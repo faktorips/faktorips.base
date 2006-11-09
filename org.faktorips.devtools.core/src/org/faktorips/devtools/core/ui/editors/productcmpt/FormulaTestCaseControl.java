@@ -269,9 +269,9 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
             if (element instanceof ExtDataForFormulaTestCase){
                 ExtDataForFormulaTestCase ftc = (ExtDataForFormulaTestCase) element;
                 if (columnIndex == IDX_COLUMN_NAME){
-                    return ftc.getName();
+                    return getTextInNullPresentationIfNull(ftc.getName());
                 } else if (columnIndex == IDX_COLUMN_EXPECTED_RESULT){
-                    return ftc.getExpectedResult();
+                    return getTextInNullPresentationIfNull(ftc.getExpectedResult());
                 } else if (columnIndex == IDX_COLUMN_ACTUAL_RESULT){
                     Object actualResult = ftc.getActualResult();
                     if (actualResult == null){
@@ -282,6 +282,13 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
             }
             return null;
         }
+        
+        private String getTextInNullPresentationIfNull(String value) {
+            if (value==null) {
+                value= IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+            }
+            return value;
+        } 
     }
     
     public FormulaTestCaseControl(Composite parent, UIToolkit uiToolkit,
@@ -636,12 +643,12 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         }
         // get the object which will be selected after the delete
         int idxBeforeLast = formulaTestCases.size()>1?formulaTestCases.size()-2:0;
-        IFormulaTestCase nextElement = (IFormulaTestCase) formulaTestCases.get(idxBeforeLast);
+        ExtDataForFormulaTestCase nextElement = (ExtDataForFormulaTestCase) formulaTestCases.get(idxBeforeLast);
         for (int i = formulaTestCases.size()-1; i >= 0 ; i--) {
             if (selElement.equals(formulaTestCases.get(i))){
                 break;
             }
-            nextElement = (IFormulaTestCase) formulaTestCases.get(i);
+            nextElement = (ExtDataForFormulaTestCase) formulaTestCases.get(i);
         }
         
         formulaTestCases.remove(selElement);

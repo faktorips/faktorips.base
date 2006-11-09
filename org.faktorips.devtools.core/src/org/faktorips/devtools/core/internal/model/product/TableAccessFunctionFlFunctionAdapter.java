@@ -64,7 +64,9 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
         try {
             IIpsArtefactBuilderSet builderSet = fct.getIpsProject().getIpsArtefactBuilderSet();
             if (!builderSet.isSupportTableAccess()) {
-                return new CompilationResultImpl(Message.newError("", Messages.TableAccessFunctionFlFunctionAdapter_msgNoTableAccess)); //$NON-NLS-1$
+                CompilationResultImpl result = new CompilationResultImpl(Message.newError("", Messages.TableAccessFunctionFlFunctionAdapter_msgNoTableAccess)); //$NON-NLS-1$
+                result.addAllIdentifierUsed(argResults);
+                return result;
             }
             return builderSet.getTableAccessCode(tableContents, fct, argResults);
         } catch (CoreException e) {
@@ -72,7 +74,7 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
             return new CompilationResultImpl(Message.newError("", Messages.TableAccessFunctionFlFunctionAdapter_msgErrorDuringCodeGeneration + fct.toString())); //$NON-NLS-1$
         }
     }
-
+    
     public void setCompiler(ExprCompiler compiler) {
         this.compiler = compiler;
     }

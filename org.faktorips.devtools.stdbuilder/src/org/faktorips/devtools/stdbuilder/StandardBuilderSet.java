@@ -98,6 +98,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         code.appendClassName(tableRowBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile()));
         code.append(" row = ");
         CompilationResultImpl result = new CompilationResultImpl(code, returnType);
+        result.addAllIdentifierUsed(argResults);
         code.appendClassName(tableImplBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile()));
         if(tableStructure.isMultipleContentsAllowed()){
             code.append(".getInstance(" + MethodNames.GET_REPOSITORY + "(), \"" + tableContents.getQualifiedName() + "\").findRow(");
@@ -129,7 +130,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         code.append(").execute())");
         return result;
     }
-
     
     public IParameterIdentifierResolver getFlParameterIdentifierResolver() {
         return new AbstractParameterIdentifierResolver(){

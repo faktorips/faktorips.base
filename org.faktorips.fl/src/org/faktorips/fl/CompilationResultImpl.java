@@ -231,6 +231,18 @@ public class CompilationResultImpl implements CompilationResult {
         }
     }
     
+    public void addAllIdentifierUsed(CompilationResult[] argResults) {
+        for (int i = 0; i < argResults.length; i++) {
+            addIdentifier(argResults[i].getIdentifiersUsed());
+        }
+    }
+    
+    private void addIdentifier(String[] identifiers){
+        for (int i = 0; i < identifiers.length; i++) {
+            addIdentifierUsed(identifiers[i]);
+        }
+    }
+    
     public boolean isUsedAsIdentifier(String candidate) {
         if (identifiersUsed==null) {
             return false;

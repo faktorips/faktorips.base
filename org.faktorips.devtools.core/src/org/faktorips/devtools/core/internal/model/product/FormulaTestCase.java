@@ -37,7 +37,6 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
 import org.faktorips.fl.DefaultIdentifierResolver;
-import org.faktorips.fl.ExcelFunctionsResolver;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.ExprEvaluator;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
@@ -163,8 +162,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
      * Returns the expression compiler used to compile the formula preview result.
      */
     private ExprCompiler getPreviewExprCompiler() throws CoreException {
-        ExprCompiler compiler = new ExprCompiler();
-        compiler.add(new ExcelFunctionsResolver(getIpsProject().getExpressionLanguageFunctionsLanguage()));
+        ExprCompiler compiler = ((IConfigElement)getParent()).getExprCompiler();
         compiler.add(new TableFunctionsFormulaTestResolver(getIpsProject(), this));
 
         IFormulaTestInputValue[] input = getFormulaTestInputValues();

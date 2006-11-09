@@ -72,14 +72,16 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public CompilationResult compile(CompilationResult[] argResults) {
         try {
             // first check if the table supports access
             IIpsArtefactBuilderSet builderSet = fct.getIpsProject().getIpsArtefactBuilderSet();
             if (!builderSet.isSupportTableAccess()) {
-                return new CompilationResultImpl(Message.newError("", Messages.TableAccessFunctionFlFunctionAdapter_msgNoTableAccess)); //$NON-NLS-1$
+                CompilationResultImpl result = new CompilationResultImpl(Message.newError("", Messages.TableAccessFunctionFlFunctionAdapter_msgNoTableAccess)); //$NON-NLS-1$
+                result.addAllIdentifierUsed(argResults);
+                return result;
             }
             return getTableContentValue(tableContents, fct, argResults);
         } catch (Exception e) {
@@ -87,7 +89,7 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
             return new CompilationResultImpl(Message.newError("", Messages.TableAccessFunctionFlFunctionAdapter_msgErrorDuringCodeGeneration + fct.toString())); //$NON-NLS-1$
         }
     }
-
+    
     /*
      * Returns <code>true</code> if the given row matches the given unique key values
      */
@@ -226,6 +228,7 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
             code.append(returnTypeHelper.newInstanceFromExpression(null));
         }
         CompilationResultImpl result = new CompilationResultImpl(code, returnType);
+        result.addAllIdentifierUsed(argResults);
         return result;
     }
     

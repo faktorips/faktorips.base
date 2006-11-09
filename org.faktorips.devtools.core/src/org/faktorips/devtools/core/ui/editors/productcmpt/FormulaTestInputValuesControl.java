@@ -133,24 +133,20 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         public String getColumnText(Object element, int columnIndex) {
             if (element instanceof IFormulaTestInputValue){
                 if (columnIndex == IDX_IDENTIFIER){
-                    return ((IFormulaTestInputValue)element).getIdentifier();
+                    return getTextInNullPresentationIfNull(((IFormulaTestInputValue)element).getIdentifier());
                 } else if (columnIndex == IDX_VALUE_COLUMN){
-                    return (String)prepareObjectForSet(((IFormulaTestInputValue)element).getValue());
+                    return getTextInNullPresentationIfNull(((IFormulaTestInputValue)element).getValue());
                 }
             }
             return null;
         }
-        
-        /*
-         * Returns the null-representation-string defined by the user (see IpsPreferences)
-         * if the given object is null, the unmodified object otherwise.
-         */
-        private Object prepareObjectForSet(Object object) {
-            if (object == null) {
-                return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+
+        private String getTextInNullPresentationIfNull(String value) {
+            if (value==null) {
+                value= IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
             }
-            return object;
-        }          
+            return value;
+        }         
     }
     
     public FormulaTestInputValuesControl(Composite parent, UIToolkit uiToolkit,

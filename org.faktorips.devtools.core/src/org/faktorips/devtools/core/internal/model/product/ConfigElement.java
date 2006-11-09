@@ -42,7 +42,6 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
-import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
@@ -188,29 +187,26 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	}
 
 	/**
-	 * Overridden.
+     * {@inheritDoc}
 	 */
-	public ExprCompiler getExprCompiler() throws CoreException {
-		ExprCompiler compiler = new ExprCompiler();
-		compiler.add(new ExcelFunctionsResolver(getIpsProject()
-				.getExpressionLanguageFunctionsLanguage()));
-		compiler.add(new TableFunctionsResolver(getIpsProject()));
-		IIpsArtefactBuilderSet builderSet = getIpsProject()
-				.getIpsArtefactBuilderSet();
-		IAttribute a = findPcTypeAttribute();
-		if (a == null) {
-			return compiler;
-		}
-		IParameterIdentifierResolver resolver = builderSet
-				.getFlParameterIdentifierResolver();
-		if (resolver == null) {
-			return compiler;
-		}
-		resolver.setIpsProject(getIpsProject());
-		resolver.setParameters(a.getFormulaParameters());
-		compiler.setIdentifierResolver(resolver);
-		return compiler;
-	}
+    public ExprCompiler getExprCompiler() throws CoreException {
+        ExprCompiler compiler = new ExprCompiler();
+        compiler.add(new ExcelFunctionsResolver(getIpsProject().getExpressionLanguageFunctionsLanguage()));
+        compiler.add(new TableFunctionsResolver(getIpsProject()));
+        IIpsArtefactBuilderSet builderSet = getIpsProject().getIpsArtefactBuilderSet();
+        IAttribute a = findPcTypeAttribute();
+        if (a == null) {
+            return compiler;
+        }
+        IParameterIdentifierResolver resolver = builderSet.getFlParameterIdentifierResolver();
+        if (resolver == null) {
+            return compiler;
+        }
+        resolver.setIpsProject(getIpsProject());
+        resolver.setParameters(a.getFormulaParameters());
+        compiler.setIdentifierResolver(resolver);
+        return compiler;
+    }
     
 	/**
 	 * {@inheritDoc}
@@ -557,54 +553,23 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         valueChanged(indexes, newIdxs);
         return newIdxs;
     }
-
+    
     /**
      * {@inheritDoc}
      */
     public String[] getIdentifierUsedInFormula() throws CoreException {
-        List result = new ArrayList();
         if (!ConfigElementType.FORMULA.equals(type)){
             return new String[0];
         }
-        
-//        ExprCompiler compiler = new ExprCompiler();
-//        CompilationResult compilationResult = compiler.compile(value);
-//        return compilationResult.getIdentifiersUsed();
-//        
-        // TODO Joerg remove
         
         IAttribute attribute = findPcTypeAttribute();
         if (attribute == null){
             return new String[0];
         }
         
-        Parameter[] formulaParameters = attribute.getFormulaParameters();
-        for (int i = 0; i < formulaParameters.length; i++) {
-            Datatype datatype = getIpsProject().findDatatype(formulaParameters[i].getDatatype());
-            if (datatype instanceof IPolicyCmptType) {
-                // if the datatype specifies a policy cmpt type add all identifiets of all attributes
-                IPolicyCmptType pcType = (IPolicyCmptType) datatype;
-                IAttribute[] attributes = pcType.getAttributes();
-                for (int j = 0; j < attributes.length; j++) {
-                    result.add(formulaParameters[i].getName() + "." + attributes[j].getName()); //$NON-NLS-1$
-                }
-            } else {
-                result.add(formulaParameters[i].getName());
-            }
-        }
-        
-        // return only identifier which are in the formula
-        List cleanedResult = new ArrayList();
-        for (Iterator iter = result.iterator(); iter.hasNext();) {
-            String identifier = (String)iter.next();
-            // check if the identifier is given in the formula, use reg exp to check if the
-            // identifier is in the formula and no character is on the beginning or end of the
-            // identifier
-            String identifiedInValue = (" " + value + " ").replaceAll(".*[^a-zA-Z]" + identifier + "[^a-zA-Z].*", identifier); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-            if (identifiedInValue.equals(identifier)) {
-                cleanedResult.add(identifier);
-            }
-        }
-        return (String[]) cleanedResult.toArray(new String[cleanedResult.size()]);
+        ExprCompiler compiler = getExprCompiler();
+        CompilationResult compilationResult = compiler.compile(value);
+        String[] identifiers =  compilationResult.getIdentifiersUsed();
+        return identifiers;
     }
 }
