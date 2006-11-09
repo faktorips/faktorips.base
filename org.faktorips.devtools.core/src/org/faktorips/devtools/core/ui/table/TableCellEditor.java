@@ -249,73 +249,10 @@ public abstract class TableCellEditor extends CellEditor{
     private void editCell(int rowIndex, int colIndex){
         // optimization: only edit if cell (row or column) changed
         if(colIndex!=columnIndex || rowIndex!=tableViewer.getTable().getSelectionIndex()){
-            tableViewer.editElement(tableViewer.getElementAt(rowIndex), colIndex);
+            if (tableViewer.getElementAt(rowIndex) != null){
+                tableViewer.editElement(tableViewer.getElementAt(rowIndex), colIndex);
+            }
         }
-        /*
-         * FIXME: 
-         * removeRows: 
-         * - danach: beim Loeschen wird die falsche Zelle editiert, zumindest graphisch. 
-         * - davor: loeschen von zeilen um eins verzoegert (loescht nur
-         *   vorletzte Zeile) 
-         * - als Selectionlistener: bei click und loeschen wird die falsche Zelle
-         *   editiert (s.o.)
-         * 
-         * komisch, denn: index der editierten Zelle bleibt beim loeschen angehaengter Zeilen
-         * gleich, es kommt warscheinlich auf den Klick der Maus an! Warum wird dies nicht ueber
-         * einen einheitlichen Mechanismus gesteuert? -> wird es , das Problem ist der Update der
-         * Table udn das scrolling!
-         * 
-         *  - Das tableitem in dem der Klick gemacht wurde ist das richtige und zum Zeitpunkt an dem der
-         *    CellEditor erstellt wird auch aktuell. Danach werden allerdings Zeilen geloescht und der
-         *    TableViewer sowie der Table geupdatet. Durch das automatische scrollen veraendert sich
-         *    die Position der TableItems und der selektion. Zum Zeitpunkt des klicks hat man davon
-         *    allerdings keine Ahnung und auch keine Moeglichkeit irgendetwas zu tun, weil alles aktuell ist. 
-         * - wenn man versucht sich VOR (zeitlich) den mouseListener zuhaengen und zu loeschen, dann
-         *   wuerde der Table geupdatet und die Position des Mausklicks waere nicht aktuell. 
-         *   (womoeglich wuerde eine andere Zeile/Zelle markiert als vor dem Layout. Naemlich genau die
-         *   in der der CellEditor momentan faelschlicherweise angezeigt wird) 
-         * -> Problem immer: Table scrollt selbst und fuehrt bei jedem einfuegen/loeschen layouting durch. Entweder: 
-         *    .Die Items veraendern ihre Position innerhalb und damit relativ zum table. (dann koennte vorher eingegriffen werden) oder:
-         *    .CellEditoren werden nicht mitgescrollt! Warum werden die nicht mitgescrollt, wenn sie doch 
-         *    children des Tables sind!??!?!?!
-         *    
-         * Die Frage ist: wann wird Editor aufgemacht, wann geloescht und gelayoutet?
-         *  - Mausklick erzeugt event und oeffnet damit editor, der die position des TableItems im akteullen Zustand erhaelt.
-         *  - Mausklick loest loeschen von Zeilen aus: Zeilen werden geloescht und jedes mal der Table relayoutet
-         *      -> nach jedem Layout wird auch die Selektion der angeklickten Zeile aktualisiert, die in einem bestimmten Fall
-         *         immer eine Zeile nach unten rutscht, genau um die eben geloeschte.
-         *  - die position des CellEditors wird dabei anscheinend nicht aktualisiert
-         *      -> dies hat womoeglich garnichts mit Scrolling zu tun!!!!
-         * Problem: wenn Loeschen VOR dem erstellen des CellEditors durchgefuehrt wuerde, dann
-         * waere die position des Mausklicks nach dem relayout moeglicherweise ebenso falsch
-         * 
-         * Merkwuerdig:
-         *  - Table scrollt beim Loeschen IMMER an das Ende des Tables, und das anscheinend BEVOR der Editor geoeffnet wird!!!
-         *    Die eigentlich angeklickte Zeile wird dabei nicht editiert sondern diejenige, die nach dem Scrollen zur letzten
-         *    Zeile an der stelle des Cursors ist. Entsprechend taucht der CellEditor an dieser Stelle auf und die zugehoerige 
-         *    Zeile wird etwas weiter unten selektiert.
-         *   -> kann es sein, dass erst gescrollt dann CellEditor geoeffnet und dann geloescht wird? wohl kaum!
-         *  - AutoScroll ist abhaengig von scrollposition des tables: oberhalb der mitte wird nicht gescrollt (top buendig)
-         *      unterhalb der mitte wird zum Ende des Tables gescrollt.
-         *    
-         * --> Loesung: nicht table scrollt, sondern Editor: Tableitems veraendern dadurch ihre position
-         *     innerhalb des Tables NICHT, denn der Table wird innerhalb nicht relayoutet, der EditorScroller 
-         *     ist fuer die position verantwortlich. 
-         * -> Probleme dabei: 
-         *      zuckendes scrollverhalten vor allem bei einfuegen und loeschen von Zeilen
-         *      doppelte scrollbalken
-         *      Label und evtlle. Buttons werden weggescrollt 
-         *    Vorteile: reveal funktioniert, ganz im gegensatz zum tablescrolling #@&% !!!!?
-         * 
-         * Idee:
-         *  Loeschen von leeren Zeilen nur per Button und automatisch beim Speichern.
-         * -> Problem: Validierung
-         * 
-         * 
-         * Remove sollte derzeit (3.2) nicht mit virtual Tables verwendet werden, da es hier 
-         * noch einige Bugs gibt, die fuer 3.3 gefixt werden sollen. 
-         * 
-         */
     }
     
     
