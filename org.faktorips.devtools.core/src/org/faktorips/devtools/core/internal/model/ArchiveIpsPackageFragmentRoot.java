@@ -173,6 +173,6 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
      * {@inheritDoc}
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage("IpsPackageFragmentRoot.gif"); //$NON-NLS-1$
+        return IpsPlugin.getDefault().getImage("IpsAr.gif"); //$NON-NLS-1$
     }
 }
