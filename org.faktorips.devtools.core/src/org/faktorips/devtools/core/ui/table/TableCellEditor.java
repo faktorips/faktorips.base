@@ -249,8 +249,7 @@ public abstract class TableCellEditor extends CellEditor{
     private void editCell(int rowIndex, int colIndex){
         // optimization: only edit if cell (row or column) changed
         if(colIndex!=columnIndex || rowIndex!=tableViewer.getTable().getSelectionIndex()){
-            IRow row= (IRow) tableViewer.getElementAt(rowIndex);
-            tableViewer.editElement(row, colIndex);
+            tableViewer.editElement(tableViewer.getElementAt(rowIndex), colIndex);
         }
         /*
          * FIXME: 
