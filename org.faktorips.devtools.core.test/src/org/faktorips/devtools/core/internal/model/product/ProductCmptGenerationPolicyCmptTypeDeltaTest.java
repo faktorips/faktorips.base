@@ -317,6 +317,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
     }
     
     public void testGetTableStructureUsagesWithMissingContentUsages() throws Exception {
+        pcType.setConfigurableByProductCmptType(true);
         IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);  
         assertEquals(0, delta.getTableStructureUsagesWithMissingContentUsages().length);
         
@@ -335,6 +336,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
     }
     
     public void testGetTableContentUsagesWithMissingStructureUsages() throws Exception {
+        pcType.setConfigurableByProductCmptType(true);
         IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);  
         assertEquals(0, delta.getTableContentUsagesWithMissingStructureUsages().length);
         
