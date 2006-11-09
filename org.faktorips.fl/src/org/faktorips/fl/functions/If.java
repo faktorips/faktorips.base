@@ -81,7 +81,15 @@ public class If extends AbstractFlFunction {
         result.addMessages(argResults[0].getMessages());
         result.addMessages(argResults[1].getMessages());
         result.addMessages(argResults[2].getMessages());
+        addIdentifier(argResults[0].getIdentifiersUsed(), result);
+        addIdentifier(argResults[1].getIdentifiersUsed(), result);
+        addIdentifier(argResults[2].getIdentifiersUsed(), result);
         return result;
     }
-
+    
+    private void addIdentifier(String[] identifiers, CompilationResultImpl compilationResult){
+        for (int i = 0; i < identifiers.length; i++) {
+            compilationResult.addIdentifierUsed(identifiers[i]);
+        }
+    }
 }

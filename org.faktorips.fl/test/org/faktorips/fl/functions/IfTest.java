@@ -17,7 +17,14 @@
 
 package org.faktorips.fl.functions;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.DefaultIdentifierResolver;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
 
@@ -83,5 +90,20 @@ public class IfTest extends FunctionAbstractTest {
         execAndTestSuccessfull("IF(1=1; 2.1 + 1; 3) + 2", Decimal.valueOf("5.1"), Datatype.DECIMAL);
         execAndTestSuccessfull("IF(1=1; 2; 3) + 10 + IF(1=2; 2; 3) ", new Integer(15), Datatype.INTEGER);
         execAndTestSuccessfull("IF(1=1; IF(1=2; 2; 30); 3) + 1", new Integer(31), Datatype.INTEGER);
+    }
+    
+    public void testIdentifierInFunction() throws Exception{
+        DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
+        compiler.setIdentifierResolver(resolver);
+        resolver.register("param1", new JavaCodeFragment(StringUtils.escape("1")), Datatype.PRIMITIVE_INT);
+        resolver.register("param2", new JavaCodeFragment(StringUtils.escape("2")), Datatype.PRIMITIVE_INT);
+        resolver.register("param3", new JavaCodeFragment(StringUtils.escape("3")), Datatype.PRIMITIVE_INT);
+        resolver.register("param4", new JavaCodeFragment(StringUtils.escape("4")), Datatype.PRIMITIVE_INT);
+        CompilationResult result = execAndTestSuccessfull("IF(param1=param2; param3; param4)", new Integer(4), Datatype.INTEGER);
+        List identifier = Arrays.asList(result.getIdentifiersUsed());
+        assertTrue(identifier.contains("param1"));
+        assertTrue(identifier.contains("param2"));
+        assertTrue(identifier.contains("param3"));
+        assertTrue(identifier.contains("param4"));        
     }
 }
