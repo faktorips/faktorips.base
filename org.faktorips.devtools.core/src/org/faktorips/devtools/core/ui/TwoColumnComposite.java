@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
- * 
+ * @deprecated
  */
 public class TwoColumnComposite extends Composite implements ModifyListener, SelectionListener {
     

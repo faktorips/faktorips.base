@@ -273,17 +273,20 @@ public class UIToolkit {
 		if (formToolkit != null) {
 			newText = formToolkit.createText(parent, null, style);
 		} else {
-			newText = new Text(parent, SWT.SINGLE | SWT.BORDER);
+			newText = new Text(parent, style);
 		}
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
 		gridData.widthHint = DEFAULT_WIDTH;
 		newText.setLayoutData(gridData);
 		return newText;
-
 	}
 
 	public Text createText(Composite parent) {
-		return createText(parent, SWT.NONE);
+        if (formToolkit != null){
+            return createText(parent, SWT.NONE);
+        } else {
+            return createText(parent, SWT.SINGLE | SWT.BORDER);
+        }
 	}
 
 	public Text createMultilineText(Composite parent) {

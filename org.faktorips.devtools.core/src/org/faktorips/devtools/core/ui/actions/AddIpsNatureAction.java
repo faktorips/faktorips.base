@@ -275,7 +275,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             Composite textComposite = kit.createLabelEditColumnComposite(composite);
 
             kit.createLabel(textComposite, Messages.AddIpsNatureAction_sourceFolderName, false);
-            sourceFolderText = kit.createText(textComposite, SWT.BORDER);
+            sourceFolderText = kit.createText(textComposite);
             sourceFolderText.setText(sourceFolderName);
             sourceFolderText.addModifyListener(new ModifyListener() {
                 public void modifyText(ModifyEvent event) {
@@ -285,7 +285,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             kit.createVerticalSpacer(composite, 5);
 
             kit.createLabel(textComposite, Messages.AddIpsNatureAction_basePackageName, false);
-            basePackageText = kit.createText(textComposite, SWT.BORDER);
+            basePackageText = kit.createText(textComposite);
             basePackageText.setText(basePackageName);
             basePackageText.addModifyListener(new ModifyListener() {
                 public void modifyText(ModifyEvent event) {
@@ -295,7 +295,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             kit.createVerticalSpacer(composite, 5);
 
             kit.createLabel(textComposite, Messages.AddIpsNatureAction_runtimeIdPrefix, false);
-            runtimeIdText = kit.createText(textComposite, SWT.BORDER);
+            runtimeIdText = kit.createText(textComposite);
             runtimeIdText.setText(runtimeIdPrefix);
 
             errorMessageText = new Text(composite, SWT.READ_ONLY);
