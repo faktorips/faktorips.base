@@ -921,6 +921,11 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         
         ITableStructureUsage tsu2 = pcType.newTableStructureUsage();
         assertEquals(1, tsu2.getId());  
+        
+        // if the pcType is not configurated by a product cmpt
+        // check if the new method returns null
+        pcType.setConfigurableByProductCmptType(false);
+        assertNull(pcType.newTableStructureUsage());
     }
     
     public void testGetTableStructureUsage(){
