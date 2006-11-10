@@ -155,7 +155,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
 
         if (IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType())) {
-            return getPackageName(ipsSrcFile);
+            return getInternalPackageName(ipsSrcFile);
         }
 
         if (IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
