@@ -46,7 +46,7 @@ public class ValidationResultCache {
 	 * 
 	 * @throws NullPointerException if container is <code>null</code>.
 	 */
-	public void putResult(IIpsObjectPartContainer container, MessageList result) {
+	synchronized public void putResult(IIpsObjectPartContainer container, MessageList result) {
 		if (result==null) {
 			data.remove(container);
 			return;
@@ -61,7 +61,7 @@ public class ValidationResultCache {
 	 * Returns the cached validation result for the given container or <code>null</code>
 	 * if the cache does not contain a result for the container.
 	 */
-	public MessageList getResult(IIpsObjectPartContainer c) {
+    synchronized public MessageList getResult(IIpsObjectPartContainer c) {
 		MessageList cached = (MessageList )data.get(c);
 		if (cached==null) {
 			return null;
@@ -81,14 +81,14 @@ public class ValidationResultCache {
 	 * result of other objects can also change if one object is changed. We might use
 	 * the exact dependencies between objects to solve this more efficiently.  
 	 */
-	public void removeStaleData(IIpsSrcFile file) {
+    synchronized public void removeStaleData(IIpsSrcFile file) {
 		data.clear();
 	}
 
 	/**
 	 * Clears the whole cache.
 	 */
-	public void clear(){
+    synchronized public void clear(){
 		data.clear();
 	}
 }

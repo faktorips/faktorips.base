@@ -66,28 +66,6 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         project.setIpsObjectPath(path);
     }
     
-    public void testInitFromXml() {
-        Element docEl = getTestDocument().getDocumentElement();
-        entry.initFromXml(XmlUtil.getElement(docEl, 0), project.getProject());
-        IFile archiveFile = project.getProject().getFolder("lib").getFile("test.ipsar");
-        assertEquals(archiveFile, entry.getArchiveFile());
-        
-        entry.initFromXml(XmlUtil.getElement(docEl, 1), project.getProject());
-        assertNull(entry.getArchiveFile());
-    }
-    
-    public void testGetIpsArchive() throws CoreException {
-        IIpsArchive archive = entry.getIpsArchive();
-        assertNotNull(archive);
-        assertEquals(archiveFile, archive.getArchiveFile());
-    }
-    
-    public void testGetIpsPackageFragementRoot() throws CoreException {
-        IIpsPackageFragmentRoot root = entry.getIpsPackageFragmentRoot(project);
-        assertNotNull(root);
-        assertEquals(archiveFile.getName(), root.getName());
-    }
-    
     public void testFindIpsObjectsStartingWith() throws CoreException {
         IIpsObject motorPolicy = project.findIpsObject(qntMotorPolicy);
         IIpsObject motorCollision = project.findIpsObject(qntMotorCollision);
@@ -109,6 +87,27 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         
     }
     
+    public void testInitFromXml() {
+        Element docEl = getTestDocument().getDocumentElement();
+        entry.initFromXml(XmlUtil.getElement(docEl, 0), project.getProject());
+        IFile archiveFile = project.getProject().getFolder("lib").getFile("test.ipsar");
+        assertEquals(archiveFile, entry.getArchiveFile());
+        
+        entry.initFromXml(XmlUtil.getElement(docEl, 1), project.getProject());
+        assertNull(entry.getArchiveFile());
+    }
+    
+    public void testGetIpsArchive() throws CoreException {
+        IIpsArchive archive = entry.getIpsArchive();
+        assertNotNull(archive);
+        assertEquals(archiveFile, archive.getArchiveFile());
+    }
+    
+    public void testGetIpsPackageFragementRoot() throws CoreException {
+        IIpsPackageFragmentRoot root = entry.getIpsPackageFragmentRoot(project);
+        assertNotNull(root);
+        assertEquals(archiveFile.getName(), root.getName());
+    }
     
     public void testToXml() throws CoreException {
         Element el = entry.toXml(newDocument());

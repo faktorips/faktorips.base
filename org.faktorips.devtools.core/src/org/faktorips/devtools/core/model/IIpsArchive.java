@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * An ips archive is an archive for ips objects. It is physically stored in a file. The file's format is jar.
@@ -28,6 +29,23 @@ import org.eclipse.core.runtime.CoreException;
  * @author Jan Ortmann
  */
 public interface IIpsArchive {
+
+    /**
+     * Constant for the toplevel folder in the archive file that contains the entries for the ips 
+     * objects. 
+     */
+    public final static String IPSOBJECTS_FOLDER = "ipsobjects";
+    
+    /**
+     * Constant for the jar entry name" that contains additional ipsobjects properties like the mapping to Java base packages.
+     */
+    public final static String JAVA_MAPPING_ENTRY_NAME = IPSOBJECTS_FOLDER + IPath.SEPARATOR + "ipsobjects.properties";
+
+    public final static String QNT_PROPERTY_POSTFIX_SEPARATOR = "#";
+    
+    public final static String PROPERTY_POSTFIX_BASE_PACKAGE = "basePackage";
+    
+    public final static String PROPERTY_POSTFIX_EXTENSION_PACKAGE = "extensionPackage";
 
     /**
      * Returns the underlying file. 
@@ -80,4 +98,17 @@ public interface IIpsArchive {
      */
     public String getContent(QualifiedNameType qnt, String encoding) throws CoreException;    
 
+    /**
+     * Returns the name of the base package for the generated Java source files.
+     * All generated Java types are contained in this package or one of the child packages.
+     */
+    public String getBasePackageNameForGeneratedJavaClass(QualifiedNameType qnt) throws CoreException;
+
+    /**
+     * Returns the name of the base package for the extension Java source files. All generated Java types
+     * are contained in this package or one of the child packages.
+     * Extension Java files are the files where the developer adds it's own code.
+     */
+    public String getBasePackageNameForExtensionJavaClass(QualifiedNameType qnt) throws CoreException;
+    
 }

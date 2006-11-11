@@ -21,7 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.runtime.ClassloaderRuntimeRepository;
 
 /**
  * A default implementation that extends the AbstractBuilderSet and implements the IJavaPackageStructure
@@ -70,25 +69,13 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     private final static String INTERNAL_PACKAGE = "internal"; //$NON-NLS-1$
     
     /**
-     * Returns the base package name. It is the <b>base package name for generated java classes</b>
-     * from the IpsSrcFolderEntry that is assigned to the package root that contains the provided
-     * IpsSrcFile. The base package name can be configure for an ips project within the
-     * ipsproject.xml file.
-     */
-    private String getBasePackageName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)ipsSrcFile.getIpsPackageFragment().getRoot()
-                .getIpsObjectPathEntry();
-        return entry.getBasePackageNameForGeneratedJavaClasses();
-    }
-
-    /**
      * Returns the addition of the name of the ips package fragment that contains the provided
      * IpsSrcFile and the base package name. This method is used within the getPackage() method
      * implementation.
      */
     protected String getPackageName(IIpsSrcFile ipsSrcFile) throws CoreException {
         StringBuffer buf = new StringBuffer();
-        String basePackeName = getBasePackageName(ipsSrcFile);
+        String basePackeName = ipsSrcFile.getBasePackageNameForGeneratedJavaClass();
         if (!StringUtils.isEmpty(basePackeName)) {
             buf.append(basePackeName);
         }
@@ -105,7 +92,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
      */
     protected String getInternalPackageName(IIpsSrcFile ipsSrcFile) throws CoreException {
         StringBuffer buf = new StringBuffer();
-        String basePackeName = getBasePackageName(ipsSrcFile);
+        String basePackeName = ipsSrcFile.getBasePackageNameForGeneratedJavaClass();
         if (!StringUtils.isEmpty(basePackeName)) {
             buf.append(basePackeName).append('.');
         }
@@ -137,16 +124,9 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
 	 */
 	public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
 		IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry(); 
-		String basePack = entry.getBasePackageNameForGeneratedJavaClasses();
-        if (StringUtils.isEmpty(basePack)) {
-        	basePack = INTERNAL_PACKAGE;
-        } else {
-        	basePack = basePack + '.' + INTERNAL_PACKAGE;
-        	
-        }
+        String tocPath = entry.getFullTocPath();
 		IFolder folder = entry.getOutputFolderForGeneratedJavaFiles();
-		IFolder tocFolder = folder.getFolder(basePack.replace('.', IPath.SEPARATOR));
-		return tocFolder.getFile(ClassloaderRuntimeRepository.TABLE_OF_CONTENTS_FILE);
+		return folder.getFile(new Path(tocPath));
 	}
 
 	/**

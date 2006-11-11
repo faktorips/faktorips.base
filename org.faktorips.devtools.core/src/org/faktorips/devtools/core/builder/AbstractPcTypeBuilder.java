@@ -232,7 +232,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
         IRelation[] relations = getPcType().getRelations();
         for (int i = 0; i < relations.length; i++) {
             try {
-                if (relations[i].validate().containsErrorMsg()) {
+                if (!relations[i].isValid()) {
                     continue;
                 }
                 generateCodeForRelation(relations[i], fieldsBuilder, methodsBuilder);                

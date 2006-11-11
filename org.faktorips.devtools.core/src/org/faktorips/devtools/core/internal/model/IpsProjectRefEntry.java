@@ -144,4 +144,12 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
         }
         return result;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        return "ProjectRefEntry[" + referencedIpsProject.getName() + "]";
+    }
+    
 }

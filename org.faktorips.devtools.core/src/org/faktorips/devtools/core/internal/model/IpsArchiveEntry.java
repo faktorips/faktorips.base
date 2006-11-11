@@ -175,4 +175,11 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         // TODO Auto-generated method stub
         return null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        return "ArchiveEntry[" + getArchiveFile().getProjectRelativePath().toString() + "]";
+    }
 }

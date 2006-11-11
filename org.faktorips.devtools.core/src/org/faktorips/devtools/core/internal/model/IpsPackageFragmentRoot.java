@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.IIpsArchive;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -50,7 +51,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
     /**
      * {@inheritDoc}
      */
-    public boolean containsSourceFiles() {
+    public boolean isBasedOnSourceFolder() {
         return true;
     }
 
@@ -252,6 +253,29 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         for (int i = 0; i < packs.length; i++) {
             ((IpsPackageFragment)packs[i]).findIpsObjectsStartingWith(type, prefix, ignoreCase, result);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getJavaBasePackageNameForGeneratedJavaClasses() throws CoreException {
+        IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)getIpsObjectPathEntry();
+        return entry.getBasePackageNameForGeneratedJavaClasses();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getJavaBasePackageNameForExtensionJavaClasses() throws CoreException {
+        IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)getIpsObjectPathEntry();
+        return entry.getBasePackageNameForExtensionJavaClasses();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsArchive getIpsArchive() {
+        return null;
     }
 
 }

@@ -58,7 +58,7 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     /**
      * {@inheritDoc}
      */
-    public boolean containsSourceFiles() {
+    public boolean isBasedOnSourceFolder() {
         return false;
     }
 
@@ -82,7 +82,7 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     }
 
     /**
-     * Returns the ips archive this root is based on.  
+     * {@inheritDoc}
      */
     public IIpsArchive getIpsArchive() throws CoreException {
         return ((IpsArchiveEntry)getIpsObjectPathEntry()).getIpsArchive();

@@ -113,6 +113,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertEquals("org.sample.generated", entry.getSpecificBasePackageNameForGeneratedJavaClasses());
         assertEquals(project.getFolder("extensions"), entry.getSpecificOutputFolderForExtensionJavaFiles());
         assertEquals("org.sample.extensions", entry.getSpecificBasePackageNameForExtensionJavaClasses());
+        assertEquals("motor.repository-toc.xml", entry.getBasePackageRelativeTocPath());
 
         entry.initFromXml((Element)nl.item(1), ipsProject.getProject());
         assertNull(entry.getSpecificOutputFolderForGeneratedJavaFiles());
@@ -125,9 +126,11 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         IpsSrcFolderEntry entry = new IpsSrcFolderEntry(path, project.getFolder("ipssrc").getFolder("modelclasses"));
         entry.setSpecificOutputFolderForGeneratedJavaFiles(project.getFolder("javasrc").getFolder("modelclasses"));
         entry.setSpecificBasePackageNameForGeneratedJavaClasses("org.faktorips.sample.model");
+        entry.setBasePackageRelativeTocPath("toc.xml");
         Element element = entry.toXml(newDocument());
         entry = new IpsSrcFolderEntry(path);
         entry.initFromXml(element, project);
+        assertEquals("toc.xml", entry.getBasePackageRelativeTocPath());
         assertEquals(project.getFolder("ipssrc").getFolder("modelclasses"), entry.getSourceFolder());
         assertEquals(project.getFolder("javasrc").getFolder("modelclasses"), entry.getSpecificOutputFolderForGeneratedJavaFiles());
         assertEquals("org.faktorips.sample.model", entry.getSpecificBasePackageNameForGeneratedJavaClasses());

@@ -64,7 +64,7 @@ public interface IIpsProjectProperties {
 	 * Sets the id of the builderset used to generate sourcecode from the model / product definition.
 	 */
 	public void setBuilderSetId(String id);
-
+    
     /**
      * Returns the IpsProject specific configuration of the IIpsArtefactBuilderSet.
      */

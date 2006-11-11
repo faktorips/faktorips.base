@@ -82,7 +82,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     private String basePackageExtension = ""; //$NON-NLS-1$
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsProjectRefEntry[] getProjectRefEntries() {
         ArrayList projectRefEntries = new ArrayList();
@@ -95,7 +95,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsSrcFolderEntry[] getSourceFolderEntries() {
         ArrayList projectRefEntries = new ArrayList();
@@ -108,7 +108,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsObjectPathEntry[] getEntries() {
         IIpsObjectPathEntry[] copy = new IIpsObjectPathEntry[entries.length];
@@ -117,7 +117,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setEntries(IIpsObjectPathEntry[] newEntries) {
         entries = new IIpsObjectPathEntry[newEntries.length];
@@ -125,7 +125,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsProject[] getReferencedIpsProjects() {
         List projects = new ArrayList();
@@ -138,7 +138,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsSrcFolderEntry newSourceFolderEntry(IFolder srcFolder) {
        IIpsSrcFolderEntry newEntry = new IpsSrcFolderEntry(this, srcFolder);
@@ -185,7 +185,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
 	public boolean containsProjectRefEntry(IIpsProject ipsProject){
 		for (int i = 0; i < entries.length; i++) {
@@ -200,7 +200,7 @@ public class IpsObjectPath implements IIpsObjectPath {
 	}
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
 	public void removeProjectRefEntry(IIpsProject ipsProject){
 		for (int i = 0; i < entries.length; i++) {
@@ -218,35 +218,35 @@ public class IpsObjectPath implements IIpsObjectPath {
 	}
 	
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean isOutputDefinedPerSrcFolder() {
         return outputDefinedPerSourceFolder;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setOutputDefinedPerSrcFolder(boolean newValue) {
         outputDefinedPerSourceFolder = newValue;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IFolder getOutputFolderForGeneratedJavaFiles() {
         return outputFolderGenerated;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setOutputFolderForGeneratedJavaFiles(IFolder outputFolder) {
         this.outputFolderGenerated = outputFolder;
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IFolder[] getOutputFolders() {
         if (!outputDefinedPerSourceFolder) {
@@ -270,42 +270,42 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getBasePackageNameForGeneratedJavaClasses() {
         return basePackageGenerated;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setBasePackageNameForGeneratedJavaClasses(String name) {
         this.basePackageGenerated = name;
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IFolder getOutputFolderForExtensionJavaFiles() {
         return outputFolderExtension;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setOutputFolderForExtensionJavaFiles(IFolder outputFolder) {
         outputFolderExtension = outputFolder;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getBasePackageNameForExtensionJavaClasses() {
         return basePackageExtension;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setBasePackageNameForExtensionJavaClasses(String name) {
         basePackageExtension = name;

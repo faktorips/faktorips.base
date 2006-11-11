@@ -136,4 +136,20 @@ public class ArchiveIpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile
         return archive.getContent(getQualifiedNameType(), getIpsProject().getXmlFileCharset());
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public String getBasePackageNameForGeneratedJavaClass() throws CoreException {
+        IIpsArchive archive = getIpsPackageFragment().getRoot().getIpsArchive();
+        return archive.getBasePackageNameForGeneratedJavaClass(getQualifiedNameType());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getBasePackageNameForExtensionJavaClass() throws CoreException {
+        IIpsArchive archive = getIpsPackageFragment().getRoot().getIpsArchive();
+        return archive.getBasePackageNameForExtensionJavaClass(getQualifiedNameType());
+    }
+
 }

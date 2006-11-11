@@ -122,4 +122,18 @@ public interface IIpsSrcFile extends IIpsElement {
      */
     public String getContentFromEnclosingResource() throws CoreException;
     
+    /**
+     * Returns the name of the base package for the generated Java source files.
+     * All generated Java types are contained in this package or one of the child packages.
+     */
+    public String getBasePackageNameForGeneratedJavaClass() throws CoreException;
+
+    /**
+     * Returns the name of the base package for the extension Java source files. All generated Java types
+     * are contained in this package or one of the child packages.
+     * Extension Java files are the files where the developer adds it's own code.
+     */
+    public String getBasePackageNameForExtensionJavaClass() throws CoreException;
+
+    
 }

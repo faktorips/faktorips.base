@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.IIpsArchive;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
 /**
  * 
@@ -37,19 +38,43 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     private IIpsArchive archive;
     private IFile archiveFile;
     
+    private IPolicyCmptType motorPolicyType;
+    
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("ArchiveProject");
-        newPolicyCmptType(project, "motor.MotorPolicy");
+        motorPolicyType = newPolicyCmptType(project, "motor.MotorPolicy");
         newPolicyCmptType(project, "motor.collision.SimpleCollisionCoverage");
         newPolicyCmptType(project, "motor.collision.ExtendedCollisionCoverage");
         newPolicyCmptType(project, "home.base.HomePolicy");
         archiveFile = project.getProject().getFile("test.ipsar");
         createArchive(project, archiveFile);
         archive = new IpsArchive(archiveFile);
+    }
+    
+    /**
+     * Tests if the access methods work correct if we change the underlying archive file on disk.
+     */
+    public void testModificationToUnderlyingFile() throws Exception {
+        QualifiedNameType qnt = new QualifiedNameType("motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE);
+        assertTrue(archive.contains(qnt));
+
+        motorPolicyType.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
+        createArchive(project, archiveFile);
+        assertFalse(archive.contains(qnt));
+    }
+    
+    public void testBasePackageNameForGeneratedJavaClass() throws CoreException {
+        String expPackage = motorPolicyType.getIpsSrcFile().getBasePackageNameForGeneratedJavaClass();
+        assertEquals(expPackage, archive.getBasePackageNameForGeneratedJavaClass(motorPolicyType.getQualifiedNameType())); 
+    }
+    
+    public void testBasePackageNameForExtensionJavaClass() throws CoreException {
+        String expPackage = motorPolicyType.getIpsSrcFile().getBasePackageNameForExtensionJavaClass();
+        assertEquals(expPackage, archive.getBasePackageNameForExtensionJavaClass(motorPolicyType.getQualifiedNameType())); 
     }
     
     public void testContains() throws CoreException {
@@ -82,9 +107,6 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertFalse(archive.exists());
     }
 
-    /*
-     * Test method for 'org.faktorips.devtools.core.internal.model.IpsArchive.getNoneEmptyPackages()'
-     */
     public void testGetNoneEmptyPackages() throws CoreException {
         String[] packs = archive.getNoneEmptyPackages();
         assertEquals(3, packs.length);
@@ -93,9 +115,6 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertEquals("motor.collision", packs[2]);
     }
 
-    /*
-     * Test method for 'org.faktorips.devtools.core.internal.model.IpsArchive.getNoneEmptySubpackages(String)'
-     */
     public void testGetNoneEmptySubpackages() throws CoreException {
         Set subpacks = archive.getNoneEmptySubpackages("");
         assertEquals(2, subpacks.size());
@@ -112,9 +131,6 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertEquals(0, subpacks.size());
     }
 
-    /*
-     * Test method for 'org.faktorips.devtools.core.internal.model.IpsArchive.getQNameTypes()'
-     */
     public void testGetQNameTypes() throws CoreException {
         Set qnt = archive.getQNameTypes();
         assertEquals(4, qnt.size());
@@ -156,5 +172,4 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         qnt = new QualifiedNameType("MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE);
         assertNull(archive.getContent(qnt, "UTF-8"));
     }
-
 }

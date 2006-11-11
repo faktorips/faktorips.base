@@ -55,6 +55,30 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
      * is returned.
      */
     public String getBasePackageNameForGeneratedJavaClasses();
+
+    /**
+     * Returns partial toc resource name. The fully qualified toc resource name is obtained
+     * by adding this partial name to the base package name for generated Java classes.
+     * 
+     * @see #getTocPath()
+     * @see #getBasePackageNameForGeneratedJavaClasses()
+     */
+    public String getBasePackageRelativeTocPath();
+    
+    /**
+     * Sets the partial toc resource name. 
+     *
+     * @see #getBasePackageRelativeTocPath()
+     */
+    public void setBasePackageRelativeTocPath(String newName);
+
+    /**
+     * Returns the full path to the toc resource.
+     * 
+     * @see #getBasePackageRelativeTocPath()
+     * @see #getBasePackageNameForGeneratedJavaClasses()
+     */
+    public String getFullTocPath();
     
     /**
      * Returns the name of the entry's own base package for the generated Java source files. All generated Java types

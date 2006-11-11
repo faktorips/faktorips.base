@@ -921,16 +921,16 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     public IIpsPackageFragmentRoot[] getSourceIpsPackageFragmentRoots() throws CoreException {
         List result = new ArrayList();
-        getSourcePdPckFragmentRoots(result);
+        getSourceIpsFragmentRoots(result);
         IIpsPackageFragmentRoot[] sourceRoots = new IIpsPackageFragmentRoot[result.size()];
         result.toArray(sourceRoots);
         return sourceRoots;
     }
 
-    void getSourcePdPckFragmentRoots(List result) throws CoreException {
+    void getSourceIpsFragmentRoots(List result) throws CoreException {
         IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
         for (int i = 0; i < roots.length; i++) {
-            if (roots[i].containsSourceFiles()) {
+            if (roots[i].isBasedOnSourceFolder()) {
                 result.add(roots[i]);
             }
         }

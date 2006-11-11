@@ -27,8 +27,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFileMemento;
+import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
@@ -145,6 +147,24 @@ public class IpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile {
      */
     public boolean isHistoric() {
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getBasePackageNameForGeneratedJavaClass() throws CoreException {
+        IIpsPackageFragmentRoot root = getIpsPackageFragment().getRoot();
+        IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
+        return entry.getBasePackageNameForGeneratedJavaClasses();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getBasePackageNameForExtensionJavaClass() throws CoreException {
+        IIpsPackageFragmentRoot root = getIpsPackageFragment().getRoot();
+        IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
+        return entry.getBasePackageNameForExtensionJavaClasses();
     }
     
 }

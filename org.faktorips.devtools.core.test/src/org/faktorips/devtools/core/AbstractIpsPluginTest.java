@@ -112,12 +112,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         
 	}
     
-    protected void createArchive(IIpsProject projectToArchive, IFile archiveFile) throws CoreException {
+    protected void createArchive(IIpsProject projectToArchive, IFile archiveFile) throws Exception {
         CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(projectToArchive, archiveFile);
         ResourcesPlugin.getWorkspace().run(op, null);
     }
 
-    protected void createArchive(IIpsPackageFragmentRoot rootToArchive, IFile archiveFile) throws CoreException {
+    protected void createArchive(IIpsPackageFragmentRoot rootToArchive, IFile archiveFile) throws Exception {
         CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(rootToArchive, archiveFile);
         ResourcesPlugin.getWorkspace().run(op, null);
     }

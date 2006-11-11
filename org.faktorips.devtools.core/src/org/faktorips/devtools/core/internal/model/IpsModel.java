@@ -431,7 +431,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         List result = new ArrayList();
         IIpsProject[] projects = getIpsProjects();
         for (int i = 0; i < projects.length; i++) {
-            ((IpsProject)projects[i]).getSourcePdPckFragmentRoots(result);
+            ((IpsProject)projects[i]).getSourceIpsFragmentRoots(result);
         }
         IIpsPackageFragmentRoot[] sourceRoots = new IIpsPackageFragmentRoot[result.size()];
         result.toArray(sourceRoots);

@@ -35,9 +35,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public interface IIpsPackageFragmentRoot extends IIpsElement {
     
     /**
-     * Returns true if this package fragment root contains source files.
+     * Returns <code>true</code> if this package fragment root represents a source folder 
+     * containing modifiable source files, otherwise <code>false</code>.
      */
-    public boolean containsSourceFiles();
+    public boolean isBasedOnSourceFolder();
     
     /**
      * Returns the entry in the ips object path that results in this package fragment root.
@@ -106,5 +107,11 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      * Returns the IPS object with the indicated qualified name type.
      */
     public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException;
-
+    
+    /**
+     * If this root is based on an archive, the method returns the archive, otherwise <code>null</code>
+     * is returned. 
+     */
+    public IIpsArchive getIpsArchive() throws CoreException;
+    
 }
