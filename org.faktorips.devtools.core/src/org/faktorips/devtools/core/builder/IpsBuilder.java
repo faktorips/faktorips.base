@@ -77,14 +77,14 @@ public class IpsBuilder extends IncrementalProjectBuilder {
      * {@inheritDoc}
      */
     protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
-
         MultiStatus buildStatus = new MultiStatus(IpsPlugin.PLUGIN_ID, 0, Messages.IpsBuilder_msgBuildResults, null);
         try {
             monitor.beginTask("build", 100000); //$NON-NLS-1$
             monitor.subTask(Messages.IpsBuilder_validatingProject);
-            if(kind == IncrementalProjectBuilder.CLEAN_BUILD){
-                getIpsProject().getIpsModel().clearValidationCache();
-            }
+            // we have to clear the validation cache as for example the deletion of ips source files migth still be
+            // undetected as the validation result cache gets cleared in a resource change listener. 
+            // it is not guaranteed that the listener is notified before the build starts!
+            getIpsProject().getIpsModel().clearValidationCache();
             getProject().deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, 0);
             MessageList list = getIpsProject().validate();
             createMarkersFromMessageList(getProject(), list, IpsPlugin.PROBLEM_MARKER);
@@ -180,6 +180,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     private void collectIpsSrcFilesForFullBuild(List allIpsSrcFiles) throws CoreException {
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
         for (int i = 0; i < roots.length; i++) {
+            if (!roots[i].isBasedOnSourceFolder()) {
+                continue;
+            }
             IIpsPackageFragment[] packs = roots[i].getIpsPackageFragments();
             for (int j = 0; j < packs.length; j++) {
                 IIpsElement[] elements = packs[j].getChildren();
@@ -195,7 +198,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     private void removeEmptyFolders() throws CoreException {
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
         for (int i = 0; i < roots.length; i++) {
-            removeEmptyFolders(roots[i].getArtefactDestination(), false);
+            if (roots[i].isBasedOnSourceFolder()) {
+                removeEmptyFolders(roots[i].getArtefactDestination(), false);
+            }
         }
     }
 
