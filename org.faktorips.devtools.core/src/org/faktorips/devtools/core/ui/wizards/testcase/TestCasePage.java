@@ -47,11 +47,11 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
     }
     
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
-        super.fillNameComposite(nameComposite, toolkit);
         toolkit.createFormLabel(nameComposite, Messages.TestCasePage_labelSuperclass);
         superTypeControl = toolkit.createTestCaseTypeRefControl(null, nameComposite);
         TextButtonField supertypeField = new TextButtonField(superTypeControl);
         supertypeField.addChangeListener(this);
+        super.fillNameComposite(nameComposite, toolkit);
     }
     
     /** 
