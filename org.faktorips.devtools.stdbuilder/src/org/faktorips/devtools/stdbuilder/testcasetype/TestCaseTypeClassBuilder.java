@@ -47,7 +47,6 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.runtime.MessageList;
-import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.runtime.test.IpsTestCase2;
 import org.faktorips.runtime.test.IpsTestResult;
@@ -413,7 +412,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     *   childElement  = XmlUtil.getFirstElement(element, "[PolicyCmptTypeParameter.name]");
     *   if (inputElement!=null){
     *        [PolicyCmptTypeParameter.name] = new [PolicyCmptTypeParameter.name]();
-    *        [PolicyCmptTypeParameter.name].initFromXml(childElement, true, getRepository(), null);
+    *        @see #buildConstrutorForTestPolicyCmptParameter
     *   }
      * </pre>
      */    
@@ -433,7 +432,6 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             body.appendln(".getFirstElement(element, \"" + policyTypeParams[i].getName() + "\");");
             body.appendln("if (childElement != null){");
             buildConstrutorForTestPolicyCmptParameter(body, policyTypeParam, variablePrefix);
-            body.appendln(variablePrefix + policyTypeParam.getName() + ".initFromXml(childElement, true, " + MethodNames.GET_REPOSITORY + "(), null);");
             body.appendln("}");
         }
     }
