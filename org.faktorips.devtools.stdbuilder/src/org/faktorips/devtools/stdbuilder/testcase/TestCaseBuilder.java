@@ -290,17 +290,30 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             }
             
             IProductCmpt productCmpt = testPolicyCmpt[i].findProductCmpt();
+            IPolicyCmptType pcType = null;
+            String pcTypeName = "";
             if (productCmpt != null){
-                IPolicyCmptType pcType = productCmpt.findPolicyCmptType();
-                if (pcType == null){
-                    throw new CoreException(new IpsStatus(NLS.bind(
-                            "The policy component type {0} was not found.", productCmpt.getPolicyCmptType())));
-                }
+                // the test policy cmpt type parameter is product relevant
+                pcTypeName = productCmpt.getPolicyCmptType();
+                pcType = productCmpt.findPolicyCmptType();
                 testPolicyCmptElem.setAttribute("productCmpt", productCmpt.getRuntimeId());
-                addTestAttrValues(doc, testPolicyCmptElem, testPolicyCmpt[i].getTestAttributeValues(), isInput);
-                addRelations(doc, testPolicyCmptElem, testPolicyCmpt[i].getTestPolicyCmptRelations(), isInput);                
-                testPolicyCmptElem.setAttribute("class", javaSourceFileBuilder.getQualifiedClassName(pcType));
+            } else {
+                // the test policy cmpt type parameter is not product relevant
+                ITestPolicyCmptTypeParameter parameter = testPolicyCmpt[i].findTestPolicyCmptTypeParameter();
+                if (parameter == null){
+                    throw new CoreException(new IpsStatus(NLS.bind(
+                            "The test policy component type parameter {0} was not found.", relation.getTestPolicyCmptTypeParameter())));
+                }
+                pcTypeName = parameter.getPolicyCmptType();
+                pcType = parameter.findPolicyCmptType();
             }
+            if (pcType == null){
+                throw new CoreException(new IpsStatus(NLS.bind(
+                        "The policy component type {0} was not found.", pcTypeName)));
+            }
+            testPolicyCmptElem.setAttribute("class", javaSourceFileBuilder.getQualifiedClassName(pcType));
+            addTestAttrValues(doc, testPolicyCmptElem, testPolicyCmpt[i].getTestAttributeValues(), isInput);
+            addRelations(doc, testPolicyCmptElem, testPolicyCmpt[i].getTestPolicyCmptRelations(), isInput);                
         }
     }
     
