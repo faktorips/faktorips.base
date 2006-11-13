@@ -82,6 +82,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
@@ -1901,24 +1902,23 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
         selectDialog.setMessage(message);
 
         IPolicyCmptType policyCmptType = testPolicyCmptTypeParam.findPolicyCmptType();
-        if (policyCmptType==null){
-            String msg = NLS.bind(Messages.TestCaseTypeSection_ErrorDialog_AttributeChangingNotAllowedBecausePolicyCmptTypeNotExists, testPolicyCmptTypeParam.getPolicyCmptType());
-            MessageDialog.openWarning(getShell(),
-                    Messages.TestCaseTypeSection_ErrorDialog_AttributeChangingTitle, msg);
+        if (policyCmptType == null) {
+            String msg = NLS.bind(
+                    Messages.TestCaseTypeSection_ErrorDialog_AttributeChangingNotAllowedBecausePolicyCmptTypeNotExists,
+                    testPolicyCmptTypeParam.getPolicyCmptType());
+            MessageDialog.openWarning(getShell(), Messages.TestCaseTypeSection_ErrorDialog_AttributeChangingTitle, msg);
             return null;
         }
 
         // find all attributes of the policy cmpt type
+        ITypeHierarchy typeHierarchy = policyCmptType.getSupertypeHierarchy();
+        IAttribute[] attributes = typeHierarchy.getAllAttributesRespectingOverride(policyCmptType);
         List attributesInDialog = new ArrayList();
-        while (policyCmptType != null){
-            IAttribute[] attributes = policyCmptType.getAttributes();
-            for (int i = 0; i < attributes.length; i++) {
-                // add only changeable or derived or computed attributes
-                if (attributes[i].isChangeable() || attributes[i].isDerivedOrComputed()){
-                    attributesInDialog.add(attributes[i]);
-                }
+        for (int i = 0; i < attributes.length; i++) {
+            // add only changeable or derived or computed attributes
+            if (attributes[i].isChangeable() || attributes[i].isDerivedOrComputed()) {
+                attributesInDialog.add(attributes[i]);
             }
-            policyCmptType = policyCmptType.findSupertype();
         }
 
         selectDialog.setElements(attributesInDialog.toArray(new IAttribute[0]));
