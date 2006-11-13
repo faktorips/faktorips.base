@@ -1334,12 +1334,16 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
         }; 
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
             public void doubleClick(DoubleClickEvent event) {
-                if (!(event.getSelection() instanceof IStructuredSelection)) {
+                Object selection = event.getSelection();
+                if (! (selection instanceof IStructuredSelection)) {
                     return;
                 }
-                Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
-                currSelectedDetailObject = (IIpsObjectPart)selected;
-                selectFirstEditFieldInSection(selected);
+                Object selectedObject = ((IStructuredSelection)selection).getFirstElement();
+                if ( ! (selectedObject instanceof IIpsObjectPart)){
+                    return;
+                }
+                currSelectedDetailObject = (IIpsObjectPart)selectedObject;
+                selectFirstEditFieldInSection(selectedObject);
             }
         });
     }
