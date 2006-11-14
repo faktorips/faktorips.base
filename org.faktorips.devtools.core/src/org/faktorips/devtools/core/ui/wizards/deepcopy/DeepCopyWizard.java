@@ -79,6 +79,7 @@ public class DeepCopyWizard extends Wizard {
 	 */
 	public DeepCopyWizard(IProductCmpt product, int type) throws IllegalArgumentException {
 		super();
+        setNeedsProgressMonitor(true);
 
 		if (type != TYPE_COPY_PRODUCT && type != TYPE_NEW_VERSION) {
 			throw new IllegalArgumentException("The given type is neither TYPE_COPY_PRODUCT nor TYPE_NEW_VERSION."); //$NON-NLS-1$
@@ -112,11 +113,11 @@ public class DeepCopyWizard extends Wizard {
 		
 		if (type == TYPE_COPY_PRODUCT) {
 			super.setWindowTitle(Messages.DeepCopyWizard_title);
-            super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/DeepCopyWizard.png"));
+            super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/DeepCopyWizard.png")); //$NON-NLS-1$
 		} else {
 			String title = NLS.bind(Messages.DeepCopyWizard_titleNewVersion, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
 			super.setWindowTitle(title);
-            super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewVersionWizard.png"));
+            super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewVersionWizard.png")); //$NON-NLS-1$
 		}
 		
 		IPath path = IpsPlugin.getDefault().getStateLocation();
@@ -130,6 +131,7 @@ public class DeepCopyWizard extends Wizard {
 		} catch (IOException e) {
 			// cant read the settings, use defaults.
 		}
+        
 	}
 
 	/**
@@ -167,7 +169,7 @@ public class DeepCopyWizard extends Wizard {
 			final IProductCmptReference[] toCopy = previewPage.getProductsToCopy();
 			final IProductCmptReference[] toRefer = previewPage.getProductsToRefer();
 			final Map handles = previewPage.getHandles();
-			schedulingRule = structure.getRoot().getProductCmpt().getIpsProject().getCorrespondingResource();
+			schedulingRule = structure.getRoot().getProductCmpt().getIpsProject().getCorrespondingResource().getWorkspace().getRoot();
 			WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule){
 
 				protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {

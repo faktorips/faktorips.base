@@ -57,4 +57,5 @@ public class Messages extends NLS {
 	public static String ReferenceAndPreviewPage_labelVersionId;
 	public static String DeepCopyWizard_titleWorkingDateNotUsed;
 	public static String DeepCopyWizard_msgWorkingDateNotUsed;
+    public static String ReferenceAndPreviewPage_msgValidateCopy;
 }

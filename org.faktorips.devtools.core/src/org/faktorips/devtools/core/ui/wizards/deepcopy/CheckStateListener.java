@@ -85,7 +85,9 @@ public class CheckStateListener implements ICheckStateListener {
 		updateGrayState(items);
 		
 		if (page != null) {
-			page.setPageComplete();
+            if (modified instanceof IProductCmptReference) {
+                page.setPageComplete((IProductCmptReference)modified, checked);
+            }
 		}
 	}
 
