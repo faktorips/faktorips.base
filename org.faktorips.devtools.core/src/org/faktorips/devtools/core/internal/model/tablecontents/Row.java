@@ -194,10 +194,10 @@ public class Row extends IpsObjectPart implements IRow {
         validateWithDatatypes(list, datatypes);
     }
     
-    /**
+    /*
      * Validates this row using the given list of datatypes.
      */
-    MessageList validateWithDatatypes(MessageList list, ValueDatatype[] datatypes) throws CoreException {
+    private MessageList validateWithDatatypes(MessageList list, ValueDatatype[] datatypes) throws CoreException {
         ITableStructure structure = ((ITableContents)getParent().getParent()).findTableStructure();
         
         IUniqueKey[] uniqueKeys= structure.getUniqueKeys();
@@ -219,10 +219,16 @@ public class Row extends IpsObjectPart implements IRow {
             }
         }
         
-        for (int i=0; i<getNumOfColumns(); i++) {
+        int numOfColumnsInStructure = structure.getNumOfColumns();
+        for (int i=0; i< getNumOfColumns(); i++) {
+            if (i >= numOfColumnsInStructure){
+                // datatypes couldn't be checked because structure contains no more columns
+                return list;
+            }
             IColumn column= structure.getColumn(i);
+            
             ValueDatatype dataType= datatypes[i];
-            if(!dataType.isParsable(getValue(i))){
+            if(dataType == null || !dataType.isParsable(getValue(i))){
                 String text = NLS.bind(Messages.Row_ValueNotParsable, column.getName(), dataType);
                 Message message= new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, new ObjectProperty(this, IRow.PROPERTY_VALUE, i));
                 list.add(message);

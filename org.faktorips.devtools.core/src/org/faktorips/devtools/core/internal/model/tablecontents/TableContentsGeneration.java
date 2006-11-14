@@ -21,14 +21,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
-import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 
@@ -208,20 +205,5 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     public void clear() {
         rows.clear();
         objectHasChanged();
-    }
-    
-
-    /**
-     * Retrieves the datatypes for all columns and calls the row validation with this array 
-     * of datatypes.
-     * {@inheritDoc}
-     */
-    protected void validateChildren(MessageList result) throws CoreException {
-        ValueDatatype[] datatypes= ((TableContents)getIpsObject()).findColumnDatatypes();
-        IIpsElement[] children = getChildren();
-        for (int i=0; i<children.length; i++) {
-            MessageList childResult = ((Row)children[i]).validateWithDatatypes(result, datatypes);
-            result.add(childResult);
-        }
     }
 }
