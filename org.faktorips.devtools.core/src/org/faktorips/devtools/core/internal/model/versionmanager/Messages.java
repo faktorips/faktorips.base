@@ -40,4 +40,5 @@ public class Messages extends NLS {
     public static String Migration_0_9_38_Message_ProductComponentNotFound;
     public static String Migration_0_9_38_Message_TestPolicyCmptNotFound;
     public static String Migration_0_9_38_MsgCode_TargetNotFound;
+    public static String Migration_0_9_39_Description;
 }
