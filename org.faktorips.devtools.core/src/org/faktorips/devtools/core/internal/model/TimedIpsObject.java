@@ -285,7 +285,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         super.validateThis(list);
         String validTo = getValidTo();
         
-        if (validTo.trim().length() == 0) {
+        if (validTo==null || validTo.trim().length() == 0) {
             // empty validTo - valid forever.
             return;
         }
