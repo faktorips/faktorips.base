@@ -52,6 +52,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -661,6 +662,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS));
 
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        IIpsSrcFolderEntry srcFolder = path.newSourceFolderEntry((IFolder)root.getEnclosingResource());
+        srcFolder.setSpecificBasePackageNameForExtensionJavaClasses("srctest");
         path.setBasePackageNameForGeneratedJavaClasses("test");
         path.newIpsProjectRefEntry(ipsProject2);
         ipsProject.setIpsObjectPath(path);
@@ -675,24 +678,32 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ipsProject2.setProperties(props);
         ml = ipsProject.validate();
         assertEquals(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS, ml
-                .getFirstMessage(Message.WARNING).getCode());
+                .getFirstMessage(Message.ERROR).getCode());
+        
+        // check same base package name per src folder
+        path = ipsProject2.getIpsObjectPath();
+        path.setBasePackageNameForGeneratedJavaClasses("test2");
+        path.setOutputDefinedPerSrcFolder(true);
+        ipsProject2.setIpsObjectPath(path);
+        ml = ipsProject.validate();
+        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS));  
         
         // check different base package name
         path = ipsProject2.getIpsObjectPath();
         path.setBasePackageNameForGeneratedJavaClasses("test2");
+        path.setOutputDefinedPerSrcFolder(false);
         ipsProject2.setIpsObjectPath(path);
         ml = ipsProject.validate();
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS));  
         
-        // check same base package name and not product definition project
+        // check same base package name and product definition project
         path = ipsProject2.getIpsObjectPath();
         path.setBasePackageNameForGeneratedJavaClasses("test");
         ipsProject2.setIpsObjectPath(path);        
         props = ipsProject2.getProperties();
-        props.setProductDefinitionProject(true);        
+        props.setProductDefinitionProject(false);        
         ml = ipsProject.validate();
-        assertEquals(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS, ml
-                .getFirstMessage(Message.WARNING).getCode());        
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS));  
     }
     
     private void setVersion(String version) throws CoreException {
