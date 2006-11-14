@@ -397,7 +397,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
         display.syncExec(new Runnable() {
             public void run() {
-                for (Iterator it = changeListeners.iterator(); it.hasNext();) {
+                List copy = new ArrayList(changeListeners); // copy do avoid concurrent modifications while iterating
+                for (Iterator it = copy.iterator(); it.hasNext();) {
                     try {
                         ContentsChangeListener listener = (ContentsChangeListener)it.next();
                         listener.contentsChanged(event);
