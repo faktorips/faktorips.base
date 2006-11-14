@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -89,7 +90,7 @@ public class NewTestCaseWizard extends NewIpsObjectWizard {
      * All test value parameter and root policy component type parameter (including all attributes)
      * from the given list of test parameter will be created.
      */
-    private void generateDefaultContent(ITestParameter[] parameter, ITestCase testCase){
+    private void generateDefaultContent(ITestParameter[] parameter, ITestCase testCase) throws CoreException{
     	for (int i = 0; i < parameter.length; i++) {
     		if (parameter[i] instanceof ITestValueParameter){
     			ITestValue testValue = testCase.newTestValue();
@@ -106,6 +107,13 @@ public class NewTestCaseWizard extends NewIpsObjectWizard {
     				ITestAttribute attribute = attributes[j];
     				ITestAttributeValue attrValue = testPolicyCmpt.newTestAttributeValue();
     				attrValue.setTestAttribute(attribute.getName());
+                    // set the default value if the test attribute is an input test attribute
+                    if (attribute.isInputAttribute()){
+                        IAttribute modelAttribute = attribute.findAttribute();
+                        if (modelAttribute != null){
+                            attrValue.setValue(modelAttribute.getDefaultValue());
+                        }
+                    }
     			}
     		}
     	}
