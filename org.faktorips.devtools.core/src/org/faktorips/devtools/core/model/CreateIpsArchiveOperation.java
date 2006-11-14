@@ -20,17 +20,24 @@ package org.faktorips.devtools.core.model;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.devtools.core.IpsStatus;
 
 /**
@@ -42,9 +49,22 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
     private IIpsPackageFragmentRoot[] roots;
     private IFile archive;
     
+    /**
+     * Creates a new operation to create an ips archive. From the given project the content from all source folders
+     * are packed into the new archive.
+     * 
+     * @throws CoreException
+     */
     public CreateIpsArchiveOperation(IIpsProject projectToArchive, IFile archive) throws CoreException {
-        this.roots = projectToArchive.getIpsPackageFragmentRoots();
         this.archive = archive;
+        List rootsInt = new ArrayList();
+        IIpsPackageFragmentRoot[] candidateRoots = projectToArchive.getIpsPackageFragmentRoots();
+        for (int i = 0; i < candidateRoots.length; i++) {
+            if (candidateRoots[i].isBasedOnSourceFolder()) {
+                rootsInt.add(candidateRoots[i]);
+            }
+        }
+        roots = (IIpsPackageFragmentRoot[])rootsInt.toArray(new IIpsPackageFragmentRoot[rootsInt.size()]);
     }
 
     public CreateIpsArchiveOperation(IIpsPackageFragmentRoot rootToArchive, IFile archive) throws CoreException {
@@ -148,6 +168,52 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
         }
     }
     
+    private void addJavaClasses(IIpsPackageFragmentRoot root, JarOutputStream os, IProgressMonitor monitor)throws CoreException {
+        IFolder javaSrcFolder = root.getArtefactDestination();
+        IPackageFragmentRoot javaRoot = root.getIpsProject().getJavaProject().findPackageFragmentRoot(javaSrcFolder.getFullPath());
+        if (javaRoot==null) {
+            throw new CoreException(new IpsStatus("Can't find file Java root for IPS root " + root.getName()));
+        }
+        IPath path = javaRoot.getRawClasspathEntry().getOutputLocation();
+        IFolder outputFolder = ResourcesPlugin.getWorkspace().getRoot().getFolder(path);
+        addJavaClasses(outputFolder, outputFolder, os, monitor);
+    }
+    
+    private void addJavaClasses(IFolder outputFolder, IFolder folder, JarOutputStream os, IProgressMonitor monitor)throws CoreException {
+        IResource[] members = folder.members();
+        for (int i = 0; i < members.length; i++) {
+            if (members[i] instanceof IFile) {
+                addJavaClasses(outputFolder, (IFile)members[i], os, monitor);
+            } else if (members[i] instanceof IFolder) {
+                addJavaClasses(outputFolder, (IFolder)members[i], os, monitor);
+            }
+        }
+    }
+
+    private void addJavaClasses(IFolder outputFolder, IFile fileToAdd, JarOutputStream os, IProgressMonitor monitor)throws CoreException {
+        String name = fileToAdd.getFullPath().removeFirstSegments(outputFolder.getFullPath().segmentCount()).toString();
+        JarEntry newEntry = new JarEntry(name);
+        try {
+           os.putNextEntry(newEntry);
+           byte[] contents = getContent(fileToAdd.getContents(true));
+           os.write(contents);
+        } catch (IOException e) {
+            throw new CoreException(new IpsStatus("Error creating entry ipsobjects.properties", e)); //$NON-NLS-1$
+        }
+
+    }
+
+    private byte[] getContent(InputStream contents) throws CoreException {
+        try {
+            byte[] content = new byte[contents.available()];
+            contents.read(content);
+            contents.close();
+            return content;
+        } catch (IOException e) {
+            throw new CoreException(new IpsStatus(e));
+        }
+    }
+
     private int getWorkload() throws CoreException {
         int load = 0;
         for (int i = 0; i < roots.length; i++) {

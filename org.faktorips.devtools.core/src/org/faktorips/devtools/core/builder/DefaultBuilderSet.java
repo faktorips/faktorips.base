@@ -21,7 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
+import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.fl.CompilationResult;
 
 /**
@@ -123,15 +124,37 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
 	 * {@inheritDoc}
 	 */
 	public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
-		IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry(); 
-        String tocPath = entry.getFullTocPath();
+	    if (root==null) {
+	        return null;   
+        }
+        if (!root.isBasedOnSourceFolder()) {
+            return null;
+        }
+        IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
+        String basePack = entry.getBasePackageNameForGeneratedJavaClasses();
+        String basePackInternal = QNameUtil.concat(basePack, INTERNAL_PACKAGE);
+        IPath path = QNameUtil.toPath(basePackInternal);
+        path = path.append(entry.getBasePackageRelativeTocPath());
 		IFolder folder = entry.getOutputFolderForGeneratedJavaFiles();
-		return folder.getFile(new Path(tocPath));
+		return folder.getFile(path);
 	}
 
-	/**
-     * Implements the org.faktorips.plugin.builder.IJavaPackageStructure interface.
+    /**
+     * {@inheritDoc}
      */
+    public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) throws CoreException {
+        IFile tocFile = getRuntimeRepositoryTocFile(root);
+        if (tocFile==null) {
+            return null;
+        }
+        IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
+        IFolder folder = entry.getOutputFolderForGeneratedJavaFiles();
+        return tocFile.getFullPath().removeFirstSegments(folder.getFullPath().segmentCount()).toString();
+    }
+
+	/**
+     * {@inheritDoc}
+	 */
     public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
 
         if (IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType())) {

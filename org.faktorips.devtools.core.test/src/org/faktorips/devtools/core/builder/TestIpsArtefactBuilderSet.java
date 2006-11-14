@@ -132,4 +132,11 @@ public class TestIpsArtefactBuilderSet implements IIpsArtefactBuilderSet {
 
     public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) throws CoreException {
+        return null;
+    }
 }

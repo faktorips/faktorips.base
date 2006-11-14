@@ -24,8 +24,10 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
@@ -35,23 +37,32 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
  */
 public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
 
-	/*
-	 * @see IpsPluginTest#setUp()
-	 */
+    private IIpsProject project;
+
 	protected void setUp() throws Exception {
-		super.setUp();
+        super.setUp();
+        project = newIpsProject("TestProject");
+        IIpsObjectPath path = project.getIpsObjectPath();
+        IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)path.getEntries()[0];
+        entry.setSpecificBasePackageNameForGeneratedJavaClasses("org.faktorips.sample");
+        entry.setBasePackageRelativeTocPath("motor/toc.xml");
+        project.setIpsObjectPath(path);
 	}
 
-	/*
-	 * Test method for 'org.faktorips.devtools.core.builder.DefaultBuilderSet.getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot)'
-	 */
 	public void testGetRuntimeRepositoryTocFile() throws CoreException {
-		IIpsProject project = newIpsProject("TestProject");
-		DefaultBuilderSet builderSet = new TestBuilderSet();
-		IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
+        IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
+        DefaultBuilderSet builderSet = new TestBuilderSet();
 		IFile file = builderSet.getRuntimeRepositoryTocFile(root);
 		assertNotNull(file);
+        assertEquals("src/org/faktorips/sample/internal/motor/toc.xml", file.getProjectRelativePath().toString());
 	}
+    
+    public void testGetRuntimeRepositoryTocResourceName() throws CoreException {
+        IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
+        DefaultBuilderSet builderSet = new TestBuilderSet();
+        String tocResource = builderSet.getRuntimeRepositoryTocResourceName(root);
+        assertEquals("org/faktorips/sample/internal/motor/toc.xml", tocResource);
+    }
 
 	class TestBuilderSet extends DefaultBuilderSet {
 

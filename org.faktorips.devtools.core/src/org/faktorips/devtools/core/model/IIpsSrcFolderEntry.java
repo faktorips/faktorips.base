@@ -73,14 +73,6 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
     public void setBasePackageRelativeTocPath(String newName);
 
     /**
-     * Returns the full path to the toc resource.
-     * 
-     * @see #getBasePackageRelativeTocPath()
-     * @see #getBasePackageNameForGeneratedJavaClasses()
-     */
-    public String getFullTocPath();
-    
-    /**
      * Returns the name of the entry's own base package for the generated Java source files. All generated Java types
      * are contained in this package or one of the child packages.
      */

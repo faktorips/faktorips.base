@@ -429,7 +429,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         if (outputFolderExtension != null) {
             list.add(validateFolder(outputFolderExtension));
         }
-        
         IIpsObjectPathEntry[] objectPathEntries = getEntries();
         for (int i = 0; i < objectPathEntries.length; i++) {
             MessageList ml = objectPathEntries[i].validate();

@@ -25,6 +25,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsArchive;
 import org.faktorips.devtools.core.model.IIpsArchiveEntry;
@@ -34,6 +35,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -172,14 +174,19 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
      * {@inheritDoc}
      */
     public MessageList validate() throws CoreException {
-        // TODO Auto-generated method stub
-        return null;
+        MessageList result = new MessageList();
+        if (!archive.exists()){
+            String text = NLS.bind(Messages.IpsArchiveEntry_archiveDoesNotExist, archive.getArchiveFile().toString());
+            Message msg = new Message(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE, text, Message.ERROR, this);
+            result.add(msg);
+        }
+        return result;
     }
 
     /**
      * {@inheritDoc}
      */
     public String toString() {
-        return "ArchiveEntry[" + getArchiveFile().getProjectRelativePath().toString() + "]";
+        return "ArchiveEntry[" + getArchiveFile().getProjectRelativePath().toString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

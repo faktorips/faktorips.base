@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
  */
 public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFolderEntry {
 
-    private final static String DEFAULT_TOC_PATH = "internal/" + ClassloaderRuntimeRepository.TABLE_OF_CONTENTS_FILE;
+    private final static String DEFAULT_TOC_PATH = ClassloaderRuntimeRepository.TABLE_OF_CONTENTS_FILE;
     
     /**
      * Returns a description of the xml format.

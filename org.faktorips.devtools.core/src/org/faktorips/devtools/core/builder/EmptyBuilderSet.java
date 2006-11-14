@@ -103,6 +103,13 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
 	public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
 		return null;
 	}
+    
+	/**
+     * {@inheritDoc}
+	 */
+    public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) throws CoreException {
+        return null;
+    }
 
     /**
      * {@inheritDoc}

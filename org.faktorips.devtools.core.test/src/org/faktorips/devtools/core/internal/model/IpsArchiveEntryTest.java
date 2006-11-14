@@ -26,11 +26,13 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsArchive;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
+import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
@@ -117,5 +119,12 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         assertEquals(archiveFile, newEntry.getArchiveFile());
     }
     
-
+    public void testValidate() throws CoreException {
+        MessageList ml = entry.validate();
+        assertEquals(0, ml.getNoOfMessages());
+        
+        entry.setArchiveFile(project.getProject().getFile("NoneExistingFile"));
+        ml = entry.validate();
+        assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE));
+    }
 }
