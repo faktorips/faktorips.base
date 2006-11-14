@@ -34,7 +34,7 @@ public class TableContentsCellModifier extends ValueCellModifier {
     
     TableViewer tableViewer;
     
-    TableContentsCellModifier(TableViewer tableViewer){
+    public TableContentsCellModifier(TableViewer tableViewer){
         this.tableViewer= tableViewer;
     }
     
@@ -68,11 +68,16 @@ public class TableContentsCellModifier extends ValueCellModifier {
     protected void modifyInternal(Object element, String property, Object value) {
         int columnIndex= getColumnIndexForProperty(property);
         if(columnIndex>=0){
+            IRow row= null;
             if(element instanceof TableItem){
-                IRow row= (IRow) ((TableItem) element).getData();
+                row= (IRow) ((TableItem) element).getData();
+            }else if(element instanceof IRow){
+                row= (IRow) element;
+            }
+            if(row!=null){
                 row.setValue(columnIndex, (String)value);
                 tableViewer.refresh(row);
-            }            
+            }
         }
     }
 

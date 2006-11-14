@@ -28,6 +28,18 @@ public interface IRow extends IIpsObjectPart {
      * Value-Property.
      */
     public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that this row does not define values in columns a unique key 
+     * of its table dictates.
+     */
+    public final static String MSGCODE_UNDEFINED_UNIQUEKEY_VALUE = "UNDEFINED_UNIQUE_KEY_VALUE"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that a value in a row does not match its column's datatype
+     * (is not parsable).
+     */
+    public final static String MSGCODE_VALUE_NOT_PARSABLE = "VALUE_NOT_PARSABLE"; //$NON-NLS-1$
     
     /**
      * Returns the row number as string.

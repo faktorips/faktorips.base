@@ -18,30 +18,12 @@
 package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.TableItem;
-import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 
-public class TableContentsContentProvider implements IStructuredContentProvider, Listener{
+public class TableContentsContentProvider implements IStructuredContentProvider{
 
-    private TableViewer tableViewer;
-    private IRow[] tableContentsRows;
-
-    /**
-     * For virtual Tables.
-     * FXIME in eigene Klasse verschieben!
-     * @param tableViewer
-     * @param tableContents
-     */
-    public TableContentsContentProvider(TableViewer tableViewer, ITableContents tableContents){
-        this.tableViewer= tableViewer;
-        tableContentsRows= ((ITableContentsGeneration) tableContents.getFirstGeneration()).getRows();
-    }
     public TableContentsContentProvider(){
     }
     
@@ -53,29 +35,19 @@ public class TableContentsContentProvider implements IStructuredContentProvider,
         return new Object[0];
     }
 
+    /**
+     * Empty implementation.
+     * {@inheritDoc}
+     */
     public void dispose() {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        // FIXME inputchange listener an TableContents?
-//        public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-//            if (newInput != null)
-//                ((ExampleTaskList) newInput).addChangeListener(this);
-//            if (oldInput != null)
-//                ((ExampleTaskList) oldInput).removeChangeListener(this);
-//        }
     }
 
     /**
-     * SetData event.
+     * Empty implementation.
      * {@inheritDoc}
      */
-    public void handleEvent(Event event) {
-        TableItem item = (TableItem)event.item;
-        int index= tableViewer.getTable().indexOf(item);
-        item.setData(tableContentsRows[index]);
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
     }
+
 
 }

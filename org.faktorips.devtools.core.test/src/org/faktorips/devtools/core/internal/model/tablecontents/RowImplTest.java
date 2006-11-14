@@ -112,4 +112,14 @@ public class RowImplTest extends AbstractIpsPluginTest {
 			//nothing to do :-)
 		}
     }
+    
+    /*
+     * Test for Row#getRowNumber()
+     */
+    public void testGetRowNumber(){
+        assertEquals(0, row.getRowNumber());
+        assertEquals(1, row2.getRowNumber());
+        row.delete();
+        assertEquals(0, row2.getRowNumber());
+    }
 }

@@ -23,11 +23,18 @@ import org.faktorips.devtools.core.model.IIpsObjectGeneration;
  *
  */
 public interface ITableContentsGeneration extends IIpsObjectGeneration {
-    
+
     /**
      * Returns the rows that make up the table.
      */
     public IRow[] getRows();
+    
+    /**
+     * Returns the row of the table at the given index.
+     * Returns null if the given index is out of bounds (less than zero or
+     * greater or equal than the number of rows).
+     */
+    public IRow getRow(int rowIndex);
 
     /**
      * Returns the number of rows in the table.

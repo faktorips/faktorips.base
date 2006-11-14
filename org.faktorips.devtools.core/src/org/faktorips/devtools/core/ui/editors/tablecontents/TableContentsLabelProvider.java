@@ -23,17 +23,21 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
  * LabelProvider for the TableViewer in the TableContents editor. Supports errormarkers for errenous
- * values and the null-representation string in table cells.
+ * values and the null-representation string for table cells.
  * 
  * @author Stefan Widmaier
  */
 public class TableContentsLabelProvider implements ITableLabelProvider {
 
+    /**
+     * The image indicating an error in a table cell.
+     */
+    private Image errorImage= IpsPlugin.getDefault().getImage("ovr16/error_co.gif");
+    
     /**
      * Returns an error-icon if the given element has an error at the given columnIndex.
      * Returns <code>null</code> otherwise.
@@ -41,25 +45,26 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
      */
     public Image getColumnImage(Object element, int columnIndex) {
         if(element instanceof IRow){
-            if(hasRowWarningsAt((IRow) element, columnIndex)){
-                return IpsPlugin.getDefault().getImage("ovr16/error_co.gif");                
+            if(hasRowErrorsAt((IRow) element, columnIndex)){
+                return errorImage;
             }
         }
         return null;
     }
 
     /**
-     * Returns <code>true</code> if the given row has an error at the given columnIndex
+     * Returns <code>true</code> if the given row validation detects an error at the given columnIndex,
      * <code>false</code> otherwise.
      * 
      * @param row
      * @param columnIndex
      * @return
      */
-    private boolean hasRowWarningsAt(IRow row, int columnIndex) {
+    private boolean hasRowErrorsAt(IRow row, int columnIndex) {
         try {
-            MessageList messageList = row.getTableContents().validate();
-            return messageList.getMessagesFor(row).getSeverity()==Message.ERROR;
+            MessageList messageList = row.validate();
+            messageList= messageList.getMessagesFor(row, IRow.PROPERTY_VALUE, columnIndex);
+            return !messageList.isEmpty();
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }

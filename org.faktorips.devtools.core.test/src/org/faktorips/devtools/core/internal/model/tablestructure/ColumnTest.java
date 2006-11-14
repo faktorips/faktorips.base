@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -113,5 +114,13 @@ public class ColumnTest extends AbstractIpsPluginTest {
         column.setName("integer");
         ml = column.validate();
         assertNull(ml.getMessageByCode(IColumn.MSGCODE_INVALID_NAME));
+    }
+    
+    public void testFindValueDatatype() throws CoreException{
+        column.setDatatype(Datatype.BOOLEAN.getQualifiedName());
+        assertEquals(Datatype.BOOLEAN, column.findValueDatatype());
+
+        column.setDatatype("NotADatatype");
+        assertNull(column.findValueDatatype());
     }
 }

@@ -34,7 +34,11 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String TableContentsEditor_title;
+	public static String ContentPage_ExportTableAction_label;
+
+    public static String ContentPage_ExportTableAction_tooltip;
+
+    public static String TableContentsEditor_title;
 
 	public static String ContentPage_title;
 

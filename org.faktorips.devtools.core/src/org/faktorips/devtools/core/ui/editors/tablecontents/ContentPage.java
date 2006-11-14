@@ -1,19 +1,19 @@
 /*******************************************************************************
- Â * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- Â *
- Â * Alle Rechte vorbehalten.
- Â *
- Â * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- Â * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- Â * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- Â * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- Â * Â  http://www.faktorips.org/legal/cl-v01.html
- Â * eingesehen werden kann.
- Â *
- Â * Mitwirkende:
- Â * Â  Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- Â *
- Â *******************************************************************************/
+ * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+ *
+ * Alle Rechte vorbehalten.
+ *
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
+ * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
+ * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+ * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ *   http://www.faktorips.org/legal/cl-v01.html
+ * eingesehen werden kann.
+ *
+ * Mitwirkende:
+ *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+ *
+ *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.editors.tablecontents;
 
@@ -22,13 +22,18 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -36,8 +41,11 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
@@ -47,12 +55,17 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.actions.DeleteRowAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
+import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.table.TableCellEditor;
+import org.faktorips.devtools.core.ui.wizards.tableexport.TableExportWizard;
+import org.faktorips.util.message.MessageList;
 
 /**
- * FIXME Doku
+ * The content-page for the <code>TableContentsEditor</code>. Allows the editing of <code>TableContents</code>
+ * using a <code>TableViewer</code>.
  * 
  * @author Stefan Widmaier
  */
@@ -77,39 +90,45 @@ public class ContentPage extends IpsObjectEditorPage {
         GridLayout layout = new GridLayout(1, false);
         formBody.setLayout(layout);
           
-        TableViewer tableViewer= createTableViewer(formBody);
-        initTableViewerData(tableViewer, toolkit, formBody);
+        Table table= createTable(formBody);
+        initTableViewer(table, toolkit, formBody);
+
+        /* Create a single row if an empty tablecontents is opened. 
+         * Otherwise no editing is possible.
+         */
+        if(getActiveGeneration().getNumOfRows()==0){
+            getActiveGeneration().newRow();
+        }
+        
+        tableViewer.setInput(getTableContents());
+        
+        ScrolledForm form= getManagedForm().getForm();
+        form.getToolBarManager().add(new DeleteRowAction(tableViewer));
+        form.getToolBarManager().add(new Separator());
+        form.getToolBarManager().add(new OpenTableExportWizardAction(getSite().getWorkbenchWindow(), getTableContents()));
+        form.updateToolBar();
 	}
 
     /**
+     * Creates a Table with the given formBody as a parent and returns it. Inits the look, layout of
+     * the table and adds a KeyListener that enables the editing of the first cell in the currently
+     * selected row by pressing "F2".
      * 
      * @param formBody
-     * @return
+     * @return The newly created and initalized Table.
      */
-    private TableViewer createTableViewer(Composite formBody) {
+    private Table createTable(Composite formBody) {
         // Table: scroll both vertically and horizontally
-        Table table= new Table(formBody, SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
+        Table table= new Table(formBody, SWT.H_SCROLL | SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION);
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
         // occupy all available space
         GridData tableGridData= new GridData(SWT.FILL, SWT.FILL, true, true);
-        // FIXME: hints erzwingen Scrollbars in Table, allerdings kann dieser dan KEIN reveal() !!!
         tableGridData.widthHint= formBody.getClientArea().width;
         tableGridData.heightHint= formBody.getClientArea().height;
         table.setLayoutData(tableGridData);
-        
-        // Viewer
-        tableViewer= new TableViewer(table);
-        tableViewer.setUseHashlookup(true);
-        TableContentsContentProvider contentProvider= new TableContentsContentProvider();
-        tableViewer.setContentProvider(contentProvider);
-        // FIXME VIRTUAL! contentprovider is at the same time setdata listener
-//        tableViewer.getTable().addListener(SWT.SetData, contentProvider);
-        tableViewer.setLabelProvider(new TableContentsLabelProvider());
-        
         table.addKeyListener(new KeyAdapter(){
             public void keyReleased(KeyEvent e) {
-                // edit first cell of the selected row
                 if(e.keyCode==SWT.F2){
                     IRow selectedRow= (IRow) ((IStructuredSelection)tableViewer.getSelection()).getFirstElement();
                     if(selectedRow!=null){
@@ -119,14 +138,28 @@ public class ContentPage extends IpsObjectEditorPage {
             }
         });
         
-        return tableViewer;
+// TODO VIRTUAL table causes exceptions when creating and deleting rows dynamically, see FS#533
+//        table.addListener(SWT.SetData, new VirtualTableListener(table, getTableContents()));
+        
+        return table;
     }
 
-    private void initTableViewerData(TableViewer tableViewer, UIToolkit toolkit, Composite formBody){
+    /**
+     * Inits the <code>TableViewer</code> for this page. Sets content- and labelprovider, column headers and
+     * widths, column properties, cell editors, sorter. Inits popupmenu and hoverservice. 
+     * @param table
+     * @param toolkit
+     * @param formBody
+     */
+    private void initTableViewer(Table table, UIToolkit toolkit, Composite formBody){
         try{            
             ITableStructure tableStructure= getTableStructure();
-            Table table= tableViewer.getTable();
             table.removeAll();
+            
+            tableViewer= new TableViewer(table);
+            tableViewer.setUseHashlookup(true);
+            tableViewer.setContentProvider(new TableContentsContentProvider());
+            tableViewer.setLabelProvider(new TableContentsLabelProvider());
             
             for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
                 TableColumn column= new TableColumn(table, SWT.LEFT, i);
@@ -134,14 +167,14 @@ public class ContentPage extends IpsObjectEditorPage {
                 column.setWidth(125);
             }
 
-            String[] columnProperties= new String[tableStructure.getNumOfColumns()];
-            CellEditor[] editors= new CellEditor[tableStructure.getNumOfColumns()];
             tableViewer.setCellModifier(new TableContentsCellModifier(tableViewer));
+            String[] columnProperties= new String[tableStructure.getNumOfColumns()];
             for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
                 columnProperties[i]= tableStructure.getColumn(i).getName();
             }
             tableViewer.setColumnProperties(columnProperties); 
             // column properties must be set before cellEditors are created.
+            CellEditor[] editors= new CellEditor[tableStructure.getNumOfColumns()];
             for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
                 ValueDatatype dataType= tableStructure.getColumn(i).findValueDatatype();
                 ValueDatatypeControlFactory factory= IpsPlugin.getDefault().getValueDatatypeControlFactory(dataType);
@@ -151,11 +184,25 @@ public class ContentPage extends IpsObjectEditorPage {
             }
             tableViewer.setCellEditors(editors);
             tableViewer.setSorter(new TableSorter());
-
             tableViewer.addSelectionChangedListener(new RowDeletor());
+
+            // popupmenu
+            MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+            menuMgr.setRemoveAllWhenShown(false);
+            menuMgr.add(new DeleteRowAction(tableViewer));
+            Menu menu = menuMgr.createContextMenu(table);
+            table.setMenu(menu);
+//            do not register to avoid mb additions
+//            getSite().registerContextMenu(menuMgr, tableViewer);
             
-            // init 
-            tableViewer.setInput(getTableContents());
+            new TableMessageHoverService(tableViewer){
+                protected MessageList getMessagesFor(Object element) throws CoreException {
+                    if(element!=null){
+                        return ((IRow)element).validate();
+                    }
+                    return null;
+                }
+            };
         }catch(CoreException e){
             IpsPlugin.log(e);
         }
@@ -175,14 +222,14 @@ public class ContentPage extends IpsObjectEditorPage {
         }
         /**
          * Checks every row from the last up to the currently selected row for emptyness and
-         * deleted every empty row until a non-empty row is found.
+         * deletes every empty row until a non-empty row is found.
          * <p>
-         * Only tries to delete rows if table has more than two rows.
+         * Only tries to delete rows if table has more than one row.
          * 
          */
         private void removeRedundantRows() {
             int selectionIndex = tableViewer.getTable().getSelectionIndex();
-            if (tableViewer.getTable().getItemCount() <= 2) {
+            if (tableViewer.getTable().getItemCount() <= 1) {
                 return;
             }
             for (int i = tableViewer.getTable().getItemCount() - 1; i > selectionIndex; i--) {
@@ -194,10 +241,10 @@ public class ContentPage extends IpsObjectEditorPage {
                     break;
                 }
             }
-            /* FIXME Bug in TableViewer:
+            /* TODO Bug in TableViewer:
              * CellEditor position is not updated after deletion of rows.
              * The fix is to update the position artificially by scrolling 
-             * the table.
+             * the table/Tableviewer.
              * Problem: tableViewer#scrollDown(x, y) calls the Viewer implementation
              * which does nothing.
              */ 
@@ -214,7 +261,7 @@ public class ContentPage extends IpsObjectEditorPage {
             int columnNumber= row.getTableContents().getNumOfColumns();
             for (int i = 0; i < columnNumber; i++) {
                 String value= row.getValue(i);
-                if(value==null || !value.trim().equals("")){
+                if(value==null || !value.trim().equals("")){ //$NON-NLS-1$
                     return false;
                 }
             }
@@ -333,11 +380,11 @@ public class ContentPage extends IpsObjectEditorPage {
     private ITableStructure getTableStructure() throws CoreException {
         return getTableContents().findTableStructure();
     }
-
-    private ITableContentsGeneration getActiveGeneration() {
-        return (ITableContentsGeneration) getTableEditor()
-                .getPreferredGeneration();
+    
+    private ITableContentsGeneration getActiveGeneration(){
+        return (ITableContentsGeneration) getTableEditor().getPreferredGeneration();
     }
+    
 
 	private class Validator implements IInputValidator {
 		private int indexCount = 0;
@@ -401,5 +448,39 @@ public class ContentPage extends IpsObjectEditorPage {
 		}
 	}
     
+
+    /**
+     * Action that opens the wizard for exporting TableContents to M$-Excel files.
+     * 
+     * @author Stefan Widmaier
+     */
+    private class OpenTableExportWizardAction extends Action {
+
+        /**
+         * The TableContents to be exported.
+         */
+        ITableContents tableContents;
+        IWorkbenchWindow window;
+        
+        public OpenTableExportWizardAction(IWorkbenchWindow window, ITableContents tableContents) {
+            this.tableContents= tableContents;
+            this.window= window;
+            setText(Messages.ContentPage_ExportTableAction_label);
+            setToolTipText(Messages.ContentPage_ExportTableAction_tooltip);
+            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ExportTableContents.gif")); //$NON-NLS-1$
+        }
+        
+        /**
+         * Opens a TableExportWizard that is initialized with the <code>TableContents</code> this action 
+         * was created with.
+         * {@inheritDoc}
+         */
+        public void run() {
+            TableExportWizard wizard= new TableExportWizard();
+            wizard.init(window.getWorkbench(), new StructuredSelection(tableContents));
+            WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
+            dialog.open();
+        }
+    }
     
 }

@@ -175,7 +175,10 @@ public class TableStructure extends IpsObject implements ITableStructure {
         columns.remove(column);
     }
     
-    int getColumnIndex(IColumn column) {
+    /**
+     * {@inheritDoc}
+     */
+    public int getColumnIndex(IColumn column) {
         for (int i=0; i<columns.size(); i++) {
             if (columns.get(i)==column) {
                 return i;

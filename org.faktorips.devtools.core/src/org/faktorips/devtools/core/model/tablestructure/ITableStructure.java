@@ -69,9 +69,16 @@ public interface ITableStructure extends IIpsObject {
     public IColumn getColumn(String name);
     
     /**
-     * Returns the column at the given index.
+     * Returns the column at the given index. Returns null if the index is out of bounds
+     * (less than zero or greater or equal than the number of columns).
      */
     public IColumn getColumn(int index);
+    
+    /**
+     * Returns the index of the given column in this tablestructure's list of columns.
+     * Returns null if the given column is not defined by this tablestructure.
+     */
+    public int getColumnIndex(IColumn column);
     
     /**
      * Returns the number of columns in the table.

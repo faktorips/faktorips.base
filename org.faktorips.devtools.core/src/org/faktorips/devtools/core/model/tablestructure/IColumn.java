@@ -9,6 +9,7 @@
 
 package org.faktorips.devtools.core.model.tablestructure;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 
@@ -50,6 +51,11 @@ public interface IColumn extends IIpsObjectPart, IKeyItem {
      */
     public void setDatatype(String newDatatype);
 
-    public ValueDatatype findValueDatatype();
+    /**
+     * Returns the valuedatatype of this column. 
+     * @return
+     * @throws CoreException 
+     */
+    public ValueDatatype findValueDatatype() throws CoreException;
 
 }

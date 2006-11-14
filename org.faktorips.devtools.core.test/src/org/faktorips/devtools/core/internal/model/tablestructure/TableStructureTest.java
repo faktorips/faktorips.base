@@ -230,5 +230,27 @@ public class TableStructureTest extends AbstractIpsPluginTest {
 			//nothing to do :-)
 		}
     }
+    
+    public void testGetColumn(){
+        IColumn column1= table.newColumn();
+        table.newColumn();
+        table.newColumn();
+        IColumn column2= table.newColumn();
+        table.newColumn();
+        
+        assertEquals(column1, table.getColumn(0));
+        assertEquals(column2, table.getColumn(3));
+    }
+    
+    public void testGetColumnIndex(){
+        IColumn column1= table.newColumn();
+        table.newColumn();
+        table.newColumn();
+        IColumn column2= table.newColumn();
+        table.newColumn();
+        
+        assertEquals(0, table.getColumnIndex(column1));
+        assertEquals(3, table.getColumnIndex(column2));
+    }
 
 }

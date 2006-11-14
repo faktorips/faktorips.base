@@ -431,16 +431,23 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         result = new MessageList();
         validateThis(result);
         validateExtensionProperties(result);
-        IIpsElement[] children = getChildren();
-        for (int i=0; i<children.length; i++) {
-            MessageList childResult = ((IpsObjectPartContainer)children[i]).validate();
-            result.add(childResult);
-        }
+        validateChildren(result);
         if (IpsModel.TRACE_VALIDATION) {
             System.out.println("Validation of " + this + ": Finsihed, took " + (System.currentTimeMillis() - start) + "ms.");
         }
         cache.putResult(this, result);
         return result;
+    }
+    
+    /**
+     * Validates part container's children.
+     */
+    protected void validateChildren(MessageList result) throws CoreException {
+        IIpsElement[] children = getChildren();
+        for (int i=0; i<children.length; i++) {
+            MessageList childResult = ((IpsObjectPartContainer)children[i]).validate();
+            result.add(childResult);
+        }
     }
     
     /**

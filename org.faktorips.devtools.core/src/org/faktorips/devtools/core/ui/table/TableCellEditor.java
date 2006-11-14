@@ -33,29 +33,30 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.ui.editors.tablecontents.ContentPage;
 
 /**
+ * Base class for <code>CellEditor</code>s for Tables. Supports the navigation in a table/tableviewer
+ * using the SWT.TRAVERSE_ESCAPE, SWT.TRAVERSE_RETURN, SWT.TRAVERSE_TAB_NEXT, SWT.TRAVERSE_TAB_PREVIOUS, 
+ * SWT.ARROW_DOWN, SWT.ARROW_UP keys. This cell editor is created with a control that is displayed 
+ * when the user edits a table cell.
+ * <p>
  * This CellEditor can be configured to ceate new rows if needed and append them to the end of the
  * table. @see #setRowCreating(boolean)
- * 
- * 
- * 
- * 
- * Todo Superklasse:
- * - editfield als textcontrol verwenden
- * - prinzipielle moeglichkeit des Popupmenues
- *      .null-value support
- * 
- * Todo Unterklasse:
- * - textcontrol mit keylistenern versehen
- * - popupmenue
- * FIXME:
- *  - popupmenu
  * 
  * @author Stefan Widmaier
  */
 public abstract class TableCellEditor extends CellEditor{
+    /**
+     * The tableviewer this CellEditor is used in.
+     */
     private final TableViewer tableViewer;
+    
+    /**
+     * Index of the column this CellEditor was created for.
+     */
     private final int columnIndex;
     
+    /**
+     * The control to be displayed when the user edits a table cell.
+     */
     private Control control;
     
     /**
@@ -70,7 +71,7 @@ public abstract class TableCellEditor extends CellEditor{
      * column of the table this editor is used.
      * <p>
      * The created CellEditor does not create rows automatically and must be configured to do so
-     * @see #setRowCreating(boolean).
+     * {@link #setRowCreating(boolean)}.
      * 
      * @param tableViewer The TableViewer this CellEditor is used in.
      * @param columnIndex The index of the column which cells this editor edits.
@@ -138,86 +139,123 @@ public abstract class TableCellEditor extends CellEditor{
         });
     }
     
-    
+    /**
+     * Edits the next row relative to the current selection of the tableviewer this celleditor is
+     * used in. If no following row exists two behaviours are possible:
+     * <ul>
+     * <li>If this celleditor is configured to create rows ({@link #isRowCreating()}) a new row
+     * is created and the current column in the new row is edited.</li>
+     * <li>If this celleditor is configured to not create rows the current column of the last row
+     * is edited.</li>
+     * <li></li>
+     * </ul>
+     * 
+     */
     private void editNextRow() {
         int nextRow= tableViewer.getTable().getSelectionIndex() + 1;
-        if(nextRow>tableViewer.getTable().getItemCount()){
-            return;
-        }
         nextRow= requestRow(nextRow);
         editCell(nextRow, columnIndex);
     }
 
-
+    /**
+     * Edits the previous row relative to the current selection of the tableviewer this celleditor
+     * is used in. Does nothing if the first row of the table is selected.
+     * 
+     */
     private void editPreviousRow() {
         int previousRow= tableViewer.getTable().getSelectionIndex() - 1;
+        if(previousRow<0){
+            previousRow= 0;
+        }
         editCell(previousRow, columnIndex);
     }
     
+    /**
+     * Edits the next column relative to the column this celleditor is used for. If there is no next
+     * column (celleditor in last column), the first cell of the next row is edited. If in turn no
+     * following row exists two behaviours are possible:
+     * <ul>
+     * <li>If this celleditor is configured to create rows ({@link #isRowCreating()}) a new row
+     * is created and the first cell edited.</li>
+     * <li>If this celleditor is configured to not create rows the last cell of the last row of the
+     * table is edited.</li>
+     * <li></li>
+     * </ul>
+     * 
+     */
     private void editNextColumn() {
-        editColumn(columnIndex+1);
-    }
-    
-    private void editPreviousColumn() {
-        editColumn(columnIndex-1);
+        int rowIndex= tableViewer.getTable().getSelectionIndex();
+        int nextColumnIndex= columnIndex+1;
+        if(nextColumnIndex>=tableViewer.getTable().getColumnCount()){
+            nextColumnIndex= 0;
+            rowIndex++;
+            // Avoid tab-traversing in last row if row creating is disabled
+            if(!isRowCreating() && rowIndex==tableViewer.getTable().getItemCount()){
+                nextColumnIndex= tableViewer.getTable().getColumnCount()-1;
+                rowIndex= tableViewer.getTable().getItemCount()-1;
+            }
+        }
+        rowIndex= requestRow(rowIndex);
+        editCell(rowIndex, nextColumnIndex);
     }
     
     /**
-     * Edits the table cell in the current row (current selection of the table) at the given column
-     * index. If the columnindex is out of bounds (greater than the table's number of columns or
-     * less than zero), this method reacts with a change of the row. If the columnindex is less than
-     * zero the last cell of the previous row (if existent) is edited. If the columnindex is greater
-     * than the columnnumber the first cell of the next row (if existent) is edited.
-     * If this cellEditor is configured to create new rows a new row is created in case the end of the
-     * table was reached.
+     * Edits the previous column relative to the column this celleditor is used for. If there is no
+     * previous column (celleditor in first column), the last cell of the previous row is edited. If
+     * in turn the previous row does not exist the first cell of the topmost row of the table is
+     * edited (first cell of the table).
+     */
+    private void editPreviousColumn() {
+        int rowIndex= tableViewer.getTable().getSelectionIndex();
+        int previousColumnIndex= columnIndex-1;
+        if(previousColumnIndex<0){
+            if(rowIndex==0){
+                previousColumnIndex= 0;
+            }else{
+                previousColumnIndex= tableViewer.getTable().getColumnCount()-1;
+                rowIndex--;
+            }
+        }
+        editCell(rowIndex, previousColumnIndex);
+    }
+    
+    /**
+     * Edits the table cell in the given column of the given row. Expects valid values for nextRowIndex 
+     * and nextColumnIndex. Out-of-bound values will cause the tableviewer to loose focus.
      * <p>
      * For optimization reasons this method only informs the tableviewer of a cell edit if the
-     * current cell changed.
+     * cell changed.
      * 
      * @param columnIndex The index of the column (value) that should be edited in the currently
      *            selected row.
      */
-    private void editColumn(int nextColumnIndex) {
-        int nextRowIndex= tableViewer.getTable().getSelectionIndex();
-        // end of line: edit first cell of next row
-        if(nextColumnIndex >= tableViewer.getTable().getColumnCount()){
-            nextRowIndex++;
-            nextColumnIndex= 0;
-            nextRowIndex= requestRow(nextRowIndex);
-            editCell(nextRowIndex, nextColumnIndex);
-        }else if(nextColumnIndex<0){
-            nextRowIndex--;
-            nextColumnIndex= tableViewer.getTable().getColumnCount()-1;
-            if(nextRowIndex<0){
-                // beginning of table: edit first cell
-                editCell(0, 0);
-            }else{
-                editCell(nextRowIndex, nextColumnIndex);
-            }
-        }else{
-            editCell(nextRowIndex, nextColumnIndex);
+    private void editCell(int nextRowIndex, int nextColumnIndex) {
+        if(nextColumnIndex!=columnIndex || nextRowIndex!=tableViewer.getTable().getSelectionIndex()){
+            tableViewer.editElement(tableViewer.getElementAt(nextRowIndex), nextColumnIndex);
         }
     }
 
     /**
-     * Returns the index of the last valid row. May also create a new row if this cellEditor is 
-     * configured to do so.
+     * Converts the given rowIndex to a valid index and returns it. This method may also create a
+     * new row if this cellEditor is configured to do so.
      * <p>
-     * If a rowindex greater or equal than the number of tableitems is given two actions
-     * are possible:
+     * If the given rowindex ist less than zero, 0 is returned. If rowindex is valid (greater or
+     * equal than zero and less than the number of rows in the table) the given rowIndex is simply
+     * returned.
+     * <p>
+     * If th rowindex is greater or equal than the number of tableitems actions are possible:
      * <ul>
      * <li> If isRowCreating()==true a new row is created and its index returned. </li>
      * <li> If isRowCreating()==false no row is created, instead the index of last row of the table
      * is returned. </li>
      * </ul>
-     * A given rowindex less than zero is treated as zero.
-     * <p>
-     * The mechanism for deleting dynamically created rows is realized in the <code>ContentPage</code>
-     * of the TableContentsEditor.
+     * The mechanism for deleting dynamically created rows is realized in the
+     * <code>ContentPage</code> of the TableContentsEditor.
+     * 
      * @see ContentPage
      * 
      * @param nextRow
-     * @return
+     * @return The index of the last row of the table (wether it was newly created or not).
      */
     private int requestRow(int nextRow) {
         // transform to valid range
@@ -233,33 +271,16 @@ public abstract class TableCellEditor extends CellEditor{
                 appendTableRow();
                 return nextRow;
             }else{
-                return tableViewer.getTable().getItemCount();
+                return tableViewer.getTable().getItemCount()-1;
             }
         }else{
             return nextRow;
         }
-    }
-    /**
-     * Opens the cellEditor at the given row index and column index. Assumes both rowIndex
-     * and colIndex contain valid values.
-     * 
-     * @param rowIndex
-     * @param colIndex
-     */
-    private void editCell(int rowIndex, int colIndex){
-        // optimization: only edit if cell (row or column) changed
-        if(colIndex!=columnIndex || rowIndex!=tableViewer.getTable().getSelectionIndex()){
-            if (tableViewer.getElementAt(rowIndex) != null){
-                tableViewer.editElement(tableViewer.getElementAt(rowIndex), colIndex);
-            }
-        }
-    }
-    
+    }    
     
    /**
-    * Appends new row to the table and returns it. Rows can only be appended if the input of the 
-    * TableViewer is a <code>TableContents</code>. Returns null otherwise.
-    * 
+    * Appends a new IRow to the table and returns it if the tableviewer's input is a TableContents. 
+    * Does nothing otherwise.
     */
     private void appendTableRow() {
         if(tableViewer.getInput() instanceof ITableContents){
@@ -291,22 +312,6 @@ public abstract class TableCellEditor extends CellEditor{
     public void setRowCreating(boolean appendRows) {
         this.rowCreating = appendRows;
     }
-    
-    /*
-     * FIXME Update nach KeyEvent statt nach verlassen der Zelle
-     *  warscheinlich nicht noetig, da TableEditorImpl modifiery verstaendigt, wenn Zelle focus verliert!
-     * Ist allerdings noetig fuer on-the-fly editieren (bei jedem Tastendruck) fuer echtzeit problemmarker und 
-     * contentassist. (-> modifyListener, der Modifyer informiert; doSetValue muss deswegen beim setzten des Textes
-     * modifyListener entfernen)
-     */
-//    private void notifyModifier(Object newValue) {
-//        if(newValue!=null){
-//            Object selectedElement= ((IStructuredSelection) fTableViewer.getSelection()).getFirstElement();
-//            fTableViewer.getCellModifier().modify(selectedElement, fProperty, newValue);
-//            
-//        }
-//    }
-    
 
     /**
      * Reimplementation of the <code>CellEditor</code> method. Needed to access the

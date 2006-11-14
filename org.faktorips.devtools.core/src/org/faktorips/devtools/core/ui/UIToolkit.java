@@ -279,14 +279,15 @@ public class UIToolkit {
 		gridData.widthHint = DEFAULT_WIDTH;
 		newText.setLayoutData(gridData);
 		return newText;
+
 	}
 
 	public Text createText(Composite parent) {
         if (formToolkit != null){
-            return createText(parent, SWT.NONE);
+		return createText(parent, SWT.NONE);
         } else {
             return createText(parent, SWT.SINGLE | SWT.BORDER);
-        }
+		}
 	}
 
 	public Text createMultilineText(Composite parent) {
@@ -450,20 +451,35 @@ public class UIToolkit {
 		return newCombo;
 	}
 
-	public Combo createCombo(Composite parent, EnumDatatype enumValues) {
-		Combo newCombo = createCombo(parent);
-		if (enumValues.isSupportingNames()) {
-			String[] ids = enumValues.getAllValueIds(true);
-			ArrayList idList = new ArrayList(ids.length);
-			for (int i = 0; i < ids.length; i++) {
-				idList.add(enumValues.getValueName(ids[i]));
-			}
-			setComboValues(newCombo, (String[]) idList.toArray(new String[ids.length]));
-			return newCombo;
-		}
-		setComboValues(newCombo, enumValues.getAllValueIds(true));
-		return newCombo;
-	}
+    /**
+     * Creates a combo containing the given <code>EnumDatatype</code>'s values as items.
+     * If the given <code>EnumDatatype</code> supports names, the values' names are used
+     * otherwise the values' IDs are used as items in the combo. 
+     */
+    public Combo createCombo(Composite parent, EnumDatatype enumValues) {
+        Combo newCombo = createCombo(parent);
+        if (enumValues.isSupportingNames()) {
+            String[] ids = enumValues.getAllValueIds(true);
+            ArrayList nameList = new ArrayList(ids.length);
+            for (int i = 0; i < ids.length; i++) {
+                nameList.add(enumValues.getValueName(ids[i]));
+            }
+            setComboValues(newCombo, (String[]) nameList.toArray(new String[ids.length]));
+            return newCombo;
+        }
+        setComboValues(newCombo, enumValues.getAllValueIds(true));
+        return newCombo;
+    }
+
+    /**
+     * Creates a combo containing the given <code>EnumDatatype</code>'s value IDs as items.
+     * It does not add names to the combo even if the <code>EnumDatatype</code> supports names. 
+     */
+    public Combo createIDCombo(Composite parent, EnumDatatype enumValues) {
+        Combo newCombo = createCombo(parent);
+        setComboValues(newCombo, enumValues.getAllValueIds(true));
+        return newCombo;
+    }
 	
 	public Combo createComboForBoolean(Composite parent, boolean inclNull, String trueRepresentation, String falseRepresentation) {
 		Combo newCombo = createCombo(parent);

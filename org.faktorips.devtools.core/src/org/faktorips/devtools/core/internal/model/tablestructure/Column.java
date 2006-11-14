@@ -25,7 +25,6 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -179,11 +178,11 @@ public class Column extends IpsObjectPart implements IColumn {
 	}
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc} 
+     * @throws CoreException 
      */
-    public ValueDatatype findValueDatatype() {
-        // FIXME direkte abhaengigkeit zu IpsModel
-        return ((IpsModel)IpsPlugin.getDefault().getIpsModel()).getValueDatatype(getIpsProject(), datatype); 
+    public ValueDatatype findValueDatatype() throws CoreException {
+        return getIpsProject().findValueDatatype(datatype); 
     }
     
 }

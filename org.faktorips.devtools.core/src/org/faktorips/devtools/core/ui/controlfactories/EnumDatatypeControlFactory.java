@@ -75,18 +75,20 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
 	}
 
     /**
-     * Creates a <code>ComboCellEditor</code> if the given valueset is an
-     * <code>EnumValueSet</code>. The CellEditor contains a <code>Combo</code> control, that is
-     * filled with the corresponding values from the given <code>ValueSet</code>. If the given
-     * valueset is null a <code>ComboCellEditor</code> is created with a <code>Combo</code>
-     * control for the given <code>DataType</code>. {@inheritDoc}
+     * Creates a <code>ComboCellEditor</code> for the given valueset and Datatype. The created
+     * CellEditor contains a <code>Combo</code> control that is filled with the corresponding
+     * values from the given <code>ValueSet</code>. If the given valueset is either not an
+     * <code>EnumValueSet</code> or <code>null</code> a <code>ComboCellEditor</code> is
+     * created with a <code>Combo</code> control for the given <code>DataType</code>. In this case
+     * the Combo contains the value IDs (not the names) of the given <code>EnumDatatype</code> 
+     * {@inheritDoc}
      */
     public TableCellEditor createCellEditor(UIToolkit toolkit, ValueDatatype dataType, ValueSet valueSet, TableViewer tableViewer, int columnIndex) {
         Combo comboControl;
         if (valueSet instanceof IEnumValueSet) {
             comboControl= toolkit.createCombo(tableViewer.getTable(), (IEnumValueSet)valueSet, (EnumDatatype)dataType);
         }else{
-            comboControl= toolkit.createCombo(tableViewer.getTable(), (EnumDatatype)dataType);
+            comboControl= toolkit.createIDCombo(tableViewer.getTable(), (EnumDatatype)dataType);
         }
         return new ComboCellEditor(tableViewer, columnIndex, comboControl);
     }

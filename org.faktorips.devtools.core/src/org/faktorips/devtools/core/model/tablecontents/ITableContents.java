@@ -45,12 +45,6 @@ public interface ITableContents extends ITimedIpsObject {
     public final static String MSGCODE_COLUMNCOUNT_MISMATCH = MSGCODE_PREFIX + "ColumncountMismatch"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that a row in this table does not define values in columns a unique key 
-     * of this table dictates.
-     */
-    public final static String MSGCODE_UNDEFINED_UNIQUEKEY_VALUE = MSGCODE_PREFIX + "UndefinedUniqueKeyValue"; //$NON-NLS-1$
-    
-    /**
      * Returns the qualified name of the table structure this table contents
      * is based on.
      */

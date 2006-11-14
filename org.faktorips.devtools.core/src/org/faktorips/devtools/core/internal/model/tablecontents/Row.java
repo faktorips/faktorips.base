@@ -19,18 +19,23 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.ArrayList;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -149,27 +154,6 @@ public class Row extends IpsObjectPart implements IRow {
     	values.remove(column);
     }
     
-    // FIXME testfall
-    IColumn findColumn(int column) throws CoreException {
-        ITableStructure structure = getTableContents().findTableStructure();
-        if (structure==null) {
-            return null;
-        }
-        if (column>=structure.getNumOfColumns()) {
-            // FIXME null oder Exception werfen?
-            return null;
-        }
-        return structure.getColumn(column); // FIXME ins published interface von ITableStructure aufnehmen
-    }
-    
-    ValueDatatype findValueDatatype(int column) throws CoreException {
-        IColumn col = findColumn(column);
-        if (col==null) {
-            return null;
-        }
-        return col.findValueDatatype(); // FIXME ins published interface IColumn aufnehmen.
-    }
-    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -191,44 +175,60 @@ public class Row extends IpsObjectPart implements IRow {
     }
 
 	/**
+     * Validates the values in this row against unique-keys and datatypes defined by the TableStructure
+     * of this row's TableContents.
+     * <p>
+     * For every unique key the TableStructure defines all columns that are part of the unique key are 
+     * processed. If a column of this row does not contain a value as dictated by unique keys, a new
+     * <code>ERROR</code>-<code>Message</code> is added to the given <code>MessageList</code>.
+     * <p>
+     * The datatype for every column is retrieved and the corresponding value is tested. If the value
+     * does not match the datatype (is not parsable) a new <code>ERROR</code>-<code>Message</code> is 
+     * added to the given <code>MessageList</code>.
 	 * {@inheritDoc}
 	 */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
-        String structureName = ((ITableContents)getParent().getParent()).getTableStructure();
-        ITableStructure structure = (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, structureName);
-
-        for (int i=0; i<getNumOfColumns(); i++) {
-            validateValue(i, (String)values.get(i), structure, list);
-        }
+        ValueDatatype[] datatypes= ((TableContents)getTableContents()).findColumnDatatypes();
+        
+        validateWithDatatypes(list, datatypes);
     }
     
-    private void validateValue(int columnIndex, String value, ITableStructure structure, MessageList list) throws CoreException {
+    /**
+     * Validates this row using the given list of datatypes.
+     */
+    MessageList validateWithDatatypes(MessageList list, ValueDatatype[] datatypes) throws CoreException {
+        ITableStructure structure = ((ITableContents)getParent().getParent()).findTableStructure();
         
-//        if (datatypeObject==null) {
-//            if (!StringUtils.isEmpty(defaultValue)) {
-//                String text = "The default value can't be parsed because the datatype is unkown!";
-//                result.add(new Message("", text, Message.WARNING, this, PROPERTY_DEFAULT_VALUE));
-//            } else {}
-//        } else {
-//            if (!datatypeObject.isValueDatatype()) {
-//                if (!StringUtils.isEmpty(datatype)) {
-//                    String text = "The default value can't be parsed because the datatype is not a value datatype!";
-//                    result.add(new Message("", text, Message.WARNING, this, PROPERTY_DEFAULT_VALUE));    
-//                } else {}
-//            } else {
-//                if (StringUtils.isNotEmpty(defaultValue)) {
-//                    ValueDatatype valueDatatype = (ValueDatatype)datatypeObject;
-//                    try {
-//                        valueDatatype.getValue(defaultValue);    
-//                    } catch (Exception e) {
-//                        String text = "The default value " + defaultValue + " is not a " + datatype +".";
-//                        result.add(new Message("", text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE));                    
-//                    }
-//                }
-//            }
-//        }
-//        
+        IUniqueKey[] uniqueKeys= structure.getUniqueKeys();
+        for (int i = 0; i < uniqueKeys.length; i++) {
+            IUniqueKey uniqueKey= uniqueKeys[i];
+            IKeyItem[] keyItems= uniqueKey.getKeyItems();
+            for (int j = 0; j < keyItems.length; j++) {
+                IKeyItem keyItem= keyItems[j];
+                if(keyItem instanceof IColumn){
+                    IColumn column= (IColumn) keyItem;
+                    int columnIndex= structure.getColumnIndex(column);
+                    String value= getValue(columnIndex);
+                    if(value!=null && StringUtils.isEmpty(value.trim()) || value==null){
+                        String text = NLS.bind(Messages.Row_MissingValueForUniqueKey, column.getName());
+                        Message message= new Message(MSGCODE_UNDEFINED_UNIQUEKEY_VALUE, text, Message.ERROR, new ObjectProperty(this, IRow.PROPERTY_VALUE, columnIndex));
+                        list.add(message);
+                    }
+                }
+            }
+        }
+        
+        for (int i=0; i<getNumOfColumns(); i++) {
+            IColumn column= structure.getColumn(i);
+            ValueDatatype dataType= datatypes[i];
+            if(!dataType.isParsable(getValue(i))){
+                String text = NLS.bind(Messages.Row_ValueNotParsable, column.getName(), dataType);
+                Message message= new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, new ObjectProperty(this, IRow.PROPERTY_VALUE, i));
+                list.add(message);
+            }
+        }
+        return list;
     }
 
 	/**
@@ -285,5 +285,4 @@ public class Row extends IpsObjectPart implements IRow {
 	public IIpsObjectPart newPart(Class partType) {
 		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
-	
 }

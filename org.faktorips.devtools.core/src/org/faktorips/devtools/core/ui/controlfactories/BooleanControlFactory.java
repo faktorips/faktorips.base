@@ -118,6 +118,11 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 		}	
 	}
 
+    /**
+     * Creates a <code>ComboCellEditor</code> containig a <code>Combo</code> using 
+     * {@link #createControl(UIToolkit, Composite, ValueDatatype, ValueSet)}. 
+     * {@inheritDoc}
+     */
     public TableCellEditor createCellEditor(UIToolkit toolkit, ValueDatatype dataType, ValueSet valueSet, TableViewer tableViewer, int columnIndex) {
         Combo comboControl= (Combo) createControl(toolkit, tableViewer.getTable(), dataType, valueSet);
         return new ComboCellEditor(tableViewer, columnIndex, comboControl);
