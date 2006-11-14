@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.IpsArchive;
@@ -39,9 +40,12 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         newPolicyCmptType(project, "mycompany.motor.MotorPolicy");
         newPolicyCmptType(project, "mycompany.motor.MotorCoverage");
         newPolicyCmptType(project, "mycompany.home.HomePolicy");
-        
         IFile archiveFile = project.getProject().getFile("test.ipsar");
+        archiveFile.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        
         CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), archiveFile);
+        operation.setInclJavaBinaries(true);
+        operation.setInclJavaSources(true);
         operation.run(null);
         
         assertTrue(archiveFile.exists());
