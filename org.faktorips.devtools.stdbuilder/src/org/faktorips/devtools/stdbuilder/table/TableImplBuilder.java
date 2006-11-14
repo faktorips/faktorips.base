@@ -275,11 +275,15 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         createAddRowMethod(codeBuilder);
         
         createInitKeyMapsMethod(codeBuilder);
-        if (getTableStructure().isMultipleContentsAllowed()) {
-            createGetInstanceMethodForMultipleContents(codeBuilder);
-        } else {
+        
+        // create single instance method only if no multi content is allowed
+        if (!getTableStructure().isMultipleContentsAllowed()) {
             createGetInstanceMethodForSingleContent(codeBuilder);
         }
+
+        // create multi instance content method if multi or single content
+        createGetInstanceMethodForMultipleContents(codeBuilder);
+        
         createAllRowsMethod(codeBuilder);
         createFindMethods(codeBuilder);
         createHashKeyClasses(codeBuilder);

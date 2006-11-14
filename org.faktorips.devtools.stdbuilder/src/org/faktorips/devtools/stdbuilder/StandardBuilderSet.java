@@ -100,13 +100,10 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         CompilationResultImpl result = new CompilationResultImpl(code, returnType);
         result.addAllIdentifierUsed(argResults);
         code.appendClassName(tableImplBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile()));
-        if(tableStructure.isMultipleContentsAllowed()){
-            code.append(".getInstance(" + MethodNames.GET_REPOSITORY + "(), \"" + tableContents.getQualifiedName() + "\").findRow(");
-        }
-        else{
-            code.append(".getInstance(" + MethodNames.GET_REPOSITORY + "()).findRow(");
-        }
-        //TODO pk: findRow is not correct in general
+        // create get instance method by using the qualified name of the table content
+        code.append(".getInstance(" + MethodNames.GET_REPOSITORY + "(), \"" + tableContents.getQualifiedName()
+                + "\").findRow(");
+        // TODO pk: findRow is not correct in general
         for (int i = 0; i < argResults.length; i++) {
             if (i>0) {
                 code.append(", ");
