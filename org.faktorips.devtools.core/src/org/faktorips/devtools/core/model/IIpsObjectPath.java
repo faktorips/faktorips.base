@@ -146,11 +146,4 @@ public interface IIpsObjectPath {
      * Validates the object path and returns the result as list of messages.
      */
     public MessageList validate() throws CoreException;    
-    
-    /**
-     * Returns <code>true</code> if the given package name is specified as a package prefix for
-     * generated classes inside this path, if no such package is
-     * defined as package prefix then <code>false</code> will be returned.
-     */
-    public boolean containsBasePackageNameForGeneratedClasses(String packageName);
 }

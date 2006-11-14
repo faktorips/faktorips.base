@@ -68,6 +68,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.ValueSetType;
@@ -1071,7 +1072,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         
         validateRequiredFeatures(result, props);
         validateMigration(result, props);
-        validateDuplicateBasePackageNameForGeneratedClasses(result, props);
+        validateDuplicateTocFilePath(result, props);
 		return result;
 	}
 
@@ -1117,13 +1118,15 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /*
      * Validates for duplicate base package generated entries inside the referenced project
      */
-    private void validateDuplicateBasePackageNameForGeneratedClasses(MessageList result, IpsProjectProperties props)
+    private void validateDuplicateTocFilePath(MessageList result, IpsProjectProperties props)
             throws CoreException {
         IIpsObjectPath path = getIpsObjectPath();
         if (path == null) {
             return;
         }
-        // check for same package name in referenced projects (only product definition projects)
+        // check for same toc file path in referenced projects (only product definition projects)
+        List tocPaths = collectTocPaths(path);
+        
         IIpsProject[] referencedProjects = getReferencedIpsProjects();
         for (int i = 0; i < referencedProjects.length; i++) {
             if (! referencedProjects[i].isProductDefinitionProject()){
@@ -1133,13 +1136,30 @@ public class IpsProject extends IpsElement implements IIpsProject {
             if (pathRelProject == null) {
                 continue;
             }
-            if (pathRelProject.containsBasePackageNameForGeneratedClasses(path.getBasePackageNameForGeneratedJavaClasses())) {
-                String msg = NLS.bind(Messages.IpsProject_msgDuplicateBasePackageNameForGeneratedClasses,
-                        path.getBasePackageNameForGeneratedJavaClasses(), referencedProjects[i].getName());
-                result.add(new Message(MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS, msg,
-                        Message.WARNING, this));
+            List tocPathsInRefProject = collectTocPaths(pathRelProject);
+            for (Iterator iter = tocPathsInRefProject.iterator(); iter.hasNext();) {
+                String tocPath = (String)iter.next();
+                if (tocPaths.contains(tocPath)) {
+                    String msg = NLS.bind(Messages.IpsProject_msgDuplicateTocFilePath, tocPath, referencedProjects[i]
+                            .getName());
+                    result.add(new Message(
+                            MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS, msg,
+                            Message.ERROR, this));
+                    continue;
+                }
             }
         }
+    }
+    
+    // Return all toc file paths inside the given ips object path
+    private List collectTocPaths(IIpsObjectPath ipsObjectPath){
+        List tocPath = new ArrayList();
+        IIpsSrcFolderEntry[] srcFolderEntries = ipsObjectPath.getSourceFolderEntries();
+        for (int j = 0; j < srcFolderEntries.length; j++) {
+            String tocFilePath = srcFolderEntries[j].getBasePackageNameForGeneratedJavaClasses() + "." + srcFolderEntries[j].getBasePackageRelativeTocPath();
+            tocPath.add(tocFilePath);
+        }
+        return tocPath;
     }
     
     /**

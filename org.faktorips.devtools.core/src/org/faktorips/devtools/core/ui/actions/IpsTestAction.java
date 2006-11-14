@@ -244,7 +244,7 @@ public class IpsTestAction extends IpsAction {
 	 */
 	private String getRepPckNameFromPckFrgmtRoot(IIpsPackageFragmentRoot root) throws CoreException {
 		IIpsArtefactBuilderSet builderSet = root.getIpsProject().getIpsArtefactBuilderSet();
-		return builderSet.getTocFilePackageName(root);
+		return builderSet.getRuntimeRepositoryTocResourceName(root);
 	}
 	
 	/*

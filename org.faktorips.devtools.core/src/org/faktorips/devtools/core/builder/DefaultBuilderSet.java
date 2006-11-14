@@ -136,6 +136,9 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
         IPath path = QNameUtil.toPath(basePackInternal);
         path = path.append(entry.getBasePackageRelativeTocPath());
 		IFolder folder = entry.getOutputFolderForGeneratedJavaFiles();
+        if (folder == null){
+            return null;
+        }
 		return folder.getFile(path);
 	}
 

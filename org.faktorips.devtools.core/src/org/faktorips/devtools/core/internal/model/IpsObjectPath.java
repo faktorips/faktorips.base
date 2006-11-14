@@ -35,7 +35,6 @@ import org.faktorips.devtools.core.model.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -448,13 +447,5 @@ public class IpsObjectPath implements IIpsObjectPath {
             result.add(msg);
         }
         return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean containsBasePackageNameForGeneratedClasses(String packageName) {
-        ArgumentCheck.notNull(packageName);
-        return packageName.equals(basePackageGenerated);
     }
 }

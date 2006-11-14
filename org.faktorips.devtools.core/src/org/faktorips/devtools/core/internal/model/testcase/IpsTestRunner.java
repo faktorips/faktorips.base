@@ -220,6 +220,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         
         ILaunchConfiguration launchConfiguration = null;
         if (mode != ILaunchManager.RUN_MODE){
+            // create configuration in non run mode, e.g. debug mode
             launchConfiguration = createConfiguration();
         }
         
@@ -607,7 +608,7 @@ public class IpsTestRunner implements IIpsTestRunner {
              IIpsArtefactBuilderSet builderSet = ipsProject.getIpsArtefactBuilderSet();
              IFile tocFile = builderSet.getRuntimeRepositoryTocFile(ipsRoots[i]);
              if (tocFile != null && tocFile.exists()){
-                 String repositoryPck = builderSet.getTocFilePackageName(ipsRoots[i]);
+                 String repositoryPck = builderSet.getRuntimeRepositoryTocResourceName(ipsRoots[i]);
                  if (repositoryPck != null && ! repositoryPackages.contains(repositoryPck))
                      repositoryPackages.add(repositoryPck);
              }
