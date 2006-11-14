@@ -24,6 +24,8 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Modifier;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -34,8 +36,10 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.codegen.jmerge.JControlModel;
 import org.eclipse.emf.codegen.jmerge.JMerger;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
+import org.eclipse.jdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
@@ -108,8 +112,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	 */
 	public final static String MARKER_END_USER_CODE = "//end-user-code"; //$NON-NLS-1$
 
-	final protected static String JAVA_EXTENSION = ".java"; //$NON-NLS-1$
-
+	protected final static String JAVA_EXTENSION = ".java"; //$NON-NLS-1$
+    
 	private boolean mergeEnabled;
 
 	private String kindId;
@@ -125,6 +129,11 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	private MultiStatus buildStatus;
 
 	private JControlModel model;
+    
+    private Integer javaOptionsSplitLength;
+    
+    private Integer javaOptionsTabSize;
+
 
 	/**
 	 * Creates a new JavaSourceFileBuilder.
@@ -146,8 +155,18 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 		ArgumentCheck.notNull(kindId, this);
 		this.kindId = kindId;
 		this.localizedStringsSet = localizedStringsSet;
+        initJavaOptions();
 	}
 
+    private void initJavaOptions(){
+        try {
+            javaOptionsSplitLength = Integer.valueOf(JavaCore.getOption(DefaultCodeFormatterConstants.FORMATTER_LINE_SPLIT));
+            javaOptionsTabSize = Integer.valueOf(JavaCore.getOption(DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE));
+        } catch (Exception e) {
+            IpsPlugin.log(new IpsStatus("Unable to apply the java formatter options.", e));
+        }
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -464,7 +483,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	public void appendLocalizedJavaDoc(String keyPrefix, IIpsElement element, JavaCodeFragmentBuilder builder) {
 		String text = getLocalizedText(element, keyPrefix + "_JAVADOC"); //$NON-NLS-1$
 		String[] annotations = new String[]{getLocalizedText(element, keyPrefix + "_ANNOTATION")}; //$NON-NLS-1$
-		builder.javaDoc(text, annotations);
+		builder.javaDoc(wrapText(text), annotations);
 	}
 
 	/**
@@ -491,7 +510,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	public void appendLocalizedJavaDoc(String keyPrefix, Object replacement, IIpsElement element, JavaCodeFragmentBuilder builder) {
 		String text = getLocalizedText(element, keyPrefix + "_JAVADOC", replacement); //$NON-NLS-1$
 		String[] annotations = new String[]{getLocalizedText(element, keyPrefix + "_ANNOTATION")}; //$NON-NLS-1$
-		builder.javaDoc(text, annotations);
+		builder.javaDoc(wrapText(text), annotations);
 	}
 
 	/**
@@ -518,9 +537,43 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	public void appendLocalizedJavaDoc(String keyPrefix, Object[] replacements, IIpsElement element, JavaCodeFragmentBuilder builder) {
 		String text = getLocalizedText(element, keyPrefix + "_JAVADOC", replacements); //$NON-NLS-1$
 		String[] annotations = new String[]{getLocalizedText(element, keyPrefix + "_ANNOTATION")}; //$NON-NLS-1$
-		builder.javaDoc(text, annotations);
+		builder.javaDoc(wrapText(text), annotations);
 	}
 
+    private String wrapText(String text){
+        
+        if(StringUtils.isEmpty(text) || javaOptionsSplitLength == null || javaOptionsTabSize == null){
+            return text;
+        }
+        int maxLengthInt = javaOptionsSplitLength.intValue();
+        int tabSizeInt = javaOptionsTabSize.intValue();
+        int length = maxLengthInt - tabSizeInt - 3;
+        String[] lines = StringUtils.split(text, SystemUtils.LINE_SEPARATOR);
+        StringBuffer buf = new StringBuffer();
+        for (int i = 0; i < lines.length; i++) {
+            String lineText = lines[i];
+            while(lineText.length() > length){
+                int index = lineText.indexOf(' ', length);
+                if(index != -1){
+                    buf.append(lineText.substring(0, index));
+                    buf.append(SystemUtils.LINE_SEPARATOR);
+                    if(lineText.length() > index + 1){
+                        lineText = lineText.substring(index + 1, lineText.length() - 1);
+                    }
+                    else{
+                        break;
+                    }
+                }
+                else{
+                    break;
+                }
+            }
+            buf.append(lineText);
+            buf.append(SystemUtils.LINE_SEPARATOR);
+        }
+        return buf.toString();
+    }
+    
 	/**
 	 * Returns the localized text for the provided key. Calling this method is
 	 * only allowed during the build cycle. If it is called outside the build
@@ -598,7 +651,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 		if (content == null || generationCanceled) {
 			return;
 		}
-		String formattedContent = format(content);
+        
+        String formattedContent = format(content);
 		boolean newFileCreated = createFileIfNotThere(javaFile);
 
 		if (!newFileCreated) {
