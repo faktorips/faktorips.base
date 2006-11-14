@@ -160,7 +160,7 @@ public class ExcelTableExportOperationTest extends AbstractIpsPluginTest {
         createInvalid();
         ExcelTableExportOperation op = new ExcelTableExportOperation(contents, file.getName(), format, "NULL", ml);
         op.run(new NullProgressMonitor());
-        assertEquals(6, ml.getNoOfMessages());
+        assertEquals(7, ml.getNoOfMessages());
     }
 
     private void fillValid() throws Exception {
@@ -199,14 +199,14 @@ public class ExcelTableExportOperationTest extends AbstractIpsPluginTest {
 
     private void createInvalid() throws Exception {
         IRow row1 = this.exportSource.newRow();
-        row1.setValue(0, "invalid is impossible");
-        row1.setValue(1, "INVALID");
-        row1.setValue(2, "INVALID");
-        row1.setValue(3, "INVALID");
-        row1.setValue(4, "INVALID");
-        row1.setValue(5, "INVALID");
-        row1.setValue(6, "INVALID");
-        row1.setValue(7, "invalid is impossible");
+        row1.setValue(0, "INVALID"); //BOOLEAN
+        row1.setValue(1, "INVALID"); //DECIMAL
+        row1.setValue(2, "INVALID"); //DOUBLE
+        row1.setValue(3, "INVALID"); //GREGORIAN_CALENDAR_DATE
+        row1.setValue(4, "INVALID"); //INTEGER
+        row1.setValue(5, "INVALID"); //LONG
+        row1.setValue(6, "INVALID"); //MONEY
+        row1.setValue(7, "invalid is impossible"); //STRING
 
         this.exportSource.getTimedIpsObject().getIpsSrcFile().save(true, null);
     }
