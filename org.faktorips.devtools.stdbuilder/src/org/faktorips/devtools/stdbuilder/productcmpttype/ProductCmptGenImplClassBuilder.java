@@ -387,6 +387,10 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
 
     private void generateMethodDoInitTableUsagesFromXml(JavaCodeFragmentBuilder builder) {
+        ITableStructureUsage[] tsus = getProductCmptType().getTableStructureUsages();
+        if (tsus.length == 0){
+            return;
+        }
         String javaDoc = null;
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         String[] argNames = new String[]{"tableUsageMap"};
@@ -395,7 +399,6 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         builder.appendln("super.doInitTableUsagesFromXml(tableUsageMap);");
         builder.appendClassName(Element.class);
         builder.appendln(" element = null;");
-        ITableStructureUsage[] tsus = getProductCmptType().getTableStructureUsages();
         for (int i = 0; i < tsus.length; i++) {
             builder.append(" element = (");
             builder.appendClassName(Element.class);
