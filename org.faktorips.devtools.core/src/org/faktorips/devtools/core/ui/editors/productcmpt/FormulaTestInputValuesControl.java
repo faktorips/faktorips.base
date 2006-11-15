@@ -242,7 +242,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         btns.setLayout(uiToolkit.createNoMarginGridLayout(1, true));
         btns.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
         
-        Button btnCalculate = uiToolkit.createButton(btns, "Calculate");
+        Button btnCalculate = uiToolkit.createButton(btns, Messages.FormulaTestInputValuesControl_ButtonLabel_Calculate);
         btnCalculate.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true ));
         btnCalculate.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
@@ -353,8 +353,12 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         column = new TableColumn(table, SWT.LEFT);
         column.setText(Messages.FormulaTestInputValuesControl_TableFormulaTestInputValues_Column_Parameter);
         column = new TableColumn(table, SWT.LEFT);
-        column.setText(Messages.FormulaTestInputValuesControl_TableFormulaTestInputValues_Column_Value);
-
+        // extend the value column
+        StringBuffer extension = new StringBuffer();
+        for (int i = 0; i < 40; i++) {
+            extension.append(" "); //$NON-NLS-1$
+        }
+        column.setText(Messages.FormulaTestInputValuesControl_TableFormulaTestInputValues_Column_Value + extension);
         
         // Create the viewer and connect it to the view
         formulaInputTableViewer = new TableViewer(table);
@@ -367,7 +371,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             // new formula test case (e.g. preview formula on the first page of the formula edit dialog)
 
             BeanTableCellModifier tableCellModifier = new BeanTableCellModifier(formulaInputTableViewer);
-            tableCellModifier.initModifier(uiToolkit, new String[] { "image", IFormulaTestInputValue.PROPERTY_NAME,
+            tableCellModifier.initModifier(uiToolkit, new String[] { "image", IFormulaTestInputValue.PROPERTY_NAME, //$NON-NLS-1$
                     IFormulaTestInputValue.PROPERTY_VALUE }, new ValueDatatype[] { null, null, ValueDatatype.STRING });
             tableCellModifier.addListener(this);
         }
@@ -438,12 +442,12 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             ml = formulaTestCase.validate();
             // don't calculate preview if there are messages, e.g. warnings because of missing values
             if (ml.getNoOfMessages() > 0) {
-                showFormulaResult("Object is not not valid.");
+                showFormulaResult(Messages.FormulaTestInputValuesControl_Result_ObjectIsNotValid);
                 return null;
             }
             Object result = formulaTestCase.execute();
             lastCalculatedResult = result;
-            showFormulaResult(""+result);
+            showFormulaResult(""+result); //$NON-NLS-1$
             if (storeExpectedResult){
                 formulaTestCase.setExpectedResult(result==null?null:result.toString());
             }

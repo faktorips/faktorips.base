@@ -242,4 +242,8 @@ public class Messages extends NLS {
 
     public static String ProductCmptPropertiesPage_pageTitle;
 
+    public static String FormulaTestInputValuesControl_ButtonLabel_Calculate;
+
+    public static String FormulaTestInputValuesControl_Result_ObjectIsNotValid;
+
 }
