@@ -122,7 +122,7 @@ public class Messages extends NLS {
     public static String TblStructureUsageSection_Title;
     public static String TblsStructureUsageEditDialog_Title;
     public static String TblsStructureUsageEditDialog_TabTitle_General;
-    public static String TblsStructureUsageEditDialog_TabTitle_TableStructure;
+    public static String TblsStructureUsageEditDialog_GroupTitle_TableStructure;
     public static String TblsStructureUsageEditDialog_TableColumn_TableStructure;
     public static String TblsStructureUsageEditDialog_Button_Add;
     public static String TblsStructureUsageEditDialog_Button_Remove;

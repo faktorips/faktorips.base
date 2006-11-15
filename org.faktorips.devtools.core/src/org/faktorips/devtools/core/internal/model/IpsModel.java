@@ -700,11 +700,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IpsArtefactBuilderSetInfo[] infos = getIpsArtefactBuilderSetInfos();
         for (int i = 0; i < infos.length; i++) {
             try {
-                IIpsArtefactBuilderSet builderSet = (IIpsArtefactBuilderSet)infos[i].getBuilderSetClass().newInstance();
-                builderSet.setId(infos[i].getBuilderSetId());
-                builderSet.setLabel(infos[i].getBuilderSetLabel());
-                return builderSet;
-                
+                if (infos[i].getBuilderSetId().equals(builderSetId)){
+                    IIpsArtefactBuilderSet builderSet = (IIpsArtefactBuilderSet)infos[i].getBuilderSetClass().newInstance();
+                    builderSet.setId(infos[i].getBuilderSetId());
+                    builderSet.setLabel(infos[i].getBuilderSetLabel());
+                    return builderSet;
+                }
             } catch(ClassCastException e){
                 IpsPlugin.log(new IpsStatus("The registered builder set " + infos[i].getBuilderSetClass() + 
                         " doesn't implement the " + IIpsArtefactBuilderSet.class + " interface.", e));

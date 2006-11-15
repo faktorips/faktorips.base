@@ -25,6 +25,8 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -42,6 +44,7 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
+import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
@@ -49,6 +52,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.DefaultIdentifierResolver;
 import org.faktorips.fl.ExcelFunctionsResolver;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
@@ -77,6 +81,11 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     
 	private boolean deleted = false;
 
+    // the cached formula identifier if the config item is from type formula
+    private String[] identifierInFormulaCached;
+    // the previous formula value will be used if the cache isvalid or needs to be refreshed
+    private String previousFormulaValue;
+    
 	public ConfigElement(ProductCmptGeneration parent, int id) {
 		super(parent, id);
 		valueSet = new AllValuesValueSet(this, getNextPartId());
@@ -192,7 +201,13 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     public ExprCompiler getExprCompiler() throws CoreException {
         ExprCompiler compiler = new ExprCompiler();
         compiler.add(new ExcelFunctionsResolver(getIpsProject().getExpressionLanguageFunctionsLanguage()));
-        compiler.add(new TableFunctionsResolver(getIpsProject()));
+        
+        // add the table functions based on the table usages defined in the product cmpt type
+        IProductCmptGeneration gen = getProductCmptGeneration();
+        if (gen != null){
+            compiler.add(new TableUsageFunctionsResolver(getIpsProject(), gen.getTableContentUsages()));
+        }
+        
         IIpsArtefactBuilderSet builderSet = getIpsProject().getIpsArtefactBuilderSet();
         IAttribute a = findPcTypeAttribute();
         if (a == null) {
@@ -567,9 +582,60 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             return new String[0];
         }
         
+        // return the cached identifier if exists and up to date
+        if (identifierInFormulaCached != null && previousFormulaValue != null && previousFormulaValue.equals(value)){
+            // not changes in the formula return the previous evaluated identifiers
+            return identifierInFormulaCached;
+        }
+        
         ExprCompiler compiler = getExprCompiler();
+        // if the default identifier is used, register the param identifier in default way
+        //   otherwise the expr compiler from the bulder will be used
+        if (compiler.getIdentifierResolver() instanceof DefaultIdentifierResolver){
+            registerParamIndentifers(compiler, attribute);
+        }
+        
         CompilationResult compilationResult = compiler.compile(value);
-        String[] identifiers =  compilationResult.getIdentifiersUsed();
-        return identifiers;
+        // store identifiers in the cache
+        identifierInFormulaCached = compilationResult.getIdentifiersUsed();
+        previousFormulaValue = getValue();
+        return identifierInFormulaCached;
     }
+    
+    /*
+     * Adds the default identifier resolver
+     */
+    private void registerParamIndentifers(ExprCompiler compiler, IAttribute attribute) throws CoreException {
+        DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
+        compiler.setIdentifierResolver(resolver);
+        Parameter[] params = attribute.getFormulaParameters();
+        for (int i = 0; i < params.length; i++) {
+            // get the datatype and the helper for generating the code fragment of the formula
+            String datatypeName = params[i].getDatatype();
+            Datatype datatype = getIpsProject().findDatatype(datatypeName);
+            if (datatype instanceof IPolicyCmptType) {
+                // if the datatype specifies a policy cmpt type add all identifiets of all
+                // attributes
+                IPolicyCmptType pcType = (IPolicyCmptType)datatype;
+                IAttribute[] attributes = pcType.getAttributes();
+                for (int j = 0; j < attributes.length; j++) {
+                    Datatype attrDatatype = attributes[j].findDatatype();
+                    if (attrDatatype == null) {
+                        throw new CoreException(new IpsStatus(NLS.bind(
+                                Messages.FormulaTestCase_CoreException_DatatypeNotFoundOrWrongConfigured, attributes[j],
+                                pcType.getQualifiedName() + "." + attributes[j].getName()))); //$NON-NLS-1$
+                    }
+                    resolver.register(params[i].getName() + "." + attributes[j].getName(), new JavaCodeFragment(), attrDatatype); //$NON-NLS-1$
+                }
+            } else {
+                DatatypeHelper dataTypeHelper = getIpsProject().findDatatypeHelper(datatypeName);
+                if (dataTypeHelper == null) {
+                    throw new CoreException(new IpsStatus(NLS.bind(
+                            Messages.FormulaTestCase_CoreException_DatatypeNotFoundOrWrongConfigured, datatypeName,
+                            params[i].getName())));
+                }
+                resolver.register(params[i].getName(), dataTypeHelper.nullExpression(), dataTypeHelper.getDatatype());
+            }
+        }
+    }    
 }

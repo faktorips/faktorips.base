@@ -29,13 +29,16 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.product.TableFunctionsResolver;
+import org.faktorips.devtools.core.internal.model.product.TableUsageFunctionsResolver;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -47,12 +50,14 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
 
 	private FormulaCompletionProcessor processor;
 	private IpsProject ipsProject;
+	private PolicyCmptType cmptType;
 	private ExprCompiler compiler;
+    
     
 	public void setUp() throws Exception{
 		super.setUp();
 		ipsProject = (IpsProject)newIpsProject("TestProject");
-		PolicyCmptType cmptType = newPolicyCmptType(ipsProject.getIpsPackageFragmentRoots()[0], "TestPolicy");
+		cmptType = newPolicyCmptType(ipsProject.getIpsPackageFragmentRoots()[0], "TestPolicy");
 		newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
 		IAttribute attr = cmptType.newAttribute();
 		attr.setAttributeType(AttributeType.CHANGEABLE);
@@ -103,10 +108,21 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         tableContents.setTableStructure(table.getQualifiedName());
         tableContents.newGeneration((GregorianCalendar)GregorianCalendar.getInstance());
         
-        compiler.add(new TableFunctionsResolver(ipsProject));
+        // create the table usage which will be used to resolve the available formula table access functions
+        IProductCmpt product = newProductCmpt(ipsProject, "Product");
+        product.setPolicyCmptType(cmptType.getQualifiedName());
+        IProductCmptGeneration gen = (IProductCmptGeneration)product.newGeneration();
+        ITableContentUsage tableContentUsage = gen.newTableContentUsage();
+        tableContentUsage.setTableContentName(tableContents.getQualifiedName());
+        tableContentUsage.setStructureUsage("ratePlan");
         
+        compiler.add(new TableUsageFunctionsResolver(ipsProject, new ITableContentUsage[]{tableContentUsage}));
+
         ArrayList results = new ArrayList();
         processor.doComputeCompletionProposals("TestTable_", 0, results);
+        assertEquals(0, results.size());
+
+        processor.doComputeCompletionProposals("ra", 0, results);
         assertEquals(1, results.size());
     }
     
@@ -123,18 +139,27 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         IUniqueKey tableKey = table.newUniqueKey();
         tableKey.addKeyItem("second");
         
-        compiler.add(new TableFunctionsResolver(ipsProject));
+        ITableContents tableContents = (ITableContents)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_CONTENTS, "Testtable");
+        tableContents.setTableStructure(table.getQualifiedName());
+        tableContents.newGeneration((GregorianCalendar)GregorianCalendar.getInstance());
+        
+        // create the table usage which will be used to resolve the available formula table access functions
+        IProductCmpt product = newProductCmpt(ipsProject, "Product");
+        product.setPolicyCmptType(cmptType.getQualifiedName());
+        IProductCmptGeneration gen = (IProductCmptGeneration)product.newGeneration();
+        ITableContentUsage tableContentUsage = gen.newTableContentUsage();
+        tableContentUsage.setTableContentName(tableContents.getQualifiedName());
+        tableContentUsage.setStructureUsage("ratePlan");
+        
+        compiler.add(new TableUsageFunctionsResolver(ipsProject, new ITableContentUsage[]{tableContentUsage}));
         
         //there needs to be a table content available for the structure otherwise no completion is proposed
         ArrayList results = new ArrayList();
-        processor.doComputeCompletionProposals("Testt", 0, results);
+        processor.doComputeCompletionProposals("TestT", 0, results);
         assertEquals(0, results.size());
         
-        ITableContents tableContents = (ITableContents)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_CONTENTS, "TestTable_2006-07-19");
-        tableContents.setTableStructure(table.getQualifiedName());
-        tableContents.newGeneration((GregorianCalendar)GregorianCalendar.getInstance());
-
-        processor.doComputeCompletionProposals("TestT", 0, results);
+        results.clear();
+        processor.doComputeCompletionProposals("ratePlan", 0, results);
         assertEquals(1, results.size());
     }
     

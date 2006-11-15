@@ -36,6 +36,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -103,25 +104,29 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog{
         TabItem page = new TabItem(folder, SWT.NONE);
         page.setText(Messages.TblsStructureUsageEditDialog_TabTitle_General);
         page.setControl(createGeneralPage(folder));
-        
-        page = new TabItem(folder, SWT.NONE);
-        page.setText(Messages.TblsStructureUsageEditDialog_TabTitle_TableStructure);
-        page.setControl(createTableStructurePage(folder));
-        
+
         createDescriptionTabItem(folder);
         
         nameField.getControl().setFocus();
         nameField.addChangeListener(new ValueChangeListener() {
             public void valueChanged(FieldValueChangedEvent e) {
-                updateTitleInTitleArea();
+                if (!getShell().isDisposed()) {
+                    getShell().getDisplay().asyncExec(new Runnable() {
+                        public void run() {
+                            if (getShell().isDisposed())
+                                return;
+                            updateTitleInTitleArea();
+                        }
+                    });
+                }
             }
         });
-        
+
         return folder;
     }
 
-    private Control createTableStructurePage(TabFolder folder) {
-        Composite composite = uiToolkit.createGridComposite(folder, 2, false, true);
+    private Control createTableStructureComposite(Composite cmp) {
+        Composite composite = uiToolkit.createGridComposite(cmp, 2, false, true);
 
         createTable(composite);
         createButtons(composite);
@@ -151,6 +156,8 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog{
                 updateButtonsEnabledState();
             }
         });
+        
+        
         
         repackTable(viewer);
     }
@@ -288,6 +295,11 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog{
         
         nameField = new TextField(nameText);
         mandatoryTableContentField = new CheckboxField(mandatoryTableContent);
+
+        uiToolkit.createVerticalSpacer(c, 10);
+        
+        Group grp = uiToolkit.createGridGroup(c, Messages.TblsStructureUsageEditDialog_GroupTitle_TableStructure, 1, true);
+        createTableStructureComposite(grp);
         
         return c;
     }

@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.util.LocalizedStringsSet;
@@ -123,7 +124,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
            generateMethodGetRangeFor(a, datatypeHelper, methodsBuilder);
        }
     }
-    
+
     /**
      * Code sample:
      * <pre>
@@ -438,4 +439,12 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
                 new String[]{"businessFunction"}, new String[]{String.class.getName()});
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForTableUsage(ITableStructureUsage tsu,
+            JavaCodeFragmentBuilder fieldsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        // nothing to do, table usage methods are not published.
+    }    
 }

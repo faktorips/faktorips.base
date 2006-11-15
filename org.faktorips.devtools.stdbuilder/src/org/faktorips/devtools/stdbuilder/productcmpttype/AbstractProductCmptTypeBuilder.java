@@ -42,6 +42,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -152,6 +153,8 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
         JavaCodeFragmentBuilder fieldCodeBuilder = new JavaCodeFragmentBuilder();
         JavaCodeFragmentBuilder methodCodeBuilder = new JavaCodeFragmentBuilder();
 
+        generateCodeForTableUsages(fieldCodeBuilder, methodCodeBuilder);
+        
         generateCodeForAttributes(fieldCodeBuilder, methodCodeBuilder);
         generateCodeForRelations(fieldCodeBuilder, methodCodeBuilder);
         generateOtherCode(fieldCodeBuilder, methodCodeBuilder);
@@ -228,6 +231,17 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
         }
     }
 
+    /*
+     * Loops over all table structure usages and generates code for the table content access method.
+     */
+    private void generateCodeForTableUsages(JavaCodeFragmentBuilder fieldCodeBuilder,
+            JavaCodeFragmentBuilder methodCodeBuilder) throws CoreException {
+        ITableStructureUsage[] tsus = getProductCmptType().getTableStructureUsages();
+        for (int i = 0; i < tsus.length; i++) {
+            generateCodeForTableUsage(tsus[i], fieldCodeBuilder, methodCodeBuilder);
+        }
+    }
+    
     /**
      * This method is called from the build attributes method if the attribute is valid and
      * therefore code can be generated.
@@ -273,6 +287,10 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
             JavaCodeFragmentBuilder fieldsBuilder, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
+    protected abstract void generateCodeForTableUsage(ITableStructureUsage tsu,
+            JavaCodeFragmentBuilder fieldsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
+    
     /*
      * Loops over the relations and generates code for a relation if it is valid.
      * Takes care of proper exception handling.

@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.util.LocalizedStringsSet;
@@ -250,5 +251,12 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
         // nothing to do
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForTableUsage(ITableStructureUsage tsu,
+            JavaCodeFragmentBuilder fieldsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        // nothing to do
+    }
 }

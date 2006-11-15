@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.fl.DefaultIdentifierResolver;
 import org.faktorips.fl.ExcelFunctionsResolver;
 import org.faktorips.fl.ExprCompiler;
@@ -165,8 +166,13 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     private ExprCompiler getPreviewExprCompiler() throws CoreException {
         ExprCompiler compiler = new ExprCompiler();
         compiler.add(new ExcelFunctionsResolver(getIpsProject().getExpressionLanguageFunctionsLanguage()));
-        compiler.add(new TableFunctionsFormulaTestResolver(getIpsProject(), this));
-
+        
+        // add the table functions based on the table usages defined in the product cmpt type
+        IProductCmptGeneration gen = ((ConfigElement)getParent()).getProductCmptGeneration();
+        if (gen != null) {
+            compiler.add(new TableFunctionsFormulaTestResolver(getIpsProject(), gen.getTableContentUsages(), this));
+        }
+        
         IFormulaTestInputValue[] input = getFormulaTestInputValues();
         if (input.length == 0){
             return compiler;

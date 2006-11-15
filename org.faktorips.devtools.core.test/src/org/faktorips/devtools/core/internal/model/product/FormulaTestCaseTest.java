@@ -35,6 +35,9 @@ import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
@@ -105,7 +108,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
     }
     
     public void testExecuteFormulaOnlyParam() throws Exception{
-        createDefaultPolicyCmpts();
+        createDefaultPolicyCmptsAndTblUsage();
         
         configElement.setValue("param1 * param2 * 2 * policyInputX.attributeInput");
         
@@ -128,45 +131,48 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
     }
 
     public void testExecuteWithFunctionAndSimpleTable() throws Exception{
-        createDefaultPolicyCmpts();
+        createDefaultPolicyCmptsAndTblUsage();
         
         // create table
-        ITableStructure table = (ITableStructure)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_STRUCTURE, "Testtable");
+        ITableStructure table = (ITableStructure)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0],
+                IpsObjectType.TABLE_STRUCTURE, "Testtable");
         table.setTableStructureType(TableStructureType.SINGLE_CONTENT);
-        IColumn column =table.newColumn();
+        IColumn column = table.newColumn();
         column.setName("key");
         column.setDatatype("Integer");
-        column =table.newColumn();
+        column = table.newColumn();
         column.setName("value");
         column.setDatatype("Decimal");
         IUniqueKey tableKey = table.newUniqueKey();
         tableKey.addKeyItem("key");
-        ITableContents tableContents = (ITableContents)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_CONTENTS, "TestTable");
+        ITableContents tableContents = (ITableContents)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0],
+                IpsObjectType.TABLE_CONTENTS, "TestTable");
         tableContents.setTableStructure(table.getQualifiedName());
         tableContents.newColumn("");
         tableContents.newColumn("0");
-        ITableContentsGeneration tcg = (ITableContentsGeneration) tableContents.newGeneration((GregorianCalendar)GregorianCalendar.getInstance());
+        ITableContentsGeneration tcg = (ITableContentsGeneration)tableContents
+                .newGeneration((GregorianCalendar)GregorianCalendar.getInstance());
         IRow row = tcg.newRow();
-        row.setValue(0,"0");
+        row.setValue(0, "0");
         row.setValue(1, "1.2");
 
         IFormulaTestInputValue formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
         formulaTestInputValue.setIdentifier("param1");
         formulaTestInputValue.setValue("0");
         
-        configElement.setValue("1 + TestTable.value(param1)");
+        configElement.setValue("1 + RatePlan.value(param1)");
         Object result = formulaTestCase.execute();
         assertEquals(Decimal.valueOf("2.2"), result);
         
         // Decimal add if result is Integer
         formulaTestInputValue.setValue("101");
-        configElement.setValue("WENN(ISTLEER(TestTable.value(param1));1;TestTable.value(param1)) +  100");
+        configElement.setValue("WENN(ISTLEER(RatePlan.value(param1));1;RatePlan.value(param1)) +  100");
         result = formulaTestCase.execute();
         assertEquals(Decimal.valueOf("101"), result);
     }
     
     public void testExecuteWithFunctionAndTableTwoKeys() throws Exception{
-        createDefaultPolicyCmpts();
+        createDefaultPolicyCmptsAndTblUsage();
         
         // create table
         ITableStructure table = (ITableStructure)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_STRUCTURE, "Testtable");
@@ -208,13 +214,18 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         formulaTestInputValue.setIdentifier("param1");
         formulaTestInputValue.setValue("0");
         
-        configElement.setValue("TestTable.value(param1; \"001\") + 1");
+        configElement.setValue("RatePlan.value(param1; \"001\") + 1");
         Object result = formulaTestCase.execute();
         assertEquals(Decimal.valueOf("2.1"), result);
         
-        configElement.setValue("TestTable.value(param1; \"002\") + 1");
+        configElement.setValue("RatePlan.value(param1; \"002\") + 1");
         result = formulaTestCase.execute();
         assertEquals(Decimal.valueOf("3.2"), result);
+        
+        // optional test to check the identifer inside a table access method
+        String[] identifiers = ((IConfigElement)formulaTestCase.getParent()).getIdentifierUsedInFormula(); 
+        assertEquals(1, identifiers.length);
+        assertEquals("param1", identifiers[0]);
     }    
     
     public void testAddOrDeleteFormulaTestInputValues(){
@@ -302,7 +313,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IFormulaTestCase.MSGCODE_DUPLICATE_NAME));
     }
     
-    private void createDefaultPolicyCmpts() throws CoreException{
+    private void createDefaultPolicyCmptsAndTblUsage() throws CoreException{
         IPolicyCmptType pcTypeInput = newPolicyCmptType(ipsProject, "policyCmptTypeInput");
         IAttribute attributeInput = pcTypeInput.newAttribute();
         attributeInput.setName("attributeInput");
@@ -323,6 +334,15 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         
         ((IProductCmptGeneration)configElement.getParent()).getProductCmpt().setPolicyCmptType(pcType.getQualifiedName());
         configElement.setType(ConfigElementType.FORMULA);
-        configElement.setPcTypeAttribute(attribute.getName());        
+        configElement.setPcTypeAttribute(attribute.getName());   
+        
+        // create the usage for the used table content
+        IProductCmptType pct = configElement.getProductCmpt().findProductCmptType();
+        ITableStructureUsage tsu = pct.newTableStructureUsage();
+        tsu.setRoleName("ratePlan");
+        tsu.addTableStructure("Testtable");
+        IProductCmptGeneration pgen = configElement.getProductCmptGeneration();
+        ITableContentUsage tcu = pgen.newTableContentUsage();
+        tcu.setTableContentName("Testtable");
     }    
 }

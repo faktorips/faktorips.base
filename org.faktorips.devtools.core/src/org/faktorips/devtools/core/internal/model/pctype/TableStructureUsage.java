@@ -65,7 +65,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
 
         private boolean deleted = false;
         
-        private String tableStructure = "";
+        private String tableStructure = ""; //$NON-NLS-1$
         
         public TableStructureReference(ITableStructureUsage tableStructureUsage, int id) {
             super(tableStructureUsage, id);
@@ -105,7 +105,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
          * {@inheritDoc}
          */
         public Image getImage() {
-            return IpsPlugin.getDefault().getImage("TableStructure.gif");
+            return IpsPlugin.getDefault().getImage("TableStructure.gif"); //$NON-NLS-1$
         }
         
         /**
@@ -136,6 +136,18 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
          */
         public void setTableStructure(String tableStructure) {
             this.tableStructure = tableStructure;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected void validateThis(MessageList list) throws CoreException {
+            super.validateThis(list);
+            if (getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, getTableStructure()) == null){
+                String text = NLS.bind(Messages.TableStructureUsage_msgTableStructureNotExists, getTableStructure());
+                Message msg = new Message(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND, text, Message.ERROR, this);
+                list.add(msg);
+            }
         }
     }
     
@@ -236,11 +248,11 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         roleName = element.getAttribute(PROPERTY_ROLENAME);
-        String madatoryTableContentString = element.getAttribute(PROPERTY_MANDATORY_TABLE_CONTENT);
-        if (StringUtils.isNotEmpty(madatoryTableContentString)) {
-            mandatoryTableContent = madatoryTableContentString.equalsIgnoreCase("yes") ? true : //$NON-NLS-1$
-                                    madatoryTableContentString.equalsIgnoreCase("true") ? true : //$NON-NLS-1$
-                                    madatoryTableContentString.equalsIgnoreCase("1") ? true : false; //$NON-NLS-1$
+        String mandatoryTableContentString = element.getAttribute(PROPERTY_MANDATORY_TABLE_CONTENT);
+        if (StringUtils.isNotEmpty(mandatoryTableContentString)) {
+            mandatoryTableContent = mandatoryTableContentString.equalsIgnoreCase("yes") ? true : //$NON-NLS-1$
+                                    mandatoryTableContentString.equalsIgnoreCase("true") ? true : //$NON-NLS-1$
+                                    mandatoryTableContentString.equalsIgnoreCase("1") ? true : false; //$NON-NLS-1$
         } else {
             mandatoryTableContent = false;
         }        
@@ -310,7 +322,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
      * {@inheritDoc}
      */
     public void addTableStructure(String tableStructure) {
-        if (getTableStructureAssignment(tableStructure) != null){
+        if (getTableStructureReference(tableStructure) != null){
             // the table structure is already assign, do nothing
             return;
         }
@@ -338,7 +350,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
      * {@inheritDoc}
      */
     public void removeTableStructure(String tableStructure) {
-        TableStructureReference toBeDeleted = getTableStructureAssignment(tableStructure);
+        TableStructureReference toBeDeleted = getTableStructureReference(tableStructure);
         if (toBeDeleted != null){
             tableStructures.remove(toBeDeleted);
             objectHasChanged();
@@ -349,10 +361,10 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
      * Returns the table structure assignment object by the given name, if there is not table
      * structure assignet return <code>null</code>
      */
-    private TableStructureReference getTableStructureAssignment(String tableStructure) {
+    private TableStructureReference getTableStructureReference(String tableStructure) {
         for (Iterator iter = tableStructures.iterator(); iter.hasNext();) {
             TableStructureReference tsr = (TableStructureReference)iter.next();
-            if (StringUtils.isNotEmpty(tsr.getTableStructure()) && tsr.getTableStructure().equals(tableStructure)) {
+            if (tsr.getTableStructure() != null && tsr.getTableStructure().equals(tableStructure)) {
                 return tsr;
             }
         }
@@ -381,17 +393,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
      */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
-        
-        // check that each referenced table structure exists
-        for (Iterator iter = tableStructures.iterator(); iter.hasNext();) {
-            TableStructureReference tsr = (TableStructureReference)iter.next();
-            if (getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, tsr.getTableStructure()) == null){
-                String text = NLS.bind(Messages.TableStructureUsage_msgTableStructureNotExists, tsr.getTableStructure());
-                Message msg = new Message(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND, text, Message.ERROR, this);
-                list.add(msg);
-            }
-        }
-        
+                
         // check the correct name format
         IStatus status = JavaConventions.validateFieldName(roleName);
         if (!status.isOK()){

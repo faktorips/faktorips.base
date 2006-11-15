@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ConversionMatrix;
 import org.faktorips.datatype.Datatype;
@@ -35,29 +36,29 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 
 /**
- * @deprecated
- * @see org.faktorips.devtools.core.internal.model.product.TableUsageAccessFunctionFlFunctionAdapter
- * 
  * An adapter that adapts a table access function to the FlFunction interfaces.
  * 
  * @author Jan Ortmann, Peter Erzberger
  */
-public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
+public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
 
     private ITableAccessFunction fct;
     private ExprCompiler compiler;
     private ITableContents tableContents;
+    private String roleName;
 
     /**
      * @param tableContents can be null. This indicates that it is a table access function for a table that doesn't allow multiple
      * 						contents
      * @param fct the table access function
      */
-    public TableAccessFunctionFlFunctionAdapter(ITableContents tableContents, ITableAccessFunction fct) {
+    public TableUsageAccessFunctionFlFunctionAdapter(ITableContents tableContents, ITableAccessFunction fct, String roleName) {
         ArgumentCheck.notNull(fct);
         ArgumentCheck.notNull(tableContents);
+        ArgumentCheck.notNull(roleName);
         this.fct = fct;
         this.tableContents = tableContents;
+        this.roleName = roleName;
     }
 
     /**
@@ -103,7 +104,7 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
     }
 
     public String getName() {
-		return tableContents.getName() + "." + fct.getAccessedColumn(); //$NON-NLS-1$
+		return StringUtils.capitalise(roleName) + "." + fct.getAccessedColumn(); //$NON-NLS-1$
     }
 
     public Datatype[] getArgTypes() {

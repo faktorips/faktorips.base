@@ -32,6 +32,10 @@ import org.faktorips.fl.FlFunction;
 import org.faktorips.fl.FunctionResolver;
 import org.faktorips.util.ArgumentCheck;
 
+/**
+ * @deprecated
+ * @see org.faktorips.devtools.core.internal.model.product.TableUsageFunctionsResolver
+ */
 public class TableFunctionsResolver implements FunctionResolver {
 
     private IIpsProject project;

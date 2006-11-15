@@ -140,6 +140,13 @@ public class TableContentUsage extends IpsObjectPart implements ITableContentUsa
     /**
      * {@inheritDoc}
      */
+    public ITableContents findTableContents() throws CoreException {
+        return (ITableContents)getIpsProject().findIpsObject(IpsObjectType.TABLE_CONTENTS, tableContentName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
         IProductCmptType type = getProductCmptType();
@@ -157,7 +164,7 @@ public class TableContentUsage extends IpsObjectPart implements ITableContentUsa
         
         ITableContents content = null;
         if (tableContentName != null) {
-            content = (ITableContents)getIpsProject().findIpsObject(IpsObjectType.TABLE_CONTENTS, tableContentName);
+            content = findTableContents();
         }
         if (content == null) {
             String text = Messages.bind(Messages.TableContentUsage_msgUnknownTableContent, tableContentName);

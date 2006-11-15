@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -44,9 +45,13 @@ import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.runtime.FormulaExecutionException;
+import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.internal.EnumValues;
 import org.faktorips.runtime.internal.MethodNames;
@@ -67,13 +72,17 @@ import org.w3c.dom.Element;
  * @author Jan Ortmann
  */
 public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuilder{
-
+    
+    // property key for the constructor's Javadoc.
+    private final static String GET_TABLE_USAGE_METHOD_JAVADOC = "GET_TABLE_USAGE_METHOD_JAVADOC";
+    
     public static final String XML_ATTRIBUTE_TARGET_RUNTIME_ID = "targetRuntimeId";
     
     private ProductCmptGenInterfaceBuilder interfaceBuilder;
     private ProductCmptImplClassBuilder productCmptTypeImplCuBuilder;
     private ProductCmptInterfaceBuilder productCmptTypeInterfaceBuilder;
     private PolicyCmptImplClassBuilder policyCmptTypeImplBuilder;
+    private TableImplBuilder tableImplBuilder;
     
     public ProductCmptGenImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(ProductCmptGenImplClassBuilder.class));
@@ -96,6 +105,10 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     
     public void setProductCmptTypeInterfaceBuilder(ProductCmptInterfaceBuilder builder) {
         this.productCmptTypeInterfaceBuilder = builder;
+    }
+
+    public void setTableImplBuilder(TableImplBuilder tableImplBuilder) {
+        this.tableImplBuilder = tableImplBuilder;
     }
 
     /**
@@ -179,6 +192,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         
         generateMethodDoInitPropertiesFromXml(methodsBuilder);
         generateMethodDoInitReferencesFromXml(methodsBuilder);
+        generateMethodDoInitTableUsagesFromXml(methodsBuilder);
     }
     
     private void generateMethodDoInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
@@ -372,6 +386,88 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         builder.methodEnd();
     }
 
+    private void generateMethodDoInitTableUsagesFromXml(JavaCodeFragmentBuilder builder) {
+        String javaDoc = null;
+        builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
+        String[] argNames = new String[]{"tableUsageMap"};
+        String[] argTypes = new String[]{Map.class.getName()};
+        builder.methodBegin(Modifier.PROTECTED, "void", "doInitTableUsagesFromXml", argNames, argTypes);
+        builder.appendln("super.doInitTableUsagesFromXml(tableUsageMap);");
+        builder.appendClassName(Element.class);
+        builder.appendln(" element = null;");
+        ITableStructureUsage[] tsus = getProductCmptType().getTableStructureUsages();
+        for (int i = 0; i < tsus.length; i++) {
+            builder.append(" element = (");
+            builder.appendClassName(Element.class);
+            builder.append(") tableUsageMap.get(\"");
+            builder.append(tsus[i].getRoleName());
+            builder.appendln("\");");
+            builder.appendln("if (element != null){");
+            builder.append(getTableStructureUsageRoleName(tsus[i]));
+            builder.appendln(" = ");
+            builder.appendClassName(ValueToXmlHelper.class);
+            builder.append(".getValueFromElement(element, \"TableContentName\");");
+            builder.appendln("};");
+        }
+        builder.appendln("};");
+    }
+    
+    /*
+     * Generates the method to return the table content which is related to the specific role.<br>
+     * Example:
+     * <code>
+     *   public FtTable getRatePlan() {
+     *      if (ratePlanName == null) {
+     *          return null;
+     *      }
+     *      return (FtTable)getRepository().getTable(ratePlanName);
+     *  }
+     * <code>
+     */
+    private void generateMethodGetTableStructure(ITableStructureUsage tsu, JavaCodeFragmentBuilder codeBuilder)
+            throws CoreException {
+        // generate the method to return the corresponding table content
+        String methodName = getMethodNameGetTableUsage(tsu);
+        String[] tss = tsu.getTableStructures();
+        // get the class name of the instance which will be returned,
+        // if the usage contains only one table structure then the returned class will be the
+        // generated class of this table structure, otherwise the return class will be the ITable interface class
+        String tableStructureClassName = "";
+        if (tss.length == 1) {
+            tableStructureClassName = tss[0];
+            ITableStructure ts = (ITableStructure) getProductCmptType().getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, tableStructureClassName);
+            tableStructureClassName = tableImplBuilder.getQualifiedClassName(ts.getIpsSrcFile());
+        } else if (tss.length > 1) {
+            tableStructureClassName = ITable.class.getName();
+        } else {
+            // if no table structure is related, do nothing, this is a validation error
+            return;
+        }
+
+        String javaDoc = getLocalizedText(getIpsSrcFile(), GET_TABLE_USAGE_METHOD_JAVADOC, tsu.getRoleName());
+        String roleName = getTableStructureUsageRoleName(tsu);
+        JavaCodeFragment body = new JavaCodeFragment();
+        body.append("if (");
+        body.append(roleName);
+        body.appendln(" == null){");
+        body.appendln("return null;");
+        body.appendln("}");
+        body.append("return ");
+        body.append("(");
+        body.appendClassName(tableStructureClassName);
+        body.append(")");
+        body.append(MethodNames.GET_REPOSITORY);
+        body.append("().getTable(");
+        body.append(roleName);
+        body.appendln(");");
+        codeBuilder.method(Modifier.PUBLIC, tableStructureClassName, methodName, new String[0], new String[0], body,
+                javaDoc, ANNOTATION_GENERATED);
+    }
+
+    private String getMethodNameGetTableUsage(ITableStructureUsage tsu) {
+        return "get" + StringUtils.capitalise(tsu.getRoleName());
+    }
+    
     protected void generateCodeForChangeableAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         generateFieldDefaultValue(a, datatypeHelper, memberVarsBuilder);
         generateMethodGetDefaultValue(a, datatypeHelper, methodsBuilder);
@@ -547,6 +643,26 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         return getLocalizedText(a, "METHOD_COMPUTE_VALUE_NAME", StringUtils.capitalise(a.getName()));
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForTableUsage(ITableStructureUsage tsu,
+            JavaCodeFragmentBuilder fieldsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        // generate the code for the fields role name which will be initialized with the related
+        // table content qualified name
+        appendLocalizedJavaDoc("FIELD_TABLE_USAGE", tsu.getRoleName(), tsu, fieldsBuilder);
+        JavaCodeFragment expression = new JavaCodeFragment("null");
+        fieldsBuilder.varDeclaration(Modifier.PROTECTED, String.class, getTableStructureUsageRoleName(tsu), expression);
+        // generate the code for the table getter methods
+        generateMethodGetTableStructure(tsu, methodsBuilder);
+    }
+
+    public String getTableStructureUsageRoleName(ITableStructureUsage tsu){
+        return tsu.getRoleName() + "Name";
+    }
+    
     /**
      * {@inheritDoc}
      */

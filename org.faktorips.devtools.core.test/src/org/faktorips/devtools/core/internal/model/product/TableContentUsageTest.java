@@ -94,6 +94,11 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_INVALID_TABLE_CONTENT));
     }
     
-    
-   
+    public void testFindTableContents() throws Exception{
+        contentUsage.setTableContentName("none");
+        assertNull(contentUsage.findTableContents());
+        
+        contentUsage.setTableContentName(content.getQualifiedName());
+        assertSame(content, contentUsage.findTableContents());
+    }
 }

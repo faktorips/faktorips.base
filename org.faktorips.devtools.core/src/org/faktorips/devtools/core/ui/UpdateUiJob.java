@@ -50,16 +50,16 @@ public class UpdateUiJob {
     /*
      * UIJob to refresh the content of the tree.
      */
-    private class UpdateUIJob extends UIJob {
+    private class UpdateUIJobInternal extends UIJob {
         private boolean fRunning = true;
 
-        public UpdateUIJob(String name) {
+        public UpdateUIJobInternal(String name) {
             super(name);
             setSystem(true);
         }
 
         public IStatus runInUIThread(IProgressMonitor monitor) {
-            Object treeEntryObject = null;
+            Object object = null;
             synchronized (updateQueue) {
                 if (updateQueue.isEmpty() || display.isDisposed()) {
                     queueDrainRequestOutstanding = false;
@@ -67,15 +67,15 @@ public class UpdateUiJob {
                 }
                 if (queueDrainRequestOutstanding) {
                     if ((System.currentTimeMillis() - lastContentChange) > REFRESH_INTERVAL) {
-                        treeEntryObject = (Object)updateQueue.values().iterator().next();
-                        if (treeEntryObject != updateQueue.remove(treeEntryObject)) {
+                        object = (Object)updateQueue.values().iterator().next();
+                        if (object != updateQueue.remove(object)) {
                             // ignore entry which was not found in the update queue
-                            treeEntryObject = null;
+                            object = null;
                         }
                     }
                 }
             }
-            if (treeEntryObject != null) {
+            if (object != null) {
                 command.run();
             }
             schedule(REFRESH_INTERVAL / 2);
@@ -97,7 +97,7 @@ public class UpdateUiJob {
             if (!queueDrainRequestOutstanding) {
                 queueDrainRequestOutstanding = true;
                 if (!display.isDisposed()) {
-                    UpdateUIJob fUpdateJob = new UpdateUIJob("UI Update Job"); //$NON-NLS-1$
+                    UpdateUIJobInternal fUpdateJob = new UpdateUIJobInternal("UI Update Job"); //$NON-NLS-1$
                     fUpdateJob.schedule(REFRESH_INTERVAL);
                 }
             }

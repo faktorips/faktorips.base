@@ -17,7 +17,9 @@
 
 package org.faktorips.devtools.core.model.product;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 
 /**
  * 
@@ -79,5 +81,13 @@ public interface ITableContentUsage extends IIpsObjectPart {
      * @return The fully quallified name of the used table content.
      */
     public String getTableContentName();
+    
+    /**
+     * Returns the table contents which is releated or <code>null</code> if the table contents
+     * can't be found.
+     * 
+     * @throws CoreException if an erros occurs while searching for the table contents.
+     */
+    public ITableContents findTableContents() throws CoreException;
     
 }
