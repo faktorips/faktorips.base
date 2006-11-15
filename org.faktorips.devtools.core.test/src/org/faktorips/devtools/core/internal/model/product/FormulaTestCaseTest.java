@@ -146,7 +146,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         IUniqueKey tableKey = table.newUniqueKey();
         tableKey.addKeyItem("key");
         ITableContents tableContents = (ITableContents)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0],
-                IpsObjectType.TABLE_CONTENTS, "TestTable");
+                IpsObjectType.TABLE_CONTENTS, "Testtable");
         tableContents.setTableStructure(table.getQualifiedName());
         tableContents.newColumn("");
         tableContents.newColumn("0");
@@ -196,7 +196,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         // add dummy key to check the table access function
         IUniqueKey tableKey2 = table.newUniqueKey();
         tableKey2.addKeyItem("value");
-        ITableContents tableContents = (ITableContents)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_CONTENTS, "TestTable");
+        ITableContents tableContents = (ITableContents)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_CONTENTS, "Testtable");
         tableContents.setTableStructure(table.getQualifiedName());
         tableContents.newColumn("0");
         tableContents.newColumn("0");        
@@ -343,6 +343,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         tsu.addTableStructure("Testtable");
         IProductCmptGeneration pgen = configElement.getProductCmptGeneration();
         ITableContentUsage tcu = pgen.newTableContentUsage();
+        tcu.setStructureUsage(tsu.getRoleName());
         tcu.setTableContentName("Testtable");
     }    
 }
