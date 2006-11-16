@@ -17,11 +17,17 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import java.io.File;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.core.model.IIpsArchive;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -50,6 +56,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         newPolicyCmptType(project, "motor.collision.SimpleCollisionCoverage");
         newPolicyCmptType(project, "motor.collision.ExtendedCollisionCoverage");
         newPolicyCmptType(project, "home.base.HomePolicy");
+        
         archiveFile = project.getProject().getFile("test.ipsar");
         createArchive(project, archiveFile);
         archive = new IpsArchive(archiveFile);
@@ -62,7 +69,9 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         QualifiedNameType qnt = new QualifiedNameType("motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE);
         assertTrue(archive.contains(qnt));
 
-        motorPolicyType.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
+        motorPolicyType.getIpsSrcFile().getCorrespondingFile().delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, null);
+        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        
         createArchive(project, archiveFile);
         assertFalse(archive.contains(qnt));
     }
@@ -171,5 +180,27 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         
         qnt = new QualifiedNameType("MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE);
         assertNull(archive.getContent(qnt, "UTF-8"));
+    }
+    
+    public void testDuplicateEntryAndTestRefreshInWorkspace() throws Exception{
+        // store archive time to check if the refresh is successfull after re-creating the archive
+        long timeBefore = archiveFile.getLocalTimeStamp();
+        
+        // check if duplicate entries will be overriden in the archive, e.g. test case runtime xml's are generated 
+        // in the source and afterwards copied to the bin folder
+        newIpsObject(project, IpsObjectType.TEST_CASE, "test.testcase");
+
+        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        
+        File file = createFileIfNecessary(archiveFile);
+        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project, file);
+        op.setInclJavaBinaries(true);
+        op.setInclJavaSources(true);
+        ResourcesPlugin.getWorkspace().run(op, null);
+        createLinkIfNecessary(archiveFile, file);
+        // no exception test was successfull
+        
+        // check if the archive file was refreshed
+        assertFalse(timeBefore == archiveFile.getLocalTimeStamp());
     }
 }

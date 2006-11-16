@@ -112,4 +112,7 @@ public class Messages extends NLS {
     public static String IpsTestAction_RunMessageDialogNoTestsFound_Title;
     public static String IpsTestAction_RunMessageDialogNoTestsFound_Text;
     public static String NewIpsPacketAction_name;
+    public static String CreateIpsArchiveAction_Name;
+    public static String CreateIpsArchiveAction_Description;
+    public static String CreateIpsArchiveAction_Tooltip;
 }

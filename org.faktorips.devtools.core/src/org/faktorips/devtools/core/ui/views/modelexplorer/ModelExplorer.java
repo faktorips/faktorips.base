@@ -54,6 +54,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
 import org.faktorips.devtools.core.ui.actions.ExpandCollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.FindPolicyReferencesAction;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
@@ -406,6 +407,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             manager.add(new Separator());
             createTestCaseAction(manager, selected);
             createRefactorMenu(manager, selected);
+            createIpsArchiveAction(manager, selected);
             createAdditionalActions(manager, structuredSelection);
             manager.add(new Separator());
             createPropertiesActions(manager, selected);
@@ -515,6 +517,25 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             }
         }
 
+        private void createIpsArchiveAction(IMenuManager manager, Object selected) {
+            if (config.isAllowedIpsElementType(IIpsProject.class) || config.isAllowedIpsElementType(IIpsPackageFragmentRoot.class)) {
+                if (selected instanceof IIpsProject || selected instanceof IIpsPackageFragmentRoot) {
+                    if (selected instanceof IIpsPackageFragmentRoot){
+                        try {
+                            // don't enable menu for ips archives
+                            if (((IIpsPackageFragmentRoot)selected).getIpsArchive() != null){
+                               return;
+                            }
+                        }
+                        catch (CoreException e) {
+                            // ignore exception while creating the men
+                        }
+                    }
+                    manager.add(new CreateIpsArchiveAction(treeViewer));
+                }
+            }
+        }
+        
         protected void createRefactorMenu(IMenuManager manager, Object selected) {
             if (selected instanceof IIpsElement & !(selected instanceof IIpsProject) | selected instanceof IFile
                     | selected instanceof IFolder) {

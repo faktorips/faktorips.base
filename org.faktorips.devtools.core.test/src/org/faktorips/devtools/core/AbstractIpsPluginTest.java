@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -31,6 +32,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -113,13 +116,40 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	}
     
     protected void createArchive(IIpsProject projectToArchive, IFile archiveFile) throws Exception {
-        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(projectToArchive, archiveFile);
+        File file = createFileIfNecessary(archiveFile);
+        
+        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(projectToArchive, file);
         ResourcesPlugin.getWorkspace().run(op, null);
+        
+        createLinkIfNecessary(archiveFile, file);
+    }
+    
+    protected void createArchive(IIpsPackageFragmentRoot rootToArchive, IFile archiveFile) throws Exception {
+        File file = createFileIfNecessary(archiveFile);
+        
+        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(rootToArchive, file);
+        ResourcesPlugin.getWorkspace().run(op, null);
+        
+        createLinkIfNecessary(archiveFile, file);        
     }
 
-    protected void createArchive(IIpsPackageFragmentRoot rootToArchive, IFile archiveFile) throws Exception {
-        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(rootToArchive, archiveFile);
-        ResourcesPlugin.getWorkspace().run(op, null);
+    /*
+     * Creates a links to the given file in the workspace.
+     */
+    protected void createLinkIfNecessary(IFile archiveFile, File file) throws CoreException {
+        if (! archiveFile.isLinked() && ! archiveFile.exists()){
+            archiveFile.createLink(new Path(file.getAbsolutePath()), 0, new NullProgressMonitor());
+        }
+    }
+
+    protected File createFileIfNecessary(IFile archiveFile) {
+        File file = null;
+        if (archiveFile.exists()){
+            file = archiveFile.getLocation().toFile();
+        } else {
+            file = archiveFile.getLocation().toFile();
+        }
+        return file;
     }
     
     /**

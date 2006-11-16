@@ -17,18 +17,11 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.actions.ActionDelegate;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.ui.wizards.ipsarchiveexport.IpsArchiveExportWizard;
 
 /**
  * Action delegate to create an ips archive.
@@ -37,50 +30,32 @@ import org.faktorips.devtools.core.model.IIpsProject;
  * 
  * @author Jan Ortmann
  */
-public class CreateIpsArchiveAction extends ActionDelegate {
+public class CreateIpsArchiveAction extends IpsAction {
 
-    private IIpsProject ipsProject;
-    
-    public CreateIpsArchiveAction() {
-        super();
-    }
-
-    public void run(IAction action) {
-        if (ipsProject==null) {
-            return;
-        }
-        try {
-            IFile archive = ipsProject.getProject().getFile("test.ipsar");
-            CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(ipsProject.getIpsPackageFragmentRoots(), archive);
-            ResourcesPlugin.getWorkspace().run(op, null);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
+    /**
+     * @param selectionProvider
+     */
+    public CreateIpsArchiveAction(ISelectionProvider selectionProvider) {
+        super(selectionProvider);
+        super.setText(Messages.CreateIpsArchiveAction_Name);
+        super.setDescription(Messages.CreateIpsArchiveAction_Description);
+        super.setToolTipText(Messages.CreateIpsArchiveAction_Tooltip);
+        super.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ExportIpsArchive.gif")); //$NON-NLS-1$
     }
 
     /**
      * {@inheritDoc}
      */
-    public void selectionChanged(IAction action, ISelection selection) {
-        if (!(selection instanceof IStructuredSelection)) {
-            ipsProject = null;
+    public void run(IStructuredSelection selection) {
+        if (selection == null) {
             return;
         }
-        IIpsElement ipsEl = null;
-        Object firstEl = ((IStructuredSelection)selection).getFirstElement();
-        if (firstEl instanceof IIpsElement) {
-            ipsEl = ((IIpsElement)firstEl);
-        }
-        if (firstEl instanceof IResource) {
-            IResource res = (IResource)firstEl;
-            ipsEl = IpsPlugin.getDefault().getIpsModel().getIpsElement(res);
-        }
-        if (ipsEl==null) {
-            ipsProject = null;
-        } else {
-            ipsProject = ipsEl.getIpsProject();
-        }
+        IpsArchiveExportWizard wizard = new IpsArchiveExportWizard();
+        wizard.init(IpsPlugin.getDefault().getWorkbench(), selection);
+        WizardDialog dialog = new WizardDialog(IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
+                .getShell(), wizard);
+        dialog.open();
     }
-
+    
     
 }

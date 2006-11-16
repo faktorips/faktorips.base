@@ -129,4 +129,6 @@ public class Messages extends NLS {
 	public static String IpsObjectType_nameTestCaseType;
 
 	public static String IpsObjectType_nameTestCase;
+
+    public static String CreateIpsArchiveOperation_Task_CreateArchive;
 }

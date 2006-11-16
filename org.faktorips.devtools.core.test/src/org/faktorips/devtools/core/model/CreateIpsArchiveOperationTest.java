@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.model;
 
+import java.io.File;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
@@ -43,12 +44,15 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         IFile archiveFile = project.getProject().getFile("test.ipsar");
         archiveFile.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
         
-        CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), archiveFile);
+        File file = archiveFile.getLocation().toFile();
+        CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), file);
         operation.setInclJavaBinaries(true);
         operation.setInclJavaSources(true);
         operation.run(null);
-        
+        createLinkIfNecessary(archiveFile, file);
+
         assertTrue(archiveFile.exists());
+        
         IIpsArchive archive = new IpsArchive(archiveFile);
         String[] packs = archive.getNoneEmptyPackages();
         assertEquals(2, packs.length);

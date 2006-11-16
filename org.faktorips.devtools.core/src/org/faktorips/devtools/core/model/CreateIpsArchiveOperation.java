@@ -22,14 +22,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -38,6 +41,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.devtools.core.IpsStatus;
 
@@ -49,11 +53,12 @@ import org.faktorips.devtools.core.IpsStatus;
 public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
 
     private IIpsPackageFragmentRoot[] roots;
-    private IFile archive;
+    private File archive;
     
     private boolean inclJavaSources;
     private boolean inclJavaBinaries;
     private HashSet handledRootFolders = new HashSet();
+    private HashMap handledEntries = new HashMap(1000);
     
     /**
      * Creates a new operation to create an ips archive. From the given project the content from all source folders
@@ -63,8 +68,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
      */
     public CreateIpsArchiveOperation(
             IIpsProject projectToArchive, 
-            IFile archive) throws CoreException {
-        
+            File archive) throws CoreException {
         this.archive = archive;
         List rootsInt = new ArrayList();
         IIpsPackageFragmentRoot[] candidateRoots = projectToArchive.getIpsPackageFragmentRoots();
@@ -76,25 +80,27 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
         roots = (IIpsPackageFragmentRoot[])rootsInt.toArray(new IIpsPackageFragmentRoot[rootsInt.size()]);
     }
 
-    public CreateIpsArchiveOperation(IIpsPackageFragmentRoot rootToArchive, IFile archive) throws CoreException {
+    public CreateIpsArchiveOperation(IIpsPackageFragmentRoot rootToArchive, File archive) throws CoreException {
         this(new IIpsPackageFragmentRoot[]{rootToArchive}, archive);
     }
 
-    public CreateIpsArchiveOperation(IIpsPackageFragmentRoot[] rootsToArchive, IFile archive) {
+    public CreateIpsArchiveOperation(IIpsPackageFragmentRoot[] rootsToArchive, File archive) {
         this.roots = rootsToArchive;
         this.archive = archive;
     }
-
+    
     /**
      * {@inheritDoc}
      */
     public void run(IProgressMonitor monitor) throws CoreException {
-        if (monitor==null) {
+        if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
-        monitor.beginTask("Create archive", getWorkload()); //$NON-NLS-1$
-        File file = archive.getLocation().toFile();
-        if (archive.getLocalTimeStamp()==file.lastModified()) {
+
+        monitor.beginTask(Messages.CreateIpsArchiveOperation_Task_CreateArchive, getWorkload());
+        
+        IFile workspaceFile = getWorkspaceFile(archive);
+        if (workspaceFile.getLocalTimeStamp()==archive.lastModified()) {
             try {
                 // windows file system does not return milliseconde, only seconds
                 // if the cached timestamp is equal to the file's timestamp on disk,
@@ -109,11 +115,13 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
                 throw new CoreException(new IpsStatus(e));
             }
         }
+        
         JarOutputStream os;
         try {
-            os = new JarOutputStream(new FileOutputStream(file));
-        } catch (IOException e) {
-            throw new CoreException(new IpsStatus("Error opening output stream for jar file " + file, e)); //$NON-NLS-1$
+            os = new JarOutputStream(new FileOutputStream(archive));
+        }
+        catch (IOException e) {
+            throw new CoreException(new IpsStatus("Error opening output stream for jar file " + archive, e)); //$NON-NLS-1$
         }
         Properties ipsObjectsProperties = new Properties();
         for (int i = 0; i < roots.length; i++) {
@@ -122,13 +130,52 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
         createIpsObjectsPropertiesEntry(os, ipsObjectsProperties);
         try {
             os.close();
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus("Error closing output stream for jar file " + file, e)); //$NON-NLS-1$
         }
-        archive.refreshLocal(0, null);
+        catch (Exception e) {
+            throw new CoreException(new IpsStatus("Error closing output stream for jar file " + archive, e)); //$NON-NLS-1$
+        }
+        
+        refreshInWorkspaceIfNecessary();
+
         monitor.done();
     }
 
+    /*
+     * If the file exists in the workspace then refresh it.
+     */
+    private void refreshInWorkspaceIfNecessary() throws CoreException {
+        IFile fileInWorkspace = getWorkspaceFile(archive);
+        if (fileInWorkspace == null){
+            // nothing to do, because the file dosn't exists in the workspace
+            return;
+        }
+        if (fileInWorkspace.exists()){
+            fileInWorkspace.refreshLocal(IResource.DEPTH_ZERO, null);
+        }
+        // refresh parent, thus the file is new then the file will be visible in the workspace
+        IContainer parent = fileInWorkspace.getParent();
+        if (parent != null){
+            parent.refreshLocal(IResource.DEPTH_ONE, null);
+        }
+    }
+
+    /*
+     * Search and return the given file in the workspace, if the file isn't in the workspace
+     * return <code>null</code>.
+     */
+    private IFile getWorkspaceFile(File file){
+        IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+        for (int i = 0; i < projects.length; i++) {
+            IPath projectPath = projects[i].getLocation();
+            IPath filePath = new Path(archive.getAbsolutePath());
+            if (projectPath.isPrefixOf(filePath)){
+                IPath filePathInProject = filePath.removeFirstSegments(filePath.matchingFirstSegments(projectPath));
+                return projects[i].getFile(filePathInProject);
+            }
+        }
+        return null;
+    }
+    
     private void addToArchive(IIpsPackageFragmentRoot root, JarOutputStream os, Properties ipsObjectsProperties, IProgressMonitor monitor) throws CoreException {
         IIpsPackageFragment[] packs = root.getIpsPackageFragments();
         for (int i = 0; i < packs.length; i++) {
@@ -151,9 +198,24 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
         }
     }
     
+    /*
+     * Check if the archive contains the given entry specified by the name, e.g. objects which were
+     * copied from the src folder to the bin folder
+     */
+    private boolean isDuplicateEnty(String entryName){
+        if (handledEntries.containsKey(entryName)){
+            return true;
+        }
+        handledEntries.put(entryName, entryName);
+        return false;
+    }
+    
     private void addToArchive(IIpsSrcFile file, JarOutputStream os, Properties ipsObjectsProperties) throws CoreException {
         String content = file.getContentFromEnclosingResource();
         String entryName = IIpsArchive.IPSOBJECTS_FOLDER + IPath.SEPARATOR + file.getQualifiedNameType().toPath().toString();
+        if (isDuplicateEnty(entryName)){
+            return;
+        }
         JarEntry newEntry = new JarEntry(entryName);
         try {
             os.putNextEntry(newEntry);
@@ -182,17 +244,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
         IFolder javaSrcFolder = root.getArtefactDestination();
         IPackageFragmentRoot javaRoot = root.getIpsProject().getJavaProject().findPackageFragmentRoot(javaSrcFolder.getFullPath());
         if (javaRoot==null) {
-            throw new CoreException(new IpsStatus("Can't find file Java root for IPS root " + root.getName()));
-        }
-        // Java sourcen
-        if (inclJavaSources) {
-            IPath path = javaRoot.getRawClasspathEntry().getPath();
-            IFolder srcFolder = ResourcesPlugin.getWorkspace().getRoot().getFolder(path);
-            if (handledRootFolders.contains(srcFolder)) {
-                return;
-            }
-            addFiles(srcFolder, srcFolder, os, monitor);
-            handledRootFolders.add(srcFolder);
+            throw new CoreException(new IpsStatus("Can't find file Java root for IPS root " + root.getName())); //$NON-NLS-1$
         }
         if (inclJavaBinaries) {
             IPath path = javaRoot.getRawClasspathEntry().getOutputLocation();
@@ -205,6 +257,16 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
             }
             addFiles(outFolder, outFolder, os, monitor);
             handledRootFolders.add(outFolder);
+        }
+        // Java sourcen
+        if (inclJavaSources) {
+            IPath path = javaRoot.getRawClasspathEntry().getPath();
+            IFolder srcFolder = ResourcesPlugin.getWorkspace().getRoot().getFolder(path);
+            if (handledRootFolders.contains(srcFolder)) {
+                return;
+            }
+            addFiles(srcFolder, srcFolder, os, monitor);
+            handledRootFolders.add(srcFolder);
         }
     }
     
@@ -221,6 +283,9 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
 
     private void addFiles(IFolder rootFolder, IFile fileToAdd, JarOutputStream os, IProgressMonitor monitor)throws CoreException {
         String name = fileToAdd.getFullPath().removeFirstSegments(rootFolder.getFullPath().segmentCount()).toString();
+        if (isDuplicateEnty(name)){
+            return;
+        }
         JarEntry newEntry = new JarEntry(name);
         try {
            os.putNextEntry(newEntry);
@@ -265,6 +330,4 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
     public void setInclJavaSources(boolean inclJavaSources) {
         this.inclJavaSources = inclJavaSources;
     }
-
-
 }

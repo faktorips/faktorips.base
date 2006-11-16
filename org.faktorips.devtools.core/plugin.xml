@@ -236,15 +236,6 @@
               menubarPath="additions"
               tooltip="%org.faktorips.devtools.core.Migrate.tooltip"/>
      </objectContribution>
-    	<objectContribution id="createIpsArchive" objectClass="org.faktorips.devtools.core.model.IIpsProject">
-	    	<action
-            class="org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction"
-            enablesFor="*"
-            icon=""
-            id="createIpsArchive"
-            label="%createIpsArchive"
-            menubarPath="additions"/>
-    	</objectContribution>
   </extension>
   
    <extension point="org.eclipse.jdt.core.classpathVariableInitializer">            
@@ -443,6 +434,14 @@
     	   class="org.faktorips.devtools.core.ui.wizards.tableexport.TableExportWizard"
     	   icon="icons/ExportTableContents.gif">
     	   <description>Exports table contents</description>
+    	   <selection class="org.eclipse.core.resources.IResource"/>
+	    </wizard>
+     	<wizard
+	       id = "ipsArchiveExportWizard"
+           name = "%ipsArchiveExportWizard"
+    	   class="org.faktorips.devtools.core.ui.wizards.ipsarchiveexport.IpsArchiveExportWizard"
+    	   icon="icons/ExportTableContents.gif">
+    	   <description>Exports Ips archive</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
     </extension>
