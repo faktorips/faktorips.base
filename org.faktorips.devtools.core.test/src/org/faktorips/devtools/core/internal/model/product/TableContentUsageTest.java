@@ -72,6 +72,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
     }
     
     public void testValidateUnknownContent() throws Exception {
+        structUsage.setMandatoryTableContent(true);
         contentUsage.setStructureUsage("StructUsageRole");
         contentUsage.setTableContentName("unknown");
         MessageList ml = contentUsage.validate();
@@ -80,6 +81,23 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         contentUsage.setTableContentName(content.getQualifiedName());
         ml = contentUsage.validate();
         assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));
+        
+        contentUsage.setTableContentName("");
+        ml = contentUsage.validate();
+        assertNotNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));   
+        
+        contentUsage.setTableContentName(null);
+        ml = contentUsage.validate();
+        assertNotNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));
+        
+        structUsage.setMandatoryTableContent(false);
+        contentUsage.setTableContentName("");
+        ml = contentUsage.validate();
+        assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));   
+        
+        contentUsage.setTableContentName(null);
+        ml = contentUsage.validate();
+        assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));        
     }
     
     public void testValidateInvalidContent() throws Exception {
