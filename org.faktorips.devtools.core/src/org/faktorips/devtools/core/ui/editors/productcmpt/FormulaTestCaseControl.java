@@ -37,6 +37,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
@@ -60,9 +61,9 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
+import org.faktorips.devtools.core.ui.table.BeanTableCellModifier;
 import org.faktorips.devtools.core.ui.table.ColumnChangeListener;
 import org.faktorips.devtools.core.ui.table.ColumnIdentifier;
-import org.faktorips.devtools.core.ui.table.BeanTableCellModifier;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -131,6 +132,9 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     
     /* Indicates if the control is in read only state */
     private boolean viewOnly;
+    
+    /* Indicates errors or failures during the calculation */
+    private boolean isCalculationErrorOrFailure;
     
     /*
      * Extended data which is displayed beside the model data in the table
@@ -596,37 +600,46 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                 + (idsInTestCase.size() > 0 ? messageDelParameter : ""); //$NON-NLS-1$
         return messageForChangeInfoDialog;
     }
-
+    
     /*
      * Execute the formula for all formula test cases
      */
     protected void executeClicked() {
-        boolean isErrorOrFailure = false;
-        for (Iterator iter = formulaTestCases.iterator(); iter.hasNext();) {
-            ExtDataForFormulaTestCase element = (ExtDataForFormulaTestCase)iter.next();
-            Object result = ""; //$NON-NLS-1$
-            try {
-                IConfigElement configElement = (IConfigElement) element.getParent();
-                MessageList mlConfigElement = configElement.validate();
-                if ( configElement.isValid()){
-                    MessageList ml = element.validate();
-                    if (ml.getNoOfMessages() == 0) {
-                        result = element.execute();
+        isCalculationErrorOrFailure = false;
+        
+        Runnable calculate = new Runnable() {
+            public void run() {
+                if (isDisposed())
+                    return;
+                for (Iterator iter = formulaTestCases.iterator(); iter.hasNext();) {
+                    ExtDataForFormulaTestCase element = (ExtDataForFormulaTestCase)iter.next();
+                    Object result = ""; //$NON-NLS-1$
+                    try {
+                        IConfigElement configElement = (IConfigElement) element.getParent();
+                        MessageList mlConfigElement = configElement.validate();
+                        if ( configElement.isValid()){
+                            MessageList ml = element.validate();
+                            if (ml.getNoOfMessages() == 0) {
+                                result = element.execute();
+                            }
+                        } else {
+                            element.setMessage(mlConfigElement.getFirstMessage(Message.ERROR).getText());
+                        }
+                    } catch (Exception e) {
+                        IpsPlugin.logAndShowErrorDialog(e);
                     }
-                } else {
-                    element.setMessage(mlConfigElement.getFirstMessage(Message.ERROR).getText());
+                    element.setActualResult(""+result);
+                    int testResultStatus = getFormulaTestCaseTestStatus(element);
+                    if (testResultStatus != TEST_OK){
+                        isCalculationErrorOrFailure = true;
+                    }
                 }
-            } catch (Exception e) {
-                IpsPlugin.logAndShowErrorDialog(e);
+                repackAndResfreshForumlaTestCaseTable();
             }
-            element.setActualResult(""+result);
-            int testResultStatus = getFormulaTestCaseTestStatus(element);
-            if (testResultStatus != TEST_OK){
-                isErrorOrFailure = true;
-            }
-        }
-        repackAndResfreshForumlaTestCaseTable();
-        if (isErrorOrFailure){
+        };
+        BusyIndicator.showWhile(getDisplay(), calculate);
+
+        if (isCalculationErrorOrFailure){
             testStatusBar.setBackground(failureColor);
         } else {
             testStatusBar.setBackground(okColor);
