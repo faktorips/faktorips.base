@@ -18,6 +18,7 @@
 package org.faktorips.devtools.stdbuilder.formulatest;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -88,11 +89,12 @@ public class FormulaTestBuilder extends AbstractArtefactBuilder {
         
         // there is at least one formula in the product cmt, therefore build the formula test
         InputStream is = null;
+        String content;
         try {
             Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
             Element element = addFormulaTestCases(doc, productCmpt);
             String encoding = ipsSrcFile.getIpsProject()==null?"UTF-8":productCmpt.getIpsProject().getXmlFileCharset(); //$NON-NLS-1$
-            String content = XmlUtil.nodeToString(element, encoding);
+            content = XmlUtil.nodeToString(element, encoding);
             is = convertContentAsStream(content, ipsSrcFile.getIpsProject().getProject().getDefaultCharset());
         } catch (TransformerException e) {
             throw new RuntimeException(e); 
@@ -107,6 +109,12 @@ public class FormulaTestBuilder extends AbstractArtefactBuilder {
         if (!file.exists()) {
             file.create(is, true, null);
         }else{
+            IFile copy = getXmlContentFile(ipsSrcFile);
+            String charSet = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
+            String currentContent = getContentAsString(copy.getContents(), charSet);
+            if(content.equals(currentContent)){
+                return;
+            }            
             file.setContents(is, true, true, null);
         }
     }
@@ -300,4 +308,12 @@ public class FormulaTestBuilder extends AbstractArtefactBuilder {
         return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination().getFolder(
             pathToPack);
     }
+    
+    private String getContentAsString(InputStream is, String charSet) throws CoreException{
+        try {
+            return StringUtil.readFromInputStream(is, charSet);
+        } catch (IOException e) {
+            throw new CoreException(new IpsStatus(e));
+        }
+    }     
 }
