@@ -49,8 +49,7 @@ public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
     public IpsArchiveExportWizard() {
         super();
         setWindowTitle("Export");
-        // TODO Joerg: image for IpsArchiveExportWizard
-        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/TableExportWizard.png"));
+        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/ExportIpsArchiveWizard.png"));
         
         IDialogSettings workbenchSettings= IpsPlugin.getDefault().getDialogSettings();
         IDialogSettings section= workbenchSettings.getSection(DIALOG_SETTINGS_KEY); //$NON-NLS-1$
