@@ -17,11 +17,9 @@
 
 package org.faktorips.devtools.core.internal.model;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +33,8 @@ import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
+import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
 public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObject {
     
     private List generations = new ArrayList(0);
-    private String validTo = ""; //$NON-NLS-1$ 
+    private GregorianCalendar validTo; 
 
     public TimedIpsObject(IIpsSrcFile file) {
         super(file);
@@ -211,7 +211,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        validTo = element.getAttribute(PROPERTY_VALID_TO);
+        validTo = XmlUtil.parseXmlDateStringToGregorianCalendar(ValueToXmlHelper.getValueFromElement(element, PROPERTY_VALID_TO));
     }
     
     /**
@@ -231,7 +231,12 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_VALID_TO, validTo);
+        if (validTo == null) {
+            ValueToXmlHelper.addValueToElement(null, element, PROPERTY_VALID_TO);
+        }
+        else {
+            ValueToXmlHelper.addValueToElement(XmlUtil.gregorianCalendarToXmlDateString(validTo), element, PROPERTY_VALID_TO);
+        }
     }
     
     /**
@@ -255,25 +260,15 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * {@inheritDoc}
      */
-    public String getValidTo() {
+    public GregorianCalendar getValidTo() {
         return validTo;
     }
 
     /**
      * {@inheritDoc}
      */
-    public GregorianCalendar getValidToAsGregorianCalendar() throws ParseException {        
-        Date date = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat().parse(validTo);
-        GregorianCalendar gc = new GregorianCalendar();
-        gc.setTime(date);
-        return gc;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setValidTo(String validTo) {
-        String oldId = this.validTo;
+    public void setValidTo(GregorianCalendar validTo) {
+        GregorianCalendar oldId = this.validTo;
         this.validTo = validTo;
         valueChanged(oldId, validTo);
     }
@@ -283,24 +278,10 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
-        String validTo = getValidTo();
+        GregorianCalendar validTo = getValidTo();
         
-        if (validTo==null || validTo.trim().length() == 0) {
+        if (validTo == null) {
             // empty validTo - valid forever.
-            return;
-        }
-        
-        GregorianCalendar gc = null;
-        try {
-            gc = getValidToAsGregorianCalendar();
-        }
-        catch (ParseException e) {
-            String text = Messages.bind(org.faktorips.devtools.core.internal.model.Messages.TimedIpsObject_msgValidToNoDate, validTo);
-            list.add(new Message(MSGCODE_VALID_TO_NO_DATE, text, Message.ERROR, this, PROPERTY_VALID_TO));
-            return;
-        }
-        
-        if (gc == null) {
             return;
         }
         
@@ -309,7 +290,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
             if (generations[i].getValidFrom().after(validTo)) {
                 IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
                 String params[] = new String[4];
-                params[0] = prefs.getValidFromFormat().format(gc.getTime());
+                params[0] = prefs.getValidFromFormat().format(validTo.getTime());
                 params[1] = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
                 params[2] = "" + generations[i].getGenerationNo(); //$NON-NLS-1$
                 params[3] = prefs.getValidFromFormat().format(generations[i].getValidFrom().getTime());

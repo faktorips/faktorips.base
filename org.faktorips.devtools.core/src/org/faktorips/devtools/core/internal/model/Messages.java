@@ -82,8 +82,6 @@ public class Messages extends NLS {
 
     public static String IpsProject_msgDuplicateTocFilePath;
 
-    public static String TimedIpsObject_msgValidToNoDate;
-
     public static String IpsArchiveEntry_TheArchive;
 
     public static String IpsArchiveEntry_DoesNotExist;

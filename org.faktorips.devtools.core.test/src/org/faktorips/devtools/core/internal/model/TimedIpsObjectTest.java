@@ -17,17 +17,14 @@
 
 package org.faktorips.devtools.core.internal.model;
 
-import java.text.DateFormat;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
-import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -178,22 +175,5 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
         gen2.delete();
         timedObject.initFromXml(element);
         assertEquals(2, timedObject.getNumOfGenerations());
-    }
-    
-    public void testValidateValidTo() throws Exception {
-        DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
-        String date = format.format(new GregorianCalendar(2000, 1, 1).getTime());
-        timedObject.setValidTo(date);
-        MessageList ml = timedObject.validate();
-        assertNull(ml.getMessageByCode(ITimedIpsObject.MSGCODE_VALID_TO_NO_DATE));
-        
-        timedObject.setValidTo("abc");
-        ml = timedObject.validate();
-        assertNotNull(ml.getMessageByCode(ITimedIpsObject.MSGCODE_VALID_TO_NO_DATE));
-        
-        timedObject.setValidTo("");
-        ml = timedObject.validate();
-        assertNull(ml.getMessageByCode(ITimedIpsObject.MSGCODE_VALID_TO_NO_DATE));
-    }
-
+    }    
 }

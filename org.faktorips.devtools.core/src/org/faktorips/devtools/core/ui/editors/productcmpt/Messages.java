@@ -246,4 +246,6 @@ public class Messages extends NLS {
 
     public static String FormulaTestInputValuesControl_Result_ObjectIsNotValid;
 
+    public static String ProductAttributesSection_msgInvalidDate;
+
 }

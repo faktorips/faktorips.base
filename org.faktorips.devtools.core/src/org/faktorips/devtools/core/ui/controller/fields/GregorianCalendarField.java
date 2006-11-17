@@ -61,7 +61,7 @@ public class GregorianCalendarField extends DefaultEditField {
         if (text == null) {
         	return null;
         }
-
+        
         try {
 			Date date = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM).parse(text);
 			GregorianCalendar gc = new GregorianCalendar();

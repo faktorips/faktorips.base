@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -46,6 +48,8 @@ import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
 import org.faktorips.devtools.core.ui.controls.ProductCmptTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Section to display and edit the product attributes
@@ -78,8 +82,8 @@ public class ProductAttributesSection extends IpsSection {
     private MyModifyListener policyCmptTypeListener;
 	
 	private Text runtimeId;
-	
-	
+    private Text validTo;
+    private GregorianCalendarField validToField;
 	private ProductCmptEditor editor;
 	
 	/**
@@ -133,15 +137,42 @@ public class ProductAttributesSection extends IpsSection {
 
         // create label and text control for the valid-to date of the displayed product component
         toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelValidTo);
-        Text validTo = toolkit.createText(rootPane);
+        validTo = toolkit.createText(rootPane);
+        validTo.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
         editControls.add(validTo);
 
 		IpsObjectUIController controller = new IpsObjectUIController(product);
 		controller.add(field, product, IProductCmpt.PROPERTY_POLICY_CMPT_TYPE);
 		controller.add(runtimeId, product, IProductCmpt.PROPERTY_RUNTIME_ID);
-        GregorianCalendarField validToField = new GregorianCalendarField(validTo);
+        validToField = new GregorianCalendarField(validTo);
         controller.add(validToField, product, IProductCmpt.PROPERTY_VALID_TO);
 
+        // handle invalid values - the gregorian calendar field transforms all invalid values 
+        // to null, so invalid strings like "egon" can not be validated in the normal way by
+        // validating the object itself
+        validTo.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                String value = validTo.getText();
+                if (value.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
+                    return;
+                }
+                
+                DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
+                try {
+                    String parsed = format.format(format.parse(value));
+                    if (!parsed.equals(value)) {
+                        throw new ParseException(value + " parsed to " + parsed, 0); //$NON-NLS-1$
+                    }
+                }
+                catch (ParseException e1) {
+                    MessageList list = new MessageList();
+                    String msg = Messages.bind(Messages.ProductAttributesSection_msgInvalidDate, value);
+                    list.add(new Message("", msg, Message.ERROR, product, IProductCmpt.PROPERTY_VALID_TO)); //$NON-NLS-1$
+                    validToField.setMessages(list);
+                }
+            }
+        });
+        
         uiMasterController = new CompositeUIController();
 		uiMasterController.add(controller);
 		uiMasterController.updateUI();

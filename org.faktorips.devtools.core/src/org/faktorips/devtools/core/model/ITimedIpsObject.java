@@ -9,7 +9,6 @@
 
 package org.faktorips.devtools.core.model;
 
-import java.text.ParseException;
 import java.util.GregorianCalendar;
 
 /**
@@ -28,11 +27,6 @@ public interface ITimedIpsObject extends IIpsObject {
      * Prefix for all message codes of this class.
      */
     public final static String MSGCODE_PREFIX = "TIMEDIPSOBJECT-"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the valid-to value is not a date.
-     */
-    public final static String MSGCODE_VALID_TO_NO_DATE = MSGCODE_PREFIX + "ValidToNoDate"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the valid-to date for this object is invalid
@@ -99,22 +93,14 @@ public interface ITimedIpsObject extends IIpsObject {
     public int getNumOfGenerations();
 
     /**
-     * @return The date this IpsObject is valid to as string or <code>null</code> if this
+     * @return The date this IpsObject is valid toor <code>null</code> if this
      *         IpsObject is valid forever.
      */
-    public String getValidTo();
-
-    /**
-     * @return The date this IpsObject is valid to or <code>null</code> if this IpsObject is valid
-     *         forever.
-     * @throws ParseException if the valid-to-date (which is a string) can not be parsed to a valid
-     *             gregorian calendar.
-     */
-    public GregorianCalendar getValidToAsGregorianCalendar() throws ParseException;
+    public GregorianCalendar getValidTo();
 
     /**
      * Set the date this IpsObject is valid to.
      */
-    public void setValidTo(String validTo);
+    public void setValidTo(GregorianCalendar validTo);
 
 }
