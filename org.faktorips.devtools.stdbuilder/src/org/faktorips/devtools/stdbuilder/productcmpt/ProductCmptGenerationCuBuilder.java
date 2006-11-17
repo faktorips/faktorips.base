@@ -18,6 +18,7 @@
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
 import java.lang.reflect.Modifier;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -137,8 +138,10 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
      * </pre>
      */
     private void buildConstructor(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
+        Locale language = getLanguageUsedInGeneratedSourceCode(generation);
+        String genName = getChangesInTimeNamingConvention(generation).getGenerationConceptNameSingular(language);
+        String javaDoc = getLocalizedText(getIpsSrcFile(), CONSTRUCTOR_JAVADOC, genName);
         String className = getUnqualifiedClassName();
-        String javaDoc = getLocalizedText(getIpsSrcFile(), CONSTRUCTOR_JAVADOC);
         String[] argNames = new String[] { "productCmpt" };
         String[] argClassNames = new String[] { productCmptImplBuilder.getQualifiedClassName(generation.getProductCmpt().findProductCmptType()) };
         JavaCodeFragment body = new JavaCodeFragment(
