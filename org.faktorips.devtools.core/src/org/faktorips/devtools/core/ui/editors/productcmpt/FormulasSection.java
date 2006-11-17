@@ -141,17 +141,36 @@ public class FormulasSection extends IpsSection {
 		IConfigElement[] elements = generation.getConfigElements(ConfigElementType.FORMULA);
 		Arrays.sort(elements, new ConfigElementComparator());
 
+        ITableContentUsage usages[] = generation.getTableContentUsages();
+
         // handle the "no formulas defined" label
-		if (elements.length == 0 && noFormulasLabel == null) {
+		if (elements.length + usages.length == 0 && noFormulasLabel == null) {
             noFormulasLabel = toolkit.createLabel(rootPane, Messages.FormulasSection_noFormulasDefined);
         }
-        else if (elements.length > 0 && noFormulasLabel != null) {
+        else if (elements.length + usages.length > 0 && noFormulasLabel != null) {
             noFormulasLabel.dispose();
             noFormulasLabel = null;
         }
 	
-		for (int i = 0; i < elements.length; i++) {
-	
+        for (int i = 0; i < usages.length; i++) {
+            try {
+                IProductCmptType type = generation.getProductCmpt().findProductCmptType();
+                ITableStructureUsage tsu = type.getTableStructureUsage(usages[i].getStructureUsage());
+                
+                // create label here to avoid lost label in case of exception
+                toolkit.createFormLabel(rootPane, StringUtils.capitalise(usages[i].getStructureUsage()));
+                
+                TableContentsUsageRefControl tcuControl = new TableContentsUsageRefControl(generation.getIpsProject(), rootPane, toolkit, tsu);
+                ctrl.add(new TextButtonField(tcuControl), usages[i], ITableContentUsage.PROPERTY_TABLE_CONTENT);
+                addFocusControl(tcuControl.getTextControl());
+                this.editControls.add(tcuControl);
+            }
+            catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
+
+        for (int i = 0; i < elements.length; i++) {
 			toolkit.createFormLabel(rootPane, StringUtils.capitalise(elements[i].getName()));
             FormulaEditControl evc = new FormulaEditControl(rootPane, toolkit, elements[i], this.getShell(), this);
             ctrl.add(new TextField(evc.getTextControl()), elements[i], ConfigElement.PROPERTY_VALUE);
@@ -171,24 +190,6 @@ public class FormulasSection extends IpsSection {
 			}
 		}
 
-        ITableContentUsage usages[] = generation.getTableContentUsages();
-        for (int i = 0; i < usages.length; i++) {
-            try {
-                IProductCmptType type = generation.getProductCmpt().findProductCmptType();
-                ITableStructureUsage tsu = type.getTableStructureUsage(usages[i].getStructureUsage());
-                
-                // create label here to avoid lost label in case of exception
-                toolkit.createFormLabel(rootPane, StringUtils.capitalise(usages[i].getStructureUsage()));
-                
-                TableContentsUsageRefControl tcuControl = new TableContentsUsageRefControl(generation.getIpsProject(), rootPane, toolkit, tsu);
-                ctrl.add(new TextButtonField(tcuControl), usages[i], ITableContentUsage.PROPERTY_TABLE_CONTENT);
-                addFocusControl(tcuControl.getTextControl());
-                this.editControls.add(tcuControl);
-            }
-            catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-        }
 		rootPane.layout(true);
 		rootPane.redraw();
 	}
