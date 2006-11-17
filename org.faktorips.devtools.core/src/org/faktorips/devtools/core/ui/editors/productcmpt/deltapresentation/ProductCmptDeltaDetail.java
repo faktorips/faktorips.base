@@ -59,6 +59,12 @@ final class ProductCmptDeltaDetail {
         if (type == ProductCmptDeltaType.VALUESET_MISMATCH) {
             return DeltaCompositeIcon.createModifyImage(IpsPlugin.getDefault().getImage("ValueSet.gif")); //$NON-NLS-1$
         }
+        if (type == ProductCmptDeltaType.MISSING_CONTENTUSAGE) {
+            return DeltaCompositeIcon.createAddImage(IpsPlugin.getDefault().getImage("TableContents.gif")); //$NON-NLS-1$
+        }
+        if (type == ProductCmptDeltaType.MISSING_STRUCTUREUSAGE) {
+            return DeltaCompositeIcon.createDeleteImage(IpsPlugin.getDefault().getImage("TableContents.gif")); //$NON-NLS-1$
+        }
         
         return null;
     }
