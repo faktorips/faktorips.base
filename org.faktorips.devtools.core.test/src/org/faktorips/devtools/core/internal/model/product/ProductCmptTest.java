@@ -83,6 +83,10 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     	kind = productCmpt.findProductCmptKind();
     	assertEquals("MotorProduct", kind.getName());
     	assertEquals("MotorProduct", kind.getRuntimeId());
+        
+        productCmpt = newProductCmpt(ipsProject, "motor.MotorProduct");
+        assertNull(productCmpt.findProductCmptKind());
+        
     }
     
     public void testSetPolicyCmptType() {
