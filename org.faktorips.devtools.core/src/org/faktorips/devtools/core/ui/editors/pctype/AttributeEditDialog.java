@@ -23,8 +23,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -44,7 +42,6 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
@@ -208,9 +205,9 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 			}
 		});
         
-        final ContentsChangeListener listener = new ContentsChangeListener(){
+        final ContentsChangeListenerForWidget listener = new ContentsChangeListenerForWidget(){
 
-            public void contentsChanged(ContentChangeEvent event) {
+            public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
                 if(!event.getIpsSrcFile().exists()){
                     return;
                 }
@@ -219,15 +216,9 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
                 }
             }
         };
+        listener.setWidget(parent);
         attribute.getIpsModel().addChangeListener(listener);
 
-        getShell().addDisposeListener(new DisposeListener(){
-
-            public void widgetDisposed(DisposeEvent e) {
-                attribute.getIpsModel().removeChangeListener(listener);
-            }
-            
-        });
         //initial update of the checkBox "validationRuleAdded"
         updateFieldValidationRuleAdded();
         return folder;

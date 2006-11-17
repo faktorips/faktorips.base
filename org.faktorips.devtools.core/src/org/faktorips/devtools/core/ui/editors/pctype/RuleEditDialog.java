@@ -20,8 +20,6 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
@@ -37,7 +35,6 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
@@ -78,8 +75,7 @@ public class RuleEditDialog extends IpsPartEditDialog {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.EditDialog#createWorkArea(org.eclipse.swt.widgets.Composite)
+     * {@inheritDoc}
      */
     protected Composite createWorkArea(Composite parent) throws CoreException {
         
@@ -103,9 +99,9 @@ public class RuleEditDialog extends IpsPartEditDialog {
         //but should be considered in the future.
         //It is necessary here because changes made to the model within the RuleFunctionsControl need to be 
         //communicated to the gui so that other controls can adjust there current state. 
-        final ContentsChangeListener listener = new ContentsChangeListener(){
+        final ContentsChangeListenerForWidget listener = new ContentsChangeListenerForWidget (){
 
-            public void contentsChanged(ContentChangeEvent event) {
+            public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
                 if(!event.getIpsSrcFile().exists()){
                     return;
                 }
@@ -114,16 +110,8 @@ public class RuleEditDialog extends IpsPartEditDialog {
                 }
             }
         };
+        listener.setWidget(parent);
         rule.getIpsModel().addChangeListener(listener);
-        //the listener has to be savely removed from the model after the dialog has been closed otherwise
-        //widget diposed exceptions will rise if changes to the rule object are made afterwards 
-        getShell().addDisposeListener(new DisposeListener(){
-
-            public void widgetDisposed(DisposeEvent e) {
-                rule.getIpsModel().removeChangeListener(listener);
-            }
-            
-        });
         return folder;
     }
     

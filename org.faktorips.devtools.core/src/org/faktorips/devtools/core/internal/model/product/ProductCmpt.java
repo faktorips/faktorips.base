@@ -78,9 +78,13 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 	 * {@inheritDoc}
 	 */
 	public IProductCmptKind findProductCmptKind() throws CoreException {
-		IProductCmptNamingStrategy stratgey = getIpsProject().getProductCmptNamingStrategy();
-		String kindName = stratgey.getKindId(getName());
-		return new ProductCmptKind(kindName, getIpsProject().getRuntimeIdPrefix() + kindName);
+        IProductCmptNamingStrategy stratgey = getIpsProject().getProductCmptNamingStrategy();
+        try {
+            String kindName = stratgey.getKindId(getName());
+            return new ProductCmptKind(kindName, getIpsProject().getRuntimeIdPrefix() + kindName);
+        } catch (Exception e) {
+            return null; // error in parsing the name results in a "not found" for the client
+        }
 	}
 
 	/**

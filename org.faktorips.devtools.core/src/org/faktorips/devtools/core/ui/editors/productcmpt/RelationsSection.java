@@ -55,7 +55,6 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.Relation;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
@@ -71,6 +70,7 @@ import org.faktorips.devtools.core.ui.actions.NewProductCmptRelationAction;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityPaneEditField;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
+import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
@@ -89,9 +89,9 @@ public class RelationsSection extends IpsSection{
 
 	private CardinalityPanel cardinalityPanel;
 
-	private CardinalityPaneEditField kardMinField;
+	private CardinalityPaneEditField cardMinField;
 
-	private CardinalityPaneEditField kardMaxField;
+	private CardinalityPaneEditField cardMaxField;
 
 	/**
 	 * The tree viewer displaying all the relations.
@@ -107,7 +107,7 @@ public class RelationsSection extends IpsSection{
 	 * Flag to indicate that the generation this informations are based on has
 	 * changed (<code>true</code>)
 	 */
-	private boolean fGenerationDirty;
+	private boolean generationDirty;
 
 	/**
 	 * Field to store the product component relation that should be moved using
@@ -120,7 +120,7 @@ public class RelationsSection extends IpsSection{
 	 * otherwise. This flag is used to control the enablement-state of the
 	 * contained controlls.
 	 */
-	private boolean fEnabled;
+	private boolean enabled;
 
 	/**
 	 * The popup-Menu for the treeview if enabled.
@@ -155,36 +155,8 @@ public class RelationsSection extends IpsSection{
 		ArgumentCheck.notNull(generation);
 		this.generation = generation;
 		this.site = site;
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(new ContentsChangeListener() {
-        
-            public void contentsChanged(ContentChangeEvent event) {
-                if (!event.getIpsSrcFile().equals(RelationsSection.this.generation.getIpsObject().getIpsSrcFile())) {
-                    return;
-                }
-                try {
-                    IIpsObject obj = event.getIpsSrcFile().getIpsObject();
-                    if (obj == null || obj.getIpsObjectType() != IpsObjectType.PRODUCT_CMPT) {
-                        return;
-                    }
-                    
-                    IProductCmpt cmpt = (IProductCmpt)obj;
-                    IIpsObjectGeneration gen = cmpt.getGenerationByEffectiveDate(RelationsSection.this.generation.getValidFrom());
-                    if (!RelationsSection.this.generation.equals(gen)) {
-                        return;
-                    }
-                    
-                    fGenerationDirty = true;
-                }
-                catch (CoreException e) {
-                    IpsPlugin.log(e);
-                    fGenerationDirty = true;
-                }
-        
-            }
-        
-        });
-		fGenerationDirty = true;
-		fEnabled = true;
+        generationDirty = true;
+		enabled = true;
 		initControls();
 
 		setText(Messages.PropertiesPage_relations);
@@ -255,6 +227,35 @@ public class RelationsSection extends IpsSection{
 			registerDoubleClickListener();
 		}
 		toolkit.getFormToolkit().paintBordersFor(relationRootPane);
+        ContentsChangeListenerForWidget listener = new ContentsChangeListenerForWidget() {
+
+            public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
+                if (!event.getIpsSrcFile().equals(RelationsSection.this.generation.getIpsObject().getIpsSrcFile())) {
+                    return;
+                }
+                try {
+                    IIpsObject obj = event.getIpsSrcFile().getIpsObject();
+                    if (obj == null || obj.getIpsObjectType() != IpsObjectType.PRODUCT_CMPT) {
+                        return;
+                    }
+                    
+                    IProductCmpt cmpt = (IProductCmpt)obj;
+                    IIpsObjectGeneration gen = cmpt.getGenerationByEffectiveDate(RelationsSection.this.generation.getValidFrom());
+                    if (!RelationsSection.this.generation.equals(gen)) {
+                        return;
+                    }
+                    generationDirty = true;
+                }
+                catch (CoreException e) {
+                    IpsPlugin.log(e);
+                    generationDirty = true;
+                }
+            }
+            
+        };
+        listener.setWidget(client);
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(listener);
+        
 	}
 
 	/**
@@ -318,10 +319,10 @@ public class RelationsSection extends IpsSection{
 	 * {@inheritDoc}
 	 */
 	protected void performRefresh() {
-		if (fGenerationDirty && treeViewer != null) {
+		if (generationDirty && treeViewer != null) {
             treeViewer.refresh();
 			treeViewer.expandAll();
-            fGenerationDirty = false;
+            generationDirty = false;
 		}
 		
 		if (selectionChangedListener != null && selectionChangedListener.uiController != null) {
@@ -380,15 +381,15 @@ public class RelationsSection extends IpsSection{
 				IProductCmptRelation rel = (IProductCmptRelation) selected;
 
 				if (rel.isDeleted()) {
-					uiController.remove(kardMinField);
-					uiController.remove(kardMaxField);
+					uiController.remove(cardMinField);
+					uiController.remove(cardMaxField);
 					cardinalityPanel.setEnabled(false);
 					return;
 				}
 
 				if (uiController != null) {
-					uiController.remove(kardMinField);
-					uiController.remove(kardMaxField);
+					uiController.remove(cardMinField);
+					uiController.remove(cardMaxField);
 				}
 
 				if (uiController == null
@@ -396,20 +397,20 @@ public class RelationsSection extends IpsSection{
 					uiController = new IpsPartUIController(rel);
 				}
 
-				kardMinField = new CardinalityPaneEditField(cardinalityPanel,
+				cardMinField = new CardinalityPaneEditField(cardinalityPanel,
 						true);
-				kardMaxField = new CardinalityPaneEditField(cardinalityPanel,
+				cardMaxField = new CardinalityPaneEditField(cardinalityPanel,
 						false);
 
-				uiController.add(kardMinField, rel,
+				uiController.add(cardMinField, rel,
 						Relation.PROPERTY_MIN_CARDINALITY);
-				uiController.add(kardMaxField, rel,
+				uiController.add(cardMaxField, rel,
 						Relation.PROPERTY_MAX_CARDINALITY);
 				uiController.updateUI();
 
 				// enable the fields for cardinality only, if this section
 				// is enabled.
-				cardinalityPanel.setEnabled(fEnabled);
+				cardinalityPanel.setEnabled(enabled);
 			} else {
 				cardinalityPanel.setEnabled(false);
 			}
@@ -426,7 +427,7 @@ public class RelationsSection extends IpsSection{
 		private int oldDetail = DND.DROP_NONE;
 		
 		public void dragEnter(DropTargetEvent event) {
-			if (!fEnabled) {
+			if (!enabled) {
 				event.detail = DND.DROP_NONE;
 				return;
 			}
@@ -707,7 +708,7 @@ public class RelationsSection extends IpsSection{
 	 * {@inheritDoc}
 	 */
 	public void setEnabled(boolean enabled) {
-		this.fEnabled = enabled;
+		this.enabled = enabled;
 		if (treeViewer == null) {
 			// no relations defined, so no tree to disable.
 			return;

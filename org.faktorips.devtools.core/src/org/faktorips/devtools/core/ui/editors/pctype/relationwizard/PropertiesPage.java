@@ -21,12 +21,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
 
 /**
  * Relation wizard page to define the relation properties and optional the product relevant properties.
@@ -52,6 +52,24 @@ public class PropertiesPage extends AbstractPropertiesPage {
         // relation is selected or created but the wizard calculates the max size when the dialog is created
         UIToolkit uiToolkit = wizard.getUiToolkit();
         uiToolkit.createVerticalSpacer(parent, 90);
+        
+        // add listener on model, 
+        //   if the model changed check if the next button could be enabled if the relation is valid
+        ContentsChangeListenerForWidget listener = new ContentsChangeListenerForWidget() {
+
+            public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
+                if (!wizard.isReverseRelationPageDisplayed()){
+                    // check only until the next page wasn't displayed
+                    if (event.getIpsSrcFile().equals(wizard.getRelation().getIpsObject().getIpsSrcFile())){
+                        if (getContainer() != null && getContainer().getCurrentPage() != null)
+                            getContainer().updateButtons();
+                    }
+                }
+            }
+            
+        };
+        listener.setWidget(parent);
+        wizard.getRelation().getIpsModel().addChangeListener(listener);
     }
     
 	/**
@@ -70,23 +88,11 @@ public class PropertiesPage extends AbstractPropertiesPage {
 		wizard.addToUiControllerRelation(targetRoleSingularProdRelevantField, IRelation.PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE);
 		wizard.addToUiControllerRelation(targetRolePluralProdRelevantField, IRelation.PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE);
 		
-		// add listener on model, 
-		//   if the model changed check if the next button could be enabled if the relation is valid
-		wizard.getRelation().getIpsModel().addChangeListener(new ContentsChangeListener(){
-			public void contentsChanged(ContentChangeEvent event) {
-				if (!wizard.isReverseRelationPageDisplayed()){
-					// check only until the next page wasn't displayed
-					if (event.getIpsSrcFile().equals(wizard.getRelation().getIpsObject().getIpsSrcFile())){
-						if (getContainer() != null && getContainer().getCurrentPage() != null)
-							getContainer().updateButtons();
-					}
-				}
-			}	
-		});
         
         // Connect the extension controls to the ui controller
-        if (wizard.getUiControllerRelation() != null)
+        if (wizard.getUiControllerRelation() != null) {
             wizard.getExtensionFactory().connectToModel(wizard.getUiControllerRelation());        
+        }
 	}
 
 	/**

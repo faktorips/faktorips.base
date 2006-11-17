@@ -14,6 +14,8 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
+import java.util.Locale;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -151,6 +153,11 @@ public class AddIpsNatureAction extends ActionDelegate {
             DateBasedProductCmptNamingStrategy namingStrategy = new DateBasedProductCmptNamingStrategy(
                     " ", "yyyy-MM", true); //$NON-NLS-1$ //$NON-NLS-2$
             props.setProductCmptNamingStrategy(namingStrategy);
+            if ("de".equals(Locale.getDefault().getLanguage())) {
+                props.setJavaSrcLanguage(Locale.getDefault());
+            } else {
+                props.setJavaSrcLanguage(Locale.ENGLISH);
+            }
             props.setMinRequiredVersionNumber("org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version"));
             ipsProject.setProperties(props);
             IFolder ipsModelFolder = ipsProject.getProject().getFolder(sourceFolderName);

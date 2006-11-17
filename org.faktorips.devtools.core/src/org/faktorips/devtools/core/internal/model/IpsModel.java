@@ -82,13 +82,16 @@ import org.w3c.dom.Document;
 public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeListener {
 
     public final static boolean TRACE_MODEL_MANAGEMENT;
+    public final static boolean TRACE_MODEL_CHANGE_LISTENERS;
     public final static boolean TRACE_VALIDATION;
 
     static {
         TRACE_MODEL_MANAGEMENT = Boolean.valueOf(
                 Platform.getDebugOption("org.faktorips.devtools.core/trace/modelmanagement")).booleanValue();
-        TRACE_VALIDATION = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/validation"))
+        TRACE_MODEL_CHANGE_LISTENERS= Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/modelchangelisteners"))
                 .booleanValue();
+        TRACE_VALIDATION = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/validation"))
+        .booleanValue();
     }
 
     // list of model change listeners that are notified about model changes
@@ -191,18 +194,21 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         changeListeners = null;
         this.addChangeListener(batchListener);
 
-        getWorkspace().run(action, rule, flags, monitor);
+        try {
+            getWorkspace().run(action, rule, flags, monitor);
+        } finally {
+            // restore change listeners
+            this.removeChangeListener(batchListener);
+            changeListeners = new ArrayList(listeners);
 
-        // restore change listeners
-        this.removeChangeListener(batchListener);
-        changeListeners = new ArrayList(listeners);
-
-        // notify about changes
-        for (Iterator it = changedSrcFiles.iterator(); it.hasNext();) {
-            IIpsSrcFile file = (IIpsSrcFile)it.next();
-            ContentChangeEvent event = new ContentChangeEvent(file);
-            notifyChangeListeners(event);
+            // notify about changes
+            for (Iterator it = changedSrcFiles.iterator(); it.hasNext();) {
+                IIpsSrcFile file = (IIpsSrcFile)it.next();
+                ContentChangeEvent event = new ContentChangeEvent(file);
+                notifyChangeListeners(event);
+            }
         }
+
     }
 
     public IWorkspace getWorkspace() {
@@ -374,6 +380,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * {@inheritDoc}
      */
     public void addChangeListener(ContentsChangeListener listener) {
+        if (TRACE_MODEL_CHANGE_LISTENERS) {
+            System.out.println("IpsModel.addChangeListeners(): " + listener); //$NON-NLS-1$
+        }
         if (changeListeners == null) {
             changeListeners = new ArrayList(1);
         }
@@ -385,7 +394,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public void removeChangeListener(ContentsChangeListener listener) {
         if (changeListeners != null) {
-            changeListeners.remove(listener);
+            boolean wasRemoved = changeListeners.remove(listener);
+            if (TRACE_MODEL_CHANGE_LISTENERS) {
+                System.out.println("IpsModel.removeChangeListeners(): " + listener + ", was removed=" + wasRemoved); //$NON-NLS-1$ //$NON-NLS-2$
+            }
         }
     }
 
@@ -393,7 +405,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (changeListeners == null) {
             return;
         }
-
+        if (TRACE_MODEL_CHANGE_LISTENERS) {
+            System.out.println("IpsModel.notfiyChangeListeners(): " + changeListeners.size() + " listeners"); //$NON-NLS-1$  //$NON-NLS-2$
+        }
         Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
         display.syncExec(new Runnable() {
             public void run() {
@@ -401,7 +415,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 for (Iterator it = copy.iterator(); it.hasNext();) {
                     try {
                         ContentsChangeListener listener = (ContentsChangeListener)it.next();
+                        if (TRACE_MODEL_CHANGE_LISTENERS) {
+                            System.out.println("IpsModel.notfiyChangeListeners(): Start notifying listener: " + listener); //$NON-NLS-1$
+                        }
                         listener.contentsChanged(event);
+                        if (TRACE_MODEL_CHANGE_LISTENERS) {
+                            System.out.println("IpsModel.notfiyChangeListeners(): Finished notifying listener: " + listener); //$NON-NLS-1$
+                        }
                     } catch (Exception e) {
                         IpsPlugin.log(new IpsStatus("Error notifying IPS model change listener", //$NON-NLS-1$
                                 e));

@@ -31,11 +31,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
+import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
 
 /**
  * Page to display the properties owned by one product (attributes, relations,
@@ -94,20 +94,6 @@ public class PropertiesPage extends IpsObjectEditorPage {
 						.isEditableGeneration(getActiveGeneration()));
 			}
 		});
-        
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(new ContentsChangeListener() {
-        
-            public void contentsChanged(ContentChangeEvent event) {
-                if (event.getIpsSrcFile().equals(((ProductCmptEditor)getEditor()).getIpsObject().getIpsSrcFile())) {
-                    if (getPartControl().isDisposed()) {
-                        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
-                        return;
-                    }
-                    updateTabname();
-                }
-            }
-        });
-        updateTabname();
 	}
 
 	/**
@@ -125,6 +111,20 @@ public class PropertiesPage extends IpsObjectEditorPage {
 		stack.topControl = root;
 
 		buildContent(toolkit, root);
+        ContentsChangeListenerForWidget listener = new ContentsChangeListenerForWidget() {
+            
+            public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
+                if (event.getIpsSrcFile().equals(((ProductCmptEditor)getEditor()).getIpsSrcFile())) {
+                    if (getPartControl().isDisposed()) {
+                        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+                        return;
+                    }
+                    updateTabname();
+                }
+            }
+        };
+        listener.setWidget(formBody);
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(listener); 
 	}
 
 	/**

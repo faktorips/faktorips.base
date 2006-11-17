@@ -70,7 +70,7 @@ public abstract class IpsObjectEditor extends FormEditor
         super();
     }
     
-    protected IIpsSrcFile getIpsSrcFile() {
+    public IIpsSrcFile getIpsSrcFile() {
         return ipsSrcFile;
     }
     

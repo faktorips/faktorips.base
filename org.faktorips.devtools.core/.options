@@ -1,5 +1,6 @@
 # tracing option for model cache and ips object initialization
 org.faktorips.devtools.core/trace/modelmanagement=false
+org.faktorips.devtools.core/trace/modelchangelisteners=false
 org.faktorips.devtools.core/trace/dependencygraphmanagement=false
 org.faktorips.devtools.core/trace/validation=false
 # tracing options for ips builder
