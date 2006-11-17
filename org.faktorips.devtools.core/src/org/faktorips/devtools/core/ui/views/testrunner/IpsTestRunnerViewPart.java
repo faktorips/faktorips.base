@@ -26,7 +26,10 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ILock;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -51,6 +54,7 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.progress.UIJob;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
@@ -135,6 +139,16 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	
 	private UpdateUIJob fUpdateJob;
 	
+    /*
+     * A Job that runs as long as a test run is
+     * running. It is used to get the progress feedback
+     * for running jobs in the view.
+     */
+    private IpsTestIsRunningJob ipsTestIsRunningJob;
+    private ILock ipsTestIsRunningLock;
+    
+    public static final Object FAMILY_IPT_TEST_RUN = new Object();
+    
 	private int testRuns=0;
 	private int testId;
 	
@@ -357,8 +371,19 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 */
 	public void init(IViewSite site, IMemento memento) throws PartInitException {
 		super.init(site, memento);
-        fMemento= memento;        
+        fMemento= memento;   
+        
+        IWorkbenchSiteProgressService progressService= getProgressService();
+        if (progressService != null)
+            progressService.showBusyForFamily(FAMILY_IPT_TEST_RUN);        
 	}
+    
+    private IWorkbenchSiteProgressService getProgressService() {
+        Object siteService= getSite().getAdapter(IWorkbenchSiteProgressService.class);
+        if(siteService != null)
+            return (IWorkbenchSiteProgressService) siteService;
+        return null;
+    }
 	
 	private Composite createProgressCountPanel(Composite parent) {
 		Composite composite= new Composite(parent, SWT.NONE);
@@ -543,6 +568,21 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         }
 	}
 	
+    class IpsTestIsRunningJob extends Job {
+        public IpsTestIsRunningJob(String name) {
+            super(name);
+            setSystem(true);
+        }
+        public IStatus run(IProgressMonitor monitor) {
+            // wait until the test run terminates
+            ipsTestIsRunningLock.acquire();
+            return Status.OK_STATUS;
+        }
+        public boolean belongsTo(Object family) {
+            return family == FAMILY_IPT_TEST_RUN;
+        }
+    }
+    
 	public Display getDisplay() {
 		return getViewSite().getShell().getDisplay();
 	}
@@ -552,8 +592,12 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 			fUpdateJob.stop();
 			fUpdateJob= null;
 		}
-	}
-	
+        if (ipsTestIsRunningJob != null && ipsTestIsRunningLock != null) {
+            ipsTestIsRunningLock.release();
+            ipsTestIsRunningJob = null;
+        }
+    }
+
 	private void reset(final int testCount) {
 		postSyncRunnable(new Runnable() {
 			public void run() {
@@ -809,6 +853,14 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         
 		stopUpdateJobs();
 		fUpdateJob = new UpdateUIJob(Messages.IpsTestRunnerViewPart_Job_UpdateUiTitle); 
+        ipsTestIsRunningJob = new IpsTestIsRunningJob("IPSTest Starter Job");
+        ipsTestIsRunningLock = Platform.getJobManager().newLock(); 
+        // acquire lock while a test run is running
+        // the lock is released when the test run terminates
+        // the wrapper job will wait on this lock.
+        ipsTestIsRunningLock.acquire();
+        getProgressService().schedule(ipsTestIsRunningJob);        
+        
 		fUpdateJob.schedule(0);
 		
 		// store the project which contains the tests, will be used to open the test in the editor
