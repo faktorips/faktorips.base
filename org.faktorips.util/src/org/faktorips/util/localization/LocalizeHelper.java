@@ -96,7 +96,7 @@ public class LocalizeHelper {
             String line = null;
             while ((line = br.readLine()) != null) {
                 if (line.indexOf("=")>0){
-                    String[] props = StringUtils.split(line,"=", 1);
+                    String[] props = StringUtils.split(line,"=", 2);
                     if (props.length == 2){
                         content.put(props[0], props[1]);
                     }
