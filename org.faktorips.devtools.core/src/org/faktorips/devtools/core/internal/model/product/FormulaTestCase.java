@@ -28,6 +28,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
@@ -324,6 +325,18 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
             if (inputValue == null){
                 inputValue = newFormulaTestInputValue();
                 inputValue.setIdentifier(newIdentifiers[i]);
+                // try to set the default value depending on the corresponding value datatype
+                try {
+                    Datatype datatype = inputValue.findDatatypeOfFormulaParameter();
+                    if (datatype instanceof ValueDatatype){
+                        inputValue.setValue(((ValueDatatype)datatype).getDefaultValue());
+                    }
+                    // ignore if the datatype is not value datatype
+                    //   this is a validation error see FormulaTestInputValue#validateThis method
+                } catch (CoreException e) {
+                    // ignore exception if the datatype wasn't found, this error will be handled as validation error
+                    // see FormulaTestInputValue#validateThis method
+                }
                 changed = true;
             } else {
                 int idxOld = formulaTestInputValues.indexOf(inputValue);
