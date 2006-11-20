@@ -201,19 +201,24 @@ public class MoveOperation implements IRunnableWithProgress {
     /**
      * Returns true for allowed move operations containing packages.
      * <p>
-     * The current implementation returns false if the given target is element of the given array of sources, 
-     * e.g. moving an Object in itself. If the given target is a package, this method returns false if the package
-     * is a subpackage of the given sources. True otherwise.
+     * The current implementation returns <code>false</code> if the given target is element of the given array of sources, 
+     * e.g. moving an Object in itself. If the given target is a package, this method returns <code>false</code> if the package
+     * is a subpackage of the given sources. <code>true</code> otherwise.
+     * If the corresponding resource of the target is null return <code>false</code> e.g. target is inside an ips archive.
      */
     private static boolean canMovePackages(IIpsElement[] sources, Object target) {
         for (int i = 0; i < sources.length; i++) {
-            if(sources[i].equals(target)){
+            if (sources[i].equals(target)) {
                 return false;
-            }else if(sources[i] instanceof IIpsPackageFragment || sources[i] instanceof IIpsPackageFragmentRoot){
-                if(target instanceof IIpsPackageFragment || target instanceof IIpsPackageFragmentRoot){
-                    IFolder sourceFolder= (IFolder) sources[i].getCorrespondingResource();
-                    IFolder targetFolder= (IFolder) ((IIpsElement)target).getCorrespondingResource();
-                    if(sourceFolder.getFullPath().isPrefixOf(targetFolder.getFullPath())){
+            } else if (sources[i] instanceof IIpsPackageFragment || sources[i] instanceof IIpsPackageFragmentRoot) {
+                if (target instanceof IIpsPackageFragment || target instanceof IIpsPackageFragmentRoot) {
+                    IFolder sourceFolder = (IFolder)sources[i].getCorrespondingResource();
+                    IResource targetResource = ((IIpsElement)target).getCorrespondingResource();
+                    if (!(targetResource instanceof IFolder)) {
+                        return false;
+                    }
+                    IFolder targetFolder = (IFolder)targetResource;
+                    if (sourceFolder.getFullPath().isPrefixOf(targetFolder.getFullPath())) {
                         return false;
                     }
                 }
@@ -223,8 +228,8 @@ public class MoveOperation implements IRunnableWithProgress {
     }
 	
 	/**
-	 * {@inheritDoc}
-	 */
+     * {@inheritDoc}
+     */
 	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
