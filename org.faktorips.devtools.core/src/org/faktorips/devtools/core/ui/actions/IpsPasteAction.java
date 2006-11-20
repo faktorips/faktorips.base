@@ -292,7 +292,7 @@ public class IpsPasteAction extends IpsAction {
                 if (target instanceof IIpsSrcFile
                         && ((IIpsSrcFile)target).getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {
                     IProductCmpt cmpt = (IProductCmpt)((IIpsSrcFile)target).getIpsObject();
-                    cmpt.setRuntimeId(nameWithoutExtension);
+                    cmpt.setRuntimeId(cmpt.getIpsProject().getRuntimeId(cmpt));
                     ((IIpsSrcFile)target).save(true, null);
                 }
             }

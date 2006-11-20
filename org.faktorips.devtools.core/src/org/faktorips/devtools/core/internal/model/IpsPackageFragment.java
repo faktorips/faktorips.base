@@ -171,7 +171,17 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             System.out.println("IpsPackageFragment.createIpsFile - finished: pack=" + this + ", newFile=" + name
                     + ", Thead: " + Thread.currentThread().getName());
         }
-        return getIpsSrcFile(name);
+        
+        IIpsSrcFile ipsSrcFile = getIpsSrcFile(name);
+        
+        // set the new evaluated runtime id for product components
+        if (ipsSrcFile .getIpsObjectType() == IpsObjectType.PRODUCT_CMPT){
+            IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile .getIpsObject();
+            productCmpt.setRuntimeId(getIpsProject().getRuntimeId(productCmpt));
+            ipsSrcFile .save(force, monitor);
+        }
+        
+        return ipsSrcFile;
     }
 
     /**
@@ -201,15 +211,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         try {
             String encoding = getIpsProject().getXmlFileCharset();
             String contents = XmlUtil.nodeToString(element, encoding);
-            IIpsSrcFile result = createIpsFile(filename, contents, force, monitor);
-
-            if (type == IpsObjectType.PRODUCT_CMPT) {
-                IProductCmpt productCmpt = (IProductCmpt)result.getIpsObject();
-                productCmpt.setRuntimeId(ipsObject.getIpsProject().getRuntimeId(productCmpt));
-                result.save(force, monitor);
-            }
-
-            return result;
+            return createIpsFile(filename, contents, force, monitor);
         }
         catch (TransformerException e) {
             throw new RuntimeException(e);
