@@ -37,19 +37,25 @@ public class DefaultRuntimeIdStrategy implements
 	 * {@inheritDoc}
 	 */
 	public String getRuntimeId(IProductCmpt productCmpt) throws CoreException {
-		IIpsProject project = productCmpt.getIpsProject();
-		String id = productCmpt.getIpsProject().getRuntimeIdPrefix() + productCmpt.getName();
-		String uniqueId = id;
-		
-		int i = 1;
-		while (project.findProductCmptByRuntimeId(uniqueId) != null) {
-			uniqueId = id + i;
-			i++;
-		}
-		
-		return uniqueId;
+		return getRuntimeId(productCmpt.getIpsProject(), productCmpt.getName());
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public String getRuntimeId(IIpsProject project, String productCmptName) throws CoreException {
+        String id = project.getRuntimeIdPrefix() + productCmptName;
+        String uniqueId = id;
+        
+        int i = 1;
+        while (project.findProductCmptByRuntimeId(uniqueId) != null) {
+            uniqueId = id + i;
+            i++;
+        }
+        
+        return uniqueId;
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */

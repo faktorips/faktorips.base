@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model.product;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsProject;
 
 
 /**
@@ -43,6 +44,23 @@ public interface IRuntimeIdStrategy {
 	public String getRuntimeId(IProductCmpt productCmpt)
 			throws CoreException;
 	
+    /**
+     * Finds the runtime id to use for the given project and product component name.
+     * The result of this method is not ensured to be the same for different calls.
+     * This method should only be used to find the id for a new product component,
+     * but does not set the runtime id for the product component.
+     * 
+     * @param project
+     *            The project which will be used to evaluate the runtime id.
+     * @param productCmptName 
+     *            The name of the new product component for which the runtime id will be 
+     *            returned.
+     * @throws CoreException
+     *             if an error occurs during evaluation.
+     */
+    public String getRuntimeId(IIpsProject project, String productCmptName)
+            throws CoreException;
+    
 	/**
 	 * Compares the runtime ids of the given product components. This method was introduced
 	 * because a simple call to <code>equals()</code> comparing the two runtime ids returned by a

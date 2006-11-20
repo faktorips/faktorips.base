@@ -46,4 +46,10 @@ public class Messages extends NLS {
 	
 	public static String ProductCmptPage_labelFullName;
 
+    public static String ProductCmptPage_labelRuntimeId;
+
+    public static String ProductCmptPage_buttonDefaultRuntimeId;
+
+    public static String ProductCmptPage_msgRuntimeIdCollision;
+
 }

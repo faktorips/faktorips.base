@@ -17,13 +17,21 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -32,6 +40,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.product.IRuntimeIdStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -48,10 +57,14 @@ public class ProductCmptPage extends IpsObjectPage {
     private ProductCmptTypeRefControl typeRefControl;
     private Text versionId;
     private Text constName;
+    private Text runtimeId;
+    private Button defaultRuntimeIdBtn;
     private Text fullName;
+    private boolean canModifyRuntimeId;
     
     public ProductCmptPage(IStructuredSelection selection) throws JavaModelException {
         super(selection, Messages.ProductCmptPage_title);
+        canModifyRuntimeId = IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId();
     }
     
     /**
@@ -71,6 +84,36 @@ public class ProductCmptPage extends IpsObjectPage {
         toolkit.createLabel(nameComposite, label);
         versionId = toolkit.createText(nameComposite);
 
+        toolkit.createFormLabel(nameComposite, Messages.ProductCmptPage_labelRuntimeId);
+        Composite runtimeIdComposite = toolkit.createComposite(nameComposite);
+        runtimeIdComposite.setLayout(toolkit.createNoMarginGridLayout(2, false));
+        runtimeIdComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        runtimeId = toolkit.createText(runtimeIdComposite);
+        runtimeId.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (StringUtils.isEmpty(runtimeId.getText())) {
+                    runtimeId.setText(getDefaultRuntimeId());
+                }
+            }
+        });
+        runtimeId.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent event) {
+                try {
+                    validatePage();
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+            }
+        });
+        if (canModifyRuntimeId) {
+            defaultRuntimeIdBtn = toolkit.createButton(runtimeIdComposite,
+                    Messages.ProductCmptPage_buttonDefaultRuntimeId);
+            defaultRuntimeIdBtn.addSelectionListener(new SelectionAdapter() {
+                public void widgetSelected(SelectionEvent event) {
+                    runtimeId.setText(getDefaultRuntimeId());
+                }
+            });
+        }
         toolkit.createFormLabel(nameComposite, Messages.ProductCmptPage_labelFullName); 
         
         fullName = addNameField(toolkit);
@@ -90,6 +133,7 @@ public class ProductCmptPage extends IpsObjectPage {
 				IProductCmptNamingStrategy ns = getNamingStrategy();
 				showMessage(ns.validateKindId(constName.getText()));
 				updateFullName();
+                updateRuntimeId();
 			}
 		});
     }
@@ -134,6 +178,10 @@ public class ProductCmptPage extends IpsObjectPage {
     	return policyCmptTypeName;
     }
     
+    String getRuntimeId() {
+        return runtimeId.getText();
+    }
+    
     /** 
      * {@inheritDoc}
      */
@@ -156,9 +204,19 @@ public class ProductCmptPage extends IpsObjectPage {
 	    if (typeRefControl.findProductCmptType()==null) {
 	        setErrorMessage(NLS.bind(Messages.ProductCmptPage_msgTemplateDoesNotExist, typeRefControl.getText()));
 	    }
+        String runtimeIdErrorMsg = validateRuntimeId();
+        if (StringUtils.isNotEmpty(runtimeIdErrorMsg)){
+            setErrorMessage(runtimeIdErrorMsg);
+        }
         updatePageComplete();
     }
-    
+
+    private String validateRuntimeId() throws CoreException {
+        if (null != getIpsProject().findProductCmptByRuntimeId(runtimeId.getText())){
+            return NLS.bind(Messages.ProductCmptPage_msgRuntimeIdCollision, runtimeId.getText());
+        }
+        return ""; //$NON-NLS-1$
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -213,8 +271,21 @@ public class ProductCmptPage extends IpsObjectPage {
 				constName.setText(namingStrategy.getKindId(fullName.getText()));
 			}
 		}
+        
+		if (canModifyRuntimeId){
+            setEnableRuntimeId(true);
+        } else {
+            setEnableRuntimeId(false);
+        }
 	}
 	
+    private void setEnableRuntimeId(boolean enable){
+            runtimeId.setEnabled(enable);
+            if (defaultRuntimeIdBtn != null){
+                defaultRuntimeIdBtn.setEnabled(enable);
+            }
+    }
+    
 	private void showMessage(MessageList list) {
 		if (!list.isEmpty()) {
 			setErrorMessage(list.getMessage(0).getText());
@@ -226,4 +297,29 @@ public class ProductCmptPage extends IpsObjectPage {
 	private void updateFullName() {
 		fullName.setText(getNamingStrategy().getProductCmptName(constName.getText(), versionId.getText()));
 	}
+    
+    private String getDefaultRuntimeId() {
+        String defaultRuntimeId = ""; //$NON-NLS-1$
+        if (getIpsProject() == null){
+            return "";  //$NON-NLS-1$
+        }
+        IRuntimeIdStrategy runtimeIdStrategy = getIpsProject().getRuntimeIdStrategy();
+        if (runtimeIdStrategy != null) {
+            try {
+                defaultRuntimeId = runtimeIdStrategy.getRuntimeId(getIpsProject(), getIpsObjectName());
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
+        return defaultRuntimeId;
+    }
+    
+    /*
+     * Updates the runtime id, if the runtime edit field is read-only
+     */
+    private void updateRuntimeId() {
+        if (!runtimeId.isEnabled()) {
+            runtimeId.setText(getDefaultRuntimeId());
+        }
+    }
 }

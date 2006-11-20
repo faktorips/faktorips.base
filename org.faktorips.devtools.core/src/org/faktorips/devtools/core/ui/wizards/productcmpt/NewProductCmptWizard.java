@@ -67,6 +67,7 @@ public class NewProductCmptWizard extends NewIpsObjectWizard {
         if (date==null) {
             return;
         }
+        productCmpt.setRuntimeId(productCmptPage.getRuntimeId());
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
         generation.setValidFrom(date);
         generation.fixDifferences(generation.computeDeltaToPolicyCmptType());
