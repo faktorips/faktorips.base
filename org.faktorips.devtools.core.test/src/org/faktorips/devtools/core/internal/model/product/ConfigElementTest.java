@@ -497,6 +497,11 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
         // check wrong number of identifiers
         assertFalse(identifierInFormula.size()==3);
+        
+        // check with empty formula
+        configElement.setValue(null);
+        identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
+        assertEquals(0, identifierInFormula.size());
     }
     
     public void testMoveFormulaTestCases(){

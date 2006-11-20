@@ -576,7 +576,9 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         if (!ConfigElementType.FORMULA.equals(type)){
             return new String[0];
         }
-        
+        if (StringUtils.isEmpty(value)){
+            return new String[0];
+        }
         IAttribute attribute = findPcTypeAttribute();
         if (attribute == null){
             return new String[0];
