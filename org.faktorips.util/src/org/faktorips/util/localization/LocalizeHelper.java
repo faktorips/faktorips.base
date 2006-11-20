@@ -17,16 +17,33 @@
 
 package org.faktorips.util.localization;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Simple class to support developers in internationalisation-process.
@@ -47,7 +64,195 @@ public class LocalizeHelper {
     File sourceRoot;
     File targetRoot;
     String targetLang;
+    List modifiedFiles = new ArrayList();
+    
+    /*
+     * Class which supports properties with predictable iteration order.
+     */
+    private class SortedProperties extends Properties {
+        private static final long serialVersionUID = 1L;
 
+        LinkedHashMap content = new LinkedHashMap();
+        
+        /**
+         * {@inheritDoc}
+         */
+        public String getProperty(String arg0) {
+            return (String) content.get(arg0);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public synchronized Object setProperty(String arg0, String arg1) {
+            return content.put(arg0, arg1);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public synchronized void load(InputStream is) throws IOException {
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                if (line.indexOf("=")>0){
+                    String[] props = StringUtils.split(line,"=", 1);
+                    if (props.length == 2){
+                        content.put(props[0], props[1]);
+                    }
+                }
+            }
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public void store(OutputStream os, String comments) throws IOException {
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "8859_1"));
+            if (comments != null){
+                writeln(bw, "#" + comments);
+            }
+            writeln(bw, "#" + new Date().toString());
+            for (Iterator iter = content.keySet().iterator(); iter.hasNext();) {
+                String key = (String)iter.next();
+                bw.write(key);
+                bw.write("=");
+                bw.write((String)content.get(key));
+                bw.newLine();
+            }
+            bw.flush();
+        }
+        
+        private void writeln(BufferedWriter bw, String s) throws IOException {
+            bw.write(s);
+            bw.newLine();
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        public Set keySet() {
+            return content.keySet();
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public synchronized void clear() {
+            content.clear();
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public synchronized boolean contains(Object arg0) {
+            return content.containsValue(arg0);
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public synchronized boolean containsKey(Object arg0) {
+            return content.containsKey(arg0);
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public boolean containsValue(Object arg0) {
+            return content.containsValue(arg0);
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public Set entrySet() {
+            return content.entrySet();
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public synchronized boolean equals(Object arg0) {
+            return content.equals(arg0);
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public synchronized Object get(Object arg0) {
+            return content.get(arg0);
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public synchronized int hashCode() {
+            return content.hashCode();
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public synchronized boolean isEmpty() {
+            return content.isEmpty();
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public synchronized Object put(Object arg0, Object arg1) {
+            return content.put(arg0, arg1);
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public synchronized void putAll(Map arg0) {
+            content.putAll(arg0);
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public synchronized Object remove(Object arg0) {
+            return content.remove(arg0);
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public synchronized int size() {
+            return content.size();
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public synchronized String toString() {
+            return content.toString();
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public Collection values() {
+            return content.values();
+        }
+        public synchronized Object clone() {
+            throw new UnsupportedOperationException();
+        }
+        protected void rehash() {
+            throw new UnsupportedOperationException();
+        }        
+        public synchronized Enumeration keys() {
+            throw new UnsupportedOperationException();
+        }
+        public synchronized Enumeration elements() {
+            throw new UnsupportedOperationException();
+        }
+        
+        public String getProperty(String arg0, String arg1) {
+            throw new UnsupportedOperationException();
+        }
+        public void list(PrintStream arg0) {
+            throw new UnsupportedOperationException();
+        }
+        public void list(PrintWriter arg0) {
+            throw new UnsupportedOperationException();
+        }
+        public Enumeration propertyNames() {
+            throw new UnsupportedOperationException();
+        }
+        public synchronized void save(OutputStream arg0, String arg1) {
+            throw new UnsupportedOperationException();
+        }
+    }
+    
     /**
      * First argument:<br>
      * Path to the base directory, where the source-language files are stored.<br>
@@ -94,6 +299,13 @@ public class LocalizeHelper {
 
         try {
             sync(sourceProperties, targetProperties);
+            if (modifiedFiles.size() > 0) {
+                System.out.println("Modified files:");
+                for (Iterator iter = modifiedFiles.iterator(); iter.hasNext();) {
+                    System.out.print("  ");
+                    System.out.println(iter.next());
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -155,6 +367,7 @@ public class LocalizeHelper {
                 String newName = targetRoot.getAbsolutePath() + name + targetLang + ".properties";
                 targetFile = new File(newName);
                 createFile(targetFile);
+                modifiedFiles.add(targetFile);
                 FileWriter writer = new FileWriter(targetFile);
                 FileReader reader = new FileReader(sourceFile);
                 for (int c = reader.read(); c != -1; c = reader.read()) {
@@ -163,26 +376,36 @@ public class LocalizeHelper {
                 reader.close();
                 writer.close();
             } else {
-                Properties sourceProps = new Properties();
+                SortedProperties sourceProps = new SortedProperties();
                 File srcFile = (File)source.get(name);
                 sourceProps.load(new FileInputStream(srcFile));
 
-                Properties targetProps = new Properties();
+                SortedProperties targetProps = new SortedProperties();
                 targetProps.load(new FileInputStream(targetFile));
 
-                Enumeration srcKeys = sourceProps.keys();
+                Set srcKeys = sourceProps.keySet();
                 boolean modified = false;
-                while (srcKeys.hasMoreElements()) {
-                    String key = (String)srcKeys.nextElement();
+
+                for (Iterator iter = srcKeys.iterator(); iter.hasNext();) {
+                    String key = (String)iter.next();
                     if (targetProps.getProperty(key) == null) {
                         targetProps.setProperty(key, ">TRANSLATE_ME<" + sourceProps.getProperty(key));
                         modified = true;
                     }
                 }
-
+                
                 if (modified) {
+                    modifiedFiles.add(targetFile);
+                    // store the target in same order as the source
+                    SortedProperties newTargetProps = new SortedProperties();
+                    Set srcKeySet = sourceProps.keySet();
+                    for (Iterator iter = srcKeySet.iterator(); iter.hasNext();) {
+                        String key = (String)iter.next();
+                        String property = targetProps.getProperty(key);
+                        newTargetProps.setProperty(key, property);
+                    }
                     FileOutputStream out = new FileOutputStream(targetFile);
-                    targetProps.store(out, "File modified by LocalizationHelper");
+                    newTargetProps.store(out, "File modified by LocalizationHelper");
                     out.close();
                 }
             }
