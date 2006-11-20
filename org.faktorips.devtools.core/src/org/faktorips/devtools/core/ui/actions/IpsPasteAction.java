@@ -96,15 +96,27 @@ public class IpsPasteAction extends IpsAction {
      */
     private void paste(IIpsObjectPartContainer parent) {
         String stored = (String)clipboard.getContents(TextTransfer.getInstance());
-        if (stored == null) {
-            IIpsElement pack = parent.getParent();
-            while (pack != null && !(pack instanceof IIpsPackageFragment)) {
-                pack = pack.getParent();
+        
+        // obtain the package fragment of the given part container
+        IIpsPackageFragment parentPackageFrgmt = null;
+        IIpsElement pack = parent.getParent();
+        while (pack != null && !(pack instanceof IIpsPackageFragment)) {
+            pack = pack.getParent();
+        }
+        if (pack != null){
+            parentPackageFrgmt = (IIpsPackageFragment)pack;
+        }
+        
+        if (stored == null && parentPackageFrgmt != null) {
+            // the clipboard contains no string, try to paste resources
+            paste(parentPackageFrgmt);
+        } else {  
+            // try to paste resource links
+            if (parentPackageFrgmt != null && pasteResourceLinks(parentPackageFrgmt, stored)){
+                // the copied text contains links, paste is finished
+                return;
             }
-            if (pack != null) {
-                paste((IIpsPackageFragment)pack);
-            }
-        } else {
+            // no links in string try to paste ips object parts
             try {
                 IpsObjectPartState state = new IpsObjectPartState(stored);
                 state.newPart(parent);
@@ -157,14 +169,26 @@ public class IpsPasteAction extends IpsAction {
             }
         }
         // Paste objects by resource links (e.g. files inside an ips archive)
+        String storedText = (String)clipboard.getContents(TextTransfer.getInstance());
+        pasteResourceLinks(parent, storedText);
+    }
+
+    /*
+     * Try to paste resource links, if the given text contains no such links do nothing.
+     * Rerurns true if the text contains resource links otherwise return false.
+     */
+    private boolean pasteResourceLinks(IIpsPackageFragment parent, String storedText) {
+        boolean result = false;
+        Object[] resourceLinks = getObjectsFromResourceLinks(storedText);
         try {
-            String storedText = (String)clipboard.getContents(TextTransfer.getInstance());
-            Object[] resourceLinks = getObjectsFromResourceLinks(storedText);
+            if (resourceLinks.length > 0){
+                result = true;
+            }
             for (int i = 0; i < resourceLinks.length; i++) {
                 if (resourceLinks[i] instanceof IIpsObject) {
                     createFile(parent, (IIpsObject)resourceLinks[i]);
-                } else if (resourceLinks[i] instanceof IIpsPackageFragment){
-                    IIpsPackageFragment packageFragment = (IIpsPackageFragment) resourceLinks[i];
+                } else if (resourceLinks[i] instanceof IIpsPackageFragment) {
+                    IIpsPackageFragment packageFragment = (IIpsPackageFragment)resourceLinks[i];
                     createPackageFragment(parent, packageFragment);
                 } else {
                     showPasteNotSupportedError();
@@ -173,6 +197,7 @@ public class IpsPasteAction extends IpsAction {
         } catch (Exception e) {
             IpsPlugin.log(e);
         }
+        return result;
     }
 
     private void createPackageFragment(IIpsPackageFragment parent, IIpsPackageFragment packageFragment) throws CoreException {
