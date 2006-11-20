@@ -25,11 +25,13 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.part.ResourceTransfer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartState;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -93,7 +95,6 @@ public class IpsPasteAction extends IpsAction {
      * @param parent The parent to paste to.
      */
     private void paste(IIpsObjectPartContainer parent) {
-
         String stored = (String)clipboard.getContents(TextTransfer.getInstance());
         if (stored == null) {
             IIpsElement pack = parent.getParent();
@@ -143,13 +144,63 @@ public class IpsPasteAction extends IpsAction {
             IResource[] res = (IResource[])stored;
             for (int i = 0; i < res.length; i++) {
                 try {
-                    IPath targetPath = ((IIpsElement)parent).getCorrespondingResource().getFullPath();
-                    copy(targetPath, res[i]);
+                    IResource resource = ((IIpsElement)parent).getCorrespondingResource();
+                    if (resource != null) {
+                        IPath targetPath = resource.getFullPath();
+                        copy(targetPath, res[i]);
+                    } else {
+                        showPasteNotSupportedError();
+                    }
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }
         }
+        // Paste objects by resource links (e.g. files inside an ips archive)
+        try {
+            String storedText = (String)clipboard.getContents(TextTransfer.getInstance());
+            Object[] resourceLinks = getObjectsFromResourceLinks(storedText);
+            for (int i = 0; i < resourceLinks.length; i++) {
+                if (resourceLinks[i] instanceof IIpsObject) {
+                    createFile(parent, (IIpsObject)resourceLinks[i]);
+                } else if (resourceLinks[i] instanceof IIpsPackageFragment){
+                    IIpsPackageFragment packageFragment = (IIpsPackageFragment) resourceLinks[i];
+                    createPackageFragment(parent, packageFragment);
+                } else {
+                    showPasteNotSupportedError();
+                }
+            }
+        } catch (Exception e) {
+            IpsPlugin.log(e);
+        }
+    }
+
+    private void createPackageFragment(IIpsPackageFragment parent, IIpsPackageFragment packageFragment) throws CoreException {
+        String packageName = packageFragment.getLastSegmentName();
+        IIpsPackageFragment destination = parent.createSubPackage(packageName, true, null);
+        IIpsElement[] children = packageFragment.getChildren();
+        for (int i = 0; i < children.length; i++) {
+            if (children[i] instanceof IIpsSrcFile){
+                IIpsObject ipsObject = ((IIpsSrcFile)children[i]).getIpsObject();
+                createFile(destination, ipsObject);
+            }
+        }
+        IIpsPackageFragment[] childPackages = packageFragment.getChildIpsPackageFragments();
+        for (int i = 0; i < childPackages.length; i++) {
+            createPackageFragment(destination, childPackages[i]);
+        }
+    }
+
+    private void createFile(IIpsPackageFragment parent, IIpsObject ipsObject) throws CoreException {
+        String content = ipsObject.toXml(IpsPlugin.getDefault().newDocumentBuilder().newDocument())
+                .toString();
+        IIpsSrcFile srcFile = ipsObject.getIpsSrcFile();
+        parent.createIpsFile(srcFile.getName(), content, true, null);
+    }
+
+    private void showPasteNotSupportedError() {
+        MessageDialog.openError(Display.getCurrent().getActiveShell(), Messages.IpsPasteAction_errorTitle,
+                Messages.IpsPasteAction_Error_CannotPasteIntoSelectedElement);
     }
 
     /**

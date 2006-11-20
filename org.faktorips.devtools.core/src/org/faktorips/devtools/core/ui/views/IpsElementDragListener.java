@@ -57,8 +57,10 @@ public class IpsElementDragListener implements DragSourceListener {
     			list.add(((IIpsElement)selected).getCorrespondingResource().getLocation().toOSString());
     		}
     		else if (selected instanceof IProductCmpt) {
-    			list.add(((IProductCmpt)selected).getIpsSrcFile().getCorrespondingFile().getLocation().toOSString());
-    		}else if(selected instanceof Object[]){
+                if (((IProductCmpt)selected).getIpsSrcFile().getCorrespondingFile() != null){
+                    list.add(((IProductCmpt)selected).getIpsSrcFile().getCorrespondingFile().getLocation().toOSString());
+                }
+            }else if(selected instanceof Object[]){
     			Object ipsObject= ((Object[])selected)[0];
     			list.add(((IIpsObject)ipsObject).getIpsSrcFile().getCorrespondingFile().getLocation().toOSString());
     		}

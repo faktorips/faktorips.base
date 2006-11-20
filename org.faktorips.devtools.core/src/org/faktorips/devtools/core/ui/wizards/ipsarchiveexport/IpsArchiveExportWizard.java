@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 
 public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
-    public static String ID = "org.faktorips.devtools.core.ui.wizards.ipsarchiveexport.IpsArchiveExportWizard";
+    public static String ID = "org.faktorips.devtools.core.ui.wizards.ipsarchiveexport.IpsArchiveExportWizard"; //$NON-NLS-1$
     private static String DIALOG_SETTINGS_KEY = "IpsArchiveExportWizard"; //$NON-NLS-1$
     
     private IpsArchivePackageWizardPage ipsArPackageWizardPage;
@@ -48,8 +48,8 @@ public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
      */
     public IpsArchiveExportWizard() {
         super();
-        setWindowTitle("Export");
-        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/ExportIpsArchiveWizard.png"));
+        setWindowTitle(Messages.IpsArchiveExportWizard_Export);
+        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/ExportIpsArchiveWizard.png")); //$NON-NLS-1$
         
         IDialogSettings workbenchSettings= IpsPlugin.getDefault().getDialogSettings();
         IDialogSettings section= workbenchSettings.getSection(DIALOG_SETTINGS_KEY); //$NON-NLS-1$

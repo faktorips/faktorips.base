@@ -454,11 +454,41 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
         protected void createReorgActions(IMenuManager manager, Object selected) {
             manager.add(copy);
+            paste.setEnabled(true);
+            delete.setEnabled(true);
+            if (isRootArchive(selected)) {
+                paste.setEnabled(false);
+                delete.setEnabled(false);
+            }
             manager.add(paste);
             manager.add(delete);
 
         }
 
+        private IIpsPackageFragmentRoot getPackageFragmentRoot(Object object) {
+            IIpsPackageFragmentRoot root = null;
+            if (object instanceof IIpsObject) {
+                root = ((IIpsObject)object).getIpsPackageFragment().getRoot();
+            } else if (object instanceof IIpsPackageFragment){
+                root = ((IIpsPackageFragment)object).getRoot();
+            } else if (object instanceof IIpsPackageFragmentRoot){
+                root = (IIpsPackageFragmentRoot)object;
+            }
+            return root;
+        }
+
+        private boolean isRootArchive(Object object){
+            IIpsPackageFragmentRoot root = getPackageFragmentRoot(object);
+            if (root != null) {
+                try {
+                    return root.getIpsArchive() != null;
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
+            }
+            return false;
+        }
+        
         protected void createObjectInfoActions(IMenuManager manager, Object selected) {
             if (selected instanceof IIpsElement) {
                 if (selected instanceof IProductCmpt) {
@@ -539,10 +569,12 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         protected void createRefactorMenu(IMenuManager manager, Object selected) {
             if (selected instanceof IIpsElement & !(selected instanceof IIpsProject) | selected instanceof IFile
                     | selected instanceof IFolder) {
-                MenuManager subMm = new MenuManager(Messages.ModelExplorer_submenuRefactor);
-                subMm.add(rename);
-                subMm.add(move);
-                manager.add(subMm);
+                if (! isRootArchive(selected)) {
+                    MenuManager subMm = new MenuManager(Messages.ModelExplorer_submenuRefactor);
+                    subMm.add(rename);
+                    subMm.add(move);
+                    manager.add(subMm);
+                }
             }
         }
 

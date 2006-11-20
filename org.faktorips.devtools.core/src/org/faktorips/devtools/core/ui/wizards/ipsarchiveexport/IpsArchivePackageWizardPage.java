@@ -78,7 +78,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
     private static final String PAGE_NAME= "IpsArchivePackageWizardPage"; //$NON-NLS-1$
     
     // Stored widget contents
-    private static final String SELECTED_TREE_ELEMENTS = PAGE_NAME + ".SELECTED_TREE_ELEMENTS";
+    private static final String SELECTED_TREE_ELEMENTS = PAGE_NAME + ".SELECTED_TREE_ELEMENTS"; //$NON-NLS-1$
     private static final String STORE_DESTINATION_NAMES = PAGE_NAME + ".DESTINATION_NAMES_ID"; //$NON-NLS-1$
     private static final String OPTION_INCLUDE_JAVA_SOURCES = PAGE_NAME + ".OPTION_INCLUDE_JAVA_SOURCES"; //$NON-NLS-1$
     private static final String OPTION_INCLUDE_JAVA_BINARIES = PAGE_NAME + ".OPTION_INCLUDE_JAVA_BINARIES"; //$NON-NLS-1$
@@ -108,8 +108,8 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
     public IpsArchivePackageWizardPage(IStructuredSelection selection) {
         super(PAGE_NAME);
         this.selection = selection;
-        setTitle("Ips Archive File");
-        setDescription("Please enter a destination archive file.");
+        setTitle(Messages.IpsArchivePackageWizardPage_Title);
+        setDescription(Messages.IpsArchivePackageWizardPage_Description_EnterDestination);
         setPageComplete(false);
     }
     
@@ -199,10 +199,11 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         }
         treeViewer.setCheckedElements(selectedObjects.toArray());
         
-        includeJavaSources = toolkit.createCheckbox(composite, "Include java sources");
-        includeJavaBinaries = toolkit.createCheckbox(composite, "Include java binaries");
+        includeJavaSources = toolkit.createCheckbox(composite, Messages.IpsArchivePackageWizardPage_Label_IncludeJavaSources); 
+        includeJavaBinaries = toolkit.createCheckbox(composite, Messages.IpsArchivePackageWizardPage_Label_IncludeJavaBinaries);
+
         
-        toolkit.createLabel(composite, "");
+        toolkit.createLabel(composite, ""); //$NON-NLS-1$
         
         createDestinationGroup(composite);
         
@@ -219,7 +220,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         destinationSelectionGroup.setLayout(layout);
         destinationSelectionGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_FILL));
 
-        new Label(destinationSelectionGroup, SWT.NONE).setText("Target:");
+        new Label(destinationSelectionGroup, SWT.NONE).setText(Messages.IpsArchivePackageWizardPage_Label_Target);
 
         // destination name entry field
         destinationNamesCombo = new Combo(destinationSelectionGroup, SWT.SINGLE | SWT.BORDER);
@@ -230,7 +231,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         
         // destination browse button
         Button destinationBrowseButton= new Button(destinationSelectionGroup, SWT.PUSH);
-        destinationBrowseButton.setText("Browse"); 
+        destinationBrowseButton.setText(Messages.IpsArchivePackageWizardPage_Label_Browse);
         destinationBrowseButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
         destinationBrowseButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -303,7 +304,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
     private String getDestinationValue() {
         String destinationText= destinationNamesCombo.getText().trim();
         if (destinationText.indexOf('.') < 0)
-            destinationText += "." + IIpsArchiveEntry.FILE_EXTENSION;
+            destinationText += "." + IIpsArchiveEntry.FILE_EXTENSION; //$NON-NLS-1$
         return destinationText;
     }
     
@@ -319,18 +320,18 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         if (StringUtils.isNotEmpty(target) && destPath.isValidPath(target)){
             canFinish = true;
         } else {
-            setDescription("Please enter a valid destination archive file.");
+            setDescription(Messages.IpsArchivePackageWizardPage_Description_EnterValidDestination);
         }
         
         if (canFinish && getCheckedElements().length > 0){
             canFinish = true;
         } else if (canFinish){
             canFinish = false;
-            setDescription("Define which resources to package into the archive file.");
+            setDescription(Messages.IpsArchivePackageWizardPage_Description_DefineWhichResource);
         }
         setPageComplete(canFinish);
         if (canFinish){
-            setDescription("Export resources to an archive file on the local file system.");
+            setDescription(Messages.IpsArchivePackageWizardPage_Description);
         }
     }
 

@@ -100,7 +100,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
         monitor.beginTask(Messages.CreateIpsArchiveOperation_Task_CreateArchive, getWorkload());
         
         IFile workspaceFile = getWorkspaceFile(archive);
-        if (workspaceFile.getLocalTimeStamp()==archive.lastModified()) {
+        if (workspaceFile != null && workspaceFile.getLocalTimeStamp()==archive.lastModified()) {
             try {
                 // windows file system does not return milliseconde, only seconds
                 // if the cached timestamp is equal to the file's timestamp on disk,

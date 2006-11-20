@@ -260,11 +260,15 @@ public abstract class IpsObjectEditor extends FormEditor
 	 * and is in sync.
 	 */
 	protected boolean isSrcFileUsable() {
-		if (ipsSrcFile instanceof IpsSrcFileImmutable) {
-			return true;
-		}
-		return ipsSrcFile != null && ipsSrcFile.exists() && ipsSrcFile.getCorrespondingFile().isSynchronized(IResource.DEPTH_ONE);
-	}
+        if (ipsSrcFile instanceof IpsSrcFileImmutable) {
+            return true;
+        }
+        if (ipsSrcFile.getCorrespondingFile() == null) {
+            return false;
+        }
+        return ipsSrcFile != null && ipsSrcFile.exists()
+                && ipsSrcFile.getCorrespondingFile().isSynchronized(IResource.DEPTH_ONE);
+    }
 
 	/**
 	 * {@inheritDoc}

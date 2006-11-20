@@ -16,14 +16,20 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsArchive;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 
 /**
  * Copy of objects controlled by FaktorIps. This action activates/deactivates itself
@@ -47,6 +53,8 @@ public class IpsCopyAction extends IpsAction implements ISelectionChangedListene
 
         List copiedObjects = new ArrayList();
         List copiedResources = new ArrayList();
+        List copiedResourceLinks = new ArrayList(); 
+        
         // IIpsObjectPart part;
         for (Iterator iter = selectedObjects.iterator(); iter.hasNext();) {
             Object selected = iter.next();
@@ -56,9 +64,32 @@ public class IpsCopyAction extends IpsAction implements ISelectionChangedListene
                 // TODO to be refactored with IpsDeleteAction, when inserting and deleting of
                 // attributes is allowed. See FS#330
                 // copiedObjects.add(new IpsObjectPartState(part).toString());
-
             } else if (selected instanceof IIpsElement) {
-
+                IIpsPackageFragmentRoot root = null;
+                IIpsArchive ipsArchive =  null;
+                if (selected instanceof IIpsObject){
+                    root = ((IIpsObject)selected).getIpsPackageFragment().getRoot();
+                } else if (selected instanceof IIpsPackageFragment){
+                    root = ((IIpsPackageFragment)selected).getRoot();
+                }
+                if (root != null) {
+                    try {
+                        ipsArchive = root.getIpsArchive();
+                    } catch (CoreException e) {
+                        IpsPlugin.log(e);
+                    }
+                }
+                // copy links in an archive file
+                if (ipsArchive != null) {
+                    if (selected instanceof IIpsObject) {
+                        copiedResourceLinks.add(getResourceLinkInArchive((IIpsObject)selected));
+                        continue;
+                    } else if (selected instanceof IIpsPackageFragment){
+                        copiedResourceLinks.add(getResourceLinkInArchive((IIpsPackageFragment)selected));
+                        continue;
+                    }
+                }
+                
                 IResource resource = ((IIpsElement)selected).getEnclosingResource();
                 if (resource != null) {
                     copiedResources.add(resource);
@@ -68,9 +99,9 @@ public class IpsCopyAction extends IpsAction implements ISelectionChangedListene
             }
         }
 
-        if (copiedObjects.size() > 0 || copiedResources.size() > 0) {
-            clipboard.setContents(getDataArray(copiedObjects, copiedResources), getTypeArray(copiedObjects,
-                    copiedResources));
+        if (copiedObjects.size() > 0 || copiedResources.size() > 0 || copiedResourceLinks.size() > 0) {
+            clipboard.setContents(getDataArray(copiedObjects, copiedResources, copiedResourceLinks), getTypeArray(
+                    copiedObjects, copiedResources, copiedResourceLinks));
         }
     }
 
