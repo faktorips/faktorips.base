@@ -37,7 +37,6 @@ public class Messages extends NLS {
 	public static String TableExport_title;
 	public static String TableExportPage_title;
 	public static String TableExportPage_labelContents;
-	public static String TableExportPage_msgMissingContent;
     public static String TableExportPage_labelSrcFolder;
     public static String TableExportPage_labelPackage;
     public static String TableExportPage_labelName;
