@@ -45,6 +45,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.util.StringUtil;
 
@@ -200,6 +201,15 @@ public abstract class IpsAction extends Action {
 				IpsPlugin.log(e);
 			}
 		}
+        // for use with StructureExplorer: open TableContent contained in
+        // StructureNodes
+        if (selected instanceof IProductCmptStructureTblUsageReference) {
+            try {
+                return ((IProductCmptStructureTblUsageReference) selected).getTableContentUsage().findTableContents();
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }        
 		// for use with reference search, where elements are stored in arrays
 		if (selected instanceof Object[]) {
 			Object[] array = (Object[]) selected;
