@@ -45,9 +45,7 @@ public class NewTableContentsWizard extends NewIpsObjectWizard {
     }
     
     /** 
-     * Overridden method.
-     * @throws JavaModelException
-     * @see org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard#createFirstPage()
+     * {@inheritDoc}
      */
     protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws JavaModelException {
         page = new TableContentsPage(selection);
@@ -55,15 +53,13 @@ public class NewTableContentsWizard extends NewIpsObjectWizard {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard#createAdditionalPages()
+     * {@inheritDoc}
      */
     protected void createAdditionalPages() {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard#finishIpsObject(org.faktorips.devtools.core.model.IIpsObject)
+     * {@inheritDoc}
      */
     protected void finishIpsObject(IIpsObject pdObject) throws CoreException {
         ITableContents table = (ITableContents)pdObject;

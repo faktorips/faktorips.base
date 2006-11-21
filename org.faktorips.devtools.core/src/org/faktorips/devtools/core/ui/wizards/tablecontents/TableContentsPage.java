@@ -54,8 +54,7 @@ public class TableContentsPage extends IpsObjectPage {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.wizards.IpsObjectPage#fillNameComposite(org.eclipse.swt.widgets.Composite, UIToolkit)
+     * {@inheritDoc}
      */
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         toolkit.createFormLabel(nameComposite, Messages.TableContentsPage_labelStructure);
@@ -80,8 +79,7 @@ public class TableContentsPage extends IpsObjectPage {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.wizards.IpsObjectPage#sourceFolderChanged()
+     * {@inheritDoc}
      */
     protected void sourceFolderChanged() {
         super.sourceFolderChanged();

@@ -27,16 +27,15 @@ import org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction;
 public class OpenNewTableContentsWizardAction extends OpenNewWizardAction {
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction#createWizard()
+     * 
+     * {@inheritDoc}
      */
     public INewWizard createWizard() {
         return new NewTableContentsWizard();
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
+     * {@inheritDoc}
      */
     public void dispose() {
         // nothing to do

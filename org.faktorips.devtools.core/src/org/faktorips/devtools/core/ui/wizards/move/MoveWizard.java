@@ -77,9 +77,6 @@ public class MoveWizard extends Wizard {
 	 */
 	private String selectionError;
 	
-	/**
-	 * Creates a new wizard which can make a deep copy of the given product
-	 */
 	public MoveWizard(IStructuredSelection selection, int operation) {
 		super();
 	

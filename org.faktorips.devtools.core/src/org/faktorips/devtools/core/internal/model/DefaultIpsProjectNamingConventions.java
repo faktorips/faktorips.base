@@ -22,15 +22,33 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsProjectNamingConventions;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
+ * Default implementation of the project naming conventions.
  * 
  * @author Daniel Hohenberger
  */
 public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConventions {
 
+
+    /**
+     * {@inheritDoc}
+     */
+    public MessageList validateQualifiedIpsObjectName(IpsObjectType type, String name) throws CoreException {
+        // TODO implement
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public MessageList validateUnqualifiedIpsObjectName(IpsObjectType type, String name) throws CoreException {
+        // TODO implement and use in NewXyzWizards and RenamePage
+        return null;
+    }
 
     /**
      * A valid IPS package fragment name is either the empty String for the default package fragment or a valid
