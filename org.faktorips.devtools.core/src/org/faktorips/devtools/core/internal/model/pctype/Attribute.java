@@ -251,7 +251,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
      * {@inheritDoc}
      */
     public boolean isDerivedOrComputed() {
-        return getAttributeType() == AttributeType.DERIVED || getAttributeType() == AttributeType.COMPUTED;
+        return getAttributeType() == AttributeType.DERIVED_ON_THE_FLY || getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL;
     }
 
     /**
@@ -357,7 +357,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         if (getAttributeType() == AttributeType.CONSTANT) {
             return ConfigElementType.PRODUCT_ATTRIBUTE;
         }
-        if (getAttributeType() == AttributeType.COMPUTED || getAttributeType() == AttributeType.DERIVED) {
+        if (getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL || getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
             return ConfigElementType.FORMULA;
         }
         throw new RuntimeException("Unkown AttributeType!"); //$NON-NLS-1$

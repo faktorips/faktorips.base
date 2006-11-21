@@ -267,11 +267,11 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         }
         for (Iterator it = attributes.iterator(); it.hasNext();) {
             IAttribute attribute = (IAttribute)it.next();
-            if (attribute.getAttributeType() == AttributeType.COMPUTED) {
+            if (attribute.getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL) {
                 if (!attribute.isProductRelevant()) {
                     return true;
                 }
-            } else if (attribute.getAttributeType() == AttributeType.DERIVED) {
+            } else if (attribute.getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
                 return true;
             }
         }

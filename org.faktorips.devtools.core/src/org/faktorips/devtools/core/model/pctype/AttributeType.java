@@ -41,7 +41,7 @@ public class AttributeType extends DefaultEnumValue {
      * product developer. The IT developer defines the paramters that the product developer
      * can use.
      */
-    public final static AttributeType COMPUTED;
+    public final static AttributeType DERIVED_BY_EXPLICIT_METHOD_CALL;
 
     /**
      * Defines an attribute as being derived, that means the attrbutes value can
@@ -53,7 +53,7 @@ public class AttributeType extends DefaultEnumValue {
      * by the product developer. The IT developer defines the paramters that the product developer
      * can use. 
      */
-    public final static AttributeType DERIVED;
+    public final static AttributeType DERIVED_ON_THE_FLY;
     
     /**
      * Defines an attribute as being constant for all policy components that
@@ -65,10 +65,10 @@ public class AttributeType extends DefaultEnumValue {
     
     static {
         enumType = new DefaultEnumType("AttributeType", AttributeType.class); //$NON-NLS-1$
-        CHANGEABLE = new AttributeType(enumType, "changeable"); //$NON-NLS-1$
-        COMPUTED = new AttributeType(enumType, "computed"); //$NON-NLS-1$
-        CONSTANT = new AttributeType(enumType, "constant"); //$NON-NLS-1$
-        DERIVED = new AttributeType(enumType, "derived"); //$NON-NLS-1$
+        CHANGEABLE = new AttributeType(enumType, "changeable", Messages.getString("AttributeType.changeable")); //$NON-NLS-1$ //$NON-NLS-2$
+        CONSTANT = new AttributeType(enumType, "constant", Messages.getString("AttributeType.constant")); //$NON-NLS-1$ //$NON-NLS-2$
+        DERIVED_BY_EXPLICIT_METHOD_CALL = new AttributeType(enumType, "computed", Messages.getString("AttributeType.derived-by-explicit-method-call")); //$NON-NLS-1$ //$NON-NLS-2$
+        DERIVED_ON_THE_FLY = new AttributeType(enumType, "derived", Messages.getString("AttributeType.derived-on-the-fly")); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     public final static EnumType getEnumType() {
@@ -82,8 +82,16 @@ public class AttributeType extends DefaultEnumValue {
         return (AttributeType)enumType.getEnumValue(id);
     }
     
-    private AttributeType(DefaultEnumType type, String id) {
-        super(type, id);
+    /**
+     * Returns <code>true</code> if this is one of the derived type,
+     * otherwise <code>false</code>.
+     */
+    public boolean isDerived() {
+        return this==DERIVED_BY_EXPLICIT_METHOD_CALL || this==DERIVED_ON_THE_FLY;
+    }
+    
+    private AttributeType(DefaultEnumType type, String id, String name) {
+        super(type, id, name);
     }
     
 }
