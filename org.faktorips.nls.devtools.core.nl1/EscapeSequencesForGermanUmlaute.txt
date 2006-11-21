@@ -1,0 +1,7 @@
+Escapesequencen fuer German Umlaute:
+====================================
+
+ä   \u00E4
+ü   \u00FC
+ö   \u00F6
+ß   \u00DF
