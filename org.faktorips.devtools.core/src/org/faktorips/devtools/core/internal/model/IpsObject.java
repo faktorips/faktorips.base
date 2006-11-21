@@ -131,7 +131,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         if (content!=null) {
             content.markAsModified();
         }
-        model.ipsSrcFileHasChanged((IpsSrcFile)getIpsSrcFile());
+        model.ipsSrcFileHasChanged((IIpsSrcFile)getIpsSrcFile());
     }
     
     /**

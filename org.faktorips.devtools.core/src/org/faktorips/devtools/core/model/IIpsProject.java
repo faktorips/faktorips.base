@@ -237,6 +237,12 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots() throws CoreException;
 
     /**
+     * Searchs and returns the root folder by the indicated name.<br>
+     * Returns <code>null</code> if the root doesn't exists or an error occurs during search.
+     */
+    public IIpsPackageFragmentRoot findIpsPackageFragmentRoot(String name);
+    
+    /**
      * Returns all <code>IResource</code> objects that do not correspond to
      * <code>IpsPackageFragmentRoots</code> contained in this Project. Returns an
      * empty array if no such resources are found. <p>

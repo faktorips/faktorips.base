@@ -351,6 +351,24 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
+    public IIpsPackageFragmentRoot findIpsPackageFragmentRoot(String name) {
+        try {
+            IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
+            for (int i = 0; i < roots.length; i++) {
+                if (roots[i].getName().equals(name)){
+                    return roots[i];
+                }
+            }
+        }
+        catch (CoreException e) {
+            // nothing to do, return null
+        }
+        return null;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
 	public IResource[] getNonIpsResources() throws CoreException {
 		IContainer cont= (IContainer) getCorrespondingResource();
     	List childResources= new ArrayList(); 
