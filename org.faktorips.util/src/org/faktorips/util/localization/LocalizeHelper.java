@@ -98,7 +98,7 @@ public class LocalizeHelper {
                 if (line.indexOf("=")>0){
                     String[] props = StringUtils.split(line,"=", 2);
                     if (props.length == 2){
-                        content.put(props[0], props[1]);
+                        content.put(props[0].trim(), props[1].trim());
                     }
                 }
             }
