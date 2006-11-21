@@ -25,7 +25,10 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
+import org.faktorips.devtools.core.model.product.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
+import org.faktorips.util.StringUtil;
 
 public class ProductStructureLabelProvider implements ILabelProvider {
 
@@ -69,7 +72,9 @@ public class ProductStructureLabelProvider implements ILabelProvider {
 		else if (element instanceof IProductCmptTypeRelationReference) {
             return ((IProductCmptTypeRelationReference)element).getRelation().getImage();
         }
-		
+        else if (element instanceof IProductCmptStructureTblUsageReference) {
+            return ((IProductCmptStructureTblUsageReference)element).getTableContentUsage().getImage();
+        }   
 	    return IpsPlugin.getDefault().getImage(Messages.ProductStructureLabelProvider_undefined);
 	}
 
@@ -83,7 +88,10 @@ public class ProductStructureLabelProvider implements ILabelProvider {
 		else if (element instanceof IProductCmptTypeRelationReference) {
             return ((IProductCmptTypeRelationReference)element).getRelation().getName();
         }
+        else if (element instanceof IProductCmptStructureTblUsageReference) {
+            ITableContentUsage tcu = ((IProductCmptStructureTblUsageReference)element).getTableContentUsage();
+            return tcu.getStructureUsage() + " : " + StringUtil.unqualifiedName(tcu.getTableContentName());
+        }        
 		return Messages.ProductStructureLabelProvider_undefined;
 	}
-
 }

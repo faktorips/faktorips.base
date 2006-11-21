@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
-import org.faktorips.devtools.core.model.product.IProductCmptSturctureReference;
+import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 
 /**
@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelatio
  * @author Thorsten Guenther
  */
 public abstract class ProductCmptStructureReference implements
-		IProductCmptSturctureReference {
+		IProductCmptStructureReference {
 
 	private IProductCmptStructure structure;
 

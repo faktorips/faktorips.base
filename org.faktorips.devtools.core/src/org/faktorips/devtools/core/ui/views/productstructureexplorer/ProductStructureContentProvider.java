@@ -17,11 +17,15 @@
 
 package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
-import org.faktorips.devtools.core.model.product.IProductCmptSturctureReference;
+import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
 
 /**
  * Provides the elements of the FaktorIps-Model for the department.
@@ -56,18 +60,26 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      * {@inheritDoc}
      */
     public Object[] getChildren(Object parentElement) {
-    	if (!fShowRelationType && parentElement instanceof IProductCmptReference) {
-    		return structure.getChildProductCmptReferences((IProductCmptReference)parentElement);
+        Object[] childsForRelationProductCmpts = new Object[0];
+        List children = new ArrayList();
+    	// add product cmpt relation and product cmpts
+        if (!fShowRelationType && parentElement instanceof IProductCmptReference) {
+            childsForRelationProductCmpts = structure.getChildProductCmptReferences((IProductCmptReference)parentElement);
     	} 
     	else if (parentElement instanceof IProductCmptReference) {
-    		return structure.getChildProductCmptTypeRelationReferences((IProductCmptReference)parentElement);
+            childsForRelationProductCmpts = structure.getChildProductCmptTypeRelationReferences((IProductCmptReference)parentElement);
     	}
-    	else if (parentElement instanceof IProductCmptSturctureReference) {
-    		return structure.getChildProductCmptReferences((IProductCmptSturctureReference)parentElement);
+    	else if (parentElement instanceof IProductCmptStructureReference) {
+            childsForRelationProductCmpts = structure.getChildProductCmptReferences((IProductCmptStructureReference)parentElement);
     	}
-    	else {
-    		return new Object[0];
-    	}
+        children.addAll(Arrays.asList(childsForRelationProductCmpts));
+        
+        // add table content usages
+        if (parentElement instanceof IProductCmptReference){
+            children.addAll(Arrays.asList(structure.getChildProductCmptStructureTblUsageReference((IProductCmptReference)parentElement)));
+        }
+        
+        return children.toArray();
     }
 
     /**
@@ -84,8 +96,8 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
     	else if (element instanceof IProductCmptReference) {
     		return structure.getParentProductCmptTypeRelationReference((IProductCmptReference)element);
     	}
-    	else if (element instanceof IProductCmptSturctureReference) {
-    		return structure.getParentProductCmptReference((IProductCmptSturctureReference)element);
+    	else if (element instanceof IProductCmptStructureReference) {
+    		return structure.getParentProductCmptReference((IProductCmptStructureReference)element);
     	}
 
     	return null;

@@ -67,7 +67,7 @@ public interface IProductCmptStructure {
 	 *            <code>true</code> to get only references to
 	 *            <code>IProductCmpt</code>s.
 	 */
-	public IProductCmptSturctureReference[] toArray(boolean productCmptOnly);
+	public IProductCmptStructureReference[] toArray(boolean productCmptOnly);
 
 	/**
 	 * Returns the parent reference to the given one which refers to a
@@ -80,7 +80,7 @@ public interface IProductCmptStructure {
 	 *         the root of the structure, for example).
 	 */
 	public IProductCmptReference getParentProductCmptReference(
-			IProductCmptSturctureReference child);
+			IProductCmptStructureReference child);
 
 	/**
 	 * Returns the parent reference to the given one which refers to a
@@ -94,7 +94,7 @@ public interface IProductCmptStructure {
 	 *         structure, for example).
 	 */
 	public IProductCmptTypeRelationReference getParentProductCmptTypeRelationReference(
-			IProductCmptSturctureReference child);
+			IProductCmptStructureReference child);
 
 	/**
 	 * @param parent
@@ -103,7 +103,7 @@ public interface IProductCmptStructure {
 	 *         <code>IProductCmpt</code>s.
 	 */
 	public IProductCmptReference[] getChildProductCmptReferences(
-			IProductCmptSturctureReference parent);
+			IProductCmptStructureReference parent);
 
 	/**
 	 * @param parent
@@ -112,6 +112,15 @@ public interface IProductCmptStructure {
 	 *         <code>IProductCmptTypeRelation</code>s.
 	 */
 	public IProductCmptTypeRelationReference[] getChildProductCmptTypeRelationReferences(
-			IProductCmptSturctureReference parent);
+			IProductCmptStructureReference parent);
+
+    /**
+     * @param parent
+     *            The parent-reference to start the search for child-references.
+     * @return The found references from the given parent to
+     *         <code>IProductCmptReference</code>s.
+     */
+    public IProductCmptStructureTblUsageReference[] getChildProductCmptStructureTblUsageReference(
+            IProductCmptStructureReference parent);
 
 }

@@ -23,7 +23,7 @@ package org.faktorips.devtools.core.model.product;
  * 
  * @author Thorsten Guenther
  */
-public interface IProductCmptSturctureReference {
+public interface IProductCmptStructureReference {
 
 	/**
 	 * @return The <code>IProductCmptStructure</code> this reference belongs

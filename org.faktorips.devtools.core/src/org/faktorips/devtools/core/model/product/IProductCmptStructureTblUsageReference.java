@@ -18,15 +18,16 @@
 package org.faktorips.devtools.core.model.product;
 
 /**
- * A reference to a <code>IProductCmpt</code> used in a
- * <code>IProductCmptStructure</code>.
+ * A reference to a <code>ITableContentUsage</code> which is used in the 
+ * <code>IProductCmptStructure</code>
  * 
- * @author Thorsten Guenther
+ * @author Joerg Ortmann
  */
-public interface IProductCmptReference extends IProductCmptStructureReference {
+public interface IProductCmptStructureTblUsageReference extends IProductCmptStructureReference {
 
-	/**
-	 * @return The <code>IProductCmpt</code> this reference refers to.
-	 */
-	public IProductCmpt getProductCmpt();
+    /**
+     * @return The <code>IProductCmptTypeRelation</code> this reference refers to.
+     */
+    public ITableContentUsage getTableContentUsage();
+    
 }

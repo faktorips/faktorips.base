@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelatio
  * 
  * @author Thorsten Guenther
  */
-public interface IProductCmptTypeRelationReference extends IProductCmptSturctureReference {
+public interface IProductCmptTypeRelationReference extends IProductCmptStructureReference {
 
 	/**
 	 * @return The <code>IProductCmptTypeRelation</code> this reference refers to.

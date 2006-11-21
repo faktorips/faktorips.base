@@ -43,7 +43,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
-import org.faktorips.devtools.core.model.product.IProductCmptSturctureReference;
+import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
@@ -259,9 +259,9 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         }
     }
 
-    public IProductCmptSturctureReference[] getCheckedNodes() {
-        return (IProductCmptSturctureReference[])Arrays.asList(tree.getCheckedElements()).toArray(
-                new IProductCmptSturctureReference[0]);
+    public IProductCmptStructureReference[] getCheckedNodes() {
+        return (IProductCmptStructureReference[])Arrays.asList(tree.getCheckedElements()).toArray(
+                new IProductCmptStructureReference[0]);
     }
 
     /**
@@ -311,12 +311,12 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
         // we have to check or uncheck all items which represent the same ipselement
         // because the decision of copy or not copy is global.
-        IProductCmptSturctureReference changed = (IProductCmptSturctureReference)event.getElement();
+        IProductCmptStructureReference changed = (IProductCmptStructureReference)event.getElement();
         IProductCmptReference root = structure.getRoot();
 
         if (!(changed instanceof IProductCmptReference)) {
             IProductCmptTypeRelationReference[] children = structure
-                    .getChildProductCmptTypeRelationReferences((IProductCmptSturctureReference)event.getElement());
+                    .getChildProductCmptTypeRelationReferences((IProductCmptStructureReference)event.getElement());
             for (int i = 0; i < children.length; i++) {
                 setCheckState(children[i].getRelation(), new IProductCmptReference[] { root }, event.getChecked());
             }
@@ -329,7 +329,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         setPageComplete();
     }
 
-    private void setCheckState(IIpsElement toCompareWith, IProductCmptSturctureReference[] nodes, boolean checked) {
+    private void setCheckState(IIpsElement toCompareWith, IProductCmptStructureReference[] nodes, boolean checked) {
         if (nodes instanceof IProductCmptReference[]) {
             for (int i = 0; i < nodes.length; i++) {
                 setCheckState(toCompareWith, structure.getChildProductCmptTypeRelationReferences(nodes[i]), checked);

@@ -55,7 +55,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
-import org.faktorips.devtools.core.model.product.IProductCmptSturctureReference;
+import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureContentProvider;
@@ -460,7 +460,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
      * Adds an error message for the given product. If a message allready exists, the new message is
      * appended.
      */
-    private void addMessage(IProductCmptSturctureReference product, String msg) {
+    private void addMessage(IProductCmptStructureReference product, String msg) {
         if (msg == null || msg.length() == 0) {
             return;
         }
@@ -513,14 +513,14 @@ public class ReferenceAndPreviewPage extends WizardPage {
     /**
      * Returns whether an error message exists for the given object or not.
      */
-    private boolean isInError(IProductCmptSturctureReference object) {
+    private boolean isInError(IProductCmptStructureReference object) {
         return errorElements.containsKey(object);
     }
 
     /**
      * Returns the error message for the given object or <code>null</code>, if no message exists.
      */
-    private String getErrorMessage(IProductCmptSturctureReference object) {
+    private String getErrorMessage(IProductCmptStructureReference object) {
         return (String)errorElements.get(object);
     }
 
@@ -556,7 +556,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
                 if (!tree.getChecked(element)) {
                     return IpsPlugin.getDefault().getImage("LinkProductCmpt.gif"); //$NON-NLS-1$
                 }
-                if (isInError((IProductCmptSturctureReference)element)) {
+                if (isInError((IProductCmptStructureReference)element)) {
                     return IpsPlugin.getDefault().getImage("error_tsk.gif"); //$NON-NLS-1$
                 }
             }
@@ -571,9 +571,9 @@ public class ReferenceAndPreviewPage extends WizardPage {
                 if (tree.getChecked(element)) {
                     name = getNewName(name, (IProductCmpt)wrapped);
                 }
-                if (isInError((IProductCmptSturctureReference)element)) {
+                if (isInError((IProductCmptStructureReference)element)) {
                     name = name + Messages.ReferenceAndPreviewPage_errorLabelInsert
-                            + getErrorMessage((IProductCmptSturctureReference)element);
+                            + getErrorMessage((IProductCmptStructureReference)element);
                 }
                 return name;
             }
@@ -609,19 +609,19 @@ public class ReferenceAndPreviewPage extends WizardPage {
         }
 
         public Object[] getChildren(Object parentElement) {
-            IProductCmptSturctureReference[] children = (IProductCmptSturctureReference[])super
+            IProductCmptStructureReference[] children = (IProductCmptStructureReference[])super
                     .getChildren(parentElement);
             ArrayList result = new ArrayList();
             for (int i = 0; i < children.length; i++) {
                 if (isChecked(children[i])
-                        || (!(children[i] instanceof IProductCmptReference) && !isUncheckedSubtree(new IProductCmptSturctureReference[] { children[i] }))) {
+                        || (!(children[i] instanceof IProductCmptReference) && !isUncheckedSubtree(new IProductCmptStructureReference[] { children[i] }))) {
                     result.add(children[i]);
                 }
             }
-            return (IProductCmptSturctureReference[])result.toArray(new IProductCmptSturctureReference[result.size()]);
+            return (IProductCmptStructureReference[])result.toArray(new IProductCmptStructureReference[result.size()]);
         }
 
-        private boolean isUncheckedSubtree(IProductCmptSturctureReference[] children) {
+        private boolean isUncheckedSubtree(IProductCmptStructureReference[] children) {
             boolean unchecked = true;
             for (int i = 0; i < children.length && unchecked; i++) {
                 if (children[i] instanceof IProductCmptReference) {
@@ -643,7 +643,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
                 return null;
             }
 
-            while (!isChecked((IProductCmptSturctureReference)parent)) {
+            while (!isChecked((IProductCmptStructureReference)parent)) {
                 parent = super.getParent(parent);
             }
             return parent;
@@ -667,14 +667,14 @@ public class ReferenceAndPreviewPage extends WizardPage {
             checkedNodes = null;
         }
 
-        public void setCheckedNodes(IProductCmptSturctureReference[] checked) {
+        public void setCheckedNodes(IProductCmptStructureReference[] checked) {
             checkedNodes = new Hashtable();
             for (int i = 0; i < checked.length; i++) {
                 checkedNodes.put(checked[i], checked[i]);
             }
         }
 
-        private boolean isChecked(IProductCmptSturctureReference node) {
+        private boolean isChecked(IProductCmptStructureReference node) {
             return checkedNodes.get(node) != null;
         }
     }

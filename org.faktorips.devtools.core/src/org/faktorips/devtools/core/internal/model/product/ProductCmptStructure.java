@@ -35,8 +35,10 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
-import org.faktorips.devtools.core.model.product.IProductCmptSturctureReference;
+import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
+import org.faktorips.devtools.core.model.product.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.util.ArgumentCheck;
 
@@ -105,19 +107,20 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	 */
 	public void refresh() throws CycleException {
 	    this.root = buildNode(root.getProductCmpt(), null);
+        this.workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProductCmptSturctureReference[] toArray(boolean productCmptOnly) {
+	public IProductCmptStructureReference[] toArray(boolean productCmptOnly) {
 		List result = new ArrayList();
 		addChildrenToList(root, result, productCmptOnly);
 		
 		if (productCmptOnly) {
 			return (IProductCmptReference[])result.toArray(new IProductCmptReference[result.size()]);
 		}
-		return (IProductCmptSturctureReference[])result.toArray(new IProductCmptSturctureReference[result.size()]);
+		return (IProductCmptStructureReference[])result.toArray(new IProductCmptStructureReference[result.size()]);
 	}
 	
 	/**
@@ -127,7 +130,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	 * @param list The list to add the children to.
 	 * @param productCmptOnly <code>true</code> to only get references to <code>IProductCmpt</code>s.
 	 */
-	private void addChildrenToList(IProductCmptSturctureReference parent, List list, boolean productCmptOnly) {
+	private void addChildrenToList(IProductCmptStructureReference parent, List list, boolean productCmptOnly) {
 		if (!productCmptOnly) {
 			addChildrenToList(getChildProductCmptTypeRelationReferences(parent), list, productCmptOnly);
 		}
@@ -141,7 +144,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	 * @param list The list to add the chlidren to.
 	 * @param productCmptOnly <code>true</code> to only get references to <code>IProductCmpt</code>s.
 	 */
-	private void addChildrenToList(IProductCmptSturctureReference[] children, List list, boolean productCmptOnly) {
+	private void addChildrenToList(IProductCmptStructureReference[] children, List list, boolean productCmptOnly) {
 		for (int i = 0; i < children.length; i++) {
 			list.add(children[i]);
 			addChildrenToList(children[i], list, productCmptOnly);
@@ -244,6 +247,12 @@ public class ProductCmptStructure implements IProductCmptStructure {
 				node.setChildren(buildChildNodes((IProductCmptRelation[])relationsList.toArray(rels), node, type));
 				children.add(node);
 			}
+            
+            ITableContentUsage[] tcus = activeGeneration.getTableContentUsages();
+            for (int i = 0; i < tcus.length; i++) {
+                ProductCmptStructureReference node = new ProductCmptStructureTblUsageReference(this, parent, tcus[i]);
+                children.add(node);
+            }
 		}
 		
 		ProductCmptStructureReference[] result = new ProductCmptStructureReference[children.size()];
@@ -253,7 +262,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProductCmptReference getParentProductCmptReference(IProductCmptSturctureReference child) {
+	public IProductCmptReference getParentProductCmptReference(IProductCmptStructureReference child) {
 		ProductCmptStructureReference ref = (ProductCmptStructureReference)child;
 		ProductCmptStructureReference result = ref.getParent();
 		if (result instanceof IProductCmptReference) {
@@ -268,7 +277,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProductCmptTypeRelationReference getParentProductCmptTypeRelationReference(IProductCmptSturctureReference child) {
+	public IProductCmptTypeRelationReference getParentProductCmptTypeRelationReference(IProductCmptStructureReference child) {
 		ProductCmptStructureReference ref = (ProductCmptStructureReference)child;
 		ProductCmptStructureReference result = ref.getParent();
 		if (result instanceof IProductCmptTypeRelationReference) {
@@ -283,32 +292,37 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProductCmptReference[] getChildProductCmptReferences(IProductCmptSturctureReference parent) {
+	public IProductCmptReference[] getChildProductCmptReferences(IProductCmptStructureReference parent) {
 		if (parent instanceof IProductCmptTypeRelationReference) {
-			IProductCmptSturctureReference[] children = ((ProductCmptTypeRelationReference)parent).getChildren();
-			IProductCmptReference[] result = new IProductCmptReference[children.length];
-			System.arraycopy(children, 0, result, 0, children.length);
-			return result;
-		}
-		else {
-			ProductCmptStructureReference children[] = ((ProductCmptReference)parent).getChildren();
-			ArrayList result = new ArrayList();
-			for (int i = 0; i < children.length; i++) {
-				result.addAll(Arrays.asList(children[i].getChildren()));
-			}
-			return (IProductCmptReference[])result.toArray(new IProductCmptReference[result.size()]);
-		}
+            IProductCmptStructureReference[] children = ((ProductCmptTypeRelationReference)parent).getChildren();
+            IProductCmptReference[] result = new IProductCmptReference[children.length];
+            System.arraycopy(children, 0, result, 0, children.length);
+            return result;
+        } else if (parent instanceof ProductCmptStructureTblUsageReference) {
+            return new IProductCmptReference[0];
+        } else {
+            ProductCmptStructureReference children[] = ((ProductCmptReference)parent).getChildren();
+            ArrayList result = new ArrayList();
+            for (int i = 0; i < children.length; i++) {
+                result.addAll(Arrays.asList(children[i].getChildren()));
+            }
+            return (IProductCmptReference[])result.toArray(new IProductCmptReference[result.size()]);
+        }
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProductCmptTypeRelationReference[] getChildProductCmptTypeRelationReferences(IProductCmptSturctureReference parent) {
+	public IProductCmptTypeRelationReference[] getChildProductCmptTypeRelationReferences(IProductCmptStructureReference parent) {
 		if (parent instanceof IProductCmptReference) {
-			IProductCmptSturctureReference[] children = ((ProductCmptReference)parent).getChildren();
-			IProductCmptTypeRelationReference[] result = new IProductCmptTypeRelationReference[children.length];
-			System.arraycopy(children, 0, result, 0, children.length);
-			return result;
+			List relationReferences = new ArrayList();
+            IProductCmptStructureReference[] children = ((ProductCmptReference)parent).getChildren();
+            for (int i = 0; i < children.length; i++) {
+                if (children[i] instanceof IProductCmptTypeRelationReference){
+                    relationReferences.add(children[i]);
+                }
+            }
+			return (IProductCmptTypeRelationReference[]) relationReferences.toArray(new IProductCmptTypeRelationReference[relationReferences.size()]);
 		}
 		else {
 			ProductCmptStructureReference children[] = ((ProductCmptTypeRelationReference)parent).getChildren();
@@ -318,5 +332,20 @@ public class ProductCmptStructure implements IProductCmptStructure {
 			}
 			return (IProductCmptTypeRelationReference[])result.toArray(new IProductCmptTypeRelationReference[result.size()]);
 		}
-	}   
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public IProductCmptStructureTblUsageReference[] getChildProductCmptStructureTblUsageReference(IProductCmptStructureReference parent) {
+        List tblUsageReferences = new ArrayList();
+        IProductCmptStructureReference[] children = ((ProductCmptReference)parent).getChildren();
+        for (int i = 0; i < children.length; i++) {
+            if (children[i] instanceof ProductCmptStructureTblUsageReference) {
+                tblUsageReferences.add(children[i]);
+            }
+        }
+        return (IProductCmptStructureTblUsageReference[])tblUsageReferences
+                .toArray(new IProductCmptStructureTblUsageReference[tblUsageReferences.size()]);
+    }
 }

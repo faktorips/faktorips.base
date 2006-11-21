@@ -19,19 +19,22 @@ package org.faktorips.devtools.core.internal.model.product;
 
 import java.util.GregorianCalendar;
 
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.IProductCmptStructureTblUsageReference;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 
 /**
  * Tests for product component structure.
@@ -57,9 +60,15 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         // Build policy component types
         IPolicyCmptType policyCmptType = (IPolicyCmptType)newIpsObject(root, IpsObjectType.POLICY_CMPT_TYPE, "policy.TestPolicy");
         policyCmptType.setUnqualifiedProductCmptType("dummy1");
-
+        ITableStructureUsage tsu1 = policyCmptType.newTableStructureUsage();
+        tsu1.setRoleName("usage1");
+        tsu1.addTableStructure("tableStructure1");
+        
         IPolicyCmptType policyCmptTypeTarget = (IPolicyCmptType)newIpsObject(root, IpsObjectType.POLICY_CMPT_TYPE, "policy.TestTargetPolicy");
         policyCmptType.setUnqualifiedProductCmptType("dummy2");
+        ITableStructureUsage tsu2 = policyCmptType.newTableStructureUsage();
+        tsu2.setRoleName("usage2");
+        tsu2.addTableStructure("tableStructure2");
         
         IRelation relation = policyCmptType.newRelation();
         relation.setTargetRoleSingularProductSide("TestRelation");
@@ -72,11 +81,17 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         productCmpt.setPolicyCmptType(policyCmptType.getQualifiedName());
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
         generation.setValidFrom(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
-
+        ITableContentUsage tcu = generation.newTableContentUsage();
+        tcu.setStructureUsage(tsu1.getRoleName());
+        tcu.setTableContentName("tableContent1");
+        
         productCmptTarget = (IProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT, "products.TestProductTarget");
         productCmptTarget.setPolicyCmptType(policyCmptTypeTarget.getQualifiedName());
         IProductCmptGeneration targetGen = (IProductCmptGeneration)productCmptTarget.newGeneration();
         targetGen.setValidFrom(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+        tcu = targetGen.newTableContentUsage();
+        tcu.setStructureUsage(tsu2.getRoleName());
+        tcu.setTableContentName("tableContent2");
         
         IProductCmptRelation cmptRelation = generation.newRelation(relation.getName());
         cmptRelation.setTarget(productCmptTarget.getQualifiedName());
@@ -123,5 +138,13 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
 		} catch (CycleException e) {
 			// success
 		} 
+    }
+    
+    public void testTblContentUsageReferences(){
+        IProductCmptStructureTblUsageReference[] ptsus = structure
+                .getChildProductCmptStructureTblUsageReference(structure.getRoot());
+        assertEquals(1, ptsus.length);
+        ITableContentUsage tcu = ptsus[0].getTableContentUsage();
+        assertEquals("tableContent1", tcu.getTableContentName());
     }
 }

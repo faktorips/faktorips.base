@@ -105,7 +105,7 @@ public class TableContentUsage extends IpsObjectPart implements ITableContentUsa
      * {@inheritDoc}
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage("TableContentUsage.gif"); //$NON-NLS-1$
+        return IpsPlugin.getDefault().getImage("TableContentsUsage.gif"); //$NON-NLS-1$
     }
 
     /**
