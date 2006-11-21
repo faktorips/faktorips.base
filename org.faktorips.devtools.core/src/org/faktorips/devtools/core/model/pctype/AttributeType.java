@@ -65,10 +65,10 @@ public class AttributeType extends DefaultEnumValue {
     
     static {
         enumType = new DefaultEnumType("AttributeType", AttributeType.class); //$NON-NLS-1$
-        CHANGEABLE = new AttributeType(enumType, "changeable", Messages.getString("AttributeType.changeable")); //$NON-NLS-1$ //$NON-NLS-2$
-        CONSTANT = new AttributeType(enumType, "constant", Messages.getString("AttributeType.constant")); //$NON-NLS-1$ //$NON-NLS-2$
-        DERIVED_BY_EXPLICIT_METHOD_CALL = new AttributeType(enumType, "computed", Messages.getString("AttributeType.derived-by-explicit-method-call")); //$NON-NLS-1$ //$NON-NLS-2$
-        DERIVED_ON_THE_FLY = new AttributeType(enumType, "derived", Messages.getString("AttributeType.derived-on-the-fly")); //$NON-NLS-1$ //$NON-NLS-2$
+        CHANGEABLE = new AttributeType(enumType, "changeable", Messages.AttributeType_changeable); //$NON-NLS-1$
+        CONSTANT = new AttributeType(enumType, "constant", Messages.AttributeType_constant); //$NON-NLS-1$ 
+        DERIVED_BY_EXPLICIT_METHOD_CALL = new AttributeType(enumType, "computed", Messages.AttributeType_derived_by_explicit_method_call); //$NON-NLS-1$
+        DERIVED_ON_THE_FLY = new AttributeType(enumType, "derived", Messages.AttributeType_derived_on_the_fly); //$NON-NLS-1$
     }
     
     public final static EnumType getEnumType() {
