@@ -31,13 +31,15 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
  */
 public class UpdateDependencyGraphTest extends AbstractIpsPluginTest {
 
-    /**
-     * 
-     */
     public UpdateDependencyGraphTest() {
         super();
     }
-    
+
+    /**
+     * Tests if the build updates the dependencygraph correctly.
+     * 
+     * @throws CoreException
+     */
     public void test() throws CoreException {
         IIpsProject project = newIpsProject();
         IPolicyCmptType typeA = newPolicyCmptType(project, "A");

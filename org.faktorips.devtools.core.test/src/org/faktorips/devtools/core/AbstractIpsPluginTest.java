@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -409,7 +410,21 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 		return file.getIpsObject();
 	}
 
-	/**
+    /**
+     * Triggers a full build of the workspace.
+     */
+    protected void fullBuild() throws CoreException {
+        ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
+    }
+    
+    /**
+     * Triggers an incremental build of the workspace.
+     */
+    protected void incrementalBuild() throws CoreException {
+        ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+    }
+
+    /**
 	 * Expects an array of classes that comply to the enum type pattern. The
 	 * enum types are registered to the provided IpsProject as definded
 	 * datatypes. The qualifiedName of a registered datatype is the unqualified
