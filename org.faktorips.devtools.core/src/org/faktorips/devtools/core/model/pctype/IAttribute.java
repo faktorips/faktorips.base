@@ -204,9 +204,9 @@ public interface IAttribute extends IMember, IValueDatatypeProvider {
     public boolean isChangeable();
     
     /**
-     * Returns true if this attribute is derivede or computed.
+     * Returns <code>true</code> if this attribute is derived, otherwise <code>false</code>.
      */
-    public boolean isDerivedOrComputed();
+    public boolean isDerived();
     
     /**
      * Returns the type of the product configuration element this attribute

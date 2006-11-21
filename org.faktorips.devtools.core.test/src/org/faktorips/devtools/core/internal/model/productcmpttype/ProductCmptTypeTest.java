@@ -121,11 +121,11 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest {
 		assertEquals(0, attributes.length);
 
 		a0.setProductRelevant(true);
-		a0.setAttributeType(AttributeType.COMPUTED);
+		a0.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
 		attributes = productCmptType.getAttributes();
 		assertEquals(0, attributes.length);
 		
-		a0.setAttributeType(AttributeType.DERIVED);
+		a0.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
 		attributes = productCmptType.getAttributes();
 		assertEquals(0, attributes.length);
 		

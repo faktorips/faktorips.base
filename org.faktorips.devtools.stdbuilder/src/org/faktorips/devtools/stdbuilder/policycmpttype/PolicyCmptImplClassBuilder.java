@@ -1613,7 +1613,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         IAttribute[] attributes = getPolicyCmptType().getAttributes();
         for (int i = 0; i < attributes.length; i++) {
             IAttribute a = attributes[i];
-            if (a.getAttributeType()==AttributeType.DERIVED 
+            if (a.getAttributeType()==AttributeType.DERIVED_ON_THE_FLY 
                     || a.getAttributeType()==AttributeType.CONSTANT
                     || !a.isValid()) {
                 continue;

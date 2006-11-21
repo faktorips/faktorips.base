@@ -171,7 +171,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     	attrA.setName("attrA");
     	attrA.setDatatype(Datatype.STRING.getQualifiedName());
     	attrA.setProductRelevant(true);
-    	attrA.setAttributeType(AttributeType.COMPUTED);
+    	attrA.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
     	Parameter[] parameter = new Parameter[2];
     	parameter[0] = new Parameter(0, "paraB", b.getQualifiedName());
     	parameter[1] = new Parameter(1, "paraC", c.getQualifiedName());

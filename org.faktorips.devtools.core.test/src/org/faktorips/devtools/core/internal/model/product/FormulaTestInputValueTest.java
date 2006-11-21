@@ -78,7 +78,7 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         IPolicyCmptType pcType = newPolicyCmptType(ipsProject, "policyCmptType1");
         IAttribute attribute = pcType.newAttribute();
         attribute.setName("attribute1");
-        attribute.setAttributeType(AttributeType.COMPUTED);
+        attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         attribute.setName("premium");
         Parameter[] params = new Parameter[]{new Parameter(0, "police", pcType.getQualifiedName())};
@@ -103,7 +103,7 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         IPolicyCmptType pcType = newPolicyCmptType(ipsProject, "policyCmptType1");
         IAttribute attribute = pcType.newAttribute();
         attribute.setName("attribute1");
-        attribute.setAttributeType(AttributeType.COMPUTED);
+        attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         Parameter[] params = new Parameter[3];
         params[0] = new Parameter(0, "param1", Datatype.INTEGER.getQualifiedName());
@@ -138,7 +138,7 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         IPolicyCmptType pcType = newPolicyCmptType(ipsProject, "policyCmptType1");
         IAttribute attribute = pcType.newAttribute();
         attribute.setName("attribute1");
-        attribute.setAttributeType(AttributeType.COMPUTED);
+        attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         Parameter[] params = new Parameter[1];
         params[0] = new Parameter(0, "param1", Datatype.INTEGER.getQualifiedName());

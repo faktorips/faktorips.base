@@ -67,7 +67,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         attr2.setAttributeType(AttributeType.CHANGEABLE);
         attr3= polCmptType.newAttribute();
         attr3.setDatatype("float");
-        attr3.setAttributeType(AttributeType.COMPUTED);
+        attr3.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
 
         folder = ((IProject)proj.getCorrespondingResource()).getFolder("testfolder");
         folder.create(true, false, null);

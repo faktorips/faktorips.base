@@ -99,7 +99,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	ce.setPcTypeAttribute("formulaTest");
     	IAttribute attr = policyCmptType.newAttribute();
     	attr.setName("formulaTest");
-    	attr.setAttributeType(AttributeType.DERIVED);
+    	attr.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
     	
     	MessageList ml = ce.validate();
     	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_FORMULA));
@@ -139,7 +139,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	ce.setPcTypeAttribute("formulaTest");
     	IAttribute attr = policyCmptType.newAttribute();
     	attr.setName("formulaTest");
-    	attr.setAttributeType(AttributeType.DERIVED);
+    	attr.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
     	attr.setDatatype("Money");
     	policyCmptType.getIpsSrcFile().save(true, null);
     	
@@ -160,7 +160,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	ce.setPcTypeAttribute("formulaTest");
     	IAttribute attr = policyCmptType.newAttribute();
     	attr.setName("formulaTest");
-    	attr.setAttributeType(AttributeType.DERIVED);
+    	attr.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
     	attr.setDatatype("Money");
     	policyCmptType.getIpsSrcFile().save(true, null);
     	
@@ -466,7 +466,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         IPolicyCmptType pcType = newPolicyCmptType(project, "policyCmptType1");
         IAttribute attribute = pcType.newAttribute();
         attribute.setName("attribute1");
-        attribute.setAttributeType(AttributeType.COMPUTED);
+        attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         Parameter[] params = new Parameter[3];
         params[0] = new Parameter(0, "param1", Datatype.INTEGER.getQualifiedName());

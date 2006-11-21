@@ -209,7 +209,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             if (a.validate().containsErrorMsg()) {
                 continue;
             }
-            if (!a.isProductRelevant() || a.isDerivedOrComputed()) {
+            if (!a.isProductRelevant() || a.isDerived()) {
                 continue;
             }
             if (attributeFound == false) {
@@ -1121,7 +1121,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         protected boolean visit(IPolicyCmptType type) {
             IAttribute[] attributes = type.getAttributes();
             for (int i = 0; i < attributes.length; i++) {
-                if (attributes[i].isDerivedOrComputed() && attributes[i].isProductRelevant()) {
+                if (attributes[i].isDerived() && attributes[i].isProductRelevant()) {
                     // note: type can't be an instanceof ProductCmptType, as derived or computed policy cmpt type attributes
                     // aren't  not product cmpt attributes!
                     modifier = modifier | Modifier.ABSTRACT;

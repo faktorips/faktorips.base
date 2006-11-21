@@ -88,7 +88,7 @@ public class ConfigElementPluginTest extends AbstractIpsPluginTest {
     public void testValidate_Formula() throws CoreException {
         // config element based on computed attribute with no parameters
         IAttribute a = pcType.newAttribute();
-        a.setAttributeType(AttributeType.DERIVED);
+        a.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
         a.setName("premium");
         a.setDatatype("unknown datatype");
         a.setFormulaParameters(new Parameter[0]);

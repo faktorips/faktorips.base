@@ -208,7 +208,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         bAttribute.setDatatype("String");
         IAttribute anAttribute = a.newAttribute();
         anAttribute.setName("anAttribute");
-        anAttribute.setAttributeType(AttributeType.COMPUTED);
+        anAttribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         anAttribute.setDatatype("String");
         Parameter p = new Parameter(0, "b", b.getQualifiedName());
         anAttribute.setFormulaParameters(new Parameter[]{p});

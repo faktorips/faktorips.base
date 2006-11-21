@@ -250,8 +250,8 @@ public class Attribute extends IpsObjectPart implements IAttribute {
     /**
      * {@inheritDoc}
      */
-    public boolean isDerivedOrComputed() {
-        return getAttributeType() == AttributeType.DERIVED_ON_THE_FLY || getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL;
+    public boolean isDerived() {
+        return getAttributeType().isDerived();
     }
 
     /**
@@ -422,7 +422,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
             }
         }
 
-        if (isDerivedOrComputed() && isProductRelevant() && parameters.length == 0) {
+        if (isDerived() && isProductRelevant() && parameters.length == 0) {
             String text = Messages.Attribute_msgNoInputparams;
             result.add(new Message(MSGCODE_NO_INPUT_PARAMETERS, text, Message.WARNING, this)); //$NON-NLS-1$
         }
@@ -503,7 +503,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
     }
 
     private void validateParameter(Parameter param, MessageList result) throws CoreException {
-        if (!isDerivedOrComputed() && !isProductRelevant()) {
+        if (!isDerived() && !isProductRelevant()) {
             String text = Messages.Attribute_msgNoParamsNeccessary;
             result.add(new Message(MSGCODE_NO_PARAMETERS_NECCESSARY, text, Message.WARNING, param)); //$NON-NLS-1$
         }

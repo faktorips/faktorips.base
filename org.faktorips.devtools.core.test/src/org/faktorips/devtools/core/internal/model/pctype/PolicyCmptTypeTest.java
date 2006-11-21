@@ -127,12 +127,12 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
 
         // attribute
         IAttribute attribute = pcType.newAttribute();
-        attribute.setAttributeType(AttributeType.COMPUTED);
+        attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         attribute.setProductRelevant(true);
         assertFalse(pcType.isExtensionCompilationUnitGenerated());
         attribute.setProductRelevant(false);
         assertTrue(pcType.isExtensionCompilationUnitGenerated());
-        attribute.setAttributeType(AttributeType.DERIVED);
+        attribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
         assertTrue(pcType.isExtensionCompilationUnitGenerated());
         attribute.setAttributeType(AttributeType.CHANGEABLE);
         assertFalse(pcType.isExtensionCompilationUnitGenerated());

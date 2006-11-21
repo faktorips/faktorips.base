@@ -55,7 +55,7 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
         project.setProperties(props);
         type = newPolicyCmptType(project, "Policy");
         IAttribute a = type.newAttribute();
-        a.setAttributeType(AttributeType.COMPUTED);
+        a.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         a.setDatatype(Datatype.INTEGER.getQualifiedName());
         a.setName("age");
         a.setProductRelevant(true);

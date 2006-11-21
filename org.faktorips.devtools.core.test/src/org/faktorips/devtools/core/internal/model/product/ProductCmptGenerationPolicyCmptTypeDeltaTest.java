@@ -156,7 +156,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         
         IAttribute a1 = pcType.newAttribute();
         a1.setName("a1");
-        a1.setAttributeType(AttributeType.COMPUTED);
+        a1.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         IAttribute a2 = supertype.newAttribute();
         a2.setName("a2");
         a2.setAttributeType(AttributeType.CHANGEABLE);

@@ -262,7 +262,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
             generateCodeForChangeableAttribute(attribute, datatypeHelper, fieldsBuilder, methodsBuilder);
         } else if (attribute.getAttributeType()==AttributeType.CONSTANT) {
             generateCodeForConstantAttribute(attribute, datatypeHelper, fieldsBuilder, methodsBuilder);
-        } else if (attribute.isDerivedOrComputed()) {
+        } else if (attribute.isDerived()) {
             generateCodeForComputedAndDerivedAttribute(attribute, datatypeHelper, fieldsBuilder, methodsBuilder);
         } else {
             throw new RuntimeException("Attribute " + attribute +" has an unknown type " + attribute.getAttributeType());

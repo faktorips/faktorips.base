@@ -171,7 +171,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         
         PolicyCmptType type = newPolicyCmptType(ipsProject, "type");
         IAttribute attr = type.newAttribute();
-        attr.setAttributeType(AttributeType.COMPUTED);
+        attr.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         attr.setFormulaParameters(new Parameter[] {param});
         processor = new FormulaCompletionProcessor(attr, ipsProject, compiler);
         

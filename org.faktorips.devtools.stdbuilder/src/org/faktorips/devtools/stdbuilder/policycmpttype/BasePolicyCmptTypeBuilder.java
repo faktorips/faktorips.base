@@ -60,9 +60,9 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             generateCodeForChangeableAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
         } else if (type == AttributeType.CONSTANT) {
             generateCodeForConstantAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
-        } else if (type == AttributeType.DERIVED) {
+        } else if (type == AttributeType.DERIVED_ON_THE_FLY) {
             generateCodeForDerivedAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
-        } else if (type == AttributeType.COMPUTED) {
+        } else if (type == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL) {
             generateCodeForComputedAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
         } else {
             throw new RuntimeException("Unkown attribute type " + type);

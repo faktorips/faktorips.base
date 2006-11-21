@@ -1071,7 +1071,7 @@ public class TestCaseTypeSection extends IpsSection  {
                 if (testPolicyCmptTypeParam.isCombinedParameter()){
                     // if the type of the parent is combined 
                     //   create a new expected if attribute is derived or computed
-                    if (modelAttribute.isDerivedOrComputed())
+                    if (modelAttribute.isDerived())
                         testAttribute = testPolicyCmptTypeParam.newExpectedResultTestAttribute();
                     else
                         testAttribute = testPolicyCmptTypeParam.newInputTestAttribute();
@@ -1933,7 +1933,7 @@ public class TestCaseTypeSection extends IpsSection  {
         List attributesInDialog = new ArrayList();
         for (int i = 0; i < attributes.length; i++) {
             // add only changeable or derived or computed attributes
-            if (attributes[i].isChangeable() || attributes[i].isDerivedOrComputed()) {
+            if (attributes[i].isChangeable() || attributes[i].isDerived()) {
                 attributesInDialog.add(attributes[i]);
             }
         }

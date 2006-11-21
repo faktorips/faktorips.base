@@ -122,7 +122,7 @@ public class ProductCmptType implements IProductCmptType {
 		IAttribute[] attributes = policyCmptType.getAttributes();
 		List result = new ArrayList(attributes.length);
 		for (int i = 0; i < attributes.length; i++) {
-			if (attributes[i].isProductRelevant() && !attributes[i].isDerivedOrComputed()) {
+			if (attributes[i].isProductRelevant() && !attributes[i].isDerived()) {
 				result.add(attributes[i]);
 			}
 		}

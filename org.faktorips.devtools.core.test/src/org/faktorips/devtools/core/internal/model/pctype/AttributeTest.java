@@ -76,10 +76,10 @@ public class AttributeTest extends AbstractIpsPluginTest {
         attribute.setAttributeType(AttributeType.CONSTANT);
         assertEquals(ConfigElementType.PRODUCT_ATTRIBUTE, attribute.getConfigElementType());
 
-        attribute.setAttributeType(AttributeType.COMPUTED);
+        attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         assertEquals(ConfigElementType.FORMULA, attribute.getConfigElementType());
         
-        attribute.setAttributeType(AttributeType.DERIVED);
+        attribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
         assertEquals(ConfigElementType.FORMULA, attribute.getConfigElementType());
     }
     
@@ -129,7 +129,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertEquals("premium", attribute.getName());
         assertEquals("money", attribute.getDatatype());
         assertFalse(attribute.isProductRelevant());
-        assertEquals(AttributeType.COMPUTED, attribute.getAttributeType());
+        assertEquals(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL, attribute.getAttributeType());
         assertEquals("42EUR", attribute.getDefaultValue());
         Parameter[] params = attribute.getFormulaParameters();
         assertEquals(2, params.length);
@@ -241,7 +241,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
      * @throws CoreException 
      */
     public void testValidate_ParamOfCalculatedAttributeRefersToTheTypeItIsDefinedIn() throws CoreException {
-    	attribute.setAttributeType(AttributeType.COMPUTED);
+    	attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
     	attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
     	attribute.setName("premium");
     	Parameter[] params = new Parameter[]{new Parameter(0, "police", pcType.getQualifiedName())};
@@ -344,7 +344,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     	MessageList ml = attribute.validate();
     	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_NO_INPUT_PARAMETERS));
     	
-    	attribute.setAttributeType(AttributeType.COMPUTED);
+    	attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
     	ml = attribute.validate();
     	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_NO_INPUT_PARAMETERS));
     }
@@ -361,7 +361,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     }
 
     public void testValidate_emptyParameterName() throws Exception {
-    	attribute.setAttributeType(AttributeType.COMPUTED);
+    	attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
     	Parameter param = new Parameter(0, "test", Datatype.INTEGER.getQualifiedName());
     	attribute.setFormulaParameters(new Parameter[] {param});
 
@@ -375,7 +375,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     }
 
     public void testValidate_invalidParameterName() throws Exception {
-    	attribute.setAttributeType(AttributeType.COMPUTED);
+    	attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
     	Parameter param = new Parameter(0, "test", Datatype.INTEGER.getQualifiedName());
     	attribute.setFormulaParameters(new Parameter[] {param});
 
@@ -388,7 +388,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     }
 
     public void testValidate_noDatatypeForParameter() throws Exception {
-    	attribute.setAttributeType(AttributeType.COMPUTED);
+    	attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
     	Parameter param = new Parameter(0, "test", Datatype.INTEGER.getQualifiedName());
     	attribute.setFormulaParameters(new Parameter[] {param});
 
@@ -401,7 +401,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     }
 
     public void testValidate_datatypeNotFound() throws Exception {
-    	attribute.setAttributeType(AttributeType.COMPUTED);
+    	attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
     	Parameter param = new Parameter(0, "test", Datatype.INTEGER.getQualifiedName());
     	attribute.setFormulaParameters(new Parameter[] {param});
 
