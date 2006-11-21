@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.faktorips.feature.nls1"
-      label="org.faktorips.feature.nls1"
+      label="FaktorIPS-Language Pack 1"
       version="0.9.41"
       provider-name="FaktorZehn GmbH">
 
    <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+      FaktorIPS - German Language Pack
    </description>
 
    <copyright url="http://www.faktorips.org">
