@@ -584,14 +584,14 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             if (builder.isBuilderFor(ipsSrcFile)) {
                 try {
                     if(TRACE_BUILDER_TRACE){
-                        System.out.println("Start building " + ipsSrcFile);
+                        System.out.println(builder.getName() + ": Start building " + ipsSrcFile); //$NON-NLS-1$
                     }
                     builder.beforeBuild(ipsSrcFile, status);
                     builder.build(ipsSrcFile);
                 } finally {
                     builder.afterBuild(ipsSrcFile);
                     if(TRACE_BUILDER_TRACE){
-                        System.out.println("Finished building " + ipsSrcFile);
+                        System.out.println(builder.getName() + ": Finished building " + ipsSrcFile); //$NON-NLS-1$
                     }
                 }
             }
