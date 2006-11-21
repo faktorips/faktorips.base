@@ -65,7 +65,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -96,6 +95,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.UpdateUiJob;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
+import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
 import org.faktorips.devtools.core.ui.editors.testcase.deltapresentation.TestCaseDeltaDialog;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.StringUtil;
@@ -104,7 +104,7 @@ import org.faktorips.util.message.MessageList;
 /**
  * Section to display and edit a ips test case.
  */
-public class TestCaseSection extends IpsSection implements IIpsTestRunListener, ContentsChangeListener {
+public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	public static final String VALUESECTION = "VALUESECTION"; //$NON-NLS-1$
 	
     //Ui refresh intervall
@@ -182,6 +182,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
 
     // Ui job to update the user interface in parallel mode
     private UpdateUiJob updateUiJob;
+    
+    // Listener about content changes
+    private TestCaseContentChangeListener changeListener;
     
 	/*
      * Action which provides the content type filter.
@@ -398,6 +401,18 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
         }
     }
     
+    /*
+     * Content change class to listen for content changes.
+     */
+    private class TestCaseContentChangeListener extends ContentsChangeListenerForWidget{
+        public TestCaseContentChangeListener(Widget widget) {
+            super(widget);
+        }
+        public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
+            contentsHasChanged(event);
+        }
+    }
+    
     public TestCaseSection(Composite parent, TestCaseEditor editor, UIToolkit toolkit,
             TestCaseContentProvider contentProvider, String title, String detailTitle, ScrolledForm form){
         super(parent, Section.NO_TITLE, GridData.FILL_BOTH, toolkit);
@@ -423,9 +438,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
 
         registerTestRunListener();
 
+        
         // add listener on model,
         //   if the model changed reset the test run status
-        testCase.getIpsModel().addChangeListener(this);
+        testCase.getIpsModel().addChangeListener(new TestCaseContentChangeListener(this));
     
         Runnable updateCommand = new Runnable() {
             public void run() {
@@ -452,7 +468,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
     /**
      * {@inheritDoc}
      */
-    public void contentsChanged(ContentChangeEvent event) {
+    private void contentsHasChanged(ContentChangeEvent event) {
         // refresh and check for delta to the test case type 
         //   if the test case type changed
         try {
@@ -2036,12 +2052,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
                 TestCaseDeltaDialog dialog = new TestCaseDeltaDialog(delta, getShell());
                 dialog.setBlockOnOpen(true);
                 if ((dialog.open() == TestCaseDeltaDialog.OK)){
-                    testCase.getIpsModel().removeChangeListener(this);
+                    testCase.getIpsModel().removeChangeListener(changeListener);
                     try {
                         testCase.fixDifferences(delta);
                         refreshTreeAndDetailArea();
                     } finally {
-                        testCase.getIpsModel().addChangeListener(this);
+                        testCase.getIpsModel().addChangeListener(changeListener);
                     }
                 }
             }
@@ -2079,7 +2095,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
      * Removes the listener for the ips test runner
      */
     private void removeAllListener() {
-        testCase.getIpsModel().removeChangeListener(this);
+        testCase.getIpsModel().removeChangeListener(changeListener);
         if (runAndStoreExpectedResultListener != null){
             IpsPlugin.getDefault().getIpsTestRunner().removeIpsTestRunListener(runAndStoreExpectedResultListener);
         }

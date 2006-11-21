@@ -67,6 +67,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
@@ -76,7 +77,6 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -105,6 +105,7 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
+import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
 import org.faktorips.devtools.core.ui.editors.testcase.TreeViewerExpandStateStorage;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
@@ -117,7 +118,7 @@ import org.faktorips.values.EnumValue;
  * 
  * @author Joerg Ortmann
  */
-public class TestCaseTypeSection extends IpsSection implements ContentsChangeListener {
+public class TestCaseTypeSection extends IpsSection  {
     private Image empytImage;
     
     private HashMap cachedProblemImageDescriptors = new HashMap();
@@ -177,6 +178,9 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
     // Ui job to update the user interface in parallel mode
     private UpdateUiJob updateUiJob;
 
+    //  Listener about content changes
+    private TestCaseTypeContentChangeListener changeListener;
+    
     /*
      * Object cache to store several object to render the ui
      */
@@ -618,6 +622,18 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
         }
     }
     
+    /*
+     * Content change class to get content changes.
+     */
+    private class TestCaseTypeContentChangeListener extends ContentsChangeListenerForWidget{
+        public TestCaseTypeContentChangeListener(Widget widget) {
+            super(widget);
+        }
+        public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
+            contentsHasChanged(event);
+        }
+    }
+    
     public TestCaseTypeSection(Composite parent, UIToolkit toolkit, final ITestCaseType testCaseType, String title,
             String detailTitle, ScrolledForm form) {
         super(parent, Section.NO_TITLE, GridData.FILL_BOTH, toolkit);
@@ -650,7 +666,7 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
      * {@inheritDoc}
      */
     public void dispose() {
-        testCaseType.getIpsModel().removeChangeListener(this);
+        testCaseType.getIpsModel().removeChangeListener(changeListener);
         empytImage.dispose();
         
         for (Iterator iter = cachedProblemImageDescriptors.values().iterator(); iter.hasNext();) {
@@ -759,9 +775,10 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
         
         redrawForm();
         
-        // register istself as listener for model changes,
+        // register listener for model changes,
         // to refresh section titles etc.
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+        changeListener = new TestCaseTypeContentChangeListener(this);
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(changeListener);
     }
     
     /*
@@ -1933,10 +1950,7 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void contentsChanged(ContentChangeEvent event) {
+    private void contentsHasChanged(ContentChangeEvent event) {
         if (event.getIpsSrcFile().equals(testCaseType.getIpsSrcFile())){
             updateUiJob.update("UpdateAll");
         }

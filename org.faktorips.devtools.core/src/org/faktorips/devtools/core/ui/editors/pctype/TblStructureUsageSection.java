@@ -23,9 +23,9 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -40,12 +40,22 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * A section to display and edit a product component type's used table structures.
  */
-public class TblStructureUsageSection extends SimpleIpsPartsSection  implements ContentsChangeListener{
+public class TblStructureUsageSection extends SimpleIpsPartsSection {
 
     private IProductCmptType productCmptType;
 
     private TblsStructureUsageComposite tblsStructureUsageComposite;
 
+    private TblStructureUsageContentChangeListener changeListener;
+    
+    private class TblStructureUsageContentChangeListener extends ContentsChangeListenerForWidget{
+        public TblStructureUsageContentChangeListener(Widget widget) {
+            super(widget);
+        }
+        public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
+            contentsHasChanged(event);
+        }
+    }
     /**
      * Label provider for the table structure usages. Adds the first related table structure and ... if 
      * more than one table structure is related.
@@ -158,13 +168,11 @@ public class TblStructureUsageSection extends SimpleIpsPartsSection  implements 
             UIToolkit toolkit) {
         super(pcType, parent, Messages.TblStructureUsageSection_Title, toolkit);
         this.productCmptType = productCmptType;
-        pcType.getIpsModel().addChangeListener(this);
+        changeListener = new TblStructureUsageContentChangeListener(this);
+        pcType.getIpsModel().addChangeListener(changeListener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void contentsChanged(ContentChangeEvent event) {
+    private void contentsHasChanged(ContentChangeEvent event) {
         if (!event.getIpsSrcFile().equals(getIpsObject().getIpsSrcFile())){
             return;
         }
@@ -188,5 +196,13 @@ public class TblStructureUsageSection extends SimpleIpsPartsSection  implements 
         tblsStructureUsageComposite = new TblsStructureUsageComposite(
                 (IPolicyCmptType)getIpsObject(), parent, toolkit);
         return tblsStructureUsageComposite;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void dispose() {
+        productCmptType.getIpsModel().removeChangeListener(changeListener);
+        super.dispose();
     }
 }
