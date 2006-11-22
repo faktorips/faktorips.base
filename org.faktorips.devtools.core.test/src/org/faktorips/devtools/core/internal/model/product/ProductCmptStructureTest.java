@@ -140,11 +140,17 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
 		} 
     }
     
-    public void testTblContentUsageReferences(){
+    public void testTblContentUsageReferences() throws Exception {
         IProductCmptStructureTblUsageReference[] ptsus = structure
                 .getChildProductCmptStructureTblUsageReference(structure.getRoot());
         assertEquals(1, ptsus.length);
         ITableContentUsage tcu = ptsus[0].getTableContentUsage();
         assertEquals("tableContent1", tcu.getTableContentName());
+        
+        IProductCmptStructure structureTarget = productCmptTarget.getStructure();
+        ptsus = structure.getChildProductCmptStructureTblUsageReference(structureTarget.getRoot());
+        assertEquals(1, ptsus.length);
+        tcu = ptsus[0].getTableContentUsage();
+        assertEquals("tableContent2", tcu.getTableContentName());
     }
 }
