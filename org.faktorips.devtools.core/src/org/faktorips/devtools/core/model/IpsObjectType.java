@@ -196,6 +196,11 @@ public final class IpsObjectType {
 		return datatype;
 	}
     
+    /**
+     * Returns <code>true</code> if instanced of this type are product definition objects,
+     * otherwise <code>false</code>. Currently product components, table contents and
+     * test cases are product definition objects.
+     */
     public boolean isProductDefinitionType(){
         return productDefinitionType;
     }
