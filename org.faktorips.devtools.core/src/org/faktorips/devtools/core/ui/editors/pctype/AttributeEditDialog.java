@@ -287,16 +287,12 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelProdRelevant);
         Checkbox checkbox = uiToolkit.createCheckbox(workArea);
 
-        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelDefaultValue);
-        Text defaultValueText = uiToolkit.createText(workArea);
-        
         // create fields
         nameField = new TextField(nameText);
         datatypeField = new TextButtonField(datatypeControl);
         modifierField = new EnumValueField(modifierCombo, Modifier.getEnumType());
         attributeTypeField = new EnumValueField(typeCombo, AttributeType.getEnumType());
         productRelevantField = new CheckboxField(checkbox);
-        defaultValueField = new TextField(defaultValueText);
         overrideField = new CheckboxField(cb);
         
         return c;
@@ -304,7 +300,16 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 
     private Control createValueSetPage(TabFolder folder) {
         Composite pageControl = createTabItemComposite(folder, 1, false);
+
+        Composite workArea = uiToolkit.createLabelEditColumnComposite(pageControl);
+        Label labelDefaultValue = uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelDefaultValue);
+        Text defaultValueText = uiToolkit.createText(workArea);
+        defaultValueField = new TextField(defaultValueText);
+        
         valueSetEditControl = new ValueSetEditControl(pageControl, uiToolkit, uiController, attribute, new PcTypeValidator());
+        // sets the label width of the value set control label, so the control will be horizontal aligned to the default value text
+        //  the offset of 7 is calculated by the corresponding composites horizontal spacing and margins
+        valueSetEditControl.setLabelWidthHint(labelDefaultValue.computeSize(SWT.DEFAULT, SWT.DEFAULT).x + 7);
         return pageControl;
     }
 
@@ -532,6 +537,8 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
             MessageList list;
             try {
                 list = attribute.validate();
+                // update the ui to set the current messages for all registered controls
+                uiController.updateUI();
                 return list.getMessagesFor(element);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
@@ -573,5 +580,4 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 		}
     	
     }
-    
 }

@@ -63,7 +63,12 @@ public class RangeEditControl extends ControlComposite {
         Composite workArea = createWorkArea(toolkit, group);
         createTextControls(toolkit, workArea);
 
-        this.uiController = new IpsPartUIController((IIpsObjectPart)range.getParent());
+        if (uiController instanceof IpsPartUIController) {
+            this.uiController = (IpsPartUIController)uiController;
+        } else {
+            this.uiController = new IpsPartUIController((IIpsObjectPart)range.getParent());
+        }
+        
         connectToModel();
     }
 

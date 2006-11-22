@@ -57,6 +57,8 @@ public class ValueSetEditControl extends ControlComposite {
     private DefaultUIController uiController;
     private TableElementValidator tableElementValidator;
 
+    private Label typLabel;
+    
     /**
      * Generates a new control which contains a combo box and depending on the value of the box a EnumValueSetEditControl
      * or a or a RangeEditControl.
@@ -148,10 +150,21 @@ public class ValueSetEditControl extends ControlComposite {
         return valueArea;
     }
 
+    /**
+     * Sets the width of the type label. The method could be used to align the control in the second
+     * column with a control in one position (row) above.
+     */
+    public void setLabelWidthHint(int widthHint){
+        Object layoutData = typLabel.getLayoutData();
+        if (layoutData instanceof GridData){
+            ((GridData)layoutData).widthHint = widthHint;
+        }
+    }
+    
     private void createValidTypesCombo(UIToolkit toolkit, Composite parentArea) {
-        Label label = toolkit.createFormLabel(this, Messages.ValueSetEditControl_labelType);
+        typLabel = toolkit.createFormLabel(this, Messages.ValueSetEditControl_labelType);
         GridData labelGridData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-        label.setLayoutData(labelGridData);
+        typLabel.setLayoutData(labelGridData);
         validTypesCombo = toolkit.createCombo(this);
 
         ValueSetType[] types = ValueSetType.getValueSetTypes();
