@@ -17,7 +17,9 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.w3c.dom.Document;
@@ -37,6 +39,18 @@ public class IpsObjectPathEntryTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
         path = new IpsObjectPath();
+    }
+    
+    public void testGetIndex() throws CoreException {
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        assertEquals(1, path.getEntries().length);
+        
+        IIpsObjectPathEntry entry0 = path.getEntries()[0];
+        assertEquals(0, entry0.getIndex());
+        
+        IIpsObjectPathEntry entry1 = path.newArchiveEntry(ipsProject.getProject().getFile("someArchive.jar"));
+        assertEquals(0, entry0.getIndex());
+        assertEquals(1, entry1.getIndex());
     }
 
     public void testCreateFromXml() {

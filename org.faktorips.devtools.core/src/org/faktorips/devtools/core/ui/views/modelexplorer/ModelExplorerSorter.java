@@ -21,10 +21,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -57,14 +60,23 @@ public class ModelExplorerSorter extends ViewerSorter{
 		if(o1 instanceof ITableContents && o2 instanceof IProductCmpt){
 			return 1;
 		}
-		// place folders above files
+		// place pakages above files
 		if (o1 instanceof IIpsPackageFragment && !(o2 instanceof IIpsPackageFragment)) {
 			return -1;
 		}
 		else if (!(o1 instanceof IIpsPackageFragment) && o2 instanceof IIpsPackageFragment) {
 			return 1;
 		}
-
+		if (o1 instanceof IIpsPackageFragmentRoot && o2 instanceof IIpsPackageFragmentRoot) {
+            IIpsPackageFragmentRoot root1 = ((IIpsPackageFragmentRoot)o1);
+            IIpsPackageFragmentRoot root2= ((IIpsPackageFragmentRoot)o2);
+            try {
+                return root1.getIpsObjectPathEntry().getIndex() - root2.getIpsObjectPathEntry().getIndex();
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+                return root1.getName().compareTo(root2.getName());
+            }
+        }
 		if (o1 instanceof IIpsPackageFragment && o2 instanceof IIpsPackageFragment) {
 			IIpsPackageFragment fragment= ((IIpsPackageFragment)o1);
 			IIpsPackageFragment fragment2= ((IIpsPackageFragment)o2);

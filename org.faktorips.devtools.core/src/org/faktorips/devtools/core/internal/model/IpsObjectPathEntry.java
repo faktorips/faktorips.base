@@ -56,6 +56,13 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     }
     
     /**
+     * {@inheritDoc}
+     */
+    public int getIndex() {
+        return path.getIndex(this);
+    }
+
+    /**
      * Returns the first object with the indicated qualified name type found in the path entry.
      */
     public abstract IIpsObject findIpsObject(IIpsProject ipsProject, QualifiedNameType nameType) throws CoreException;    

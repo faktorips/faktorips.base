@@ -72,6 +72,11 @@ public interface IIpsObjectPathEntry {
      * Returns the type of this entry as one of the type constant defined in this interface.
      */
     public String getType();
+    
+    /**
+     * Returns the (zero based) index of this entry in the path.
+     */
+    public int getIndex();
 
     /**
      * Returns the package fragment root this source folder entry defines or <code>null</code> if

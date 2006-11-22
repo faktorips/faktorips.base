@@ -81,6 +81,18 @@ public class IpsObjectPath implements IIpsObjectPath {
     private String basePackageExtension = ""; //$NON-NLS-1$
     
     /**
+     * Returns the index of the given entry.
+     */
+    public int getIndex(IpsObjectPathEntry entry) {
+        for (int i = 0; i < entries.length; i++) {
+            if (entries[i].equals(entry)) {
+                return i;
+            }
+        }
+        throw new IllegalArgumentException("Can't find entry " + entry + " in path " + this);  //$NON-NLS-1$  //$NON-NLS-2$
+    }
+    
+    /**
      * {@inheritDoc}
      */
     public IIpsProjectRefEntry[] getProjectRefEntries() {
