@@ -103,7 +103,8 @@ public class DefaultUIController implements ValueChangeListener, UIController {
 	}
 
 	public void updateModel() {
-		for (Iterator it = mappings.iterator(); it.hasNext();) {
+        List copy = new ArrayList(mappings); // defensive copy to avoid concurrent modification exceptions
+		for (Iterator it = copy.iterator(); it.hasNext();) {
 			FieldPropertyMapping mapping = (FieldPropertyMapping) it.next();
 			try {
 				mapping.setPropertyValue();
@@ -115,7 +116,8 @@ public class DefaultUIController implements ValueChangeListener, UIController {
 	}
 
 	public void updateUI() {
-		for (Iterator it = mappings.iterator(); it.hasNext();) {
+        List copy = new ArrayList(mappings); // defensive copy to avoid concurrent modification exceptions
+		for (Iterator it = copy.iterator(); it.hasNext();) {
 			FieldPropertyMapping mapping = (FieldPropertyMapping) it.next();
 			try {
 				mapping.setControlValue();
@@ -127,10 +129,11 @@ public class DefaultUIController implements ValueChangeListener, UIController {
 	}
 
 	/**
-	 * Overridden.
+     * {@inheritDoc}
 	 */
 	public void valueChanged(FieldValueChangedEvent e) {
-		for (Iterator it = mappings.iterator(); it.hasNext();) {
+        List copy = new ArrayList(mappings); // defensive copy to avoid concurrent modification exceptions
+		for (Iterator it = copy.iterator(); it.hasNext();) {
 			FieldPropertyMapping mapping = (FieldPropertyMapping) it.next();
 			if (e.field == mapping.getField()) {
 				try {
