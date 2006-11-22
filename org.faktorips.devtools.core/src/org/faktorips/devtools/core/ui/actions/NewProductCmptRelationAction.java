@@ -72,9 +72,12 @@ public class NewProductCmptRelationAction extends IpsAction {
 			relation.setMinCardinality(((IProductCmptTypeRelation)selected).getMinCardinality());
 			RelationEditDialog dialog = new RelationEditDialog(relation, shell);
 			dialog.setProductCmptsToExclude(parent.getRelationTargetsFor((IProductCmptTypeRelation)selected));
-			if (dialog.open() == Dialog.CANCEL) {
+			int rc = dialog.open();
+            if (rc == Dialog.CANCEL) {
 				reset();
-			}
+			} else if (rc == Dialog.OK){
+			    parent.refresh();
+            }
 		}
 	}
 	
