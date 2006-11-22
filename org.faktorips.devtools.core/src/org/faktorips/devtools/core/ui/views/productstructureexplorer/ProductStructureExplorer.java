@@ -37,6 +37,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IViewSite;
@@ -55,6 +56,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.ui.UpdateUiJob;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowAttributesAction;
@@ -70,20 +72,26 @@ import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
  *
  */
 public class ProductStructureExplorer extends ViewPart implements ContentsChangeListener, IShowInSource, IResourceChangeListener {
+    public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productStructureExplorer"; //$NON-NLS-1$
 
     private TreeViewer tree; 
     private IIpsSrcFile file;
     private ProductStructureContentProvider contentProvider;
     private Label errormsg;
     
-    public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productStructureExplorer"; //$NON-NLS-1$
-
+    // Job to refresh the ui in asynchronous manner
+    private UpdateUiJob updateUiJob;
+    
     public ProductStructureExplorer() {
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
         
         // add as resource listener because refactoring-actions like move or rename
         // does not cause a model-changed-event.
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
+    }
+    
+    private Display getDisplay(){
+        return getViewSite().getShell().getDisplay();
     }
     
     /**
@@ -99,7 +107,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     		}
     		
 			public void run() {
-				refresh();
+                updateUiJob.update(this);
 		        tree.expandAll();
 			}
 
@@ -121,7 +129,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     		
 			public void run() {
 				contentProvider.setRelationTypeShowing(!contentProvider.isRelationTypeShowing());
-				refresh();
+                updateUiJob.update(this);
 			}
 
 			public String getToolTipText() {
@@ -145,6 +153,17 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 			}
 		
 		});
+        
+        // add asynchronous refreh ui job
+        Runnable refreshCommand = new Runnable() {
+            public void run() {
+                if (getDisplay().isDisposed())
+                    return;
+              // refresh the whole content of the tree
+              refresh();
+            }
+        };
+        updateUiJob = new UpdateUiJob(getDisplay(), refreshCommand);        
     }
     
     /**
@@ -227,10 +246,10 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      */
     public void contentsChanged(ContentChangeEvent event) {
     	if (file == null || !event.getIpsSrcFile().equals(file)) {
-    		// no contents set - nothing to refresh.
+    		// no contents set or event concerncs another source file - nothing to refresh.
     		return;
     	}
-    	refresh();
+        updateUiJob.update(this);
     }
 
     private void refresh() {
@@ -240,30 +259,36 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         	return;
         }
         
-        ctrl.getDisplay().syncExec(new Runnable() {
-            public void run() {
-                if (!tree.getControl().isDisposed()) {
-                	Object input = tree.getInput();
-                	if (input instanceof IProductCmptStructure) {
-                		try {
-            				((IProductCmptStructure)input).refresh();
-            			} catch (CycleException e) {
-            				handleCircle(e);
-            				return;
-            			}
-                	}
-                	
-                	errormsg.setVisible(false);
-            		((GridData)errormsg.getLayoutData()).exclude = true;
-                	
-            		tree.getTree().setVisible(true);
-            		((GridData)tree.getTree().getLayoutData()).exclude = false;
-            		tree.getTree().getParent().layout();
-               		tree.setInput(input);
-                    tree.expandAll();
+        try {
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    if (!tree.getControl().isDisposed()) {
+                        Object input = tree.getInput();
+                        if (input instanceof IProductCmptStructure) {
+                            try {
+                                ((IProductCmptStructure)input).refresh();
+                            } catch (CycleException e) {
+                                handleCircle(e);
+                                return;
+                            }
+                        }
+
+                        errormsg.setVisible(false);
+                        ((GridData)errormsg.getLayoutData()).exclude = true;
+
+                        tree.getTree().setVisible(true);
+                        ((GridData)tree.getTree().getLayoutData()).exclude = false;
+                        tree.getTree().getParent().layout();
+                        tree.setInput(input);
+                        tree.expandAll();
+                    }
                 }
-            }
-        });
+            };
+            ctrl.setRedraw(false);
+            ctrl.getDisplay().syncExec(runnable);
+        } finally {
+            ctrl.setRedraw(true);
+        }
     }
     
     /**
@@ -303,11 +328,11 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      * {@inheritDoc}
      */
 	public void resourceChanged(IResourceChangeEvent event) {
-		if (file == null) {
-			return;
-		}
-		refresh();
-	}
+        if (file == null) {
+            return;
+        }
+        updateUiJob.update(this);
+    }
 	
 	private class ProductCmptDropListener extends IpsElementDropListener {
 
@@ -331,4 +356,12 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 	    }
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public void dispose() {
+        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        super.dispose();
+    }
 }

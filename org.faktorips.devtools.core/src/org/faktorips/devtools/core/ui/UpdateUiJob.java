@@ -24,13 +24,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.progress.UIJob;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * 
  * @author Joerg Ortmann
  */
 public class UpdateUiJob {
-    private static final int REFRESH_INTERVAL = 300;
+    private int refreshInterval = 300;
     
     private HashMap updateQueue = new HashMap(20);
     
@@ -43,10 +44,17 @@ public class UpdateUiJob {
     private Display display;
     
     public UpdateUiJob(Display display, Runnable command) {
+        ArgumentCheck.notNull(display, command);
         this.display = display;
         this.command = command;
     }
 
+    public UpdateUiJob(Display display, Runnable command, int refreshInterval) {
+        this(display, command);
+        ArgumentCheck.isTrue(refreshInterval > 0);
+        this.refreshInterval = refreshInterval;
+    }
+    
     /*
      * UIJob to refresh the content of the tree.
      */
@@ -66,7 +74,7 @@ public class UpdateUiJob {
                     stop();
                 }
                 if (queueDrainRequestOutstanding) {
-                    if ((System.currentTimeMillis() - lastContentChange) > REFRESH_INTERVAL) {
+                    if ((System.currentTimeMillis() - lastContentChange) > refreshInterval) {
                         object = (Object)updateQueue.values().iterator().next();
                         if (object != updateQueue.remove(object)) {
                             // ignore entry which was not found in the update queue
@@ -75,10 +83,10 @@ public class UpdateUiJob {
                     }
                 }
             }
-            if (object != null) {
+            if (object != null && command != null) {
                 command.run();
             }
-            schedule(REFRESH_INTERVAL / 2);
+            schedule(refreshInterval / 2);
             return Status.OK_STATUS;
         }
 
@@ -98,7 +106,7 @@ public class UpdateUiJob {
                 queueDrainRequestOutstanding = true;
                 if (!display.isDisposed()) {
                     UpdateUIJobInternal fUpdateJob = new UpdateUIJobInternal("UI Update Job"); //$NON-NLS-1$
-                    fUpdateJob.schedule(REFRESH_INTERVAL);
+                    fUpdateJob.schedule(refreshInterval);
                 }
             }
         }
