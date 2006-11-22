@@ -17,10 +17,14 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IRuntimeIdStrategy;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Calculates a new runtime id ensured to be unique for all product components contained
@@ -68,5 +72,17 @@ public class DefaultRuntimeIdStrategy implements
 	 */
 	public boolean equals(Object obj) {
 		return obj instanceof DefaultRuntimeIdStrategy;
-	}	
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public MessageList validateRuntimeId(String runtimeId) {
+        MessageList result = new MessageList();
+        if (StringUtils.isEmpty(runtimeId)){
+            String text = NLS.bind(Messages.DefaultRuntimeIdStrategy_msgRuntimeIdNotValid, runtimeId);
+            result.add(new Message(MSGCODE_INVALID_RUNTIME_ID_FORMAT, text, Message.ERROR, this)); 
+        }
+        return result;
+    }
 }

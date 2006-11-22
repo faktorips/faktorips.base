@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.ProductCmptTypeRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 
@@ -203,18 +204,29 @@ public class ProductCmptPage extends IpsObjectPage {
         }
 	    if (typeRefControl.findProductCmptType()==null) {
 	        setErrorMessage(NLS.bind(Messages.ProductCmptPage_msgTemplateDoesNotExist, typeRefControl.getText()));
+            return;
 	    }
         String runtimeIdErrorMsg = validateRuntimeId();
         if (StringUtils.isNotEmpty(runtimeIdErrorMsg)){
             setErrorMessage(runtimeIdErrorMsg);
+            return;
         }
         updatePageComplete();
     }
 
     private String validateRuntimeId() throws CoreException {
+        // check correct format of the given runtime id
+        MessageList ml = getIpsProject().getRuntimeIdStrategy().validateRuntimeId(runtimeId.getText());
+        Message msg = ml.getFirstMessage(Message.ERROR);
+        if (msg != null){
+            return msg.getText();
+        }
+
+        // check for duplicate runtime id
         if (null != getIpsProject().findProductCmptByRuntimeId(runtimeId.getText())){
             return NLS.bind(Messages.ProductCmptPage_msgRuntimeIdCollision, runtimeId.getText());
         }
+        
         return ""; //$NON-NLS-1$
     }
 

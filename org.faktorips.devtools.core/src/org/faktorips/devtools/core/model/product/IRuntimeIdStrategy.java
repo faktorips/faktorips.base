@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.model.product;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.util.message.MessageList;
 
 
 /**
@@ -29,6 +30,16 @@ import org.faktorips.devtools.core.model.IIpsProject;
  */
 public interface IRuntimeIdStrategy {
 
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "RUNTIMEIDSTRATEGY-"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the runtime id has a valid format.
+     */
+    public final static String MSGCODE_INVALID_RUNTIME_ID_FORMAT = MSGCODE_PREFIX + "InvalidRuntimeIdFormat"; //$NON-NLS-1$
+    
 	/**
 	 * Finds the runtime id to use for the given product component. The result
 	 * of this method is not ensured to be the same for different calls. This
@@ -78,4 +89,8 @@ public interface IRuntimeIdStrategy {
 	 */
 	public boolean sameRuntimeId(IProductCmpt cmpt1, IProductCmpt cmpt2);
 	
+    /**
+     * Validates the given runtime id.
+     */
+    public MessageList validateRuntimeId(String runtimeId);
 }

@@ -831,7 +831,7 @@
    <extension
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
-            label="Ips Test"
+            label="%org.faktorips.devtools.core.launchIpsTest"
             icon="icons/TestCaseRun.gif"
             helpContextId=""
             class="org.faktorips.devtools.core.ui.IpsTestLaunchShortcut"

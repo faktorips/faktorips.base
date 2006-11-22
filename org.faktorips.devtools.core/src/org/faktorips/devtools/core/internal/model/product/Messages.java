@@ -120,4 +120,5 @@ public class Messages extends NLS {
 
     public static String TableContentUsage_msgInvalidTableContent;
 
+    public static String DefaultRuntimeIdStrategy_msgRuntimeIdNotValid;
 }
