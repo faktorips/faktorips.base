@@ -122,6 +122,9 @@ public class IpsTestRunner implements IIpsTestRunner {
     // The job to run the test
     private TestRunnerJob job;
     
+    // Indicates that a job is currently running
+    private boolean jobRunning;
+    
     private IpsTestRunner() {
     }
 
@@ -730,6 +733,10 @@ public class IpsTestRunner implements IIpsTestRunner {
      * Starts the test runner.
      */
     private void startTestRunnerJob(String classpathRepository, String testsuite, boolean force, String mode) throws CoreException{
+        if (jobRunning){
+            return;
+        }
+
         // check for dirty editors and wait for builders
         if (!force && !checkPrelauchConditions(classpathRepository, testsuite, mode))
             return;
@@ -745,13 +752,15 @@ public class IpsTestRunner implements IIpsTestRunner {
 
         job.addJobChangeListener(new JobChangeAdapter() {
             public void done(IJobChangeEvent event) {
-                // nothing to do
+                jobRunning = false;
             }
+            
         });
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
         job.setRule(workspace.getRoot());
         job.schedule();
+        jobRunning = true;
     }
     
 	/*
