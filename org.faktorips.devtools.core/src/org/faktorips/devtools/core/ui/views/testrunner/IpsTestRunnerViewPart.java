@@ -48,6 +48,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
@@ -586,6 +587,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	public Display getDisplay() {
 		return getViewSite().getShell().getDisplay();
 	}
+    
+    public Shell getShell() {
+        return getViewSite().getShell();
+    }
 	 
 	private void stopUpdateJobs() {
 		if (fUpdateJob != null) {

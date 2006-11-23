@@ -17,15 +17,32 @@
 
 package org.faktorips.devtools.core.ui.views.testrunner;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.faktorips.devtools.core.IpsPlugin;
 
 /**
@@ -47,6 +64,7 @@ public class FailurePane {
     
     // Contains the last reported failures in this pane
     private String[] fLastFailures = new String[0];
+    private IpsTestRunnerViewPart viewPart;
     
     /*
      * Action class to filter the stack trace elements
@@ -68,14 +86,95 @@ public class FailurePane {
         }
     }
     
+    /*
+     * Class to represent the corresponding object in the trace line of the stacktrace.
+     */
+    private class TraceLineElement{
+        private String testName = "";
+        private String fileName = "";
+        private int line = 0;
+        
+        public TraceLineElement(String traceLine) {
+            testName= traceLine;
+            if (testName.lastIndexOf('(') == -1 || testName.lastIndexOf('.') == -1){
+                return;
+            }
+            testName= testName.substring(0, testName.lastIndexOf('(')).trim();
+            testName= testName.substring(0, testName.lastIndexOf('.'));
+            int innerSeparatorIndex= testName.indexOf('$');
+            if (innerSeparatorIndex != -1){
+                testName= testName.substring(0, innerSeparatorIndex);
+            }
+            String lineNumber= traceLine;
+            lineNumber= lineNumber.substring(lineNumber.indexOf(':') + 1, lineNumber.lastIndexOf(')'));
+            line = Integer.valueOf(lineNumber).intValue();
+            fileName= traceLine.substring(traceLine.lastIndexOf('(') + 1, traceLine.lastIndexOf(':'));
+        }
+        
+        public String getFileName() {
+            return fileName;
+        }
+
+        public int getLine() {
+            return line;
+        }
+
+        public String getTestName() {
+            return testName;
+        }
+        
+        /**
+         * Returns <code>true</code> if the element is valid, means the element could be
+         * successfully determined from the trace line.
+         */
+        public boolean isValidElement(){
+            return testName.length()>0 && fileName.length()>0 && line >0;
+        }
+        
+        /**
+         * Returns <code>true</code> if the element is an valid element in the java projects source folder.
+         */
+        public boolean isValidProjectSourceElement(){
+            if (!isValidElement()){
+                return false;
+            }
+            try {
+                // find the java element, all elements in the whole classpath are searched
+                IJavaElement file = findElement(viewPart.getLaunchedProject(), testName);
+                // check if there is a valid editor input for the found element,
+                // see method getEditorInput for further details. The method returns only an valid input
+                // if the element is a compilation unit, means a source file (but no classfile),
+                // therefore only elements in the source folder are valid and no class elements in jars
+                // or binary folders. 
+                // This is ok, because only elements which are visible and editable by the user
+                // should be displayed in the stacktrace.
+                IEditorInput editorInput = getEditorInput(file, fileName);
+                if (editorInput != null) {
+                    return true;
+                }
+            } catch (Exception e) {
+                // ignore exception
+            }
+            return false;
+        }
+    }
+    
 	public FailurePane(Composite parent, ToolBar toolBar, final IpsTestRunnerViewPart viewPart) {
-		fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
+		this.viewPart = viewPart;
+        fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
         
         fTable.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                TableItem[] items = fTable.getSelection();
-                if(items.length>0){
-                    viewPart.setStatusBarMessage(items[0].getText());
+                viewPart.setStatusBarMessage(getSelectedTableRowText());
+            }
+        });
+        
+        fTable.addSelectionListener(new SelectionListener() {
+            public void widgetSelected(SelectionEvent e) {
+            }
+            public void widgetDefaultSelected(SelectionEvent e) {
+                if (fTable.getSelectionCount() > 0){
+                    openEditor(getSelectedTableRowText());
                 }
             }
         });
@@ -86,6 +185,86 @@ public class FailurePane {
         failureToolBarmanager.add(fShowStackTraceAction);    
         failureToolBarmanager.update(true);
 	}
+    
+    private String getSelectedTableRowText(){
+        TableItem[] items = fTable.getSelection();
+        if(items.length>0){
+            return items[0].getText();
+        }
+        return ""; //$NON-NLS-1$
+    }
+    
+    private boolean containsTraceLineRelevantSourceFile(String traceLine){
+        TraceLineElement tli = new TraceLineElement(traceLine);
+        return tli.isValidProjectSourceElement();
+    }
+    
+    /*
+     * Open the editor and mark corresponding line.
+     */
+    private void openEditor(String traceLine) {
+        try { 
+            TraceLineElement tli = new TraceLineElement(traceLine);
+            if (! tli.isValidElement()){
+                return;
+            }
+            
+            IJavaElement file= findElement(viewPart.getLaunchedProject(), tli.getTestName());
+            if (file == null){
+                MessageDialog.openError(viewPart.getShell(), 
+                        "Cannot Open Editor", NLS.bind("Test class {0} not found in selected project", tli.getTestName())); 
+                    return;
+            }
+
+            // don't support full JUnint class file editor support, only edit files which are in the source folder
+            // ITextEditor textEditor= (ITextEditor)EditorUtility.openInEditor(file, true);
+            
+            IEditorInput editorInput = getEditorInput(file, tli.getFileName());
+            if (editorInput == null){
+                MessageDialog.openInformation(viewPart.getShell(), 
+                        "Cannot Open Editor", NLS.bind("Class {0} not exists in projetc source folder", tli.getTestName())); 
+                    return;
+            }
+            IEditorDescriptor editor = IDE.getEditorDescriptor(editorInput.getName());
+            ITextEditor textEditor = (ITextEditor)IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(editorInput, editor.getId(), true);
+
+            // goto corresponding line in the editor
+            IDocument document= textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
+            if (document == null)
+                return;
+            textEditor.selectAndReveal(document.getLineOffset(tli.getLine()-1), document.getLineLength(tli.getLine()));
+        } catch (BadLocationException x) {
+            // marker refers to invalid text position -> do nothing
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+    }
+    
+    /*
+     * Returns the editor input. Only files in the project source folder (compilation init) are supported.
+     * Class files in e.g. Jar's with source attachment are not supported.
+     */
+    private IEditorInput getEditorInput(IJavaElement element, String name) throws JavaModelException {
+        while (element != null){
+            if (element instanceof ICompilationUnit) {
+                ICompilationUnit unit = (ICompilationUnit)element;
+                IResource resource = unit.getResource();
+                if (resource instanceof IFile)
+                    return new FileEditorInput((IFile)resource);
+            }
+            element = element.getParent();
+        }
+
+        return null;
+    }
+
+    /*
+     * Find java element in the given java project by the given class name.
+     */
+    private IJavaElement findElement(IJavaProject project, String className) throws CoreException {
+        IJavaElement element= project.findType(className);
+        return element;
+    }
     
 	/**
 	 * Returns the composite used to present the failures.
@@ -115,8 +294,11 @@ public class FailurePane {
                 fShowStackTraceAction.setEnabled(true);
                 if (fShowStackTrace){
                     TableItem tableItem = new TableItem(fTable, SWT.NONE);
-                    tableItem.setText(testCaseFailures[i].substring(TEST_ERROR_STACK_INDICATOR.length()));
-                    tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/stkfrm_obj.gif")); //$NON-NLS-1$
+                    String traceLine = testCaseFailures[i].substring(TEST_ERROR_STACK_INDICATOR.length());
+                    if (containsTraceLineRelevantSourceFile(traceLine)){
+                        tableItem.setText(traceLine);
+                        tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/stkfrm_obj.gif")); //$NON-NLS-1$
+                    }
                 }
             } else {
                 if (testCaseFailures[i].trim().length()>0){
