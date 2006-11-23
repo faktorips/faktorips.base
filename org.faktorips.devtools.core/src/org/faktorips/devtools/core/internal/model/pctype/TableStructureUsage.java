@@ -421,5 +421,16 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
                 break;
             }
         }
+        
+        // check if the policy cmpt is configurable by product, if the policy cmpt type is not
+        // configurable by product no table content usage is allowed
+        if (pcType != null) {
+            if (!pcType.isConfigurableByProductCmptType()) {
+                String text = Messages.TableStructureUsage_msgPolicyCmptTypeIsNotConfiguratedByProduct;
+                Message msg = new Message(MSGCODE_POLICYCMPTTYPE_IS_NOT_CONFIGURABLE_BY_PRODUCT, text, Message.ERROR,
+                        this);
+                list.add(msg);
+            }
+        }
     }
 }

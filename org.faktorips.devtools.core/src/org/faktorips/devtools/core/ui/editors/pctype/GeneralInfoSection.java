@@ -33,8 +33,10 @@ import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
+import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -44,7 +46,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  *
  */
-public class GeneralInfoSection extends IpsSection {
+public class GeneralInfoSection extends IpsSection implements ValueChangeListener {
     
     private IPolicyCmptType pcType;
     private IpsObjectUIController uiController;
@@ -55,7 +57,8 @@ public class GeneralInfoSection extends IpsSection {
     private TextField productCmptTypeNameField;
     private CheckboxField configuratedField;    
     private ExtensionPropertyControlFactory extFactory;
-
+    private PctEditor editor;
+    
     /**
      * @param parent
      * @param style
@@ -64,10 +67,12 @@ public class GeneralInfoSection extends IpsSection {
     public GeneralInfoSection(
             IPolicyCmptType pcType, 
             Composite parent, 
-            UIToolkit toolkit) {
+            UIToolkit toolkit,
+            PctEditor editor) {
         super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
         ArgumentCheck.notNull(pcType);
         this.pcType = pcType;
+        this.editor = editor;
         
         extFactory = new ExtensionPropertyControlFactory(pcType.getClass());
         
@@ -120,7 +125,8 @@ public class GeneralInfoSection extends IpsSection {
 	    abstractField = new CheckboxField(abstractCheckbox);
 	    productCmptTypeNameField = new TextField(productCmptTypeNameText);
 	    configuratedField = new CheckboxField(configuratedCheckbox);
-	    
+        configuratedField.addChangeListener(this);
+        
 	    // connect fields to model properties
 	    uiController = new IpsObjectUIController(pcType);
 	    uiController.add(supertypeField, IPolicyCmptType.PROPERTY_SUPERTYPE);
@@ -141,5 +147,15 @@ public class GeneralInfoSection extends IpsSection {
         
     }
 
-    
+    /**
+     * {@inheritDoc}
+     */
+    public void valueChanged(FieldValueChangedEvent e) {
+        Runnable r = new Runnable(){
+            public void run() {
+                editor.refreshEditor();
+            }
+        };
+        getDisplay().asyncExec(r);
+    }
 }

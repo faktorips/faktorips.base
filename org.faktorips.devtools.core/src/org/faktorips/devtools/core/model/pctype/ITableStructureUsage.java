@@ -58,6 +58,12 @@ public interface ITableStructureUsage extends IIpsObjectPart {
     public final static String MSGCODE_SAME_ROLENAME = MSGCODE_PREFIX + "SameRoleName"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the policy cmpt type is not configurable by product.
+     */ 
+    public final static String MSGCODE_POLICYCMPTTYPE_IS_NOT_CONFIGURABLE_BY_PRODUCT = MSGCODE_PREFIX + "PolicycmpttypeIsNotConfigurableByProduct"; //$NON-NLS-1$
+
+    
+    /**
      * Returns the role name.
      */
     public String getRoleName();

@@ -140,6 +140,17 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_SAME_ROLENAME));
     }
     
+    public void testvalidate_PolicycmpttypeIsNotConfigurableByProduct() throws CoreException{
+        policyCmptType.setConfigurableByProductCmptType(true);
+        MessageList ml = tableStructureUsage.validate();
+        tableStructureUsage.addTableStructure("tableStructure1");
+        assertNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_POLICYCMPTTYPE_IS_NOT_CONFIGURABLE_BY_PRODUCT));
+        
+        policyCmptType.setConfigurableByProductCmptType(false);
+        ml = tableStructureUsage.validate();
+        assertNotNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_POLICYCMPTTYPE_IS_NOT_CONFIGURABLE_BY_PRODUCT));
+    }
+    
     public void testGetId(){
         ITableStructureUsage tcu2 = productCmptType.newTableStructureUsage();
         assertFalse(tableStructureUsage.getId() == tcu2.getId());

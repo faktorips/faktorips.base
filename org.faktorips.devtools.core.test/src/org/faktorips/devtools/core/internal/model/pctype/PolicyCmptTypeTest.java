@@ -945,20 +945,4 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         pcType.getTableStructureUsages()[0] = null;
         assertNotNull(pcType.getTableStructureUsages()[0]);
     }
-    
-    /**
-     * Test if the table structure usages will be deleted if the policy cmpt type is no longer
-     * configured by a product cmpt.
-     */
-    public void testRemoveTableStructureUsagesIfNotConfByProduct(){
-        pcType.setConfigurableByProductCmptType(false);
-        assertNull(pcType.newTableStructureUsage());
-        
-        pcType.setConfigurableByProductCmptType(true);
-        assertNotNull(pcType.newTableStructureUsage());
-        assertEquals(1, pcType.getNumOfTableStructureUsage());
-        
-        pcType.setConfigurableByProductCmptType(false);
-        assertEquals(0, pcType.getNumOfTableStructureUsage());
-    }
 }

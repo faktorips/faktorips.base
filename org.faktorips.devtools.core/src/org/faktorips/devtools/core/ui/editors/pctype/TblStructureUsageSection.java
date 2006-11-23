@@ -23,9 +23,8 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Widget;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -46,16 +45,6 @@ public class TblStructureUsageSection extends SimpleIpsPartsSection {
 
     private TblsStructureUsageComposite tblsStructureUsageComposite;
 
-    private TblStructureUsageContentChangeListener changeListener;
-    
-    private class TblStructureUsageContentChangeListener extends ContentsChangeListenerForWidget{
-        public TblStructureUsageContentChangeListener(Widget widget) {
-            super(widget);
-        }
-        public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
-            contentsHasChanged(event);
-        }
-    }
     /**
      * Label provider for the table structure usages. Adds the first related table structure and ... if 
      * more than one table structure is related.
@@ -90,7 +79,18 @@ public class TblStructureUsageSection extends SimpleIpsPartsSection {
             private Object[] EMPTY_ARRAY = new Object[0];
             public Object[] getElements(Object inputElement) {
                 if (productCmptType == null) {
-                    return EMPTY_ARRAY;
+                    // there is no product cmpt type (product cmpt type is not configurable by product cmpt),
+                    // we couldn't get the table structure usages, because this objects are part of the product cmpt type,
+                    // but currently the policy cmpt type specifies the product cmpt type and all
+                    // childs (maybe changed in a later version),)
+                    // thus we downcast to the policy cmpt type to use the internal find method
+                    try {
+                        productCmptType = ((PolicyCmptType)getPcType()).findProductCmptTypeInternal();
+                    } catch (CoreException e) {
+                        IpsPlugin.logAndShowErrorDialog(e);
+                        return EMPTY_ARRAY;
+                    }
+                    return productCmptType.getTableStructureUsages();
                 }
                 return productCmptType.getTableStructureUsages();
             }
@@ -152,7 +152,7 @@ public class TblStructureUsageSection extends SimpleIpsPartsSection {
          */
         protected void updateButtonEnabledStates() {
             super.updateButtonEnabledStates();
-            if (productCmptType == null){
+            if (! getPcType().isConfigurableByProductCmptType()){
                 newButton.setEnabled(false);
                 editButton.setEnabled(false);
                 upButton.setEnabled(false);
@@ -168,25 +168,6 @@ public class TblStructureUsageSection extends SimpleIpsPartsSection {
             UIToolkit toolkit) {
         super(pcType, parent, Messages.TblStructureUsageSection_Title, toolkit);
         this.productCmptType = productCmptType;
-        changeListener = new TblStructureUsageContentChangeListener(this);
-        pcType.getIpsModel().addChangeListener(changeListener);
-    }
-
-    private void contentsHasChanged(ContentChangeEvent event) {
-        if (!event.getIpsSrcFile().equals(getIpsObject().getIpsSrcFile())){
-            return;
-        }
-        try {
-            IProductCmptType productCmptTypeNew = ((IPolicyCmptType)getIpsObject()).findProductCmptType();
-            // check if configured by product cmpt has changed, e.g. product cmpt was null before but now not null
-            if ((productCmptType != null && productCmptTypeNew == null)
-                    || (productCmptType == null && productCmptTypeNew != null)) {
-                productCmptType = productCmptTypeNew;
-                tblsStructureUsageComposite.refresh();
-            }
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
     }
 
     /**
@@ -196,13 +177,5 @@ public class TblStructureUsageSection extends SimpleIpsPartsSection {
         tblsStructureUsageComposite = new TblsStructureUsageComposite(
                 (IPolicyCmptType)getIpsObject(), parent, toolkit);
         return tblsStructureUsageComposite;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void dispose() {
-        productCmptType.getIpsModel().removeChangeListener(changeListener);
-        super.dispose();
     }
 }

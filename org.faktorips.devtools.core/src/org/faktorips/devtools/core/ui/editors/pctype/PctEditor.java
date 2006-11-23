@@ -62,4 +62,8 @@ public class PctEditor extends IpsObjectEditor {
     protected String getUniformPageTitle() {
         return Messages.PctEditor_title + getPolicyCmptType().getName();
     }
+    
+    public void refreshEditor(){
+        refresh();
+    }
 }
