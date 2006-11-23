@@ -74,7 +74,13 @@ import org.faktorips.util.message.MessageList;
  * @author Stefan Widmaier
  */
 public class ContentPage extends IpsObjectEditorPage {
-
+    /*
+     * SWT event type for the measure item event
+     * @since 3.2
+     * defined here to ensure compatibility to lower SWT versions
+     */
+    private static final int SWT_MeasureItem = 41;
+    
 	final static String PAGE_ID = "Contents"; //$NON-NLS-1$
     
     private TableViewer tableViewer;
@@ -161,28 +167,7 @@ public class ContentPage extends IpsObjectEditorPage {
             ITableStructure tableStructure= getTableStructure();
             table.removeAll();
 
-            // add paint lister to increase the height of the table row,
-            // because in edit mode the cell becomes a border and the bottom pixel of the text will
-            // be hidden
-            Listener paintListener = new Listener() {
-                public void handleEvent(Event event) {
-                    switch(event.type) {        
-                        case 41: {
-                            TableItem item = (TableItem)event.item;
-                            String text = getText(item, 0);
-                            Point size = event.gc.textExtent(text);
-                            // the height will be increased by 5 pixel
-                            event.height = Math.max(event.height, size.y + 5);
-                            break;
-                        }
-                    }
-                }
-                String getText(TableItem item, int column) {
-                    String text = item.getText(column);
-                    return text;
-                }
-            };                
-            table.addListener(41, paintListener);
+            increaseHeightOfTableRow(table, tableStructure);
             
             tableViewer= new TableViewer(table);
             tableViewer.setUseHashlookup(true);
@@ -234,6 +219,40 @@ public class ContentPage extends IpsObjectEditorPage {
         }catch(CoreException e){
             IpsPlugin.log(e);
         }
+    }
+
+
+    private void increaseHeightOfTableRow(Table table, ITableStructure tableStructure) {
+        // add paint lister to increase the height of the table row,
+        // because @since 3.2 in edit mode the cell becomes a border and the bottom pixel of the
+        // text is hidden
+        final int numOfColumns = tableStructure.getNumOfColumns();
+        Listener paintListener = new Listener() {
+            public void handleEvent(Event event) {
+                switch(event.type) {        
+                    case SWT_MeasureItem: {
+                        if (numOfColumns == 0){
+                            return;
+                        }
+                        TableItem item = (TableItem)event.item;
+                        // column 0 will be used to determine the height,
+                        // <code>event.index<code> couldn't be used because it is only available
+                        // @since 3.2, that's ok because the height is always the same, even if the
+                        // column contains no text, the height only depends on the font
+                        String text = getText(item, 0);
+                        Point size = event.gc.textExtent(text);
+                        // the height will be increased by 5 pixel
+                        event.height = Math.max(event.height, size.y + 5);
+                        break;
+                    }
+                }
+            }
+            String getText(TableItem item, int column) {
+                String text = item.getText(column);
+                return text;
+            }
+        };
+        table.addListener(SWT_MeasureItem, paintListener);
     }
     
     /**
