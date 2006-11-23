@@ -63,4 +63,8 @@ public class Messages extends NLS {
     public static String IpsTestRunnerViewPart_Action_PrevFailureToolTip;
     public static String IpsTestRunnerViewPart_Action_ShowStackTrace;
     public static String IpsTestRunnerViewPart_Action_ShowStackTraceToolTip;
+    public static String FailurePane_DialogClassNotFound_Title;
+    public static String FailurePane_DialogClassNotFound_Description;
+    public static String FailurePane_DialogClassNotFoundInSrcFolder_Title;
+    public static String FailurePane_DialogClassNotFoundInSrcFolder_Description;
 }

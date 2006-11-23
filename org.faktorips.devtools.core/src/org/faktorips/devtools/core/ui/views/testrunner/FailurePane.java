@@ -90,8 +90,8 @@ public class FailurePane {
      * Class to represent the corresponding object in the trace line of the stacktrace.
      */
     private class TraceLineElement{
-        private String testName = "";
-        private String fileName = "";
+        private String testName = ""; //$NON-NLS-1$
+        private String fileName = ""; //$NON-NLS-1$
         private int line = 0;
         
         public TraceLineElement(String traceLine) {
@@ -212,7 +212,7 @@ public class FailurePane {
             IJavaElement file= findElement(viewPart.getLaunchedProject(), tli.getTestName());
             if (file == null){
                 MessageDialog.openError(viewPart.getShell(), 
-                        "Cannot Open Editor", NLS.bind("Test class {0} not found in selected project", tli.getTestName())); 
+                        Messages.FailurePane_DialogClassNotFound_Title, NLS.bind(Messages.FailurePane_DialogClassNotFound_Description, tli.getTestName())); 
                     return;
             }
 
@@ -222,7 +222,7 @@ public class FailurePane {
             IEditorInput editorInput = getEditorInput(file, tli.getFileName());
             if (editorInput == null){
                 MessageDialog.openInformation(viewPart.getShell(), 
-                        "Cannot Open Editor", NLS.bind("Class {0} not exists in projetc source folder", tli.getTestName())); 
+                        Messages.FailurePane_DialogClassNotFoundInSrcFolder_Title, NLS.bind(Messages.FailurePane_DialogClassNotFoundInSrcFolder_Description, tli.getTestName())); 
                     return;
             }
             IEditorDescriptor editor = IDE.getEditorDescriptor(editorInput.getName());
@@ -293,9 +293,13 @@ public class FailurePane {
             } else if (testCaseFailures[i].startsWith(TEST_ERROR_STACK_INDICATOR)) {
                 fShowStackTraceAction.setEnabled(true);
                 if (fShowStackTrace){
-                    TableItem tableItem = new TableItem(fTable, SWT.NONE);
                     String traceLine = testCaseFailures[i].substring(TEST_ERROR_STACK_INDICATOR.length());
-                    if (containsTraceLineRelevantSourceFile(traceLine)){
+                    if (containsTraceLineRelevantSourceFile(traceLine) || i == 0){
+                        TableItem tableItem = new TableItem(fTable, SWT.NONE);
+                        // show the stacktrace line only if the element is inside the projects
+                        // sources or this is the last stacktrace line,
+                        // thus if the last stacktrace line is not inside the souce the error could
+                        // be better determined with at least this trace line
                         tableItem.setText(traceLine);
                         tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/stkfrm_obj.gif")); //$NON-NLS-1$
                     }
