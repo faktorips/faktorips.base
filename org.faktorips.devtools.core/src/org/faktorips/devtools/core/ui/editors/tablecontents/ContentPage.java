@@ -167,9 +167,9 @@ public class ContentPage extends IpsObjectEditorPage {
             Listener paintListener = new Listener() {
                 public void handleEvent(Event event) {
                     switch(event.type) {        
-                        case SWT.MeasureItem: {
+                        case 41: {
                             TableItem item = (TableItem)event.item;
-                            String text = getText(item, event.index);
+                            String text = getText(item, 0);
                             Point size = event.gc.textExtent(text);
                             // the height will be increased by 5 pixel
                             event.height = Math.max(event.height, size.y + 5);
@@ -182,7 +182,7 @@ public class ContentPage extends IpsObjectEditorPage {
                     return text;
                 }
             };                
-            table.addListener(SWT.MeasureItem, paintListener);
+            table.addListener(41, paintListener);
             
             tableViewer= new TableViewer(table);
             tableViewer.setUseHashlookup(true);
