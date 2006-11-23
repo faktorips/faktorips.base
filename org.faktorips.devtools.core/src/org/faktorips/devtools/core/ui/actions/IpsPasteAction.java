@@ -330,6 +330,7 @@ public class IpsPasteAction extends IpsAction {
                             nameWithoutExtension);
                 }
             }
+            nameWithoutExtension = suggestedName;
             
             if (! forceUseNameSuggestionIfFileExists){
                 InputDialog dialog = new InputDialog(shell, Messages.IpsPasteAction_titleNamingConflict, NLS.bind(
@@ -342,7 +343,7 @@ public class IpsPasteAction extends IpsAction {
                 }
             }
         } 
-        return suggestedName + extension;
+        return nameWithoutExtension + extension;
     }
     
     /*
