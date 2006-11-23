@@ -20,7 +20,9 @@ package org.faktorips.devtools.core.ui.views.productdefinitionexplorer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
+
 /**
  * ViewerFilter for <code>ProductExplorer<code> viewpart. It is used to
  * filter out all projects that are not productdefinition projects.
@@ -49,6 +51,9 @@ public class ProductExplorerFilter extends ViewerFilter {
             if(((IFile)element).getName().indexOf(".")==0){ //$NON-NLS-1$
                 return false;
             }
+        }
+        if (element instanceof IIpsObject){
+            return ((IIpsObject)element).getIpsObjectType().isProductDefinitionType();
         }
 		return true;
 	}
