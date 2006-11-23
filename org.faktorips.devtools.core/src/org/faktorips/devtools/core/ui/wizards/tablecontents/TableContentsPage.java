@@ -24,7 +24,12 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
@@ -39,6 +44,7 @@ public class TableContentsPage extends IpsObjectPage {
     
     private TableStructureRefControl structureControl;
     private TextButtonField structureField;
+    private Text name;
     
     /**
      * @param pageName
@@ -59,26 +65,46 @@ public class TableContentsPage extends IpsObjectPage {
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         toolkit.createFormLabel(nameComposite, Messages.TableContentsPage_labelStructure);
         structureControl = toolkit.createTableStructureRefControl(null, nameComposite);
-        structureControl.addFocusListener(new FocusListener() {
 
-            public void focusGained(FocusEvent e) {
-            }
-
-            public void focusLost(FocusEvent e) {
-                if (getIpsObjectName().equals("")) { //$NON-NLS-1$
-                    String structureName = structureField.getText();
-                    setIpsObjectName(StringUtil.unqualifiedName(structureName));
-                }
-            }
-            
-        });
         structureField = new TextButtonField(structureControl);
         structureField.addChangeListener(this);
-        addNameLabelField(toolkit);
+        name = addNameLabelField(toolkit);
+        name.addFocusListener(new FocusListener() {
+            public void focusGained(FocusEvent e) {
+                setDefaultName();
+            }
+            public void focusLost(FocusEvent e) {
+            }
+        });
+        
         structureControl.setFocus();
+        
+        // sets the default table structure if the selection is a table structure or a table content
+        String tableStructureInSelect = getTableStructureFromSelection();
+        if (tableStructureInSelect != null){
+            structureControl.getTextControl().setText(tableStructureInSelect);
+            name.setFocus();
+        }
     }
     
-    /** 
+    private String getTableStructureFromSelection() {
+        IIpsObject selectedObject;
+        try {
+            selectedObject = getSelectedIpsObject();
+            if (selectedObject instanceof ITableStructure) {
+                return ((ITableStructure)selectedObject).getQualifiedName();
+            }
+            else if (selectedObject instanceof ITableContents) {
+                return ((ITableContents)selectedObject).getTableStructure();
+            }
+        }
+        catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        return null;
+    }
+
+    /**
      * {@inheritDoc}
      */
     protected void sourceFolderChanged() {
@@ -102,4 +128,10 @@ public class TableContentsPage extends IpsObjectPage {
         updatePageComplete();
     }
     
+    private void setDefaultName() {
+        if (getIpsObjectName().equals("")) { //$NON-NLS-1$
+            String structureName = structureField.getText();
+            setIpsObjectName(StringUtil.unqualifiedName(structureName));
+        }
+    }
 }
