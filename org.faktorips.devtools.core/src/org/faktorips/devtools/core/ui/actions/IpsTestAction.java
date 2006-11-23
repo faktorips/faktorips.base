@@ -92,13 +92,13 @@ public class IpsTestAction extends IpsAction {
         } else if (object instanceof IIpsPackageFragment) {
             IIpsPackageFragment child = (IIpsPackageFragment) object;
             root = (IIpsPackageFragmentRoot) child.getRoot();
-            IIpsProject project = root.getIpsProject();
-            pathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root)+ SEPARATOR + child.getName());
+            String name = child.getName(); 
+            addElement(pathElements, root, name);
         } else if (object instanceof ITestCase) {
             ITestCase testCase = (ITestCase) object;
             root = testCase.getIpsPackageFragment().getRoot();
-            IIpsProject project = root.getIpsProject();
-            pathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root) + SEPARATOR + testCase.getQualifiedName());
+            String name = testCase.getQualifiedName(); 
+            addElement(pathElements, root, name);
         } else if (object instanceof IIpsProject) {
             root = ipsProjectSelected((IIpsProject) object, pathElements);
         } else if (object instanceof IJavaProject) {
@@ -112,8 +112,8 @@ public class IpsTestAction extends IpsAction {
         } else if (object instanceof IProductCmpt){
             IProductCmpt productCmpt = (IProductCmpt) object;
             root = productCmpt.getIpsPackageFragment().getRoot();
-            IIpsProject project = root.getIpsProject();
-            pathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root) + SEPARATOR + productCmpt.getQualifiedName());
+            String name = productCmpt.getQualifiedName(); 
+            addElement(pathElements, root, name);            
         } else if (object instanceof IJavaElement) {
             IIpsElement ipsElem = IpsPlugin.getDefault().getIpsModel().getIpsElement(((IJavaElement)object).getResource());
             root = addPathElementFromObject(pathElements, ipsElem);
@@ -125,6 +125,13 @@ public class IpsTestAction extends IpsAction {
             root = addPathElementFromObject(pathElements, ipsObject);
         }
         return root;
+    }
+
+    private void addElement(List pathElements, IIpsPackageFragmentRoot root, String name) throws CoreException {
+        if (root.exists()){
+            IIpsProject project = root.getIpsProject();
+            pathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root)+ SEPARATOR + name);
+        }
     }
     
 	/**
