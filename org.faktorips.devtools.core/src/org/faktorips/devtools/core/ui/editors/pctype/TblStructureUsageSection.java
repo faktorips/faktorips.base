@@ -154,9 +154,6 @@ public class TblStructureUsageSection extends SimpleIpsPartsSection {
             super.updateButtonEnabledStates();
             if (! getPcType().isConfigurableByProductCmptType()){
                 newButton.setEnabled(false);
-                editButton.setEnabled(false);
-                upButton.setEnabled(false);
-                downButton.setEnabled(false);
             }
         }
     }
