@@ -38,12 +38,16 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.datatype.ValueDatatype;
@@ -119,7 +123,7 @@ public class ContentPage extends IpsObjectEditorPage {
      */
     private Table createTable(Composite formBody) {
         // Table: scroll both vertically and horizontally
-        Table table= new Table(formBody, SWT.H_SCROLL | SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION);
+        Table table= new Table(formBody, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.SINGLE | SWT.FULL_SELECTION);
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
         // occupy all available space
@@ -143,6 +147,7 @@ public class ContentPage extends IpsObjectEditorPage {
         
         return table;
     }
+    
 
     /**
      * Inits the <code>TableViewer</code> for this page. Sets content- and labelprovider, column headers and
@@ -155,6 +160,29 @@ public class ContentPage extends IpsObjectEditorPage {
         try{            
             ITableStructure tableStructure= getTableStructure();
             table.removeAll();
+
+            // add paint lister to increase the height of the table row,
+            // because in edit mode the cell becomes a border and the bottom pixel of the text will
+            // be hidden
+            Listener paintListener = new Listener() {
+                public void handleEvent(Event event) {
+                    switch(event.type) {        
+                        case SWT.MeasureItem: {
+                            TableItem item = (TableItem)event.item;
+                            String text = getText(item, event.index);
+                            Point size = event.gc.textExtent(text);
+                            // the height will be increased by 5 pixel
+                            event.height = Math.max(event.height, size.y + 5);
+                            break;
+                        }
+                    }
+                }
+                String getText(TableItem item, int column) {
+                    String text = item.getText(column);
+                    return text;
+                }
+            };                
+            table.addListener(SWT.MeasureItem, paintListener);
             
             tableViewer= new TableViewer(table);
             tableViewer.setUseHashlookup(true);
