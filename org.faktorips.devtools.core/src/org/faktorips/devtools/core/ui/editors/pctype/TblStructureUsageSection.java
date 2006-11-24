@@ -90,6 +90,9 @@ public class TblStructureUsageSection extends SimpleIpsPartsSection {
                         IpsPlugin.logAndShowErrorDialog(e);
                         return EMPTY_ARRAY;
                     }
+                    if (productCmptType == null){
+                        return EMPTY_ARRAY;
+                    }
                     return productCmptType.getTableStructureUsages();
                 }
                 return productCmptType.getTableStructureUsages();
