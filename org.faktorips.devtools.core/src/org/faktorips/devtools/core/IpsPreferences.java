@@ -127,9 +127,7 @@ public class IpsPreferences {
 	 * Set the working date to the given one.
 	 */
 	public final void setWorkingDate(GregorianCalendar newDate) {
-		IpsPlugin.getDefault().getIpsPreferences().prefStore
-				.setValue(WORKING_DATE, XmlUtil
-						.gregorianCalendarToXmlDateString(newDate));
+		prefStore.setValue(WORKING_DATE, XmlUtil.gregorianCalendarToXmlDateString(newDate));
 	}
     
     /**
@@ -145,6 +143,13 @@ public class IpsPreferences {
      */
     public final String getNullPresentation() {
     	return prefStore.getString(NULL_REPRESENTATION_STRING);
+    }
+    
+    /**
+     * Sets the new presentation for <code>null</code>.
+     */
+    public final void setNullPresentation(String newPresentation) {
+        prefStore.setValue(NULL_REPRESENTATION_STRING, newPresentation);
     }
 
     /**

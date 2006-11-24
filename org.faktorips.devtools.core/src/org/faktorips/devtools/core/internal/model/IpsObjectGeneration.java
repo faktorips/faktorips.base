@@ -234,7 +234,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         super.validateThis(list);
         GregorianCalendar parentValidTo = getTimedIpsObject().getValidTo();
         
-        if (parentValidTo != null && getValidFrom().after(parentValidTo)) {
+        if (parentValidTo != null && getValidFrom()!=null && getValidFrom().after(parentValidTo)) {
             IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences(); 
             String[] params = new String[3];
             params[0] = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();

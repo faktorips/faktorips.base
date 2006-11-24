@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
 
 /**
- * Page to display the properties owned by one product (attributes, relations,
+ * Page to display the properties owned by one product component generations (attributes, relations,
  * ...)
  * 
  * @author Thorsten Guenther
@@ -87,7 +87,7 @@ public class PropertiesPage extends IpsObjectEditorPage {
 	 *            The owner of this page
 	 */
 	public PropertiesPage(IpsObjectEditor editor) {
-		super(editor, PAGE_ID, Messages.PropertiesPage_properties);
+		super(editor, PAGE_ID, ""); // Title will be updated based on selected generation
 		editor.addPageChangedListener(new IPageChangedListener() {
 			public void pageChanged(PageChangedEvent event) {
 				setEnabled(((ProductCmptEditor) getIpsObjectEditor())
@@ -111,14 +111,11 @@ public class PropertiesPage extends IpsObjectEditorPage {
 		stack.topControl = root;
 
 		buildContent(toolkit, root);
+        updateTabname();
         ContentsChangeListenerForWidget listener = new ContentsChangeListenerForWidget() {
             
             public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
                 if (event.getIpsSrcFile().equals(((ProductCmptEditor)getEditor()).getIpsSrcFile())) {
-                    if (getPartControl().isDisposed()) {
-                        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
-                        return;
-                    }
                     updateTabname();
                 }
             }
@@ -222,7 +219,6 @@ public class PropertiesPage extends IpsObjectEditorPage {
         String generationConceptName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(); 
         setPartName(generationConceptName + " " + validRange); //$NON-NLS-1$
         updateTabText(getPartControl());
-        
     }
 
     /**

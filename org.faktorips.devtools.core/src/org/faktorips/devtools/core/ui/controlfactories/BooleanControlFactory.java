@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ValueSet;
+import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -53,7 +54,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 	/**
 	 * {@inheritDoc}
 	 */
-	public EditField createEditField(UIToolkit toolkit, Composite parent, ValueDatatype datatype, ValueSet valueSet) {
+	public EditField createEditField(UIToolkit toolkit, Composite parent, ValueDatatype datatype, IValueSet valueSet) {
 		return new BooleanComboField((Combo)createControl(toolkit, parent, datatype, valueSet), "Yes", "No");
 
 	}
@@ -61,7 +62,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Control createControl(UIToolkit toolkit, Composite parent, ValueDatatype datatype, ValueSet valueSet) {
+	public Control createControl(UIToolkit toolkit, Composite parent, ValueDatatype datatype, IValueSet valueSet) {
 		return toolkit.createComboForBoolean(parent, !datatype.isPrimitive(), "Yes", "No");
 	}
     
@@ -120,7 +121,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 
     /**
      * Creates a <code>ComboCellEditor</code> containig a <code>Combo</code> using 
-     * {@link #createControl(UIToolkit, Composite, ValueDatatype, ValueSet)}. 
+     * {@link #createControl(UIToolkit, Composite, ValueDatatype, IValueSet)}. 
      * {@inheritDoc}
      */
     public TableCellEditor createCellEditor(UIToolkit toolkit, ValueDatatype dataType, ValueSet valueSet, TableViewer tableViewer, int columnIndex) {

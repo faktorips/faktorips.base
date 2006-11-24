@@ -22,7 +22,15 @@ package org.faktorips.devtools.core.model;
  */
 public class ContentChangeEvent {
 
+    public final static int PART_CHANGED = 0;
+    
+    public final static int PART_ADDED = 1;
+    
+    public final static int PART_REMOVED = 2;
+    
     private IIpsSrcFile ipsSrcFile;
+    
+    private IIpsObjectPart part;
     
     public ContentChangeEvent(IIpsSrcFile ipsSrcFile) {
         this.ipsSrcFile = ipsSrcFile;
@@ -33,6 +41,18 @@ public class ContentChangeEvent {
      */
     public IIpsSrcFile getIpsSrcFile() {
         return ipsSrcFile;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public IIpsObjectPart getPart() {
+        return part;
+    }
+    
+    public Integer getEventTypeForPart() {
+       return null; 
     }
 
     /**

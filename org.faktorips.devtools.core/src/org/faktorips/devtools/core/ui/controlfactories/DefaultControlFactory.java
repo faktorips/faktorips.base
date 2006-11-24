@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ValueSet;
 import org.faktorips.devtools.core.model.IEnumValueSet;
+import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -58,7 +59,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
 	 * {@inheritDoc}
 	 */
 	public EditField createEditField(UIToolkit toolkit, Composite parent,
-			ValueDatatype datatype, ValueSet valueSet) {
+			ValueDatatype datatype, IValueSet valueSet) {
 		
 		if (valueSet instanceof IEnumValueSet) {
 			Combo combo = toolkit.createCombo(parent);
@@ -71,7 +72,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
 	 * {@inheritDoc}
 	 */
 	public Control createControl(UIToolkit toolkit, Composite parent,
-			ValueDatatype datatype, ValueSet valueSet) {
+			ValueDatatype datatype, IValueSet valueSet) {
 
 		return createEditField(toolkit, parent, datatype, valueSet).getControl();
 	}

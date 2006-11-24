@@ -25,6 +25,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ValueSet;
 import org.faktorips.devtools.core.model.IEnumValueSet;
+import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -55,7 +56,7 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
 	 * {@inheritDoc}
 	 */
 	public EditField createEditField(UIToolkit toolkit, Composite parent,
-			ValueDatatype datatype, ValueSet valueSet) {
+			ValueDatatype datatype, IValueSet valueSet) {
 
 		Combo combo = toolkit.createCombo(parent);
 		if (valueSet instanceof IEnumValueSet) {
@@ -69,7 +70,7 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
 	 * {@inheritDoc}
 	 */
 	public Control createControl(UIToolkit toolkit, Composite parent,
-			ValueDatatype datatype, ValueSet valueSet) {
+			ValueDatatype datatype, IValueSet valueSet) {
 
 		return createEditField(toolkit, parent, datatype, valueSet).getControl();
 	}

@@ -88,12 +88,10 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	private boolean enabled = true;
 	
-	/**
-	 * Storage for the decision of the user to browse an old generation to supress repeating 
-	 * questions to the user. 
-	 */
-	private boolean browseOldGeneration = false;
-	
+    // The working date that is used in the editor. This has to be stored in the editor
+    // as it can differ from the global working date when the user chnages the global working date.
+    private GregorianCalendar workingDateUsedInEditor = null;
+    
 	/**
 	 * Storage for the decision of the user not to fix differences existing between attributes
 	 * and config elements to supress repeating questions to the user.
@@ -147,6 +145,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 				addPage(propertiesPage);
 				addPage(productCmptPropertiesPage);
 				addPage(descriptionPage);
+                setActiveGeneration(getPreferredGeneration(), false);
 			}
 			else {
 				MissingResourcePage page = new MissingResourcePage(this, getIpsSrcFile());
@@ -163,10 +162,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		super.init(site, input);
-
-		if (isSrcFileUsable()) {
-			setActiveGeneration(getPreferredGeneration(), false);
-		} 
 	}
 
 	/**
@@ -186,17 +181,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	public void partActivated(IWorkbenchPartReference partRef) {
 		super.partActivated(partRef);
-
 		IWorkbenchPart part = partRef.getPart(false);
-		
 		if (part != this || !isSrcFileUsable()) {
 			return;
 		}
-
 		active = true;
-
 		checkGeneration();
-
 		checkForInconsistenciesBetweenAttributeAndConfigElements(false);
 	}
 
@@ -336,42 +326,45 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		IProductCmptGeneration generation = (IProductCmptGeneration) prod
 				.getGenerationByEffectiveDate(workingDate);
 
-		if (generation == null) {
-			// no generation for the _exact_ current working date.
-
-			if (browseOldGeneration) {
-				// check happned before and user decided not to create a new generation - dont bother 
-				// the user with repeating questions.
-				setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
-				return;
-			}
-			
-			if (IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse()) {
-				// Editor is on browse-mode.
-				setPropertiesEnabled(false);
-				return;
-			}
-			
-			IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
-			if (prefs.isWorkingModeBrowse()) {
-				// just browsing - show the generation valid at working date
-				if (!generationManuallySet) {
-					showGenerationEffectiveOn(prefs.getWorkingDate());
-				} 
-				else {
-					setPropertiesEnabled(false);
-				}
-				return;
-			}
-			
-			handleWorkingDateMissmatch(getContainer().getShell());
-		} else if (!generation.equals(getActiveGeneration())) {
-			// we found a generation matching the working date, but the found one is not active,
-			// so make it active.
-			this.setActiveGeneration(generation, false);
-		} else {
+        if (generation!=null) {
+            workingDate = workingDateUsedInEditor;
+            if (!generation.equals(getActiveGeneration())) {
+                // we found a generation matching the working date, but the found one is not active,
+                // so make it active.
+                this.setActiveGeneration(generation, false);
+            } else {
+                setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
+            }
+            return;
+        }
+        // no generation for the _exact_ current working date.
+		if (workingDate.equals(workingDateUsedInEditor)) {
+			// check happned before and user decided not to create a new generation - dont bother 
+			// the user with repeating questions.
 			setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
+			return;
 		}
+		
+        // TODO Mit Thorsten klaeren: Wieso wird hier 2x auf WorkingMode Browse geprueft. 
+		if (IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse()) {
+			// Editor is on browse-mode.
+			setPropertiesEnabled(false);
+			return;
+		}
+		
+		IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
+		if (prefs.isWorkingModeBrowse()) {
+			// just browsing - show the generation valid at working date
+			if (!generationManuallySet) {
+				showGenerationEffectiveOn(prefs.getWorkingDate());
+			} 
+			else {
+				setPropertiesEnabled(false);
+			}
+			return;
+		}
+		
+		handleWorkingDateMissmatch(getContainer().getShell());
 	}
 
 	/**
@@ -405,15 +398,17 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	private class MyPropertyChangeListener implements IPropertyChangeListener {
 
+        /**
+         * {@inheritDoc}
+         */
 		public void propertyChange(PropertyChangeEvent event) {
-			if (!active) {
+            if (!active) {
 				return;
 			}
 
 			String property = event.getProperty();
 			if (property.equals(IpsPreferences.WORKING_DATE)) {
 				generationManuallySet = false;
-				browseOldGeneration = false;
 				checkGeneration();
                 productCmptPropertiesPage.refresh();
 				refreshInternal(false);
@@ -441,15 +436,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		if (generation == null) {
 			return;
 		}
-
-		if (getActiveGeneration() == null
-				|| !getActiveGeneration().equals(generation)) {
+		if (!generation.equals(getActiveGeneration())) {
 			super.setActiveGeneration(generation);
+            updateGenerationPropertiesPageTab();
 			refreshStructure();
 		}
-
 		setPropertiesEnabled((IProductCmptGeneration) generation);
-		
 		generationManuallySet = generationManuallySet || rememberDecision;
 	}
 
@@ -586,9 +578,9 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		
 			IProductCmpt cmpt = getProductCmpt();
 			GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
+            workingDateUsedInEditor = workingDate;
 			switch (choice) {
 			case GenerationSelectionDialog.CHOICE_BROWSE:
-				browseOldGeneration = true;
 				setActiveGeneration(cmpt.findGenerationEffectiveOn(workingDate), false);
 				break;
 
