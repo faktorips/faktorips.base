@@ -718,4 +718,46 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertFalse(namingConventions.validateIpsPackageName("testPackage").containsErrorMsg());
         assertTrue(namingConventions.validateIpsPackageName("1").containsErrorMsg());
     }
+    
+    public void testCheckForDuplicateRuntimeIds() throws CoreException {
+        IIpsProject prj = newIpsProject("PRJ1");
+        IProductCmpt cmpt1 = newProductCmpt(prj, "product1");
+        IProductCmpt cmpt2 = newProductCmpt(prj, "product2");
+        cmpt1.setRuntimeId("Egon");
+        cmpt2.setRuntimeId("Egon");
+        assertEquals(cmpt1.getRuntimeId(), cmpt2.getRuntimeId());
+
+        MessageList ml = prj.checkForDuplicateRuntimeIds();
+        assertEquals(1, ml.getNoOfMessages());
+        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
+
+        cmpt2.setRuntimeId("Hugo");
+        ml = prj.checkForDuplicateRuntimeIds();
+        assertEquals(0, ml.getNoOfMessages());
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
+
+        // test that not linked projects are not checked against each other
+        IProductCmpt cmpt3 = newProductCmpt(ipsProject, "product3");
+        cmpt3.setRuntimeId("Egon");
+        cmpt2.setRuntimeId("Egon");
+        ml = prj.checkForDuplicateRuntimeIds();
+        assertEquals(1, ml.getNoOfMessages());
+        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
+
+        // test that linked projects will be checked against each other
+        IIpsObjectPath objectPath = prj.getIpsObjectPath();
+        objectPath.newIpsProjectRefEntry(ipsProject);
+        prj.setIpsObjectPath(objectPath);
+        ml = prj.checkForDuplicateRuntimeIds();
+        assertEquals(3, ml.getNoOfMessages());
+        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
+
+        ml = prj.checkForDuplicateRuntimeIds(new IProductCmpt[] { cmpt3 });
+        assertEquals(2, ml.getNoOfMessages());
+        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
+
+        ml = prj.checkForDuplicateRuntimeIds(new IProductCmpt[] { cmpt1, cmpt3 });
+        assertEquals(4, ml.getNoOfMessages());
+        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
+    }    
 }

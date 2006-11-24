@@ -35,6 +35,8 @@ public interface IIpsModel extends IIpsElement {
 
     /**
      * Validation message code to indicate that there exist two runtime ids which collide.
+     * 
+     * @deprecated @see IIpsModel#checkForDuplicateRuntimeIds()
      */
     public final static String MSGCODE_RUNTIME_ID_COLLISION = MSGCODE_PREFIX + "RuntimeIdCollision"; //$NON-NLS-1$
 
@@ -207,6 +209,10 @@ public interface IIpsModel extends IIpsElement {
      *         each containing one of the two product components.
      * 
      * @throws CoreException if an error occurs during search.
+     * 
+     * @deprecated The {@link IIpsProject#checkForDuplicateRuntimeIds()} method should be used instead,
+     *             to check the runtime id only product cmpt's in the ips object path are relevant (not all
+     *             found in the model, therfore the method is moved to the IIpsProject)
      */
     public MessageList checkForDuplicateRuntimeIds() throws CoreException;
 
@@ -219,6 +225,10 @@ public interface IIpsModel extends IIpsElement {
      *         property, containing the product component given to this method.
      * 
      * @throws CoreException if an error occurs during search.
+     * 
+     * @deprecated The {@link IIpsProject#checkForDuplicateRuntimeIds()} method should be used instead,
+     *             to check the runtime id only product cmpt's in the ips object path are relevant (not all
+     *             found in the model, therfore the method is moved to the IIpsProject)
      */
     public MessageList checkForDuplicateRuntimeIds(IProductCmpt[] cmptsToCheck) throws CoreException;
 

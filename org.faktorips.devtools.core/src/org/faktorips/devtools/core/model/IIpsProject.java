@@ -100,6 +100,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
             + "DuplicateBasePackageNameForGeneratedClassesInDifferentProjects"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that there exist two runtime ids which collide.
+     */
+    public final static String MSGCODE_RUNTIME_ID_COLLISION = MSGCODE_PREFIX + "RuntimeIdCollision"; //$NON-NLS-1$
+
+    /**
      * Returns the corresponding platform project.
      */
     public IProject getProject();
@@ -501,5 +506,28 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns the naming conventions used for this project.
      */
     public IIpsProjectNamingConventions getNamingConventions();
+
+    /**
+     * Checks all given product components against all product components in the ips object path for
+     * duplicate runtime ids.
+     * 
+     * @return A list of messages. For each combination of two product components with duplicate
+     *         runtime id a new message is created. This message has only one invalid object
+     *         property, containing the product component given to this method.
+     * 
+     * @throws CoreException if an error occurs during search.
+     */
+    public MessageList checkForDuplicateRuntimeIds(IProductCmpt[] cmptsToCheck) throws CoreException;
+
     
+    /**
+     * Searches all product components in the ips object path for duplicate runtime ids.
+     * 
+     * @return A list of messages. For each combination of two product components with duplicate
+     *         runtime id a new message is created. This message has two invalid object properties,
+     *         each containing one of the two product components.
+     * 
+     * @throws CoreException if an error occurs during search.
+     */
+    public MessageList checkForDuplicateRuntimeIds() throws CoreException;
 }
