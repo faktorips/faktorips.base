@@ -62,22 +62,22 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
 		return null;
 	}
 
-	/** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public String getName() {
         return name;
     }
 
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public final IIpsElement getParent() {
         return parent;
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean exists() {
         if (!getParent().exists()) {
@@ -93,8 +93,8 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
         return getCorrespondingResource().exists();
     }
     
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public IResource getEnclosingResource() {
         IResource resource = getCorrespondingResource();
@@ -105,14 +105,14 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsModel getIpsModel() {
         return IpsPlugin.getDefault().getIpsModel();
     }
 
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public IIpsProject getIpsProject() {
         if (getParent()==null) {
@@ -121,15 +121,15 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
         return getParent().getIpsProject();
     }
     
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public IIpsElement[] getChildren() throws CoreException {
         return NO_CHILDREN;
     }
 
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public boolean hasChildren() throws CoreException {
         return getChildren().length>0;
