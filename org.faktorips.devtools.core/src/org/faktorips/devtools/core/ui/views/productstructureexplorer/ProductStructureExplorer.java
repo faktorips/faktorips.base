@@ -26,6 +26,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -48,6 +50,7 @@ import org.eclipse.ui.part.IShowInSource;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.CycleException;
@@ -71,7 +74,8 @@ import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
  * @author guenther
  *
  */
-public class ProductStructureExplorer extends ViewPart implements ContentsChangeListener, IShowInSource, IResourceChangeListener {
+public class ProductStructureExplorer extends ViewPart implements ContentsChangeListener, IShowInSource,
+        IResourceChangeListener, IPropertyChangeListener {
     public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productStructureExplorer"; //$NON-NLS-1$
 
     private TreeViewer tree; 
@@ -82,12 +86,36 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     // Job to refresh the ui in asynchronous manner
     private UpdateUiJob updateUiJob;
     
+    private class ProductCmptDropListener extends IpsElementDropListener {
+
+        public void dragEnter(DropTargetEvent event) {
+            event.detail = DND.DROP_LINK;
+        }
+
+        public void drop(DropTargetEvent event) {
+            IIpsElement[] transferred = super.getTransferedElements(event.currentDataType);
+            if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile) {
+                try {
+                    showStructure((IIpsSrcFile)transferred[0]);
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
+            }
+        }
+
+        public void dropAccept(DropTargetEvent event) {
+            event.detail = DND.DROP_LINK;
+        }
+    }
+    
     public ProductStructureExplorer() {
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
-        
+
         // add as resource listener because refactoring-actions like move or rename
         // does not cause a model-changed-event.
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
+        
+        IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
     }
     
     private Display getDisplay(){
@@ -334,27 +362,16 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         updateUiJob.update(this);
     }
 	
-	private class ProductCmptDropListener extends IpsElementDropListener {
-
-	    public void dragEnter(DropTargetEvent event) {
-	        event.detail = DND.DROP_LINK;
-	    }
-
-	    public void drop(DropTargetEvent event) {
-	    	IIpsElement[] transferred = super.getTransferedElements(event.currentDataType);
-	    	if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile) {
-	    		try {
-	    			showStructure((IIpsSrcFile)transferred[0]);
-				} catch (CoreException e) {
-					IpsPlugin.log(e);
-				}
-	    	}
-	    }
-
-	    public void dropAccept(DropTargetEvent event) {
-	        event.detail = DND.DROP_LINK;
-	    }
-	}
+    /**
+     * If the working date changed refresh the content of the view.
+     * 
+     * {@inheritDoc}
+     */
+    public void propertyChange(PropertyChangeEvent event) {
+        if (event.getProperty().equals(IpsPreferences.WORKING_DATE)){
+            updateUiJob.update(this);
+        }
+    }
 
     /**
      * {@inheritDoc}
@@ -362,6 +379,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     public void dispose() {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        IpsPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
         super.dispose();
     }
 }
