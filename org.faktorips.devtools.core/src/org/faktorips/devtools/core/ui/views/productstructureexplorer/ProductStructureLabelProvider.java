@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ViewerLabel;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
@@ -75,6 +76,9 @@ public class ProductStructureLabelProvider implements ILabelProvider {
         else if (element instanceof IProductCmptStructureTblUsageReference) {
             return ((IProductCmptStructureTblUsageReference)element).getTableContentUsage().getImage();
         }   
+        else if (element instanceof ViewerLabel){
+            return ((ViewerLabel)element).getImage();
+        }
 	    return IpsPlugin.getDefault().getImage(Messages.ProductStructureLabelProvider_undefined);
 	}
 
@@ -91,7 +95,10 @@ public class ProductStructureLabelProvider implements ILabelProvider {
         else if (element instanceof IProductCmptStructureTblUsageReference) {
             ITableContentUsage tcu = ((IProductCmptStructureTblUsageReference)element).getTableContentUsage();
             return tcu.getStructureUsage() + " : " + StringUtil.unqualifiedName(tcu.getTableContentName());
-        }        
+        } 
+        else if (element instanceof ViewerLabel){
+            return ((ViewerLabel)element).getText();
+        }
 		return Messages.ProductStructureLabelProvider_undefined;
 	}
 }

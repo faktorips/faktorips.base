@@ -29,6 +29,7 @@ public class Messages extends NLS {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
+    public static String ProductStructureContentProvider_TreeNodeText_NoGenerationOnCurrentWorkingDate;
     public static String ProductStructureLabelProvider_undefined;
 	public static String ProductStructureExplorer_labelCircleRelation;
 	public static String ProductStructureExplorer_tooltipToggleRelationTypeNodes;

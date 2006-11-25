@@ -17,12 +17,18 @@
 
 package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerLabel;
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
@@ -47,6 +53,24 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 	
 	private IProductCmptReference root;
 	
+    /*
+     * Class to represent a tree node to inform about no generation on current working date.
+     */
+    private class NoGenerationNode extends ViewerLabel {
+        public NoGenerationNode(IProductCmpt productCmpt, GregorianCalendar workingDate) {
+            super("", null); //$NON-NLS-1$
+            String generation = productCmpt.getIpsProject().getChangesInTimeNamingConventionForGeneratedCode()
+                    .getGenerationConceptNameSingular();
+
+            DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
+            String formatedWorkingDate = format.format(workingDate.getTime());
+            String label = NLS.bind(Messages.ProductStructureContentProvider_TreeNodeText_NoGenerationOnCurrentWorkingDate, formatedWorkingDate,
+                    generation);
+            this.setText(label);
+            this.setImage(IpsPlugin.getDefault().getImage("WorkingDate.gif")); //$NON-NLS-1$
+        }
+    }
+    
 	/**
 	 * Creates a new content provider.
 	 * 
@@ -77,6 +101,11 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
         // add table content usages
         if (parentElement instanceof IProductCmptReference){
             children.addAll(Arrays.asList(structure.getChildProductCmptStructureTblUsageReference((IProductCmptReference)parentElement)));
+        }
+        
+        // add optional information node
+        if (! (parentElement instanceof NoGenerationNode)){
+            addNoGenerationNodeIfNecessary(children);
         }
         
         return children.toArray();
@@ -140,6 +169,15 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
         
         structure = (IProductCmptStructure)newInput;
         root = structure.getRoot();
+    }
+
+    private void addNoGenerationNodeIfNecessary(List elements) {
+        GregorianCalendar currWorkingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
+        if (null == root.getProductCmpt().getGenerationByEffectiveDate(currWorkingDate)) {
+            // no generations avaliable,
+            // show node to inform that no generations exists
+            elements.add(new NoGenerationNode(root.getProductCmpt(), currWorkingDate));
+        }
     }
     
     public boolean isRelationTypeShowing() {

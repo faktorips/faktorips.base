@@ -269,17 +269,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 		}
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    public void contentsChanged(ContentChangeEvent event) {
-    	if (file == null || !event.getIpsSrcFile().equals(file)) {
-    		// no contents set or event concerncs another source file - nothing to refresh.
-    		return;
-    	}
-        updateUiJob.update(this);
-    }
-
     private void refresh() {
         Control ctrl = tree.getControl();
         
@@ -355,6 +344,17 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     /**
      * {@inheritDoc}
      */
+    public void contentsChanged(ContentChangeEvent event) {
+        if (file == null || !event.getIpsSrcFile().equals(file)) {
+            // no contents set or event concerncs another source file - nothing to refresh.
+            return;
+        }
+        updateUiJob.update(this);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
 	public void resourceChanged(IResourceChangeEvent event) {
         if (file == null) {
             return;
@@ -363,13 +363,17 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 	
     /**
-     * If the working date changed refresh the content of the view.
+     * If the working date changed update the content of the view.
      * 
      * {@inheritDoc}
      */
     public void propertyChange(PropertyChangeEvent event) {
         if (event.getProperty().equals(IpsPreferences.WORKING_DATE)){
-            updateUiJob.update(this);
+            try {
+                showStructure(file);
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
         }
     }
 
