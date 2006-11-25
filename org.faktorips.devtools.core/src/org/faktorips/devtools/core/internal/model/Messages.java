@@ -36,6 +36,18 @@ public class Messages extends NLS {
 
 	public static String DefaultIpsProjectNamingConventions_error;
 
+    public static String DefaultIpsProjectNamingConventions_msgMissingName;
+
+    public static String DefaultIpsProjectNamingConventions_msgMissingNameForProductCmpt;
+
+    public static String DefaultIpsProjectNamingConventions_msgNameIdDiscouraged;
+
+    public static String DefaultIpsProjectNamingConventions_msgNameMustNotBeQualified;
+
+    public static String DefaultIpsProjectNamingConventions_msgNameNotValid;
+
+    public static String DefaultIpsProjectNamingConventions_msgNameNotValidForProductCmpt;
+
     public static String DefaultIpsProjectNamingConventions_warning;
 
     public static String ValidationUtils_msgObjectDoesNotExist;

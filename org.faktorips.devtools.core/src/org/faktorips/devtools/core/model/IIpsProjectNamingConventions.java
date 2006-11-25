@@ -41,7 +41,7 @@ public interface IIpsProjectNamingConventions {
     public static final String INVALID_NAME = "INVALID_NAME"; //$NON-NLS-1$
     
     /**
-     * Message code for messages indicating that a name is invalid.
+     * Message code for messages indicating that a name is missing.
      */
     public static final String NAME_IS_MISSING = "NAME_IS_MISSING"; //$NON-NLS-1$
 
@@ -64,8 +64,9 @@ public interface IIpsProjectNamingConventions {
      * @see #NAME_IS_MISSING
      * 
      * @throws NullPointerException if type is <code>null</code>
+     * @throws CoreException if an error occurs while validating the name.
      */
-    public MessageList validateQualifiedIpsObjectName(IpsObjectType type, String name) throws CoreException;
+    public MessageList validateQualifiedIpsObjectName(IpsObjectType type, String name) throws CoreException ;
 
     /**
      * Returns a message list containing errors if the given unqualified name is missing
@@ -81,9 +82,10 @@ public interface IIpsProjectNamingConventions {
      * @see #NAME_IS_QUALIFIED
      * 
      * @throws NullPointerException if type is <code>null</code>
+     * @throws CoreException if an error occurs while validating the name.
      */
-    public MessageList validateUnqualifiedIpsObjectName(IpsObjectType type, String name) throws CoreException;
-
+    public MessageList validateUnqualifiedIpsObjectName(IpsObjectType type, String name)  throws CoreException ;
+    
     /**
      * Validates if the given name is a valid for ips packages.
      * 

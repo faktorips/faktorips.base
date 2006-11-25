@@ -934,5 +934,21 @@ public class TestCase extends IpsObject implements ITestCase {
             messageList.add(msg);
             return;
         }
+        
+        validateNamingConventions(messageList);
+    }
+
+    /*
+     *  Validate naming conventions
+     */
+    private void validateNamingConventions(MessageList list) throws CoreException {
+        MessageList mlForNameValidation = new MessageList();
+        mlForNameValidation.add(getIpsProject().getNamingConventions().validateUnqualifiedIpsObjectName(getIpsObjectType(), getName()));
+        mlForNameValidation.add(getIpsProject().getNamingConventions().validateQualifiedIpsObjectName(getIpsObjectType(), getQualifiedName()));
+        for (Iterator iter = mlForNameValidation.iterator(); iter.hasNext();) {
+            Message msg = (Message)iter.next();
+            Message newMsg = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_NAME);
+            list.add(newMsg);
+        }
     }
 }

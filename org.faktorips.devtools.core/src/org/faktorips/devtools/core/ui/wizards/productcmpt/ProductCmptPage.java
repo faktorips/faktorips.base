@@ -231,23 +231,6 @@ public class ProductCmptPage extends IpsObjectPage {
     }
 
 	/**
-	 * {@inheritDoc}
-	 */
-	protected void validateName() {
-		super.validateName();
-		if (getErrorMessage() != null) {
-			return;
-		}
-		IProductCmptNamingStrategy ns = getNamingStrategy();
-		if (ns != null) {
-			MessageList list = ns.validate(getIpsObjectName());
-			if (!list.isEmpty()) {
-				setErrorMessage(list.getMessage(0).getText());
-			}
-		}
-	}    
-
-	/**
 	 * Returns the currentyl active naming strategy. 
 	 */
 	private IProductCmptNamingStrategy getNamingStrategy()  {

@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
+import java.util.Iterator;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -173,8 +175,24 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         	String text = NLS.bind(Messages.TableContents_msgColumncountMismatch, structCols, contentCols);
         	list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
         }
+        
+        validateNamingConventions(list);
     }
 
+    /*
+     *  Validate naming conventions
+     */
+    private void validateNamingConventions(MessageList list) throws CoreException {
+        MessageList mlForNameValidation = new MessageList();
+        mlForNameValidation.add(getIpsProject().getNamingConventions().validateUnqualifiedIpsObjectName(getIpsObjectType(), getName()));
+        mlForNameValidation.add(getIpsProject().getNamingConventions().validateQualifiedIpsObjectName(getIpsObjectType(), getQualifiedName()));
+        for (Iterator iter = mlForNameValidation.iterator(); iter.hasNext();) {
+            Message msg = (Message)iter.next();
+            Message newMsg = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_NAME);
+            list.add(newMsg);
+        }
+    }
+    
     private void initValueDatatypes() throws CoreException {
         ITableStructure structure= findTableStructure();
         IColumn[] columns= structure.getColumns();

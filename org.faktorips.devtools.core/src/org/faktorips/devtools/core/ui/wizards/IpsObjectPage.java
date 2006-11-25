@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
@@ -38,6 +39,7 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -47,6 +49,8 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 
 /**
@@ -359,16 +363,32 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
 	 * </p>
 	 */
 	protected void validateName() {
-		String name=nameField.getText(); 
-		// must not be empty
-		if (name.length() == 0) {
-			setErrorMessage(Messages.IpsObjectPage_msgEmptyName);
-			return;
-		}
-		if (name.indexOf('.') != -1) {
-			setErrorMessage(Messages.IpsObjectPage_msgNameMustNotBeQualified);
-			return;
-		}
+	    // validate naming conventions
+        String name=nameField.getText();
+        IIpsProjectNamingConventions namingConventions = getIpsProject().getNamingConventions();
+        MessageList ml;
+        try {
+            ml = namingConventions.validateUnqualifiedIpsObjectName(getIpsObjectType(), name);
+            if (ml.getNoOfMessages() > 0) {
+                String msgText = ml.getFirstMessage(ml.getSeverity()).getText();
+                if (ml.getSeverity() == Message.ERROR){
+                    setErrorMessage(msgText);
+                } else if (ml.getSeverity() == Message.WARNING){
+                    setMessage(msgText, DialogPage.WARNING);
+                } else if (ml.getSeverity() == Message.INFO){
+                    setMessage(msgText, DialogPage.INFORMATION);
+                } else {
+                    setMessage(msgText, DialogPage.NONE);
+                }
+                return;
+            }            
+        }
+        catch (CoreException e) {
+            // an error occured while validating the name
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+		
+        // validate to indicate that the object not exists
 		IIpsPackageFragment pack = packageControl.getPdPackageFragment();
 		String filename = getIpsObjectType().getFileName(name);
 		if (pack!=null) {

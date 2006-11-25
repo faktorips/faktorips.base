@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -36,6 +37,8 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 
@@ -564,7 +567,27 @@ public class TableStructure extends IpsObject implements ITableStructure {
 	 */
 	public boolean isEnumType() {
 		return type == TableStructureType.ENUMTYPE_MODEL || type == TableStructureType.ENUMTYPE_PRODUCTDEFINTION;
-		
-		
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
+        validateNamingConventions(list);
+    }
+
+    /*
+     *  Validate naming conventions
+     */
+    private void validateNamingConventions(MessageList list) throws CoreException {
+        MessageList mlForNameValidation = new MessageList();
+        mlForNameValidation.add(getIpsProject().getNamingConventions().validateUnqualifiedIpsObjectName(getIpsObjectType(), getName()));
+        mlForNameValidation.add(getIpsProject().getNamingConventions().validateQualifiedIpsObjectName(getIpsObjectType(), getQualifiedName()));
+        for (Iterator iter = mlForNameValidation.iterator(); iter.hasNext();) {
+            Message msg = (Message)iter.next();
+            Message newMsg = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_NAME);
+            list.add(newMsg);
+        }
+    }
 }

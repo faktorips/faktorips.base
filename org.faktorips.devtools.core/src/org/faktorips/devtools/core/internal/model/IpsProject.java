@@ -1190,7 +1190,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     public IIpsProjectNamingConventions getNamingConventions() {
         if(namingConventions==null){
-            namingConventions = new DefaultIpsProjectNamingConventions();
+            namingConventions = new DefaultIpsProjectNamingConventions(this);
         }
         return namingConventions;
     }
@@ -1290,9 +1290,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 objects[0] = new ObjectProperty(cmpt1, IProductCmpt.PROPERTY_RUNTIME_ID);
             }
 
-            String projectName = cmpt2.getIpsProject().getName();
-            String msg = NLS.bind(Messages.IpsModel_msgRuntimeIDCollision, new String[] { cmpt1.getQualifiedName(),
-                    cmpt2.getQualifiedName(), projectName });
+            String msg = NLS.bind(Messages.IpsModel_msgRuntimeIDCollision, cmpt1.getQualifiedName(), cmpt2
+                    .getQualifiedName());
             list.add(new Message(MSGCODE_RUNTIME_ID_COLLISION, msg, Message.ERROR, objects));
         }
     }    

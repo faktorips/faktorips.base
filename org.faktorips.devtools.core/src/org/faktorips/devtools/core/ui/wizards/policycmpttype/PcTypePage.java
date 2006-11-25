@@ -17,12 +17,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.policycmpttype;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -83,24 +79,4 @@ public class PcTypePage extends IpsObjectPage implements ValueChangeListener {
     public boolean overrideAbstractMethods() {
         return overrideCheckbox.isChecked();
     }
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void validateName() {
-		super.validateName();
-		if (getErrorMessage()!=null) {
-			return;
-		}
-		String name=getIpsObjectName(); 
-		IStatus val= JavaConventions.validateJavaTypeName(name);
-		if (val.getSeverity() == IStatus.ERROR) {
-			setErrorMessage(NLS.bind(org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_msgInvalidName, name));
-			return;
-		} else if (val.getSeverity() == IStatus.WARNING) {
-			setMessage(org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_msgNameDiscouraged, IMessageProvider.WARNING); 
-		}		
-	}
-    
-    
 }

@@ -702,6 +702,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      * {@inheritDoc}
      */
     protected void validateThis(MessageList list) throws CoreException {
+        validateNamingConventions(list);
+        
         TypeHierarchy supertypeHierarchy = null;
         try {
             supertypeHierarchy = TypeHierarchy.getSupertypeHierarchy(this);
@@ -749,11 +751,27 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         }
     }
 
+    /*
+     *  Validate naming conventions for the policy cmpt type
+     */
+    private void validateNamingConventions(MessageList list) throws CoreException {
+        MessageList mlForNameValidation = new MessageList();
+        mlForNameValidation.add(getIpsProject().getNamingConventions().validateUnqualifiedIpsObjectName(getIpsObjectType(), getName()));
+        mlForNameValidation.add(getIpsProject().getNamingConventions().validateQualifiedIpsObjectName(getIpsObjectType(), getQualifiedName()));
+        for (Iterator iter = mlForNameValidation.iterator(); iter.hasNext();) {
+            Message msg = (Message)iter.next();
+            Message newMsg = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_NAME);
+            list.add(newMsg);
+        }
+    }
+
     private void validateProductSide(MessageList list) throws CoreException {
         if (!isConfigurableByProductCmptType()) {
             return;
         }
 
+        validateNamingConventionsForProductCmptType(list);
+        
         if (StringUtils.isEmpty(this.unqalifiedProductCmptType)) {
             String text = Messages.PolicyCmptType_msgNameMissing;
             list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING, text, Message.ERROR, this,
@@ -779,6 +797,20 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
                 list.add(new Message(MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT, msg, Message.ERROR, this,
                         IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE));
             }
+        }
+    }
+
+    /*
+     *  Validate naming conventions for the product cmpt type
+     */
+    private void validateNamingConventionsForProductCmptType(MessageList list) throws CoreException {
+        MessageList mlForNameValidation = new MessageList();
+        mlForNameValidation.add(getIpsProject().getNamingConventions().validateUnqualifiedIpsObjectName(IpsObjectType.PRODUCT_CMPT_TYPE, getUnqualifiedProductCmptType()));
+        mlForNameValidation.add(getIpsProject().getNamingConventions().validateQualifiedIpsObjectName(IpsObjectType.PRODUCT_CMPT_TYPE, getProductCmptType()));
+        for (Iterator iter = mlForNameValidation.iterator(); iter.hasNext();) {
+            Message msg = (Message)iter.next();
+            Message newMsg = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE);
+            list.add(newMsg);
         }
     }
 

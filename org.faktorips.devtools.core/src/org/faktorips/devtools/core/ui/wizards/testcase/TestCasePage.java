@@ -73,14 +73,10 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
     String getSuperType() {
         return superTypeControl.getText();
     }
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void validateName() {
-		super.validateName();
-	}
 	
+    /**
+     * {@inheritDoc}
+     */
     protected void validatePage() throws CoreException {
         super.validatePage();
         if (getErrorMessage()!=null) {

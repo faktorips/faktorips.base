@@ -50,13 +50,9 @@ public class TestCaseTypePage extends IpsObjectPage implements ValueChangeListen
         super.sourceFolderChanged();
     }
     
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void validateName() {
-		super.validateName();
-	}
-	
+    /**
+     * {@inheritDoc}
+     */
     protected void validatePage() throws CoreException {
         super.validatePage();
         updatePageComplete();

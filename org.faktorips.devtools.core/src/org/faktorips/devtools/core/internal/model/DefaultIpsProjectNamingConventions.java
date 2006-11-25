@@ -17,12 +17,19 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -33,44 +40,194 @@ import org.faktorips.util.message.MessageList;
  */
 public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConventions {
 
-
+    private IIpsProject ipsProject;
+    
+    private Map errorMsgTxtNameIsEmpty = new HashMap(1);
+    private Map errorMsgTxtNameIsQualified = new HashMap(1);
+    
+    public DefaultIpsProjectNamingConventions(IIpsProject ipsProject){
+        this.ipsProject = ipsProject;
+        
+        // initialize special error texts depending on the object type
+        errorMsgTxtNameIsEmpty.put(IpsObjectType.PRODUCT_CMPT_TYPE, Messages.DefaultIpsProjectNamingConventions_msgMissingNameForProductCmpt);
+        errorMsgTxtNameIsQualified.put(IpsObjectType.PRODUCT_CMPT_TYPE, Messages.DefaultIpsProjectNamingConventions_msgNameNotValidForProductCmpt);
+    }
+    
+    private String getNameIsEmptyErrorText(IpsObjectType type){
+        String text = (String) errorMsgTxtNameIsEmpty.get(type);
+        if (text == null){
+            text =  Messages.DefaultIpsProjectNamingConventions_msgMissingName;
+        }
+        return text;
+    }
+    
+    private String getNameIsQualifiedErrorText(IpsObjectType type){
+        String text = (String) errorMsgTxtNameIsQualified.get(type);
+        if (text == null){
+            text =  Messages.DefaultIpsProjectNamingConventions_msgNameMustNotBeQualified;
+        }
+        return text;
+    }
+    
     /**
      * {@inheritDoc}
      */
     public MessageList validateQualifiedIpsObjectName(IpsObjectType type, String name) throws CoreException {
-        // TODO implement
-        return null;
+        return validateIpsObjectNameInternal(type, name, true);
     }
 
     /**
      * {@inheritDoc}
      */
     public MessageList validateUnqualifiedIpsObjectName(IpsObjectType type, String name) throws CoreException {
-        // TODO implement and use in NewXyzWizards and RenamePage
-        return null;
+        ArgumentCheck.notNull(type);
+        return validateIpsObjectNameInternal(type, name, false);
+    }
+    
+    private MessageList validateIpsObjectNameInternal(IpsObjectType type, String name, boolean qualifiedCheck) throws CoreException{
+        MessageList result = new MessageList();
+        
+        // common check for all ips object types
+        if (StringUtils.isEmpty(name)){
+            String text = getNameIsEmptyErrorText(type);
+            result.add(new Message(NAME_IS_MISSING, text, Message.ERROR));
+            return result;
+        }
+        if (!qualifiedCheck) {
+            if (name.indexOf('.') != -1) {
+                String text = getNameIsQualifiedErrorText(type);
+                result.add(new Message(NAME_IS_QUALIFIED, text, Message.ERROR));
+                return result;
+            }
+        }
+        
+        if (IpsObjectType.BUSINESS_FUNCTION.equals(type)) {
+            MessageList ml = validateNameForBusinessFunction(name, qualifiedCheck);
+            result.add(ml);
+            return result;
+        }
+        else if (IpsObjectType.POLICY_CMPT_TYPE.equals(type)){
+            MessageList ml = validateNameForPolicyCmptType(name, qualifiedCheck);
+            result.add(ml);
+            return result;
+        }
+        else if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(type)){
+            MessageList ml = validateNameForProductCmptType(name, qualifiedCheck);
+            result.add(ml);
+            return result;
+        }
+        else if (IpsObjectType.TABLE_STRUCTURE.equals(type)){
+            MessageList ml = validateNameForTableStructure(name, qualifiedCheck);
+            result.add(ml);
+            return result;
+        }
+        if (IpsObjectType.PRODUCT_CMPT.equals(type)) {
+            MessageList ml = validateNameForProductCmpt(name, qualifiedCheck);
+            result.add(ml);
+            return result;
+        }
+        else if (IpsObjectType.TABLE_CONTENTS.equals(type)){
+            MessageList ml = validateNameForTableContents(name, qualifiedCheck);
+            result.add(ml);
+            return result;
+        }
+        else if (IpsObjectType.TEST_CASE_TYPE.equals(type)){
+            MessageList ml = validateNameForTestCaseType(name, qualifiedCheck);
+            result.add(ml);
+            return result;
+        }
+        else if (IpsObjectType.TEST_CASE.equals(type)){
+            MessageList ml = validateNameForTestCase(name, qualifiedCheck);
+            result.add(ml);
+            return result;
+        }
+        return result;
+    }
+    
+    private MessageList validateNameForPolicyCmptType(String name, boolean qualifiedCheck) {
+        return validateJavaTypeName(name, qualifiedCheck);
     }
 
+    private MessageList validateNameForTestCase(String name, boolean qualifiedCheck) {
+        return validateJavaTypeName(name, qualifiedCheck);
+    }
+
+    private MessageList validateNameForTestCaseType(String name, boolean qualifiedCheck) {
+        return validateJavaTypeName(name, qualifiedCheck);
+    }
+
+    private MessageList validateNameForTableContents(String name, boolean qualifiedCheck) {
+        return validateJavaTypeName(name, qualifiedCheck);
+    }
+
+    private MessageList validateNameForTableStructure(String name, boolean qualifiedCheck) {
+        return validateJavaTypeName(name, qualifiedCheck);
+    }
+
+    private MessageList validateNameForProductCmptType(String name, boolean qualifiedCheck) {
+        return validateJavaTypeName(name, qualifiedCheck);
+    }
+
+    private MessageList validateNameForBusinessFunction(String name, boolean qualifiedCheck) {
+        return validateJavaTypeName(name, qualifiedCheck);
+    }
+
+    private MessageList validateJavaTypeName(String name, boolean qualifiedCheck){
+        return validateJavaTypeName(name, qualifiedCheck, Messages.DefaultIpsProjectNamingConventions_msgNameNotValid, Messages.DefaultIpsProjectNamingConventions_msgNameIdDiscouraged);
+    }
+    
+    private MessageList validateNameForProductCmpt(String name, boolean qualifiedCheck) throws CoreException {
+        IProductCmptNamingStrategy pns = ipsProject.getProductCmptNamingStrategy();
+        // the validate will be delegated to the product cmpt naming strategy, only if the given name is unqualified
+        if (!qualifiedCheck){
+            return pns.validate(name);
+        }
+        return null;
+    }
+    
+    private MessageList validateJavaTypeName(String name, boolean qualifiedCheck, String msgNameNotValidError, String msgNameNotValidWarning){
+        MessageList ml = new MessageList();
+        if (!qualifiedCheck){
+            IStatus status = JavaConventions.validateJavaTypeName(name);
+            if(status.getSeverity()==IStatus.ERROR){
+                ml.add(new Message(INVALID_NAME, NLS.bind(msgNameNotValidError, name, status.getMessage()), Message.ERROR));
+                return ml;
+            }
+            if(status.getSeverity()==IStatus.WARNING){
+                ml.add(new Message(DISCOURAGED_NAME, NLS.bind(msgNameNotValidWarning, name, status.getMessage()), Message.WARNING));
+                return ml;
+            }
+        }
+        return ml;
+    }
+    
     /**
      * A valid IPS package fragment name is either the empty String for the default package fragment or a valid
      * package package fragment name according to <code>JavaConventions.validatePackageName</code>.
      *
      * {@inheritDoc}
      */
-    public MessageList validateIpsPackageName(String name) throws CoreException {
+    public MessageList validateIpsPackageName(String name) {
         MessageList ml = new MessageList();
-        if(name.equals("")){ //$NON-NLS-1$
+        if (name.equals("")) { 
             return ml;
         }
+        ml.add(validateJavaPackageName(name, Messages.DefaultIpsProjectNamingConventions_error,
+                Messages.DefaultIpsProjectNamingConventions_warning));
+        return ml;
+    }
+    
+    private MessageList validateJavaPackageName(String name, String msgNameNotValidError, String msgNameNotValidWarning){
+        MessageList ml = new MessageList();
         IStatus status = JavaConventions.validatePackageName(name);
         if(status.getSeverity()==IStatus.ERROR){
-            ml.add(new Message(INVALID_NAME, NLS.bind(Messages.DefaultIpsProjectNamingConventions_error, name, status.getMessage()), Message.ERROR));
+            ml.add(new Message(INVALID_NAME, NLS.bind(msgNameNotValidError, name, status.getMessage()), Message.ERROR));
             return ml;
         }
         if(status.getSeverity()==IStatus.WARNING){
-            ml.add(new Message(DISCOURAGED_NAME, NLS.bind(Messages.DefaultIpsProjectNamingConventions_warning, name, status.getMessage()), Message.WARNING));
+            ml.add(new Message(DISCOURAGED_NAME, NLS.bind(msgNameNotValidWarning, name, status.getMessage()), Message.WARNING));
             return ml;
         }
         return ml;
-    }
-
+    }    
 }

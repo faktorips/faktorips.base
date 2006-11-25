@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.ListElementMover;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
@@ -541,5 +542,20 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
      */
     protected void validateThis(MessageList messageList) throws CoreException {
         super.validateThis(messageList);
+        validateNamingConventions(messageList);
+    }
+
+    /*
+     *  Validate naming conventions
+     */
+    private void validateNamingConventions(MessageList list) throws CoreException {
+        MessageList mlForNameValidation = new MessageList();
+        mlForNameValidation.add(getIpsProject().getNamingConventions().validateUnqualifiedIpsObjectName(getIpsObjectType(), getName()));
+        mlForNameValidation.add(getIpsProject().getNamingConventions().validateQualifiedIpsObjectName(getIpsObjectType(), getQualifiedName()));
+        for (Iterator iter = mlForNameValidation.iterator(); iter.hasNext();) {
+            Message msg = (Message)iter.next();
+            Message newMsg = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_NAME);
+            list.add(newMsg);
+        }
     }
 }

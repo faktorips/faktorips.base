@@ -21,9 +21,8 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.JavaConventions;
+import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -38,12 +37,14 @@ import org.faktorips.devtools.core.internal.model.IpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -198,7 +199,16 @@ public class RenamePage extends WizardPage implements ModifyListener {
 	 */
 	private boolean setMessageFromList(MessageList list) {
 		if (!list.isEmpty()) {
-			setMessage(list.getMessage(0).getText(), ERROR);
+            String text = list.getFirstMessage(list.getSeverity()).getText();
+            if (list.getSeverity() == Message.ERROR){
+                setMessage(text, DialogPage.ERROR);
+            } else if (list.getSeverity() == Message.WARNING){
+                setMessage(text, DialogPage.WARNING);
+            } else if (list.getSeverity() == Message.INFO){
+                setMessage(text, DialogPage.INFORMATION);
+            } else {
+                setMessage(text, DialogPage.NONE);
+            }
 			return true;
 		} else {
 			setMessage(null);
@@ -220,51 +230,45 @@ public class RenamePage extends WizardPage implements ModifyListener {
 			return;
 		}
 
+        // validate the name conventions
 		if (namingStrategy != null && namingStrategy.supportsVersionId() && versionId != null) {
-			if (setMessageFromList(namingStrategy.validateVersionId(versionId.getText()))) {
+			// name check for product cmpt
+            if (setMessageFromList(namingStrategy.validateVersionId(versionId.getText()))) {
 				return;
 			}
 			
 			if (setMessageFromList(namingStrategy.validateKindId(constNamePart.getText()))) {
 				return;
 			}
-			
-		} else {
-			String name = newName.getText(); 
-			// must not be empty
-			if (name.length() == 0) {
-				setMessage(Messages.RenamePage_errorNameIsEmpty, ERROR);
-				return;
-			}
-			if (name.indexOf('.') != -1) {
-				setMessage(Messages.RenamePage_errorNameQualified, ERROR);
-				return;
-			}
-			
-			if (renameObject instanceof IProductCmpt || renameObject instanceof ITableContents) {
-				IStatus val= JavaConventions.validateJavaTypeName(name);
-				if (val.getSeverity() == IStatus.ERROR) {
-					String msg = Messages.bind(Messages.errorNameNotValid, name);
-					setMessage(msg, ERROR);
-					return;
-				} else if (val.getSeverity() == IStatus.WARNING) {
-					setMessage(Messages.RenamePage_warningDiscouraged, WARNING);
-					// continue checking
-				}		
-			} else {
-				IStatus val= JavaConventions.validatePackageName(name);
-				if (val.getSeverity() == IStatus.ERROR) {
-					String msg = Messages.bind(Messages.errorNameNotValid, name);
-					setMessage(msg, ERROR);
-					return;
-				}
-			}
 		}
+        else {
+            String name = newName.getText();
+            IIpsProjectNamingConventions pnc = renameObject.getIpsProject().getNamingConventions();
+            try {
+                if (renameObject instanceof IIpsObject) {
+                    // ips object, validate the unqualified ips object name
+                    MessageList ml = pnc.validateUnqualifiedIpsObjectName(
+                            ((IIpsObject)renameObject).getIpsObjectType(), name);
+                    setMessageFromList(ml);
+                }
+                else {
+                    // no ips object, validate for ips package name
+                    MessageList ml = pnc.validateIpsPackageName(name);
+                    setMessageFromList(ml);
+                }
+            }
+            catch (CoreException e) {
+                // error during validation of the name,
+                // show error dialog and exit
+                IpsPlugin.logAndShowErrorDialog(e);
+                return;
+            }
+        }
 		
+        // validate that an object with the name not exists
 		IIpsPackageFragment pack = null;
-		
 		if (renameObject instanceof IProductCmpt || renameObject instanceof ITableContents || renameObject instanceof ITestCase) {
-			pack = ((IIpsObject)renameObject).getIpsPackageFragment();
+            pack = ((IIpsObject)renameObject).getIpsPackageFragment();
 			IIpsSrcFile newFile = pack.getIpsSrcFile(((IIpsObject)renameObject).getIpsObjectType().getFileName(newName.getText()));
 			if (newFile.exists()) {
 				setMessage(Messages.RenamePage_errorFileExists, ERROR);
