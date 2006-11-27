@@ -223,4 +223,5 @@ public class IpsPreferences {
 	public boolean canModifyRuntimeId() {
 		return prefStore.getBoolean(MODIFY_RUNTIME_ID);
 	}
+    
 }

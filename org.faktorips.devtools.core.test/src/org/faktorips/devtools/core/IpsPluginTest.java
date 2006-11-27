@@ -27,6 +27,9 @@ import org.eclipse.jface.util.PropertyChangeEvent;
  */
 public class IpsPluginTest extends AbstractIpsPluginTest {
 
+    private IpsPreferences pref;
+    private String oldPresentationString;
+    
     public IpsPluginTest() {
         super();
     }
@@ -34,11 +37,19 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
     public IpsPluginTest(String name) {
         super(name);
     }
+    
+    protected void setUp() {
+        pref = IpsPlugin.getDefault().getIpsPreferences();
+        oldPresentationString = pref.getNullPresentation(); 
+    }
+    
+    protected void tearDown() {
+        pref.setNullPresentation(oldPresentationString);
+    }
 
     public void testIpsPreferencesInclListener() {
         
         MyPropertyChangeListener listener = new MyPropertyChangeListener();
-        IpsPreferences pref = IpsPlugin.getDefault().getIpsPreferences();
         IPreferenceStore store = IpsPlugin.getDefault().getPreferenceStore();
         store.addPropertyChangeListener(listener);
         pref.setNullPresentation("-");
