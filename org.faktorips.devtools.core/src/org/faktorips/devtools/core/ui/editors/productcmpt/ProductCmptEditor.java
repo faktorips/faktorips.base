@@ -412,9 +412,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 				checkGeneration();
                 productCmptPropertiesPage.refresh();
 				refreshInternal(false);
-			} else if (property
-					.equals(IpsPreferences.EDIT_GENERATION_WITH_SUCCESSOR)
-					|| property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
+			} else if (property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
 				setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
 				refreshInternal(false);
 			} else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
@@ -485,9 +483,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 				.getGenerations();
 		for (int i = 0; i < generations.length; i++) {
 			if (generations[i].getValidFrom().after(validFrom)) {
-				return IpsPlugin.getDefault().getIpsPreferences()
-						.canEditGenerationsWithSuccesor()
-						&& editable;
+				return editable;
 			}
 		}
 

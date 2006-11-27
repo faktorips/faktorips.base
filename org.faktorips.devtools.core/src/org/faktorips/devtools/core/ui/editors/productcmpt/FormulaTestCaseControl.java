@@ -142,7 +142,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     public class ExtDataForFormulaTestCase {
         private IFormulaTestCase formulaTestCase;
         
-        private String actualResult = "";
+        private String actualResult = ""; //$NON-NLS-1$
         private String message = ""; //$NON-NLS-1$
         
         public ExtDataForFormulaTestCase(IFormulaTestCase formulaTestCase) {
@@ -628,7 +628,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                     } catch (Exception e) {
                         IpsPlugin.logAndShowErrorDialog(e);
                     }
-                    element.setActualResult(""+result);
+                    element.setActualResult(""+result); //$NON-NLS-1$
                     int testResultStatus = getFormulaTestCaseTestStatus(element);
                     if (testResultStatus != TEST_OK){
                         isCalculationErrorOrFailure = true;
@@ -886,7 +886,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         // resets the color of the last test run
         ExtDataForFormulaTestCase tc = getSelectedFormulaTestCase();
         if (tc != null){
-            tc.setActualResult("");
+            tc.setActualResult(""); //$NON-NLS-1$
         }
         repackAndResfreshForumlaTestCaseTable();
     }
@@ -894,7 +894,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     private void calculateAndStoreActualResult(){
         ExtDataForFormulaTestCase tc = getSelectedFormulaTestCase();
         if (tc != null){
-            tc.setActualResult("" + formulaTestInputValuesControl.calculateFormulaIfValid());
+            tc.setActualResult("" + formulaTestInputValuesControl.calculateFormulaIfValid()); //$NON-NLS-1$
         }
     }
 }

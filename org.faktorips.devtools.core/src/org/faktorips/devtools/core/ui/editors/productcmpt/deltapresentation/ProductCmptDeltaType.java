@@ -76,8 +76,8 @@ class ProductCmptDeltaType extends DefaultEnumValue {
         VALUESET_MISMATCH = new ProductCmptDeltaType(enumType, "valuesetMismatch", Messages.ProductCmptDeltaType_valuesetMismatch, "ValueSetMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-2$
         CFGELEMENT_TYPE_MISMATCH = new ProductCmptDeltaType(enumType, "typeMismatch", Messages.ProductCmptDeltaType_cfgElementTypeMismatch, "CfgElementTypeMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-2$
         RELATION_MISMATCH = new ProductCmptDeltaType(enumType, "relationMismatch", Messages.ProductCmptDeltaType_missingRelationDefinition, "RelationMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-2$
-        MISSING_STRUCTUREUSAGE = new ProductCmptDeltaType(enumType, "missingStructure", Messages.ProductCmptDeltaType_missingTableStructureUsage, "MissingTableStructureUsage.gif"); //$NON-NLS-1$ //$NON-NLS-3$
-        MISSING_CONTENTUSAGE = new ProductCmptDeltaType(enumType, "missingContent", Messages.ProductCmptDeltaType_missingTableContentUsage, "MissingTableContentUsage.gif"); //$NON-NLS-1$ //$NON-NLS-3$
+        MISSING_STRUCTUREUSAGE = new ProductCmptDeltaType(enumType, "missingStructure", Messages.ProductCmptDeltaType_missingTableStructureUsage, "MissingTableStructureUsage.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        MISSING_CONTENTUSAGE = new ProductCmptDeltaType(enumType, "missingContent", Messages.ProductCmptDeltaType_missingTableContentUsage, "MissingTableContentUsage.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     private Image icon;

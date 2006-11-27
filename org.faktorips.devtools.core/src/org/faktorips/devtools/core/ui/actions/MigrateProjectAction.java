@@ -36,7 +36,7 @@ public class MigrateProjectAction extends Action {
 		super();
 		this.window = window;
         this.selection = selection;
-		setText("Migrate Project");
+		setText(Messages.MigrateProjectAction_text);
         setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("MigrationWizard.gif")); //$NON-NLS-1$
 	}
 	

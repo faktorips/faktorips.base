@@ -34,18 +34,18 @@ public interface IIpsArchive {
      * Constant for the toplevel folder in the archive file that contains the entries for the ips 
      * objects. 
      */
-    public final static String IPSOBJECTS_FOLDER = "ipsobjects";
+    public final static String IPSOBJECTS_FOLDER = "ipsobjects"; //$NON-NLS-1$
     
     /**
      * Constant for the jar entry name" that contains additional ipsobjects properties like the mapping to Java base packages.
      */
-    public final static String JAVA_MAPPING_ENTRY_NAME = IPSOBJECTS_FOLDER + IPath.SEPARATOR + "ipsobjects.properties";
+    public final static String JAVA_MAPPING_ENTRY_NAME = IPSOBJECTS_FOLDER + IPath.SEPARATOR + "ipsobjects.properties"; //$NON-NLS-1$
 
-    public final static String QNT_PROPERTY_POSTFIX_SEPARATOR = "#";
+    public final static String QNT_PROPERTY_POSTFIX_SEPARATOR = "#"; //$NON-NLS-1$
     
-    public final static String PROPERTY_POSTFIX_BASE_PACKAGE = "basePackage";
+    public final static String PROPERTY_POSTFIX_BASE_PACKAGE = "basePackage"; //$NON-NLS-1$
     
-    public final static String PROPERTY_POSTFIX_EXTENSION_PACKAGE = "extensionPackage";
+    public final static String PROPERTY_POSTFIX_EXTENSION_PACKAGE = "extensionPackage"; //$NON-NLS-1$
 
     /**
      * Returns the underlying file. 

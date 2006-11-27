@@ -1175,7 +1175,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         List tocPath = new ArrayList();
         IIpsSrcFolderEntry[] srcFolderEntries = ipsObjectPath.getSourceFolderEntries();
         for (int j = 0; j < srcFolderEntries.length; j++) {
-            String tocFilePath = srcFolderEntries[j].getBasePackageNameForGeneratedJavaClasses() + "." + srcFolderEntries[j].getBasePackageRelativeTocPath();
+            String tocFilePath = srcFolderEntries[j].getBasePackageNameForGeneratedJavaClasses() + "." + srcFolderEntries[j].getBasePackageRelativeTocPath(); //$NON-NLS-1$
             tocPath.add(tocFilePath);
         }
         return tocPath;
@@ -1290,8 +1290,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 objects[0] = new ObjectProperty(cmpt1, IProductCmpt.PROPERTY_RUNTIME_ID);
             }
 
-            String msg = NLS.bind(Messages.IpsModel_msgRuntimeIDCollision, cmpt1.getQualifiedName(), cmpt2
-                    .getQualifiedName());
+            String projectName = cmpt2.getIpsProject().getName();
+            String msg = NLS.bind(Messages.IpsModel_msgRuntimeIDCollision, new String[] { cmpt1.getQualifiedName(),
+                    cmpt2.getQualifiedName(), projectName });
             list.add(new Message(MSGCODE_RUNTIME_ID_COLLISION, msg, Message.ERROR, objects));
         }
     }    

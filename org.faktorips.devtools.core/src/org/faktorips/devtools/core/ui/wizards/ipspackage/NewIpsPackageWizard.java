@@ -37,7 +37,7 @@ public class NewIpsPackageWizard extends Wizard implements INewWizard {
     
     public NewIpsPackageWizard() {
         setWindowTitle(Messages.IpsPackagePage_title);
-        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewIpsPackageWizard.png"));
+        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewIpsPackageWizard.png")); //$NON-NLS-1$
     }
     
     /** 

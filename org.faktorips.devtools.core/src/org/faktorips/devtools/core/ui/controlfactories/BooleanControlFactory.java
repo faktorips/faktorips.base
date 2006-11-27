@@ -39,7 +39,7 @@ import org.faktorips.util.ArgumentCheck;
  * @author Joerg Ortmann
  */
 public class BooleanControlFactory extends ValueDatatypeControlFactory {
-
+    
 	public BooleanControlFactory() {
 		super();
 	}
@@ -55,7 +55,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 	 * {@inheritDoc}
 	 */
 	public EditField createEditField(UIToolkit toolkit, Composite parent, ValueDatatype datatype, IValueSet valueSet) {
-		return new BooleanComboField((Combo)createControl(toolkit, parent, datatype, valueSet), "Yes", "No");
+		return new BooleanComboField((Combo)createControl(toolkit, parent, datatype, valueSet), Messages.BooleanControlFactory_Yes, Messages.BooleanControlFactory_No);
 
 	}
 
@@ -63,7 +63,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 	 * {@inheritDoc}
 	 */
 	public Control createControl(UIToolkit toolkit, Composite parent, ValueDatatype datatype, IValueSet valueSet) {
-		return toolkit.createComboForBoolean(parent, !datatype.isPrimitive(), "Yes", "No");
+		return toolkit.createComboForBoolean(parent, !datatype.isPrimitive(), Messages.BooleanControlFactory_Yes, Messages.BooleanControlFactory_No);
 	}
     
 	/**

@@ -162,14 +162,14 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         IFolder folder = (IFolder)getCorrespondingResource();
         IFile file = folder.getFile(name);
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-            System.out.println("IpsPackageFragment.createIpsFile - begin: pack=" + this + ", newFile=" + name
-                    + ", Thead: " + Thread.currentThread().getName());
+            System.out.println("IpsPackageFragment.createIpsFile - begin: pack=" + this + ", newFile=" + name //$NON-NLS-1$ //$NON-NLS-2$
+                    + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
         }
         file.create(source, force, monitor);
 
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-            System.out.println("IpsPackageFragment.createIpsFile - finished: pack=" + this + ", newFile=" + name
-                    + ", Thead: " + Thread.currentThread().getName());
+            System.out.println("IpsPackageFragment.createIpsFile - finished: pack=" + this + ", newFile=" + name //$NON-NLS-1$ //$NON-NLS-2$
+                    + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
         }
         
         IIpsSrcFile ipsSrcFile = getIpsSrcFile(name);
@@ -360,9 +360,9 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             throws CoreException {
         if (getIpsProject().getNamingConventions().validateIpsPackageName(name).containsErrorMsg()) {
             throw new CoreException(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, IStatus.ERROR, NLS.bind(
-                    "{0} is not a valid package name.", name), null));
+                    "{0} is not a valid package name.", name), null)); //$NON-NLS-1$
         }
-        return getRoot().createPackageFragment(isDefaultPackage() ? name : (getName() + "." + name), true, null);
+        return getRoot().createPackageFragment(isDefaultPackage() ? name : (getName() + "." + name), true, null); //$NON-NLS-1$
     }
 
 }

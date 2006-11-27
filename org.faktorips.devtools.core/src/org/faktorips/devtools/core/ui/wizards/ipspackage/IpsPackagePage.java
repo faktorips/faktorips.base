@@ -8,7 +8,7 @@
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
  * 
- * Mitwirkende:  Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  
+ * Mitwirkende:ï¿½ Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de ï¿½
  **************************************************************************************************/
 
 package org.faktorips.devtools.core.ui.wizards.ipspackage;
@@ -50,9 +50,9 @@ import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
  */
 public class IpsPackagePage extends WizardPage implements ValueChangeListener {
 
-    private static final String BLANK = " ";
+    private static final String BLANK = " "; //$NON-NLS-1$
 
-    private static final String EMPTY_STRING = "";
+    private static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
     // the resource that was selected in the workbench or null if none.
     private IResource selectedResource;
@@ -387,7 +387,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         }
         IIpsPackageFragment pack = packageControl.getPdPackageFragment();
         IIpsPackageFragment ipsPackage = pack.getRoot().getIpsPackageFragment(
-                pack.isDefaultPackage() ? name : (pack.getName() + "." + name));
+                pack.isDefaultPackage() ? name : (pack.getName() + "." + name)); //$NON-NLS-1$
         IFolder folder = (IFolder)ipsPackage.getCorrespondingResource();
         if (folder != null) {
             if (folder.exists()) {

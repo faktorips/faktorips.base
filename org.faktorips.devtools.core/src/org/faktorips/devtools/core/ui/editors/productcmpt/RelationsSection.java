@@ -267,18 +267,15 @@ public class RelationsSection extends IpsSection{
 				if (!(event.getSelection() instanceof IStructuredSelection)) {
 					return;
 				}
-				
 				IStructuredSelection selection = (IStructuredSelection)event.getSelection();
 				Object selected = selection.getFirstElement();
 				
 				if (!(selected instanceof IProductCmptRelation)) {
 					return;
 				}
-				
-				RelationEditDialog dialog = new RelationEditDialog((IProductCmptRelation)selected, site.getShell());
-				dialog.open();
-				refresh();
-
+				IProductCmptRelation relation = (IProductCmptRelation)selected;
+                IProductCmpt target = relation.findTarget();
+                IpsPlugin.getDefault().openEditor(target);
 			}
 		});
 	}
@@ -288,21 +285,22 @@ public class RelationsSection extends IpsSection{
 	 */
 	private void buildContextMenu() {
 
-		MenuManager menumanager = new MenuManager();
-		menumanager.setRemoveAllWhenShown(false);
+		MenuManager menuManager = new MenuManager();
+		menuManager.setRemoveAllWhenShown(false);
 
-		menumanager.add(new NewProductCmptRelationAction(site.getShell(),
+		menuManager.add(new NewProductCmptRelationAction(site.getShell(),
 				treeViewer, this));
 
-		menumanager.add(ActionFactory.DELETE.create(site.getWorkbenchWindow()));
-
-		menumanager.add(new Separator());
-		menumanager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-		menumanager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS
+		menuManager.add(ActionFactory.DELETE.create(site.getWorkbenchWindow()));
+		menuManager.add(new OpenProductCmptRelationAction(this, treeViewer));
+        
+		menuManager.add(new Separator());
+		menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+		menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS
 				+ "-end")); //$NON-NLS-1$
-		menumanager.add(new Separator());
+		menuManager.add(new Separator());
 
-		treePopup = menumanager.createContextMenu(treeViewer.getControl());
+		treePopup = menuManager.createContextMenu(treeViewer.getControl());
 
 		treeViewer.getControl().setMenu(treePopup);
 
@@ -679,12 +677,12 @@ public class RelationsSection extends IpsSection{
 	 * Returns all targets for all relations defined with the given product
 	 * component relation type.
 	 * 
-	 * @param relation
+	 * @param relationType
 	 *            The type of the relations to find.
 	 */
 	public IProductCmpt[] getRelationTargetsFor(
-			IProductCmptTypeRelation relation) {
-		IProductCmptRelation[] relations = generation.getRelations(relation
+			IProductCmptTypeRelation relationType) {
+		IProductCmptRelation[] relations = generation.getRelations(relationType
 				.getName());
 
 		IProductCmpt[] targets = new IProductCmpt[relations.length];
@@ -779,4 +777,5 @@ public class RelationsSection extends IpsSection{
 		}
 
 	}
+    
 }

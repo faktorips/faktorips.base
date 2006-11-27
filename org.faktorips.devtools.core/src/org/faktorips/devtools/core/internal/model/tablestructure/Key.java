@@ -230,7 +230,7 @@ public abstract class Key extends IpsObjectPart implements IKey {
                 return i;
             }
         }
-        throw new IllegalArgumentException("The provided item: " + item + " is not part of the list of items hold by this key.");
+        throw new IllegalArgumentException("The provided item: " + item + " is not part of the list of items hold by this key."); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -243,8 +243,8 @@ public abstract class Key extends IpsObjectPart implements IKey {
                 return i;
             }
         }
-        throw new IllegalArgumentException("The provided item name: " + itemName + " doesn't match with one of the items" +
-                " in the itme list of this key.");
+        throw new IllegalArgumentException("The provided item name: " + itemName + " doesn't match with one of the items" + //$NON-NLS-1$ //$NON-NLS-2$
+                " in the itme list of this key."); //$NON-NLS-1$
     }
 
     /**

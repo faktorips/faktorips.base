@@ -158,11 +158,11 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
      */
     public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor)
             throws CoreException {
-        throw new CoreException(new IpsStatus("Can't modifiy package stored in an archive."));
+        throw new CoreException(new IpsStatus("Can't modifiy package stored in an archive.")); //$NON-NLS-1$
     }
     
     private CoreException newCantModifyPackageStoredInArchive() {
-        return new CoreException(new IpsStatus("Can't modifiy package stored in an archive."));
+        return new CoreException(new IpsStatus("Can't modifiy package stored in an archive.")); //$NON-NLS-1$
     }
 
     /**

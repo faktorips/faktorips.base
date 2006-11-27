@@ -62,7 +62,7 @@ public class BeanTableCellModifier extends ValueCellModifier  {
         for (int i = 0; i < properties.length; i++) {
             ColumnIdentifier ci = new ColumnIdentifier(properties[i], datatypes[i], i);
             // assert that a property could only be assigned to one column
-            Assert.isTrue(columnIdentifers.get(properties[i]) == null, "A column modifier for property " + properties[i] + " already exist!");
+            Assert.isTrue(columnIdentifers.get(properties[i]) == null, "A column modifier for property " + properties[i] + " already exist!"); //$NON-NLS-1$ //$NON-NLS-2$
             columnIdentifers.put(properties[i], ci);
             // create cell modifier if enabled
             if (datatypes[i] != null){
@@ -111,9 +111,9 @@ public class BeanTableCellModifier extends ValueCellModifier  {
                 return (String) getPropertyValue(element, pd);
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error resolving property methods for element " + element.getClass().getName());
+            throw new RuntimeException("Error resolving property methods for element " + element.getClass().getName()); //$NON-NLS-1$
         }
-        throw new RuntimeException("Error resolving property method " + property);
+        throw new RuntimeException("Error resolving property method " + property); //$NON-NLS-1$
     }
 
     /**
@@ -134,9 +134,9 @@ public class BeanTableCellModifier extends ValueCellModifier  {
                 return;
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error resolving property methods for element " + element.getClass().getName());
+            throw new RuntimeException("Error resolving property methods for element " + element.getClass().getName()); //$NON-NLS-1$
         }
-        throw new RuntimeException("Error resolving property method " + property);
+        throw new RuntimeException("Error resolving property method " + property); //$NON-NLS-1$
     }
     
     /*

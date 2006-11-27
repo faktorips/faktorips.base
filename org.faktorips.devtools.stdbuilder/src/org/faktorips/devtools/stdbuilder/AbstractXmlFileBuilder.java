@@ -92,14 +92,14 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
                 copy.create(is, true, null);
             }
         } catch (CoreException e) {
-            throw new CoreException(new IpsStatus("Unable to create a content file for the file: "
+            throw new CoreException(new IpsStatus("Unable to create a content file for the file: " //$NON-NLS-1$
                     + file.getName(), e));
         } finally {
             if (is != null) {
                 try {
                     is.close();
                 } catch (IOException e) {
-                    throw new CoreException(new IpsStatus("Unable to close the input stream for the file: "
+                    throw new CoreException(new IpsStatus("Unable to close the input stream for the file: " //$NON-NLS-1$
                             + file.getName(), e));
                 }
             }
@@ -116,7 +116,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
     private IFile getXmlContentFile(IIpsSrcFile ipsSrcFile) throws CoreException {
         IFile file = (IFile)ipsSrcFile.getEnclosingResource();
         IFolder folder = getXmlContentFileFolder(ipsSrcFile);
-        return folder.getFile(StringUtil.getFilenameWithoutExtension(file.getName()) + ".xml");
+        return folder.getFile(StringUtil.getFilenameWithoutExtension(file.getName()) + ".xml"); //$NON-NLS-1$
     }
 
     /**
@@ -152,7 +152,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
      * {@inheritDoc}
      */
     public String getName() {
-        return "XmlContentFileCopyBuilder";
+        return "XmlContentFileCopyBuilder"; //$NON-NLS-1$
     }
 
     protected String getContentAsString(InputStream is, String charSet) throws CoreException{

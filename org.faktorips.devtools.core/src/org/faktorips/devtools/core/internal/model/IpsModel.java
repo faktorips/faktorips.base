@@ -87,10 +87,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     static {
         TRACE_MODEL_MANAGEMENT = Boolean.valueOf(
-                Platform.getDebugOption("org.faktorips.devtools.core/trace/modelmanagement")).booleanValue();
-        TRACE_MODEL_CHANGE_LISTENERS= Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/modelchangelisteners"))
+                Platform.getDebugOption("org.faktorips.devtools.core/trace/modelmanagement")).booleanValue(); //$NON-NLS-1$
+        TRACE_MODEL_CHANGE_LISTENERS= Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/modelchangelisteners")) //$NON-NLS-1$
                 .booleanValue();
-        TRACE_VALIDATION = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/validation"))
+        TRACE_VALIDATION = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/validation")) //$NON-NLS-1$
         .booleanValue();
     }
 
@@ -150,7 +150,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public IpsModel() {
         super(null, "IpsModel"); //$NON-NLS-1$
         if (TRACE_MODEL_MANAGEMENT) {
-            System.out.println("IpsModel.Constructor(): IpsModel created.");
+            System.out.println("IpsModel.Constructor(): IpsModel created."); //$NON-NLS-1$
         }
     }
 
@@ -727,13 +727,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     return builderSet;
                 }
             } catch(ClassCastException e){
-                IpsPlugin.log(new IpsStatus("The registered builder set " + infos[i].getBuilderSetClass() + 
-                        " doesn't implement the " + IIpsArtefactBuilderSet.class + " interface.", e));
+                IpsPlugin.log(new IpsStatus("The registered builder set " + infos[i].getBuilderSetClass() +  //$NON-NLS-1$
+                        " doesn't implement the " + IIpsArtefactBuilderSet.class + " interface.", e)); //$NON-NLS-1$ //$NON-NLS-2$
             } catch (InstantiationException e) {
-                IpsPlugin.log(new IpsStatus("Unable to instantiate the builder set " + infos[i].getBuilderSetClass(), e));
+                IpsPlugin.log(new IpsStatus("Unable to instantiate the builder set " + infos[i].getBuilderSetClass(), e)); //$NON-NLS-1$
                 
             } catch (IllegalAccessException e) {
-                IpsPlugin.log(new IpsStatus("Unable to instantiate the builder set " + infos[i].getBuilderSetClass(), e));
+                IpsPlugin.log(new IpsStatus("Unable to instantiate the builder set " + infos[i].getBuilderSetClass(), e)); //$NON-NLS-1$
             }
         }
         return new EmptyBuilderSet();
@@ -1205,14 +1205,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             content = new IpsSrcFileContent((IpsObject)file.getIpsObjectType().newObject(file));
             ipsObjectsMap.put(file, content);
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                System.out.println("IpsModel.getIpsSrcFileContent(): New content created for " + file + ", Thead: "
+                System.out.println("IpsModel.getIpsSrcFileContent(): New content created for " + file + ", Thead: " //$NON-NLS-1$ //$NON-NLS-2$
                         + Thread.currentThread().getName());
             }
         } else {
             if (content.getModificationStamp() == resourceModStamp) {
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                    System.out.println("IpsModel.getIpsSrcFileContent(): Content returned from cache, file=" + file
-                            + ", FileModStamp=" + resourceModStamp + ", Thead: " + Thread.currentThread().getName());
+                    System.out.println("IpsModel.getIpsSrcFileContent(): Content returned from cache, file=" + file //$NON-NLS-1$
+                            + ", FileModStamp=" + resourceModStamp + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 return content;
             }
@@ -1223,15 +1223,15 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     public void ipsSrcFileHasChanged(IIpsSrcFile file) {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-            System.out.println("IpsModel.ipsSrcFileHasChanged(): About to broadcast change notifications, file=" + file
-                    + ", Thead: " + Thread.currentThread().getName());
+            System.out.println("IpsModel.ipsSrcFileHasChanged(): About to broadcast change notifications, file=" + file //$NON-NLS-1$
+                    + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
         }
         validationResultCache.removeStaleData(file);
         ContentChangeEvent event = new ContentChangeEvent(file);
         notifyChangeListeners(event);
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-            System.out.println("IpsModel.ipsSrcFileHasChanged(): Finished broadcasting change notifications, file="
-                    + file + ", Thead: " + Thread.currentThread().getName());
+            System.out.println("IpsModel.ipsSrcFileHasChanged(): Finished broadcasting change notifications, file=" //$NON-NLS-1$
+                    + file + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
         }
     }
 
@@ -1260,11 +1260,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 IpsSrcFile srcFile = (IpsSrcFile)element;
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out
-                            .println("IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change/delete on disk with modStamp "
+                            .println("IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change/delete on disk with modStamp " //$NON-NLS-1$
                                     + resource.getModificationStamp()
-                                    + ", "
+                                    + ", " //$NON-NLS-1$
                                     + srcFile
-                                    + " Thread: "
+                                    + " Thread: " //$NON-NLS-1$
                                     + Thread.currentThread().getName());
                     ipsSrcFileHasChanged(srcFile);
                 }
@@ -1274,7 +1274,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                         + resource + " changed.", e)); //$NON-NLS-1$
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out
-                            .println("IpsModel.ResourceDeltaVisitor.visit(): Error updating model objects after resource changed, resource="
+                            .println("IpsModel.ResourceDeltaVisitor.visit(): Error updating model objects after resource changed, resource=" //$NON-NLS-1$
                                     + resource);
                 }
             }
@@ -1307,7 +1307,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                         IpsPlugin.log(new IpsStatus("The identifier of the IpsArtefactBuilderSet extension is empty")); //$NON-NLS-1$
                         continue;
                     }
-                    String builderSetClassName = element.getAttribute("class");
+                    String builderSetClassName = element.getAttribute("class"); //$NON-NLS-1$
                     if(StringUtils.isEmpty(builderSetClassName)){
                         IpsPlugin.log(new IpsStatus("The class attribute of the IpsArtefactBuilderSet extension with the extension id " + //$NON-NLS-1$ 
                                 extension.getUniqueIdentifier() + " is not specified."));//$NON-NLS-1$
@@ -1317,8 +1317,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     try {
                         builderSetClass = Platform.getBundle(extension.getNamespace()).loadClass(builderSetClassName);
                     } catch (ClassNotFoundException e) {
-                        IpsPlugin.log(new IpsStatus("Unable to load the IpsArtefactBuilderSet class " + builderSetClassName + 
-                                " specified with the extension id " + extension.getUniqueIdentifier()));
+                        IpsPlugin.log(new IpsStatus("Unable to load the IpsArtefactBuilderSet class " + builderSetClassName +  //$NON-NLS-1$
+                                " specified with the extension id " + extension.getUniqueIdentifier())); //$NON-NLS-1$
                         continue;
                     }
                     builderSetInfoList.add(new IpsArtefactBuilderSetInfo(builderSetClass, extension.getUniqueIdentifier(), extension.getLabel()));

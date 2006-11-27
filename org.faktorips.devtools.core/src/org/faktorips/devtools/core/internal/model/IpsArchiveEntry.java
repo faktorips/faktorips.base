@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -46,6 +47,17 @@ import org.w3c.dom.Element;
  */
 public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEntry {
 
+    /**
+     * Returns a description of the xml format.
+     */
+    public final static String getXmlFormatDescription() {
+        return "Archive:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+            +  "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
+            +  "     type=\"archive\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+            +  "     referencedIpsProject=\"base\">      The other project used by this project." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+            +  "  </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR;  //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    
     private IIpsArchive archive;
     
     /**

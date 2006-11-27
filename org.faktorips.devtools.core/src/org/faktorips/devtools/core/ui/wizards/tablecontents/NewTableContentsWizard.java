@@ -41,7 +41,7 @@ public class NewTableContentsWizard extends NewIpsObjectWizard {
     
     public NewTableContentsWizard() {
         super(IpsObjectType.TABLE_CONTENTS);
-        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewTableContentsWizard.png"));
+        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewTableContentsWizard.png")); //$NON-NLS-1$
     }
     
     /** 

@@ -36,7 +36,7 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
     /**
      * The image indicating an error in a table cell.
      */
-    private Image errorImage= IpsPlugin.getDefault().getImage("ovr16/error_co.gif");
+    private Image errorImage= IpsPlugin.getDefault().getImage("ovr16/error_co.gif"); //$NON-NLS-1$
     
     /**
      * Returns an error-icon if the given element has an error at the given columnIndex.

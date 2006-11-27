@@ -133,7 +133,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents{
             return true;
         }
         
-        throw new IllegalArgumentException("Unknown toc entry type " + entry);
+        throw new IllegalArgumentException("Unknown toc entry type " + entry); //$NON-NLS-1$
 	}
 	
 	/**

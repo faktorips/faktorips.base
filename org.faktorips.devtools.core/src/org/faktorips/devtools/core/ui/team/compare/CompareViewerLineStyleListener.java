@@ -49,11 +49,11 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
      * Regex-pattern for recognizing date at linestart; only recognizes SimpleDateFormat.MEDIUM.
      * (e.g. "01.02.2003")
      */
-    private Pattern genDatePattern = Pattern.compile("[0-9]+\\.[0-9]+\\.[0-9]+");
+    private Pattern genDatePattern = Pattern.compile("[0-9]+\\.[0-9]+\\.[0-9]+"); //$NON-NLS-1$
     /**
      * Pattern for recognizing separators between generations (single line starting with "-")
      */
-    private Pattern genSeparatorPattern = Pattern.compile("-");
+    private Pattern genSeparatorPattern = Pattern.compile("-"); //$NON-NLS-1$
     
     /**
      * List of patterns to be applied to lines in getStylesForRestOfLine().

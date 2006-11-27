@@ -98,7 +98,7 @@ public class ExcelTableExportOperationTest extends AbstractIpsPluginTest {
         format.addValueConverter(new MoneyValueConverter());
         format.addValueConverter(new StringValueConverter());
 
-        contents = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "importTarget");
+        contents = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "ImportTarget");
         contents.newColumn(null);
         contents.newColumn(null);
         contents.newColumn(null);

@@ -292,8 +292,6 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 
 			String property = event.getProperty();
 			if (property.equals(IpsPreferences.WORKING_DATE)
-					|| property
-							.equals(IpsPreferences.EDIT_GENERATION_WITH_SUCCESSOR)
 					|| property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
 				viewer.refresh();
 				composite.updateButtonEnabledStates();

@@ -46,15 +46,15 @@ public class QualifiedNameType {
     public final static QualifiedNameType newQualifedNameType(String pathToFile) throws CoreException {
         int index = pathToFile.lastIndexOf('.');
         if (index==-1 || index==pathToFile.length()-1) {
-            throw new CoreException(new IpsStatus("Path " + pathToFile + " can't be parsed to a qualified name type."));
+            throw new CoreException(new IpsStatus("Path " + pathToFile + " can't be parsed to a qualified name type.")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         IpsObjectType type = IpsObjectType.getTypeForExtension(pathToFile.substring(index+1));
         if (type==null) {
-            throw new CoreException(new IpsStatus("Path " + pathToFile + " does not specifiy an ips object type."));
+            throw new CoreException(new IpsStatus("Path " + pathToFile + " does not specifiy an ips object type.")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         String qName = pathToFile.substring(0, index).replace(IPath.SEPARATOR, IpsPackageFragment.SEPARATOR);
-        if (qName.equals("")) {
-            throw new CoreException(new IpsStatus("Path " + pathToFile + " does not specifiy a qualified name."));
+        if (qName.equals("")) { //$NON-NLS-1$
+            throw new CoreException(new IpsStatus("Path " + pathToFile + " does not specifiy a qualified name.")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return new QualifiedNameType(qName, type);
     }
@@ -91,7 +91,7 @@ public class QualifiedNameType {
     public String getPackageName() {
         int index = qualifiedName.lastIndexOf('.');
         if (index==-1) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         return qualifiedName.substring(0, index);
     }
@@ -105,7 +105,7 @@ public class QualifiedNameType {
             return qualifiedName;
         }
         if (index==qualifiedName.length()-1) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         return qualifiedName.substring(index+1);
     }

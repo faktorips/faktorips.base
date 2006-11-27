@@ -592,7 +592,7 @@ public class MoveOperation implements IRunnableWithProgress {
 			else if (toTest instanceof ITableContents) {
 				ITableContents table = (ITableContents)toTest;
 				if (!table.exists()) {
-					String msg = NLS.bind("Tablecontent {0} is missing", table.getName()); //$NON-NLS-1$
+					String msg = NLS.bind(Messages.MoveOperation_tableContentIsMissing, table.getName()); 
 					IpsStatus status = new IpsStatus(msg); 
 					throw new CoreException(status);
 				}
@@ -600,7 +600,7 @@ public class MoveOperation implements IRunnableWithProgress {
             else if (toTest instanceof ITestCase) {
                 ITestCase testCase = (ITestCase)toTest;
                 if (!testCase.exists()) {
-                    String msg = NLS.bind("Test case {0} is missing", testCase.getName());
+                    String msg = NLS.bind(Messages.MoveOperation_testCaseIsMissing, testCase.getName());
                     IpsStatus status = new IpsStatus(msg); 
                     throw new CoreException(status);
                 }

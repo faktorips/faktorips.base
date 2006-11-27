@@ -86,45 +86,45 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         DatatypeHelper returnTypeHelper = fct.getIpsProject().findDatatypeHelper(returnType.getQualifiedName());
         JavaCodeFragment code = new JavaCodeFragment();
         ITableStructure tableStructure = fct.getTableStructure();
-        code.append("((");
+        code.append("(("); //$NON-NLS-1$
         code.appendClassName(returnType.getJavaClassName());
-        code.append(")");
-        code.append("(new ");
+        code.append(")"); //$NON-NLS-1$
+        code.append("(new "); //$NON-NLS-1$
         code.appendClassName(TableFunctionExecution.class);
-        code.append("()");
+        code.append("()"); //$NON-NLS-1$
         code.appendOpenBracket();
-        code.append("public Object execute()");
+        code.append("public Object execute()"); //$NON-NLS-1$
         code.appendOpenBracket();
         code.appendClassName(tableRowBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile()));
-        code.append(" row = ");
+        code.append(" row = "); //$NON-NLS-1$
         CompilationResultImpl result = new CompilationResultImpl(code, returnType);
         result.addAllIdentifierUsed(argResults);
         code.appendClassName(tableImplBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile()));
         // create get instance method by using the qualified name of the table content
-        code.append(".getInstance(" + MethodNames.GET_REPOSITORY + "(), \"" + tableContents.getQualifiedName()
-                + "\").findRow(");
+        code.append(".getInstance(" + MethodNames.GET_REPOSITORY + "(), \"" + tableContents.getQualifiedName() //$NON-NLS-1$ //$NON-NLS-2$
+                + "\").findRow("); //$NON-NLS-1$
         // TODO pk: findRow is not correct in general
         for (int i = 0; i < argResults.length; i++) {
             if (i>0) {
-                code.append(", ");
+                code.append(", "); //$NON-NLS-1$
             }
             code.append(argResults[i].getCodeFragment());
             result.addMessages(argResults[i].getMessages());
         }
-        code.append(");");
+        code.append(");"); //$NON-NLS-1$
         code.appendln();
-        code.append("if(row != null)");
+        code.append("if(row != null)"); //$NON-NLS-1$
         code.appendOpenBracket();
-        code.append("return row.get");
+        code.append("return row.get"); //$NON-NLS-1$
         code.append(StringUtils.capitalise(fct.findAccessedColumn().getName()));
-        code.append("();");
+        code.append("();"); //$NON-NLS-1$
         code.appendCloseBracket();
-        code.append("return ");
+        code.append("return "); //$NON-NLS-1$
         code.append(returnTypeHelper.nullExpression());
         code.append(';');
         code.appendCloseBracket();
         code.appendCloseBracket();
-        code.append(").execute())");
+        code.append(").execute())"); //$NON-NLS-1$
         return result;
     }
     
@@ -266,7 +266,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             if (builders[i].getClass().equals(builderClass)) {
                 return builders[i];            }
         }
-        throw new RuntimeException("No builder of class " + builderClass + " defined.");
+        throw new RuntimeException("No builder of class " + builderClass + " defined."); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

@@ -181,4 +181,6 @@ public class Messages extends NLS {
     public static String PolicyCmptType_msgSuperTypeNotProdRelevantIfProductRelevant;
 
     public static String TableStructureUsage_msgPolicyCmptTypeIsNotConfiguratedByProduct;
+
+    public static String ValidationRule_msgCodeShouldBeProvided;
 }

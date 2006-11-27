@@ -153,12 +153,12 @@ public class AddIpsNatureAction extends ActionDelegate {
             DateBasedProductCmptNamingStrategy namingStrategy = new DateBasedProductCmptNamingStrategy(
                     " ", "yyyy-MM", true); //$NON-NLS-1$ //$NON-NLS-2$
             props.setProductCmptNamingStrategy(namingStrategy);
-            if ("de".equals(Locale.getDefault().getLanguage())) {
+            if ("de".equals(Locale.getDefault().getLanguage())) { //$NON-NLS-1$
                 props.setJavaSrcLanguage(Locale.getDefault());
             } else {
                 props.setJavaSrcLanguage(Locale.ENGLISH);
             }
-            props.setMinRequiredVersionNumber("org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version"));
+            props.setMinRequiredVersionNumber("org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             ipsProject.setProperties(props);
             IFolder ipsModelFolder = ipsProject.getProject().getFolder(sourceFolderName);
             if (!ipsModelFolder.exists()) {

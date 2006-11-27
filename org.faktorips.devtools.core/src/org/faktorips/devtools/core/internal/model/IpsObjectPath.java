@@ -60,7 +60,9 @@ public class IpsObjectPath implements IIpsObjectPath {
             + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
             + IpsSrcFolderEntry.getXmlFormatDescription() + SystemUtils.LINE_SEPARATOR
             + " "+ SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-            + IpsProjectRefEntry.getXmlFormatDescription();
+            + IpsProjectRefEntry.getXmlFormatDescription()
+            + " "+ SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+            + IpsArchiveEntry.getXmlFormatDescription();
     }
     
     

@@ -858,7 +858,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         
 		stopUpdateJobs();
 		fUpdateJob = new UpdateUIJob(Messages.IpsTestRunnerViewPart_Job_UpdateUiTitle); 
-        ipsTestIsRunningJob = new IpsTestIsRunningJob("IPSTest Starter Job");
+        ipsTestIsRunningJob = new IpsTestIsRunningJob("IPSTest Starter Job"); //$NON-NLS-1$
         ipsTestIsRunningLock = Platform.getJobManager().newLock(); 
         // acquire lock while a test run is running
         // the lock is released when the test run terminates

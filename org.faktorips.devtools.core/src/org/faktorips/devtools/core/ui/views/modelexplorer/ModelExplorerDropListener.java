@@ -42,7 +42,6 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
 	 * {@inheritDoc}
 	 */
 	public void dragEnter(DropTargetEvent event) {
-        System.out.println("drag enter");
         event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL;
 	}
     

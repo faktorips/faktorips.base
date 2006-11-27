@@ -229,8 +229,22 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         msgList = rule.validate();
         msgList = msgList.getMessagesFor(rule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
         assertTrue(msgList.isEmpty());
-        
     }
+    
+    public void testValidateMsgCodeShouldntBeNull() throws CoreException {
+        rule.setMessageCode(null);
+        MessageList list = rule.validate();
+        assertNotNull(list.getMessageByCode(IValidationRule.MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY));
+        rule.setMessageCode("");
+        list = rule.validate();
+        assertNotNull(list.getMessageByCode(IValidationRule.MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY));
+        
+        rule.setMessageCode("code");
+        list = rule.validate();
+        assertNull(list.getMessageByCode(IValidationRule.MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY));
+    }
+    
+    
     /**
      * Tests for the correct type of excetion to be thrown - no part of any type could ever be created.
      */

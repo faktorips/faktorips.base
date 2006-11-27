@@ -420,20 +420,20 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         MessageList result = cache.getResult(this);
         if (result!=null) {
             if (IpsModel.TRACE_VALIDATION) {
-                System.out.println("Validation of " + this + ": Got result from cache.");
+                System.out.println("Validation of " + this + ": Got result from cache."); //$NON-NLS-1$ //$NON-NLS-2$
             }
             return result;
         }
         long start = System.currentTimeMillis();
         if (IpsModel.TRACE_VALIDATION) {
-            System.out.println("Validation of " + this + ": Started.");
+            System.out.println("Validation of " + this + ": Started."); //$NON-NLS-1$ //$NON-NLS-2$
         }
         result = new MessageList();
         validateThis(result);
         validateExtensionProperties(result);
         validateChildren(result);
         if (IpsModel.TRACE_VALIDATION) {
-            System.out.println("Validation of " + this + ": Finsihed, took " + (System.currentTimeMillis() - start) + "ms.");
+            System.out.println("Validation of " + this + ": Finsihed, took " + (System.currentTimeMillis() - start) + "ms."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         cache.putResult(this, result);
         return result;

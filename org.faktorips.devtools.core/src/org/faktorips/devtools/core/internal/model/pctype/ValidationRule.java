@@ -69,6 +69,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 
     private boolean deleted = false;
 
+    
 	/**
 	 * Flag which is <code>true</code> if this rule is a default rule for validating the value of an attribute
 	 * against the value set defined for the attribute. Default means, that the rule is not a manually 
@@ -210,7 +211,13 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 		super.validateThis(list);
 		ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, //$NON-NLS-1$
 				PROPERTY_NAME, "", list); //$NON-NLS-1$
-		IIpsProject project = getIpsProject();
+		if (StringUtils.isEmpty(msgCode)) {
+            String text = Messages.ValidationRule_msgCodeShouldBeProvided;
+		    Message msg = new Message(IValidationRule.MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY, text, Message.ERROR, this, PROPERTY_MESSAGE_CODE);
+            list.add(msg);
+        }
+        
+        IIpsProject project = getIpsProject();
 		for (Iterator it = functions.iterator(); it.hasNext();) {
 			String function = (String) it.next();
 			if (StringUtils.isNotEmpty(function)) {

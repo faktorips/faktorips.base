@@ -50,7 +50,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReferen
 import org.faktorips.util.StringUtil;
 
 /**
- * Abstract base action for global actions on the ips-model.
+ * Abstract base action for global actions.
  * 
  * @author Thorsten Guenther
  * @author Stefan Widmaier

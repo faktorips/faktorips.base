@@ -94,8 +94,8 @@ public class ProductStructureLabelProvider implements ILabelProvider {
         }
         else if (element instanceof IProductCmptStructureTblUsageReference) {
             ITableContentUsage tcu = ((IProductCmptStructureTblUsageReference)element).getTableContentUsage();
-            return tcu.getStructureUsage() + " : " + StringUtil.unqualifiedName(tcu.getTableContentName());
-        } 
+            return tcu.getStructureUsage() + " : " + StringUtil.unqualifiedName(tcu.getTableContentName()); //$NON-NLS-1$
+        }        
         else if (element instanceof ViewerLabel){
             return ((ViewerLabel)element).getText();
         }

@@ -64,7 +64,7 @@ public class TableExportWizard extends Wizard implements IExportWizard {
 	public TableExportWizard() {
 		super();
 		setWindowTitle(Messages.TableExport_title);
-        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/TableExportWizard.png"));
+        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/TableExportWizard.png")); //$NON-NLS-1$
 	}
 
 	/**

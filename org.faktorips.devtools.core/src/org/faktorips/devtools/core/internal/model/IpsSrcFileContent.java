@@ -168,8 +168,8 @@ public class IpsSrcFileContent {
         IIpsSrcFile file = getIpsSrcFile();
         try {
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                System.out.println("IpsSrcFileContent.initContentFromFile(): About to read content from disk, file=" +  file
-                        + ", Thead: " + Thread.currentThread().getName());
+                System.out.println("IpsSrcFileContent.initContentFromFile(): About to read content from disk, file=" +  file //$NON-NLS-1$
+                        + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
             }
             String fileContent = file.getContentFromEnclosingResource();
             String encoding = file.getIpsProject().getXmlFileCharset();
@@ -182,15 +182,15 @@ public class IpsSrcFileContent {
             modified = false;
             parsable = true;
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                System.out.println("IpsSrcFileContent.initContentFromFile: Content read from disk, file=" +  file
-                        + ", Thead: " + Thread.currentThread().getName());
+                System.out.println("IpsSrcFileContent.initContentFromFile: Content read from disk, file=" +  file //$NON-NLS-1$
+                        + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
             }
         } catch (Exception e) {
             parsable = false;
-            IpsPlugin.log(new IpsStatus("Error reading xml doc from file " + file, e));
+            IpsPlugin.log(new IpsStatus("Error reading xml doc from file " + file, e)); //$NON-NLS-1$
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                System.out.println("IpsSrcFileContent.initContentFromFile: Error reading content from disk, file=" +  file
-                        + ", Thead: " + Thread.currentThread().getName());
+                System.out.println("IpsSrcFileContent.initContentFromFile: Error reading content from disk, file=" +  file //$NON-NLS-1$
+                        + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
             }
         }
     }
@@ -204,7 +204,7 @@ public class IpsSrcFileContent {
             public void run(IProgressMonitor monitor) throws CoreException {
                 try {
                     if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                        System.out.println("IpsSrcFileContent.save() begin: " + IpsSrcFileContent.this);
+                        System.out.println("IpsSrcFileContent.save() begin: " + IpsSrcFileContent.this); //$NON-NLS-1$
                     }
                     Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
                     String encoding = ipsObject.getIpsProject().getXmlFileCharset();
@@ -215,11 +215,11 @@ public class IpsSrcFileContent {
                     modificationStamp = file.getModificationStamp();
                     markAsUnmodified();
                     if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                        System.out.println("IpsSrcFileContent.save() finished. ModStamp=" + modificationStamp + ", " + IpsSrcFileContent.this);
+                        System.out.println("IpsSrcFileContent.save() finished. ModStamp=" + modificationStamp + ", " + IpsSrcFileContent.this); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 } catch (Exception e) {
                     if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                        System.out.println("IpsSrcFileContent.save() failed: " + IpsSrcFileContent.this);
+                        System.out.println("IpsSrcFileContent.save() failed: " + IpsSrcFileContent.this); //$NON-NLS-1$
                     }
                     throw new CoreException(new IpsStatus(e));
                 }
@@ -233,7 +233,7 @@ public class IpsSrcFileContent {
      * {@inheritDoc}
      */
     public String toString() {
-        return "IpsSrcFileContent " + getIpsSrcFile();
+        return "IpsSrcFileContent " + getIpsSrcFile(); //$NON-NLS-1$
     }
     
     

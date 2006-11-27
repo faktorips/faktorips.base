@@ -142,7 +142,7 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     }
 
     private CoreException newExceptionMethodNotAvailableForArchvies() {
-        return new CoreException(new IpsStatus("Not possible for archives because they are not modifiable."));
+        return new CoreException(new IpsStatus("Not possible for archives because they are not modifiable.")); //$NON-NLS-1$
     }
 
     /**

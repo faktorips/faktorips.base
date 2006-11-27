@@ -87,7 +87,7 @@ public class PropertiesPage extends IpsObjectEditorPage {
 	 *            The owner of this page
 	 */
 	public PropertiesPage(IpsObjectEditor editor) {
-		super(editor, PAGE_ID, ""); // Title will be updated based on selected generation
+		super(editor, PAGE_ID, ""); // Title will be updated based on selected generation //$NON-NLS-1$
 		editor.addPageChangedListener(new IPageChangedListener() {
 			public void pageChanged(PageChangedEvent event) {
 				setEnabled(((ProductCmptEditor) getIpsObjectEditor())

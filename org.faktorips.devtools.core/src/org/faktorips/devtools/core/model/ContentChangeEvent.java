@@ -59,7 +59,7 @@ public class ContentChangeEvent {
      * {@inheritDoc}
      */
     public String toString() {
-        return "ContentChangeEvent for " + ipsSrcFile;
+        return "ContentChangeEvent for " + ipsSrcFile; //$NON-NLS-1$
     }
     
     

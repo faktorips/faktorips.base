@@ -40,7 +40,6 @@ public class Util {
             return java.lang.reflect.Modifier.PUBLIC;
         }
 
-        throw new IllegalArgumentException("No match was found for the provided modifier: "
-                + modifier);
+        throw new IllegalArgumentException("No match was found for the provided modifier:" + modifier);  //$NON-NLS-1$
     }
 }

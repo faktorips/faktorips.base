@@ -128,7 +128,7 @@ public class ModelExplorerSorter extends ViewerSorter{
         }else if(o instanceof IIpsProject){
             return ((IIpsProject)o).getName();
         }else{
-            return "";
+            return ""; //$NON-NLS-1$
         }
     }
 	

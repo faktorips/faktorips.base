@@ -54,7 +54,7 @@ public class XmlContentFileCopyBuilder extends AbstractXmlFileBuilder {
      * {@inheritDoc}
      */
     public String getName() {
-        return "XmlContentFileCopyBuilder";
+        return "XmlContentFileCopyBuilder"; //$NON-NLS-1$
     }
 
 }

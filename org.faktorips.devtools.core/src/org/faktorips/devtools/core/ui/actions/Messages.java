@@ -116,4 +116,5 @@ public class Messages extends NLS {
     public static String CreateIpsArchiveAction_Description;
     public static String CreateIpsArchiveAction_Tooltip;
     public static String IpsPasteAction_Error_CannotPasteIntoSelectedElement;
+    public static String MigrateProjectAction_text;
 }

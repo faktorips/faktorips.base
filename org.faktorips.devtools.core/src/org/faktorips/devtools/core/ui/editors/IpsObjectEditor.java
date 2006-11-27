@@ -366,7 +366,7 @@ public abstract class IpsObjectEditor extends FormEditor
     }
 
     public String toString() {
-        return "Editor for " + getIpsSrcFile();
+        return "Editor for " + getIpsSrcFile(); //$NON-NLS-1$
     }
 
 	/**

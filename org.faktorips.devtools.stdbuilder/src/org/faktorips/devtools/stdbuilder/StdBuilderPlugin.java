@@ -31,12 +31,12 @@ public class StdBuilderPlugin extends Plugin {
     /**
      * The plugin id like it is defined in the plugin.xml file
      */
-    public final static String PLUGIN_ID = "org.faktorips.stdbuilder";
+    public final static String PLUGIN_ID = "org.faktorips.stdbuilder"; //$NON-NLS-1$
 
     /**
      * The id of the standard builder set extension like it is defined in the plugin.xml file
      */
-    public final static String STANDARD_BUILDER_EXTENSION_ID = "org.faktorips.devtools.stdbuilder.ipsstdbuilderset";
+    public final static String STANDARD_BUILDER_EXTENSION_ID = "org.faktorips.devtools.stdbuilder.ipsstdbuilderset"; //$NON-NLS-1$
     
     // The shared instance.
     private static StdBuilderPlugin plugin;

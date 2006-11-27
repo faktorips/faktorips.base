@@ -50,7 +50,7 @@ public class TableStructureEnumDatatypeHelper extends AbstractDatatypeHelper {
      * {@inheritDoc}
      */
     public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null");
+        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
     /**
@@ -62,7 +62,7 @@ public class TableStructureEnumDatatypeHelper extends AbstractDatatypeHelper {
         }
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(getJavaClassName());        
-        fragment.append(".valueOf(");
+        fragment.append(".valueOf("); //$NON-NLS-1$
         fragment.appendQuoted(value);
         fragment.append(')');
         return fragment;
@@ -77,7 +77,7 @@ public class TableStructureEnumDatatypeHelper extends AbstractDatatypeHelper {
         }
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(getJavaClassName());        
-        fragment.append(".valueOf(");
+        fragment.append(".valueOf("); //$NON-NLS-1$
         fragment.append(expression);
         fragment.append(')');
         return fragment;
@@ -87,6 +87,6 @@ public class TableStructureEnumDatatypeHelper extends AbstractDatatypeHelper {
      * {@inheritDoc}
      */
     public String getJavaClassName() {
-        return "org.faktorips.integrationtest.tables.TableAsEnumTypeDatatype";
+        return "org.faktorips.integrationtest.tables.TableAsEnumTypeDatatype"; //$NON-NLS-1$
     }
 }

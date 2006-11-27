@@ -100,14 +100,14 @@ public class IpsArchive implements IIpsArchive {
         if (name==null) {
             return false;
         }
-        if (name.equals("")) {
+        if (name.equals("")) { //$NON-NLS-1$
             return true; // default package is always contained.
         }
         readArchiveContentIfNeccessary();
         if (packs.containsKey(name)) {
             return true;
         }
-        String prefix = name + ".";
+        String prefix = name + "."; //$NON-NLS-1$
         for (Iterator it=packs.keySet().iterator(); it.hasNext(); ) {
             String pack = (String)it.next();
             if (pack.startsWith(prefix)) {
@@ -139,13 +139,13 @@ public class IpsArchive implements IIpsArchive {
     }
     
     private boolean isChildPackageOf(String candidate, String parentPack) {
-        if (parentPack.equals("")) { // default package
+        if (parentPack.equals("")) { // default package //$NON-NLS-1$
             return candidate.indexOf('.')==-1;
         } else {
             if (!candidate.startsWith(parentPack + '.')) {
                 return false;
             }
-            return StringUtils.countMatches(parentPack, ".") == StringUtils.countMatches(candidate, ".") - 1;
+            return StringUtils.countMatches(parentPack, ".") == StringUtils.countMatches(candidate, ".") - 1; //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
     
@@ -193,19 +193,19 @@ public class IpsArchive implements IIpsArchive {
         try {
             archive = new JarFile(archiveFile.getLocation().toFile());
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus("Error opening jar for " + this, e));
+            throw new CoreException(new IpsStatus("Error opening jar for " + this, e)); //$NON-NLS-1$
         }
         String entryName = IIpsArchive.IPSOBJECTS_FOLDER + IPath.SEPARATOR + qnt.toPath().toString();
         JarEntry entry = archive.getJarEntry(entryName);
         if (entry==null) {
-            throw new CoreException(new IpsStatus("Entry not found in archive for " + this));
+            throw new CoreException(new IpsStatus("Entry not found in archive for " + this)); //$NON-NLS-1$
         }
         InputStream is = null;
         try {
             is = archive.getInputStream(entry);
             return StringUtil.readFromInputStream(is, encoding);
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus("Error reading data from archive for " + this, e));
+            throw new CoreException(new IpsStatus("Error reading data from archive for " + this, e)); //$NON-NLS-1$
         } finally {
             try {
                 if (is!=null) {
@@ -213,7 +213,7 @@ public class IpsArchive implements IIpsArchive {
                 }
                 archive.close();
             } catch (Exception e) {
-                throw new CoreException(new IpsStatus("Error closing stream or archive for " + this, e));
+                throw new CoreException(new IpsStatus("Error closing stream or archive for " + this, e)); //$NON-NLS-1$
             }
         }
         
@@ -236,10 +236,10 @@ public class IpsArchive implements IIpsArchive {
     
     private void readArchiveContent() throws CoreException {
         if (!archiveFile.exists()) {
-            throw new CoreException(new IpsStatus("IpsArchive file " + archiveFile + " does not exists!"));
+            throw new CoreException(new IpsStatus("IpsArchive file " + archiveFile + " does not exists!")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-            System.out.println("Reading archive content from disk: " + this);
+            System.out.println("Reading archive content from disk: " + this); //$NON-NLS-1$
         }
         packs = new HashMap(100);
         qNameTypes = new HashMap(100);
@@ -248,7 +248,7 @@ public class IpsArchive implements IIpsArchive {
         try {
             jar = new JarFile(archiveFile.getLocation().toFile());
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus("Error reading ips archive " + archiveFile, e));
+            throw new CoreException(new IpsStatus("Error reading ips archive " + archiveFile, e)); //$NON-NLS-1$
         }
         Properties ipsObjectProperties = readIpsObjectsProperties(jar);
         for (Enumeration e=jar.entries(); e.hasMoreElements(); ) {
@@ -274,14 +274,14 @@ public class IpsArchive implements IIpsArchive {
         try {
             jar.close();
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus("Error closing ips archive " + archiveFile));
+            throw new CoreException(new IpsStatus("Error closing ips archive " + archiveFile)); //$NON-NLS-1$
         }
     }
     
     private Properties readIpsObjectsProperties(JarFile archive) throws CoreException {
         JarEntry entry = archive.getJarEntry(IIpsArchive.JAVA_MAPPING_ENTRY_NAME);
         if (entry==null) {
-            throw new CoreException(new IpsStatus("Entry " + IIpsArchive.JAVA_MAPPING_ENTRY_NAME + " not found in archive for " + this));
+            throw new CoreException(new IpsStatus("Entry " + IIpsArchive.JAVA_MAPPING_ENTRY_NAME + " not found in archive for " + this)); //$NON-NLS-1$ //$NON-NLS-2$
         }
         InputStream is = null;
         try {
@@ -290,7 +290,7 @@ public class IpsArchive implements IIpsArchive {
             props.load(is);
             return props;
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus("Error reading ipsobjects.properties from archive for " + this, e));
+            throw new CoreException(new IpsStatus("Error reading ipsobjects.properties from archive for " + this, e)); //$NON-NLS-1$
         } 
     }
     
@@ -309,7 +309,7 @@ public class IpsArchive implements IIpsArchive {
     }
     
     public String toString() {
-        return "Archive " + archiveFile;
+        return "Archive " + archiveFile; //$NON-NLS-1$
     }
     
     private List getParentPackagesIncludingSelf(String pack) {

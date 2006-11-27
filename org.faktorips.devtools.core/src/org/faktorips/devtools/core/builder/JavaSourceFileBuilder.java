@@ -163,7 +163,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             javaOptionsSplitLength = Integer.valueOf(JavaCore.getOption(DefaultCodeFormatterConstants.FORMATTER_LINE_SPLIT));
             javaOptionsTabSize = Integer.valueOf(JavaCore.getOption(DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE));
         } catch (Exception e) {
-            IpsPlugin.log(new IpsStatus("Unable to apply the java formatter options.", e));
+            IpsPlugin.log(new IpsStatus("Unable to apply the java formatter options.", e)); //$NON-NLS-1$
         }
     }
     

@@ -73,12 +73,6 @@ public class IpsPreferences {
     public final static String DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX = IpsPlugin.PLUGIN_ID + ".defaultProductCmptTypePostfix"; //$NON-NLS-1$
 
     /**
-     * Contant identifying the preference for editing generations with succesors
-     * (regardless whether the valid-from-date of the generation lies in the past or not).
-     */
-    public final static String EDIT_GENERATION_WITH_SUCCESSOR = IpsPlugin.PLUGIN_ID + ".editGenerationWithSuccessor"; //$NON-NLS-1$
-    
-    /**
      * Constant identifying the preference for editing the runtime id.
      */
     public final static String MODIFY_RUNTIME_ID = IpsPlugin.PLUGIN_ID + ".modifyRuntimeId"; //$NON-NLS-1$
@@ -180,13 +174,6 @@ public class IpsPreferences {
      */
     public boolean canEditRecentGeneration() {
     	return prefStore.getBoolean(EDIT_RECENT_GENERATION);
-    }
-    
-    /**
-     * Returns whether generations with succesor generations can be edited.
-     */
-    public boolean canEditGenerationsWithSuccesor() {
-    	return prefStore.getBoolean(EDIT_GENERATION_WITH_SUCCESSOR);
     }
     
     /**

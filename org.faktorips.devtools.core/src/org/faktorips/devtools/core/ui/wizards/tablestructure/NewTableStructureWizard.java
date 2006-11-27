@@ -34,7 +34,7 @@ public class NewTableStructureWizard extends NewIpsObjectWizard {
     
     public NewTableStructureWizard() {
         super(IpsObjectType.TABLE_STRUCTURE);
-        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewTableStructureWizard.png"));
+        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewTableStructureWizard.png")); //$NON-NLS-1$
     }
     
     /** 

@@ -1952,7 +1952,7 @@ public class TestCaseTypeSection extends IpsSection  {
 
     private void contentsHasChanged(ContentChangeEvent event) {
         if (event.getIpsSrcFile().equals(testCaseType.getIpsSrcFile())){
-            updateUiJob.update("UpdateAll");
+            updateUiJob.update("UpdateAll"); //$NON-NLS-1$
         }
     }
 }

@@ -49,7 +49,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
      */
     private boolean isFlatLayout = false;
     
-    public static final String EXTENSION_ID= "org.faktorips.devtools.core.ipsproblemsdecorator";
+    public static final String EXTENSION_ID= "org.faktorips.devtools.core.ipsproblemsdecorator"; //$NON-NLS-1$
 
     private ImageDescriptorRegistry registry = null;
 
@@ -159,7 +159,6 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     }
 
     public boolean isLabelProperty(Object element, String property) {
-        System.out.println("requested property ("+element+"): "+property);
         return true;
     }
 

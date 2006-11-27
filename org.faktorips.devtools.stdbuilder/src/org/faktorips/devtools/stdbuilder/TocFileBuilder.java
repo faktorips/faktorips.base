@@ -125,7 +125,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      * {@inheritDoc}
      */
     public String getName() {
-        return "TocFileBuilder";
+        return "TocFileBuilder"; //$NON-NLS-1$
     }
 
     /**
@@ -165,14 +165,10 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      * {@inheritDoc}
      */
     public void afterBuildProcess(IIpsProject ipsProject, int buildKind) throws CoreException {
-        if (ipsProject == null){System.out.println("ipsproject ist null");}
         IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
-        if (srcRoots == null){System.out.println("srcRoots ist null");}
         for (int i = 0; i < srcRoots.length; i++) {
             IpsPackageFragmentRoot root = (IpsPackageFragmentRoot)srcRoots[i];
-            if (root == null){System.out.println("root ist null");}
             Long oldModStamp = (Long)packFrgmtRootTocModStamps.get(root);
-            if (oldModStamp == null){System.out.println("oldModStamp ist null");}
             if (oldModStamp.longValue() != getToc(root).getModificationStamp()) {
                 saveToc(root);
             }
@@ -201,7 +197,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             doc.appendChild(tocElement);
             xml = XmlUtil.nodeToString(doc, encoding);
         } catch (TransformerException e) {
-            throw new CoreException(new IpsStatus("Error transforming product component registry's table of contents to xml.", e));
+            throw new CoreException(new IpsStatus("Error transforming product component registry's table of contents to xml.", e)); //$NON-NLS-1$
         }
         InputStream is;
         try {
@@ -267,14 +263,14 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 					doc = builder.parse(is);
 				} catch (Exception e) {
 					throw new CoreException(new IpsStatus(
-							"Error parsing toc contents.", e));
+							"Error parsing toc contents.", e)); //$NON-NLS-1$
 				}
 				Element tocEl = doc.getDocumentElement();
 				try {
 					toc.initFromXml(tocEl);
 				} catch (Exception e) {
 					throw new CoreException(new IpsStatus(
-							"Error initializing toc from xml!", e));
+							"Error initializing toc from xml!", e)); //$NON-NLS-1$
 				}
 			}
 			tocFileMap.put(tocFile, toc);
@@ -320,12 +316,12 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 entry = createTocEntry((ITestCase)object);
             }
             else {
-                throw new RuntimeException("Unknown ips object type " + object.getIpsObjectType());
+                throw new RuntimeException("Unknown ips object type " + object.getIpsObjectType()); //$NON-NLS-1$
             }
             getToc(ipsSrcFile).addOrReplaceTocEntry(entry);
         } catch (Exception e) {
             throw new CoreException(new IpsStatus(
-                    "Unable to update the runtime repository toc file with the entry for: "
+                    "Unable to update the runtime repository toc file with the entry for: " //$NON-NLS-1$
                             + object.getQualifiedName(), e));
         }
     }
@@ -346,7 +342,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             return null;
         }
         String packageString = getBuilderSet().getPackage(DefaultBuilderSet.KIND_PRODUCT_CMPT_TOCENTRY, productCmpt.getIpsSrcFile()).replace('.', '/');
-        String xmlResourceName = packageString + '/' + productCmpt.getName() + ".xml";
+        String xmlResourceName = packageString + '/' + productCmpt.getName() + ".xml"; //$NON-NLS-1$
         TocEntryObject entry = TocEntryObject.createProductCmptTocEntry(
             productCmpt.getRuntimeId(), 
             productCmpt.getQualifiedName(),
@@ -389,8 +385,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 
         // generate the object id, the objectId for this element will be the package root name concatenated with the qualified name 
         String packageRootName = productCmpt.getIpsSrcFile().getIpsObject().getIpsPackageFragment().getRoot().getName();
-        String objectId = packageRootName + "." + productCmpt.getQualifiedName();
-        objectId = objectId.replace('.', '/') + "." + IpsObjectType.PRODUCT_CMPT.getFileExtension();
+        String objectId = packageRootName + "." + productCmpt.getQualifiedName(); //$NON-NLS-1$
+        objectId = objectId.replace('.', '/') + "." + IpsObjectType.PRODUCT_CMPT.getFileExtension(); //$NON-NLS-1$
         
         TocEntryObject entry = TocEntryObject.createFormulaTestTocEntry(
                 objectId, 
@@ -432,7 +428,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String tableStructureName = tableImplClassBuilder.getQualifiedClassName(tableStructure
                 .getIpsSrcFile());
         String xmlResourceName = packageInternal.replace('.', '/') + '/' + tableContents.getName()
-                + ".xml";
+                + ".xml"; //$NON-NLS-1$
         TocEntryObject entry = TocEntryObject.createTableTocEntry(tableContents.getQualifiedName(), tableContents.getQualifiedName(),
             xmlResourceName, tableStructureName);
         return entry;
@@ -448,8 +444,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         }
         // generate the object id, the objectId for this element will be the package root name concatenated with the qualified name 
         String packageRootName = testCase.getIpsSrcFile().getIpsObject().getIpsPackageFragment().getRoot().getName();
-        String objectId = packageRootName + "." + testCase.getQualifiedName();
-        objectId = objectId.replace('.', '/') + "." + IpsObjectType.TEST_CASE.getFileExtension();
+        String objectId = packageRootName + "." + testCase.getQualifiedName(); //$NON-NLS-1$
+        objectId = objectId.replace('.', '/') + "." + IpsObjectType.TEST_CASE.getFileExtension(); //$NON-NLS-1$
         
         String testCaseTypeName = testCaseTypeClassBuilder.getQualifiedClassName(type);
         String xmlResourceName = testCaseBuilder.getXmlResourcePath(testCase);

@@ -38,10 +38,10 @@ public class QNameUtil {
         if (qName==null) {
             return null;
         }
-        int index = qName.lastIndexOf(".");
+        int index = qName.lastIndexOf("."); //$NON-NLS-1$
         if (index == -1)
         {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         return qName.substring(0, index);
     }
@@ -59,7 +59,7 @@ public class QNameUtil {
             return qName;
         }
         if (index==qName.length()-1) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         return qName.substring(index + 1);
     }
@@ -75,7 +75,7 @@ public class QNameUtil {
         if (StringUtils.isEmpty(packOrUnqualifiedName)) {
             return packagePrefix;
         }
-        return packagePrefix + "." + packOrUnqualifiedName;
+        return packagePrefix + "." + packOrUnqualifiedName; //$NON-NLS-1$
     }
     
     /**

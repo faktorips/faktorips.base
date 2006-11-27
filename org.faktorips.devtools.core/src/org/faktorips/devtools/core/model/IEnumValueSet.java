@@ -26,7 +26,7 @@ import org.faktorips.datatype.EnumDatatype;
  */
 public interface IEnumValueSet extends IValueSet {
 
-    public final static String PROPERTY_VALUES = "values";
+    public final static String PROPERTY_VALUES = "values"; //$NON-NLS-1$
     
 	/**
 	 * Prefix for all message codes of this class.

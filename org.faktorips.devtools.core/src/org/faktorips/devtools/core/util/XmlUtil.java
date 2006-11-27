@@ -125,7 +125,7 @@ public class XmlUtil {
         // explicit use of xalan, as we need it's indentation feature
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         try {
-            transformerFactory.setAttribute("indent-number", new Integer(4));
+            transformerFactory.setAttribute("indent-number", new Integer(4)); //$NON-NLS-1$
         } catch (IllegalArgumentException e) {
             // no problem, we're using a older version
         }
@@ -213,7 +213,7 @@ public class XmlUtil {
         Result res = new StreamResult(file);
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         try {
-            transformerFactory.setAttribute("indent-number", new Integer(4));
+            transformerFactory.setAttribute("indent-number", new Integer(4)); //$NON-NLS-1$
         } catch (IllegalArgumentException e) {
             // no problem, we're using a older version
         }

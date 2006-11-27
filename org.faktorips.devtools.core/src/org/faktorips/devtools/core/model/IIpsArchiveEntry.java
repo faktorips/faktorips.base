@@ -26,7 +26,7 @@ import org.eclipse.core.resources.IFile;
  */
 public interface IIpsArchiveEntry extends IIpsObjectPathEntry {
 
-    public final static String FILE_EXTENSION = "ipsar";
+    public final static String FILE_EXTENSION = "ipsar"; //$NON-NLS-1$
     
     /**
      * Returns the ips archive this entry refers to. 
