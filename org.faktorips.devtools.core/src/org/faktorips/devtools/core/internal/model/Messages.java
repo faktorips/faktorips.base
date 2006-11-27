@@ -100,4 +100,6 @@ public class Messages extends NLS {
 
     public static String IpsArchiveEntry_archiveDoesNotExist;
 
+    public static String IpsProjectProperties_msgMissingMinFeatureId;
+
 }

@@ -51,6 +51,12 @@ public interface IIpsProjectProperties {
     public final static String MSGCODE_UNKNOWN_PREDEFINED_DATATYPE = MSGCODE_PREFIX + "UnknownPredefinedDatatype"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the min required version number for a specific 
+     * feature is missing.
+     */
+    public final static String MSGCODE_MISSING_MIN_FEATURE_ID = MSGCODE_PREFIX + "MissingMinFeatureId"; //$NON-NLS-1$
+
+    /**
 	 * Validates the project properties. 
 	 */
 	public MessageList validate(IIpsProject ipsProject) throws CoreException;

@@ -88,14 +88,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      */
 	public IpsProjectProperties() {
 		super();
-        setInitialMinRequiredVersionNumbers();
 	}
 
     /**
      * Copy constructor.
      */
 	public IpsProjectProperties(IIpsProject ipsProject, IpsProjectProperties props) {
-        setInitialMinRequiredVersionNumbers();
 		Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
 		Element el = props.toXml(doc);
 		initFromXml(ipsProject, el);
@@ -110,12 +108,27 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		validateBuilderSetId(ipsProject, list);
 		validateUsedPredefinedDatatype(ipsProject, list);
         validateIpsObjectPath(ipsProject, list);
+        validateRequiredFeatures(ipsProject, list);
 		for (int i = 0; i < definedDatatypes.length; i++) {
 			list.add(definedDatatypes[i].validate());
 		}
 		return list;
 	}
 	
+    /**
+     * @param ipsProject
+     * @param list
+     */
+    private void validateRequiredFeatures(IIpsProject ipsProject, MessageList list) {
+        IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();
+        for (int i = 0; i < managers.length; i++) {
+            if (getMinRequiredVersionNumber(managers[i].getFeatureId()) == null) {
+                String text = Messages.bind(Messages.IpsProjectProperties_msgMissingMinFeatureId, managers[i].getFeatureId());
+                list.add(new Message(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID, text, Message.ERROR, this));
+            }
+        }
+    }
+
     private void validateUsedPredefinedDatatype(IIpsProject ipsProject, MessageList list) {
 		IIpsModel model = ipsProject.getIpsModel();
 		for (int i = 0; i < predefinedDatatypesUsed.length; i++) {
@@ -414,7 +427,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      */
     private void initRequiredFeatures(Element el) {
         requiredFeatures = new Hashtable();
-        setInitialMinRequiredVersionNumbers();
+
         if (el == null) {
             return;
         }
@@ -754,12 +767,5 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         requiredFeatures.put(featureId, version);
     }
     
-    private void setInitialMinRequiredVersionNumbers() {
-        IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();
-        for (int i = 0; i < managers.length; i++) {
-            setMinRequiredVersionNumber(managers[i].getFeatureId(), managers[i].getCurrentVersion());
-        }
-        
-    }
     
 }
