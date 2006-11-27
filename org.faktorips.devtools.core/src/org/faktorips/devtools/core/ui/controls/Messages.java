@@ -54,6 +54,8 @@ public class Messages extends NLS {
 
 	public static String PcTypeRefControl_description;
 
+    public static String ValueSetEditControl_labelAllowedValueSet;
+
 	public static String ValueSetEditControl_labelType;
 
 	public static String TableStructureRefControl_title;

@@ -26,6 +26,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
@@ -58,6 +59,9 @@ public class ValueSetEditControl extends ControlComposite {
     private TableElementValidator tableElementValidator;
 
     private Label typLabel;
+    
+    private Composite groupComposite;
+    private Group group;
     
     /**
      * Generates a new control which contains a combo box and depending on the value of the box a EnumValueSetEditControl
@@ -107,18 +111,24 @@ public class ValueSetEditControl extends ControlComposite {
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
 			}
-			
-			if (enumType != null) {
+
+            if (enumType != null) {
                 if (!(enumControl instanceof EnumValueSetChooser)) {
-                    enumControl = new EnumValueSetChooser(valueSetArea, toolkit, null, (IEnumValueSet)valueSet, enumType, uiController);
+                    groupComposite = createEnumValueSetGroup(valueSetArea);
+                    enumControl = new EnumValueSetChooser(group, toolkit, null, (IEnumValueSet)valueSet, enumType,
+                            uiController);
+                    enumControl.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
                 }
-			} else {
-                if (!(enumControl instanceof EnumValueSetEditControl)) { 
-                    enumControl = new EnumValueSetEditControl((IEnumValueSet)valueSet, valueSetArea, tableElementValidator);
+            }
+            else {
+                if (!(enumControl instanceof EnumValueSetEditControl)) {
+                    groupComposite = createEnumValueSetGroup(valueSetArea);
+                    enumControl = new EnumValueSetEditControl((IEnumValueSet)valueSet, group, tableElementValidator);
+                    enumControl.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
                 }
-			}
-			
-    		retValue = enumControl;
+            }
+            
+            retValue = groupComposite;
     	} else if (valueSet.getValueSetType() == ValueSetType.RANGE) {
     		if (rangeControl == null) {
     			rangeControl = new RangeEditControl(valueSetArea, toolkit, (RangeValueSet)valueSet, uiController);
@@ -132,6 +142,22 @@ public class ValueSetEditControl extends ControlComposite {
     		retValue = allValuesControl;
     	}
         return retValue;
+    }
+
+    private Composite createEnumValueSetGroup(Composite parent) {
+        Composite composite = toolkit.createComposite(parent);
+        GridData gd = new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL);
+        gd.horizontalSpan = 2;
+        composite.setLayoutData(gd);
+        GridLayout layout = new GridLayout(1, false);
+        layout.marginHeight = 10;
+        layout.marginWidth = 0;
+        composite.setLayout(layout);
+        
+        group = toolkit.createGroup(composite, Messages.ValueSetEditControl_labelAllowedValueSet);
+        group.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
+        group.setLayout(new GridLayout(1, true));
+        return composite;
     }
     
     private void initLayout() {
@@ -216,7 +242,6 @@ public class ValueSetEditControl extends ControlComposite {
     }
     
     private class TypeModifyListener implements ModifyListener {
-
 		/**
 		 * {@inheritDoc}
 		 */
@@ -240,7 +265,7 @@ public class ValueSetEditControl extends ControlComposite {
             ((StackLayout)valueSetArea.getLayout()).topControl = getControlForValueSet(attribute.getValueSet());
 
             valueSetArea.layout(); // show the new top control
-            valueSetArea.getParent().getParent().layout(); // parent has to resize
+            valueSetArea.getParent().layout(); // parent has to resize
 		}
     }
 }

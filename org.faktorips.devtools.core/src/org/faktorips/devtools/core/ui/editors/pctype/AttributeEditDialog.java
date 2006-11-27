@@ -52,6 +52,8 @@ import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
+import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
@@ -89,7 +91,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 
     private CheckboxField productRelevantField;
     
-    private TextField defaultValueField;
+    private EditField defaultValueField;
     
     private ValueSetEditControl valueSetEditControl;
     private DatatypeRefControl datatypeControl;
@@ -152,6 +154,10 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
      * Listener to handle changes to the overwrites-Checkbox
      */
     private OverwritesListener overwritesListener;
+    
+    // placeholder for the default edit field, the edit field for the default value depends on
+    // the attributes datatype
+    private Composite defaultEditFieldPlaceholder;
     
     /**
      * @param parentShell
@@ -274,7 +280,13 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         datatypeControl.setOnlyValueDatatypesAllowed(true);
         datatypeControl.addListener(SWT.Modify, new Listener() {
             public void handleEvent(Event event) {
-                updateValueSetTypes();
+                event.display.asyncExec(new Runnable(){
+                    public void run() {
+                        updateValueSetTypes();
+                        createDefaultValueEditField();
+                        uiController.updateUI();
+                    }
+                });
             }
         });
 
@@ -303,14 +315,43 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 
         Composite workArea = uiToolkit.createLabelEditColumnComposite(pageControl);
         Label labelDefaultValue = uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelDefaultValue);
-        Text defaultValueText = uiToolkit.createText(workArea);
-        defaultValueField = new TextField(defaultValueText);
+        
+        defaultEditFieldPlaceholder = uiToolkit.createComposite(workArea);
+        defaultEditFieldPlaceholder.setLayout(uiToolkit.createNoMarginGridLayout(1, true));
+        defaultEditFieldPlaceholder.setLayoutData(new GridData(GridData.FILL_BOTH));
+        createDefaultValueEditField();
         
         valueSetEditControl = new ValueSetEditControl(pageControl, uiToolkit, uiController, attribute, new PcTypeValidator());
         // sets the label width of the value set control label, so the control will be horizontal aligned to the default value text
         //  the offset of 7 is calculated by the corresponding composites horizontal spacing and margins
         valueSetEditControl.setLabelWidthHint(labelDefaultValue.computeSize(SWT.DEFAULT, SWT.DEFAULT).x + 7);
         return pageControl;
+    }
+
+    /*
+     * Create the default value edit field, if the field exists, recreate it
+     */
+    private void createDefaultValueEditField() {
+        if (defaultValueField != null){
+            attribute.setDefaultValue(null);
+            uiController.remove(defaultValueField);
+            defaultValueField.getControl().dispose();
+        }
+        
+        ValueDatatype datatypeOfAttribute = null;
+        try { 
+            datatypeOfAttribute = attribute.findDatatype();
+        }
+        catch (CoreException e) {
+            // ignore exception, the default edit field will be created
+        }
+        ValueDatatypeControlFactory datatypeCtrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(datatypeOfAttribute);
+        defaultValueField = datatypeCtrlFactory.createEditField(uiToolkit, defaultEditFieldPlaceholder, datatypeOfAttribute, null);
+        defaultValueField.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
+        defaultEditFieldPlaceholder.layout();
+        defaultEditFieldPlaceholder.getParent().getParent().layout();
+
+        uiController.add(defaultValueField, IAttribute.PROPERTY_DEFAULT_VALUE);
     }
 
     private Control createFormulaParametersPage(TabFolder folder) {
