@@ -266,6 +266,7 @@ public class ValueSetEditControl extends ControlComposite {
 
             valueSetArea.layout(); // show the new top control
             valueSetArea.getParent().layout(); // parent has to resize
+            valueSetArea.getParent().getParent().layout(); // parent has to resize
 		}
     }
 }

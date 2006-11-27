@@ -324,6 +324,13 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         createDefaultValueEditField();
         
         valueSetEditControl = new ValueSetEditControl(pageControl, uiToolkit, uiController, attribute, new PcTypeValidator());
+        Object layoutData = valueSetEditControl.getLayoutData();
+        if (layoutData instanceof GridData){
+            // set the minimum height to show at least the maximum size of the selected ValueSetEditControl
+            GridData gd = (GridData)layoutData;
+            gd.heightHint = 300;
+        }
+        
         // sets the label width of the value set control label, so the control will be horizontal aligned to the default value text
         //  the offset of 7 is calculated by the corresponding composites horizontal spacing and margins
         valueSetEditControl.setLabelWidthHint(labelDefaultValue.computeSize(SWT.DEFAULT, SWT.DEFAULT).x + 7);
