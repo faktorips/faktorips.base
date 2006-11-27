@@ -65,6 +65,11 @@ public interface IProductCmptNamingStrategy {
     public final static String MSGCODE_MISSING_VERSION_SEPARATOR = MSGCODE_PREFIX + "VersionSeparatorIsMissing"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that the name contains illegal characters.
+     */
+    public final static String MSGCODE_ILLEGAL_CHARACTERS = MSGCODE_PREFIX + "IllegalCharacters"; //$NON-NLS-1$
+
+    /**
      * Sets the ips project this stratgey belongs to. Is called when the strategey is instantiated.
      * Should never be called by clients.
      * 

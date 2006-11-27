@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import java.util.Iterator;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
@@ -25,6 +27,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -46,22 +49,22 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     protected IpsObject() {
     }
 
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public IIpsPackageFragment getIpsPackageFragment() {
         return getIpsSrcFile().getIpsPackageFragment();
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public QualifiedNameType getQualifiedNameType() {
         return new QualifiedNameType(getQualifiedName(), getIpsObjectType());
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getQualifiedName() {
         String folderName = getParent().getParent().getName();
@@ -72,7 +75,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getName() {
         String filename = getParent().getName();
@@ -83,15 +86,15 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         return filename.substring(0, index);
     }
 
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public IResource getCorrespondingResource() {
         return null;
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsSrcFile getIpsSrcFile() {
         if (getParent() instanceof IIpsSrcFile) {
@@ -101,22 +104,22 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public Image getImage() {
         return getIpsObjectType().getImage();
     }
 
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public void setDescription(String newDescription) {
         description = newDescription;
         objectHasChanged();
     }
 
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public String getDescription() {
         return description;
@@ -149,21 +152,21 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
 	}
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public QualifiedNameType[] dependsOn() throws CoreException {
         return new QualifiedNameType[0];
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected final Element createElement(Document doc) {
         return doc.createElement(getIpsObjectType().getXmlElementName());
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void propertiesToXml(Element element) {
         DescriptionHelper.setDescription(element, description);
@@ -177,7 +180,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         description = DescriptionHelper.getDescription(element);
@@ -188,5 +191,31 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
             return "unnamed object"; // can only happen in test cases.  //$NON-NLS-1$
         }
         return super.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
+        validateNamingConventions(list, getName(), PROPERTY_NAME);
+    }
+    
+    /**
+     *  Validate the naming conventions for the given name.
+     *  
+     *  @param list The list the message will be added if the name is invalid
+     *  @param nameToValidate The name which will be validated against the naming conventions
+     *  @param property The property which contains the name, the message will be related to this property
+     */
+    protected void validateNamingConventions(MessageList list, String nameToValidate, String property) throws CoreException {
+        MessageList mlForNameValidation = new MessageList();
+        mlForNameValidation.add(getIpsProject().getNamingConventions().validateUnqualifiedIpsObjectName(getIpsObjectType(), nameToValidate));
+        for (Iterator iter = mlForNameValidation.iterator(); iter.hasNext();) {
+            // create new messages related to this object and the given property
+            Message msg = (Message)iter.next();
+            Message newMsg = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, property);
+            list.add(newMsg);
+        }
     }
 }

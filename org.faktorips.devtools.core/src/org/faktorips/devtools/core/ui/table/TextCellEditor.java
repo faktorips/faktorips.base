@@ -57,4 +57,10 @@ public class TextCellEditor extends TableCellEditor {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isMappedValue() {
+        return false;
+    }
 }

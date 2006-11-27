@@ -58,11 +58,6 @@ import org.w3c.dom.NodeList;
 public abstract class AbstractProductCmptNamingStrategy implements
 		IProductCmptNamingStrategy {
 
-	/**
-     * Validation message code to indicate that the name contains illegal characters.
-     */
-    public final static String MSGCODE_ILLEGAL_CHARACTERS = MSGCODE_PREFIX + "IllegalCharacters"; //$NON-NLS-1$
-
 	private String separator;
 	private HashMap specialCharReplacements = new HashMap();
 	private IIpsProject ipsProject;

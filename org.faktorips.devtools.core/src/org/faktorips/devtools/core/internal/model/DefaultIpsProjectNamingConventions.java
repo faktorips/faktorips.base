@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -30,6 +31,7 @@ import org.faktorips.devtools.core.model.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -39,11 +41,28 @@ import org.faktorips.util.message.MessageList;
  * @author Daniel Hohenberger
  */
 public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConventions {
-
+    private static final String INSTALLED_PLATFORM;
+    
     private IIpsProject ipsProject;
     
     private Map errorMsgTxtNameIsEmpty = new HashMap(1);
     private Map errorMsgTxtNameIsQualified = new HashMap(1);
+    
+    public static final char[] INVALID_RESOURCE_CHARACTERS;
+    
+    static {
+        //find out the OS being used
+        //setup the invalid names; @see OS
+        INSTALLED_PLATFORM = Platform.getOS();
+        if (INSTALLED_PLATFORM.equals(Platform.OS_WIN32)) {
+            //valid names and characters taken from http://msdn.microsoft.com/library/default.asp?url=/library/en-us/fileio/fs/naming_a_file.asp
+            INVALID_RESOURCE_CHARACTERS = new char[] {'\\', '/', ':', '*', '?', '"', '<', '>', '|'};
+        } else {
+            //only front slash and null char are invalid on UNIXes
+            //taken from http://www.faqs.org/faqs/unix-faq/faq/part2/section-2.html
+            INVALID_RESOURCE_CHARACTERS = new char[] {'/', '\0',};
+        }
+    }
     
     public DefaultIpsProjectNamingConventions(IIpsProject ipsProject){
         this.ipsProject = ipsProject;
@@ -149,7 +168,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     }
 
     private MessageList validateNameForTestCase(String name, boolean qualifiedCheck) {
-        return validateJavaTypeName(name, qualifiedCheck);
+        return validateValidOsName(name, qualifiedCheck);
     }
 
     private MessageList validateNameForTestCaseType(String name, boolean qualifiedCheck) {
@@ -157,7 +176,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     }
 
     private MessageList validateNameForTableContents(String name, boolean qualifiedCheck) {
-        return validateJavaTypeName(name, qualifiedCheck);
+        return validateValidOsName(name, qualifiedCheck);
     }
 
     private MessageList validateNameForTableStructure(String name, boolean qualifiedCheck) {
@@ -172,10 +191,32 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         return validateJavaTypeName(name, qualifiedCheck);
     }
 
+    /*
+     * Validate if the name is a valid os name
+     */
+    private MessageList validateValidOsName(String name, boolean qualifiedCheck) {
+        MessageList ml = new MessageList();
+        String unqualifiedName = qualifiedCheck ? StringUtil.unqualifiedName(name) : name;
+        char[] chars = INVALID_RESOURCE_CHARACTERS;
+        for (int i = 0; i < chars.length; i++) {
+            if (unqualifiedName.indexOf(chars[i]) != -1) {
+                ml.add(new Message(INVALID_NAME, NLS.bind(Messages.DefaultIpsProjectNamingConventions_msgNameNotValid,
+                        unqualifiedName), Message.ERROR));
+            }
+        }
+        return ml;
+    }
+    
+    /*
+     * Validate if the name is a valid java type identifier
+     */
     private MessageList validateJavaTypeName(String name, boolean qualifiedCheck){
         return validateJavaTypeName(name, qualifiedCheck, Messages.DefaultIpsProjectNamingConventions_msgNameNotValid, Messages.DefaultIpsProjectNamingConventions_msgNameIdDiscouraged);
     }
     
+    /*
+     * Special validation for product cmpt, the validation will be delegated to the IProductCmptNamingStrategy
+     */
     private MessageList validateNameForProductCmpt(String name, boolean qualifiedCheck) throws CoreException {
         IProductCmptNamingStrategy pns = ipsProject.getProductCmptNamingStrategy();
         // the validate will be delegated to the product cmpt naming strategy, only if the given name is unqualified

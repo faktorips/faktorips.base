@@ -44,27 +44,27 @@ import org.faktorips.devtools.core.ui.editors.tablecontents.ContentPage;
  * @author Stefan Widmaier
  */
 public abstract class TableCellEditor extends CellEditor{
-    /**
+    /*
      * The tableviewer this CellEditor is used in.
      */
     private final TableViewer tableViewer;
     
-    /**
+    /*
      * Index of the column this CellEditor was created for.
      */
     private final int columnIndex;
     
-    /**
+    /*
      * The control to be displayed when the user edits a table cell.
      */
     private Control control;
     
-    /**
+    /*
      * True if this CellEditor creates new rows if requested and deletes empty rows at the 
      * bottom of the table, false otherwise (default).
      */
     private boolean rowCreating= false;
-    
+
     /**
      * Constructs a CellEditor that is used in the given <code>TableViewer</code>. The CellEditor
      * displays the given control when a cell is edited. The given columnIndex indicates in which
@@ -90,6 +90,13 @@ public abstract class TableCellEditor extends CellEditor{
         initTraverseListener(control);
     }
 
+    /**
+     * Returns <code>true</code> if the cell editor supports mapping between an id and a text
+     * which will be displayed (e.g. combo boxes stores intern an id but the user can select the
+     * value by using names).
+     */
+    public abstract boolean isMappedValue();
+    
     /**
      * This method is never called, since the super-constructor is not used to create this cell
      * editor. Returns the control given at instanciation. {@inheritDoc}

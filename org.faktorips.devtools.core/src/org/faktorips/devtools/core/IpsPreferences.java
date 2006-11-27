@@ -23,6 +23,7 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDisplay;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 
@@ -88,7 +89,11 @@ public class IpsPreferences {
      * Constant identifying the ips test runner max heap size preference.
      */
     public final static String IPSTESTRUNNER_MAX_HEAP_SIZE = IpsPlugin.PLUGIN_ID + ".ipsTestTunnerMaxHeapSize"; //$NON-NLS-1$
-    
+
+    /**
+     * Constant identifying the enum display type.
+     */
+    public final static String ENUM_TYPE_DISPLAY = IpsPlugin.PLUGIN_ID + ".enumTypeDisplay"; //$NON-NLS-1$
     
     private IPreferenceStore prefStore;
     
@@ -103,6 +108,7 @@ public class IpsPreferences {
     	prefStore.setDefault(WORKING_MODE, WORKING_MODE_EDIT);
     	prefStore.setDefault(ENABLE_GENERATING, true);
         prefStore.setDefault(IPSTESTRUNNER_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
+        prefStore.setDefault(ENUM_TYPE_DISPLAY, EnumTypeDisplay.NAME_AND_ID.getId());
     }
 
     /**
@@ -195,10 +201,27 @@ public class IpsPreferences {
     public String getIpsTestRunnerMaxHeapSize(){
         return prefStore.getString(IPSTESTRUNNER_MAX_HEAP_SIZE);
     }
+
+    /**
+     * Returns the enum type display. Specifies the text display of enum type edit fields. E.g.
+     * diplay id or name only, or display both.
+     * 
+     * @see EnumTypeDisplay
+     */
+    public EnumTypeDisplay getEnumTypeDisplay() {
+        String id = prefStore.getString(ENUM_TYPE_DISPLAY);
+        EnumTypeDisplay enumTypeDisplay = (EnumTypeDisplay)EnumTypeDisplay.getEnumType().getEnumValue(id);
+        if (enumTypeDisplay == null) {
+            IpsPlugin.log(new IpsStatus("Unknown enum type with id: " + id //$NON-NLS-1$
+                    + ". Use default enum type display."));//$NON-NLS-1$
+            enumTypeDisplay = EnumTypeDisplay.DEFAULT;
+        }
+        return enumTypeDisplay;
+    }
     
     /**
-     * Returns whether the navigation from product component to model is active
-     * (<code>true</code>) or not.
+     * Returns whether the navigation from product component to model is active (<code>true</code>)
+     * or not.
      */
     public boolean canNavigateToModel() {
     	return prefStore.getBoolean(NAVIGATE_TO_MODEL);

@@ -21,6 +21,8 @@ import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -43,13 +45,25 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	
 	private String invalidValue;
 
+    // contains the property to specify the display name (e.g. id, name, or both)
+    private EnumTypeDisplay enumTypeDisplay = EnumTypeDisplay.DEFAULT;
+    
 	public AbstractEnumDatatypeBasedField(Combo combo, ValueDatatype datatype) {
 		super(combo);
 		ArgumentCheck.notNull(datatype);
 		this.datatype = datatype;
+        
+        enumTypeDisplay = IpsPlugin.getDefault().getIpsPreferences().getEnumTypeDisplay();
 	}
 
-	/**
+    /**
+     * Sets the enum type display property.
+     */
+	public void setEnumTypeDisplay(EnumTypeDisplay enumTypeDisplay) {
+        this.enumTypeDisplay = enumTypeDisplay;
+    }
+
+    /**
 	 * Refills the combo box and tries to keep the current value if it is still
 	 * in the range of possible values. If not, the first value will be selected.
 	 */
@@ -162,10 +176,20 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 		}
 	}
 	
-	protected String getValueName(String id) {
+    /**
+     * Returns the value name for the given id. The ips property @see {@link IpsPreferences#ENUM_TYPE_DISPLAY} 
+     * specifies the format of the name.
+     */
+	public String getValueName(String id) {
 		String noNullId = (String)super.prepareObjectForSet(id);
 		if (datatype instanceof EnumDatatype && ((EnumDatatype)datatype).isSupportingNames()) {
-			return ((EnumDatatype)datatype).getValueName(noNullId) + " (" + noNullId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            if (enumTypeDisplay.equals(EnumTypeDisplay.NAME_AND_ID)){
+                return ((EnumDatatype)datatype).getValueName(noNullId) + " (" + noNullId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            } else if (enumTypeDisplay.equals(EnumTypeDisplay.NAME)){
+                return ((EnumDatatype)datatype).getValueName(noNullId);
+            } else {
+                return noNullId;
+            }
 		} else {
 			return noNullId;
 		}

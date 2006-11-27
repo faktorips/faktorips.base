@@ -17,8 +17,6 @@
 
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
-import java.util.Iterator;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -159,9 +157,8 @@ public class TableContents extends TimedIpsObject implements ITableContents {
      * {@inheritDoc}
      */
     protected void validateThis(MessageList list) throws CoreException {
-        initValueDatatypes();
         super.validateThis(list);
-        
+
         ITableStructure structure = findTableStructure();
         if (structure == null) {
             String text = NLS.bind(Messages.TableContents_msgMissingTablestructure, this.structure);
@@ -169,27 +166,13 @@ public class TableContents extends TimedIpsObject implements ITableContents {
             return;
         }
         
+        initValueDatatypes();
+        
         if (structure.getNumOfColumns() != getNumOfColumns()) {
         	Integer structCols = new Integer(structure.getNumOfColumns());
         	Integer contentCols = new Integer(getNumOfColumns());
         	String text = NLS.bind(Messages.TableContents_msgColumncountMismatch, structCols, contentCols);
         	list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
-        }
-        
-        validateNamingConventions(list);
-    }
-
-    /*
-     *  Validate naming conventions
-     */
-    private void validateNamingConventions(MessageList list) throws CoreException {
-        MessageList mlForNameValidation = new MessageList();
-        mlForNameValidation.add(getIpsProject().getNamingConventions().validateUnqualifiedIpsObjectName(getIpsObjectType(), getName()));
-        mlForNameValidation.add(getIpsProject().getNamingConventions().validateQualifiedIpsObjectName(getIpsObjectType(), getQualifiedName()));
-        for (Iterator iter = mlForNameValidation.iterator(); iter.hasNext();) {
-            Message msg = (Message)iter.next();
-            Message newMsg = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_NAME);
-            list.add(newMsg);
         }
     }
     

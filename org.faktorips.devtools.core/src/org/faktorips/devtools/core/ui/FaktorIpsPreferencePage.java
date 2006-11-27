@@ -27,6 +27,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDisplay;
+import org.faktorips.values.EnumValue;
 
 /**
  * 
@@ -73,6 +75,18 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage
 				Messages.FaktorIpsPreferencePage_labelNamingScheme, nameValues,
 				getFieldEditorParent());
 		addField(changeOverTimeField);
+
+        EnumValue[] values = EnumTypeDisplay.getEnumType().getValues();
+        String[][] enumTypeDisplayNameValues = new String[values.length][2];
+        for (int i = 0; i < enumTypeDisplayNameValues.length; i++) {
+            enumTypeDisplayNameValues[i][0] = values[i].getName();
+            enumTypeDisplayNameValues[i][1] = values[i].getId();
+        }
+        ComboFieldEditor enumTypeDisplay = new ComboFieldEditor(
+                IpsPreferences.ENUM_TYPE_DISPLAY,
+                Messages.FaktorIpsPreferencePage_labelEnumTypeDisplay, enumTypeDisplayNameValues,
+                getFieldEditorParent());
+        addField(enumTypeDisplay);
 
         StringFieldEditor ipsTestRunnerMaxHeapSize = new StringFieldEditor(
                 IpsPreferences.IPSTESTRUNNER_MAX_HEAP_SIZE,

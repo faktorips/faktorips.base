@@ -17,12 +17,17 @@
 
 package org.faktorips.devtools.core.ui.editors.tablecontents;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
+import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
+import org.faktorips.devtools.core.ui.table.TableCellEditor;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -33,6 +38,8 @@ import org.faktorips.util.message.MessageList;
  */
 public class TableContentsLabelProvider implements ITableLabelProvider {
 
+    private Map mappedEditor = new HashMap();
+    
     /**
      * The image indicating an error in a table cell.
      */
@@ -52,6 +59,13 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
         return null;
     }
 
+    /**
+     * Adds an cell editor for which the mapping between an id and a displayed text is supported.
+     */
+    public void addMappedEditor(int columnIdx, TableCellEditor cellEditor){
+        mappedEditor.put(""+columnIdx, cellEditor);
+    }
+    
     /**
      * Returns <code>true</code> if the given row validation detects an error at the given columnIndex,
      * <code>false</code> otherwise.
@@ -84,6 +98,14 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
             if (value==null) {
                 value= IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
             }
+
+            if (mappedEditor.containsKey(""+columnIndex)){
+                // the value inside the cell will be mapped to the specified format as defined in the editor 
+                TableCellEditor cellEditor = (TableCellEditor)mappedEditor.get(""+columnIndex);
+                EnumDatatypeField enumDatatypeField = (EnumDatatypeField)cellEditor.getControl().getData();
+                return enumDatatypeField.getValueName(value);
+            }
+            
             return value;
         }
         return null;

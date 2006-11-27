@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.controller.fields.AbstractEnumDatatypeBasedField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
@@ -57,13 +58,14 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
 	 */
 	public EditField createEditField(UIToolkit toolkit, Composite parent,
 			ValueDatatype datatype, IValueSet valueSet) {
-
 		Combo combo = toolkit.createCombo(parent);
+        AbstractEnumDatatypeBasedField enumField = null;
 		if (valueSet instanceof IEnumValueSet) {
-			return new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype);
+            enumField = new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype);
 		} else {
-			return new EnumDatatypeField(combo, (EnumDatatype)datatype);
+            enumField = new EnumDatatypeField(combo, (EnumDatatype)datatype);
 		}
+        return enumField;
 	}
 
 	/**
@@ -84,14 +86,29 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
      * the Combo contains the value IDs (not the names) of the given <code>EnumDatatype</code> 
      * {@inheritDoc}
      */
-    public TableCellEditor createCellEditor(UIToolkit toolkit, ValueDatatype dataType, ValueSet valueSet, TableViewer tableViewer, int columnIndex) {
+    public TableCellEditor createCellEditor(UIToolkit toolkit,
+            ValueDatatype dataType,
+            ValueSet valueSet,
+            TableViewer tableViewer,
+            int columnIndex) {
         Combo comboControl;
         if (valueSet instanceof IEnumValueSet) {
-            comboControl= toolkit.createCombo(tableViewer.getTable(), (IEnumValueSet)valueSet, (EnumDatatype)dataType);
-        }else{
-            comboControl= toolkit.createIDCombo(tableViewer.getTable(), (EnumDatatype)dataType);
+            comboControl = toolkit.createCombo(tableViewer.getTable(), (IEnumValueSet)valueSet, (EnumDatatype)dataType);
+        }
+        else if (dataType instanceof EnumDatatype) {
+            comboControl = toolkit.createCombo(tableViewer.getTable());
+            initializeEnumCombo(comboControl, (EnumDatatype)dataType);
+        }
+        else {
+            comboControl = toolkit.createIDCombo(tableViewer.getTable(), (EnumDatatype)dataType);
         }
         return new ComboCellEditor(tableViewer, columnIndex, comboControl);
     }
 
+    private void initializeEnumCombo(Combo combo, EnumDatatype datatype) {
+        // stores the enum datatype object as data object in the combo,
+        // will be used to map between the displayed text and id
+        EnumDatatypeField enumDatatypeField = new EnumDatatypeField(combo, datatype);
+        combo.setData(enumDatatypeField);
+    }
 }

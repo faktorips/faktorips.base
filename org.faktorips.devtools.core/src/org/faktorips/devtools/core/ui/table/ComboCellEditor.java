@@ -22,6 +22,7 @@ import java.util.Arrays;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
+import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
 
 /**
  * 
@@ -49,7 +50,13 @@ public class ComboCellEditor extends TableCellEditor {
      * {@inheritDoc}
      */
     protected Object doGetValue() { 
-        return comboControl.getText();
+        Object field = comboControl.getData();
+        if (field instanceof EnumDatatypeField){
+            // map the id by using the stored EnumDatatypeField
+            return ((EnumDatatypeField)field).getValue();
+        } else {
+            return comboControl.getText();
+        }
     }
 
     /**
@@ -66,17 +73,30 @@ public class ComboCellEditor extends TableCellEditor {
      */
     protected void doSetValue(Object value) {
         if((comboControl != null) && value instanceof String){
-            comboControl.select(getIndexForValue((String) value));            
+            Object field = comboControl.getData();
+            if (field instanceof EnumDatatypeField){
+                // map the value by using the stored EnumDatatypeField
+                ((EnumDatatypeField)field).setValue(value);
+            } else {
+                comboControl.select(getIndexForValue((String) value));  
+            }
         }else{
             comboControl.select(0);
         }
     }
+
     /**
+     * {@inheritDoc}
+     */
+    public boolean isMappedValue() {
+        return true;
+    }
+    
+    /*
      * Searches the combo's list of items for the given text and returns the first index at 
      * which an equal item is found. If the given text cannot be found -1 is returned.
      */
     private int getIndexForValue(String text) {
         return Arrays.asList(comboControl.getItems()).indexOf(text);
-    }
-
+    }    
 }

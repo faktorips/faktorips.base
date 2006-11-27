@@ -21,6 +21,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.businessfct.BusinessFunction;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -78,22 +86,22 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
 
     public void testValidateNameForBusinessFunction() throws CoreException {
         IpsObjectType type = IpsObjectType.BUSINESS_FUNCTION;
-        testCommonNameValidation(type); 
+        testCommonJavaTypeNameValidation(type); 
     }
     
     public void testValidateNameForPolicyCmptType() throws CoreException {
         IpsObjectType type = IpsObjectType.POLICY_CMPT_TYPE;
-        testCommonNameValidation(type);        
+        testCommonJavaTypeNameValidation(type);        
     }
 
     public void testValidateNameForProductCmptType() throws CoreException {
         IpsObjectType type = IpsObjectType.PRODUCT_CMPT_TYPE;
-        testCommonNameValidation(type); 
+        testCommonJavaTypeNameValidation(type); 
     }
     
     public void testValidateNameForTableStructure() throws CoreException {
         IpsObjectType type = IpsObjectType.TABLE_STRUCTURE;
-        testCommonNameValidation(type); 
+        testCommonJavaTypeNameValidation(type); 
     }
 
     public void testValidateNameForProductCmpt() throws CoreException {
@@ -125,26 +133,26 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
 
     public void testValidateNameForTableContents() throws CoreException {
         IpsObjectType type = IpsObjectType.TABLE_CONTENTS;
-        testCommonNameValidation(type); 
+        testCommonOSNameValidation(type); 
     }
 
     public void testValidateNameForTestCaseType() throws CoreException {
         IpsObjectType type = IpsObjectType.TEST_CASE_TYPE;
-        testCommonNameValidation(type); 
+        testCommonJavaTypeNameValidation(type); 
     }
 
     public void testValidateNameForTestCase() throws CoreException {
         IpsObjectType type = IpsObjectType.TEST_CASE;
-        testCommonNameValidation(type); 
+        testCommonOSNameValidation(type); 
     }
     
-    private void testCommonNameValidation(IpsObjectType type) throws CoreException {
+    private void testCommonJavaTypeNameValidation(IpsObjectType type) throws CoreException {
         List validNames = new ArrayList();
         List invalidNames = new ArrayList();
         List invalidNamesMsgCodes = new ArrayList();
         
         // check unqualified names
-        getCommonQualifiedNamesTestData(validNames, invalidNames, invalidNamesMsgCodes);
+        getCommonJavaTypeQualifiedNamesTestData(validNames, invalidNames, invalidNamesMsgCodes);
         validateAndAssertNames(type, false, validNames, invalidNames, invalidNamesMsgCodes);
 
         validNames.clear();
@@ -158,7 +166,47 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         validateAndAssertNames(type, true, validNames, invalidNames, invalidNamesMsgCodes);
     }
     
-    private void getCommonQualifiedNamesTestData(List validNames, List invalidNames, List invalidNamesMsgCodes){
+    private void testCommonOSNameValidation(IpsObjectType type) throws CoreException {
+        List validNames = new ArrayList();
+        List invalidNames = new ArrayList();
+        List invalidNamesMsgCodes = new ArrayList();
+        
+        // check unqualified names
+        validNames.add("test test");
+        invalidNames.add("");
+        invalidNames.add("test\\");
+        invalidNames.add("test/");
+        invalidNames.add("test:");
+        invalidNames.add("test*");
+        invalidNames.add("test?");
+        invalidNames.add("test\"");
+        invalidNames.add("test<");
+        invalidNames.add("test>");
+        invalidNames.add("test|");
+        invalidNamesMsgCodes.add(IIpsProjectNamingConventions.NAME_IS_MISSING);
+        invalidNamesMsgCodes.add(IIpsProjectNamingConventions.INVALID_NAME);
+        invalidNamesMsgCodes.add(IIpsProjectNamingConventions.INVALID_NAME);
+        invalidNamesMsgCodes.add(IIpsProjectNamingConventions.INVALID_NAME);
+        invalidNamesMsgCodes.add(IIpsProjectNamingConventions.INVALID_NAME);
+        invalidNamesMsgCodes.add(IIpsProjectNamingConventions.INVALID_NAME);
+        invalidNamesMsgCodes.add(IIpsProjectNamingConventions.INVALID_NAME);
+        invalidNamesMsgCodes.add(IIpsProjectNamingConventions.INVALID_NAME);
+        invalidNamesMsgCodes.add(IIpsProjectNamingConventions.INVALID_NAME);
+        invalidNamesMsgCodes.add(IIpsProjectNamingConventions.INVALID_NAME);
+        validateAndAssertNames(type, false, validNames, invalidNames, invalidNamesMsgCodes);
+
+        validNames.clear();
+        invalidNames.clear();
+        invalidNamesMsgCodes.clear();
+        
+        // check qualified names
+        validNames.add("test.test");
+        invalidNames.add("");
+        invalidNamesMsgCodes.add(IIpsProjectNamingConventions.NAME_IS_MISSING);
+        validateAndAssertNames(type, true, validNames, invalidNames, invalidNamesMsgCodes);
+    }
+    
+    private void getCommonJavaTypeQualifiedNamesTestData(List validNames, List invalidNames, List invalidNamesMsgCodes){
         validNames.add("Test");
         validNames.add("TEST");
         
@@ -212,5 +260,69 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
             assertNotNull("\"" + invalidName + "\"" + " is valid against " + msgCode
                     + ", expected was invalid!", ml.getMessageByCode(msgCode));
         }
+    }
+    
+    /*
+     * Test if the validate method of the ips objects includes the naming validation.
+     */
+    public void testValidateNameWithIpsObjects() throws CoreException{
+        int testTypesCount = 0;
+        
+        // Policy cmpt type
+        IPolicyCmptType pct = newPolicyCmptType(ipsProject, "1test");
+        pct.setConfigurableByProductCmptType(false);
+        MessageList ml = pct.validate();
+        assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
+        testTypesCount ++;
+            
+        // Product cmpt type
+        pct = newPolicyCmptType(ipsProject, "test");
+        pct.setConfigurableByProductCmptType(true);
+        pct.setUnqualifiedProductCmptType("1testType");
+        ml = pct.validate();
+        assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
+        assertEquals(IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE, ml.getMessageByCode(
+                IIpsProjectNamingConventions.INVALID_NAME).getInvalidObjectProperties()[0].getProperty());
+        // testTypesCount ++;  is currently no ips object type
+        
+        // Product cmpt
+        IProductCmpt pc = newProductCmpt(ipsProject, "/test");
+        ml = pc.validate();
+        assertNotNull(ml.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_ILLEGAL_CHARACTERS)); 
+        testTypesCount ++;
+
+        // Test case type
+        ITestCaseType tct = (ITestCaseType) newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "1test");
+        ml = tct.validate();
+        assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
+        testTypesCount ++;
+        
+        // Test case
+        ITestCase tc = (ITestCase) newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "/test");
+        ml = tc.validate();
+        assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME)); 
+        testTypesCount ++;
+        
+        // Business function
+        BusinessFunction bf = (BusinessFunction) newIpsObject(ipsProject, IpsObjectType.BUSINESS_FUNCTION, "1test");
+        ml = bf.validate();
+        assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME)); 
+        testTypesCount ++;
+        
+        // Table structure
+        ITableStructure ts = (ITableStructure) newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, "1test");
+        ml = ts.validate();
+        assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));         
+        testTypesCount ++;
+        
+        // Table contents
+        ITableContents tco = (ITableContents) newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "/test");
+        ml = tco.validate();
+        assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));    
+        testTypesCount ++;
+        
+        
+        // assert that all types are tested in this test method
+        assertEquals(IpsObjectType.ALL_TYPES.length, testTypesCount);
     }
 }

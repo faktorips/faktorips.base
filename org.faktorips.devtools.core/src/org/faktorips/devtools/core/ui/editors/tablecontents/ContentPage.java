@@ -172,7 +172,8 @@ public class ContentPage extends IpsObjectEditorPage {
             tableViewer= new TableViewer(table);
             tableViewer.setUseHashlookup(true);
             tableViewer.setContentProvider(new TableContentsContentProvider());
-            tableViewer.setLabelProvider(new TableContentsLabelProvider());
+            TableContentsLabelProvider labelProvider = new TableContentsLabelProvider();
+            tableViewer.setLabelProvider(labelProvider);
             
             for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
                 TableColumn column= new TableColumn(table, SWT.LEFT, i);
@@ -192,6 +193,9 @@ public class ContentPage extends IpsObjectEditorPage {
                 ValueDatatype dataType= tableStructure.getColumn(i).findValueDatatype();
                 ValueDatatypeControlFactory factory= IpsPlugin.getDefault().getValueDatatypeControlFactory(dataType);
                 TableCellEditor cellEditor= factory.createCellEditor(toolkit, dataType, null, tableViewer, i);
+                if (cellEditor.isMappedValue()){
+                    labelProvider.addMappedEditor(i, cellEditor);
+                }
                 cellEditor.setRowCreating(true);
                 editors[i]= cellEditor;
             }

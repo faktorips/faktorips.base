@@ -39,6 +39,8 @@ public class Messages extends NLS {
 
 	public static String DatatypeCompletionProcessor_msgInternalError;
 
+    public static String FaktorIpsPreferencePage_labelEnumTypeDisplay;
+
 	public static String PdPackageSelectionDialog_title;
 
 	public static String PdPackageSelectionDialog_description;
