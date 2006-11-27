@@ -195,9 +195,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(!(dynTypes[1] instanceof DynamicEnumDatatype));
         
         assertEquals("min.Version", props.getMinRequiredVersionNumber("required.id"));
-        // we expect three entries because we have two in the xml file, but the core-feature
-        // is added by default.
-        assertEquals(3, props.getRequiredIpsFeatureIds().length);
+        assertEquals(2, props.getRequiredIpsFeatureIds().length);
 	}
 	
 	public void testGetLocale() {

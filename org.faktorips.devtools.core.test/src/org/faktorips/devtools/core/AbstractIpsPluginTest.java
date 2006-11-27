@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -271,6 +272,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 		props.setPredefinedDatatypesUsed(new String[] { "Decimal", "Money", "Integer", 
 				"String", "Boolean" });
 		props.setJavaSrcLanguage(Locale.GERMAN);
+        
+        props.setMinRequiredVersionNumber("org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        ipsProject.setProperties(props);
+
 		ipsProject.setProperties(props);
 	}
 
