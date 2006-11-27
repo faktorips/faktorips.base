@@ -23,7 +23,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -41,8 +40,6 @@ import org.faktorips.util.message.MessageList;
  * @author Daniel Hohenberger
  */
 public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConventions {
-    private static final String INSTALLED_PLATFORM;
-    
     private IIpsProject ipsProject;
     
     private Map errorMsgTxtNameIsEmpty = new HashMap(1);
@@ -51,17 +48,13 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     public static final char[] INVALID_RESOURCE_CHARACTERS;
     
     static {
-        //find out the OS being used
-        //setup the invalid names; @see OS
-        INSTALLED_PLATFORM = Platform.getOS();
-        if (INSTALLED_PLATFORM.equals(Platform.OS_WIN32)) {
-            //valid names and characters taken from http://msdn.microsoft.com/library/default.asp?url=/library/en-us/fileio/fs/naming_a_file.asp
-            INVALID_RESOURCE_CHARACTERS = new char[] {'\\', '/', ':', '*', '?', '"', '<', '>', '|'};
-        } else {
-            //only front slash and null char are invalid on UNIXes
-            //taken from http://www.faqs.org/faqs/unix-faq/faq/part2/section-2.html
-            INVALID_RESOURCE_CHARACTERS = new char[] {'/', '\0',};
-        }
+        // setup the invalid names; @see OS
+        // valid names and characters taken from
+        // http://msdn.microsoft.com/library/default.asp?url=/library/en-us/fileio/fs/naming_a_file.asp
+        // and from http://www.faqs.org/faqs/unix-faq/faq/part2/section-2.html
+        // remark: wo don't differ between linux and windows because both could be used in
+        // together (e.g. client and server installation), thus we use resriction for windows and linux
+        INVALID_RESOURCE_CHARACTERS = new char[] { '\\', '/', ':', '*', '?', '"', '<', '>', '|', '/', '\0' };
     }
     
     public DefaultIpsProjectNamingConventions(IIpsProject ipsProject){

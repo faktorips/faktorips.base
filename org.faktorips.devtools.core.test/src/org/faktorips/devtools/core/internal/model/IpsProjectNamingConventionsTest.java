@@ -183,7 +183,11 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         invalidNames.add("test<");
         invalidNames.add("test>");
         invalidNames.add("test|");
+        invalidNames.add("test/");
+        invalidNames.add("test\0");        
         invalidNamesMsgCodes.add(IIpsProjectNamingConventions.NAME_IS_MISSING);
+        invalidNamesMsgCodes.add(IIpsProjectNamingConventions.INVALID_NAME);
+        invalidNamesMsgCodes.add(IIpsProjectNamingConventions.INVALID_NAME);
         invalidNamesMsgCodes.add(IIpsProjectNamingConventions.INVALID_NAME);
         invalidNamesMsgCodes.add(IIpsProjectNamingConventions.INVALID_NAME);
         invalidNamesMsgCodes.add(IIpsProjectNamingConventions.INVALID_NAME);
