@@ -789,7 +789,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      *  Validate naming conventions for the product cmpt type
      */
     private void validateNamingConventionsForProductCmptType(MessageList list) throws CoreException {
-        validateNamingConventions(list, getProductCmptType(), PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE);
+        validateNamingConventions(list, getUnqualifiedProductCmptType(), PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE);
     }
 
     /**
