@@ -159,6 +159,8 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     // the attributes datatype
     private Composite defaultEditFieldPlaceholder;
     
+    private String prevDatatype;
+    
     /**
      * @param parentShell
      * @param title
@@ -332,8 +334,15 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
      * Create the default value edit field, if the field exists, recreate it
      */
     private void createDefaultValueEditField() {
-        if (defaultValueField != null){
+        if (attribute.getDatatype().equals(prevDatatype)){
+            return;
+        } else if (prevDatatype != null){
+            // if the datatype was changed, reset the default value
             attribute.setDefaultValue(null);
+        }
+        prevDatatype = attribute.getDatatype();
+            
+        if (defaultValueField != null){
             uiController.remove(defaultValueField);
             defaultValueField.getControl().dispose();
         }
