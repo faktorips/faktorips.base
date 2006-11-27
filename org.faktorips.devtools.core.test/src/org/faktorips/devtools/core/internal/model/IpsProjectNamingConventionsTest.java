@@ -265,7 +265,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
     /*
      * Test if the validate method of the ips objects includes the naming validation.
      */
-    public void testValidateNameWithIpsObjects() throws CoreException{
+    public void testValidateNameWithIpsObjects() throws Exception{
         int testTypesCount = 0;
         
         // Policy cmpt type
