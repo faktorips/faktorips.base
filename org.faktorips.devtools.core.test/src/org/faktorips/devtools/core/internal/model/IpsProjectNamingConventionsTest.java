@@ -277,7 +277,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         pct.setConfigurableByProductCmptType(false);
         MessageList ml = pct.validate();
         assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
-        pct = newPolicyCmptType(ipsProject, "test.test");
+        pct = newPolicyCmptType(ipsProject, "test.test2");
         pct.setConfigurableByProductCmptType(false);
         ml = pct.validate();
         assertNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
