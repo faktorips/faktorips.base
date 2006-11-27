@@ -248,4 +248,8 @@ public class Messages extends NLS {
 
     public static String ProductAttributesSection_msgInvalidDate;
 
+    public static String RelationsSection_ContextMenu_Properties;
+
+    public static String RelationsSection_ContextMenu_OpenInNewEditor;
+
 }

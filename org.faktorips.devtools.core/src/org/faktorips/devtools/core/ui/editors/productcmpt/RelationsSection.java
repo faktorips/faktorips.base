@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -59,6 +60,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -66,6 +68,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.actions.NewProductCmptRelationAction;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityPaneEditField;
@@ -269,13 +272,10 @@ public class RelationsSection extends IpsSection{
 				}
 				IStructuredSelection selection = (IStructuredSelection)event.getSelection();
 				Object selected = selection.getFirstElement();
-				
-				if (!(selected instanceof IProductCmptRelation)) {
-					return;
+				if (selected instanceof IProductCmptRelation) {
+                    IProductCmptRelation relation = (IProductCmptRelation)selected;
+                    openRelationEditDialog(relation);
 				}
-				IProductCmptRelation relation = (IProductCmptRelation)selected;
-                IProductCmpt target = relation.findTarget();
-                IpsPlugin.getDefault().openEditor(target);
 			}
 		});
 	}
@@ -291,8 +291,9 @@ public class RelationsSection extends IpsSection{
 		menuManager.add(new NewProductCmptRelationAction(site.getShell(),
 				treeViewer, this));
 
+        menuManager.add(new OpenReferencedProductCmptInEditorAction());
 		menuManager.add(ActionFactory.DELETE.create(site.getWorkbenchWindow()));
-		menuManager.add(new OpenProductCmptRelationAction(this, treeViewer));
+		menuManager.add(new OpenProductCmptRelationDialogAction());
         
 		menuManager.add(new Separator());
 		menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -697,6 +698,22 @@ public class RelationsSection extends IpsSection{
 		}
 		return targets;
 	}
+    
+    private void openRelationEditDialog(IProductCmptRelation relation) {
+        try {
+            IIpsSrcFile file = relation.getIpsObject().getIpsSrcFile();
+            IIpsSrcFileMemento memento = file.newMemento();
+            RelationEditDialog dialog = new RelationEditDialog(relation, getShell());
+            int rc = dialog.open();
+            if (rc == Dialog.CANCEL) {
+                file.setMemento(memento);
+            } else if (rc == Dialog.OK){
+                refresh();
+            }
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+    }
 
 	/**
 	 * To get access to the informations which depend on the selections that can
@@ -777,5 +794,70 @@ public class RelationsSection extends IpsSection{
 		}
 
 	}
+    
+    class OpenProductCmptRelationDialogAction extends IpsAction {
+
+        public OpenProductCmptRelationDialogAction() {
+            super(treeViewer);
+            setText(Messages.RelationsSection_ContextMenu_Properties);
+            
+            selectionProvider.addSelectionChangedListener(new ISelectionChangedListener() {
+            
+                public void selectionChanged(SelectionChangedEvent event) {
+                    Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
+                    setEnabled(selected instanceof IProductCmptRelation);
+                }
+            
+            });
+            
+        }
+
+        /** 
+         * {@inheritDoc}
+         */
+        public void run(IStructuredSelection selection) {
+            Object selected = selection.getFirstElement();
+            if (selected instanceof IProductCmptRelation) {
+                IProductCmptRelation relation = (IProductCmptRelation)selected;
+                openRelationEditDialog(relation);
+            }
+        }
+        
+    }
+
+    class OpenReferencedProductCmptInEditorAction extends IpsAction {
+
+        public OpenReferencedProductCmptInEditorAction() {
+            super(treeViewer);
+            setText(Messages.RelationsSection_ContextMenu_OpenInNewEditor);
+            
+            selectionProvider.addSelectionChangedListener(new ISelectionChangedListener() {
+            
+                public void selectionChanged(SelectionChangedEvent event) {
+                    Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
+                    setEnabled(selected instanceof IProductCmptRelation);
+                }
+            
+            });
+            
+        }
+
+        /** 
+         * {@inheritDoc}
+         */
+        public void run(IStructuredSelection selection) {
+            Object selected = selection.getFirstElement();
+            if (selected instanceof IProductCmptRelation) {
+                IProductCmptRelation relation = (IProductCmptRelation)selected;
+                try {
+                    IProductCmpt target = relation.findTarget();
+                    IpsPlugin.getDefault().openEditor(target);
+                } catch (Exception e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+            }
+        }
+        
+    }
     
 }
