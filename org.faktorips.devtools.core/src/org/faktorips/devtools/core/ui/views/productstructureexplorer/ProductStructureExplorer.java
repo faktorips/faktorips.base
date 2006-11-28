@@ -19,6 +19,9 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 
 
+import java.text.DateFormat;
+import java.util.GregorianCalendar;
+
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -30,6 +33,8 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerLabel;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -81,10 +86,63 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private TreeViewer tree; 
     private IIpsSrcFile file;
     private ProductStructureContentProvider contentProvider;
+    private GenerationRootNode rootNode;
     private Label errormsg;
+    
     
     // Job to refresh the ui in asynchronous manner
     private UpdateUiJob updateUiJob;
+    
+    /*
+     * Class to represent the root tree node to inform about the current working date.
+     */
+    class GenerationRootNode extends ViewerLabel {
+        private IProductCmpt productCmpt;
+        private GregorianCalendar workingDate;
+        private String generationText;
+        
+        public GenerationRootNode() {
+            super("", null); //$NON-NLS-1$
+        }
+        
+        public void refreshText() {
+            if (productCmpt == null) {
+                return;
+            }
+            workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
+            generationText = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(); 
+            
+            DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
+            String formatedWorkingDate = format.format(workingDate.getTime());
+            String label = NLS.bind(Messages.ProductStructureContentProvider_treeNodeText_GenerationCurrentWorkingDate,
+                    formatedWorkingDate);
+            this.setText(label);
+            this.setImage(IpsPlugin.getDefault().getImage("WorkingDate.gif")); //$NON-NLS-1$
+        }
+
+        public void storeProductCmpt(IProductCmpt productCmpt){
+            this.productCmpt = productCmpt;
+            refreshText();
+        }
+        
+        public String getGenerationText() {
+            return generationText;
+        }
+
+        public GregorianCalendar getWorkingDate() {
+            return workingDate;
+        }
+        
+        public String getProductCmptNoGenerationLabel(IProductCmpt productCmpt){
+            String label = productCmpt.getName();
+            if (null == productCmpt.findGenerationEffectiveOn(getWorkingDate())) {
+                // no generations avaliable,
+                // show additional text to inform that no generations exists
+                label = NLS.bind(Messages.ProductStructureExplorer_label_NoGenerationForCurrentWorkingDate, label, getGenerationText());
+            }
+            return label;
+        }
+    }
     
     private class ProductCmptDropListener extends IpsElementDropListener {
 
@@ -207,10 +265,13 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
 		tree = new TreeViewer(parent);
 		tree.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		rootNode = new GenerationRootNode();
 		contentProvider = new ProductStructureContentProvider(false);
+        contentProvider.setGenerationRootNode(rootNode);
 		tree.setContentProvider(contentProvider);
 
         ProductStructureLabelProvider labelProvider = new ProductStructureLabelProvider();
+        labelProvider.setGenerationRootNode(rootNode);
         tree.setLabelProvider(new DecoratingLabelProvider(labelProvider, new IpsProblemsLabelDecorator()));
         
         tree.addDoubleClickListener(new TreeViewerDoubleclickListener(tree));
@@ -256,12 +317,14 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     	}
     	this.file = product.getIpsSrcFile();
         try {
+            
         	errormsg.setVisible(false);
     		((GridData)errormsg.getLayoutData()).exclude = true;
         	
     		tree.getTree().setVisible(true);
     		((GridData)tree.getTree().getLayoutData()).exclude = false;
     		tree.getTree().getParent().layout();
+    		rootNode.storeProductCmpt(product);
 			tree.setInput(product.getStructure());
             tree.expandAll();
 		} catch (CycleException e) {
@@ -297,6 +360,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                         ((GridData)tree.getTree().getLayoutData()).exclude = false;
                         tree.getTree().getParent().layout();
                         tree.setInput(input);
+                        rootNode.refreshText();
                         tree.expandAll();
                     }
                 }

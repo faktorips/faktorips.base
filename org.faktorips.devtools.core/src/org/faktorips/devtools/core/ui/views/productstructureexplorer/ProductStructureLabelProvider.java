@@ -29,12 +29,15 @@ import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
+import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureExplorer.GenerationRootNode;
 import org.faktorips.util.StringUtil;
 
 public class ProductStructureLabelProvider implements ILabelProvider {
 
 	private List listeners = new ArrayList();
 	
+    private GenerationRootNode generationRootNode;
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -87,7 +90,7 @@ public class ProductStructureLabelProvider implements ILabelProvider {
 	 */
 	public String getText(Object element) {
 		if (element instanceof IProductCmptReference) {
-			return ((IProductCmptReference)element).getProductCmpt().getName();
+            return generationRootNode.getProductCmptNoGenerationLabel(((IProductCmptReference)element).getProductCmpt());
 		}
 		else if (element instanceof IProductCmptTypeRelationReference) {
             return ((IProductCmptTypeRelationReference)element).getRelation().getName();
@@ -101,4 +104,8 @@ public class ProductStructureLabelProvider implements ILabelProvider {
         }
 		return Messages.ProductStructureLabelProvider_undefined;
 	}
+
+    public void setGenerationRootNode(GenerationRootNode generationRootNode) {
+        this.generationRootNode = generationRootNode;
+    }
 }
