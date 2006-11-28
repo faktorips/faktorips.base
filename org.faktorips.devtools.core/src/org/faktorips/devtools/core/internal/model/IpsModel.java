@@ -40,7 +40,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.faktorips.codegen.DatatypeHelper;
@@ -59,21 +58,14 @@ import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.product.IRuntimeIdStrategy;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 
 /**
@@ -1075,116 +1067,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public ValidationResultCache getValidationResultCache() {
         return validationResultCache;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public MessageList checkForDuplicateRuntimeIds() throws CoreException {
-        return checkForDuplicateRuntimeIdsInternal(getAllProductCmpts(), true);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public MessageList checkForDuplicateRuntimeIds(IProductCmpt[] cmptsToCheck) throws CoreException {
-        return checkForDuplicateRuntimeIdsInternal(cmptsToCheck, false);
-    }
-
-    /**
-     * @return all product components of all projects managed by this model.
-     * @throws CoreException if an error occurs during search.
-     */
-    private IProductCmpt[] getAllProductCmpts() throws CoreException {
-        IIpsProject[] projects = this.getIpsProjects();
-        ArrayList all = new ArrayList();
-        for (int i = 0; i < projects.length; i++) {
-            IIpsObject[] objects = projects[i].findIpsObjects(IpsObjectType.PRODUCT_CMPT);
-            for (int j = 0; j < objects.length; j++) {
-                all.add((IProductCmpt)objects[j]);
-            }
-        }
-        return (IProductCmpt[])all.toArray(new IProductCmpt[all.size()]);
-    }
-
-    /**
-     * Check product cmpts for duplicate runtime id.
-     * 
-     * @param cmptsToCheck List of product components to check.
-     * @param all <code>true</code> to indicate that the given array of product components is the
-     *            whole list of all available product components or <code>false</code> for only a
-     *            subset of product components. If <code>false</code> is provided, a list of all
-     *            product components is build and all given product components are checked against
-     *            this list.
-     * @return A message list containing messages for each combination of a given product component
-     *         with the same runtime id as another one. The message has either one invalid object
-     *         property containing the given product component if <code>all</code> is
-     *         <code>false</code>, or two invalid object properties with the both product
-     *         components with the same runtime id if <code>all</code> is <code>true</code>.
-     * @throws CoreException if an error occurs during processing.
-     */
-    private MessageList checkForDuplicateRuntimeIdsInternal(IProductCmpt[] cmptsToCheck, boolean all)
-            throws CoreException {
-        IProductCmpt[] baseCheck;
-        if (all) {
-            baseCheck = cmptsToCheck;
-        } else {
-            baseCheck = getAllProductCmpts();
-        }
-
-        MessageList result = new MessageList();
-        IRuntimeIdStrategy strategyI = null;
-        IRuntimeIdStrategy strategyJ = null;
-        for (int i = 0; i < cmptsToCheck.length; i++) {
-            strategyI = cmptsToCheck[i].getIpsProject().getRuntimeIdStrategy();
-
-            if (all) {
-                // because we process the same array with index j as with index
-                // i, index j can start allways with i+1 without overlooking some product
-                // component combinations.
-                for (int j = i + 1; j < cmptsToCheck.length; j++) {
-                    strategyJ = cmptsToCheck[j].getIpsProject().getRuntimeIdStrategy();
-                    checkRuntimeId(strategyI, cmptsToCheck[i], cmptsToCheck[j], result, true);
-                    if (!strategyI.equals(strategyJ)) {
-                        checkRuntimeId(strategyJ, cmptsToCheck[i], cmptsToCheck[j], result, true);
-                    }
-                }
-            } else {
-                for (int j = 0; j < baseCheck.length; j++) {
-                    if (cmptsToCheck[i] != baseCheck[j]) {
-                        strategyJ = baseCheck[j].getIpsProject().getRuntimeIdStrategy();
-                        checkRuntimeId(strategyI, cmptsToCheck[i], baseCheck[j], result, false);
-                        if (!strategyI.equals(strategyJ)) {
-                            checkRuntimeId(strategyJ, cmptsToCheck[i], baseCheck[j], result, false);
-                        }
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    private void checkRuntimeId(IRuntimeIdStrategy strategy,
-            IProductCmpt cmpt1,
-            IProductCmpt cmpt2,
-            MessageList list,
-            boolean addBoth) {
-        if (strategy.sameRuntimeId(cmpt1, cmpt2)) {
-            ObjectProperty[] objects;
-
-            if (addBoth) {
-                objects = new ObjectProperty[2];
-                objects[0] = new ObjectProperty(cmpt1, IProductCmpt.PROPERTY_RUNTIME_ID);
-                objects[1] = new ObjectProperty(cmpt2, IProductCmpt.PROPERTY_RUNTIME_ID);
-            } else {
-                objects = new ObjectProperty[1];
-                objects[0] = new ObjectProperty(cmpt1, IProductCmpt.PROPERTY_RUNTIME_ID);
-            }
-
-            String msg = NLS.bind(Messages.IpsModel_msgRuntimeIDCollision, cmpt1.getQualifiedName(), cmpt2
-                    .getQualifiedName());
-            list.add(new Message(MSGCODE_RUNTIME_ID_COLLISION, msg, Message.ERROR, objects));
-        }
     }
 
     /**

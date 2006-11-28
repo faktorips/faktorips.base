@@ -52,7 +52,6 @@ import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefiniti
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 
@@ -323,41 +322,6 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         // compare handles (IProject)
         assertEquals(javaProject.getProject(), nonIpsResources[0]);
         assertEquals(javaProject2.getProject(), nonIpsResources[1]);
-    }
-    
-    public void testCheckForDuplicateRuntimeIds() throws CoreException {
-        IIpsProject prj = newIpsProject("PRJ1");
-        IProductCmpt cmpt1 = newProductCmpt(prj, "product1");
-        IProductCmpt cmpt2 = newProductCmpt(prj, "product2");
-        
-        cmpt1.setRuntimeId("Egon");
-        cmpt2.setRuntimeId("Egon");
-        assertEquals(cmpt1.getRuntimeId(), cmpt2.getRuntimeId());
-        
-        MessageList ml = model.checkForDuplicateRuntimeIds();
-        assertEquals(1, ml.getNoOfMessages());
-        assertNotNull(ml.getMessageByCode(IIpsModel.MSGCODE_RUNTIME_ID_COLLISION));
-        
-        cmpt2.setRuntimeId("Hugo");
-        ml = model.checkForDuplicateRuntimeIds();
-        assertEquals(0, ml.getNoOfMessages());
-        assertNull(ml.getMessageByCode(IIpsModel.MSGCODE_RUNTIME_ID_COLLISION));
-        
-        IProductCmpt cmpt3 = newProductCmpt(prj, "product3");
-        cmpt3.setRuntimeId("Egon");
-        cmpt2.setRuntimeId("Egon");
-        ml = model.checkForDuplicateRuntimeIds();
-        assertEquals(3, ml.getNoOfMessages());
-        assertNotNull(ml.getMessageByCode(IIpsModel.MSGCODE_RUNTIME_ID_COLLISION));
-        
-        ml = model.checkForDuplicateRuntimeIds(new IProductCmpt[] {cmpt3});
-        assertEquals(2, ml.getNoOfMessages());
-        assertNotNull(ml.getMessageByCode(IIpsModel.MSGCODE_RUNTIME_ID_COLLISION));
-        
-        ml = model.checkForDuplicateRuntimeIds(new IProductCmpt[] {cmpt1, cmpt3});
-        assertEquals(4, ml.getNoOfMessages());
-        assertNotNull(ml.getMessageByCode(IIpsModel.MSGCODE_RUNTIME_ID_COLLISION));
-        
     }
     
     public void testClearValidationCache() throws CoreException{

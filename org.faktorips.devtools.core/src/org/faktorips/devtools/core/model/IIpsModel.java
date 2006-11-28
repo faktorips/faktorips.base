@@ -18,8 +18,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.util.message.MessageList;
 
 /**
  * The IPS model is the top of the IpsElement hierarchy (like the Java model is the top of the Java
@@ -32,13 +30,6 @@ public interface IIpsModel extends IIpsElement {
      * Prefix for all message codes of this class.
      */
     public final static String MSGCODE_PREFIX = "IPSMODEL-"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that there exist two runtime ids which collide.
-     * 
-     * @deprecated @see IIpsModel#checkForDuplicateRuntimeIds()
-     */
-    public final static String MSGCODE_RUNTIME_ID_COLLISION = MSGCODE_PREFIX + "RuntimeIdCollision"; //$NON-NLS-1$
 
     /**
      * Returns the workspace.
@@ -200,37 +191,6 @@ public interface IIpsModel extends IIpsElement {
      * Removes the given object from the model.
      */
     public void delete(IIpsElement toDelete);
-
-    /**
-     * Searches all product components of all projects of this model for duplicate runtime ids.
-     * 
-     * @return A list of messages. For each combination of two product components with duplicate
-     *         runtime id a new message is created. This message has two invalid object properties,
-     *         each containing one of the two product components.
-     * 
-     * @throws CoreException if an error occurs during search.
-     * 
-     * @deprecated The {@link IIpsProject#checkForDuplicateRuntimeIds()} method should be used instead,
-     *             to check the runtime id only product cmpt's in the ips object path are relevant (not all
-     *             found in the model, therfore the method is moved to the IIpsProject)
-     */
-    public MessageList checkForDuplicateRuntimeIds() throws CoreException;
-
-    /**
-     * Checks all given product components against all product components of all projects of this
-     * model for duplicate runtime ids.
-     * 
-     * @return A list of messages. For each combination of two product components with duplicate
-     *         runtime id a new message is created. This message has only one invalid object
-     *         property, containing the product component given to this method.
-     * 
-     * @throws CoreException if an error occurs during search.
-     * 
-     * @deprecated The {@link IIpsProject#checkForDuplicateRuntimeIds()} method should be used instead,
-     *             to check the runtime id only product cmpt's in the ips object path are relevant (not all
-     *             found in the model, therfore the method is moved to the IIpsProject)
-     */
-    public MessageList checkForDuplicateRuntimeIds(IProductCmpt[] cmptsToCheck) throws CoreException;
 
     /**
      * Clears the validation results for all elements in the workspace.
