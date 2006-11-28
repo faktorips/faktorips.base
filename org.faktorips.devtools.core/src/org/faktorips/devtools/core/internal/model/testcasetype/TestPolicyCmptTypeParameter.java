@@ -590,5 +590,13 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                 list.add(msg);
             }
         }
+        
+        // check if the requires product flag is only true if the related test policy cmpt is configurable by product cmpt type
+        if (requiresProductCmpt && ! policyCmptTypeFound.isConfigurableByProductCmptType() && policyCmptTypeFound != null){
+            String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_FlagRequiresIsTrueButPolicyCmptTypeIsNotConfByProduct, policyCmptType);
+            Message msg = new Message(MSGCODE_REQUIRES_PROD_BUT_POLICY_CMPT_TYPE_IS_NOT_CONF_BY_PROD, text, Message.ERROR, this,
+                    PROPERTY_REQUIRES_PRODUCTCMT); //$NON-NLS-1$
+            list.add(msg);
+        }
     }
 }

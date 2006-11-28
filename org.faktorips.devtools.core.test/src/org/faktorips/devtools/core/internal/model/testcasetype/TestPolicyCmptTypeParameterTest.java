@@ -360,5 +360,28 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         policyCmptTypeParameterInput.setRequiresProductCmpt(true);
         ml = policyCmptTypeParameterInput.validate();
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_MUST_REQUIRE_PROD_IF_ROOT_AND_ABSTRACT));
-    }    
+    } 
+    
+    public void testValidateRequiresProdButPolicyCmptTypeIsNotConfByProd() throws Exception {
+        MessageList ml = policyCmptTypeParameterInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_REQUIRES_PROD_BUT_POLICY_CMPT_TYPE_IS_NOT_CONF_BY_PROD));
+
+        IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
+        policyCmptTypeParameterInput.setPolicyCmptType(policyCmptType.getQualifiedName());
+        
+        policyCmptType.setConfigurableByProductCmptType(false);
+        policyCmptTypeParameterInput.setRequiresProductCmpt(true);
+        ml = policyCmptTypeParameterInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_REQUIRES_PROD_BUT_POLICY_CMPT_TYPE_IS_NOT_CONF_BY_PROD));  
+        
+        policyCmptType.setConfigurableByProductCmptType(true);
+        policyCmptTypeParameterInput.setRequiresProductCmpt(false);
+        ml = policyCmptTypeParameterInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_REQUIRES_PROD_BUT_POLICY_CMPT_TYPE_IS_NOT_CONF_BY_PROD));  
+        
+        policyCmptType.setConfigurableByProductCmptType(false);
+        policyCmptTypeParameterInput.setRequiresProductCmpt(false);
+        ml = policyCmptTypeParameterInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_REQUIRES_PROD_BUT_POLICY_CMPT_TYPE_IS_NOT_CONF_BY_PROD));  
+    }     
 }

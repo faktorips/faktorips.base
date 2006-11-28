@@ -89,6 +89,13 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
             + "MustRequireProdIfRootAndAbstract"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that the policy cmpt type must be configurated by product if
+     * the requires product flag is set to <code>true</code>. 
+     */
+    public final static String MSGCODE_REQUIRES_PROD_BUT_POLICY_CMPT_TYPE_IS_NOT_CONF_BY_PROD = MSGCODE_PREFIX
+            + "RequiresProdButPolicyCmptTypeIsNotConfByProd"; //$NON-NLS-1$
+    
+    /**
      * Returns the qualified name of policy component class.
      */
 	public String getPolicyCmptType();
