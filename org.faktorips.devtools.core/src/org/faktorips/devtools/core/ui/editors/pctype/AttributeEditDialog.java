@@ -98,6 +98,8 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     // control to edit the formula parameters
     private ChangeParametersControl parametersControl;
     
+    private Label labelDefaultValue;
+    
     private ExtensionPropertyControlFactory extFactory;
     
     /**
@@ -316,7 +318,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         Composite pageControl = createTabItemComposite(folder, 1, false);
 
         Composite workArea = uiToolkit.createLabelEditColumnComposite(pageControl);
-        Label labelDefaultValue = uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelDefaultValue);
+        labelDefaultValue = uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelDefaultValue);
         
         defaultEditFieldPlaceholder = uiToolkit.createComposite(workArea);
         defaultEditFieldPlaceholder.setLayout(uiToolkit.createNoMarginGridLayout(1, true));
@@ -324,6 +326,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         createDefaultValueEditField();
         
         valueSetEditControl = new ValueSetEditControl(pageControl, uiToolkit, uiController, attribute, new PcTypeValidator());
+        
         Object layoutData = valueSetEditControl.getLayoutData();
         if (layoutData instanceof GridData){
             // set the minimum height to show at least the maximum size of the selected ValueSetEditControl
@@ -331,10 +334,28 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
             gd.heightHint = 300;
         }
         
+        adjustLabelWidth();
+        return pageControl;
+    }
+
+    private void adjustLabelWidth() {
+        if (valueSetEditControl == null){
+            return;
+        }
+        Label valueSetTypeLabel = valueSetEditControl.getLabel();
         // sets the label width of the value set control label, so the control will be horizontal aligned to the default value text
         //  the offset of 7 is calculated by the corresponding composites horizontal spacing and margins
-        valueSetEditControl.setLabelWidthHint(labelDefaultValue.computeSize(SWT.DEFAULT, SWT.DEFAULT).x + 7);
-        return pageControl;
+        int widthDefaultLabel = labelDefaultValue.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+        int widthValueSetTypeLabel = valueSetTypeLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+        if (widthDefaultLabel > widthValueSetTypeLabel){
+            valueSetEditControl.setLabelWidthHint(widthDefaultLabel + 7);
+        } else {
+            Object ld = defaultValueField.getControl().getLayoutData();
+            if (ld instanceof GridData){
+                ((GridData)ld).widthHint = widthValueSetTypeLabel - 7;
+                labelDefaultValue.setLayoutData(ld);
+            }
+        }
     }
 
     /*
@@ -343,9 +364,6 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     private void createDefaultValueEditField() {
         if (attribute.getDatatype().equals(prevDatatype)){
             return;
-        } else if (prevDatatype != null){
-            // if the datatype was changed, reset the default value
-            attribute.setDefaultValue(null);
         }
         prevDatatype = attribute.getDatatype();
             
@@ -364,6 +382,8 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         ValueDatatypeControlFactory datatypeCtrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(datatypeOfAttribute);
         defaultValueField = datatypeCtrlFactory.createEditField(uiToolkit, defaultEditFieldPlaceholder, datatypeOfAttribute, null);
         defaultValueField.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
+        adjustLabelWidth();
+
         defaultEditFieldPlaceholder.layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout();
 

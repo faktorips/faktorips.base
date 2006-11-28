@@ -114,7 +114,7 @@ public class ValueSetEditControl extends ControlComposite {
 
             if (enumType != null) {
                 if (!(enumControl instanceof EnumValueSetChooser)) {
-                    groupComposite = createEnumValueSetGroup(valueSetArea);
+                    groupComposite = createEnumValueSetGroup(valueSetArea, Messages.ValueSetEditControl_labelAllowedValueSet);
                     enumControl = new EnumValueSetChooser(group, toolkit, null, (IEnumValueSet)valueSet, enumType,
                             uiController);
                     enumControl.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
@@ -122,7 +122,7 @@ public class ValueSetEditControl extends ControlComposite {
             }
             else {
                 if (!(enumControl instanceof EnumValueSetEditControl)) {
-                    groupComposite = createEnumValueSetGroup(valueSetArea);
+                    groupComposite = createEnumValueSetGroup(valueSetArea, Messages.ValueSetEditControl_labelAllowedValueSet);
                     enumControl = new EnumValueSetEditControl((IEnumValueSet)valueSet, group, tableElementValidator);
                     enumControl.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
                 }
@@ -144,7 +144,7 @@ public class ValueSetEditControl extends ControlComposite {
         return retValue;
     }
 
-    private Composite createEnumValueSetGroup(Composite parent) {
+    private Composite createEnumValueSetGroup(Composite parent, String title) {
         Composite composite = toolkit.createComposite(parent);
         GridData gd = new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 2;
@@ -154,7 +154,7 @@ public class ValueSetEditControl extends ControlComposite {
         layout.marginWidth = 0;
         composite.setLayout(layout);
         
-        group = toolkit.createGroup(composite, Messages.ValueSetEditControl_labelAllowedValueSet);
+        group = toolkit.createGroup(composite, title);
         group.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
         group.setLayout(new GridLayout(1, true));
         return composite;
@@ -185,6 +185,10 @@ public class ValueSetEditControl extends ControlComposite {
         if (layoutData instanceof GridData){
             ((GridData)layoutData).widthHint = widthHint;
         }
+    }
+    
+    public Label getLabel(){
+        return typLabel;
     }
     
     private void createValidTypesCombo(UIToolkit toolkit, Composite parentArea) {
