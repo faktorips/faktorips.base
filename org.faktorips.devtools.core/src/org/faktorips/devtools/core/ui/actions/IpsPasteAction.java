@@ -13,6 +13,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
+import javax.xml.transform.TransformerException;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -44,6 +46,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -247,32 +250,44 @@ public class IpsPasteAction extends IpsAction {
         return result;
     }
 
+    private String getContentsOfIpsObject(IIpsObject ipsObject){
+        String encoding = ipsObject.getIpsProject().getXmlFileCharset();
+        String contents;
+        try {
+            contents = XmlUtil.nodeToString(ipsObject.toXml(IpsPlugin.getDefault().newDocumentBuilder().newDocument()), encoding);
+        }
+        catch (TransformerException e) {
+            throw new RuntimeException(e);
+            // This is a programing error, rethrow as runtime exception
+        }
+        return contents;
+    }
     /*
      * Creates a new file in the parent package fragment based on the given ips source object.
      */
     private void createFile(IIpsPackageFragment parent, IIpsObject ipsObject) throws CoreException {
-        String content = ipsObject.toXml(IpsPlugin.getDefault().newDocumentBuilder().newDocument())
-                .toString();
+        String contents = getContentsOfIpsObject(ipsObject);
+        
         String ipsSrcFileName = getNewIpsSrcFileName((IFolder)parent.getCorrespondingResource(), ipsObject);
         if (ipsSrcFileName == null){
             return;
         }
-        parent.createIpsFile(ipsSrcFileName, content, true, null);
+        parent.createIpsFile(ipsSrcFileName, contents, true, null);
     }
 
     /*
      * Creates a new file in the parent folder based on the given ips source object.
      */
-    private void createFile(IFolder parent, IIpsObject ipsSourceObject) throws CoreException {
-        String content = ipsSourceObject.toXml(IpsPlugin.getDefault().newDocumentBuilder().newDocument()).toString();
+    private void createFile(IFolder parent, IIpsObject ipsObject) throws CoreException {
+        String contents = getContentsOfIpsObject(ipsObject);
         InputStream is;
         try {
-            is = new ByteArrayInputStream(content.getBytes(ipsSourceObject.getIpsProject().getXmlFileCharset()));
+            is = new ByteArrayInputStream(contents.getBytes(ipsObject.getIpsProject().getXmlFileCharset()));
         } catch (UnsupportedEncodingException e) {
             throw new CoreException(new IpsStatus(e));
         }
         
-        String newIpsSrcFileName = getNewIpsSrcFileName(parent, ipsSourceObject);
+        String newIpsSrcFileName = getNewIpsSrcFileName(parent, ipsObject);
         if (newIpsSrcFileName == null){
             return;
         }
@@ -309,41 +324,55 @@ public class IpsPasteAction extends IpsAction {
         String nameWithoutExtension = ipsObject.getName();
         String extension = "." + StringUtil.getFileExtension(ipsObject.getIpsSrcFile().getName()); //$NON-NLS-1$
         IPath targetPath = parent.getFullPath();
-        return getNewName(IResource.FILE, targetPath, nameWithoutExtension, extension);
+        return getNewName(IResource.FILE, targetPath, nameWithoutExtension, extension, false);
     }
     
     /*
      * Returns a new name for folder or files, returns null if the user aborts the get new name for
      * duplicate souce file dialog.
      */
-    private String getNewName(int resourceType, IPath targetPath, String nameWithoutExtension, String extension){
+    private String getNewName(int resourceType,
+            IPath targetPath,
+            String nameWithOrWithoutExtension,
+            String extension,
+            boolean showExtension) {
+        boolean dialogWasDisplayed = false;
         Validator validator = new Validator(targetPath, resourceType, extension);
-        String suggestedName = nameWithoutExtension;
+        String suggestedName = nameWithOrWithoutExtension;
         int doCopy = InputDialog.OK;
-        boolean nameChangeRequired = validator.isValid(nameWithoutExtension) != null;
+        boolean nameChangeRequired = validator.isValid(nameWithOrWithoutExtension) != null;
         if (nameChangeRequired) {
             for (int count = 0; validator.isValid(suggestedName) != null; count++) {
                 if (count == 0) {
-                    suggestedName = Messages.IpsPasteAction_suggestedNamePrefixSimple + nameWithoutExtension;
-                } else {
+                    suggestedName = Messages.IpsPasteAction_suggestedNamePrefixSimple + nameWithOrWithoutExtension;
+                }
+                else {
                     suggestedName = NLS.bind(Messages.IpsPasteAction_suggestedNamePrefixComplex, new Integer(count),
-                            nameWithoutExtension);
+                            nameWithOrWithoutExtension);
                 }
             }
-            nameWithoutExtension = suggestedName;
-            
-            if (! forceUseNameSuggestionIfFileExists){
+            nameWithOrWithoutExtension = suggestedName;
+
+            // if force is true don't show dialog (for automated testing purposite force could be set to true)
+            if (!forceUseNameSuggestionIfFileExists) {
+                dialogWasDisplayed = true;
+                suggestedName += showExtension?extension:"";
                 InputDialog dialog = new InputDialog(shell, Messages.IpsPasteAction_titleNamingConflict, NLS.bind(
-                        Messages.IpsPasteAction_msgNamingConflict, nameWithoutExtension), suggestedName, validator);
+                        Messages.IpsPasteAction_msgNamingConflict, nameWithOrWithoutExtension), suggestedName, validator);
                 dialog.setBlockOnOpen(true);
                 doCopy = dialog.open();
-                nameWithoutExtension = dialog.getValue();
+                nameWithOrWithoutExtension = dialog.getValue();
                 if (doCopy != InputDialog.OK) {
                     return null;
                 }
             }
-        } 
-        return nameWithoutExtension + extension;
+        }
+        if (showExtension && dialogWasDisplayed){
+            // the extension was already shown in the dialog
+            return nameWithOrWithoutExtension;
+        } else {
+            return nameWithOrWithoutExtension + extension;
+        }
     }
     
     /*
@@ -353,7 +382,7 @@ public class IpsPasteAction extends IpsAction {
     private void createFolderAndFiles(IFolder targetParentFolder, IIpsPackageFragment sourcePackageFragment) throws CoreException {
         String packageName = sourcePackageFragment.getLastSegmentName();
         IPath targetPath = targetParentFolder.getFullPath();
-        packageName = getNewName(IResource.FOLDER, targetPath, packageName, ""); //$NON-NLS-1$
+        packageName = getNewName(IResource.FOLDER, targetPath, packageName, "", false); //$NON-NLS-1$
         if (packageName == null){
             return;
         }
@@ -396,8 +425,10 @@ public class IpsPasteAction extends IpsAction {
             extension = ""; //$NON-NLS-1$
         }
         String suggestedName = StringUtil.getFilenameWithoutExtension(name);
-       
-        String newName = getNewName(resource.getType(), targetPath, suggestedName, extension);
+        
+        boolean showExtension = !isResourceIpsObject(resource);
+        String newName = getNewName(resource.getType(), targetPath, suggestedName, extension, showExtension);
+        
         if (newName != null) {
             IPath finalTargetPath = targetPath.append(newName);
             resource.copy(finalTargetPath, true, null);
@@ -411,6 +442,15 @@ public class IpsPasteAction extends IpsAction {
                 ((IIpsSrcFile)target).save(true, null);
             }
         }
+    }
+
+    private boolean isResourceIpsObject(IResource resource) {
+        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(resource.getFullPath());
+        IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+        if (ipsElement instanceof IIpsSrcFile && ipsElement.exists()) {
+            return true;
+        }
+        return false;
     }
 
     /*
