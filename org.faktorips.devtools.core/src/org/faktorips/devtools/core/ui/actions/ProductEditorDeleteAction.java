@@ -20,62 +20,62 @@ package org.faktorips.devtools.core.ui.actions;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 
-public class ProductEditorDeleteAction extends IpsDeleteAction {
+public class ProductEditorDeleteAction extends AbstractSelectionChangedListenerAction {
 
     public ProductEditorDeleteAction(ISelectionProvider provider) {
         super(provider);
     }    
 
     /**
-     * Removed all <code>IIpsObjectPart</code>s in the selection from their <code>IIpsObject</code>s.
+     * Removes all <code>IIpsObjectPart</code>s in the selection from their <code>IIpsObject</code>s.
      * {@inheritDoc}
      */
-    protected void deleteSelection(IStructuredSelection selection) {
+    protected void execute(IStructuredSelection selection) {
         Object[] items= selection.toArray();
         for (int i = 0; i < items.length; i++) {
-            if (items[i] instanceof IIpsObjectPart & !(items[i] instanceof IProductCmptTypeRelation)) {
-                ((IIpsObjectPart)items[i]).delete();
+            IpsObjectPart part = canBeProcessed(items[i]);
+            if(part != null){
+                part.delete();
             }
         }
     }
 
     /**
+     * Defines which IpsObjectParts can be process by this action. Returns the IpsObjectPart if it can be processed, returns 
+     * <code>null</code> if the provided object cannot be processed.
+     */
+    protected IpsObjectPart canBeProcessed(Object selectedIpsObjectPart){
+        if(selectedIpsObjectPart instanceof IProductCmptRelation){
+            return (IpsObjectPart)selectedIpsObjectPart;
+        }
+        return null;
+    }
+    
+    /**
      * Removes this action and all delegates as listener of the selectionprovider given at
      * instanciation and disables them.
-     * 
      */
-    public void deregister(){
+    public void disposeInternal(){
         setEnabled(false);
-        if(selectionProvider!=null){
-            // SelectionProvider can be null if ProductCmpt does not contain relations.
-            // In this case the editor does not create a treeviewer in the RelationsSection.
-            selectionProvider.removeSelectionChangedListener(this);
-        }
-        // avoid further usage
-        selectionProvider= null;
     }
     
     /** 
      * Activates the action if the selection is a <code>IStructuredSelection</code> and 
      * does not contain <code>IProductCmptTypeRelation</code>s. Disables this action otherwise.
+     * 
      * {@inheritDoc}
      */
-    protected void setEnabledState(ISelection selection){
-        if(selection instanceof IStructuredSelection){
-            Object[] items= ((IStructuredSelection)selection).toArray();
-            boolean enabled= false;
-            for (int i = 0; i < items.length; i++) {
-                if (items[i] instanceof IIpsObjectPart & !(items[i] instanceof IProductCmptTypeRelation)) {
-                    enabled= true;
-                }
+    protected boolean isEnabled(ISelection selection){
+        Object[] items= ((IStructuredSelection)selection).toArray();
+        for (int i = 0; i < items.length; i++) {
+            IpsObjectPart part = canBeProcessed(items[i]);
+            if (part != null) {
+                return true;
             }
-            setEnabled(enabled);
-        }else{
-            setEnabled(false);
         }
+        return false;
     }
-
 }

@@ -59,7 +59,7 @@ public class ProductCmptEditorActionContributor extends EditorActionBarContribut
     public void setActiveEditor(IEditorPart targetEditor) {
         super.setActiveEditor(targetEditor);
         if(deleteAction!=null){
-            deleteAction.deregister();
+            deleteAction.dispose();
         }
         ISelectionProvider provider= targetEditor.getEditorSite().getSelectionProvider();
         if(provider!=null){

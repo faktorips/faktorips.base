@@ -69,8 +69,25 @@ public abstract class IpsObjectEditorPage extends FormPage {
 		form.setExpandHorizontal(true);
 		form.setExpandVertical(true);
 		form.reflow(true);
+        registerSelectionProviderActivation(getPartControl());
 	}
 	
+    private void registerSelectionProviderActivation(Control container){
+        if(container instanceof ISelectionProviderActivation){
+            getIpsObjectEditor().getSelectionProviderDispatcher().addSelectionProviderActivation((ISelectionProviderActivation)container);
+        }
+        if(!(container instanceof Composite)){
+            return;
+        }
+        Control[] childs = ((Composite)container).getChildren();
+        for (int i = 0; i < childs.length; i++) {
+            if(childs[i] instanceof Composite){
+                registerSelectionProviderActivation(childs[i]);
+            }
+        }
+        
+    }
+
 	protected abstract void createPageContent(Composite formBody, UIToolkit toolkit);
 	
 	/**

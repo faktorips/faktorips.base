@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -42,6 +45,8 @@ import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -72,6 +77,7 @@ import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.actions.NewProductCmptRelationAction;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityPaneEditField;
+import org.faktorips.devtools.core.ui.editors.ISelectionProviderActivation;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -83,7 +89,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public class RelationsSection extends IpsSection{
+public class RelationsSection extends IpsSection implements ISelectionProviderActivation{
 
 	/**
 	 * the generation the displayed informations are based on.
@@ -107,8 +113,7 @@ public class RelationsSection extends IpsSection{
 	private IEditorSite site;
 
 	/**
-	 * Flag to indicate that the generation this informations are based on has
-	 * changed (<code>true</code>)
+	 * Flag to indicate that the generation has changed (<code>true</code>)
 	 */
 	private boolean generationDirty;
 
@@ -161,10 +166,7 @@ public class RelationsSection extends IpsSection{
         generationDirty = true;
 		enabled = true;
 		initControls();
-
 		setText(Messages.PropertiesPage_relations);
-		
-		site.setSelectionProvider(treeViewer);
 	}
 
 	/**
@@ -228,37 +230,11 @@ public class RelationsSection extends IpsSection{
 	
 			addFocusControl(treeViewer.getTree());
 			registerDoubleClickListener();
+			ModelViewerSynchronizer synchronizer = new ModelViewerSynchronizer(generation, treeViewer);
+			synchronizer.setWidget(client);
+			IpsPlugin.getDefault().getIpsModel().addChangeListener(synchronizer);
 		}
 		toolkit.getFormToolkit().paintBordersFor(relationRootPane);
-        ContentsChangeListenerForWidget listener = new ContentsChangeListenerForWidget() {
-
-            public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
-                if (!event.getIpsSrcFile().equals(RelationsSection.this.generation.getIpsObject().getIpsSrcFile())) {
-                    return;
-                }
-                try {
-                    IIpsObject obj = event.getIpsSrcFile().getIpsObject();
-                    if (obj == null || obj.getIpsObjectType() != IpsObjectType.PRODUCT_CMPT) {
-                        return;
-                    }
-                    
-                    IProductCmpt cmpt = (IProductCmpt)obj;
-                    IIpsObjectGeneration gen = cmpt.getGenerationByEffectiveDate(RelationsSection.this.generation.getValidFrom());
-                    if (!RelationsSection.this.generation.equals(gen)) {
-                        return;
-                    }
-                    generationDirty = true;
-                }
-                catch (CoreException e) {
-                    IpsPlugin.log(e);
-                    generationDirty = true;
-                }
-            }
-            
-        };
-        listener.setWidget(client);
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(listener);
-        
 	}
 
 	/**
@@ -794,7 +770,7 @@ public class RelationsSection extends IpsSection{
 		}
 
 	}
-    
+	
     class OpenProductCmptRelationDialogAction extends IpsAction {
 
         public OpenProductCmptRelationDialogAction() {
@@ -859,5 +835,157 @@ public class RelationsSection extends IpsSection{
         }
         
     }
+	
     
+    /**
+     * Synchronizes the model object thus the generation object with the tree viewer. It implements an algorithm
+     * that calculates the next selection of an item after the currently selected item has been selected. 
+     *  
+     * @author Peter Erzberger
+     */
+    private class ModelViewerSynchronizer extends ContentsChangeListenerForWidget implements SelectionListener{
+
+        private int currentNumberOfProductCmptRelations = 0;
+        private List lastSelectionPath = null;
+        
+        private ModelViewerSynchronizer(IProductCmptGeneration generation, TreeViewer treeViewer){
+            currentNumberOfProductCmptRelations = generation.getNumOfRelations();
+            treeViewer.getTree().addSelectionListener(this);
+        }
+        
+        /**
+         * Keeps track of structural changes of relations of the current product component generation.
+         * {@inheritDoc}
+         */
+        public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
+            //the generationDirty flag is only necessary because of a buggy behaviour when the
+            //the generation of the product component editor has changed. The pages a created newly 
+            //in this case and I don't exactly what then happens... (pk). It desperately asks for refactoring
+            if (!event.getIpsSrcFile().equals(RelationsSection.this.generation.getIpsObject().getIpsSrcFile())) {
+                return;
+            }
+            try {
+                IIpsObject obj = event.getIpsSrcFile().getIpsObject();
+                if (obj == null || obj.getIpsObjectType() != IpsObjectType.PRODUCT_CMPT) {
+                    return;
+                }
+                
+                IProductCmpt cmpt = (IProductCmpt)obj;
+                IIpsObjectGeneration gen = cmpt.getGenerationByEffectiveDate(RelationsSection.this.generation.getValidFrom());
+                if (RelationsSection.this.generation.equals(gen)) {
+                    generationDirty = true;
+                }
+            }
+            catch (CoreException e) {
+                IpsPlugin.log(e);
+                generationDirty = true;
+            }
+            processRelationChanges();
+        }
+
+        private void processRelationChanges(){
+            // case when a relation has been deleted
+            if(currentNumberOfProductCmptRelations > generation.getNumOfRelations()){
+                currentNumberOfProductCmptRelations = generation.getNumOfRelations();
+                treeViewer.refresh();
+                TreeItem possibleSelection = getNextPossibleItem(treeViewer.getTree(), lastSelectionPath);
+                if(possibleSelection == null){
+                    return;
+                }
+                treeViewer.getTree().setSelection(new TreeItem[]{possibleSelection});
+                //this additional sending of an event is necessary due to a bug in swt. The problem is
+                //that dispite of the new selection no event is triggered
+                treeViewer.getTree().notifyListeners(SWT.Selection, null);
+                return;
+            }
+            //  case when a relation has been added
+            if(currentNumberOfProductCmptRelations < generation.getNumOfRelations()){
+                currentNumberOfProductCmptRelations = generation.getNumOfRelations();
+            }
+        }
+        
+        /**
+         * Empty implementation
+         */
+        public void widgetDefaultSelected(SelectionEvent e) {
+            // empty implementation
+        }
+
+        /*
+         * Calculates the path within the tree that points to the provided TreeItem. The path is a list of indices.
+         * The first index in the list is meant to be the index of the TreeItem starting from the root of the tree,
+         * the second is the index of the TreeItem starting from the TreeItem calculated before and so on.
+         */
+        private void createSelectionPath(List path, TreeItem item){
+            TreeItem parent = item.getParentItem();
+            if(parent == null){
+                path.add(new Integer(item.getParent().indexOf(item)));
+                return;
+            }
+            createSelectionPath(path, parent);
+            path.add(new Integer(parent.indexOf(item)));
+        }
+        
+        /*
+         * Calculates the next possible selection for the provided path. The assumption is that the item the path is targeting at
+         * might not exist anymore therefor an item has to be determined that is preferably near to it.
+         */
+        private TreeItem getNextPossibleItem(Tree tree, List pathList){
+            
+            if(pathList == null || tree.getItemCount() == 0 || pathList.size() == 0){
+                return null;
+            }
+            TreeItem parent = null;
+            Integer index = (Integer)pathList.get(0);
+            if(tree.getItemCount() > index.intValue()){
+                parent = tree.getItem(((Integer)pathList.get(0)).intValue());
+            }
+            else{
+                parent = tree.getItem(tree.getItemCount() - 1);
+            }
+            for (int i = 1; i < pathList.size(); i++) {
+                if(parent.getItemCount() == 0){
+                    return parent;
+                }
+                index = (Integer)pathList.get(i);
+                if(parent.getItemCount() > index.intValue()){
+                    TreeItem item = parent.getItem(index.intValue());
+                    if(item.getItemCount() == 0){
+                        return item;
+                    }
+                    parent = item;
+                    continue;
+                }
+                return parent.getItem(parent.getItemCount() - 1);
+            }
+            return parent;
+        }
+        
+        /**
+         * Calculates the path starting from the tree root to the currently selected item. The path is kept in the
+         * lastSelectionPath member variable.
+         */ 
+        public void widgetSelected(SelectionEvent e) {
+            
+            if(e.item != null){
+                TreeItem item = (TreeItem)e.item;
+                lastSelectionPath = new ArrayList();
+                createSelectionPath(lastSelectionPath, item);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ISelectionProvider getSelectionProvider() {
+        return treeViewer;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isActivated() {
+        return treeViewer.getTree().isFocusControl();
+    }
 }

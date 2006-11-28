@@ -23,13 +23,15 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.DeleteResourceAction;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.util.ArgumentCheck;
 
-public class ModelExplorerDeleteAction extends IpsDeleteAction {
+public class ModelExplorerDeleteAction extends AbstractSelectionChangedListenerAction {
     
     private DeleteResourceAction deleteAction;
 
     public ModelExplorerDeleteAction(ISelectionProvider provider, Shell shell) {
         super(provider);
+        ArgumentCheck.notNull(shell, this);
         deleteAction = new DeleteResourceAction(shell);
         provider.addSelectionChangedListener(deleteAction);
         ISelection selection= provider.getSelection();
@@ -38,7 +40,7 @@ public class ModelExplorerDeleteAction extends IpsDeleteAction {
         }
     }
 
-    protected void deleteSelection(IStructuredSelection selection) {
+    protected void execute(IStructuredSelection selection) {
         if(canDelete(selection)){
             deleteAction.run();
         }
@@ -54,12 +56,18 @@ public class ModelExplorerDeleteAction extends IpsDeleteAction {
         }
         return canDelete;
     }
+    
+    protected void disposeInternal(){
+        getSelectionProvider().removeSelectionChangedListener(deleteAction);
+    }
 
-    protected void setEnabledState(ISelection selection){
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean isEnabled(ISelection selection) {
         if(selection instanceof IStructuredSelection){
-            setEnabled(canDelete((IStructuredSelection)selection));
-        }else{
-            setEnabled(false);
+            return canDelete((IStructuredSelection)selection);
         }
+        return false;
     }
 }

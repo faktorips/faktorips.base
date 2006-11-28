@@ -23,6 +23,7 @@ import java.util.Iterator;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -54,7 +55,7 @@ import org.faktorips.util.message.MessageList;
  * A composite that shows parts in a table viewer and provides an
  * area containing a new, edit and delete button.
  */
-public abstract class IpsPartsComposite extends ViewerButtonComposite {
+public abstract class IpsPartsComposite extends ViewerButtonComposite implements ISelectionProviderActivation{
 
     // the object the parts belong to.
     private IIpsObject ipsObject;
@@ -89,6 +90,9 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
 	// via double click.
 	private boolean showEditButton;
 	
+    // the table view of this composite 
+    private TableViewer viewer;
+    
     public IpsPartsComposite(
             IIpsObject pdObject, 
             Composite parent, 
@@ -131,7 +135,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
 		table = toolkit.getFormToolkit().createTable(parent, SWT.NONE);
 		setEditDoubleClickListenerEnabled(true);
 
-		TableViewer viewer = new TableViewer(table);
+		viewer = new TableViewer(table);
 		viewer.setContentProvider(createContentProvider());
 		ILabelProvider lp = createLabelProvider();
 		viewer.setLabelProvider(new MessageCueLabelProvider(lp));
@@ -463,4 +467,20 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
 			listener.deleted(part);
 		}
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ISelectionProvider getSelectionProvider() {
+        return viewer;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isActivated() {
+        return viewer.getTable().getDisplay().getCursorControl() == viewer.getTable() ? true : false;
+    }
+    
+    
 }

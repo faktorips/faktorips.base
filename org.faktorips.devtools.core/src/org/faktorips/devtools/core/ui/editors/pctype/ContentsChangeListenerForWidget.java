@@ -74,8 +74,12 @@ public abstract class ContentsChangeListenerForWidget implements ContentsChangeL
 
     public abstract void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event);
 
+    public void disposedInternal(DisposeEvent e){
+    }
+    
     public final void widgetDisposed(DisposeEvent e) {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+        disposedInternal(e);
     }
 
     
