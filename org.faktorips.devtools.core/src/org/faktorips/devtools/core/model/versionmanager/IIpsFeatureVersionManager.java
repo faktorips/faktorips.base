@@ -64,7 +64,7 @@ public interface IIpsFeatureVersionManager {
     public String getFeatureId();
 
     /**
-     * @return The current version of the feature this is a manager for.
+     * @return The current version of the feature this manager is responsible for.
      */
     public String getCurrentVersion();
 
