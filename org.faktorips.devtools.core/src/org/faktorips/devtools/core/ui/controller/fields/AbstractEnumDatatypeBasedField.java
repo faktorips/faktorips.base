@@ -158,12 +158,17 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	 */
 	public void setValue(Object newValue) {
 
-		if (!datatype.isParsable((String) newValue)) {
-			return;
-		}
-
-		super.setValue(getValueName((String) newValue));
-
+        boolean isParsable = false;
+        try {
+            datatype.isParsable((String) newValue);
+        } catch (NumberFormatException e) {
+            // ignore number format exception, value is not parsable
+        }
+        
+        if (isParsable) {
+		    super.setValue(getValueName((String) newValue));
+        }
+        
         /* 
          * check if the given value was set - if not so, we try to set an invalid value.
          * But because this is a field for a combo, an invalid value can only be set

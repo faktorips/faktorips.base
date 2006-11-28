@@ -97,6 +97,8 @@ public abstract class DefaultEditField implements EditField {
         notifyChangeListeners = triggerValueChanged;
         try {
             setValue(newValue);
+        } catch (Exception e){
+            IpsPlugin.log(e);
         } finally {
             notifyChangeListeners = true;
         }
