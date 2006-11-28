@@ -17,12 +17,17 @@
 
 package org.faktorips.devtools.core.ui.wizards.testcase;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
@@ -36,6 +41,8 @@ import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
     
     private TestCaseTypeRefControl superTypeControl;
+    
+    private Text nameField;
     
     /**
      * @param pageName
@@ -73,7 +80,29 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
     String getSuperType() {
         return superTypeControl.getText();
     }
-	
+    
+    protected void setDefaults(IResource selectedResource) throws CoreException {
+        super.setDefaults(selectedResource);
+        IIpsObject obj = getSelectedIpsObject();
+        if (obj instanceof ITestCaseType) {
+            superTypeControl.setText(obj.getQualifiedName());
+            nameField.setFocus();
+        }
+        else if (obj instanceof ITestCase) {
+            superTypeControl.setText(((ITestCase)obj).getTestCaseType());
+            nameField.setFocus();
+        }
+        return;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected Text addNameField(UIToolkit toolkit) {
+        nameField = super.addNameField(toolkit);
+        return nameField;
+    }
+    
     /**
      * {@inheritDoc}
      */

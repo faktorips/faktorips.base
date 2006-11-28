@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IRuntimeIdStrategy;
@@ -152,6 +153,10 @@ public class ProductCmptPage extends IpsObjectPage {
 				versionId.setText(namingStrategy.getNextVersionId(null));
 				typeRefControl.setFocus();
 			}
+            if (obj instanceof IPolicyCmptType){
+                typeRefControl.setText(obj.getQualifiedName());
+                constName.setFocus();
+            }
 			return;
 		}
 		IProductCmpt productCmpt = (IProductCmpt)obj;
