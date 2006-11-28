@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.testcase;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -26,13 +27,17 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
@@ -440,13 +445,16 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             name = getTestCase().generateUniqueNameForTestPolicyCmpt(newTestPolicyCmpt, name);
 			newTestPolicyCmpt.setName(name);
 			
-			// add the attributes which are defined in the test case type parameter
+            // add all test attribute values as spedified in the test parameter type
 			ITestAttribute attributes[] = typeParam.getTestAttributes();
 			for (int i = 0; i < attributes.length; i++) {
 				ITestAttribute attribute = attributes[i];
 				ITestAttributeValue attrValue = newTestPolicyCmpt.newTestAttributeValue();
 				attrValue.setTestAttribute(attribute.getName());
 			}
+            // set the defaults for all attribute values
+            newTestPolicyCmpt.updateDefaultTestAttributeValues();
+
 		} else{
 			// relation is assoziation
 			//   add new assoziation relation (only the target will be set and no child will be created)
@@ -472,6 +480,49 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 		objectHasChanged();
 		return newTestPcTypeRelation;
 	}
+
+	/**
+     * {@inheritDoc}
+	 */
+    public void updateDefaultTestAttributeValues() throws CoreException{
+        // add the attributes which are defined in the test case type parameter
+        GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
+        IProductCmpt productCmptObj = getIpsProject().findProductCmpt(productCmpt);
+        IProductCmptGeneration generation = null;
+        if (productCmptObj != null){
+            generation = (IProductCmptGeneration)productCmptObj.findGenerationEffectiveOn(workingDate);
+        }
+        ITestPolicyCmptTypeParameter typeParam = findTestPolicyCmptTypeParameter();
+        if (typeParam == null){
+            // test parameter not found, do nothing
+            return;
+        }
+        ITestAttribute attributes[] = typeParam.getTestAttributes();
+        for (int i = 0; i < attributes.length; i++) {
+            ITestAttributeValue testAttrValue = getTestAttributeValue(attributes[i].getName());
+            setDefaultTestAttributeValue(generation, attributes[i], testAttrValue);
+        }
+    }
+    
+    private void setDefaultTestAttributeValue(IProductCmptGeneration generation, ITestAttribute attribute, ITestAttributeValue attrValue) throws CoreException {
+        IAttribute modelAttribute = attribute.findAttribute();
+        if (modelAttribute != null){
+            boolean defaultSet = false;
+        	// set default as specified in the product cmpt
+            if (modelAttribute.isProductRelevant() && generation != null){
+                IConfigElement ce = generation.getConfigElement(modelAttribute.getName());
+                if (ce != null){
+                    attrValue.setValue(ce.getValue());
+                    defaultSet = true;
+                }
+            }
+            // alternative set the default as specified in the policy cmpt type
+            if (! defaultSet){
+                attrValue.setValue(modelAttribute.getDefaultValue());
+                defaultSet = true;
+            }
+        }
+    }
 	
     /**
      * Fix the sort order of the child test policy cmpt relations in order to the corresponding test

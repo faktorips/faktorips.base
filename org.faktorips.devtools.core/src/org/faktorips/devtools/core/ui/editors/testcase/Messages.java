@@ -42,6 +42,8 @@ public class Messages extends NLS {
 	public static String TestCaseSection_ButtonAdd;
 	public static String TestCaseSection_ButtonRemove;
 	public static String TestCaseSection_ButtonProductCmpt;
+    public static String TestCaseSection_DialogOverwriteWithDefault_Text;
+    public static String TestCaseSection_DialogOverwriteWithDefault_Title;
 	public static String TestCaseSection_Error_CreatingRelation;
 	public static String TestCaseSection_DialogSelectProductCmpt_Title;
 	public static String TestCaseSection_DialogSelectProductCmpt_Description;

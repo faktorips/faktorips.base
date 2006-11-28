@@ -208,4 +208,13 @@ public interface ITestPolicyCmpt extends ITestObject {
      * @throws CoreException in case of an error.
      */
     public void removeRelation(ITestPolicyCmptRelation relation) throws CoreException;
+    
+    /**
+     * Updates the default for all test attribute values. The default will be retrieved from the
+     * product cmpt or if no product cmpt is available or the attribute isn't configurated by product 
+     * then from the policy cmpt. Don't update the value if not default is specified.
+     * 
+     * @throws CoreException in case of an error.
+     */
+    public void updateDefaultTestAttributeValues() throws CoreException;
 }

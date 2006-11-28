@@ -1240,7 +1240,19 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				testPolicyCmpt.setProductCmpt(productCmptQualifiedName);
 				testPolicyCmpt.setName(
 						testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, StringUtil.unqualifiedName(productCmptQualifiedName)));
-				refreshTreeAndDetailArea();
+                
+                // ask if the new product cmpt should be updated means all test attribute values are
+                // updated with the default values
+                boolean updateTestAttrValuesWithDefault = MessageDialog
+                        .openQuestion(
+                                getShell(),
+                                Messages.TestCaseSection_DialogOverwriteWithDefault_Title,
+                                Messages.TestCaseSection_DialogOverwriteWithDefault_Text);
+                if (updateTestAttrValuesWithDefault) {
+                    testPolicyCmpt.updateDefaultTestAttributeValues();
+                }
+
+                refreshTreeAndDetailArea();
 			}
 		}
 	}
