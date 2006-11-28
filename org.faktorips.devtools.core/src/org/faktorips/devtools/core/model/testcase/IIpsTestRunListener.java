@@ -75,5 +75,11 @@ public interface IIpsTestRunListener {
     /** 
      * A error (exception) occured while executing the test.
      */
-    public void testErrorOccured(String qualifiedTestName, String[] errorDetails);    
+    public void testErrorOccured(String qualifiedTestName, String[] errorDetails);  
+    
+    /**
+     * Returns <code>true</code> if the listener supports navigate to the corresponding failure object.
+     * E.g. the test case editor can set the focus to the corresponding failure attribute field.
+     */
+    public boolean canNavigateToFailure();
 }

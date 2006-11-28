@@ -83,7 +83,7 @@ public class IpsPreferences {
      */
     public final static String ENABLE_GENERATING = IpsPlugin.PLUGIN_ID + ".enableGenerating"; //$NON-NLS-1$
     
-    public final static String NAVIGATE_TO_MODEL = IpsPlugin.PLUGIN_ID + ".navigateToModel"; //$NON-NLS-1$
+    public final static String NAVIGATE_TO_MODEL_OR_SOURCE_CODE = IpsPlugin.PLUGIN_ID + ".navigateToModel"; //$NON-NLS-1$
     
     /**
      * Constant identifying the ips test runner max heap size preference.
@@ -223,8 +223,8 @@ public class IpsPreferences {
      * Returns whether the navigation from product component to model is active (<code>true</code>)
      * or not.
      */
-    public boolean canNavigateToModel() {
-    	return prefStore.getBoolean(NAVIGATE_TO_MODEL);
+    public boolean canNavigateToModelOrSourceCode() {
+    	return prefStore.getBoolean(NAVIGATE_TO_MODEL_OR_SOURCE_CODE);
     }
     
     /**

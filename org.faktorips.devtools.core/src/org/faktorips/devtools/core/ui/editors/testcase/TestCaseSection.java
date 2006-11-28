@@ -1708,6 +1708,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 			return;
         }
         
+        // if not all fields are visible, first show all fields
+        if (!actionAll.isChecked()){
+            postShowAll();
+        }
+        
 		isTestRunFailure = true;
 		failureCount ++;
 		
@@ -1775,7 +1780,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private void postAddExpectedResultContextMenu(final Control control, final List failureDetails, final boolean isSectionTitleMenu) {
         postAsyncRunnable(new Runnable() {
             public void run() {
-                if (isDisposed())
+                if (isDisposed() || control == null)
                     return;
                 
                 if (failureDetails.size() == 0)
@@ -2164,5 +2169,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 testCaseDetailArea.updateUi();
             }
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean canNavigateToFailure() {
+        return true;
     }
 }

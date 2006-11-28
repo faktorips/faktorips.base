@@ -70,8 +70,8 @@ public class TestRunPane {
 			}
 			public void widgetDefaultSelected(SelectionEvent e) {
 				if (fTable.getSelectionCount() > 0)
-					if (getTestFullPath() != null)
-						new OpenTestInEditorAction(testRunnerViewPart, getTestFullPath()).run();
+					if (getSelectedTestFullPath() != null)
+						new OpenTestInEditorAction(testRunnerViewPart, getSelectedTestFullPath()).run();
 			}
 		});
 	}
@@ -141,6 +141,15 @@ public class TestRunPane {
         showDetailsInFailurePane((TableItem)tableFailureItems.get(currErrorOrFailure));
     }    
 
+    public String[] getFailureDetailsOfSelectedTestCase(int failureIndex){
+        TableItem ti = getSelectedItem();
+        if (ti == null){
+            return EMPTY_STRING_ARRAY;
+        }
+        TestTableEntry entry= (TestTableEntry) ti.getData();
+        return entry.getDetailsOfSingleFailure(failureIndex);
+    }
+    
 	//
 	// Methods to inform this pane about test run, end and failures
 	//
@@ -221,14 +230,15 @@ public class TestRunPane {
 	/**
 	 * The given test fails with the given details. 
 	 */
-	public void failureTest(String testId, String failure) {
+	public void failureTest(String testId, String failure, String[] failureDetails) {
 		TestTableEntry testTableEntry = (TestTableEntry) fTableItemMap.get(testId);
 		if (testTableEntry == null)
 			return;
 		
 		testTableEntry.setStatus(TestTableEntry.FAILURE);
 		testTableEntry.addFailure(failure);
-		
+        testTableEntry.addFailureDetails(failureDetails);
+        
         if (!tableFailureItems.contains(testTableEntry.getTableItem()))
             tableFailureItems.add(testTableEntry.getTableItem());
 	}
@@ -252,10 +262,10 @@ public class TestRunPane {
         tableFailureItems.add(tableItem);		
 	}
 	
-    /*
+    /**
      * Returns the full path of the selected test case or an empty string if no test case is selected
      */
-	private String getTestFullPath() {
+	String getSelectedTestFullPath() {
 		TableItem item= getSelectedItem();
         if (item == null)
             return ""; //$NON-NLS-1$
@@ -288,6 +298,7 @@ public class TestRunPane {
 		private TableItem tableItem;
 		private int status = UNKNOWN;
 		private List failures = new ArrayList();
+		private List failureDetailList = new ArrayList();
 		private String[] errorDetails = EMPTY_STRING_ARRAY;
 		
 		TestTableEntry(String testId, String qualifiedTestName, TableItem tableItem){
@@ -295,7 +306,7 @@ public class TestRunPane {
 			this.qualifiedTestName = qualifiedTestName;
 			this.tableItem = tableItem;
 		}
-		public String getTestId() {
+        public String getTestId() {
 			return testId;
 		}
 		public String getQualifiedTestName() {
@@ -334,6 +345,16 @@ public class TestRunPane {
 		public void setErrorDetails(String[] errorDetails) {
 			this.errorDetails = errorDetails;
 		}
+        public void addFailureDetails(String[] failureDetails) {
+            failureDetailList.add(failureDetails);
+        }
+        public String[] getDetailsOfSingleFailure(int idx) {
+            if (idx > failureDetailList.size()){
+                return EMPTY_STRING_ARRAY;
+            } else {
+                return (String[]) failureDetailList.get(idx);
+            }
+        }
 	}
 
     void checkMissingEntries() {

@@ -173,8 +173,16 @@ public class FailurePane {
             public void widgetSelected(SelectionEvent e) {
             }
             public void widgetDefaultSelected(SelectionEvent e) {
-                if (fTable.getSelectionCount() > 0){
-                    openEditor(getSelectedTableRowText());
+                if (fTable.getSelectionCount() > 0) {
+                    boolean navigate = false;
+                    if (IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
+                        // the user can modify to the model or sources, open the java class
+                        navigate = openEditor(getSelectedTableRowText());
+                    }
+                    if (!navigate) {
+                        // navigate to corresponding test case
+                        new OpenTestInEditorAction(viewPart, viewPart.getSelectedTestFullPath(), getSelectedTableRowText()).run();
+                    }
                 }
             }
         });
@@ -202,18 +210,19 @@ public class FailurePane {
     /*
      * Open the editor and mark corresponding line.
      */
-    private void openEditor(String traceLine) {
+    private boolean openEditor(String traceLine) {
         try { 
             TraceLineElement tli = new TraceLineElement(traceLine);
             if (! tli.isValidElement()){
-                return;
+                //  no link to java source code
+                return false;
             }
             
             IJavaElement file= findElement(viewPart.getLaunchedProject(), tli.getTestName());
             if (file == null){
                 MessageDialog.openError(viewPart.getShell(), 
                         Messages.FailurePane_DialogClassNotFound_Title, NLS.bind(Messages.FailurePane_DialogClassNotFound_Description, tli.getTestName())); 
-                    return;
+                    return false;
             }
 
             // don't support full JUnint class file editor support, only edit files which are in the source folder
@@ -223,7 +232,7 @@ public class FailurePane {
             if (editorInput == null){
                 MessageDialog.openInformation(viewPart.getShell(), 
                         Messages.FailurePane_DialogClassNotFoundInSrcFolder_Title, NLS.bind(Messages.FailurePane_DialogClassNotFoundInSrcFolder_Description, tli.getTestName())); 
-                    return;
+                    return false;
             }
             IEditorDescriptor editor = IDE.getEditorDescriptor(editorInput.getName());
             ITextEditor textEditor = (ITextEditor)IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(editorInput, editor.getId(), true);
@@ -231,13 +240,15 @@ public class FailurePane {
             // goto corresponding line in the editor
             IDocument document= textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
             if (document == null)
-                return;
+                return false;
             textEditor.selectAndReveal(document.getLineOffset(tli.getLine()-1), document.getLineLength(tli.getLine()));
         } catch (BadLocationException x) {
             // marker refers to invalid text position -> do nothing
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
+            return false;
         }
+        return true;
     }
     
     /*
@@ -319,5 +330,12 @@ public class FailurePane {
 	 */
 	public void aboutToStart() {
 		fTable.removeAll();
-	}    
+	}
+
+    /**
+     * Returns the index of the selected element.
+     */
+    int getSelectedTableIndex() {
+        return fTable.getSelectionIndex();
+    }    
 }

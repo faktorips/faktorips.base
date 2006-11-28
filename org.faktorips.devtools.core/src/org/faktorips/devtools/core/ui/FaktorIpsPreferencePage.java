@@ -111,8 +111,8 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage
 		addField(enableGeneratingField);
 
 		BooleanFieldEditor canNavigateToModel = new BooleanFieldEditor(
-				IpsPreferences.NAVIGATE_TO_MODEL,
-				Messages.FaktorIpsPreferencePage_labelCanNavigateToModel, getFieldEditorParent());
+				IpsPreferences.NAVIGATE_TO_MODEL_OR_SOURCE_CODE,
+				Messages.FaktorIpsPreferencePage_labelCanNavigateToModelOrSourceCode, getFieldEditorParent());
 		addField(canNavigateToModel);
 		
 		RadioGroupFieldEditor workingMode = new RadioGroupFieldEditor(

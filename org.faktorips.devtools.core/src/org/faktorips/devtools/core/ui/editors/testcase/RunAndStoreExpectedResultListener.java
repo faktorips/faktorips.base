@@ -99,4 +99,11 @@ public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
     public void testRunEnded(String elapsedTime) {
         // nothing to do
     }    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean canNavigateToFailure() {
+        return false;
+    }    
 }

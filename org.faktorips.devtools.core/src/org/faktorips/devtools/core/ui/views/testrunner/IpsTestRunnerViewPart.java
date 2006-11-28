@@ -707,7 +707,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 			public void run() {
 				if(isDisposed()) 
 					return;
-				fTestRunPane.failureTest(testId, failureDetailsToString(failureDetails));
+				fTestRunPane.failureTest(testId, failureDetailsToString(failureDetails), failureDetails);
                 fTestRunPane.selectFirstFailureOrError();
 			}
 		});
@@ -936,4 +936,20 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         fNextAction.setEnabled(enabled);
         fPreviousAction.setEnabled(enabled);
     }
+    
+
+    public String getSelectedTestFullPath() {
+        return fTestRunPane.getSelectedTestFullPath();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean canNavigateToFailure() {
+        return false;
+    }    
+    
+    String[] getFailureDetailsOfSelectedTestCase(){
+        return fTestRunPane.getFailureDetailsOfSelectedTestCase(fFailurePane.getSelectedTableIndex());
+    }    
 }
