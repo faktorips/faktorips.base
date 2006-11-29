@@ -60,7 +60,7 @@ import org.faktorips.devtools.core.ui.actions.FindPolicyReferencesAction;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
-import org.faktorips.devtools.core.ui.actions.IpsDeleteAction;
+import org.faktorips.devtools.core.ui.actions.AbstractSelectionChangedListenerAction;
 import org.faktorips.devtools.core.ui.actions.IpsPasteAction;
 import org.faktorips.devtools.core.ui.actions.IpsPropertiesAction;
 import org.faktorips.devtools.core.ui.actions.IpsTestAction;
@@ -360,7 +360,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     protected class MenuBuilder implements IMenuListener {
         // hold references to enabled RetargetActions
-        private IpsDeleteAction ipsDelete = new ModelExplorerDeleteAction(treeViewer, getSite().getShell());
+        private AbstractSelectionChangedListenerAction ipsDelete = new ModelExplorerDeleteAction(treeViewer, getSite().getShell());
         private IWorkbenchAction copy = ActionFactory.COPY.create(getSite().getWorkbenchWindow());
         private IWorkbenchAction paste = ActionFactory.PASTE.create(getSite().getWorkbenchWindow());
         private IWorkbenchAction delete = ActionFactory.DELETE.create(getSite().getWorkbenchWindow());
