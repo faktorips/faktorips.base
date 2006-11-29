@@ -245,6 +245,20 @@ public class ValueSetEditControl extends ControlComposite {
         return ValueSetType.getValueSetTypeByName(validTypesCombo.getText());
     }
     
+    /**
+     * Selectes the given value set type. Or the first item if the value set type is not in the list
+     * of available item.
+     */
+    public void selectValueSetType(ValueSetType valueSetType) {
+        String[] items = validTypesCombo.getItems();
+        for (int i = 0; i < items.length; i++) {
+            if (items[i].equals(valueSetType.getName())){
+                validTypesCombo.select(i);
+                break;
+            }
+        }
+    }
+    
     private class TypeModifyListener implements ModifyListener {
 		/**
 		 * {@inheritDoc}

@@ -95,6 +95,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     
     private ValueSetEditControl valueSetEditControl;
     private DatatypeRefControl datatypeControl;
+    
     // control to edit the formula parameters
     private ChangeParametersControl parametersControl;
     
@@ -157,11 +158,15 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
      */
     private OverwritesListener overwritesListener;
     
+    private ValueSetType prevSelectedType;
+    
+    private ValueDatatype prevDatatype;
+    
     // placeholder for the default edit field, the edit field for the default value depends on
     // the attributes datatype
     private Composite defaultEditFieldPlaceholder;
     
-    private String prevDatatype;
+    private String prevDatatypeName;
     
     /**
      * @param parentShell
@@ -362,10 +367,10 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
      * Create the default value edit field, if the field exists, recreate it
      */
     private void createDefaultValueEditField() {
-        if (attribute.getDatatype().equals(prevDatatype)){
+        if (attribute.getDatatype().equals(prevDatatypeName)){
             return;
         }
-        prevDatatype = attribute.getDatatype();
+        prevDatatypeName = attribute.getDatatype();
             
         if (defaultValueField != null){
             uiController.remove(defaultValueField);
@@ -548,9 +553,18 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         ValueDatatype datatype;
         try {
             datatype = attribute.getIpsProject().findValueDatatype(datatypeControl.getText());
+
+            if (prevDatatype != null){
+                // the previous selection was a valid selection, thus store the selection, 
+                // to restore it later if a new valid selection is done
+                prevSelectedType = valueSetEditControl.getValueSetType();
+            }
+            prevDatatype = datatype;
+            
             if (datatype != null) {
                 ValueSetType[] types = attribute.getIpsProject().getValueSetTypes(datatype);
                 valueSetEditControl.setTypes(types, datatype);
+                valueSetEditControl.selectValueSetType(prevSelectedType);
             } else {
                 valueSetEditControl.setTypes(new ValueSetType[]{ValueSetType.ALL_VALUES}, null);
             }
@@ -559,7 +573,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         }
     }
 
-	/**
+    /**
 	 * {@inheritDoc}
 	 */
     protected void connectToModel() {
