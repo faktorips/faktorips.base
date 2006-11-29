@@ -202,13 +202,13 @@ public class IpsPreferences {
         return prefStore.getString(IPSTESTRUNNER_MAX_HEAP_SIZE);
     }
 
-    /**
+    /*
      * Returns the enum type display. Specifies the text display of enum type edit fields. E.g.
      * diplay id or name only, or display both.
      * 
      * @see EnumTypeDisplay
      */
-    public EnumTypeDisplay getEnumTypeDisplay() {
+    private EnumTypeDisplay getEnumTypeDisplay() {
         String id = prefStore.getString(ENUM_TYPE_DISPLAY);
         EnumTypeDisplay enumTypeDisplay = (EnumTypeDisplay)EnumTypeDisplay.getEnumType().getEnumValue(id);
         if (enumTypeDisplay == null) {
@@ -217,6 +217,22 @@ public class IpsPreferences {
             enumTypeDisplay = EnumTypeDisplay.DEFAULT;
         }
         return enumTypeDisplay;
+    }
+    
+    /**
+     * Returns the to be displayed text of an enumeration. 
+     * The property ENUM_TYPE_DISPLAY specifies how the name and id will be formated.
+     * E.g. diplay only id or only name, or display both.
+     */
+    public String getFormatedEnumText(String id, String name){
+        EnumTypeDisplay enumTypeDisplay = getEnumTypeDisplay();
+        if (enumTypeDisplay.equals(EnumTypeDisplay.NAME_AND_ID)){
+            return name + " (" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+        } else if (enumTypeDisplay.equals(EnumTypeDisplay.NAME)){
+            return name;
+        } else {
+            return id;
+        }
     }
     
     /**
