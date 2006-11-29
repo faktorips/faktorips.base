@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -95,12 +96,12 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 
 	    	if (!select && !automatic) {
 	    		String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
-	    		String title = Messages.bind(Messages.GenerationsSection_titleShowGeneration, genName);
+	    		String title = NLS.bind(Messages.GenerationsSection_titleShowGeneration, genName);
 	    		Object[] args = new Object[3];
 	    		args[0] = genName;
 	    		args[1] = generation.getName();
 	    		args[2] = IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate();
-	    		String message = Messages.bind(Messages.GenerationsSection_msgShowGeneration, args);	    		
+	    		String message = NLS.bind(Messages.GenerationsSection_msgShowGeneration, args);	    		
                 
                 MessageDialog dlg = new MessageDialog(page.getSite().getShell(), title, null, message, MessageDialog.NONE, new String[] {Messages.GenerationsSection_buttonReadOnly, Messages.GenerationsSection_buttonEditable, Messages.GenerationsSection_buttonCancel}, 0);
                 int result = dlg.open();

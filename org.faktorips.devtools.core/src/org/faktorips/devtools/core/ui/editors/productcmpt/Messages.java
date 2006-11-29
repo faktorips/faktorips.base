@@ -30,14 +30,6 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String PolicyAttributesSection_policyAttributes;
-
-	public static String PolicyAttributesSection_defaultLabelPrefix;
-
-	public static String PolicyAttributesSection_defaultLabelPostfix;
-
-	public static String PropertiesPage_properties;
-
 	public static String PropertiesPage_relations;
 
 	public static String PropertiesPage_noRelationsDefined;
@@ -58,21 +50,7 @@ public class Messages extends NLS {
 
 	public static String RelationEditDialog_cardinalityMax;
 
-	public static String ProductAttributesSection_productAttributes;
-
 	public static String ProductAttributesSection_template;
-
-	public static String ProductCmptEditor_msgNotContainingAttributes;
-
-	public static String ProductCmptEditor_msgAttributesNotFound;
-
-	public static String ProductCmptEditor_msgTypeMismatch;
-
-	public static String ProductCmptEditor_msgValueAttributeMismatch;
-
-	public static String ProductCmptEditor_msgNoRelationDefined;
-
-	public static String ProductCmptEditor_msgFixIt;
 
 	public static String ProductCmptEditor_productComponent;
 
@@ -104,8 +82,6 @@ public class Messages extends NLS {
 
 	public static String FormulasSection_noFormulasDefined;
 
-	public static String ProductCmptEditor_msg_GenerationMissmatch;
-	
 	public static String ProductCmptEditor_title_GenerationMissmatch;
 
 	public static String RelationsContentProvider_msg_UnknownElementClass;
@@ -114,21 +90,11 @@ public class Messages extends NLS {
 
 	public static String GenerationsSection_msgShowGeneration;
 
-	public static String ProductAttributesSection_labelGenerationValidTo;
-
 	public static String ProductAttributesSection_valueGenerationValidToUnlimited;
-
-	public static String ProductAttributesSection_true;
-
-	public static String ProductAttributesSection_false;
-
-	public static String RulesPage_title;
 
 	public static String RulesSection_title;
 
 	public static String GenerationsSection_displayPostfix;
-
-	public static String ProductAttributesSection_noProductCmptType;
 
 	public static String CardinalityPanel_labelOptional;
 

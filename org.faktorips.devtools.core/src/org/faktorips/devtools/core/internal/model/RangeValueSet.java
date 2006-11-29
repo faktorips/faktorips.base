@@ -266,14 +266,14 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         
         if (!StringUtils.isEmpty(getLowerBound()) && StringUtils.isEmpty(subRange.getLowerBound())) {
             String[] bindings = {subRange.toShortString(), toShortString(), getLowerBound()};
-            String msg = Messages.bind(Messages.RangeValueSet_msgLowerboundViolation, bindings);
+            String msg = NLS.bind(Messages.RangeValueSet_msgLowerboundViolation, bindings);
             addMsg(list, MSGCODE_LOWER_BOUND_VIOLATION, msg, invalidObject, getProperty(invalidProperty, PROPERTY_LOWERBOUND));
             isSubset = false;
         }
         
         if (!StringUtils.isEmpty(getUpperBound()) && StringUtils.isEmpty(subRange.getUpperBound())) {
             String[] bindings = {subRange.toShortString(), toShortString(), getUpperBound()};
-            String msg = Messages.bind(Messages.RangeValueSet_msgUpperboundViolation, bindings);
+            String msg = NLS.bind(Messages.RangeValueSet_msgUpperboundViolation, bindings);
             addMsg(list, MSGCODE_UPPER_BOUND_VIOLATION, msg, invalidObject, getProperty(invalidProperty, PROPERTY_UPPERBOUND));
             isSubset = false;
         }

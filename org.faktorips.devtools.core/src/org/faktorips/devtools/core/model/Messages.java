@@ -48,15 +48,9 @@ public class Messages extends NLS {
 
 	public static String Range_msgNoStepDefinedInSubset;
 
-	public static String Range_msgStepMismatch;
-
 	public static String Range_msgLowerBoundViolation;
 
 	public static String Range_msgUpperBoundViolation;
-
-	public static String Range_msgValueNotParsable;
-
-	public static String Range_msgValueNotComparable;
 
 	public static String Range_msgUnknownDatatype;
 

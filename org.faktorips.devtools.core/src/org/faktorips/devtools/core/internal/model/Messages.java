@@ -82,8 +82,6 @@ public class Messages extends NLS {
 
     public static String IpsProject_msgVersionTooLow;
 
-    public static String IpsProject_msgCompatible;
-
     public static String IpsProject_msgIncompatibleVersions;
 
     public static String IpsProject_msgInvalidMigrationInformation;
@@ -93,10 +91,6 @@ public class Messages extends NLS {
     public static String IpsSrcFolderEntry_msgMissingFolder;
 
     public static String IpsProject_msgDuplicateTocFilePath;
-
-    public static String IpsArchiveEntry_TheArchive;
-
-    public static String IpsArchiveEntry_DoesNotExist;
 
     public static String IpsArchiveEntry_archiveDoesNotExist;
 

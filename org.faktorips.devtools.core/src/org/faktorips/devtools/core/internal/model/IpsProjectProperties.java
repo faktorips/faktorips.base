@@ -123,7 +123,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();
         for (int i = 0; i < managers.length; i++) {
             if (getMinRequiredVersionNumber(managers[i].getFeatureId()) == null) {
-                String text = Messages.bind(Messages.IpsProjectProperties_msgMissingMinFeatureId, managers[i].getFeatureId());
+                String text = NLS.bind(Messages.IpsProjectProperties_msgMissingMinFeatureId, managers[i].getFeatureId());
                 list.add(new Message(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID, text, Message.ERROR, this));
             }
         }

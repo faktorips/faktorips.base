@@ -32,11 +32,9 @@ public class Messages extends NLS {
 
     public static String DeepCopyWizard_title;
     public static String SourcePage_title;
-    public static String SourcePage_pageTitle;
     public static String SourcePage_description;
     public static String SourcePage_msgSelect;
 	public static String ReferenceAndPreviewPage_title;
-	public static String ReferenceAndPreviewPage_pageTitle;
 	public static String ReferenceAndPreviewPage_description;
 	public static String ReferenceAndPreviewPage_labelValidFrom;
 	public static String ReferenceAndPreviewPage_labelTargetPackage;

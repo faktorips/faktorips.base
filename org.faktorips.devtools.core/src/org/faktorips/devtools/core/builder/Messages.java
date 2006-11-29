@@ -50,8 +50,6 @@ public class Messages extends NLS {
 
 	public static String JetJavaSourceFileBuilder_name;
 
-	public static String IpsBuilder_msgErrorExceptionDuringBuild;
-
 	public static String IpsBuilder_msgBuildResults;
 
 	public static String IpsBuilder_msgInvalidProperties;

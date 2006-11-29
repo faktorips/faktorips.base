@@ -64,7 +64,6 @@ public class Messages extends NLS {
 	public static String IpsAction_msgUnsupportedSelection;
 	public static String IpsDeepCopyAction_name;
 	public static String IpsPasteAction_errorTitle;
-	public static String IpsPasteAction_msgSrcAndTargetSame;
 	public static String IpsPasteAction_suggestedNamePrefixSimple;
 	public static String IpsPasteAction_suggestedNamePrefixComplex;
 	public static String IpsPasteAction_titleNamingConflict;

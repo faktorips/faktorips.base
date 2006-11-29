@@ -34,8 +34,6 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String Relation_msgErrorMaxCardinalityMalformed;
-
 	public static String Relation_msgMaxCardinalityMustBeAtLeast1;
 
 	public static String Relation_msgMaxCardinalityForContainerRelationTooLow;
@@ -92,8 +90,6 @@ public class Messages extends NLS {
 
 	public static String Attribute_msgDefaultNotParsable_UnknownDatatype;
 
-	public static String Attribute_msgValueNotParsable_InvalidDatatype;
-
 	public static String Attribute_msgValueTypeMismatch;
 
 	public static String Attribute_msgDefaultNotInValueset;
@@ -131,8 +127,6 @@ public class Messages extends NLS {
 	public static String Relation_msgImplementationMustHaveSameProductRelevantValue;
 
 	public static String Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;
-
-	public static String PolicyCmptType_msgMustImplementAbstractRelation;
 
 	public static String PolicyCmptType_msgInconsistentTypeHierarchy;
 

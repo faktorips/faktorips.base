@@ -27,6 +27,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -90,7 +91,7 @@ public class MoveWizard extends Wizard {
             super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/RenameWizard.png")); //$NON-NLS-1$
 		}
 		else {
-			String msg = Messages.bind(Messages.MoveWizard_warnInvalidOperation, ""+operation); //$NON-NLS-1$
+			String msg = NLS.bind(Messages.MoveWizard_warnInvalidOperation, ""+operation); //$NON-NLS-1$
 			IpsStatus status = new IpsStatus(msg);
 			IpsPlugin.log(status);
 			this.operation = OPERATION_MOVE;

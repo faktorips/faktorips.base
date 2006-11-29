@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model.product;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
@@ -158,7 +159,7 @@ public class TableContentUsage extends IpsObjectPart implements ITableContentUsa
         
         ITableStructureUsage tsu = type.getTableStructureUsage(structureUsage);
         if (tsu == null) {
-            String text = Messages.bind(Messages.TableContentUsage_msgUnknownStructureUsage, structureUsage);
+            String text = NLS.bind(Messages.TableContentUsage_msgUnknownStructureUsage, structureUsage);
             list.add(new Message(MSGCODE_UNKNOWN_STRUCTURE_USAGE, text, Message.ERROR, this, PROPERTY_STRUCTURE_USAGE));
             return;
         }
@@ -168,7 +169,7 @@ public class TableContentUsage extends IpsObjectPart implements ITableContentUsa
             content = findTableContents();
         }
         if ((content == null && StringUtils.isNotEmpty(tableContentName)) || ((content == null && tsu.isMandatoryTableContent()))) {
-            String text = Messages.bind(Messages.TableContentUsage_msgUnknownTableContent, tableContentName);
+            String text = NLS.bind(Messages.TableContentUsage_msgUnknownTableContent, tableContentName);
             list.add(new Message(MSGCODE_UNKNOWN_TABLE_CONTENT, text, Message.ERROR, this, PROPERTY_TABLE_CONTENT));
             return;
         }
@@ -182,7 +183,7 @@ public class TableContentUsage extends IpsObjectPart implements ITableContentUsa
             }
             if (!found) {
                 String[] params = {tableContentName, usedStructure, structureUsage};
-                String text = Messages.bind(Messages.TableContentUsage_msgInvalidTableContent, params);
+                String text = NLS.bind(Messages.TableContentUsage_msgInvalidTableContent, params);
                 list.add(new Message(MSGCODE_INVALID_TABLE_CONTENT, text, Message.ERROR, this, PROPERTY_TABLE_CONTENT));
             }
         }

@@ -34,11 +34,6 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-
-	public static String DatatypeCompletionProcessor_msgNoProjectContext;
-
-	public static String DatatypeCompletionProcessor_msgInternalError;
-
     public static String FaktorIpsPreferencePage_labelEnumTypeDisplay;
 
 	public static String PdPackageSelectionDialog_title;

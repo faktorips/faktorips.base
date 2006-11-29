@@ -26,6 +26,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -166,7 +167,7 @@ public class ProductAttributesSection extends IpsSection {
                 }
                 catch (ParseException e1) {
                     MessageList list = new MessageList();
-                    String msg = Messages.bind(Messages.ProductAttributesSection_msgInvalidDate, value);
+                    String msg = NLS.bind(Messages.ProductAttributesSection_msgInvalidDate, value);
                     list.add(new Message("", msg, Message.ERROR, product, IProductCmpt.PROPERTY_VALID_TO)); //$NON-NLS-1$
                     validToField.setMessages(list);
                 }

@@ -21,6 +21,7 @@ import java.text.DateFormat;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
@@ -240,7 +241,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
             params[0] = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
             params[1] = prefs.getValidFromFormat().format(getValidFrom().getTime());
             params[2] = prefs.getValidFromFormat().format(parentValidTo.getTime());
-            String msg = Messages.bind(Messages.IpsObjectGeneration_msgInvalidFromDate, params);
+            String msg = NLS.bind(Messages.IpsObjectGeneration_msgInvalidFromDate, params);
             
             list.add(new Message(MSGCODE_INVALID_VALID_FROM, msg, Message.ERROR, this, PROPERTY_VALID_FROM));
         }

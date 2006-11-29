@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.Hashtable;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -100,7 +101,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         if (cmpt.getValidTo() == null || cmpt.getValidTo().after(prefs.getWorkingDate())) {            
             createButton = new Button(selectPane, SWT.RADIO);
             Label l1 = new Label(selectPane, SWT.NONE);
-            l1.setText(Messages.bind(Messages.GenerationSelectionDialog_labelCreate, generationConceptName, prefs.getFormattedWorkingDate()));
+            l1.setText(NLS.bind(Messages.GenerationSelectionDialog_labelCreate, generationConceptName, prefs.getFormattedWorkingDate()));
             l1.addMouseListener(new ActivateButtonOnClickListener(createButton));
             choices.put(createButton, new Integer(CHOICE_CREATE));
         }
@@ -113,7 +114,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 			
 			browseButton = new Button(selectPane, SWT.RADIO);
 			Label l2 = new Label(selectPane, SWT.NONE);
-			l2.setText(Messages.bind(Messages.GenerationSelectionDialog_labelBrowse, generationConceptName, prefs.getFormattedWorkingDate()));
+			l2.setText(NLS.bind(Messages.GenerationSelectionDialog_labelBrowse, generationConceptName, prefs.getFormattedWorkingDate()));
 			l2.addMouseListener(new ActivateButtonOnClickListener(browseButton));
 			choices.put(browseButton, new Integer(CHOICE_BROWSE));
 		}
@@ -124,7 +125,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 		gridLayout.marginWidth = 0;
 		switchPane.setLayout(gridLayout);
 		Label l3 = new Label(switchPane, SWT.NONE);
-		l3.setText(Messages.bind(Messages.GenerationSelectionDialog_labelSwitch, generationConceptName));
+		l3.setText(NLS.bind(Messages.GenerationSelectionDialog_labelSwitch, generationConceptName));
 		l3.addMouseListener(new ActivateButtonOnClickListener(switchButton));
 		choices.put(switchButton, new Integer(CHOICE_SWITCH));
 		
@@ -163,12 +164,12 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         }
 		switchButton.addSelectionListener(new MySelectionListener(validFromDates));
 		
-		String winTitle = Messages.bind(
+		String winTitle = NLS.bind(
 				Messages.ProductCmptEditor_title_GenerationMissmatch, cmpt
 						.getName(), generationConceptName);
 		getShell().setText(winTitle);
 		
-		String description = Messages.bind(Messages.GenerationSelectionDialog_description, prefs
+		String description = NLS.bind(Messages.GenerationSelectionDialog_description, prefs
 					.getFormattedWorkingDate(), generationConceptName);
 		setTitle(description);
 		initSelectionFromPreferences();

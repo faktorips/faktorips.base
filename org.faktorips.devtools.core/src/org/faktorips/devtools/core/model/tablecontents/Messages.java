@@ -30,15 +30,11 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
     public static String AbstractXlsTableImportOperation_errRead;
-    public static String AbstractXlsTableImportOperation_errNoSheets;
-    public static String AbstractXlsTableImportOperation_errNoRows;
     public static String TableExportOperation_errNoGenerations;
     public static String TableExportOperation_labelMonitorTitle;
     public static String TableExportOperation_errStructureNotFound;
     public static String TableExportOperation_errWrite;
     public static String TableExportOperation_errStructureTooMuchColumns;
-    public static String TableExportOperation_errContentsTooMuchColumns;
-    public static String TableExportOperation_errTooMuchRows;
     public static String ExcelTableImportOperation_labelImportFile;
     public static String ExcelTableImportOperation_msgImportEscapevalue;
 }

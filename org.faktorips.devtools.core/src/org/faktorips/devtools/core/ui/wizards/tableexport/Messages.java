@@ -37,12 +37,7 @@ public class Messages extends NLS {
 	public static String TableExport_title;
 	public static String TableExportPage_title;
 	public static String TableExportPage_labelContents;
-    public static String TableExportPage_labelSrcFolder;
-    public static String TableExportPage_labelPackage;
     public static String TableExportPage_labelName;
-    public static String TableExportPage_msgRootMissing;
-    public static String TableExportPage_msgRootNoIPSSrcFolder;
-    public static String TableExportPage_msgPackageMissing;
     public static String TableExportPage_msgEmptyName;
     public static String TableExportPage_labelProject;
     public static String TableExportPage_msgInvalidProject;

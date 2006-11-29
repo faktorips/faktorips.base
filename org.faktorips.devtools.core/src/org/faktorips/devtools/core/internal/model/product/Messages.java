@@ -54,8 +54,6 @@ public class Messages extends NLS {
 
 	public static String ConfigElement_msgUndknownDatatype;
 
-	public static String ConfigElement_msgNoValueDatatype;
-
 	public static String ConfigElement_msgInvalidDatatype;
 
 	public static String ConfigElement_msgValueNotParsable;
@@ -64,15 +62,11 @@ public class Messages extends NLS {
 
 	public static String ProductCmptRelation_msgNoRelationDefined;
 
-	public static String ProductCmptRelation_msgMalformedMaxCardinality;
-
 	public static String ProductCmptRelation_msgMaxCardinalityIsLessThan1;
 
 	public static String ProductCmptRelation_msgMaxCardinalityIsLessThanMin;
 
 	public static String ProductCmptRelation_msgMaxCardinalityExceedsModelMax;
-
-	public static String ProductCmptRelation_msgMinCardinalityIsLessThanModelMin;
 
 	public static String ProductCmpt_msgUnknownTemplate;
 

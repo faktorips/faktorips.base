@@ -29,6 +29,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -126,7 +127,7 @@ public class MovePage extends WizardPage implements ModifyListener {
 
 		IStatus val = JavaConventions.validatePackageName(name);
 		if (val.getSeverity() == IStatus.ERROR) {
-			String msg = Messages.bind(Messages.errorNameNotValid, name);
+			String msg = NLS.bind(Messages.errorNameNotValid, name);
 			setMessage(msg, ERROR);
 			complete = false;
 		} else if (pack != null && !pack.exists()) {

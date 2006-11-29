@@ -25,9 +25,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.internal.model.product.Messages;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -294,7 +294,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
                 params[1] = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
                 params[2] = "" + generations[i].getGenerationNo(); //$NON-NLS-1$
                 params[3] = prefs.getValidFromFormat().format(generations[i].getValidFrom().getTime());
-                String msg = Messages.bind(org.faktorips.devtools.core.internal.model.Messages.TimedIpsObject_msgIvalidValidToDate, params);
+                String msg = NLS.bind(org.faktorips.devtools.core.internal.model.Messages.TimedIpsObject_msgIvalidValidToDate, params);
                 list.add(new Message(MSGCODE_INVALID_VALID_TO, msg, Message.ERROR, this, PROPERTY_VALID_TO));
             }
         }

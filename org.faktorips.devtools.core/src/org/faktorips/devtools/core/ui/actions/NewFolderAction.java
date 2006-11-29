@@ -62,7 +62,7 @@ public class NewFolderAction extends IpsAction {
             return;
         }
 
-        String message = Messages.bind(Messages.NewFolderAction_descriptionNewFolder, container.getName());
+        String message = NLS.bind(Messages.NewFolderAction_descriptionNewFolder, container.getName());
         Validator validator = new Validator(container);
         InputDialog d = new InputDialog(shell, Messages.NewFolderAction_titleNewFolder, message,
                 Messages.NewFolderAction_valueNewFolder, validator);

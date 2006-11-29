@@ -38,10 +38,6 @@ public class Messages extends NLS {
     public static String IpsObjectPage_msgRootMissing;
     public static String IpsObjectPage_msgRootNoIPSSrcFolder;
     public static String IpsObjectPage_msgPackageMissing;
-    public static String IpsObjectPage_msgEmptyName;
-    public static String IpsObjectPage_msgNameMustNotBeQualified;
-    public static String IpsObjectPage_msgInvalidName;
-    public static String IpsObjectPage_msgNameDiscouraged;
     public static String IpsObjectPage_msgObjectAllreadyExists;
     public static String IpsObjectPage_msgRootRequired;
     public static String ResultDisplayer_msgExportAborted;

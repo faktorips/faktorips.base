@@ -62,13 +62,7 @@ public class Messages extends NLS {
 
 	public static String RenamePage_newName;
 
-	public static String RenamePage_errorNameIsEmpty;
-
-	public static String RenamePage_errorNameQualified;
-
 	public static String errorNameNotValid;
-
-	public static String RenamePage_warningDiscouraged;
 
 	public static String RenamePage_errorFileExists;
 

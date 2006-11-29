@@ -108,7 +108,7 @@ public class ProductExplorer extends ModelExplorer {
         
 
         private WrapperAction compareWith_latest= new WrapperAction(treeViewer, Messages.ProductExplorer_actionCompareWithLatest_label
-                , Messages.ProductExplorer_actionCompareWithLatest_label
+                , Messages.ProductExplorer_actionCompareWithLatest_tooltip
                 , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.compareWithRemote"); //$NON-NLS-1$ //$NON-NLS-2$
         private WrapperAction compareWith_branch= new WrapperAction(treeViewer, Messages.ProductExplorer_actionCompareWithBranch_label
                 , Messages.ProductExplorer_actionCompareWithBranch_tooltip

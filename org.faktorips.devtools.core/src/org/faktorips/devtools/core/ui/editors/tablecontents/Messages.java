@@ -38,8 +38,6 @@ public class Messages extends NLS {
 
     public static String ContentPage_ExportTableAction_tooltip;
 
-    public static String TableContentsEditor_title;
-
 	public static String ContentPage_title;
 
 	public static String TableContentsEditor_TableContentsEditor_title2;
