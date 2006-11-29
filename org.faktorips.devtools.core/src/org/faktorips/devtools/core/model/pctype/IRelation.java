@@ -22,7 +22,17 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 
 
 /**
+ * Represents a directed(!) relation between two types. Bidirectional relations are represented in faktorips 
+ * as two corresponding directed relations. Given a relation the other corresponding relation is called
+ * the reverse relation.
+ * <p>
+ * In conceptual models bidirectional relation can be either assoziations or compositions. A bidirectional assoziation
+ * is represented in FaktorIPS by two relations of type assoziation. A bidirectional composition is represented in 
+ * FaktorIPS by one master to detail composition and on detail to master composition.
+ *  
  * 
+ *
+ * @author Jan Ortmann
  */
 public interface IRelation extends IIpsObjectPart {
     
@@ -48,6 +58,7 @@ public interface IRelation extends IIpsObjectPart {
 	public static final int CARDINALITY_ONE = 1;
 	public static final int CARDINALITY_MANY = Integer.MAX_VALUE;
 
+    public final static RelationType DEFAULT_RELATION_TYPE = RelationType.ASSOZIATION; 
     /**
      * Prefix for all message codes of this class.
      */
@@ -144,7 +155,7 @@ public interface IRelation extends IIpsObjectPart {
     	MSGCODE_PREFIX + "TargetRoleSingularProductSideEqualsTargetRoleSingularProductSide"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the container relation does not exist in supertype hirachy.
+     * Validation message code to indicate that the container relation does not exist in the supertype hirachy.
      */
     public final static String MSGCODE_CONTAINERRELATION_NOT_IN_SUPERTYPE = MSGCODE_PREFIX + "ContainerRelationNotInSupertype"; //$NON-NLS-1$
 
@@ -164,10 +175,10 @@ public interface IRelation extends IIpsObjectPart {
     public final static String MSGCODE_TARGET_NOT_SUBCLASS = MSGCODE_PREFIX + "TargetNotSubclass"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the container relation is not the reverse relation of the container relation of the reverse relation.
+     * Validation message code to indicate that the container relation is not the reverse relation 
+     * of the container relation of the reverse relation.
      */
-    public final static String MSGCODE_CONTAINERRELATION_NOT_REVERSERELATION = MSGCODE_PREFIX + "ContainerRelationNotReverseRelation"; //$NON-NLS-1$
-    // TODO testcase; Jan: evtl. nicht mehr notwendig?
+    public final static String MSGCODE_CONTAINERRELATION_REVERSERELATION_MISMATCH = MSGCODE_PREFIX + "ContainerRelationNotReverseRelation"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the relation has same plural rolename like another relation in supertype hirarchy.
@@ -195,9 +206,13 @@ public interface IRelation extends IIpsObjectPart {
     public final static String MSGCODE_REVERSERELATION_NOT_IN_TARGET = MSGCODE_PREFIX + "ReverseRelationNotInTarget"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the reverse relation does not specify this relation as it's reverse one.
+     * Validation message code to indicate that given a relation with a reverse relation,
+     * this reverse relation can be found but it does not specify the first relation as it's
+     * reverse relation. 
+     * This applies to associations only, as detail-to-master composition don't specify a 
+     * reverse relation.
      */
-    public final static String MSGCODE_REVERSERELATION_NOT_SPECIFIED = MSGCODE_PREFIX + "ReverseRelationNotSpecified"; //$NON-NLS-1$
+    public final static String MSGCODE_REVERSE_RELATION_MISMATCH = MSGCODE_PREFIX + "ReverseRelationNotSpecified"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that forward and reverse relation must be marked as container relation 
@@ -226,14 +241,16 @@ public interface IRelation extends IIpsObjectPart {
     public boolean isAssoziation();
     
     /**
-     * Returns <code>true</code> if this is a forward composition otherwise <code>false</code>.
+     * Returns <code>true</code> if this is a composition from the master type to the detail type,
+     * otherwise <code>false</code>.
      */
-    public boolean isForwardComposition();
+    public boolean isCompositionMasterToDetail();
     
     /**
-     * Returns <code>true</code> if this is a forward composition otherwise <code>false</code>.
+     * Returns <code>true</code> if this is a composition from the detail type to the master type,
+     * otherwise <code>false</code>.
      */
-    public boolean isReverseComposition();
+    public boolean isCompositionDetailToMaster();
     
     /**
      * Returns the relation's type indication if it's an association or
@@ -382,31 +399,23 @@ public interface IRelation extends IIpsObjectPart {
     public String getReverseRelation();
     
     /**
+     * Returns <code>true</code> if this relation has a reverse relation otherwise <code>false</code>.
+     */
+    public boolean hasReverseRelation();
+    
+    /**
      * Sets the name of the reverse relation.
      */
     public void setReverseRelation(String relation);
     
     /**
      * Searches the reverse relation and returns it, if it exists. Returns <code>null</code> if the reverse
-     * relation does not exists. Note that if this relation implements a container relation,
-     * the reverse relation is determined by the container relation's reverse relation.
+     * relation does not exists. For detail-to-master relations the method always(!) return <code>null</code>
+     * as severall master-to-detail relations can have the same detail-to-master relation.
      * 
      * @throws CoreException if an error occurs while searching.
      */
     public IRelation findReverseRelation() throws CoreException;
-    
-    /**
-     * Returns the forward compositions that refer to this reverse composition.
-     * The forward compositions are those relations in this relation's target policy
-     * component type (and it's supertypes) that have the type 'composition' and 
-     * refer to this relation as reverse relation.
-     * <p>  
-     * If this relation's target can't be found, an empty array is returned. 
-     * 
-     * @throws CoreException if an error occurs while search for the forward relations or
-     * the method is called on relation that is not of type reverse composition. 
-     */
-    public IRelation[] findForwardCompositions() throws CoreException;
     
     /**
      * Returns <code>true</code> if this relation implements a container relation, otherwise <code>false</code>.
@@ -420,14 +429,6 @@ public interface IRelation extends IIpsObjectPart {
      */
     public boolean isContainerRelationImplementation(IRelation containerRelation) throws CoreException;
 
-    /**
-     * Searches the reverse relation and returns its container relation, if it exists and is of type reverse composition. 
-     * Returns <code>null</code> otherwise.
-     * 
-     * @throws CoreException if an error occurs while searching.
-     */
-    public IRelation findContainerRelationOfTypeReverseComposition() throws CoreException;
-    
     /**
      * Returns the role of the target in this relation on the product side.
      */

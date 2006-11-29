@@ -26,9 +26,9 @@ import org.faktorips.values.EnumType;
  */
 public class RelationType extends DefaultEnumValue {
     
-    public final static RelationType COMPOSITION;
+    public final static RelationType COMPOSITION_MASTER_TO_DETAIL;
 
-    public final static RelationType REVERSE_COMPOSITION;
+    public final static RelationType COMPOSITION_DETAIL_TO_MASTER;
     
     public final static RelationType ASSOZIATION;
     
@@ -36,8 +36,8 @@ public class RelationType extends DefaultEnumValue {
     
     static {
         enumType = new DefaultEnumType("RelationType", RelationType.class); //$NON-NLS-1$
-        COMPOSITION = new RelationType(enumType, "comp", "Composition"); //$NON-NLS-1$ //$NON-NLS-2$
-        REVERSE_COMPOSITION = new RelationType(enumType, "reverseComp", "Reverse Composition"); //$NON-NLS-1$ //$NON-NLS-2$
+        COMPOSITION_MASTER_TO_DETAIL = new RelationType(enumType, "comp", "Composition (Master to Detail)"); //$NON-NLS-1$ //$NON-NLS-2$
+        COMPOSITION_DETAIL_TO_MASTER = new RelationType(enumType, "reverseComp", "Composition (Detail to Master)"); //$NON-NLS-1$ //$NON-NLS-2$
         ASSOZIATION = new RelationType(enumType, "ass", "Assoziation"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
@@ -52,17 +52,17 @@ public class RelationType extends DefaultEnumValue {
     public final static RelationType getRelationType(String id) {
         if (id.equals("agg")) { //$NON-NLS-1$
             // renamed aggregation to composition (inkl the id!)
-            return COMPOSITION;
+            return COMPOSITION_MASTER_TO_DETAIL;
         }
         return (RelationType)enumType.getEnumValue(id);
     }
     
-    public boolean isComposition() {
-        return this==COMPOSITION;
+    public boolean isCompositionMasterToDetail() {
+        return this==COMPOSITION_MASTER_TO_DETAIL;
     }
     
-    public boolean isReverseComposition() {
-        return this==REVERSE_COMPOSITION;
+    public boolean isCompositionDetailToMaster() {
+        return this==COMPOSITION_DETAIL_TO_MASTER;
     }
     
     public boolean isAssoziation() {

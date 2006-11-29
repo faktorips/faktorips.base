@@ -47,12 +47,12 @@ public class NewPcTypeRelationWizardTest  extends AbstractIpsPluginTest {
         assertEquals(RelationType.ASSOZIATION, NewPcTypeRelationWizard.getCorrespondingRelationType(relation.getRelationType()));
         
         // COMPOSITION => REVERSE_COMPOSITION
-        relation.setRelationType(RelationType.COMPOSITION);
-        assertEquals(RelationType.REVERSE_COMPOSITION, NewPcTypeRelationWizard.getCorrespondingRelationType(relation.getRelationType()));
+        relation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        assertEquals(RelationType.COMPOSITION_DETAIL_TO_MASTER, NewPcTypeRelationWizard.getCorrespondingRelationType(relation.getRelationType()));
         
         // REVERSE_COMPOSITION => COMPOSITION 
-        relation.setRelationType(RelationType.REVERSE_COMPOSITION);
-        assertEquals(RelationType.COMPOSITION, NewPcTypeRelationWizard.getCorrespondingRelationType(relation.getRelationType()));
+        relation.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
+        assertEquals(RelationType.COMPOSITION_MASTER_TO_DETAIL, NewPcTypeRelationWizard.getCorrespondingRelationType(relation.getRelationType()));
     }
     
     public void testGetCorrespondingTargetRelations() throws Exception{
@@ -87,17 +87,17 @@ public class NewPcTypeRelationWizardTest  extends AbstractIpsPluginTest {
         assertTrue(result.contains(superRelation));
         assertTrue(result.contains(relation12));
         
-        superRelation.setRelationType(RelationType.COMPOSITION);
-        relation12.setRelationType(RelationType.REVERSE_COMPOSITION);
+        superRelation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        relation12.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
         result = ReverseRelationPropertiesPage.getCorrespondingTargetRelations(relation21, policyCmptType1);
         assertEquals(0, result.size());
         
-        relation21.setRelationType(RelationType.COMPOSITION);
+        relation21.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
         result = ReverseRelationPropertiesPage.getCorrespondingTargetRelations(relation21, policyCmptType1);
         assertEquals(1, result.size());
         assertTrue(result.contains(relation12));
         
-        relation21.setRelationType(RelationType.REVERSE_COMPOSITION);
+        relation21.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
         result = ReverseRelationPropertiesPage.getCorrespondingTargetRelations(relation21, policyCmptType1);
         assertEquals(1, result.size());
         assertTrue(result.contains(superRelation));

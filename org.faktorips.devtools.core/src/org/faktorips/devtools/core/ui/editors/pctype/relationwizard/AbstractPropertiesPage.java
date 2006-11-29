@@ -99,7 +99,7 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
 	 * {@inheritDoc}
 	 */
 	protected boolean updateControlStatus() {
-        if (getCurrentRelation().getRelationType().isReverseComposition()){
+        if (getCurrentRelation().getRelationType().isCompositionDetailToMaster()){
             setEnabledAllPropertyControls(true);
             minCardinalityField.getControl().setEnabled(false);
             maxCardinalityField.getControl().setEnabled(false);

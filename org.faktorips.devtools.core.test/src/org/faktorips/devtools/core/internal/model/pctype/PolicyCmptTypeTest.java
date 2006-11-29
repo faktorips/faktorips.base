@@ -595,10 +595,10 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     	pcType.newRelation().setRelationType(RelationType.ASSOZIATION);
     	assertTrue(pcType.isAggregateRoot());
 
-    	pcType.newRelation().setRelationType(RelationType.COMPOSITION);
+    	pcType.newRelation().setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
     	assertTrue(pcType.isAggregateRoot());
     	
-    	pcType.newRelation().setRelationType(RelationType.REVERSE_COMPOSITION);
+    	pcType.newRelation().setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
     	assertFalse(pcType.isAggregateRoot());
     	
     	// create a supertype
@@ -609,9 +609,9 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     	
     	supertype.newRelation().setRelationType(RelationType.ASSOZIATION);
     	assertTrue(subtype.isAggregateRoot());
-    	supertype.newRelation().setRelationType(RelationType.COMPOSITION);
+    	supertype.newRelation().setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
     	assertTrue(subtype.isAggregateRoot());
-    	supertype.newRelation().setRelationType(RelationType.REVERSE_COMPOSITION);
+    	supertype.newRelation().setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
     	assertFalse(subtype.isAggregateRoot());
         
         IPolicyCmptType invalidType = newPolicyCmptType(ipsProject, "InvalidType");

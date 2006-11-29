@@ -153,7 +153,7 @@ public class RelationTargetPage extends AbstractPcTypeRelationWizardPage  {
 			setDefaults();
 			
 			// set composition type as default
-			typeField.getCombo().setText(RelationType.COMPOSITION.getName());
+			typeField.getCombo().setText(RelationType.COMPOSITION_MASTER_TO_DETAIL.getName());
 			
 			isUiInitialized = true;
 		}

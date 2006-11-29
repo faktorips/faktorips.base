@@ -413,6 +413,11 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     public boolean isAggregateRoot() throws CoreException;
     
     /**
+     * Returns <code>true</code> if this not an aggregate root, otherwise <code>false</code>.
+     */
+    public boolean isDependantType() throws CoreException;
+        
+    /**
      * Returns the type's relations.
      */
     public IRelation[] getRelations();

@@ -47,7 +47,7 @@ public class Relation extends IpsObjectPart implements IRelation {
 
     final static String TAG_NAME = "Relation"; //$NON-NLS-1$
 
-    private RelationType type = RelationType.ASSOZIATION;
+    private RelationType type = IRelation.DEFAULT_RELATION_TYPE;
     private String target = ""; //$NON-NLS-1$
     private String targetRoleSingular = ""; //$NON-NLS-1$
     private String targetRolePlural = ""; //$NON-NLS-1$
@@ -120,15 +120,15 @@ public class Relation extends IpsObjectPart implements IRelation {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean isForwardComposition() {
-		return type.isComposition();
+	public boolean isCompositionMasterToDetail() {
+		return type.isCompositionMasterToDetail();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean isReverseComposition() {
-		return type.isReverseComposition();
+	public boolean isCompositionDetailToMaster() {
+		return type.isCompositionDetailToMaster();
 	}
 
 	/** 
@@ -419,45 +419,25 @@ public class Relation extends IpsObjectPart implements IRelation {
     /**
      * {@inheritDoc}
      */
+    public boolean hasReverseRelation() {
+        return StringUtils.isNotEmpty(reverseRelation);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void setReverseRelation(String newRelation) {
         String oldValue = this.reverseRelation;
         this.reverseRelation = newRelation;
         valueChanged(oldValue, newRelation);
     }
     
-    /**
-	 * {@inheritDoc}
-	 */
-	public IRelation[] findForwardCompositions() throws CoreException {
-		if (!getRelationType().isReverseComposition()) {
-			throw new CoreException(new IpsStatus("findForwardCompositions is only defined for reverse composition.")); //$NON-NLS-1$
-		}
-		IPolicyCmptType target = findTarget();
-		if (target==null) {
-			return new IRelation[0];
-		}
-		String typeName = getIpsObject().getQualifiedName();
-		ITypeHierarchy hierarchy = target.getSupertypeHierarchy();
-		IRelation[] relations = hierarchy.getAllRelations(target);
-		List result = new ArrayList(relations.length);
-		for (int i = 0; i < relations.length; i++) {
-			IRelation relation = relations[i];
-			if (relation.isForwardComposition()
-					&& relation.getTarget().equals(typeName)
-					&& relation.getReverseRelation().equals(getName())) {
-
-				result.add(relation);
-			}
-		}
-		return (IRelation[])result.toArray(new IRelation[result.size()]);
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
     public IRelation findReverseRelation() throws CoreException {
-        if ((type.isComposition() || type.isReverseComposition()) && isContainerRelationImplementation()) {
-        	return findReverseRelationOfImplementationRelation();
+        if (type.isCompositionDetailToMaster()) {
+            return null;
         }
     	if (StringUtils.isEmpty(reverseRelation)) {
             return null;
@@ -474,38 +454,15 @@ public class Relation extends IpsObjectPart implements IRelation {
         }
         return null;
     }
-    
-    private IRelation findReverseRelationOfImplementationRelation() throws CoreException {
-        IRelation containerRel = findContainerRelation();
-        if (containerRel==null) {
-        	return null;
-        }
-        IRelation reverseContainerRel = containerRel.findReverseRelation();
-        if (reverseContainerRel==null) {
-        	return null;
-        }
-        IPolicyCmptType target = findTarget();
-        if (target==null) {
-            return null;
-        }
-        IRelation[] relations = target.getRelations();
-        for (int i=0; i<relations.length; i++) {
-            if (relations[i].getTarget().equals(getIpsObject().getQualifiedName()) 
-            		&& reverseContainerRel==relations[i].findContainerRelation()) {
-                return relations[i];
-            }
-        }
-        return null;
-    }
-    
+
     /** 
      * {@inheritDoc}
      */
     public Image getImage() {
     	String baseImageName = ""; //$NON-NLS-1$
-        if (this.type==RelationType.COMPOSITION) {
+        if (this.type==RelationType.COMPOSITION_MASTER_TO_DETAIL) {
         	baseImageName = "Composition.gif"; //$NON-NLS-1$
-        } else if (this.type==RelationType.REVERSE_COMPOSITION) {
+        } else if (this.type==RelationType.COMPOSITION_DETAIL_TO_MASTER) {
         	baseImageName = "ReverseComposition.gif"; //$NON-NLS-1$
         } else {
         	baseImageName = "Relation.gif"; //$NON-NLS-1$ 
@@ -530,7 +487,7 @@ public class Relation extends IpsObjectPart implements IRelation {
         if (maxCardinality == 0) {
         	String text = Messages.Relation_msgMaxCardinalityMustBeAtLeast1;
         	list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1, text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY)); //$NON-NLS-1$
-        } else if (maxCardinality == 1 && isReadOnlyContainer() && getRelationType() != RelationType.REVERSE_COMPOSITION) {
+        } else if (maxCardinality == 1 && isReadOnlyContainer() && getRelationType() != RelationType.COMPOSITION_DETAIL_TO_MASTER) {
         	String text = Messages.Relation_msgMaxCardinalityForContainerRelationTooLow;
         	list.add(new Message(MSGCODE_MAX_CARDINALITY_FOR_CONTAINERRELATION_TOO_LOW, text, Message.ERROR, this, new String[]{PROPERTY_READONLY_CONTAINER, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
         } else if (minCardinality > maxCardinality) {
@@ -555,19 +512,19 @@ public class Relation extends IpsObjectPart implements IRelation {
 							PROPERTY_TARGET_ROLE_PLURAL }));
 		}
 		
-        if (maxCardinality != 1 && this.type == RelationType.REVERSE_COMPOSITION) {
+        if (maxCardinality != 1 && this.type == RelationType.COMPOSITION_DETAIL_TO_MASTER) {
         	String text = Messages.Relation_msgRevereseCompositionMustHaveMaxCardinality1;
         	list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION, text, Message.ERROR, this, new String[] {PROPERTY_MAX_CARDINALITY, PROPERTY_RELATIONTYPE}));
         }
         
-        if (this.type == RelationType.REVERSE_COMPOSITION && isProductRelevant()) {
+        if (this.type == RelationType.COMPOSITION_DETAIL_TO_MASTER && isProductRelevant()) {
         	String text = Messages.Relation_msgReverseCompositionCantBeMarkedAsProductRelevant;
         	list.add(new Message(MSGCODE_REVERSE_COMPOSITION_CANT_BE_MARKED_AS_PRODUCT_RELEVANT, text, Message.ERROR, this, new String[] {PROPERTY_PRODUCT_RELEVANT, PROPERTY_RELATIONTYPE}));
         }
        
         IPolicyCmptType targetPolicyCmptType = findTarget();
 		if (targetPolicyCmptType != null && 
-				this.type != RelationType.REVERSE_COMPOSITION &&
+				this.type != RelationType.COMPOSITION_DETAIL_TO_MASTER &&
 				this.isProductRelevant() &&
 				! targetPolicyCmptType.isConfigurableByProductCmptType()) {
 			String text = Messages.Relation_msgRelationCanOnlyProdRelIfTargetTypeIsConfByProduct;
@@ -659,18 +616,18 @@ public class Relation extends IpsObjectPart implements IRelation {
         if (StringUtils.isEmpty(containerRelation)) {
             return;
         }
-        IRelation relation = findContainerRelation();
-        if (relation==null) {
+        IRelation containerRel = findContainerRelation();
+        if (containerRel==null) {
             String text = NLS.bind(Messages.Relation_msgContainerRelNotInSupertype, containerRelation);
             list.add(new Message(MSGCODE_CONTAINERRELATION_NOT_IN_SUPERTYPE, text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION)); //$NON-NLS-1$
             return;
         }
-        if (!relation.isReadOnlyContainer()) {
+        if (!containerRel.isReadOnlyContainer()) {
             String text = Messages.Relation_msgNotMarkedAsContainerRel;
             list.add(new Message(MSGCODE_NOT_MARKED_AS_CONTAINERRELATION, text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION)); //$NON-NLS-1$
             return;
         }
-        if (relation.isProductRelevant() != isProductRelevant()) {
+        if (containerRel.isProductRelevant() != isProductRelevant()) {
 			String text = Messages.Relation_msgImplementationMustHaveSameProductRelevantValue;
 			list
 					.add(new Message(
@@ -679,7 +636,7 @@ public class Relation extends IpsObjectPart implements IRelation {
 									PROPERTY_CONTAINER_RELATION,
 									PROPERTY_PRODUCT_RELEVANT }));
 		}
-        IPolicyCmptType superRelationTarget = getIpsProject().findPolicyCmptType(relation.getTarget());
+        IPolicyCmptType superRelationTarget = getIpsProject().findPolicyCmptType(containerRel.getTarget());
         if (superRelationTarget==null) {
             String text = Messages.Relation_msgNoTarget;
             list.add(new Message(MSGCODE_CONTAINERRELATION_TARGET_DOES_NOT_EXIST, text, Message.WARNING, this, PROPERTY_CONTAINER_RELATION)); //$NON-NLS-1$
@@ -693,16 +650,36 @@ public class Relation extends IpsObjectPart implements IRelation {
                 list.add(new Message(MSGCODE_TARGET_NOT_SUBCLASS, text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION));     //$NON-NLS-1$
             }
         }
-        IRelation reverseRel = findContainerRelationOfTypeReverseComposition();
-        if(reverseRel != null && reverseRel != relation)  {
+        checkForContainerRelationReverseRelationMismatch(containerRel, list);
+    }
+    
+    /**
+     * Performs the check for the rule with message code
+     * @see IRelation#MSGCODE_CONTAINERRELATION_REVERSERELATION_MISMATCH
+     */
+    private void checkForContainerRelationReverseRelationMismatch(IRelation containerRel, MessageList list) throws CoreException {
+        IRelation reverseRel = findReverseRelation();
+        if (reverseRel==null) {
+            return; // not found => error will be reported in validateReverseRelation
+        }
+        IRelation reverseRelationOfContainerRel = containerRel.findReverseRelation();
+        if (reverseRelationOfContainerRel==null) {
+            return; // not found => error will be reported in validateReverseRelation
+        }
+        IRelation containerRelationofReverseRel = reverseRel.findContainerRelation();
+        if (containerRelationofReverseRel==null || containerRelationofReverseRel!=reverseRelationOfContainerRel) {
             String text = Messages.Relation_msgContainerRelNotReverseRel;
-            list.add(new Message(MSGCODE_CONTAINERRELATION_NOT_REVERSERELATION, text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION)); //$NON-NLS-1$
-            return;
+            list.add(new Message(MSGCODE_CONTAINERRELATION_REVERSERELATION_MISMATCH, text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION)); //$NON-NLS-1$
         }
     }
     
     private void validateReverseRelation(MessageList list) throws CoreException {
         if (StringUtils.isEmpty(reverseRelation)) {
+            return;
+        }
+        if (isCompositionDetailToMaster()) {
+            String text = "For datail-to-master relation the reverse relation needn't be specified.";
+            list.add(new Message("SomeNewCode", text, Message.ERROR, this, PROPERTY_REVERSE_RELATION)); //$NON-NLS-1$
             return;
         }
         IRelation reverseRelationObj = findReverseRelation();
@@ -711,17 +688,17 @@ public class Relation extends IpsObjectPart implements IRelation {
             list.add(new Message(MSGCODE_REVERSERELATION_NOT_IN_TARGET, text, Message.ERROR, this, PROPERTY_REVERSE_RELATION)); //$NON-NLS-1$
             return;
         }
-        if (!reverseRelationObj.getReverseRelation().equals(getName())) {
+        if (isAssoziation() && (!reverseRelationObj.getReverseRelation().equals(getName()))) {
             String text = Messages.Relation_msgReverseRelationNotSpecified;
-            list.add(new Message(MSGCODE_REVERSERELATION_NOT_SPECIFIED, text, Message.ERROR, this, PROPERTY_REVERSE_RELATION)); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_REVERSE_RELATION_MISMATCH, text, Message.ERROR, this, PROPERTY_REVERSE_RELATION)); //$NON-NLS-1$
         }
         if (isReadOnlyContainer()!=reverseRelationObj.isReadOnlyContainer()) {
             String text = Messages.Relation_msgReverseRelOfContainerRelMustBeContainerRelToo;
             list.add(new Message(MSGCODE_FORWARD_AND_REVERSE_RELATION_MUST_BOTH_BE_MARKED_AS_CONTAINER, text, Message.ERROR, this, PROPERTY_REVERSE_RELATION)); //$NON-NLS-1$
         }
         
-        if((type.isComposition() && !reverseRelationObj.getRelationType().isReverseComposition())
-                || (reverseRelationObj.getRelationType().isComposition() && !type.isReverseComposition())) {
+        if((type.isCompositionMasterToDetail() && !reverseRelationObj.getRelationType().isCompositionDetailToMaster())
+                || (reverseRelationObj.getRelationType().isCompositionMasterToDetail() && !type.isCompositionDetailToMaster())) {
 	            String text = Messages.Relation_msgReverseCompositionMissmatch;
 	            list.add(new Message(MSGCODE_REVERSE_COMPOSITION_MISSMATCH, text, Message.ERROR, this, new String[]{PROPERTY_REVERSE_RELATION, PROPERTY_READONLY_CONTAINER})); //$NON-NLS-1$
 	    }
@@ -730,24 +707,6 @@ public class Relation extends IpsObjectPart implements IRelation {
 	            String text = Messages.Relation_msgReverseAssociationMissmatch;
 	            list.add(new Message(MSGCODE_REVERSE_ASSOCIATION_MISSMATCH, text, Message.ERROR, this, new String[]{PROPERTY_REVERSE_RELATION})); //$NON-NLS-1$
         }
-    }
-    
-    /**
-     * Overridden.
-     */
-    public IRelation findContainerRelationOfTypeReverseComposition() throws CoreException {
-        IRelation reverseRel = findReverseRelation();
-        if(reverseRel != null) {
-            IRelation containerRel = reverseRel.findContainerRelation();
-            if(containerRel != null) {
-                IRelation reverseContainerRel = containerRel.findReverseRelation();
-                if(reverseContainerRel != null && 
-                        reverseContainerRel.getRelationType() == RelationType.REVERSE_COMPOSITION) {
-                    return reverseContainerRel;
-                }
-            }
-        }
-        return null;
     }
     
     /**
@@ -796,18 +755,21 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         type = RelationType.getRelationType(element.getAttribute(PROPERTY_RELATIONTYPE));
+        if (type==null) {
+            type = IRelation.DEFAULT_RELATION_TYPE;
+        }
         readOnlyContainer = Boolean.valueOf(element.getAttribute(PROPERTY_READONLY_CONTAINER)).booleanValue();
         target = element.getAttribute(PROPERTY_TARGET);
         targetRoleSingular = element.getAttribute(PROPERTY_TARGET_ROLE_SINGULAR);
@@ -830,6 +792,9 @@ public class Relation extends IpsObjectPart implements IRelation {
         }
         containerRelation = element.getAttribute(PROPERTY_CONTAINER_RELATION);
         reverseRelation = element.getAttribute(PROPERTY_REVERSE_RELATION);
+        if (isCompositionDetailToMaster()) {
+            reverseRelation = ""; //$NON-NLS-1$
+        }
         productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
         targetRoleSingularProductSide = element.getAttribute(PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE);
         targetRolePluralProductSide = element.getAttribute(PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE);
@@ -852,7 +817,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);

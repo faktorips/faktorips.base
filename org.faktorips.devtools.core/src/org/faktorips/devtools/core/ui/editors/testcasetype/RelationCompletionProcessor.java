@@ -62,7 +62,7 @@ public class RelationCompletionProcessor extends AbstractCompletionProcessor {
             IRelation[] relations = currentPcType.getRelations();
             for (int i = 0; i < relations.length; i++) {
                 if (onlyAssoziationOrComposition &&
-                    !(relations[i].isAssoziation() || relations[i].isForwardComposition())){
+                    !(relations[i].isAssoziation() || relations[i].isCompositionMasterToDetail())){
                     continue;
                 }
                 

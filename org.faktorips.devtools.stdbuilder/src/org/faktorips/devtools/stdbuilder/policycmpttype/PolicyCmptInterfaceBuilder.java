@@ -44,8 +44,9 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
-import org.faktorips.runtime.IConfigurablePolicyComponent;
-import org.faktorips.runtime.IPolicyComponent;
+import org.faktorips.runtime.IConfigurableModelObject;
+import org.faktorips.runtime.IDependantObject;
+import org.faktorips.runtime.IModelObject;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.faktorips.valueset.EnumValueSet;
@@ -111,17 +112,22 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected String[] getExtendedInterfaces() throws CoreException {
         IPolicyCmptType type = getPcType();
-        IPolicyCmptType supertype = null;
-        if (type.hasSupertype()) {
-        	supertype = type.findSupertype();
+        String[] interfaces;
+        if (isFirstDependantTypeInHierarchy(type)) {
+            interfaces = new String[2];
+            interfaces[1] = IDependantObject.class.getName();
+        } else {
+            interfaces = new String[1];
         }
+        IPolicyCmptType supertype = type.findSupertype();
         if (supertype != null) {
-            return new String[]{getQualifiedClassName(supertype)};
+            interfaces[0] = getQualifiedClassName(supertype);
+        } else if (type.isConfigurableByProductCmptType()) {
+            interfaces[0] = IConfigurableModelObject.class.getName();
+        } else {
+            interfaces[0] = IModelObject.class.getName();
         }
-        if (type.isConfigurableByProductCmptType()) {
-            return new String[]{IConfigurablePolicyComponent.class.getName()};
-        }
-        return new String[]{IPolicyComponent.class.getName()};
+        return interfaces;
     }
 
     /**
@@ -500,7 +506,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateCodeForRelationInCommon(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         if(!relation.isReadOnlyContainer() && 
-           !relation.getRelationType().isReverseComposition()){
+           !relation.getRelationType().isCompositionDetailToMaster()){
             generateFieldGetMaxCardinalityFor(relation, fieldsBuilder);
         }
     }
@@ -511,7 +517,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateCodeFor1To1Relation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         IPolicyCmptType target = relation.findTarget();
         generateMethodGetRefObject(relation, methodsBuilder);
-        if (!relation.isReadOnlyContainer() && !relation.getRelationType().isReverseComposition()) {
+        if (!relation.isReadOnlyContainer() && !relation.getRelationType().isCompositionDetailToMaster()) {
             generateMethodSetObject(relation, methodsBuilder);
             generateNewChildMethodsIfApplicable(relation, target, methodsBuilder);
         }

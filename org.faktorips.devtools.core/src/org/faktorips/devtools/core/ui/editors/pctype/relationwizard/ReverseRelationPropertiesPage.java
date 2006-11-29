@@ -55,7 +55,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 	/* State variables */
 	private String prevSelExistingRelation = ""; //$NON-NLS-1$
 	private String prevTarget = ""; //$NON-NLS-1$
-	private RelationType prevRelType = RelationType.COMPOSITION;
+	private RelationType prevRelType = RelationType.COMPOSITION_MASTER_TO_DETAIL;
 	private boolean prevIsExisting;
 	private boolean prevIsNew;
 	

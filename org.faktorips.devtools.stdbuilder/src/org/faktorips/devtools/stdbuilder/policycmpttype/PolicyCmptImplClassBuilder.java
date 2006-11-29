@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -44,23 +45,23 @@ import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
-import org.faktorips.runtime.IPolicyComponent;
+import org.faktorips.runtime.IConfigurableModelObject;
+import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IUnresolvedReference;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ModelObjectChangedEvent;
 import org.faktorips.runtime.ObjectProperty;
-import org.faktorips.runtime.PolicyCmptChangedEvent;
-import org.faktorips.runtime.internal.AbstractConfigurablePolicyComponent;
-import org.faktorips.runtime.internal.AbstractConfigurablePolicyComponentPart;
-import org.faktorips.runtime.internal.AbstractPolicyComponent;
-import org.faktorips.runtime.internal.AbstractPolicyComponentPart;
+import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
+import org.faktorips.runtime.internal.AbstractModelObject;
+import org.faktorips.runtime.internal.DependantObject;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -68,6 +69,8 @@ import org.w3c.dom.Element;
 
 public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
+    private final static String FIELD_PARENT_MODEL_OBJECT = "parentModelObject";
+    
     private PolicyCmptInterfaceBuilder interfaceBuilder;
     private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
@@ -120,23 +123,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected String getSuperclass() throws CoreException {
-        if (getPcType().hasSupertype()) {
-            IPolicyCmptType supertype = getPcType().findSupertype();
-            if (supertype != null) {
-                return getQualifiedClassName(supertype.getIpsSrcFile());
-            }
+        IPolicyCmptType supertype = getPcType().findSupertype();
+        if (supertype != null) {
+            return getQualifiedClassName(supertype.getIpsSrcFile());
         }
-        if (getPcType().isAggregateRoot()) {
-            if (getPcType().isConfigurableByProductCmptType()) {
-                return AbstractConfigurablePolicyComponent.class.getName(); 
-            } else {
-                return AbstractPolicyComponent.class.getName();
-            }
-        } 
         if (getPcType().isConfigurableByProductCmptType()) {
-            return AbstractConfigurablePolicyComponentPart.class.getName(); 
-        } 
-        return AbstractPolicyComponentPart.class.getName();
+            return AbstractConfigurableModelObject.class.getName(); 
+        } else {
+            return AbstractModelObject.class.getName();
+        }
     }
 
     /**
@@ -151,7 +146,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected String[] getExtendedInterfaces() throws CoreException {
-        return new String[] { interfaceBuilder.getQualifiedClassName(getPcType()) };
+        String publishedInterface = interfaceBuilder.getQualifiedClassName(getPcType());
+        if (isFirstDependantTypeInHierarchy(getPcType())) {
+            return new String[]{publishedInterface, DependantObject.class.getName()};
+        }
+        return new String[] { publishedInterface };
     }
 
     /**
@@ -176,27 +175,30 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateOther(JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        IPolicyCmptType type = getPcType();
         generateMethodInitialize(methodsBuilder);
-        if (getPcType().findProductCmptType()!=null) {
+        if (type.findProductCmptType()!=null) {
             generateMethodGetProductCmpt(methodsBuilder);
             generateMethodGetProductCmptGeneration(methodsBuilder);
             generateMethodSetProductCmpt(methodsBuilder);
             generateMethodEffectiveFromHasChanged(methodsBuilder);
         }
-        if (getPcType().isAggregateRoot()) {
-            generateMethodGetEffectiveFromAsCalendar(methodsBuilder);
-        } else {
-            if (!getPcType().isAbstract()) {
-                generateMethodGetParent(methodsBuilder);
+        if (type.isAggregateRoot()) {
+            if (type.isConfigurableByProductCmptType()) {
+                generateMethodGetEffectiveFromAsCalendarForAggregateRoot(methodsBuilder);
             }
+        } else if (isFirstDependantTypeInHierarchy(type)){
+            generateCodeForDependantObjectBaseClass(memberVarsBuilder, methodsBuilder);
         }
+        generateMethodRemoveChildModelObjectInternal(methodsBuilder);
         buildValidation(methodsBuilder);
         generateMethodInitPropertiesFromXml(methodsBuilder);
         generateMethodCreateChildFromXml(methodsBuilder);
         generateMethodCreateUnresolvedReference(methodsBuilder);
     }
     
-    protected void generateMethodGetEffectiveFromAsCalendar(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateMethodGetEffectiveFromAsCalendarForAggregateRoot(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Calendar.class, MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR, new String[0], new Class[0]);
         if (getPolicyCmptType().hasSupertype()) {
@@ -216,7 +218,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         IRelation[] relations = getPolicyCmptType().getRelations();
         for (int i = 0; i < relations.length; i++) {
             IRelation r = relations[i];
-            if (r.isValid() && r.isForwardComposition() && !r.isReadOnlyContainer()) {
+            if (r.isValid() && r.isCompositionMasterToDetail() && !r.isReadOnlyContainer()) {
                 IPolicyCmptType target = r.findTarget();
                 if (!target.isConfigurableByProductCmptType()) {
                     continue;
@@ -227,16 +229,16 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                     methodsBuilder.append("for (");
                     methodsBuilder.appendClassName(Iterator.class);
                     methodsBuilder.append(" it=" + field + ".iterator(); it.hasNext();) {");
-                    methodsBuilder.appendClassName(AbstractConfigurablePolicyComponent.class);
+                    methodsBuilder.appendClassName(AbstractConfigurableModelObject.class);
                     methodsBuilder.append(" child = (");
-                    methodsBuilder.appendClassName(AbstractConfigurablePolicyComponent.class);
+                    methodsBuilder.appendClassName(AbstractConfigurableModelObject.class);
                     methodsBuilder.append(")it.next();");
                     methodsBuilder.append("child." + MethodNames.EFFECTIVE_FROM_HAS_CHANGED + "();");
                     methodsBuilder.append("}");
                 } else {
                     methodsBuilder.append("if (" + field + "!=null) {");
                     methodsBuilder.append("((");
-                    methodsBuilder.appendClassName(AbstractConfigurablePolicyComponent.class);
+                    methodsBuilder.appendClassName(AbstractConfigurableModelObject.class);
                     methodsBuilder.append(")" + field + ")." + MethodNames.EFFECTIVE_FROM_HAS_CHANGED + "();");
                     methodsBuilder.append("}");
                 }
@@ -245,33 +247,25 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.methodEnd();
     }
     
-    protected void generateMethodGetParent(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        int counter=0;
-        IRelation reverseComp = null;
-        IRelation[] relations = getPcType().getSupertypeHierarchy().getAllRelations(getPcType());
-        for (int i = 0; i < relations.length; i++) {
-            if (relations[i].getRelationType().isReverseComposition() && !relations[i].isReadOnlyContainer()) {
-                reverseComp = relations[i];
-                counter++;
-            }
-        }
+    protected void generateMethodRemoveChildModelObjectInternal(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, IPolicyComponent.class, MethodNames.GET_PARENT_POLICY_COMPONENT, new String[0], new Class[0]);
-        
-        if (counter==1) {
-            methodsBuilder.appendln("return " + interfaceBuilder.getMethodNameGetRefObject(reverseComp) + "();");
-            methodsBuilder.methodEnd();
-            return;
-        }
+        String paramName = "childToRemove";
+        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Void.class, MethodNames.REMOVE_CHILD_MODEL_OBJECT_INTERNAL, 
+                new String[] {paramName}, new Class[]{IModelObject.class});
+        methodsBuilder.appendln("super." + MethodNames.REMOVE_CHILD_MODEL_OBJECT_INTERNAL + "(" + paramName + ");");
+        IRelation[] relations = getPcType().getRelations();
         for (int i = 0; i < relations.length; i++) {
-            if (relations[i].getRelationType().isReverseComposition() && !relations[i].isReadOnlyContainer()) {
-                String method = interfaceBuilder.getMethodNameGetRefObject(relations[i]);
-                methodsBuilder.appendln("if (" + method + "()!=null) {");
-                methodsBuilder.appendln("return " + method + "();");
-                methodsBuilder.appendln("}");
+            if (relations[i].isValid() && relations[i].getRelationType().isCompositionMasterToDetail() && !relations[i].isReadOnlyContainer()) {
+                String fieldName = getFieldNameForRelation(relations[i]);
+                if (relations[i].is1ToMany()) {
+                    methodsBuilder.appendln(fieldName + ".remove(" + paramName + ");");
+                } else {
+                    methodsBuilder.appendln("if (" + fieldName + "==" + paramName + ") {");
+                    methodsBuilder.appendln(fieldName + " = null;");
+                    methodsBuilder.appendln("}");
+                }
             }
         }
-        methodsBuilder.append("return null;");
         methodsBuilder.methodEnd();
     }
 
@@ -280,7 +274,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        if(Modifier.PUBLIC.equals(attribute.getModifier())){
+        if(org.faktorips.devtools.core.model.pctype.Modifier.PUBLIC.equals(attribute.getModifier())){
             interfaceBuilder.generateFieldConstantForProperty(attribute, datatypeHelper.getDatatype(), memberVarsBuilder);
         }
         super.generateCodeForAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
@@ -314,14 +308,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         DatatypeHelper nonPrimitiveDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsSrcFile().getIpsProject(), datatypeHelper);
 
         if(ValueSetType.RANGE.equals(attribute.getValueSet().getValueSetType())){
-            if(Modifier.PUBLIC.equals(attribute.getModifier())){
+            if(org.faktorips.devtools.core.model.pctype.Modifier.PUBLIC.equals(attribute.getModifier())){
                 interfaceBuilder.generateFieldMaxRangeFor(attribute, nonPrimitiveDatatypeHelper, memberVarsBuilder);
             }
             generateMethodGetRangeFor(attribute, nonPrimitiveDatatypeHelper, methodsBuilder);
         }
         if(ValueSetType.ENUM.equals(attribute.getValueSet().getValueSetType()) ||
                 datatypeHelper.getDatatype() instanceof EnumDatatype){
-            if(Modifier.PUBLIC.equals(attribute.getModifier())){
+            if(org.faktorips.devtools.core.model.pctype.Modifier.PUBLIC.equals(attribute.getModifier())){
                 interfaceBuilder.generateFieldMaxAllowedValuesFor(attribute, nonPrimitiveDatatypeHelper, memberVarsBuilder);
             }
             generateMethodGetAllowedValuesFor(attribute, nonPrimitiveDatatypeHelper, methodsBuilder);
@@ -488,7 +482,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append("this.");
         methodsBuilder.append(getFieldNameForAttribute(a));
         methodsBuilder.appendln(" = " + interfaceBuilder.getParamNameForSetPropertyValue(a) + ";");
-        generateChangeListenerSupport( methodsBuilder, "PolicyCmptChangedEvent.PROPERTY_CHANGED", getFieldNameForAttribute(a) );
+        String eventClassName = QNameUtil.getUnqualifiedName(ModelObjectChangedEvent.class.getName());
+        generateChangeListenerSupport( methodsBuilder, eventClassName + ".PROPERTY_CHANGED", getFieldNameForAttribute(a) );
         
         methodsBuilder.closeBracket();
     }
@@ -501,7 +496,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     	if (isChangeListenerSupportActive()) {
             methodsBuilder.appendln("if (" + MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED + "()) {");
             methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
-            methodsBuilder.appendClassName(PolicyCmptChangedEvent.class);
+            methodsBuilder.appendClassName(ModelObjectChangedEvent.class);
             methodsBuilder.append("(this, ");
             methodsBuilder.append(event);
             methodsBuilder.append(", ");
@@ -529,7 +524,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             IPolicyCmptType target = relation.findTarget();
             generateFieldForRelation(relation, target, fieldsBuilder);
             generateMethodGetRefObjectForNoneContainerRelation(relation, methodsBuilder);
-            generateMethodSetRefObject(relation, methodsBuilder);
+            if (relation.isAssoziation()) {
+                generateMethodSetRefObjectForAssociation(relation, methodsBuilder);
+            } else if (relation.isCompositionMasterToDetail()) { 
+                generateMethodSetRefObjectForComposition(relation, methodsBuilder);
+            }
             generateNewChildMethodsIfApplicable(relation, target, methodsBuilder);
         }
     }
@@ -557,6 +556,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             IPolicyCmptType target,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
+        if (relation.isCompositionDetailToMaster()) {
+            return; // variable for parent is defined in base class
+        }
         String javaClassname = relation.is1ToMany() ? List.class.getName()
                 : getQualifiedClassName(target);
         JavaCodeFragment initialValueExpression = new JavaCodeFragment();
@@ -788,9 +790,16 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureGetRefObject(relation, methodsBuilder);
-        String field = getFieldNameForRelation(relation);
         methodsBuilder.openBracket();
-        methodsBuilder.appendln("return " + field + ";");
+        if (!relation.isCompositionDetailToMaster()) {
+            String field = getFieldNameForRelation(relation);
+            methodsBuilder.appendln("return " + field + ";");
+        } else {
+            IPolicyCmptType target = relation.findTarget();
+            methodsBuilder.append("return (");
+            methodsBuilder.appendClassName(interfaceBuilder.getQualifiedClassName(target));
+            methodsBuilder.append(")" + MethodNames.GET_PARENT + "();");
+        }
         methodsBuilder.closeBracket();
     }
     
@@ -819,14 +828,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         for (int i = 0; i < subRelations.size(); i++) {
             IRelation subrel = (IRelation)subRelations.get(i);
             String accessCode;
-            if (subrel.isReadOnlyContainer()) {
-                // if the implementation relation is a container relation itself
-                // we have to use the access method
-                accessCode = interfaceBuilder.getMethodNameGetRefObject(subrel) + "()";
-            } else {
-                // otherwise we use the field.
-                accessCode = getFieldNameForRelation(subrel);
-            }
+            accessCode = interfaceBuilder.getMethodNameGetRefObject(subrel) + "()";
             methodsBuilder.appendln("if (" + accessCode + "!=null) {");
             methodsBuilder.appendln("return " + accessCode + ";");
             methodsBuilder.appendln("}");
@@ -869,10 +871,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append(fieldname);
         methodsBuilder.append(".add(" + paramName + ");");
         if (reverseRelation != null) {
-            String targetClass = interfaceBuilder.getQualifiedClassName(relation.findTarget());
-            methodsBuilder.append(generateCodeToSynchronizeReverseRelation(paramName, targetClass, relation, reverseRelation));
+            if (relation.isAssoziation()) {
+                String targetClass = interfaceBuilder.getQualifiedClassName(relation.findTarget());
+                methodsBuilder.append(generateCodeToSynchronizeReverseAssoziation(paramName, targetClass, relation, reverseRelation));
+            } else {
+                methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));
+            }
         }
-        generateChangeListenerSupport(methodsBuilder, "PolicyCmptChangedEvent.PROPERTY_CHILD_ADDED" , fieldname, paramName);
+        String eventClassName = QNameUtil.getUnqualifiedName(ModelObjectChangedEvent.class.getName());
+        generateChangeListenerSupport(methodsBuilder, eventClassName + ".PROPERTY_CHILD_ADDED" , fieldname, paramName);
         methodsBuilder.closeBracket();
     }
     
@@ -949,12 +956,69 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append(".remove(" + paramName + ")");
         if (reverseRelation != null) {
             methodsBuilder.append(") {");
-            methodsBuilder.append(generateCodeToCleanupOldReference(relation, reverseRelation, paramName));
+            if (relation.isAssoziation()) {
+                methodsBuilder.append(generateCodeToCleanupOldReference(relation, reverseRelation, paramName));
+            } else {
+                methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "null"));
+            }
             methodsBuilder.append(" }");
         } else {
             methodsBuilder.append(';');
         }
-        generateChangeListenerSupport(methodsBuilder, "PolicyCmptChangedEvent.PROPERTY_CHILD_REMOVED", fieldname, paramName);
+        String eventClassName = QNameUtil.getUnqualifiedName(ModelObjectChangedEvent.class.getName());
+        generateChangeListenerSupport(methodsBuilder, eventClassName + ".PROPERTY_CHILD_REMOVED", fieldname, paramName);
+        methodsBuilder.closeBracket();
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public void setCoverage(ICoverage newObject) {
+     *     if (homeContract!=null) {
+     *         ((DependantObject)homeContract).setParentModelObjectInternal(null);
+     *     }
+     *     homeContract = (HomeContract)newObject;
+     *     if (homeContract!=null) {
+     *         ((DependantObject)homeContract).setParentModelObjectInternal(this);
+     *     }
+     * }
+     * </pre>
+     */
+    protected void generateMethodSetRefObjectForComposition(
+            IRelation relation, 
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        
+        if (relation.isCompositionDetailToMaster()) {
+            return; // setter defined in base class.
+        }
+        String fieldname = getFieldNameForRelation(relation);
+        String paramName = interfaceBuilder.getParamNameForSetObject(relation);
+        IPolicyCmptType target = relation.findTarget();
+
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureSetObject(relation, methodsBuilder);
+        
+        methodsBuilder.openBracket();
+        if (relation.hasReverseRelation()) {
+            methodsBuilder.appendln("if(" + fieldname + " != null) {");
+            methodsBuilder.append(generateCodeToSynchronizeReverseComposition(fieldname, "null"));;
+            methodsBuilder.appendln("}");
+        }
+        
+        methodsBuilder.append(fieldname);
+        methodsBuilder.append(" = (");
+        methodsBuilder.appendClassName(getQualifiedClassName(target));
+        methodsBuilder.append(")" + paramName +";");
+
+        if (relation.hasReverseRelation()) {
+            methodsBuilder.appendln("if(" + fieldname + " != null) {");
+            methodsBuilder.append(generateCodeToSynchronizeReverseComposition(fieldname, "this"));;
+            methodsBuilder.appendln("}");
+        }
+        
+        String eventClassName = QNameUtil.getUnqualifiedName(ModelObjectChangedEvent.class.getName());
+        generateChangeListenerSupport(methodsBuilder, eventClassName + ".PROPERTY_CHILD_CHANGED", fieldname, paramName);
         methodsBuilder.closeBracket();
     }
     
@@ -977,7 +1041,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
-    protected void generateMethodSetRefObject(
+    protected void generateMethodSetRefObjectForAssociation(
             IRelation relation, 
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         
@@ -1007,14 +1071,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.appendClassName(getQualifiedClassName(target));
         methodsBuilder.append(")" + paramName +";");
         if (reverseRelation != null) {
-            methodsBuilder.append(generateCodeToSynchronizeReverseRelation(fieldname, 
+            methodsBuilder.append(generateCodeToSynchronizeReverseAssoziation(fieldname, 
                     getQualifiedClassName(target), relation, reverseRelation));
         }
-        generateChangeListenerSupport(methodsBuilder, "PolicyCmptChangedEvent.PROPERTY_CHILD_CHANGED", fieldname, paramName);
+        String eventClassName = QNameUtil.getUnqualifiedName(ModelObjectChangedEvent.class.getName());
+        generateChangeListenerSupport(methodsBuilder, eventClassName + ".PROPERTY_CHILD_CHANGED", fieldname, paramName);
         methodsBuilder.closeBracket();
     }
     
-    private JavaCodeFragment generateCodeToSynchronizeReverseRelation(
+    private JavaCodeFragment generateCodeToSynchronizeReverseAssoziation(
             String varName,
             String varClassName,
             IRelation relation,
@@ -1051,6 +1116,25 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         return code;
     }
     
+    /**
+     * <pre>
+     * ((DependantObject)parentModelObject).setParentModelObjectInternal(this);
+     * </pre>
+     */
+    private JavaCodeFragment generateCodeToSynchronizeReverseComposition(
+            String varName, String newValue) throws CoreException {
+        
+        JavaCodeFragment code = new JavaCodeFragment();
+        code.append("((");
+        code.appendClassName(DependantObject.class);
+        code.append(')');
+        code.append(varName);
+        code.append(")." + MethodNames.SET_PARENT);
+        code.append('(');
+        code.append(newValue);
+        code.appendln(");");
+        return code;
+    }
     
     private JavaCodeFragment generateCodeToCleanupOldReference(
             IRelation relation, 
@@ -1076,7 +1160,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         return body;
     }
-    
+
     /**
      * Returns the name of field/member var for the relation.
      */
@@ -1138,7 +1222,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         for (int i = 0; i < relations.length; i++) {
             IRelation r = relations[i];
             if (!r.validate().containsErrorMsg()) {
-                if (r.getRelationType() == RelationType.COMPOSITION
+                if (r.getRelationType() == RelationType.COMPOSITION_MASTER_TO_DETAIL
                         && StringUtils.isEmpty(r.getContainerRelation())) {
                     body.appendln();
                     if (r.is1ToMany()) {
@@ -1579,7 +1663,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeForMethodDefinedInModel(IMethod method, Datatype returnType, Datatype[] paramTypes, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        if (method.getModifier()==Modifier.PUBLISHED) {
+        if (method.getModifier()==org.faktorips.devtools.core.model.pctype.Modifier.PUBLISHED) {
             methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_MODIFIABLE);
         } else {
             methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_MODIFIABLE);
@@ -1661,12 +1745,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private void generateMethodCreateChildFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, 
-                AbstractPolicyComponent.class, 
+                AbstractModelObject.class, 
                 MethodNames.CREATE_CHILD_FROM_XML, 
                 new String[]{"childEl"}, 
                 new Class[]{Element.class});
         
-        builder.appendClassName(AbstractPolicyComponent.class);
+        builder.appendClassName(AbstractModelObject.class);
         builder.append(" newChild = super." + MethodNames.CREATE_CHILD_FROM_XML + "(childEl);");
         builder.appendln("if (newChild!=null) {");
         builder.appendln("return newChild;");
@@ -1675,7 +1759,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         IRelation[] relations = getPolicyCmptType().getRelations();
         for (int i = 0; i < relations.length; i++) {
             IRelation relation = relations[i];
-            if (!relation.isForwardComposition() 
+            if (!relation.isCompositionMasterToDetail() 
                     || relation.isReadOnlyContainer()
                     || !relation.isValid()) {
                 continue;
@@ -1700,7 +1784,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             builder.appendln("}"); // if
             if (!target.isAbstract()) {
                 builder.append("return (");
-                builder.appendClassName(AbstractPolicyComponent.class);
+                builder.appendClassName(AbstractModelObject.class);
                 builder.append(")");
                 builder.append(interfaceBuilder.getMethodNameNewChild(relation));
                 builder.appendln("();");
@@ -1790,45 +1874,140 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodBuilder.append(body);
     }
     
+    private void generateCodeForDependantObjectBaseClass(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+        generateFieldForParent(memberVarsBuilder);
+        if (getPcType().isConfigurableByProductCmptType()) {
+            generateMethodGetEffectiveFromAsCalendarForDependantObjectBaseClass(methodBuilder);
+        }
+        generateMethodGetParentModelObject(methodBuilder);
+        generateMethodSetParentModelObjectInternal(methodBuilder);
+        generateMethodExistsChangeListenerToBeInformed(methodBuilder);
+        generateMethodNotifyChangeListeners(methodBuilder);
+    }
     
     /**
-     * Code sample:
      * <pre>
-     * [Javadoc]
-     * public void addChangeListener(ICoverage objectToAdd) {
-     *     if(objectToAdd == null) { 
-     *         throw new IllegalArgumentException("Can't add null to ...");
-     *     }
-     *     if (coverages.contains(objectToAdd)) { 
-     *         return; 
-     *     }
-     *     coverages.add(objectToAdd);
+     * private AbstractModelObject parentModelObject;
+     * </pre>
+     */
+    private void generateFieldForParent(JavaCodeFragmentBuilder memberVarsBuilder) {
+        memberVarsBuilder.javaDoc("doc", ANNOTATION_GENERATED); // TODO
+        memberVarsBuilder.append("private ");
+        memberVarsBuilder.appendClassName(AbstractModelObject.class);
+        memberVarsBuilder.append(' ');
+        memberVarsBuilder.append(FIELD_PARENT_MODEL_OBJECT);
+        memberVarsBuilder.appendln(";");
+    }
+    
+    /**
+     * <pre>
+     * public IModelObject getParentModelObject() {
+     *     return parentModelObject;
      * }
      * </pre>
      */
-    protected void generateMethodAddChangeListener (
-            IRelation relation, 
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureAddObject(relation, methodsBuilder);
-        String fieldname = getFieldNameForRelation(relation);
-        String paramName = interfaceBuilder.getParamNameForAddObject(relation);
-        IRelation reverseRelation = relation.findReverseRelation();
-        methodsBuilder.openBracket();
-        methodsBuilder.append("if (" + paramName + " == null) {");
-        methodsBuilder.append("throw new ");
-        methodsBuilder.appendClassName(NullPointerException.class);
-        methodsBuilder.append("(\"Can't add null to relation " + relation.getName() + " of \" + this); }");
-        methodsBuilder.append("if(");
-        methodsBuilder.append(fieldname);
-        methodsBuilder.append(".contains(" + paramName + ")) { return; }");
-        methodsBuilder.append(fieldname);
-        methodsBuilder.append(".add(" + paramName + ");");
-        if (reverseRelation != null) {
-            String targetClass = interfaceBuilder.getQualifiedClassName(relation.findTarget());
-            methodsBuilder.append(generateCodeToSynchronizeReverseRelation(paramName, targetClass, relation, reverseRelation));
-        }
-        methodsBuilder.closeBracket();
+    private void generateMethodGetParentModelObject(JavaCodeFragmentBuilder methodBuilder) {
+        methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        methodBuilder.methodBegin(Modifier.PUBLIC, IModelObject.class, MethodNames.GET_PARENT, new String[0], new Class[0]);
+        methodBuilder.appendln("return " + FIELD_PARENT_MODEL_OBJECT + ";");
+        methodBuilder.methodEnd();
     }
     
+    /**
+     * <pre>
+     * public IModelObject getParentModelObject() {
+     *     if (parentModelObject!=null && parentModelObject!=newParent) {
+     *         parentModelObject.removeChildModelObjectInternal(this);
+     *     }
+     *     return parentModelObject;
+     * }
+     * </pre>
+     */
+    private void generateMethodSetParentModelObjectInternal(JavaCodeFragmentBuilder methodBuilder) {
+        methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        methodBuilder.methodBegin(Modifier.PUBLIC, Void.class, MethodNames.SET_PARENT, 
+                new String[]{"newParent"}, new Class[]{AbstractModelObject.class});
+        methodBuilder.appendln("if (" + FIELD_PARENT_MODEL_OBJECT + "!=null && " + FIELD_PARENT_MODEL_OBJECT + "!=newParent) {");
+        methodBuilder.appendln(FIELD_PARENT_MODEL_OBJECT + "." + MethodNames.REMOVE_CHILD_MODEL_OBJECT_INTERNAL + "(this);");
+        methodBuilder.appendln("}");
+        methodBuilder.appendln(FIELD_PARENT_MODEL_OBJECT + "=newParent;");
+        methodBuilder.methodEnd();
+    }
+    
+    /**
+     * <pre>
+     * protected boolean existsChangeListenerToBeInformed() {
+     *     if (super.existsChangeListenerToBeInformed()) {
+     *         return true;
+     *     }
+     *     if (parentModelObject==null) {
+     *         return false;
+     *     }
+     *     return parentModelObject.existsChangeListenerToBeInformed();
+     * }
+     * </pre>
+     */
+    private void generateMethodExistsChangeListenerToBeInformed(JavaCodeFragmentBuilder methodBuilder) {
+        methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        methodBuilder.methodBegin(Modifier.PUBLIC, Boolean.TYPE, MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED, 
+                new String[]{}, new Class[]{});
+        methodBuilder.appendln("if (super." + MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED + "()) {");
+        methodBuilder.appendln("return true;");
+        methodBuilder.appendln("}");
+        methodBuilder.appendln("if (" + FIELD_PARENT_MODEL_OBJECT + "==null) {");
+        methodBuilder.appendln("return false;");
+        methodBuilder.appendln("}");
+        methodBuilder.appendln("return " + FIELD_PARENT_MODEL_OBJECT + "." + MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED+ "();");
+        methodBuilder.methodEnd();
+    }
+    
+    /**
+     * <pre>
+     * public void notifyChangeListeners(ModelObjectChangedEvent event) {
+     *     super.notifyChangeListeners(event);
+     *     if (parentModelObject != null) {
+     *         parentModelObject.notifyChangeListeners(event);
+     *     }
+     * }
+     * </pre>
+     */
+    private void generateMethodNotifyChangeListeners(JavaCodeFragmentBuilder methodBuilder) {
+        methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        methodBuilder.methodBegin(Modifier.PUBLIC, Void.class, MethodNames.NOTIFIY_CHANGE_LISTENERS, 
+                new String[]{"event"}, new Class[]{ModelObjectChangedEvent.class});
+        
+        methodBuilder.appendln("super." + MethodNames.NOTIFIY_CHANGE_LISTENERS+ "(event);");
+        methodBuilder.appendln("if (" + FIELD_PARENT_MODEL_OBJECT + "!=null) {");
+        methodBuilder.appendln(FIELD_PARENT_MODEL_OBJECT + "." + MethodNames.NOTIFIY_CHANGE_LISTENERS + "(event);");
+        methodBuilder.appendln("}");
+        methodBuilder.methodEnd();
+    }
+
+    /**
+     * <pre>
+     * public Calendar getEffectiveFromAsCalendar() {
+     *    IModelObject parent = getParentModelObject();
+     *    if (parent instanceof IConfigurableModelObject) {
+     *        return ((IConfigurableModelObject)parent).getEffectiveFromAsCalendar();
+     *    }
+     *    return null;
+     * }
+     * </pre>
+     */
+    protected void generateMethodGetEffectiveFromAsCalendarForDependantObjectBaseClass(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Calendar.class, MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR, new String[0], new Class[0]);
+        methodsBuilder.append("if (" + FIELD_PARENT_MODEL_OBJECT + " instanceof ");
+        methodsBuilder.appendClassName(IConfigurableModelObject.class);
+        methodsBuilder.append(") {");
+        methodsBuilder.append("return ((");
+        methodsBuilder.appendClassName(IConfigurableModelObject.class);
+        methodsBuilder.appendln(")" + FIELD_PARENT_MODEL_OBJECT + ")." + MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR + "();");
+        methodsBuilder.appendln("}");
+        methodsBuilder.appendln("return null;");
+        methodsBuilder.methodEnd();
+    }
+    
+    
+   
 }

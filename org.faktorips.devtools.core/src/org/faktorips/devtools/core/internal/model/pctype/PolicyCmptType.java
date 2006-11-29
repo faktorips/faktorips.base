@@ -436,7 +436,14 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         visitor.start(this);
         return visitor.isRoot();
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDependantType() throws CoreException {
+        return !isAggregateRoot();
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -1266,7 +1273,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             IRelation[] relations = currentType.getRelations();
             for (int i=0; i<relations.length; i++) {
                 IRelation each = relations[i];
-                if (each.getRelationType().isReverseComposition()) {
+                if (each.getRelationType().isCompositionDetailToMaster()) {
                     root = false;
                     return false; // stop the visit, we have the result
                 }

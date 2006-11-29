@@ -92,7 +92,7 @@ public class RelationRefControl extends TextButtonControl {
         while (currPolicyCmptType != null){
             IRelation[] relations = currPolicyCmptType.getRelations();
             for (int i = 0; i < relations.length; i++) {
-                if (relations[i].isAssoziation() || relations[i].isForwardComposition()){
+                if (relations[i].isAssoziation() || relations[i].isCompositionMasterToDetail()){
                     relationsToSelect.add(relations[i]);
                 }
             }

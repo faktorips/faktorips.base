@@ -147,7 +147,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             IPolicyCmptType target,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        if (!relation.getRelationType().isComposition()) {
+        if (!relation.getRelationType().isCompositionMasterToDetail()) {
             return;
         }
         if (target.isAbstract()) {
@@ -176,4 +176,14 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             boolean inclProductCmptArg,
             JavaCodeFragmentBuilder builder) throws CoreException;
 
+    boolean isFirstDependantTypeInHierarchy(IPolicyCmptType type) throws CoreException {
+        if (!type.isDependantType()) {
+            return false;
+        }
+        IPolicyCmptType supertype = type.findSupertype();
+        if (supertype==null) {
+            return true;
+        }
+        return !supertype.isDependantType();
+    }
 }

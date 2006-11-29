@@ -99,8 +99,8 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
     public static RelationType getCorrespondingRelationType(RelationType sourceRelType){
         return sourceRelType == null                ? null :
                sourceRelType.isAssoziation()        ? RelationType.ASSOZIATION :
-               sourceRelType.isReverseComposition() ? RelationType.COMPOSITION :
-               sourceRelType.isComposition()        ? RelationType.REVERSE_COMPOSITION : null;
+               sourceRelType.isCompositionDetailToMaster() ? RelationType.COMPOSITION_MASTER_TO_DETAIL :
+               sourceRelType.isCompositionMasterToDetail()        ? RelationType.COMPOSITION_DETAIL_TO_MASTER : null;
     }
     
     public NewPcTypeRelationWizard(IRelation relation) {
@@ -315,10 +315,10 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	void setDefaultsByRelationType(IRelation newRelation){
 		RelationType type = newRelation.getRelationType();
 		if (type != null) {
-			if (type.isComposition()) {
+			if (type.isCompositionMasterToDetail()) {
 				newRelation.setMaxCardinality(Integer.MAX_VALUE);
 				newRelation.setProductRelevant(newRelation.getPolicyCmptType().isConfigurableByProductCmptType());
-			} else if (type.isReverseComposition()) {
+			} else if (type.isCompositionDetailToMaster()) {
 				newRelation.setMinCardinality(1);
 				newRelation.setMaxCardinality(1);
 				newRelation.setTargetRolePluralProductSide(""); //$NON-NLS-1$
@@ -444,7 +444,9 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	void storeReverseRelation(IRelation reverseRelation){
 		if (reverseRelation != null){
 			relation.setReverseRelation(reverseRelation.getTargetRoleSingular());
-			reverseRelation.setReverseRelation(relation.getTargetRoleSingular());
+            if (!reverseRelation.isCompositionDetailToMaster()) {
+                reverseRelation.setReverseRelation(relation.getTargetRoleSingular());
+            }
 		}else{
 			relation.setReverseRelation(""); //$NON-NLS-1$
 		}
