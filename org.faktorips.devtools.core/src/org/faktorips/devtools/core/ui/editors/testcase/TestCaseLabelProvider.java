@@ -165,9 +165,8 @@ public class TestCaseLabelProvider implements ILabelProvider {
      * Returns the label for the target of a assoziation.
      */
     public String getAssoziationTargetLabel(String target) {
-        return target.replaceAll(TestCaseHierarchyPath.separator, "/"); //$NON-NLS-1$
+        return target.replaceAll(TestCaseHierarchyPath.SEPARATOR, "/"); //$NON-NLS-1$
     }
-
     
 	/**
 	 * {@inheritDoc}

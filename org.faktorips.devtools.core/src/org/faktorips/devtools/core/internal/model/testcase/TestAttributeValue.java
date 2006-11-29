@@ -27,6 +27,8 @@ import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -226,6 +228,46 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
             // ignore exceptions
         }
         return false;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void updateDefaultTestAttributeValue() throws CoreException {
+        IProductCmptGeneration generation = ((TestPolicyCmpt)getParent()).findProductCmpsCurrentGeneration();
+        setDefaultTestAttributeValueInternal(generation);
+    }
+
+    /**
+     * Updates the default for the test attribute value. The default will be retrieved from the
+     * product cmpt or if no product cmpt is available or the attribute isn't configurated by product 
+     * then from the policy cmpt. Don't update the value if not default is specified.
+     */
+    void setDefaultTestAttributeValueInternal(IProductCmptGeneration generation) throws CoreException {
+        ITestAttribute testAttribute = findTestAttribute();
+        if (testAttribute == null) {
+            // the test attribute wasn't found, do nothing
+        }
+        
+        IAttribute modelAttribute = testAttribute.findAttribute();
+        if (modelAttribute != null){
+            boolean defaultSet = false;
+            // set default as specified in the product cmpt
+            if (modelAttribute.isProductRelevant() && generation != null){
+                IConfigElement ce = generation.getConfigElement(modelAttribute.getName());
+                if (ce != null){
+                    this.setValue(ce.getValue());
+                    defaultSet = true;
+                }
+            }
+            // alternative set the default as specified in the policy cmpt type
+            if (! defaultSet){
+                this.setValue(modelAttribute.getDefaultValue());
+                defaultSet = true;
+            }
+        } else {
+            // the model attribute (policy cmpt type attribute) wasn't found, do nothing
+        }
     }
     
     /**

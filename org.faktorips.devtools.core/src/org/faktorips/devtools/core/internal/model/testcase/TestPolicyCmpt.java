@@ -33,9 +33,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
@@ -486,42 +484,24 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	 */
     public void updateDefaultTestAttributeValues() throws CoreException{
         // add the attributes which are defined in the test case type parameter
+        IProductCmptGeneration generation = findProductCmpsCurrentGeneration();
+        ITestAttributeValue[] testAttrValues = getTestAttributeValues();
+        for (int i = 0; i < testAttrValues.length; i++) {
+            ((TestAttributeValue)testAttrValues[i]).setDefaultTestAttributeValueInternal(generation);
+        }
+    }
+
+    /**
+     * Returns the product components generation depending on the current working date (current working generation).
+     */
+    IProductCmptGeneration findProductCmpsCurrentGeneration() throws CoreException {
         GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
         IProductCmpt productCmptObj = getIpsProject().findProductCmpt(productCmpt);
         IProductCmptGeneration generation = null;
         if (productCmptObj != null){
             generation = (IProductCmptGeneration)productCmptObj.findGenerationEffectiveOn(workingDate);
         }
-        ITestPolicyCmptTypeParameter typeParam = findTestPolicyCmptTypeParameter();
-        if (typeParam == null){
-            // test parameter not found, do nothing
-            return;
-        }
-        ITestAttribute attributes[] = typeParam.getTestAttributes();
-        for (int i = 0; i < attributes.length; i++) {
-            ITestAttributeValue testAttrValue = getTestAttributeValue(attributes[i].getName());
-            setDefaultTestAttributeValue(generation, attributes[i], testAttrValue);
-        }
-    }
-    
-    private void setDefaultTestAttributeValue(IProductCmptGeneration generation, ITestAttribute attribute, ITestAttributeValue attrValue) throws CoreException {
-        IAttribute modelAttribute = attribute.findAttribute();
-        if (modelAttribute != null){
-            boolean defaultSet = false;
-        	// set default as specified in the product cmpt
-            if (modelAttribute.isProductRelevant() && generation != null){
-                IConfigElement ce = generation.getConfigElement(modelAttribute.getName());
-                if (ce != null){
-                    attrValue.setValue(ce.getValue());
-                    defaultSet = true;
-                }
-            }
-            // alternative set the default as specified in the policy cmpt type
-            if (! defaultSet){
-                attrValue.setValue(modelAttribute.getDefaultValue());
-                defaultSet = true;
-            }
-        }
+        return generation;
     }
 	
     /**

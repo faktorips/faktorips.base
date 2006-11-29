@@ -82,4 +82,12 @@ public interface ITestAttributeValue extends IIpsObjectPart{
      */
     public boolean isExpextedResultAttribute();
     
+    /**
+     * Updates the default for the test attribute value. The default will be retrieved from the
+     * product cmpt or if no product cmpt is available or the attribute isn't configurated by product 
+     * then from the policy cmpt. Don't update the value if not default is specified.
+     * 
+     * @throws CoreException in case of an error.
+     */
+    public void updateDefaultTestAttributeValue() throws CoreException;
 }

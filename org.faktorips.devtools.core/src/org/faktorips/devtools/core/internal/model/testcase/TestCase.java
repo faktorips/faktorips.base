@@ -275,6 +275,8 @@ public class TestCase extends IpsObject implements ITestCase {
                 for (int j = 0; j < attrs.length; j++) {
                     ITestAttributeValue testAttributeValue = testPolicyCpmt.newTestAttributeValue();
                     testAttributeValue.setTestAttribute(attrs[j].getName());
+                    // set default for the added test attribute value
+                    testAttributeValue.updateDefaultTestAttributeValue();
                 }
             } else {
                 throw new RuntimeException("Merge of child test test policy cmpts is not supported!"); //$NON-NLS-1$
@@ -287,6 +289,8 @@ public class TestCase extends IpsObject implements ITestCase {
             for (int j = 0; j < testPolicyCmpts.length; j++) {
                 ITestAttributeValue testAttributeValue = testPolicyCmpts[j].newTestAttributeValue();
                 testAttributeValue.setTestAttribute(testAttributesWithMissingTestAttributeValue[i].getName());
+                // set default for the added test attribute value
+                testPolicyCmpts[j].updateDefaultTestAttributeValues();
             }
         }
         

@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
  */
 public class TestCaseHierarchyPath{
 	// Seperator between each hierarchy element
-	public static final String separator = "//"; //$NON-NLS-1$
+	public static final String SEPARATOR = "//"; //$NON-NLS-1$
 	    
 	// Contains the complete hierarchy path
 	private String hierarchyPath = ""; //$NON-NLS-1$
@@ -38,11 +38,11 @@ public class TestCaseHierarchyPath{
      * Removes the folder information from the beginning.
      */
 	public static String unqualifiedName(String hierarchyPath){
-        int index = hierarchyPath.lastIndexOf(separator); //$NON-NLS-1$
+        int index = hierarchyPath.lastIndexOf(SEPARATOR); //$NON-NLS-1$
         if (index == -1) {
             return hierarchyPath;
         }
-        return hierarchyPath.substring(index + separator.length());
+        return hierarchyPath.substring(index + SEPARATOR.length());
 	}
 	
     /**
@@ -144,9 +144,9 @@ public class TestCaseHierarchyPath{
 	public String next(){
 		String next = ""; //$NON-NLS-1$
 		
-		if (hierarchyPath.indexOf(separator)>=0){
-			next = hierarchyPath.substring(0, hierarchyPath.indexOf(separator));
-			hierarchyPath = hierarchyPath.substring(hierarchyPath.indexOf(separator) + separator.length());
+		if (hierarchyPath.indexOf(SEPARATOR)>=0){
+			next = hierarchyPath.substring(0, hierarchyPath.indexOf(SEPARATOR));
+			hierarchyPath = hierarchyPath.substring(hierarchyPath.indexOf(SEPARATOR) + SEPARATOR.length());
 			return next;
 		}else{
 			next = hierarchyPath;
@@ -182,7 +182,7 @@ public class TestCaseHierarchyPath{
      * Returns the folder name for a given hierarchy path.
      */	
 	public static String getFolderName(String hierarchyPath){
-        int index = hierarchyPath.lastIndexOf(separator); //$NON-NLS-1$
+        int index = hierarchyPath.lastIndexOf(SEPARATOR); //$NON-NLS-1$
         if (index == -1){
             return ""; //$NON-NLS-1$
         }
@@ -192,25 +192,25 @@ public class TestCaseHierarchyPath{
 	private String evalHierarchyPathForTestCaseType(ITestPolicyCmpt currTestPolicyCmpt, String hierarchyPath){
 		while (!currTestPolicyCmpt.isRoot()){
 			if (hierarchyPath.length()>0)
-				hierarchyPath = separator + hierarchyPath ;
+				hierarchyPath = SEPARATOR + hierarchyPath ;
 			ITestPolicyCmptRelation testPcTypeRelation = (ITestPolicyCmptRelation) currTestPolicyCmpt.getParent();
 			hierarchyPath = testPcTypeRelation.getTestPolicyCmptTypeParameter() + hierarchyPath;
 			currTestPolicyCmpt = (ITestPolicyCmpt) testPcTypeRelation.getParent();
 		}
-		hierarchyPath = currTestPolicyCmpt.getTestPolicyCmptTypeParameter() + (hierarchyPath.length() > 0 ? separator + hierarchyPath : ""); //$NON-NLS-1$
+		hierarchyPath = currTestPolicyCmpt.getTestPolicyCmptTypeParameter() + (hierarchyPath.length() > 0 ? SEPARATOR + hierarchyPath : ""); //$NON-NLS-1$
 		return hierarchyPath;
 	}
 	
 	private String evalHierarchyPathForTestCase(ITestPolicyCmpt currTestPolicyCmpt, String hierarchyPath){
 		while (!currTestPolicyCmpt.isRoot()){
 			if (hierarchyPath.length()>0)
-				hierarchyPath = separator + hierarchyPath ;
-			hierarchyPath = separator + currTestPolicyCmpt.getName() + hierarchyPath;
+				hierarchyPath = SEPARATOR + hierarchyPath ;
+			hierarchyPath = SEPARATOR + currTestPolicyCmpt.getName() + hierarchyPath;
 			ITestPolicyCmptRelation testPcTypeRelation = (ITestPolicyCmptRelation) currTestPolicyCmpt.getParent();
 			hierarchyPath = testPcTypeRelation.getTestPolicyCmptTypeParameter() + hierarchyPath;
 			currTestPolicyCmpt = (ITestPolicyCmpt) testPcTypeRelation.getParent();
 		}
-		hierarchyPath = currTestPolicyCmpt.getName() + (hierarchyPath.length() > 0 ? separator + hierarchyPath : ""); //$NON-NLS-1$
+		hierarchyPath = currTestPolicyCmpt.getName() + (hierarchyPath.length() > 0 ? SEPARATOR + hierarchyPath : ""); //$NON-NLS-1$
 		return hierarchyPath;
 	}
 }

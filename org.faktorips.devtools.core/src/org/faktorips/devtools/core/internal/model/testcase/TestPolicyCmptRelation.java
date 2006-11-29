@@ -354,4 +354,11 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
         validateGroup(list);
 		validateSingle(list);
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getName() {
+        return getTestPolicyCmptTypeParameter();
+    }
 }
