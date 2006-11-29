@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class AbstractProductCmptNamingStrategyTest extends AbstractIpsPluginTest {
+public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPluginTest {
 
 	private AbstractProductCmptNamingStrategy namingStrategy;
 	

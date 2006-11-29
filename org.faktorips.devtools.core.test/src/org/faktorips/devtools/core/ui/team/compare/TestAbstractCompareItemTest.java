@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItem;
 import org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItemCreator;
 
-public class AbstractCompareItemTest extends AbstractIpsPluginTest {
+public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
 
     private IStructureCreator structureCreator = new TableContentsCompareItemCreator();
     private ITableContentsGeneration generation;

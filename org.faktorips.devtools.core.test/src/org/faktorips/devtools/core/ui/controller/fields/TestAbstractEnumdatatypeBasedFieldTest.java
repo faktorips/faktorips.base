@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.IpsPlugin;
  * 
  * @author Thorsten Guenther
  */
-public class AbstractEnumdatatypeBasedFieldTest extends AbstractIpsPluginTest {
+public class TestAbstractEnumdatatypeBasedFieldTest extends AbstractIpsPluginTest {
 
     public void testInvalidValue() {
         Composite parent = new Composite(IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.NONE);
