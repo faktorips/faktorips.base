@@ -479,6 +479,10 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
      * {@inheritDoc}
      */
     public boolean isActivated() {
+        
+        if(viewer == null){
+            return false;
+        }
         return viewer.getTable().getDisplay().getCursorControl() == viewer.getTable() ? true : false;
     }
     

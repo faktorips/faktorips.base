@@ -125,6 +125,10 @@ public class SelectionProviderDispatcherTest extends TestCase {
         public boolean isActivated() {
             return activated;
         }
+
+        public boolean isDisposed() {
+            return false;
+        }
     }
     
     

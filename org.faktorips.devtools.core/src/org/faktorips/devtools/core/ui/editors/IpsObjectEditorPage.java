@@ -72,7 +72,7 @@ public abstract class IpsObjectEditorPage extends FormPage {
         registerSelectionProviderActivation(getPartControl());
 	}
 	
-    private void registerSelectionProviderActivation(Control container){
+    protected final void registerSelectionProviderActivation(Control container){
         if(container instanceof ISelectionProviderActivation){
             getIpsObjectEditor().getSelectionProviderDispatcher().addSelectionProviderActivation((ISelectionProviderActivation)container);
         }

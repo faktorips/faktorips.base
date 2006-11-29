@@ -986,6 +986,9 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
      * {@inheritDoc}
      */
     public boolean isActivated() {
+        if(treeViewer == null){
+            return false;
+        }
         return treeViewer.getTree().isFocusControl();
     }
 }

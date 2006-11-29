@@ -67,13 +67,21 @@ public class SelectionProviderDispatcher implements ISelectionProvider, ISelecti
 
     private ISelectionProviderActivation determineCurrentActivation(){
         if(currentActivation != null){
+            if(currentActivation.isDisposed()){
+                currentActivation = null;
+            }
             if(currentActivation.isActivated()){
                 return currentActivation;
             }
             currentActivation = null;
         }
-        for (Iterator it = activiations.iterator(); it.hasNext();) {
-            ISelectionProviderActivation activation = (ISelectionProviderActivation)it.next();
+        for (int i = 0; i < activiations.size(); i++) {
+            ISelectionProviderActivation activation = (ISelectionProviderActivation)activiations.get(i);
+            if(activation.isDisposed()){
+                activiations.remove(i);
+                i--;
+                continue;
+            }
             if(activation.isActivated()){
                 currentActivation = activation;
                 break;
@@ -105,6 +113,9 @@ public class SelectionProviderDispatcher implements ISelectionProvider, ISelecti
      * with this dispatcher.
      */
     public void addSelectionProviderActivation(ISelectionProviderActivation activation){
+        if(activation == null || activation.isDisposed() || activation.getSelectionProvider() == null){
+            return;
+        }
         activiations.add(activation);
         activation.getSelectionProvider().addSelectionChangedListener(this);
     }

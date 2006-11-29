@@ -311,8 +311,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 
 	/**
 	 * Checks if the currently active generations valid-from-date matches exactly the currently set
-	 * working date. If not so, a search for a matching geneartion is started. If nothing found, the user
-	 * is asked to create one. 
+	 * working date. If not so, a search for a matching generation is started. If nothing is found, the user
+	 * is asked to create a new one. 
 	 */
 	private void checkGeneration() {
 

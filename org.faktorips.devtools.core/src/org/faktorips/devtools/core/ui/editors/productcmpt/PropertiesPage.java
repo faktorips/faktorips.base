@@ -158,8 +158,13 @@ public class PropertiesPage extends IpsObjectEditorPage {
 		productAttributesSection.setFocusSuccessor(formulasSection);
 		formulasSection.setFocusSuccessor(defaultsAndRangesSection);
 		defaultsAndRangesSection.setFocusSuccessor(relationsSection);
-
-		pageRoot.layout();
+        
+        //searches for Composites that implement the ISelectionProviderActivation interface and registers
+        //them with the selection provider dispatcher of the IpsObjectEditor
+		registerSelectionProviderActivation(root);
+		
+        pageRoot.layout();
+        
 		setEnabled(enabled);
 	}
 

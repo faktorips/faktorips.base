@@ -39,4 +39,10 @@ public interface ISelectionProviderActivation {
      * Returns if the selection provider of this activation is active.
      */
     public boolean isActivated();
+    
+    /**
+     * Returns true if the control that is displayed for the selection provider of this activation is
+     * disposed.
+     */
+    public boolean isDisposed();
 }
