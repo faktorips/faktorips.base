@@ -106,7 +106,4 @@ public abstract class SimpleIpsPartsSection extends IpsSection {
     public final IIpsObjectPart getSelectedPart() {
         return pdPartsComposite.getSelectedPart();
     }
-    
-    
-    
 }
