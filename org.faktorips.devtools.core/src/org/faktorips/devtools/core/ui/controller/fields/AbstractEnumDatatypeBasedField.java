@@ -160,7 +160,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 
         boolean isParsable = false;
         try {
-            datatype.isParsable((String) newValue);
+            isParsable = datatype.isParsable((String) newValue);
         } catch (NumberFormatException e) {
             // ignore number format exception, value is not parsable
         }
