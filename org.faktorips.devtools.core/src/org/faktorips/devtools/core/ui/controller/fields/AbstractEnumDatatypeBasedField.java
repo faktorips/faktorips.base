@@ -44,24 +44,12 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	private String[] ids;
 	
 	private String invalidValue;
-
-    // contains the property to specify the display name (e.g. id, name, or both)
-    private EnumTypeDisplay enumTypeDisplay = EnumTypeDisplay.DEFAULT;
     
 	public AbstractEnumDatatypeBasedField(Combo combo, ValueDatatype datatype) {
 		super(combo);
 		ArgumentCheck.notNull(datatype);
 		this.datatype = datatype;
-        
-        enumTypeDisplay = IpsPlugin.getDefault().getIpsPreferences().getEnumTypeDisplay();
 	}
-
-    /**
-     * Sets the enum type display property.
-     */
-	public void setEnumTypeDisplay(EnumTypeDisplay enumTypeDisplay) {
-        this.enumTypeDisplay = enumTypeDisplay;
-    }
 
     /**
 	 * Refills the combo box and tries to keep the current value if it is still
@@ -187,17 +175,13 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
      */
 	public String getValueName(String id) {
 		String noNullId = (String)super.prepareObjectForSet(id);
-		if (datatype instanceof EnumDatatype && ((EnumDatatype)datatype).isSupportingNames()) {
-            if (enumTypeDisplay.equals(EnumTypeDisplay.NAME_AND_ID)){
-                return ((EnumDatatype)datatype).getValueName(noNullId) + " (" + noNullId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-            } else if (enumTypeDisplay.equals(EnumTypeDisplay.NAME)){
-                return ((EnumDatatype)datatype).getValueName(noNullId);
-            } else {
-                return noNullId;
-            }
-		} else {
-			return noNullId;
-		}
+        if (datatype instanceof EnumDatatype && ((EnumDatatype)datatype).isSupportingNames()) {
+            return IpsPlugin.getDefault().getIpsPreferences().getFormatedEnumText(noNullId,
+                    ((EnumDatatype)datatype).getValueName(noNullId));
+        }
+        else {
+            return noNullId;
+        }
 	}
 
 	/**

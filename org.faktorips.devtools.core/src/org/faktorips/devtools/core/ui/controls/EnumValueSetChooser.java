@@ -41,12 +41,12 @@ public class EnumValueSetChooser extends ListChooser {
 	/**
 	 * The value set to modify 
 	 */
-	private IEnumValueSet target;
+	private IEnumValueSet targetValueSet;
 
     /**
      * The value set to get the values from 
      */
-    private IEnumValueSet source;
+    private IEnumValueSet sourceValueSet;
 
     /**
 	 * The controller to notify of changes to the target value set
@@ -58,6 +58,8 @@ public class EnumValueSetChooser extends ListChooser {
 	 */
 	private Map id2name = new HashMap();
 	
+    private EnumDatatype type;
+    
 	/**
      * @param parent The parent control
      * @param toolkit The toolkit to make creation of UI easier.
@@ -70,19 +72,33 @@ public class EnumValueSetChooser extends ListChooser {
     public EnumValueSetChooser(Composite parent, UIToolkit toolkit, IEnumValueSet source, IEnumValueSet target,
             EnumDatatype type, DefaultUIController uiController) {
         super(parent, toolkit);
-        this.target = target;
-        this.source = source;
+        this.targetValueSet = target;
+        this.sourceValueSet = source;
+        this.type = type;
         this.uiController = uiController;
-        super.setTargetContent(getTargetValues(target, type));
-        super.setSourceContent(getSourceValues(source, target, type));
+        setContents();
     }
 
+    private void setContents() {
+        super.setTargetContent(getTargetValues(targetValueSet, type));
+        super.setSourceContent(getSourceValues(sourceValueSet, targetValueSet, type));
+    }
+
+    /**
+     * Udates the target list with the given value set depending on the given type.
+     */
+    public void setEnumTypeAndValueSet(EnumDatatype type, IEnumValueSet valueSet) {
+        this.targetValueSet = valueSet;
+        this.type = type;
+        setContents();
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */
 	public void valuesAdded(String[] values) {
 		for (int i = 0; i < values.length; i++) {
-			target.addValue(getIdForName(values[i]));
+            targetValueSet.addValue(getIdForName(values[i]));
 		}
 		uiController.updateUI();
 	}
@@ -92,7 +108,7 @@ public class EnumValueSetChooser extends ListChooser {
 	 */
 	public void valuesRemoved(String[] values) {
 		for (int i = 0; i < values.length; i++) {
-			target.removeValue(getIdForName(values[i]));
+            targetValueSet.removeValue(getIdForName(values[i]));
 		}
 		uiController.updateUI();
 	}
@@ -107,9 +123,9 @@ public class EnumValueSetChooser extends ListChooser {
 		} else {
 			newIndex = index + 1;
 		}
-		String old = target.getValue(newIndex);
-		target.setValue(newIndex, value);
-		target.setValue(index, getIdForName(old));
+		String old = targetValueSet.getValue(newIndex);
+        targetValueSet.setValue(newIndex, value);
+        targetValueSet.setValue(index, getIdForName(old));
 
 	}	
 	
@@ -177,7 +193,8 @@ public class EnumValueSetChooser extends ListChooser {
 		for (int i = 0; i < ids.length; i++) {
 			String name;
 			if (type != null && type.isSupportingNames()) {
-				name = type.getValueName(ids[i]) + " (" + ids[i] + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                name = IpsPlugin.getDefault().getIpsPreferences().getFormatedEnumText(ids[i],
+                        type.getValueName(ids[i]));
 			} else {
 				name = ids[i];
 			}
@@ -198,10 +215,10 @@ public class EnumValueSetChooser extends ListChooser {
     public MessageList getMessagesFor(String value) {
         String id = (String)this.id2name.get(value);
         MessageList result = new MessageList();
-        if(source == null){
+        if(sourceValueSet == null){
             return result;
         }
-        source.containsValue(id, result, target, null);
+        sourceValueSet.containsValue(id, result, targetValueSet, null);
         return result;
     }
 }

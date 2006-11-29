@@ -49,7 +49,7 @@ import org.faktorips.util.message.MessageList;
  */
 public class EnumValueSetEditControl extends EditTableControl {
 
-    private EnumValueSet valueSet;
+    private IEnumValueSet valueSet;
 
     private TableElementValidator tableElementValidator;
 
@@ -78,11 +78,11 @@ public class EnumValueSetEditControl extends EditTableControl {
         valueSet = (EnumValueSet)modelObject;
     }
 
-    public EnumValueSet getEnumValueSet() {
+    public IEnumValueSet getEnumValueSet() {
         return valueSet;
     }
 
-    public void setEnumValueSet(EnumValueSet valueSet) {
+    public void setEnumValueSet(IEnumValueSet valueSet) {
         this.valueSet = valueSet;
         getTableViewer().setInput(valueSet);
     }

@@ -280,16 +280,18 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     public String toShortString() {
-    	Datatype type = getValueDatatype();
-    	if (type != null && type instanceof EnumDatatype && ((EnumDatatype)type).isSupportingNames()) {
-    		List result = new ArrayList(elements.size());
-    		for (Iterator iter = elements.iterator(); iter.hasNext();) {
-    			String id = (String) iter.next();
-				result.add(((EnumDatatype)type).getValueName(id) + " (" + id + ")"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-    		return result.toString();
-    	}
-    	return elements.toString();
+        Datatype type = getValueDatatype();
+        if (type != null && type instanceof EnumDatatype && ((EnumDatatype)type).isSupportingNames()) {
+            List result = new ArrayList(elements.size());
+            for (Iterator iter = elements.iterator(); iter.hasNext();) {
+                String id = (String)iter.next();
+                String formatedEnumText = IpsPlugin.getDefault().getIpsPreferences().getFormatedEnumText(id,
+                        ((EnumDatatype)type).getValueName(id));
+                result.add(formatedEnumText);
+            }
+            return result.toString();
+        }
+        return elements.toString();
     }
     
 	/**

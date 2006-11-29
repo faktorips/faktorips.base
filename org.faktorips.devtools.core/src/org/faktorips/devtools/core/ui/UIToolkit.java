@@ -452,9 +452,10 @@ public class UIToolkit {
 	}
 
     /**
-     * Creates a combo containing the given <code>EnumDatatype</code>'s values as items.
-     * If the given <code>EnumDatatype</code> supports names, the values' names are used
-     * otherwise the values' IDs are used as items in the combo. 
+     * Creates a combo containing the given <code>EnumDatatype</code>'s values as items. If the
+     * given <code>EnumDatatype</code> supports names, the values' names and ids are used as
+     * defined in the properties (e.g. "[name] ([id])") otherwise the values' IDs are used as items
+     * in the combo.
      */
     public Combo createCombo(Composite parent, EnumDatatype enumValues) {
         Combo newCombo = createCombo(parent);
@@ -462,9 +463,11 @@ public class UIToolkit {
             String[] ids = enumValues.getAllValueIds(true);
             ArrayList nameList = new ArrayList(ids.length);
             for (int i = 0; i < ids.length; i++) {
-                nameList.add(enumValues.getValueName(ids[i]));
+                String formatedText = IpsPlugin.getDefault().getIpsPreferences().getFormatedEnumText(ids[i],
+                        enumValues.getValueName(ids[i]));
+                nameList.add(formatedText);
             }
-            setComboValues(newCombo, (String[]) nameList.toArray(new String[ids.length]));
+            setComboValues(newCombo, (String[])nameList.toArray(new String[ids.length]));
             return newCombo;
         }
         setComboValues(newCombo, enumValues.getAllValueIds(true));
@@ -508,25 +511,27 @@ public class UIToolkit {
 	}
 	
 	/**
-	 * Creates a new Combo and adds the values of the value set as items to it
-	 * and returns it. If an EnumDatatype is provided then the names for the
-	 * values in the EnumValueSet are retrieved from it and added as items to the
-	 * Combo. If the EnumValueSet doesn't base on an EnumDatatype or if just the
-	 * value ids are to display in the Combo null can be specified for the
-	 * EnumDatatype parameter.
-	 */
+     * Creates a new Combo and adds the values of the value set as items to it and returns it. If an
+     * EnumDatatype is provided then the names for the values in the EnumValueSet are retrieved from
+     * it and added as items combined with the id as the property defined to the Combo. If the
+     * EnumValueSet doesn't base on an EnumDatatype or if just the value ids are to display in the
+     * Combo null can be specified for the EnumDatatype parameter.
+     */
 	public Combo createCombo(Composite parent, IEnumValueSet enumValueSet,
 			EnumDatatype dataType) {
 		Combo newCombo = createCombo(parent);
 
 		String[] values = new String[enumValueSet.size()];
-		for (int i = 0; i < values.length; i++) {
-			if (dataType != null && dataType.isSupportingNames()) {
-				values[i] = dataType.getValueName(enumValueSet.getValue(i));
-			} else {
-				values[i] = enumValueSet.getValue(i);
-			}
-		}
+        for (int i = 0; i < values.length; i++) {
+            if (dataType != null && dataType.isSupportingNames()) {
+                String formatedText = IpsPlugin.getDefault().getIpsPreferences().getFormatedEnumText(
+                        enumValueSet.getValue(i), dataType.getValueName(enumValueSet.getValue(i)));
+                values[i] = formatedText;
+            }
+            else {
+                values[i] = enumValueSet.getValue(i);
+            }
+        }
 
 		setComboValues(newCombo, values);
 		return newCombo;

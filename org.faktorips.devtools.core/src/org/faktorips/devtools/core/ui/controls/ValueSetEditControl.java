@@ -118,6 +118,11 @@ public class ValueSetEditControl extends ControlComposite {
                     enumControl = new EnumValueSetChooser(group, toolkit, null, (IEnumValueSet)valueSet, enumType,
                             uiController);
                     enumControl.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
+                } else {
+                    // update ui with the current value set in the model object,
+                    // because we reuse the old control and maybe the value set of the attribute has changed in the meanwhile
+                    // (e.g. if we select all values then Attribute#setValueSetType is called and the internal enum values are deleted!)
+                    ((EnumValueSetChooser)enumControl).setEnumTypeAndValueSet(enumType, (IEnumValueSet)this.attribute.getValueSet());
                 }
             }
             else {
@@ -125,6 +130,11 @@ public class ValueSetEditControl extends ControlComposite {
                     groupComposite = createEnumValueSetGroup(valueSetArea, Messages.ValueSetEditControl_labelAllowedValueSet);
                     enumControl = new EnumValueSetEditControl((IEnumValueSet)valueSet, group, tableElementValidator);
                     enumControl.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
+                } else {
+                    // update ui with the current value set in the model object,
+                    // because we reuse the old control and maybe the value set of the attribute has changed in the meanwhile
+                    // (e.g. if we select all values then Attribute#setValueSetType is called and the internal enum values are deleted!)
+                    ((EnumValueSetEditControl)enumControl).setEnumValueSet((IEnumValueSet)this.attribute.getValueSet());
                 }
             }
             
@@ -285,6 +295,8 @@ public class ValueSetEditControl extends ControlComposite {
             valueSetArea.layout(); // show the new top control
             valueSetArea.getParent().layout(); // parent has to resize
             valueSetArea.getParent().getParent().layout(); // parent has to resize
+            
+            uiController.updateUI();
 		}
     }
 }
