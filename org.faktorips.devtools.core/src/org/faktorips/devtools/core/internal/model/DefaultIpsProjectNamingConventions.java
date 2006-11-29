@@ -243,7 +243,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
      */
     public MessageList validateIpsPackageName(String name) {
         MessageList ml = new MessageList();
-        if (name.equals("")) { 
+        if (name.equals("")) {  //$NON-NLS-1$
             return ml;
         }
         ml.add(validateJavaPackageName(name, Messages.DefaultIpsProjectNamingConventions_error,

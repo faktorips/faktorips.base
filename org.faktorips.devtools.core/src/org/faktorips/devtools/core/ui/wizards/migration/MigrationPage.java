@@ -58,7 +58,8 @@ public class MigrationPage extends WizardPage {
         StringBuffer desc = new StringBuffer();
         setPageComplete(true);
         for (int i = 0; i < projects.length; i++) {
-            desc.append(Messages.MigrationPage_titleProject).append(projects[i].getName()).append(":").append(SystemUtils.LINE_SEPARATOR).append(SystemUtils.LINE_SEPARATOR); //$NON-NLS-2$ //$NON-NLS-1$ //$NON-NLS-1$
+            desc.append(Messages.MigrationPage_titleProject).append(projects[i].getName())
+                    .append(":").append(SystemUtils.LINE_SEPARATOR).append(SystemUtils.LINE_SEPARATOR); //$NON-NLS-1$
             try {
                 desc.append(IpsPlugin.getDefault().getMigrationOperation(projects[i]).getDescription());
                 desc.append(SystemUtils.LINE_SEPARATOR);

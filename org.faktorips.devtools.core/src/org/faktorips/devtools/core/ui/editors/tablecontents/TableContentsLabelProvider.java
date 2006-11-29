@@ -63,7 +63,7 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
      * Adds an cell editor for which the mapping between an id and a displayed text is supported.
      */
     public void addMappedEditor(int columnIdx, TableCellEditor cellEditor){
-        mappedEditor.put(""+columnIdx, cellEditor);
+        mappedEditor.put(""+columnIdx, cellEditor); //$NON-NLS-1$
     }
     
     /**
@@ -99,9 +99,9 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
                 value= IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
             }
 
-            if (mappedEditor.containsKey(""+columnIndex)){
+            if (mappedEditor.containsKey(""+columnIndex)){ //$NON-NLS-1$
                 // the value inside the cell will be mapped to the specified format as defined in the editor 
-                TableCellEditor cellEditor = (TableCellEditor)mappedEditor.get(""+columnIndex);
+                TableCellEditor cellEditor = (TableCellEditor)mappedEditor.get(""+columnIndex); //$NON-NLS-1$
                 EnumDatatypeField enumDatatypeField = (EnumDatatypeField)cellEditor.getControl().getData();
                 return enumDatatypeField.getValueName(value);
             }

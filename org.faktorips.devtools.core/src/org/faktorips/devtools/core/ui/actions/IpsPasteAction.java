@@ -356,7 +356,7 @@ public class IpsPasteAction extends IpsAction {
             // if force is true don't show dialog (for automated testing purposite force could be set to true)
             if (!forceUseNameSuggestionIfFileExists) {
                 dialogWasDisplayed = true;
-                suggestedName += showExtension?extension:"";
+                suggestedName += showExtension?extension:""; //$NON-NLS-1$
                 InputDialog dialog = new InputDialog(shell, Messages.IpsPasteAction_titleNamingConflict, NLS.bind(
                         Messages.IpsPasteAction_msgNamingConflict, nameWithOrWithoutExtension), suggestedName, validator);
                 dialog.setBlockOnOpen(true);

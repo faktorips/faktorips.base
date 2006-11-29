@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Event;
 
 /**
@@ -121,7 +122,7 @@ public abstract class AbstractSelectionChangedListenerAction extends Action impl
     
     protected final void checkDisposedState(){
         if(disposed){
-            throw new RuntimeException("This " + AbstractSelectionChangedListenerAction.class + " has already been disposed.");
+            throw new RuntimeException(NLS.bind("This {0} has already been disposed.", AbstractSelectionChangedListenerAction.class)); //$NON-NLS-1$
         }
     }
 }
