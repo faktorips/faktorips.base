@@ -564,7 +564,9 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
             if (datatype != null) {
                 ValueSetType[] types = attribute.getIpsProject().getValueSetTypes(datatype);
                 valueSetEditControl.setTypes(types, datatype);
-                valueSetEditControl.selectValueSetType(prevSelectedType);
+                if (prevSelectedType != null){
+                    valueSetEditControl.selectValueSetType(prevSelectedType);
+                }
             } else {
                 valueSetEditControl.setTypes(new ValueSetType[]{ValueSetType.ALL_VALUES}, null);
             }
