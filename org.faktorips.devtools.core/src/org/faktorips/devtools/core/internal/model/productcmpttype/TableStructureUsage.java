@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dï¿½rfen nur unter den Bedingungen der 
+ * Faktor-Zehn-Community Lizenzvereinbarung ï¿½ Version 0.1 (vor Grï¿½ndung Community) 
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -22,6 +22,7 @@ import java.util.Iterator;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -208,5 +209,39 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
             result.add(new Message(msg.getCode(), msg.getText(), msg.getSeverity(), newProps));
         }
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsElement[] getChildren() {
+        return new IIpsElement[0];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void reinitPartCollections() {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void reAddPart(IIpsObjectPart part) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void removePart(IIpsObjectPart part) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+        return null;
     }
 }

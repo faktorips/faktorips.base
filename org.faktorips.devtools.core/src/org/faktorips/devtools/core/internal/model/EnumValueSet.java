@@ -297,13 +297,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
 		elements.clear();

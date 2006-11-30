@@ -23,9 +23,11 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -78,6 +80,17 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     public IpsObjectPartContainer() {
         super();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsSrcFile getIpsSrcFile() {
+        IIpsObject obj = getIpsObject();
+        if (obj==null) {
+            return null;
+        }
+        return obj.getIpsSrcFile();
     }
 
     /**
@@ -160,6 +173,30 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     protected abstract void objectHasChanged();
     
+    /**
+     * Hass to be called when a part was added to the container to trigger event
+     * notification.
+     */
+    protected void partWasAdded(IIpsObjectPart part) {
+        objectHasChanged(ContentChangeEvent.newPartAddedEvent(part));
+    }
+
+    protected void partsMoved(IIpsObjectPart[] parts) {
+        ContentChangeEvent event = ContentChangeEvent.newPartsChangedPositionsChangedEvent(getIpsSrcFile(), parts);
+        objectHasChanged(event);
+    }
+    
+    protected void objectHasChanged(ContentChangeEvent event) {
+        IpsModel model = (IpsModel)getIpsModel();
+        IpsSrcFileContent content = model.getIpsSrcFileContent(getIpsSrcFile());
+        if (content!=null) {
+            content.ipsObjectChanged(event);
+        } else {
+            model.ipsSrcFileContentHasChanged(event);
+        }
+        
+    }
+    
     private void checkExtProperty(String propertyId) {
         initExtPropertiesIfNotDoneSoFar();
         if (!extPropertyValues.containsKey(propertyId)) {
@@ -178,9 +215,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
     
     /** 
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.XmlSupport#toXml(org.w3c.dom.Document)
+     * {@inheritDoc}
      */
     public Element toXml(Document doc) {
         Element newElement = createElement(doc);
@@ -393,14 +428,19 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @throws RuntimeException if the part can't be readded, e.g. because it's type is unknown.
      */
     protected abstract void reAddPart(IIpsObjectPart part);
+    
+    /**
+     * Removes the given part from the container.
+     */
+    protected abstract void removePart(IIpsObjectPart part);
 
     /**
      * This method is called during the initFromXml processing to create a new part object for 
      * the given element with the given id. Subclasses must create the right part based on
-     * the xml element, e.g. for IPolicyCmptType: if the element name is <code>IAttribute</code>
+     * the xml element, e.g. for IPolicyCmptType: if the element name is <code>Attribute</code>
      * an <code>IAttribute</code> is created.
      * <p>
-     * Note: It is <strong>NOT</strong> neccessary to fully initialize the the part, this is 
+     * Note: It is <strong>NOT</strong> neccessary to fully initialize the part, this is 
      * done later by the caller calling initFromXml().
      * 
      * @return a new part with the given id, or <code>null</code> if the xml tag name is unknown.

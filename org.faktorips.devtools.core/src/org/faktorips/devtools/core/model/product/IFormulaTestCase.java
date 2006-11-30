@@ -18,7 +18,6 @@
 package org.faktorips.devtools.core.model.product;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.internal.model.product.FormulaTestInputValue;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 
 /**
@@ -91,12 +90,6 @@ public interface IFormulaTestCase extends IIpsObjectPart {
      */
     public IFormulaTestInputValue newFormulaTestInputValue();
 
-    /**
-     * Removes the given formula test input value from the list of formula test values.
-     * @param value
-     */
-    public void removeFormulaTestInputValue(FormulaTestInputValue formulaTestInputValue);
-    
     /**
      * Adds new or delete unused formula test input values. Returns <code>true</code> if one or more
      * formula test input values are deleted or added. If there was no change returns <code>false</code>.

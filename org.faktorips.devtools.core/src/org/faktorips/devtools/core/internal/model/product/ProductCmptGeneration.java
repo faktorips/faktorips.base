@@ -221,10 +221,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 		return e;
 	}
 
-	void removeConfigElement(ConfigElement element) {
-		configElements.remove(element);
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -339,11 +335,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 		objectHasChanged();
 	}
 
-	void removeRelation(ProductCmptRelation relation) {
-		relations.remove(relation);
-		objectHasChanged();
-	}
-
     /**
      * {@inheritDoc}
      */
@@ -362,12 +353,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
         tableContentUsages.add(retValue);
         return retValue;
     }
-    
-    void removeTableContentUsage(ITableContentUsage usage) {
-        tableContentUsages.remove(usage);
-        objectHasChanged();
-    }
-    
     
 	/*
 	 * Returns true if the generation contains a formula config element, otherwise false.
@@ -418,6 +403,26 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
         }
 		throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void removePart(IIpsObjectPart part) {
+        if (part instanceof IConfigElement) {
+            configElements.remove(part);
+            return;
+        }
+        else if (part instanceof IProductCmptRelation) {
+            relations.remove(part);
+            return;
+        }
+        else if (part instanceof ITableContentUsage) {
+            tableContentUsages.remove(part);
+            return;
+        }
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+    }
+
 
 	/**
 	 * {@inheritDoc}

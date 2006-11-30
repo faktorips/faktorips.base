@@ -23,8 +23,7 @@ import java.util.List;
 
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsObjectPart;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
@@ -38,7 +37,7 @@ import org.w3c.dom.NodeList;
 /**
  *
  */
-public abstract class Key extends IpsObjectPart implements IKey {
+public abstract class Key extends AtomicIpsObjectPart implements IKey {
     
     final static String KEY_ITEM_TAG_NAME = "Item"; //$NON-NLS-1$
     
@@ -197,26 +196,6 @@ public abstract class Key extends IpsObjectPart implements IKey {
             itemElement.setAttribute("name", item); //$NON-NLS-1$
             element.appendChild(itemElement);
         }
-    }
-
-    /**
-     * Returns <code>null</code>
-     */
-    public IIpsObjectPart newPart(Class partType) {
-        return null;
-    }
-
-    /**
-     * Empty implementation
-     */
-    public void delete() {
-    }
-
-    /**
-     * Returns false
-     */
-    public boolean isDeleted() {
-        return false;
     }
 
     /**

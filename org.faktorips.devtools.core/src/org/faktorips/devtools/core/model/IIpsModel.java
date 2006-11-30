@@ -116,17 +116,23 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Adds a listener that is notified when something in the model was changed. The notifications
      * are made in the ui-thread.
-     * 
-     * @throws IllegalArgumentException if listener is null.
      */
     public void addChangeListener(ContentsChangeListener listener);
 
     /**
      * Removes the change listener.
-     * 
-     * @throws IllegalArgumentException if listener is null.
      */
     public void removeChangeListener(ContentsChangeListener listener);
+
+    /**
+     * Adds the modification status change listener. 
+     */
+    public void addModifcationStatusChangeListener(IModificationStatusChangeListener listener);
+
+    /**
+     * Removes the modification status change listener. 
+     */
+    public void removeModificationStatusChangeListener(IModificationStatusChangeListener listener);
 
     /**
      * Returns all package fragment roots containing source files or an empty array if none is

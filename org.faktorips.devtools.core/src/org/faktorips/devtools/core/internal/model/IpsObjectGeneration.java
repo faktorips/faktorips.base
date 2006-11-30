@@ -102,26 +102,6 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     /**
      * {@inheritDoc}
      */
-    public void delete() {
-        ((TimedIpsObject)getTimedIpsObject()).removeGeneration(this);
-        deleted = true;
-        objectHasChanged();
-        parent = null;
-    }
-
-    private boolean deleted = false;
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-    	return deleted;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
     public Image getImage() {
     	return IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptImage();
     }

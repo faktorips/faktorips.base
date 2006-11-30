@@ -25,8 +25,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsObjectPart;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
@@ -45,7 +44,7 @@ import org.w3c.dom.Text;
 /**
  *
  */
-public class Row extends IpsObjectPart implements IRow {
+public class Row extends AtomicIpsObjectPart implements IRow {
     
     final static String TAG_NAME = "Row"; //$NON-NLS-1$
     final static String VALUE_TAG_NAME = "Value"; //$NON-NLS-1$
@@ -82,24 +81,6 @@ public class Row extends IpsObjectPart implements IRow {
         }
     }
     
-	/**
-	 * {@inheritDoc}
-	 */
-    public void delete() {
-        ((TableContentsGeneration)getParent()).removeRow(this);
-        deleted = true;
-        objectHasChanged();
-    }
-
-    private boolean deleted = false;
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-    	return deleted;
-    }
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -285,10 +266,4 @@ public class Row extends IpsObjectPart implements IRow {
         }
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-	}
 }

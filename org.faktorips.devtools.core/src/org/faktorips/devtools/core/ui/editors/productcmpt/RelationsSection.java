@@ -835,8 +835,7 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
         }
         
     }
-	
-    
+
     /**
      * Synchronizes the model object thus the generation object with the tree viewer. It implements an algorithm
      * that calculates the next selection of an item after the currently selected item has been selected. 
@@ -845,11 +844,9 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
      */
     private class ModelViewerSynchronizer extends ContentsChangeListenerForWidget implements SelectionListener{
 
-        private int currentNumberOfProductCmptRelations = 0;
         private List lastSelectionPath = null;
         
         private ModelViewerSynchronizer(IProductCmptGeneration generation, TreeViewer treeViewer){
-            currentNumberOfProductCmptRelations = generation.getNumOfRelations();
             treeViewer.getTree().addSelectionListener(this);
         }
         
@@ -880,14 +877,20 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
                 IpsPlugin.log(e);
                 generationDirty = true;
             }
-            processRelationChanges();
+            processRelationChanges(event);
         }
 
-        private void processRelationChanges(){
-            // case when a relation has been deleted
-            if(currentNumberOfProductCmptRelations > generation.getNumOfRelations()){
-                currentNumberOfProductCmptRelations = generation.getNumOfRelations();
-                treeViewer.refresh();
+        private void processRelationChanges(ContentChangeEvent event){
+            if (event.getEventType()==ContentChangeEvent.TYPE_PART_REMOVED
+                    && event.containsAffectedObjects(IProductCmptRelation.class)) {
+                IProductCmptRelation relation = (IProductCmptRelation)event.getPart();
+                try {
+                    IProductCmptTypeRelation typeRelation = relation.findProductCmptTypeRelation(); 
+                    treeViewer.refresh(typeRelation);
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                    treeViewer.refresh();
+                }
                 TreeItem possibleSelection = getNextPossibleItem(treeViewer.getTree(), lastSelectionPath);
                 if(possibleSelection == null){
                     return;
@@ -897,10 +900,6 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
                 //that dispite of the new selection no event is triggered
                 treeViewer.getTree().notifyListeners(SWT.Selection, null);
                 return;
-            }
-            //  case when a relation has been added
-            if(currentNumberOfProductCmptRelations < generation.getNumOfRelations()){
-                currentNumberOfProductCmptRelations = generation.getNumOfRelations();
             }
         }
         

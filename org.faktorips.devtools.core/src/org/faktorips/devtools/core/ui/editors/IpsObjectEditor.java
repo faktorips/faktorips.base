@@ -37,7 +37,9 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 
 /**
  * TODO comment 
@@ -62,7 +64,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
  * </li>
  * </ol>
  */
-public abstract class IpsObjectEditor extends FormEditor implements ContentsChangeListener, IPartListener2,
+public abstract class IpsObjectEditor extends FormEditor implements ContentsChangeListener, IModificationStatusChangeListener, IPartListener2,
         IResourceChangeListener {
 
     // the file that's being edited (if any)
@@ -210,16 +212,22 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * {@inheritDoc}
      */
     public void contentsChanged(ContentChangeEvent event) {
-        if (!ipsSrcFile.equals(event.getIpsSrcFile())) {
-            return;
-        }
-        setDirty(ipsSrcFile.isDirty());
         // no refresh neccessary - this method is only called if this editor is the active one.
         // we only need a refresh here if the content of one field of this editorwill have an
         // effect on another field in this editor, but this is not the case yet.
 
         // TODO remark: disabled because of performance problems
         // refresh();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
+        if (!ipsSrcFile.equals(event.getIpsSrcFile())) {
+            return;
+        }
+        setDirty(ipsSrcFile.isDirty());
     }
 
     protected void setDirty(boolean newValue) {
@@ -392,14 +400,15 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         if (this.active == active) {
             return;
         }
-
         this.active = active;
         if (active) {
             IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+            IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(this);
             setDirty(ipsSrcFile.isDirty());
             refresh();
         } else {
             IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+            IpsPlugin.getDefault().getIpsModel().removeModificationStatusChangeListener(this);
         }
     }
 

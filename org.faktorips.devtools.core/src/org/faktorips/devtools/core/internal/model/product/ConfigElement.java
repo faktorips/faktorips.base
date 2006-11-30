@@ -79,8 +79,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     private List formulaTestCases = new ArrayList(0);
     
-	private boolean deleted = false;
-
     // the cached formula identifier if the config item is from type formula
     private String[] identifierInFormulaCached;
     // the previous formula value will be used if the cache isvalid or needs to be refreshed
@@ -156,30 +154,14 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	}
 
 	/**
-	 * Overridden.
-	 */
-	public void delete() {
-		((ProductCmptGeneration) getParent()).removeConfigElement(this);
-		deleted = true;
-        objectHasChanged();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isDeleted() {
-		return deleted;
-	}
-
-	/**
-	 * Overridden.
+     * {@inheritDoc}
 	 */
 	public Image getImage() {
 		return IpsPlugin.getDefault().getImage("AttributePublic.gif"); //$NON-NLS-1$
 	}
 
 	/**
-	 * Overridden.
+     * {@inheritDoc}
 	 */
 	public IAttribute findPcTypeAttribute() throws CoreException {
 		IPolicyCmptType pcType = ((IProductCmpt) getIpsObject())
@@ -433,8 +415,22 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
     
     /**
-	 * Overridden.
-	 */
+     * {@inheritDoc}
+     */
+    protected void removePart(IIpsObjectPart part) {
+        if (part instanceof IValueSet) {
+            this.valueSet = null;
+            return;
+        } else if (part instanceof IFormulaTestCase){
+            formulaTestCases.remove(part);
+            return;
+        }
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
 		type = ConfigElementType.getConfigElementType(element

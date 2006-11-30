@@ -503,9 +503,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#reAddPart(org.faktorips.devtools.core.model.IIpsObjectPart)
+     * {@inheritDoc}
      */
     protected void reAddPart(IIpsObjectPart part) {
         if (part instanceof IColumn) {
@@ -523,11 +521,30 @@ public class TableStructure extends IpsObject implements ITableStructure {
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void removePart(IIpsObjectPart part) {
+        if (part instanceof IColumn) {
+            columns.remove(part);
+            return;
+        } else if (part instanceof IColumnRange) {
+            ranges.remove(part);
+            return;
+        } else if (part instanceof IUniqueKey) {
+            uniqueKeys.remove(part);
+            return;
+        } else if (part instanceof IForeignKey) {
+            foreignKeys.remove(part);
+            return;
+        }
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+    }
+
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#newPart(java.lang.String, int)
+     * {@inheritDoc}
      */
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
     	String xmlTagName = xmlTag.getNodeName();
@@ -543,7 +560,8 @@ public class TableStructure extends IpsObject implements ITableStructure {
         }
         throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
     }
-	/**
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public IIpsObjectPart newPart(Class partType) {
@@ -565,4 +583,5 @@ public class TableStructure extends IpsObject implements ITableStructure {
 	public boolean isEnumType() {
 		return type == TableStructureType.ENUMTYPE_MODEL || type == TableStructureType.ENUMTYPE_PRODUCTDEFINTION;
 	}
+
 }

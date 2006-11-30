@@ -41,8 +41,6 @@ import org.w3c.dom.Element;
  */
 public abstract class TestParameter extends IpsObjectPart implements ITestParameter {
 
-    private boolean deleted = false;
-
     protected TestParameterType type = TestParameterType.COMBINED;
 
     public TestParameter(IIpsObject parent, int id) {
@@ -77,23 +75,6 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
      */
     protected Element createElement(Document doc) {
         throw new RuntimeException("Not implemented!"); //$NON-NLS-1$
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void delete() {
-        if (isRoot())
-            ((TestCaseType)getIpsObject()).removeTestParameter(this);
-        objectHasChanged();
-        deleted = true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-        return deleted;
     }
 
     /**

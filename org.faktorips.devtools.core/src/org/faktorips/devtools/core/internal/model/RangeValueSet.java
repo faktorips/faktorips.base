@@ -473,13 +473,6 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     /**
      * {@inheritDoc}
      */
-    public IIpsObjectPart newPart(Class partType) {
-        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         Element el = DescriptionHelper.getFirstNoneDescriptionElement(element);

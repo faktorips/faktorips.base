@@ -21,7 +21,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
@@ -129,4 +131,39 @@ public class TestRuleParameter extends TestParameter implements ITestRuleParamet
             list.add(msg);
         }
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsElement[] getChildren() {
+        return new IIpsElement[0];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void reinitPartCollections() {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void reAddPart(IIpsObjectPart part) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void removePart(IIpsObjectPart part) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+        return null;
+    }
+    
 }

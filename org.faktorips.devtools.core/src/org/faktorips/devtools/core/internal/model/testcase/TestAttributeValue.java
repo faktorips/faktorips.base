@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
  * 
  * @author Joerg Ortmann
  */
-public class TestAttributeValue  extends IpsObjectPart implements ITestAttributeValue {
+public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAttributeValue {
     /* Specifies the default type, will be used if the corresponding test case type parameter 
      * is not specified or not found */
     private static TestParameterType DEFAULT_TYPE = TestParameterType.COMBINED;
@@ -57,8 +57,6 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
 	static final String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
 
 	private String testAttribute = ""; //$NON-NLS-1$
-	
-    private boolean deleted = false;
 	
 	private String value = ""; //$NON-NLS-1$
 	
@@ -149,22 +147,6 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
     /** 
      * {@inheritDoc}
      */
-    public void delete() {
-        ((TestPolicyCmpt)getParent()).removeTestAttributeValue(this);
-        deleted = true;
-        objectHasChanged();
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-    	return deleted;
-    }    
-    
-    /** 
-     * {@inheritDoc}
-     */
     public Image getImage() {
         try {
             ITestAttribute testAttribute = findTestAttribute();
@@ -176,13 +158,6 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
         }
         return IpsPlugin.getDefault().getImage("MissingAttribute.gif"); //$NON-NLS-1$
     }
-    
-    /**
-     * This object has no parts.
-     */
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
-	}
     
     /**
      * {@inheritDoc}

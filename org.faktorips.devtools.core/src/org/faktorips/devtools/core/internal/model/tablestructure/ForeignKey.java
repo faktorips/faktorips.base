@@ -20,7 +20,6 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
@@ -45,9 +44,6 @@ public class ForeignKey extends Key implements IForeignKey {
     
     // the unique key referenced by this fk.
     private String refUniqueKey = ""; //$NON-NLS-1$
-
-    private boolean deleted = false;
-
 
     public ForeignKey(TableStructure tableStructure, int id) {
         super(tableStructure, id);
@@ -112,24 +108,6 @@ public class ForeignKey extends Key implements IForeignKey {
         refUniqueKey = uniqueKey;
         valueChanged(oldValue, refUniqueKey);
     }
-    
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPart#delete()
-     */
-    public void delete() {
-        ((TableStructure)getTableStructure()).removeForeignKey(this);
-        deleted = true;
-        objectHasChanged();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-    	return deleted;
-    }
-
 
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
@@ -269,10 +247,4 @@ public class ForeignKey extends Key implements IForeignKey {
         element.setAttribute(PROPERTY_REF_UNIQUE_KEY, refUniqueKey);
     }
     
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-	}
 }

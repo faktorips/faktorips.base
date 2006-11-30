@@ -64,6 +64,8 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
+import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
@@ -88,6 +90,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     // list of model change listeners that are notified about model changes
     private List changeListeners;
+
+    // list of modifcation status change listeners
+    private List modificationStatusChangeListeners;
 
     /*
      * A map containing the dataypes (value) by id (key).
@@ -196,7 +201,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             // notify about changes
             for (Iterator it = changedSrcFiles.iterator(); it.hasNext();) {
                 IIpsSrcFile file = (IIpsSrcFile)it.next();
-                ContentChangeEvent event = new ContentChangeEvent(file);
+                ContentChangeEvent event = ContentChangeEvent.newWholeContentChangedEvent(file);
                 notifyChangeListeners(event);
             }
         }
@@ -366,6 +371,61 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             return element;
         }
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addModifcationStatusChangeListener(IModificationStatusChangeListener listener) {
+        if (TRACE_MODEL_CHANGE_LISTENERS) {
+            System.out.println("IpsModel.addModificationStatusChangeListener(): " + listener); //$NON-NLS-1$
+        }
+        if (this.modificationStatusChangeListeners == null) {
+            modificationStatusChangeListeners = new ArrayList(1);
+        }
+        modificationStatusChangeListeners.add(listener);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeModificationStatusChangeListener(IModificationStatusChangeListener listener) {
+        if (modificationStatusChangeListeners != null) {
+            boolean wasRemoved = modificationStatusChangeListeners.remove(listener);
+            if (TRACE_MODEL_CHANGE_LISTENERS) {
+                System.out.println("IpsModel.removeModificationStatusChangeListener(): " + listener + ", was removed=" + wasRemoved); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+    }
+
+    public void notifyModificationStatusChangeListener(final ModificationStatusChangedEvent event) {
+        if (modificationStatusChangeListeners == null) {
+            return;
+        }
+        if (TRACE_MODEL_CHANGE_LISTENERS) {
+            System.out.println("IpsModel.notifyModificationStatusChangeListener(): " + modificationStatusChangeListeners.size() + " listeners"); //$NON-NLS-1$  //$NON-NLS-2$
+        }
+        Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
+        display.syncExec(new Runnable() {
+            public void run() {
+                List copy = new ArrayList(modificationStatusChangeListeners); // copy do avoid concurrent modifications while iterating
+                for (Iterator it = copy.iterator(); it.hasNext();) {
+                    try {
+                        IModificationStatusChangeListener listener = (IModificationStatusChangeListener)it.next();
+                        if (TRACE_MODEL_CHANGE_LISTENERS) {
+                            System.out.println("IpsModel.notfiyChangeListeners(): Start notifying listener: " + listener); //$NON-NLS-1$
+                        }
+                        listener.modificationStatusHasChanged(event);
+                        if (TRACE_MODEL_CHANGE_LISTENERS) {
+                            System.out.println("IpsModel.notifyModificationStatusChangeListener(): Finished notifying listener: " + listener); //$NON-NLS-1$
+                        }
+                    } catch (Exception e) {
+                        IpsPlugin.log(new IpsStatus("Error notifying IPS model ModificationStatusChangeListeners", //$NON-NLS-1$
+                                e));
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -1068,7 +1128,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public ValidationResultCache getValidationResultCache() {
         return validationResultCache;
     }
-
+    
     /**
      * Returns the content for the given ips src file. If the ips source file's corresponding
      * resource does not exist, the method returns <code>null</code>.
@@ -1103,20 +1163,24 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return content;
     }
 
-    public void ipsSrcFileHasChanged(IIpsSrcFile file) {
+    public void ipsSrcFileContentHasChanged(ContentChangeEvent event) {
+        IIpsSrcFile file = event.getIpsSrcFile();
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-            System.out.println("IpsModel.ipsSrcFileHasChanged(): About to broadcast change notifications, file=" + file //$NON-NLS-1$
+            System.out.println("IpsModel.ipsSrcFileHasChanged(), file=" + file //$NON-NLS-1$
                     + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
         }
         validationResultCache.removeStaleData(file);
-        ContentChangeEvent event = new ContentChangeEvent(file);
         notifyChangeListeners(event);
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-            System.out.println("IpsModel.ipsSrcFileHasChanged(): Finished broadcasting change notifications, file=" //$NON-NLS-1$
-                    + file + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
+            System.out.println("IpsModel.ipsSrcFileHasChanged(), file=" //$NON-NLS-1$
+                    + event.getIpsSrcFile()+ ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
         }
     }
 
+    public void ipsSrcFileModificationStatusHasChanged(ContentChangeEvent event) {
+        notifyChangeListeners(event);
+    }
+    
     /**
      * ResourceDeltaVisitor to update any model objects on resource changes.
      */
@@ -1148,7 +1212,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                                     + srcFile
                                     + " Thread: " //$NON-NLS-1$
                                     + Thread.currentThread().getName());
-                    ipsSrcFileHasChanged(srcFile);
+                    ipsSrcFileContentHasChanged(ContentChangeEvent.newWholeContentChangedEvent(srcFile));
                 }
                 return true;
             } catch (Exception e) {

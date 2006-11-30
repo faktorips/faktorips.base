@@ -85,6 +85,17 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     /**
      * {@inheritDoc}
      */
+    protected void removePart(IIpsObjectPart part) {
+        if (part instanceof ITestParameter) {
+            testParameters.remove(part);
+            return;
+        }
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
         String xmlTagName = xmlTag.getNodeName();
         if (TestPolicyCmptTypeParameter.TAG_NAME.equals(xmlTagName)) {

@@ -151,13 +151,6 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
 		// nothing more to do...
@@ -210,4 +203,5 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
 			throw new UnsupportedOperationException("Datatype is nonPrimitive, therefore this all-values values has to contain null"); //$NON-NLS-1$
 		}
 	}
+
 }

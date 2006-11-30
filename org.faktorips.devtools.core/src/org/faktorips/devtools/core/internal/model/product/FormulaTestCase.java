@@ -56,28 +56,10 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     
     private String expectedResult = ""; //$NON-NLS-1$
     
-    private boolean deleted = false;
-    
     private List formulaTestInputValues = new ArrayList(0);
     
     public FormulaTestCase(IConfigElement parent, int id) {
         super(parent, id);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void delete() {
-        ((IConfigElement) getParent()).removeFormulaTestCase(this);
-        deleted = true;
-        objectHasChanged();
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-        return deleted;
     }
     
     /**
@@ -126,6 +108,17 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    protected void removePart(IIpsObjectPart part) {
+        if (part instanceof IFormulaTestInputValue) {
+            formulaTestInputValues.remove(part);
+            return;
+        }
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -264,16 +257,6 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         IFormulaTestInputValue v = new FormulaTestInputValue(this, nextPartId);
         formulaTestInputValues.add(v);
         return v;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void removeFormulaTestInputValue(FormulaTestInputValue formulaTestInputValue) {
-        if (formulaTestInputValues.contains(formulaTestInputValue)){
-            formulaTestInputValues.remove(formulaTestInputValue);
-            objectHasChanged();
-        }
     }
 
     /**

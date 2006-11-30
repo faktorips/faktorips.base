@@ -25,8 +25,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsObjectPart;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IParameter;
 import org.faktorips.devtools.core.model.pctype.IParameterContainer;
 import org.faktorips.fl.ExprCompiler;
@@ -40,7 +39,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class Parameter extends IpsObjectPart implements IParameter {
+public class Parameter extends AtomicIpsObjectPart implements IParameter {
 
     final static String TAG_NAME = "Parameter"; //$NON-NLS-1$
 
@@ -89,30 +88,6 @@ public class Parameter extends IpsObjectPart implements IParameter {
 		return getIpsProject().findDatatype(datatype);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void delete() {
-		((IParameterContainer)getParent()).removeParameter(this);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isDeleted() {
-		return false;
-	}
-
-	/**
-	 * Returns <code>null</code> as a parameter has no parts.
-	 * 
-	 * {@inheritDoc}
-	 */
-	public IIpsObjectPart newPart(Class partType) {
-		return null;
-	}
-
-	
 	/**
 	 * {@inheritDoc}
 	 */

@@ -28,6 +28,17 @@ import org.faktorips.util.memento.MementoSupport;
 public interface IIpsObjectPartContainer extends IIpsElement, IExtensionPropertyAccess, Validatable, XmlSupport, MementoSupport, Described {
 
     /**
+     * Returns the ips object this part belongs to if the container is a part,
+     * or the ips object itself, if this container is the ips object.
+     */
+    public IIpsObject getIpsObject();
+    
+    /**
+     * Returns the ips source file this container belongs to.
+     */
+    public IIpsSrcFile getIpsSrcFile();
+    
+    /**
      * Creates a new IIpsObjectPart of the given type. If the type is not supported, an 
      * IllegalArgumentException is thrown.
      * 

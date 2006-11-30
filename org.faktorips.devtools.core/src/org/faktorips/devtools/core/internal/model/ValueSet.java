@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * @author Thorsten Guenther
  * @author Jan Ortmann
  */
-public abstract class ValueSet extends IpsObjectPart implements IValueSet {
+public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet {
     /**
      * Name of the xml element used in the xml conversion.
      */
@@ -108,25 +108,6 @@ public abstract class ValueSet extends IpsObjectPart implements IValueSet {
     	
     	list.add(msg);
     }
-    
-    
-    /**
-     * This operation is not supported for value sets. An Attribute or Config Element has
-     * to have a value set allways, so it can not be deleted. To remove any restrictins 
-     * set the value-set-type to All Values.
-     * 
-     * {@inheritDoc}
-     */
-	public void delete() {
-		throw new UnsupportedOperationException("ValueSet can not be deleted");		 //$NON-NLS-1$
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isDeleted() {
-		return false;
-	}
 
 	/**
 	 * {@inheritDoc}

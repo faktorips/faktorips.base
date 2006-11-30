@@ -26,9 +26,8 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -43,7 +42,7 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class Relation extends IpsObjectPart implements IRelation {
+public class Relation extends AtomicIpsObjectPart implements IRelation {
 
     final static String TAG_NAME = "Relation"; //$NON-NLS-1$
 
@@ -61,7 +60,6 @@ public class Relation extends IpsObjectPart implements IRelation {
     private String targetRolePluralProductSide = ""; //$NON-NLS-1$
     private int minCardinalityProductSide = 0;
     private int maxCardinalityProductSide = Integer.MAX_VALUE;
-    private boolean deleted = false;
 
     public Relation(IPolicyCmptType pcType, int id) {
         super(pcType, id);
@@ -87,22 +85,6 @@ public class Relation extends IpsObjectPart implements IRelation {
         return targetRoleSingular;
     }
     
-    /** 
-     * Overridden.
-     */
-    public void delete() {
-        ((PolicyCmptType)getIpsObject()).removeRelation(this);
-        deleted = true;
-        objectHasChanged();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-    	return deleted;
-    }
-
     /** 
      * Overridden.
      */
@@ -850,8 +832,4 @@ public class Relation extends IpsObjectPart implements IRelation {
         }
     }
     
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-	}
-
 }

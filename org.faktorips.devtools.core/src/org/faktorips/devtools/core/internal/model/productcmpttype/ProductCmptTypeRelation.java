@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
@@ -389,4 +390,11 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	public IIpsObjectPart newPart(Class partType) {
 		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsSrcFile getIpsSrcFile() {
+        return getProductCmptType().getIpsSrcFile();
+    }
 }

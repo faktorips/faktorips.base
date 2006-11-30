@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.pctype.Relation;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -440,6 +441,8 @@ public class ProductCmptType implements IProductCmptType {
         return policyCmptType.moveTableStructureUsage(indexes, up);
     }
     
+    
+    
     /**
      * Removes the given table structure usage
      *
@@ -448,5 +451,12 @@ public class ProductCmptType implements IProductCmptType {
         tableStructureUsage.getTableStructureUsage().delete();
         // remove the cached object
         tableStructureUsages.remove(tableStructureUsage);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObject getIpsObject() {
+        return this;
     }
 }

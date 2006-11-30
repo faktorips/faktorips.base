@@ -98,6 +98,21 @@ public class TestCase extends IpsObject implements ITestCase {
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void removePart(IIpsObjectPart part) {
+        if (part instanceof ITestObject) {
+            try {
+                removeTestObject((ITestObject)part);
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+    }
 
     /**
      * {@inheritDoc}

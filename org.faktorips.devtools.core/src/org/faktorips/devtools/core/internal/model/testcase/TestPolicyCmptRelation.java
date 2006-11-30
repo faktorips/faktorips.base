@@ -54,8 +54,6 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 
 	private ITestPolicyCmpt targetChild;
 
-	private boolean deleted = false;
-
 	public TestPolicyCmptRelation(IIpsObject parent, int id) {
 		super(parent, id);
 	}
@@ -144,22 +142,6 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		super.propertiesToXml(element);
 		element.setAttribute(PROPERTY_POLICYCMPTTYPE, testPolicyCmptTypeParameter);
 		element.setAttribute(PROPERTY_TARGET, target);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void delete() {
-		((TestPolicyCmpt) getParent()).removeTestPcTypeRelation(this);
-		deleted = true;
-        objectHasChanged();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isDeleted() {
-		return deleted;
 	}
 
 	/**
@@ -265,7 +247,22 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		throw new RuntimeException("Unknown part type: " + part.getClass()); //$NON-NLS-1$
 	}
 
-	/**
+    /**
+     * {@inheritDoc}
+     */
+    protected void removePart(IIpsObjectPart part) {
+        if (targetChild!=null && part==targetChild) {
+            if (!targetChild.isRoot()) {
+                // delete also this relation that refers to test policy component
+                delete();
+            }
+            targetChild = null;
+            return;
+        }
+        throw new RuntimeException("Unknown part type: " + part.getClass()); //$NON-NLS-1$
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	protected IIpsObjectPart newPart(Element xmlTag, int id) {

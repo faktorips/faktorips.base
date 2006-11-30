@@ -56,9 +56,9 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         super();
     }
 
-    /** 
-     * Overridden.
-     */
+    /**
+     * {@inheritDoc}
+     */ 
     public boolean changesOn(GregorianCalendar date) {
         for (Iterator it=generations.iterator(); it.hasNext();) {
             IIpsObjectGeneration gen = (IIpsObjectGeneration)it.next();
@@ -80,7 +80,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsObjectGeneration[] getGenerations() {
         IIpsObjectGeneration[] gens = (IIpsObjectGeneration[])generations.toArray(new IIpsObjectGeneration[generations.size()]);
@@ -100,7 +100,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsObjectGeneration findGenerationEffectiveOn(GregorianCalendar date) {
         if (date==null) {
@@ -130,7 +130,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsObjectGeneration getGenerationByEffectiveDate(GregorianCalendar date) {
         for (Iterator it=generations.iterator(); it.hasNext();) {
@@ -183,10 +183,15 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         return generation;
     }
     
-    void removeGeneration(IIpsObjectGeneration generation) {
-        generations.remove(generation);
+    /**
+     * {@inheritDoc}
+     */
+    protected void removePart(IIpsObjectPart part) {
+        if (part instanceof IIpsObjectGeneration) {
+            generations.remove(part);
+        }
     }
-    
+
     /**
      * Creates a new generation instance. Subclass have to override to
      * and return an instance of the correct subclass of IpsObjectGenerationImpl.

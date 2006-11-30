@@ -56,7 +56,6 @@ public class Method extends IpsObjectPart implements IMethod {
     private Modifier modifier = Modifier.PUBLISHED;
     private boolean abstractFlag = false;
     private List parameters = new ArrayList();
-    private boolean deleted = false;
 
     
     /**
@@ -82,22 +81,6 @@ public class Method extends IpsObjectPart implements IMethod {
         String oldName = name;
     	this.name = newName;
         valueChanged(oldName, name);
-    }
-    
-    /** 
-     * {@inheritDoc}
-     */
-    public void delete() {
-        ((PolicyCmptType)getIpsObject()).removeMethod(this);
-        deleted = true;
-        objectHasChanged();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-    	return deleted;
     }
     
     /** 
@@ -201,15 +184,6 @@ public class Method extends IpsObjectPart implements IMethod {
         return parameters.size();
     }
     
-    /**
-	 * {@inheritDoc}
-	 */
-	public void removeParameter(IParameter param) {
-		if (parameters.remove(param)) {
-			objectHasChanged();
-		}
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -374,10 +348,20 @@ public class Method extends IpsObjectPart implements IMethod {
 	}
 
 	/**
+     * {@inheritDoc}
+	 */
+	protected void removePart(IIpsObjectPart part) {
+        if (part instanceof IParameter) {
+            parameters.remove(part);
+            return;
+        }
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	protected void reinitPartCollections() {
-		super.reinitPartCollections();
 		parameters.clear();
 	}
 	

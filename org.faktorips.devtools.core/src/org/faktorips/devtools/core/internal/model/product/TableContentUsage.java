@@ -22,8 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsObjectPart;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
@@ -40,13 +39,8 @@ import org.w3c.dom.Element;
  * 
  * @author Thorsten Guenther
  */
-public class TableContentUsage extends IpsObjectPart implements ITableContentUsage {
+public class TableContentUsage extends AtomicIpsObjectPart implements ITableContentUsage {
 
-    /**
-     * Flag indicating whether this part is deleted (<code>true</code>) or not.
-     */
-    private boolean deleted = false;
-    
     /**
      * The full quallified name of the table content this usage defines.
      */
@@ -78,28 +72,6 @@ public class TableContentUsage extends IpsObjectPart implements ITableContentUsa
      */
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void delete() {
-        getProductCmptGeneration().removeTableContentUsage(this);
-        deleted = true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsObjectPart newPart(Class partType) {
-        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
     /**

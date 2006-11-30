@@ -37,50 +37,33 @@ public class BusinessFunctionImpl extends IpsObject implements
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObject#getIpsObjectType()
+     * {@inheritDoc}
      */
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.BUSINESS_FUNCTION;
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#getChildren()
+     * {@inheritDoc}
      */
     public IIpsElement[] getChildren() {
         return new IIpsElement[0];
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#propertiesToXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     protected void propertiesToXml(Element newElement) {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#initPropertiesFromXml(org.w3c.dom.Element)
-     */
-    protected void initPropertiesFromXml(Element element) {
-    }
-
-    /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#reinitPartCollections()
+     * {@inheritDoc}
      */
     protected void reinitPartCollections() {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#reAddPart(org.faktorips.devtools.core.model.IIpsObjectPart)
+     * {@inheritDoc}
      */
     protected void reAddPart(IIpsObjectPart part) {
     }
@@ -104,4 +87,11 @@ public class BusinessFunctionImpl extends IpsObject implements
 	public IIpsObjectPart newPart(Class partType) {
 		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void removePart(IIpsObjectPart part) {
+        throw new IllegalArgumentException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+    }
 }

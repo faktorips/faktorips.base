@@ -25,9 +25,8 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -38,15 +37,12 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class Column extends IpsObjectPart implements IColumn {
+public class Column extends AtomicIpsObjectPart implements IColumn {
     
     final static String TAG_NAME = "Column"; //$NON-NLS-1$
     
     private String datatype = ""; //$NON-NLS-1$
     
-    private boolean deleted = false;
-
-
     Column(TableStructure table, int id) {
         super(table, id);
     }
@@ -57,60 +53,35 @@ public class Column extends IpsObjectPart implements IColumn {
     Column() {
     }
     
-    private TableStructure getTable() {
-        return (TableStructure)getIpsObject();
-    }
-
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablestructure.IColumn#setName(java.lang.String)
-     */ 
+     * {@inheritDoc}
+     */
     public void setName(String newName) {
         this.name = newName;
         objectHasChanged();
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getAccessParameterName() {
         return name;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablestructure.IColumn#getDatatype()
+     * {@inheritDoc}
      */
     public String getDatatype() {
         return datatype;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablestructure.IColumn#setDatatype(java.lang.String)
+     * {@inheritDoc}
      */
     public void setDatatype(String newDatatype) {
         datatype = newDatatype;
         objectHasChanged();
     }
-
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPart#delete()
-     */
-    public void delete() {
-        getTable().removeColumn(this);
-        deleted = true;
-        objectHasChanged();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-    	return deleted;
-    }
-
 
     /** 
      * {@inheritDoc}
@@ -119,6 +90,9 @@ public class Column extends IpsObjectPart implements IColumn {
         return IpsPlugin.getDefault().getImage("TableColumn.gif"); //$NON-NLS-1$
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
         ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, PROPERTY_NAME, "", list); //$NON-NLS-1$ //$NON-NLS-2$
@@ -164,19 +138,12 @@ public class Column extends IpsObjectPart implements IColumn {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IColumn[] getColumns() {
         return new IColumn[]{this};
     }
     
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-	}
-
     /**
      * {@inheritDoc} 
      * @throws CoreException 

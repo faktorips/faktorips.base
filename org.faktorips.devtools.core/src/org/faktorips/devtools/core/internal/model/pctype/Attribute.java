@@ -66,8 +66,6 @@ public class Attribute extends IpsObjectPart implements IAttribute {
     private IValueSet valueSet;
     private boolean overwrites = false;
 
-    private boolean deleted = false;
-
     /**
      * Creates a new attribute.
      * 
@@ -88,22 +86,6 @@ public class Attribute extends IpsObjectPart implements IAttribute {
 
     PolicyCmptType getPolicyCmptType() {
         return (PolicyCmptType)getIpsObject();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void delete() {
-        getPolicyCmptType().removeAttribute(this);
-        deleted = true;
-        objectHasChanged();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-        return deleted;
     }
 
     /**
@@ -682,5 +664,19 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         IValueSet oldset = valueSet;
         valueSet = source.copy(this, getNextPartId());
         valueChanged(oldset, valueSet);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void reinitPartCollections() {
+        // nothing to do
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void removePart(IIpsObjectPart part) {
+        valueSet = new AllValuesValueSet(this, getNextPartId());
     }
 }

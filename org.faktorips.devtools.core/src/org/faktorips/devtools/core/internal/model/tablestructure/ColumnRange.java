@@ -26,9 +26,8 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
@@ -43,7 +42,7 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class ColumnRange extends IpsObjectPart implements IColumnRange {
+public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
     
     final static String TAG_NAME = "Range"; //$NON-NLS-1$
 
@@ -61,39 +60,36 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablestructure.IColumnRange#getTableStructure()
+     * {@inheritDoc}
      */
     public ITableStructure getTableStructure() {
         return (ITableStructure)getParent();
     }
     
     /**  
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getName()
+     * {@inheritDoc}
      */
     public String getName() {
         return from + '-' + to;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getAccessParameterName() {
         return getName();
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablestructure.IColumnRange#getFromColumn()
+     * {@inheritDoc}
      */
     public String getFromColumn() {
         return from;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablestructure.IColumnRange#setFromColumn(org.faktorips.devtools.core.model.tablestructure.IColumn)
+     * 
+     * {@inheritDoc}
      */
     public void setFromColumn(String columnName) {
         ArgumentCheck.notNull(columnName);
@@ -103,16 +99,14 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablestructure.IColumnRange#getToColumn()
+     * {@inheritDoc}
      */
     public String getToColumn() {
         return to;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablestructure.IColumnRange#setToColumn(org.faktorips.devtools.core.model.tablestructure.IColumn)
+     * {@inheritDoc}
      */
     public void setToColumn(String columnName) {
         ArgumentCheck.notNull(columnName);
@@ -122,28 +116,7 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPart#delete()
-     */
-    public void delete() {
-        getTableStructureImpl().removeRange(this);
-        deleted = true;
-        objectHasChanged();
-    }
-
-    private boolean deleted = false;
-
-    /**
      * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-    	return deleted;
-    }
-
-
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
      */
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("TableRange.gif"); //$NON-NLS-1$
@@ -194,9 +167,7 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.tablestructure.IColumnRange#setColumnRangeType(org.faktorips.devtools.core.model.tablestructure.ColumnRangeType)
+     * {@inheritDoc}
      */
     public void setColumnRangeType(ColumnRangeType rangeType) {
         ArgumentCheck.notNull(rangeType);
@@ -206,18 +177,14 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.tablestructure.IColumnRange#getColumnRangeType()
+     * {@inheritDoc}
      */
     public ColumnRangeType getColumnRangeType() {
         return rangeType;
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.tablestructure.IColumnRange#getDatatype()
+     * {@inheritDoc}
      */
     public String getDatatype() {
         if (rangeType.isTwoColumn() || rangeType.isOneColumnFrom()) {
@@ -235,9 +202,7 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.tablestructure.IColumnRange#getParameterName()
+s     * {@inheritDoc}
      */
     public String getParameterName() {
     	return parameterName;
@@ -254,18 +219,14 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
 	}
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#createElement(org.w3c.dom.Document)
+     * {@inheritDoc}
      */
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -276,9 +237,7 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -289,7 +248,7 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IColumn[] getColumns() {
         List columns = new ArrayList();
@@ -306,10 +265,4 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
         return (IColumn[])columns.toArray(new IColumn[columns.size()]);
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-	}
 }

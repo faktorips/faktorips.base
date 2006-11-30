@@ -21,9 +21,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -40,7 +39,7 @@ import org.w3c.dom.Element;
 /**
  * 
  */
-public class ProductCmptRelation extends IpsObjectPart implements
+public class ProductCmptRelation extends AtomicIpsObjectPart implements
 		IProductCmptRelation {
 
 
@@ -52,9 +51,6 @@ public class ProductCmptRelation extends IpsObjectPart implements
 
 	private int maxCardinality = 1;
 	
-	private boolean deleted = false;
-
-
 	public ProductCmptRelation(IProductCmptGeneration generation, int id) {
 		super(generation, id);
 	}
@@ -64,37 +60,17 @@ public class ProductCmptRelation extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden.
+     * {@inheritDoc}
 	 */
 	public IProductCmpt getProductCmpt() {
 		return (IProductCmpt) getParent().getParent();
 	}
 
 	/**
-	 * Overridden.
+     * {@inheritDoc}
 	 */
 	public IProductCmptGeneration getProductCmptGeneration() {
 		return (IProductCmptGeneration) getParent();
-	}
-
-	/**
-	 * Overridden.
-	 * 
-	 */
-	public void delete() {
-		if (deleted) {
-			return;
-		}
-		deleted = true;
-		((ProductCmptGeneration) getParent()).removeRelation(this);
-		parent = null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isDeleted() {
-		return deleted;
 	}
 
 	public String getName() {
@@ -317,7 +293,7 @@ public class ProductCmptRelation extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden.
+     * {@inheritDoc}
 	 */
 	protected void propertiesToXml(Element element) {
 		super.propertiesToXml(element);
@@ -332,10 +308,4 @@ public class ProductCmptRelation extends IpsObjectPart implements
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-	}
 }

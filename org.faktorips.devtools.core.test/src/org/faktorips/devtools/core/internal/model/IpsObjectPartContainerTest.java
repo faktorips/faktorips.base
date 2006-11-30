@@ -23,7 +23,6 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -48,7 +47,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     private TestIpsObjectPartContainer container;
     private IpsModel model;
-    private boolean deleted = false;
 
 
     
@@ -273,7 +271,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertTrue(messagesImmutable.isEmpty());
     }
 
-    class TestIpsObjectPartContainer extends IpsObjectPart {
+    class TestIpsObjectPartContainer extends AtomicIpsObjectPart {
 
         private String name;
         private int numOfUpdateSrcFileCalls = 0;
@@ -286,11 +284,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         	return numOfUpdateSrcFileCalls;
         }
 
-		/**
-         * Overridden IMethod.
-         *
-         * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#createElement(org.w3c.dom.Document)
-         */
         protected Element createElement(Document doc) {
             return doc.createElement("TestPart");
         }
@@ -310,38 +303,10 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
             this.name = name;
         }
         
-        /**
-         * Overridden IMethod.
-         *
-         * @see org.faktorips.devtools.core.model.IIpsObjectPart#delete()
-         */
-        public void delete() {
-            deleted = true;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public boolean isDeleted() {
-        	return deleted;
-        }
-
-
-        /**
-         * Overridden IMethod.
-         *
-         * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
-         */
         public Image getImage() {
             return null;
         }
 
-    	/**
-    	 * {@inheritDoc}
-    	 */
-    	public IIpsObjectPart newPart(Class partType) {
-    		throw new IllegalArgumentException("Unknown part type" + partType);
-    	}
         
     }
     

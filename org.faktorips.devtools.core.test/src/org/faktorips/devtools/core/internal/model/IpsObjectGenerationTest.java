@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
  */
 public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
     
-    private ITimedIpsObject timedPdo;
+    private ITimedIpsObject timedObj;
     private IIpsObjectGeneration generation;
     private DefaultTestContent content;
     
@@ -44,8 +44,8 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
         content = new DefaultTestContent();
         // we use the ProductCmptImpl to test the TimedIpsObject class
         // because TimedIpsObject is abstract.
-        timedPdo = content.getBasicCollisionCoverage();
-        generation = timedPdo.getGenerations()[0];
+        timedObj = content.getBasicCollisionCoverage();
+        generation = timedObj.getGenerations()[0];
     }
     
     public void testGetGenerationNo() {
@@ -53,7 +53,7 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
         
         // create a new generation that begins before the generation => generation no changes!
         generation.setValidFrom(new GregorianCalendar(2005, 1, 1));
-        IIpsObjectGeneration gen2 = timedPdo.newGeneration();
+        IIpsObjectGeneration gen2 = timedObj.newGeneration();
         gen2.setValidFrom(new GregorianCalendar(2004, 1, 1));
         
         assertEquals(2, generation.getGenerationNo());
@@ -64,13 +64,12 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
         GregorianCalendar date = new GregorianCalendar(2005, 0, 1);
         generation.setValidFrom(date);
         assertEquals(date, generation.getValidFrom());
-        assertTrue(timedPdo.getIpsSrcFile().isDirty());
+        assertTrue(timedObj.getIpsSrcFile().isDirty());
     }
 
     public void testRemove() {
         generation.delete();
-        assertNull(generation.getParent());
-        assertEquals(0, timedPdo.getNumOfGenerations());
+        assertEquals(0, timedObj.getNumOfGenerations());
     }
 
     public void testInitFromXml() {
@@ -96,7 +95,7 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
     	GregorianCalendar validTo = generation.getValidTo();
     	assertNull(validTo);
     	
-        IIpsObjectGeneration gen2 = timedPdo.newGeneration();    	
+        IIpsObjectGeneration gen2 = timedObj.newGeneration();    	
     	validTo = generation.getValidTo();
     	assertNull(validTo);
     	
@@ -111,9 +110,9 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
     }
 
     public void testGetNext() throws Exception {
-    	IIpsObjectGeneration gen1 = timedPdo.newGeneration();
-    	IIpsObjectGeneration gen2 = timedPdo.newGeneration();
-    	IIpsObjectGeneration gen3 = timedPdo.newGeneration();
+    	IIpsObjectGeneration gen1 = timedObj.newGeneration();
+    	IIpsObjectGeneration gen2 = timedObj.newGeneration();
+    	IIpsObjectGeneration gen3 = timedObj.newGeneration();
     	
     	assertSame(gen2, gen1.getNext());
     	assertSame(gen3, gen2.getNext());
@@ -121,9 +120,9 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
     }
     
     public void testGetPrevious() throws Exception {
-    	IIpsObjectGeneration gen1 = timedPdo.newGeneration();
-    	IIpsObjectGeneration gen2 = timedPdo.newGeneration();
-    	IIpsObjectGeneration gen3 = timedPdo.newGeneration();
+    	IIpsObjectGeneration gen1 = timedObj.newGeneration();
+    	IIpsObjectGeneration gen2 = timedObj.newGeneration();
+    	IIpsObjectGeneration gen3 = timedObj.newGeneration();
     	
     	assertSame(gen2, gen3.getPrevious());
     	assertSame(gen1, gen2.getPrevious());

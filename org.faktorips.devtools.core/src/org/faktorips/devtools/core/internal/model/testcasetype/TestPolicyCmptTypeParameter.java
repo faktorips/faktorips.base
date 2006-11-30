@@ -112,6 +112,20 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 		throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    protected void removePart(IIpsObjectPart part) {
+        if (part instanceof TestAttribute) {
+            testAttributes.remove(part);
+            return;
+        }else if(part instanceof TestPolicyCmptTypeParameter){
+            testPolicyCmptTypeChilds.remove(part);
+            return;
+        }
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+    }
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -411,16 +425,6 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	public void removeTestPolicyCmptTypeParamChild(TestPolicyCmptTypeParameter testPolicyCmptTypeParamChildName) {
 		testPolicyCmptTypeChilds.remove(testPolicyCmptTypeParamChildName);
 	}
-
-	/**
-     * {@inheritDoc}
-	 */
-	public void delete() {
-        if (!isRoot())
-            ((ITestPolicyCmptTypeParameter)getParent()).removeTestPolicyCmptTypeParamChild(this);
-            
-        super.delete();
-    }
 
     /**
 	 * {@inheritDoc}

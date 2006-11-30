@@ -47,7 +47,9 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -159,23 +161,51 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals(pdFolderA, model.findIpsElement(folderA));
     }
     
-    public void testAddChangeListener() {
+    public void testChangeListenerSupport() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IIpsSrcFile file = newPolicyCmptType(project, "TestPolicy").getIpsSrcFile();
         TestContentsChangeListener listener = new TestContentsChangeListener();
+
+        model.removeChangeListener(listener); // test for npe
+
         model.addChangeListener(listener);
-        ContentChangeEvent event = new ContentChangeEvent(null);
+        ContentChangeEvent event = ContentChangeEvent.newWholeContentChangedEvent(file);
         assertNull(listener.lastEvent);
         model.notifyChangeListeners(event);
         assertEquals(event, listener.lastEvent);
-    }
-
-    public void testRemoveChangeListener() {
-        TestContentsChangeListener listener = new TestContentsChangeListener();
-        model.addChangeListener(listener);
+        
+        model.notifyChangeListeners(event);
+        assertEquals(event, listener.lastEvent);
+        
         model.removeChangeListener(listener);
-        ContentChangeEvent event = new ContentChangeEvent(null);
+        listener.lastEvent = null;
         model.notifyChangeListeners(event);
         assertNull(listener.lastEvent);
     }
+
+    public void testModifcationStatusChangeListenerSupport() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IIpsSrcFile file = newPolicyCmptType(project, "TestPolicy").getIpsSrcFile();
+        TestModStatusListener listener = new TestModStatusListener();
+
+        model.removeModificationStatusChangeListener(listener); // test for npe
+
+        model.addModifcationStatusChangeListener(listener);
+        ModificationStatusChangedEvent event = new ModificationStatusChangedEvent(file);
+        assertNull(listener.lastEvent);
+        model.notifyModificationStatusChangeListener(event);
+        assertEquals(event, listener.lastEvent);
+        
+        model.notifyModificationStatusChangeListener(event);
+        assertEquals(event, listener.lastEvent);
+        
+        model.removeModificationStatusChangeListener(listener);
+        listener.lastEvent = null;
+        model.notifyModificationStatusChangeListener(event);
+        assertNull(listener.lastEvent);
+    }
+
+
     
     public void testResourceChanged() throws IOException, CoreException {
         IIpsProject ipsProject = this.newIpsProject("TestProject");
@@ -375,5 +405,14 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         }
         
     };
-    
+
+    class TestModStatusListener implements IModificationStatusChangeListener {
+
+        ModificationStatusChangedEvent lastEvent;
+        
+        public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
+            lastEvent = event;
+        }
+        
+    }
 }

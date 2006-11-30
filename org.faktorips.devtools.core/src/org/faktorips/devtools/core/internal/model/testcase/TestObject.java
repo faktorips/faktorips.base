@@ -14,9 +14,7 @@
 
 package org.faktorips.devtools.core.internal.model.testcase;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -38,8 +36,6 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
      * is not specified or not found */
     public static TestParameterType DEFAULT_TYPE = TestParameterType.COMBINED;
 
-    private boolean deleted = false;
-    
     /**
      * {@inheritDoc}
      */
@@ -131,30 +127,6 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
      */
     protected Element createElement(Document doc) {
         throw new RuntimeException("Not implemented!"); //$NON-NLS-1$
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void delete() {
-        try {
-            if (isRoot()){
-                ((TestCase)getParent()).removeTestObject(this);
-            } else {
-                throw new RuntimeException("Can't delete non root objects!"); //$NON-NLS-1$
-            }
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
-        objectHasChanged();
-        deleted = true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-        return deleted;
     }
 
     /**

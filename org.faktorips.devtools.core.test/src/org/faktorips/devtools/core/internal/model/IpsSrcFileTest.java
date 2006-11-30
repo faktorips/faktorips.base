@@ -24,22 +24,22 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFileMemento;
+import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
 
 /**
  *
  */
-public class IpsSrcFileTest extends AbstractIpsPluginTest implements ContentsChangeListener {
+public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificationStatusChangeListener {
     
     private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot ipsRootFolder;
@@ -48,7 +48,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements ContentsCha
     private IPolicyCmptType policyCmptType;
     private IIpsSrcFile unparsableFile; // file with unparsable contents
     
-    private ContentChangeEvent lastEvent;
+    private ModificationStatusChangedEvent lastModStatusEvent;
 
     /*
      * @see TestCase#setUp()
@@ -140,12 +140,17 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements ContentsCha
     
     public void testSave() throws IOException, CoreException {
         policyCmptType.newAttribute();
-        parsableFile.getIpsModel().addChangeListener(this);
+        parsableFile.getIpsModel().addModifcationStatusChangeListener(this);
         parsableFile.save(true, null);
         assertFalse(parsableFile.isDirty());
-        assertEquals(parsableFile, lastEvent.getIpsSrcFile());
+        assertEquals(parsableFile, lastModStatusEvent.getIpsSrcFile());
     }
     
+    
+    public void testIsHistoric() {
+        assertFalse(parsableFile.isHistoric());
+    }
+
     public void testNewMemento() throws CoreException {
         policyCmptType.newAttribute();
         IIpsSrcFileMemento memento = parsableFile.newMemento();
@@ -160,16 +165,12 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements ContentsCha
         assertEquals(0, policyCmptType.getNumOfAttributes());
         assertFalse(parsableFile.isDirty());
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
-    public void contentsChanged(ContentChangeEvent event) {
-        lastEvent = event;
-    }
-
-    public void testIsHistoric() {
-        assertFalse(parsableFile.isHistoric());
+    public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
+        lastModStatusEvent = event;
     }
 
 }

@@ -165,6 +165,8 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertEquals(1, pcType.getNumOfAttributes());
         assertTrue(sourceFile.isDirty());
         assertEquals(sourceFile, lastEvent.getIpsSrcFile());
+        assertEquals(a, lastEvent.getPart());
+        assertEquals(ContentChangeEvent.TYPE_PART_ADDED, lastEvent.getEventType());
         assertEquals(0, a.getId());
 
         IMethod m = pcType.newMethod();

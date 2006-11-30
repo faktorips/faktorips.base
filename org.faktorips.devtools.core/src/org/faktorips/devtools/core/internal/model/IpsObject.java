@@ -22,6 +22,7 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -47,6 +48,13 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      * Constructor for testing purposes.
      */
     protected IpsObject() {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObject getIpsObject() {
+        return this;
     }
 
     /**
@@ -129,12 +137,8 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      * Notifies the model about the change.  
      */
     protected void objectHasChanged() {
-        IpsModel model = (IpsModel)getIpsModel();
-        IpsSrcFileContent content = model.getIpsSrcFileContent(getIpsSrcFile());
-        if (content!=null) {
-            content.markAsModified();
-        }
-        model.ipsSrcFileHasChanged((IIpsSrcFile)getIpsSrcFile());
+        ContentChangeEvent event = ContentChangeEvent.newWholeContentChangedEvent(getIpsSrcFile());
+        objectHasChanged(event);
     }
     
     /**

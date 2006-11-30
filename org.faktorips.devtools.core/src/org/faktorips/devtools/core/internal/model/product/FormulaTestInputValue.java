@@ -25,9 +25,8 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Parameter;
@@ -40,15 +39,13 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class FormulaTestInputValue extends IpsObjectPart implements IFormulaTestInputValue {
+public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormulaTestInputValue {
 
     /** Tags */
     final static String TAG_NAME = "FormulaTestInputValue"; //$NON-NLS-1$
     
     private String identifier = ""; //$NON-NLS-1$
     private String value = ""; //$NON-NLS-1$
-    
-    private boolean deleted = false;
     
     public FormulaTestInputValue(IFormulaTestCase parent, int id) {
         super(parent, id);
@@ -57,33 +54,10 @@ public class FormulaTestInputValue extends IpsObjectPart implements IFormulaTest
     /**
      * {@inheritDoc}
      */
-    public void delete() {
-        ((IFormulaTestCase) getParent()).removeFormulaTestInputValue(this);
-        deleted = true;
-        objectHasChanged();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsObjectPart newPart(Class partType) {
-        throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
-    }
-
     /**
      * {@inheritDoc}
      */

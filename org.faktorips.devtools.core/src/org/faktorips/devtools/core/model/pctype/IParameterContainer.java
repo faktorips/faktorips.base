@@ -48,11 +48,6 @@ public interface IParameterContainer extends IIpsObjectPart {
     public IParameter newParameter(String datatype, String name);
     
     /**
-     * Removes the parameter from the container.
-     */
-    public void removeParameter(IParameter param);
-
-    /**
      * Moves the parameters identified by the indexes up or down by one position.
      * If one of the indexes is 0 (the first parameter), no parameter is moved up. 
      * If one of the indexes is the number of parameters - 1 (the last parameter)

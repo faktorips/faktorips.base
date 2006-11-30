@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
@@ -27,13 +27,11 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class TableAccessFunction extends IpsObjectPart implements ITableAccessFunction {
+public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAccessFunction {
 
     private String accessedColumn;
     private String type;
     private String[] argTypes = new String[0];
-    private boolean deleted = false;
-
     
     // hides field in supertype. Done to avoid update-events fired on description changes.
     private String description; 
@@ -97,28 +95,12 @@ public class TableAccessFunction extends IpsObjectPart implements ITableAccessFu
         return types; // return defensive copy
     }
 
-    public void delete() {
-        deleted = true;
-    }
-
     /**
      * {@inheritDoc}
      */
-    public boolean isDeleted() {
-    	return deleted;
-    }
-
-
     public Image getImage() {
         return null;
     }
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-	}
 
 	/**
 	 * Overridden to avoid change-notifications on description changes. This method is neccessary, 

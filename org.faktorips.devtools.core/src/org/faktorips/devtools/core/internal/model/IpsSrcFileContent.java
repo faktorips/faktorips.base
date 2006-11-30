@@ -28,7 +28,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
@@ -45,26 +47,23 @@ public class IpsSrcFileContent {
     // true if the content has been modified.
     private boolean modified = false;
     
+    // the corresponding file's modification stamp at the time of reading
+    // the content from it.
     private long modificationStamp;
     
     private boolean parsable = true;
 
-    /**
-     * 
-     */
     public IpsSrcFileContent(IpsObject ipsObject) {
         ArgumentCheck.notNull(ipsObject);
         this.ipsObject = ipsObject;
     }
     
-    /**
-     * @return Returns the ipsObject.
-     */
     public IpsObject getIpsObject() {
         return ipsObject;
     }
     
-    public void updateState(String xml, boolean modified) {
+    public void updateState(String xml, boolean newModified) {
+        boolean wasModified = newModified;
         try {
             String encoding = ipsObject.getIpsProject().getXmlFileCharset();
             ByteArrayInputStream is = new ByteArrayInputStream(xml.getBytes(encoding)); 
@@ -72,24 +71,26 @@ public class IpsSrcFileContent {
             Document doc = builder.parse(is);
             is.close();
             ipsObject.initFromXml(doc.getDocumentElement());
-            this.modified = modified;
+            this.modified = newModified;
             parsable = true;
         } catch (Exception e) {
             parsable = false;
         } finally {
-            contentHasChanged();
+            this.modified = wasModified; // set back modified flag
+            setModified(newModified); // and use setter to trigger notification
+            wholeContentChanged();
         }
     }
     
     public void updateState(Element el, boolean modified) {
         try {
             ipsObject.initFromXml(el);
-            this.modified = modified;
+            setModified(modified);
             parsable = true;
         } catch (Exception e) {
             parsable = false;
         } finally {
-            contentHasChanged();
+            wholeContentChanged();
         }
     }
             
@@ -115,20 +116,32 @@ public class IpsSrcFileContent {
     void markAsUnmodified() {
         if (modified==true) { 
             modified = false;
-            // change from modified to unmodified is also a change
-            contentHasChanged();
+            modificationStatusHasChanged();
         }
     }
     
     void markAsModified() {
-        modified = true;
-        contentHasChanged();
+        if (!modified) {
+            modified = true;
+            modificationStatusHasChanged();
+        }
     }
     
-    void contentHasChanged() {
-        ((IpsModel)ipsObject.getIpsModel()).ipsSrcFileHasChanged(getIpsSrcFile());
+    private void modificationStatusHasChanged() {
+        ModificationStatusChangedEvent event = new ModificationStatusChangedEvent(getIpsSrcFile());
+        ((IpsModel)ipsObject.getIpsModel()).notifyModificationStatusChangeListener(event);
     }
     
+    private void wholeContentChanged() {
+        ContentChangeEvent event = ContentChangeEvent.newWholeContentChangedEvent(getIpsSrcFile());
+        ((IpsModel)ipsObject.getIpsModel()).ipsSrcFileContentHasChanged(event);
+    }
+
+    public void ipsObjectChanged(ContentChangeEvent event) {
+        markAsModified();
+        ((IpsModel)ipsObject.getIpsModel()).ipsSrcFileContentHasChanged(event);
+    }
+
     /**
      * @return Returns the modStamp.
      */

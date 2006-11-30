@@ -41,17 +41,14 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
+     * {@inheritDoc}
      */
     public IIpsElement[] getChildren() {
         return getRows();
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration#getRows()
+     * {@inheritDoc}
      */
     public IRow[] getRows() {
         IRow[] r = new IRow[rows.size()];
@@ -60,8 +57,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration#getRows()
+     * {@inheritDoc}
      */
     public IRow getRow(int rowIndex) {
         if(rowIndex<0 || rowIndex>=getNumOfRows()){
@@ -71,16 +67,14 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration#getNumOfRows()
+     * {@inheritDoc}
      */
     public int getNumOfRows() {
         return rows.size();
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration#newRow()
+     * {@inheritDoc}
      */
     public IRow newRow() {
         IRow newRow = newRowInternal(getNextPartId());
@@ -101,23 +95,8 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         newRow.setRowNumber(nextRowNumber);
         return newRow;
     }
-    
-    /**
-     * Removes the given row from the list of rows and updates the rownumbers of all following rows.
-     * @param row
-     */
-    void removeRow(IRow row) {
-        int delIndex= rows.indexOf(row);
-        if(delIndex != -1){
-            rows.remove(delIndex);
-            // update rownumbers after delete
-            for(int i=delIndex; i<rows.size(); i++){
-                Row updateRow= (Row) rows.get(i);
-                updateRow.setRowNumber(i);
-            }
-        }
-    }
 
+    
     public void newColumn(int insertAt, String defaultValue) {
         for (Iterator it=rows.iterator(); it.hasNext(); ) {
             Row row = (Row)it.next();
@@ -167,9 +146,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#reAddPart(org.faktorips.devtools.core.model.IIpsObjectPart)
+     * {@inheritDoc}
      */
     protected void reAddPart(IIpsObjectPart part) {
         if (part instanceof IRow) {
@@ -180,9 +157,29 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#reinitPartCollections()
+     * Removes the given row from the list of rows and updates the rownumbers of all following rows.
+     * {@inheritDoc}
+     */
+    protected void removePart(IIpsObjectPart part) {
+        if (part instanceof IRow) {
+            Row row = (Row)part;
+            int delIndex= rows.indexOf(row);
+            if(delIndex != -1){
+                rows.remove(delIndex);
+                // update rownumbers after delete
+                for(int i=delIndex; i<rows.size(); i++){
+                    Row updateRow= (Row) rows.get(i);
+                    updateRow.setRowNumber(i);
+                }
+            }
+            return;
+        }
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+        
+    }
+    
+    /**
+     * {@inheritDoc}
      */
     protected void reinitPartCollections() {
         rows.clear();

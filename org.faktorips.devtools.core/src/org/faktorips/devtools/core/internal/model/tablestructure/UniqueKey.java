@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
@@ -39,9 +38,6 @@ public class UniqueKey extends Key implements IUniqueKey {
     
     final static String TAG_NAME = "UniqueKey"; //$NON-NLS-1$
 
-    private boolean deleted = false;
-
-
     public UniqueKey(TableStructure tableStructure, int id) {
         super(tableStructure, id);
     }
@@ -51,8 +47,7 @@ public class UniqueKey extends Key implements IUniqueKey {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getName()
+     * {@inheritDoc}
      */
     public String getName() {
         StringBuffer buffer = new StringBuffer();
@@ -64,23 +59,6 @@ public class UniqueKey extends Key implements IUniqueKey {
             buffer.append(items[i]);
         }
         return buffer.toString();
-    }
-
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPart#delete()
-     */
-    public void delete() {
-        ((TableStructure)getTableStructure()).removeUniqueKey(this);
-        deleted = true;
-        objectHasChanged();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-    	return deleted;
     }
 
     private void validateItemSequence(MessageList msgList){
@@ -137,9 +115,7 @@ public class UniqueKey extends Key implements IUniqueKey {
 
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.tablestructure.IUniqueKey#containsRangesOnly()
+     * {@inheritDoc}
      */
     public boolean containsRangesOnly() {
         String[] items = getKeyItemNames();
@@ -152,9 +128,7 @@ public class UniqueKey extends Key implements IUniqueKey {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.tablestructure.IUniqueKey#containsRanges()
+     * {@inheritDoc}
      */
     public boolean containsRanges() {
         String[] items = getKeyItemNames();
@@ -167,9 +141,7 @@ public class UniqueKey extends Key implements IUniqueKey {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.tablestructure.IUniqueKey#containsColumns()
+     * {@inheritDoc}
      */
     public boolean containsColumns() {
         String[] items = getKeyItemNames();
@@ -182,18 +154,14 @@ public class UniqueKey extends Key implements IUniqueKey {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#createElement(org.w3c.dom.Document)
+     * {@inheritDoc}
      */
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -201,19 +169,11 @@ public class UniqueKey extends Key implements IUniqueKey {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         // nothing else to do
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-	}
 }

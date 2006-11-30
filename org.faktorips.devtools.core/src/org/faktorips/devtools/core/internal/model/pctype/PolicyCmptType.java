@@ -333,7 +333,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      */
     public IAttribute newAttribute() {
         Attribute a = newAttributeInternal(getNextPartId());
-        objectHasChanged();
+        partWasAdded(a);
         return a;
     }
 
@@ -342,7 +342,9 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      */
     public int[] moveAttributes(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(attributes);
-        return mover.move(indexes, up);
+        int[] newIndexes = mover.move(indexes, up);
+        partsMoved(getAttributes());
+        return newIndexes;
     }
 
     /*
@@ -360,13 +362,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         Attribute a = new Attribute(this, id);
         attributes.add(a);
         return a;
-    }
-
-    /**
-     * Removes the attribute from the type.
-     */
-    void removeAttribute(Attribute attribute) {
-        attributes.remove(attribute);
     }
 
     /**
@@ -390,8 +385,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      * {@inheritDoc}
      */
     public IMethod newMethod() {
-        IMethod m = newMethodInternal(getNextPartId());
-        objectHasChanged();
+        Method m = newMethodInternal(getNextPartId());
+        partWasAdded(m);
         return m;
     }
 
@@ -416,14 +411,9 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      */
     public int[] moveMethods(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(methods);
-        return mover.move(indexes, up);
-    }
-
-    /**
-     * Removes the method from the type.
-     */
-    void removeMethod(Method method) {
-        methods.remove(method);
+        int[] newIndices = mover.move(indexes, up);
+        partsMoved(getMethods());
+        return newIndices;
     }
 
     /**
@@ -501,7 +491,9 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      */
     public int[] moveRelations(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(relations);
-        return mover.move(indexes, up);
+        int[] newIndices = mover.move(indexes, up);
+        partsMoved(getRelations());
+        return newIndices;
     }
 
     /**
@@ -509,7 +501,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      */
     public IRelation newRelation() {
         Relation r = newRelationInternal(getNextPartId());
-        objectHasChanged();
+        partWasAdded(r);
         return r;
     }
 
@@ -520,13 +512,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         Relation r = new Relation(this, id);
         relations.add(r);
         return r;
-    }
-
-    /**
-     * Removes the relation from the type.
-     */
-    void removeRelation(Relation relation) {
-        relations.remove(relation);
     }
 
     /**
@@ -583,7 +568,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      */
     public IValidationRule newRule() {
         IValidationRule r = newRuleInternal(getNextPartId());
-        objectHasChanged();
+        partWasAdded(r);
         return r;
     }
 
@@ -608,14 +593,9 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      */
     public int[] moveRules(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(rules);
-        return mover.move(indexes, up);
-    }
-
-    /**
-     * Removes the method from the type.
-     */
-    void removeRule(ValidationRule rule) {
-        rules.remove(rule);
+        int[] newIndices = mover.move(indexes, up);
+        partsMoved(getRules());
+        return newIndices;
     }
 
     /**
@@ -668,6 +648,29 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             return;
         } else if (part instanceof ITableStructureUsage){
             tableStuctureUsages.add(part);
+            return;
+        }
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void removePart(IIpsObjectPart part) {
+        if (part instanceof IAttribute) {
+            attributes.remove(part);
+            return;
+        } else if (part instanceof IMethod) {
+            methods.remove(part);
+            return;
+        } else if (part instanceof IRelation) {
+            relations.remove(part);
+            return;
+        } else if (part instanceof IValidationRule) {
+            rules.remove(part);
+            return;
+        } else if (part instanceof ITableStructureUsage){
+            tableStuctureUsages.remove(part);
             return;
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
@@ -1198,7 +1201,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             return null;
         }
         TableStructureUsage tsu = newTableStructureUsageInternal(getNextPartId());
-        objectHasChanged();
+        partWasAdded(tsu);
         return tsu;
     }
 
@@ -1231,7 +1234,9 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      */
     public int[] moveTableStructureUsage(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(tableStuctureUsages);
-        return mover.move(indexes, up);
+        int[] newIndices = mover.move(indexes, up);
+        partsMoved(getTableStructureUsages());
+        return newIndices;
     }
 
     /**

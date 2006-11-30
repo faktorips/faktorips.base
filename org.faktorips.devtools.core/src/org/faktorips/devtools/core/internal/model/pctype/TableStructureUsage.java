@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dï¿½rfen nur unter den Bedingungen der 
+ * Faktor-Zehn-Community Lizenzvereinbarung ï¿½ Version 0.1 (vor Grï¿½ndung Community) 
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -28,6 +28,7 @@ import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -52,8 +53,6 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     
     final static String TAG_NAME_TABLE_STRUCTURE = "TableStructure"; //$NON-NLS-1$
     
-    private boolean deleted = false;
-    
     private String roleName = ""; //$NON-NLS-1$
     
     private boolean mandatoryTableContent = false;
@@ -61,10 +60,8 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     // Contains the related table structures identified by the full qualified name
     private List tableStructures = new ArrayList();
     
-    private class TableStructureReference extends IpsObjectPart{
+    private class TableStructureReference extends AtomicIpsObjectPart {
 
-        private boolean deleted = false;
-        
         private String tableStructure = ""; //$NON-NLS-1$
         
         public TableStructureReference(ITableStructureUsage tableStructureUsage, int id) {
@@ -76,29 +73,6 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
          */
         protected Element createElement(Document doc) {
             return doc.createElement(TAG_NAME_TABLE_STRUCTURE);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void delete() {
-            ((TableStructureUsage)getIpsObject()).removeTableStructure(this);
-            deleted = true;
-            objectHasChanged();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public boolean isDeleted() {
-            return deleted;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public IIpsObjectPart newPart(Class partType) {
-            throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
         }
 
         /**
@@ -183,27 +157,21 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     /**
      * {@inheritDoc}
      */
-    public void delete() {
-        ((PolicyCmptType)getIpsObject()).removeTableStructureUsage(this);
-        deleted = true;
-        objectHasChanged();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public IIpsObjectPart newPart(Class partType) {
         if (partType.equals(TableStructureReference.class)){
             return newTableStructureReference();
         }
-        throw new RuntimeException("Could not create part for tag name" + partType); //$NON-NLS-1$
+        throw new RuntimeException("Unkown part type " + partType); //$NON-NLS-1$
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void removePart(IIpsObjectPart part) {
+        if (part instanceof TableStructureReference) {
+            this.tableStructures.remove(part);
+        }
+        throw new RuntimeException("Unkown part type " + part.getClass()); //$NON-NLS-1$
     }
 
     /**

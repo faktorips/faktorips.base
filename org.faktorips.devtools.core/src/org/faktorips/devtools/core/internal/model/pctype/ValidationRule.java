@@ -27,9 +27,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ValueSetType;
@@ -48,7 +47,7 @@ import org.w3c.dom.NodeList;
 /**
  * @inheritDoc
  */
-public class ValidationRule extends IpsObjectPart implements IValidationRule {
+public class ValidationRule extends AtomicIpsObjectPart implements IValidationRule {
 
 	final static String TAG_NAME = "ValidationRuleDef"; //$NON-NLS-1$
 
@@ -67,9 +66,6 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 
 	private boolean validatedAttrSpecifiedInSrc = false;
 
-    private boolean deleted = false;
-
-    
 	/**
 	 * Flag which is <code>true</code> if this rule is a default rule for validating the value of an attribute
 	 * against the value set defined for the attribute. Default means, that the rule is not a manually 
@@ -95,23 +91,6 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	 */
 	public ValidationRule() {
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void delete() {
-		((PolicyCmptType) getIpsObject()).removeRule(this);
-        deleted = true;
-        objectHasChanged();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-    	return deleted;
-    }
-
 
 	/**
 	 * {@inheritDoc}
@@ -479,13 +458,6 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 		boolean oldValue = this.validatedAttrSpecifiedInSrc;
 		this.validatedAttrSpecifiedInSrc = validatedAttrSpecifiedInSrc;
 		valueChanged(oldValue, validatedAttrSpecifiedInSrc);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 
 	/**

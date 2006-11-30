@@ -22,7 +22,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
@@ -50,16 +52,12 @@ public class TestRule extends TestObject implements ITestRule {
     
     private TestRuleViolationType violationType = TestRuleViolationType.VIOLATED;
     
-    /**
-     * @param parent
-     * @param id
-     */
     public TestRule(IIpsObject parent, int id) {
         super(parent, id);
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
@@ -223,5 +221,39 @@ public class TestRule extends TestObject implements ITestRule {
             Message msg = new Message(MSGCODE_TEST_RULE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_TEST_RULE_PARAMETER);
             list.add(msg);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsElement[] getChildren() {
+        return new IIpsElement[0];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void reinitPartCollections() {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void reAddPart(IIpsObjectPart part) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void removePart(IIpsObjectPart part) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+        return null;
     }
 }

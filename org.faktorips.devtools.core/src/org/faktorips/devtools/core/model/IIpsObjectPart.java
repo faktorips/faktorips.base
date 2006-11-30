@@ -27,12 +27,7 @@ public interface IIpsObjectPart extends IIpsObjectPartContainer {
     
     public final static String PROPERTY_DESCRIPTION = "description"; //$NON-NLS-1$
     public final static String PROPERTY_ID = "id"; //$NON-NLS-1$
-    
-    /**
-     * Returns the object this part belongs to.
-     */
-    public IIpsObject getIpsObject();
-    
+        
     /**
      * The part's id that uniquely identifies it in it's parent.
      */

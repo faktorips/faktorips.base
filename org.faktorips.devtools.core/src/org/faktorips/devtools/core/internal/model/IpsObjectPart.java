@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.internal.model;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.util.ArgumentCheck;
@@ -35,6 +35,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     
     private String description = ""; //$NON-NLS-1$
     private int id;
+    private boolean deleted = false;
     
     protected IpsObjectPart(IIpsObject parent, int id) {
         super(parent, ""); //$NON-NLS-1$
@@ -59,27 +60,43 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         return id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsElement[] getChildren() {
-        return new IIpsElement[0];
-    }
-    
     /** 
      * {@inheritDoc}
      */
     public IIpsObject getIpsObject() {
-        IIpsElement element = this;
-        while (element!=null) {
-            element = element.getParent();
-            if (element instanceof IIpsObject) {
-                return (IIpsObject)element;
-            }
+        IpsObjectPartContainer container = getContainer();
+        if (container==null) {
+            return null;
         }
-        throw new RuntimeException("Can't get IpsObject for " + this); //$NON-NLS-1$
+        return container.getIpsObject();
     }
     
+    public IpsObjectPartContainer getContainer() {
+        return (IpsObjectPartContainer)getParent();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void delete() {
+        if (isDeleted()) {
+            throw new RuntimeException("Object has already been deleted!");
+        }
+        deleted = true;
+        if (getContainer()!=null) {
+            getContainer().removePart(this);
+        }
+        ContentChangeEvent event = ContentChangeEvent.newPartRemovedEvent(this);
+        objectHasChanged(event);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDeleted() {
+        return deleted;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -101,7 +118,9 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
      * {@inheritDoc}
      */
     protected void objectHasChanged() {
-        ((IpsObject)getIpsObject()).objectHasChanged();
+        IpsModel model = (IpsModel)getIpsModel();
+        ContentChangeEvent event = ContentChangeEvent.newPartChangedEvent(this);
+        model.getIpsSrcFileContent(getIpsSrcFile()).ipsObjectChanged(event);
     }
     
     /** 
@@ -144,32 +163,11 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc}
      */
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
-        return null;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
     protected void propertiesToXml(Element element) {
         element.setAttribute(PROPERTY_ID, "" + id); //$NON-NLS-1$
         DescriptionHelper.setDescription(element, description);
     }
     
-    /**
-     * Empty default-implementation.
-     * 
-     * {@inheritDoc}
-     */
-    protected void reAddPart(IIpsObjectPart part) {
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    protected void reinitPartCollections() {
-    }
-
     /**
      * {@inheritDoc}
      * Two parts are equal if the have the same parent and the same id.
