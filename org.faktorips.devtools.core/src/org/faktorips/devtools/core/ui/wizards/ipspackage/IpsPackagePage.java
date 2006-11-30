@@ -42,7 +42,6 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
-import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 
 /**
@@ -59,12 +58,10 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
 
     // edit controls
     private IpsPckFragmentRootRefControl sourceFolderControl;
-    private IpsPckFragmentRefControl packageControl;
 
     // edit fields
     private TextField nameField;
     private TextButtonField sourceFolderField;
-    private TextButtonField packageField;
 
     // true if the input is validated and errors are displayed in the messes area.
     protected boolean validateInput = true;
@@ -128,11 +125,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         sourceFolderControl = toolkit.createPdPackageFragmentRootRefControl(locationComposite, true);
         sourceFolderField = new TextButtonField(sourceFolderControl);
         sourceFolderField.addChangeListener(this);
-
-        toolkit.createFormLabel(locationComposite, Messages.IpsPackagePage_labelPackage);
-        packageControl = toolkit.createPdPackageFragmentRefControl(locationComposite);
-        packageField = new TextButtonField(packageControl);
-        packageField.addChangeListener(this);
 
         Label line = new Label(pageControl, SWT.SEPARATOR | SWT.HORIZONTAL);
         line.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -210,15 +202,30 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     }
 
     public String getIpsPackageName() {
-        return nameField.getText();
+        String packageName = getPdPackageFragment().getName();
+        if (packageName.length() > 0) {
+            return nameField.getText().substring(getPdPackageFragment().getName().length() + 1);
+        }
+        else {
+            return nameField.getText();
+        }
     }
 
-    public void setIpsObjectName(String newName) {
-        nameField.setText(newName);
-    }
-
-    public String getPackage() {
-        return packageField.getText();
+    public IIpsPackageFragment getPdPackageFragment() {
+        IIpsPackageFragmentRoot root = getPdPackageFragmentRoot();
+        String packageName = nameField.getText();
+        IIpsPackageFragment pack = root.getIpsPackageFragment(packageName);
+        if (pack != null && pack.exists()) {
+            return pack;
+        }
+        while (packageName.lastIndexOf('.') > 0) {
+            packageName = packageName.substring(0, packageName.lastIndexOf('.'));
+            pack = root.getIpsPackageFragment(packageName);
+            if (pack != null && pack.exists()) {
+                return pack;
+            }
+        }
+        return root.getDefaultIpsPackageFragment();
     }
 
     public String getSourceFolder() {
@@ -238,10 +245,17 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     }
 
     private void setPdPackageFragment(IIpsPackageFragment pack) {
-        packageControl.setPdPackageFragment(pack);
         if (pack != null) {
             setPdPackageFragmentRoot(pack.getRoot());
+            replacePackageFragment(pack);
         }
+    }
+
+    private void replacePackageFragment(IIpsPackageFragment pack) {
+        IIpsPackageFragment oldPack = getPdPackageFragment();
+        nameField.setText(pack.getName().concat(nameField.getText().substring(oldPack.getName().length())));
+        nameField.selectAll();
+        nameField.getTextControl().setFocus();
     }
 
     private void setPdPackageFragmentRoot(IIpsPackageFragmentRoot root) {
@@ -249,7 +263,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     }
 
     public IIpsPackageFragment getIpsPackageFragment() {
-        return packageControl.getPdPackageFragment();
+        return getPdPackageFragment();
     }
 
     public IIpsProject getIpsProject() {
@@ -283,9 +297,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     public void valueChanged(FieldValueChangedEvent e) {
         if (e.field == sourceFolderField) {
             sourceFolderChanged();
-        }
-        if (e.field == packageField) {
-            packageChanged();
         }
         if (e.field == nameField) {
             nameChanged();
@@ -348,7 +359,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      * The method validates the source folder.
      */
     private void validatePackage() {
-        IIpsPackageFragment pack = packageControl.getPdPackageFragment();
+        IIpsPackageFragment pack = getPdPackageFragment();
         if (pack != null && !pack.exists()) {
             setErrorMessage(NLS.bind(Messages.IpsPackagePage_msgPackageMissing, pack.getName()));
         }
@@ -361,7 +372,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      * </p>
      */
     protected void validateName() {
-        String name = nameField.getText();
+        String name = getIpsPackageName();
         // must not be empty
         if (name.length() == 0) {
             setErrorMessage(Messages.IpsPackagePage_msgEmptyName);
@@ -385,7 +396,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
                     IMessageProvider.WARNING);
             return;
         }
-        IIpsPackageFragment pack = packageControl.getPdPackageFragment();
+        IIpsPackageFragment pack = getPdPackageFragment();
         IIpsPackageFragment ipsPackage = pack.getRoot().getIpsPackageFragment(
                 pack.isDefaultPackage() ? name : (pack.getName() + "." + name)); //$NON-NLS-1$
         IFolder folder = (IFolder)ipsPackage.getCorrespondingResource();
@@ -412,7 +423,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      */
     protected void sourceFolderChanged() {
         IIpsPackageFragmentRoot root = sourceFolderControl.getPdPckFragmentRoot();
-        packageControl.setPdPckFragmentRoot(root);
+        setPdPackageFragmentRoot(root);
     }
 
 }
