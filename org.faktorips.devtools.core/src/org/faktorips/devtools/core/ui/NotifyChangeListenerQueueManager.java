@@ -122,7 +122,9 @@ public class NotifyChangeListenerQueueManager {
             // schedule again, the scheduling time is shorter, because within the working method we
             // check the time manually to decide if it is time to process the next outstanding event
             int nextScheduleTime = refreshInterval / 2;
-            logTrace("NotifyChangeListenerQueueManager$UpdateUIJobInternal.runInUIThread(): Schedule: " + nextScheduleTime + " ms"); //$NON-NLS-1$
+            if (shouldSchedule()){
+                logTrace("NotifyChangeListenerQueueManager$UpdateUIJobInternal.runInUIThread(): Schedule: " + nextScheduleTime + " ms"); //$NON-NLS-1$
+            }
             schedule(nextScheduleTime);
             return Status.OK_STATUS;
         }
@@ -130,7 +132,7 @@ public class NotifyChangeListenerQueueManager {
         public void stop() {
             // indicate the internal job to stop
             running = false;
-            logTrace("NotifyChangeListenerQueueManager$UpdateUIJobInternal.runInUIThread(): Stop scheduling"); //$NON-NLS-1$
+            logTrace("NotifyChangeListenerQueueManager$UpdateUIJobInternal.runInUIThread(): Stop scheduling, job will discarded next time."); //$NON-NLS-1$
         }
 
         /**
