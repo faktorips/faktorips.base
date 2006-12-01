@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.controller.EditFieldChangesBroadcaster;
 import org.faktorips.util.message.MessageList;
 
 
@@ -35,9 +36,8 @@ public abstract class DefaultEditField implements EditField {
     private boolean supportNull = true;
     
     
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#isTextContentParsable()
+    /**
+     * {@inheritDoc}
      */
     public boolean isTextContentParsable() {
         try {
@@ -48,17 +48,15 @@ public abstract class DefaultEditField implements EditField {
         }
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#setMessages(org.faktorips.util.message.MessageList)
+    /**
+     * {@inheritDoc}
      */
     public void setMessages(MessageList list) {
         MessageCueController.setMessageCue(getControl(), list);
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#addChangeListener(org.faktorips.devtools.core.ui.controls.ValueChangeListener)
+    /**
+     * {@inheritDoc}
      */
     public boolean addChangeListener(ValueChangeListener listener) {
         if (changeListeners==null) {
@@ -71,9 +69,8 @@ public abstract class DefaultEditField implements EditField {
         return added;
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#removeChangeListener(org.faktorips.devtools.core.ui.controls.ValueChangeListener)
+    /**
+     * {@inheritDoc}
      */
     public boolean removeChangeListener(ValueChangeListener listener) {
         if (changeListeners==null) {
@@ -89,8 +86,7 @@ public abstract class DefaultEditField implements EditField {
     protected abstract void addListenerToControl();
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#setValue(java.lang.Object, boolean)
+     * {@inheritDoc}
      */
     public void setValue(Object newValue, boolean triggerValueChanged) {
         notifyChangeListeners = triggerValueChanged;
@@ -104,16 +100,36 @@ public abstract class DefaultEditField implements EditField {
     }
     
     /**
-     * Sends the given event to all registered listeners. 
+     * Sends the given event to all registered listeners. In delayed manner.
+     * @see EditFieldChangesBroadcaster
      */
-    protected void notifyChangeListeners(FieldValueChangedEvent e) {
+    protected void notifyChangeListeners(FieldValueChangedEvent event) {
+        notifyChangeListeners(event, false);
+    }
+ 
+    /**
+     * Sends the given event to all registered listeners.
+     * 
+     * @param event The event which wille send to the listener
+     * @param immediately <code>true</code> the event will be directly broadcast to all registered
+     *            listener <code>false</code> the event will be delayed send to the listeners.
+     * @see EditFieldChangesBroadcaster
+     */
+    protected void notifyChangeListeners(FieldValueChangedEvent event, boolean immediately) {
         if (!notifyChangeListeners) {
             return;
         }
 
-        // notify change listeners in delayed manner
-        IpsPlugin.getDefault().getEditFieldChangeBroadcaster().broadcastDelayed(e,
-                (ValueChangeListener[])changeListeners.toArray(new ValueChangeListener[changeListeners.size()]));
+        if (immediately) {
+            // notify change listeners immediately
+            IpsPlugin.getDefault().getEditFieldChangeBroadcaster().broadcastImmediately(event,
+                    (ValueChangeListener[])changeListeners.toArray(new ValueChangeListener[changeListeners.size()]));
+        }
+        else {
+            // notify change listeners in delayed manner
+            IpsPlugin.getDefault().getEditFieldChangeBroadcaster().broadcastDelayed(event,
+                    (ValueChangeListener[])changeListeners.toArray(new ValueChangeListener[changeListeners.size()]));
+        }
     }
  
     /**

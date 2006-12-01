@@ -59,10 +59,13 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowAttributesAction;
@@ -393,7 +396,22 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             // no contents set or event concerncs another source file - nothing to refresh.
             return;
         }
-        refresh();
+        int type = event.getEventType();
+        IIpsObjectPart part = event.getPart();
+        
+        // refresh only for relevant changes
+        if (part instanceof ITableContentUsage || part instanceof IProductCmptRelation
+                || type == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
+            postRefresh();
+        }
+    }
+
+    private void postRefresh() {
+        getViewSite().getShell().getDisplay().asyncExec(new Runnable(){
+            public void run() {
+                refresh();
+            }
+        });
     }
     
     /**
@@ -403,7 +421,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         if (file == null) {
             return;
         }
-        refresh();
+        postRefresh();
     }
 	
     /**

@@ -432,6 +432,8 @@ public class MoveOperation implements IRunnableWithProgress {
 	 */
 	private void move(IProductCmpt source, IIpsSrcFile targetFile, IProgressMonitor monitor) {
 		try {
+            String runtimeId = source.getRuntimeId();
+            
 			// first, find all objects refering the source (which will be deleted later)
 			IProductCmptGeneration[] refs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedName());
 			
@@ -443,8 +445,13 @@ public class MoveOperation implements IRunnableWithProgress {
 				fixRelations(refs[i], source.getQualifiedName(), targetFile.getIpsObject().getQualifiedName(), monitor);
 			}			
 			
-			// at least, delete the source
+			// fourthly, delete the source
 			source.getEnclosingResource().delete(true, monitor);
+            
+            // at least, update the runtime id of the moved product cmpt to the original runtime id
+            IProductCmpt productCmpt = (IProductCmpt) targetFile.getIpsObject();
+            productCmpt.setRuntimeId(runtimeId);
+            productCmpt.getIpsSrcFile().save(true, null);
 		} catch (CoreException e) {
 			Shell shell = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
 			MessageDialog.openError(shell, Messages.MoveOperation_titleAborted, Messages.MoveOperation_msgAborted);

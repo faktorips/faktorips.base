@@ -32,6 +32,8 @@ public class TextField extends DefaultEditField {
 
     private Text text;
     
+    private boolean immediatelyNotifyListener = false;
+    
     public TextField(Text text) {
         super();
         ArgumentCheck.notNull(text);
@@ -66,7 +68,7 @@ public class TextField extends DefaultEditField {
      * @see org.faktorips.devtools.core.ui.controller.EditField#setValue(java.lang.Object)
      */
     public void setValue(Object newValue) {
-        text.setText((String)super.prepareObjectForSet(newValue));
+        setText((String)super.prepareObjectForSet(newValue));
     }
 
     /** 
@@ -82,7 +84,13 @@ public class TextField extends DefaultEditField {
      * @see org.faktorips.devtools.core.ui.controller.EditField#setText(java.lang.String)
      */
     public void setText(String newText) {
-        text.setText(newText);
+        immediatelyNotifyListener = true;
+        try {
+            text.setText(newText);
+        }
+        finally {
+            immediatelyNotifyListener = false;
+        }
     }
 
     /** 
@@ -100,7 +108,7 @@ public class TextField extends DefaultEditField {
     public void selectAll() {
         text.selectAll();
     }
-
+    
     /** 
      * Overridden method.
      * @see org.faktorips.devtools.core.ui.controller.fields.DefaultEditField#addListenerToControl()
@@ -109,7 +117,7 @@ public class TextField extends DefaultEditField {
         text.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                notifyChangeListeners(new FieldValueChangedEvent(TextField.this));
+                notifyChangeListeners(new FieldValueChangedEvent(TextField.this), immediatelyNotifyListener);
             }
             
         });

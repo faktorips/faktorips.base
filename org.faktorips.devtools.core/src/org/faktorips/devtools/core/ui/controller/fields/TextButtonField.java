@@ -33,6 +33,8 @@ public class TextButtonField extends DefaultEditField {
     
     TextButtonControl control;
     
+    private boolean immediatelyNotifyListener = false;
+
     public TextButtonField(TextButtonControl control) {
         super();
         this.control = control;
@@ -67,7 +69,7 @@ public class TextButtonField extends DefaultEditField {
      * @see org.faktorips.devtools.core.ui.controller.EditField#setValue(java.lang.Object)
      */
     public void setValue(Object newValue) {
-        control.getTextControl().setText((String)super.prepareObjectForSet(newValue));
+        setText((String)super.prepareObjectForSet(newValue));
     }
 
     /** 
@@ -83,7 +85,13 @@ public class TextButtonField extends DefaultEditField {
      * @see org.faktorips.devtools.core.ui.controller.EditField#setText(java.lang.String)
      */
     public void setText(String newText) {
-        control.getTextControl().setText(newText);
+        immediatelyNotifyListener = true;
+        try {
+            control.getTextControl().setText(newText);
+        }
+        finally {
+            immediatelyNotifyListener = false;
+        }
     }
 
     /** 
@@ -110,7 +118,8 @@ public class TextButtonField extends DefaultEditField {
     	ModifyListener ml = new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                notifyChangeListeners(new FieldValueChangedEvent(TextButtonField.this));
+                boolean immediatelyNotify = immediatelyNotifyListener | control.isImmediatelyNotifyListener();
+                notifyChangeListeners(new FieldValueChangedEvent(TextButtonField.this), immediatelyNotify);
             }
             
         };

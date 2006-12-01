@@ -49,6 +49,9 @@ public class EditFieldChangesBroadcaster {
     private ValueChangeListener[] lastListeners;
     private long lastEventTime = 0;
 
+    // contains the current broadcast event
+    private FieldValueChangedEvent currentEvent = null;
+    
     // mutex for synchronize reason
     private Boolean mutex = Boolean.TRUE;
     
@@ -105,9 +108,8 @@ public class EditFieldChangesBroadcaster {
         synchronized (mutex){
             if (lastEvent!=null && lastEvent.field != event.field) {
                 broadcastLastEvent();
-            } else {
-                incrementCounter();
-            }
+            } 
+            incrementCounter();
             
             lastEvent = event;
             lastListeners = listeners;
@@ -118,32 +120,42 @@ public class EditFieldChangesBroadcaster {
     }
     
     /**
-     *  Broadcasts the occured event immediatly.
+     *  Broadcasts the occured event immediately.
      */
     public void broadcastLastEvent() {
         if (lastEvent!=null) {
-            broadcastImmediatly(lastEvent, lastListeners);
+            broadcastImmediately(lastEvent, lastListeners);
             lastEvent = null;
         }
     }
     
     /**
-     *  Broadcasts the given event to the listeners immediatly.
+     *  Broadcasts the given event to the listeners immediately.
      */
-    public void broadcastImmediatly(FieldValueChangedEvent event, ValueChangeListener[] listeners) {
-        if (isDebugOn()){
-            logTrace("Start broadcast. Accrued events " + eventCounter);
-        }
-        resetCounter();
-        for (int i = 0; i < listeners.length; i++) {
-            try {
-                listeners[i].valueChanged(event);
+    public void broadcastImmediately(FieldValueChangedEvent event, ValueChangeListener[] listeners) {
+        synchronized (mutex) {
+            if (currentEvent != null && currentEvent.field == event.field) {
+                logTrace("Skip current broadcast event");
+                return;
             }
-            catch (RuntimeException e) {
-               if (isDebugOn()){
-                   e.printStackTrace();
-               }
+            if (isDebugOn()){
+                logTrace("Start broadcast." + (eventCounter==1?"":" Accrued events " + eventCounter));
             }
+            
+            currentEvent = event;
+
+            resetCounter();
+            for (int i = 0; i < listeners.length; i++) {
+                try {
+                    listeners[i].valueChanged(event);
+                }
+                catch (RuntimeException e) {
+                    if (isDebugOn()) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            currentEvent = null;
         }
         logTrace("Finished broadcast");
     }
@@ -184,7 +196,7 @@ public class EditFieldChangesBroadcaster {
 
     private void resetCounter(){
         if (isDebugOn()){
-            eventCounter = 0;
+            eventCounter = 1;
         }
     }
     

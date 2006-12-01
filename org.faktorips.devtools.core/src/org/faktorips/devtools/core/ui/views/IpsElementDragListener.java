@@ -27,6 +27,9 @@ import org.eclipse.swt.dnd.DragSourceListener;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
 
 public class IpsElementDragListener implements DragSourceListener {
 
@@ -56,9 +59,9 @@ public class IpsElementDragListener implements DragSourceListener {
     		if (selected instanceof IIpsElement && ((IIpsElement)selected).getCorrespondingResource() != null) {
     			list.add(((IIpsElement)selected).getCorrespondingResource().getLocation().toOSString());
     		}
-    		else if (selected instanceof IProductCmpt) {
-                if (((IProductCmpt)selected).getIpsSrcFile().getCorrespondingFile() != null){
-                    list.add(((IProductCmpt)selected).getIpsSrcFile().getCorrespondingFile().getLocation().toOSString());
+    		else if (selected instanceof IProductCmpt || selected instanceof ITestCase || selected instanceof ITableContents) {
+                if (((IIpsObject)selected).getIpsSrcFile().getCorrespondingFile() != null){
+                    list.add(((IIpsObject)selected).getIpsSrcFile().getCorrespondingFile().getLocation().toOSString());
                 }
             }else if(selected instanceof Object[]){
     			Object ipsObject= ((Object[])selected)[0];

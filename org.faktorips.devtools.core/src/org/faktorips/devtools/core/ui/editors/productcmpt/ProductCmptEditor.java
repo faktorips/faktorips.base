@@ -210,7 +210,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 * Does what the methodname says :-)
 	 */
 	private void checkForInconsistenciesBetweenAttributeAndConfigElements(boolean force) {
-		if (!force) {
+        if (!getIpsSrcFile().exists()){
+            // dont't check for inconsistencies if the src file not exists,
+            // e.g. if the product cmpt editor is open and the product cmpt was moved
+            return;
+        }
+        if (!force) {
 			if (!this.enabled || !getIpsSrcFile().isMutable() || deltasShowing) {
 	    		// no modifications for read-only-editors
 				return;
