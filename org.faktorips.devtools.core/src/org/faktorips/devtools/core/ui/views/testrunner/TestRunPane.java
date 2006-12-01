@@ -349,7 +349,7 @@ public class TestRunPane {
             failureDetailList.add(failureDetails);
         }
         public String[] getDetailsOfSingleFailure(int idx) {
-            if (idx > failureDetailList.size()){
+            if (idx >= failureDetailList.size()){
                 return EMPTY_STRING_ARRAY;
             } else {
                 return (String[]) failureDetailList.get(idx);
