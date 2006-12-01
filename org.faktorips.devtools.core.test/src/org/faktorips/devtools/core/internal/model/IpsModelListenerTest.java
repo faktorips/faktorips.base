@@ -178,6 +178,8 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         
         IpsModel model = (IpsModel)file.getIpsModel();
         model.stopBroadcastingChangesMadeByCurrentThread();
+        model.stopBroadcastingChangesMadeByCurrentThread();
+        model.resumeBroadcastingChangesMadeByCurrentThread();
         contentChangeListener.count = 0;
         statusChangeListener .count = 0;
         type.setSupertype("NewSuper");
@@ -185,7 +187,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         assertEquals(0, statusChangeListener.count);
         file.save(true, null);
         
-        model.restartBroadcastingChangesMadeByCurrentThread();
+        model.resumeBroadcastingChangesMadeByCurrentThread();
         contentChangeListener.count = 0;
         statusChangeListener .count = 0;
         type.setSupertype("NewerSuper");

@@ -176,9 +176,15 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         
         // set the new evaluated runtime id for product components
         if (ipsSrcFile .getIpsObjectType() == IpsObjectType.PRODUCT_CMPT){
-            IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile .getIpsObject();
-            productCmpt.setRuntimeId(getIpsProject().getRuntimeId(productCmpt));
-            ipsSrcFile .save(force, monitor);
+            IpsModel model = (IpsModel)getIpsModel();
+            try {
+                model.stopBroadcastingChangesMadeByCurrentThread();
+                IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile .getIpsObject();
+                productCmpt.setRuntimeId(getIpsProject().getRuntimeId(productCmpt));
+                ipsSrcFile .save(force, monitor);
+            } finally {
+                model.resumeBroadcastingChangesMadeByCurrentThread();
+            }
         }
         
         return ipsSrcFile;
@@ -227,53 +233,64 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             GregorianCalendar date,
             boolean force,
             IProgressMonitor monitor) throws CoreException {
+        
         IpsObjectType type = template.getIpsObjectType();
         String filename = type.getFileName(name);
         Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
         Element element;
 
-        IIpsSrcFile file;
         if (template instanceof ITimedIpsObject) {
-            IIpsObjectGeneration source = ((ITimedIpsObject)template).findGenerationEffectiveOn(date);
-            if (source == null) {
-                source = getFirstGeneration((ITimedIpsObject)template, date);
-            }
-
-            if (source == null) {
-                throw new CoreException(
-                        new IpsStatus(
-                                "No generation found for the given date " + date.getTime().toString() + " in " + template.getQualifiedName())); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            file = createIpsFile(type, name, force, monitor);
-            TimedIpsObject newObject = (TimedIpsObject)file.getIpsObject();
-            //TODO i think we need to disable event broadcasting until all attributes of the new
-            //generations have been set.
-            newObject.newGeneration(source, IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
-            
-            if (template instanceof IProductCmpt) {
-                ((IProductCmpt)newObject).setPolicyCmptType(((IProductCmpt)template).getPolicyCmptType());
-            }
-            file.save(true, null);
-
-            if (type == IpsObjectType.PRODUCT_CMPT) {
-                ((IProductCmpt)newObject).setRuntimeId(newObject.getIpsProject().getRuntimeId((IProductCmpt)newObject));
-            }
-            
+            return createIpsFileForTimedIpsObject(name, template, date, force, null);
         }
         else {
             element = template.toXml(doc);
             try {
                 String encoding = getIpsProject().getXmlFileCharset();
                 String contents = XmlUtil.nodeToString(element, encoding);
-                file = createIpsFile(filename, contents, force, monitor);
+                return createIpsFile(filename, contents, force, monitor);
             }
             catch (TransformerException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    private IIpsSrcFile createIpsFileForTimedIpsObject(String name,
+            IIpsObject template,
+            GregorianCalendar date,
+            boolean force,
+            IProgressMonitor monitor) throws CoreException {
+
+        IIpsObjectGeneration source = ((ITimedIpsObject)template).findGenerationEffectiveOn(date);
+        if (source == null) {
+            source = getFirstGeneration((ITimedIpsObject)template, date);
+            if (source == null) {
+                throw new CoreException(
+                        new IpsStatus(
+                                "No generation found for the given date " + date.getTime().toString() + " in " + template.getQualifiedName())); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+        IIpsSrcFile file = createIpsFile(template.getIpsObjectType(), name, force, monitor);
+        IpsModel model =(IpsModel)getIpsModel();
+        try {
+            model.stopBroadcastingChangesMadeByCurrentThread();
+            TimedIpsObject newObject = (TimedIpsObject)file.getIpsObject();
+            newObject.newGeneration(source, IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+            
+            if (template instanceof IProductCmpt) {
+                ((IProductCmpt)newObject).setPolicyCmptType(((IProductCmpt)template).getPolicyCmptType());
+                ((IProductCmpt)newObject).setRuntimeId(newObject.getIpsProject().getRuntimeId((IProductCmpt)newObject));
+            }
+            file.save(true, null);
+        } finally {
+            model.resumeBroadcastingChangesMadeByCurrentThread();
+        }
         return file;
     }
-
+    
     /**
      * Returns the first generation of the given timed ips object, if this generation is valid from
      * before the given date or <code>null</code> otherwise.

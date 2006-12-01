@@ -96,7 +96,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     
     // a map that contains per thread if changes should be broadcasted to the registered listeners
     // or squeezed.
-    private HashMap listenerNoticicationStatusMap = new HashMap();
+    private HashMap listenerNoticicationLevelMap = new HashMap();
 
     /*
      * A map containing the dataypes (value) by id (key).
@@ -380,22 +380,44 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Tells the model to stop broadcasting any changes made to ips objects by the current
      * thread. By default changes are broadcasted until this method is called.
+     * To restart brodcasting changes the method resumeBroadcastingChangesMadeByCurrentThread() has to 
+     * be called. 
+     * 
+     * <strong>Note<strong> that these to method have a "nested transaction behaviour". That means broadcasting
+     * resumes only if the resume method has been called as many times as the stop method. This
+     * allows to implement method that stop/resume broadcasting to call other method that use these methods
+     * without resuming broadcasting to early.
      */
     public void stopBroadcastingChangesMadeByCurrentThread() {
-        this.listenerNoticicationStatusMap.put(Thread.currentThread(), Boolean.FALSE);
+        Integer level = (Integer)listenerNoticicationLevelMap.get(Thread.currentThread());
+        if (level==null) {
+            level = new Integer(1);
+        } else {
+            level = new Integer(level.intValue()+1);
+        }
+        listenerNoticicationLevelMap.put(Thread.currentThread(), level);
         if (TRACE_MODEL_CHANGE_LISTENERS) {
-            System.out.println("IpsModel.stopBroadcastingChangesMadeByCurrentThread(): Thread=" + Thread.currentThread()); //$NON-NLS-1$
+            System.out.println("IpsModel.stopBroadcastingChangesMadeByCurrentThread(): Thread=" + Thread.currentThread() + ", new level=" + level); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
     
     /**
-     * Tells the model to restart broadcasting any changes made to ips objects by the current
+     * Tells the model to resume broadcasting any changes made to ips objects by the current
      * thread.
+     * 
+     * <strong>Note<strong> that these to method have a "nested transaction behaviour". That means broadcasting
+     * resumes only if the resume method has been called as many times as the stop method. This
+     * allows to implement method that stop/resume broadcasting to call other method that use these methods
+     * without resuming broadcasting to early.
      */
-    public void restartBroadcastingChangesMadeByCurrentThread() {
-        this.listenerNoticicationStatusMap.put(Thread.currentThread(), Boolean.TRUE);
+    public void resumeBroadcastingChangesMadeByCurrentThread() {
+        Integer level = (Integer)listenerNoticicationLevelMap.get(Thread.currentThread());
+        if (level!=null && level.intValue()>0) {
+            level = new Integer(level.intValue()-1);
+        }
+        listenerNoticicationLevelMap.put(Thread.currentThread(), level);
         if (TRACE_MODEL_CHANGE_LISTENERS) {
-            System.out.println("IpsModel.restartBroadcastingChangesMadeByCurrentThread(): Thread=" + Thread.currentThread()); //$NON-NLS-1$
+            System.out.println("IpsModel.restartBroadcastingChangesMadeByCurrentThread(): Thread=" + Thread.currentThread() + ", new level=" + level); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
     
@@ -404,8 +426,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * an ips object by the current thread.
      */
     public boolean isBroadcastingChangesForCurrentThread() {
-        Boolean status = (Boolean)listenerNoticicationStatusMap.get(Thread.currentThread());
-        if (status==null || status.booleanValue()) {
+        Integer level = (Integer)listenerNoticicationLevelMap.get(Thread.currentThread());
+        if (level==null || level.intValue()==0) {
             return true;
         }
         return false;

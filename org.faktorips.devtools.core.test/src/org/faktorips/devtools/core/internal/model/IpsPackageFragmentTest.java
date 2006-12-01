@@ -33,6 +33,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -263,8 +265,11 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     	IProductCmptGeneration generation = (IProductCmptGeneration)template.newGeneration(date);
     	generation.newRelation("testRelation");
     	template.getIpsSrcFile().save(true, null);
-    	
+    	TestContentChangeListener listener = new TestContentChangeListener();
+        template.getIpsModel().addChangeListener(listener);
+        
     	IIpsSrcFile file = pack.createIpsFileFromTemplate("copy", template, date, true, null);
+        assertEquals(0, listener.count);
     	IProductCmpt copy = (IProductCmpt)file.getIpsObject();
     	file.save(true, null);
     	
@@ -279,4 +284,16 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     	assertFalse(StringUtils.isEmpty(copy.getRuntimeId()));
     }
     
+    class TestContentChangeListener implements ContentsChangeListener {
+
+        int count = 0;
+        ContentChangeEvent lastEvent;
+
+        public void contentsChanged(ContentChangeEvent event) {
+            lastEvent = event;
+            count++;
+        }
+        
+    }
+
 }
