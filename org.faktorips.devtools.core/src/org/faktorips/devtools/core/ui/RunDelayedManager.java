@@ -151,7 +151,12 @@ public class RunDelayedManager {
                         logTrace("Start runnable", runnable.getId()); //$NON-NLS-1$
                         // there is an event to proceed, start notification of the corresponding
                         // listeners stored in this event
-                        runnable.run();
+                        try {
+                            runnable.run();
+                        }
+                        catch (RuntimeException e) {
+                            logTrace("Error durring run: " + e.getMessage(), runnable.getId());
+                        }
                         logTrace("Finished runnable", runnable.getId()); //$NON-NLS-1$
                     }
                 }
