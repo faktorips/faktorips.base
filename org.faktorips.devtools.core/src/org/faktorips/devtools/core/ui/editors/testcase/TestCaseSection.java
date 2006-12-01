@@ -89,10 +89,10 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.IIdentifiableDelayedRunnable;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.PdObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.UpdateUiJob;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
@@ -180,11 +180,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     // Contains all failure details for one test run
     private List allFailureDetails = new ArrayList();
 
-    // Ui job to update the user interface in parallel mode
-    private UpdateUiJob updateUiJob;
-    
     // Listener about content changes
     private TestCaseContentChangeListener changeListener;
+
+    // Runnable to update the ui after a specified delayed time
+    private IIdentifiableDelayedRunnable updateCommand;
     
 	/*
      * Action which provides the content type filter.
@@ -414,7 +414,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     }
     
     public TestCaseSection(Composite parent, TestCaseEditor editor, UIToolkit toolkit,
-            TestCaseContentProvider contentProvider, String title, String detailTitle, ScrolledForm form){
+            TestCaseContentProvider contentProvider, final String title, String detailTitle, ScrolledForm form){
         super(parent, Section.NO_TITLE, GridData.FILL_BOTH, toolkit);
         
         this.editor = editor;
@@ -443,7 +443,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         //   if the model changed reset the test run status
         testCase.getIpsModel().addChangeListener(new TestCaseContentChangeListener(this));
     
-        Runnable updateCommand = new Runnable() {
+        // create the update (refresh command)
+        updateCommand = new IIdentifiableDelayedRunnable() {
             public void run() {
                 if (isDisposed())
                     return;
@@ -453,16 +454,20 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
               // reset the test runner status
               postResetTestRunStatus();
             }
+            public int getDelayTime() {
+                return DEFAULT_DELAY_TIME;
+            }
+            public String getId() {
+                return title;
+            }
         };
-        
-        updateUiJob = new UpdateUiJob(getDisplay(), updateCommand);
     }
     
     /**
      * Informs that the content of the given object has changed.
      */
     void contentsChanged(Object element) {
-        updateUiJob.update(element);
+        IpsPlugin.getDefault().runDelayed(updateCommand);
     }
     
     /**

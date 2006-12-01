@@ -18,10 +18,10 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.NotifyChangeDelayedRunnable;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.util.message.MessageList;
 
@@ -111,10 +111,9 @@ public abstract class DefaultEditField implements EditField {
         if (!notifyChangeListeners) {
             return;
         }
-        for (Iterator it=changeListeners.iterator(); it.hasNext(); ) {
-            ValueChangeListener listener = (ValueChangeListener)it.next();
-            listener.valueChanged(e);
-        }
+        NotifyChangeDelayedRunnable runnable = new NotifyChangeDelayedRunnable((ValueChangeListener[])changeListeners
+                .toArray(new ValueChangeListener[changeListeners.size()]), e, getId());
+        IpsPlugin.getDefault().runDelayed(runnable);
     }
  
     /**
@@ -146,5 +145,13 @@ public abstract class DefaultEditField implements EditField {
      */
     public void setSupportsNull(boolean supportsNull) {
     	this.supportNull = supportsNull;
+    }
+
+
+    /*
+     * Returns the identified of this class object
+     */
+    private String getId(){
+        return "" + System.identityHashCode(this);
     }
 }

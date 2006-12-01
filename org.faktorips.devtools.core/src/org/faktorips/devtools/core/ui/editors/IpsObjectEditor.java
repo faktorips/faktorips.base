@@ -131,8 +131,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         site.getPage().addPartListener(this);
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-        // TODO remark: disabled because of performance problems
-        // IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
 
         selectionProviderDispatcher = new SelectionProviderDispatcher();
         site.setSelectionProvider(selectionProviderDispatcher);
@@ -216,8 +215,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         // we only need a refresh here if the content of one field of this editorwill have an
         // effect on another field in this editor, but this is not the case yet.
 
-        // TODO remark: disabled because of performance problems
-        // refresh();
+        refresh();
     }
     
     /**

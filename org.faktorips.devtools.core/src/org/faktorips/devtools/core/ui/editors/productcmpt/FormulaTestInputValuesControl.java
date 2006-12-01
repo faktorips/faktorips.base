@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
@@ -49,10 +50,9 @@ import org.faktorips.devtools.core.ui.ProblemImageDescriptor;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.UIController;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
+import org.faktorips.devtools.core.ui.table.BeanTableCellModifier;
 import org.faktorips.devtools.core.ui.table.ColumnChangeListener;
 import org.faktorips.devtools.core.ui.table.ColumnIdentifier;
-import org.faktorips.devtools.core.ui.table.BeanTableCellModifier;
-import org.faktorips.fl.parser.ParseException;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -445,15 +445,28 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
                 showFormulaResult(Messages.FormulaTestInputValuesControl_Result_ObjectIsNotValid);
                 return null;
             }
-            Object result = formulaTestCase.execute();
-            lastCalculatedResult = result;
-            showFormulaResult(""+result); //$NON-NLS-1$
+
+            Runnable calculate = new Runnable() {
+                public void run() {
+                    if (isDisposed())
+                        return;
+                    try {
+                        lastCalculatedResult = formulaTestCase.execute();
+                    }
+                    catch (Exception e) {
+                        showFormulaResult(NLS.bind(
+                                Messages.FormulaTestInputValuesControl_Error_ParseExceptionWhenExecutingFormula, e
+                                        .getLocalizedMessage()));
+                    }
+                }
+            };
+            BusyIndicator.showWhile(getDisplay(), calculate);
+
+            showFormulaResult(""+lastCalculatedResult); //$NON-NLS-1$
             if (storeExpectedResult){
-                formulaTestCase.setExpectedResult(result==null?null:result.toString());
+                formulaTestCase.setExpectedResult(lastCalculatedResult==null?null:lastCalculatedResult.toString());
             }
-            return result;
-        } catch (ParseException e){
-            showFormulaResult(NLS.bind(Messages.FormulaTestInputValuesControl_Error_ParseExceptionWhenExecutingFormula, e.getLocalizedMessage()));
+            return lastCalculatedResult;
         } catch (Exception e) {
             showFormulaResult(Messages.FormulaTestInputValuesControl_Error_ExecutingFormula);
         }

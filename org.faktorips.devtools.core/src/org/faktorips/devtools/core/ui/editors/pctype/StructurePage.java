@@ -41,7 +41,7 @@ public class StructurePage extends PctEditorPage {
     
 	protected void createPageContent(Composite formBody, UIToolkit toolkit) {
 		formBody.setLayout(createPageLayout(1, false));
-		IpsSection general = new GeneralInfoSection(getPolicyCmptType(), formBody, toolkit, getPctEditor()); 
+		IpsSection general = new GeneralInfoSection(getPolicyCmptType(), formBody, toolkit); 
 		
 		Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
 		IpsSection attributes = new AttributesSection(getPolicyCmptType(), members, toolkit);

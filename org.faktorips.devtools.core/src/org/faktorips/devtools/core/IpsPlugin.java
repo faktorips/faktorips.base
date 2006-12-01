@@ -51,14 +51,12 @@ import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsContentMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.model.versionmanager.IpsFeatureVersionManagerSorter;
-import org.faktorips.devtools.core.ui.NotifyChangeListenerEvent;
-import org.faktorips.devtools.core.ui.NotifyChangeListenerQueueManager;
+import org.faktorips.devtools.core.ui.IIdentifiableDelayedRunnable;
+import org.faktorips.devtools.core.ui.RunDelayedManager;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.EnumDatatypeControlFactory;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
 import org.faktorips.devtools.extsystems.IValueConverter;
@@ -79,7 +77,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     private boolean testMode = false;
     private ITestAnswerProvider testAnswerProvider;
 
-    private NotifyChangeListenerQueueManager notifiyChangeListenerJob;
+    private RunDelayedManager runDelayedManager;
     
     /**
      * Returns the full extension id. This is the plugin's id plus the plugin relative extension id
@@ -630,17 +628,12 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
     
     /**
-     * Notify the given listener with the change event in asynchronous manner. The event will be post to the 
-     * listener in scheduled way. All events are stored in queue which will be proccessed with a specified delay,
-     * @param listeners The listeners which are interested for the change event
-     * @param fieldValueChangedEvent The change event which occurred
-     * @param initiator The initiator who would like to sends the change event to the listener
+     * Run the given runnable in asynchronous manner. The runnable will be started after a specified delay.
      */
-    public void queueNotifyChangeListener(ValueChangeListener[] listeners, FieldValueChangedEvent fieldValueChangedEvent, Object initiator){
-        if (notifiyChangeListenerJob == null){
-            notifiyChangeListenerJob = new NotifyChangeListenerQueueManager();
+    public void runDelayed(IIdentifiableDelayedRunnable runnable){
+        if (runDelayedManager == null){
+            runDelayedManager = new RunDelayedManager();
         }
-        NotifyChangeListenerEvent event = new NotifyChangeListenerEvent(listeners, fieldValueChangedEvent, initiator);
-        notifiyChangeListenerJob.update(event);
+        runDelayedManager.update(runnable);
     }
 }

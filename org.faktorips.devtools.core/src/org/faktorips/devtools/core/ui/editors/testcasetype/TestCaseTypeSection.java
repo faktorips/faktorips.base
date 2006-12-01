@@ -91,10 +91,10 @@ import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.IIdentifiableDelayedRunnable;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.ProblemImageDescriptor;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.UpdateUiJob;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.UIController;
@@ -175,12 +175,12 @@ public class TestCaseTypeSection extends IpsSection  {
     // Object cache for the detail area
     private SectionDetailObjectCache objectCache;
     
-    // Ui job to update the user interface in parallel mode
-    private UpdateUiJob updateUiJob;
-
     //  Listener about content changes
     private TestCaseTypeContentChangeListener changeListener;
-    
+
+    // Runnable to update the ui after a specified delayed time
+    private IIdentifiableDelayedRunnable updateCommand;
+
     /*
      * Object cache to store several object to render the ui
      */
@@ -634,7 +634,7 @@ public class TestCaseTypeSection extends IpsSection  {
         }
     }
     
-    public TestCaseTypeSection(Composite parent, UIToolkit toolkit, final ITestCaseType testCaseType, String title,
+    public TestCaseTypeSection(Composite parent, UIToolkit toolkit, final ITestCaseType testCaseType, final String title,
             String detailTitle, ScrolledForm form) {
         super(parent, Section.NO_TITLE, GridData.FILL_BOTH, toolkit);
 
@@ -648,8 +648,9 @@ public class TestCaseTypeSection extends IpsSection  {
         
         initControls();
         setText(title);
-        
-        Runnable updateCommand = new Runnable() {
+
+        // create the update (refresh command)
+        updateCommand = new IIdentifiableDelayedRunnable() {
             public void run() {
                 if (isDisposed()) {
                     return;
@@ -657,9 +658,13 @@ public class TestCaseTypeSection extends IpsSection  {
                 // refresh all if the test case type changes, redraw section titles etc.
                 postRefreshAll();
             }
+            public int getDelayTime() {
+                return DEFAULT_DELAY_TIME;
+            }
+            public String getId() {
+                return title;
+            }
         };
-        
-        updateUiJob = new UpdateUiJob(getDisplay(), updateCommand);
     }
 
     /**
@@ -1952,7 +1957,7 @@ public class TestCaseTypeSection extends IpsSection  {
 
     private void contentsHasChanged(ContentChangeEvent event) {
         if (event.getIpsSrcFile().equals(testCaseType.getIpsSrcFile())){
-            updateUiJob.update("UpdateAll"); //$NON-NLS-1$
+            IpsPlugin.getDefault().runDelayed(updateCommand);
         }
     }
 }

@@ -64,7 +64,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
-import org.faktorips.devtools.core.ui.UpdateUiJob;
+import org.faktorips.devtools.core.ui.IIdentifiableDelayedRunnable;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowAttributesAction;
@@ -88,11 +88,9 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private ProductStructureContentProvider contentProvider;
     private GenerationRootNode rootNode;
     private Label errormsg;
-    
-    
-    // Job to refresh the ui in asynchronous manner
-    private UpdateUiJob updateUiJob;
-    
+
+    private IIdentifiableDelayedRunnable refreshRunnable;
+
     /*
      * Class to represent the root tree node to inform about the current working date.
      */
@@ -193,7 +191,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     		}
     		
 			public void run() {
-                updateUiJob.update(this);
+                refresh();
 		        tree.expandAll();
 			}
 
@@ -215,7 +213,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     		
 			public void run() {
 				contentProvider.setRelationTypeShowing(!contentProvider.isRelationTypeShowing());
-                updateUiJob.update(this);
+                refresh();
 			}
 
 			public String getToolTipText() {
@@ -240,18 +238,32 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 		
 		});
         
-        // add asynchronous refreh ui job
-        Runnable refreshCommand = new Runnable() {
+        // create refresh runnable
+        refreshRunnable= new IIdentifiableDelayedRunnable() {
+            /**
+             * {@inheritDoc}
+             */
             public void run() {
                 if (getDisplay().isDisposed())
                     return;
               // refresh the whole content of the tree
               refresh();
             }
+            /**
+             * {@inheritDoc}
+             */
+            public String getId() {
+                return getPartName();
+            }
+            /**
+             * {@inheritDoc}
+             */
+            public int getDelayTime() {
+                return 500;
+            }
         };
-        updateUiJob = new UpdateUiJob(getDisplay(), refreshCommand);        
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -365,6 +377,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                     }
                 }
             };
+
             ctrl.setRedraw(false);
             ctrl.getDisplay().syncExec(runnable);
         } finally {
@@ -413,7 +426,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             // no contents set or event concerncs another source file - nothing to refresh.
             return;
         }
-        updateUiJob.update(this);
+        runQueueRefreshRunnable();
     }
     
     /**
@@ -423,7 +436,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         if (file == null) {
             return;
         }
-        updateUiJob.update(this);
+        runQueueRefreshRunnable();
     }
 	
     /**
@@ -449,5 +462,12 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         IpsPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
         super.dispose();
+    }
+
+    /*
+     * Process the refresh runnable in a queue.
+     */
+    private void runQueueRefreshRunnable() {
+        IpsPlugin.getDefault().runDelayed(refreshRunnable);
     }
 }
