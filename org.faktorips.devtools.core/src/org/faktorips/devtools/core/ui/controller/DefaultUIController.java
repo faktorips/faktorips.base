@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -35,7 +37,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 /**
  * 
  */
-public class DefaultUIController implements ValueChangeListener, UIController {
+public class DefaultUIController implements ValueChangeListener, UIController, FocusListener {
 
 	// list of mappings between edit fields and properties of model objects.
 	protected List mappings = new ArrayList();
@@ -100,6 +102,7 @@ public class DefaultUIController implements ValueChangeListener, UIController {
 	protected void addMapping(FieldPropertyMapping mapping) {
 		mappings.add(mapping);
 		mapping.getField().addChangeListener(this);
+        mapping.getField().getControl().addFocusListener(this);
 	}
 
 	public void updateModel() {
@@ -166,4 +169,18 @@ public class DefaultUIController implements ValueChangeListener, UIController {
 		}
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public void focusGained(FocusEvent e) {
+        // nothing to do
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void focusLost(FocusEvent e) {
+        // broadcast outstanding change events
+        IpsPlugin.getDefault().getEditFieldChangeBroadcaster().broadcastLastEvent();
+    }
 }

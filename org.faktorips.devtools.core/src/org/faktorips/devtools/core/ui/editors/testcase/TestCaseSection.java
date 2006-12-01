@@ -89,7 +89,6 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
-import org.faktorips.devtools.core.ui.IIdentifiableDelayedRunnable;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.PdObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -183,9 +182,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     // Listener about content changes
     private TestCaseContentChangeListener changeListener;
 
-    // Runnable to update the ui after a specified delayed time
-    private IIdentifiableDelayedRunnable updateCommand;
-    
 	/*
      * Action which provides the content type filter.
      */
@@ -442,32 +438,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         // add listener on model,
         //   if the model changed reset the test run status
         testCase.getIpsModel().addChangeListener(new TestCaseContentChangeListener(this));
-    
-        // create the update (refresh command)
-        updateCommand = new IIdentifiableDelayedRunnable() {
-            public void run() {
-                if (isDisposed())
-                    return;
-              // refresh the whole content of the tree, because if there is an update of a
-              // child element then also the parent must be refreshed
-              treeViewer.refresh();
-              // reset the test runner status
-              postResetTestRunStatus();
-            }
-            public int getDelayTime() {
-                return DEFAULT_DELAY_TIME;
-            }
-            public String getId() {
-                return title;
-            }
-        };
-    }
-    
-    /**
-     * Informs that the content of the given object has changed.
-     */
-    void contentsChanged(Object element) {
-        IpsPlugin.getDefault().runDelayed(updateCommand);
     }
     
     /**
@@ -486,21 +456,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void refresh() {
-        super.refresh();
-        // if in the meanwhile the test case type changed check for inconsistence between test case
-        // and test case type
-        if (testCaseTypeChanged) {
-            testCaseTypeChanged = false;
-            postResetTestRunStatus();
-            refreshTreeAndDetailArea();
-            checkForInconsistenciesBetweenTestCaseAndTestCaseType();
         }
     }
     
@@ -1652,14 +1607,26 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     }
 	
 	/**
-	 * (@inheritDoc)
-	 */
-	protected void performRefresh() {
-	}
+     * (@inheritDoc)
+     */
+    protected void performRefresh() {
+        treeViewer.refresh();
+        // reset the test runner status
+        postResetTestRunStatus();
+
+        // if in the meanwhile the test case type changed check for inconsistence between test case
+        // and test case type
+        if (testCaseTypeChanged) {
+            testCaseTypeChanged = false;
+            postResetTestRunStatus();
+            refreshTreeAndDetailArea();
+            checkForInconsistenciesBetweenTestCaseAndTestCaseType();
+        }
+    }
 
 	/*
-	 * Converts the given failure details to one failure detail row.
-	 */
+     * Converts the given failure details to one failure detail row.
+     */
 	private String failureDetailsToString(String[] failureDetails){
 		String failureFormat= Messages.TestCaseSection_FailureFormat_FailureIn;
 		String failureActual = Messages.TestCaseSection_FailureFormat_Actual;

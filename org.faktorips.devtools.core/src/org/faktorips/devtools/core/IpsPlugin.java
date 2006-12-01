@@ -51,12 +51,11 @@ import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsContentMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.model.versionmanager.IpsFeatureVersionManagerSorter;
-import org.faktorips.devtools.core.ui.IIdentifiableDelayedRunnable;
-import org.faktorips.devtools.core.ui.RunDelayedManager;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.EnumDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.controller.EditFieldChangesBroadcaster;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
 import org.faktorips.devtools.extsystems.IValueConverter;
@@ -77,8 +76,6 @@ public class IpsPlugin extends AbstractUIPlugin {
     private boolean testMode = false;
     private ITestAnswerProvider testAnswerProvider;
 
-    private RunDelayedManager runDelayedManager;
-    
     /**
      * Returns the full extension id. This is the plugin's id plus the plugin relative extension id
      * separated by a dot.
@@ -120,6 +117,9 @@ public class IpsPlugin extends AbstractUIPlugin {
     // Factories for creating controls depending on the datatype
     private ValueDatatypeControlFactory[] controlFactories = new ValueDatatypeControlFactory[] {
             new BooleanControlFactory(), new EnumDatatypeControlFactory(), new DefaultControlFactory() };
+
+    // Broadcaster for broadcasting delayed change events triggerd by edit fields
+    private EditFieldChangesBroadcaster editFieldChangeBroadcaster;
 
     /**
      * Returns the shared instance.
@@ -628,12 +628,12 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
     
     /**
-     * Run the given runnable in asynchronous manner. The runnable will be started after a specified delay.
+     * Returns the edit field change broadcaster.
      */
-    public void runDelayed(IIdentifiableDelayedRunnable runnable){
-        if (runDelayedManager == null){
-            runDelayedManager = new RunDelayedManager();
+    public EditFieldChangesBroadcaster getEditFieldChangeBroadcaster(){
+        if (editFieldChangeBroadcaster == null){
+            editFieldChangeBroadcaster = new EditFieldChangesBroadcaster();
         }
-        runDelayedManager.update(runnable);
+        return editFieldChangeBroadcaster;
     }
 }

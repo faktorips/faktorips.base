@@ -67,7 +67,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
@@ -76,7 +75,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -91,7 +89,6 @@ import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
-import org.faktorips.devtools.core.ui.IIdentifiableDelayedRunnable;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.ProblemImageDescriptor;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -105,7 +102,6 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
-import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
 import org.faktorips.devtools.core.ui.editors.testcase.TreeViewerExpandStateStorage;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
@@ -175,12 +171,6 @@ public class TestCaseTypeSection extends IpsSection  {
     // Object cache for the detail area
     private SectionDetailObjectCache objectCache;
     
-    //  Listener about content changes
-    private TestCaseTypeContentChangeListener changeListener;
-
-    // Runnable to update the ui after a specified delayed time
-    private IIdentifiableDelayedRunnable updateCommand;
-
     /*
      * Object cache to store several object to render the ui
      */
@@ -622,18 +612,6 @@ public class TestCaseTypeSection extends IpsSection  {
         }
     }
     
-    /*
-     * Content change class to get content changes.
-     */
-    private class TestCaseTypeContentChangeListener extends ContentsChangeListenerForWidget{
-        public TestCaseTypeContentChangeListener(Widget widget) {
-            super(widget);
-        }
-        public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
-            contentsHasChanged(event);
-        }
-    }
-    
     public TestCaseTypeSection(Composite parent, UIToolkit toolkit, final ITestCaseType testCaseType, final String title,
             String detailTitle, ScrolledForm form) {
         super(parent, Section.NO_TITLE, GridData.FILL_BOTH, toolkit);
@@ -648,30 +626,12 @@ public class TestCaseTypeSection extends IpsSection  {
         
         initControls();
         setText(title);
-
-        // create the update (refresh command)
-        updateCommand = new IIdentifiableDelayedRunnable() {
-            public void run() {
-                if (isDisposed()) {
-                    return;
-                }
-                // refresh all if the test case type changes, redraw section titles etc.
-                postRefreshAll();
-            }
-            public int getDelayTime() {
-                return DEFAULT_DELAY_TIME;
-            }
-            public String getId() {
-                return title;
-            }
-        };
     }
 
     /**
      * {@inheritDoc}
      */
     public void dispose() {
-        testCaseType.getIpsModel().removeChangeListener(changeListener);
         empytImage.dispose();
         
         for (Iterator iter = cachedProblemImageDescriptors.values().iterator(); iter.hasNext();) {
@@ -690,6 +650,7 @@ public class TestCaseTypeSection extends IpsSection  {
      * {@inheritDoc}
      */
     protected void performRefresh() {
+        postRefreshAll();
     }
 
     /*
@@ -779,11 +740,6 @@ public class TestCaseTypeSection extends IpsSection  {
         configureToolBar();
         
         redrawForm();
-        
-        // register listener for model changes,
-        // to refresh section titles etc.
-        changeListener = new TestCaseTypeContentChangeListener(this);
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(changeListener);
     }
     
     /*
@@ -1953,11 +1909,5 @@ public class TestCaseTypeSection extends IpsSection  {
             }
         }
         return null;
-    }
-
-    private void contentsHasChanged(ContentChangeEvent event) {
-        if (event.getIpsSrcFile().equals(testCaseType.getIpsSrcFile())){
-            IpsPlugin.getDefault().runDelayed(updateCommand);
-        }
     }
 }

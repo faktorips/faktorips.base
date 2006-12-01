@@ -58,7 +58,6 @@ import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 
 /**
  * Detail section class of the test case editor. Supports dynamic creation of detail edit controls.
@@ -361,20 +360,7 @@ public class TestCaseDetailArea {
         }
         uiController.updateUI();
 
-        addValueChangeListener(editField, testPolicyCmpt);
         return editField;
-    }
-
-    /*
-     * Adds a value change listener to the given edit field, to inform the tree about changes on the
-     * given element. Remark: The given object must be an object which is displayed in the tree.
-     */
-    private void addValueChangeListener(EditField editField, final Object element) {
-        editField.addChangeListener(new ValueChangeListener() {
-            public void valueChanged(FieldValueChangedEvent e) {
-                testCaseSection.contentsChanged(element);
-            }
-        });
     }
 
     /*
@@ -531,8 +517,6 @@ public class TestCaseDetailArea {
             }
         });
 
-        addValueChangeListener(editField, testValue);
-        
         allEditFields.put(uniquePath, editField);
         editField2ModelObject.put(editField, testValue);
 
@@ -587,8 +571,6 @@ public class TestCaseDetailArea {
             }
         });
 
-        addValueChangeListener(editField, rule);
-        
         allEditFields.put(uniqueKey, editField);
         editField2ModelObject.put(editField, rule);
 
