@@ -108,7 +108,7 @@ public class SelectTargetPackagePage extends WizardPage {
 	class IpsPackageFrmgmtLabelProvider extends LabelProvider {
 		public String getText(Object obj) {
 			IIpsPackageFragment packageFragment = (IIpsPackageFragment) obj;
-			return  packageFragment.getIpsProject().getName() + " - " + packageFragment.getRoot().getName() + packageFragment.getName(); //$NON-NLS-1$
+			return  packageFragment.getIpsProject().getName() + " - " + packageFragment.getRoot().getName() + "." + packageFragment.getName(); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		public Image getImage(Object obj) {
 			return ((IIpsPackageFragment) obj).getImage();

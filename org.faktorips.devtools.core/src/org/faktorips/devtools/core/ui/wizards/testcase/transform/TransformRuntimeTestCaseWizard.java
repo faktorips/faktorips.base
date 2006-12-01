@@ -178,6 +178,9 @@ public class TransformRuntimeTestCaseWizard extends Wizard implements IImportWiz
 			for (int i = 0; i < ipsProjects.length; i++) {
 				IIpsPackageFragmentRoot[] roots = ipsProjects[i].getIpsPackageFragmentRoots();
 				for (int j = 0; j < roots.length; j++) {
+                    if (!roots[j].isBasedOnSourceFolder()){
+                        continue;
+                    }
 					IIpsPackageFragment[] childs = roots[j].getIpsPackageFragments();
 					for (int k = 0; k < childs.length; k++) {
 						packageFragmentList.add(childs[k]);

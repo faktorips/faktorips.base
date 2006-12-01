@@ -572,16 +572,16 @@ public class MoveOperation implements IRunnableWithProgress {
 				throw new CoreException(status);
 			}
 			
-			if (toTest instanceof IProductCmpt) {
-				IProductCmpt product = (IProductCmpt)toTest;
-				if (!product.getIpsSrcFile().exists()) {
-					String msg = NLS.bind(Messages.MoveOperation_msgSourceMissing, getQualifiedSourceName(product));
+			if (toTest instanceof IIpsObject) {
+                IIpsObject ipsObject = (IIpsObject)toTest;
+				if (!ipsObject.getIpsSrcFile().exists()) {
+					String msg = NLS.bind(Messages.MoveOperation_msgSourceMissing, getQualifiedSourceName(ipsObject));
 					IpsStatus status = new IpsStatus(msg); 
 					throw new CoreException(status);
 				}
 				
-				if (product.getIpsSrcFile().isDirty()) {
-					String msg = NLS.bind(Messages.MoveOperation_msgSourceModified, getQualifiedSourceName(product));
+				if (ipsObject.getIpsSrcFile().isDirty()) {
+					String msg = NLS.bind(Messages.MoveOperation_msgSourceModified, getQualifiedSourceName(ipsObject));
 					IpsStatus status = new IpsStatus(msg); 
 					throw new CoreException(status);
 				}
@@ -631,9 +631,9 @@ public class MoveOperation implements IRunnableWithProgress {
 	}
 	
 	/**
-	 * Returns the qualified source-name (including file extension) for the given product.
+	 * Returns the qualified source-name (including file extension) for the given ips object.
 	 */
-	private String getQualifiedSourceName(IProductCmpt product) {
+	private String getQualifiedSourceName(IIpsObject product) {
 		return product.getQualifiedName() + "." + product.getIpsObjectType().getFileExtension(); //$NON-NLS-1$
 	}
 	

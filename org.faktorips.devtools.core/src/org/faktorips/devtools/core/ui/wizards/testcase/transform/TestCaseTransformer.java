@@ -42,6 +42,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
@@ -55,7 +56,6 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.XmlUtil;
-import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -262,6 +262,9 @@ public class TestCaseTransformer {
     }
     
     private void parseTestValue(Element element, ITestValue testValue){
+        if (XmlUtil.getTextNode(element) == null){
+            return;
+        }
         testValue.setValue(XmlUtil.getTextNode(element).getData());
         testValue.setTestValueParameter(element.getNodeName());
     }
@@ -276,10 +279,20 @@ public class TestCaseTransformer {
     private void parseTestPolicyCmpt(Element element, ITestPolicyCmpt testPolicyCmpt, boolean isInput) throws CoreException{
         // init test policy component
         String policyCmpt = element.getNodeName();
-        String productCmpt = element.getAttribute("productCmpt"); //$NON-NLS-1$
-        if (StringUtils.isNotEmpty(productCmpt)){
-            String uniqueLabel = StringUtil.unqualifiedName(productCmpt);
-        	testPolicyCmpt.setProductCmpt(productCmpt);
+        String runtimeId = element.getAttribute("productCmpt"); //$NON-NLS-1$
+        if (StringUtils.isNotEmpty(runtimeId)){
+            // the product cmpt for the runtime test case is the runtime id,
+            // therefore search the product and store the qualified name
+            String uniqueLabel = ""; //$NON-NLS-1$
+            IProductCmpt productCmpt = testPolicyCmpt.getIpsProject().findProductCmptByRuntimeId(runtimeId);
+            if (productCmpt != null){
+                uniqueLabel = productCmpt.getName();
+                testPolicyCmpt.setProductCmpt(productCmpt.getQualifiedName());
+            } else {
+                // error product cmpt not found, store at least the runtime id
+                uniqueLabel = runtimeId;
+                testPolicyCmpt.setProductCmpt(runtimeId);
+            }
             
             ITestCase testCase = testPolicyCmpt.getTestCase();
             uniqueLabel = testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, uniqueLabel);

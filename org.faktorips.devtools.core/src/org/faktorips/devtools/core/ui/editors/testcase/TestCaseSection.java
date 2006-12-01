@@ -1190,6 +1190,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 					// ignored, the validation shows the unknown type failure message
 					return;
 				}
+                String prevProductCmpt = testPolicyCmpt.getProductCmpt();
 				String productCmptQualifiedName = ""; //$NON-NLS-1$
 				if (testTypeParam.isRequiresProductCmpt()){
 					productCmptQualifiedName = selectProductCmptDialog(testTypeParam.getPolicyCmptType(), testPolicyCmpt.findProductCmpt());
@@ -1201,17 +1202,23 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				testPolicyCmpt.setName(
 						testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, StringUtil.unqualifiedName(productCmptQualifiedName)));
                 
-                // ask if the new product cmpt should be updated means all test attribute values are
-                // updated with the default values
-                boolean updateTestAttrValuesWithDefault = MessageDialog
-                        .openQuestion(
-                                getShell(),
-                                Messages.TestCaseSection_DialogOverwriteWithDefault_Title,
-                                Messages.TestCaseSection_DialogOverwriteWithDefault_Text);
+                boolean updateTestAttrValuesWithDefault = false;
+                if (StringUtils.isNotEmpty(prevProductCmpt)){
+                    // ask if the new product cmpt should be updated means all test attribute values are
+                    // updated with the default values
+                    updateTestAttrValuesWithDefault = MessageDialog
+                            .openQuestion(
+                                    getShell(),
+                                    Messages.TestCaseSection_DialogOverwriteWithDefault_Title,
+                                    Messages.TestCaseSection_DialogOverwriteWithDefault_Text);
+                } else {
+                    // set the defaults if no product cmpt was configured before
+                    updateTestAttrValuesWithDefault = true;
+                }
                 if (updateTestAttrValuesWithDefault) {
                     testPolicyCmpt.updateDefaultTestAttributeValues();
                 }
-
+                
                 refreshTreeAndDetailArea();
 			}
 		}
