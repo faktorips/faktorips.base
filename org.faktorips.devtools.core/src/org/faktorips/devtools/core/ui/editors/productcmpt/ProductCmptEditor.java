@@ -89,7 +89,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	private boolean enabled = true;
 	
     // The working date that is used in the editor. This has to be stored in the editor
-    // as it can differ from the global working date when the user chnages the global working date.
+    // as it can differ from the global working date when the user changes the global working date.
     private GregorianCalendar workingDateUsedInEditor = null;
     
 	/**
@@ -332,7 +332,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 				.getGenerationByEffectiveDate(workingDate);
 
         if (generation!=null) {
-            workingDate = workingDateUsedInEditor;
+            workingDateUsedInEditor = workingDate;
             if (!generation.equals(getActiveGeneration())) {
                 // we found a generation matching the working date, but the found one is not active,
                 // so make it active.
@@ -407,6 +407,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
          * {@inheritDoc}
          */
 		public void propertyChange(PropertyChangeEvent event) {
+            System.out.println("ProductCmptEditor propertyChange, property: " + event.getProperty());
             if (!active) {
 				return;
 			}

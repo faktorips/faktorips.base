@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -38,6 +39,8 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -53,13 +56,15 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 /**
  * A section that displays a timed pdobject's generations.
  */
-public class GenerationsSection extends SimpleIpsPartsSection {
+public class GenerationsSection extends SimpleIpsPartsSection{
 
 	/**
 	 * The page owning this section.
 	 */
 	private ProductCmptPropertiesPage page;
 	
+    private int lastNumberOfGenerations = 0;
+    
 	/**
 	 * Create a new Section to display generations.
 	 * @param page The page owning this section.
@@ -131,7 +136,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
      * A composite that shows a policy component's attributes in a viewer and 
      * allows to edit attributes in a dialog, create new attributes and delete attributes.
      */
-    public class GenerationsComposite extends IpsPartsComposite implements IDeleteListener {
+    public class GenerationsComposite extends IpsPartsComposite implements IDeleteListener, ContentsChangeListener {
 
         public GenerationsComposite(ITimedIpsObject ipsObject, Composite parent,
                 UIToolkit toolkit) {
@@ -159,8 +164,11 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 				public void widgetDisposed(DisposeEvent e) {
 					IpsPlugin.getDefault().getPreferenceStore()
 							.removePropertyChangeListener(changeListener);
+                    getIpsObject().getIpsModel().removeChangeListener(GenerationsComposite.this);
 				}
 			});
+            
+            getIpsObject().getIpsModel().addChangeListener(this);
         }
         
         public ITimedIpsObject getTimedPdObject() {
@@ -239,6 +247,25 @@ public class GenerationsSection extends SimpleIpsPartsSection {
     		}
     	}
     	
+        /**
+         * Refreshes the viewer if the number of generations has changed.
+         */
+        public void contentsChanged(ContentChangeEvent event) {
+            try {
+                if(event.getIpsSrcFile().getIpsObject().equals(getIpsObject())){
+                    IProductCmpt productCmpt = (IProductCmpt)getIpsObject();
+                    
+                    if(lastNumberOfGenerations != productCmpt.getNumOfGenerations()){
+                        refresh();
+                        lastNumberOfGenerations = productCmpt.getNumOfGenerations();
+                    }
+                }
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
+
+        
     	private class LabelProvider extends DefaultLabelProvider  {
 
 			public String getText(Object element) {
@@ -299,5 +326,4 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 			}
 		}
 	}
-
 }

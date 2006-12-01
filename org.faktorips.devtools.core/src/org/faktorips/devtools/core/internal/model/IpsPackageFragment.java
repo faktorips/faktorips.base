@@ -245,10 +245,11 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
                                 "No generation found for the given date " + date.getTime().toString() + " in " + template.getQualifiedName())); //$NON-NLS-1$ //$NON-NLS-2$
             }
             file = createIpsFile(type, name, force, monitor);
-            ITimedIpsObject newObject = (ITimedIpsObject)file.getIpsObject();
-            IIpsObjectGeneration target = newObject.newGeneration();
-            target.initFromGeneration(source);
-            target.setValidFrom(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+            TimedIpsObject newObject = (TimedIpsObject)file.getIpsObject();
+            //TODO i think we need to disable event broadcasting until all attributes of the new
+            //generations have been set.
+            newObject.newGeneration(source, IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+            
             if (template instanceof IProductCmpt) {
                 ((IProductCmpt)newObject).setPolicyCmptType(((IProductCmpt)template).getPolicyCmptType());
             }
@@ -257,6 +258,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             if (type == IpsObjectType.PRODUCT_CMPT) {
                 ((IProductCmpt)newObject).setRuntimeId(newObject.getIpsProject().getRuntimeId((IProductCmpt)newObject));
             }
+            
         }
         else {
             element = template.toXml(doc);

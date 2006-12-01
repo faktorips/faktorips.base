@@ -78,7 +78,7 @@ public interface IIpsObjectGeneration extends IIpsObjectPart {
     /**
      * copies structure and values from the given source.
      */
-	public void initFromGeneration(IIpsObjectGeneration source);
+	public void initFromGeneration(IIpsObjectGeneration source, GregorianCalendar validFrom);
 
 	/**
 	 * Returns the generation previous to this one. The order is determined by
