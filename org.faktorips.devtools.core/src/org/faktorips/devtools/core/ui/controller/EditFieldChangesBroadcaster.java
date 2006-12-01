@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.progress.UIJob;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
@@ -150,9 +151,7 @@ public class EditFieldChangesBroadcaster {
                     listeners[i].valueChanged(event);
                 }
                 catch (RuntimeException e) {
-                    if (isDebugOn()) {
-                        e.printStackTrace();
-                    }
+                    IpsPlugin.logAndShowErrorDialog(e);
                 }
             }
             currentEvent = null;
