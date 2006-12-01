@@ -22,8 +22,8 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -121,6 +121,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     public void testMoveProduct() throws CoreException, InvocationTargetException, InterruptedException {
 
     	IProductCmpt source = content.getStandardVehicle();
+    	String runtimeId = source.getRuntimeId();
     	
     	IIpsSrcFile target = source.getIpsPackageFragment().getRoot().getIpsPackageFragment("test.my.pack").getIpsSrcFile(source.getName() + ".ipsproduct");
     	String targetName = target.getIpsPackageFragment().getName() + "." + source.getName();
@@ -132,6 +133,11 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         
         MoveOperation move = new MoveOperation(source, targetName);
         move.run(null);
+        
+        // assert that the runtime id hasn't changed
+        assertEquals(runtimeId, ((IProductCmpt)target.getIpsObject()).getRuntimeId());
+        
+        assertFalse(target.isDirty());
         
         assertTrue(target.exists());
         assertFalse(source.getIpsSrcFile().exists());        
@@ -199,6 +205,30 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
    		IIpsSrcFile target = content.getStandardVehicle().getIpsPackageFragment().getIpsSrcFile(IpsObjectType.TABLE_CONTENTS.getFileName("newTable"));
    		assertTrue(target.exists());
    		assertFalse(file.exists());
+    }
+    
+    public void testMoveTestCase() throws CoreException, InvocationTargetException, InterruptedException {
+        IIpsSrcFile file = content.getStandardVehicle().getIpsPackageFragment().createIpsFile(IpsObjectType.TEST_CASE, "testCase", true, null);
+        
+        assertTrue(file.exists());
+        
+        new MoveOperation(new IIpsElement[] {file.getIpsObject()}, new String[] {"testCase"}).run(null);
+        
+        IIpsSrcFile target = content.getStandardVehicle().getIpsPackageFragment().getRoot().getDefaultIpsPackageFragment().getIpsSrcFile(IpsObjectType.TEST_CASE.getFileName("testCase"));
+        assertTrue(target.exists());
+        assertFalse(file.exists());
+    }
+    
+    public void testRenameTestCase() throws Exception {
+        IIpsSrcFile file = content.getStandardVehicle().getIpsPackageFragment().createIpsFile(IpsObjectType.TEST_CASE, "testcase", true, null);
+        
+        assertTrue(file.exists());
+        
+        new MoveOperation(new IIpsElement[] {file.getIpsObject()}, new String[] {"products.newTestCase"}).run(null);
+        
+        IIpsSrcFile target = content.getStandardVehicle().getIpsPackageFragment().getIpsSrcFile(IpsObjectType.TEST_CASE.getFileName("newTestCase"));
+        assertTrue(target.exists());
+        assertFalse(file.exists());
     }
     
     /**
