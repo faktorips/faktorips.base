@@ -329,6 +329,9 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
             return;
         }
         validateName();
+        if (getErrorMessage() != null) {
+            return;
+        }
         updatePageComplete();
     }
 
