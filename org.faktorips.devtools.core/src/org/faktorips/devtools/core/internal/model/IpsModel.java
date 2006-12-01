@@ -93,6 +93,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     // list of modifcation status change listeners
     private List modificationStatusChangeListeners;
+    
+    // a map that contains per thread if changes should be broadcasted to the registered listeners
+    // or squeezed.
+    private HashMap listenerNoticicationStatusMap = new HashMap();
 
     /*
      * A map containing the dataypes (value) by id (key).
@@ -372,6 +376,40 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         return null;
     }
+    
+    /**
+     * Tells the model to stop broadcasting any changes made to ips objects by the current
+     * thread. By default changes are broadcasted until this method is called.
+     */
+    public void stopBroadcastingChangesMadeByCurrentThread() {
+        this.listenerNoticicationStatusMap.put(Thread.currentThread(), Boolean.FALSE);
+        if (TRACE_MODEL_CHANGE_LISTENERS) {
+            System.out.println("IpsModel.stopBroadcastingChangesMadeByCurrentThread(): Thread=" + Thread.currentThread()); //$NON-NLS-1$
+        }
+    }
+    
+    /**
+     * Tells the model to restart broadcasting any changes made to ips objects by the current
+     * thread.
+     */
+    public void restartBroadcastingChangesMadeByCurrentThread() {
+        this.listenerNoticicationStatusMap.put(Thread.currentThread(), Boolean.TRUE);
+        if (TRACE_MODEL_CHANGE_LISTENERS) {
+            System.out.println("IpsModel.restartBroadcastingChangesMadeByCurrentThread(): Thread=" + Thread.currentThread()); //$NON-NLS-1$
+        }
+    }
+    
+    /**
+     * Returns <code>true</code> if the model is currently broadcasting changes made to
+     * an ips object by the current thread.
+     */
+    public boolean isBroadcastingChangesForCurrentThread() {
+        Boolean status = (Boolean)listenerNoticicationStatusMap.get(Thread.currentThread());
+        if (status==null || status.booleanValue()) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * {@inheritDoc}
@@ -399,7 +437,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     public void notifyModificationStatusChangeListener(final ModificationStatusChangedEvent event) {
-        if (modificationStatusChangeListeners == null) {
+        if (modificationStatusChangeListeners == null || !isBroadcastingChangesForCurrentThread()) {
             return;
         }
         if (TRACE_MODEL_CHANGE_LISTENERS) {
@@ -454,7 +492,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     public void notifyChangeListeners(final ContentChangeEvent event) {
-        if (changeListeners == null) {
+        if (changeListeners == null || !isBroadcastingChangesForCurrentThread()) {
             return;
         }
         if (TRACE_MODEL_CHANGE_LISTENERS) {

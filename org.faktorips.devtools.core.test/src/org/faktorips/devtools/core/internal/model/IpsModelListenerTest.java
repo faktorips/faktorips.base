@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
  * 
  * @author Jan Ortmann
  */
-public class ListenerTest extends AbstractIpsPluginTest {
+public class IpsModelListenerTest extends AbstractIpsPluginTest {
 
     private TestContentChangeListener contentChangeListener;
     private TestModificationStatusChangeListener statusChangeListener;
@@ -47,11 +47,11 @@ public class ListenerTest extends AbstractIpsPluginTest {
     private IPolicyCmptType type;
     private IIpsSrcFile file;
     
-    public ListenerTest() {
+    public IpsModelListenerTest() {
         super();
     }
 
-    public ListenerTest(String name) {
+    public IpsModelListenerTest(String name) {
         super(name);
     }
     
@@ -164,6 +164,33 @@ public class ListenerTest extends AbstractIpsPluginTest {
         };
         IpsPlugin.getDefault().getIpsModel().addChangeListener(listener);
         ioFile.setContents(is, true, false, null);
+    }
+    
+    public void testStopRestartBroadcasting() throws Exception {
+        type.setSupertype("Super");
+        assertEquals(1, contentChangeListener.count);
+        assertEquals(1, statusChangeListener.count);
+        assertEquals(file, statusChangeListener.lastEvent.getIpsSrcFile());
+        assertEquals(file, contentChangeListener.lastEvent.getIpsSrcFile());
+        assertNull(contentChangeListener.lastEvent.getPart());
+        assertEquals(0, contentChangeListener.lastEvent.getMovedParts().length);
+        file.save(true, null);
+        
+        IpsModel model = (IpsModel)file.getIpsModel();
+        model.stopBroadcastingChangesMadeByCurrentThread();
+        contentChangeListener.count = 0;
+        statusChangeListener .count = 0;
+        type.setSupertype("NewSuper");
+        assertEquals(0, contentChangeListener.count);
+        assertEquals(0, statusChangeListener.count);
+        file.save(true, null);
+        
+        model.restartBroadcastingChangesMadeByCurrentThread();
+        contentChangeListener.count = 0;
+        statusChangeListener .count = 0;
+        type.setSupertype("NewerSuper");
+        assertEquals(1, contentChangeListener.count);
+        assertEquals(1, statusChangeListener.count);
     }
 
     class TestContentChangeListener implements ContentsChangeListener {
