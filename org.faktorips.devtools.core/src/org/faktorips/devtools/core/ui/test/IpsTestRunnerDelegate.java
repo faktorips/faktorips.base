@@ -38,6 +38,7 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
     public static final String ID_IPSTEST_LAUNCH_CONFIGURATION_TYPE = "org.faktorips.devtools.core.ipsTestLaunchConfigurationType"; //$NON-NLS-1$
     public static final String ATTR_PACKAGEFRAGMENTROOT = IpsPlugin.PLUGIN_ID + ".ATTR_PACKAGEFRAGMENTROOT"; //$NON-NLS-1$
     public static final String ATTR_TESTCASES = IpsPlugin.PLUGIN_ID + ".ATTR_TESTCASES"; //$NON-NLS-1$
+    public static final String ATTR_MAX_HEAP_SIZE = IpsPlugin.PLUGIN_ID + ".ATTR_MAX_HEAP_SIZE"; //$NON-NLS-1$
     
     /**
      * {@inheritDoc}
@@ -80,6 +81,7 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
             throws CoreException {
         String packageFragment = configuration.getAttribute(ATTR_PACKAGEFRAGMENTROOT, ""); //$NON-NLS-1$
         String testCases = configuration.getAttribute(ATTR_TESTCASES, ""); //$NON-NLS-1$
+        
         IpsTestAction runTestAction = new IpsTestAction(null, mode);
         runTestAction.setLauch(launch);
         runTestAction.run(packageFragment, testCases);

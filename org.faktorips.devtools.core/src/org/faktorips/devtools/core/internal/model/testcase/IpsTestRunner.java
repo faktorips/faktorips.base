@@ -275,10 +275,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             // set the default size to 64
             testRunnerMaxHeapSize = "64"; //$NON-NLS-1$
         }
-        if (testRunnerMaxHeapSize.length()>0){
-            String testRunnerMaxHeapSizeArg = "-Xmx" + testRunnerMaxHeapSize + "m"; //$NON-NLS-1$ //$NON-NLS-2$
-            vmConfig.setVMArguments(new String[]{testRunnerMaxHeapSizeArg});
-        }
+        setVmConfigMaxHeapSize(vmConfig, testRunnerMaxHeapSize);
         
         ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
         
@@ -291,13 +288,24 @@ public class IpsTestRunner implements IIpsTestRunner {
                 lauchInUiThreadIfNecessary(launchConfiguration, mode);
             }
         } else {
-            setDefaultSourceLocatorInternal(launch, launch.getLaunchConfiguration());
+            ILaunchConfiguration launchConfiguration = launch.getLaunchConfiguration();
+            // overwrite default max heap size if specified in the current lauch
+            String maxHeapSizeInConfiguration = launchConfiguration.getAttribute(IpsTestRunnerDelegate.ATTR_MAX_HEAP_SIZE, "");
+            if (StringUtils.isNotEmpty(maxHeapSizeInConfiguration)){
+                setVmConfigMaxHeapSize(vmConfig, maxHeapSizeInConfiguration);
+            }
+            setDefaultSourceLocatorInternal(launch, launchConfiguration);
             testStartTime = System.currentTimeMillis();
             vmRunner.run(vmConfig, launch, null);
             manager.addLaunch(launch);
             connect();
         }
         launch = null;
+    }
+    
+    private void setVmConfigMaxHeapSize(VMRunnerConfiguration vmConfig, String maxHeapSize){
+        String testRunnerMaxHeapSizeArg = "-Xmx" + maxHeapSize + "m"; //$NON-NLS-1$ //$NON-NLS-2$
+        vmConfig.setVMArguments(new String[]{testRunnerMaxHeapSizeArg});
     }
     
     /*

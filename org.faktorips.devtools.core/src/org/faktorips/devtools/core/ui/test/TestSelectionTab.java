@@ -23,6 +23,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -41,6 +42,7 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab {
 
     private Text packageFragmentRootText;
     private Text testCasesText;
+    private Text parameterText;
     
     /**
      * {@inheritDoc}
@@ -52,16 +54,25 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab {
         setControl(main);
         
         Group tocGroup = toolkit.createGroup(main, Messages.TestSelectionTab_goupPackageFragmentRoots);
+        tocGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         Composite tocComp = toolkit.createLabelEditColumnComposite(tocGroup);
         toolkit.createLabel(tocComp, Messages.TestSelectionTab_labelTocFiles);
         packageFragmentRootText = toolkit.createText(tocComp);
         packageFragmentRootText.addModifyListener(basicModifyListener);
         
         Group testCaseGroup = toolkit.createGroup(main, Messages.TestSelectionTab_groupTestSuites);
+        testCaseGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         Composite testCaseComp = toolkit.createLabelEditColumnComposite(testCaseGroup);
         toolkit.createLabel(testCaseComp, Messages.TestSelectionTab_labelTestCasesPackages);
         testCasesText = toolkit.createText(testCaseComp);
         testCasesText.addModifyListener(basicModifyListener);
+        
+        Group parameterGroup = toolkit.createGroup(main, Messages.TestSelectionTab_groupParameter);
+        parameterGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        Composite parameterComp = toolkit.createLabelEditColumnComposite(parameterGroup);
+        toolkit.createLabel(parameterComp, Messages.TestSelectionTab_labelMaxHeapSize);
+        parameterText = toolkit.createText(parameterComp);
+        parameterText.addModifyListener(basicModifyListener);  
     }
 
     /**
@@ -78,9 +89,11 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab {
         try {
             String packageFragmentRoot = configuration.getAttribute(IpsTestRunnerDelegate.ATTR_PACKAGEFRAGMENTROOT, ""); //$NON-NLS-1$
             String testCases = configuration.getAttribute(IpsTestRunnerDelegate.ATTR_TESTCASES, ""); //$NON-NLS-1$
+            String maxHeapSize = configuration.getAttribute(IpsTestRunnerDelegate.ATTR_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
             
             packageFragmentRootText.setText(packageFragmentRoot);
             testCasesText.setText(testCases);
+            parameterText.setText(maxHeapSize);
         }
         catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -93,6 +106,7 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab {
     public void performApply(ILaunchConfigurationWorkingCopy configuration) {
         configuration.setAttribute(IpsTestRunnerDelegate.ATTR_PACKAGEFRAGMENTROOT, packageFragmentRootText.getText());
         configuration.setAttribute(IpsTestRunnerDelegate.ATTR_TESTCASES, testCasesText.getText());
+        configuration.setAttribute(IpsTestRunnerDelegate.ATTR_MAX_HEAP_SIZE, parameterText.getText());
     }
 
     /**
@@ -101,6 +115,7 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab {
     public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
         configuration.setAttribute(IpsTestRunnerDelegate.ATTR_PACKAGEFRAGMENTROOT, ""); //$NON-NLS-1$
         configuration.setAttribute(IpsTestRunnerDelegate.ATTR_TESTCASES, ""); //$NON-NLS-1$
+        configuration.setAttribute(IpsTestRunnerDelegate.ATTR_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
     }
     
     /**
