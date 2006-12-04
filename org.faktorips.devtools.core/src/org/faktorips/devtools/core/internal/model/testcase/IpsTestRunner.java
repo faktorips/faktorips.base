@@ -35,9 +35,11 @@ import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -62,6 +64,7 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.SocketUtil;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.progress.UIJob;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
@@ -285,7 +288,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             launch= new Launch(launchConfiguration, mode, null);
             if (launchConfiguration != null){
                 setDefaultSourceLocatorInternal(launch, launchConfiguration);
-                DebugUITools.launch(launchConfiguration, mode);
+                lauchInUiThreadIfNecessary(launchConfiguration, mode);
             }
         } else {
             setDefaultSourceLocatorInternal(launch, launch.getLaunchConfiguration());
@@ -295,6 +298,25 @@ public class IpsTestRunner implements IIpsTestRunner {
             connect();
         }
         launch = null;
+    }
+    
+    /*
+     * Launch the given configuration in an ui thread if no active workbench window is available, otherwise launch in current thread.
+     */
+    private void lauchInUiThreadIfNecessary(final ILaunchConfiguration launchConfiguration, final String mode) {
+        if (IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow() == null) {
+            UIJob uiJob = new UIJob("IPS Testrunner") { //$NON-NLS-1$
+                public IStatus runInUIThread(IProgressMonitor monitor) {
+                    DebugUITools.launch(launchConfiguration, mode);
+                    return Job.ASYNC_FINISH;
+                }
+            };
+            uiJob.setSystem(true);
+            uiJob.run(new NullProgressMonitor());
+        }
+        else {
+            DebugUITools.launch(launchConfiguration, mode);
+        }
     }
 
     /*

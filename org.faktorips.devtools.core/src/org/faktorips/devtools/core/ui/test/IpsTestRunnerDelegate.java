@@ -49,15 +49,19 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
-
+        
+        if (IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow() != null){
+            // the current thread is an ui thread, thus we can start the test directly
+            startTest(configuration, mode, launch);
+            return;
+        }
+        
+        // it is necessary that we execute the test in an ui thread (e.g. check for open editors in
+        // DebugUiTools or open view is only possible if we run in an ui thread)
         UIJob uiJob = new UIJob("IPS Testrunner delegate") { //$NON-NLS-1$
             public IStatus runInUIThread(IProgressMonitor monitor) {
                 try {
-                    String packageFragment = configuration.getAttribute(ATTR_PACKAGEFRAGMENTROOT, ""); //$NON-NLS-1$
-                    String testCases = configuration.getAttribute(ATTR_TESTCASES, ""); //$NON-NLS-1$
-                    IpsTestAction runTestAction = new IpsTestAction(null, mode);
-                    runTestAction.setLauch(launch);
-                    runTestAction.run(packageFragment, testCases);
+                    startTest(configuration, mode, launch);
                 }
                 catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
@@ -67,5 +71,17 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
         };
         uiJob.setSystem(true);
         uiJob.run(monitor);
+    }
+    
+    /*
+     * Delegate the test start to the ips test runner
+     */
+    private void startTest(final ILaunchConfiguration configuration, final String mode, final ILaunch launch)
+            throws CoreException {
+        String packageFragment = configuration.getAttribute(ATTR_PACKAGEFRAGMENTROOT, ""); //$NON-NLS-1$
+        String testCases = configuration.getAttribute(ATTR_TESTCASES, ""); //$NON-NLS-1$
+        IpsTestAction runTestAction = new IpsTestAction(null, mode);
+        runTestAction.setLauch(launch);
+        runTestAction.run(packageFragment, testCases);
     }
 }
