@@ -152,7 +152,7 @@ public abstract class AbstractExternalTableFormat {
 		for (Iterator iter = converter.iterator(); iter.hasNext();) {
 			IValueConverter valueConverter = (IValueConverter) iter.next();
 
-			if (valueConverter.getSupportedDatatype().compareTo(datatype) == 0) {
+			if (valueConverter.getSupportedDatatype().equals(datatype)) {
 				return valueConverter;
 			}
 		}

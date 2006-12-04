@@ -660,7 +660,7 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
             return;
         }
         if (isCompositionDetailToMaster()) {
-            String text = "For datail-to-master relation the reverse relation needn't be specified.";
+            String text = Messages.Relation_noReverseRelationNeededForDetailToMasterRelations;
             list.add(new Message("SomeNewCode", text, Message.ERROR, this, PROPERTY_REVERSE_RELATION)); //$NON-NLS-1$
             return;
         }

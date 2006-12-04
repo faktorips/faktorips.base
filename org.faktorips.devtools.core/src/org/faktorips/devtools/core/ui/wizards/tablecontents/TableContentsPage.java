@@ -122,9 +122,14 @@ public class TableContentsPage extends IpsObjectPage {
         if (getErrorMessage()!=null) {
             return;
         }
-	    if (structureControl.findTableStructure()==null) {
+        ITableStructure structure = structureControl.findTableStructure();
+	    if (structure==null) {
 	        setErrorMessage(NLS.bind(Messages.TableContentsPage_msgMissingStructure, structureControl.getText()));
-	    }
+	    } else {
+	        if (structure.getNumOfColumns()==0) {
+                setErrorMessage(Messages.TableContentsPage_tableStructureHasntGotAnyColumns);
+            }
+        }
         updatePageComplete();
     }
     

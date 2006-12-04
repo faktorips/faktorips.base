@@ -200,6 +200,15 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         if (!active) {
             return;
         }
+        try {
+            ipsSrcFile.getIpsObject(); 
+            // here we have to request the ips object once, to make sure that 
+            // it's state is is synchronized with enclosing resource.
+            // otherwise if some part of the ui keep a reference the ips object, it won't contain
+            // the correct state.
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
         IEditorPart editor = getActivePageInstance();
         if (editor instanceof IpsObjectEditorPage) {
             IpsObjectEditorPage page = (IpsObjectEditorPage)editor;
@@ -212,9 +221,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      */
     public void contentsChanged(ContentChangeEvent event) {
         // no refresh neccessary - this method is only called if this editor is the active one.
-        // we only need a refresh here if the content of one field of this editorwill have an
+        // we only need a refresh here if the content of one field of this editor will have an
         // effect on another field in this editor, but this is not the case yet.
-
         refresh();
     }
     

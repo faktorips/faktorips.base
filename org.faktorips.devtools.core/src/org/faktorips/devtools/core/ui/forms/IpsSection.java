@@ -29,7 +29,7 @@ import org.faktorips.util.ArgumentCheck;
 
 
 /**
- * A section is an area of the user interface 
+ * A section is an area of the user interface.
  */
 public abstract class IpsSection extends Composite {
     

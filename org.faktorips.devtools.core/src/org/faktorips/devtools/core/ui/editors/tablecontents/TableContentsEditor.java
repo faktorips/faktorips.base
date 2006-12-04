@@ -39,8 +39,7 @@ public class TableContentsEditor extends TimedIpsObjectEditor {
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
+     * {@inheritDoc}
      */
     protected void addPages() {
         try {
@@ -51,8 +50,7 @@ public class TableContentsEditor extends TimedIpsObjectEditor {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.IpsObjectEditor#getUniformPageTitle()
+     * {@inheritDoc}
      */
     protected String getUniformPageTitle() {
     	return Messages.TableContentsEditor_TableContentsEditor_title2 + " " + getTableContents().getName(); //$NON-NLS-1$

@@ -94,7 +94,11 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
      */
     public String getColumnText(Object element, int columnIndex) {
         if(element instanceof IRow){
-            String value= ((IRow) element).getValue(columnIndex);
+            IRow row = (IRow)element;
+            if (row.getTableContents().getNumOfColumns()==0) {
+                return null;
+            }
+            String value= row.getValue(columnIndex);
             if (value==null) {
                 value= IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
             }

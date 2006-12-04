@@ -1223,6 +1223,22 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return content;
     }
 
+    /**
+     * Returns <code>true</code> if the ips source file' content is in sny with the 
+     * enclosing resource storing it's contents. 
+     */
+    public synchronized boolean isInSyncWithEnclosingResource(IIpsSrcFile file) {
+        IResource enclResource = file.getEnclosingResource();
+        if (enclResource == null || !enclResource.exists()) {
+            return false;
+        }
+        IpsSrcFileContent content = (IpsSrcFileContent)ipsObjectsMap.get(file);
+        if (content==null) {
+            return true;
+        }
+        return content.getModificationStamp() == enclResource.getModificationStamp(); 
+    }
+
     public void ipsSrcFileContentHasChanged(ContentChangeEvent event) {
         IIpsSrcFile file = event.getIpsSrcFile();
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
@@ -1264,14 +1280,17 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     return true;
                 }
                 IpsSrcFile srcFile = (IpsSrcFile)element;
+                boolean isInSync = isInSyncWithEnclosingResource(srcFile);
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out
                             .println("IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change/delete on disk with modStamp " //$NON-NLS-1$
-                                    + resource.getModificationStamp()
+                                    + resource.getModificationStamp() + ", Sync status=" + isInSync //$NON-NLS-1$ 
                                     + ", " //$NON-NLS-1$
                                     + srcFile
                                     + " Thread: " //$NON-NLS-1$
                                     + Thread.currentThread().getName());
+                }
+                if (!isInSync) {
                     ipsSrcFileContentHasChanged(ContentChangeEvent.newWholeContentChangedEvent(srcFile));
                 }
                 return true;

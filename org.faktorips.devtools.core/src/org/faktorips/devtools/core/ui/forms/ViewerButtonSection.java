@@ -97,8 +97,7 @@ public abstract class ViewerButtonSection extends IpsSection {
 	}
 	
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.forms.IpsSection#performRefresh()
+     * {@inheritDoc}
      */
     protected void performRefresh() {
 		if (viewer.getInput()==null) {

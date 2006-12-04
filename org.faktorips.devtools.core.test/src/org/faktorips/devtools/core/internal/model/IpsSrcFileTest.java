@@ -24,6 +24,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -39,7 +41,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 /**
  *
  */
-public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificationStatusChangeListener {
+public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificationStatusChangeListener, ContentsChangeListener {
     
     private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot ipsRootFolder;
@@ -49,7 +51,8 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     private IIpsSrcFile unparsableFile; // file with unparsable contents
     
     private ModificationStatusChangedEvent lastModStatusEvent;
-
+    private ContentChangeEvent lastContentChangedEvent;
+    
     /*
      * @see TestCase#setUp()
      */
@@ -63,8 +66,28 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         policyCmptType = (IPolicyCmptType)parsableFile.getIpsObject();
         unparsableFile = ipsFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE.getFileName("UnparsableFile"), "blabla", true, null);
         unparsableFile.getCorrespondingFile().setContents(new ByteArrayInputStream("Blabla".getBytes()), true, false, null);
-    }
 
+        parsableFile.getIpsModel().addModifcationStatusChangeListener(this);
+        parsableFile.getIpsModel().addChangeListener(this);
+    }
+    
+    protected void tearDown() throws Exception {
+        parsableFile.getIpsModel().removeModificationStatusChangeListener(this);
+        parsableFile.getIpsModel().removeChangeListener(this);
+    }
+    
+    public void testSave() throws IOException, CoreException {
+        policyCmptType.newAttribute();
+        assertTrue(parsableFile.isDirty());
+        
+        lastModStatusEvent = null;
+        lastContentChangedEvent = null;
+        parsableFile.save(true, null);
+        assertFalse(parsableFile.isDirty());
+        assertNull(lastContentChangedEvent);
+        assertEquals(parsableFile, lastModStatusEvent.getIpsSrcFile());
+    }
+    
     public void testContentIsParsable() throws CoreException {
         assertFalse(unparsableFile.isContentParsable());
         assertTrue(parsableFile.isContentParsable());
@@ -138,15 +161,6 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         assertTrue(parsableFile.hasChildren());
     }
     
-    public void testSave() throws IOException, CoreException {
-        policyCmptType.newAttribute();
-        parsableFile.getIpsModel().addModifcationStatusChangeListener(this);
-        parsableFile.save(true, null);
-        assertFalse(parsableFile.isDirty());
-        assertEquals(parsableFile, lastModStatusEvent.getIpsSrcFile());
-    }
-    
-    
     public void testIsHistoric() {
         assertFalse(parsableFile.isHistoric());
     }
@@ -171,6 +185,13 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
      */
     public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
         lastModStatusEvent = event;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void contentsChanged(ContentChangeEvent event) {
+        this.lastContentChangedEvent = event;
     }
 
 }

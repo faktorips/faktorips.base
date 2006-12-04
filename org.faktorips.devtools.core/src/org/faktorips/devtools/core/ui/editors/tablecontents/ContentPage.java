@@ -1,19 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
+ï¿½* Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+ï¿½*
+ï¿½* Alle Rechte vorbehalten.
+ï¿½*
+ï¿½* Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
+ï¿½* Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
+ï¿½* Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+ï¿½* genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ï¿½* ï¿½ http://www.faktorips.org/legal/cl-v01.html
+ï¿½* eingesehen werden kann.
  *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+ï¿½* Mitwirkende:
+ï¿½* ï¿½ Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+ï¿½*
+ï¿½*******************************************************************************/
 
 package org.faktorips.devtools.core.ui.editors.tablecontents;
 
@@ -340,8 +340,7 @@ public class ContentPage extends IpsObjectEditorPage {
                 }
             }
             
-            int difference = structure.getColumns().length
-            - getTableContents().getNumOfColumns();
+            int difference = structure.getColumns().length - getTableContents().getNumOfColumns();
             
             if (difference != 0) {
                 IInputValidator validator = new Validator(difference);
