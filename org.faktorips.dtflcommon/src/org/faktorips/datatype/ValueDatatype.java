@@ -53,7 +53,6 @@ public interface ValueDatatype extends Datatype {
      */
     public String getDefaultValue();
     
-    
     /**
      * @return <code>true</code> if this datatype is able to compare two values.
      */
