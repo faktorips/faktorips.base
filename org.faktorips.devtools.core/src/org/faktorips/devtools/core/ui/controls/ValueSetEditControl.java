@@ -20,8 +20,6 @@ package org.faktorips.devtools.core.ui.controls;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -40,6 +38,9 @@ import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.DefaultUIController;
+import org.faktorips.devtools.core.ui.controller.fields.ComboField;
+import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 
 /**
  * A control to define the type of value set and edit a value set. 
@@ -47,6 +48,7 @@ import org.faktorips.devtools.core.ui.controller.DefaultUIController;
 public class ValueSetEditControl extends ControlComposite {
 
     private Combo validTypesCombo;
+    private ComboField validTypesComboField;
     private RangeEditControl rangeControl;
     private Composite enumControl;
     private Composite allValuesControl;
@@ -215,7 +217,8 @@ public class ValueSetEditControl extends ControlComposite {
             }
         }
 
-        validTypesCombo.addModifyListener(new TypeModifyListener());
+        validTypesComboField = new ComboField(validTypesCombo);
+        validTypesComboField.addChangeListener(new TypeModifyListener());
     }
 
     public boolean setFocus() {
@@ -269,34 +272,34 @@ public class ValueSetEditControl extends ControlComposite {
         }
     }
     
-    private class TypeModifyListener implements ModifyListener {
-		/**
+    private class TypeModifyListener implements ValueChangeListener {
+        /**
 		 * {@inheritDoc}
 		 */
-		public void modifyText(ModifyEvent e) {
-            String selectedText = validTypesCombo.getText();
-            IValueSet oldValueSet = attribute.getValueSet();
-            if (selectedText.equals(ValueSetType.RANGE.getName())) {
-            	attribute.setValueSetType(ValueSetType.RANGE);
-            	if (oldValueSet.getValueSetType() == ValueSetType.RANGE) {
-            		attribute.getValueSet().setValuesOf(oldValueSet);
-            	}
-            } else if (selectedText.equals(ValueSetType.ENUM.getName())) {
-        		attribute.setValueSetType(ValueSetType.ENUM);
-        		IEnumValueSet valueSet = (IEnumValueSet)attribute.getValueSet();
-            	if (oldValueSet.getValueSetType() == ValueSetType.ENUM) {
-            		valueSet.setValuesOf(oldValueSet);
-            	}
-            } else if (selectedText.equals(ValueSetType.ALL_VALUES.getName())) {
-            	attribute.setValueSetType(ValueSetType.ALL_VALUES);
-            }
-            ((StackLayout)valueSetArea.getLayout()).topControl = getControlForValueSet(attribute.getValueSet());
+		public void valueChanged(FieldValueChangedEvent e) {
+              String selectedText = validTypesCombo.getText();
+                IValueSet oldValueSet = attribute.getValueSet();
+                if (selectedText.equals(ValueSetType.RANGE.getName())) {
+                    attribute.setValueSetType(ValueSetType.RANGE);
+                    if (oldValueSet.getValueSetType() == ValueSetType.RANGE) {
+                        attribute.getValueSet().setValuesOf(oldValueSet);
+                    }
+                } else if (selectedText.equals(ValueSetType.ENUM.getName())) {
+                    attribute.setValueSetType(ValueSetType.ENUM);
+                    IEnumValueSet valueSet = (IEnumValueSet)attribute.getValueSet();
+                    if (oldValueSet.getValueSetType() == ValueSetType.ENUM) {
+                        valueSet.setValuesOf(oldValueSet);
+                    }
+                } else if (selectedText.equals(ValueSetType.ALL_VALUES.getName())) {
+                    attribute.setValueSetType(ValueSetType.ALL_VALUES);
+                }
+                ((StackLayout)valueSetArea.getLayout()).topControl = getControlForValueSet(attribute.getValueSet());
 
-            valueSetArea.layout(); // show the new top control
-            valueSetArea.getParent().layout(); // parent has to resize
-            valueSetArea.getParent().getParent().layout(); // parent has to resize
-            
-            uiController.updateUI();
-		}
+                valueSetArea.layout(); // show the new top control
+                valueSetArea.getParent().layout(); // parent has to resize
+                valueSetArea.getParent().getParent().layout(); // parent has to resize
+                
+                uiController.updateUI();
+        }
     }
 }

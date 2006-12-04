@@ -31,10 +31,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -57,9 +55,11 @@ import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
+import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.MessageCueController;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.ChangeParametersControl;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
@@ -287,17 +287,6 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         datatypeControl = uiToolkit.createDatatypeRefEdit(attribute.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
-        datatypeControl.addListener(SWT.Modify, new Listener() {
-            public void handleEvent(Event event) {
-                event.display.asyncExec(new Runnable(){
-                    public void run() {
-                        updateValueSetTypes();
-                        createDefaultValueEditField();
-                        uiController.updateUI();
-                    }
-                });
-            }
-        });
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelModifier);
         Combo modifierCombo = uiToolkit.createCombo(workArea, Modifier.getEnumType());
@@ -315,6 +304,13 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         attributeTypeField = new EnumValueField(typeCombo, AttributeType.getEnumType());
         productRelevantField = new CheckboxField(checkbox);
         overrideField = new CheckboxField(cb);
+        
+        datatypeField.addChangeListener(new ValueChangeListener(){
+            public void valueChanged(FieldValueChangedEvent e) {
+                updateValueSetTypes(e.field.getText());
+                createDefaultValueEditField();
+            }
+        });
         
         return c;
     }
@@ -549,10 +545,10 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         }
     }
     
-    private void updateValueSetTypes() {
+    private void updateValueSetTypes(String strDatatype) {
         ValueDatatype datatype;
         try {
-            datatype = attribute.getIpsProject().findValueDatatype(datatypeControl.getText());
+            datatype = attribute.getIpsProject().findValueDatatype(strDatatype);
 
             if (prevDatatype != null){
                 // the previous selection was a valid selection, thus store the selection, 
