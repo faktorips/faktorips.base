@@ -106,7 +106,7 @@ public class ValueSetEditControl extends ControlComposite {
     	if (valueSet.getValueSetType() == ValueSetType.ENUM) {
     		EnumDatatype enumType = null;
     		try {
-				Datatype type = this.attribute.findDatatype();
+				Datatype type = attribute.findDatatype();
 				if (type instanceof EnumDatatype) {
 					enumType = (EnumDatatype)type;
 				}
@@ -248,7 +248,7 @@ public class ValueSetEditControl extends ControlComposite {
                 newType = oldType;
             }
         }
-        validTypesCombo.setText(newType.getName());
+        validTypesComboField.select(newType.getName());
     }
 
     /**
@@ -263,13 +263,7 @@ public class ValueSetEditControl extends ControlComposite {
      * of available item.
      */
     public void selectValueSetType(ValueSetType valueSetType) {
-        String[] items = validTypesCombo.getItems();
-        for (int i = 0; i < items.length; i++) {
-            if (items[i].equals(valueSetType.getName())){
-                validTypesCombo.select(i);
-                break;
-            }
-        }
+        validTypesComboField.select(valueSetType.getName());
     }
     
     private class TypeModifyListener implements ValueChangeListener {
@@ -277,7 +271,7 @@ public class ValueSetEditControl extends ControlComposite {
 		 * {@inheritDoc}
 		 */
 		public void valueChanged(FieldValueChangedEvent e) {
-              String selectedText = validTypesCombo.getText();
+              String selectedText = e.field.getText();
                 IValueSet oldValueSet = attribute.getValueSet();
                 if (selectedText.equals(ValueSetType.RANGE.getName())) {
                     attribute.setValueSetType(ValueSetType.RANGE);
@@ -298,7 +292,6 @@ public class ValueSetEditControl extends ControlComposite {
                 valueSetArea.layout(); // show the new top control
                 valueSetArea.getParent().layout(); // parent has to resize
                 valueSetArea.getParent().getParent().layout(); // parent has to resize
-                
                 uiController.updateUI();
         }
     }

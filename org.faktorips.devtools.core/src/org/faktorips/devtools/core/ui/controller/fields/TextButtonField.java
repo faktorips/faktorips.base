@@ -33,7 +33,7 @@ public class TextButtonField extends DefaultEditField {
     
     TextButtonControl control;
     
-    private boolean immediatelyNotifyListener = false;
+    protected boolean immediatelyNotifyListener = false;
 
     public TextButtonField(TextButtonControl control) {
         super();

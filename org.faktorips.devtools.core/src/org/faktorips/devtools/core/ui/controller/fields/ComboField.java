@@ -27,6 +27,8 @@ import org.eclipse.swt.widgets.Control;
  */
 public class ComboField extends DefaultEditField {
 
+    private boolean immediatelyNotifyListener = false;
+    
     private Combo combo;
     
     public ComboField(Combo combo) {
@@ -78,7 +80,12 @@ public class ComboField extends DefaultEditField {
      * @see org.faktorips.devtools.core.ui.controller.EditField#setText(java.lang.String)
      */
     public void setText(String newText) {
-        combo.setText(newText);
+        immediatelyNotifyListener = true;
+        try {
+            combo.setText(newText);
+        } finally {
+            immediatelyNotifyListener = false;
+        }
     }
 
     /** 
@@ -87,6 +94,22 @@ public class ComboField extends DefaultEditField {
      */
     public void insertText(String text) {
         combo.setText(text);
+    }
+
+    /**
+     * Selects the item in the combo, if the item doesn't exist the selection doesn't change.
+     * Returns <code>true</code> if the item was successfully selected otherwise return <code>false</code>.
+     */
+    public boolean select(String text) {
+        String[] items = combo.getItems();
+        for (int i = 0; i < items.length; i++) {
+            if (items[i].equals(text)) {
+                combo.select(i);
+                notifyChangeListeners(new FieldValueChangedEvent(this), true);
+                return true;
+            }
+        }
+        return false;
     }
 
     /** 
@@ -102,17 +125,15 @@ public class ComboField extends DefaultEditField {
      * @see org.faktorips.devtools.core.ui.controller.fields.DefaultEditField#addListenerToControl()
      */
     protected void addListenerToControl() {
+        // add selection listener to get notifications if the user changes the selection
         combo.addSelectionListener(new SelectionListener() {
-
             public void widgetSelected(SelectionEvent e) {
-                notifyChangeListeners(new FieldValueChangedEvent(ComboField.this));
+                notifyChangeListeners(new FieldValueChangedEvent(ComboField.this), immediatelyNotifyListener);
             }
-
             public void widgetDefaultSelected(SelectionEvent e) {
                 // nothing to do
             }
         });
-
     }
 
 }

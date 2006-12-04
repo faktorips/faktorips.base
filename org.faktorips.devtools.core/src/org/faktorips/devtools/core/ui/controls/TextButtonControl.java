@@ -39,9 +39,10 @@ public abstract class TextButtonControl extends ControlComposite{
 
     // text and button controls
     protected Text text;
+
     private Button button;
     
-    private boolean immediatelyNotifyListener = false;
+    protected boolean immediatelyNotifyListener = false;
     
     /**
      * Creates a textfield and a button. The given buttonHeightHint is used to set the heightHint for the layout-data 
@@ -120,13 +121,7 @@ public abstract class TextButtonControl extends ControlComposite{
     }
     
     public void setText(String newText) {
-        immediatelyNotifyListener = true;
-        try {
-            text.setText(newText);
-        }
-        finally  {
-            immediatelyNotifyListener = false;
-        }
+        text.setText(newText);
     }
     
     public boolean isImmediatelyNotifyListener() {
@@ -164,5 +159,4 @@ public abstract class TextButtonControl extends ControlComposite{
     	text.setEnabled(enabled);
     	button.setEnabled(enabled);
     }
-    
 }

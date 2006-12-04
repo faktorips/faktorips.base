@@ -88,11 +88,16 @@ public class DatatypeRefControl extends TextButtonControl {
             DatatypeSelectionDialog dialog = new DatatypeSelectionDialog(getShell());
             dialog.setElements(ipsProject.findDatatypes(isOnlyValueDatatypesAllowed(), isVoidAllowed()));
             if (dialog.open()==Window.OK) {
+                String textToSet = ""; //$NON-NLS-1$
                 if (dialog.getResult().length>0) {
                     Datatype datatype = (Datatype)dialog.getResult()[0];
-                    text.setText(datatype.getQualifiedName());
-                } else {
-                    text.setText(""); //$NON-NLS-1$
+                    textToSet = datatype.getQualifiedName();
+                }
+                try{
+                    immediatelyNotifyListener = true;
+                    text.setText(textToSet);
+                } finally {
+                    immediatelyNotifyListener = false;
                 }
             }
         } catch (Exception e) {

@@ -236,6 +236,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 
         //initial update of the checkBox "validationRuleAdded"
         updateFieldValidationRuleAdded();
+        
         return folder;
     }
     
@@ -307,6 +308,10 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         
         datatypeField.addChangeListener(new ValueChangeListener(){
             public void valueChanged(FieldValueChangedEvent e) {
+                // set the datatype of the attribute without using the ui controller, 
+                // because we need this information when creating the value set controls,
+                // maybe the ui controler notification is to late
+                attribute.setDatatype(e.field.getText());
                 updateValueSetTypes(e.field.getText());
                 createDefaultValueEditField();
             }
@@ -367,7 +372,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
             return;
         }
         prevDatatypeName = attribute.getDatatype();
-            
+        
         if (defaultValueField != null){
             uiController.remove(defaultValueField);
             defaultValueField.getControl().dispose();
@@ -561,6 +566,8 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
                 ValueSetType[] types = attribute.getIpsProject().getValueSetTypes(datatype);
                 valueSetEditControl.setTypes(types, datatype);
                 if (prevSelectedType != null){
+                    // if the previous selction was a valid selection use this one as new selection in drop down,
+                    // otherwise the default (first one) is selected
                     valueSetEditControl.selectValueSetType(prevSelectedType);
                 }
             } else {
@@ -596,6 +603,10 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         
         overwritesListener.doEnablement(!this.attribute.getOverwrites());
         
+        // set defaults
+        uiController.updateUI();
+        updateValueSetTypes(datatypeField.getText());
+        createDefaultValueEditField();
     }
 
 	/**
