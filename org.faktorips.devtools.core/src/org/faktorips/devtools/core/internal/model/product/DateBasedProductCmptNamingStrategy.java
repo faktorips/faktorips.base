@@ -22,8 +22,10 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -176,5 +178,23 @@ public class DateBasedProductCmptNamingStrategy extends
 		el.setAttribute("postfixAllowed", "" + postfixAllowed); //$NON-NLS-1$ //$NON-NLS-2$
 		return el;
 	}
-	
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreException {
+        String id = project.getRuntimeIdPrefix() + productCmptName;
+        String uniqueId = id;
+        
+        String[] parts = uniqueId.split(getVersionIdSeparator(), 2);
+        
+        
+        int i = 1;
+        while (project.findProductCmptByRuntimeId(uniqueId) != null) {
+            uniqueId = parts[0] + i + getVersionIdSeparator() + parts[1];
+            i++;
+        }
+        
+        return uniqueId;
+    }
 }

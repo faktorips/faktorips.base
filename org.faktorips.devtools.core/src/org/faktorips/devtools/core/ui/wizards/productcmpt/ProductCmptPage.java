@@ -41,7 +41,6 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.product.IRuntimeIdStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -221,7 +220,7 @@ public class ProductCmptPage extends IpsObjectPage {
 
     private String validateRuntimeId() throws CoreException {
         // check correct format of the given runtime id
-        MessageList ml = getIpsProject().getRuntimeIdStrategy().validateRuntimeId(runtimeId.getText());
+        MessageList ml = getIpsProject().getProductCmptNamingStrategy().validateRuntimeId(runtimeId.getText());
         Message msg = ml.getFirstMessage(Message.ERROR);
         if (msg != null){
             return msg.getText();
@@ -300,16 +299,17 @@ public class ProductCmptPage extends IpsObjectPage {
     
     private String getDefaultRuntimeId() {
         String defaultRuntimeId = ""; //$NON-NLS-1$
-        if (getIpsProject() == null){
-            return "";  //$NON-NLS-1$
+        if (getIpsProject() == null) {
+            return ""; //$NON-NLS-1$
         }
-        IRuntimeIdStrategy runtimeIdStrategy = getIpsProject().getRuntimeIdStrategy();
-        if (runtimeIdStrategy != null) {
-            try {
-                defaultRuntimeId = runtimeIdStrategy.getRuntimeId(getIpsProject(), getIpsObjectName());
-            } catch (CoreException e) {
-                IpsPlugin.logAndShowErrorDialog(e);
+        try {
+            IProductCmptNamingStrategy productCmptNamingStrategy = getIpsProject().getProductCmptNamingStrategy();
+            if (productCmptNamingStrategy != null) {
+                defaultRuntimeId = productCmptNamingStrategy.getUniqueRuntimeId(getIpsProject(), getIpsObjectName());
             }
+        }
+        catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
         }
         return defaultRuntimeId;
     }

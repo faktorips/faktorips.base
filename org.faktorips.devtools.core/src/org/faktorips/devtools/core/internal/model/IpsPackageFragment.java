@@ -180,7 +180,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             try {
                 model.stopBroadcastingChangesMadeByCurrentThread();
                 IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile .getIpsObject();
-                productCmpt.setRuntimeId(getIpsProject().getRuntimeId(productCmpt));
+                productCmpt.setRuntimeId(getIpsProject().getUniqueRuntimeId(productCmpt));
                 ipsSrcFile .save(force, monitor);
             } finally {
                 model.resumeBroadcastingChangesMadeByCurrentThread();
@@ -282,7 +282,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             
             if (template instanceof IProductCmpt) {
                 ((IProductCmpt)newObject).setPolicyCmptType(((IProductCmpt)template).getPolicyCmptType());
-                ((IProductCmpt)newObject).setRuntimeId(newObject.getIpsProject().getRuntimeId((IProductCmpt)newObject));
+                ((IProductCmpt)newObject).setRuntimeId(newObject.getIpsProject().getUniqueRuntimeId((IProductCmpt)newObject));
             }
             file.save(true, null);
         } finally {

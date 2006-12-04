@@ -56,7 +56,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.product.DefaultRuntimeIdStrategy;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -78,7 +77,6 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
-import org.faktorips.devtools.core.model.product.IRuntimeIdStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
@@ -95,7 +93,6 @@ import org.w3c.dom.Element;
  */
 public class IpsProject extends IpsElement implements IIpsProject {
 
-	private IRuntimeIdStrategy runtimeIdStrategy = null;
     private IIpsProjectNamingConventions namingConventions = null;
 	
     /**
@@ -1040,11 +1037,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getRuntimeId(IProductCmpt productCmpt) throws CoreException {
-		if (runtimeIdStrategy == null) {
-			runtimeIdStrategy = new DefaultRuntimeIdStrategy(); 
-		}
-		return runtimeIdStrategy.getRuntimeId(productCmpt);
+	public String getUniqueRuntimeId(IProductCmpt productCmpt) throws CoreException {
+        return getPropertiesInternal().getProductCmptNamingStrategy().getUniqueRuntimeId(productCmpt);
 	}
 
 	/**
@@ -1052,16 +1046,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	 */
 	public String getRuntimeIdPrefix() {
 		return getPropertiesInternal().getRuntimeIdPrefix();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public IRuntimeIdStrategy getRuntimeIdStrategy() {
-		if (runtimeIdStrategy == null) {
-			runtimeIdStrategy = new DefaultRuntimeIdStrategy(); 
-		}
-		return runtimeIdStrategy;
 	}
 
 	/**
@@ -1235,12 +1219,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
 
         MessageList result = new MessageList();
-        IRuntimeIdStrategy strategyI = null;
-        IRuntimeIdStrategy strategyJ = null;
+        IProductCmptNamingStrategy strategyI = null;
+        IProductCmptNamingStrategy strategyJ = null;
         for (int i = 0; i < cmptsToCheck.length; i++) {
             ArgumentCheck.isInstanceOf(cmptsToCheck[i], IProductCmpt.class);
             IProductCmpt productCmptToCheck = (IProductCmpt)cmptsToCheck[i];
-            strategyI = productCmptToCheck.getIpsProject().getRuntimeIdStrategy();
+            strategyI = productCmptToCheck.getIpsProject().getProductCmptNamingStrategy();
 
             if (all) {
                 // because we process the same array with index j as with index
@@ -1249,7 +1233,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 for (int j = i + 1; j < cmptsToCheck.length; j++) {
                     ArgumentCheck.isInstanceOf(cmptsToCheck[j], IProductCmpt.class);
                     IProductCmpt productCmptToCheckB = (IProductCmpt)cmptsToCheck[j];
-                    strategyJ = productCmptToCheckB.getIpsProject().getRuntimeIdStrategy();
+                    strategyJ = productCmptToCheckB.getIpsProject().getProductCmptNamingStrategy();
                     checkRuntimeId(strategyI, productCmptToCheck, productCmptToCheckB, result, true);
                     if (!strategyI.equals(strategyJ)) {
                         checkRuntimeId(strategyJ, productCmptToCheck, productCmptToCheckB, result, true);
@@ -1260,7 +1244,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
                     ArgumentCheck.isInstanceOf(baseCheck[j], IProductCmpt.class);
                     IProductCmpt productCmptToCheckB = (IProductCmpt)baseCheck[j];                    
                     if (productCmptToCheck != productCmptToCheckB) {
-                        strategyJ = productCmptToCheckB.getIpsProject().getRuntimeIdStrategy();
+                        strategyJ = productCmptToCheckB.getIpsProject().getProductCmptNamingStrategy();
                         checkRuntimeId(strategyI, productCmptToCheck, productCmptToCheckB, result, false);
                         if (!strategyI.equals(strategyJ)) {
                             checkRuntimeId(strategyJ, productCmptToCheck, productCmptToCheckB, result, false);
@@ -1272,7 +1256,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return result;
     }
 
-    private void checkRuntimeId(IRuntimeIdStrategy strategy,
+    private void checkRuntimeId(IProductCmptNamingStrategy strategy,
             IProductCmpt cmpt1,
             IProductCmpt cmpt2,
             MessageList list,

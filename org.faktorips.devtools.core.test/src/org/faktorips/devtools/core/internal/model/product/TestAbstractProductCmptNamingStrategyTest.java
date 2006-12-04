@@ -91,7 +91,7 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
 		assertFalse(list.containsErrorMsg());	
 		
 		list = namingStrategy.validate("abc - d123");
-		assertFalse(list.containsErrorMsg());	
+		assertFalse(list.containsErrorMsg());
 	}
 
 	/*
@@ -107,6 +107,14 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
 		list = namingStrategy.validateKindId("abc");
 		assertFalse(list.containsErrorMsg());	
 	}
+    
+	public void testValidateRuntimeId() {
+	    MessageList list = namingStrategy.validateRuntimeId("x");
+        assertNull(list.getMessageByCode(AbstractProductCmptNamingStrategy.MSGCODE_INVALID_RUNTIME_ID_FORMAT)); 
+        
+        list = namingStrategy.validateRuntimeId("");
+        assertNotNull(list.getMessageByCode(AbstractProductCmptNamingStrategy.MSGCODE_INVALID_RUNTIME_ID_FORMAT));
+	}
 
 	/*
 	 * Test method for 'org.faktorips.devtools.core.internal.model.product.AbstractProductCmptNamingStrategy.getJavaClassIdentifier(String)'
@@ -114,7 +122,6 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
 	public void testGetJavaClassIdentifier() {
 		assertEquals("abc", namingStrategy.getJavaClassIdentifier("abc"));
 		assertEquals("abc___def__", namingStrategy.getJavaClassIdentifier("abc def-"));
-		
 	}
 
 	class TestNamingStrategy extends AbstractProductCmptNamingStrategy {
@@ -171,6 +178,11 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
 			return "TestStrategy";
 		}
 
-		
+        /**
+         * {@inheritDoc}
+         */
+        public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreException {
+            throw new UnsupportedOperationException();
+        }
 	}
 }

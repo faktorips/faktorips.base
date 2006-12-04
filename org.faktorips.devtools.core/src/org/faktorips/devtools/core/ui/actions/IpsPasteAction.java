@@ -461,7 +461,7 @@ public class IpsPasteAction extends IpsAction {
         // set the new evaluated runtime id for product components
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {
             IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-            productCmpt.setRuntimeId(ipsObject.getIpsProject().getRuntimeId(productCmpt));
+            productCmpt.setRuntimeId(ipsObject.getIpsProject().getUniqueRuntimeId(productCmpt));
             ipsSrcFile.save(true, null);
         }
     }

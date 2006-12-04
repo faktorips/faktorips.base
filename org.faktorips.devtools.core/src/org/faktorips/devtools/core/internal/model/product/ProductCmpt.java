@@ -21,6 +21,7 @@ package org.faktorips.devtools.core.internal.model.product;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -161,9 +162,20 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 				throw new CoreException(new IpsStatus("Error during validate of policy component type", e)); //$NON-NLS-1$
 			}
         }
-        MessageList list2 = getIpsProject().getProductCmptNamingStrategy().validate(getName());
-        list.add(list2);
-        
+        IProductCmptNamingStrategy strategy = getIpsProject().getProductCmptNamingStrategy();
+        MessageList list2 = strategy.validate(getName());
+        for (Iterator iter = list2.iterator(); iter.hasNext();) {
+            Message msg = (Message)iter.next();
+            Message msgNew = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_NAME);
+            list.add(msgNew);
+        }
+        list2 = strategy.validateRuntimeId(getRuntimeId());
+        for (Iterator iter = list2.iterator(); iter.hasNext();) {
+            Message msg = (Message)iter.next();
+            Message msgNew = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_RUNTIME_ID);
+            list.add(msgNew);
+        }
+
         list2 = getIpsProject().checkForDuplicateRuntimeIds(new IProductCmpt[] {this});
         list.add(list2);
     }

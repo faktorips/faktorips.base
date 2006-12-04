@@ -32,13 +32,22 @@ import org.w3c.dom.Element;
  */
 public class NoVersionIdProductCmptNamingStrategyTest extends AbstractIpsPluginTest {
 
+    private IIpsProject project;
+    
 	private NoVersionIdProductCmptNamingStrategy strategy = new NoVersionIdProductCmptNamingStrategy();
 	
-	/*
+    private String prefix;
+    
+	protected void setUp() throws Exception {
+        super.setUp();
+	    project = newIpsProject("TestProject");
+        prefix = project.getRuntimeIdPrefix();
+    }
+
+    /*
 	 * Test method for 'org.faktorips.devtools.core.internal.model.product.NoVersionIdProductCmptNamingStrategy.getNextVersionId(IProductCmpt)'
 	 */
 	public void testGetNextVersionId() throws CoreException {
-		IIpsProject project = newIpsProject("TestProject");
 		IProductCmpt pc = newProductCmpt(project, "TestProduct");
 		assertEquals("", strategy.getNextVersionId(pc));
 	}
@@ -84,4 +93,20 @@ public class NoVersionIdProductCmptNamingStrategyTest extends AbstractIpsPluginT
 		Element el = strategy.toXml(doc);
 		assertEquals(IProductCmptNamingStrategy.XML_TAG_NAME, el.getNodeName());
 	}
+    
+
+    public void testGetUniqueRuntimeId() throws Exception {
+        IProductCmpt cmpt = newProductCmpt(project, "TestProductCmpt");
+        
+        String id = strategy.getUniqueRuntimeId(cmpt);
+        assertEquals(prefix + cmpt.getName() + "1", id);
+        
+        IProductCmpt cmpt2 = newProductCmpt(project, "TestProductCmpt1");
+        id = strategy.getUniqueRuntimeId(cmpt2);
+        assertEquals(prefix + cmpt.getName() + "11", id);
+        
+        cmpt2 = newProductCmpt(project, "TestProductCmpt2");
+        id = strategy.getUniqueRuntimeId(cmpt);
+        assertEquals(prefix + cmpt.getName() + "3", id);
+    }
 }

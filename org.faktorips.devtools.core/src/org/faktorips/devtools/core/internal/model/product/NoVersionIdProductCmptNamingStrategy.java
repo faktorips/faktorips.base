@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -103,4 +105,19 @@ public class NoVersionIdProductCmptNamingStrategy extends
 		return doc.createElement(XML_TAG_NAME);
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreException {
+        String id = project.getRuntimeIdPrefix() + productCmptName;
+        String uniqueId = id;
+
+        int i = 1;
+        while (project.findProductCmptByRuntimeId(uniqueId) != null) {
+            uniqueId = id + i;
+            i++;
+        }
+
+        return uniqueId;
+    }
 }

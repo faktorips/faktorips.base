@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
@@ -308,5 +309,41 @@ public abstract class AbstractProductCmptNamingStrategy implements
 	 */
 	protected abstract Element toXmlSubclass(Document doc);
 	
-	
+    /**
+     * {@inheritDoc}
+     */
+    public String getUniqueRuntimeId(IProductCmpt productCmpt) throws CoreException {
+        return getUniqueRuntimeId(productCmpt.getIpsProject(), productCmpt.getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public abstract String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreException;
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean sameRuntimeId(IProductCmpt cmpt1, IProductCmpt cmpt2) {
+        return cmpt1.getRuntimeId().equals(cmpt2.getRuntimeId());
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean equals(Object obj) {
+        return obj.getClass().isAssignableFrom(this.getClass());
+    } 
+    
+    /**
+     * {@inheritDoc}
+     */
+    public MessageList validateRuntimeId(String runtimeId) {
+        MessageList result = new MessageList();
+        if (StringUtils.isEmpty(runtimeId)){
+            String text = NLS.bind(Messages.DefaultRuntimeIdStrategy_msgRuntimeIdNotValid, runtimeId);
+            result.add(new Message(MSGCODE_INVALID_RUNTIME_ID_FORMAT, text, Message.ERROR, this)); 
+        }
+        return result;
+    }
 }

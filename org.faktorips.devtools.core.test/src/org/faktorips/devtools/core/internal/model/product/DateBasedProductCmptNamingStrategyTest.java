@@ -118,7 +118,22 @@ public class DateBasedProductCmptNamingStrategyTest extends AbstractIpsPluginTes
 		assertEquals(" ", strategy.getVersionIdSeparator());
 		assertEquals("yyyy-MM-dd", strategy.getDateFormatPattern());
         assertEquals(3, strategy.getReplacedCharacters().length);
-        
 	}
-	
+
+    public void testGetUniqueRuntimeId() throws Exception {
+        String prefix = ipsProject.getIpsProject().getRuntimeIdPrefix();
+        
+        IProductCmpt cmpt = newProductCmpt(ipsProject, "TestProduct 2005-01-01");
+        
+        String id = strategy.getUniqueRuntimeId(cmpt);
+        assertEquals(prefix + "TestProduct1 2005-01-01", id);
+        
+        IProductCmpt cmpt2 = newProductCmpt(ipsProject, "TestProduct1 2005-01-01");
+        id = strategy.getUniqueRuntimeId(cmpt2);
+        assertEquals(prefix + "TestProduct11 2005-01-01", id);
+        
+        cmpt2 = newProductCmpt(ipsProject, "TestProduct2 2005-01-01");
+        id = strategy.getUniqueRuntimeId(cmpt);
+        assertEquals(prefix + "TestProduct3 2005-01-01", id);
+    }
 }

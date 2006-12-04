@@ -37,7 +37,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.product.IRuntimeIdStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.MessageList;
 
@@ -474,13 +473,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @param productCmpt The product component to find the runtime id for.
      * @throws CoreException if an error occurs during evaluation.
      */
-    public String getRuntimeId(IProductCmpt productCmpt) throws CoreException;
+    public String getUniqueRuntimeId(IProductCmpt productCmpt) throws CoreException;
    
-    /**
-     * @return the runtime id strategy defined for this project.
-     */
-    public IRuntimeIdStrategy getRuntimeIdStrategy();
-    
     /**
      * Returns the stratgey used to name product components. This method never returns
      * <code>null</code>.
