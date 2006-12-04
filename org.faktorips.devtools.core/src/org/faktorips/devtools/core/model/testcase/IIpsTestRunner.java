@@ -107,6 +107,9 @@ public interface IIpsTestRunner {
      */
     public void startTestRunnerJob(String classpathRepository, String testPackage, String mode) throws CoreException;
     
+    /**
+     * Sets the launch to run the tests with.<br>
+     * If no launch is set, a new launch will be created.
+     */
     public void setLauch(ILaunch launch);
-    
 }
