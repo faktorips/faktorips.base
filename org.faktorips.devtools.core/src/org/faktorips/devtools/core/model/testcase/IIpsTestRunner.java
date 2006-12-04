@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model.testcase;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.ILaunch;
 import org.faktorips.devtools.core.model.IIpsProject;
 
 /**
@@ -105,4 +106,7 @@ public interface IIpsTestRunner {
      * @throws CoreException if an error occured.
      */
     public void startTestRunnerJob(String classpathRepository, String testPackage, String mode) throws CoreException;
+    
+    public void setLauch(ILaunch launch);
+    
 }

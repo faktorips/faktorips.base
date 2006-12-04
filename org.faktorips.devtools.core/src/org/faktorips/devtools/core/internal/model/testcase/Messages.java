@@ -36,6 +36,7 @@ public class Messages extends NLS {
 
 	public static String IpsTestRunner_Error_CouldNotConnect;
 	public static String IpsTestRunner_Job_Name;
+    public static String IpsTestRunner_lauchConfigurationDefaultName;
 	public static String TestAttributeValue_ValidateError_TestAttributeNotFound;
 	public static String TestAttributeValue_ValidateError_AttributeNotFound;
 	public static String TestCase_Error_NoRelationOrPolicyCmptGiven;

@@ -25,6 +25,7 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -32,7 +33,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
@@ -56,6 +56,8 @@ public class IpsTestAction extends IpsAction {
 	private static final String SEPARATOR = "#|#"; //$NON-NLS-1$
     
     private String mode;
+    
+    private ILaunch launch;
     
 	/**
 	 * @param selectionProvider
@@ -182,6 +184,19 @@ public class IpsTestAction extends IpsAction {
 		}
 	}
 	
+    public void run(String tocFile, String testCasePackages){
+        try {
+            showTestCaseResultView(IpsTestRunnerViewPart.EXTENSION_ID);
+
+            IIpsTestRunner testRunner = IpsPlugin.getDefault().getIpsTestRunner();
+            testRunner.setLauch(launch);
+            testRunner.startTestRunnerJob(tocFile, testCasePackages, mode);
+        }
+        catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+    }
+    
 	/*
 	 * Add all package fragment roots of the selected IpsProject - including the project name - to the given list.
 	 */
@@ -282,14 +297,21 @@ public class IpsTestAction extends IpsAction {
 			// run the test
 			IIpsTestRunner testRunner = IpsPlugin.getDefault().getIpsTestRunner();
 			testRunner.setIpsProject(ipsProject);
-			testRunner.startTestRunnerJob(testRootsString, testPackagesString, mode);
+            if (launch != null){
+                testRunner.setLauch(launch);
+            }
+            testRunner.startTestRunnerJob(testRootsString, testPackagesString, mode);
 		}
 	}
     
 	/*
 	 * Displays the ips test run result view.
 	 */
-	private IViewPart showTestCaseResultView(String viewId) throws PartInitException {
-		return IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId);
-	}	
+	private void showTestCaseResultView(String viewId) throws PartInitException {
+        IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId);
+    }
+
+    public void setLauch(ILaunch launch) {
+        this.launch = launch;
+    }
 }

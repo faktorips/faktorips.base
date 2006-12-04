@@ -38,9 +38,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.IJobChangeListener;
-import org.eclipse.core.runtime.jobs.IJobManager;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -55,8 +52,9 @@ import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupDirector;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.ProjectSourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.WorkspaceSourceContainer;
+import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
@@ -64,8 +62,6 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.SocketUtil;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.progress.IProgressService;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
@@ -73,8 +69,10 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
-import org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart;
+import org.faktorips.devtools.core.ui.test.IpsTestRunnerDelegate;
+import org.faktorips.runtime.test.AbstractIpsTestRunner;
 import org.faktorips.runtime.test.SocketIpsTestRunner;
+import org.faktorips.util.StringUtil;
 
 /**
  * Class to run ips test cases in a second VM.
@@ -82,7 +80,6 @@ import org.faktorips.runtime.test.SocketIpsTestRunner;
  * @author Joerg Ortmann
  */
 public class IpsTestRunner implements IIpsTestRunner { 
-    
     private static final int ACCEPT_TIMEOUT = 5000;
     
 	private int port;
@@ -124,7 +121,43 @@ public class IpsTestRunner implements IIpsTestRunner {
     
     // Indicates that a job is currently running
     private boolean jobRunning;
+
+    /*
+     * Job class to run the selected tests.
+     */
+    private class TestRunnerJob extends WorkspaceJob {
+        private IIpsTestRunner testRunner;
+        private String classpathRepository;
+        private String testsuite;
+        private String mode;
+        
+        public TestRunnerJob(IIpsTestRunner testRunner, String classpathRepository, String testsuite, String mode) {
+            super(Messages.IpsTestRunner_Job_Name);
+            this.testRunner = testRunner;
+            this.classpathRepository = classpathRepository;
+            this.testsuite = testsuite;
+            this.mode = mode;
+        }
+        
+        public IStatus runInWorkspace(IProgressMonitor monitor) {
+            try {
+                testRunnerMonitor = monitor;
+                
+                if (!monitor.isCanceled()) {
+                    if (mode != null){
+                        testRunner.run(classpathRepository, testsuite, mode);
+                    } else {
+                        testRunner.run(classpathRepository, testsuite);
+                    }
+                }
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+            return Status.OK_STATUS;
+        }
+    }
     
+    // avoid creating new instances (use getDefault instead)
     private IpsTestRunner() {
     }
 
@@ -137,17 +170,6 @@ public class IpsTestRunner implements IIpsTestRunner {
     	}
     	return ipsTestRunner;
     }
-
-    /*
-     * Save all dirty editors in the workbench. Returns whether the operation succeeded.
-     * @return whether all saving was completed
-     */
-    private static boolean saveAllEditors(boolean confirm) {
-        if (IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow() == null) {
-            return false;
-        }
-        return IpsPlugin.getDefault().getWorkbench().saveAllEditors(confirm);
-    }   
     
     /**
      * {@inheritDoc}
@@ -170,19 +192,53 @@ public class IpsTestRunner implements IIpsTestRunner {
         run(classpathRepositories, testsuites, ILaunchManager.RUN_MODE);
     }
 
+    /*
+     * Gets the package name from the given ips package fragment root.
+     */
+    private String getRepPckNameFromPckFrgmtRoot(IIpsPackageFragmentRoot root) throws CoreException {
+        IIpsArtefactBuilderSet builderSet = root.getIpsProject().getIpsArtefactBuilderSet();
+        return builderSet.getRuntimeRepositoryTocResourceName(root);
+    }
+
+    private IIpsProject getIpsProjectFromTocPath(String tocPaths) throws CoreException{
+        List reps = AbstractIpsTestRunner.extractListFromString(tocPaths);
+        if (!(reps.size()>0)){
+            return null;
+        }
+        String tocPath = (String)reps.get(0);
+        IIpsProject[] projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
+        for (int i = 0; i < projects.length; i++) {
+            IIpsPackageFragmentRoot[] roots = projects[i].getIpsPackageFragmentRoots();
+            for (int j = 0; j < roots.length; j++) {
+                if (tocPath.equals(getRepPckNameFromPckFrgmtRoot(roots[i]))){
+                    return projects[i];
+                }
+            }
+        }
+        return null;
+    }
+    
     /**
      * {@inheritDoc}
      */
     public void run(String classpathRepositories, String testsuites, String mode) throws CoreException {
-    	this.classpathRepositories= classpathRepositories;
+        // if the classpathRepository or the testsuite are not enclosed in "{...}" then 
+        // enclosed it, therefore the strings will be correctly interpreted as one entry
+        if (! (classpathRepositories.indexOf("{")>=0)) //$NON-NLS-1$
+            classpathRepositories = "{" + classpathRepositories + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+        if (! (testsuites.indexOf("{")>=0)) //$NON-NLS-1$
+            testsuites = "{" + testsuites + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+        
+        this.classpathRepositories= classpathRepositories;
     	this.testsuites = testsuites;
     	
-    	// if the classpathRepository or the testsuite are not enclosed in "{...}" then 
-    	// enclosed it, therefore the strings will be correctly interpreted as one entry
-    	if (! (classpathRepositories.indexOf("{")>=0)) //$NON-NLS-1$
-    		classpathRepositories = "{" + classpathRepositories + "}"; //$NON-NLS-1$ //$NON-NLS-2$
-    	if (! (testsuites.indexOf("{")>=0)) //$NON-NLS-1$
-    		testsuites = "{" + testsuites + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+        if (ipsProject == null){
+            ipsProject = getIpsProjectFromTocPath(classpathRepositories);
+        }
+        
+        if (ipsProject == null){
+            return;
+        }
     	
     	IVMInstall vmInstall= getVMInstall(ipsProject.getJavaProject());
         
@@ -217,82 +273,122 @@ public class IpsTestRunner implements IIpsTestRunner {
             testRunnerMaxHeapSize = "64"; //$NON-NLS-1$
         }
         if (testRunnerMaxHeapSize.length()>0){
-            testRunnerMaxHeapSize = "-Xmx" + testRunnerMaxHeapSize + "m"; //$NON-NLS-1$ //$NON-NLS-2$
-            vmConfig.setVMArguments(new String[]{testRunnerMaxHeapSize});
-        } 
-        
-        ILaunchConfiguration launchConfiguration = null;
-        if (mode != ILaunchManager.RUN_MODE){
-            // create configuration in non run mode, e.g. debug mode
-            launchConfiguration = createConfiguration();
+            String testRunnerMaxHeapSizeArg = "-Xmx" + testRunnerMaxHeapSize + "m"; //$NON-NLS-1$ //$NON-NLS-2$
+            vmConfig.setVMArguments(new String[]{testRunnerMaxHeapSizeArg});
         }
         
-        launch= new Launch(launchConfiguration, mode, null);
-        if (launchConfiguration != null){
-            setDefaultSourceLocator(launch, launchConfiguration);
+        ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+        
+        if (launch == null){
+            ILaunchConfiguration launchConfiguration = createConfiguration(classpathRepositories, testsuites, manager);
+    
+            launch= new Launch(launchConfiguration, mode, null);
+            if (launchConfiguration != null){
+                setDefaultSourceLocatorInternal(launch, launchConfiguration);
+                DebugUITools.launch(launchConfiguration, mode);
+            }
+        } else {
+            setDefaultSourceLocatorInternal(launch, launch.getLaunchConfiguration());
+            testStartTime = System.currentTimeMillis();
+            vmRunner.run(vmConfig, launch, null);
+            manager.addLaunch(launch);
+            connect();
         }
-        testStartTime = System.currentTimeMillis();
-        vmRunner.run(vmConfig, launch, null);
-        DebugPlugin.getDefault().getLaunchManager().addLaunch(launch);
-        connect();
+        launch = null;
     }
 
     /*
      * Creates a dummy non persistent lauch configuration
      */
-    private ILaunchConfiguration createConfiguration() throws CoreException {
-        ILaunchConfigurationType configType = getWorkbenchLaunchConfigType();
-        ILaunchConfigurationWorkingCopy wc = configType.newInstance(null, "IpsTestRunner");  //$NON-NLS-1$
+    private ILaunchConfiguration createConfiguration(String classpathRepositories, String testsuites, ILaunchManager manager) throws CoreException {
+        String confName = Messages.IpsTestRunner_lauchConfigurationDefaultName;
+        List tests = AbstractIpsTestRunner.extractListFromString(testsuites);
+        if (tests.size()==1){
+            String testName = (String)tests.get(0);
+            if (StringUtils.isNotEmpty(testName)){
+                confName = StringUtil.unqualifiedName(testName);
+            }
+        }
+        confName = manager.generateUniqueLaunchConfigurationNameFrom(confName);
+        
+        ILaunchConfigurationType configType = getLaunchConfigType();
+        ILaunchConfigurationWorkingCopy wc = createNewLaunchConfiguration(configType, confName, classpathRepositories, testsuites);
+        
+        ILaunchConfiguration[] confs = manager.getLaunchConfigurations(configType);
+        for (int i = 0; i < confs.length; i++) {
+            if (checkLaunchConfigurationSameAttributes(confs[i], wc)){
+                wc = createNewLaunchConfiguration(configType, confs[i].getName(), classpathRepositories, testsuites);
+                break;
+            }
+        }
+        return wc.doSave();
+    }
+    
+    private boolean checkLaunchConfigurationSameAttributes(ILaunchConfiguration configuration, ILaunchConfigurationWorkingCopy wc) throws CoreException {
+        if (configuration.getAttribute(IpsTestRunnerDelegate.ATTR_PACKAGEFRAGMENTROOT, "").equals(wc.getAttribute(IpsTestRunnerDelegate.ATTR_PACKAGEFRAGMENTROOT, ""))&&  //$NON-NLS-1$ //$NON-NLS-2$
+            configuration.getAttribute(IpsTestRunnerDelegate.ATTR_TESTCASES, "").equals(wc.getAttribute(IpsTestRunnerDelegate.ATTR_TESTCASES, ""))){ //$NON-NLS-1$ //$NON-NLS-2$
+            return true;
+        }
+        return false;
+    }
+
+    private ILaunchConfigurationWorkingCopy createNewLaunchConfiguration(ILaunchConfigurationType configType, String name, String classpathRepositories, String testsuites) throws CoreException{
+        ILaunchConfigurationWorkingCopy wc = configType.newInstance(null, name);
+        wc.setAttribute(IpsTestRunnerDelegate.ATTR_PACKAGEFRAGMENTROOT, classpathRepositories);
+        wc.setAttribute(IpsTestRunnerDelegate.ATTR_TESTCASES, testsuites);
+        wc.setAttribute(IDebugUIConstants.ATTR_PRIVATE, false); 
+        wc.setAttribute(IDebugUIConstants.ATTR_LAUNCH_IN_BACKGROUND, true);
         return wc;
     }
     
     /*
      * Returns the config type of the lauch configuration
      */
-    private ILaunchConfigurationType getWorkbenchLaunchConfigType() {
+    private ILaunchConfigurationType getLaunchConfigType() {
         ILaunchManager lm = DebugPlugin.getDefault().getLaunchManager();
-        return lm.getLaunchConfigurationType(IJavaLaunchConfigurationConstants.ID_JAVA_APPLICATION);  
-    }   
+        return lm.getLaunchConfigurationType(IpsTestRunnerDelegate.ID_IPSTEST_LAUNCH_CONFIGURATION_TYPE);
+    }
 
     /*
-     * Sets the default source locator.
-     * The source container will evaluated as follows:
-     * a) all source container from the given project
-     * b) all source container from the workspace
-     * c) all sources attached to the libraries in the classpath
+     * Sets the default source locator. The source container will evaluated as follows: a) all
+     * source container from the given project b) all source container from the workspace c) all
+     * sources attached to the libraries in the classpath
      */
-    private void setDefaultSourceLocator(ILaunch launch, ILaunchConfiguration configuration) throws CoreException {
-        // set default source locator if none specified
-        if (launch.getSourceLocator() == null) {
-            
-            ISourceLocator locator = getLaunchManager().newSourceLocator(configuration.getType().getSourceLocatorId());
-            AbstractSourceLookupDirector sld = (AbstractSourceLookupDirector)locator;
-            sld.initializeDefaults(configuration); 
-            
-            // get source container from the project
-            ISourceContainer sc = new ProjectSourceContainer(ipsProject.getProject(), true);
-            List sourceContainer = new ArrayList(Arrays.asList(sc.getSourceContainers()));
-            
-            // get source container from the workspace
-            sc = new WorkspaceSourceContainer();
-            sourceContainer.addAll(Arrays.asList(sc.getSourceContainers()));
+    private void setDefaultSourceLocatorInternal(ILaunch launch, ILaunchConfiguration configuration)
+            throws CoreException {
+        ISourceLocator locator = getLaunchManager().newSourceLocator(configuration.getType().getSourceLocatorId());
+        AbstractSourceLookupDirector sld = (AbstractSourceLookupDirector)locator;
+        sld.initializeDefaults(configuration);
 
-            // get source container from the classpath
-            List classpaths = new ArrayList();
-            classpaths.addAll(Arrays.asList(JavaRuntime.computeUnresolvedRuntimeClasspath(ipsProject.getJavaProject())));
-            IRuntimeClasspathEntry[] entries = new IRuntimeClasspathEntry[classpaths.size()];
-            classpaths.toArray(entries);
-            IRuntimeClasspathEntry[] resolved = JavaRuntime.resolveSourceLookupPath(entries, configuration);
-            ISourceContainer[] sourceContainers = JavaRuntime.getSourceContainers(resolved);
-            
-            sourceContainer.addAll(Arrays.asList(sourceContainers));
-            sld.setSourceContainers((ISourceContainer[]) sourceContainer.toArray(new ISourceContainer[sourceContainer.size()]));
-            
-            launch.setSourceLocator(locator);
-        }
+        // get source container from the project
+        ISourceContainer sc = new ProjectSourceContainer(ipsProject.getProject(), true);
+        List sourceContainer = new ArrayList(Arrays.asList(sc.getSourceContainers()));
+
+        // get source container from the workspace
+        sc = new WorkspaceSourceContainer();
+        sourceContainer.addAll(Arrays.asList(sc.getSourceContainers()));
+
+        // get source container from the classpath
+        List classpaths = new ArrayList();
+        classpaths.addAll(Arrays.asList(JavaRuntime.computeUnresolvedRuntimeClasspath(ipsProject.getJavaProject())));
+        IRuntimeClasspathEntry[] entries = new IRuntimeClasspathEntry[classpaths.size()];
+        classpaths.toArray(entries);
+        IRuntimeClasspathEntry[] resolved = JavaRuntime.resolveSourceLookupPath(entries, configuration);
+        ISourceContainer[] sourceContainers = JavaRuntime.getSourceContainers(resolved);
+
+        sourceContainer.addAll(Arrays.asList(sourceContainers));
+        sld.setSourceContainers((ISourceContainer[])sourceContainer
+                .toArray(new ISourceContainer[sourceContainer.size()]));
+
+        launch.setSourceLocator(locator);
     }
     
-    private ILaunchManager getLaunchManager() {
+    /**
+     * Convenience method to get the launch manager.
+     * 
+     * @return the launch manager
+     */
+    protected ILaunchManager getLaunchManager() {
         return DebugPlugin.getDefault().getLaunchManager();
     }
     
@@ -309,82 +405,6 @@ public class IpsTestRunner implements IIpsTestRunner {
             }
         }
         return ""; //$NON-NLS-1$
-    }
-    
-    /*
-     * Ask for saving dirty editors, and wait for builders.
-     */
-    private boolean checkPrelauchConditions(final String classpathRepository, final String testsuite, final String mode) {
-        try {
-            // ask for saving dirty editors
-            if (!saveAllEditors(true))
-                return false;
-
-            // show test runner view
-            IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-                    IpsTestRunnerViewPart.EXTENSION_ID);
-
-            // wait until builder finished
-            final IJobManager jobManager = Platform.getJobManager();
-            boolean wait = (jobManager.find(ResourcesPlugin.FAMILY_AUTO_BUILD).length > 0)
-                    || (jobManager.find(ResourcesPlugin.FAMILY_MANUAL_BUILD).length > 0)
-                    || (jobManager.find(ResourcesPlugin.FAMILY_AUTO_REFRESH).length > 0)
-                    || ! jobManager.isIdle();
-
-            if (wait) {
-                Job job = new Job(Messages.IpsTestRunner_LaunchingWaitJob_Name) {
-                    public IStatus run(final IProgressMonitor monitor) {
-                        IJobChangeListener listener = new IJobChangeListener() {
-                            public void sleeping(IJobChangeEvent event) {
-                            }
-                            public void scheduled(IJobChangeEvent event) {
-                            }
-                            public void running(IJobChangeEvent event) {
-                            }
-                            public void done(IJobChangeEvent event) {
-                                removeJobChangeListener(this);
-                            }
-                            public void awake(IJobChangeEvent event) {
-                            }
-                            public void aboutToRun(IJobChangeEvent event) {
-                            }
-                        };
-                        addJobChangeListener(listener);
-                        try {
-                            jobManager.join(ResourcesPlugin.FAMILY_AUTO_BUILD, monitor);
-                            jobManager.join(ResourcesPlugin.FAMILY_MANUAL_BUILD, monitor);
-                            jobManager.join(ResourcesPlugin.FAMILY_AUTO_REFRESH, monitor);
-                        } catch (InterruptedException e) {
-                            // just continue.
-                        }
-
-                        if (!monitor.isCanceled()) {
-                            try {
-                                startTestRunnerJob(classpathRepository, testsuite, true, mode);
-                            } catch (CoreException e) {
-                                IpsPlugin.log(e);
-                            }                    
-                            return Status.OK_STATUS;
-                        }
-                        return Status.CANCEL_STATUS;
-                    }
-                };
-                IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
-                IProgressService progressService = workbench.getProgressService();
-                job.setPriority(Job.INTERACTIVE);
-                job.setName(Messages.IpsTestRunner_LaunchingWaitJob_Name);
-                if (wait) {
-                    progressService.showInDialog(workbench.getActiveWorkbenchWindow().getShell(), job);
-                }
-                job.schedule();
-                return false;
-            }
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-            return false;
-        }
-        
-        return true;
     }
 
     /**
@@ -719,27 +739,16 @@ public class IpsTestRunner implements IIpsTestRunner {
      * {@inheritDoc}
 	 */
 	public void startTestRunnerJob(String classpathRepository, String testsuite) throws CoreException{
-        startTestRunnerJob(classpathRepository, testsuite, false, null);
+        startTestRunnerJob(classpathRepository, testsuite, null);
 	}
-
-    /**
-     * {@inheritDoc}
-     */
-    public void startTestRunnerJob(String classpathRepository, String testsuite, String mode) throws CoreException{
-        startTestRunnerJob(classpathRepository, testsuite, false, mode);
-    }
     
     /**
      * Starts the test runner.
      */
-    private void startTestRunnerJob(String classpathRepository, String testsuite, boolean force, String mode) throws CoreException{
+    public synchronized void startTestRunnerJob(String classpathRepository, String testsuite, String mode) throws CoreException{
         if (jobRunning){
             return;
         }
-
-        // check for dirty editors and wait for builders
-        if (!force && !checkPrelauchConditions(classpathRepository, testsuite, mode))
-            return;
         
         // first check the heap size, to display an error if there is a wrong value,
         // this is the last chance to display the error, otherwise the error will only be logged in the background
@@ -762,39 +771,8 @@ public class IpsTestRunner implements IIpsTestRunner {
         job.schedule();
         jobRunning = true;
     }
-    
-	/*
-	 * Job class to run the selected tests.
-	 */
-	private class TestRunnerJob extends WorkspaceJob {
-		private IIpsTestRunner testRunner;
-		private String classpathRepository;
-		private String testsuite;
-		private String mode;
-        
-        public TestRunnerJob(IIpsTestRunner testRunner, String classpathRepository, String testsuite, String mode) {
-			super(Messages.IpsTestRunner_Job_Name);
-			this.testRunner = testRunner;
-			this.classpathRepository = classpathRepository;
-			this.testsuite = testsuite;
-            this.mode = mode;
-		}
-		
-		public IStatus runInWorkspace(IProgressMonitor monitor) {
-			try {
-                testRunnerMonitor = monitor;
-                
-                if (!monitor.isCanceled()) {
-                    if (mode != null){
-                        testRunner.run(classpathRepository, testsuite, mode);
-                    } else {
-                        testRunner.run(classpathRepository, testsuite);
-                    }
-                }
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
-			return Status.OK_STATUS;
-		}
-	}
+
+    public void setLauch(ILaunch launch) {
+        this.launch = launch;
+    }
 }
