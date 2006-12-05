@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.devtools.core.ui.controller.fields.AbstractEnumDatatypeBasedField;
+import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 
 
 class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMapping {
@@ -88,7 +89,19 @@ class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMapping {
             }
 
             if (field.isTextContentParsable() && ObjectUtils.equals(propertyValue, field.getValue())) {
-                return;
+                if (field instanceof ComboField){
+                    // special case: if the field is a combo field the getValue method returns null
+                    // if there is no selection and if the null value is selected, 
+                    // therefore we must check here if the getValue is a valid selection or nothing is selected.
+                    // If there is no valid selection set the new value (e.g. the null value)
+                    if (((ComboField)field).getCombo().getSelectionIndex() != -1) {
+                        // the selection in the combo is valid and equal to the property value, 
+                        // don't set the new value
+                        return;
+                    }
+                } else {
+                    return;
+                }
             }
             field.setValue(propertyValue, false);
 

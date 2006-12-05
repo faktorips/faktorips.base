@@ -68,12 +68,12 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
     		} catch (Exception e) {
                 // ignore exception, select first element instead if available
     		}
+    		if (ids != null && ids.length > 0) {
+    		    setValue(ids[0]);
+    		}
         }
-        if (ids != null && ids.length > 0) {
-		    setValue(ids[0]);
-		}
 	}
-
+	
 	/**
 	 * Implementations of this edit field should provide a reinitialization of
 	 * the field within this method. In cases where the provided
