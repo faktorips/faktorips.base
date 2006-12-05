@@ -62,6 +62,9 @@ public class ProductCmptPage extends IpsObjectPage {
     private Button defaultRuntimeIdBtn;
     private Text fullName;
     private boolean canModifyRuntimeId;
+
+    // product cmpt template
+    private IProductCmpt sourceProductCmpt;
     
     public ProductCmptPage(IStructuredSelection selection) throws JavaModelException {
         super(selection, Messages.ProductCmptPage_title);
@@ -131,14 +134,16 @@ public class ProductCmptPage extends IpsObjectPage {
         
         constName.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				IProductCmptNamingStrategy ns = getNamingStrategy();
-				showMessage(ns.validateKindId(constName.getText()));
-				updateFullName();
-                updateRuntimeId();
-			}
+                IProductCmptNamingStrategy ns = getNamingStrategy();
+                if (ns != null) {
+                    showMessage(ns.validateKindId(constName.getText()));
+                    updateFullName();
+                    updateRuntimeId();
+                }
+            }
 		});
     }
-    
+
     /**
 	 * {@inheritDoc}
      * @throws CoreException 
@@ -156,19 +161,27 @@ public class ProductCmptPage extends IpsObjectPage {
                 typeRefControl.setText(obj.getQualifiedName());
                 constName.setFocus();
             }
-			return;
-		}
-		IProductCmpt productCmpt = (IProductCmpt)obj;
-		if (namingStrategy != null) {
-			if (namingStrategy.supportsVersionId()) {
-				versionId.setText(namingStrategy.getNextVersionId(productCmpt));
-				constName.setText(namingStrategy.getKindId(namingStrategy.getNextName(productCmpt)));
-				constName.setFocus();
-			}
 		} else {
-			setIpsObjectName(productCmpt.getName());
-		}
-		typeRefControl.setText(productCmpt.findProductCmptType().getQualifiedName());
+    		IProductCmpt productCmpt = (IProductCmpt)obj;
+    		if (namingStrategy != null) {
+    			if (namingStrategy.supportsVersionId()) {
+    				versionId.setText(namingStrategy.getNextVersionId(productCmpt));
+    				constName.setText(namingStrategy.getKindId(namingStrategy.getNextName(productCmpt)));
+    				constName.setFocus();
+    			}
+    		} else {
+    			setIpsObjectName(productCmpt.getName());
+    		}
+    		typeRefControl.setText(productCmpt.findProductCmptType().getQualifiedName());
+        }
+        
+        // update defaults with defaults from the copied product cmpt, if available
+        try {
+            updateDefaultsFromProductCmpt();
+        }
+        catch (CoreException e) {
+            throw new RuntimeException(e);
+        }         
 	}
 
 	String getPolicyCmptType() {
@@ -320,6 +333,32 @@ public class ProductCmptPage extends IpsObjectPage {
     private void updateRuntimeId() {
         if (!runtimeId.isEnabled()) {
             runtimeId.setText(getDefaultRuntimeId());
+        }
+    }
+
+    /**
+     * Sets the product cmpt which will be used as template for the input fields.
+     */
+    public void setDefaultProductCmpt(IProductCmpt sourceProductCmpt) throws CoreException {
+        this.sourceProductCmpt = sourceProductCmpt;
+    }
+    
+    /*
+     * Updates the fields with the values from the product component template if available
+     */
+    private void updateDefaultsFromProductCmpt() throws CoreException {
+        if (sourceProductCmpt != null){
+            IProductCmptNamingStrategy ns = getNamingStrategy();
+            if (ns != null){
+                constName.setText(ns.getKindId(sourceProductCmpt.getName()));
+            } else {
+                constName.setText(sourceProductCmpt.getName());
+            }
+            typeRefControl.setText(sourceProductCmpt.findPolicyCmptType().getProductCmptType());
+            versionId.setText(sourceProductCmpt.getVersionId());
+            runtimeId.setText(getDefaultRuntimeId());
+            constName.setFocus();
+            constName.setSelection(constName.getTextLimit());
         }
     }
 }

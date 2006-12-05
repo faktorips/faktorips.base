@@ -28,6 +28,8 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -44,8 +46,8 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.ui.wizards.productcmpt.CopyProductCmptWizard;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.StringUtil;
 
@@ -156,8 +158,7 @@ public class IpsPasteAction extends IpsAction {
             IResource[] res = (IResource[])stored;
             for (int i = 0; i < res.length; i++) {
                 try {
-                    IPath targetPath = parent.getFullPath();
-                    copy(targetPath, res[i]);
+                    copy(parent, res[i]);
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
@@ -181,8 +182,7 @@ public class IpsPasteAction extends IpsAction {
                 try {
                     IResource resource = ((IIpsElement)parent).getCorrespondingResource();
                     if (resource != null) {
-                        IPath targetPath = resource.getFullPath();
-                        copy(targetPath, res[i]);
+                        copy(resource, res[i]);
                     } else {
                         showPasteNotSupportedError();
                     }
@@ -262,6 +262,7 @@ public class IpsPasteAction extends IpsAction {
         }
         return contents;
     }
+    
     /*
      * Creates a new file in the parent package fragment based on the given ips source object.
      */
@@ -324,14 +325,14 @@ public class IpsPasteAction extends IpsAction {
         String nameWithoutExtension = ipsObject.getName();
         String extension = "." + StringUtil.getFileExtension(ipsObject.getIpsSrcFile().getName()); //$NON-NLS-1$
         IPath targetPath = parent.getFullPath();
-        return getNewName(IResource.FILE, targetPath, nameWithoutExtension, extension, false);
+        return getNewNameByDialogIfNecessary(IResource.FILE, targetPath, nameWithoutExtension, extension, false);
     }
     
     /*
      * Returns a new name for folder or files, returns null if the user aborts the get new name for
      * duplicate souce file dialog.
      */
-    private String getNewName(int resourceType,
+    private String getNewNameByDialogIfNecessary(int resourceType,
             IPath targetPath,
             String nameWithOrWithoutExtension,
             String extension,
@@ -382,7 +383,7 @@ public class IpsPasteAction extends IpsAction {
     private void createFolderAndFiles(IFolder targetParentFolder, IIpsPackageFragment sourcePackageFragment) throws CoreException {
         String packageName = sourcePackageFragment.getLastSegmentName();
         IPath targetPath = targetParentFolder.getFullPath();
-        packageName = getNewName(IResource.FOLDER, targetPath, packageName, "", false); //$NON-NLS-1$
+        packageName = getNewNameByDialogIfNecessary(IResource.FOLDER, targetPath, packageName, "", false); //$NON-NLS-1$
         if (packageName == null){
             return;
         }
@@ -412,11 +413,12 @@ public class IpsPasteAction extends IpsAction {
      * 
      * @throws CoreException If copy failed.
      */
-    private void copy(IPath targetPath, IResource resource) throws CoreException {
-        if (targetPath == null) {
+    private void copy(IResource target, IResource resource) throws CoreException {
+        if (target == null) {
             return;
         }
-
+        IPath targetPath = resource.getFullPath();
+        
         String name = resource.getName();
         String extension = StringUtil.getFileExtension(name);
         if (extension != null){
@@ -427,21 +429,38 @@ public class IpsPasteAction extends IpsAction {
         String suggestedName = StringUtil.getFilenameWithoutExtension(name);
         
         boolean showExtension = !isResourceIpsObject(resource);
-        String newName = getNewName(resource.getType(), targetPath, suggestedName, extension, showExtension);
         
-        if (newName != null) {
-            IPath finalTargetPath = targetPath.append(newName);
-            resource.copy(finalTargetPath, true, null);
-
-            // If the copied object is a product component, the runtime-id has to be updated.
-            IFile newFile = ResourcesPlugin.getWorkspace().getRoot().getFile(finalTargetPath);
-            IIpsElement target = IpsPlugin.getDefault().getIpsModel().getIpsElement(newFile);
-            
-            if (target instanceof IIpsSrcFile && target.exists()) {
-                updateRuntimeIdOfProductCmpt(((IIpsSrcFile)target).getIpsObject());
-                ((IIpsSrcFile)target).save(true, null);
+        if (isResourceProductCmpt(resource)) {
+            IIpsElement source = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
+            copyProductCmptByWizard((IProductCmpt)((IIpsSrcFile)source).getIpsObject(), target);
+        }
+        else {
+            // non product cmpt
+            String newName = getNewNameByDialogIfNecessary(resource.getType(), targetPath, suggestedName, extension,
+                    showExtension);
+            if (newName != null) {
+                resource.copy(targetPath.append(newName), true, null);
             }
         }
+    }
+
+    private void copyProductCmptByWizard(IProductCmpt productCmpt, IResource target) throws CoreException {
+        CopyProductCmptWizard wizard = new CopyProductCmptWizard(productCmpt);
+        wizard.init(IpsPlugin.getDefault().getWorkbench(), new StructuredSelection(target));
+        WizardDialog dialog = new WizardDialog(shell, wizard);
+        dialog.open();
+    }
+
+    private boolean isResourceProductCmpt(IResource resource) throws CoreException {
+        if (resource instanceof IFile){
+            IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement((IFile)resource);
+            if (ipsElement instanceof IIpsSrcFile && ipsElement.exists()){
+                if (((IIpsSrcFile)ipsElement).getIpsObject() instanceof IProductCmpt){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean isResourceIpsObject(IResource resource) {
@@ -451,19 +470,6 @@ public class IpsPasteAction extends IpsAction {
             return true;
         }
         return false;
-    }
-
-    /*
-     * If the given object is a product cmpt update the runtimeId if the id is already used
-     */
-    private void updateRuntimeIdOfProductCmpt(IIpsObject ipsObject) throws CoreException {
-        IIpsSrcFile ipsSrcFile = ipsObject.getIpsSrcFile();
-        // set the new evaluated runtime id for product components
-        if (ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {
-            IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-            productCmpt.setRuntimeId(ipsObject.getIpsProject().getUniqueRuntimeId(productCmpt));
-            ipsSrcFile.save(true, null);
-        }
     }
     
     /*

@@ -277,7 +277,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     }
     
     protected IpsObjectType getIpsObjectType() {
-        return ((NewIpsObjectWizard)getWizard()).getIpsObjectType();
+        return ((INewIpsObjectWizard)getWizard()).getIpsObjectType();
     }
     
     protected Composite getNameComposite() {

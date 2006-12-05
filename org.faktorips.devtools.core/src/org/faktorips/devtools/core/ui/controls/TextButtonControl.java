@@ -121,7 +121,13 @@ public abstract class TextButtonControl extends ControlComposite{
     }
     
     public void setText(String newText) {
-        text.setText(newText);
+        immediatelyNotifyListener = true;
+        try {
+            text.setText(newText);
+        }
+        finally {
+            immediatelyNotifyListener = false;
+        }
     }
     
     public boolean isImmediatelyNotifyListener() {

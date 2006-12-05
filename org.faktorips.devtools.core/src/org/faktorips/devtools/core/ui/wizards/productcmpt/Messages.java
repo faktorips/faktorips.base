@@ -34,7 +34,9 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String ProductCmptPage_title;
+	public static String CopyProductCmptWizard_titleCopyProductComponent;
+
+    public static String ProductCmptPage_title;
 
 	public static String ProductCmptPage_labelTemplate;
 

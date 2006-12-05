@@ -20,7 +20,6 @@ package org.faktorips.devtools.core.ui.wizards;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -32,7 +31,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 /**
  * Base class for wizards to create a new ips object.
  */
-public abstract class NewIpsObjectWizard extends Wizard implements INewWizard {
+public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObjectWizard {
     
     private IStructuredSelection selection;
     
@@ -65,7 +64,10 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewWizard {
     
     protected abstract void createAdditionalPages() throws Exception;
     
-    protected IpsObjectType getIpsObjectType() {
+    /**
+     * {@inheritDoc}
+     */
+    public IpsObjectType getIpsObjectType() {
         return ipsObjectType;
     }
     
