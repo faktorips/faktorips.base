@@ -359,6 +359,9 @@ public class ProductCmptPage extends IpsObjectPage {
             runtimeId.setText(getDefaultRuntimeId());
             constName.setFocus();
             constName.setSelection(constName.getTextLimit());
+            // because the new product cmpt is based on an existing product cmpt,
+            // the product cmpt type couldn't be changed
+            typeRefControl.setEnabled(false);
         }
     }
 }
