@@ -119,6 +119,10 @@ public abstract class DefaultEditField implements EditField {
         if (!notifyChangeListeners) {
             return;
         }
+        
+        if (changeListeners == null){
+            return;
+        }
 
         if (immediately) {
             // notify change listeners immediately

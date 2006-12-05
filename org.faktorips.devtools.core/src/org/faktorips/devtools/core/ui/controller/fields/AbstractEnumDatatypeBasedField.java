@@ -140,10 +140,9 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	}
 
 	/**
-	 * Sets the value that is to display in the Control of this EditField. It
-	 * expectes the values that are contained in the EnumValueSet this EditField
-	 * was initialized with. Other values are ignored.
-	 */
+     * Sets (select) the value that is to display in the Control of this EditField. If the value are
+     * not contained in the EnumValueSet then the value will be added and selected otherwise only selected.
+     */
 	public void setValue(Object newValue) {
 
         boolean isParsable = false;
@@ -154,7 +153,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
         }
         
         if (isParsable) {
-		    super.setValue(getValueName((String) newValue));
+            selectOrInsert(getValueName((String) newValue));
         }
         
         /* 
@@ -165,9 +164,15 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
          */
 		if (!ObjectUtils.equals(getValue(), newValue)) {
 			setInvalidValue((String)newValue);
-			super.setValue(newValue);
+            selectOrInsert(newValue);
 		}
 	}
+
+    private void selectOrInsert(Object newValue) {
+        if (!select((String)newValue)){
+            super.setValue(newValue);
+        }
+    }
 	
     /**
      * Returns the value name for the given id. The ips property @see {@link IpsPreferences#ENUM_TYPE_DISPLAY} 

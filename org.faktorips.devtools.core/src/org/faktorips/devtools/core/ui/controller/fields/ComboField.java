@@ -35,9 +35,8 @@ public class ComboField extends DefaultEditField {
         this.combo = combo;
     }
     
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#getControl()
+    /**
+     * {@inheritDoc}
      */
     public Control getControl() {
         return combo;
@@ -47,25 +46,22 @@ public class ComboField extends DefaultEditField {
         return combo;
     }
     
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#getValue()
+    /**
+     * {@inheritDoc}
      */
     public Object getValue() {
         return super.prepareObjectForGet(getText());
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#setValue(java.lang.Object)
+    /**
+     * {@inheritDoc}
      */
     public void setValue(Object newValue) {
         setText((String)prepareObjectForSet(newValue));
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#getText()
+    /**
+     * {@inheritDoc}
      */
     public String getText() {
         int i = combo.getSelectionIndex();
@@ -75,9 +71,8 @@ public class ComboField extends DefaultEditField {
         return combo.getItem(i);
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#setText(java.lang.String)
+    /**
+     * {@inheritDoc}
      */
     public void setText(String newText) {
         immediatelyNotifyListener = true;
@@ -88,9 +83,8 @@ public class ComboField extends DefaultEditField {
         }
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#insertText(java.lang.String)
+    /**
+     * {@inheritDoc}
      */
     public void insertText(String text) {
         combo.setText(text);
@@ -112,22 +106,24 @@ public class ComboField extends DefaultEditField {
         return false;
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#selectAll()
+    /**
+     * {@inheritDoc}
      */
     public void selectAll() {
         // nothing to do
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.fields.DefaultEditField#addListenerToControl()
+    /**
+     * {@inheritDoc}
      */
     protected void addListenerToControl() {
         // add selection listener to get notifications if the user changes the selection
         combo.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
+                // changes in combo fields will always be notified immediately,
+                // it is not necessary to delay the notification, when the user selects a new item
+                // the time for the change is long enough
+                immediatelyNotifyListener = true;
                 notifyChangeListeners(new FieldValueChangedEvent(ComboField.this), immediatelyNotifyListener);
             }
             public void widgetDefaultSelected(SelectionEvent e) {
