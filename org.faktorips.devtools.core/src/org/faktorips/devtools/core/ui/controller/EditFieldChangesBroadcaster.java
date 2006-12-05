@@ -148,6 +148,10 @@ public class EditFieldChangesBroadcaster {
             resetCounter();
             for (int i = 0; i < listeners.length; i++) {
                 try {
+                    if (event.field.getControl() != null && event.field.getControl().isDisposed()){
+                        // don't notifiy listeners if the control is disposed
+                        continue;
+                    }
                     listeners[i].valueChanged(event);
                 }
                 catch (RuntimeException e) {

@@ -158,12 +158,8 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	public void setValue(Object newValue) {
         boolean isParsable = false;
         newValue = (String)prepareObjectForSet(newValue);
-        try {
-            isParsable = datatype.isParsable((String) newValue);
-        } catch (NumberFormatException e) {
-            // ignore number format exception, value is not parsable
-        }
         
+        isParsable = datatype.isParsable((String) newValue);
         if (isParsable) {
             super.setValue(getValueName((String) newValue));
         }

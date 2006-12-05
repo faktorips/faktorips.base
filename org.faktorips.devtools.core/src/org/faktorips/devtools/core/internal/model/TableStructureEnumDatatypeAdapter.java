@@ -113,22 +113,27 @@ public class TableStructureEnumDatatypeAdapter extends AbstractDatatype implemen
 	 * {@inheritDoc}
 	 */
 	public boolean isParsable(String value) {
-		if (value == null) {
-			return true;
-		}
-		
-		if (datatype == null) {
-			return Arrays.asList(getAllValueIds(false)).contains(value);
-		}
+        try {
+            if (value == null) {
+                return true;
+            }
 
-		String[] values = getAllValueIds(false);
-		for (int i = 0; i < values.length; i++) {
-			if (datatype.areValuesEqual(value, values[i])) {
-				return true;
-			}
-		}
-		return false;
-	}
+            if (datatype == null) {
+                return Arrays.asList(getAllValueIds(false)).contains(value);
+            }
+
+            String[] values = getAllValueIds(false);
+            for (int i = 0; i < values.length; i++) {
+                if (datatype.areValuesEqual(value, values[i])) {
+                    return true;
+                }
+            }
+        }
+        catch (NumberFormatException e) {
+            // ignore number format exception, content is not parsable
+        }
+        return false;
+    }
 
 	/**
 	 * {@inheritDoc}

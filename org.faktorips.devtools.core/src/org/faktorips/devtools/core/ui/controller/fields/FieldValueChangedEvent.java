@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.util.ArgumentCheck;
 
 
 /**
@@ -31,7 +32,7 @@ public class FieldValueChangedEvent {
     public EditField field;
 
     public FieldValueChangedEvent(EditField field) {
+        ArgumentCheck.notNull(field);
         this.field = field;
     }
-
 }
