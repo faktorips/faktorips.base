@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.internal.model.IpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -68,7 +69,12 @@ public class RenamePage extends WizardPage implements ModifyListener {
 	 * Input for the constant part of the name.
 	 */
 	private Text constNamePart;
-	
+
+    /**
+     * Input for the runtime id.
+     */
+    private Text runtimeId;
+    
 	/**
 	 * The object to rename
 	 */
@@ -153,6 +159,17 @@ public class RenamePage extends WizardPage implements ModifyListener {
 			toolkit.createLabel(parent, label);
 			versionId = toolkit.createText(parent);
 
+            toolkit.createLabel(parent, Messages.RenamePage_labelRuntimeId);
+            runtimeId = toolkit.createText(parent);
+            runtimeId.setEnabled(false);
+            runtimeId.setText(product.getRuntimeId());
+            runtimeId.setEnabled(IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
+            runtimeId.addModifyListener(new ModifyListener() {
+                public void modifyText(ModifyEvent e) {
+                    updateFullName();
+                }
+            });
+            
 			toolkit.createLabel(parent, Messages.RenamePage_newName);
 			newName = toolkit.createText(parent);
 			newName.setEnabled(false);
@@ -240,21 +257,37 @@ public class RenamePage extends WizardPage implements ModifyListener {
 			if (setMessageFromList(namingStrategy.validateKindId(constNamePart.getText()))) {
 				return;
 			}
+            MessageList ml = new MessageList();
+            
+            try {
+                validateForRuntimeId(ml);
+            }
+            catch (CoreException e) {
+                // error during validation show error dialog and exit
+                IpsPlugin.logAndShowErrorDialog(e);
+                return;
+            }
+            if (setMessageFromList(ml)){
+                return;
+            }
 		}
         else {
             String name = newName.getText();
             IIpsProjectNamingConventions pnc = renameObject.getIpsProject().getNamingConventions();
             try {
+                MessageList ml = null;
                 if (renameObject instanceof IIpsObject) {
                     // ips object, validate the unqualified ips object name
-                    MessageList ml = pnc.validateUnqualifiedIpsObjectName(
+                    ml = pnc.validateUnqualifiedIpsObjectName(
                             ((IIpsObject)renameObject).getIpsObjectType(), name);
-                    setMessageFromList(ml);
+                    validateForRuntimeId(ml);
                 }
                 else {
                     // no ips object, validate for ips package name
-                    MessageList ml = pnc.validateIpsPackageName(name);
-                    setMessageFromList(ml);
+                    ml = pnc.validateIpsPackageName(name);
+                }
+                if (setMessageFromList(ml)){
+                    return;
                 }
             }
             catch (CoreException e) {
@@ -302,6 +335,20 @@ public class RenamePage extends WizardPage implements ModifyListener {
 		
 		super.setPageComplete(true);
 	}
+
+    private void validateForRuntimeId(MessageList ml) throws CoreException {
+        if (renameObject instanceof IProductCmpt) {
+            // additional validate the runtime id
+            IProductCmpt pcmtWithSameRuntimeId = renameObject.getIpsProject().findProductCmptByRuntimeId(runtimeId.getText());
+            if (pcmtWithSameRuntimeId != null && pcmtWithSameRuntimeId != renameObject) {
+                String text = NLS.bind(Messages.RenamePage_msgRuntimeCollision,
+                        newName.getText(), pcmtWithSameRuntimeId.getName());
+                Message msg = new Message(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION, text, Message.ERROR, renameObject,
+                        IProductCmpt.PROPERTY_RUNTIME_ID);
+                ml.add(msg);
+            }
+        }
+    }
 	
 	private boolean hasContentWithNameEqualsIgnoreCase(IContainer parentFolder, String name) {
 		try {
@@ -348,7 +395,7 @@ public class RenamePage extends WizardPage implements ModifyListener {
 	 */
 	public void modifyText(ModifyEvent e) {
 		setPageComplete();
-	}		
+    }
 }
 
 

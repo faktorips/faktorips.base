@@ -56,6 +56,10 @@ public class Messages extends NLS {
 
 	public static String ErrorPage_error;
 
+    public static String RenamePage_labelRuntimeId;
+
+    public static String RenamePage_msgRuntimeCollision;
+
 	public static String RenamePage_rename;
 
 	public static String RenamePage_msgChooseNewName;
