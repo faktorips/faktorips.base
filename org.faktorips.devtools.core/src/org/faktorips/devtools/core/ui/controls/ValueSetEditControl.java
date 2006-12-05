@@ -248,7 +248,7 @@ public class ValueSetEditControl extends ControlComposite {
                 newType = oldType;
             }
         }
-        validTypesComboField.select(newType.getName());
+        validTypesComboField.setText(newType.getName());
     }
 
     /**
@@ -263,7 +263,7 @@ public class ValueSetEditControl extends ControlComposite {
      * of available item.
      */
     public void selectValueSetType(ValueSetType valueSetType) {
-        validTypesComboField.select(valueSetType.getName());
+        validTypesComboField.setText(valueSetType.getName());
     }
     
     private class TypeModifyListener implements ValueChangeListener {

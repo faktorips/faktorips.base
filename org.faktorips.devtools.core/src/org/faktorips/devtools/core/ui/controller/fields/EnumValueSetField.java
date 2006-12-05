@@ -18,6 +18,8 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.datatype.ValueDatatype;
@@ -35,7 +37,7 @@ public class EnumValueSetField extends AbstractEnumDatatypeBasedField {
 
 	private IEnumValueSet valueSet;
 
-	/**
+    /**
 	 * Creates a new EnumValueSetField.
 	 * 
 	 * @param combo
@@ -54,15 +56,17 @@ public class EnumValueSetField extends AbstractEnumDatatypeBasedField {
 	}
 
 	protected final void reInitInternal() {
-		String[] ids = valueSet.getValues();
-		ArrayList names = new ArrayList(ids.length);
-        if (!valueSet.getContainsNull()) {
-            names.add(getValueName(null));
-        }
-		for (int i = 0; i < ids.length; i++) {
+		List ids = new ArrayList();
+        ids.addAll(Arrays.asList(valueSet.getValues()));
+		ArrayList names = new ArrayList(ids.size());
+		for (int i = 0; i < ids.size(); i++) {
 			names.add(getValueName(valueSet.getValue(i)));
 		}
-		initialize(ids, (String[]) names.toArray(new String[names.size()]));
+        // add the null representation entry if not exists in list
+        if (!valueSet.containsValue(null)) {
+            names.add(0, getValueName(null));
+            ids.add(0, getValueName(null));
+        }
+		initialize((String[])ids.toArray(new String[ids.size()]), (String[]) names.toArray(new String[names.size()]));
 	}
-    
 }

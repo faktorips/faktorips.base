@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
@@ -91,22 +93,6 @@ public class ComboField extends DefaultEditField {
     }
 
     /**
-     * Selects the item in the combo, if the item doesn't exist the selection doesn't change.
-     * Returns <code>true</code> if the item was successfully selected otherwise return <code>false</code>.
-     */
-    public boolean select(String text) {
-        String[] items = combo.getItems();
-        for (int i = 0; i < items.length; i++) {
-            if (items[i].equals(text)) {
-                combo.select(i);
-                notifyChangeListeners(new FieldValueChangedEvent(this), true);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * {@inheritDoc}
      */
     public void selectAll() {
@@ -123,11 +109,16 @@ public class ComboField extends DefaultEditField {
                 // changes in combo fields will always be notified immediately,
                 // it is not necessary to delay the notification, when the user selects a new item
                 // the time for the change is long enough
-                immediatelyNotifyListener = true;
                 notifyChangeListeners(new FieldValueChangedEvent(ComboField.this), immediatelyNotifyListener);
             }
             public void widgetDefaultSelected(SelectionEvent e) {
                 // nothing to do
+            }
+        });
+        // add modify listener to get changes when using combo#setText method
+        combo.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                notifyChangeListeners(new FieldValueChangedEvent(ComboField.this), immediatelyNotifyListener);
             }
         });
     }

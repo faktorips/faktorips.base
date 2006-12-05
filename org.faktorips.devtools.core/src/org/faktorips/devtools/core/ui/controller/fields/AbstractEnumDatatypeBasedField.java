@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import java.util.Arrays;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.datatype.EnumDatatype;
@@ -56,14 +58,19 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	 * in the range of possible values. If not, the first value will be selected.
 	 */
 	public final void reInit() {
+        boolean prevValidSelection = getCombo().getSelectionIndex() != -1;
 		String currentValue = (String) getValue();
 		reInitInternal();
-		try {
-			setValue(currentValue, false);
-		} catch (Exception e) {
-			if (ids != null && ids.length > 0) {
-				setValue(ids[0]);
-			}
+		if (prevValidSelection){
+            try {
+    			setValue(currentValue, false);
+                return;
+    		} catch (Exception e) {
+                // ignore exception, select first element instead if available
+    		}
+        }
+        if (ids != null && ids.length > 0) {
+		    setValue(ids[0]);
 		}
 	}
 
@@ -110,8 +117,13 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	private void setItems(String[] items) {
 		getCombo().setItems(items);
 		if (invalidValue != null) {
-			getCombo().add((String)super.prepareObjectForSet(getValueName(invalidValue)));
-		}
+            // there is an invalid value in the list, add this value to the items if the invalid
+            // value is currently not in the list
+            String valueToAdd = (String)super.prepareObjectForSet(getValueName(invalidValue));
+            if (!Arrays.asList(getCombo().getItems()).contains(valueToAdd)) {
+                getCombo().add(valueToAdd);
+            }
+        }
 	}
 
 	/**
@@ -126,17 +138,17 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	 * enumeration value). Returns null if no value is selected.
 	 */
 	public Object getValue() {
-
-		if (getCombo().getSelectionIndex() == -1) {
+	    int selectedIndex = getCombo().getSelectionIndex();
+		if (selectedIndex == -1) {
 			return null;
 		}
 		
-		if (getCombo().getSelectionIndex() >= ids.length) {
+		if (selectedIndex >= ids.length) {
 			// we have the invalid value selected...
 			return invalidValue;
 		}
 		
-		return super.prepareObjectForGet(ids[getCombo().getSelectionIndex()]);
+		return super.prepareObjectForGet(ids[selectedIndex]);
 	}
 
 	/**
@@ -144,8 +156,8 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
      * not contained in the EnumValueSet then the value will be added and selected otherwise only selected.
      */
 	public void setValue(Object newValue) {
-
         boolean isParsable = false;
+        newValue = (String)prepareObjectForSet(newValue);
         try {
             isParsable = datatype.isParsable((String) newValue);
         } catch (NumberFormatException e) {
@@ -153,7 +165,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
         }
         
         if (isParsable) {
-            selectOrInsert(getValueName((String) newValue));
+            super.setValue(getValueName((String) newValue));
         }
         
         /* 
@@ -163,16 +175,13 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
          * So we can add the value as invalid value. 
          */
 		if (!ObjectUtils.equals(getValue(), newValue)) {
-			setInvalidValue((String)newValue);
-            selectOrInsert(newValue);
-		}
-	}
-
-    private void selectOrInsert(Object newValue) {
-        if (!select((String)newValue)){
+            setInvalidValue((String)newValue);
+            // because this is an invalid value (not in enum value set, we
+            // must reinit the item in the drop down, only so we can select the invalid value
+            reInitInternal();
             super.setValue(newValue);
         }
-    }
+	}
 	
     /**
      * Returns the value name for the given id. The ips property @see {@link IpsPreferences#ENUM_TYPE_DISPLAY} 
