@@ -1190,7 +1190,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 					// ignored, the validation shows the unknown type failure message
 					return;
 				}
-                String prevProductCmpt = testPolicyCmpt.getProductCmpt();
 				String productCmptQualifiedName = ""; //$NON-NLS-1$
 				if (testTypeParam.isRequiresProductCmpt()){
 					productCmptQualifiedName = selectProductCmptDialog(testTypeParam.getPolicyCmptType(), testPolicyCmpt.findProductCmpt());
