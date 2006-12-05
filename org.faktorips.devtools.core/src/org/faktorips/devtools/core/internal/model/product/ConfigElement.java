@@ -303,7 +303,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 			String text = NLS.bind(Messages.ConfigElement_msgValueNotParsable, valueInMsg, valueDatatype.getName());
 			list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this,
 					PROPERTY_VALUE));
-            return;
 		}
 		
         IValueSet modelValueSet = attribute.getValueSet();
