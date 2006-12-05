@@ -131,7 +131,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         site.getPage().addPartListener(this);
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+        addListener();
 
         selectionProviderDispatcher = new SelectionProviderDispatcher();
         site.setSelectionProvider(selectionProviderDispatcher);
@@ -201,11 +201,15 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             return;
         }
         try {
-            ipsSrcFile.getIpsObject(); 
             // here we have to request the ips object once, to make sure that 
             // it's state is is synchronized with enclosing resource.
             // otherwise if some part of the ui keep a reference the ips object, it won't contain
             // the correct state.
+            if (ipsSrcFile.exists()){
+                // synchronize only if the src file exists (e.g. if the editor is open and the file was moved to another location
+                // then the corresponding ips src file doesn't exists any more, in this case the editor will be closed)
+                ipsSrcFile.getIpsObject(); 
+            }
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
@@ -351,8 +355,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         if (part == this) {
             ipsSrcFile.discardChanges();
             part.getSite().getPage().removePartListener(this);
-            IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
             ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+            removeListener();
         }
     }
 
@@ -408,14 +412,22 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
         this.active = active;
         if (active) {
-            IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
-            IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(this);
+            addListener();
             setDirty(ipsSrcFile.isDirty());
             refresh();
         } else {
-            IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
-            IpsPlugin.getDefault().getIpsModel().removeModificationStatusChangeListener(this);
+            removeListener();
         }
+    }
+
+    private void addListener() {
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+        IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(this);
+    }
+
+    private void removeListener() {
+        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+        IpsPlugin.getDefault().getIpsModel().removeModificationStatusChangeListener(this);
     }
 
     /**
