@@ -179,4 +179,8 @@ public class Messages extends NLS {
     public static String ValidationRule_msgCodeShouldBeProvided;
 
     public static String Relation_noReverseRelationNeededForDetailToMasterRelations;
+
+    public static String Attribute_proposalForRuleName;
+
+    public static String Attribute_proposalForMsgCode;
 }

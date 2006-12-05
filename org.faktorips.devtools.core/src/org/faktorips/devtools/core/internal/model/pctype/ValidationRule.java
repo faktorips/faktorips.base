@@ -233,6 +233,9 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         if(isCheckValueAgainstValueSetRule()){
             String attributeName = getValidatedAttributeAt(0);
             IAttribute attribute = getPolicyCmptType().getAttribute(attributeName);
+            if (attribute==null) {
+                return;
+            }
             if(ValueSetType.ALL_VALUES.equals(attribute.getValueSet().getValueSetType())){
                 String text = Messages.ValidationRule_msgValueSetRule;
                 msgList.add(new Message("", text, Message.ERROR, this, IValidationRule.PROPERTY_CHECK_AGAINST_VALUE_SET_RULE)); //$NON-NLS-1$

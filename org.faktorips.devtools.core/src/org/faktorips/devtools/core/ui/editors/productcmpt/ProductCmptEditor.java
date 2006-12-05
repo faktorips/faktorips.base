@@ -377,7 +377,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 * if not. 
 	 */
 	protected void setPropertiesEnabled(IProductCmptGeneration generation) {
-		setPropertiesEnabled(isEditableGeneration(generation));
+		setPropertiesEnabled(isEditableGenerationIgnoringEditorState(generation));
 	}
 
 	/**
@@ -416,8 +416,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			if (property.equals(IpsPreferences.WORKING_DATE)) {
 				generationManuallySet = false;
 				checkGeneration();
-                productCmptPropertiesPage.refresh();
-				refreshInternal(false);
+                refresh();
 			} else if (property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
 				setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
 				refreshInternal(false);
@@ -452,7 +451,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	/**
 	 * Checks whether the given generation can be edited respecting the preferences 
 	 */
-	protected boolean isEditableGeneration(IProductCmptGeneration generation) {
+	protected boolean isEditableGenerationIgnoringEditorState(IProductCmptGeneration generation) {
 
 		if (generation == null) {
 			return false;

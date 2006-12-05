@@ -75,8 +75,6 @@ import org.faktorips.util.message.ObjectProperty;
  */
 public class AttributeEditDialog extends IpsPartEditDialog implements ParameterListChangeListener {
 
-    //private final static String PROPERTY_PM_PROPERTY_NAME_ID = "de.bbv.faktorips.attribute.pmPropertyName";
-    	
     private IAttribute attribute;
     private IValidationRule rule;
 
@@ -458,7 +456,6 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         Label nameLabel = uiToolkit.createFormLabel(nameComposite, Messages.AttributeEditDialog_labelName);
         Text nameText = uiToolkit.createText(nameComposite);
         nameText.setFocus();
-        nameText.setText(Messages.AttributeEditDialog_suggestedNamePrefix + attribute.getName());
 
         // message group
         Group msgGroup = uiToolkit.createGroup(ruleGroup, Messages.AttributeEditDialog_messageTitle);
@@ -508,17 +505,17 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     	
     	if (enabled) {
     		if (rule != null) {
-    			// we allready have a rule, so dont create one. this could happen
+    			// we already have a rule, so dont create one. this could happen
     			// at creation time, for example.
     			return;
     		}
             rule = attribute.createValueSetRule();
     		rule.setDescription(Messages.AttributeEditDialog_descriptionContent);
-    		rule.setName(ruleNameField.getText());
 
             if(ruleUIController == null){
                 createRuleUIController();
             }
+            ruleUIController.updateUI();
     	}
     	else if (rule != null){
             deleteRuleUIController();
@@ -680,4 +677,5 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 		}
     	
     }
+
 }

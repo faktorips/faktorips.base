@@ -76,7 +76,6 @@ public class Messages extends NLS {
 	public static String AttributeEditDialog_tooltipActivateValidationRule;
 	public static String AttributeEditDialog_ruleTitle;
 	public static String AttributeEditDialog_labelName;
-	public static String AttributeEditDialog_suggestedNamePrefix;
 	public static String AttributeEditDialog_messageTitle;
 	public static String AttributeEditDialog_labelCode;
 	public static String AttributeEditDialog_labelSeverity;

@@ -285,7 +285,7 @@ public class GenerationsSection extends SimpleIpsPartsSection{
 					IProductCmptGeneration generation = (IProductCmptGeneration)element;
 
 					Image image = super.getImage(element); 
-					if (((ProductCmptEditor)page.getEditor()).isEditableGeneration(generation)) {
+					if (((ProductCmptEditor)page.getEditor()).isEditableGenerationIgnoringEditorState(generation)) {
 						return image;
 					}
 					else {

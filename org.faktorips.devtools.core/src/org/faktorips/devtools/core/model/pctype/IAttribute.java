@@ -173,7 +173,18 @@ public interface IAttribute extends IMember, IValueDatatypeProvider {
      * returned by this method otherwise <code>null</code> will be returned.
      */
     public IValidationRule findValueSetRule();
+    
+    /**
+     * Returns a proposal for the name of the rule checking the value against the value set.
+     */
+    public String getProposalValueSetRuleName();
 
+    /**
+     * Returns a proposal for the message code if the rule checking the value against the 
+     * value set.
+     */
+    public String getProposalMsgCodeForValueSetRule();
+    
     /**
      * Creates a IValidationRule for this IAttribute. In the generated code the corresponding rule 
      * is supposed to validate the value of the corresponding Attribute. There can only exists one

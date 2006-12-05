@@ -91,7 +91,7 @@ public class PropertiesPage extends IpsObjectEditorPage {
 		editor.addPageChangedListener(new IPageChangedListener() {
 			public void pageChanged(PageChangedEvent event) {
 				setEnabled(((ProductCmptEditor) getIpsObjectEditor())
-						.isEditableGeneration(getActiveGeneration()));
+						.isEditableGenerationIgnoringEditorState(getActiveGeneration()));
 			}
 		});
 	}

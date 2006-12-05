@@ -186,7 +186,9 @@ public class Attribute extends IpsObjectPart implements IAttribute {
             return rule;
         }
         rule = getPolicyCmptType().newRule();
+        rule.setName(getProposalValueSetRuleName());
         rule.addValidatedAttribute(getName());
+        rule.setMessageCode(getProposalMsgCodeForValueSetRule());
         rule.setCheckValueAgainstValueSetRule(true);
         rule.setAppliedForAllBusinessFunctions(true);
         rule.setValidatedAttrSpecifiedInSrc(false);
@@ -679,4 +681,20 @@ public class Attribute extends IpsObjectPart implements IAttribute {
     protected void removePart(IIpsObjectPart part) {
         valueSet = new AllValuesValueSet(this, getNextPartId());
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getProposalValueSetRuleName() {
+        return NLS.bind(Messages.Attribute_proposalForRuleName, StringUtils.capitalise(getName()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getProposalMsgCodeForValueSetRule() {
+        return NLS.bind(Messages.Attribute_proposalForMsgCode, getName().toUpperCase());
+    }
+    
+    
 }
