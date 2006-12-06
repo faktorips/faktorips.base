@@ -248,6 +248,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         retargetAction.setImageDescriptor(refreshAction.getImageDescriptor());
         retargetAction.setToolTipText(refreshAction.getToolTipText());
         getViewSite().getActionBars().getToolBarManager().add(retargetAction);
+        getViewSite().getActionBars().getToolBarManager().add(new ExpandCollapseAllAction(treeViewer));
     }
 
     public void setFocus() {

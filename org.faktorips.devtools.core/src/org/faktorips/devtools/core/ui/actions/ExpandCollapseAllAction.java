@@ -27,6 +27,8 @@ import org.faktorips.devtools.core.IpsPlugin;
  * tooltiptext are changed in this process too. After instanciation this action will first expand,
  * after running once it will collapse the tree, and so on.
  * 
+ * Remark: Currently only collapse all will be supported, expand all is disabled
+ * 
  * @author Stefan Widmaier
  */
 public class ExpandCollapseAllAction extends Action {
@@ -39,9 +41,9 @@ public class ExpandCollapseAllAction extends Action {
      * Status flag that defines the next action to be performed (expand or collapse) as well as
      * the image and the tooltiptext this action possesses at the moment.
      * <p>
-     * Default value is <code>true</code> denoting that the next call of run() will expand.
+     * Remark: Always <code>false</code>.
      */
-    private boolean expand= true;
+    private boolean expand= false;
     
     public ExpandCollapseAllAction(AbstractTreeViewer treeViewer){
         this.treeViewer= treeViewer;
@@ -58,7 +60,8 @@ public class ExpandCollapseAllAction extends Action {
         }else{
             treeViewer.collapseAll();
         }
-        expand= !expand;
+        // expand all is disabled, only collapse will be supported
+        expand= false;
         setImageDescriptor(getImageDescriptor());
         setToolTipText(getToolTipText());
     }
