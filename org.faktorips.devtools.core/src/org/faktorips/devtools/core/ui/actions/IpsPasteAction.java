@@ -417,7 +417,7 @@ public class IpsPasteAction extends IpsAction {
         if (target == null) {
             return;
         }
-        IPath targetPath = resource.getFullPath();
+        IPath targetPath = target.getFullPath();
         
         String name = resource.getName();
         String extension = StringUtil.getFileExtension(name);
