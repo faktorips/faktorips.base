@@ -354,14 +354,17 @@ public class ProductCmptPage extends IpsObjectPage {
             } else {
                 constName.setText(sourceProductCmpt.getName());
             }
-            typeRefControl.setText(sourceProductCmpt.findPolicyCmptType().getProductCmptType());
+            IPolicyCmptType pct = sourceProductCmpt.findPolicyCmptType();
+            if (pct != null){
+                typeRefControl.setText(pct.getProductCmptType());
+                // because the new product cmpt is based on an existing product cmpt,
+                // the product cmpt type couldn't be changed
+                typeRefControl.setEnabled(false);
+            }
             versionId.setText(sourceProductCmpt.getVersionId());
             runtimeId.setText(getDefaultRuntimeId());
             constName.setFocus();
             constName.setSelection(constName.getTextLimit());
-            // because the new product cmpt is based on an existing product cmpt,
-            // the product cmpt type couldn't be changed
-            typeRefControl.setEnabled(false);
         }
     }
 }
