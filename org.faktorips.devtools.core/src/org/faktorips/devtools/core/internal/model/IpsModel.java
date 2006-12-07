@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -89,10 +90,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     // list of model change listeners that are notified about model changes
-    private List changeListeners;
+    private Set changeListeners;
 
     // list of modifcation status change listeners
-    private List modificationStatusChangeListeners;
+    private Set modificationStatusChangeListeners;
     
     // a map that contains per thread if changes should be broadcasted to the registered listeners
     // or squeezed.
@@ -200,7 +201,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         } finally {
             // restore change listeners
             this.removeChangeListener(batchListener);
-            changeListeners = new ArrayList(listeners);
+            changeListeners = new HashSet(listeners);
 
             // notify about changes
             for (Iterator it = changedSrcFiles.iterator(); it.hasNext();) {
@@ -441,7 +442,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             System.out.println("IpsModel.addModificationStatusChangeListener(): " + listener); //$NON-NLS-1$
         }
         if (this.modificationStatusChangeListeners == null) {
-            modificationStatusChangeListeners = new ArrayList(1);
+            modificationStatusChangeListeners = new HashSet(1);
         }
         modificationStatusChangeListeners.add(listener);
     }
@@ -496,8 +497,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             System.out.println("IpsModel.addChangeListeners(): " + listener); //$NON-NLS-1$
         }
         if (changeListeners == null) {
-            changeListeners = new ArrayList(1);
+            changeListeners = new HashSet(1);
         }
+
         changeListeners.add(listener);
     }
 

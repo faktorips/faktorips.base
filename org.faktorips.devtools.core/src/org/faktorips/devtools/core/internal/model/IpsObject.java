@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -115,7 +116,14 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      * {@inheritDoc}
      */
     public Image getImage() {
-        return getIpsObjectType().getImage();
+        if (getIpsSrcFile().exists()){
+            return getIpsObjectType().getImage();
+        } else {
+            // the ips source file doesn't exists, thus the ips object couldn't be linked to 
+            // an ips src file in the workspace, return the image of the ips source file to
+            // decide between valid and invalid ips objects
+            return IpsObjectType.IPS_SOURCE_FILE.getImage();
+        }
     }
 
     /**

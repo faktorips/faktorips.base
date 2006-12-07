@@ -8,8 +8,11 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.IWorkbenchAdapter;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 
 /**
@@ -37,6 +40,17 @@ public class ModelLabelProvider implements ILabelProvider {
 				return ((IIpsElement) element).getImage();
 			//}
 		}else if(element instanceof IResource){
+            // check if the resource is an ips source file, in this case return the image of the ips source,
+            // remark: if we use the IWorkbenchAdapter to retrieve the image, we get the
+            // standard icon of the ips object (resolved by the filename and defined in the extension point)
+            // - but the element is no valid ips object (e.g. not inside an ips package) -
+            // therefore to differ between "valid" and "invalid" ips objects in the model explorer we return 
+            // a different icon
+            IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement((IResource)element);
+            if (ipsElement != null && ipsElement instanceof IIpsSrcFile){
+                return IpsObjectType.IPS_SOURCE_FILE.getImage();
+            }
+            
 	        IWorkbenchAdapter adapter= null;
 	        if (element instanceof IAdaptable) {
 	            adapter= (IWorkbenchAdapter) ((IAdaptable) element).getAdapter(IWorkbenchAdapter.class);

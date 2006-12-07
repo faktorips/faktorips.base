@@ -73,7 +73,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     // dirty flag
     private boolean dirty = false;
 
-    /** Activates or deactivates the refreshing of this editor */
+    // Activates or deactivates the refreshing of this editor
     private boolean active = false;
 
     // the ISelectionProvider of this IEditorPart
@@ -90,9 +90,18 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         return ipsSrcFile;
     }
 
+    /**
+     * Returns the ips object of the currently editing ips src file, returns <code>null</code> if
+     * the ips object not exists (e.g. if the ips src file is outside an ips package.
+     */
     public IIpsObject getIpsObject() {
         try {
-            return getIpsSrcFile().getIpsObject();
+            if (getIpsSrcFile().exists()) {
+                return getIpsSrcFile().getIpsObject();
+            }
+            else {
+                return null;
+            }
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
             throw new RuntimeException(e);
@@ -105,11 +114,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     protected abstract String getUniformPageTitle();
 
     /**
-     * Overridden method.
-     * 
-     * @see org.eclipse.ui.IEditorPart#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
+     * {@inheritDoc}
      */
-    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+    public void init(final IEditorSite site, IEditorInput input) throws PartInitException {
         super.init(site, input);
         IIpsModel model = IpsPlugin.getDefault().getIpsModel();
 
@@ -128,7 +135,20 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         if (ipsSrcFile == null) {
             throw new PartInitException("Unsupported editor input type " + input.getClass().getName()); //$NON-NLS-1$
         }
-
+        
+        // check if the ips src file is valid and could be edit in the editor,
+        // if the ips src file doesn't exists (e.g. ips src file outside ips package)
+        // close the editor and open the current file in the default text editor
+        if (!ipsSrcFile.exists()) {
+            Runnable closeRunnable = new Runnable() {
+                public void run() {
+                    IpsObjectEditor.this.close(false);
+                    IpsPlugin.getDefault().openEditor(ipsSrcFile.getCorrespondingFile());
+                }
+            };
+            getSite().getShell().getDisplay().syncExec(closeRunnable);
+        }
+        
         site.getPage().addPartListener(this);
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
         addListener();

@@ -56,15 +56,28 @@ public abstract class IpsObjectEditorPage extends FormPage {
         return (IpsObjectEditor)getEditor();
     }
     
+    /**
+     * Return the ips object of the currently editing ips src file.
+     * Returns <code>null</code> if the src file couldn't determine the ips object
+     * (e.g. if the src file is stored outside an ips package)
+     */
     protected IIpsObject getIpsObject() {
-        return getIpsObjectEditor().getIpsObject();
+        if (getIpsObjectEditor().getIpsSrcFile().exists()){
+            return getIpsObjectEditor().getIpsObject();
+        } else {
+            return null;
+        }
     }
     
 	protected final void createFormContent(IManagedForm managedForm) {
 		super.createFormContent(managedForm);
 		ScrolledForm form = managedForm.getForm();
+		if (getIpsObject() == null){
+            // no valid ips src file, create nothing
+            return;
+        }
 		form.setText(getIpsObjectEditor().getUniformPageTitle());
-		FormToolkit toolkit = managedForm.getToolkit();
+        FormToolkit toolkit = managedForm.getToolkit();
 		createPageContent(form.getBody(), new UIToolkit(toolkit));
 		form.setExpandHorizontal(true);
 		form.setExpandVertical(true);

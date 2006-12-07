@@ -90,6 +90,12 @@ public final class IpsObjectType {
     	{BUSINESS_FUNCTION, POLICY_CMPT_TYPE, TABLE_STRUCTURE, PRODUCT_CMPT, TABLE_CONTENTS, TEST_CASE_TYPE, TEST_CASE};
     
     /**
+     * Ips source file type for ips objects in none ips source folder.
+     */
+    public final static IpsObjectType IPS_SOURCE_FILE =  
+        new IpsObjectType("Unknown", "Ips Source file", "*", false, true, "IpsSrcFile.gif");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+
+    /**
      * Returns the IpsObjectType that has the given file extension. 
 	 * Returns null, if no type with the given file extension exists or the given
 	 * fileExtension is null.
