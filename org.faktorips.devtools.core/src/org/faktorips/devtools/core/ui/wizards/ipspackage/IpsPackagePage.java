@@ -202,12 +202,16 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     }
 
     public String getIpsPackageName() {
-        String packageName = getPdPackageFragment().getName();
-        if (packageName.length() > 0) {
-            return nameField.getText().substring(getPdPackageFragment().getName().length() + 1);
+        String parentPackageName = getPdPackageFragment().getName();
+        String packageName = nameField.getText();
+        if(parentPackageName.length() == packageName.length()){
+            return "";
+        }
+        if (parentPackageName.length() > 0) {
+            return packageName.substring(parentPackageName.length() + 1);
         }
         else {
-            return nameField.getText();
+            return packageName;
         }
     }
 
@@ -376,9 +380,14 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      */
     protected void validateName() {
         String name = getIpsPackageName();
+        String parentPackageName = getPdPackageFragment().getName();
         // must not be empty
         if (name.length() == 0) {
-            setErrorMessage(Messages.IpsPackagePage_msgEmptyName);
+            if(parentPackageName.length()>0){
+                setErrorMessage(NLS.bind(Messages.IpsPackagePage_PackageAllreadyExists, parentPackageName));
+            }else{
+                setErrorMessage(Messages.IpsPackagePage_msgEmptyName);
+            }
             return;
         }
         if (name.indexOf(BLANK) != -1) {
