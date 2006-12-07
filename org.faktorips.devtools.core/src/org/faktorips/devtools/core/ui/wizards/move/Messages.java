@@ -34,7 +34,11 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String MovePage_title;
+	public static String MovePage_msgErrorPackageAlreadyExists;
+
+    public static String MovePage_msgErrorSelectedTargetIsIncludedInSource;
+
+    public static String MovePage_title;
 
 	public static String MovePage_description;
 

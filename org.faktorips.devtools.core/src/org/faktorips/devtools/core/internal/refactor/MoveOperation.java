@@ -31,6 +31,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -66,10 +68,10 @@ public class MoveOperation implements IRunnableWithProgress {
 	 */
 	private String[] targetNames;
 	
-	/**
-	 * The package fragment where to place the moved objects.
-	 */
-	private IIpsPackageFragment target;
+    /**
+     * The ips package fragment root defindes the ips src root where to place the moved objects.
+     */
+    private IIpsPackageFragmentRoot targetRoot;
 	
 	/**
 	 * Creates a new operation to move or rename the given product. After the run-method has returned,
@@ -115,21 +117,23 @@ public class MoveOperation implements IRunnableWithProgress {
 	 * @throws CoreException If the source does not exist or ist modiefied or if the target allready exists.
 	 */
 	public MoveOperation(IIpsElement[] sources, IIpsPackageFragment target) throws CoreException {
-		this.target = target;
 		this.sourceObjects = prepare(sources);
-		this.targetNames = getTragetNames(this.sourceObjects, target);
+        this.targetRoot = target.getRoot();
+		this.targetNames = getTargetNames(this.sourceObjects, target);
 		
-		checkSources(sources);
+        // perform checks, if one check fails an core exception will be thrown
+        checkTargetIncludedInSources(sources, target);
+        checkSources(sources);
 		checkTargets(sources, targetNames);
 	}
 
-	/**
+    /**
 	 * Creates the new qualified names for the moved objects.
 	 *  
 	 * @param sources The objects to move
 	 * @param target The package fragment to move to.
 	 */
-	private String[] getTragetNames(IIpsElement[] sources, IIpsPackageFragment target) {
+	private String[] getTargetNames(IIpsElement[] sources, IIpsPackageFragment target) {
 		String[] result = new String[sources.length];
 		
 		String prefix = target.getName();
@@ -230,58 +234,68 @@ public class MoveOperation implements IRunnableWithProgress {
 	/**
      * {@inheritDoc}
      */
-	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-		if (monitor == null) {
-			monitor = new NullProgressMonitor();
-		}
-		
-		for (int i = 0; i < this.sourceObjects.length; i++) {
-			try {
-				IIpsElement toMove;
-				if (sourceObjects[i] instanceof IIpsSrcFile) {
-					toMove = ((IIpsSrcFile)sourceObjects[i]).getIpsObject();
-				}
-				else {
-					toMove = sourceObjects[i];
-				}
-				
-				if (toMove instanceof IProductCmpt) {
-					moveProductCmpt((IProductCmpt)toMove, this.targetNames[i], monitor);
-				}
-				else if (toMove instanceof IIpsPackageFragment) {
-					movePackageFragement((IIpsPackageFragment)toMove, this.targetNames[i], monitor);
-				}
-				else if (toMove instanceof ITableContents) {
-					moveTableContent((ITableContents)toMove, this.targetNames[i], monitor);
-				}
-                else if (toMove instanceof ITestCase) {
-                    moveTestCase((ITestCase)toMove, this.targetNames[i], monitor);
+	public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+	    Runnable run = new Runnable(){
+            public void run() {
+                IProgressMonitor currMonitor = monitor;
+                if (currMonitor == null) {
+                    currMonitor = new NullProgressMonitor();
                 }
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
-		}
 
+                for (int i = 0; i < MoveOperation.this.sourceObjects.length; i++) {
+                    try {
+                        IIpsElement toMove;
+                        if (sourceObjects[i] instanceof IIpsSrcFile) {
+                            toMove = ((IIpsSrcFile)sourceObjects[i]).getIpsObject();
+                        }
+                        else {
+                            toMove = sourceObjects[i];
+                        }
+                        
+                        if (toMove instanceof IProductCmpt) {
+                            moveProductCmpt((IProductCmpt)toMove, MoveOperation.this.targetNames[i], monitor);
+                        }
+                        else if (toMove instanceof IIpsPackageFragment) {
+                            movePackageFragement((IIpsPackageFragment)toMove, MoveOperation.this.targetNames[i], monitor);
+                        }
+                        else if (toMove instanceof ITableContents) {
+                            moveTableContent((ITableContents)toMove, MoveOperation.this.targetNames[i], monitor);
+                        }
+                        else if (toMove instanceof ITestCase) {
+                            moveTestCase((ITestCase)toMove, MoveOperation.this.targetNames[i], monitor);
+                        }
+                    } catch (CoreException e) {
+                        IpsPlugin.logAndShowErrorDialog(e);
+                    }
+                }
+            }
+        };
+        BusyIndicator.showWhile(Display.getCurrent(), run);
 	}
 	
 	private void movePackageFragement(IIpsPackageFragment pack, String newName, IProgressMonitor monitor) throws CoreException {
-		IIpsPackageFragment parent = pack.getParentIpsPackageFragment();
+		IIpsPackageFragmentRoot currTargetRoot = targetRoot;
+        if (currTargetRoot == null){
+            currTargetRoot = pack.getRoot();
+        }
+        
+        IIpsPackageFragment parent = pack.getParentIpsPackageFragment();
 		
 		// first, find all products contained in this folder
 	    ArrayList files = new ArrayList();
 		getRelativeFileNames("", (IFolder)pack.getEnclosingResource(), files); //$NON-NLS-1$
 
-		IIpsPackageFragmentRoot root = parent.getRoot();
+		IIpsPackageFragmentRoot sourceRoot = parent.getRoot();
 		
 		// second, move them all
 		for (Iterator iter = files.iterator(); iter.hasNext();) {
 			String[] fileInfos = (String[]) iter.next();
-			IIpsPackageFragment targetPackage = root.getIpsPackageFragment(buildPackageName("", newName, fileInfos[0])); //$NON-NLS-1$
+			IIpsPackageFragment targetPackage = currTargetRoot.getIpsPackageFragment(buildPackageName("", newName, fileInfos[0])); //$NON-NLS-1$
 			if (!targetPackage.exists()) {
-				root.createPackageFragment(targetPackage.getName(), true, monitor);
+                currTargetRoot.createPackageFragment(targetPackage.getName(), true, monitor);
 			}
 			IIpsSrcFile file = targetPackage.getIpsSrcFile(fileInfos[1]);
-			IIpsPackageFragment sourcePackage = root.getIpsPackageFragment(buildPackageName(pack.getName(), "", fileInfos[0])); //$NON-NLS-1$
+			IIpsPackageFragment sourcePackage = sourceRoot.getIpsPackageFragment(buildPackageName(pack.getName(), "", fileInfos[0])); //$NON-NLS-1$
 			IIpsSrcFile cmptFile = sourcePackage.getIpsSrcFile(fileInfos[1]);  //$NON-NLS-1$
 			if (cmptFile != null) {
 				// we got an IIpsSrcFile, so we have to move it correctly
@@ -293,6 +307,15 @@ public class MoveOperation implements IRunnableWithProgress {
 					ITableContents tblcontent = (ITableContents)cmptFile.getIpsObject();
 					move(tblcontent, file, monitor);
 				}
+                else if (cmptFile.getIpsObjectType() == IpsObjectType.TEST_CASE) {
+                    ITestCase testCase = (ITestCase)cmptFile.getIpsObject();
+                    move(testCase, file, monitor);
+                }
+                else {
+                    // programming error, this is an unsupported type which should be moved, but this type
+                    // wasn't checked in the prepare check of the move operation!
+                    throw new CoreException(new IpsStatus(NLS.bind(Messages.MoveOperation_msgUnsupportedType, cmptFile.getName())));
+                }
 			} else {
 				// we dont have a IIpsSrcFile, so move the file as resource operation
 				IFolder folder = (IFolder)sourcePackage.getEnclosingResource(); 
@@ -335,8 +358,11 @@ public class MoveOperation implements IRunnableWithProgress {
 	 * package fragment root of the given source.
 	 */
 	private IIpsSrcFile createTarget(IIpsObject source, String targetName) {
-		IIpsPackageFragmentRoot root = source.getIpsPackageFragment().getRoot();
-		IIpsPackageFragment pack = root.getIpsPackageFragment(getPackageName(targetName));
+        IIpsPackageFragmentRoot currTargetRoot = targetRoot;
+        if (currTargetRoot == null){
+            currTargetRoot = source.getIpsPackageFragment().getRoot();
+        }
+		IIpsPackageFragment pack = currTargetRoot.getIpsPackageFragment(getPackageName(targetName));
 		return pack.getIpsSrcFile(source.getIpsObjectType().getFileName(getUnqualifiedName(targetName)));
 	}
 	
@@ -512,7 +538,9 @@ public class MoveOperation implements IRunnableWithProgress {
 	 * @throws CoreException if a target exists.
 	 */
 	private void checkTargets(IIpsElement[] sources, String[] targets) throws CoreException {
-		for (int i = 0; i < targets.length; i++) {
+        for (int i = 0; i < targets.length; i++) {
+            IIpsPackageFragmentRoot currTargetRoot = targetRoot;
+
 			IIpsElement toTest;
 			if (sources[i] instanceof IIpsSrcFile) {
 				toTest = ((IIpsSrcFile)sources[i]).getIpsObject();
@@ -521,43 +549,65 @@ public class MoveOperation implements IRunnableWithProgress {
 				toTest = sources[i];
 			}
 
-			if (toTest instanceof IProductCmpt) {
-				IProductCmpt product = (IProductCmpt)toTest;
-				IIpsPackageFragmentRoot root = product.getIpsPackageFragment().getRoot();
-				IIpsPackageFragment pack = root.getIpsPackageFragment(getPackageName(targets[i]));
+            if (currTargetRoot == null){
+                // no target root, use the source root as target root (e.g. if renaming the files)
+                if (toTest instanceof IIpsObject){
+                    currTargetRoot = ((IIpsObject) toTest).getIpsPackageFragment().getRoot();
+                } else if (toTest instanceof IIpsPackageFragment) {
+                    currTargetRoot = ((IIpsPackageFragment) toTest).getRoot();
+                }
+			}
+
+            if (toTest instanceof IIpsPackageFragment) {
+                IIpsPackageFragment pack = currTargetRoot.getIpsPackageFragment(targets[i]);
+                if (pack.exists()) {
+                    String msg = NLS.bind(Messages.MoveOperation_msgPackageExists, targets[i]);
+                    IpsStatus status = new IpsStatus(msg);
+                    throw new CoreException(status);
+                }
+            }
+            else if (toTest instanceof IProductCmpt) {
+				IIpsPackageFragment pack = currTargetRoot.getIpsPackageFragment(getPackageName(targets[i]));
 				if (pack.getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(getUnqualifiedName(targets[i]))).exists()) {
 					String msg = NLS.bind(Messages.MoveOperation_msgFileExists, targets[i]);
 					IpsStatus status = new IpsStatus(msg);
 					throw new CoreException(status);
 				}
 			}
-			else if (toTest instanceof IIpsPackageFragment) {
-				IIpsPackageFragment sourcePack = (IIpsPackageFragment)toTest;
-				IIpsPackageFragmentRoot root = sourcePack.getRoot();
-				IIpsPackageFragment pack = root.getIpsPackageFragment(targets[i]);
-				if (pack.exists()) {
-					String msg = NLS.bind(Messages.MoveOperation_msgPackageExists, targets[i]);
-					IpsStatus status = new IpsStatus(msg);
-					throw new CoreException(status);
-				}
-			}
 			else if (toTest instanceof ITableContents) {
-				ITableContents table = (ITableContents)toTest;
-				IIpsPackageFragmentRoot root = table.getIpsPackageFragment().getRoot();
-				IIpsPackageFragment pack = root.getIpsPackageFragment(getPackageName(targets[i]));
+				IIpsPackageFragment pack = currTargetRoot.getIpsPackageFragment(getPackageName(targets[i]));
 				if (pack.getIpsSrcFile(IpsObjectType.TABLE_CONTENTS.getFileName(getUnqualifiedName(targets[i]))).exists()) {
 					String msg = NLS.bind(Messages.MoveOperation_msgFileExists, targets[i]);
 					IpsStatus status = new IpsStatus(msg);
 					throw new CoreException(status);
 				}
 			}
+            else if (toTest instanceof ITestCase) {
+                IIpsPackageFragment pack = currTargetRoot.getIpsPackageFragment(getPackageName(targets[i]));
+                if (pack.getIpsSrcFile(IpsObjectType.TEST_CASE.getFileName(getUnqualifiedName(targets[i]))).exists()) {
+                    String msg = NLS.bind(Messages.MoveOperation_msgFileExists, targets[i]);
+                    IpsStatus status = new IpsStatus(msg);
+                    throw new CoreException(status);
+                }
+            }            
 		}
 	}
 	
+    /*
+     * Check all sources to exist and to be saved. If not so, a CoreException will be thrown.
+     */
+    private void checkSources(IIpsElement[] source) throws CoreException{
+        IpsStatus status = checkSourcesForInvalidContent(source);
+        if (status != null){
+            throw new CoreException(status);
+        }
+    }
+    
 	/**
-	 * Check all sources to exist and to be saved. If not so, a core exception is thrown.
+	 * Check all sources to exist and to be saved. If not so, an IpsStatus containing the error will be returned.
+     * Returns <code>null</code> if no error was found.
 	 */
-	private void checkSources(IIpsElement[] source) throws CoreException {
+	public static IpsStatus checkSourcesForInvalidContent(IIpsElement[] source) throws CoreException {
 		for (int i = 0; i < source.length; i++) { 
 			IIpsElement toTest;
 			if (source[i] instanceof IIpsSrcFile) {
@@ -567,49 +617,53 @@ public class MoveOperation implements IRunnableWithProgress {
 				toTest = source[i];
 			}
 			
-			if (this.target != null && !toTest.getIpsProject().equals(this.target.getIpsProject())) {
-				IpsStatus status = new IpsStatus(Messages.MoveOperation_msgMoveBetweenProjectsNotSupported); 
-				throw new CoreException(status);
-			}
-			
-			if (toTest instanceof IIpsObject) {
+			if (toTest instanceof IProductCmpt || toTest instanceof ITableContents || toTest instanceof ITestCase) {
                 IIpsObject ipsObject = (IIpsObject)toTest;
 				if (!ipsObject.getIpsSrcFile().exists()) {
 					String msg = NLS.bind(Messages.MoveOperation_msgSourceMissing, getQualifiedSourceName(ipsObject));
-					IpsStatus status = new IpsStatus(msg); 
-					throw new CoreException(status);
+					return new IpsStatus(msg); 
 				}
 				
 				if (ipsObject.getIpsSrcFile().isDirty()) {
 					String msg = NLS.bind(Messages.MoveOperation_msgSourceModified, getQualifiedSourceName(ipsObject));
-					IpsStatus status = new IpsStatus(msg); 
-					throw new CoreException(status);
+                    return new IpsStatus(msg); 
 				}
 			}
-			else if (toTest instanceof IIpsPackageFragment) {
+			
+            if (toTest instanceof IIpsPackageFragment) {
 				IIpsPackageFragment pack = (IIpsPackageFragment)toTest;
 				if (!pack.exists()) {
 					String msg = NLS.bind(Messages.MoveOperation_msgPackageMissing, pack.getName());
-					IpsStatus status = new IpsStatus(msg); 
-					throw new CoreException(status);
+                    return new IpsStatus(msg); 
 				}
-				checkSources(pack.getChildren());
-				checkSources(pack.getChildIpsPackageFragments());
+                IpsStatus status = checkSourcesForInvalidContent(pack.getChildren());
+                if (status != null){
+                    return status;
+                }
+                status = checkSourcesForInvalidContent(pack.getChildIpsPackageFragments());
+                if (status != null){
+                    return status;
+                }
 			}
-			else if (toTest instanceof ITableContents) {
+            else if (toTest instanceof IProductCmpt) {
+                IProductCmpt productCmpt = (IProductCmpt)toTest;
+                if (!productCmpt.exists()) {
+                    String msg = NLS.bind("Product component {0} is missing", productCmpt.getName()); 
+                    return new IpsStatus(msg); 
+                }
+            }
+            else if (toTest instanceof ITableContents) {
 				ITableContents table = (ITableContents)toTest;
 				if (!table.exists()) {
 					String msg = NLS.bind(Messages.MoveOperation_tableContentIsMissing, table.getName()); 
-					IpsStatus status = new IpsStatus(msg); 
-					throw new CoreException(status);
+                    return new IpsStatus(msg); 
 				}
 			}
             else if (toTest instanceof ITestCase) {
                 ITestCase testCase = (ITestCase)toTest;
                 if (!testCase.exists()) {
                     String msg = NLS.bind(Messages.MoveOperation_testCaseIsMissing, testCase.getName());
-                    IpsStatus status = new IpsStatus(msg); 
-                    throw new CoreException(status);
+                    return new IpsStatus(msg); 
                 }
             }            
 			else {
@@ -624,16 +678,61 @@ public class MoveOperation implements IRunnableWithProgress {
 				else {
 					msg = NLS.bind(Messages.MoveOperation_msgUnsupportedObject, toTest.getName());
 				}
-				IpsStatus status = new IpsStatus(msg); 
-				throw new CoreException(status);
+				return new IpsStatus(msg); 
 			}
 		}
+        return null;
 	}
 	
+    private void checkTargetIncludedInSources(IIpsElement[] sources, IIpsPackageFragment target) throws CoreException {
+        if (isTargetIncludedInSources(sources, target)){
+            throw new CoreException(new IpsStatus("The target is included in the sources."));
+        }
+    }
+    
+    /**
+     * Check if the target is included in the source or child of source. Returns <code>true</code> if the given target
+     * IIpsPackageFragment is inside one of one source elements. The source elements wich will be checked are IIpsPackageFragmentRoots
+     * or IIpsPackageFragment all other types will be ignored. Returns <code>false</code> if the target is not inside the sources.
+     * This check is very importend for the move operation, because the target will be deleted after the move operation, thus if the 
+     * target is inside one of source this package will be deleted!
+     */
+    public static boolean isTargetIncludedInSources(IIpsElement[] sources, IIpsPackageFragment target) throws CoreException {
+        for (int i = 0; i < sources.length; i++) {
+            if (sources[i] instanceof IIpsPackageFragmentRoot) {
+                if (isTargetInPackageFragment(target, ((IIpsPackageFragmentRoot)target).getDefaultIpsPackageFragment()
+                        .getChildIpsPackageFragments())) {
+                    return true;
+                }
+            }
+            else if (sources[i] instanceof IIpsPackageFragment) {
+                if (target.equals(sources[i])){
+                    return true;
+                }
+                if (isTargetInPackageFragment(target, ((IIpsPackageFragment)sources[i]).getChildIpsPackageFragments())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    private static boolean isTargetInPackageFragment(IIpsPackageFragment frgmt, IIpsPackageFragment[] packageFragments) throws CoreException {
+        for (int i = 0; i < packageFragments.length; i++) {
+            if(packageFragments[i].equals(frgmt)){
+                return true;
+            }
+            if (isTargetInPackageFragment(frgmt, packageFragments[i].getChildIpsPackageFragments())){
+                return true;
+            }
+        }
+        return false;
+    }
+    
 	/**
 	 * Returns the qualified source-name (including file extension) for the given ips object.
 	 */
-	private String getQualifiedSourceName(IIpsObject product) {
+	public static String getQualifiedSourceName(IIpsObject product) {
 		return product.getQualifiedName() + "." + product.getIpsObjectType().getFileExtension(); //$NON-NLS-1$
 	}
 	

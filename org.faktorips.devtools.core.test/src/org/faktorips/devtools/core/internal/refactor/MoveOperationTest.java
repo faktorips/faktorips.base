@@ -26,12 +26,16 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -155,13 +159,90 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     public void testMovePackage() throws CoreException, InvocationTargetException, InterruptedException {
 
     	IIpsPackageFragment sourcePackage = content.getStandardVehicle().getIpsPackageFragment();
+        ITestCase testCase = (ITestCase)sourcePackage.createIpsFile(IpsObjectType.TEST_CASE, "testcase", true, null).getIpsObject();
+        ITableContents tableContents = (ITableContents)sourcePackage.createIpsFile(IpsObjectType.TABLE_CONTENTS, "tablecontents", true, null).getIpsObject();
     	IIpsPackageFragment target = sourcePackage.getRoot().getIpsPackageFragment("moved");
     	
     	IProductCmpt source = content.getStandardVehicle();
         
     	assertFalse(target.exists());
         assertTrue(source.getIpsSrcFile().exists());
+        assertTrue(testCase.getIpsSrcFile().exists());
+        assertTrue(tableContents.getIpsSrcFile().exists());
     	
+        IProductCmptGeneration[] sourceRefs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedName());
+        
+        MoveOperation move = new MoveOperation(new IIpsElement[] {sourcePackage}, target);
+        move.run(null);
+        
+        assertTrue(target.exists());
+        assertFalse(sourcePackage.exists());     
+        assertFalse(source.getIpsSrcFile().exists());     
+        assertFalse(testCase.getIpsSrcFile().exists());
+        assertFalse(tableContents.getIpsSrcFile().exists());
+        
+        target = target.getRoot().getIpsPackageFragment("moved.products");
+        
+        IIpsSrcFile vehicleFile = target.getIpsSrcFile("StandardVehicle.ipsproduct"); 
+        
+        assertTrue(vehicleFile.exists());
+        
+        IIpsObject targetObject = vehicleFile.getIpsObject();
+        IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(targetObject.getQualifiedName());
+        
+        assertEquals(sourceRefs.length, targetRefs.length);
+        assertTrue(target.getIpsSrcFile(IpsObjectType.TABLE_CONTENTS.getFileName("tablecontents")).exists());
+        assertTrue(target.getIpsSrcFile(IpsObjectType.TEST_CASE.getFileName("testcase")).exists());
+    }
+    
+    public void testMovePackageWithUnsupportetFile() throws Exception {
+        IIpsPackageFragment sourcePackage = content.getStandardVehicle().getIpsPackageFragment();
+        IIpsPackageFragment target = sourcePackage.getRoot().getIpsPackageFragment("moved");
+        
+        IProductCmpt source = content.getStandardVehicle();
+        
+        assertFalse(target.exists());
+        assertTrue(source.getIpsSrcFile().exists());
+
+        // test move of unsupported file
+        testMoveOfUnsupportedObject(IpsObjectType.POLICY_CMPT_TYPE, sourcePackage, target);
+        testMoveOfUnsupportedObject(IpsObjectType.TEST_CASE_TYPE, sourcePackage, target);
+        testMoveOfUnsupportedObject(IpsObjectType.TABLE_STRUCTURE, sourcePackage, target);
+        
+        // test move valid types again
+        MoveOperation move = new MoveOperation(new IIpsElement[] { sourcePackage }, target);
+        move.run(null);
+        assertTrue(target.exists());
+        assertFalse(sourcePackage.exists()); 
+    }
+
+    private void testMoveOfUnsupportedObject(IpsObjectType type, IIpsPackageFragment sourcePackage, IIpsPackageFragment target) throws CoreException, InvocationTargetException, InterruptedException {
+        IIpsSrcFile src = sourcePackage.createIpsFile(type, "unsupported", true, null);
+        boolean exceptionThrown = false;
+        try {
+            MoveOperation move = new MoveOperation(new IIpsElement[] { sourcePackage }, target);
+            move.run(null);
+        }
+        catch (CoreException e) {
+            exceptionThrown = true;
+        }
+        assertTrue(exceptionThrown);
+        assertFalse(target.exists());
+        assertTrue(sourcePackage.exists()); 
+        src.getCorrespondingFile().delete(true, null);
+    }
+    
+    public void testMovePackageInDifferentRoot() throws Exception {
+        IIpsPackageFragmentRoot targetRoot = createIpsPackageFrgmtRoot();
+        
+        IIpsPackageFragment sourcePackage = content.getStandardVehicle().getIpsPackageFragment();
+        IIpsPackageFragment target = targetRoot.getIpsPackageFragment("moved");
+        
+        IProductCmpt source = content.getStandardVehicle();
+        
+        assertFalse(target.exists());
+        assertTrue(source.getIpsSrcFile().exists());
+        
         IProductCmptGeneration[] sourceRefs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedName());
         
         MoveOperation move = new MoveOperation(new IIpsElement[] {sourcePackage}, target);
@@ -180,7 +261,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(targetObject.getQualifiedName());
         
         assertEquals(sourceRefs.length, targetRefs.length);
-        
     }
     
     public void testMoveTableContent() throws CoreException, InvocationTargetException, InterruptedException {
@@ -331,4 +411,38 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         
     }
     
+    public void testMoveInDifferentRoot() throws Exception {
+        IIpsPackageFragmentRoot targetRoot = createIpsPackageFrgmtRoot();
+        
+        IIpsPackageFragment sourcePackageFrgmt = content.getStandardVehicle().getIpsPackageFragment();
+        String sourcePackageFrgmtName = sourcePackageFrgmt.getName();
+        
+        // prepare the source object
+        IIpsSrcFile file = sourcePackageFrgmt.createIpsFile(IpsObjectType.TEST_CASE, "testCase", true, null);
+        IIpsSrcFile target = sourcePackageFrgmt.getRoot().getIpsPackageFragment(sourcePackageFrgmtName).getIpsSrcFile(IpsObjectType.TEST_CASE.getFileName("testCase"));
+        assertTrue(file.exists());
+        
+        // now move the source object into the target root default frgmt
+        new MoveOperation(new IIpsElement[] {file.getIpsObject()}, targetRoot.getDefaultIpsPackageFragment()).run(null);
+        target = sourcePackageFrgmt.getRoot().getIpsPackageFragment(sourcePackageFrgmtName).getIpsSrcFile(IpsObjectType.TEST_CASE.getFileName("testCase"));
+        assertFalse(target.exists());
+        target = sourcePackageFrgmt.getRoot().getDefaultIpsPackageFragment().getIpsSrcFile(IpsObjectType.TEST_CASE.getFileName("testCase"));
+        assertFalse(target.exists());
+        
+        target = targetRoot.getDefaultIpsPackageFragment().getIpsSrcFile(IpsObjectType.TEST_CASE.getFileName("testCase"));
+        assertTrue(target.exists());
+    }
+
+    private IIpsPackageFragmentRoot createIpsPackageFrgmtRoot() throws CoreException {
+        IIpsProject ipsProject = content.getProject();
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        IFolder rootFolder = ipsProject.getProject().getFolder("targetRoot");
+        rootFolder.create(true, true, null);
+        path.newSourceFolderEntry(rootFolder);
+        ipsProject.setIpsObjectPath(path);
+        IIpsPackageFragmentRoot targetRoot = ipsProject.getIpsPackageFragmentRoot("targetRoot");
+        assertNotNull(targetRoot);
+        assertTrue(targetRoot.exists());
+        return targetRoot;
+    }
 }

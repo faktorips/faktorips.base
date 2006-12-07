@@ -507,6 +507,9 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
      * Update the tab-content (text and image) for the tab of the generation properties page.
      */
     protected void updateGenerationPropertiesPageTab() {
+        if (propertiesPage == null){
+            return;
+        }
         propertiesPage.updateTabname();
     }
 	
