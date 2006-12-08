@@ -297,6 +297,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 IpsSrcFile ipsSrcFile = (IpsSrcFile)it.next();
                 monitor.subTask(Messages.IpsBuilder_deleting + ipsSrcFile.getName());
                 applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new DeleteArtefactBuildCommand(ipsSrcFile), monitor);
+                updateDependencyGraph(buildStatus, ipsSrcFile);
                 monitor.worked(1);
             }
             
@@ -304,6 +305,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 IpsSrcFile ipsSrcFile = (IpsSrcFile)it.next();
                 monitor.subTask(Messages.IpsBuilder_building + ipsSrcFile.getName());
                 buildIpsSrcFile(ipsArtefactBuilderSet, ipsSrcFile, buildStatus, monitor);
+                updateDependencyGraph(buildStatus, ipsSrcFile);
                 monitor.worked(1);
             }
             
@@ -320,7 +322,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                     }
                     monitor.subTask(Messages.IpsBuilder_building + nameType);
                     buildIpsSrcFile(ipsArtefactBuilderSet, ipsObject.getIpsSrcFile(), buildStatus, monitor);
-                    ((IpsModel)ipsModel).getDependencyGraph(ipsProject).update(nameType);
+                    updateDependencyGraph(buildStatus, ipsObject.getIpsSrcFile());
                     monitor.worked(1);
                 }
             }
@@ -391,6 +393,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return ipsObject;
     }
 
+    
     private int collectBuildCandidatesForIncrementalBuild(List addedOrChangesIpsSrcFiles, List removedIpsSrcFiles, Map buildCandidatesForProjectsMap) throws CoreException{
         int numberOfBuildCandidates = 0;
         for (Iterator it = addedOrChangesIpsSrcFiles.iterator(); it.hasNext();) {
@@ -418,6 +421,18 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             }
         }
         return dependants.length;
+    }
+
+    private void updateDependencyGraph(MultiStatus buildStatus, IIpsSrcFile ipsSrcFile) {
+        try{
+            DependencyGraph graph = ((IpsModel)ipsSrcFile.getIpsProject().getIpsModel()).
+            getDependencyGraph(ipsSrcFile.getIpsProject());
+            graph.update(ipsSrcFile.getQualifiedNameType());
+        }
+        catch(CoreException e){
+            buildStatus.add(new IpsStatus("An error occured while trying to update the " + //$NON-NLS-1$
+                    "dependency graph for the IpsSrcFile: " + ipsSrcFile, e)); //$NON-NLS-1$
+        }
     }
 
     private int collectDependantForDependantProjects(QualifiedNameType root,

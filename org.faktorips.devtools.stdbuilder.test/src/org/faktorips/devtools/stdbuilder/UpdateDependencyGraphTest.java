@@ -51,31 +51,29 @@ public class UpdateDependencyGraphTest extends AbstractIpsPluginTest {
         fullBuild();
         DependencyGraph graph = ((IpsModel)project.getIpsModel()).getDependencyGraph(project);
         QualifiedNameType[] qnt = graph.getDependants(typeA.getQualifiedNameType());
-        qnt = graph.getDependants(typeA.getQualifiedNameType());
         assertEquals(1, qnt.length);
         assertEquals(typeB.getQualifiedNameType(), qnt[0]);
 
-        // has to be fixed by Peter
-//        // delete the dependency
-//        typeB.setSupertype("");
-//        typeB.getIpsSrcFile().save(true, null);
-//        incrementalBuild();
-//        qnt = graph.getDependants(typeA.getQualifiedNameType());
-//        assertEquals(0, qnt.length);
-//        
-//        // recreate the dependeny
-//        typeB.setSupertype(typeA.getQualifiedName());
-//        typeB.getIpsSrcFile().save(true, null);
-//        incrementalBuild();
-//        qnt = graph.getDependants(typeA.getQualifiedNameType());
-//        assertEquals(1, qnt.length);
-//        assertEquals(typeB.getQualifiedNameType(), qnt[0]);
-//        
-//        typeB.setSupertype("");
-//        typeB.getIpsSrcFile().save(true, null);
-//        incrementalBuild();
-//        qnt = graph.getDependants(typeA.getQualifiedNameType());
-//        assertEquals(0, qnt.length);
+        // delete the dependency
+        typeB.setSupertype("");
+        typeB.getIpsSrcFile().save(true, null);
+        incrementalBuild();
+        qnt = graph.getDependants(typeA.getQualifiedNameType());
+        assertEquals(0, qnt.length);
+        
+        // recreate the dependeny
+        typeB.setSupertype(typeA.getQualifiedName());
+        typeB.getIpsSrcFile().save(true, null);
+        incrementalBuild();
+        qnt = graph.getDependants(typeA.getQualifiedNameType());
+        assertEquals(1, qnt.length);
+        assertEquals(typeB.getQualifiedNameType(), qnt[0]);
+        
+        typeB.setSupertype("");
+        typeB.getIpsSrcFile().save(true, null);
+        incrementalBuild();
+        qnt = graph.getDependants(typeA.getQualifiedNameType());
+        assertEquals(0, qnt.length);
     }
 
 }
