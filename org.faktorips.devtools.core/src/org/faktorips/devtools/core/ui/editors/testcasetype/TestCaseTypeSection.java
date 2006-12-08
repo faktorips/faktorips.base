@@ -28,6 +28,10 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
@@ -50,6 +54,8 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -62,6 +68,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -283,6 +290,16 @@ public class TestCaseTypeSection extends IpsSection  {
         public Collection getAllAttributeTable(){
             return attributeTableViewers.values();
         }
+    }
+    
+    /*
+     * State class contains the enable state of all actions (for buttons and context menu)
+     */
+    private class TreeActionEnableState{
+        boolean addEnable = false;
+        boolean removeEnable = false;
+        boolean upEnable = false;
+        boolean downEnable = false;
     }
     
     /*
@@ -545,30 +562,6 @@ public class TestCaseTypeSection extends IpsSection  {
             return ((ITestAttribute) element).getImage();
         }
     }
-
-    /*
-     * Returns the image for the given message list (e.g. if there is an error return a problem image)
-     */
-    private Image getImageForMsgList(Image defaultImage, MessageList msgList) {
-        // get the cached problem descriptor for the base image
-        String key = getKey(defaultImage, msgList.getSeverity());
-        ProblemImageDescriptor descriptor = (ProblemImageDescriptor) cachedProblemImageDescriptors.get(key);
-        if (descriptor == null && defaultImage != null){
-            descriptor = new ProblemImageDescriptor(defaultImage, msgList.getSeverity());
-            cachedProblemImageDescriptors.put(key, descriptor);
-        }
-        return IpsPlugin.getDefault().getImage(descriptor);
-    } 
-    
-    /*
-     * Returns an unique key for the given image and severity compination.
-     */
-    private String getKey(Image image, int severity) {
-        if (image == null){
-            return null;
-        }
-        return image.hashCode() + "_" + severity; //$NON-NLS-1$
-    }   
     
     /*
      * Expansion section listener class to select the section if expand or collapsed
@@ -609,6 +602,73 @@ public class TestCaseTypeSection extends IpsSection  {
 
         public void expansionStateChanging(ExpansionEvent e) {
             // nothing to do
+        }
+    }
+    
+    /*
+     * Tree context menu builder
+     */
+    private class MenuBuilder extends MenuManager implements IMenuListener {
+        public void menuAboutToShow(IMenuManager manager) {
+            if (!(treeViewer.getSelection() instanceof IStructuredSelection)) {
+                return;
+            }
+            Object selection = ((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
+            TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection);
+            
+            createAddMenu(manager, actionEnableState.addEnable);
+            createRemoveMenu(manager, actionEnableState.removeEnable);
+            createUpMenu(manager, selection, actionEnableState.upEnable);
+            createDownMenu(manager, selection, actionEnableState.downEnable);
+        }
+
+        private void createAddMenu(IMenuManager manager, boolean enable) {
+            IAction action = new Action(Messages.TestCaseTypeSection_Button_NewRootParameter, Action.AS_PUSH_BUTTON) {
+                public void run() {
+                    addParameterClicked();
+                }
+            };
+            action.setEnabled(enable);
+            manager.add(action);
+        }
+        private void createRemoveMenu(IMenuManager manager, boolean enable) {
+            IAction action = new Action(Messages.TestCaseTypeSection_Button_Remove, Action.AS_PUSH_BUTTON) {
+                public void run() {
+                    try {
+                        removeClicked();
+                    } catch (Exception ex) {
+                        IpsPlugin.logAndShowErrorDialog(ex);
+                    }
+                }
+            };
+            action.setEnabled(enable);
+            manager.add(action);
+        }
+        private void createUpMenu(IMenuManager manager, final Object selection, boolean enable) {
+            IAction addAction = new Action(Messages.TestCaseTypeSection_Button_Up, Action.AS_PUSH_BUTTON) {
+                public void run() {
+                    try {
+                        moveUpClicked(selection);
+                    } catch (Exception ex) {
+                        IpsPlugin.logAndShowErrorDialog(ex);
+                    }
+                }
+            };
+            addAction.setEnabled(enable);
+            manager.add(addAction); 
+        }
+        private void createDownMenu(IMenuManager manager, final Object selection, boolean enable) {
+            IAction addAction = new Action(Messages.TestCaseTypeSection_Button_Down, Action.AS_PUSH_BUTTON) {
+                public void run() {
+                    try {
+                        moveDownClicked(selection);
+                    } catch (Exception ex) {
+                        IpsPlugin.logAndShowErrorDialog(ex);
+                    }
+                }
+            };
+            addAction.setEnabled(enable);
+            manager.add(addAction); 
         }
     }
     
@@ -699,6 +759,7 @@ public class TestCaseTypeSection extends IpsSection  {
         treeViewer.collapseAll();
         hookTreeListeners();
         treeViewer.expandToLevel(2);
+        createTreeContextMenu();
         
         // Buttons belongs to the tree structure
         Composite buttons = toolkit.getFormToolkit().createComposite(structureComposite);
@@ -1165,6 +1226,30 @@ public class TestCaseTypeSection extends IpsSection  {
     }
 
     /*
+     * Returns the image for the given message list (e.g. if there is an error return a problem image)
+     */
+    private Image getImageForMsgList(Image defaultImage, MessageList msgList) {
+        // get the cached problem descriptor for the base image
+        String key = getKey(defaultImage, msgList.getSeverity());
+        ProblemImageDescriptor descriptor = (ProblemImageDescriptor) cachedProblemImageDescriptors.get(key);
+        if (descriptor == null && defaultImage != null){
+            descriptor = new ProblemImageDescriptor(defaultImage, msgList.getSeverity());
+            cachedProblemImageDescriptors.put(key, descriptor);
+        }
+        return IpsPlugin.getDefault().getImage(descriptor);
+    } 
+    
+    /*
+     * Returns an unique key for the given image and severity compination.
+     */
+    private String getKey(Image image, int severity) {
+        if (image == null){
+            return null;
+        }
+        return image.hashCode() + "_" + severity; //$NON-NLS-1$
+    }   
+    
+    /*
      * Update the enable status of the detail buttons
      */
     private void updateDetailButtonStatus(IIpsObjectPart currSelectedDetailObject) {
@@ -1325,8 +1410,25 @@ public class TestCaseTypeSection extends IpsSection  {
                 selectFirstEditFieldInSection(selectedObject);
             }
         });
+        treeViewer.getTree().addKeyListener(new KeyListener() {
+            public void keyPressed(KeyEvent e) {
+                if (e.keyCode == SWT.DEL) {
+                    removeClicked();
+                }
+            }
+            public void keyReleased(KeyEvent e) {
+            }
+        });        
     }
 
+    private void createTreeContextMenu() {
+        MenuManager manager = new MenuManager();
+        manager.setRemoveAllWhenShown(true);
+        manager.addMenuListener(new MenuBuilder());
+        Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
+        treeViewer.getControl().setMenu(contextMenu);
+    }
+    
     /*
      * Selects the first edit field in the section contains the given object
      */
@@ -1663,32 +1765,44 @@ public class TestCaseTypeSection extends IpsSection  {
      * Updates the enable state of the buttons which belongs to the tree
      */
     private void updateTreeButtonStatus(Object object) {
+        TreeActionEnableState treeActionEnableState = evaluateTreeActionEnableState(object);
+        removeButton.setEnabled(treeActionEnableState.removeEnable);
+        addParameterButton.setEnabled(treeActionEnableState.addEnable);
+        moveUpButton.setEnabled(treeActionEnableState.upEnable);
+        moveDownButton.setEnabled(treeActionEnableState.downEnable);
+
+    }
+
+    private TreeActionEnableState evaluateTreeActionEnableState(Object object){
+        TreeActionEnableState treeActionEnableState = new TreeActionEnableState();
         if (object == null){
             object = getSelectedObjectInTree();
         }
-        if (object instanceof ITestPolicyCmptTypeParameter){
-            removeButton.setEnabled(true);
-            addParameterButton.setEnabled(true);
-            moveUpButton.setEnabled(true);
-            moveDownButton.setEnabled(true);
-        } else if (object instanceof ITestParameter){
-            removeButton.setEnabled(true);
-            addParameterButton.setEnabled(false);
-            moveUpButton.setEnabled(true);
-            moveDownButton.setEnabled(true);
-        } else if (object instanceof TestCaseTypeTreeRootElement){
-            removeButton.setEnabled(false);
-            addParameterButton.setEnabled(true);
-            moveUpButton.setEnabled(false);
-            moveDownButton.setEnabled(false);
-        } else{
-            removeButton.setEnabled(false);
-            addParameterButton.setEnabled(false);
-            moveUpButton.setEnabled(false);
-            moveDownButton.setEnabled(false);
-        }
-    }
 
+        if (object instanceof ITestPolicyCmptTypeParameter){
+            treeActionEnableState.removeEnable = true;
+            treeActionEnableState.addEnable = true;
+            treeActionEnableState.upEnable = true;
+            treeActionEnableState.downEnable = true;
+        } else if (object instanceof ITestParameter){
+            treeActionEnableState.removeEnable = true;
+            treeActionEnableState.addEnable = true;
+            treeActionEnableState.upEnable = true;
+            treeActionEnableState.downEnable = true;
+        } else if (object instanceof TestCaseTypeTreeRootElement){
+            treeActionEnableState.removeEnable = false;
+            treeActionEnableState.addEnable = true;
+            treeActionEnableState.upEnable = false;
+            treeActionEnableState.downEnable = false;
+        } else{
+            treeActionEnableState.removeEnable = false;
+            treeActionEnableState.addEnable = false;
+            treeActionEnableState.upEnable = false;
+            treeActionEnableState.downEnable = false;
+        }
+        return treeActionEnableState;
+    }
+    
     /*
      * Refreshs the tree and details
      */

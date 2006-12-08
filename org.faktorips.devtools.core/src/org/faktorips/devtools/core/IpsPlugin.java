@@ -38,6 +38,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
@@ -598,7 +599,11 @@ public class IpsPlugin extends AbstractUIPlugin {
                     defaultContentTypeOfIpsSrcFilesId)));
         }
         try {
-            IEditorPart editorPart = workbench.getActiveWorkbenchWindow().getActivePage().openEditor(editorInput,
+            IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+            if (page == null){
+                return;
+            }
+            IEditorPart editorPart = page.openEditor(editorInput,
                     editors[0].getId());
             if (editorPart == null) {
                 throw new CoreException(new IpsStatus("Error opening the default text editor!!")); //$NON-NLS-1$

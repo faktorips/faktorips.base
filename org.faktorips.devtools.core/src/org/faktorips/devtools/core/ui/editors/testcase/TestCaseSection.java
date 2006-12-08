@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -45,6 +46,8 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
@@ -182,6 +185,18 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     // Listener about content changes
     private TestCaseContentChangeListener changeListener;
 
+    // Contains the menu in the title if available
+    private Menu sectionTitleContextMenu;
+    
+    /*
+     * State class contains the enable state of all actions (for buttons and context menu)
+     */
+    private class TreeActionEnableState{
+        boolean productCmptEnable = false;
+        boolean removeEnable = false;
+        boolean addEnable = false;
+    }
+    
 	/*
      * Action which provides the content type filter.
      */
@@ -409,6 +424,59 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
     }
     
+    /*
+     * Tree context menu builder
+     */
+    private class MenuBuilder extends MenuManager implements IMenuListener {
+        public void menuAboutToShow(IMenuManager manager) {
+            if (!(treeViewer.getSelection() instanceof IStructuredSelection)) {
+                return;
+            }
+            Object selection = ((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
+            TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection);
+            
+            createAddMenu(manager, actionEnableState.addEnable);
+            createRemoveMenu(manager, actionEnableState.removeEnable);
+            createProductCmptMenu(manager, actionEnableState.productCmptEnable);
+        }
+
+        private void createAddMenu(IMenuManager manager, boolean enable) {
+            IAction action = new Action(Messages.TestCaseSection_ButtonAdd, Action.AS_PUSH_BUTTON) {
+                public void run() {
+                    addClicked();
+                }
+            };
+            action.setEnabled(enable);
+            manager.add(action);
+        }
+        private void createRemoveMenu(IMenuManager manager, boolean enable) {
+            IAction action = new Action(Messages.TestCaseSection_ButtonRemove, Action.AS_PUSH_BUTTON) {
+                public void run() {
+                    try {
+                        removeClicked();
+                    } catch (Exception ex) {
+                        IpsPlugin.logAndShowErrorDialog(ex);
+                    }
+                }
+            };
+            action.setEnabled(enable);
+            manager.add(action);
+        }
+        private void createProductCmptMenu(IMenuManager manager, boolean enable) {
+            IAction action = new Action(Messages.TestCaseSection_ButtonProductCmpt, Action.AS_PUSH_BUTTON) {
+                public void run() {
+                    try {
+                        productCmptClicked();
+                    } catch (Exception ex) {
+                        IpsPlugin.logAndShowErrorDialog(ex);
+                    }
+                }
+            };
+            action.setEnabled(enable);
+            manager.add(action);
+        }
+    }
+    
     public TestCaseSection(Composite parent, TestCaseEditor editor, UIToolkit toolkit,
             TestCaseContentProvider contentProvider, final String title, String detailTitle, ScrolledForm form){
         super(parent, Section.NO_TITLE, GridData.FILL_BOTH, toolkit);
@@ -505,7 +573,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         treeViewer.setLabelProvider(new MessageCueLabelProvider(labelProvider));
         treeViewer.setUseHashlookup(true);
         treeViewer.setInput(testCase);
-
+        createTreeContextMenu();
+        
 		// Buttons belongs to the tree structure
 		Composite buttons = toolkit.getFormToolkit().createComposite(structureComposite);
 		buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
@@ -535,7 +604,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         checkForInconsistenciesBetweenTestCaseAndTestCaseType();
 	}
 
-	/**
+    /**
 	 * Creates the tool bar actions.
 	 */
 	private void configureToolBar() {
@@ -751,69 +820,78 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         selectInDetailArea(selected, false);
 	}
 	
+    /*
+     * Evaluates the state of the available actions
+     */
+    private TreeActionEnableState evaluateTreeActionEnableState(Object selection){
+        TreeActionEnableState actionEnableState = new TreeActionEnableState();
+
+        if (selection == null){
+            return actionEnableState;
+        }
+        
+        if (selection instanceof TestCaseTypeRelation){
+            TestCaseTypeRelation relation = (TestCaseTypeRelation) selection;
+            try {
+                IRelation modelRelation = null;
+                if ( relation != null){
+                    modelRelation = relation.findRelation();
+                }
+                if (modelRelation == null){
+                    // failure in test case type definition
+                    // test case type or model relation not found
+                    // no add and removed allowed, because the test case type definition is wrong
+                }else{
+                    actionEnableState.addEnable = true;
+                    actionEnableState.removeEnable = false;
+                }
+            } catch (CoreException e) {
+                // disable add and enable remove button and ignore exception
+                // maybe the test case type model and test case are inconsistence
+                // in this case the whole relation could be deleted but no new childs could be added
+                actionEnableState.removeEnable = true;
+            }
+        }else if (selection instanceof ITestPolicyCmpt){
+            ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) selection;
+            try {
+                ITestPolicyCmptTypeParameter param = testPolicyCmpt.findTestPolicyCmptTypeParameter();
+                // root elements could not be deleted
+                actionEnableState.removeEnable = !((ITestPolicyCmpt)selection).isRoot();
+                if (param != null){
+                    // type parameter exists,
+                    //   enable add button only if relations are defined
+                    actionEnableState.addEnable = param.getTestPolicyCmptTypeParamChilds().length>0;
+                    // product component select button is only enabled if the type parameter specified this
+                    actionEnableState.productCmptEnable = param.isRequiresProductCmpt();
+                }
+            } catch (CoreException e) {
+                // disable add and remove button and ignore exception
+                // maybe the test case type model and test case are inconsistence
+                // in this case the parent relation could be removed but not this child element
+            }
+        }else if (selection instanceof ITestPolicyCmptRelation){
+            // the relation object indicates, that the test policy type parameter for this relation
+            // not exists, therefore only remove is enabled
+            actionEnableState.removeEnable = true;
+        } else if (selection instanceof TestCaseTypeRule){
+            // group of test rule parameter (test rules i.e. validation rules)
+            actionEnableState.addEnable = true;
+        } else if (selection instanceof ITestRule){
+            // a concrete test rule inside the test case
+            actionEnableState.removeEnable = true;
+        }
+        
+        return actionEnableState;
+    }
+    
 	/**
 	 * Update the button state depending on the given object.
 	 */
 	private void updateButtonEnableState(Object selection) {
-		productCmptButton.setEnabled(false);
-		removeButton.setEnabled(false);
-		addButton.setEnabled(false);
-		
-        if (selection == null){
-            return;
-        }
-        
-		if (selection instanceof TestCaseTypeRelation){
-			TestCaseTypeRelation relation = (TestCaseTypeRelation) selection;
-			try {
-				IRelation modelRelation = null;
-				if ( relation != null){
-					modelRelation = relation.findRelation();
-				}
-				if (modelRelation == null){
-					// failure in test case type definition
-					// test case type or model relation not found
-					// no add and removed allowed, because the test case type definition is wrong
-				}else{
-					addButton.setEnabled(true);
-					removeButton.setEnabled(false);
-				}
-			} catch (CoreException e) {
-				// disable add and enable remove button and ignore exception
-				// maybe the test case type model and test case are inconsistence
-				// in this case the whole relation could be deleted but no new childs could be added
-				removeButton.setEnabled(true);
-				return;
-			}
-		}else if (selection instanceof ITestPolicyCmpt){
-			ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) selection;
-			try {
-				ITestPolicyCmptTypeParameter param = testPolicyCmpt.findTestPolicyCmptTypeParameter();
-				// root elements could not be deleted
-				removeButton.setEnabled(!((ITestPolicyCmpt)selection).isRoot());	
-				if (param != null){
-					// type parameter exists,
-					//   enable add button only if relations are defined
-					addButton.setEnabled(param.getTestPolicyCmptTypeParamChilds().length>0);
-					// product component select button is only enabled if the type parameter specified this
-					productCmptButton.setEnabled(param.isRequiresProductCmpt());
-				}
-			} catch (CoreException e) {
-				// disable add and remove button and ignore exception
-				// maybe the test case type model and test case are inconsistence
-				// in this case the parent relation could be removed but not this child element
-			}
-		}else if (selection instanceof ITestPolicyCmptRelation){
-			// the relation object indicates, that the test policy type parameter for this relation
-			// not exists, therefore only remove is enabled
-			removeButton.setEnabled(true);
-		} else if (selection instanceof TestCaseTypeRule){
-            // group of test rule parameter (test rules i.e. validation rules)
-            addButton.setEnabled(true);
-        } else if (selection instanceof ITestRule){
-            // a concrete test rule inside the test case
-            removeButton.setEnabled(true);
-        }
+        TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection);
+        productCmptButton.setEnabled(actionEnableState.productCmptEnable);
+		removeButton.setEnabled(actionEnableState.removeEnable);
+		addButton.setEnabled(actionEnableState.addEnable);
 	}
 	
 	/**
@@ -862,8 +940,30 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				}
 			}
 		});
+        treeViewer.getTree().addKeyListener(new KeyListener(){
+            public void keyPressed(KeyEvent e) {
+                if (e.keyCode == SWT.DEL){
+                    try {
+                        removeClicked();
+                    }
+                    catch (CoreException exception) {
+                        IpsPlugin.logAndShowErrorDialog(exception);
+                    }
+                }
+            }
+            public void keyReleased(KeyEvent e) {
+            }
+        });
 	}
 
+    private void createTreeContextMenu() {
+        MenuManager manager = new MenuManager();
+        manager.setRemoveAllWhenShown(true);
+        manager.addMenuListener(new MenuBuilder());
+        Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
+        treeViewer.getControl().setMenu(contextMenu);
+    }
+    
     /**
      * Select the section which is identified by the unique path.
      */
@@ -1756,8 +1856,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private Control getSectionTitleControl(){
         return form.getContent();
     }
-    
-    private Menu sectionTitleContextMenu;
     
     private void postAddExpectedResultContextMenu(final Control control, final List failureDetails, final boolean isSectionTitleMenu) {
         postAsyncRunnable(new Runnable() {
