@@ -205,7 +205,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         String parentPackageName = getPdPackageFragment().getName();
         String packageName = nameField.getText();
         if(parentPackageName.length() == packageName.length()){
-            return "";
+            return ""; //$NON-NLS-1$
         }
         if (parentPackageName.length() > 0) {
             return packageName.substring(parentPackageName.length() + 1);

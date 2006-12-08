@@ -648,7 +648,7 @@ public class MoveOperation implements IRunnableWithProgress {
             else if (toTest instanceof IProductCmpt) {
                 IProductCmpt productCmpt = (IProductCmpt)toTest;
                 if (!productCmpt.exists()) {
-                    String msg = NLS.bind("Product component {0} is missing", productCmpt.getName()); 
+                    String msg = NLS.bind(Messages.MoveOperation_msgErrorProductCmptIsMissing, productCmpt.getName()); 
                     return new IpsStatus(msg); 
                 }
             }
@@ -686,7 +686,7 @@ public class MoveOperation implements IRunnableWithProgress {
 	
     private void checkTargetIncludedInSources(IIpsElement[] sources, IIpsPackageFragment target) throws CoreException {
         if (isTargetIncludedInSources(sources, target)){
-            throw new CoreException(new IpsStatus("The target is included in the sources."));
+            throw new CoreException(new IpsStatus(Messages.MoveOperation_msgErrorTheTargetIsIncludedInTheSource));
         }
     }
     

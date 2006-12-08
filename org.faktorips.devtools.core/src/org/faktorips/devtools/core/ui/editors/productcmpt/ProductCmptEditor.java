@@ -407,7 +407,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
          * {@inheritDoc}
          */
 		public void propertyChange(PropertyChangeEvent event) {
-            System.out.println("ProductCmptEditor propertyChange, property: " + event.getProperty());
             if (!active) {
 				return;
 			}

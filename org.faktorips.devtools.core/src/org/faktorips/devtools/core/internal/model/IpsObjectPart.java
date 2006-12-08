@@ -80,7 +80,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
      */
     public void delete() {
         if (isDeleted()) {
-            throw new RuntimeException("Object has already been deleted!");
+            throw new RuntimeException("Object has already been deleted!"); //$NON-NLS-1$
         }
         deleted = true;
         if (getContainer()!=null) {

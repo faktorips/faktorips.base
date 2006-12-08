@@ -67,7 +67,7 @@ public class EditFieldChangesBroadcaster {
      */
     private class BroadcastDelayedUIJob extends UIJob {
         public BroadcastDelayedUIJob() {
-            super("BroadcastDelayedUIJob");
+            super("BroadcastDelayedUIJob"); //$NON-NLS-1$
             setSystem(true);
         }
         
@@ -82,7 +82,7 @@ public class EditFieldChangesBroadcaster {
                         broadcastLastEvent();
                     }
                     catch (RuntimeException e) {
-                        logTrace("Error: " + e.getMessage());
+                        logTrace("Error: " + e.getMessage()); //$NON-NLS-1$
                     }
                     running = false;
                 }
@@ -136,11 +136,11 @@ public class EditFieldChangesBroadcaster {
     public void broadcastImmediately(FieldValueChangedEvent event, ValueChangeListener[] listeners) {
         synchronized (mutex) {
             if (currentEvent != null && currentEvent.field == event.field) {
-                logTrace("Skip current broadcast event");
+                logTrace("Skip current broadcast event"); //$NON-NLS-1$
                 return;
             }
             if (isDebugOn()){
-                logTrace("Start broadcast." + (eventCounter==1?"":" Accrued events " + eventCounter));
+                logTrace("Start broadcast." + (eventCounter==1?"":" Accrued events " + eventCounter)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
             
             currentEvent = event;
@@ -160,7 +160,7 @@ public class EditFieldChangesBroadcaster {
             }
             currentEvent = null;
         }
-        logTrace("Finished broadcast");
+        logTrace("Finished broadcast"); //$NON-NLS-1$
     }
 
     /*
@@ -169,7 +169,7 @@ public class EditFieldChangesBroadcaster {
      */
     private void startBroadcastDelayedJobIfNecessary() {
         if (!running){
-            logTrace("Start new job");
+            logTrace("Start new job"); //$NON-NLS-1$
             running = true;
             BroadcastDelayedUIJob fUpdateJob = new BroadcastDelayedUIJob();
             fUpdateJob.schedule(DELAY_TIME);

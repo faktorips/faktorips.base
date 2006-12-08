@@ -290,7 +290,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         } else {
             ILaunchConfiguration launchConfiguration = launch.getLaunchConfiguration();
             // overwrite default max heap size if specified in the current lauch
-            String maxHeapSizeInConfiguration = launchConfiguration.getAttribute(IpsTestRunnerDelegate.ATTR_MAX_HEAP_SIZE, "");
+            String maxHeapSizeInConfiguration = launchConfiguration.getAttribute(IpsTestRunnerDelegate.ATTR_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
             if (StringUtils.isNotEmpty(maxHeapSizeInConfiguration)){
                 setVmConfigMaxHeapSize(vmConfig, maxHeapSizeInConfiguration);
             }
