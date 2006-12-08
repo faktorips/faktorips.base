@@ -61,7 +61,6 @@ public class Messages extends NLS {
     public static String TestCase_Error_WrongInstanceTestPolicyCmpt;
     public static String TestAttributeValue_Error_WrongType;
     public static String TestValue_ErrorWrongType;
-    public static String IpsTestRunner_LaunchingWaitJob_Name;
     public static String TestCase_Error_TestCaseTypeNotFound;
     public static String IpsTestRunner_Error_WrongHeapSize;
     public static String TestPolicyCmpt_ValidationError_ProductCmptNotRequiredButIsRelatedToProductCmpt;
