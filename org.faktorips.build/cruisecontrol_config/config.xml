@@ -44,6 +44,7 @@
                         subjectprefix="[CC ${project.name}]"
                         reportsuccess="always"
                         xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                        css="/opt/cc/docs/cruisecontrol.css"
                         >
                    
                    <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
@@ -104,6 +105,7 @@
                    subjectprefix="[CC ${project.name}]"
                    reportsuccess="always"
                    xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
                    >
               
               <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
@@ -163,6 +165,7 @@
                    subjectprefix="[CC ${project.name}]"
                    reportsuccess="always"
                    xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
                    >
               
               <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
@@ -223,6 +226,7 @@
                    subjectprefix="[CC ${project.name}]"
                    reportsuccess="always"
                    xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
                    >
               
               <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
@@ -282,6 +286,7 @@
                    subjectprefix="[CC ${project.name}]"
                    reportsuccess="always"
                    xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
                    >
               
               <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
@@ -341,6 +346,7 @@
                    subjectprefix="[CC ${project.name}]"
                    reportsuccess="always"
                    xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
                    >
               
               <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
@@ -399,7 +405,7 @@
                    returnname="faktorips-buildqueue"
                    subjectprefix="[CC ${project.name}]"
                    reportsuccess="always"
-                   xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   xsldir="/opt/cc/webapps/cruisecontrol/xsl/"                   css="/opt/cc/docs/cruisecontrol.css"
                    >
               
               <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
@@ -458,6 +464,7 @@
 				   subjectprefix="[CC ${project.name}]"
 				   reportsuccess="always"
 				   xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
 				   >
 				
 				<failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
@@ -514,7 +521,8 @@
                    returnname="faktorips-buildqueue"
                    subjectprefix="[CC ${project.name}]"
                    reportsuccess="always"
-                   xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   xsldir="/opt/cc/webapps/cruisecontrol/xsl/" 
+                   css="/opt/cc/docs/cruisecontrol.css"
                    >
               
               <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
@@ -571,6 +579,7 @@
                    subjectprefix="[CC ${project.name}]"
                    reportsuccess="always"
                    xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
                    >
               
               <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
@@ -633,6 +642,7 @@
                    subjectprefix="[CC ${project.name}]"
                    reportsuccess="always"
                    xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
                    >
               
               <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
@@ -722,6 +732,7 @@
                    subjectprefix="[CC ${project.name}]"
                    reportsuccess="always"
                    xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
 	      >
               
               <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
@@ -809,6 +820,7 @@
                    subjectprefix="[CC ${project.name}]"
                    reportsuccess="always"
                    xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
 	      >
               
               <failure reportWhenFixed="true" address="faktorips-bbv-devel@faktorzehn.de" />
@@ -871,6 +883,7 @@
                    subjectprefix="[CC ${project.name}]"
                    reportsuccess="always"
                    xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
                    >
               
               <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
