@@ -89,10 +89,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         .booleanValue();
     }
 
-    // list of model change listeners that are notified about model changes
+    // set of model change listeners that are notified about model changes
     private Set changeListeners;
 
-    // list of modifcation status change listeners
+    // set of modifcation status change listeners
     private Set modificationStatusChangeListeners;
     
     // a map that contains per thread if changes should be broadcasted to the registered listeners
