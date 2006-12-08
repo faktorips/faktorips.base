@@ -829,24 +829,23 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	private void merge(IFile javaFile, String oldContent,
 			String newContent, String charset) throws CoreException {
 
-		JMerger merger = new JMerger();
-		merger.setControlModel(getJControlModel());
-		merger.setSourceCompilationUnit(merger.createCompilationUnitForContents(newContent));
-		merger.setTargetCompilationUnit(merger.createCompilationUnitForContents(oldContent));
-		String targetContentsBeforeMerge = merger.getTargetCompilationUnitContents();
-		merger.merge();
-		try {
-			String targetContents = merger.getTargetCompilationUnitContents();
+	    try {
+            JMerger merger = new JMerger();
+            merger.setControlModel(getJControlModel());
+            merger.setSourceCompilationUnit(merger.createCompilationUnitForContents(newContent));
+            merger.setTargetCompilationUnit(merger.createCompilationUnitForContents(oldContent));
+            String targetContentsBeforeMerge = merger.getTargetCompilationUnitContents();
+            merger.merge();
+            String targetContents = merger.getTargetCompilationUnitContents();
 
-			if (targetContents == null
-					|| targetContents.equals(targetContentsBeforeMerge)) {
-				return;
-			}
-			javaFile.setContents(new ByteArrayInputStream(targetContents
-					.getBytes(charset)), true, false, null);
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
+            if (targetContents == null || targetContents.equals(targetContentsBeforeMerge)) {
+                return;
+            }
+            javaFile.setContents(new ByteArrayInputStream(targetContents.getBytes(charset)), true, false, null);
+        } catch (Exception e){
+            throw new CoreException(new IpsStatus("An error occurred while trying to merge " + //$NON-NLS-1$
+                    "the generated content with the old content of the file: " + javaFile, e)); //$NON-NLS-1$
+        }
 	}
 
 	private ByteArrayInputStream transform(IIpsSrcFile ipsSrcFile,
