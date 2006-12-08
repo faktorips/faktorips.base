@@ -33,8 +33,8 @@ import org.faktorips.util.ArgumentCheck;
  */
 public abstract class SimpleIpsPartsSection extends IpsSection {
     
-    private IIpsObject pdObject;
-    private IpsPartsComposite pdPartsComposite;
+    private IIpsObject ipsObject;
+    private IpsPartsComposite partsComposite;
 
     public SimpleIpsPartsSection(
             IIpsObject pdObject, 
@@ -43,7 +43,7 @@ public abstract class SimpleIpsPartsSection extends IpsSection {
             UIToolkit toolkit) {
         super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
         ArgumentCheck.notNull(pdObject);
-        this.pdObject = pdObject;
+        this.ipsObject = pdObject;
         initControls();
         setText(title);
     }
@@ -56,32 +56,30 @@ public abstract class SimpleIpsPartsSection extends IpsSection {
             UIToolkit toolkit) {
         super(parent, style, GridData.FILL_BOTH, toolkit);
         ArgumentCheck.notNull(pdObject);
-        this.pdObject = pdObject;
+        this.ipsObject = pdObject;
         initControls();
         setText(title);
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.forms.IpsSection#initClientComposite(org.eclipse.swt.widgets.Composite, org.faktorips.devtools.core.ui.UIToolkit)
+     * {@inheritDoc}
      */
     protected final void initClientComposite(Composite client, UIToolkit toolkit) {
-		pdPartsComposite = createIpsPartsComposite(client, toolkit);
-		addFocusControl(pdPartsComposite);
+		partsComposite = createIpsPartsComposite(client, toolkit);
+		addFocusControl(partsComposite);
     }
     
     protected abstract IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit);
     
     public IIpsObject getIpsObject() {
-        return pdObject;
+        return ipsObject;
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.forms.IpsSection#performRefresh()
+     * {@inheritDoc}
      */
     protected void performRefresh() {
-        pdPartsComposite.refresh();
+        partsComposite.refresh();
     }
     
     /**
@@ -90,20 +88,20 @@ public abstract class SimpleIpsPartsSection extends IpsSection {
      * <code>getSelectedPart</code> on this object.
      */
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
-        pdPartsComposite.addSelectionChangedListener(listener);
+        partsComposite.addSelectionChangedListener(listener);
     }
     
     /**
      * Removes the listener as one being notified when the selected part changes.
      */
     public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-        pdPartsComposite.removeSelectionChangedListener(listener);
+        partsComposite.removeSelectionChangedListener(listener);
     }
 
     /**
      * Returns the part selected in the section or null if no part is selected.
      */
     public final IIpsObjectPart getSelectedPart() {
-        return pdPartsComposite.getSelectedPart();
+        return partsComposite.getSelectedPart();
     }
 }

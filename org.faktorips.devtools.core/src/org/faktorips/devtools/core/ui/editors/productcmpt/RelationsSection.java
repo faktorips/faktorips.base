@@ -236,8 +236,8 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 		}
 		toolkit.getFormToolkit().paintBordersFor(relationRootPane);
 	}
-
-	/**
+    
+    /**
 	 * register a double click listener to open the edit-dialog to edit the relation. 
 	 */
 	private void registerDoubleClickListener() {

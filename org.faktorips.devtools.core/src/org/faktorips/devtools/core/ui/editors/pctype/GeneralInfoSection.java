@@ -76,8 +76,8 @@ public class GeneralInfoSection extends IpsSection  {
     }
 
     /**
-	 * Overridden.
-	 */ 
+     * {@inheritDoc}
+     */
 	protected void initClientComposite(Composite client, UIToolkit toolkit) {
 	    client.setLayout(new GridLayout(1, false));
 	    Composite composite = toolkit.createLabelEditColumnComposite(client);
@@ -134,10 +134,11 @@ public class GeneralInfoSection extends IpsSection  {
     
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void performRefresh() {
         uiController.updateUI();
         
     }
+    
 }

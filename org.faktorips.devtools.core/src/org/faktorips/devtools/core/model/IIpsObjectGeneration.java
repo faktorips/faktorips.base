@@ -62,18 +62,23 @@ public interface IIpsObjectGeneration extends IIpsObjectPart {
     public GregorianCalendar getValidFrom();
     
     /**
-     * Returns the date this generations is no longer valid or null, if this generation
-     * is valid forever.
-     */
-	public GregorianCalendar getValidTo();
-
-    /**
      * Sets the new point in time from that on this generation contains
      * the object's data.
      * 
      * @throws NullPointerException if valid from is null.
      */
     public void setValidFrom(GregorianCalendar validFrom);
+
+    /**
+     * Returns <code>true</code> if the valid from date is in the past, otherwise <code>false</code>.
+     */
+    public boolean isValidFromInPast();
+    
+    /**
+     * Returns the date this generations is no longer valid or null, if this generation
+     * is valid forever.
+     */
+    public GregorianCalendar getValidTo();
 
     /**
      * copies structure and values from the given source.

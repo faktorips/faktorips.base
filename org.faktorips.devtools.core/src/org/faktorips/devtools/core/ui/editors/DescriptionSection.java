@@ -33,7 +33,9 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 
 /**
- *
+ * A section to edit a description.
+ * 
+ * @author Jan Ortmann
  */
 public class DescriptionSection extends IpsSection {
     

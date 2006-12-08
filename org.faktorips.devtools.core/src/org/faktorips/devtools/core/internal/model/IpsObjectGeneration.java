@@ -98,6 +98,23 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         this.validFrom = validFrom;
         valueChanged(oldValue, validFrom);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isValidFromInPast() {
+        GregorianCalendar now = new GregorianCalendar();        
+        // because now contains the current time incliding hour, minute and second, but
+        // validFrom does not, we have to set the fields for hour, minute, second and millisecond
+        // to 0 to get an editable generation which is valid from today. The field AM_PM has to be 
+        // set to AM, too. 
+        now.set(GregorianCalendar.HOUR, 0);
+        now.set(GregorianCalendar.AM_PM, GregorianCalendar.AM);
+        now.set(GregorianCalendar.MINUTE, 0);
+        now.set(GregorianCalendar.SECOND, 0);
+        now.set(GregorianCalendar.MILLISECOND, 0);
+        return validFrom.before(now);
+    }
 
     /**
      * {@inheritDoc}

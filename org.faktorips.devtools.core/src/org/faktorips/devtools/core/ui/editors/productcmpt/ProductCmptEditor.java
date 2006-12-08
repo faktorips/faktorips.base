@@ -56,9 +56,9 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.Prod
  * @author Jan Ortmann
  * @author Thorsten Guenther
  */
-public class ProductCmptEditor extends TimedIpsObjectEditor {
+public class ProductCmptEditor extends TimedIpsObjectEditor implements IPropertyChangeListener {
 
-	private PropertiesPage propertiesPage;
+	private GenerationPropertiesPage generationPropertiesPage;
 
 	private ProductCmptPropertiesPage productCmptPropertiesPage;
 
@@ -69,30 +69,24 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	private boolean active = false;
 
-	/**
+	/*
 	 * Image used in editor titlebar if editor is enabled
 	 */ 
 	private Image enabledImage;
 
-	/**
+	/*
 	 * Image used in editor titlebar if editor is disabled
 	 */
 	private Image disabledImage;
 
-	private boolean generationManuallySet = false;
-	
-	private IPropertyChangeListener propertyChangeListener;
-
-	/**
-	 * Flag that is <code>true</code> if this editor is enabled (what means that the properties-page is editable).
-	 */
-	private boolean enabled = true;
+	// flag is true if the user has manually chosen the active generation
+    private boolean activeGenerationManuallySet = false;
 	
     // The working date that is used in the editor. This has to be stored in the editor
     // as it can differ from the global working date when the user changes the global working date.
     private GregorianCalendar workingDateUsedInEditor = null;
     
-	/**
+	/*
 	 * Storage for the decision of the user not to fix differences existing between attributes
 	 * and config elements to supress repeating questions to the user.
 	 */
@@ -108,11 +102,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	public ProductCmptEditor() {
 		super();
-		propertyChangeListener = new MyPropertyChangeListener();
-		IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(propertyChangeListener);
 		enabledImage = IpsPlugin.getDefault().getImage("ProductCmpt.gif"); //$NON-NLS-1$
-		disabledImage = IpsPlugin.getDefault()
-				.getImage("lockedProductCmpt.gif"); //$NON-NLS-1$
+		disabledImage = IpsPlugin.getDefault().getImage("lockedProductCmpt.gif"); //$NON-NLS-1$
 	}
 
 	/**
@@ -138,14 +129,18 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 					}
 				}
 				
-				propertiesPage = new PropertiesPage(this);
+				generationPropertiesPage = new GenerationPropertiesPage(this);
                 productCmptPropertiesPage = new ProductCmptPropertiesPage(this);
 				descriptionPage = new DescriptionPage(this);
 				
-				addPage(propertiesPage);
+				addPage(generationPropertiesPage);
 				addPage(productCmptPropertiesPage);
 				addPage(descriptionPage);
-                setActiveGeneration(getPreferredGeneration(), false);
+                IIpsObjectGeneration gen = getGenerationEffectiveOnCurrentEffectiveDate();
+                if (gen==null) {
+                    gen = cmpt.getGenerations()[cmpt.getNumOfGenerations()-1];            
+                }
+                setActiveGeneration(gen, false);
 			}
 			else {
 				MissingResourcePage page = new MissingResourcePage(this, getIpsSrcFile());
@@ -163,7 +158,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			throws PartInitException {
 		super.init(site, input);
 	}
-
+    
 	/**
 	 * Returns the product component for the sourcefile edited with this editor.
 	 */
@@ -186,7 +181,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			return;
 		}
 		active = true;
-		checkGeneration();
+        IpsPlugin.getDefault().getIpsPreferences().addChangeListener(this);
+        updateChosenActiveGeneration();
 		checkForInconsistenciesBetweenAttributeAndConfigElements(false);
 	}
 
@@ -195,6 +191,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	public void partDeactivated(IWorkbenchPartReference partRef) {
 		super.partDeactivated(partRef);
+        IpsPlugin.getDefault().getIpsPreferences().removeChangeListener(this);
 		active = false;
 	}
 
@@ -203,30 +200,28 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	public void partClosed(IWorkbenchPartReference partRef) {
 		super.partClosed(partRef);
-		IpsPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(propertyChangeListener);
+		IpsPlugin.getDefault().getIpsPreferences().removeChangeListener(this);
 	}
 
 	/**
 	 * Does what the methodname says :-)
 	 */
-	private void checkForInconsistenciesBetweenAttributeAndConfigElements(boolean force) {
+	protected void checkForInconsistenciesBetweenAttributeAndConfigElements(boolean force) {
         if (!getIpsSrcFile().exists()){
             // dont't check for inconsistencies if the src file not exists,
             // e.g. if the product cmpt editor is open and the product cmpt was moved
             return;
         }
         if (!force) {
-			if (!this.enabled || !getIpsSrcFile().isMutable() || deltasShowing) {
+			if (isContentChangeable()==null && !isContentChangeable().booleanValue() || deltasShowing) {
 	    		// no modifications for read-only-editors
 				return;
 			}
-			
 			if (dontFixDifferencesBetweenAttributeAndConfigElement) {
 			    // user decided not to fix the differences some time ago...
 				return;
 			}			
 		}
-		
 		if (getContainer() == null) {
 			// do nothing, we will be called again later. This avoids that the user
 			// is shown the differences-dialog twice if openening the editor...
@@ -267,7 +262,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
             
             try {
                 model.runAndQueueChangeEvents(new DifferenceFixer(generations, deltas), null);
-                super.refresh();
+                refresh();
             }
             catch (CoreException e) {
                 IpsPlugin.log(e);
@@ -277,29 +272,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			dontFixDifferencesBetweenAttributeAndConfigElement = true;
 		}
         deltasShowing = false;
-	}
-
-	/**
-	 * Triggers a refresh for sturcturals changes. 
-	 */
-	private void refreshStructure() {
-		
-		if (this.propertiesPage != null) {
-			this.propertiesPage.refreshStructure();
-		}
-	}
-	
-	public void refresh() {
-		refreshInternal(false);
-	}
-	
-	public void forceRefresh() {
-		refreshInternal(true);
-	}
-	
-	private void refreshInternal(boolean force) {
-		checkForInconsistenciesBetweenAttributeAndConfigElements(force);
-		super.refresh();
 	}
 
 	/**
@@ -319,13 +291,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 * working date. If not so, a search for a matching generation is started. If nothing is found, the user
 	 * is asked to create a new one. 
 	 */
-	private void checkGeneration() {
-
-		if (!getIpsSrcFile().isMutable()) {
-			setPropertiesEnabled(false);
-			return;
-		}
-
+	private void updateChosenActiveGeneration() {
 		IProductCmpt prod = getProductCmpt();
 		GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
 		IProductCmptGeneration generation = (IProductCmptGeneration) prod
@@ -337,8 +303,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
                 // we found a generation matching the working date, but the found one is not active,
                 // so make it active.
                 this.setActiveGeneration(generation, false);
-            } else {
-                setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
             }
             return;
         }
@@ -346,152 +310,97 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		if (workingDate.equals(workingDateUsedInEditor)) {
 			// check happned before and user decided not to create a new generation - dont bother 
 			// the user with repeating questions.
-			setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
-			return;
+            return;
 		}
-		
-        // TODO Mit Thorsten klaeren: Wieso wird hier 2x auf WorkingMode Browse geprueft. 
-		if (IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse()) {
-			// Editor is on browse-mode.
-			setPropertiesEnabled(false);
-			return;
-		}
-		
 		IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
 		if (prefs.isWorkingModeBrowse()) {
 			// just browsing - show the generation valid at working date
-			if (!generationManuallySet) {
+			if (!activeGenerationManuallySet) {
 				showGenerationEffectiveOn(prefs.getWorkingDate());
-			} 
-			else {
-				setPropertiesEnabled(false);
 			}
 			return;
 		}
-		
 		handleWorkingDateMissmatch(getContainer().getShell());
 	}
 
-	/**
-	 * Enable the properties page if the given generation is editable or disable the page 
-	 * if not. 
-	 */
-	protected void setPropertiesEnabled(IProductCmptGeneration generation) {
-		setPropertiesEnabled(isEditableGenerationIgnoringEditorState(generation));
-	}
-
-	/**
-	 * Set the enablement-state of the properties page.
-	 */
-	private void setPropertiesEnabled(boolean enabled) {
-		this.enabled = enabled && !IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse();
-		if (this.enabled) {
-			this.setTitleImage(enabledImage);
-			checkForInconsistenciesBetweenAttributeAndConfigElements(false);
-		} else {
-			this.setTitleImage(disabledImage);
+    /**
+     * {@inheritDoc}
+     */
+	public void propertyChange(PropertyChangeEvent event) {
+        if (!active) {
+			return;
 		}
-		if (propertiesPage != null) {
-			propertiesPage.setEnabled(this.enabled);
-		}
-	}
-	
-	/**
-	 * Listener to properties with effects on this editor. If changes occur, check if correct generation is displayed.
-	 * 
-	 * @author Thorsten Guenther
-	 */
-	private class MyPropertyChangeListener implements IPropertyChangeListener {
-
-        /**
-         * {@inheritDoc}
-         */
-		public void propertyChange(PropertyChangeEvent event) {
-            if (!active) {
-				return;
-			}
-
-			String property = event.getProperty();
-			if (property.equals(IpsPreferences.WORKING_DATE)) {
-				generationManuallySet = false;
-				checkGeneration();
-                refresh();
-			} else if (property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
-				setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
-				refreshInternal(false);
-			} else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
-				generationManuallySet = false;
-				setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
-				refreshInternal(false);
-			}
+		String property = event.getProperty();
+		if (property.equals(IpsPreferences.WORKING_DATE)) {
+			activeGenerationManuallySet = false;
+			updateChosenActiveGeneration();
+		} else if (property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
+            refresh();
+		} else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
+			activeGenerationManuallySet = false;
+            refresh();
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setActiveGeneration(IIpsObjectGeneration generation) {
-		setActiveGeneration(generation, true);
-	}
-
-	private void setActiveGeneration(IIpsObjectGeneration generation, boolean rememberDecision) {
+	public void setActiveGeneration(IIpsObjectGeneration generation, boolean manuallySet) {
 		if (generation == null) {
 			return;
 		}
 		if (!generation.equals(getActiveGeneration())) {
 			super.setActiveGeneration(generation);
-            updateGenerationPropertiesPageTab();
-			refreshStructure();
+            if (generationPropertiesPage!=null) {
+                generationPropertiesPage.rebuildAfterActiveGenerationhasChanged();
+            }
 		}
-		setPropertiesEnabled((IProductCmptGeneration) generation);
-		generationManuallySet = generationManuallySet || rememberDecision;
+        refresh();
+        activeGenerationManuallySet = manuallySet;
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void setContentChangeable(boolean changeable) {
+        Boolean oldValue = isContentChangeable();
+        super.setContentChangeable(changeable);
+        if (oldValue!=null && oldValue.booleanValue()==changeable) {
+            return;
+        }
+        if (changeable) {
+            this.setTitleImage(enabledImage);
+        } else {
+            this.setTitleImage(disabledImage);
+        }
+    }
 
-	/**
-	 * Checks whether the given generation can be edited respecting the preferences 
-	 */
-	protected boolean isEditableGenerationIgnoringEditorState(IProductCmptGeneration generation) {
+    /**
+     * Returns <code>true</code> if the active generation is editable, otherwise <code>false</code>.
+     */
+    public boolean isActiveGenerationEditable() {
+        return isGenerationEditable((IProductCmptGeneration)getActiveGeneration());
+    }
 
-		if (generation == null) {
+    /**
+     * Returns <code>true</code> if the given generation is editable, otherwise <code>false</code>.
+     */
+    public boolean isGenerationEditable(IProductCmptGeneration gen) {
+        if (gen==null) {
+            return false;
+        }
+        if (!getIpsSrcFile().isMutable()) {
+            return false;
+        }
+        IpsPreferences pref = IpsPlugin.getDefault().getIpsPreferences();
+        if (pref.isWorkingModeBrowse()) {
+            return false;
+        }
+		// if generation is not effective in the current effective date, no editing is possible
+		if (!gen.equals(getGenerationEffectiveOnCurrentEffectiveDate())) {
 			return false;
+		}        
+        if (gen.isValidFromInPast()) {
+            return pref.canEditRecentGeneration();
 		}
-		
-		// if generation does not match the current set working date, no editing will ever
-		// be possible, so return false immediate
-		if (!generation.equals(this.getProductCmpt()
-				.getGenerationByEffectiveDate(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate()))) {
-			return false;
-		}
-
-		GregorianCalendar validFrom = generation.getValidFrom();
-		GregorianCalendar now = new GregorianCalendar();
-        
-        // because now contains the current time incliding hour, minute and second, but
-        // validFrom does not, we have to set the fields for hour, minute, second and millisecond
-        // to 0 to get an editable generation which is valid from today. The field AM_PM has to be 
-        // set to AM, too. 
-        now.set(GregorianCalendar.HOUR, 0);
-        now.set(GregorianCalendar.AM_PM, GregorianCalendar.AM);
-        now.set(GregorianCalendar.MINUTE, 0);
-        now.set(GregorianCalendar.SECOND, 0);
-        now.set(GregorianCalendar.MILLISECOND, 0);
-        
-		boolean editable = true;
-
-		if (now.after(validFrom)) {
-			editable = IpsPlugin.getDefault().getIpsPreferences()
-					.canEditRecentGeneration();
-		}
-
-		IIpsObjectGeneration[] generations = this.getProductCmpt()
-				.getGenerations();
-		for (int i = 0; i < generations.length; i++) {
-			if (generations[i].getValidFrom().after(validFrom)) {
-				return editable;
-			}
-		}
-
-		return editable;
+		return true;
 	}
 	
 	private void showGenerationEffectiveOn(GregorianCalendar date) {
@@ -501,22 +410,11 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		}
 		setActiveGeneration(generation, false);
 	}
-    
-    /**
-     * Update the tab-content (text and image) for the tab of the generation properties page.
-     */
-    protected void updateGenerationPropertiesPageTab() {
-        if (propertiesPage == null){
-            return;
-        }
-        propertiesPage.updateTabname();
-    }
 	
 	private void handleWorkingDateMissmatch(Shell shell) {
 		IProductCmpt cmpt = getProductCmpt();
 		GenerationSelectionDialog dialog = new GenerationSelectionDialog(shell, cmpt);
 		dialog.open();
-	
 		CloseHandler handler = new CloseHandler(dialog);
 		if (!IpsPlugin.getDefault().isTestMode()) {
 			dialog.getShell().addShellListener(handler);
@@ -597,10 +495,9 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 					generation = (IProductCmptGeneration) getProductCmpt()
 							.getFirstGeneration();
 				}
-				IpsPreferences prefs = IpsPlugin.getDefault()
-						.getIpsPreferences();
+                setActiveGeneration(generation, true);
+				IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
 				prefs.setWorkingDate(generation.getValidFrom());
-				setPropertiesEnabled(true);
 				break;
 
 			default:
@@ -632,7 +529,9 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
                 }
             }
             setDirty(getIpsSrcFile().isDirty());
-            refreshStructure();
+            if (generationPropertiesPage!=null) {
+                generationPropertiesPage.rebuildAfterActiveGenerationhasChanged();
+            }
             getContainer().update();
         }
         

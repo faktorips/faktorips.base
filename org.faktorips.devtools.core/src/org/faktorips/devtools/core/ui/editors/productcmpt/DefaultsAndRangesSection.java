@@ -247,5 +247,5 @@ public class DefaultsAndRangesSection extends IpsSection {
 		rootPane.layout(true);
 		rootPane.redraw();
 	}
-	
+
 }

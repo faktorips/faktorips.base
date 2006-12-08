@@ -66,6 +66,17 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
         assertEquals(date, generation.getValidFrom());
         assertTrue(timedObj.getIpsSrcFile().isDirty());
     }
+    
+    public void testIsValidFromInPast() {
+        GregorianCalendar now = new GregorianCalendar();
+        generation.setValidFrom(now);
+        assertFalse(generation.isValidFromInPast());
+
+        GregorianCalendar yesterday = now;
+        yesterday.set(GregorianCalendar.DATE, now.get(GregorianCalendar.DATE)-1);
+        generation.setValidFrom(yesterday);
+        assertTrue(generation.isValidFromInPast());
+    }
 
     public void testRemove() {
         generation.delete();

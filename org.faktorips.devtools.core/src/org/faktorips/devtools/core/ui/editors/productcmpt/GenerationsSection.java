@@ -19,26 +19,20 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -88,44 +82,35 @@ public class GenerationsSection extends SimpleIpsPartsSection{
     }
     
     /**
-     * Set the active generation (which means, the generation to show/edit) to the editor. If the 
+     * Set the active generation (which means, the generation to show/edit) in the editor. If the 
      * generation to set would not be editable, the user is asked if a switch is really wanted.
      */
-    private void setActiveGeneration(IProductCmptGeneration generation, boolean automatic) {
-    	if (generation != null) {
-			IProductCmpt prod = page.getProductCmptEditor().getProductCmpt();
-			IProductCmptGeneration editableGeneration = (IProductCmptGeneration) prod
-					.getGenerationByEffectiveDate(IpsPlugin.getDefault()
-							.getIpsPreferences().getWorkingDate());
-	    	boolean select = generation.equals(editableGeneration);
-
-	    	if (!select && !automatic) {
-	    		String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
-	    		String title = NLS.bind(Messages.GenerationsSection_titleShowGeneration, genName);
-	    		Object[] args = new Object[3];
-	    		args[0] = genName;
-	    		args[1] = generation.getName();
-	    		args[2] = IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate();
-	    		String message = NLS.bind(Messages.GenerationsSection_msgShowGeneration, args);	    		
-                
-                MessageDialog dlg = new MessageDialog(page.getSite().getShell(), title, null, message, MessageDialog.NONE, new String[] {Messages.GenerationsSection_buttonReadOnly, Messages.GenerationsSection_buttonEditable, Messages.GenerationsSection_buttonCancel}, 0);
-                int result = dlg.open();
-                if (result == 0) {
-                    select = true;
-                }
-                else if (result == 1) {
-                    select = true;
-                    IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(generation.getValidFrom());
-                }
-	    	}
-			if (select || automatic) {
-				page.getProductCmptEditor().setActiveGeneration(generation);
-                page.getProductCmptEditor().updateGenerationPropertiesPageTab();
-				if (!automatic) {
-					page.getProductCmptEditor().setActivePage(PropertiesPage.PAGE_ID);
-				}
-			}
-    	}
+    private void setActiveGeneration(IProductCmptGeneration generation) {
+        if (generation==null) {
+            return;
+        }
+        if (generation.equals(page.getProductCmptEditor().getGenerationEffectiveOnCurrentEffectiveDate())) {
+            page.getProductCmptEditor().setActiveGeneration(generation, false);
+            return;
+        }
+		String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
+		String title = NLS.bind(Messages.GenerationsSection_titleShowGeneration, genName);
+		Object[] args = new Object[3];
+		args[0] = genName;
+		args[1] = generation.getName();
+		args[2] = IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate();
+		String message = NLS.bind(Messages.GenerationsSection_msgShowGeneration, args);	    		
+        
+        MessageDialog dlg = new MessageDialog(page.getSite().getShell(), title, null, message, MessageDialog.QUESTION, 
+                new String[] {Messages.GenerationsSection_buttonChangeEffectiveDate, Messages.GenerationsSection_buttonKeepEffectiveDate, Messages.GenerationsSection_buttonCancel}, 0);
+        int result = dlg.open();
+        if (result == 2) {
+            return; // cancel
+        }
+        if (result == 0) {
+            IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(generation.getValidFrom());
+        }
+        page.getProductCmptEditor().setActiveGeneration(generation, true);
     }
     
     private IProductCmptGeneration getActiveGeneration() {
@@ -148,22 +133,15 @@ public class GenerationsSection extends SimpleIpsPartsSection{
 				public void mouseDoubleClick(MouseEvent e) {
 					Object selected = ((IStructuredSelection)getViewer().getSelection()).getFirstElement();
 					if (selected instanceof IProductCmptGeneration) {
-						setActiveGeneration((IProductCmptGeneration)selected, false);
+						setActiveGeneration((IProductCmptGeneration)selected);
 					}
 				}
             });
             
 			addDeleteListener(this);
-			
-			final MyPropertyChangeListener changeListener = new MyPropertyChangeListener(getViewer(), this);
-
-			IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(changeListener);
-			
 			getViewer().getControl().addDisposeListener(new DisposeListener() {
 
 				public void widgetDisposed(DisposeEvent e) {
-					IpsPlugin.getDefault().getPreferenceStore()
-							.removePropertyChangeListener(changeListener);
                     getIpsObject().getIpsModel().removeChangeListener(GenerationsComposite.this);
 				}
 			});
@@ -216,7 +194,7 @@ public class GenerationsSection extends SimpleIpsPartsSection{
 		 * {@inheritDoc}
 		 */
 		public void deleted(IIpsObjectPart part) {
-			setActiveGeneration(getSelectedGeneration(), true);
+			page.getProductCmptEditor().setActiveGeneration(getSelectedGeneration(), true);
 		}
 		
 		private IProductCmptGeneration getSelectedGeneration() {
@@ -272,58 +250,33 @@ public class GenerationsSection extends SimpleIpsPartsSection{
 				if (!(element instanceof IProductCmptGeneration)) {
 					return super.getText(element);
 				}
-				
-				if (element.equals(getActiveGeneration())) {
-					return super.getText(element) + Messages.GenerationsSection_displayPostfix;
-				}
-				
-				return super.getText(element);
+                IProductCmptGeneration gen = (IProductCmptGeneration)element;
+                String comment = "";
+                if (page.getProductCmptEditor().isEffectiveOnCurrentEffectiveDate(gen)) {
+                    comment = comment + " wirksam am " + IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate();
+                }
+                if (gen.isValidFromInPast() && !IpsPlugin.getDefault().getIpsPreferences().canEditRecentGeneration()) {
+                    if (!comment.equals("")) {
+                        comment = comment + ",";
+                    }
+                    comment = comment + " nicht ändernbar, da Beginn in Vergangenheit";
+                }
+				return super.getText(element) + comment;
 			}
 
 			public Image getImage(Object element) {
-				if (element instanceof IProductCmptGeneration) {
-					IProductCmptGeneration generation = (IProductCmptGeneration)element;
-
-					Image image = super.getImage(element); 
-					if (((ProductCmptEditor)page.getEditor()).isEditableGenerationIgnoringEditorState(generation)) {
-						return image;
-					}
-					else {
-						return new Image(Display.getDefault(), image, SWT.IMAGE_DISABLE);
-					}
-				}
-				else {
-					return super.getImage(element);
+                if (!(element instanceof IProductCmptGeneration)) {
+                    return super.getImage(element);
+                }
+				IProductCmptGeneration generation = (IProductCmptGeneration)element;
+				Image image = super.getImage(element); 
+				if (getActiveGeneration().equals(generation)) {
+					return image;
+				} else {
+					return page.getProductCmptEditor().getUneditableGenerationImage(image);
 				}
 			}
     	}
     }
     
-    private class MyPropertyChangeListener implements IPropertyChangeListener {
-		private Viewer viewer;
-
-		private GenerationsComposite composite;
-
-		public MyPropertyChangeListener(Viewer viewer,
-				GenerationsComposite generationsComposite) {
-			this.viewer = viewer;
-			this.composite = generationsComposite;
-		}
-
-		public void propertyChange(PropertyChangeEvent event) {
-			if (viewer.getControl().isDisposed()) {
-				IpsPlugin
-						.log(new IpsStatus(
-								"Disposed GenerationsSections is listening for property changes.")); //$NON-NLS-1$
-				return;
-			}
-
-			String property = event.getProperty();
-			if (property.equals(IpsPreferences.WORKING_DATE)
-					|| property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
-				viewer.refresh();
-				composite.updateButtonEnabledStates();
-			}
-		}
-	}
 }

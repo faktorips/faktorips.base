@@ -42,7 +42,7 @@ public class GeneralInfoSection extends IpsSection {
     private IpsObjectUIController uiController;
 
     private EnumValueField typeField; 
-	
+    
 	public GeneralInfoSection(
 			ITableStructure tableStructure, 
 			Composite parent,
@@ -71,7 +71,7 @@ public class GeneralInfoSection extends IpsSection {
         uiController.add(typeField, ITableStructure.PROPERTY_TYPE);
 	}
 
-	/**
+    /**
 	 * {@inheritDoc}
 	 */
 	protected void performRefresh() {

@@ -209,4 +209,5 @@ public class FormulasSection extends IpsSection {
 		rootPane.redraw();
 	}
 
+
 }

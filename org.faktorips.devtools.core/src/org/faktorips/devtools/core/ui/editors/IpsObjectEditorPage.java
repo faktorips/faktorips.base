@@ -39,6 +39,8 @@ public abstract class IpsObjectEditorPage extends FormPage {
     public final static int HORIZONTAL_SECTION_SPACE = 15;
     public final static int VERTICAL_SECTION_SPACE = 10;
 
+    private boolean contentChangeable = true;
+    
     /**
      * @param editor	The editor the page belongs to.
      * @param id		Page id used to identify the page.
@@ -57,7 +59,7 @@ public abstract class IpsObjectEditorPage extends FormPage {
     }
     
     /**
-     * Return the ips object of the currently editing ips src file.
+     * Return the ips object of the ips src file beeing edited.
      * Returns <code>null</code> if the src file couldn't determine the ips object
      * (e.g. if the src file is stored outside an ips package)
      */
@@ -72,12 +74,12 @@ public abstract class IpsObjectEditorPage extends FormPage {
 	protected final void createFormContent(IManagedForm managedForm) {
 		super.createFormContent(managedForm);
 		ScrolledForm form = managedForm.getForm();
-		if (getIpsObject() == null){
+        if (getIpsObject() == null){
             // no valid ips src file, create nothing
             return;
         }
 		form.setText(getIpsObjectEditor().getUniformPageTitle());
-        FormToolkit toolkit = managedForm.getToolkit();
+		FormToolkit toolkit = managedForm.getToolkit();
 		createPageContent(form.getBody(), new UIToolkit(toolkit));
 		form.setExpandHorizontal(true);
 		form.setExpandVertical(true);
@@ -144,12 +146,11 @@ public abstract class IpsObjectEditorPage extends FormPage {
 	}
 	
     /**
+     * Refreshes the page with the data from the model.
+     * 
      * Default implementation refreshs all ancestors that are instances
      * of <code>IpsSection</code>. By ancestors we mean the children of the
      * composite that represents this page and their children.
-     * <p>
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage#refresh()
      */
     protected void refresh() {
         if (!(getPartControl() instanceof Composite)) {
@@ -171,6 +172,65 @@ public abstract class IpsObjectEditorPage extends FormPage {
         
     }
     
+    /**
+     * Returns <code>true</code> if the content shown on this page is changeable,
+     * otherwise false.
+     */
+    public boolean isContentChangeable() {
+        return contentChangeable;
+    }
     
+    /**
+     * Evaluates the new content changeable state and updates it, if it has changed.
+     * If the user can't change the the editor's content at all, he also can't change the
+     * content shown on this page. If the user can change editor's content in general,
+     * the computeContentChangeableState() is called to evaluate if the content shown on
+     * this page can be changed. 
+     */
+    public void updateContentChangeableState() {
+        if (getIpsObjectEditor().isContentChangeable()==null || !getIpsObjectEditor().isContentChangeable().booleanValue()) {
+            setContentChangeable(false);
+        } else {
+            setContentChangeable(computeContentChangeableState());
+        }
+    }
+
+    /**
+     * Evaluates if if the content shown on this page is changeable by the user. 
+     * This method does not consider the state of the ips object editor. 
+     * 
+     * The default implementation returns <code>true</code>, subclasses may override.
+     */
+    protected boolean computeContentChangeableState() {
+        return true;
+    }
+    
+    /**
+     * Resets the content changeable state to it's default, which is <code>true</code>,
+     * so that it maches the initial state of controls which are be default enabled and editable.
+     */
+    protected void resetContentChangeableState() {
+        contentChangeable = true;
+    }
+        
+    private void setContentChangeable(boolean changeable) {
+        if (changeable==this.contentChangeable) {
+            return;
+        }
+        this.contentChangeable = changeable;
+        setContentChangeable((Composite)getPartControl(), changeable);
+    }
+    
+    private void setContentChangeable(Composite composite, boolean editable) {
+        Control[] children =composite.getChildren();
+        for (int i=0; i<children.length; i++) {
+            if (children[i] instanceof IpsSection) {
+                ((IpsSection)children[i]).setContentChangeable(editable);
+            }
+            else if (children[i] instanceof Composite) {
+                setContentChangeable((Composite)children[i], editable);
+            }
+        }
+    }
 
 }

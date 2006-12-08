@@ -156,6 +156,15 @@ public abstract class TextButtonControl extends ControlComposite{
             listenToControl(text, eventType);
         }
     }
+    
+    public void setEditable(boolean editable) {
+        text.setEditable(editable);
+        button.setEnabled(editable);
+    }
+    
+    public boolean isEditable() {
+        return text.getEditable();
+    }
 
     /**
      * {@inheritDoc}

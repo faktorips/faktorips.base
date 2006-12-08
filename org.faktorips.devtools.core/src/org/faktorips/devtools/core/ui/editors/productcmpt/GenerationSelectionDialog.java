@@ -63,8 +63,19 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
     
     private Combo validFromDates;
 	
+    /**
+     * User's choice was to create a new generation
+     */
 	public static final int CHOICE_CREATE = 0;
+    
+    /**
+     * User's choice was to browse the generation effective at the current effective date.
+     */
 	public static final int CHOICE_BROWSE = 1;
+
+    /**
+     * User's choice was to switch the effective date to the effective from of one of the generations. 
+     */
 	public static final int CHOICE_SWITCH = 2;
 	
 	private static final String STORED_CHOICE_ID = IpsPlugin.PLUGIN_ID + ".generationSelectionDialogChoice"; //$NON-NLS-1$

@@ -20,8 +20,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.text.DateFormat;
 import java.util.GregorianCalendar;
 
-import org.eclipse.jface.dialogs.IPageChangedListener;
-import org.eclipse.jface.dialogs.PageChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.StackLayout;
@@ -38,12 +36,11 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
 
 /**
- * Page to display the properties owned by one product component generations (attributes, relations,
- * ...)
+ * Page to display a generation's properties.
  * 
  * @author Thorsten Guenther
  */
-public class PropertiesPage extends IpsObjectEditorPage {
+public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
 	/**
 	 * Id to identify the page.
@@ -58,8 +55,6 @@ public class PropertiesPage extends IpsObjectEditorPage {
 	private DefaultsAndRangesSection defaultsAndRangesSection;
 
 	private RelationsSection relationsSection;
-
-	private boolean enabled;
 
 	/**
 	 * Layout for this page (see pageRoot) - if the content-structure for this
@@ -86,14 +81,8 @@ public class PropertiesPage extends IpsObjectEditorPage {
 	 * @param editor
 	 *            The owner of this page
 	 */
-	public PropertiesPage(IpsObjectEditor editor) {
+	public GenerationPropertiesPage(IpsObjectEditor editor) {
 		super(editor, PAGE_ID, ""); // Title will be updated based on selected generation //$NON-NLS-1$
-		editor.addPageChangedListener(new IPageChangedListener() {
-			public void pageChanged(PageChangedEvent event) {
-				setEnabled(((ProductCmptEditor) getIpsObjectEditor())
-						.isEditableGenerationIgnoringEditorState(getActiveGeneration()));
-			}
-		});
 	}
 
 	/**
@@ -164,41 +153,8 @@ public class PropertiesPage extends IpsObjectEditorPage {
 		registerSelectionProviderActivation(root);
 		
         pageRoot.layout();
-        
-		setEnabled(enabled);
 	}
-
-	/**
-	 * Enables or disables the page for editing.
-	 */
-	protected void setEnabled(boolean enabled) {
-		this.enabled = enabled
-				&& IpsPlugin.getDefault().getIpsPreferences()
-						.isWorkingModeEdit();
-		if (productAttributesSection != null) {
-			productAttributesSection.setEnabled(this.enabled);
-			formulasSection.setEnabled(this.enabled);
-			defaultsAndRangesSection.setEnabled(this.enabled);
-			relationsSection.setEnabled(this.enabled);
-		}
-	}
-
-	/**
-	 * A call to this method causes the currently displayed composite to be
-	 * disposed. A completely new composite is created and stacked on top of the
-	 * layout. This is done to avoid complex code for structural updates.
-	 */
-	protected void refreshStructure() {
-		// if stack == null, the page contents are not created yet, so do
-		// nothing.
-		if (stack != null) {
-			stack.topControl.dispose();
-			Composite root = new Composite(pageRoot, SWT.NONE);
-			stack.topControl = root;
-			buildContent(toolkit, root);
-		}
-	}
-
+    
 	/**
 	 * Returns the currently active generation set in the owning editor.
 	 */
@@ -207,7 +163,27 @@ public class PropertiesPage extends IpsObjectEditorPage {
 				.getActiveGeneration();
 	}
 
-    protected void updateTabname() {
+    /**
+     * Refreshes the page when the active generation has chanaged.
+     * 
+     * A call to this method causes the currently displayed composite to be
+     * disposed. A completely new composite is created and stacked on top of the
+     * layout. This is done to avoid complex code for structural updates.
+     */
+    protected void rebuildAfterActiveGenerationhasChanged() {
+        // if stack == null, the page contents are not created yet, so do
+        // nothing.
+        if (stack != null) {
+            stack.topControl.dispose();
+            Composite root = new Composite(pageRoot, SWT.NONE);
+            stack.topControl = root;
+            buildContent(toolkit, root);
+            updateTabname();
+            resetContentChangeableState();
+        }
+    }
+
+    private void updateTabname() {
         DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
         String validRange = format.format(getActiveGeneration().getValidFrom().getTime());
 
@@ -239,5 +215,11 @@ public class PropertiesPage extends IpsObjectEditorPage {
         }
         updateTabText(partControl.getParent());
     }
+
+    protected boolean computeContentChangeableState() {
+        return ((ProductCmptEditor)getIpsObjectEditor()).isActiveGenerationEditable();
+    }
+    
+    
     
 }

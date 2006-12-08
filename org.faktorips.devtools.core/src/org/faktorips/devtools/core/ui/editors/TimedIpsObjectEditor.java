@@ -19,6 +19,9 @@ package org.faktorips.devtools.core.ui.editors;
 
 import java.util.GregorianCalendar;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
@@ -30,10 +33,8 @@ import org.faktorips.devtools.core.model.ITimedIpsObject;
 public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
 
 	private IIpsObjectGeneration generation;
-	
-    /**
-     * 
-     */
+	private Image uneditableGenerationImage;
+    
     public TimedIpsObjectEditor() {
         super();
     }
@@ -53,17 +54,42 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
     }
     
     /**
-     * Returns the generation which is preferred to be displayed to match the 
-     * working date set in preferences.
+     * Returns <code>true</code> if the given generation is effective on the
+     * effective date currently set in the preferences.
      */
-    public IIpsObjectGeneration getPreferredGeneration() {
-        GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-        ITimedIpsObject object = (ITimedIpsObject)getIpsObject();
-        IIpsObjectGeneration prefGen = object.getGenerationByEffectiveDate(workingDate);
-        if (prefGen==null && object.getNumOfGenerations()>0) {
-        	prefGen = object.getGenerations()[object.getNumOfGenerations()-1];            
+    public boolean isEffectiveOnCurrentEffectiveDate(IIpsObjectGeneration gen) {
+        if (gen==null) {
+            return false;
         }
-        return prefGen;    	
+        return gen.equals(getGenerationEffectiveOnCurrentEffectiveDate());
     }
     
+    /**
+     * Returns the generation that is effective on the effective date currently set
+     * in the preferences.
+     */
+    public IIpsObjectGeneration getGenerationEffectiveOnCurrentEffectiveDate() {
+        GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
+        ITimedIpsObject object = (ITimedIpsObject)getIpsObject();
+        return object.getGenerationByEffectiveDate(workingDate);
+    }
+    
+    /**
+     * Returns the image for uneditable generations.
+     */
+    public Image getUneditableGenerationImage(Image editableImage) {
+        if (uneditableGenerationImage==null) {
+            uneditableGenerationImage = new Image(Display.getDefault(), editableImage, SWT.IMAGE_DISABLE);
+        }
+        return uneditableGenerationImage;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void disposeInternal() {
+        if (uneditableGenerationImage!=null) {
+            uneditableGenerationImage.dispose();
+        }
+    }
 }

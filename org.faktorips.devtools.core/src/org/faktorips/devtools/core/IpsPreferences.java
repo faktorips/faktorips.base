@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDisplay;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -109,6 +110,14 @@ public class IpsPreferences {
     	prefStore.setDefault(ENABLE_GENERATING, true);
         prefStore.setDefault(IPSTESTRUNNER_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
         prefStore.setDefault(ENUM_TYPE_DISPLAY, EnumTypeDisplay.NAME_AND_ID.getId());
+    }
+    
+    public void addChangeListener(IPropertyChangeListener listener) {
+        prefStore.addPropertyChangeListener(listener);
+    }
+    
+    public void removeChangeListener(IPropertyChangeListener listener) {
+        prefStore.removePropertyChangeListener(listener);
     }
 
     /**

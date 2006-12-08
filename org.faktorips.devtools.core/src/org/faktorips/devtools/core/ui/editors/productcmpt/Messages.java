@@ -89,12 +89,16 @@ public class Messages extends NLS {
 	public static String GenerationsSection_titleShowGeneration;
 
 	public static String GenerationsSection_msgShowGeneration;
+    
+    public static String GenerationsSection_buttonKeepEffectiveDate;
+
+    public static String GenerationsSection_buttonChangeEffectiveDate;
+
+    public static String GenerationsSection_buttonCancel;
 
 	public static String ProductAttributesSection_valueGenerationValidToUnlimited;
 
 	public static String RulesSection_title;
-
-	public static String GenerationsSection_displayPostfix;
 
 	public static String CardinalityPanel_labelOptional;
 
@@ -137,12 +141,6 @@ public class Messages extends NLS {
 	public static String GenerationSelectionDialog_description;
 
 	public static String ProductAttributesSection_labelRuntimeId;
-
-    public static String GenerationsSection_buttonReadOnly;
-
-    public static String GenerationsSection_buttonEditable;
-
-    public static String GenerationsSection_buttonCancel;
 
     public static String ProductAttributesSection_labelValidTo;
 

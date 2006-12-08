@@ -229,5 +229,6 @@ public class GenerationAttributesSection extends IpsSection {
 			editControls.add(text);
 			controller.add(text, toDisplay, IConfigElement.PROPERTY_VALUE);		
 		}
-	}		
+	}
+
 }

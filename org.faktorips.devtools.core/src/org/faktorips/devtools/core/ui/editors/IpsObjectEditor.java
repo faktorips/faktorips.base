@@ -76,7 +76,10 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     // Activates or deactivates the refreshing of this editor
     private boolean active = false;
 
-    // the ISelectionProvider of this IEditorPart
+    // 
+    private Boolean contentChangeable;
+    
+    // the editor's ISelectionProvider 
     private SelectionProviderDispatcher selectionProviderDispatcher;
 
     /**
@@ -91,7 +94,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     /**
-     * Returns the ips object of the currently editing ips src file, returns <code>null</code> if
+     * Returns the ips object of the ips src file currently edited, returns <code>null</code> if
      * the ips object not exists (e.g. if the ips src file is outside an ips package.
      */
     public IIpsObject getIpsObject() {
@@ -116,7 +119,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     /**
      * {@inheritDoc}
      */
-    public void init(final IEditorSite site, IEditorInput input) throws PartInitException {
+    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         super.init(site, input);
         IIpsModel model = IpsPlugin.getDefault().getIpsModel();
 
@@ -135,7 +138,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         if (ipsSrcFile == null) {
             throw new PartInitException("Unsupported editor input type " + input.getClass().getName()); //$NON-NLS-1$
         }
-        
+
         // check if the ips src file is valid and could be edit in the editor,
         // if the ips src file doesn't exists (e.g. ips src file outside ips package)
         // close the editor and open the current file in the default text editor
@@ -151,7 +154,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         
         site.getPage().addPartListener(this);
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-        addListener();
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
 
         selectionProviderDispatcher = new SelectionProviderDispatcher();
         site.setSelectionProvider(selectionProviderDispatcher);
@@ -198,9 +201,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     protected void setActivePage(int pageIndex) {
         super.setActivePage(pageIndex);
         refresh();
-        if (!ipsSrcFile.isMutable()) {
-            super.getActivePageInstance().getPartControl().setEnabled(false);
-        }
     }
 
     /**
@@ -212,7 +212,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     /**
-     * Refresh the controls on the active page with the data from the model.<br>
+     * Refreshes the controls on the active page with the data from the model.<br>
      * Calls to this refresh method are ignored if the activate attribute is set to
      * <code>false</code>.
      */
@@ -222,8 +222,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
         try {
             // here we have to request the ips object once, to make sure that 
-            // it's state is is synchronized with enclosing resource.
-            // otherwise if some part of the ui keep a reference the ips object, it won't contain
+            // it's state is is synchronized with the enclosing resource.
+            // otherwise if some part of the ui keeps a reference to the ips object, it won't contain
             // the correct state.
             if (ipsSrcFile.exists()){
                 // synchronize only if the src file exists (e.g. if the editor is open and the file was moved to another location
@@ -238,16 +238,54 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             IpsObjectEditorPage page = (IpsObjectEditorPage)editor;
             page.refresh();
         }
+        updateContentChangeableState();
     }
-
+    
+    /**
+     * Evaluates the new content changeable state and updates it, if it has changed.
+     */
+    public void updateContentChangeableState() {
+        setContentChangeable(computeContentChangeableState());
+        IEditorPart editor = getActivePageInstance();
+        if (editor instanceof IpsObjectEditorPage) {
+            IpsObjectEditorPage page = (IpsObjectEditorPage)editor;
+            page.updateContentChangeableState();
+        }
+    }
+    
+    /**
+     * Evaluates if if the content shown in this editor is changeable by the user. 
+     * The content is changeable if the the ips source file shown
+     * in the editor is mutable and the working mode preference is set to edit mode.
+     * 
+     * Subclasses may override this method.
+     */
+    protected boolean computeContentChangeableState() {
+        return ipsSrcFile.isMutable() && IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit();
+    }
+    
+    /**
+     * Returns <code>true</code> if the content shown in this editor is changeable by the user, 
+     * otherwise <code>false</code>. 
+     */
+    public final Boolean isContentChangeable() {
+        return contentChangeable;
+    }
+    
+    /**
+     * Sets the content changeable state.
+     */
+    protected void setContentChangeable(boolean changeable) {
+        this.contentChangeable = Boolean.valueOf(changeable);
+    }
+    
     /**
      * {@inheritDoc}
      */
     public void contentsChanged(ContentChangeEvent event) {
-        // no refresh neccessary - this method is only called if this editor is the active one.
-        // we only need a refresh here if the content of one field of this editor will have an
-        // effect on another field in this editor, but this is not the case yet.
-        refresh();
+        if (event.getIpsSrcFile().equals(ipsSrcFile)) {
+            refresh();
+        }
     }
     
     /**
@@ -375,8 +413,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         if (part == this) {
             ipsSrcFile.discardChanges();
             part.getSite().getPage().removePartListener(this);
+            IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
             ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-            removeListener();
         }
     }
 
@@ -432,24 +470,16 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
         this.active = active;
         if (active) {
-            addListener();
+            IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+            IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(this);
             setDirty(ipsSrcFile.isDirty());
             refresh();
         } else {
-            removeListener();
+            IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+            IpsPlugin.getDefault().getIpsModel().removeModificationStatusChangeListener(this);
         }
     }
-
-    private void addListener() {
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
-        IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(this);
-    }
-
-    private void removeListener() {
-        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
-        IpsPlugin.getDefault().getIpsModel().removeModificationStatusChangeListener(this);
-    }
-
+    
     /**
      * Returns the SelectionProviderDispatcher which is the ISelectionProvider for this IEditorPart.
      */

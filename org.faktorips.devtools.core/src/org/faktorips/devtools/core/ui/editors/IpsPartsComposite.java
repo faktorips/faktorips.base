@@ -101,7 +101,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     public IpsPartsComposite(
-            IIpsObject pdObject, 
+            IIpsObject ipsObject, 
             Composite parent,
             boolean canCreate,
             boolean canEdit,
@@ -110,7 +110,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             boolean showEditButton,
             UIToolkit toolkit) {
         super(parent);
-        this.ipsObject = pdObject;
+        this.ipsObject = ipsObject;
         this.canCreate = canCreate;
         this.canEdit = canEdit;
         this.canDelete = canDelete;
@@ -127,9 +127,53 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         return ipsObject;
     }
 
+    public boolean isCanCreate() {
+        return canCreate;
+    }
+    
+    public void setContentChangeable(boolean flag) {
+        this.canCreate = flag;
+        this.canEdit = flag;
+        this.canDelete = flag;
+        this.canMove = flag;
+        updateButtonEnabledStates();
+    }
+
+    public void setCanCreate(boolean canCreate) {
+        this.canCreate = canCreate;
+        updateButtonEnabledStates();
+    }
+
+    public boolean isCanDelete() {
+        return canDelete;
+    }
+
+    public void setCanDelete(boolean canDelete) {
+        this.canDelete = canDelete;
+        updateButtonEnabledStates();
+    }
+
+    public boolean isCanEdit() {
+        return canEdit;
+        
+    }
+
+    public void setCanEdit(boolean canEdit) {
+        this.canEdit = canEdit;
+        updateButtonEnabledStates();
+    }
+
+    public boolean isCanMove() {
+        return canMove;
+    }
+
+    public void setCanMove(boolean canMove) {
+        this.canMove = canMove;
+        updateButtonEnabledStates();
+    }
+
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.forms.ViewerButtonSection#createViewer(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
+     * {@inheritDoc}
      */
     protected Viewer createViewer(Composite parent, UIToolkit toolkit) {
 		table = toolkit.getFormToolkit().createTable(parent, SWT.NONE);
@@ -301,8 +345,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.forms.ViewerButtonSection#updateButtonEnabledStates()
+     * {@inheritDoc}
      */
     protected void updateButtonEnabledStates() {
 		boolean itemSelected = false;
@@ -313,7 +356,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 		    newButton.setEnabled(true);    
 		}
 		if (editButton!=null) {
-		    editButton.setEnabled(itemSelected);    
+		    editButton.setEnabled(itemSelected);
 		}
 		if (deleteButton!=null) {
 		    deleteButton.setEnabled(itemSelected);    
@@ -446,6 +489,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
     
     private ArrayList deleteListeners = new ArrayList();
+    
     protected void addDeleteListener(IDeleteListener listener) {
     	deleteListeners.add(listener);
     }

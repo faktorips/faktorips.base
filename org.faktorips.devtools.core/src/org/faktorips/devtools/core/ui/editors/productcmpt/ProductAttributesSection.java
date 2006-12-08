@@ -212,15 +212,14 @@ public class ProductAttributesSection extends IpsSection {
 	 * {@inheritDoc}
 	 */
 	public void setEnabled(boolean enabled) {
-		if (isEnabled() == enabled) {
+		// TODO: pruefen, ob dies die setEditable() Methode ist
+        if (isEnabled() == enabled) {
 			return;
 		}
 		
 		if (isDisposed()) {
 			return;
 		}
-		
-		super.setEnabled(enabled);
 		
 		// to get the disabled look, we have to disable all the input-fields manually :-(
 		for (Iterator iter = editControls.iterator(); iter.hasNext();) {
@@ -235,8 +234,7 @@ public class ProductAttributesSection extends IpsSection {
 		rootPane.layout(true);
 		rootPane.redraw();
 	}
-	
-	
+
 	private class ProductCmptTypeField extends IpsObjectField {
 
 		/**
@@ -291,8 +289,9 @@ public class ProductAttributesSection extends IpsSection {
             policyCmptType.getTextControl().removeModifyListener(this);
 			uiMasterController.updateUI();
 			uiMasterController.updateModel();
-			editor.forceRefresh();
+			editor.checkForInconsistenciesBetweenAttributeAndConfigElements(false);
             policyCmptType.getTextControl().addModifyListener(this);
 		}
-	};
+	}
+
 }

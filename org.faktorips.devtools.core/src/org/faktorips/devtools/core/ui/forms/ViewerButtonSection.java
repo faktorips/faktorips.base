@@ -42,8 +42,7 @@ public abstract class ViewerButtonSection extends IpsSection {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.forms.IpsSection#initClientComposite(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
+     * {@inheritDoc}
      */
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
 		GridLayout clientLayout = new GridLayout(2, false);
