@@ -72,8 +72,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private static final String EXECUTEASSERTS_JAVADOC = "EXECUTEASSERTS_JAVADOC";
     private static final String EXECUTEBUSINESSLOGIC_TODO = "EXECUTEBUSINESSLOGIC_TODO";
     private static final String ASSERT_TODO = "ASSERT_TODO";
-    private static final String ASSERT_DUMMY_EXPECTED = "ASSERT_DUMMY_EXPECTED";
-    private static final String ASSERT_DUMMY_ACTUAL = "ASSERT_DUMMY_ACTUAL";
+    private static final String RUNTIME_EXCEPTION_NO_ASSERTS = "RUNTIME_EXCEPTION_NO_ASSERTS";
     private static final String INPUT_PREFIX = "INPUT_PREFIX";
     private static final String EXPECTED_RESULT_PREFIX = "EXPECTED_RESULT_PREFIX";
     private static final String RULE_NOT_VIOLATED_PREFIX = "RULE_NOT_VIOLATED_PREFIX";
@@ -592,8 +591,11 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         
         // generate dummy assert with todo remark
         body.appendln("// TODO " + getLocalizedText(getIpsSrcFile(), ASSERT_TODO));
-        body.appendln("assertEquals(\"" + getLocalizedText(getIpsSrcFile(), ASSERT_DUMMY_EXPECTED) + "\", \"" + getLocalizedText(getIpsSrcFile(), ASSERT_DUMMY_ACTUAL) + "\", result);");
-        
+        body.appendln("throw new ");
+        body.appendClassName(RuntimeException.class);
+        body.append("(\"");
+        body.append(getLocalizedText(getIpsSrcFile(), RUNTIME_EXCEPTION_NO_ASSERTS));
+        body.append("\");");
         codeBuilder.method(Modifier.PUBLIC, "void", "executeAsserts", new String[]{"result"}, 
                 new String[]{IpsTestResult.class.getName()}, body, javaDoc, ANNOTATION_MODIFIABLE);
     }
