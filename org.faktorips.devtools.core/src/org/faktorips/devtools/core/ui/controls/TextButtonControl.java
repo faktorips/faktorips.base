@@ -51,7 +51,7 @@ public abstract class TextButtonControl extends ControlComposite{
      * @param parent The parent composite.
      * @param toolkit The UIToolkit to use for the creation of the controlls.
      * @param buttonText The label for the button.
-     * @param smallMargins <code>true</code> to get as smallest margins as possible.
+     * @param smallMargins <code>true</code> to get the smallest margin possible.
      * @param buttonHeightHint The preferred height or -1.
      */
     public TextButtonControl(
@@ -134,7 +134,6 @@ public abstract class TextButtonControl extends ControlComposite{
         return immediatelyNotifyListener;
     }
 
-
     public String getText() {
         return text.getText();
     }
@@ -157,21 +156,4 @@ public abstract class TextButtonControl extends ControlComposite{
         }
     }
     
-    public void setEditable(boolean editable) {
-        text.setEditable(editable);
-        button.setEnabled(editable);
-    }
-    
-    public boolean isEditable() {
-        return text.getEditable();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setEnabled(boolean enabled) {
-    	super.setEnabled(enabled);
-    	text.setEnabled(enabled);
-    	button.setEnabled(enabled);
-    }
 }

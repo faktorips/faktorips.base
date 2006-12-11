@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.ui.IWorkbenchPage;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.SwitchDataChangeableSupport;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -36,43 +37,60 @@ import org.faktorips.util.message.MessageList;
 /**
  * @author Jan Ortmann
  */
-public abstract class EditDialog extends TitleAreaDialog {
+public abstract class EditDialog extends TitleAreaDialog implements SwitchDataChangeableSupport  {
 
     private String windowTitle;
     private boolean tabFolderUsed;
     protected UIToolkit uiToolkit = new UIToolkit(null);
+    private boolean dataChangeable;
     
-    /**
-     * The editor which was active when this dialog was opened or null if this editor was
-     * not an <code>IpsObjectEditor</code>
-     */
-    private IpsObjectEditor parentEditor;
-
 	public EditDialog(Shell shell, String windowTitle) {
-	    this(shell, windowTitle, false);
+	    this(shell, windowTitle, false, true);
 	}
 	
-	public EditDialog(Shell shell, String windowTitle, boolean useTabFolder) {
+    public EditDialog(Shell shell, String windowTitle, boolean useTabFolder) {
+        this(shell, windowTitle, useTabFolder, true);
+    }
+
+    public EditDialog(Shell shell, String windowTitle, boolean useTabFolder, boolean dataChangeable) {
 		super(shell);
 		setShellStyle(getShellStyle() | SWT.MAX | SWT.RESIZE);
 		this.windowTitle = windowTitle;
-		tabFolderUsed = useTabFolder;
+        this.dataChangeable = dataChangeable;
+		this.tabFolderUsed = useTabFolder;
 		IWorkbenchPage page = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		if (page == null) {
 			return;
 		}
 	}
-	
-	public void setWindowTitle(String newTitle) {
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDataChangeable() {
+        return dataChangeable;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+	public void setDataChangeable(boolean changeable) {
+	    if (dataChangeable = changeable) {
+	        return;
+        }
+        this.dataChangeable = changeable;
+        uiToolkit.setDataChangeable(getDialogArea(), dataChangeable);
+    }
+
+    public void setWindowTitle(String newTitle) {
 	    windowTitle = newTitle;
 	    if (getShell()!=null) {
 	        getShell().setText(newTitle);    
 	    }
 	}
-
-	/**
-	 * Overridden method.
-	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+    
+    /**
+     * {@inheritDoc}
 	 */
 	protected final Control createDialogArea(Composite parent) {
 	    getShell().setText(windowTitle);
@@ -93,6 +111,7 @@ public abstract class EditDialog extends TitleAreaDialog {
 		}
 		try {
 			Composite workArea = createWorkArea(panel);
+            uiToolkit.setDataChangeable(workArea, dataChangeable);
 			if (workArea.getLayoutData()==null) {
 			    workArea.setLayoutData(new GridData(GridData.FILL_BOTH));    
 			}
@@ -101,7 +120,7 @@ public abstract class EditDialog extends TitleAreaDialog {
 		}
 		return composite;
 	}
-	
+    
 	protected abstract Composite createWorkArea(Composite parent) throws CoreException;
 	
 	protected void updateTitleInTitleArea() {
@@ -129,12 +148,5 @@ public abstract class EditDialog extends TitleAreaDialog {
 	    }
 	}
 
-	/**
-	 * Returns the editor which is the parent editor to this one - which means
-	 * that the parent editor contains the control which has opened this editor.
-	 */
-	IpsObjectEditor getParentEditor() {
-		return parentEditor;
-	}
 }	
 

@@ -31,7 +31,8 @@ import org.faktorips.util.StringUtil;
 
 
 /**
- *
+ * Control to edit a referennce to an ips object in a text control with an associated browse button
+ * that allows to browse the available objects.
  */
 abstract class IpsObjectRefControl extends TextButtonControl {
     

@@ -52,8 +52,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection#createIpsPartsComposite(org.eclipse.swt.widgets.Composite, org.faktorips.devtools.core.ui.UIToolkit)
+     * {@inheritDoc}
      */
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new AttributesComposite((IPolicyCmptType)getIpsObject(), parent, toolkit);
@@ -110,6 +109,14 @@ public class AttributesSection extends SimpleIpsPartsSection {
 			});
         }
         
+        /**
+         * {@inheritDoc}
+         */
+        public void setDataChangeable(boolean flag) {
+            super.setDataChangeable(flag);
+            overrideButton.setEnabled(flag);
+        }
+        
         public IPolicyCmptType getPcType() {
             return (IPolicyCmptType)getIpsObject();
         }
@@ -150,17 +157,15 @@ public class AttributesSection extends SimpleIpsPartsSection {
         }
 
         /**
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createContentProvider()
-         */ 
+         * {@inheritDoc}
+         */
         protected IStructuredContentProvider createContentProvider() {
             return new AttributeContentProvider();
         }
 
         /**
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#newIpsPart()
-         */ 
+         * {@inheritDoc}
+         */
         protected IIpsObjectPart newIpsPart() {
             IAttribute a = getPcType().newAttribute();
             a.setProductRelevant(getPcType().isConfigurableByProductCmptType());
@@ -168,11 +173,10 @@ public class AttributesSection extends SimpleIpsPartsSection {
         }
 
         /**
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createEditDialog(org.faktorips.devtools.core.model.IIpsObjectPart, org.eclipse.swt.widgets.Shell)
+         * {@inheritDoc}
          */
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            return new AttributeEditDialog((IAttribute)part, shell);
+            return new AttributeEditDialog((IAttribute)part, shell, isDataChangeable());
         }
         
         protected int[] moveParts(int[] indexes, boolean up) {

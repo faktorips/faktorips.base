@@ -19,6 +19,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -31,6 +33,7 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.IpsSrcFileImmutable;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
@@ -64,8 +67,9 @@ import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
  * </li>
  * </ol>
  */
-public abstract class IpsObjectEditor extends FormEditor implements ContentsChangeListener, IModificationStatusChangeListener, IPartListener2,
-        IResourceChangeListener {
+public abstract class IpsObjectEditor extends FormEditor 
+    implements ContentsChangeListener, IModificationStatusChangeListener, IPartListener2,
+        IResourceChangeListener, IPropertyChangeListener {
 
     // the file that's being edited (if any)
     private IIpsSrcFile ipsSrcFile;
@@ -158,7 +162,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         selectionProviderDispatcher = new SelectionProviderDispatcher();
         site.setSelectionProvider(selectionProviderDispatcher);
-        setActive(true);
     }
 
     private void initFromStorageEditorInput(IStorageEditorInput input) throws PartInitException {
@@ -238,44 +241,44 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             IpsObjectEditorPage page = (IpsObjectEditorPage)editor;
             page.refresh();
         }
-        updateContentChangeableState();
+        updateDataChangeableState();
     }
     
     /**
-     * Evaluates the new content changeable state and updates it, if it has changed.
+     * Evaluates the new data changeable state and updates it, if it has changed.
      */
-    public void updateContentChangeableState() {
-        setContentChangeable(computeContentChangeableState());
+    public void updateDataChangeableState() {
+        setDataChangeable(computeDataChangeableState());
         IEditorPart editor = getActivePageInstance();
         if (editor instanceof IpsObjectEditorPage) {
             IpsObjectEditorPage page = (IpsObjectEditorPage)editor;
-            page.updateContentChangeableState();
+            page.updateDataChangeableState();
         }
     }
     
     /**
-     * Evaluates if if the content shown in this editor is changeable by the user. 
-     * The content is changeable if the the ips source file shown
+     * Evaluates if if the data shown in this editor is changeable by the user. 
+     * The data is changeable if the the ips source file shown
      * in the editor is mutable and the working mode preference is set to edit mode.
      * 
      * Subclasses may override this method.
      */
-    protected boolean computeContentChangeableState() {
+    protected boolean computeDataChangeableState() {
         return ipsSrcFile.isMutable() && IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit();
     }
     
     /**
-     * Returns <code>true</code> if the content shown in this editor is changeable by the user, 
+     * Returns <code>true</code> if the data shown in this editor is changeable by the user, 
      * otherwise <code>false</code>. 
      */
-    public final Boolean isContentChangeable() {
+    public final Boolean isDataChangeable() {
         return contentChangeable;
     }
     
     /**
      * Sets the content changeable state.
      */
-    protected void setContentChangeable(boolean changeable) {
+    protected void setDataChangeable(boolean changeable) {
         this.contentChangeable = Boolean.valueOf(changeable);
     }
     
@@ -371,7 +374,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             return;
         }
         setActive(true);
-        refresh();
     }
 
     /**
@@ -472,11 +474,13 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         if (active) {
             IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
             IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(this);
+            IpsPlugin.getDefault().getIpsPreferences().addChangeListener(this);
             setDirty(ipsSrcFile.isDirty());
             refresh();
         } else {
             IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
             IpsPlugin.getDefault().getIpsModel().removeModificationStatusChangeListener(this);
+            IpsPlugin.getDefault().getIpsPreferences().removeChangeListener(this);
         }
     }
     
@@ -501,4 +505,14 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      */
     protected void disposeInternal() {
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void propertyChange(PropertyChangeEvent event) {
+        if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
+            refresh();        
+        }
+    }
+    
 }

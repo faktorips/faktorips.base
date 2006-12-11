@@ -22,7 +22,6 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.DisposeEvent;
@@ -56,7 +55,7 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.Prod
  * @author Jan Ortmann
  * @author Thorsten Guenther
  */
-public class ProductCmptEditor extends TimedIpsObjectEditor implements IPropertyChangeListener {
+public class ProductCmptEditor extends TimedIpsObjectEditor {
 
 	private GenerationPropertiesPage generationPropertiesPage;
 
@@ -181,7 +180,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IProperty
 			return;
 		}
 		active = true;
-        IpsPlugin.getDefault().getIpsPreferences().addChangeListener(this);
         updateChosenActiveGeneration();
 		checkForInconsistenciesBetweenAttributeAndConfigElements(false);
 	}
@@ -213,7 +211,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IProperty
             return;
         }
         if (!force) {
-			if (isContentChangeable()==null && !isContentChangeable().booleanValue() || deltasShowing) {
+			if (isDataChangeable()==null && !isDataChangeable().booleanValue() || deltasShowing) {
 	    		// no modifications for read-only-editors
 				return;
 			}
@@ -338,8 +336,9 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IProperty
             refresh();
 		} else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
 			activeGenerationManuallySet = false;
-            refresh();
+            // refresh is done in superclass
 		}
+        super.propertyChange(event);
 	}
 
 	public void setActiveGeneration(IIpsObjectGeneration generation, boolean manuallySet) {
@@ -359,9 +358,9 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IProperty
     /**
      * {@inheritDoc}
      */
-    protected void setContentChangeable(boolean changeable) {
-        Boolean oldValue = isContentChangeable();
-        super.setContentChangeable(changeable);
+    protected void setDataChangeable(boolean changeable) {
+        Boolean oldValue = isDataChangeable();
+        super.setDataChangeable(changeable);
         if (oldValue!=null && oldValue.booleanValue()==changeable) {
             return;
         }

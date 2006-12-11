@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
+import org.faktorips.devtools.core.ui.SwitchDataChangeableSupport;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.MessageList;
@@ -55,7 +56,7 @@ import org.faktorips.util.message.MessageList;
  * A composite that shows parts in a table viewer and provides an
  * area containing a new, edit and delete button.
  */
-public abstract class IpsPartsComposite extends ViewerButtonComposite implements ISelectionProviderActivation{
+public abstract class IpsPartsComposite extends ViewerButtonComposite implements ISelectionProviderActivation, SwitchDataChangeableSupport {
 
     // the object the parts belong to.
     private IIpsObject ipsObject;
@@ -92,6 +93,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 	
     // the table view of this composite 
     private TableViewer viewer;
+
+    private UIToolkit uiToolkit;
     
     public IpsPartsComposite(
             IIpsObject pdObject, 
@@ -116,6 +119,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         this.canDelete = canDelete;
         this.canMove = canMove;
         this.showEditButton = showEditButton;
+        this.uiToolkit = toolkit;
         initControls(toolkit);
         toolkit.getFormToolkit().adapt(this);
     }
@@ -126,16 +130,31 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     public IIpsObject getIpsObject() {
         return ipsObject;
     }
+    
+    public UIToolkit getUiToolkit() {
+        return uiToolkit;
+    }
 
     public boolean isCanCreate() {
         return canCreate;
     }
     
-    public void setContentChangeable(boolean flag) {
-        this.canCreate = flag;
-        this.canEdit = flag;
-        this.canDelete = flag;
-        this.canMove = flag;
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDataChangeable() {
+        return canCreate || canEdit || canMove || canDelete;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDataChangeable(boolean flag) {
+        table.setEnabled(true);
+        canCreate = flag;
+        canEdit = flag;
+        canDelete = flag;
+        canMove = flag;
         updateButtonEnabledStates();
     }
 
@@ -353,19 +372,20 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 			itemSelected = true;
 		}
 		if (newButton!=null) {
-		    newButton.setEnabled(true);    
+		    newButton.setEnabled(canCreate);    
 		}
 		if (editButton!=null) {
 		    editButton.setEnabled(itemSelected);
+            editButton.setText((canEdit ? "Edit" : "Show"));
 		}
 		if (deleteButton!=null) {
-		    deleteButton.setEnabled(itemSelected);    
+		    deleteButton.setEnabled(itemSelected && canDelete);    
 		}
 		if (upButton!=null) {
-		    upButton.setEnabled(itemSelected);    
+		    upButton.setEnabled(itemSelected && canMove);    
 		}
 		if (downButton!=null) {
-		    downButton.setEnabled(itemSelected);    
+		    downButton.setEnabled(itemSelected && canMove);    
 		}
     }
     
@@ -408,6 +428,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             	return;
             }
             dialog.open();
+            dialog.setDataChangeable(isDataChangeable());
             if (dialog.getReturnCode()==Window.CANCEL) {
                 part.setState(memento);
                 if (!dirty) {

@@ -59,12 +59,62 @@ public class UIToolkit {
 	
 	public static final int DEFAULT_WIDTH = 100;
 
+    /**
+     * Adjusts the control so that the data shown in it can be either edited or not according to the
+     * given changeable value. If this control is a composite all it's children (and recursivly their children)
+     * are adjusted as well.
+     */
+    public void setDataChangeable(Control c, boolean changeable) {
+        if (c==null) {
+            return;
+        }
+        if (c instanceof SwitchDataChangeableSupport) {
+            ((SwitchDataChangeableSupport)c).setDataChangeable(changeable);
+            return;
+        }
+        if (c instanceof Text) {
+            if (formToolkit!=null) {
+                ((Text)c).setEditable(changeable);
+            } else {
+                ((Text)c).setEnabled(changeable);
+            }
+            return;
+        }
+        if (c instanceof Checkbox) {
+            ((Checkbox)c).setEnabled(changeable);
+            return;
+        }
+        if (c instanceof Combo) {
+            ((Combo)c).setEnabled(changeable);
+            return;
+        }
+        if (c instanceof Button) {
+            ((Button)c).setEnabled(changeable);
+            return;
+        }
+        // note: this has to definitly the last if statement as other control might derive from composite
+        if (c instanceof Composite) {
+            Control[] children = ((Composite)c).getChildren();
+            for (int i = 0; i < children.length; i++) {
+                setDataChangeable(children[i], changeable);
+            }
+        } 
+    }
+    
 	/**
 	 * Creates a new toolkit.
 	 */
 	public UIToolkit(FormToolkit formToolkit) {
 		this.formToolkit = formToolkit;
 	}
+    
+    /**
+     * Returns <code>true</code> if this is toolkit used for forms,
+     * otherwise <code>false</code>.
+     */
+    public boolean isFormToolkit() {
+        return formToolkit != null;
+    }
 
 	public FormToolkit getFormToolkit() {
 		return formToolkit;
@@ -542,9 +592,6 @@ public class UIToolkit {
 	}
 
     public Group createGroup(Composite parent, int style, String text) {
-//      if (formToolkit != null) {
-//          throw new RuntimeException("Not implemented for forms!"); //$NON-NLS-1$
-//      }
         Group newGroup = new Group(parent, style);
         if (text != null) {
             newGroup.setText(text);

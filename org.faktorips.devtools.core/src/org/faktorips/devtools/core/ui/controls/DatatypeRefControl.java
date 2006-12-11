@@ -80,8 +80,7 @@ public class DatatypeRefControl extends TextButtonControl {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.ReferenceControl#selectObjectInDialog()
+     * {@inheritDoc}
      */
     protected void buttonClicked() {
         try {

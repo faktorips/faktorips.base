@@ -170,8 +170,8 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
      * @param parentShell
      * @param title
      */
-    public AttributeEditDialog(IAttribute attribute, Shell parentShell) {
-        super(attribute, parentShell, Messages.AttributeEditDialog_title, true);
+    public AttributeEditDialog(IAttribute attribute, Shell parentShell, boolean dataChangeable) {
+        super(attribute, parentShell, Messages.AttributeEditDialog_title, true, dataChangeable);
         this.attribute = attribute;
         this.rule = attribute.findValueSetRule();
         extFactory = new ExtensionPropertyControlFactory(attribute.getClass());
@@ -670,7 +670,10 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 		}
 		
 		public void doEnablement(boolean enabled) {
-			datatypeField.getControl().setEnabled(enabled);
+			if (!isDataChangeable()) {
+			    return; // don't enabled if the dialog does not allow to change anything
+            }
+            datatypeField.getControl().setEnabled(enabled);
 			modifierField.getControl().setEnabled(enabled);
 			attributeTypeField.getControl().setEnabled(enabled);
 			productRelevantField.getControl().setEnabled(enabled);

@@ -21,21 +21,18 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.Section;
+import org.faktorips.devtools.core.ui.SwitchDataChangeableSupport;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controls.Checkbox;
-import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.util.ArgumentCheck;
 
 
 /**
  * A section is an area of the user interface.
  */
-public abstract class IpsSection extends Composite {
+public abstract class IpsSection extends Composite implements SwitchDataChangeableSupport {
     
     private Section section;
     private boolean isRefreshing = false;
@@ -155,68 +152,18 @@ public abstract class IpsSection extends Composite {
      * Returns <code>true</code> if the content in this section can be changed by the user,
      * otherwise <code>false</code>.
      */
-    public final boolean isContentChangeable() {
+    public final boolean isDataChangeable() {
         return changeable;
     }
     
     /**
      * Enables or disables that the section's content can be changed by the user.
      */
-    public final void setContentChangeable(boolean changeable) {
+    public final void setDataChangeable(boolean changeable) {
         this.changeable = changeable;
-        setContentChangeableInternal(changeable);
+        toolkit.setDataChangeable(section.getClient(), changeable);
     }
     
-    protected void setContentChangeableInternal(boolean changeable) {
-        setContentChangeableForChildren(section, changeable);
-    }
-    
-    protected void setContentChangeableForChildren(Composite parent, boolean changeable) {
-        Control[] children = parent.getChildren();
-        for (int i = 0; i < children.length; i++) {
-            if (children[i] instanceof Combo) {
-                setContentChangeableForCombo((Combo)children[i], changeable);
-                continue;
-            }
-            if (children[i] instanceof Composite) {
-                Composite child = (Composite)children[i];
-                if (setContentChangeableForComposite(child, changeable)) {
-                    setContentChangeableForChildren(child, changeable);
-                }
-                continue;
-            } else {
-                setContentChangeableForBasicControl(children[i], changeable);
-            }
-        }
-    }
-    
-    protected boolean setContentChangeableForComposite(Composite composite, boolean changeable) {
-        if (composite instanceof IpsPartsComposite) {
-            ((IpsPartsComposite)composite).setContentChangeable(changeable);
-            return false;
-        }
-        return true;
-    }
-    
-    protected void setContentChangeableForBasicControl(Control control, boolean changeable) {
-        if (control instanceof Text) {
-            ((Text)control).setEnabled(changeable);
-            return;
-        }
-        if (control instanceof Checkbox) {
-            ((Checkbox)control).setEnabled(changeable);
-            return;
-        }
-        if (control instanceof Combo) {
-            ((Combo)control).setEnabled(changeable);
-            return;
-        }
-    }
-    
-    protected void setContentChangeableForCombo(Combo combo, boolean changeable) {
-        combo.setEnabled(changeable);
-    }
-
     /**
      * Set the successor for focus handling. This successor is only needed
      * if no focusControl is set for this section. If so, the initial setFocus-call

@@ -21,6 +21,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -39,6 +40,7 @@ public abstract class IpsObjectEditorPage extends FormPage {
     public final static int HORIZONTAL_SECTION_SPACE = 15;
     public final static int VERTICAL_SECTION_SPACE = 10;
 
+    private UIToolkit uiToolkit;
     private boolean contentChangeable = true;
     
     /**
@@ -52,6 +54,7 @@ public abstract class IpsObjectEditorPage extends FormPage {
             String id, 
             String tabPageName) {
         super(editor, id, tabPageName);
+        uiToolkit = new UIToolkit(new FormToolkit(Display.getCurrent()));
     }
     
     protected IpsObjectEditor getIpsObjectEditor() {
@@ -181,56 +184,44 @@ public abstract class IpsObjectEditorPage extends FormPage {
     }
     
     /**
-     * Evaluates the new content changeable state and updates it, if it has changed.
-     * If the user can't change the the editor's content at all, he also can't change the
-     * content shown on this page. If the user can change editor's content in general,
-     * the computeContentChangeableState() is called to evaluate if the content shown on
+     * Evaluates the new data changeable state and updates it, if it has changed.
+     * If the user can't change the data shown in the editor's at all, he also can't change the
+     * data shown on this page. If the user can change editor's data in general,
+     * the computeContentChangeableState() is called to evaluate if the data shown on
      * this page can be changed. 
      */
-    public void updateContentChangeableState() {
-        if (getIpsObjectEditor().isContentChangeable()==null || !getIpsObjectEditor().isContentChangeable().booleanValue()) {
-            setContentChangeable(false);
+    public void updateDataChangeableState() {
+        if (getIpsObjectEditor().isDataChangeable()==null || !getIpsObjectEditor().isDataChangeable().booleanValue()) {
+            setDataChangeable(false);
         } else {
-            setContentChangeable(computeContentChangeableState());
+            setDataChangeable(computeDataChangeableState());
         }
     }
 
     /**
-     * Evaluates if if the content shown on this page is changeable by the user. 
+     * Evaluates if if the data shown on this page is changeable by the user. 
      * This method does not consider the state of the ips object editor. 
      * 
      * The default implementation returns <code>true</code>, subclasses may override.
      */
-    protected boolean computeContentChangeableState() {
+    protected boolean computeDataChangeableState() {
         return true;
     }
     
     /**
-     * Resets the content changeable state to it's default, which is <code>true</code>,
-     * so that it maches the initial state of controls which are be default enabled and editable.
+     * Resets the data changeable state to it's default, which is <code>true</code>,
+     * so that it machtes the initial state of controls which are by default enabled / editable.
      */
-    protected void resetContentChangeableState() {
+    protected void resetDataChangeableState() {
         contentChangeable = true;
     }
         
-    private void setContentChangeable(boolean changeable) {
+    private void setDataChangeable(boolean changeable) {
         if (changeable==this.contentChangeable) {
             return;
         }
         this.contentChangeable = changeable;
-        setContentChangeable((Composite)getPartControl(), changeable);
+        uiToolkit.setDataChangeable(getPartControl(), changeable);
     }
     
-    private void setContentChangeable(Composite composite, boolean editable) {
-        Control[] children =composite.getChildren();
-        for (int i=0; i<children.length; i++) {
-            if (children[i] instanceof IpsSection) {
-                ((IpsSection)children[i]).setContentChangeable(editable);
-            }
-            else if (children[i] instanceof Composite) {
-                setContentChangeable((Composite)children[i], editable);
-            }
-        }
-    }
-
 }

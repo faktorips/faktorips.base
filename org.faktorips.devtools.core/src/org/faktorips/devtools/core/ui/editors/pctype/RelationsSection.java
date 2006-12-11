@@ -58,8 +58,8 @@ public class RelationsSection extends SimpleIpsPartsSection {
     }
 
 	/** 
-     * Overridden.
-     */
+     * {@inheritDoc}
+	 */
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new RelationsComposite((IPolicyCmptType)getIpsObject(), parent, toolkit);
     }
@@ -79,48 +79,50 @@ public class RelationsSection extends SimpleIpsPartsSection {
         }
         
         /** 
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createContentProvider()
+         * {@inheritDoc}
          */
         protected IStructuredContentProvider createContentProvider() {
             return new RelationContentProvider();
         }
 
         /**
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createLabelProvider()
+         * {@inheritDoc}
          */
         protected ILabelProvider createLabelProvider() {
             return new RelationLabelProvider();
         }
         
         /** 
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#newIpsPart()
+         * {@inheritDoc}
          */
         protected IIpsObjectPart newIpsPart() {
             return getPcType().newRelation();
         }
         
+        /**
+         * {@inheritDoc}
+         */
+        public void setDataChangeable(boolean flag) {
+            super.setDataChangeable(flag);
+            getUiToolkit().setDataChangeable(wizardNewButton, flag);
+        }
+
         /** 
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createEditDialog(org.faktorips.devtools.core.model.IIpsObjectPart, org.eclipse.swt.widgets.Shell)
+         * {@inheritDoc}
          */
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
             return new RelationEditDialog((IRelation)part, shell);
         }
         
         /**
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#moveParts(int[], boolean)
+         * {@inheritDoc}
          */
         protected int[] moveParts(int[] indexes, boolean up) {
             return getPcType().moveRelations(indexes, up);
         }
 
         /**
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createButtons(Composite buttons, UIToolkit toolkit)
+         * {@inheritDoc}
          */
         protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
         	createNewWizardButton(buttons, toolkit);

@@ -179,7 +179,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             stack.topControl = root;
             buildContent(toolkit, root);
             updateTabname();
-            resetContentChangeableState();
+            resetDataChangeableState();
         }
     }
 
@@ -216,7 +216,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         updateTabText(partControl.getParent());
     }
 
-    protected boolean computeContentChangeableState() {
+    protected boolean computeDataChangeableState() {
         return ((ProductCmptEditor)getIpsObjectEditor()).isActiveGenerationEditable();
     }
     

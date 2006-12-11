@@ -79,14 +79,20 @@ public abstract class AbstractCheckbox extends ControlComposite {
     }
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.swt.widgets.Widget#addListener(int, org.eclipse.swt.widgets.Listener)
+     * {@inheritDoc}
      */
     public void addListener(int eventType, Listener listener) {
         super.addListener(eventType, listener);
         if (eventType != SWT.Paint) {
             listenToControl(button, eventType);
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean getEnabled() {
+        return button.getEnabled();
     }
 
     /**

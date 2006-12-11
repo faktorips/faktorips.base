@@ -215,10 +215,10 @@ public abstract class ChangeParametersControl extends Composite {
 	        Composite parent, 
 	        int style, 
 	        String label, 
-	        IIpsProject pdProject) {
+	        IIpsProject project) {
 	    
 		super(parent, style);
-		this.ipsProject= pdProject;
+		this.ipsProject= project;
 		this.label = label;
 	}
 	

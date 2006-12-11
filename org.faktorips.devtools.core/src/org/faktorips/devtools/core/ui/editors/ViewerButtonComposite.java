@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 public abstract class ViewerButtonComposite extends Composite {
 
 	private Viewer viewer;
-	
+    
     public ViewerButtonComposite(Composite parent) {
         super(parent, SWT.NONE);
     }

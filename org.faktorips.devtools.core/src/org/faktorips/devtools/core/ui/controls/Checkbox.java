@@ -28,10 +28,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  */
 public class Checkbox extends AbstractCheckbox {
     
-    /**
-     * @param parent
-     * @param toolkit
-     */
     public Checkbox(Composite parent, UIToolkit toolkit) {
         super(parent, toolkit, SWT.CHECK);
     }

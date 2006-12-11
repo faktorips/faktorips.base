@@ -50,7 +50,7 @@ public abstract class IpsPartEditDialog extends EditDialog {
             IIpsObjectPart part, 
             Shell parentShell, 
             String windowTitle) {
-        this(part, parentShell, windowTitle, false);
+        this(part, parentShell, windowTitle, false, true);
     }
     
     public IpsPartEditDialog(
@@ -58,7 +58,16 @@ public abstract class IpsPartEditDialog extends EditDialog {
             Shell parentShell, 
             String windowTitle,
             boolean useTabFolder) {
-        super(parentShell, windowTitle, useTabFolder);
+        this(part, parentShell, windowTitle, useTabFolder, true);
+    }
+
+        public IpsPartEditDialog(
+            IIpsObjectPart part, 
+            Shell parentShell, 
+            String windowTitle,
+            boolean useTabFolder,
+            boolean dataChangeable) {
+        super(parentShell, windowTitle, useTabFolder, dataChangeable);
         uiController = createUIController(part);
         oldState = part.getIpsObject().newMemento();
         dirty = part.getIpsObject().getIpsSrcFile().isDirty();
@@ -88,9 +97,6 @@ public abstract class IpsPartEditDialog extends EditDialog {
 		uiController.getIpsObjectPart().getIpsObject().setState(oldState);
 		if (!dirty) {
 			uiController.getIpsObjectPart().getIpsObject().getIpsSrcFile().markAsClean();
-		}
-		if (getParentEditor() != null) {
-			getParentEditor().refresh();
 		}
     }
     

@@ -98,7 +98,7 @@ public class RulesSection extends SimpleIpsPartsSection {
         				rule.delete();
         				return null;
         			}
-        			AttributeEditDialog dialog = new AttributeEditDialog(attr, getShell());
+        			AttributeEditDialog dialog = new AttributeEditDialog(attr, getShell(), isDataChangeable());
         			dialog.showValidationRulePage();
         			return dialog;
         		}
