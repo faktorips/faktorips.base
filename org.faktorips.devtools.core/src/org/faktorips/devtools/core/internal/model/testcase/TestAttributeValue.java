@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -227,10 +228,13 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
         IAttribute modelAttribute = testAttribute.findAttribute();
         if (modelAttribute != null){
             boolean defaultSet = false;
-            // set default as specified in the product cmpt
-            if (modelAttribute.isProductRelevant() && generation != null){
+            // set default as specified in the product cmpt 
+            // if attribute is product relevant, a generation exists 
+            // and the attribute is changeable
+            if (modelAttribute.isProductRelevant() && generation != null
+                    && modelAttribute.getAttributeType().equals(AttributeType.CHANGEABLE)) {
                 IConfigElement ce = generation.getConfigElement(modelAttribute.getName());
-                if (ce != null){
+                if (ce != null) {
                     this.setValue(ce.getValue());
                     defaultSet = true;
                 }
