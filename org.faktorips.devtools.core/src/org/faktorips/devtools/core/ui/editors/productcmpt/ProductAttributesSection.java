@@ -289,7 +289,7 @@ public class ProductAttributesSection extends IpsSection {
             policyCmptType.getTextControl().removeModifyListener(this);
 			uiMasterController.updateUI();
 			uiMasterController.updateModel();
-			editor.checkForInconsistenciesBetweenAttributeAndConfigElements(false);
+			editor.checkForInconsistenciesBetweenAttributeAndConfigElements();
             policyCmptType.getTextControl().addModifyListener(this);
 		}
 	}

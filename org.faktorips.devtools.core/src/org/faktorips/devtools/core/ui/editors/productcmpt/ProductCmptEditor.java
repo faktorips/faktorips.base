@@ -124,7 +124,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 						this.close(false);
 						return;
 					} else {
-						checkForInconsistenciesBetweenAttributeAndConfigElements(false);
+						checkForInconsistenciesBetweenAttributeAndConfigElements();
 					}
 				}
 				
@@ -181,7 +181,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		}
 		active = true;
         updateChosenActiveGeneration();
-		checkForInconsistenciesBetweenAttributeAndConfigElements(false);
+		checkForInconsistenciesBetweenAttributeAndConfigElements();
 	}
 
 	/**
@@ -204,22 +204,20 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	/**
 	 * Does what the methodname says :-)
 	 */
-	protected void checkForInconsistenciesBetweenAttributeAndConfigElements(boolean force) {
+	protected void checkForInconsistenciesBetweenAttributeAndConfigElements() {
+        if (isDataChangeable()==null || !isDataChangeable().booleanValue() || deltasShowing) {
+            // no modifications for read-only-editors
+            return;
+        }
         if (!getIpsSrcFile().exists()){
             // dont't check for inconsistencies if the src file not exists,
             // e.g. if the product cmpt editor is open and the product cmpt was moved
             return;
         }
-        if (!force) {
-			if (isDataChangeable()==null && !isDataChangeable().booleanValue() || deltasShowing) {
-	    		// no modifications for read-only-editors
-				return;
-			}
-			if (dontFixDifferencesBetweenAttributeAndConfigElement) {
-			    // user decided not to fix the differences some time ago...
-				return;
-			}			
-		}
+		if (dontFixDifferencesBetweenAttributeAndConfigElement) {
+		    // user decided not to fix the differences some time ago...
+			return;
+		}			
 		if (getContainer() == null) {
 			// do nothing, we will be called again later. This avoids that the user
 			// is shown the differences-dialog twice if openening the editor...
