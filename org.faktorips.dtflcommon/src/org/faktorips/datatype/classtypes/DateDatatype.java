@@ -33,7 +33,9 @@ import org.faktorips.datatype.ValueClassDatatype;
  */
 public class DateDatatype extends ValueClassDatatype {
 
-    private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    private final static String format = "yyyy-MM-dd";
+    
+    private static SimpleDateFormat formatter = new SimpleDateFormat(format);
     
     /**
      * Creates a new DateDatatype where the name is the short class name.
@@ -50,17 +52,16 @@ public class DateDatatype extends ValueClassDatatype {
     }
     
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.ValueDatatype#getValue(java.lang.String)
+     * {@inheritDoc}
      */
     public Object getValue(String value) {
-        
         if (StringUtils.isEmpty(value)) {
             return null;
         }
-        
         try{
+            if (value.charAt(4)!='-' || value.charAt(7)!='-') {
+                throw new IllegalArgumentException("Date value must have the format " + format);
+            }
             return formatter.parse(value);
         }
         catch(ParseException e){
@@ -73,12 +74,9 @@ public class DateDatatype extends ValueClassDatatype {
     }
 
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.ValueDatatype#valueToString(java.lang.Object)
+     * {@inheritDoc}
      */
     public String valueToString(Object value) {
-        
         if(value == null){
             return null;
         }

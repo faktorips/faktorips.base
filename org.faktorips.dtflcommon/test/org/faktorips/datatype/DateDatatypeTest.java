@@ -31,16 +31,15 @@ import junit.framework.TestCase;
  */
 public class DateDatatypeTest extends TestCase {
 
-    private DateDatatype dataType;
+    private DateDatatype datatype;
     
     public void setUp(){
-        dataType = new DateDatatype();
+        datatype = new DateDatatype();
     }
     
     public void testGetValue(){
-        
         String valueStr = "2000-01-01";
-        Date date = (Date)dataType.getValue(valueStr);
+        Date date = (Date)datatype.getValue(valueStr);
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         assertEquals(2000, cal.get(Calendar.YEAR));
@@ -49,31 +48,39 @@ public class DateDatatypeTest extends TestCase {
         assertEquals(0, cal.get(Calendar.SECOND));
         assertEquals(0, cal.get(Calendar.MILLISECOND));
         
-        assertNull(dataType.getValue(null));
+        assertNull(datatype.getValue(null));
         
         try{
-            dataType.getValue("01.01.2000");
+            datatype.getValue("01.01.2000");
             fail();
         }
         catch(Exception e){
         }
     }
     
+    public void testIsParsable() {
+        assertTrue(datatype.isParsable("2000-01-01"));
+        assertTrue(datatype.isParsable(null));
+        assertFalse(datatype.isParsable("2000.01.01"));
+        assertFalse(datatype.isParsable("01-01-2001"));
+        
+    }
+    
     public void testValueToString(){
         
         Calendar cal = Calendar.getInstance();
         cal.set(2000, Calendar.FEBRUARY, 20);
-        String valueStr = dataType.valueToString(cal.getTime());
+        String valueStr = datatype.valueToString(cal.getTime());
         String[] tokens = valueStr.split("-");
         assertEquals(3, tokens.length);
         assertEquals(tokens[0], "2000");
         assertEquals(tokens[1], "02");
         assertEquals(tokens[2], "20");
         
-        assertNull(dataType.valueToString(null));
+        assertNull(datatype.valueToString(null));
         
         try{
-            dataType.valueToString(cal);
+            datatype.valueToString(cal);
             fail();
         }
         catch(Exception e){

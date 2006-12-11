@@ -37,7 +37,7 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
 	}
 	
 	public ValueClassDatatype(Class clazz, String name) {
-		this.clazz = clazz;
+	    this.clazz = clazz;
 		this.name = name;
         Class[] interfaces = clazz.getInterfaces();
         for (int i = 0; i < interfaces.length; i++) {
