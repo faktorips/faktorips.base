@@ -25,7 +25,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ClassNameUtil {
 
-    /**
+    /** 
      * Takes a name like a class name and removes the package information from the beginning.
      */
     public final static String unqualifiedName(String qualifiedName) {
