@@ -71,6 +71,9 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
     public IIpsObjectGeneration getGenerationEffectiveOnCurrentEffectiveDate() {
         GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
         ITimedIpsObject object = (ITimedIpsObject)getIpsObject();
+        if (object==null) {
+            return null;
+        }
         return object.getGenerationByEffectiveDate(workingDate);
     }
     

@@ -220,7 +220,7 @@ public abstract class IpsObjectEditor extends FormEditor
      * <code>false</code>.
      */
     protected void refresh() {
-        if (!active) {
+        if (!active && !ipsSrcFile.exists()) {
             return;
         }
         try {
@@ -229,8 +229,6 @@ public abstract class IpsObjectEditor extends FormEditor
             // otherwise if some part of the ui keeps a reference to the ips object, it won't contain
             // the correct state.
             if (ipsSrcFile.exists()){
-                // synchronize only if the src file exists (e.g. if the editor is open and the file was moved to another location
-                // then the corresponding ips src file doesn't exists any more, in this case the editor will be closed)
                 ipsSrcFile.getIpsObject(); 
             }
         } catch (CoreException e) {
