@@ -36,16 +36,24 @@ public class ExprEvaluator {
     // The compiler used to compile the formula into standard Java sourcecode
     private ExprCompiler compiler;
 
+    private ClassLoader classLoader;
+    
     /**
      * Constructs a new processor for the given compiler.
      */
     public ExprEvaluator(ExprCompiler compiler) {
-
         ArgumentCheck.notNull(compiler);
         this.compiler = compiler;
-
     }
 
+    /**
+     * Constructs a new processor for the given compiler and class loader.
+     */
+    public ExprEvaluator(ExprCompiler compiler, ClassLoader classLoader) {
+        this(compiler);
+        this.classLoader = classLoader;
+    }
+    
     /**
      * Evaluates and returns the result of the given expression.
      */
@@ -53,13 +61,15 @@ public class ExprEvaluator {
         // compiles the expression to Java sourcecode
         JavaCodeFragment fragment = compileExpressionToJava(expression);
         Interpreter i = new Interpreter(); // Construct an interpreter
+        if (classLoader != null) {
+            i.setClassLoader(classLoader);
+        }
 
         StringBuffer sb = new StringBuffer();
         sb.append(fragment.getImportDeclaration().toString());
         sb.append(System.getProperty("line.separator")); //$NON-NLS-1$
         sb.append(fragment.getSourcecode());
 
-        // execute the expression.
         return i.eval(sb.toString());
     }
     
@@ -67,7 +77,12 @@ public class ExprEvaluator {
      * Evaluates and return the result of the given java code fragment
      */
     public Object evaluate(JavaCodeFragment javaCodeFragment) throws Exception {
+        System.setProperty("debug", "true");
+        System.setProperty("trace", "true");
         Interpreter i = new Interpreter(); // Construct an interpreter
+        if (classLoader != null){
+            i.setClassLoader(classLoader);
+        }
         
         StringBuffer sb = new StringBuffer();
         sb.append(javaCodeFragment);
