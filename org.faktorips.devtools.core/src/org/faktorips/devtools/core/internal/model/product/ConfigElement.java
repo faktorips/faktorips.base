@@ -28,6 +28,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -594,11 +595,37 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         
         CompilationResult compilationResult = compiler.compile(value);
         // store identifiers in the cache
-        identifierInFormulaCached = compilationResult.getIdentifiersUsed();
+        identifierInFormulaCached = removeEnumDatatypeValueIdentifiers(compilationResult.getIdentifiersUsed());
+        
+        removeEnumDatatypeValueIdentifiers(identifierInFormulaCached);
+        
         previousFormulaValue = getValue();
         return identifierInFormulaCached;
     }
     
+    /*
+     * Returns the given list without enum value identifiers.
+     */
+    private String[] removeEnumDatatypeValueIdentifiers(String[] identifiers) throws CoreException {
+        List result = new ArrayList(identifiers.length);
+        
+        for (int i = 0; i < identifiers.length; i++) {
+            String paramName;
+            int pos = identifiers[i].indexOf('.');
+            if (pos == -1) {
+                paramName = identifiers[i];
+            } else {
+                paramName = identifiers[i].substring(0, pos);
+            }
+            
+            EnumDatatype enumType = getIpsProject().findEnumDatatype(paramName);
+            if(enumType == null){
+                result.add(identifiers[i]);
+            }
+        }
+        return (String[]) result.toArray(new String[result.size()]);        
+    }
+
     /*
      * Adds the default identifier resolver
      */
