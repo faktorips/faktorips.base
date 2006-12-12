@@ -18,16 +18,18 @@
 package org.faktorips.devtools.core.ui;
 
 /**
- * A listener for state changes of the data changeable property.
- * 
- * @see org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess
+ * An interface that marks an user interface component (control, editor, editor page)
+ * as being able to tell, if the data shown can be modified by the user or not.
  * 
  * @author Jan Ortmann
  */
-public interface IDataChangeableStateChangeListener {
+public interface IDataChangeableReadAccess {
 
     /**
-     * Called when the given object's data changeable state has changed.
+     * Returns <code>true</code> if the data shown in this user interface component can
+     * be changed, otherwise <code>false</code>.
      */
-    public void dataChangeableStateHasChanged(IDataChangeableReadAccess object);
+    public boolean isDataChangeable();
+    
+
 }

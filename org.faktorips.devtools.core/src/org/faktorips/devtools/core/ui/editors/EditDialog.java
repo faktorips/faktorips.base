@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.ui.IWorkbenchPage;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.ui.ISwitchDataChangeableSupport;
+import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -37,7 +37,7 @@ import org.faktorips.util.message.MessageList;
 /**
  * @author Jan Ortmann
  */
-public abstract class EditDialog extends TitleAreaDialog implements ISwitchDataChangeableSupport  {
+public abstract class EditDialog extends TitleAreaDialog implements IDataChangeableReadWriteAccess  {
 
     private String windowTitle;
     private boolean tabFolderUsed;
@@ -45,18 +45,13 @@ public abstract class EditDialog extends TitleAreaDialog implements ISwitchDataC
     private boolean dataChangeable;
     
 	public EditDialog(Shell shell, String windowTitle) {
-	    this(shell, windowTitle, false, true);
+	    this(shell, windowTitle, false);
 	}
 	
     public EditDialog(Shell shell, String windowTitle, boolean useTabFolder) {
-        this(shell, windowTitle, useTabFolder, true);
-    }
-
-    public EditDialog(Shell shell, String windowTitle, boolean useTabFolder, boolean dataChangeable) {
 		super(shell);
 		setShellStyle(getShellStyle() | SWT.MAX | SWT.RESIZE);
 		this.windowTitle = windowTitle;
-        this.dataChangeable = dataChangeable;
 		this.tabFolderUsed = useTabFolder;
 		IWorkbenchPage page = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		if (page == null) {

@@ -29,7 +29,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
-import org.faktorips.devtools.core.ui.ISwitchDataChangeableWithListenerSupport;
+import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
+import org.faktorips.devtools.core.ui.IDataChangeableReadAccessWithListenerSupport;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.ArgumentCheck;
 
@@ -37,7 +38,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * A section is an area of the user interface.
  */
-public abstract class IpsSection extends Composite implements ISwitchDataChangeableWithListenerSupport {
+public abstract class IpsSection extends Composite implements IDataChangeableReadWriteAccess, IDataChangeableReadAccessWithListenerSupport  {
     
     private Section section;
     private boolean isRefreshing = false;

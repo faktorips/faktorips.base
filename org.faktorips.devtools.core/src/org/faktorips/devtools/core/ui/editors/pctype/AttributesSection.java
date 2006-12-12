@@ -176,7 +176,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
          * {@inheritDoc}
          */
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            return new AttributeEditDialog((IAttribute)part, shell, isDataChangeable());
+            return new AttributeEditDialog((IAttribute)part, shell);
         }
         
         protected int[] moveParts(int[] indexes, boolean up) {

@@ -170,8 +170,8 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
      * @param parentShell
      * @param title
      */
-    public AttributeEditDialog(IAttribute attribute, Shell parentShell, boolean dataChangeable) {
-        super(attribute, parentShell, Messages.AttributeEditDialog_title, true, dataChangeable);
+    public AttributeEditDialog(IAttribute attribute, Shell parentShell) {
+        super(attribute, parentShell, Messages.AttributeEditDialog_title, true);
         this.attribute = attribute;
         this.rule = attribute.findValueSetRule();
         extFactory = new ExtensionPropertyControlFactory(attribute.getClass());

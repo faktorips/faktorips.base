@@ -50,7 +50,8 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
-import org.faktorips.devtools.core.ui.ISwitchDataChangeableWithListenerSupport;
+import org.faktorips.devtools.core.ui.IDataChangeableReadAccess;
+import org.faktorips.devtools.core.ui.IDataChangeableReadAccessWithListenerSupport;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -67,7 +68,7 @@ public abstract class IpsAction extends Action {
 
 	private ISelection selection = null;
 
-    private ISwitchDataChangeableWithListenerSupport ctrl;
+    private IDataChangeableReadAccess ctrl;
     
 	/**
 	 * Creates a new IpsAction. This action uses the
@@ -406,11 +407,11 @@ public abstract class IpsAction extends Action {
         return result.toArray();
     }
 
-    public void setControlWithSwithDataChangeableSupport(ISwitchDataChangeableWithListenerSupport ctrl) {
+    public void setControlWithDataChangeableSupport(IDataChangeableReadAccessWithListenerSupport ctrl) {
         this.ctrl = ctrl;
         ctrl.addDataChangeableStateChangeListener(new IDataChangeableStateChangeListener() {
 
-            public void dataChangeableStateHasChanged(ISwitchDataChangeableWithListenerSupport object) {
+            public void dataChangeableStateHasChanged(IDataChangeableReadAccess object) {
                 updateEnabledProperty();
             }
             

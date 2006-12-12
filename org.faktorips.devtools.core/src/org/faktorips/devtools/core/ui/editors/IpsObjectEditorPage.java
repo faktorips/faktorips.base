@@ -17,6 +17,10 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -27,6 +31,8 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
+import org.faktorips.devtools.core.ui.IDataChangeableReadAccessWithListenerSupport;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
@@ -34,14 +40,16 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 /**
  *
  */
-public abstract class IpsObjectEditorPage extends FormPage {
+public abstract class IpsObjectEditorPage extends FormPage implements IDataChangeableReadAccessWithListenerSupport {
     
     // the space between two sections 
     public final static int HORIZONTAL_SECTION_SPACE = 15;
     public final static int VERTICAL_SECTION_SPACE = 10;
 
     private UIToolkit uiToolkit;
-    private boolean contentChangeable = true;
+    private boolean dataChangeable = true;
+
+    private ArrayList dataChangeableStateChangeListeners;
     
     /**
      * @param editor	The editor the page belongs to.
@@ -179,8 +187,8 @@ public abstract class IpsObjectEditorPage extends FormPage {
      * Returns <code>true</code> if the content shown on this page is changeable,
      * otherwise false.
      */
-    public boolean isContentChangeable() {
-        return contentChangeable;
+    public boolean isDataChangeable() {
+        return dataChangeable;
     }
     
     /**
@@ -213,15 +221,47 @@ public abstract class IpsObjectEditorPage extends FormPage {
      * so that it machtes the initial state of controls which are by default enabled / editable.
      */
     protected void resetDataChangeableState() {
-        contentChangeable = true;
+        dataChangeable = true;
     }
         
     private void setDataChangeable(boolean changeable) {
-        if (changeable==this.contentChangeable) {
+        if (changeable==this.dataChangeable) {
             return;
         }
-        this.contentChangeable = changeable;
+        this.dataChangeable = changeable;
         uiToolkit.setDataChangeable(getPartControl(), changeable);
+        if (dataChangeableStateChangeListeners==null) {
+            return;
+        }
+        List listeners = new ArrayList(dataChangeableStateChangeListeners);
+        for (Iterator it = listeners.iterator(); it.hasNext();) {
+            ((IDataChangeableStateChangeListener)it.next()).dataChangeableStateHasChanged(this);
+        }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener) {
+        if (listener==null) {
+            return;
+        }
+        if (dataChangeableStateChangeListeners==null) {
+            dataChangeableStateChangeListeners = new ArrayList(1);
+        }
+        this.dataChangeableStateChangeListeners.add(listener);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener) {
+        if (dataChangeableStateChangeListeners==null) {
+            return;
+        }
+        dataChangeableStateChangeListeners.remove(listener);
+    }
+    
+    
     
 }

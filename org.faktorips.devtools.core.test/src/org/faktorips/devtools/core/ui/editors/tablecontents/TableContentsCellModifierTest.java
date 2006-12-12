@@ -74,13 +74,7 @@ public class TableContentsCellModifierTest extends AbstractIpsPluginTest {
         
         TableViewer tableViewer= new TableViewer(new Shell());
         tableViewer.setColumnProperties(new String[]{"ColumnA", "ColumnB", "ColumnC"});
-        cellModifier= new TableContentsCellModifier(tableViewer);
-    }
-
-    public void testCanModify() {
-        assertTrue(cellModifier.canModify(rowValid, "ColumnA"));
-        assertTrue(cellModifier.canModify(rowValid, "ColumnB"));
-        assertTrue(cellModifier.canModify(rowValid, "ColumnC"));
+        cellModifier= new TableContentsCellModifier(tableViewer, null);
     }
 
     public void testGetValue() {

@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dï¿½rfen nur unter den Bedingungen der 
+ * Faktor-Zehn-Community Lizenzvereinbarung ï¿½ Version 0.1 (vor Grï¿½ndung Community) 
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -15,12 +15,14 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.actions;
+package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
+import org.faktorips.devtools.core.ui.actions.IpsAction;
+import org.faktorips.devtools.core.ui.actions.Messages;
 
 /**
  * Action for deleting a single row in a tableviewer.
@@ -38,9 +40,10 @@ public class DeleteRowAction extends IpsAction {
      * Creates an action that, when run, deletes the (first) selected row in the given
      * <code>TableViewer</code>.
      */
-    public DeleteRowAction(TableViewer tableViewer) {
+    public DeleteRowAction(TableViewer tableViewer, ContentPage page) {
         super(tableViewer);
         this.tableViewer= tableViewer;
+        setControlWithDataChangeableSupport(page);
         setText(Messages.DeleteRowAction_Label);
         setToolTipText(Messages.DeleteRowAction_Tooltip);
         setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("Delete.gif")); //$NON-NLS-1$

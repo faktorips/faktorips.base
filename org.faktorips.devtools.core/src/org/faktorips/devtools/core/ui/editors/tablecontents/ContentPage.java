@@ -59,7 +59,6 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
-import org.faktorips.devtools.core.ui.actions.DeleteRowAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
@@ -100,8 +99,9 @@ public class ContentPage extends IpsObjectEditorPage {
         GridLayout layout = new GridLayout(1, false);
         formBody.setLayout(layout);
           
+        DeleteRowAction deleteRowAction = new DeleteRowAction(tableViewer, this);
         Table table= createTable(formBody);
-        initTableViewer(table, toolkit, formBody);
+        initTableViewer(table, toolkit, formBody, deleteRowAction);
 
         /* Create a single row if an empty tablecontents is opened. 
          * Otherwise no editing is possible.
@@ -111,9 +111,9 @@ public class ContentPage extends IpsObjectEditorPage {
         }
         
         tableViewer.setInput(getTableContents());
-        
+
         ScrolledForm form= getManagedForm().getForm();
-        form.getToolBarManager().add(new DeleteRowAction(tableViewer));
+        form.getToolBarManager().add(deleteRowAction);
         form.getToolBarManager().add(new Separator());
         form.getToolBarManager().add(new OpenTableExportWizardAction(getSite().getWorkbenchWindow(), getTableContents()));
         form.updateToolBar();
@@ -162,7 +162,7 @@ public class ContentPage extends IpsObjectEditorPage {
      * @param toolkit
      * @param formBody
      */
-    private void initTableViewer(Table table, UIToolkit toolkit, Composite formBody){
+    private void initTableViewer(Table table, UIToolkit toolkit, Composite formBody, DeleteRowAction deleteRowAction){
         try{            
             ITableStructure tableStructure= getTableStructure();
             table.removeAll();
@@ -181,7 +181,7 @@ public class ContentPage extends IpsObjectEditorPage {
                 column.setWidth(125);
             }
 
-            tableViewer.setCellModifier(new TableContentsCellModifier(tableViewer));
+            tableViewer.setCellModifier(new TableContentsCellModifier(tableViewer, this));
             String[] columnProperties= new String[tableStructure.getNumOfColumns()];
             for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
                 columnProperties[i]= tableStructure.getColumn(i).getName();
@@ -206,7 +206,7 @@ public class ContentPage extends IpsObjectEditorPage {
             // popupmenu
             MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
             menuMgr.setRemoveAllWhenShown(false);
-            menuMgr.add(new DeleteRowAction(tableViewer));
+            menuMgr.add(deleteRowAction);
             Menu menu = menuMgr.createContextMenu(table);
             table.setMenu(menu);
 //            do not register to avoid mb additions

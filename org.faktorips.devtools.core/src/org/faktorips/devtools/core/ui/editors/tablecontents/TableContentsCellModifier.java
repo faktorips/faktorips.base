@@ -32,18 +32,20 @@ import org.faktorips.devtools.core.ui.table.ValueCellModifier;
  */
 public class TableContentsCellModifier extends ValueCellModifier {
     
-    TableViewer tableViewer;
+    private TableViewer tableViewer;
+    private ContentPage page;
     
-    public TableContentsCellModifier(TableViewer tableViewer){
+    public TableContentsCellModifier(TableViewer tableViewer, ContentPage page){
         this.tableViewer= tableViewer;
+        this.page = page;
     }
     
     /**
-     * Returns true. 
+     * Returns the page's data changeable property. 
      * {@inheritDoc}
      */
     public boolean canModify(Object element, String property) {
-        return true;
+        return page.isDataChangeable();
     }
     
     /**

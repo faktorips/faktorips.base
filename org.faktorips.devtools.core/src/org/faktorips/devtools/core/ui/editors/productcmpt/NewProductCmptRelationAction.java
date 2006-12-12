@@ -45,7 +45,7 @@ public class NewProductCmptRelationAction extends IpsAction {
 		super(selectionProvider);
 		this.shell = shell;
 		this.parent = parent;
-        setControlWithSwithDataChangeableSupport(parent);
+        setControlWithDataChangeableSupport(parent);
 		setText(Messages.NewProductCmptRelationAction_name);
 	}
     

@@ -98,18 +98,15 @@ public class RulesSection extends SimpleIpsPartsSection {
         				rule.delete();
         				return null;
         			}
-        			AttributeEditDialog dialog = new AttributeEditDialog(attr, getShell(), isDataChangeable());
+        			AttributeEditDialog dialog = new AttributeEditDialog(attr, getShell());
         			dialog.showValidationRulePage();
+                    dialog.setDataChangeable(isDataChangeable());
         			return dialog;
         		}
         	}
             return new RuleEditDialog((IValidationRule)part, shell);
         }
         
-        /**
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#moveParts(int[], boolean)
-         */
         protected int[] moveParts(int[] indexes, boolean up) {
             return getPcType().moveRules(indexes, up);
         }
