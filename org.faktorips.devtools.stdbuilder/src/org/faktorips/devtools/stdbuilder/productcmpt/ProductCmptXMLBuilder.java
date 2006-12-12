@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.AbstractXmlFileBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -53,24 +52,15 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
 
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-        
-        Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
-        Element root = productCmpt.toXml(doc);
+        Element root = productCmpt.toXml(IpsPlugin.getDefault().newDocumentBuilder().newDocument());
         
         IIpsObjectGeneration[] generations = productCmpt.getGenerations();
         NodeList generationNodes = root.getElementsByTagName(IIpsObjectGeneration.TAG_NAME);
-        
-        if (generations.length != generationNodes.getLength()) {
-            IpsPlugin.log(new IpsStatus("Found " + generations.length + "generations, but " + generationNodes.getLength() + " generation nodes."));
+        for (int i = 0; i < generations.length; i++) {
+            updateTargetRuntimeId((IProductCmptGeneration)generations[i], (Element)generationNodes.item(i));
         }
-        else {
-            for (int i = 0; i < generations.length; i++) {
-                updateTargetRuntimeId((IProductCmptGeneration)generations[i], (Element)generationNodes.item(i));
-            }
-        }
-        
         try {
-            super.build(ipsSrcFile, XmlUtil.nodeToString(root, ipsSrcFile.getIpsProject().getProject().getDefaultCharset()));
+            super.build(ipsSrcFile, XmlUtil.nodeToString(root, ipsSrcFile.getIpsProject().getXmlFileCharset()));
         } catch (TransformerException e) {
             throw new CoreException(new IpsStatus(e));
         }
@@ -83,12 +73,6 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
     private void updateTargetRuntimeId(IProductCmptGeneration generation, Element generationElement) {
         NodeList relationNodes = generationElement.getElementsByTagName(IProductCmptRelation.TAG_NAME);
         IProductCmptRelation[] relations = generation.getRelations();
-        
-        if (relationNodes.getLength() != relations.length) {
-            IpsPlugin.log(new IpsStatus("Found " + relations.length + "relations, but " + relationNodes.getLength() + " relation nodes."));
-            return;
-        }
-        
         for (int i = 0; i < relations.length; i++) {
             Element relation = (Element)relationNodes.item(i);
             relation.setAttribute(ProductCmptGenImplClassBuilder.XML_ATTRIBUTE_TARGET_RUNTIME_ID, getTargetRuntimeId(relations[i]));
@@ -97,11 +81,9 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
 
     private String getTargetRuntimeId(IProductCmptRelation relation) {
         IProductCmpt productCmpt = relation.findTarget();
-        
         if(productCmpt != null){
             return productCmpt.getRuntimeId();
         }
-
         return "";
     }
     
