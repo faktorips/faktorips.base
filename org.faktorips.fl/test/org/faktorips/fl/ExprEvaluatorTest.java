@@ -46,4 +46,15 @@ public class ExprEvaluatorTest extends TestCase {
         assertEquals(new Integer(84), o);
     }
     
+    public void testExecuteWithEnum() throws Exception{
+        System.setProperty("debug", "true");
+        System.setProperty("trace", "true");
+        
+        ExprCompiler compiler = new ExprCompiler();
+        compiler.setIdentifierResolver(new TestEnumIdentifierResolver());
+        String expression = "TestEnum.MONTH";
+        ExprEvaluator processor = new ExprEvaluator(compiler);
+        Object value = processor.evaluate(expression);
+        assertEquals(TestEnum.MONTH, value);
+    }
 }
