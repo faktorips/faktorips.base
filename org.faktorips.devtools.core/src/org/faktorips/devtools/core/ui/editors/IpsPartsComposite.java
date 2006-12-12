@@ -46,7 +46,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
-import org.faktorips.devtools.core.ui.SwitchDataChangeableSupport;
+import org.faktorips.devtools.core.ui.ISwitchDataChangeableSupport;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.MessageList;
@@ -56,7 +56,7 @@ import org.faktorips.util.message.MessageList;
  * A composite that shows parts in a table viewer and provides an
  * area containing a new, edit and delete button.
  */
-public abstract class IpsPartsComposite extends ViewerButtonComposite implements ISelectionProviderActivation, SwitchDataChangeableSupport {
+public abstract class IpsPartsComposite extends ViewerButtonComposite implements ISelectionProviderActivation, ISwitchDataChangeableSupport {
 
     // the object the parts belong to.
     private IIpsObject ipsObject;

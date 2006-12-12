@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.ui.IWorkbenchPage;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.ui.SwitchDataChangeableSupport;
+import org.faktorips.devtools.core.ui.ISwitchDataChangeableSupport;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -37,7 +37,7 @@ import org.faktorips.util.message.MessageList;
 /**
  * @author Jan Ortmann
  */
-public abstract class EditDialog extends TitleAreaDialog implements SwitchDataChangeableSupport  {
+public abstract class EditDialog extends TitleAreaDialog implements ISwitchDataChangeableSupport  {
 
     private String windowTitle;
     private boolean tabFolderUsed;

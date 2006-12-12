@@ -27,8 +27,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -47,6 +49,8 @@ import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
+import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
+import org.faktorips.devtools.core.ui.ISwitchDataChangeableWithListenerSupport;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -58,13 +62,13 @@ import org.faktorips.util.StringUtil;
 public abstract class IpsAction extends Action {
     private static final String ARCHIVE_LINK = "ARCHIVE_LINK"; //$NON-NLS-1$
     
-	/**
-	 * The source of objects to modify by this action.
-	 */
+	// The source of objects to modify by this action.
 	protected ISelectionProvider selectionProvider;
 
 	private ISelection selection = null;
 
+    private ISwitchDataChangeableWithListenerSupport ctrl;
+    
 	/**
 	 * Creates a new IpsAction. This action uses the
 	 * <code>SelectionService</code> of the given WorkbenchWindow to retrieve
@@ -87,8 +91,17 @@ public abstract class IpsAction extends Action {
 	 */
 	public IpsAction(ISelectionProvider selectionProvider) {
 		this.selectionProvider = selectionProvider;
-	}
+        if (selectionProvider!=null) {
+            selectionProvider.addSelectionChangedListener(new ISelectionChangedListener() {
 
+                public void selectionChanged(SelectionChangedEvent event) {
+                    updateEnabledProperty();
+                }
+                
+            });
+        }
+	}
+    
 	public void run() {
 		ISelection sel = selectionProvider.getSelection();
 		if (sel != null) {
@@ -392,5 +405,52 @@ public abstract class IpsAction extends Action {
         }
         return result.toArray();
     }
+
+    public void setControlWithSwithDataChangeableSupport(ISwitchDataChangeableWithListenerSupport ctrl) {
+        this.ctrl = ctrl;
+        ctrl.addDataChangeableStateChangeListener(new IDataChangeableStateChangeListener() {
+
+            public void dataChangeableStateHasChanged(ISwitchDataChangeableWithListenerSupport object) {
+                updateEnabledProperty();
+            }
+            
+        });
+    }
+    
+    /**
+     * Computes and sets the new value for the enabled property. 
+     */
+    public void updateEnabledProperty() {
+        setEnabled(computeEnabledProperty());
+    }
+    
+    /**
+     * Returns <code>true</code> if the action should be enabled, otherwise <code>false</code>.
+     * Default implementation first checks if the enabled state depends on a control with switch data changeable
+     * support. If this is not the case or the data is changeable, then the property is computed based
+     * on the current selection (if a selection provider is available).
+     */
+    protected boolean computeEnabledProperty() {
+        if (ctrl!=null) {
+            if (!ctrl.isDataChangeable()) {
+                return false;
+            }
+        }
+        if (selectionProvider!=null) {
+            if (selectionProvider.getSelection() instanceof IStructuredSelection) {
+                return computeEnabledProperty((IStructuredSelection)selectionProvider.getSelection());
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Returns <code>true</code> if the action is enabled based on the given selection, 
+     * otherwise <code>false</code>. Defaultimplementation always returns <code>true</code>.
+     */
+    protected boolean computeEnabledProperty(IStructuredSelection selection) {
+        return true;
+    }
+
 
 }

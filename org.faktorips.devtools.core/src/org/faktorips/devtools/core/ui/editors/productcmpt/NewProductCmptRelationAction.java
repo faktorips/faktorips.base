@@ -15,19 +15,17 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.actions;
+package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
-import org.faktorips.devtools.core.ui.editors.productcmpt.RelationEditDialog;
-import org.faktorips.devtools.core.ui.editors.productcmpt.RelationsSection;
+import org.faktorips.devtools.core.ui.actions.IpsAction;
+import org.faktorips.devtools.core.ui.actions.Messages;
 import org.faktorips.util.memento.Memento;
 
 /**
@@ -47,18 +45,20 @@ public class NewProductCmptRelationAction extends IpsAction {
 		super(selectionProvider);
 		this.shell = shell;
 		this.parent = parent;
+        setControlWithSwithDataChangeableSupport(parent);
 		setText(Messages.NewProductCmptRelationAction_name);
-		
-		selectionProvider.addSelectionChangedListener(new ISelectionChangedListener() {
-		
-			public void selectionChanged(SelectionChangedEvent event) {
-				Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
-				setEnabled(selected instanceof IProductCmptTypeRelation);
-			}
-		
-		});
-		
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean computeEnabledProperty(IStructuredSelection selection) {
+        if (selection.isEmpty()) {
+            return false;
+        }
+        Object selected = selection.getFirstElement();
+        return (selected instanceof IProductCmptTypeRelation);
+    }
 
 	/** 
 	 * {@inheritDoc}
@@ -97,4 +97,6 @@ public class NewProductCmptRelationAction extends IpsAction {
 		}
 		parent.refresh();
 	}
+
+    
 }

@@ -18,21 +18,16 @@
 package org.faktorips.devtools.core.ui;
 
 /**
- * An interface that is implement by user interface components that allow to switch 
- * whether the data shown is changeable or not.
+ * A listener for state changes of the data changeable property.
+ * 
+ * @see org.faktorips.devtools.core.ui.ISwitchDataChangeableSupport
  * 
  * @author Jan Ortmann
  */
-public interface SwitchDataChangeableSupport {
+public interface IDataChangeableStateChangeListener {
 
     /**
-     * Sets if the data shown in this user interface component can be changes ot not.
+     * Called when the given object's data changeable state has changed.
      */
-    public void setDataChangeable(boolean changeable);
-    
-    /**
-     * Returns <code>true</code> if the data shown in this user interface component can
-     * be changed, otherwise <code>false</code>.
-     */
-    public boolean isDataChangeable();
+    public void dataChangeableStateHasChanged(ISwitchDataChangeableWithListenerSupport object);
 }

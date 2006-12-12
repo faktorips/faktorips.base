@@ -68,8 +68,8 @@ public class UIToolkit {
         if (c==null) {
             return;
         }
-        if (c instanceof SwitchDataChangeableSupport) {
-            ((SwitchDataChangeableSupport)c).setDataChangeable(changeable);
+        if (c instanceof ISwitchDataChangeableSupport) {
+            ((ISwitchDataChangeableSupport)c).setDataChangeable(changeable);
             return;
         }
         if (c instanceof Text) {

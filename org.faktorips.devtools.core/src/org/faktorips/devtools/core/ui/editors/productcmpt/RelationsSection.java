@@ -74,7 +74,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelatio
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
-import org.faktorips.devtools.core.ui.actions.NewProductCmptRelationAction;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityPaneEditField;
 import org.faktorips.devtools.core.ui.editors.ISelectionProviderActivation;
@@ -776,16 +775,6 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
         public OpenProductCmptRelationDialogAction() {
             super(treeViewer);
             setText(Messages.RelationsSection_ContextMenu_Properties);
-            
-            selectionProvider.addSelectionChangedListener(new ISelectionChangedListener() {
-            
-                public void selectionChanged(SelectionChangedEvent event) {
-                    Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
-                    setEnabled(selected instanceof IProductCmptRelation);
-                }
-            
-            });
-            
         }
 
         /** 
@@ -799,6 +788,14 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
             }
         }
         
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean computeEnabledProperty(IStructuredSelection selection) {
+            Object selected = selection.getFirstElement();
+            return (selected instanceof IProductCmptRelation);
+        }
+
     }
 
     class OpenReferencedProductCmptInEditorAction extends IpsAction {
@@ -806,16 +803,14 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
         public OpenReferencedProductCmptInEditorAction() {
             super(treeViewer);
             setText(Messages.RelationsSection_ContextMenu_OpenInNewEditor);
-            
-            selectionProvider.addSelectionChangedListener(new ISelectionChangedListener() {
-            
-                public void selectionChanged(SelectionChangedEvent event) {
-                    Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
-                    setEnabled(selected instanceof IProductCmptRelation);
-                }
-            
-            });
-            
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean computeEnabledProperty(IStructuredSelection selection) {
+            Object selected = selection.getFirstElement();
+            return (selected instanceof IProductCmptRelation);
         }
 
         /** 

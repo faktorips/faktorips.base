@@ -17,6 +17,10 @@
 
 package org.faktorips.devtools.core.ui.forms;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -24,7 +28,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.Section;
-import org.faktorips.devtools.core.ui.SwitchDataChangeableSupport;
+import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
+import org.faktorips.devtools.core.ui.ISwitchDataChangeableWithListenerSupport;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.ArgumentCheck;
 
@@ -32,7 +37,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * A section is an area of the user interface.
  */
-public abstract class IpsSection extends Composite implements SwitchDataChangeableSupport {
+public abstract class IpsSection extends Composite implements ISwitchDataChangeableWithListenerSupport {
     
     private Section section;
     private boolean isRefreshing = false;
@@ -42,6 +47,8 @@ public abstract class IpsSection extends Composite implements SwitchDataChangeab
     private UIToolkit toolkit;
     
     private boolean changeable = true;
+    
+    private ArrayList dataChangeableStateChangeListeners;
 
     /**
      * The section to delegate the call of <code>setFocus()</code> to
@@ -162,6 +169,36 @@ public abstract class IpsSection extends Composite implements SwitchDataChangeab
     public final void setDataChangeable(boolean changeable) {
         this.changeable = changeable;
         toolkit.setDataChangeable(section.getClient(), changeable);
+        if (dataChangeableStateChangeListeners==null) {
+            return;
+        }
+        List listeners = new ArrayList(dataChangeableStateChangeListeners);
+        for (Iterator it = listeners.iterator(); it.hasNext();) {
+            ((IDataChangeableStateChangeListener)it.next()).dataChangeableStateHasChanged(this);
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void addDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener) {
+        if (listener==null) {
+            return;
+        }
+        if (dataChangeableStateChangeListeners==null) {
+            dataChangeableStateChangeListeners = new ArrayList(1);
+        }
+        this.dataChangeableStateChangeListeners.add(listener);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener) {
+        if (dataChangeableStateChangeListeners==null) {
+            return;
+        }
+        dataChangeableStateChangeListeners.remove(listener);
     }
     
     /**
