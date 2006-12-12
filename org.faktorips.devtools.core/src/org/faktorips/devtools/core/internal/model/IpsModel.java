@@ -527,6 +527,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             public void run() {
                 List copy = new ArrayList(changeListeners); // copy do avoid concurrent modifications while iterating
                 for (Iterator it = copy.iterator(); it.hasNext();) {
+                    if (!event.getIpsSrcFile().exists()) {
+                        break;
+                    }
                     try {
                         ContentsChangeListener listener = (ContentsChangeListener)it.next();
                         if (TRACE_MODEL_CHANGE_LISTENERS) {

@@ -175,6 +175,7 @@ public class IpsSrcFileContent {
             return;
         }
         initContentFromFile();
+        wholeContentChanged();
     }
     
     public void initContentFromFile() {

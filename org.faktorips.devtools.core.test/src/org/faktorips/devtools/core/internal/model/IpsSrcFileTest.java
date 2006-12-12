@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.util.message.MessageList;
 
 
 /**
@@ -104,13 +105,20 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     	}
     }
     
-    public void testDiscardChanges_ParsableContents() throws CoreException {
+    public void testDiscardChanges_ParsableContents() throws Exception {
         IPolicyCmptType type = newPolicyCmptType(this.ipsProject, "Policy");
         IIpsSrcFile file = type.getIpsSrcFile();
         type.newAttribute();
         assertEquals(1, type.getNumOfAttributes());
         assertTrue(file.isDirty());
+        type.setSupertype("UnknownType");
+        MessageList list = type.validate();
+        assertNotNull(list.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_FOUND));
+        
         file.discardChanges();
+        list = type.validate();
+        assertNull(list.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_FOUND));
+        
         type = (IPolicyCmptType)file.getIpsObject();
         assertEquals(0, type.getNumOfAttributes());
         assertFalse(file.isDirty());
