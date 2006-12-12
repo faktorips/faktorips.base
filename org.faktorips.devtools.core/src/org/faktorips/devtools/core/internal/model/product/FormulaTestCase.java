@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,10 +29,12 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -168,9 +171,6 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         }
         
         IFormulaTestInputValue[] input = getFormulaTestInputValues();
-        if (input.length == 0){
-            return compiler;
-        }
         DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
         for (int i = 0; i < input.length; i++) {
             String storedValue = input[i].getValue();
@@ -184,10 +184,37 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
             }
             resolver.register(input[i].getIdentifier(), dataTypeHelper.newInstance(storedValue), datatype);
         }
-        compiler.setIdentifierResolver(resolver);
         
+        compileAndAddAllEnumDatatypeValueIdentifier(resolver);
+        
+        compiler.setIdentifierResolver(resolver);
+
         return compiler;
     }
+    
+    /*
+     * Add all identifier for enum values 
+     */
+    private void compileAndAddAllEnumDatatypeValueIdentifier(DefaultIdentifierResolver resolver) {
+        try {
+            EnumDatatype[] enumTypes = getIpsProject().findEnumDatatypes();
+            for (int i = 0; i < enumTypes.length; i++) {
+                String valueName = enumTypes[i].getName();
+                List valueIds = Arrays.asList(enumTypes[i].getAllValueIds(true));
+                for (Iterator iter = valueIds.iterator(); iter.hasNext();) {
+                    String id = (String)iter.next();
+                    JavaCodeFragment frag = new JavaCodeFragment();
+                    frag.getImportDeclaration().add(enumTypes[i].getJavaClassName());
+                    DatatypeHelper helper = getIpsProject().getDatatypeHelper(enumTypes[i]);
+                    frag.append(helper.newInstance(id));
+                    resolver.register(valueName + "." + id, frag, enumTypes[i]);
+                }
+            }
+        }
+        catch (Exception e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+    }    
     
     /**
      * {@inheritDoc}
@@ -197,9 +224,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         IConfigElement configElement = (IConfigElement) getParent();
         String formula = configElement.getValue();
         
-        ExprCompiler compiler = getPreviewExprCompiler();
-        ExprEvaluator processor = new ExprEvaluator(compiler);
-        
+        ExprEvaluator processor = getExprEvaluatorInternal();
         return processor.evaluate(formula);
     }
     
@@ -207,9 +232,14 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
      * {@inheritDoc}
      */
     public Object execute(JavaCodeFragment javaCodeFragment) throws Exception {
-        ExprCompiler compiler = new ExprCompiler();
-        ExprEvaluator processor = new ExprEvaluator(compiler);
+        ExprEvaluator processor = getExprEvaluatorInternal();
         return processor.evaluate(javaCodeFragment);
+    }
+    
+    private ExprEvaluator getExprEvaluatorInternal() throws CoreException {
+        ExprCompiler compiler = getPreviewExprCompiler();
+        ClassLoader cl = ((IpsProject)getIpsProject()).getClassLoaderProviderForJavaProject().getClassLoader();
+        return new ExprEvaluator(compiler, cl);
     }
     
     /**
