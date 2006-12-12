@@ -468,6 +468,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             }
             return lastCalculatedResult;
         } catch (Exception e) {
+            IpsPlugin.log(e);
             showFormulaResult(Messages.FormulaTestInputValuesControl_Error_ExecutingFormula);
         }
         return null;
