@@ -27,8 +27,10 @@ import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.internal.model.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
@@ -500,6 +502,44 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         
         // check with empty formula
         configElement.setValue(null);
+        identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
+        assertEquals(0, identifierInFormula.size());
+    }
+    
+    public void testGetIdentifierUsedInFormulaWithEnum() throws CoreException{
+        IAttribute attributeInput = pcTypeInput.newAttribute();
+        attributeInput.setName("attributeInput1");
+        attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attributeInput = pcTypeInput.newAttribute();
+        attributeInput.setName("attributeInput2");
+        attributeInput.setAttributeType(AttributeType.CHANGEABLE);
+        attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
+        IPolicyCmptType pcType = newPolicyCmptType(project, "policyCmptType1");
+        IAttribute attribute = pcType.newAttribute();
+        attribute.setName("attribute1");
+        attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        Parameter[] params = new Parameter[3];
+        params[0] = new Parameter(0, "param1", Datatype.INTEGER.getQualifiedName());
+        params[1] = new Parameter(1, "param2", Datatype.INTEGER.getQualifiedName());
+        params[2] = new Parameter(2, "policyInputX", pcTypeInput.getQualifiedName());
+        
+        attribute.setFormulaParameters(params);
+        
+        ((IProductCmptGeneration)configElement.getParent()).getProductCmpt().setPolicyCmptType(pcType.getQualifiedName());
+        configElement.setType(ConfigElementType.FORMULA);
+        configElement.setPcTypeAttribute(attribute.getName());
+        
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+        newDefinedEnumDatatype((IpsProject)project, new Class[]{TestEnumType.class});
+
+        // check with non enum datatype (unknow identifier)
+        configElement.setValue("TestEnumType.test");
+        List identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
+        assertTrue(identifierInFormula.size()==0);
+        
+        // check with enum datatype
+        configElement.setValue("TestEnumType.1");
         identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
         assertEquals(0, identifierInFormula.size());
     }
