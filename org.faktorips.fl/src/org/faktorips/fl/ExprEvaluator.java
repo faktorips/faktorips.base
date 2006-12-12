@@ -77,8 +77,6 @@ public class ExprEvaluator {
      * Evaluates and return the result of the given java code fragment
      */
     public Object evaluate(JavaCodeFragment javaCodeFragment) throws Exception {
-        System.setProperty("debug", "true");
-        System.setProperty("trace", "true");
         Interpreter i = new Interpreter(); // Construct an interpreter
         if (classLoader != null){
             i.setClassLoader(classLoader);
