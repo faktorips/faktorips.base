@@ -22,8 +22,6 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.TestEnumType;
-import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -229,18 +227,6 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         assertEquals(1, identifiers.length);
         assertEquals("param1", identifiers[0]);
     }    
-    
-    public void testExecuteFormulaWithEnum() throws Exception{
-        createDefaultPolicyCmptsAndTblUsage();
-        
-        newDefinedEnumDatatype((IpsProject)ipsProject, new Class[]{TestEnumType.class});
-        configElement.findPcTypeAttribute().setDatatype(Datatype.STRING.getQualifiedName());
-        
-        configElement.setValue("TestEnumType.1");
-        
-        Object result = formulaTestCase.execute();
-        assertEquals("first", result);
-    }
     
     public void testAddOrDeleteFormulaTestInputValues(){
         IFormulaTestInputValue value1 = formulaTestCase.newFormulaTestInputValue();
