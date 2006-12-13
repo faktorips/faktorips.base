@@ -44,6 +44,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBui
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.runtime.FormulaExecutionException;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.message.MessageList;
 
@@ -74,15 +75,17 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
      * Constructs a new builder.
      */
     public ProductCmptGenerationCuBuilder(
-            IProductCmptGeneration generation,
             IIpsArtefactBuilderSet builderSet, 
-            String kindId)
-            throws CoreException {
+            String kindId){
         super(builderSet, kindId, new LocalizedStringsSet(
                 ProductCmptGenerationCuBuilder.class));
-        this.generation = generation;
     }
 
+    public void setProductCmptGeneration(IProductCmptGeneration generation){
+        ArgumentCheck.notNull(generation);
+        this.generation = generation;
+    }
+    
     public void setProductCmptImplBuilder(ProductCmptImplClassBuilder builder) {
         this.productCmptImplBuilder = builder;
     }
@@ -106,6 +109,10 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
      * {@inheritDoc}
      */
     protected JavaCodeFragment generateCodeForJavatype() throws CoreException {
+        if(generation == null){
+            addToBuildStatus(new IpsStatus("The generation needs to be set for this " + ProductCmptGenerationCuBuilder.class));
+            return new JavaCodeFragment();
+        }
         IPolicyCmptType pcType = generation.getProductCmpt().findPolicyCmptType();
         JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
         codeBuilder.classBegin(Modifier.PUBLIC, getUnqualifiedClassName(),

@@ -75,13 +75,6 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE);
     }
-
-    /**
-     * Overridden.
-     */
-    public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
-        super.afterBuild(ipsSrcFile);
-    }
     
     /**
      * Returns the abbreviation for the generation (changes over time) concept.

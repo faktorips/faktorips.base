@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Modifier;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -53,6 +55,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
@@ -114,6 +117,14 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
 	protected final static String JAVA_EXTENSION = ".java"; //$NON-NLS-1$
     
+    private final static String BEGIN_FAKTORIPS_GENERATOR_INFORMATION_SECTION = "BEGIN FAKTORIPS GENERATOR INFORMATION SECTION"; //$NON-NLS-1$
+    
+    private final static String END_FAKTORIPS_GENERATOR_INFORMATION_SECTION = "END FAKTORIPS GENERATOR INFORMATION SECTION"; //$NON-NLS-1$
+    
+    private final static Pattern FAKTORIPS_GENERATOR_INFORMATION_SECTION_PATTERN = createFeatureSectionPattern();
+    
+    private String versionSection;
+    
 	private boolean mergeEnabled;
 
 	private String kindId;
@@ -172,6 +183,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	 */
 	public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
 		model = null;
+        versionSection = null;
 	}
 
 	/**
@@ -179,8 +191,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	 */
 	public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
 		initJControlModel(project);
+        createVersionSection();
 	}
-
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -653,26 +666,26 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 		}
         
         String formattedContent = format(content);
+        
 		boolean newFileCreated = createFileIfNotThere(javaFile);
-
 		if (!newFileCreated) {
-
 			String charset = ipsSrcFile.getIpsProject().getProject()
 					.getDefaultCharset();
 			String javaFileContentsStr = getJavaFileContents(javaFile, charset);
 			if (isMergeEnabled()) {
 				merge(javaFile, javaFileContentsStr, formattedContent, charset);
-				return;
+                return;
 			}
-
+			formattedContent = writeFeatureVersions(formattedContent);
 			// if merging is not activated and the content of the file is
 			// equal compared to the generated and formatted
 			// content then the new content is not written to the file
-			if (formattedContent.equals(javaFileContentsStr)) {
+            if (formattedContent.equals(javaFileContentsStr)) {
 				return;
 			}
 		}
-
+        
+		formattedContent = writeFeatureVersions(formattedContent);
 		javaFile.setContents(transform(ipsSrcFile, formattedContent), true,
 				false, null);
 	}
@@ -837,7 +850,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             String targetContentsBeforeMerge = merger.getTargetCompilationUnitContents();
             merger.merge();
             String targetContents = merger.getTargetCompilationUnitContents();
-
+            targetContents = writeFeatureVersions(targetContents);
             if (targetContents == null || targetContents.equals(targetContentsBeforeMerge)) {
                 return;
             }
@@ -847,6 +860,63 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
                     "the generated content with the old content of the file: " + javaFile, e)); //$NON-NLS-1$
         }
 	}
+
+    private final static Pattern createFeatureSectionPattern(){
+        StringBuffer buf = new StringBuffer();
+        buf.append("/\\*.*"); //$NON-NLS-1$
+        buf.append(BEGIN_FAKTORIPS_GENERATOR_INFORMATION_SECTION);
+        buf.append(".*"); //$NON-NLS-1$
+        buf.append(END_FAKTORIPS_GENERATOR_INFORMATION_SECTION);
+        buf.append("[\\s\\*]*\\*/"); //$NON-NLS-1$
+        return Pattern.compile(buf.toString(), Pattern.DOTALL);
+    }
+
+    private void createVersionSection(){
+        StringBuffer versionSecionBuf = new StringBuffer();
+        versionSecionBuf.append("/* "); //$NON-NLS-1$
+        versionSecionBuf.append(BEGIN_FAKTORIPS_GENERATOR_INFORMATION_SECTION);
+        versionSecionBuf.append(SystemUtils.LINE_SEPARATOR);
+        versionSecionBuf.append(" * "); //$NON-NLS-1$
+        versionSecionBuf.append(SystemUtils.LINE_SEPARATOR);
+        IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();
+        for (int i = 0; i < managers.length; i++) {
+            versionSecionBuf.append(" * Feature: "); //$NON-NLS-1$
+            versionSecionBuf.append(managers[i].getFeatureId());
+            versionSecionBuf.append(", Version: "); //$NON-NLS-1$
+            versionSecionBuf.append(managers[i].getCurrentVersion());
+        }
+        versionSecionBuf.append(SystemUtils.LINE_SEPARATOR);
+        versionSecionBuf.append(" * "); //$NON-NLS-1$
+        versionSecionBuf.append(SystemUtils.LINE_SEPARATOR);
+        versionSecionBuf.append(" * "); //$NON-NLS-1$
+        versionSecionBuf.append(END_FAKTORIPS_GENERATOR_INFORMATION_SECTION);
+        versionSecionBuf.append(SystemUtils.LINE_SEPARATOR);
+        versionSecionBuf.append(" */"); //$NON-NLS-1$
+        this.versionSection = versionSecionBuf.toString();
+    }
+    
+    private String writeFeatureVersions(String source){
+        if(source == null){
+            return source;
+        }
+        Matcher m = FAKTORIPS_GENERATOR_INFORMATION_SECTION_PATTERN.matcher(source);
+        StringBuffer newSource = new StringBuffer();
+        if(m.find()){
+            if(m.start() > 0){
+                newSource.append(source.substring(0, m.start()));
+            }
+            newSource.append(versionSection);
+            if(source.length() > m.end()){
+                newSource.append(source.substring(m.end(), source.length()));
+            }
+        }
+        else{
+            newSource.append(versionSection);
+            newSource.append(SystemUtils.LINE_SEPARATOR);
+            newSource.append(source);
+        }
+        return newSource.toString();
+    }
 
 	private ByteArrayInputStream transform(IIpsSrcFile ipsSrcFile,
 			String content) throws CoreException {

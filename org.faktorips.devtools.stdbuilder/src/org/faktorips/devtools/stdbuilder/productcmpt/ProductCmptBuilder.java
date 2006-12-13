@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -39,6 +40,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
 
     private String kindId;
     private MultiStatus buildStatus;
+    private ProductCmptGenerationCuBuilder productCmptGenerationBuilder;
     
     // builders needed
     private ProductCmptImplClassBuilder productCmptImplBuilder;
@@ -68,39 +70,31 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         return "ProductCmptBuilder";
     }
 
+    public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+        super.beforeBuildProcess(project, buildKind);
+        productCmptGenerationBuilder = newProductCmptGenerationCuBuilder();
+        productCmptGenerationBuilder.beforeBuildProcess(project, buildKind);
+    }
+    
+    public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+        super.afterBuildProcess(project, buildKind);
+        productCmptGenerationBuilder.afterBuildProcess(project, buildKind);
+        productCmptGenerationBuilder = null;
+    }
+
     /**
      * {@inheritDoc}
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType());
     }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void beforeBuildProcess(int buildKind) throws CoreException {
-        // nothing to do
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void afterBuildProcess(int buildKind) throws CoreException {
-        // nothing to do
-    }
 
     /**
      * {@inheritDoc}
      */
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
+        super.beforeBuild(ipsSrcFile, status);
         buildStatus = status;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
-        // nothing to do
     }
 
     /**
@@ -123,15 +117,14 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     
     private void build(IProductCmptGeneration generation) throws CoreException {
         IIpsSrcFile ipsSrcFile = getVirtualIpsSrcFile(generation);
-        ProductCmptGenerationCuBuilder genBuilder = newProductCmptGenerationCuBuilder(generation);
-        genBuilder.beforeBuild(ipsSrcFile, buildStatus);
-        genBuilder.build(ipsSrcFile);
-        genBuilder.afterBuild(ipsSrcFile);
+        productCmptGenerationBuilder.setProductCmptGeneration(generation);
+        productCmptGenerationBuilder.beforeBuild(ipsSrcFile, buildStatus);
+        productCmptGenerationBuilder.build(ipsSrcFile);
+        productCmptGenerationBuilder.afterBuild(ipsSrcFile);
     }
     
-    private ProductCmptGenerationCuBuilder newProductCmptGenerationCuBuilder(IProductCmptGeneration generation) throws CoreException {
-        ProductCmptGenerationCuBuilder genBuilder = new ProductCmptGenerationCuBuilder(
-                generation, getBuilderSet(), kindId);
+    private ProductCmptGenerationCuBuilder newProductCmptGenerationCuBuilder(){
+        ProductCmptGenerationCuBuilder genBuilder = new ProductCmptGenerationCuBuilder(getBuilderSet(), kindId);
         genBuilder.setProductCmptGenImplBuilder(productCmptGenImplBuilder);
         genBuilder.setProductCmptImplBuilder(productCmptImplBuilder);
         return genBuilder;
@@ -150,7 +143,8 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     }
     
     public String getQualifiedClassName(IProductCmptGeneration generation) throws CoreException {
-        ProductCmptGenerationCuBuilder builder = newProductCmptGenerationCuBuilder(generation);
+        ProductCmptGenerationCuBuilder builder = newProductCmptGenerationCuBuilder();
+        builder.setProductCmptGeneration(generation);
         IIpsSrcFile file = getVirtualIpsSrcFile(generation);
         return builder.getQualifiedClassName(file);
     }

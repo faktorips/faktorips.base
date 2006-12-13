@@ -134,13 +134,6 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * {@inheritDoc}
      */
-    public void afterBuildProcess(int buildKind) throws CoreException {
-        // nothing to do
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
     protected JavaCodeFragment generateCodeForJavatype() throws CoreException {
         
         JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
