@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.CellEditor;
@@ -56,7 +57,7 @@ public class BeanTableCellModifier extends ValueCellModifier  {
     // Contains the delegate cell editors for each column, 
     // only if at least one column specifies different cell editor for each row
     // otherwise the list is empty
-    private List delegateCellEditor= new ArrayList(0);
+    private Map delegateCellEditor= new HashMap(0);
 
     private UIToolkit uiToolkit;
     
@@ -71,7 +72,11 @@ public class BeanTableCellModifier extends ValueCellModifier  {
      */
     public void initRowModifier(int column, ValueDatatype[] datatypesRows) {
         List rowCellEditors = new ArrayList(datatypesRows.length);
-        DelegateCellEditor dm = (DelegateCellEditor) delegateCellEditor.get(column);
+        DelegateCellEditor dm = (DelegateCellEditor) delegateCellEditor.get(new Integer(column));
+        if (dm == null){
+            // error wrong initializing of the delegate cell editor
+            throw new RuntimeException("Wrong index of delegate cell editor!"); //$NON-NLS-1$
+        }
         for (int i = 0; i < datatypesRows.length; i++) {
             rowCellEditors.add(createCellEditor(uiToolkit, datatypesRows[i], dm.getColumn()));
         }
@@ -116,7 +121,7 @@ public class BeanTableCellModifier extends ValueCellModifier  {
             // content of the table is updated
             // @see this#initRowModifier
             DelegateCellEditor dm = new DelegateCellEditor(tableViewer, columnIndex);
-            delegateCellEditor.add(dm);
+            delegateCellEditor.put(new Integer(columnIndex), dm);
             return dm;
         } else {
             ValueDatatypeControlFactory factory = IpsPlugin.getDefault().getValueDatatypeControlFactory(valueDatatype);

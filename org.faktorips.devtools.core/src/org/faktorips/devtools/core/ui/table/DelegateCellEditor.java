@@ -110,7 +110,7 @@ public class DelegateCellEditor extends CellEditor {
     private TableCellEditor getCurrent(){
         int currentCellEditorRow = tableViewer.getTable().getSelectionIndex();
         if (currentCellEditorRow >= cellEditors.size()){
-            throw new RuntimeException("Undefined table cell editor! No table cell editor is specified for the selected row.");
+            throw new RuntimeException("Undefined table cell editor! No table cell editor is specified for the selected row."); //$NON-NLS-1$
         }
         return ((TableCellEditor)cellEditors.get(currentCellEditorRow));
     }
