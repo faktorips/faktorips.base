@@ -14,4 +14,4 @@ Export-Package: org.faktorips.fl,
  org.faktorips.fl.operations,
  org.faktorips.fl.parser
 Bundle-ClassPath: .,
- lib/bsh-2.0b2.jar
+ lib/bsh-2.0b4.jar
