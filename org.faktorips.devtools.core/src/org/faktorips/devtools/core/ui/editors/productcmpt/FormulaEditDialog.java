@@ -209,7 +209,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         GridLayout layout = (GridLayout)c.getLayout();
         layout.verticalSpacing = 20;
 
-        parametersControl = new ChangeParametersControl(c, SWT.NONE, Messages.FormulaEditDialog_availableParameters, configElement.getIpsProject()) {
+        parametersControl = new ChangeParametersControl(c, uiToolkit, SWT.NONE, Messages.FormulaEditDialog_availableParameters, configElement.getIpsProject()) {
 
             public MessageList validate(int paramIndex) throws CoreException {
                 return new MessageList();
@@ -221,6 +221,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         parametersControl.setCanChangeParameterNames(false);
         parametersControl.setCanMoveParameters(false);
         parametersControl.setTableStyle(SWT.BORDER);
+        parametersControl.setCanChangeParameterNames(isDataChangeable());
         parametersControl.initControl();
         parametersControl.setLayoutData(new GridData(GridData.FILL_BOTH));
         

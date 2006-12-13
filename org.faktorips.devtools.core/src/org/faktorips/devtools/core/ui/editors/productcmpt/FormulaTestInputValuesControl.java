@@ -568,7 +568,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
      * {@inheritDoc}
      */
     public boolean isDataChangeable() {
-        return true;
+        return dataChangeable;
     }
 
     /*

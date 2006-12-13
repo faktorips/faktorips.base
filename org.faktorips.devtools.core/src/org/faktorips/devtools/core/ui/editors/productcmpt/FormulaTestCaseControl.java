@@ -922,6 +922,6 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
      * {@inheritDoc}
      */
     public boolean isDataChangeable() {
-        return true;
+        return dataChangeable;
     }
 }

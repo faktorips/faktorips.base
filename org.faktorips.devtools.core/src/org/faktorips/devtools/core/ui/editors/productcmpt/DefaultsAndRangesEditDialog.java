@@ -147,6 +147,8 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
             		enumType = (EnumDatatype)type;
             	}
             	EnumValueSetChooser chooser = new EnumValueSetChooser(workArea, uiToolkit, (IEnumValueSet)attrValueSet, (IEnumValueSet)valueSet, enumType, uiController);
+                chooser.setDataChangeable(isDataChangeable());
+                chooser.initControl();
                 return chooser;
             } 
         } catch (CoreException e) {
