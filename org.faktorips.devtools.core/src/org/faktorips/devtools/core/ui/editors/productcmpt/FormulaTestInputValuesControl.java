@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
+import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.ProblemImageDescriptor;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.UIController;
@@ -63,7 +64,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Joerg Ortmann
  */
-public class FormulaTestInputValuesControl extends Composite implements ColumnChangeListener {
+public class FormulaTestInputValuesControl extends Composite implements ColumnChangeListener, IDataChangeableReadWriteAccess {
     private static final int IDX_IDENTIFIER = 1;
     private static final int IDX_VALUE_COLUMN = 2;
     
@@ -79,7 +80,10 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     /* Label to display the result of the formula */
     private Label formulaResult;
 
+    /* Buttons */
     private Button btnNewFormulaTestCase;
+    private Button btnCalculate;
+    private Button btnClearInputValues;
     
     /* The formula test case which will be displayed and edit by this composite */ 
     private IFormulaTestCase formulaTestCase;
@@ -105,9 +109,6 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     /* Contains the last calculated result */
     private Object lastCalculatedResult = null;
     
-    /* Indicates if the control is in read only state */
-    private boolean viewOnly;
-    
     /* indicates that the object is self updating */
     private boolean isUpdatingSelf;
     
@@ -116,6 +117,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     
     // The column index of the delegate cell editor
     private int delegateCellEditorColumnIndex;
+    private boolean dataChangeable;
     
     /*
      * Label provider for the formula test input value.
@@ -204,14 +206,6 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     public void setCanStoreExpectedResult(boolean storeExpectedResult) {
         this.storeExpectedResult = storeExpectedResult;
     }
-
-    /**
-     * Sets if the control is for read only view <code>true</code> or not <code>false</code>.
-     */
-    public void setViewOnly(boolean viewOnly) {
-        // the preview calculation is always allowed
-        this.viewOnly = viewOnly;
-    }    
     
     /**
      * Returns the last calculated result or <code>null</code> if the formula couldn't or wasn't executed.
@@ -239,7 +233,9 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
                 rowDatatypes[i] = null;
             }
         }
-        tableCellModifier.initRowModifier(delegateCellEditorColumnIndex, rowDatatypes);
+        if (tableCellModifier != null){
+            tableCellModifier.initRowModifier(delegateCellEditorColumnIndex, rowDatatypes);
+        }
     }
 
     /**
@@ -262,7 +258,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         btns.setLayout(uiToolkit.createNoMarginGridLayout(1, true));
         btns.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
         
-        Button btnCalculate = uiToolkit.createButton(btns, Messages.FormulaTestInputValuesControl_ButtonLabel_Calculate);
+        btnCalculate = uiToolkit.createButton(btns, Messages.FormulaTestInputValuesControl_ButtonLabel_Calculate);
         btnCalculate.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true ));
         btnCalculate.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
@@ -286,11 +282,9 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
                 public void widgetDefaultSelected(SelectionEvent e) {
                 }
             });            
-
-             btnNewFormulaTestCase.setEnabled(!viewOnly);
         }
         
-        Button btnClearInputValues = uiToolkit.createButton(btns, Messages.FormulaTestInputValuesControl_ButtonLabel_Clear);
+        btnClearInputValues = uiToolkit.createButton(btns, Messages.FormulaTestInputValuesControl_ButtonLabel_Clear);
         btnClearInputValues.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true ));
         btnClearInputValues.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
@@ -299,9 +293,6 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
-        // the clear btn is enabled is not view only or if this is the control which can store the input as
-        // new formula test case (e.g. preview formula on the first page of the formula edit dialog)
-        btnClearInputValues.setEnabled(!viewOnly || canStoreFormulaTestCaseAsNewFormulaTestCase);
         
         // create the label to display the formula result
         Composite resultComposite = uiToolkit.createLabelEditColumnComposite(formulaTestArea);
@@ -344,7 +335,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         if (formulaTestCase != null){
             IFormulaTestInputValue[] inputValues = formulaTestCase.getFormulaTestInputValues();
             for (int i = 0; i < inputValues.length; i++) {
-                inputValues[i].setValue(""); //$NON-NLS-1$
+                inputValues[i].setValue(null); //$NON-NLS-1$
                 uiController.updateUI();
                 repackAndResfreshParamInputTable();
                 clearResult();
@@ -386,7 +377,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         formulaInputTableViewer.setLabelProvider (new FormulaTestInputValueTblLabelProvider());
         
         // create the cell editor
-        if (!viewOnly || canStoreFormulaTestCaseAsNewFormulaTestCase){
+        if (dataChangeable || isPreviewOfFormulaTest()){
             // the table is modifiedable if not "view only"  is set or if this is the control which can store the input as
             // new formula test case (e.g. preview formula on the first page of the formula edit dialog)
             delegateCellEditorColumnIndex = 2;
@@ -567,5 +558,33 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         repackAndResfreshParamInputTable();
         clearResult();
         uiController.updateUI();  
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDataChangeable() {
+        return true;
+    }
+
+    /*
+     * Returns true if this control is a preview control for formula test cases,
+     * returns false if this control shows stored formula test cases.
+     */
+    private boolean isPreviewOfFormulaTest(){
+        return canStoreFormulaTestCaseAsNewFormulaTestCase;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setDataChangeable(boolean changeable) {
+        this.dataChangeable = changeable;
+        uiToolkit.setDataChangeable(btnNewFormulaTestCase, changeable);
+        if(!isPreviewOfFormulaTest()){
+            // special button to reset the input values is disabled if the data are related to a stored formula test case
+            uiToolkit.setDataChangeable(btnClearInputValues, changeable);
+            uiToolkit.setDataChangeable(formulaInputTableViewer.getTable(), changeable);
+        }
     }
 }

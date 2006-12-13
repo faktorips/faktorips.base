@@ -56,6 +56,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
+import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.ProblemImageDescriptor;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
@@ -73,7 +74,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Joerg Ortmann
  */
-public class FormulaTestCaseControl extends Composite implements ColumnChangeListener {
+public class FormulaTestCaseControl extends Composite implements ColumnChangeListener, IDataChangeableReadWriteAccess {
     private static final int IDX_COLUMN_IMAGE = 0;
     private static final int IDX_COLUMN_NAME = 1;
     private static final int IDX_COLUMN_EXPECTED_RESULT = 2;
@@ -121,6 +122,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     private Control testStatusBar;
     
     /* Buttons */
+    private Button btnNewFormulaTestCase;
     private Button btnDeleteFormulaTestCase;
     private Button btnUpdateFormulaTestCase;
     private Button btnMoveFormulaTestCaseUp;
@@ -130,11 +132,9 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     private Color failureColor;
     private Color okColor;
     
-    /* Indicates if the control is in read only state */
-    private boolean viewOnly;
-    
     /* Indicates errors or failures during the calculation */
     private boolean isCalculationErrorOrFailure;
+    private boolean dataChangeable;
     
     /*
      * Extended data which is displayed beside the model data in the table
@@ -369,16 +369,9 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     }
 
     /**
-     * Sets if this control is only for read only viewing <code>true</code>, otherwise <code>false</code>.
-     */
-    public void setViewOnly(boolean viewOnly) {
-        this.viewOnly = viewOnly;
-    }
-    
-    /**
      * Creates the compoiste's controls. This method has to be called by this
      * controls client, after the control has been configured via the appropiate
-     * setter method, e.g. <code>setViewOnly(boolean viewOnly)</code>
+     * setter method.
      */
     public void initControl() {
         setLayout(uiToolkit.createNoMarginGridLayout(1, false));
@@ -414,7 +407,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         uiToolkit.createVerticalSpacer(btns, 5);
         
         if (configElement != null){
-            Button btnNewFormulaTestCase = uiToolkit.createButton(btns, Messages.FormulaTestCaseControl_Button_New);
+            btnNewFormulaTestCase = uiToolkit.createButton(btns, Messages.FormulaTestCaseControl_Button_New);
             btnNewFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true ));
             btnNewFormulaTestCase.addSelectionListener(new SelectionListener() {
                 public void widgetSelected(SelectionEvent e) {
@@ -423,7 +416,6 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                 public void widgetDefaultSelected(SelectionEvent e) {
                 }
             });  
-            btnNewFormulaTestCase.setEnabled(!viewOnly);
         }
         
         btnDeleteFormulaTestCase = uiToolkit.createButton(btns, Messages.FormulaTestCaseControl_Button_Delete);
@@ -484,9 +476,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         formulaTestInputValuesControl.setCanCalulateResult(true);
         formulaTestInputValuesControl.setCanStoreExpectedResult(false);
         formulaTestInputValuesControl.setCanStoreFormulaTestCaseAsNewFormulaTestCase(false);
-        formulaTestInputValuesControl.setViewOnly(viewOnly);
         formulaTestInputValuesControl.initControl();
-        
     }
 
     /*
@@ -715,7 +705,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         formulaTestCaseTableViewer.setContentProvider (new ArrayContentProvider());
         formulaTestCaseTableViewer.setLabelProvider (new FormulaTestCaseTblLabelProvider());
         
-        if (!viewOnly){
+        if (dataChangeable){
             // create the cell editor
             BeanTableCellModifier tableCellModifier = new BeanTableCellModifier(formulaTestCaseTableViewer);
             tableCellModifier.initModifier(uiToolkit, new String[] { null, IFormulaTestCase.PROPERTY_NAME,
@@ -792,7 +782,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
      * Method to indicate that the selection in the formula test case table has changed
      */
     protected void selectionFormulaTestCaseChanged(ExtDataForFormulaTestCase selectedFormulaTestCase) {
-        if (selectedFormulaTestCase == null || viewOnly) {
+        if (selectedFormulaTestCase == null) {
             btnDeleteFormulaTestCase.setEnabled(false);
             btnMoveFormulaTestCaseUp.setEnabled(false);
             btnMoveFormulaTestCaseDown.setEnabled(false);
@@ -805,6 +795,14 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         btnMoveFormulaTestCaseUp.setEnabled(true);
         btnMoveFormulaTestCaseDown.setEnabled(true);
         updateStatusOfUpdateButton(selectedFormulaTestCase);
+        
+        // if the data is not changeable disable all buttons in any case
+        if (!dataChangeable){
+            btnDeleteFormulaTestCase.setEnabled(false);
+            btnMoveFormulaTestCaseUp.setEnabled(false);
+            btnMoveFormulaTestCaseDown.setEnabled(false);
+            btnUpdateFormulaTestCase.setEnabled(false);
+        }
     }
 
     /*
@@ -896,5 +894,25 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         if (tc != null){
             tc.setActualResult("" + formulaTestInputValuesControl.calculateFormulaIfValid()); //$NON-NLS-1$
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDataChangeable(boolean changeable) {
+        this.dataChangeable = changeable;
+        // trigger update state of buttons
+        selectionFormulaTestCaseChanged(getSelectedFormulaTestCase());
+        uiToolkit.setDataChangeable(btnNewFormulaTestCase, changeable);
+        
+        // set state of child control
+        formulaTestInputValuesControl.setDataChangeable(changeable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDataChangeable() {
+        return true;
     }
 }

@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.productcmpt.FormulaEditDialog;
@@ -34,11 +35,13 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * 
  * @author Thorsten Guenther
  */
-public class FormulaEditControl extends TextButtonControl {
+public class FormulaEditControl extends TextButtonControl implements IDataChangeableReadWriteAccess{
 
 	private IConfigElement configElement;
 	private Shell shell;
 	private IpsSection parentSection;
+    
+    private UIToolkit uiToolkit;
     
 	public FormulaEditControl(Composite parent, UIToolkit toolkit, IConfigElement configElement, Shell shell,
             IpsSection parentSection) {
@@ -46,11 +49,13 @@ public class FormulaEditControl extends TextButtonControl {
         this.configElement = configElement;
         this.shell = shell;
         this.parentSection = parentSection;
+        this.uiToolkit = toolkit;
     }
 	
 	protected void buttonClicked() {
 		try {
-            EditDialog dialog = new FormulaEditDialog(configElement, shell, !super.getTextControl().isEnabled());
+            EditDialog dialog = new FormulaEditDialog(configElement, shell);
+            dialog.setDataChangeable(parentSection.isDataChangeable());
             if (dialog.open()==Window.OK) {
                 if (parentSection != null){
                     parentSection.refresh();
@@ -68,5 +73,21 @@ public class FormulaEditControl extends TextButtonControl {
 	public void setEnabled(boolean enabled) {
 		super.getTextControl().setEnabled(enabled);
 	}
-	
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDataChangeable(boolean changeable) {
+        // set changeable for the text control,
+        // the button control will be always enabled, because formula tests
+        // could be executes if changeable or not changeable
+        uiToolkit.setDataChangeable(getTextControl(), changeable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDataChangeable() {
+        return true;
+    }
 }

@@ -76,14 +76,8 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     // the table to display the formula test case, to preview the result of the editing formula
     private FormulaTestInputValuesControl formulaDummyTestInputValuesControl;
     
-    /*
-     * Flag indicating that this dialog is only a view (which does not allow to 
-     * modify its contents).
-     */
-    private boolean viewOnly = false;
-
     /**
-     * Creates a new dialog which allows to edit a formula. This dialog is editable.
+     * Creates a new dialog which allows to edit a formula.
      * 
      * @param configElement The config element the formula is for.
      * @param parentShell The shell as parent for the dialog.
@@ -91,25 +85,10 @@ public class FormulaEditDialog extends IpsPartEditDialog {
      * @throws CoreException if the config element is invalid (e.g. no datatype can be found for it).
      */
     public FormulaEditDialog(IConfigElement configElement, Shell parentShell) throws CoreException {
-    	this(configElement, parentShell, false);
-    }
-    
-    /**
-     * Creates a new dialog which allows to edit a formula. 
-     * 
-     * @param configElement The config element the formula is for.
-     * @param parentShell The shell as parent for the dialog.
-     * @param viewOnly <code>true</code> to get a dialog where no modifications can be made, 
-     *        <code>false</code> to get a unlocked, fully modifyable dialog.
-     *        
-     * @throws CoreException if the config element is invalid (e.g. no datatype can be found for it).
-     */
-    public FormulaEditDialog(IConfigElement configElement, Shell parentShell, boolean viewOnly) throws CoreException {
         super(configElement, parentShell, Messages.FormulaEditDialog_editFormula, true);
         ArgumentCheck.notNull(configElement);
         this.configElement = configElement;
         attribute = configElement.findPcTypeAttribute();
-        this.viewOnly = viewOnly;
     }
 
     /**
@@ -221,7 +200,6 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         createFormulaTestCasesTab(folder);
         
         createDescriptionTabItem(folder);
-        super.setEnabledDescription(!viewOnly);
         
         return folder;
     }
@@ -245,7 +223,6 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         parametersControl.setTableStyle(SWT.BORDER);
         parametersControl.initControl();
         parametersControl.setLayoutData(new GridData(GridData.FILL_BOTH));
-        parametersControl.setEnabled(!viewOnly);
         
         Text formulaText = uiToolkit.createMultilineText(c);
         try {
@@ -257,8 +234,6 @@ public class FormulaEditDialog extends IpsPartEditDialog {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         
-        formulaText.setEnabled(!viewOnly);
-        
         // create fields
         formulaField = new TextField(formulaText);
 
@@ -268,7 +243,6 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         formulaDummyTestInputValuesControl.setCanCalulateResult(true);
         formulaDummyTestInputValuesControl.setCanStoreFormulaTestCaseAsNewFormulaTestCase(true);
         formulaDummyTestInputValuesControl.setCanStoreExpectedResult(true);
-        formulaDummyTestInputValuesControl.setViewOnly(viewOnly);
         formulaDummyTestInputValuesControl.initControl();
         
         return c;
@@ -346,7 +320,6 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         Composite c = createTabItemComposite(folder, 1, false);
 
         formulaTestCaseControl = new FormulaTestCaseControl(c, uiToolkit, uiController, configElement);
-        formulaTestCaseControl.setViewOnly(viewOnly);
         formulaTestCaseControl.setConfigElem(configElement);
         formulaTestCaseControl.initControl();
         formulaTestCaseControl.storeFormulaTestCases(getPersistentFormulaTestCases());
