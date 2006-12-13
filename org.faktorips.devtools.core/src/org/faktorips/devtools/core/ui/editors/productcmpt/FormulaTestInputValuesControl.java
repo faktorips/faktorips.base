@@ -380,15 +380,19 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         if (dataChangeable || isPreviewOfFormulaTest()){
             // the table is modifiedable if not "view only"  is set or if this is the control which can store the input as
             // new formula test case (e.g. preview formula on the first page of the formula edit dialog)
-            delegateCellEditorColumnIndex = 2;
-            tableCellModifier = new BeanTableCellModifier(formulaInputTableViewer);
-            tableCellModifier.initModifier(uiToolkit, new String[] { "image", IFormulaTestInputValue.PROPERTY_NAME, //$NON-NLS-1$
-                    IFormulaTestInputValue.PROPERTY_VALUE}, new ValueDatatype[] { null, null, DelegateCellEditor.DELEGATE_VALUE_DATATYPE});
-            tableCellModifier.addListener(this);
+            createTableCellModifier();
         }
         hookTableListener();     
 
         repackAndResfreshParamInputTable();
+    }
+
+    private void createTableCellModifier() {
+        delegateCellEditorColumnIndex = 2;
+        tableCellModifier = new BeanTableCellModifier(formulaInputTableViewer);
+        tableCellModifier.initModifier(uiToolkit, new String[] { "image", IFormulaTestInputValue.PROPERTY_NAME, //$NON-NLS-1$
+                IFormulaTestInputValue.PROPERTY_VALUE}, new ValueDatatype[] { null, null, DelegateCellEditor.DELEGATE_VALUE_DATATYPE});
+        tableCellModifier.addListener(this);
     }
 
     /*
@@ -579,6 +583,10 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
      * {@inheritDoc}
      */
     public void setDataChangeable(boolean changeable) {
+        if (!this.dataChangeable && changeable){
+            // create the cell editor
+            createTableCellModifier();
+        }
         this.dataChangeable = changeable;
         uiToolkit.setDataChangeable(btnNewFormulaTestCase, changeable);
         if(!isPreviewOfFormulaTest()){
