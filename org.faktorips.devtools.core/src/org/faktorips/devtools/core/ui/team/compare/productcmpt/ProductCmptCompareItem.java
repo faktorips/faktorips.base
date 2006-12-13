@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
+import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
@@ -215,18 +216,24 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
                 String validFromSimple = simpleDateFormat.format(rel.getProductCmptGeneration().getValidFrom()
                         .getTime());
                 sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(rel.getTarget());
+                sb.append(BLANK).append("(").append(rel.getId()).append(")");
             } else if (getIpsElement() instanceof IConfigElement) {
                 IConfigElement configElement = (IConfigElement)getIpsElement();
                 String validFromSimple = simpleDateFormat
-                        .format(configElement.getProductCmptGeneration().getValidFrom().getTime());
-                sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(NEWLINE);
-                sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB)
-                        .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PolicyAttributeEditDialog_defaultValue)
-                        .append(BLANK);
-                sb.append(configElement.getValue()).append(NEWLINE);
-                sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB)
-                        .append(Messages.ProductCmptCompareItem_ValueSet).append(COLON_BLANK);
-                sb.append(getValueSetContent(configElement));
+                    .format(configElement.getProductCmptGeneration().getValidFrom().getTime());
+                if(configElement.getType() == ConfigElementType.PRODUCT_ATTRIBUTE){
+                    sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(COLON_BLANK);
+                    sb.append(configElement.getValue()).append(NEWLINE);
+                }else{
+                    sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(NEWLINE);
+                    sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB)
+                            .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PolicyAttributeEditDialog_defaultValue)
+                            .append(BLANK);
+                    sb.append(configElement.getValue()).append(NEWLINE);
+                    sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB)
+                            .append(Messages.ProductCmptCompareItem_ValueSet).append(COLON_BLANK);
+                    sb.append(getValueSetContent(configElement));
+                }
             } else if (getIpsElement() instanceof IIpsObjectGeneration) {
                 IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
                 String validFromSimple = simpleDateFormat.format(gen.getValidFrom().getTime());

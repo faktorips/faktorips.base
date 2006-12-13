@@ -55,7 +55,9 @@ public class ProductCmptCompareItemComparator implements Comparator {
             }
             // Sort relations by name (qualified name of the target)
             if (element1 instanceof IProductCmptRelation && element2 instanceof IProductCmptRelation) {
-                return element1.getName().compareTo(element2.getName());
+//                return element1.getName().compareTo(element2.getName());
+                // sort by ID 
+                return ((IProductCmptRelation)element1).getId() - ((IProductCmptRelation)element2).getId();
             }
             // Sort configElements by type (which is at the same time their name)
             if (element1 instanceof IConfigElement && element2 instanceof IConfigElement) {
