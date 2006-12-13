@@ -53,6 +53,7 @@ import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.table.BeanTableCellModifier;
 import org.faktorips.devtools.core.ui.table.ColumnChangeListener;
 import org.faktorips.devtools.core.ui.table.ColumnIdentifier;
+import org.faktorips.devtools.core.ui.table.DelegateCellEditor;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -109,6 +110,12 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     
     /* indicates that the object is self updating */
     private boolean isUpdatingSelf;
+    
+    // Contains the cell modifier for the table
+    private BeanTableCellModifier tableCellModifier;
+    
+    // The column index of the delegate cell editor
+    private int delegateCellEditorColumnIndex;
     
     /*
      * Label provider for the formula test input value.
@@ -220,6 +227,19 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         this.formulaTestCase = formulaTestCase;
         clearResult();
         repackAndResfreshParamInputTable();
+
+        // update the table row cell editors
+        IFormulaTestInputValue[] inputValues = formulaTestCase.getFormulaTestInputValues();
+        ValueDatatype[] rowDatatypes = new ValueDatatype[inputValues.length];
+        for (int i = 0; i < rowDatatypes.length; i++) {
+            try {
+                rowDatatypes[i] = (ValueDatatype) inputValues[i].findDatatypeOfFormulaParameter();
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+                rowDatatypes[i] = null;
+            }
+        }
+        tableCellModifier.initRowModifier(delegateCellEditorColumnIndex, rowDatatypes);
     }
 
     /**
@@ -369,10 +389,10 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         if (!viewOnly || canStoreFormulaTestCaseAsNewFormulaTestCase){
             // the table is modifiedable if not "view only"  is set or if this is the control which can store the input as
             // new formula test case (e.g. preview formula on the first page of the formula edit dialog)
-
-            BeanTableCellModifier tableCellModifier = new BeanTableCellModifier(formulaInputTableViewer);
+            delegateCellEditorColumnIndex = 2;
+            tableCellModifier = new BeanTableCellModifier(formulaInputTableViewer);
             tableCellModifier.initModifier(uiToolkit, new String[] { "image", IFormulaTestInputValue.PROPERTY_NAME, //$NON-NLS-1$
-                    IFormulaTestInputValue.PROPERTY_VALUE }, new ValueDatatype[] { null, null, ValueDatatype.STRING });
+                    IFormulaTestInputValue.PROPERTY_VALUE}, new ValueDatatype[] { null, null, DelegateCellEditor.DELEGATE_VALUE_DATATYPE});
             tableCellModifier.addListener(this);
         }
         hookTableListener();     

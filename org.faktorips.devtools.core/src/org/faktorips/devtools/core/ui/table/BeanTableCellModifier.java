@@ -37,25 +37,50 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.util.ArgumentCheck;
 
+/**
+ * Cell modifier with bean setter and getter support.
+ * 
+ * @author Joerg Ortmann
+ */
 public class BeanTableCellModifier extends ValueCellModifier  {
     // The table viewer this cell modifier belongs to
     private TableViewer tableViewer;
 
+    // Listeners for the changes inside the cell
     private List columnChangeListeners = new ArrayList(1);
     
+    // Cache
     private HashMap propertyDescriptors = new HashMap(4);
-    
     private HashMap columnIdentifers = new HashMap(4);
     
-    
+    // Contains the delegate cell editors for each column, 
+    // only if at least one column specifies different cell editor for each row
+    // otherwise the list is empty
+    private List delegateCellEditor= new ArrayList(0);
+
+    private UIToolkit uiToolkit;
     
     public BeanTableCellModifier(TableViewer tableViewer) {
         ArgumentCheck.notNull(tableViewer);
         this.tableViewer = tableViewer;
     }
     
+    /**
+     * Inits (create and store) the cell editors for each row. The given value datatypes specifies
+     * the type of the cell editor in the row.
+     */
+    public void initRowModifier(int column, ValueDatatype[] datatypesRows) {
+        List rowCellEditors = new ArrayList(datatypesRows.length);
+        DelegateCellEditor dm = (DelegateCellEditor) delegateCellEditor.get(column);
+        for (int i = 0; i < datatypesRows.length; i++) {
+            rowCellEditors.add(createCellEditor(uiToolkit, datatypesRows[i], dm.getColumn()));
+        }
+        dm.setCellEditors((CellEditor[])rowCellEditors.toArray(new CellEditor[rowCellEditors.size()]));
+    }
+    
     public void initModifier(UIToolkit uiToolkit, String[] properties, ValueDatatype[] datatypes) {
         ArgumentCheck.isTrue(properties.length == datatypes.length);
+        this.uiToolkit = uiToolkit;
         ArrayList cellEditors = new ArrayList(datatypes.length);
         
         // create column identifier and cell editors
@@ -65,6 +90,7 @@ public class BeanTableCellModifier extends ValueCellModifier  {
             Assert.isTrue(columnIdentifers.get(properties[i]) == null, "A column modifier for property " + properties[i] + " already exist!"); //$NON-NLS-1$ //$NON-NLS-2$
             columnIdentifers.put(properties[i], ci);
             // create cell modifier if enabled
+            
             if (datatypes[i] != null){
                 CellEditor cellEditor = createCellEditor(uiToolkit, datatypes[i], i);
                 cellEditors.add(cellEditor);
@@ -72,19 +98,30 @@ public class BeanTableCellModifier extends ValueCellModifier  {
                 cellEditors.add(null);
             }
         }
-
+        
         // connect to table viewer
         tableViewer.setColumnProperties(properties);
         tableViewer.setCellEditors((CellEditor[])cellEditors.toArray(new CellEditor[cellEditors.size()]));
         tableViewer.setCellModifier(this);
     }
     
-    /**
+    /*
      * Returns a new cell editor for the given datatype.
      */
-    public CellEditor createCellEditor(UIToolkit uiToolkit, ValueDatatype valueDatatype, int columnIndex) {
-        ValueDatatypeControlFactory factory = IpsPlugin.getDefault().getValueDatatypeControlFactory(valueDatatype);
-        return factory.createCellEditor(uiToolkit, valueDatatype, null, tableViewer, columnIndex);
+    private CellEditor createCellEditor(UIToolkit uiToolkit, ValueDatatype valueDatatype, int columnIndex) {
+        if (valueDatatype == DelegateCellEditor.DELEGATE_VALUE_DATATYPE) {
+            // the value datatype is the dummy delagate indicator
+            // create a delegate cell editor which delegates to the corresponding editor depending
+            // on the value datatype for each the row, the row cell editors will be created if the
+            // content of the table is updated
+            // @see this#initRowModifier
+            DelegateCellEditor dm = new DelegateCellEditor(tableViewer, columnIndex);
+            delegateCellEditor.add(dm);
+            return dm;
+        } else {
+            ValueDatatypeControlFactory factory = IpsPlugin.getDefault().getValueDatatypeControlFactory(valueDatatype);
+            return factory.createCellEditor(uiToolkit, valueDatatype, null, tableViewer, columnIndex);
+        }
     }
     
     /**
@@ -187,5 +224,5 @@ public class BeanTableCellModifier extends ValueCellModifier  {
         for (Iterator iter = columnChangeListeners.iterator(); iter.hasNext();) {
             ((ColumnChangeListener)iter.next()).valueChanged(columnIdentifier, value);
         }
-    }    
+    }
 }
