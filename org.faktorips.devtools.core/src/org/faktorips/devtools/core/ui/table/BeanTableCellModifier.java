@@ -83,6 +83,12 @@ public class BeanTableCellModifier extends ValueCellModifier  {
         dm.setCellEditors((CellEditor[])rowCellEditors.toArray(new CellEditor[rowCellEditors.size()]));
     }
     
+    /**
+     * Initialize the modifiers with the given properties and datatypes. The datatypes specifies the
+     * type of the cell editor which will adapt to the corresponding column. The cell editors will
+     * be related to the column index in the same order like the datatypes (e.g. the first given
+     * datatype specifies the cell editor type of the first column.
+     */
     public void initModifier(UIToolkit uiToolkit, String[] properties, ValueDatatype[] datatypes) {
         ArgumentCheck.isTrue(properties.length == datatypes.length);
         this.uiToolkit = uiToolkit;
