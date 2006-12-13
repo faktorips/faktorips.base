@@ -350,6 +350,9 @@ public class KeyEditDialog extends IpsPartEditDialog {
     }
     
     private void addSelectedItems() {
+        if (!isDataChangeable()){
+            return;
+        }
         ISelection selection = candidatesViewer.getSelection();
         if (selection.isEmpty()) {
             return;
@@ -365,6 +368,9 @@ public class KeyEditDialog extends IpsPartEditDialog {
     }
     
     private void removeSelectedItems() {
+        if (!isDataChangeable()){
+            return;
+        }        
         ISelection selection = itemsViewer.getSelection();
         if (selection.isEmpty()) {
             return;
@@ -380,6 +386,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
     }
     
     private void moveSelectedItems(boolean up) {
+        
         Table table = itemsViewer.getTable();
 		if (table.getSelectionCount() == 0) {
 		    return;
@@ -407,10 +414,10 @@ public class KeyEditDialog extends IpsPartEditDialog {
     }
     
     private void updateButtonEnabledState() {
-        addButton.setEnabled(!candidatesViewer.getSelection().isEmpty());
-        removeButton.setEnabled(!itemsViewer.getSelection().isEmpty());
-        upButton.setEnabled(!itemsViewer.getSelection().isEmpty());
-        downButton.setEnabled(!itemsViewer.getSelection().isEmpty());
+        addButton.setEnabled(isDataChangeable() && !candidatesViewer.getSelection().isEmpty());
+        removeButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
+        upButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
+        downButton.setEnabled(isDataChangeable() && !itemsViewer.getSelection().isEmpty());
     }
     
     private class KeyItemLabelProvider extends DefaultLabelProvider {
@@ -474,6 +481,4 @@ public class KeyEditDialog extends IpsPartEditDialog {
             return image.hashCode() + "_" + severity; //$NON-NLS-1$
         }        
     }
-    
-    
 }
