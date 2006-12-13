@@ -42,7 +42,7 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
     private String windowTitle;
     private boolean tabFolderUsed;
     protected UIToolkit uiToolkit = new UIToolkit(null);
-    private boolean dataChangeable;
+    private boolean dataChangeable = true;
     
 	public EditDialog(Shell shell, String windowTitle) {
 	    this(shell, windowTitle, false);

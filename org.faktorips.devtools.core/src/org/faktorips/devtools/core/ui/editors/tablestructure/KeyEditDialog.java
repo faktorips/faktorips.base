@@ -102,8 +102,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.EditDialog#createWorkArea(org.eclipse.swt.widgets.Composite)
+     * {@inheritDoc}
      */
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
