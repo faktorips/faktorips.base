@@ -439,6 +439,10 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         if (tss.length == 1) {
             tableStructureClassName = tss[0];
             ITableStructure ts = (ITableStructure) getProductCmptType().getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, tableStructureClassName);
+            if (ts == null){
+                // abort because table structure not found
+                return;
+            }
             tableStructureClassName = tableImplBuilder.getQualifiedClassName(ts.getIpsSrcFile());
         } else if (tss.length > 1) {
             tableStructureClassName = ITable.class.getName();

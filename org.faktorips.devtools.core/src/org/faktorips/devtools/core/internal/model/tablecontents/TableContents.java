@@ -213,6 +213,9 @@ public class TableContents extends TimedIpsObject implements ITableContents {
 
     ValueDatatype[] findColumnDatatypes() throws CoreException {
         ITableStructure structure = findTableStructure();
+        if (structure == null){
+            return new ValueDatatype[0];
+        }
         IColumn[] columns= structure.getColumns();
         ValueDatatype[] datatypes= new ValueDatatype[columns.length];
         for (int i = 0; i < columns.length; i++) {

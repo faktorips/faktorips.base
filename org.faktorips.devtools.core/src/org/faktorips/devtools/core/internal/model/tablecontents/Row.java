@@ -180,6 +180,13 @@ public class Row extends AtomicIpsObjectPart implements IRow {
      */
     private MessageList validateWithDatatypes(MessageList list, ValueDatatype[] datatypes) throws CoreException {
         ITableStructure structure = ((ITableContents)getParent().getParent()).findTableStructure();
+        if (structure == null){
+            // the structure is missing no further checks
+            String text = NLS.bind(Messages.TableContents_msgMissingTablestructure, ((ITableContents)getParent().getParent()).getTableStructure());
+            Message message= new Message(ITableContents.MSGCODE_UNKNWON_STRUCTURE, text, Message.WARNING, this);
+            list.add(message);
+            return list;
+        }
         
         IUniqueKey[] uniqueKeys= structure.getUniqueKeys();
         for (int i = 0; i < uniqueKeys.length; i++) {

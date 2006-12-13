@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
+import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -194,6 +195,10 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         for (int i = 0; i < firstkeyItems.length; i++) {
             Datatype firstDatatype = getDatatypeForKeyName(firstkeyItems[i]);
             Datatype secondDatatype = getDatatypeForKeyName(secondkeyItems[i]);
+            if (firstDatatype == null || secondDatatype == null){
+                // compare failed beacause of missing datatypes
+                return false;
+            }
             if (!firstDatatype.equals(secondDatatype)) {
                 return false;
             }
@@ -258,6 +263,14 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         for (int i = 0; i < keys.length; i++) {
             if (!keys[i].validate().isEmpty()) {
                 return false;
+            }
+            // the key is valid
+            // additional check if the column inside the keys are valid
+            IKeyItem[] keyItems = keys[i].getKeyItems();
+            for (int j = 0; j < keyItems.length; j++) {
+                if (! checkColumnsValidity(keyItems[j].getColumns())){
+                    return false;
+                }
             }
         }
         return true;
@@ -342,7 +355,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC));
     }
 
-    private boolean checkColumns(IColumn[] columns) throws CoreException{
+    private boolean checkColumnsValidity(IColumn[] columns) throws CoreException{
         for (int i = 0; i < columns.length; i++) {
             if(!columns[i].validate().isEmpty()){
                 return false;
@@ -354,7 +367,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private void createAddRowMethod(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         IColumn[] columns = getTableStructure().getColumns();
-        if(!checkColumns(columns)){
+        if(!checkColumnsValidity(columns)){
             return;
         }
         String textVariableName = createAddRowMethodTextVariableName(columns);
