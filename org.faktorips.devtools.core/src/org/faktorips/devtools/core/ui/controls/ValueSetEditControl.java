@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.DefaultUIController;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
@@ -45,7 +46,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 /**
  * A control to define the type of value set and edit a value set. 
  */
-public class ValueSetEditControl extends ControlComposite {
+public class ValueSetEditControl extends ControlComposite implements IDataChangeableReadWriteAccess{
 
     private Combo validTypesCombo;
     private ComboField validTypesComboField;
@@ -65,6 +66,8 @@ public class ValueSetEditControl extends ControlComposite {
     private Composite groupComposite;
     private Group group;
     
+    private boolean dataChangeable;
+    
     /**
      * Generates a new control which contains a combo box and depending on the value of the box a EnumValueSetEditControl
      * or a or a RangeEditControl.
@@ -80,6 +83,14 @@ public class ValueSetEditControl extends ControlComposite {
         this.tableElementValidator = tableElementValidator;
         
         initLayout();
+    }
+    
+    /**
+     * Creates the compoiste's controls. This method has to be called by this
+     * controls client, after the control has been configured via the appropiate
+     * setter method, e.g. <code>setDataChangeable(boolean)</code>
+     */
+    public void initControl() {
         Composite parentArea;
         if (toolkit.getFormToolkit() == null) {
             parentArea = this;
@@ -91,6 +102,7 @@ public class ValueSetEditControl extends ControlComposite {
             parentArea.setLayout(formAreaLayout);
         }
         parentArea.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
+        
         createValidTypesCombo(toolkit, parentArea);
         valueSetArea = createValueControlArea(toolkit, parentArea);
         IValueSet valueSet = attribute.getValueSet();
@@ -119,6 +131,8 @@ public class ValueSetEditControl extends ControlComposite {
                     groupComposite = createEnumValueSetGroup(valueSetArea, Messages.ValueSetEditControl_labelAllowedValueSet);
                     enumControl = new EnumValueSetChooser(group, toolkit, null, (IEnumValueSet)valueSet, enumType,
                             uiController);
+                    ((EnumValueSetChooser)enumControl).setDataChangeable(isDataChangeable());
+                    ((EnumValueSetChooser)enumControl).initControl();                    
                     enumControl.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
                 } else {
                     // update ui with the current value set in the model object,
@@ -131,6 +145,8 @@ public class ValueSetEditControl extends ControlComposite {
                 if (!(enumControl instanceof EnumValueSetEditControl)) {
                     groupComposite = createEnumValueSetGroup(valueSetArea, Messages.ValueSetEditControl_labelAllowedValueSet);
                     enumControl = new EnumValueSetEditControl((IEnumValueSet)valueSet, group, tableElementValidator);
+                    ((EnumValueSetEditControl)enumControl).setDataChangeable(isDataChangeable());
+                    ((EnumValueSetEditControl)enumControl).initControl();
                     enumControl.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
                 } else {
                     // update ui with the current value set in the model object,
@@ -144,6 +160,8 @@ public class ValueSetEditControl extends ControlComposite {
     	} else if (valueSet.getValueSetType() == ValueSetType.RANGE) {
     		if (rangeControl == null) {
     			rangeControl = new RangeEditControl(valueSetArea, toolkit, (RangeValueSet)valueSet, uiController);
+                rangeControl.setDataChangeable(isDataChangeable());
+                rangeControl.initControl();
     		}
     		rangeControl.setValueSet(valueSet);
     		retValue = rangeControl;
@@ -219,6 +237,8 @@ public class ValueSetEditControl extends ControlComposite {
 
         validTypesComboField = new ComboField(validTypesCombo);
         validTypesComboField.addChangeListener(new TypeModifyListener());
+        
+        toolkit.setDataChangeable(validTypesCombo, isDataChangeable());
     }
 
     public boolean setFocus() {
@@ -294,5 +314,19 @@ public class ValueSetEditControl extends ControlComposite {
                 valueSetArea.getParent().getParent().layout(); // parent has to resize
                 uiController.updateUI();
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDataChangeable(boolean changeable) {
+        this.dataChangeable = changeable;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDataChangeable() {
+        return dataChangeable;
     }
 }

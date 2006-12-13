@@ -330,6 +330,8 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         createDefaultValueEditField();
         
         valueSetEditControl = new ValueSetEditControl(pageControl, uiToolkit, uiController, attribute, new PcTypeValidator());
+        valueSetEditControl.setDataChangeable(isDataChangeable());
+        valueSetEditControl.initControl();
         
         Object layoutData = valueSetEditControl.getLayoutData();
         if (layoutData instanceof GridData){
@@ -399,7 +401,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         Composite pageControl = createTabItemComposite(folder, 1, false);
         Composite workArea = uiToolkit.createLabelEditColumnComposite(pageControl);
 
-        parametersControl = new ChangeParametersControl(workArea, SWT.NONE, Messages.AttributeEditDialog_labelParams, attribute.getIpsProject()) {
+        parametersControl = new ChangeParametersControl(workArea, uiToolkit, SWT.NONE, Messages.AttributeEditDialog_labelParams, attribute.getIpsProject()) {
 
             public MessageList validate(int paramIndex) throws CoreException {
                 MessageList result = new MessageList();
@@ -425,6 +427,8 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
             }
 
         };
+        
+        parametersControl.setDataChangeable(isDataChangeable());
         parametersControl.initControl();
         parametersControl.setLayoutData(new GridData(GridData.FILL_BOTH));
         return pageControl;

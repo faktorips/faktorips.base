@@ -67,6 +67,8 @@ import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DatatypeCompletionProcessor;
+import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
+import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.pctype.ParameterInfo;
 import org.faktorips.devtools.core.ui.editors.pctype.ParameterListChangeListener;
@@ -79,7 +81,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Jan Jan Ortmann
  */
-public abstract class ChangeParametersControl extends Composite {
+public abstract class ChangeParametersControl extends Composite implements IDataChangeableReadWriteAccess {
 
 	private static class ParameterInfoContentProvider implements IStructuredContentProvider {
 		public Object[] getElements(Object inputElement) {
@@ -190,6 +192,8 @@ public abstract class ChangeParametersControl extends Composite {
 	private boolean defaultValueForNewParameters = false;
 	private int tableStyle = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
 	
+    private UIToolkit uiToolkit;
+    
 	private ParameterListChangeListener fListener;
 
 	private TableViewer fTableViewer;
@@ -207,20 +211,19 @@ public abstract class ChangeParametersControl extends Composite {
 	private List fParameterInfos;
 	private IIpsProject ipsProject;
 
+    private boolean dataChangeable;
+    
 	/**
-	 * @param label the label before the table or <code>null</code>
-	 * @param typeContext the package in which to complete types
-	 */
-	public ChangeParametersControl(
-	        Composite parent, 
-	        int style, 
-	        String label, 
-	        IIpsProject project) {
-	    
-		super(parent, style);
-		this.ipsProject= project;
-		this.label = label;
-	}
+     * @param uiToolkit2
+     * @param label the label before the table or <code>null</code>
+     * @param typeContext the package in which to complete types
+     */
+    public ChangeParametersControl(Composite parent, UIToolkit uiToolkit, int style, String label, IIpsProject project) {
+        super(parent, style);
+        this.uiToolkit = uiToolkit;
+        this.ipsProject = project;
+        this.label = label;
+    }
 	
 	public void setCanChangeParameterNames(boolean value) {
 	    fCanChangeParameterNames = value;
@@ -370,7 +373,7 @@ public abstract class ChangeParametersControl extends Composite {
 	}
 
     private boolean canEditTableCells() {
-        return fCanChangeParameterNames || fCanChangeTypesOfOldParameters;
+        return (fCanChangeParameterNames || fCanChangeTypesOfOldParameters) && dataChangeable;
     }
 	
 	private void editColumnOrNextPossible(int column){
@@ -470,6 +473,13 @@ public abstract class ChangeParametersControl extends Composite {
 	}
 
 	private void updateButtonsEnabledState() {
+        if (!dataChangeable){
+            uiToolkit.setDataChangeable(fUpButton, false);
+            uiToolkit.setDataChangeable(fDownButton, false);
+            uiToolkit.setDataChangeable(fAddButton, false);
+            uiToolkit.setDataChangeable(fRemoveButton, false);
+            return;
+        }
 	    if (fUpButton!=null) {
 			fUpButton.setEnabled(canMove(true));
 	    }
@@ -808,4 +818,20 @@ public abstract class ChangeParametersControl extends Composite {
 		}
 		return result;
 	}
+
+    /**
+     * @param changeable
+     */
+    public void setDataChangeable(boolean changeable) {
+        this.dataChangeable = changeable;
+    }
+
+    /**
+     * @return
+     */
+    public boolean isDataChangeable() {
+        return dataChangeable;
+    }
+    
+    
 }

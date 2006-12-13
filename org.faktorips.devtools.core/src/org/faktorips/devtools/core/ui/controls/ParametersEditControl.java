@@ -64,6 +64,8 @@ import org.faktorips.devtools.core.model.pctype.IParameter;
 import org.faktorips.devtools.core.model.pctype.IParameterContainer;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DatatypeCompletionProcessor;
+import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
+import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
@@ -72,7 +74,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Jan Ortmann
  */
-public class ParametersEditControl extends Composite {
+public class ParametersEditControl extends Composite implements  IDataChangeableReadWriteAccess {
 
 	private IParameterContainer paramContainer;
 	
@@ -90,6 +92,8 @@ public class ParametersEditControl extends Composite {
 	private boolean defaultValueForNewParameters = false;
 	private int tableStyle = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
 	
+    private UIToolkit uiToolkit;
+    
 	private TableViewer fTableViewer;
 	
 	// the label text above the table
@@ -104,19 +108,18 @@ public class ParametersEditControl extends Composite {
 	
 	private IIpsProject ipsProject;
 
+    private boolean dataChangeable;
+    
 	/**
+	 * @param uiToolkit 
 	 * @param label the label before the table or <code>null</code>
 	 */
-	public ParametersEditControl(
-	        Composite parent, 
-	        int style, 
-	        String label, 
-	        IIpsProject ipsProject) {
-	    
-		super(parent, style);
-		this.ipsProject= ipsProject;
-		this.label = label;
-	}
+	public ParametersEditControl(Composite parent, UIToolkit uiToolkit, int style, String label, IIpsProject ipsProject) {
+        super(parent, style);
+        this.ipsProject = ipsProject;
+        this.label = label;
+        this.uiToolkit = uiToolkit;
+    }
 	
 	public void setCanChangeParameterNames(boolean value) {
 	    fCanChangeParameterNames = value;
@@ -262,7 +265,7 @@ public class ParametersEditControl extends Composite {
 	}
 
     private boolean canEditTableCells() {
-        return fCanChangeParameterNames || fCanChangeTypesOfOldParameters;
+        return (fCanChangeParameterNames || fCanChangeTypesOfOldParameters) && isDataChangeable();
     }
 	
 	private void editColumnOrNextPossible(int column){
@@ -362,6 +365,13 @@ public class ParametersEditControl extends Composite {
 	}
 
 	private void updateButtonsEnabledState() {
+        if (!dataChangeable){
+            uiToolkit.setDataChangeable(fUpButton, false);
+            uiToolkit.setDataChangeable(fDownButton, false);
+            uiToolkit.setDataChangeable(fAddButton, false);
+            uiToolkit.setDataChangeable(fRemoveButton, false);
+            return;
+        }
 	    if (fUpButton!=null) {
 			fUpButton.setEnabled(canMove(true));
 	    }
@@ -372,6 +382,8 @@ public class ParametersEditControl extends Composite {
 			fAddButton.setEnabled(true);	
 		if (fRemoveButton != null)
 			fRemoveButton.setEnabled(getTableSelectionCount() != 0);
+        
+        
 	}
 
 	private int getTableSelectionCount() {
@@ -692,6 +704,17 @@ public class ParametersEditControl extends Composite {
 		}
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public void setDataChangeable(boolean changeable) {
+        this.dataChangeable = changeable;
+    }
 
-	
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDataChangeable() {
+        return dataChangeable;
+    }
 }

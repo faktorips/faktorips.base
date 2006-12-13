@@ -47,22 +47,28 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
+import org.faktorips.devtools.core.ui.UIToolkit;
 
 
 /**
  * A control that contains a table on the left and buttons to add and remove
  * rows and to move a row up or down.
  */
-public abstract class EditTableControl extends Composite {
+public abstract class EditTableControl extends Composite implements IDataChangeableReadWriteAccess {
     
-	private Button fAddButton;
+    private UIToolkit uiToolkit = new UIToolkit(null);
+
+    private Button fAddButton;
 	private Button fRemoveButton;
 	private Button fUpButton;
 	private Button fDownButton;
 	
 	private Table table;
 	private TableViewer fTableViewer;
-	
+    private boolean dataChangeable;
+    
+    private Object modelObject;
 	
     public EditTableControl(
 	        Object modelObject,
@@ -87,10 +93,19 @@ public abstract class EditTableControl extends Composite {
 			tableLabel.setText(label);
 		}
 
-		createTable(this);
-		createButtonComposite(this);
-		fTableViewer.setInput(modelObject);
+        this.modelObject = modelObject;
 	}
+    
+    /**
+     * Creates the compoiste's controls. This method has to be called by this
+     * controls client, after the control has been configured via the appropiate
+     * setter method, e.g. <code>setDataChangeable(boolean)</code>
+     */
+    public void initControl() {
+        createTable(this);
+        createButtonComposite(this);
+        fTableViewer.setInput(modelObject);
+    }
     
     protected abstract void initModelObject(Object modelObject);
     
@@ -146,22 +161,24 @@ public abstract class EditTableControl extends Composite {
 			}
 		});
 
-		UnfocusableTextCellEditor[] editors = createCellEditors();
-		if (editors!=null && editors.length!=table.getColumnCount()) {
-		    throw new RuntimeException("Number of editors must be equal to the number of table columns!"); //$NON-NLS-1$
-		}
-		fTableViewer.setCellEditors(editors);
-		if (getColumnPropertyNames().length!=table.getColumnCount()) {
-		    throw new RuntimeException("Number of ColumnProperties must be equal to the number of table columns!"); //$NON-NLS-1$
-		}
 		fTableViewer.setColumnProperties(getColumnPropertyNames());
-		fTableViewer.setCellModifier(createCellModifier());
-		
-		for (int i = 0; i < editors.length; i++) {
-			if (editors[i]!=null) {
-			    addListenersToEditor(editors[i], i);
-			}
-		}
+        if (dataChangeable) {
+            UnfocusableTextCellEditor[] editors = createCellEditors();
+            if (editors != null && editors.length != table.getColumnCount()) {
+                throw new RuntimeException("Number of editors must be equal to the number of table columns!"); //$NON-NLS-1$
+            }
+            fTableViewer.setCellEditors(editors);
+            if (getColumnPropertyNames().length != table.getColumnCount()) {
+                throw new RuntimeException("Number of ColumnProperties must be equal to the number of table columns!"); //$NON-NLS-1$
+            }
+            fTableViewer.setCellModifier(createCellModifier());
+
+            for (int i = 0; i < editors.length; i++) {
+                if (editors[i] != null) {
+                    addListenersToEditor(editors[i], i);
+                }
+            }
+        }
 	}
 	
 	private void addListenersToEditor(
@@ -351,6 +368,13 @@ public abstract class EditTableControl extends Composite {
 	}
 
 	private void updateButtonsEnabledState() {
+        if (!dataChangeable){
+            uiToolkit.setDataChangeable(fAddButton, false);
+            uiToolkit.setDataChangeable(fRemoveButton, false);
+            uiToolkit.setDataChangeable(fUpButton, false);
+            uiToolkit.setDataChangeable(fDownButton, false);
+            return;
+        }
 		fAddButton.setEnabled(true);	
 		fRemoveButton.setEnabled(table.getSelectionCount() != 0);
 		fUpButton.setEnabled(table.getSelectionCount() != 0);
@@ -520,4 +544,17 @@ public abstract class EditTableControl extends Composite {
 		}
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public void setDataChangeable(boolean changeable) {
+        this.dataChangeable = changeable;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDataChangeable() {
+        return dataChangeable;
+    }
 }

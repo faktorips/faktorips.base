@@ -63,9 +63,16 @@ public class EnumValueSetEditControl extends EditTableControl {
         GridLayout layout = (GridLayout)getLayout();
         layout.marginHeight = 10;
         this.tableElementValidator = tableElementValidator;
-        new MessageService(getTableViewer());
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public void initControl() {
+        super.initControl();
+        new MessageService(getTableViewer());
+    }
+
     /**
      * Constructs a EnumValueSetEditControl and handles the type of the value set that is, if the value set is of the
      * wrong type, a new EnumValueEnumSet is created. Labels the control with default-text ("Values") in english.

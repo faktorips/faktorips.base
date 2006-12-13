@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.internal.model.RangeValueSet;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
+import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.DefaultUIController;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
@@ -39,7 +40,8 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
  * A composite that consits of three textfields for input. if there is a uicontroller supplied it is used to establish a
  * mapping between the modell object and the control which represents the object property.
  */
-public class RangeEditControl extends ControlComposite {
+public class RangeEditControl extends ControlComposite implements IDataChangeableReadWriteAccess{
+    private UIToolkit uiToolkit;
 
     // lower and button controls
     private Text lower;
@@ -52,16 +54,28 @@ public class RangeEditControl extends ControlComposite {
     private IpsPartUIController uiController;
     private Checkbox containsNullCB;
 	private CheckboxField containsNullField;
+    
+    private boolean dataChangeable;
+    
 
     /**
      */
     public RangeEditControl(Composite parent, UIToolkit toolkit, RangeValueSet range, DefaultUIController uiController) {
         super(parent, SWT.NONE);
         this.range = range;
+        this.uiToolkit = toolkit;
+    }
+
+    /**
+     * Creates the compoiste's controls. This method has to be called by this
+     * controls client, after the control has been configured via the appropiate
+     * setter method, e.g. <code>setDataChangeable(boolean)</code>
+     */
+    public void initControl() {
         setLayout();
-        Group group = createRangeGroup(toolkit);
-        Composite workArea = createWorkArea(toolkit, group);
-        createTextControls(toolkit, workArea);
+        Group group = createRangeGroup(uiToolkit);
+        Composite workArea = createWorkArea(uiToolkit, group);
+        createTextControls(uiToolkit, workArea);
 
         if (uiController instanceof IpsPartUIController) {
             this.uiController = (IpsPartUIController)uiController;
@@ -71,7 +85,7 @@ public class RangeEditControl extends ControlComposite {
         
         connectToModel();
     }
-
+    
     private void setLayout() {
         setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
         GridLayout layout = new GridLayout(2, false);
@@ -127,6 +141,11 @@ public class RangeEditControl extends ControlComposite {
             toolkit.getFormToolkit().paintBordersFor(workArea);
             toolkit.getFormToolkit().adapt(workArea);
         }
+        
+        toolkit.setDataChangeable(lower, isDataChangeable());
+        toolkit.setDataChangeable(upper, isDataChangeable());
+        toolkit.setDataChangeable(step, isDataChangeable());
+        toolkit.setDataChangeable(containsNullCB, isDataChangeable());
     }
 
     private void connectToModel() {
@@ -205,4 +224,17 @@ public class RangeEditControl extends ControlComposite {
         super.setEnabled(enabled);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDataChangeable() {
+        return dataChangeable;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDataChangeable(boolean changeable) {
+        this.dataChangeable = changeable;
+    }
 }

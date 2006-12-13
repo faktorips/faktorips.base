@@ -39,6 +39,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.util.message.MessageList;
@@ -53,7 +54,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public abstract class ListChooser extends Composite {
+public abstract class ListChooser extends Composite implements IDataChangeableReadWriteAccess {
 
     private static final int DATA_COLUMN = 1;
     private static final int IMG_COLUMN = 0;
@@ -69,6 +70,8 @@ public abstract class ListChooser extends Composite {
 	private Button removeAll;
 	private Button up;
 	private Button down;
+    
+    private boolean dataChangeable;
 	
 	/**
 	 * Creates a new list chooser.
@@ -81,21 +84,28 @@ public abstract class ListChooser extends Composite {
 	public ListChooser(Composite parent, UIToolkit toolkit) {
 		super(parent, SWT.NONE);
 		this.toolkit = toolkit;
-		
-		this.setLayout(new GridLayout(4, false));
-		
-		toolkit.createLabel(this, Messages.ListChooser_labelAvailableValues);
-		toolkit.createLabel(this, ""); //$NON-NLS-1$
-		toolkit.createLabel(this, Messages.ListChooser_lableChoosenValues);
-		toolkit.createLabel(this, ""); //$NON-NLS-1$
-		
+	}
+    
+    /**
+     * Creates the compoiste's controls. This method has to be called by this
+     * controls client, after the control has been configured via the appropiate
+     * setter method, e.g. <code>setDataChangeable(boolean)</code>
+     */
+    public void initControl() {
+        this.setLayout(new GridLayout(4, false));
+        
+        toolkit.createLabel(this, Messages.ListChooser_labelAvailableValues);
+        toolkit.createLabel(this, ""); //$NON-NLS-1$
+        toolkit.createLabel(this, Messages.ListChooser_lableChoosenValues);
+        toolkit.createLabel(this, ""); //$NON-NLS-1$
+        
         TableLayoutComposite srcParent = new TableLayoutComposite(this, SWT.NONE);
         srcParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         sourceTable = new Table(srcParent, SWT.MULTI | SWT.FULL_SELECTION | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
         sourceTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         newTableColumns(sourceTable, srcParent);
         source = new TableViewer(sourceTable);
-		addChooseButtons();
+        addChooseButtons();
         
         TableLayoutComposite targetParent = new TableLayoutComposite(this, SWT.NONE);
         targetParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -105,21 +115,21 @@ public abstract class ListChooser extends Composite {
         targetTable.setLayoutData(layoutData);
         newTableColumns(targetTable, targetParent);
         target = new TableViewer(targetTable);
-		addMoveButtons();
+        addMoveButtons();
 
         source.setContentProvider(new ContentProvider());
         source.setLabelProvider(new TableLabelProvider());
         target.setContentProvider(new ContentProvider());
         target.setLabelProvider(new TableLabelProvider());
         
-		addSelected.addSelectionListener(new ChooseListener(sourceTable, targetTable, false));
-		removeSelected.addSelectionListener(new ChooseListener(targetTable, sourceTable, false));
-		addAll.addSelectionListener(new ChooseListener(sourceTable, targetTable, true));
-		removeAll.addSelectionListener(new ChooseListener(targetTable, sourceTable, true));
+        addSelected.addSelectionListener(new ChooseListener(sourceTable, targetTable, false));
+        removeSelected.addSelectionListener(new ChooseListener(targetTable, sourceTable, false));
+        addAll.addSelectionListener(new ChooseListener(sourceTable, targetTable, true));
+        removeAll.addSelectionListener(new ChooseListener(targetTable, sourceTable, true));
         
         new MessageService(source);
-        new MessageService(target);
-	}
+        new MessageService(target);        
+    }
     
     public TableViewer getTargetViewer() {
         return target;
@@ -173,6 +183,11 @@ public abstract class ListChooser extends Composite {
 		removeSelected.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		addAll.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		removeAll.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        
+        toolkit.setDataChangeable(addSelected, isDataChangeable());
+        toolkit.setDataChangeable(removeSelected, isDataChangeable());
+        toolkit.setDataChangeable(addAll, isDataChangeable());
+        toolkit.setDataChangeable(removeAll, isDataChangeable());
 	}
 
 	/**
@@ -191,6 +206,9 @@ public abstract class ListChooser extends Composite {
 		
 		up.addSelectionListener(new MoveListener());
 		down.addSelectionListener(new MoveListener());
+
+        toolkit.setDataChangeable(up, isDataChangeable());
+		toolkit.setDataChangeable(down, isDataChangeable());
 	}
 
 	/**
@@ -420,7 +438,19 @@ public abstract class ListChooser extends Composite {
         protected MessageList getMessagesFor(Object element) throws CoreException {
             return ListChooser.this.getMessagesFor((String)element);
         }
-        
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDataChangeable() {
+        return dataChangeable;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDataChangeable(boolean changeable) {
+        this.dataChangeable = changeable;
+    }
 }

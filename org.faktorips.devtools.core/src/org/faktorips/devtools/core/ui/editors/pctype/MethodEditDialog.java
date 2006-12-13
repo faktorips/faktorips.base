@@ -107,9 +107,11 @@ public class MethodEditDialog extends IpsPartEditDialog  {
         Text nameText = uiToolkit.createText(propertyPane);
         
         // parameters
-        parametersControl = new ParametersEditControl(workArea, SWT.NONE, Messages.MethodEditDialog_labelParameters, method.getIpsProject());
+        parametersControl = new ParametersEditControl(workArea, uiToolkit, SWT.NONE, Messages.MethodEditDialog_labelParameters, method.getIpsProject());
+        parametersControl.setDataChangeable(isDataChangeable());
         parametersControl.initControl();
         parametersControl.setLayoutData(new GridData(GridData.FILL_BOTH));
+        
         // create fields
         abstractField = new CheckboxField(abstractCheckbox);
         modifierField = new EnumValueField(modifierCombo, Modifier.getEnumType());
@@ -160,5 +162,13 @@ public class MethodEditDialog extends IpsPartEditDialog  {
         
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
+    public void setDataChangeable(boolean changeable) {
+        super.setDataChangeable(changeable);
+        if (parametersControl != null){
+            parametersControl.setDataChangeable(changeable);
+        }
+    }
 }
