@@ -21,6 +21,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
@@ -32,9 +33,11 @@ import org.faktorips.util.memento.Memento;
  * 
  * @author Thorsten Guenther
  */
-public class EnumValueSetControl extends TextButtonControl {
+public class EnumValueSetControl extends TextButtonControl implements IDataChangeableReadWriteAccess {
 
-	/**
+    private UIToolkit uiToolkit;
+
+    /**
 	 * The config element which is based on the enum value set to modify.
 	 */
 	private IConfigElement configElement;
@@ -62,6 +65,9 @@ public class EnumValueSetControl extends TextButtonControl {
 	private boolean dirty;
 	
 	private boolean enabled = true;
+
+    private boolean dataChangeable;
+
 	
 	/**
 	 * Creates a new control to edit an enum value.
@@ -74,12 +80,10 @@ public class EnumValueSetControl extends TextButtonControl {
 	 */
 	public EnumValueSetControl(Composite parent, UIToolkit toolkit, IConfigElement configElement, Shell shell, IpsPartUIController controller) {
 		super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
+		this.uiToolkit = toolkit;
 		this.configElement = configElement;
 		this.shell = shell;
 		this.controller = controller;
-		
-		// lock input, values are not editable.
-		super.getTextControl().setEnabled(false);
 	}
 	
 	/**
@@ -88,6 +92,7 @@ public class EnumValueSetControl extends TextButtonControl {
 	protected void buttonClicked() {
 		preserveState();
 		DefaultsAndRangesEditDialog dialog = new DefaultsAndRangesEditDialog(configElement, shell, !enabled);
+        dialog.setDataChangeable(isDataChangeable());
 		if (dialog.open() == Dialog.OK) {
 			super.getTextControl().setText(configElement.getValueSet().toShortString());
 			controller.updateUI();
@@ -129,4 +134,18 @@ public class EnumValueSetControl extends TextButtonControl {
 		this.enabled = enabled;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public void setDataChangeable(boolean changeable) {
+        this.dataChangeable = changeable;
+        uiToolkit.setDataChangeable(getTextControl(), changeable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDataChangeable() {
+        return dataChangeable;
+    }
 }

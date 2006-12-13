@@ -192,6 +192,7 @@ public class DefaultsAndRangesSection extends IpsSection {
         toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
         toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_values);
         EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, element, this.getShell(), controller);
+        evc.setDataChangeable(isDataChangeable());
         evc.setText(valueSet.toShortString());
         PreviewTextButtonField ptbf = new PreviewTextButtonField(evc);
         controller.add(ptbf, valueSet, IEnumValueSet.PROPERTY_VALUES);
