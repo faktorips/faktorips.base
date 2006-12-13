@@ -20,10 +20,12 @@ package org.faktorips.devtools.stdbuilder.productcmpt;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -43,6 +45,9 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
     private IIpsProject project;
     private IPolicyCmptType type;
     private IProductCmpt productCmpt;
+    private IProductCmptGeneration productCmptGen;
+    
+    private ProductCmptBuilder builder;
     
     /*
      * @see IpsPluginTest#setUp()
@@ -64,21 +69,37 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
         
         productCmpt = newProductCmpt(project, "Product");
         productCmpt.setPolicyCmptType(type.getQualifiedName());
-        IProductCmptGeneration gen = (IProductCmptGeneration)productCmpt.newGeneration();
-        gen.setValidFrom(new GregorianCalendar(2006, 0, 1));
-        IConfigElement ce = gen.newConfigElement();
+        productCmptGen = (IProductCmptGeneration)productCmpt.newGeneration();
+        productCmptGen.setValidFrom(new GregorianCalendar(2006, 0, 1));
+        IConfigElement ce = productCmptGen.newConfigElement();
         ce.setPcTypeAttribute(a.getName());
         ce.setType(ConfigElementType.FORMULA);
         ce.setValue("42");
         productCmpt.getIpsSrcFile().save(true, null);
         assertFalse(productCmpt.validate().containsErrorMsg());
+        
+        IIpsArtefactBuilder[] builders = project.getIpsArtefactBuilderSet().getArtefactBuilders();
+        for (int i = 0; i < builders.length; i++) {
+            if (builders[i] instanceof ProductCmptBuilder) {
+                builder = (ProductCmptBuilder)builders[i];
+            }
+        }
+        assertNotNull(builder);
     }
     
     public void testBuild() throws CoreException {
         // build should not throw an exception even if the reference to the type is missing
+        productCmpt.getIpsSrcFile().save(true, null);
+        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        assertTrue(builder.getGeneratedJavaFile(productCmptGen).exists());
+    }
+
+    public void testBuildMissingType() throws CoreException {
+        // build should not throw an exception even if the reference to the type is missing
         productCmpt.setPolicyCmptType("");
         productCmpt.getIpsSrcFile().save(true, null);
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        assertNull(builder.getGeneratedJavaFile(productCmptGen));
     }
 
     /*
@@ -86,9 +107,13 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
      */
     public void testDelete() throws CoreException {
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        IFile javaFile = builder.getGeneratedJavaFile(productCmptGen);
+        assertTrue(javaFile.exists());
         
         productCmpt.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
-        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        assertFalse(javaFile.exists());
     }
+    
 
 }
