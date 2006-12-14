@@ -414,7 +414,14 @@ public abstract class IpsObjectEditor extends FormEditor
         }
         try {
             deltaShowing = true;
-            dontFixDifferences = checkAndFixInconsistenciesToModel();
+            if (getSite() != null){
+                Runnable checkAndFixRunnable = new Runnable(){
+                    public void run() {
+                        dontFixDifferences = checkAndFixInconsistenciesToModel();
+                    }
+                };
+                getSite().getShell().getDisplay().asyncExec(checkAndFixRunnable);
+            }
         } finally {
             deltaShowing = false;
         }
@@ -423,7 +430,8 @@ public abstract class IpsObjectEditor extends FormEditor
     /**
      * Checks for inconsistencies between the structure shown in this editor and the model.
      * Asks the user if the inconsistencies should be fixed. Specific logic has to be implemented in subclasses.
-     * 
+     * If the user confirms the proposal fix then the inconsistencies will be fixed.
+     *  
      * @return <code>true</code> if the user does not want to fix any existing differences,
      * <code>false</code> otherwise.  Default returns false.
      *

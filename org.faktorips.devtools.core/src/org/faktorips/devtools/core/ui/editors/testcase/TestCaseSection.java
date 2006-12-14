@@ -81,7 +81,6 @@ import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
@@ -97,9 +96,9 @@ import org.faktorips.devtools.core.ui.PdObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
-import org.faktorips.devtools.core.ui.editors.testcase.deltapresentation.TestCaseDeltaDialog;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
@@ -120,7 +119,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	private ITestCase testCase;
 	
 	// Contains the test case editor
-	private TestCaseEditor editor;
+	private IpsObjectEditor editor;
 	
 	// UI toolkit for creating the controls
 	private UIToolkit toolkit;
@@ -638,9 +637,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         updateButtonEnableState(null);
 
         refreshTree();
-        
-        // check for delta to the test case type
-        checkForInconsistenciesBetweenTestCaseAndTestCaseType();
 	}
 
     /**
@@ -1771,7 +1767,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             testCaseTypeChanged = false;
             postResetTestRunStatus();
             refreshTreeAndDetailArea();
-            checkForInconsistenciesBetweenTestCaseAndTestCaseType();
+            editor.checkForInconsistenciesToModel();
         }
     }
 
@@ -2134,7 +2130,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	/**
 	 * Returns the corresponding test case editor.
 	 */
-	TestCaseEditor getTestCaseEditor(){
+    IpsObjectEditor getTestCaseEditor(){
 		return editor;
 	}
 
@@ -2165,47 +2161,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
-    }
-    
-    /*
-     * Checks for delta between test case and test case type in an async way
-     */
-    private void checkForInconsistenciesBetweenTestCaseAndTestCaseType(){
-        if (!isDisposed())
-            getDisplay().asyncExec(new Runnable() {
-                public void run() {
-                    if (isDisposed())
-                        return;
-                    if ( ! isDataChangeable()){
-                        return;
-                    }
-                    performInconsistenciesCheck();
-                }
-            });
-    }
-    
-    /*
-     * Performs the inconsistencies check 
-     */
-    private void performInconsistenciesCheck(){
-        try {
-            ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
-            if (delta != null && !delta.isEmpty()){
-                TestCaseDeltaDialog dialog = new TestCaseDeltaDialog(delta, getShell());
-                dialog.setBlockOnOpen(true);
-                if ((dialog.open() == TestCaseDeltaDialog.OK)){
-                    testCase.getIpsModel().removeChangeListener(changeListener);
-                    try {
-                        testCase.fixDifferences(delta);
-                        refreshTreeAndDetailArea();
-                    } finally {
-                        testCase.getIpsModel().addChangeListener(changeListener);
-                    }
-                }
-            }
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }        
     }
 
     /*

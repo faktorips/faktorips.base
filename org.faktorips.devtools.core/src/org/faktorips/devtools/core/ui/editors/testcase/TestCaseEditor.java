@@ -1,12 +1,15 @@
 package org.faktorips.devtools.core.ui.editors.testcase;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
 import org.faktorips.devtools.core.ui.editors.DescriptionPage;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
+import org.faktorips.devtools.core.ui.editors.testcase.deltapresentation.TestCaseDeltaDialog;
 
 /**
  * The editor to edit test cases based on test case types.
@@ -75,5 +78,36 @@ public class TestCaseEditor extends IpsObjectEditor {
      */
     protected String getUniformPageTitle() {
         return NLS.bind(Messages.TestCaseEditor_Title, getTestCase().getName(), getTestCase().getTestCaseType());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean checkAndFixInconsistenciesToModel() {
+        return performInconsistenciesCheck();
+    }
+
+    /*
+     * Performs the inconsistencies check
+     */
+    private boolean performInconsistenciesCheck() {
+        boolean dontFix = false;
+        ITestCase testCase = getTestCase();
+        try {
+            ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+            if (delta != null && !delta.isEmpty()) {
+                TestCaseDeltaDialog dialog = new TestCaseDeltaDialog(delta, getSite().getShell());
+                dialog.setBlockOnOpen(true);
+                if ((dialog.open() == TestCaseDeltaDialog.OK)) {
+                    testCase.fixDifferences(delta);
+                } else {
+                    dontFix = true;
+                }
+            }
+        }
+        catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+        return dontFix;
     }
 }
