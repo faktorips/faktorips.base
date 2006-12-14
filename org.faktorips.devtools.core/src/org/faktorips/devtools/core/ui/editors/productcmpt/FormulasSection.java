@@ -154,8 +154,11 @@ public class FormulasSection extends IpsSection {
 	
         for (int i = 0; i < usages.length; i++) {
             try {
+                ITableStructureUsage tsu = null;
                 IProductCmptType type = generation.getProductCmpt().findProductCmptType();
-                ITableStructureUsage tsu = type.getTableStructureUsage(usages[i].getStructureUsage());
+                if (type!=null) {
+                    tsu = type.getTableStructureUsage(usages[i].getStructureUsage());
+                }
                 
                 // create label here to avoid lost label in case of exception
                 toolkit.createFormLabel(rootPane, StringUtils.capitalise(usages[i].getStructureUsage()));
