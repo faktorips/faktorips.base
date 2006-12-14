@@ -34,7 +34,6 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.forms.editor.FormPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
@@ -100,18 +99,10 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		try {
 			if (isSrcFileUsable()) {
 				IProductCmpt cmpt = (ProductCmpt)getIpsObject();
-                //TODO needs to be changed when the isHistorical() method is available on IpsSrcFile
-				if (cmpt.findProductCmptType() == null && 
-                    !IpsPlugin.getDefault().isTestMode() &&
-                    !cmpt.getIpsSrcFile().isHistoric()) {
+				if (!getIpsSrcFile().isMutable() && cmpt.findProductCmptType() == null && !IpsPlugin.getDefault().isTestMode()) {
 					String msg = NLS.bind(Messages.ProductCmptEditor_msgTemplateNotFound, cmpt.getPolicyCmptType());
 					SetTemplateDialog dialog = new SetTemplateDialog(cmpt, getSite().getShell(), msg);
-					int button = dialog.open();
-					if (button != SetTemplateDialog.OK) {
-						addPage(new FormPage(this, Messages.ProductCmptEditor_titleEmpty, "")); //$NON-NLS-1$
-						this.close(false);
-						return;
-					}
+					dialog.open();
 				}
 				
 				generationPropertiesPage = new GenerationPropertiesPage(this);
@@ -308,15 +299,23 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
         activeGenerationManuallySet = manuallySet;
 	}
     
-    /**
+    protected boolean computeDataChangeableState() {
+        if (!super.computeDataChangeableState()) {
+            return false;
+        }
+        try {
+            return getProductCmpt().findProductCmptType()!=null;
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return false;
+        }
+    }
+
+        /**
      * {@inheritDoc}
      */
     protected void setDataChangeable(boolean changeable) {
-        Boolean oldValue = isDataChangeable();
         super.setDataChangeable(changeable);
-        if (oldValue!=null && oldValue.booleanValue()==changeable) {
-            return;
-        }
         if (changeable) {
             this.setTitleImage(enabledImage);
         } else {

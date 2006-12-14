@@ -83,4 +83,6 @@ public class Messages extends NLS {
     public static String SetStructureDialog_labelNewStructure;
 
     public static String SetStructureDialog_msgStructureDontExist;
+
+    public static String ContentPage_Column;
 }

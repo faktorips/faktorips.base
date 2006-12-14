@@ -376,7 +376,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 		}
 		if (editButton!=null) {
 		    editButton.setEnabled(itemSelected);
-            editButton.setText((canEdit ? "Edit" : "Show"));
+            editButton.setText((canEdit ? Messages.IpsPartsComposite_buttonEdit : Messages.IpsPartsComposite_buttonShow));
 		}
 		if (deleteButton!=null) {
 		    deleteButton.setEnabled(itemSelected && canDelete);    

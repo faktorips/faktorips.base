@@ -57,6 +57,7 @@ import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
@@ -164,10 +165,8 @@ public class ContentPage extends IpsObjectEditorPage {
      */
     private void initTableViewer(Table table, UIToolkit toolkit, Composite formBody, DeleteRowAction deleteRowAction){
         try{            
-            ITableStructure tableStructure= getTableStructure();
             table.removeAll();
-
-            increaseHeightOfTableRow(table, tableStructure);
+            increaseHeightOfTableRow(table, getTableContents().getNumOfColumns());
             
             tableViewer= new TableViewer(table);
             tableViewer.setUseHashlookup(true);
@@ -175,31 +174,38 @@ public class ContentPage extends IpsObjectEditorPage {
             TableContentsLabelProvider labelProvider = new TableContentsLabelProvider();
             tableViewer.setLabelProvider(labelProvider);
             
-            for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
-                TableColumn column= new TableColumn(table, SWT.LEFT, i);
-                column.setText(tableStructure.getColumn(i).getName());
-                column.setWidth(125);
-            }
-
-            tableViewer.setCellModifier(new TableContentsCellModifier(tableViewer, this));
-            String[] columnProperties= new String[tableStructure.getNumOfColumns()];
-            for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
-                columnProperties[i]= tableStructure.getColumn(i).getName();
-            }
-            tableViewer.setColumnProperties(columnProperties); 
-            // column properties must be set before cellEditors are created.
-            CellEditor[] editors= new CellEditor[tableStructure.getNumOfColumns()];
-            for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
-                ValueDatatype dataType= tableStructure.getColumn(i).findValueDatatype();
-                ValueDatatypeControlFactory factory= IpsPlugin.getDefault().getValueDatatypeControlFactory(dataType);
-                TableCellEditor cellEditor= factory.createCellEditor(toolkit, dataType, null, tableViewer, i);
-                if (cellEditor.isMappedValue()){
-                    labelProvider.addMappedEditor(i, cellEditor);
+            ITableStructure tableStructure= getTableStructure();
+            String[] columnProperties= new String[getTableContents().getNumOfColumns()];
+            for (int i = 0; i < getTableContents().getNumOfColumns(); i++) {
+                String columnName;
+                if (tableStructure==null) {
+                    columnName = Messages.ContentPage_Column + (i+1);
+                } else {
+                    columnName = tableStructure.getColumn(i).getName();
                 }
-                cellEditor.setRowCreating(true);
-                editors[i]= cellEditor;
+                TableColumn column= new TableColumn(table, SWT.LEFT, i);
+                column.setWidth(125);
+                column.setText(columnName);
+                columnProperties[i]= columnName;
             }
-            tableViewer.setCellEditors(editors);
+            tableViewer.setCellModifier(new TableContentsCellModifier(tableViewer, this));
+            tableViewer.setColumnProperties(columnProperties); 
+
+            // column properties must be set before cellEditors are created.
+            if (tableStructure!=null) {
+                CellEditor[] editors= new CellEditor[tableStructure.getNumOfColumns()];
+                for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
+                    ValueDatatype dataType = tableStructure.getColumn(i).findValueDatatype();
+                    ValueDatatypeControlFactory factory= IpsPlugin.getDefault().getValueDatatypeControlFactory(dataType);
+                    TableCellEditor cellEditor= factory.createCellEditor(toolkit, dataType, null, tableViewer, i);
+                    if (cellEditor.isMappedValue()){
+                        labelProvider.addMappedEditor(i, cellEditor);
+                    }
+                    cellEditor.setRowCreating(true);
+                    editors[i]= cellEditor;
+                }
+                tableViewer.setCellEditors(editors);
+            }
             tableViewer.setSorter(new TableSorter());
             tableViewer.addSelectionChangedListener(new RowDeletor());
 
@@ -226,11 +232,10 @@ public class ContentPage extends IpsObjectEditorPage {
     }
 
 
-    private void increaseHeightOfTableRow(Table table, ITableStructure tableStructure) {
+    private void increaseHeightOfTableRow(Table table, final int numOfColumns) {
         // add paint lister to increase the height of the table row,
         // because @since 3.2 in edit mode the cell becomes a border and the bottom pixel of the
         // text is hidden
-        final int numOfColumns = tableStructure.getNumOfColumns();
         Listener paintListener = new Listener() {
             public void handleEvent(Event event) {
                 switch(event.type) {        
@@ -323,7 +328,6 @@ public class ContentPage extends IpsObjectEditorPage {
     private void checkDifferences(Composite formBody, UIToolkit toolkit) {
         try {
             ITableStructure structure = getTableStructure();
-            
             if (structure == null) {
                 String msg = NLS.bind(Messages.ContentPage_msgMissingStructure,
                         getTableContents().getTableStructure());

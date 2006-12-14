@@ -37,6 +37,7 @@ public class Messages extends NLS {
 	public static String IpsPartEditDialog_description;
 	public static String IpsPartsComposite_buttonNew;
 	public static String IpsPartsComposite_buttonEdit;
+    public static String IpsPartsComposite_buttonShow;
 	public static String IpsPartsComposite_buttonDelete;
 	public static String IpsPartsComposite_buttonUp;
 	public static String IpsPartsComposite_buttonDown;
