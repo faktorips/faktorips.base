@@ -86,9 +86,17 @@ public abstract class IpsObjectEditor extends FormEditor
     // the editor's ISelectionProvider 
     private SelectionProviderDispatcher selectionProviderDispatcher;
 
-    /**
-     * 
+    /*
+     * Storage for the user's decision of not to fix the differences between the
+     * product definition structure and the model structure
      */
+    private boolean dontFixDifferences = false;
+    
+    /*
+     * Flag indicating an open delta-dialog if <code>true</code>.
+     */
+    private boolean deltaShowing = false;
+
     public IpsObjectEditor() {
         super();
     }
@@ -366,12 +374,62 @@ public abstract class IpsObjectEditor extends FormEditor
     /**
      * {@inheritDoc}
      */
-    public void partActivated(IWorkbenchPartReference partRef) {
+    public final void partActivated(IWorkbenchPartReference partRef) {
         IWorkbenchPart part = partRef.getPart(false);
         if (part != this) {
             return;
         }
         setActive(true);
+        editorActivated();
+    }
+    
+    /**
+     * Called when the editor is activated (e.g. by clicking in it).
+     */
+    protected void editorActivated() {
+        checkForInconsistenciesToModel();
+    }
+    
+    /**
+     * Does what the methodname says :-)
+     */
+    public final void checkForInconsistenciesToModel() {
+        if (isDataChangeable()==null || !isDataChangeable().booleanValue() || deltaShowing) {
+            // no modifications for read-only-editors
+            return;
+        }
+        if (!getIpsSrcFile().exists()){
+            // dont't check for inconsistencies if the src file not exists,
+            // e.g. if the product cmpt editor is open and the product cmpt was moved
+            return;
+        }
+        if (dontFixDifferences) {
+            // user decided not to fix the differences some time ago...
+            return;
+        }           
+        if (getContainer() == null) {
+            // do nothing, we will be called again later. This avoids that the user
+            // is shown the differences-dialog twice if openening the editor...
+            return;
+        }
+        try {
+            deltaShowing = true;
+            dontFixDifferences = checkForInconsistenciesToModelInternal();
+        } finally {
+            deltaShowing = false;
+        }
+    }    
+    
+    /**
+     * Checks for inconsistencies between the structure shown in this editor and the model.
+     * Asks the user if the inconsistencies should be fixed. Specific logic has to be implemented in subclasses.
+     * 
+     * @return <code>true</code> if the user does not want to fix any existing differences,
+     * <code>false</code> otherwise.  Default returns false.
+     *
+     */
+    protected boolean checkForInconsistenciesToModelInternal() {
+        return false;
     }
 
     /**

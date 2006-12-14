@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 
 
 /**
- *
+ * Editor for a table content.
  */
 public class TableContentsEditor extends TimedIpsObjectEditor {
 

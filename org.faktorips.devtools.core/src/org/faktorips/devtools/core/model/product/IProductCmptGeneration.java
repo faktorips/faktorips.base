@@ -148,7 +148,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * @return <code>true</code> if a new relation with the given values will be valid, <code>false</code> otherwise.
      * @throws CoreException if a problem occur during the search of the type hierarchy.
      */
-	public boolean canCreateValidRelation(IProductCmpt target, IProductCmptTypeRelation relation) throws CoreException;
+	public boolean canCreateValidRelation(IProductCmpt target, String relationType) throws CoreException;
 
 	/**
      * Moves the first given relation in front of the second one.

@@ -279,15 +279,23 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
     /**
      * {@inheritDoc}
      */
-	public boolean canCreateValidRelation(IProductCmpt target, IProductCmptTypeRelation relation) throws CoreException {
-		if (relation==null) {
+	public boolean canCreateValidRelation(IProductCmpt target, String relation) throws CoreException {
+        if (relation==null || target == null) {
 			return false;
 		}
-		// it is not valid to create more than one relation with the same type and target.
-		if (!isFirstRelationOfThisType(relation, target)) {
+        IProductCmptType type = getProductCmpt().findProductCmptType();
+        if (type==null) {
+            return false;
+        }
+        IProductCmptTypeRelation relationType = type.getRelation(relation);
+		if (relationType==null) {
+		    return false;
+        }
+        // it is not valid to create more than one relation with the same type and target.
+		if (!isFirstRelationOfThisType(relationType, target)) {
 			return false;
 		}
-		return this.getRelations(relation.getName()).length < relation.getMaxCardinality() && ProductCmptRelation.willBeValid(target, relation);
+		return this.getRelations(relation).length < relationType.getMaxCardinality() && ProductCmptRelation.willBeValid(target, relationType);
 	}
 	
 	private boolean isFirstRelationOfThisType(IProductCmptTypeRelation relation, IProductCmpt target) throws CoreException {

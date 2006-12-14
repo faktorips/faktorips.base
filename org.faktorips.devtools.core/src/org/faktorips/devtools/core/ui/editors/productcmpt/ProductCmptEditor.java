@@ -32,7 +32,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -85,17 +84,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
     // as it can differ from the global working date when the user changes the global working date.
     private GregorianCalendar workingDateUsedInEditor = null;
     
-	/*
-	 * Storage for the decision of the user not to fix differences existing between attributes
-	 * and config elements to supress repeating questions to the user.
-	 */
-	private boolean dontFixDifferencesBetweenAttributeAndConfigElement = false;
-	
-	/**
-	 * Flag indicating an open delta-dialog if <code>true</code>.
-	 */
-	private boolean deltasShowing = false;
-	
 	/**
 	 * Creates a new editor for product components.
 	 */
@@ -123,8 +111,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 						addPage(new FormPage(this, Messages.ProductCmptEditor_titleEmpty, "")); //$NON-NLS-1$
 						this.close(false);
 						return;
-					} else {
-						checkForInconsistenciesBetweenAttributeAndConfigElements();
 					}
 				}
 				
@@ -173,15 +159,9 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void partActivated(IWorkbenchPartReference partRef) {
-		super.partActivated(partRef);
-		IWorkbenchPart part = partRef.getPart(false);
-		if (part != this || !isSrcFileUsable()) {
-			return;
-		}
-		active = true;
+	public void editorActivated() {
         updateChosenActiveGeneration();
-		checkForInconsistenciesBetweenAttributeAndConfigElements();
+		super.editorActivated();
 	}
 
 	/**
@@ -190,7 +170,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	public void partDeactivated(IWorkbenchPartReference partRef) {
 		super.partDeactivated(partRef);
         IpsPlugin.getDefault().getIpsPreferences().removeChangeListener(this);
-		active = false;
 	}
 
 	/**
@@ -204,32 +183,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	/**
 	 * Does what the methodname says :-)
 	 */
-	protected void checkForInconsistenciesBetweenAttributeAndConfigElements() {
-        if (isDataChangeable()==null || !isDataChangeable().booleanValue() || deltasShowing) {
-            // no modifications for read-only-editors
-            return;
-        }
-        if (!getIpsSrcFile().exists()){
-            // dont't check for inconsistencies if the src file not exists,
-            // e.g. if the product cmpt editor is open and the product cmpt was moved
-            return;
-        }
-		if (dontFixDifferencesBetweenAttributeAndConfigElement) {
-		    // user decided not to fix the differences some time ago...
-			return;
-		}			
-		if (getContainer() == null) {
-			// do nothing, we will be called again later. This avoids that the user
-			// is shown the differences-dialog twice if openening the editor...
-			return;
-		}
-		
+	protected boolean checkForInconsistenciesToModelInternal() {
 		IIpsObjectGeneration[] gen = this.getProductCmpt().getGenerations();
 		IProductCmptGeneration[] generations = new IProductCmptGeneration[gen.length];
 		for (int i = 0; i < generations.length; i++) {
 			generations[i] = (IProductCmptGeneration)gen[i];
 		}
-
 		IProductCmptGenerationPolicyCmptTypeDelta[] deltas = new IProductCmptGenerationPolicyCmptTypeDelta[generations.length];
 		boolean deltaFound = false;
 		for (int i = 0; i < generations.length; i++) {			
@@ -243,31 +202,27 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		}
 
 		if (!deltaFound) {
-			return;
+			return false;
 		}
 
-		deltasShowing = true;
 		Shell shell = getSite().getShell();
 		ProductCmptDeltaDialog dialog = new ProductCmptDeltaDialog(generations, deltas, shell);
 		dialog.setBlockOnOpen(true);
 		int result = dialog.open();
 		
 		boolean fix = result == ProductCmptDeltaDialog.OK;
-		if (fix) {
-			IIpsModel model = getProductCmpt().getIpsModel();
-            
-            try {
-                model.runAndQueueChangeEvents(new DifferenceFixer(generations, deltas), null);
-                refresh();
-            }
-            catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-		}
-		else {
-			dontFixDifferencesBetweenAttributeAndConfigElement = true;
-		}
-        deltasShowing = false;
+		if (!fix) {
+		    return true;
+        }
+		IIpsModel model = getProductCmpt().getIpsModel();
+        try {
+            model.runAndQueueChangeEvents(new DifferenceFixer(generations, deltas), null);
+            refresh();
+        }
+        catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        return false;
 	}
 
 	/**

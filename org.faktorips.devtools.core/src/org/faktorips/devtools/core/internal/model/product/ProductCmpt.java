@@ -116,15 +116,15 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public IPolicyCmptType findPolicyCmptType() throws CoreException {
         return getIpsProject().findPolicyCmptType(policyCmptType);
     }
 
     /**
-	 * Overridden.
-	 */
+     * {@inheritDoc}
+     */
 	public IProductCmptType findProductCmptType() throws CoreException {
 		IPolicyCmptType policyCmptType = findPolicyCmptType();
 		if (policyCmptType==null) {
@@ -134,7 +134,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 	}
 
 	/** 
-     * Overridden.
+     * {@inheritDoc}
      */
     protected IpsObjectGeneration createNewGeneration(int id) {
         return new ProductCmptGeneration(this, id);
@@ -181,7 +181,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public IRelation findPcTypeRelation(String relationName) throws CoreException {
         IPolicyCmptType pcType = findPolicyCmptType();
@@ -192,7 +192,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean containsFormula() {
         IIpsObjectGeneration[] generations = getGenerations();
@@ -223,7 +223,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }    
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public QualifiedNameType[] dependsOn() throws CoreException {
         
@@ -241,7 +241,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -250,7 +250,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);

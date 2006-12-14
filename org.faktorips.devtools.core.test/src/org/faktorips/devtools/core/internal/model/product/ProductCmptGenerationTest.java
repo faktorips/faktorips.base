@@ -36,7 +36,6 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -47,6 +46,7 @@ import org.w3c.dom.Element;
  */
 public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
+    private IPolicyCmptType policyCmptType;
     private IProductCmpt productCmpt;
     private IProductCmptGeneration generation;
     private IIpsPackageFragmentRoot root;
@@ -55,10 +55,27 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         ipsProject =  newIpsProject("TestProject");
-        
         root = ipsProject.getIpsPackageFragmentRoots()[0];
+        policyCmptType = newPolicyCmptType(ipsProject, "type");
         productCmpt = (IProductCmpt)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "testProduct");
+        productCmpt.setPolicyCmptType(policyCmptType.getQualifiedName());
         generation = (IProductCmptGeneration)productCmpt.newGeneration();
+    }
+    
+    public void testCanCreateValidRelation() throws Exception {
+        assertFalse(generation.canCreateValidRelation(null, null));
+        assertFalse(generation.canCreateValidRelation(productCmpt, null));
+        
+        IPolicyCmptType targetType = newPolicyCmptType(ipsProject, "target.TargetPolicy");
+        IProductCmpt target = newProductCmpt(ipsProject, "target.Target");
+        target.setPolicyCmptType(targetType.getQualifiedName());
+        
+        IRelation rel = policyCmptType.newRelation();
+        rel.setTarget(targetType.getQualifiedName());
+        rel.setTargetRoleSingular("testRelation");
+        rel.setTargetRoleSingularProductSide("testRelation");
+        
+        assertTrue(generation.canCreateValidRelation(target, "testRelation"));
     }
     
     public void testGetChildren() throws CoreException  {
@@ -333,28 +350,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 		}
     }
     
-    public void testCanCreateValidRelation() throws Exception {
-        assertFalse(generation.canCreateValidRelation(productCmpt, null));
-        
-        IPolicyCmptType targetType = newPolicyCmptType(ipsProject, "target.TargetPolicy");
-        IProductCmpt target = newProductCmpt(ipsProject, "target.Target");
-        target.setPolicyCmptType(targetType.getQualifiedName());
-        
-        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "type");
-        
-        IRelation rel = policyCmptType.newRelation();
-        rel.setTarget(targetType.getQualifiedName());
-        rel.setTargetRoleSingular("testRelation");
-        rel.setTargetRoleSingularProductSide("testRelation");
-        
-        IProductCmptTypeRelation relation = policyCmptType.findProductCmptType().getRelation("testRelation");
-        
-        assertTrue(generation.canCreateValidRelation(target, relation));
-    }
-    
     public void testValidateValidFrom() throws Exception {
-        IPolicyCmptType type = newPolicyCmptType(ipsProject, "type");
-        generation.getProductCmpt().setPolicyCmptType(type.getQualifiedName());
         generation.getProductCmpt().setValidTo(new GregorianCalendar(2000, 10, 1));
         generation.setValidFrom(new GregorianCalendar(2000, 10, 2));
         

@@ -53,6 +53,15 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
 		super(new IpsProject(IpsPlugin.getDefault().getIpsModel(), "IpsSrcFileImmutableIpsProject"), name); //$NON-NLS-1$
 		setContents(content);
 	}
+    
+    /**
+     * Returns <code>true</code> as the file is constructed from an existing input stream.
+     * 
+     * {@inheritDoc}
+     */
+    public boolean exists() {
+        return true;
+    }
 
     /**
      * {@inheritDoc}

@@ -18,15 +18,13 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.product.ProductCmptRelation;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
@@ -48,44 +46,52 @@ public class RelationsContentProvider implements ITreeContentProvider {
      * {@inheritDoc}
      */ 
     public Object[] getElements(Object inputElement) {
-
-    	if (inputElement instanceof IProductCmptGeneration) {
-    		IProductCmptGeneration generation = (IProductCmptGeneration)inputElement;
-    		
-    		try {
-    			IProductCmpt pc = generation.getProductCmpt();
-    			IProductCmptType pcType = pc.findProductCmptType();
-    			
-    			if (pcType == null) {
-    				return new Object[0];
-    			}
-    			
-				List result = new ArrayList();
-    			while (pcType != null) {
-					IProductCmptTypeRelation[] relations = pcType.getRelations();
-					int index = 0;
-					for (int i = 0; i < relations.length; i++) {
-						if (!relations[i].isAbstract() && !relations[i].isAbstractContainer()) {
-							// to get the relations of the supermost product component type
-							// put in the list as first, but with unchanged order for all relations
-							// found in one type...
-							result.add(index, relations[i]);
-							index++;
-						}
-					}
-					pcType = pcType.findSupertype();
-    			}
-    			
-				return (IProductCmptTypeRelation[])result.toArray(new IProductCmptTypeRelation[result.size()]);
-				
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
-    	}
-    	
-        return new Object[0];
+    	if (!(inputElement instanceof IProductCmptGeneration)) {
+            throw new RuntimeException("Unkown input element type " + inputElement.getClass());
+        }
+		IProductCmptGeneration generation = (IProductCmptGeneration)inputElement;
+		try {
+			IProductCmpt pc = generation.getProductCmpt();
+			IProductCmptType pcType = pc.findProductCmptType();
+			if (pcType == null) {
+                // type can't be found, so extract the relation types from the generation
+				return getRelationTypes(generation);
+			} else {
+			    return getRelationTypes(pcType);
+            }
+		} catch (CoreException e) {
+            throw new RuntimeException("Error getting element ", e);
+		}
+    }
+    
+    private String[] getRelationTypes(IProductCmptGeneration gen) {
+        Set relationTypes = new HashSet();
+        IProductCmptRelation[] relations = gen.getRelations();
+        for (int i = 0; i < relations.length; i++) {
+            relationTypes.add(relations[i].getProductCmptTypeRelation());
+        }
+        return (String[])relationTypes.toArray(new String[relationTypes.size()]);
     }
 
+    private String[] getRelationTypes(IProductCmptType pcType) throws CoreException {
+        List result = new ArrayList();
+        while (pcType != null) {
+            IProductCmptTypeRelation[] relations = pcType.getRelations();
+            int index = 0;
+            for (int i = 0; i < relations.length; i++) {
+                if (!relations[i].isAbstract() && !relations[i].isAbstractContainer()) {
+                    // to get the relations of the supermost product component type
+                    // put in the list as first, but with unchanged order for all relations
+                    // found in one type...
+                    result.add(index, relations[i].getName());
+                    index++;
+                }
+            }
+            pcType = pcType.findSupertype();
+        }
+        return (String[])result.toArray(new String[result.size()]);
+    }
+    
     /**
      * {@inheritDoc}
      */ 
@@ -108,32 +114,24 @@ public class RelationsContentProvider implements ITreeContentProvider {
      * {@inheritDoc}
      */ 
 	public Object[] getChildren(Object parentElement) {
-		if (parentElement instanceof IProductCmptTypeRelation && generation != null) {
-			IProductCmptTypeRelation relation = (IProductCmptTypeRelation)parentElement;
-			return generation.getRelations(relation.getName());
+		if (!(parentElement instanceof String) || generation == null) {
+            return null;
 		}
-		return null;
+        return generation.getRelations((String)parentElement);
 	}
 
     /**
      * {@inheritDoc}
      */ 
 	public Object getParent(Object element) {
-		if (element instanceof IProductCmptTypeRelation) {
-			return ((ProductCmptTypeRelation)element).getParent();
+		if (element instanceof String) {
+			return generation;
 		}
 		if (element instanceof IProductCmptRelation) {
-			if (((IProductCmptRelation)element).isDeleted()) {
-				return null;
-			}
-			try {
-				return ((ProductCmptRelation)element).findProductCmptTypeRelation();
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
+            IProductCmptRelation relation = (IProductCmptRelation)element; 
+            return relation.getProductCmptTypeRelation();
 		}
-		IpsPlugin.log(new IpsStatus(Messages.RelationsContentProvider_msg_UnknownElementClass + element.getClass()));
-		return null;
+        throw new RuntimeException("Unknown element type " + element);  //$NON-NLS-1$ 
 	}
 
     /**

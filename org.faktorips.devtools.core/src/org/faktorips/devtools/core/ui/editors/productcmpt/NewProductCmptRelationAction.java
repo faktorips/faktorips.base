@@ -23,7 +23,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.actions.Messages;
 import org.faktorips.util.memento.Memento;
@@ -57,7 +56,7 @@ public class NewProductCmptRelationAction extends IpsAction {
             return false;
         }
         Object selected = selection.getFirstElement();
-        return (selected instanceof IProductCmptTypeRelation);
+        return (selected instanceof String);
     }
 
 	/** 
@@ -65,13 +64,13 @@ public class NewProductCmptRelationAction extends IpsAction {
 	 */
 	public void run(IStructuredSelection selection) {
 		Object selected = selection.getFirstElement();
-		if (selected instanceof IProductCmptTypeRelation) {
+		if (selected instanceof String) {
 			setSyncpoint();
-			IProductCmptRelation relation = parent.newRelation((IProductCmptTypeRelation)selected);
+			IProductCmptRelation relation = parent.newRelation((String)selected);
 			relation.setMaxCardinality(1);
-			relation.setMinCardinality(((IProductCmptTypeRelation)selected).getMinCardinality());
+			relation.setMinCardinality(0); // todo get min from modell
 			RelationEditDialog dialog = new RelationEditDialog(relation, shell);
-			dialog.setProductCmptsToExclude(parent.getRelationTargetsFor((IProductCmptTypeRelation)selected));
+			dialog.setProductCmptsToExclude(parent.getRelationTargetsFor((String)selected));
 			int rc = dialog.open();
             if (rc == Dialog.CANCEL) {
 				reset();

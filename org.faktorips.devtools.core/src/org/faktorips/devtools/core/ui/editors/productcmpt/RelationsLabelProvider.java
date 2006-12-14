@@ -23,10 +23,8 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -39,34 +37,31 @@ public class RelationsLabelProvider implements ILabelProvider{
 	private ArrayList listeners;
 	
 	/**
-	 * Overridden.
+     * {@inheritDoc}
 	 */
 	public String getText(Object element) {
 		if (element instanceof IProductCmptRelation) {
 			IProductCmptRelation rel = ((IProductCmptRelation)element);
 			return StringUtil.unqualifiedName(rel.getTarget());
 		}
-		else if (element instanceof IIpsObjectPart) {
-			return ((IIpsObjectPart)element).getName();
-		}
-		return Messages.RelationsLabelProvider_undefined;
+        return element.toString();
 	}
 	
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public Image getImage(Object element) {
-		if (element instanceof IProductCmptTypeRelation) {
-			return ((IProductCmptTypeRelation)element).getImage();
-		}
-		else if (element instanceof IProductCmptRelation) {
-			return IpsObjectType.PRODUCT_CMPT.getImage();
+        if (element instanceof IProductCmptRelation) {
+            return IpsObjectType.PRODUCT_CMPT.getImage();
+        }
+		if (element instanceof String) {
+			return IpsPlugin.getDefault().getImage("Composition.gif");  //$NON-NLS-1$ 
 		}
 		return IpsPlugin.getDefault().getImage(Messages.RelationsLabelProvider_undefined);
 	}
 	
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void addListener(ILabelProviderListener listener) {
 		if (listeners == null) {
@@ -75,21 +70,21 @@ public class RelationsLabelProvider implements ILabelProvider{
 	}
 	
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void dispose() {
 		listeners = null;
 	}
 	
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public boolean isLabelProperty(Object element, String property) {
 		return true;
 	}
 	
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void removeListener(ILabelProviderListener listener) {
 		listeners.remove(listener);

@@ -70,7 +70,6 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
@@ -286,8 +285,7 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 		// treeViewer); //$NON-NLS-1$
 
 		// create empty menu for later use
-		emptyMenu = new MenuManager()
-				.createContextMenu(treeViewer.getControl());
+		emptyMenu = new MenuManager().createContextMenu(treeViewer.getControl());
 	}
 
 	/**
@@ -308,9 +306,8 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 	/**
 	 * Creates a new Relation of the given type.
 	 */
-	public IProductCmptRelation newRelation(
-			IProductCmptTypeRelation relationType) {
-		return generation.newRelation(relationType.getName());
+	public IProductCmptRelation newRelation(String relationType) {
+		return generation.newRelation(relationType);
 	}
 
 	/**
@@ -319,26 +316,40 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 	public IProductCmptGeneration getActiveGeneration() {
 		return generation;
 	}
-
+    
+    /**
+     * Returns the name of the product component type relation identified by the target.
+     * The target is either the name itself (the top level nodes of the relation section tree)
+     * or instances of IProductCmptRelation. (the nodes below the relation type nodes).
+     */
+    String getRelationName(Object target) {
+        if (target instanceof String) {
+            return (String)target;
+        }
+        if (target instanceof IProductCmptRelation) {
+            return ((IProductCmptRelation)target).getProductCmptTypeRelation();
+        }
+        return null;
+    }
+    
 	/**
 	 * Creates a new relation which connects the currently displayed generation
 	 * with the given target. The new relation is placed before the the given
 	 * one.
 	 */
-	private IProductCmptRelation newRelation(String target, IProductCmptTypeRelation relation,
+	private IProductCmptRelation newRelation(String target, String relation,
 			IProductCmptRelation insertBefore) {
         
         IProductCmptRelation prodRelation = null;
-        
         if (insertBefore != null) {
-            prodRelation = generation.newRelation(relation.getName(), insertBefore);
+            prodRelation = generation.newRelation(relation, insertBefore);
         }
         else {
-            prodRelation = generation.newRelation(relation.getName());
+            prodRelation = generation.newRelation(relation);
         }
 		prodRelation.setTarget(target);
 		prodRelation.setMaxCardinality(1);
-		prodRelation.setMinCardinality(relation.getMinCardinality());
+        prodRelation.setMinCardinality(0); // TODO min aus modell ermitteln
 		return prodRelation;
 	}
 
@@ -452,11 +463,11 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 						
 						IProductCmpt target = getProductCmpt(file); 
 
-						IProductCmptTypeRelation relation = null;
-						if (insertAt instanceof IProductCmptTypeRelation) {
-							relation = (IProductCmptTypeRelation) insertAt;
+						String relation = null;
+						if (insertAt instanceof String) { // product component type relation
+							relation = (String) insertAt;
 						} else if (insertAt instanceof IProductCmptRelation) {
-							relation = ((IProductCmptRelation)insertAt).findProductCmptTypeRelation();
+							relation = ((IProductCmptRelation)insertAt).getProductCmptTypeRelation();
 						}
 
 						if (generation.canCreateValidRelation(target, relation)) {
@@ -508,7 +519,9 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 		}
 
 		public void dropAccept(DropTargetEvent event) {
-			// nothing to do
+			if (!isDataChangeable()) {
+			    event.detail = DND.DROP_NONE;
+            }
 		}
 
 		private IFile getFile(String filename) {
@@ -592,14 +605,14 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 		 */
 		private void insert(IProductCmpt cmpt, Object insertAt) {
             String target = cmpt.getQualifiedName();
-            IProductCmptTypeRelation relationType = null;
+            String relationType = null;
             IProductCmptRelation insertBefore = null;
             try {
-                if (insertAt instanceof IProductCmptTypeRelation) {
-                    relationType = (IProductCmptTypeRelation)insertAt;
+                if (insertAt instanceof String) { // product component type relation
+                    relationType = (String)insertAt;
                 }
                 else if (insertAt instanceof IProductCmptRelation) {
-                    relationType = ((IProductCmptRelation)insertAt).findProductCmptTypeRelation();
+                    relationType = ((IProductCmptRelation)insertAt).getProductCmptTypeRelation();
                     insertBefore = (IProductCmptRelation)insertAt;
                 }
                 if (generation.canCreateValidRelation(cmpt, relationType)) {
@@ -627,7 +640,7 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 		public void dragStart(DragSourceEvent event) {
 			Object selected = ((IStructuredSelection) selectionProvider
 					.getSelection()).getFirstElement();
-			event.doit = selected instanceof IProductCmptRelation;
+			event.doit = (selected instanceof IProductCmptRelation) && isDataChangeable();
 			
 			// we provide the event data yet so we can decide if we will
 			// accept a drop at drag-over time.
@@ -659,11 +672,8 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 	 * @param relationType
 	 *            The type of the relations to find.
 	 */
-	public IProductCmpt[] getRelationTargetsFor(
-			IProductCmptTypeRelation relationType) {
-		IProductCmptRelation[] relations = generation.getRelations(relationType
-				.getName());
-
+	public IProductCmpt[] getRelationTargetsFor(String relationType) {
+		IProductCmptRelation[] relations = generation.getRelations(relationType);
 		IProductCmpt[] targets = new IProductCmpt[relations.length];
 		for (int i = 0; i < relations.length; i++) {
 			try {
@@ -729,10 +739,9 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 	private MessageList validate(Object element) throws CoreException {
 		if (element instanceof IProductCmptRelation) {
 			return ((IProductCmptRelation) element).validate();
-		} else if (element instanceof IProductCmptTypeRelation) {
+		} else if (element instanceof String) {
 			MessageList ml = generation.validate();
-			return ml.getMessagesFor(((IProductCmptTypeRelation) element)
-					.getTargetRoleSingular());
+			return ml.getMessagesFor(((String) element));
 		}
 		return new MessageList();
 	}
@@ -766,12 +775,9 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 		 * {@inheritDoc}
 		 */
 		protected MessageList getMessages(Object element) throws CoreException {
-			if (element instanceof IProductCmptTypeRelation) {
-				IProductCmptTypeRelation relType = (IProductCmptTypeRelation) element;
-				return generation.validate().getMessagesFor(
-						relType.getTargetRoleSingular());
+			if (element instanceof String) {
+				return generation.validate().getMessagesFor((String)element);
 			}
-
 			return super.getMessages(element);
 		}
 
@@ -886,13 +892,7 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
             if (event.getEventType()==ContentChangeEvent.TYPE_PART_REMOVED
                     && event.containsAffectedObjects(IProductCmptRelation.class)) {
                 IProductCmptRelation relation = (IProductCmptRelation)event.getPart();
-                try {
-                    IProductCmptTypeRelation typeRelation = relation.findProductCmptTypeRelation(); 
-                    treeViewer.refresh(typeRelation);
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                    treeViewer.refresh();
-                }
+                treeViewer.refresh(relation.getProductCmptTypeRelation());
                 TreeItem possibleSelection = getNextPossibleItem(treeViewer.getTree(), lastSelectionPath);
                 if(possibleSelection == null){
                     return;
