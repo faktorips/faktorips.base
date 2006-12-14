@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
+import org.faktorips.util.message.MessageList;
 
 /**
  * 
@@ -324,6 +325,15 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     protected void validatePage() throws CoreException {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
         setErrorMessage(null);
+        MessageList ml = getIpsProject().getNamingConventions().validateIpsPackageName(nameField.getText());
+        if (!ml.isEmpty()) {
+            if(ml.containsErrorMsg()){
+                setErrorMessage(ml.getText());
+                return;
+            }else{
+                setMessage(ml.getText(), IMessageProvider.WARNING);
+            }
+        }
         validateSourceRoot();
         if (getErrorMessage() != null) {
             return;
