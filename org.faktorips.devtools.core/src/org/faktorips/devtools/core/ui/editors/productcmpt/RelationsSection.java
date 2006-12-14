@@ -385,9 +385,6 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 				// is enabled.
 				cardinalityPanel.setEnabled(enabled);
 			} else {
-                uiController.remove(cardMinField);
-                uiController.remove(cardMaxField);
-                
 				cardinalityPanel.setEnabled(false);
 			}
             
