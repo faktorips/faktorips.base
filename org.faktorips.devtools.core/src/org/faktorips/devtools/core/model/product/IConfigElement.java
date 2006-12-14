@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model.product;
 import javax.naming.OperationNotSupportedException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IValueDatatypeProvider;
 import org.faktorips.devtools.core.model.IValueSet;
@@ -180,6 +181,14 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider  
      */
     public IAttribute findPcTypeAttribute() throws CoreException;
 
+    /**
+     * Returns the element's value datatype, or <code>null</code> if it can't be found.
+     * The config element's datatype is the attribute's datatype the elemet is based on.
+     * 
+     * @throws CoreException
+     */
+    public ValueDatatype findValueDatatype() throws CoreException;
+    
     /**
 	 *  
 	 * @throws CoreException if an exception occurs while validating the object.

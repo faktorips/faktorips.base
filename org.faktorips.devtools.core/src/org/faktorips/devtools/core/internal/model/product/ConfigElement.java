@@ -91,28 +91,28 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IProductCmpt getProductCmpt() {
 		return (IProductCmpt) getParent().getParent();
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IProductCmptGeneration getProductCmptGeneration() {
 		return (IProductCmptGeneration) getParent();
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public ConfigElementType getType() {
 		return type;
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void setType(ConfigElementType newType) {
 		ConfigElementType oldType = type;
@@ -122,14 +122,14 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	}
 
 	/**
-	 * Overridden.
+     * {@inheritDoc}
 	 */
 	public String getPcTypeAttribute() {
 		return pcTypeAttribute;
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void setPcTypeAttribute(String newName) {
 		String oldName = pcTypeAttribute;
@@ -139,14 +139,14 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public String getValue() {
 		return value;
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void setValue(String newValue) {
 		String oldValue = value;
@@ -177,8 +177,19 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		ITypeHierarchy hierarchy = pcType.getSupertypeHierarchy();
 		return hierarchy.findAttribute(pcType, pcTypeAttribute);
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+	public ValueDatatype findValueDatatype() throws CoreException {
+        IAttribute a = findPcTypeAttribute();
+        if (a!=null) {
+            return a.findDatatype();
+        }
+        return null;
+    }
 
-	/**
+    /**
      * {@inheritDoc}
 	 */
     public ExprCompiler getExprCompiler() throws CoreException {
@@ -339,7 +350,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IValueSet getValueSet() {
 		if (type == ConfigElementType.PRODUCT_ATTRIBUTE) {
@@ -387,7 +398,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	}
 	
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	protected Element createElement(Document doc) {
 		return doc.createElement(TAG_NAME);
@@ -443,7 +454,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	protected void propertiesToXml(Element element) {
 		super.propertiesToXml(element);
