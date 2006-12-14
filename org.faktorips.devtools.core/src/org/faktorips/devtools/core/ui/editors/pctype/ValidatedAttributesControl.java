@@ -210,6 +210,10 @@ public class ValidatedAttributesControl extends EditTableControl {
 	private class CellModifier implements ICellModifier {
 
 		public boolean canModify(Object element, String property) {
+            if (!isDataChangeable()){
+                return false;
+            }
+            
 			if (ATTRIBUTENAME_COLUMN_PROPERTY.equals(property)) {
 				return true;
 			}

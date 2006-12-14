@@ -138,6 +138,9 @@ public abstract class ChangeParametersControl extends Composite implements IData
 
 	private class ParametersCellModifier implements ICellModifier {
 		public boolean canModify(Object element, String property) {
+            if (!isDataChangeable()){
+                return false;
+            }
 			Assert.isTrue(element instanceof ParameterInfo);
 			if (property.equals(PROPERTIES[TYPE_PROP]))
 				return ChangeParametersControl.this.fCanChangeTypesOfOldParameters;
@@ -373,7 +376,7 @@ public abstract class ChangeParametersControl extends Composite implements IData
 	}
 
     private boolean canEditTableCells() {
-        return (fCanChangeParameterNames || fCanChangeTypesOfOldParameters) && dataChangeable;
+        return (fCanChangeParameterNames || fCanChangeTypesOfOldParameters);
     }
 	
 	private void editColumnOrNextPossible(int column){
@@ -473,7 +476,7 @@ public abstract class ChangeParametersControl extends Composite implements IData
 	}
 
 	private void updateButtonsEnabledState() {
-        if (!dataChangeable){
+        if (!isDataChangeable()){
             uiToolkit.setDataChangeable(fUpButton, false);
             uiToolkit.setDataChangeable(fDownButton, false);
             uiToolkit.setDataChangeable(fAddButton, false);
@@ -824,6 +827,11 @@ public abstract class ChangeParametersControl extends Composite implements IData
      */
     public void setDataChangeable(boolean changeable) {
         this.dataChangeable = changeable;
+        
+        uiToolkit.setDataChangeable(fUpButton, changeable);
+        uiToolkit.setDataChangeable(fDownButton, changeable);
+        uiToolkit.setDataChangeable(fAddButton, changeable);
+        uiToolkit.setDataChangeable(fRemoveButton, changeable);
     }
 
     /**

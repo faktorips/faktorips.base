@@ -151,21 +151,19 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 		});
 
 		tableViewer.setColumnProperties(getColumnPropertyNames());
-        if (dataChangeable) {
-            UnfocusableTextCellEditor[] editors = createCellEditors();
-            if (editors != null && editors.length != table.getColumnCount()) {
-                throw new RuntimeException("Number of editors must be equal to the number of table columns!"); //$NON-NLS-1$
-            }
-            tableViewer.setCellEditors(editors);
-            if (getColumnPropertyNames().length != table.getColumnCount()) {
-                throw new RuntimeException("Number of ColumnProperties must be equal to the number of table columns!"); //$NON-NLS-1$
-            }
-            tableViewer.setCellModifier(createCellModifier());
+        UnfocusableTextCellEditor[] editors = createCellEditors();
+        if (editors != null && editors.length != table.getColumnCount()) {
+            throw new RuntimeException("Number of editors must be equal to the number of table columns!"); //$NON-NLS-1$
+        }
+        tableViewer.setCellEditors(editors);
+        if (getColumnPropertyNames().length != table.getColumnCount()) {
+            throw new RuntimeException("Number of ColumnProperties must be equal to the number of table columns!"); //$NON-NLS-1$
+        }
+        tableViewer.setCellModifier(createCellModifier());
 
-            for (int i = 0; i < editors.length; i++) {
-                if (editors[i] != null) {
-                    addListenersToEditor(editors[i], i);
-                }
+        for (int i = 0; i < editors.length; i++) {
+            if (editors[i] != null) {
+                addListenersToEditor(editors[i], i);
             }
         }
 	}

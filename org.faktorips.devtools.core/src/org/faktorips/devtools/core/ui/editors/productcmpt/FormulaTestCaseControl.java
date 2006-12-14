@@ -705,10 +705,8 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         formulaTestCaseTableViewer.setContentProvider (new ArrayContentProvider());
         formulaTestCaseTableViewer.setLabelProvider (new FormulaTestCaseTblLabelProvider());
         
-        if (dataChangeable){
-            // create the cell editor
-            createTableCellModifier(uiToolkit);
-        }
+        // create the cell editor
+        createTableCellModifier(uiToolkit);
         
         hookFormulaTestCaseTableListener();     
         
@@ -717,7 +715,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     }
 
     private void createTableCellModifier(UIToolkit uiToolkit) {
-        BeanTableCellModifier tableCellModifier = new BeanTableCellModifier(formulaTestCaseTableViewer);
+        BeanTableCellModifier tableCellModifier = new BeanTableCellModifier(formulaTestCaseTableViewer, this);
         tableCellModifier.initModifier(uiToolkit, new String[] { null, IFormulaTestCase.PROPERTY_NAME,
                 IFormulaTestCase.PROPERTY_EXPECTED_RESULT, PROPERTY_ACTUAL_RESULT }, new ValueDatatype[] { null,
                 ValueDatatype.STRING, ValueDatatype.STRING, null });
@@ -904,17 +902,14 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
      * {@inheritDoc}
      */
     public void setDataChangeable(boolean changeable) {
-        if (!this.dataChangeable && changeable){
-            // create the cell editor
-            createTableCellModifier(uiToolkit);
-        }
-        
         this.dataChangeable = changeable;
+        
+        createTableCellModifier(uiToolkit);
+        
         // trigger update state of buttons
         selectionFormulaTestCaseChanged(getSelectedFormulaTestCase());
-        uiToolkit.setDataChangeable(btnNewFormulaTestCase, changeable);
         
-        // set state of child control
+        uiToolkit.setDataChangeable(btnNewFormulaTestCase, changeable);
         formulaTestInputValuesControl.setDataChangeable(changeable);
     }
 

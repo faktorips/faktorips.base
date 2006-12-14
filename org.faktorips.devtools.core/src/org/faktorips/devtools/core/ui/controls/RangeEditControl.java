@@ -64,14 +64,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         super(parent, SWT.NONE);
         this.range = range;
         this.uiToolkit = toolkit;
-    }
-
-    /**
-     * Creates the compoiste's controls. This method has to be called by this
-     * controls client, after the control has been configured via the appropiate
-     * setter method, e.g. <code>setDataChangeable(boolean)</code>
-     */
-    public void initControl() {
+        
         setLayout();
         Group group = createRangeGroup(uiToolkit);
         Composite workArea = createWorkArea(uiToolkit, group);
@@ -83,7 +76,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
             this.uiController = new IpsPartUIController((IIpsObjectPart)range.getParent());
         }
         
-        connectToModel();
+        connectToModel();        
     }
     
     private void setLayout() {
@@ -141,11 +134,6 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
             toolkit.getFormToolkit().paintBordersFor(workArea);
             toolkit.getFormToolkit().adapt(workArea);
         }
-        
-        toolkit.setDataChangeable(lower, isDataChangeable());
-        toolkit.setDataChangeable(upper, isDataChangeable());
-        toolkit.setDataChangeable(step, isDataChangeable());
-        toolkit.setDataChangeable(containsNullCB, isDataChangeable());
     }
 
     private void connectToModel() {
@@ -236,5 +224,10 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
      */
     public void setDataChangeable(boolean changeable) {
         this.dataChangeable = changeable;
+        
+        uiToolkit.setDataChangeable(lower, changeable);
+        uiToolkit.setDataChangeable(upper, changeable);
+        uiToolkit.setDataChangeable(step, changeable);
+        uiToolkit.setDataChangeable(containsNullCB, changeable);        
     }
 }

@@ -83,14 +83,6 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
         this.tableElementValidator = tableElementValidator;
         
         initLayout();
-    }
-    
-    /**
-     * Creates the compoiste's controls. This method has to be called by this
-     * controls client, after the control has been configured via the appropiate
-     * setter method, e.g. <code>setDataChangeable(boolean)</code>
-     */
-    public void initControl() {
         Composite parentArea;
         if (toolkit.getFormToolkit() == null) {
             parentArea = this;
@@ -110,9 +102,9 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
         validTypesCombo.setText(valueSet.getValueSetType().getName());
         if (toolkit.getFormToolkit() != null) {
             toolkit.getFormToolkit().adapt(this); // has to be done after the text control is created!
-        }
+        }        
     }
-    
+        
     private Composite getControlForValueSet(IValueSet valueSet) {
     	Composite retValue;
     	if (valueSet.getValueSetType() == ValueSetType.ENUM) {
@@ -131,8 +123,6 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
                     groupComposite = createEnumValueSetGroup(valueSetArea, Messages.ValueSetEditControl_labelAllowedValueSet);
                     enumControl = new EnumValueSetChooser(group, toolkit, null, (IEnumValueSet)valueSet, enumType,
                             uiController);
-                    ((EnumValueSetChooser)enumControl).setDataChangeable(isDataChangeable());
-                    ((EnumValueSetChooser)enumControl).initControl();                    
                     enumControl.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
                 } else {
                     // update ui with the current value set in the model object,
@@ -145,8 +135,6 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
                 if (!(enumControl instanceof EnumValueSetEditControl)) {
                     groupComposite = createEnumValueSetGroup(valueSetArea, Messages.ValueSetEditControl_labelAllowedValueSet);
                     enumControl = new EnumValueSetEditControl((IEnumValueSet)valueSet, group, tableElementValidator);
-                    ((EnumValueSetEditControl)enumControl).setDataChangeable(isDataChangeable());
-                    ((EnumValueSetEditControl)enumControl).initControl();
                     enumControl.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
                 } else {
                     // update ui with the current value set in the model object,
@@ -160,8 +148,6 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
     	} else if (valueSet.getValueSetType() == ValueSetType.RANGE) {
     		if (rangeControl == null) {
     			rangeControl = new RangeEditControl(valueSetArea, toolkit, (RangeValueSet)valueSet, uiController);
-                rangeControl.setDataChangeable(isDataChangeable());
-                rangeControl.initControl();
     		}
     		rangeControl.setValueSet(valueSet);
     		retValue = rangeControl;
@@ -171,6 +157,10 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
     		}
     		retValue = allValuesControl;
     	}
+        
+        // update data change state of controls
+        setDataChangeable(isDataChangeable());
+        
         return retValue;
     }
 
@@ -321,6 +311,11 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
      */
     public void setDataChangeable(boolean changeable) {
         this.dataChangeable = changeable;
+        
+        toolkit.setDataChangeable(validTypesCombo, changeable);
+        toolkit.setDataChangeable(rangeControl, changeable);
+        toolkit.setDataChangeable(enumControl, changeable);
+        toolkit.setDataChangeable(allValuesControl, changeable);
     }
 
     /**

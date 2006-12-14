@@ -235,7 +235,7 @@ public class RuleFunctionsControl extends EditTableControl {
     private class CellModifier implements ICellModifier {
 
         public boolean canModify(Object element, String property) {
-            return true;
+            return isDataChangeable();
         }
 
         public Object getValue(Object element, String property) {

@@ -117,6 +117,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     
     // The column index of the delegate cell editor
     private int delegateCellEditorColumnIndex;
+    
     private boolean dataChangeable;
     
     /*
@@ -377,7 +378,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         formulaInputTableViewer.setLabelProvider (new FormulaTestInputValueTblLabelProvider());
         
         // create the cell editor
-        if (dataChangeable || isPreviewOfFormulaTest()){
+        if (isPreviewOfFormulaTest()){
             // the table is modifiedable if not "view only"  is set or if this is the control which can store the input as
             // new formula test case (e.g. preview formula on the first page of the formula edit dialog)
             createTableCellModifier();
@@ -389,7 +390,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
 
     private void createTableCellModifier() {
         delegateCellEditorColumnIndex = 2;
-        tableCellModifier = new BeanTableCellModifier(formulaInputTableViewer);
+        tableCellModifier = new BeanTableCellModifier(formulaInputTableViewer, this);
         tableCellModifier.initModifier(uiToolkit, new String[] { "image", IFormulaTestInputValue.PROPERTY_NAME, //$NON-NLS-1$
                 IFormulaTestInputValue.PROPERTY_VALUE}, new ValueDatatype[] { null, null, DelegateCellEditor.DELEGATE_VALUE_DATATYPE});
         tableCellModifier.addListener(this);
@@ -564,13 +565,6 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         uiController.updateUI();  
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDataChangeable() {
-        return dataChangeable;
-    }
-
     /*
      * Returns true if this control is a preview control for formula test cases,
      * returns false if this control shows stored formula test cases.
@@ -578,21 +572,22 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     private boolean isPreviewOfFormulaTest(){
         return canStoreFormulaTestCaseAsNewFormulaTestCase;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDataChangeable() {
+        return dataChangeable;
+    }
     
     /**
      * {@inheritDoc}
      */
     public void setDataChangeable(boolean changeable) {
-        if (!this.dataChangeable && changeable){
-            // create the cell editor
-            createTableCellModifier();
-        }
         this.dataChangeable = changeable;
+        
         uiToolkit.setDataChangeable(btnNewFormulaTestCase, changeable);
-        if(!isPreviewOfFormulaTest()){
-            // special button to reset the input values is disabled if the data are related to a stored formula test case
-            uiToolkit.setDataChangeable(btnClearInputValues, changeable);
-            uiToolkit.setDataChangeable(formulaInputTableViewer.getTable(), changeable);
-        }
+        uiToolkit.setDataChangeable(btnClearInputValues, changeable);
+        uiToolkit.setDataChangeable(formulaInputTableViewer.getTable(), changeable);
     }
 }

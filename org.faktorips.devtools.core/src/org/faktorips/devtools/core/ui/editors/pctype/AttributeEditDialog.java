@@ -330,8 +330,6 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         createDefaultValueEditField();
         
         valueSetEditControl = new ValueSetEditControl(pageControl, uiToolkit, uiController, attribute, new PcTypeValidator());
-        valueSetEditControl.setDataChangeable(isDataChangeable());
-        valueSetEditControl.initControl();
         
         Object layoutData = valueSetEditControl.getLayoutData();
         if (layoutData instanceof GridData){

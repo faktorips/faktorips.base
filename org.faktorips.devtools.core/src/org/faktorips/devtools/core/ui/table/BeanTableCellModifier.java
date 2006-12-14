@@ -34,6 +34,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.TableItem;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.util.ArgumentCheck;
@@ -44,8 +45,13 @@ import org.faktorips.util.ArgumentCheck;
  * @author Joerg Ortmann
  */
 public class BeanTableCellModifier extends ValueCellModifier  {
+    private UIToolkit uiToolkit;
+
     // The table viewer this cell modifier belongs to
     private TableViewer tableViewer;
+
+    // The parent control
+    IDataChangeableReadWriteAccess parentControl;
 
     // Listeners for the changes inside the cell
     private List columnChangeListeners = new ArrayList(1);
@@ -59,11 +65,12 @@ public class BeanTableCellModifier extends ValueCellModifier  {
     // otherwise the list is empty
     private Map delegateCellEditor= new HashMap(0);
 
-    private UIToolkit uiToolkit;
     
-    public BeanTableCellModifier(TableViewer tableViewer) {
+    
+    public BeanTableCellModifier(TableViewer tableViewer, IDataChangeableReadWriteAccess parentControl) {
         ArgumentCheck.notNull(tableViewer);
         this.tableViewer = tableViewer;
+        this.parentControl = parentControl;
     }
     
     /**
@@ -146,7 +153,7 @@ public class BeanTableCellModifier extends ValueCellModifier  {
      * {@inheritDoc}
      */
     public boolean canModify(Object element, String property) {
-        return true;
+        return parentControl.isDataChangeable();
     }
 
     /**

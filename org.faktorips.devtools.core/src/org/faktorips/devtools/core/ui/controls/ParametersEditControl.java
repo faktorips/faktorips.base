@@ -365,13 +365,6 @@ public class ParametersEditControl extends Composite implements  IDataChangeable
 	}
 
 	private void updateButtonsEnabledState() {
-        if (!dataChangeable){
-            uiToolkit.setDataChangeable(fUpButton, false);
-            uiToolkit.setDataChangeable(fDownButton, false);
-            uiToolkit.setDataChangeable(fAddButton, false);
-            uiToolkit.setDataChangeable(fRemoveButton, false);
-            return;
-        }
 	    if (fUpButton!=null) {
 			fUpButton.setEnabled(canMove(true));
 	    }
@@ -473,7 +466,7 @@ public class ParametersEditControl extends Composite implements  IDataChangeable
 	}
 	
 	//---- editing -----------------------------------------------------------------------------------------------
-
+    
 	private void addCellEditors() {
 		class UnfocusableTextCellEditor extends TextCellEditor {
 			private Object fOriginalValue;
@@ -623,7 +616,7 @@ public class ParametersEditControl extends Composite implements  IDataChangeable
 		fTableViewer.setColumnProperties(PROPERTIES);
 		fTableViewer.setCellModifier(new ParametersCellModifier());
 	}
-
+    
 	private SubjectControlContentAssistant installParameterTypeContentAssist(Control control) {
 		if (! (control instanceof Text))
 			return null;
@@ -676,6 +669,9 @@ public class ParametersEditControl extends Composite implements  IDataChangeable
 
 	private class ParametersCellModifier implements ICellModifier {
 		public boolean canModify(Object element, String property) {
+            if (isDataChangeable()){
+                return false;
+            }
 			if (property.equals(PROPERTIES[TYPE_PROP]))
 				return ParametersEditControl.this.fCanChangeTypesOfOldParameters;
 			else if (property.equals(PROPERTIES[NEWNAME_PROP]))
@@ -709,6 +705,11 @@ public class ParametersEditControl extends Composite implements  IDataChangeable
      */
     public void setDataChangeable(boolean changeable) {
         this.dataChangeable = changeable;
+
+        uiToolkit.setDataChangeable(fUpButton, changeable);
+        uiToolkit.setDataChangeable(fDownButton, changeable);
+        uiToolkit.setDataChangeable(fAddButton, changeable);
+        uiToolkit.setDataChangeable(fRemoveButton, changeable);
     }
 
     /**

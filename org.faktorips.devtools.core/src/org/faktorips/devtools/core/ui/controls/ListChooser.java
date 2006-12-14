@@ -84,14 +84,7 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
 	public ListChooser(Composite parent, UIToolkit toolkit) {
 		super(parent, SWT.NONE);
 		this.toolkit = toolkit;
-	}
-    
-    /**
-     * Creates the compoiste's controls. This method has to be called by this
-     * controls client, after the control has been configured via the appropiate
-     * setter method, e.g. <code>setDataChangeable(boolean)</code>
-     */
-    public void initControl() {
+        
         this.setLayout(new GridLayout(4, false));
         
         toolkit.createLabel(this, Messages.ListChooser_labelAvailableValues);
@@ -128,8 +121,8 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
         removeAll.addSelectionListener(new ChooseListener(targetTable, sourceTable, true));
         
         new MessageService(source);
-        new MessageService(target);        
-    }
+        new MessageService(target);           
+	}
     
     public TableViewer getTargetViewer() {
         return target;
@@ -183,11 +176,6 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
 		removeSelected.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		addAll.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		removeAll.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-        
-        toolkit.setDataChangeable(addSelected, isDataChangeable());
-        toolkit.setDataChangeable(removeSelected, isDataChangeable());
-        toolkit.setDataChangeable(addAll, isDataChangeable());
-        toolkit.setDataChangeable(removeAll, isDataChangeable());
 	}
 
 	/**
@@ -206,9 +194,6 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
 		
 		up.addSelectionListener(new MoveListener());
 		down.addSelectionListener(new MoveListener());
-
-        toolkit.setDataChangeable(up, isDataChangeable());
-		toolkit.setDataChangeable(down, isDataChangeable());
 	}
 
 	/**
@@ -452,5 +437,12 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
      */
     public void setDataChangeable(boolean changeable) {
         this.dataChangeable = changeable;
+        
+        toolkit.setDataChangeable(addSelected, changeable);
+        toolkit.setDataChangeable(removeSelected, changeable);
+        toolkit.setDataChangeable(addAll, changeable);
+        toolkit.setDataChangeable(removeAll, changeable);
+        toolkit.setDataChangeable(up, changeable);
+        toolkit.setDataChangeable(down, changeable);
     }
 }

@@ -129,29 +129,29 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
             IValueSet valueSet = configElement.getValueSet();
             IValueSet attrValueSet = null;
             IAttribute attribute = configElement.findPcTypeAttribute();
-            if (attribute!=null) {
+            if (attribute != null) {
                 attrValueSet = attribute.getValueSet();
                 if (valueSet.getValueSetType() == ValueSetType.ALL_VALUES) {
                     valueSet = attrValueSet;
                 }
             }
-            
+
             if (valueSet.getValueSetType() == ValueSetType.RANGE) {
-                RangeEditControl rangeEditControl = new RangeEditControl(workArea, uiToolkit, (RangeValueSet)valueSet, uiController);
+                RangeEditControl rangeEditControl = new RangeEditControl(workArea, uiToolkit, (RangeValueSet)valueSet,
+                        uiController);
                 return rangeEditControl;
-            } 
+            }
             if (valueSet.getValueSetType() == ValueSetType.ENUM) {
-            	Datatype type = attribute.findDatatype();
-            	EnumDatatype enumType = null;
-            	if (type instanceof EnumDatatype) {
-            		enumType = (EnumDatatype)type;
-            	}
-            	EnumValueSetChooser chooser = new EnumValueSetChooser(workArea, uiToolkit, (IEnumValueSet)attrValueSet, (IEnumValueSet)valueSet, enumType, uiController);
-                chooser.setDataChangeable(isDataChangeable());
-                chooser.initControl();
-                return chooser;
-            } 
-        } catch (CoreException e) {
+                Datatype type = attribute.findDatatype();
+                EnumDatatype enumType = null;
+                if (type instanceof EnumDatatype) {
+                    enumType = (EnumDatatype)type;
+                }
+                return new EnumValueSetChooser(workArea, uiToolkit, (IEnumValueSet)attrValueSet,
+                        (IEnumValueSet)valueSet, enumType, uiController);
+            }
+        }
+        catch (CoreException e) {
             IpsPlugin.log(e);
         }
         return null;

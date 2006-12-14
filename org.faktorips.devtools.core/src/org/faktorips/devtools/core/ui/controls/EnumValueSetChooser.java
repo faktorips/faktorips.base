@@ -76,13 +76,6 @@ public class EnumValueSetChooser extends ListChooser {
         this.sourceValueSet = source;
         this.type = type;
         this.uiController = uiController;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void initControl() {
-        super.initControl();
         setContents();
     }
 

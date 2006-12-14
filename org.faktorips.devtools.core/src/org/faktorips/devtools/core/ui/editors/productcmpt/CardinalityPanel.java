@@ -311,6 +311,4 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
             uiToolkit.setDataChangeable(maxKard, changeable);
         }        
     }
-    
-    
 }
