@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dï¿½rfen nur unter den Bedingungen der 
+ * Faktor-Zehn-Community Lizenzvereinbarung ï¿½ Version 0.1 (vor Grï¿½ndung Community) 
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -33,16 +33,18 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.faktorips.devtools.core.IpsStatus;
 
 /**
- * An <code>IRunnableWithProgress</code> that adapts and  <code>IWorkspaceRunnable</code>
+ * An <code>IRunnableWithProgress</code> that adapts an <code>IWorkspaceRunnable</code>
  * so that is can be executed inside <code>IRunnableContext</code>. <code>OperationCanceledException</code> 
  * thrown by the adapted runnable are caught and re-thrown as a <code>InterruptedException</code>.
+ * 
+ * Copied from the class with the same name from the internal Eclipse packages.
  * 
  * @author Joerg Ortmann
  */
 public class WorkbenchRunnableAdapter implements IRunnableWithProgress {
 
-    private IWorkspaceRunnable fWorkspaceRunnable;
-    private ISchedulingRule fRule;
+    private IWorkspaceRunnable workspaceRunnable;
+    private ISchedulingRule rule;
     
     /**
      * Runs a workspace runnable with the workspace lock.
@@ -55,12 +57,12 @@ public class WorkbenchRunnableAdapter implements IRunnableWithProgress {
      * Runs a workspace runnable with the given lock or <code>null</code> to run with no lock at all.
      */
     public WorkbenchRunnableAdapter(IWorkspaceRunnable runnable, ISchedulingRule rule) {
-        fWorkspaceRunnable= runnable;
-        fRule= rule;
+        workspaceRunnable= runnable;
+        this.rule= rule;
     }    
     
     public ISchedulingRule getSchedulingRule() {
-        return fRule;
+        return rule;
     }
 
     /**
@@ -68,7 +70,7 @@ public class WorkbenchRunnableAdapter implements IRunnableWithProgress {
      */
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         try {
-            JavaCore.run(fWorkspaceRunnable, fRule, monitor);
+            JavaCore.run(workspaceRunnable, rule, monitor);
         } catch (OperationCanceledException e) {
             throw new InterruptedException(e.getMessage());
         } catch (CoreException e) {
@@ -102,7 +104,7 @@ public class WorkbenchRunnableAdapter implements IRunnableWithProgress {
                 return jobFamiliy == family;
             }
         };
-        buildJob.setRule(fRule);
+        buildJob.setRule(rule);
         buildJob.setUser(true); 
         buildJob.schedule();
     }

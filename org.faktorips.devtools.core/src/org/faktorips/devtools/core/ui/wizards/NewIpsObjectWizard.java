@@ -17,7 +17,17 @@
 
 package org.faktorips.devtools.core.ui.wizards;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
@@ -26,6 +36,7 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 
 
 /**
@@ -47,8 +58,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
     }
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.wizard.IWizard#addPages()
+     * {@inheritDoc}
      */
     public final void addPages() {
         try {
@@ -72,28 +82,48 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
     }
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.wizard.IWizard#performFinish()
+     * {@inheritDoc}
      */
     public final boolean performFinish() {
+        final IIpsPackageFragment pack = objectPage.getIpsPackageFragment();
+        IWorkspaceRunnable op= new IWorkspaceRunnable() {
+            public void run(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
+                monitor.beginTask("Creating object", 2);
+                IIpsSrcFile srcFile = pack.createIpsFile(ipsObjectType, objectPage.getIpsObjectName(), true, null);
+                monitor.worked(1);
+                finishIpsObject(srcFile.getIpsObject());
+                srcFile.save(true, null);
+                monitor.worked(1);
+                monitor.done();
+            }
+        };
         try {
-            IIpsPackageFragment pack = objectPage.getIpsPackageFragment();
-            IIpsSrcFile srcFile = pack.createIpsFile(ipsObjectType, objectPage.getIpsObjectName(), true, null);
-            finishIpsObject(srcFile.getIpsObject());
-            srcFile.save(true, null);
-            IpsPlugin.getDefault().openEditor(srcFile);
-        } catch (Exception e) {
+            ISchedulingRule rule= null;
+            Job job= Platform.getJobManager().currentJob();
+            if (job != null)
+                rule= job.getRule();
+            IRunnableWithProgress runnable= null;
+            if (rule != null) {
+                runnable= new WorkbenchRunnableAdapter(op, rule);
+            } else {
+                runnable= new WorkbenchRunnableAdapter(op, ResourcesPlugin.getWorkspace().getRoot());
+            }
+            getContainer().run(false, true, runnable);
+        } catch (InvocationTargetException e) {
             IpsPlugin.logAndShowErrorDialog(e);
+            return false;
+        } catch  (InterruptedException e) {
+            return false;
         }
+        IIpsSrcFile srcFile = pack.getIpsSrcFile(ipsObjectType.getFileName(objectPage.getIpsObjectName()));
+        IpsPlugin.getDefault().openEditor(srcFile);
         return true;
     }
     
     protected abstract void finishIpsObject(IIpsObject ipsObject) throws CoreException;
 
     /** 
-     * Overridden method.
-     * 
-     * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
+     * {@inheritDoc}
      */
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.selection = selection;
