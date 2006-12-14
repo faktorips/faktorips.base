@@ -799,7 +799,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         updateStatusOfUpdateButton(selectedFormulaTestCase);
         
         // if the data is not changeable disable all buttons in any case
-        if (!dataChangeable){
+        if (!isDataChangeable()){
             btnDeleteFormulaTestCase.setEnabled(false);
             btnMoveFormulaTestCaseUp.setEnabled(false);
             btnMoveFormulaTestCaseDown.setEnabled(false);

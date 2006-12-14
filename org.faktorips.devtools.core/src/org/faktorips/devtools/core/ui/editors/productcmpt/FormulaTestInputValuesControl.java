@@ -234,9 +234,8 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
                 rowDatatypes[i] = null;
             }
         }
-        if (tableCellModifier != null){
-            tableCellModifier.initRowModifier(delegateCellEditorColumnIndex, rowDatatypes);
-        }
+        
+        tableCellModifier.initRowModifier(delegateCellEditorColumnIndex, rowDatatypes);
     }
 
     /**
@@ -377,12 +376,8 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         formulaInputTableViewer.setContentProvider (new ArrayContentProvider());
         formulaInputTableViewer.setLabelProvider (new FormulaTestInputValueTblLabelProvider());
         
-        // create the cell editor
-        if (isPreviewOfFormulaTest()){
-            // the table is modifiedable if not "view only"  is set or if this is the control which can store the input as
-            // new formula test case (e.g. preview formula on the first page of the formula edit dialog)
-            createTableCellModifier();
-        }
+        createTableCellModifier();
+        
         hookTableListener();     
 
         repackAndResfreshParamInputTable();
@@ -591,7 +586,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             this.dataChangeable = changeable;
         }
         
-        uiToolkit.setDataChangeable(btnNewFormulaTestCase, this.dataChangeable);
+        uiToolkit.setDataChangeable(btnNewFormulaTestCase, changeable && isPreviewOfFormulaTest());
         uiToolkit.setDataChangeable(btnClearInputValues, this.dataChangeable);
     }
 }
