@@ -584,10 +584,14 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
      * {@inheritDoc}
      */
     public void setDataChangeable(boolean changeable) {
-        this.dataChangeable = changeable;
+        if (isPreviewOfFormulaTest()){
+            // in preview mode the control is always changeable
+            this.dataChangeable = true;
+        } else { 
+            this.dataChangeable = changeable;
+        }
         
-        uiToolkit.setDataChangeable(btnNewFormulaTestCase, changeable);
-        uiToolkit.setDataChangeable(btnClearInputValues, changeable);
-        uiToolkit.setDataChangeable(formulaInputTableViewer.getTable(), changeable);
+        uiToolkit.setDataChangeable(btnNewFormulaTestCase, this.dataChangeable);
+        uiToolkit.setDataChangeable(btnClearInputValues, this.dataChangeable);
     }
 }
