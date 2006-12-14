@@ -59,6 +59,7 @@ import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
 import org.faktorips.devtools.core.ui.actions.ExpandCollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.FindPolicyReferencesAction;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
+import org.faktorips.devtools.core.ui.actions.FixDifferencesAction;
 import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsPasteAction;
@@ -405,6 +406,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             manager.add(new Separator());
             createProjectActions(manager, selected, (IStructuredSelection)treeViewer.getSelection());
             manager.add(new Separator());
+            createFixDifferencesAction(manager, selected, (IStructuredSelection)treeViewer.getSelection());
             createTestCaseAction(manager, selected);
             createRefactorMenu(manager, selected);
             createIpsArchiveAction(manager, selected);
@@ -547,6 +549,20 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             }
         }
 
+        protected void createFixDifferencesAction(IMenuManager manager, Object selected, IStructuredSelection selection) {
+            if (selected instanceof IIpsElement) {
+                if (selected instanceof IIpsProject) {
+                    manager.add(new FixDifferencesAction(getSite().getWorkbenchWindow(), selection));
+                }
+                else if (selected instanceof IIpsPackageFragmentRoot) {
+                    manager.add(new FixDifferencesAction(getSite().getWorkbenchWindow(), selection));
+                }
+                else if (selected instanceof IIpsPackageFragment) {
+                    manager.add(new FixDifferencesAction(getSite().getWorkbenchWindow(), selection));
+                }
+            }
+        }
+
         private void createIpsArchiveAction(IMenuManager manager, Object selected) {
             if (config.isAllowedIpsElementType(IIpsProject.class) || config.isAllowedIpsElementType(IIpsPackageFragmentRoot.class)) {
                 if (selected instanceof IIpsProject || selected instanceof IIpsPackageFragmentRoot) {
@@ -558,7 +574,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                             }
                         }
                         catch (CoreException e) {
-                            // ignore exception while creating the men
+                            // ignore exception while creating the menu
                         }
                     }
                     manager.add(new CreateIpsArchiveAction(treeViewer));

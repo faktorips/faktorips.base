@@ -957,4 +957,22 @@ public class TestCase extends IpsObject implements ITestCase {
             return;
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean containsDifferenceToModel() throws CoreException {
+        ITestCaseTestCaseTypeDelta delta = computeDeltaToTestCaseType();
+        if (delta != null && !delta.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void fixAllDifferencesToModel() throws CoreException {
+        fixDifferences(computeDeltaToTestCaseType());
+    }
 }

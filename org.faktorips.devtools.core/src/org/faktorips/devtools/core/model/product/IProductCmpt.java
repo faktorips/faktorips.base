@@ -21,6 +21,7 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.CycleException;
+import org.faktorips.devtools.core.model.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -30,7 +31,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 /**
  * 
  */
-public interface IProductCmpt extends ITimedIpsObject {
+public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSupport {
     
     /**
      * The name of the policy component type property

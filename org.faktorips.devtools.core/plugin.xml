@@ -214,15 +214,37 @@
       </perspectiveExtension>
    </extension>
    <extension point="org.eclipse.ui.popupMenus">
-    	<objectContribution id="addIpsNature" objectClass="org.eclipse.jdt.core.IJavaProject">
+		<objectContribution id="addIpsNature" objectClass="org.eclipse.jdt.core.IJavaProject">
+			<action
+		    class="org.faktorips.devtools.core.ui.actions.AddIpsNatureAction"
+		    enablesFor="*"
+		    icon="icons/AddIpsNature.gif"
+		    id="addIpsNatureAction"
+		    label="%addIpsNatureAction"
+		    menubarPath="additions"/>
+		  		<!-- <filter name="nature" value="org.eclipse.emf.codegen.jet.IJETNature"/> -->
+		</objectContribution>
+    	<objectContribution id="fixDifferencesAction" objectClass="org.eclipse.core.runtime.IAdaptable">
 	    	<action
-            class="org.faktorips.devtools.core.ui.actions.AddIpsNatureAction"
+            class="org.faktorips.devtools.core.ui.wizards.fixdifferences.OpenFixDifferencesToModelWizardAction"
             enablesFor="*"
             icon="icons/AddIpsNature.gif"
-            id="addIpsNatureAction"
-            label="%addIpsNatureAction"
-            menubarPath="additions"/>
-      		<!-- <filter name="nature" value="org.eclipse.emf.codegen.jet.IJETNature"/> -->
+            id="fixDifferencesAction"
+            label="%fixDifferencesAction"
+            menubarPath="additions">
+	            <enablement>
+		             <or>
+			              <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
+			              <objectClass name="org.eclipse.core.resources.IFolder"/>
+		             </or>
+	            </enablement> 
+            </action>
+		      <visibility>
+	             <or>
+		              <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
+		              <objectClass name="org.eclipse.core.resources.IFolder"/>
+	             </or>
+		      </visibility> 
     	</objectContribution>
      <objectContribution
            id="migrateIpsProject"

@@ -291,4 +291,34 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         this.runtimeId = runtimeId;
         valueChanged(oldId, runtimeId);
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean containsDifferenceToModel() throws CoreException {
+        IIpsObjectGeneration[] generations = this.getGenerations();
+        for (int i = 0; i < generations.length; i++) {
+            IIpsObjectGeneration generation = generations[i];
+            if(generation instanceof IProductCmptGeneration){
+                IProductCmptGenerationPolicyCmptTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToPolicyCmptType();
+                if(delta!=null && !delta.isEmpty()){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void fixAllDifferencesToModel() throws CoreException {
+        IIpsObjectGeneration[] generations = this.getGenerations();
+        for (int i = 0; i < generations.length; i++) {
+            IIpsObjectGeneration generation = generations[i];
+            if(generation instanceof IProductCmptGeneration){
+                ((IProductCmptGeneration)generation).fixDifferences(((IProductCmptGeneration)generation).computeDeltaToPolicyCmptType());
+            }
+        }
+    }
 }
