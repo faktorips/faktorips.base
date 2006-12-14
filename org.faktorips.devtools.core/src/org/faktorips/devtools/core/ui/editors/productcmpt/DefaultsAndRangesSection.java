@@ -38,7 +38,6 @@ import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -143,30 +142,23 @@ public class DefaultsAndRangesSection extends IpsSection {
 	}
     
     private void createEditControlsForElement(IConfigElement element) {
-        IAttribute attribute;
-        ValueDatatype dataType;
         try {
-           attribute = element.findPcTypeAttribute(); 
-           if (attribute==null) {
-               return;
-           }
-           dataType = attribute.findDatatype();
-           if (dataType == null) {
-               // no datatype found - use string as default
-               dataType = Datatype.STRING;
-           }
+            ValueDatatype datatype = element.findValueDatatype();
+            if (datatype == null) {
+                // no datatype found - use string as default
+                datatype = Datatype.STRING;
+            }
+            IpsPartUIController controller = new IpsPartUIController(element);
+            uiMasterController.add(controller);
+            createEditControlForDefaultValue(element, datatype, controller);      
+            IValueSet valueSet = element.getValueSet();
+            if (valueSet.getValueSetType() == ValueSetType.ENUM) {
+                createEditControlsForEnumeration(element, valueSet, controller);
+            } else if (valueSet.getValueSetType() == ValueSetType.RANGE) {
+                createEditControlsForRange(valueSet, controller);
+            }
         } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return;
-        }
-        IpsPartUIController controller = new IpsPartUIController(element);
-        uiMasterController.add(controller);
-        createEditControlForDefaultValue(element, dataType, controller);      
-        IValueSet valueSet = element.getValueSet();
-        if (valueSet.getValueSetType() == ValueSetType.ENUM) {
-            createEditControlsForEnumeration(element, valueSet, controller);
-        } else if (valueSet.getValueSetType() == ValueSetType.RANGE) {
-            createEditControlsForRange(valueSet, controller);
+            throw new RuntimeException(e);
         }
     }
 
