@@ -181,9 +181,9 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	}
 
 	/**
-	 * Does what the methodname says :-)
+     * {@inheritDoc}
 	 */
-	protected boolean checkForInconsistenciesToModelInternal() {
+	protected boolean checkAndFixInconsistenciesToModel() {
 		IIpsObjectGeneration[] gen = this.getProductCmpt().getGenerations();
 		IProductCmptGeneration[] generations = new IProductCmptGeneration[gen.length];
 		for (int i = 0; i < generations.length; i++) {

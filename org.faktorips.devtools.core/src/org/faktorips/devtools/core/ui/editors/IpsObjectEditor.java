@@ -414,7 +414,7 @@ public abstract class IpsObjectEditor extends FormEditor
         }
         try {
             deltaShowing = true;
-            dontFixDifferences = checkForInconsistenciesToModelInternal();
+            dontFixDifferences = checkAndFixInconsistenciesToModel();
         } finally {
             deltaShowing = false;
         }
@@ -428,7 +428,7 @@ public abstract class IpsObjectEditor extends FormEditor
      * <code>false</code> otherwise.  Default returns false.
      *
      */
-    protected boolean checkForInconsistenciesToModelInternal() {
+    protected boolean checkAndFixInconsistenciesToModel() {
         return false;
     }
 
