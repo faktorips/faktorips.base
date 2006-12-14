@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.MessageCueController;
 import org.faktorips.util.message.MessageList;
@@ -40,7 +41,8 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public class CardinalityPanel {
+public class CardinalityPanel implements IDataChangeableReadWriteAccess {
+    private UIToolkit uiToolkit;
 
 	private Text minKard;
 	private Text maxKard;
@@ -56,12 +58,15 @@ public class CardinalityPanel {
 	
 	private ModifyListener minListener;
 	private ModifyListener maxListener;
-	
+    
+    private boolean dataChangeable;
 
 	/**
 	 * Creates a new Cardinality panel
 	 */
 	public CardinalityPanel(Composite parent, UIToolkit toolkit) {
+        this.uiToolkit = toolkit;
+        
 		// first create a composite to fill the complete space
 		root = toolkit.createComposite(parent);
 		GridLayout layout = new GridLayout(1, false);
@@ -285,4 +290,27 @@ public class CardinalityPanel {
 		this.maxListener = listener;
 		maxKard.addModifyListener(listener);
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDataChangeable() {
+        return dataChangeable;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDataChangeable(boolean changeable) {
+        this.dataChangeable = changeable;
+        if (!isDataChangeable()){
+            uiToolkit.setDataChangeable(optional, changeable);
+            uiToolkit.setDataChangeable(mandatory, changeable);
+            uiToolkit.setDataChangeable(other, changeable);
+            uiToolkit.setDataChangeable(minKard, changeable);
+            uiToolkit.setDataChangeable(maxKard, changeable);
+        }        
+    }
+    
+    
 }

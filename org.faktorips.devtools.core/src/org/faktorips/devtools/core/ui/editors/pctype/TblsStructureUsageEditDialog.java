@@ -272,6 +272,13 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog{
     }
 
     private void updateButtonsEnabledState() {
+        if(!isDataChangeable()){
+            uiToolkit.setDataChangeable(btnAdd, false);
+            uiToolkit.setDataChangeable(btnRemove, false);
+            uiToolkit.setDataChangeable(btnUp, false);
+            uiToolkit.setDataChangeable(btnDown, false);
+            return;
+        }
         boolean enabled = false;
         btnAdd.setEnabled(true);
         ISelection selection = viewer.getSelection();

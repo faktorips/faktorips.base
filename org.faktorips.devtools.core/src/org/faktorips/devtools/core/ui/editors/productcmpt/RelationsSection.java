@@ -225,6 +225,7 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 			buildContextMenu();
 	
 			cardinalityPanel = new CardinalityPanel(relationRootPane, toolkit);
+            cardinalityPanel.setDataChangeable(isDataChangeable());
 			cardinalityPanel.setEnabled(false);
 	
 			addFocusControl(treeViewer.getTree());
@@ -376,18 +377,23 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 				cardMaxField = new CardinalityPaneEditField(cardinalityPanel,
 						false);
 
-				uiController.add(cardMinField, rel,
-						Relation.PROPERTY_MIN_CARDINALITY);
-				uiController.add(cardMaxField, rel,
-						Relation.PROPERTY_MAX_CARDINALITY);
-				uiController.updateUI();
+				uiController.add(cardMinField, rel, Relation.PROPERTY_MIN_CARDINALITY);
+                uiController.add(cardMaxField, rel, Relation.PROPERTY_MAX_CARDINALITY);
+                uiController.updateUI();
 
 				// enable the fields for cardinality only, if this section
 				// is enabled.
 				cardinalityPanel.setEnabled(enabled);
 			} else {
+                uiController.remove(cardMinField);
+                uiController.remove(cardMaxField);
+                
 				cardinalityPanel.setEnabled(false);
 			}
+            
+            if (! isDataChangeable()){
+                cardinalityPanel.setEnabled(false);
+            }
 		}
 	}
 
@@ -679,6 +685,10 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
             IIpsSrcFile file = relation.getIpsObject().getIpsSrcFile();
             IIpsSrcFileMemento memento = file.newMemento();
             RelationEditDialog dialog = new RelationEditDialog(relation, getShell());
+            if (dialog == null) {
+                return;
+            }
+            dialog.setDataChangeable(isDataChangeable());            
             int rc = dialog.open();
             if (rc == Dialog.CANCEL) {
                 file.setMemento(memento);
