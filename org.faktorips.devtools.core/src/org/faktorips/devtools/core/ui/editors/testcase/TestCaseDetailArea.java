@@ -253,7 +253,11 @@ public class TestCaseDetailArea {
 
         if (!((testCaseSection.getContentProvider().isExpectedResult() && testPolicyCmpt.isExpectedResult()) || (testCaseSection
                 .getContentProvider().isInput() && testPolicyCmpt.isInput()))) {
-            return;
+            // check if the parameter wasn't found
+            // if the parameter not exists then the type couldn't be determined, therefore display the content in any case
+            if (testPolicyCmpt.findTestPolicyCmptTypeParameter() != null){
+                return;
+            }
         }
 
         Section section = toolkit.getFormToolkit().createSection(details, 0);

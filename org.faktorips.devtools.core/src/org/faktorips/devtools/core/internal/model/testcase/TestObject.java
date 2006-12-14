@@ -73,9 +73,8 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
         } catch (Exception e) {
             // ignore exception check type of root
         }
-        // parameter not found, use the combined type
         return testCase.isTypeOrDefault(root.getTestParameterName(), 
-                TestParameterType.COMBINED, DEFAULT_TYPE);
+                TestParameterType.INPUT, DEFAULT_TYPE);
     }
 
     /**

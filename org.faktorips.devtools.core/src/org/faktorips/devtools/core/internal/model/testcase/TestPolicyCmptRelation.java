@@ -293,7 +293,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
         ITestPolicyCmptTypeParameter testCaseTypeParam = findTestPolicyCmptTypeParameter();
         if (messageList.getMessageByCode(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND) == null){
     		if (testCaseTypeParam == null){
-    			String text = Messages.TestPolicyCmptRelation_ValidationError_TestCaseTypeParamNotFound;
+    			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_TestCaseTypeParamNotFound, getName());
     			Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
     			messageList.add(msg);	
     		}
