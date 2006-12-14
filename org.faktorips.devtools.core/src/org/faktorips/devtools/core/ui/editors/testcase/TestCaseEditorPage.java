@@ -56,9 +56,10 @@ public class TestCaseEditorPage extends IpsObjectEditorPage {
 	 * {@inheritDoc}
 	 */
 	protected void createPageContent(Composite formBody, UIToolkit toolkit) {
-		formBody.setLayout(createPageLayout(1, false));
-        section = new TestCaseSection(formBody, (TestCaseEditor) getEditor(), toolkit, contentProvider, sectionTitle, sectionDetailTitle, getManagedForm().getForm());
-	}
+        formBody.setLayout(createPageLayout(1, false));
+        section = new TestCaseSection(formBody, (TestCaseEditor)getEditor(), toolkit, contentProvider, sectionTitle,
+                sectionDetailTitle, getManagedForm().getForm(), getEditorSite());
+    }
 	
 	/**
 	 * Returns the corresponding test case content provider.

@@ -28,9 +28,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -99,6 +96,7 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.ProblemImageDescriptor;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.UIController;
@@ -339,6 +337,13 @@ public class TestCaseTypeSection extends IpsSection  {
         }
         
         public void updateDetailButtonStatus(IIpsObjectPart mainSectionObject, IIpsObjectPart currSelectedDetailObject) {
+            if (!isDataChangeable()){
+                toolkit.setDataChangeable(addAtributeButton, false);
+                toolkit.setDataChangeable(removeAttributeButton, false);
+                toolkit.setDataChangeable(moveAttributeUp, false);
+                toolkit.setDataChangeable(moveAttributeDown, false);
+                return;
+            }
             if (section != objectCache.getSection(mainSectionObject)){
                 addAtributeButton.setEnabled(false);
                 removeAttributeButton.setEnabled(false);
@@ -456,7 +461,7 @@ public class TestCaseTypeSection extends IpsSection  {
          * {@inheritDoc}
          */
         public boolean canModify(Object element, String property) {
-            return true;
+            return isDataChangeable();
         }
 
         /**
@@ -606,69 +611,121 @@ public class TestCaseTypeSection extends IpsSection  {
     }
     
     /*
-     * Tree context menu builder
+     * Action to add an element
      */
-    private class MenuBuilder extends MenuManager implements IMenuListener {
-        public void menuAboutToShow(IMenuManager manager) {
-            if (!(treeViewer.getSelection() instanceof IStructuredSelection)) {
-                return;
-            }
-            Object selection = ((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
-            TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection);
-            
-            createAddMenu(manager, actionEnableState.addEnable);
-            createRemoveMenu(manager, actionEnableState.removeEnable);
-            createUpMenu(manager, selection, actionEnableState.upEnable);
-            createDownMenu(manager, selection, actionEnableState.downEnable);
+    private class AddAction extends IpsAction {
+        public AddAction() {
+            super(treeViewer);
+            setText(Messages.TestCaseTypeSection_Button_NewRootParameter);
         }
 
-        private void createAddMenu(IMenuManager manager, boolean enable) {
-            IAction action = new Action(Messages.TestCaseTypeSection_Button_NewRootParameter, Action.AS_PUSH_BUTTON) {
-                public void run() {
-                    addParameterClicked();
-                }
-            };
-            action.setEnabled(enable);
-            manager.add(action);
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean computeEnabledProperty(IStructuredSelection selection) {
+            TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
+            return actionEnableState.addEnable;
         }
-        private void createRemoveMenu(IMenuManager manager, boolean enable) {
-            IAction action = new Action(Messages.TestCaseTypeSection_Button_Remove, Action.AS_PUSH_BUTTON) {
-                public void run() {
-                    try {
-                        removeClicked();
-                    } catch (Exception ex) {
-                        IpsPlugin.logAndShowErrorDialog(ex);
-                    }
-                }
-            };
-            action.setEnabled(enable);
-            manager.add(action);
+
+        /**
+         * {@inheritDoc}
+         */
+        public void run(IStructuredSelection selection) {
+            try {
+                addParameterClicked();
+            }
+            catch (Exception e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
         }
-        private void createUpMenu(IMenuManager manager, final Object selection, boolean enable) {
-            IAction addAction = new Action(Messages.TestCaseTypeSection_Button_Up, Action.AS_PUSH_BUTTON) {
-                public void run() {
-                    try {
-                        moveUpClicked(selection);
-                    } catch (Exception ex) {
-                        IpsPlugin.logAndShowErrorDialog(ex);
-                    }
-                }
-            };
-            addAction.setEnabled(enable);
-            manager.add(addAction); 
+    }
+
+    /*
+     * Action to remove an element
+     */
+    private class RemoveAction extends IpsAction {
+        public RemoveAction() {
+            super(treeViewer);
+            setText(Messages.TestCaseTypeSection_Button_Remove);
         }
-        private void createDownMenu(IMenuManager manager, final Object selection, boolean enable) {
-            IAction addAction = new Action(Messages.TestCaseTypeSection_Button_Down, Action.AS_PUSH_BUTTON) {
-                public void run() {
-                    try {
-                        moveDownClicked(selection);
-                    } catch (Exception ex) {
-                        IpsPlugin.logAndShowErrorDialog(ex);
-                    }
-                }
-            };
-            addAction.setEnabled(enable);
-            manager.add(addAction); 
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean computeEnabledProperty(IStructuredSelection selection) {
+            TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
+            return actionEnableState.addEnable;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void run(IStructuredSelection selection) {
+            try {
+                removeClicked();
+            }
+            catch (Exception e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
+    }
+    /*
+     * Action to move up an element
+     */
+    private class MoveUpAction extends IpsAction {
+        public MoveUpAction() {
+            super(treeViewer);
+            setText(Messages.TestCaseTypeSection_Button_Up);
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean computeEnabledProperty(IStructuredSelection selection) {
+            TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
+            return actionEnableState.addEnable;
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        public void run(IStructuredSelection selection) {
+            try {
+                moveUpClicked(selection);
+            }
+            catch (Exception e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
+    }
+    
+    /*
+     * Action to move down an element
+     */
+    private class MoveDownAction extends IpsAction {
+        public MoveDownAction() {
+            super(treeViewer);
+            setText(Messages.TestCaseTypeSection_Button_Down);
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean computeEnabledProperty(IStructuredSelection selection) {
+            TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
+            return actionEnableState.addEnable;
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        public void run(IStructuredSelection selection) {
+            try {
+                moveDownClicked(selection);
+            }
+            catch (Exception e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
         }
     }
     
@@ -759,7 +816,7 @@ public class TestCaseTypeSection extends IpsSection  {
         treeViewer.collapseAll();
         hookTreeListeners();
         treeViewer.expandToLevel(2);
-        createTreeContextMenu();
+        buildContextMenu();
         
         // Buttons belongs to the tree structure
         Composite buttons = toolkit.getFormToolkit().createComposite(structureComposite);
@@ -987,6 +1044,9 @@ public class TestCaseTypeSection extends IpsSection  {
         }
         
         uiController.updateUI();
+        
+        toolkit.setDataChangeable(detailComposite, isDataChangeable());
+        
         return section;
     }
 
@@ -1421,10 +1481,13 @@ public class TestCaseTypeSection extends IpsSection  {
         });        
     }
 
-    private void createTreeContextMenu() {
+    private void buildContextMenu() {
         MenuManager manager = new MenuManager();
-        manager.setRemoveAllWhenShown(true);
-        manager.addMenuListener(new MenuBuilder());
+        manager.setRemoveAllWhenShown(false);
+        manager.add(new AddAction());
+        manager.add(new RemoveAction());
+        manager.add(new MoveUpAction());
+        manager.add(new MoveDownAction());
         Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
     }
@@ -1765,6 +1828,13 @@ public class TestCaseTypeSection extends IpsSection  {
      * Updates the enable state of the buttons which belongs to the tree
      */
     private void updateTreeButtonStatus(Object object) {
+        if (!isDataChangeable()){
+            toolkit.setDataChangeable(removeButton, false);
+            toolkit.setDataChangeable(addParameterButton, false);
+            toolkit.setDataChangeable(moveUpButton, false);
+            toolkit.setDataChangeable(moveDownButton, false);
+            return;
+        }
         TreeActionEnableState treeActionEnableState = evaluateTreeActionEnableState(object);
         removeButton.setEnabled(treeActionEnableState.removeEnable);
         addParameterButton.setEnabled(treeActionEnableState.addEnable);
@@ -1779,6 +1849,10 @@ public class TestCaseTypeSection extends IpsSection  {
             object = getSelectedObjectInTree();
         }
 
+        if (object == null || !isDataChangeable()){
+            return treeActionEnableState;
+        }
+        
         if (object instanceof ITestPolicyCmptTypeParameter){
             treeActionEnableState.removeEnable = true;
             treeActionEnableState.addEnable = true;
@@ -1786,7 +1860,7 @@ public class TestCaseTypeSection extends IpsSection  {
             treeActionEnableState.downEnable = true;
         } else if (object instanceof ITestParameter){
             treeActionEnableState.removeEnable = true;
-            treeActionEnableState.addEnable = true;
+            treeActionEnableState.addEnable = false;
             treeActionEnableState.upEnable = true;
             treeActionEnableState.downEnable = true;
         } else if (object instanceof TestCaseTypeTreeRootElement){

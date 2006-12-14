@@ -229,6 +229,10 @@ public class TestCaseDetailArea {
                     createPolicyCmptAndRelationSection((ITestPolicyCmpt)testObject, borderedComosite);
                 }
             }
+            
+            if (!testCaseSection.isDataChangeable()){
+                toolkit.setDataChangeable(detailsArea, false);
+            }
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -697,6 +701,9 @@ public class TestCaseDetailArea {
      * Stores the given actual value as expected result.
      */
     void storeActualValueInExpResult(String editFieldUniqueKey, String actualValue, String message) {
+        if (! testCaseSection.isDataChangeable()){
+            return;
+        }
         EditField editField = (EditField)allEditFields.get(editFieldUniqueKey);
         if (editField == null) {
             // edit field not found, try to get the special edit value field

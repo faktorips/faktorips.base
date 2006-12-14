@@ -26,7 +26,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -61,6 +60,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
@@ -95,6 +95,7 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.PdObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
@@ -425,60 +426,98 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     }
     
     /*
-     * Tree context menu builder
+     * Action to add an element
      */
-    private class MenuBuilder extends MenuManager implements IMenuListener {
-        public void menuAboutToShow(IMenuManager manager) {
-            if (!(treeViewer.getSelection() instanceof IStructuredSelection)) {
-                return;
-            }
-            Object selection = ((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
-            TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection);
-            
-            createAddMenu(manager, actionEnableState.addEnable);
-            createRemoveMenu(manager, actionEnableState.removeEnable);
-            createProductCmptMenu(manager, actionEnableState.productCmptEnable);
+    private class AddAction extends IpsAction {
+        public AddAction() {
+            super(treeViewer);
+            setText(Messages.TestCaseSection_ButtonAdd);
         }
 
-        private void createAddMenu(IMenuManager manager, boolean enable) {
-            IAction action = new Action(Messages.TestCaseSection_ButtonAdd, Action.AS_PUSH_BUTTON) {
-                public void run() {
-                    addClicked();
-                }
-            };
-            action.setEnabled(enable);
-            manager.add(action);
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean computeEnabledProperty(IStructuredSelection selection) {
+            TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
+            return actionEnableState.addEnable;
         }
-        private void createRemoveMenu(IMenuManager manager, boolean enable) {
-            IAction action = new Action(Messages.TestCaseSection_ButtonRemove, Action.AS_PUSH_BUTTON) {
-                public void run() {
-                    try {
-                        removeClicked();
-                    } catch (Exception ex) {
-                        IpsPlugin.logAndShowErrorDialog(ex);
-                    }
-                }
-            };
-            action.setEnabled(enable);
-            manager.add(action);
+
+        /**
+         * {@inheritDoc}
+         */
+        public void run(IStructuredSelection selection) {
+            try {
+                addClicked();
+            }
+            catch (Exception e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
         }
-        private void createProductCmptMenu(IMenuManager manager, boolean enable) {
-            IAction action = new Action(Messages.TestCaseSection_ButtonProductCmpt, Action.AS_PUSH_BUTTON) {
-                public void run() {
-                    try {
-                        productCmptClicked();
-                    } catch (Exception ex) {
-                        IpsPlugin.logAndShowErrorDialog(ex);
-                    }
-                }
-            };
-            action.setEnabled(enable);
-            manager.add(action);
+    }
+
+    /*
+     * Action to change the product cmpt
+     */
+    private class ProductCmptAction extends IpsAction {
+        public ProductCmptAction() {
+            super(treeViewer);
+            setText(Messages.TestCaseSection_ButtonProductCmpt);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean computeEnabledProperty(IStructuredSelection selection) {
+            TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
+            return actionEnableState.productCmptEnable;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void run(IStructuredSelection selection) {
+            try {
+                productCmptClicked();
+            }
+            catch (Exception e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
+    }
+
+    /*
+     * Action to remove the product cmpt
+     */
+    private class RemoveAction extends IpsAction {
+        public RemoveAction() {
+            super(treeViewer);
+            setText(Messages.TestCaseSection_ButtonRemove);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean computeEnabledProperty(IStructuredSelection selection) {
+            TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
+            return actionEnableState.removeEnable;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void run(IStructuredSelection selection) {
+            try {
+                removeClicked();
+            }
+            catch (Exception e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
         }
     }
     
     public TestCaseSection(Composite parent, TestCaseEditor editor, UIToolkit toolkit,
-            TestCaseContentProvider contentProvider, final String title, String detailTitle, ScrolledForm form){
+            TestCaseContentProvider contentProvider, final String title, String detailTitle, ScrolledForm form,
+            IEditorSite site) {
         super(parent, Section.NO_TITLE, GridData.FILL_BOTH, toolkit);
         
         this.editor = editor;
@@ -507,7 +546,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         //   if the model changed reset the test run status
         testCase.getIpsModel().addChangeListener(new TestCaseContentChangeListener(this));
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -573,7 +612,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         treeViewer.setLabelProvider(new MessageCueLabelProvider(labelProvider));
         treeViewer.setUseHashlookup(true);
         treeViewer.setInput(testCase);
-        createTreeContextMenu();
+        buildContextMenu();
         
 		// Buttons belongs to the tree structure
 		Composite buttons = toolkit.getFormToolkit().createComposite(structureComposite);
@@ -826,7 +865,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private TreeActionEnableState evaluateTreeActionEnableState(Object selection){
         TreeActionEnableState actionEnableState = new TreeActionEnableState();
 
-        if (selection == null){
+        if (selection == null || ! isDataChangeable()){
             return actionEnableState;
         }
         
@@ -888,6 +927,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 * Update the button state depending on the given object.
 	 */
 	private void updateButtonEnableState(Object selection) {
+        if (!isDataChangeable()){
+            toolkit.setDataChangeable(productCmptButton, false);
+            toolkit.setDataChangeable(removeButton, false);
+            toolkit.setDataChangeable(addButton, false);
+            return;
+        }
         TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection);
         productCmptButton.setEnabled(actionEnableState.productCmptEnable);
 		removeButton.setEnabled(actionEnableState.removeEnable);
@@ -953,13 +998,18 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
             public void keyReleased(KeyEvent e) {
             }
-        });
+        });        
 	}
-
-    private void createTreeContextMenu() {
+    
+    /*
+     * Build the context menu
+     */
+    private void buildContextMenu() {
         MenuManager manager = new MenuManager();
-        manager.setRemoveAllWhenShown(true);
-        manager.addMenuListener(new MenuBuilder());
+        manager.setRemoveAllWhenShown(false);
+        manager.add(new AddAction());
+        manager.add(new RemoveAction());
+        manager.add(new ProductCmptAction());
         Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
     }
@@ -1322,6 +1372,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	}
 
     private void runAndStoreExpectedResultClicked() {
+        if (!isDataChangeable()){
+            return;
+        }
         boolean overwriteExpectedResult = MessageDialog.openQuestion(getShell(), Messages.TestCaseSection_MessageDialog_TitleRunTestAndStoreExpectedResults,
                 Messages.TestCaseSection_MessageDialog_QuestionRunTestAndStoreExpectedResults);
         if (!overwriteExpectedResult) {
@@ -1857,23 +1910,24 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         return form.getContent();
     }
     
-    private void postAddExpectedResultContextMenu(final Control control, final List failureDetails, final boolean isSectionTitleMenu) {
+    private void postAddExpectedResultContextMenu(final Control control,
+            final List failureDetails,
+            final boolean isSectionTitleMenu) {
         postAsyncRunnable(new Runnable() {
             public void run() {
-                if (isDisposed() || control == null)
+                if (isDisposed() || control == null || !isDataChangeable())
                     return;
-                
+
                 if (failureDetails.size() == 0)
                     return;
-                
-                EditFieldMenu menuMgr = new EditFieldMenu(
-                        "#PopupMenu", failureDetails); //$NON-NLS-1$
+
+                EditFieldMenu menuMgr = new EditFieldMenu("#PopupMenu", failureDetails); //$NON-NLS-1$
                 menuMgr.setRemoveAllWhenShown(true);
                 menuMgr.addMenuListener(menuMgr);
-                
+
                 Menu menu = menuMgr.createContextMenu(control);
                 control.setMenu(menu);
-                if (isSectionTitleMenu){
+                if (isSectionTitleMenu) {
                     sectionTitleContextMenu = menu;
                 }
             }
@@ -1881,8 +1935,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     }
 
 	/**
-	 * {@inheritDoc}
-	 */	
+     * {@inheritDoc}
+     */	
 	public void testFinished(String qualifiedTestName) {
 		if (! canListenToTestRun(qualifiedTestName)){
 			return;
