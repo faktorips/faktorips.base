@@ -39,7 +39,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionDelegate;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.FixDifferencesToModelSupport;
+import org.faktorips.devtools.core.model.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -58,8 +58,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
      * {@inheritDoc}
      */
     public void dispose() {
-        // TODO Auto-generated method stub
-
+        // nothing to do
     }
 
     /**
@@ -211,8 +210,8 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
             if(element instanceof IIpsSrcFile){
                 element = ((IIpsSrcFile)element).getIpsObject();
             }
-            if(element instanceof FixDifferencesToModelSupport){
-                FixDifferencesToModelSupport ipsElementToFix = (FixDifferencesToModelSupport)element;
+            if(element instanceof IFixDifferencesToModelSupport){
+                IFixDifferencesToModelSupport ipsElementToFix = (IFixDifferencesToModelSupport)element;
                 if(ipsElementToFix.containsDifferenceToModel()){
                     ipsElementsToFix.add(ipsElementToFix);
                 }

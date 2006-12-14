@@ -13,14 +13,15 @@
 
 package org.faktorips.devtools.core.ui.wizards.fixdifferences;
 
-import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IFixDifferencesToModelSupport;
 
 /**
  * 
@@ -32,23 +33,31 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
 
     public FixDifferencesToModelWizard(Set ipsElementsToFix) {
         this.ipsElementsToFix = ipsElementsToFix;
-    }
-    public FixDifferencesToModelWizard() {
-        this.ipsElementsToFix = new HashSet();
         setWindowTitle(Messages.FixDifferencesToModelWizard_Title);
-        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewIpsPackageWizard.png")); //$NON-NLS-1$
+        this
+                .setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor(
+                        "wizards/NewIpsPackageWizard.png")); //$NON-NLS-1$
     }
 
     public boolean performFinish() {
-        // TODO Auto-generated method stub
-        return false;
+        IFixDifferencesToModelSupport[] elementsToFix = elementSelectionPage.getElementsToFix();
+        try {
+            for (int i = 0; i < elementsToFix.length; i++) {
+                elementsToFix[i].fixAllDifferencesToModel();
+            }
+        }
+        catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            return false;
+        }
+        return true;
     }
 
     public void init(IWorkbench workbench, IStructuredSelection selection) {
-        // TODO Auto-generated method stub
-        
+        // initialization is handled in the calling action, which transforms the selection to the
+        // needed set.
     }
-    
+
     public void addPages() {
         super.addPages();
         elementSelectionPage = new ElementSelectionPage(ipsElementsToFix);

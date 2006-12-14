@@ -27,7 +27,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.FixDifferencesToModelSupport;
+import org.faktorips.devtools.core.model.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.IIpsElement;
 
 /**
@@ -75,11 +75,11 @@ public class ElementSelectionPage extends WizardPage {
     /**
      * @return all IIpsElements to be fixed.
      */
-    protected FixDifferencesToModelSupport[] getElementsToFix() {
+    protected IFixDifferencesToModelSupport[] getElementsToFix() {
         Object[] checked = treeViewer.getCheckedElements();
-        FixDifferencesToModelSupport[] elements = new FixDifferencesToModelSupport[checked.length];
+        IFixDifferencesToModelSupport[] elements = new IFixDifferencesToModelSupport[checked.length];
         for (int i = 0; i < elements.length; i++) {
-            elements[i] = (FixDifferencesToModelSupport)checked[i];
+            elements[i] = (IFixDifferencesToModelSupport)checked[i];
         }
         return elements;
     }
