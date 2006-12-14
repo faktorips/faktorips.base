@@ -75,24 +75,21 @@ public class RuleFunctionsControl extends EditTableControl {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createContentProvider()
+     * {@inheritDoc}
      */
     protected IStructuredContentProvider createContentProvider() {
         return new ContentProvider();
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createLabelProvider()
+     * {@inheritDoc}
      */
     protected ILabelProvider createLabelProvider() {
         return new TableLabelProvider();
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createTableColumns(org.eclipse.swt.widgets.TableContentsGeneration)
+     * {@inheritDoc}
      */
     protected void createTableColumns(Table table) {
 		new TableColumn(table, SWT.NONE).setResizable(false);
@@ -100,8 +97,7 @@ public class RuleFunctionsControl extends EditTableControl {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.EditTableControl#getColumnPropertyNames()
+     * {@inheritDoc}
      */
     protected String[] getColumnPropertyNames() {
         return new String[]{Messages.RuleFunctionsControl_titleColum1, Messages.RuleFunctionsControl_titleColumn2};
@@ -116,8 +112,7 @@ public class RuleFunctionsControl extends EditTableControl {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createCellEditors()
+     * {@inheritDoc}
      */
     protected UnfocusableTextCellEditor[] createCellEditors() {
         UnfocusableTextCellEditor[] editors = new UnfocusableTextCellEditor[2];
@@ -134,16 +129,14 @@ public class RuleFunctionsControl extends EditTableControl {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.EditTableControl#createCellModifier()
+     * {@inheritDoc}
      */
     protected ICellModifier createCellModifier() {
         return new CellModifier();
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.EditTableControl#addElement()
+     * {@inheritDoc}
      */
     public Object addElement() {
         String newFct = ""; //$NON-NLS-1$
@@ -152,8 +145,7 @@ public class RuleFunctionsControl extends EditTableControl {
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.EditTableControl#removeElement(int)
+     * {@inheritDoc}
      */
     public void removeElement(int index) {
         getRule().removeBusinessFunction(index);

@@ -166,8 +166,6 @@ public class RuleEditDialog extends IpsPartEditDialog {
         ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
         Checkbox appliedToAllCheckbox = uiToolkit.createCheckbox(workArea, Messages.RuleEditDialog_labelApplyInAllBusinessFunctions);
         rfControl = new RuleFunctionsControl((IValidationRule)super.getIpsPart(), workArea);
-        rfControl.setDataChangeable(isDataChangeable());
-        rfControl.initControl();
         appliedToAllField = new CheckboxField(appliedToAllCheckbox);
         
         return workArea;
@@ -179,9 +177,7 @@ public class RuleEditDialog extends IpsPartEditDialog {
         Checkbox specifiedInSrc = uiToolkit.createCheckbox(workArea, Messages.RuleEditDialog_labelSpecifiedInSrc);
         specifiedInSrcField = new CheckboxField(specifiedInSrc);
         
-        ValidatedAttributesControl validatedAttributesControl = new ValidatedAttributesControl((IValidationRule)super.getIpsPart(), workArea);
-        validatedAttributesControl.setDataChangeable(isDataChangeable());
-        validatedAttributesControl.initControl();
+        new ValidatedAttributesControl((IValidationRule)super.getIpsPart(), workArea);
         return workArea;
     }
 

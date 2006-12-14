@@ -59,17 +59,15 @@ public abstract class EditTableControl extends Composite implements IDataChangea
     
     private UIToolkit uiToolkit = new UIToolkit(null);
 
-    private Button fAddButton;
-	private Button fRemoveButton;
-	private Button fUpButton;
-	private Button fDownButton;
+    private Button addButton;
+	private Button removeButton;
+	private Button upButton;
+	private Button downButton;
 	
 	private Table table;
-	private TableViewer fTableViewer;
+	private TableViewer tableViewer;
     private boolean dataChangeable;
     
-    private Object modelObject;
-	
     public EditTableControl(
 	        Object modelObject,
             Composite parent, 
@@ -93,24 +91,15 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 			tableLabel.setText(label);
 		}
 
-        this.modelObject = modelObject;
-	}
-    
-    /**
-     * Creates the compoiste's controls. This method has to be called by this
-     * controls client, after the control has been configured via the appropiate
-     * setter method, e.g. <code>setDataChangeable(boolean)</code>
-     */
-    public void initControl() {
         createTable(this);
         createButtonComposite(this);
-        fTableViewer.setInput(modelObject);
-    }
+        tableViewer.setInput(modelObject);
+	}
     
     protected abstract void initModelObject(Object modelObject);
     
     public void refresh() {
-        fTableViewer.refresh();
+        tableViewer.refresh();
     }
 
     protected Table getTable() {
@@ -118,7 +107,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
     }
     
     protected TableViewer getTableViewer() {
-        return fTableViewer;
+        return tableViewer;
     }
 	
 	private void createTable(Composite parent) {
@@ -133,12 +122,12 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 		gd.widthHint= 40;
 		layouter.setLayoutData(gd);
 
-		fTableViewer= new TableViewer(table);
-		fTableViewer.setUseHashlookup(true);
-		fTableViewer.setContentProvider(createContentProvider());
-		fTableViewer.setLabelProvider(createLabelProvider());
+		tableViewer= new TableViewer(table);
+		tableViewer.setUseHashlookup(true);
+		tableViewer.setContentProvider(createContentProvider());
+		tableViewer.setLabelProvider(createLabelProvider());
 		
-		fTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				updateButtonsEnabledState();
 			}
@@ -161,17 +150,17 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 			}
 		});
 
-		fTableViewer.setColumnProperties(getColumnPropertyNames());
+		tableViewer.setColumnProperties(getColumnPropertyNames());
         if (dataChangeable) {
             UnfocusableTextCellEditor[] editors = createCellEditors();
             if (editors != null && editors.length != table.getColumnCount()) {
                 throw new RuntimeException("Number of editors must be equal to the number of table columns!"); //$NON-NLS-1$
             }
-            fTableViewer.setCellEditors(editors);
+            tableViewer.setCellEditors(editors);
             if (getColumnPropertyNames().length != table.getColumnCount()) {
                 throw new RuntimeException("Number of ColumnProperties must be equal to the number of table columns!"); //$NON-NLS-1$
             }
-            fTableViewer.setCellModifier(createCellModifier());
+            tableViewer.setCellModifier(createCellModifier());
 
             for (int i = 0; i < editors.length; i++) {
                 if (editors[i] != null) {
@@ -200,7 +189,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 						break;
 					
 					case SWT.TRAVERSE_ESCAPE :
-						fTableViewer.cancelEditing();
+						tableViewer.cancelEditing();
 						e.detail= SWT.TRAVERSE_NONE;
 						break;
 					
@@ -301,8 +290,8 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 			return;
 		int nextColumn= column;
 		do {
-			fTableViewer.editElement(selected[0], nextColumn);
-			if (fTableViewer.isCellEditorActive())
+			tableViewer.editElement(selected[0], nextColumn);
+			if (tableViewer.isCellEditorActive())
 				return;
 			nextColumn= nextColumn(nextColumn);
 		} while (nextColumn != column);
@@ -314,8 +303,8 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 			return;
 		int prevColumn= column;
 		do {
-			fTableViewer.editElement(selected[0], prevColumn);
-			if (fTableViewer.isCellEditorActive())
+			tableViewer.editElement(selected[0], prevColumn);
+			if (tableViewer.isCellEditorActive())
 			    return;
 			prevColumn = prevColumn(prevColumn);
 		} while (prevColumn != column);
@@ -330,7 +319,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 	}
 	
 	private Object[] getSelectedElements() {
-		ISelection selection= fTableViewer.getSelection();
+		ISelection selection= tableViewer.getSelection();
 		if (selection == null)
 			return new Object[0];
 
@@ -351,11 +340,11 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 		gl.marginWidth= 0;
 		buttonComposite.setLayout(gl);
 
-		fAddButton= createAddButton(buttonComposite);	
-		fRemoveButton= createRemoveButton(buttonComposite);
+		addButton= createAddButton(buttonComposite);	
+		removeButton= createRemoveButton(buttonComposite);
 		addSpacer(buttonComposite);
-		fUpButton= createMoveButton(buttonComposite, "Move up", true); //$NON-NLS-1$
-		fDownButton= createMoveButton(buttonComposite, "Move down", false); //$NON-NLS-1$
+		upButton= createMoveButton(buttonComposite, "Move up", true); //$NON-NLS-1$
+		downButton= createMoveButton(buttonComposite, "Move down", false); //$NON-NLS-1$
 
 		updateButtonsEnabledState();
 	}
@@ -369,16 +358,16 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 
 	private void updateButtonsEnabledState() {
         if (!dataChangeable){
-            uiToolkit.setDataChangeable(fAddButton, false);
-            uiToolkit.setDataChangeable(fRemoveButton, false);
-            uiToolkit.setDataChangeable(fUpButton, false);
-            uiToolkit.setDataChangeable(fDownButton, false);
+            uiToolkit.setDataChangeable(addButton, false);
+            uiToolkit.setDataChangeable(removeButton, false);
+            uiToolkit.setDataChangeable(upButton, false);
+            uiToolkit.setDataChangeable(downButton, false);
             return;
         }
-		fAddButton.setEnabled(true);	
-		fRemoveButton.setEnabled(table.getSelectionCount() != 0);
-		fUpButton.setEnabled(table.getSelectionCount() != 0);
-		fDownButton.setEnabled(table.getSelectionCount() != 0);
+		addButton.setEnabled(true);	
+		removeButton.setEnabled(table.getSelectionCount() != 0);
+		upButton.setEnabled(table.getSelectionCount() != 0);
+		downButton.setEnabled(table.getSelectionCount() != 0);
 	}
 
 	private Button createAddButton(Composite buttonComposite) {
@@ -388,8 +377,8 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 			    addElement();
-				fTableViewer.refresh();
-				fTableViewer.getControl().setFocus();
+				tableViewer.refresh();
+				tableViewer.getControl().setFocus();
 				int row= table.getItemCount() - 1;
 				table.setSelection(row);
 				updateButtonsEnabledState();
@@ -412,8 +401,8 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 				restoreSelection(indices[0]);
 			}
 			private void restoreSelection(int index) {
-				fTableViewer.refresh();
-				fTableViewer.getControl().setFocus();
+				tableViewer.refresh();
+				tableViewer.getControl().setFocus();
 				int itemCount= table.getItemCount();
 				if (itemCount != 0 && index >= itemCount) {
 					index= itemCount - 1;
@@ -443,9 +432,9 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 				} else {
 				    newSelection = moveDown(table.getSelectionIndices());
 				}
-				fTableViewer.refresh();
+				tableViewer.refresh();
 				table.setSelection(newSelection);
-				fTableViewer.getControl().setFocus();
+				tableViewer.getControl().setFocus();
 			}
 		});
 		return button;
@@ -514,8 +503,8 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 		}
 		
 		public void fireModifyEvent(Object newValue, final int property) {
-			fTableViewer.getCellModifier().modify(
-					((IStructuredSelection) fTableViewer.getSelection()).getFirstElement(),
+			tableViewer.getCellModifier().modify(
+					((IStructuredSelection) tableViewer.getSelection()).getFirstElement(),
 					getProperty(property), newValue);
 		}
 		
@@ -534,8 +523,8 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 					if (fSaveNextModification) {
 						fSaveNextModification= false;
 						final String newValue= text.getText();
-						fTableViewer.getCellModifier().modify(
-								((IStructuredSelection) fTableViewer.getSelection()).getFirstElement(),
+						tableViewer.getCellModifier().modify(
+								((IStructuredSelection) tableViewer.getSelection()).getFirstElement(),
 								getProperty(property), newValue);
 						editColumnOrNextPossible(property);
 					}
@@ -549,6 +538,11 @@ public abstract class EditTableControl extends Composite implements IDataChangea
      */
     public void setDataChangeable(boolean changeable) {
         this.dataChangeable = changeable;
+        addButton.setEnabled(changeable);
+        removeButton.setEnabled(changeable);
+        downButton.setEnabled(changeable);
+        upButton.setEnabled(changeable);
+        table.setEnabled(changeable);
     }
 
     /**
@@ -557,4 +551,5 @@ public abstract class EditTableControl extends Composite implements IDataChangea
     public boolean isDataChangeable() {
         return dataChangeable;
     }
+    
 }
