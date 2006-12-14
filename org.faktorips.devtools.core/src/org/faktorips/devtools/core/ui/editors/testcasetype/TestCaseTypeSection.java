@@ -654,7 +654,7 @@ public class TestCaseTypeSection extends IpsSection  {
          */
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
-            return actionEnableState.addEnable;
+            return actionEnableState.removeEnable;
         }
 
         /**
@@ -683,7 +683,7 @@ public class TestCaseTypeSection extends IpsSection  {
          */
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
-            return actionEnableState.addEnable;
+            return actionEnableState.upEnable;
         }
         
         /**
@@ -713,7 +713,7 @@ public class TestCaseTypeSection extends IpsSection  {
          */
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
-            return actionEnableState.addEnable;
+            return actionEnableState.downEnable;
         }
         
         /**
