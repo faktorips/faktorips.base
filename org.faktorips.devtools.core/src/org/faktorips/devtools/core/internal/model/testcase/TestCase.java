@@ -228,7 +228,8 @@ public class TestCase extends IpsObject implements ITestCase {
         if (testCaseTypeFound != null) {
             return new TestCaseTestCaseTypeDelta(this, testCaseTypeFound);
         }
-        throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCase_Error_TestCaseTypeNotFound, testCaseType)));
+        // type not found, therefore no delta could be computed
+        return null;
     }
 
     /**
@@ -584,7 +585,7 @@ public class TestCase extends IpsObject implements ITestCase {
 
         ITestCaseType testCaseTypeFound = findTestCaseType();
         if (testCaseTypeFound == null) {
-            throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCase_Error_TestCaseTypeNotFound, testCaseType)));
+            return null;
         }
 
         // Create a helper path obejct to search the given string path
@@ -762,8 +763,10 @@ public class TestCase extends IpsObject implements ITestCase {
     public IValidationRule[] getTestRuleCandidates() throws CoreException {
         Set result = new HashSet();
         ITestCaseType testCaseTypeFound = findTestCaseType();
-        result.addAll(Arrays.asList(testCaseTypeFound.getTestRuleCandidates()));
-        result.addAll(getTestCaseTestRuleCandidates());
+        if (testCaseTypeFound != null){
+            result.addAll(Arrays.asList(testCaseTypeFound.getTestRuleCandidates()));
+            result.addAll(getTestCaseTestRuleCandidates());
+        }
         return (IValidationRule[]) result.toArray(new IValidationRule[result.size()]);
     }
     

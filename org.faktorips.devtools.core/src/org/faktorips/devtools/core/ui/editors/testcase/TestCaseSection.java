@@ -1766,7 +1766,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         postResetTestRunStatus();
 
         // if in the meanwhile the test case type changed check for inconsistence between test case
-        // and test case type
+        // and test case type, only if the data is changeable
         if (testCaseTypeChanged) {
             testCaseTypeChanged = false;
             postResetTestRunStatus();
@@ -2176,6 +2176,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 public void run() {
                     if (isDisposed())
                         return;
+                    if ( ! isDataChangeable()){
+                        return;
+                    }
                     performInconsistenciesCheck();
                 }
             });
@@ -2187,7 +2190,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private void performInconsistenciesCheck(){
         try {
             ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
-            if (!delta.isEmpty()){
+            if (delta != null && !delta.isEmpty()){
                 TestCaseDeltaDialog dialog = new TestCaseDeltaDialog(delta, getShell());
                 dialog.setBlockOnOpen(true);
                 if ((dialog.open() == TestCaseDeltaDialog.OK)){

@@ -33,7 +33,7 @@ public class TestCaseEditor extends IpsObjectEditor {
      */
     protected void addPages() {
         try {
-            if (getTestCase().findTestCaseType() == null) {
+            if (getTestCase().findTestCaseType() == null && Boolean.TRUE.equals(isDataChangeable())) {
                 String msg = NLS.bind(Messages.TestCaseEditor_Information_TemplateNotFound, getTestCase()
                         .getTestCaseType());
                 SetTemplateDialog dialog = new SetTemplateDialog(getTestCase(), getSite().getShell(), msg);
