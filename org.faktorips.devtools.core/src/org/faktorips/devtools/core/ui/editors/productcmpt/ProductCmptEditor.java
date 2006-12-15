@@ -222,9 +222,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
      * {@inheritDoc}
      */
 	public void propertyChange(PropertyChangeEvent event) {
-        if (!active) {
-			return;
-		}
 		String property = event.getProperty();
 		if (property.equals(IpsPreferences.WORKING_DATE)) {
 			activeGenerationManuallySet = false;
