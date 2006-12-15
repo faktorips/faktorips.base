@@ -192,13 +192,11 @@ public class EnumValueSetChooser extends ListChooser {
 		List result = new ArrayList();
 		for (int i = 0; i < ids.length; i++) {
 			String name;
-			if (type != null && type.isSupportingNames()) {
-                name = IpsPlugin.getDefault().getIpsPreferences().getFormatedEnumText(ids[i],
-                        type.getValueName(ids[i]));
+			if (type != null) {
+                name = IpsPlugin.getDefault().getIpsPreferences().formatValue(type, ids[i]);
 			} else {
 				name = ids[i];
 			}
-
 			if (name == null) {
 				name = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
 			}

@@ -502,25 +502,25 @@ public class UIToolkit {
 	}
 
     /**
-     * Creates a combo containing the given <code>EnumDatatype</code>'s values as items. If the
-     * given <code>EnumDatatype</code> supports names, the values' names and ids are used as
-     * defined in the properties (e.g. "[name] ([id])") otherwise the values' IDs are used as items
-     * in the combo.
+     * Creates a combo containing the given <code>EnumDatatype</code>'s values as items. The
+     * formatting is done based on the user's preferences.
+     *
+     * @see org.faktorips.devtools.core.IpsPreferences#formatValue(EnumDatatype, String)
+     * @see org.faktorips.devtools.core.IpsPreferences#getEnumTypeDisplay()
      */
-    public Combo createCombo(Composite parent, EnumDatatype enumValues) {
+    public Combo createCombo(Composite parent, EnumDatatype datatype) {
         Combo newCombo = createCombo(parent);
-        if (enumValues.isSupportingNames()) {
-            String[] ids = enumValues.getAllValueIds(true);
+        if (datatype.isSupportingNames()) {
+            String[] ids = datatype.getAllValueIds(true);
             ArrayList nameList = new ArrayList(ids.length);
             for (int i = 0; i < ids.length; i++) {
-                String formatedText = IpsPlugin.getDefault().getIpsPreferences().getFormatedEnumText(ids[i],
-                        enumValues.getValueName(ids[i]));
+                String formatedText = IpsPlugin.getDefault().getIpsPreferences().formatValue(datatype, ids[i]);
                 nameList.add(formatedText);
             }
             setComboValues(newCombo, (String[])nameList.toArray(new String[ids.length]));
             return newCombo;
         }
-        setComboValues(newCombo, enumValues.getAllValueIds(true));
+        setComboValues(newCombo, datatype.getAllValueIds(true));
         return newCombo;
     }
 
@@ -573,9 +573,8 @@ public class UIToolkit {
 
 		String[] values = new String[enumValueSet.size()];
         for (int i = 0; i < values.length; i++) {
-            if (dataType != null && dataType.isSupportingNames()) {
-                String formatedText = IpsPlugin.getDefault().getIpsPreferences().getFormatedEnumText(
-                        enumValueSet.getValue(i), dataType.getValueName(enumValueSet.getValue(i)));
+            if (dataType != null) {
+                String formatedText = IpsPlugin.getDefault().getIpsPreferences().formatValue(dataType, enumValueSet.getValue(i));
                 values[i] = formatedText;
             }
             else {

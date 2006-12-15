@@ -40,6 +40,9 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class BooleanControlFactory extends ValueDatatypeControlFactory {
     
+    public final static String TRUE_REPRESENATION = Messages.BooleanControlFactory_Yes;
+    public final static String FALSE_REPRESENTATION = Messages.BooleanControlFactory_No;
+    
 	public BooleanControlFactory() {
 		super();
 	}
@@ -55,7 +58,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 	 * {@inheritDoc}
 	 */
 	public EditField createEditField(UIToolkit toolkit, Composite parent, ValueDatatype datatype, IValueSet valueSet) {
-		return new BooleanComboField((Combo)createControl(toolkit, parent, datatype, valueSet), Messages.BooleanControlFactory_Yes, Messages.BooleanControlFactory_No);
+		return new BooleanComboField((Combo)createControl(toolkit, parent, datatype, valueSet), TRUE_REPRESENATION, FALSE_REPRESENTATION);
 
 	}
 

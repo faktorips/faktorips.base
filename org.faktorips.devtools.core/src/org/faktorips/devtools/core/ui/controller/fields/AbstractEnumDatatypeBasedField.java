@@ -186,8 +186,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	public String getValueName(String id) {
 		String noNullId = (String)super.prepareObjectForSet(id);
         if (datatype instanceof EnumDatatype && ((EnumDatatype)datatype).isSupportingNames()) {
-            return IpsPlugin.getDefault().getIpsPreferences().getFormatedEnumText(noNullId,
-                    ((EnumDatatype)datatype).getValueName(noNullId));
+            return IpsPlugin.getDefault().getIpsPreferences().formatValue(datatype, noNullId);
         }
         else {
             return noNullId;

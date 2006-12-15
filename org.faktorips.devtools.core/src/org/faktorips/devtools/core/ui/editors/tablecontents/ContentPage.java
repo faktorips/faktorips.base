@@ -192,20 +192,20 @@ public class ContentPage extends IpsObjectEditorPage {
             tableViewer.setColumnProperties(columnProperties); 
 
             // column properties must be set before cellEditors are created.
+            ValueDatatype[] datatypes = new ValueDatatype[getTableContents().getNumOfColumns()];
             if (tableStructure!=null) {
                 CellEditor[] editors= new CellEditor[tableStructure.getNumOfColumns()];
                 for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
                     ValueDatatype dataType = tableStructure.getColumn(i).findValueDatatype();
                     ValueDatatypeControlFactory factory= IpsPlugin.getDefault().getValueDatatypeControlFactory(dataType);
                     TableCellEditor cellEditor= factory.createCellEditor(toolkit, dataType, null, tableViewer, i);
-                    if (cellEditor.isMappedValue()){
-                        labelProvider.addMappedEditor(i, cellEditor);
-                    }
                     cellEditor.setRowCreating(true);
                     editors[i]= cellEditor;
+                    datatypes[i] = dataType;
                 }
                 tableViewer.setCellEditors(editors);
             }
+            labelProvider.setValueDatatypes(datatypes);
             tableViewer.setSorter(new TableSorter());
             tableViewer.addSelectionChangedListener(new RowDeletor());
 
