@@ -43,7 +43,7 @@ public class FormulaEditControl extends TextButtonControl implements IDataChange
     
     private UIToolkit uiToolkit;
     
-    private boolean dataChangeable;
+    private boolean dataChangeable = true;
     
 	public FormulaEditControl(Composite parent, UIToolkit toolkit, IConfigElement configElement, Shell shell,
             IpsSection parentSection) {

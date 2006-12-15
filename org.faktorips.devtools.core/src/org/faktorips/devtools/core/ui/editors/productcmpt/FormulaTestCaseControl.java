@@ -904,8 +904,6 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     public void setDataChangeable(boolean changeable) {
         this.dataChangeable = changeable;
         
-        createTableCellModifier(uiToolkit);
-        
         // trigger update state of buttons
         selectionFormulaTestCaseChanged(getSelectedFormulaTestCase());
         

@@ -145,6 +145,12 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
                 if (columnIndex == IDX_IDENTIFIER){
                     return getTextInNullPresentationIfNull(((IFormulaTestInputValue)element).getIdentifier());
                 } else if (columnIndex == IDX_VALUE_COLUMN){
+                        try {
+                            ValueDatatype vd = (ValueDatatype) (((IFormulaTestInputValue)element).findDatatypeOfFormulaParameter());
+                            return IpsPlugin.getDefault().getIpsPreferences().formatValue(vd, ((IFormulaTestInputValue)element).getValue());
+                        } catch (CoreException e) {
+                            // ignore exception, return the unformated value
+                        }
                     return getTextInNullPresentationIfNull(((IFormulaTestInputValue)element).getValue());
                 }
             }
