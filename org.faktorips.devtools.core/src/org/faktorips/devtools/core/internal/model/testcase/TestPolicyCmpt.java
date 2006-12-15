@@ -248,9 +248,9 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
      */
 	public Image getImage() {
         if (StringUtils.isNotEmpty(productCmpt)){
-            return IpsObjectType.PRODUCT_CMPT.getImage();
+            return IpsObjectType.PRODUCT_CMPT.getEnabledImage();
         } else {
-            return IpsObjectType.POLICY_CMPT_TYPE.getImage();
+            return IpsObjectType.POLICY_CMPT_TYPE.getEnabledImage();
         }
     }
 

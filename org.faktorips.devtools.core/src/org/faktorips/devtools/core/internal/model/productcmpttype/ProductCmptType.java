@@ -268,7 +268,7 @@ public class ProductCmptType implements IProductCmptType {
 	 * {@inheritDoc}
 	 */
 	public Image getImage() {
-		return getIpsObjectType().getImage();
+		return getIpsObjectType().getEnabledImage();
 	}
 
 	/**

@@ -292,9 +292,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
     public Image getImage() {
         if (StringUtils.isEmpty(relation))
             if (requiresProductCmpt)
-                return IpsObjectType.PRODUCT_CMPT.getImage();
+                return IpsObjectType.PRODUCT_CMPT.getEnabledImage();
             else
-                return IpsObjectType.POLICY_CMPT_TYPE.getImage();
+                return IpsObjectType.POLICY_CMPT_TYPE.getEnabledImage();
         
         if (!isRoot()) {
             try {

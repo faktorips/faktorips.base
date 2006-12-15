@@ -87,7 +87,7 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
         for (int i = 0; i < types.length; i++) {
             TableItem item = new TableItem(filterList, SWT.NONE);
             item.setText(types[i].getName());
-            item.setImage(types[i].getImage());
+            item.setImage(types[i].getEnabledImage());
         }
         handleFilterSelectionChanged();
     }

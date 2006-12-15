@@ -27,11 +27,9 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
@@ -59,21 +57,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 
 	private DescriptionPage descriptionPage;
 
-	/**
-	 * Flag that indicates whether this editor is currently active or not.
-	 */
-	private boolean active = false;
-
-	/*
-	 * Image used in editor titlebar if editor is enabled
-	 */ 
-	private Image enabledImage;
-
-	/*
-	 * Image used in editor titlebar if editor is disabled
-	 */
-	private Image disabledImage;
-
 	// flag is true if the user has manually chosen the active generation
     private boolean activeGenerationManuallySet = false;
 	
@@ -86,8 +69,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	public ProductCmptEditor() {
 		super();
-		enabledImage = IpsPlugin.getDefault().getImage("ProductCmpt.gif"); //$NON-NLS-1$
-		disabledImage = IpsPlugin.getDefault().getImage("lockedProductCmpt.gif"); //$NON-NLS-1$
 	}
 
 	/**
@@ -156,22 +137,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void partDeactivated(IWorkbenchPartReference partRef) {
-		super.partDeactivated(partRef);
-        IpsPlugin.getDefault().getIpsPreferences().removeChangeListener(this);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void partClosed(IWorkbenchPartReference partRef) {
-		super.partClosed(partRef);
-		IpsPlugin.getDefault().getIpsPreferences().removeChangeListener(this);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	protected String getUniformPageTitle() {
 		if (!isSrcFileUsable()) {
 			String filename = getIpsSrcFile()==null?"null":getIpsSrcFile().getName(); //$NON-NLS-1$
@@ -189,8 +154,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	private void updateChosenActiveGeneration() {
 		IProductCmpt prod = getProductCmpt();
 		GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-		IProductCmptGeneration generation = (IProductCmptGeneration) prod
-				.getGenerationByEffectiveDate(workingDate);
+		IProductCmptGeneration generation = (IProductCmptGeneration)prod.getGenerationByEffectiveDate(workingDate);
 
         if (generation!=null) {
             workingDateUsedInEditor = workingDate;
@@ -258,18 +222,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return false;
-        }
-    }
-
-        /**
-     * {@inheritDoc}
-     */
-    protected void setDataChangeable(boolean changeable) {
-        super.setDataChangeable(changeable);
-        if (changeable) {
-            this.setTitleImage(enabledImage);
-        } else {
-            this.setTitleImage(disabledImage);
         }
     }
 

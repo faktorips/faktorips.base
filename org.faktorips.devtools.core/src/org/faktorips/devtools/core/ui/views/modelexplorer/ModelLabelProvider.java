@@ -48,7 +48,7 @@ public class ModelLabelProvider implements ILabelProvider {
             // a different icon
             IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement((IResource)element);
             if (ipsElement != null && ipsElement instanceof IIpsSrcFile){
-                return IpsObjectType.IPS_SOURCE_FILE.getImage();
+                return IpsObjectType.IPS_SOURCE_FILE.getEnabledImage();
             }
             
 	        IWorkbenchAdapter adapter= null;

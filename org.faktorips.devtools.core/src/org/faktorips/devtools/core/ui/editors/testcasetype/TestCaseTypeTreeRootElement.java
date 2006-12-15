@@ -38,7 +38,7 @@ class TestCaseTypeTreeRootElement {
     }
    
     public Image getImgage(){
-        return IpsObjectType.TEST_CASE_TYPE.getImage();
+        return IpsObjectType.TEST_CASE_TYPE.getEnabledImage();
     }
 
     /**

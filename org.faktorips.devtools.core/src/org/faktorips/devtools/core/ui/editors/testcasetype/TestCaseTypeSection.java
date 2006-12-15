@@ -985,7 +985,7 @@ public class TestCaseTypeSection extends IpsSection  {
         if (errorMessageText.length()>0){
             FormToolkit toolkit = new FormToolkit(form.getParent().getDisplay());
             FormText formText = toolkit.createFormText(section, false);
-            formText.setImage("imagepccmpttype", getImageForMsgList(IpsObjectType.POLICY_CMPT_TYPE.getImage(), msgList)); //$NON-NLS-1$
+            formText.setImage("imagepccmpttype", getImageForMsgList(IpsObjectType.POLICY_CMPT_TYPE.getEnabledImage(), msgList)); //$NON-NLS-1$
             formText.setImage("imagerelation", getImageForMsgList(IpsPlugin.getDefault().getImage("Relation.gif"), msgList)); //$NON-NLS-1$ //$NON-NLS-2$
             formText.setColor("red", getDisplay().getSystemColor(SWT.COLOR_DARK_RED)); //$NON-NLS-1$
             formText.setText("<form>" + errorMessageText + "</form>", true, false); //$NON-NLS-1$ //$NON-NLS-2$

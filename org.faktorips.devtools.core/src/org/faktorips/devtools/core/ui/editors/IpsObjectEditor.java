@@ -80,10 +80,6 @@ public abstract class IpsObjectEditor extends FormEditor
     // dirty flag
     private boolean dirty = false;
 
-    // Activates or deactivates the refreshing of this editor
-    private boolean active = false;
-
-    // 
     private Boolean contentChangeable;
     
     // the editor's ISelectionProvider 
@@ -163,8 +159,6 @@ public abstract class IpsObjectEditor extends FormEditor
         }
         
         site.getPage().addPartListener(this);
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
 
         selectionProviderDispatcher = new SelectionProviderDispatcher();
         site.setSelectionProvider(selectionProviderDispatcher);
@@ -226,7 +220,7 @@ public abstract class IpsObjectEditor extends FormEditor
      * <code>false</code>.
      */
     protected void refresh() {
-        if (!active && !ipsSrcFile.exists()) {
+        if (!ipsSrcFile.exists()) {
             return;
         }
         try {
@@ -234,9 +228,7 @@ public abstract class IpsObjectEditor extends FormEditor
             // it's state is is synchronized with the enclosing resource.
             // otherwise if some part of the ui keeps a reference to the ips object, it won't contain
             // the correct state.
-            if (ipsSrcFile.exists()){
-                ipsSrcFile.getIpsObject(); 
-            }
+            ipsSrcFile.getIpsObject(); 
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
@@ -284,6 +276,9 @@ public abstract class IpsObjectEditor extends FormEditor
      */
     protected void setDataChangeable(boolean changeable) {
         this.contentChangeable = Boolean.valueOf(changeable);
+        if (getIpsSrcFile()!=null) {
+            this.setTitleImage(getIpsSrcFile().getIpsObjectType().getImage(changeable));
+        }
     }
     
     /**
@@ -377,10 +372,26 @@ public abstract class IpsObjectEditor extends FormEditor
         if (part != this) {
             return;
         }
-        setActive(true);
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+        IpsPlugin.getDefault().getIpsPreferences().addChangeListener(this);
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+        
         editorActivated();
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public void partDeactivated(IWorkbenchPartReference partRef) {
+        IWorkbenchPart part = partRef.getPart(false);
+        if (part != this) {
+            return;
+        }
+        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        IpsPlugin.getDefault().getIpsPreferences().removeChangeListener(this);
+    }
+
     /**
      * Called when the editor is activated (e.g. by clicking in it).
      */
@@ -501,8 +512,6 @@ public abstract class IpsObjectEditor extends FormEditor
         if (part == this) {
             ipsSrcFile.discardChanges();
             part.getSite().getPage().removePartListener(this);
-            IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
-            ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         }
     }
 
@@ -535,48 +544,12 @@ public abstract class IpsObjectEditor extends FormEditor
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public void partDeactivated(IWorkbenchPartReference partRef) {
-        IWorkbenchPart part = partRef.getPart(false);
-        if (part != this || partRef.getPage().isPartVisible(part)) {
-            return;
-        }
-        setActive(false);
-    }
-
-    public String toString() {
-        return "Editor for " + getIpsSrcFile(); //$NON-NLS-1$
-    }
-
-    /**
-     * @see IpsObjectEditor#active
-     */
-    public void setActive(boolean active) {
-        if (this.active == active) {
-            return;
-        }
-        this.active = active;
-        if (active) {
-            IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
-            IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(this);
-            IpsPlugin.getDefault().getIpsPreferences().addChangeListener(this);
-            setDirty(ipsSrcFile.isDirty());
-            refresh();
-        } else {
-            IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
-            IpsPlugin.getDefault().getIpsModel().removeModificationStatusChangeListener(this);
-            IpsPlugin.getDefault().getIpsPreferences().removeChangeListener(this);
-        }
-    }
-    
-    /**
      * Returns the SelectionProviderDispatcher which is the ISelectionProvider for this IEditorPart.
      */
     public SelectionProviderDispatcher getSelectionProviderDispatcher() {
         return selectionProviderDispatcher;
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -599,6 +572,10 @@ public abstract class IpsObjectEditor extends FormEditor
         if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
             refresh();        
         }
+    }
+
+    public String toString() {
+        return "Editor for " + getIpsSrcFile(); //$NON-NLS-1$
     }
 
     /**

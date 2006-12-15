@@ -117,12 +117,12 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      */
     public Image getImage() {
         if (getIpsSrcFile().exists()){
-            return getIpsObjectType().getImage();
+            return getIpsObjectType().getEnabledImage();
         } else {
             // the ips source file doesn't exists, thus the ips object couldn't be linked to 
             // an ips src file in the workspace, return the image of the ips source file to
             // decide between valid and invalid ips objects
-            return IpsObjectType.IPS_SOURCE_FILE.getImage();
+            return IpsObjectType.IPS_SOURCE_FILE.getEnabledImage();
         }
     }
 

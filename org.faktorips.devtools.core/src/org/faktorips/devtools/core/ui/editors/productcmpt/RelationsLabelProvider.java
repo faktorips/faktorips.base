@@ -52,7 +52,7 @@ public class RelationsLabelProvider implements ILabelProvider{
 	 */
 	public Image getImage(Object element) {
         if (element instanceof IProductCmptRelation) {
-            return IpsObjectType.PRODUCT_CMPT.getImage();
+            return IpsObjectType.PRODUCT_CMPT.getEnabledImage();
         }
 		if (element instanceof String) {
 			return IpsPlugin.getDefault().getImage("Composition.gif");  //$NON-NLS-1$ 
