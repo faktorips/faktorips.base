@@ -14,10 +14,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IStorage;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -37,6 +39,7 @@ import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.IpsSrcFileImmutable;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -92,11 +95,6 @@ public abstract class IpsObjectEditor extends FormEditor
      */
     private boolean dontFixDifferences = false;
     
-    /*
-     * Flag indicating an open delta-dialog if <code>true</code>.
-     */
-    private boolean deltaShowing = false;
-
     public IpsObjectEditor() {
         super();
     }
@@ -394,7 +392,7 @@ public abstract class IpsObjectEditor extends FormEditor
      * Does what the methodname says :-)
      */
     public final void checkForInconsistenciesToModel() {
-        if (isDataChangeable()==null || !isDataChangeable().booleanValue() || deltaShowing) {
+        if (isDataChangeable()==null || !isDataChangeable().booleanValue()) {
             // no modifications for read-only-editors
             return;
         }
@@ -412,34 +410,58 @@ public abstract class IpsObjectEditor extends FormEditor
             // is shown the differences-dialog twice if openening the editor...
             return;
         }
+        if (!(getIpsObject() instanceof IFixDifferencesToModelSupport)) {
+            return;
+        }
+        final IFixDifferencesToModelSupport toFixIpsObject = (IFixDifferencesToModelSupport)getIpsObject();
         try {
-            deltaShowing = true;
-            if (getSite() != null){
-                Runnable checkAndFixRunnable = new Runnable(){
+            if (!toFixIpsObject.containsDifferenceToModel()){
+                return;
+            }
+            final Dialog dialog = createDialogToFixDifferencesToModel();
+            if (getSite() != null) {
+                Runnable checkAndFixRunnable = new Runnable() {
                     public void run() {
-                        dontFixDifferences = checkAndFixInconsistenciesToModel();
+                        if (dialog.open() == Dialog.OK) {
+                            try {
+                                IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(
+                                        new DifferenceFixer(toFixIpsObject), null);
+                                refreshAfterModelDifferencesAreFixed();
+                            } catch (CoreException e) {
+                                IpsPlugin.logAndShowErrorDialog(e);
+                                return;
+                            }
+                        } else {
+                            dontFixDifferences = true;
+                        }
                     }
                 };
                 getSite().getShell().getDisplay().asyncExec(checkAndFixRunnable);
             }
-        } finally {
-            deltaShowing = false;
+        }
+        catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            return;
         }
     }    
     
     /**
-     * Checks for inconsistencies between the structure shown in this editor and the model.
-     * Asks the user if the inconsistencies should be fixed. Specific logic has to be implemented in subclasses.
-     * If the user confirms the proposal fix then the inconsistencies will be fixed.
-     *  
-     * @return <code>true</code> if the user does not want to fix any existing differences,
-     * <code>false</code> otherwise.  Default returns false.
-     *
+     * Creates a dialog to disblay the differences to the model and ask the user if the
+     * inconsistencies should be fixed. Specific logic has to be implemented in subclasses.
+     * 
+     * @throws CoreException Throws in case of an error
      */
-    protected boolean checkAndFixInconsistenciesToModel() {
-        return false;
+    protected Dialog createDialogToFixDifferencesToModel() throws CoreException{
+        throw new UnsupportedOperationException();
     }
 
+    /**
+     * Refresh after the differences are fixed.
+     */
+    protected void refreshAfterModelDifferencesAreFixed(){
+        refresh();
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -578,5 +600,24 @@ public abstract class IpsObjectEditor extends FormEditor
             refresh();        
         }
     }
-    
+
+    /**
+     * Class to fix differences to the model as workspace runnable
+     * 
+     * @author Joerg Ortmann
+     */
+    private class DifferenceFixer implements IWorkspaceRunnable {
+        private IFixDifferencesToModelSupport toFixIpsObject;
+        
+        public DifferenceFixer(IFixDifferencesToModelSupport toFixIpsObject) {
+            this.toFixIpsObject = toFixIpsObject;
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        public void run(IProgressMonitor monitor) throws CoreException {
+            toFixIpsObject.fixAllDifferencesToModel();
+        }
+    }
 }

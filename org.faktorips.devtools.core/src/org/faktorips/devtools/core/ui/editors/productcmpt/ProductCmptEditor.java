@@ -19,9 +19,8 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.DisposeEvent;
@@ -38,7 +37,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
-import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -169,51 +167,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	public void partClosed(IWorkbenchPartReference partRef) {
 		super.partClosed(partRef);
 		IpsPlugin.getDefault().getIpsPreferences().removeChangeListener(this);
-	}
-
-	/**
-     * {@inheritDoc}
-	 */
-	protected boolean checkAndFixInconsistenciesToModel() {
-		IIpsObjectGeneration[] gen = this.getProductCmpt().getGenerations();
-		IProductCmptGeneration[] generations = new IProductCmptGeneration[gen.length];
-		for (int i = 0; i < generations.length; i++) {
-			generations[i] = (IProductCmptGeneration)gen[i];
-		}
-		IProductCmptGenerationPolicyCmptTypeDelta[] deltas = new IProductCmptGenerationPolicyCmptTypeDelta[generations.length];
-		boolean deltaFound = false;
-		for (int i = 0; i < generations.length; i++) {			
-			try {
-				deltas[i] = ((IProductCmptGeneration)generations[i]).computeDeltaToPolicyCmptType();
-				deltaFound = deltaFound || (deltas[i] != null && !deltas[i].isEmpty()); 
-			} catch (CoreException e) {
-				IpsPlugin.logAndShowErrorDialog(e);
-				deltas[i] = null;
-			}
-		}
-
-		if (!deltaFound) {
-			return false;
-		}
-
-		Shell shell = getSite().getShell();
-		ProductCmptDeltaDialog dialog = new ProductCmptDeltaDialog(generations, deltas, shell);
-		dialog.setBlockOnOpen(true);
-		int result = dialog.open();
-		
-		boolean fix = result == ProductCmptDeltaDialog.OK;
-		if (!fix) {
-		    return true;
-        }
-		IIpsModel model = getProductCmpt().getIpsModel();
-        try {
-            model.runAndQueueChangeEvents(new DifferenceFixer(generations, deltas), null);
-            refresh();
-        }
-        catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
-        return false;
 	}
 
 	/**
@@ -459,32 +412,31 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		}
 	}
     
-    private class DifferenceFixer implements IWorkspaceRunnable {
-        IProductCmptGeneration[] generations;
-        IProductCmptGenerationPolicyCmptTypeDelta[] deltas;
-        
-        public DifferenceFixer(IProductCmptGeneration[] generations, IProductCmptGenerationPolicyCmptTypeDelta[] deltas) {
-            this.generations = generations;
-            this.deltas = deltas;
+    /**
+     * {@inheritDoc}
+     * @throws CoreException 
+     */
+    protected Dialog createDialogToFixDifferencesToModel() throws CoreException {
+
+        IIpsObjectGeneration[] gen = this.getProductCmpt().getGenerations();
+        IProductCmptGeneration[] generations = new IProductCmptGeneration[gen.length];
+        for (int i = 0; i < generations.length; i++) {
+            generations[i] = (IProductCmptGeneration)gen[i];
+        }
+        IProductCmptGenerationPolicyCmptTypeDelta[] deltas = new IProductCmptGenerationPolicyCmptTypeDelta[generations.length];
+        for (int i = 0; i < generations.length; i++) {          
+                deltas[i] = ((IProductCmptGeneration)generations[i]).computeDeltaToPolicyCmptType();
         }
         
-        /**
-         * {@inheritDoc}
-         */
-        public void run(IProgressMonitor monitor) throws CoreException {
-            for (int i = 0; i < generations.length; i++) {
-                try {
-                    generations[i].fixDifferences(deltas[i]);
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
-            }
-            setDirty(getIpsSrcFile().isDirty());
-            if (generationPropertiesPage!=null) {
-                generationPropertiesPage.rebuildAfterActiveGenerationhasChanged();
-            }
-            getContainer().update();
+        return new ProductCmptDeltaDialog(generations, deltas, getSite().getShell());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void refreshAfterModelDifferencesAreFixed() {
+        if (generationPropertiesPage!=null) {
+            generationPropertiesPage.rebuildAfterActiveGenerationhasChanged();
         }
-        
     }
 }

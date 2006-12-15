@@ -1767,7 +1767,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             testCaseTypeChanged = false;
             postResetTestRunStatus();
             refreshTreeAndDetailArea();
-            editor.checkForInconsistenciesToModel();
         }
     }
 
