@@ -373,6 +373,7 @@ public abstract class IpsObjectEditor extends FormEditor
             return;
         }
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+        IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(this);
         IpsPlugin.getDefault().getIpsPreferences().addChangeListener(this);
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
         
@@ -388,8 +389,9 @@ public abstract class IpsObjectEditor extends FormEditor
             return;
         }
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
-        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        IpsPlugin.getDefault().getIpsModel().removeModificationStatusChangeListener(this);
         IpsPlugin.getDefault().getIpsPreferences().removeChangeListener(this);
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
     }
 
     /**
