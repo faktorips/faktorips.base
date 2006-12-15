@@ -1440,6 +1440,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * Returns the toc file package name which stores the current test case.
      */
     private String getTocFilePackage() throws CoreException {
+        if (!testCase.getIpsSrcFile().isMutable()) {
+            return null; // not available for immutable files.
+        }
         IIpsPackageFragment packageFragment = testCase.getIpsPackageFragment();
         if (packageFragment == null)
             return null;

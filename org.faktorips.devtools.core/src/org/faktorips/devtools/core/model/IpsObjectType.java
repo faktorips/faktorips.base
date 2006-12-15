@@ -236,6 +236,9 @@ public final class IpsObjectType {
      * Returns the type's image with disabled look.
      */
     public final Image getDisabledImage() {
+        if (disabledImage==null) { // TODO remove as soon images are available
+            return getEnabledImage(); 
+        }
         return IpsPlugin.getDefault().getImage(disabledImage);
     }
     
