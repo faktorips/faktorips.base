@@ -244,6 +244,8 @@ public class FailurePane {
             textEditor.selectAndReveal(document.getLineOffset(tli.getLine()-1), document.getLineLength(tli.getLine()));
         } catch (BadLocationException x) {
             // marker refers to invalid text position -> do nothing
+        } catch (StringIndexOutOfBoundsException x) {
+            // invalid text -> do nothing
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
