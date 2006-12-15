@@ -5,3 +5,5 @@ org.faktorips.devtools.core/trace/dependencygraphmanagement=false
 org.faktorips.devtools.core/trace/validation=false
 # tracing options for ips builder
 org.faktorips.devtools.core/trace/builder=false
+# tracing options for ips test runner
+org.faktorips.devtools.core/trace/testrunner=false

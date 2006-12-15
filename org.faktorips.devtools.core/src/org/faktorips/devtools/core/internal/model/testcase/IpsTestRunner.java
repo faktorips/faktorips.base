@@ -85,6 +85,12 @@ import org.faktorips.util.StringUtil;
 public class IpsTestRunner implements IIpsTestRunner { 
     private static final int ACCEPT_TIMEOUT = 5000;
     
+    public final static boolean TRACE_IPS_TEST_RUNNER;
+    
+    static {
+        TRACE_IPS_TEST_RUNNER = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/testrunner")).booleanValue(); //$NON-NLS-1$
+    }
+    
 	private int port;
     private IIpsProject ipsProject;    
     private BufferedReader reader;
@@ -508,6 +514,9 @@ public class IpsTestRunner implements IIpsTestRunner {
      * Parse the incomming message and fire the messages events to the registered listener.
      */
     private void parseMessage(String line) {
+        if (TRACE_IPS_TEST_RUNNER){
+            System.out.println(line); //$NON-NLS-1$
+        }
         if (line.startsWith(SocketIpsTestRunner.ALL_TESTS_STARTED)) {  
     		// format: 
             //   SocketIpsTestRunner.ALL_TESTS_STARTED(<count>) [<repositoryPackage>].[<testPackage>]:<testQualifiedName>{<testFullPath>},...
@@ -574,7 +583,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         } else if (line.endsWith(SocketIpsTestRunner.TEST_ERROR_END)){
             String errorDetails = line.substring(0, line.indexOf(SocketIpsTestRunner.TEST_ERROR_END));
             parseErrorStack(errorDetailList, errorDetails);
-            notifyTestErrorOccured(qualifiedTestName, (String[]) errorDetailList.toArray(new String[0]));
+            notifyTestErrorOccured(qualifiedTestName, errorDetailList==null?new String[0]:(String[]) errorDetailList.toArray(new String[0]));
             errorDetailList = null;
         } else if (errorDetailList != null){
             // parse multiline stack elements
