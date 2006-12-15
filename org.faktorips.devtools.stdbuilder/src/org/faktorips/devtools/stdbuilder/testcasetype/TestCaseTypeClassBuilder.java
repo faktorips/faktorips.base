@@ -19,7 +19,6 @@ package org.faktorips.devtools.stdbuilder.testcasetype;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -94,9 +93,6 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     
     private IIpsProject project;
     private ITestCaseType testCaseType;
-    
-    // Contains the cached datatype helper
-    private HashMap dataTypeHelpers = new HashMap();
     
     public TestCaseTypeClassBuilder(
             IIpsArtefactBuilderSet builderSet, 
@@ -244,19 +240,15 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     }
     
     /*
-     * Returns the corresponding helper for the given ITestValueParameter from a cached list.
+     * Returns the corresponding helper for the given ITestValueParameter.
      */
     private DatatypeHelper getCachedDatatypeHelper(ITestValueParameter testValueParameter) throws CoreException{
     	ValueDatatype valueDatatype = testValueParameter.findValueDatatype();
         if (valueDatatype == null)
             return null;
-        
-        DatatypeHelper helper = (DatatypeHelper) dataTypeHelpers.get(valueDatatype.getJavaClassName());
-    	if (helper != null)
-    		return helper;
     	
         try {
-            helper = project.getDatatypeHelper(valueDatatype);
+            DatatypeHelper helper = project.getDatatypeHelper(valueDatatype);
             if (helper == null) {
                 throw new CoreException(new IpsStatus("No datatype helper found for datatype " + valueDatatype));            
             }

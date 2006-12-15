@@ -61,7 +61,6 @@ import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.TocEntryGeneration;
 import org.faktorips.runtime.internal.TocEntryObject;
-import org.faktorips.runtime.test.IpsFormulaTestCase;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -375,34 +374,17 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             // only build toc entry if at least one formula is specified
             return null;
         }
-        IPolicyCmptType pcType = productCmpt.findPolicyCmptType();
-        if (pcType == null) {
-            return null;
-        }
         
-        String xmlResourceName = formulaTestBuilder.getXmlResourcePath(productCmpt);
-        String qualifiedName = formulaTestBuilder.getFormulaTestQualifiedName(productCmpt);
-
-        // generate the object id, the objectId for this element will be the package root name concatenated with the qualified name 
-        String packageRootName = productCmpt.getIpsSrcFile().getIpsObject().getIpsPackageFragment().getRoot().getName();
+        // generate the object id, the objectId for this element will be the package root name
+        // concatenated with the qualified name
+        String packageRootName = productCmpt.getIpsPackageFragment().getRoot().getName();
         String objectId = packageRootName + "." + productCmpt.getQualifiedName(); //$NON-NLS-1$
         objectId = objectId.replace('.', '/') + "." + IpsObjectType.PRODUCT_CMPT.getFileExtension(); //$NON-NLS-1$
         
-        TocEntryObject entry = TocEntryObject.createFormulaTestTocEntry(
-                objectId, 
-                qualifiedName,
-                productCmpt.findProductCmptKind().getRuntimeId(),
-                productCmpt.getVersionId(),
-                xmlResourceName,
-                IpsFormulaTestCase.class.getName());
-        
-        IIpsObjectGeneration[] generations = productCmpt.getGenerations();
-        TocEntryGeneration[] genEntries = new TocEntryGeneration[generations.length];
-        for (int i = 0; i < generations.length; i++) {
-            DateTime validFrom = DateTime.createDateOnly(generations[i].getValidFrom());
-            genEntries[i] = new TocEntryGeneration(entry, validFrom, IpsFormulaTestCase.class.getName(), xmlResourceName); 
-        }
-        entry.setGenerationEntries(genEntries);
+        String formulaTestCaseName = formulaTestBuilder.getQualifiedClassName(productCmpt);
+        TocEntryObject entry = TocEntryObject.createTestCaseTocEntry(objectId, productCmpt.getQualifiedName(), "",
+                formulaTestCaseName);
+
         return entry;
     }
     
@@ -443,7 +425,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             return null;
         }
         // generate the object id, the objectId for this element will be the package root name concatenated with the qualified name 
-        String packageRootName = testCase.getIpsSrcFile().getIpsObject().getIpsPackageFragment().getRoot().getName();
+        String packageRootName = testCase.getIpsPackageFragment().getRoot().getName();
         String objectId = packageRootName + "." + testCase.getQualifiedName(); //$NON-NLS-1$
         objectId = objectId.replace('.', '/') + "." + IpsObjectType.TEST_CASE.getFileExtension(); //$NON-NLS-1$
         

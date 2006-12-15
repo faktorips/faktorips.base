@@ -62,7 +62,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     public final static String KIND_TABLE_ROW = "tablerow"; //$NON-NLS-1$
     public final static String KIND_TEST_CASE_TYPE_CLASS = "testcasetypeclass"; //$NON-NLS-1$
     public final static String KIND_TEST_CASE_XML = "testcasexml"; //$NON-NLS-1$
-    public final static String KIND_FORMULA_TEST_XML = "formulatestxml"; //$NON-NLS-1$
+    public final static String KIND_FORMULA_TEST_CASE = "formulatestcase"; //$NON-NLS-1$
     
     public final static String KIND_TABLE_TOCENTRY = "tabletocentry"; //$NON-NLS-1$
     public final static String KIND_PRODUCT_CMPT_TOCENTRY = "productcmpttocentry"; //$NON-NLS-1$
@@ -198,7 +198,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
             if (KIND_PRODUCT_CMPT_GENERATION_IMPL.equals(kind)) {
                 return getInternalPackageName(ipsSrcFile);
             }
-            if (KIND_FORMULA_TEST_XML.equals(kind)){
+            if (KIND_FORMULA_TEST_CASE.equals(kind)){
                 return getInternalPackageName(ipsSrcFile);
             }
         }

@@ -103,6 +103,9 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         ArgumentCheck.isTrue(ipsSrcFile.getIpsObjectType() == IpsObjectType.TEST_CASE);
         ITestCase testCase = (ITestCase) ipsSrcFile.getIpsObject();
+        if (!testCase.isValid()){
+            return;
+        }
         InputStream is = null;
         String content = null;
         try {
@@ -203,6 +206,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
      */
     private Element toRuntimeTestCaseXml(Document doc, ITestCase testCase) throws CoreException {
         Element testCaseElm = doc.createElement("TestCase");
+        
         doc.appendChild(testCaseElm);
         
         Element input = doc.createElement("Input");

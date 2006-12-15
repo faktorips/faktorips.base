@@ -17,30 +17,28 @@
 
 package org.faktorips.devtools.stdbuilder.formulatest;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import javax.xml.transform.TransformerException;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
+import org.eclipse.core.runtime.MultiStatus;
+import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
+import org.faktorips.devtools.core.internal.model.product.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -48,272 +46,377 @@ import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.util.XmlUtil;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
+import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.internal.MethodNames;
+import org.faktorips.runtime.test.IpsFormulaTestCase;
+import org.faktorips.runtime.test.IpsTestResult;
+import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.faktorips.values.DateUtil;
 
 /**
  * A builder that extracts formula test cases from product components and generates the
- * corresponding runtime xml to instantiate such formula tests.
+ * corresponding formula test cases.
  * 
  * @author Joerg Ortmann
  */
-public class FormulaTestBuilder extends AbstractArtefactBuilder {
+public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
+    private final static String[] EMPTY_STRING_ARRAY = new String[0];
+    
     private static final String RUNTIME_EXTENSION = "_formulaTest";
+    private static final String TEST_METHOD_PREFIX = "test";
+    
+    private IIpsProject project;
+    
+    private IProductCmpt productCmpt;
+    private IProductCmptType productCmptType;
+    
+    private IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
+    
+    // wired builder
+    private PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder;
+    private ProductCmptInterfaceBuilder productCmptInterfaceBuilder; 
+    private ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder; 
+    private ProductCmptBuilder productCmptBuilder;
+    
+    public FormulaTestBuilder(
+            IIpsArtefactBuilderSet builderSet, 
+            String kindId) {
+        super(builderSet, kindId, new LocalizedStringsSet(FormulaTestBuilder.class));
+        setMergeEnabled(true);
+    }
 
-    public FormulaTestBuilder(IIpsArtefactBuilderSet builderSet) {
-        super(builderSet);
+    /**
+     * @param policyCmptInterfaceBuilder The policyCmptInterfaceBuilder to set.
+     */
+    public synchronized void setPolicyCmptInterfaceBuilder(PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder) {
+        this.policyCmptInterfaceBuilder = policyCmptInterfaceBuilder;
+    }
+
+    /**
+     * @param productCmptInterfaceBuilder The productCmptInterfaceBuilder to set.
+     */
+    public synchronized void setProductCmptInterfaceBuilder(ProductCmptInterfaceBuilder productCmptInterfaceBuilder) {
+        this.productCmptInterfaceBuilder = productCmptInterfaceBuilder;
     }
     
     /**
-     * {@inheritDoc}
+     * @param productCmptGenImplClassBuilder The productCmptGenImplClassBuilder to set.
      */
-    public String getName() {
-        return "FormulaTestBuilder";
+    public synchronized void setProductCmptGenImplClassBuilder(ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder) {
+        this.productCmptGenImplClassBuilder = productCmptGenImplClassBuilder;
     }
 
     /**
-     * {@inheritDoc}
+     * @param productCmptBuilder The productCmptBuilder to set.
      */
-    public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
-        IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-        if (!productCmpt.isValid()){
-            return;
-        }
-        if (!productCmpt.containsFormulaTest()){
-            // build formula test if at least one formula and formula test is specified
-            return;
-        }
-        
-        // there is at least one formula in the product cmt, therefore build the formula test
-        InputStream is = null;
-        String content;
-        try {
-            Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
-            Element element = addFormulaTestCases(doc, productCmpt);
-            String encoding = ipsSrcFile.getIpsProject()==null?"UTF-8":productCmpt.getIpsProject().getXmlFileCharset(); //$NON-NLS-1$
-            content = XmlUtil.nodeToString(element, encoding);
-            is = convertContentAsStream(content, ipsSrcFile.getIpsProject().getProject().getDefaultCharset());
-        } catch (TransformerException e) {
-            throw new RuntimeException(e); 
-            // This is a programing error, rethrow as runtime exception
-        }
-
-        IFile file = getXmlContentFile(ipsSrcFile);
-        IFolder folder = (IFolder)file.getParent();
-        if (!folder.exists()) {
-            createFolder(folder);
-        }
-        if (!file.exists()) {
-            file.create(is, true, null);
-        }else{
-            IFile copy = getXmlContentFile(ipsSrcFile);
-            String charSet = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
-            String currentContent = getContentAsString(copy.getContents(), charSet);
-            if(content.equals(currentContent)){
-                return;
-            }            
-            file.setContents(is, true, true, null);
-        }
-    }
-
-    /*
-     * Creates the root formula test node
-     */
-    private Element addFormulaTestCases(Document doc, IProductCmpt productCmpt) throws CoreException {
-        Element formulaTestElem = doc.createElement("FormulaTest");
-        Element inputElem = doc.createElement("Input");
-        formulaTestElem.appendChild(inputElem);
-        
-        Element productCmptElem = doc.createElement("ProductCmpt");
-        productCmptElem.setAttribute("runtimeId", productCmpt.getRuntimeId());
-        inputElem.appendChild(productCmptElem);
-
-        IIpsObjectGeneration[] generations = productCmpt.getGenerations();
-        for (int i = 0; i < generations.length; i++) {
-            if (!generations[i].isValid()){
-                continue;
-            }
-            addFormulaTestForGeneration(doc, productCmptElem, (IProductCmptGeneration) generations[i]);
-        }
-        return formulaTestElem;
-    }
-
-    /*
-     * Creates nodes for generation
-     */
-    private void addFormulaTestForGeneration(Document doc, Element parent, IProductCmptGeneration generation) throws CoreException {
-        IConfigElement[] formulas = generation.getConfigElements(ConfigElementType.FORMULA);
-        if (formulas.length == 0){
-            return;
-        }
-        
-        Element generationElem = doc.createElement("Generation");
-        parent.appendChild(generationElem);
-        generationElem.setAttribute("validFrom", XmlUtil.gregorianCalendarToXmlDateString(generation.getValidFrom()));
-        for (int i = 0; i < formulas.length; i++) {
-            if (!formulas[i].isValid()){
-                return;
-            }
-            addFormula(doc, generationElem, formulas[i]);
-        }
-    }
-    
-    /*
-     * Creates nodes for each config elment of type formula
-     */
-    private void addFormula(Document doc, Element generationElem, IConfigElement element) throws CoreException {
-        Element formulaElem = doc.createElement("Formula");
-        generationElem.appendChild(formulaElem);
-        formulaElem.setAttribute("formulaName", element.getPcTypeAttribute());
-        IFormulaTestCase[] ftcs = element.getFormulaTestCases();
-        for (int i = 0; i < ftcs.length; i++) {
-            if (!ftcs[i].isValid()){
-                return;
-            }
-            addFormulaTestCase(doc, formulaElem, ftcs[i]);
-        }
-    }
-
-    /*
-     * Creates nodes for each formula test case
-     */
-    private void addFormulaTestCase(Document doc, Element formulaElem, IFormulaTestCase formulaTestCase) throws CoreException {
-        Element formulaTestCaseElem = doc.createElement("FormulaTestCase");
-        formulaElem.appendChild(formulaTestCaseElem);
-        formulaTestCaseElem.setAttribute("name", formulaTestCase.getName());
-        ValueToXmlHelper.addValueToElement(formulaTestCase.getExpectedResult(), formulaTestCaseElem, "ExpectedResult");
-        IFormulaTestInputValue[] ftivs = formulaTestCase.getFormulaTestInputValues();
-        
-        for (int i = 0; i < ftivs.length; i++) {
-            Element formulaTestInputValueElem = doc.createElement("FormulaTestInputValue");
-            formulaTestCaseElem.appendChild(formulaTestInputValueElem);
-            formulaTestInputValueElem.setAttribute("identifier", ftivs[i].getIdentifier());
-            ValueToXmlHelper.addValueToElement(ftivs[i].getValue(), formulaTestInputValueElem, "Value");
-            Datatype datatype = ftivs[i].findDatatypeOfFormulaParameter();
-            if (datatype != null){
-                formulaTestInputValueElem.setAttribute("datatype", datatype.getJavaClassName());
-            }
-            Parameter formulaParam = ftivs[i].findFormulaParameter();
-            if (formulaParam != null){
-                formulaTestInputValueElem.setAttribute("parameterIndex", ""+formulaParam.getIndex());
-            }
-        }
-    }
-
-    /**
-     * Returns all formula config elements of the given product cmpt or null if the product cmpt has no formulas
-     * or no generation exists.
-     */
-    public IConfigElement[] getFormulas(IProductCmpt productCmpt) throws CoreException{
-        IIpsObjectGeneration[] productCmptGenerations = productCmpt.getGenerations();
-        if (productCmptGenerations.length == 0){
-            return null;
-        } else {
-            List formulaList = new ArrayList();
-            for (int i = 0; i < productCmptGenerations.length; i++) {
-                IConfigElement[] formulas = ((IProductCmptGeneration)productCmptGenerations[i]).getConfigElements(ConfigElementType.FORMULA);
-                if (formulas.length > 0){
-                    formulaList.addAll(Arrays.asList(formulas));
-                }
-            }
-            if (formulaList.size() == 0){
-                return null;
-            } else {
-                return (IConfigElement[]) formulaList.toArray(new IConfigElement[formulaList.size()]);
-            }
-        }
+    public synchronized void setProductCmptBuilder(ProductCmptBuilder productCmptBuilder) {
+        this.productCmptBuilder = productCmptBuilder;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-        if (!ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)){
+        if (!ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
             return false;
         }
+        productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+        if (!productCmpt.isValid()) {
+            return false;
+        }
+        // build formula test if at least one formula and formula test is specified
+        if (!productCmpt.containsFormulaTest()) {
+            return false;
+        }
+        IPolicyCmptType pcType = productCmpt.findPolicyCmptType();
+        productCmptType = pcType == null ? null : pcType.findProductCmptType();
+        if (pcType == null) {
+            return false;
+        }
+
+        project = productCmpt.getIpsProject();
+
         return true;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status)
+            throws CoreException {
+        super.beforeBuild(ipsSrcFile, status);
+    }
+
+    protected String getSuperClassName(){
+        return IpsFormulaTestCase.class.getName();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getQualifiedClassName() throws CoreException {
+        return getQualifiedClassName(productCmpt.getIpsSrcFile());
     }
 
     /**
      * {@inheritDoc}
      */
-    public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
-        IFile file = getXmlContentFile(ipsSrcFile);
-        if (file.exists()) {
-            file.delete(true, null);
-        }
-    }
-
-    /*
-     * Converts the given string content as ByteArrayInputStream.
-     */
-    private ByteArrayInputStream convertContentAsStream(String content, String charSet) throws CoreException{
-        try {
-            return new ByteArrayInputStream(content.getBytes(charSet));
-        } catch (UnsupportedEncodingException e) {
-            throw new CoreException(new IpsStatus(e));
-        }
-    }
-
-    /*
-     * Creates a folder if not existes.
-     */
-    private void createFolder(IFolder folder) throws CoreException {
-        while (!folder.getParent().exists()) {
-            createFolder((IFolder)folder.getParent());
-        }
-        folder.create(true, true, null);
-    }   
-    
-    /*
-     * Returns the file resource of the given ips source file.
-     */
-    private IFile getXmlContentFile(IIpsSrcFile ipsSrcFile) throws CoreException {
-        IFile file = (IFile)ipsSrcFile.getEnclosingResource();
-        IFolder folder = getXmlContentFileFolder(ipsSrcFile);
-        return folder.getFile(getFileName(StringUtil.getFilenameWithoutExtension(file.getName())) + ".xml");
+    public String getQualifiedClassName(IIpsObject ipsObject) throws CoreException {
+        return getQualifiedClassName(ipsObject.getIpsSrcFile());
     }
 
     /**
-     * Returns the path to the xml resource as used by the Class.getResourceAsStream() Method.
+     * {@inheritDoc}
+     */
+    public String getQualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
+        IIpsSrcFile file = getVirtualIpsSrcFile(ipsSrcFile.getIpsObject());
+        String qualifiedClassName = super.getQualifiedClassName(file);
+        qualifiedClassName += RUNTIME_EXTENSION;
+        return qualifiedClassName;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getUnqualifiedClassName() throws CoreException {
+        return StringUtil.unqualifiedName(getQualifiedClassName());
+    }
+    
+    private IIpsSrcFile getVirtualIpsSrcFile(IIpsObject ipsObject) {
+        String name = productCmptNamingStrategy.getJavaClassIdentifier(ipsObject.getName());
+        return productCmpt.getIpsSrcFile().getIpsPackageFragment().getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected JavaCodeFragment generateCodeForJavatype() throws CoreException {
+        JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
+        codeBuilder.classBegin(Modifier.PUBLIC, StringUtil.unqualifiedName(getQualifiedClassName()),
+                getSuperClassName(), new String[0]);
+
+        generateConstructor(codeBuilder);
+        generateMethodGetProductCmptType(productCmptType, codeBuilder);
+        
+        List testMethods = generateTestMethods(productCmpt, codeBuilder);
+        generateExecuteBusinessLogicMethod(productCmptType, testMethods ,codeBuilder);
+        generateExecuteAssertsMethod(productCmptType, testMethods ,codeBuilder);
+        
+        codeBuilder.classEnd();
+        return codeBuilder.getFragment();
+    }
+    
+    /*
+     * Code sample:
+     * <pre>
+     *  public FtPolicyA___2006__01_formulaTest(String formulaTestCaseName) {
+     *      super(formulaTestCaseName);
+     *  }
+     * </pre>
+     */
+    private void generateConstructor(JavaCodeFragmentBuilder builder) throws CoreException {
+        String className = getUnqualifiedClassName();
+        appendLocalizedJavaDoc("CONSTRUCTOR", className, getIpsObject(), builder);
+        String[] argNames = new String[] { "formulaTestCaseName"};
+        String[] argTypes = new String[] { String.class.getName()};
+        builder.methodBegin(Modifier.PUBLIC, null, className, argNames, argTypes);
+        builder.append("super(formulaTestCaseName);");
+        builder.methodEnd();
+    }
+    
+    /*
+     * Code sample:
      * 
-     * @see Class#getResourceAsStream(java.lang.String) 
+     * <pre>
+     *  public IFtPolicyType getFtPolicyType() {
+     *      return (IFtPolicyType) getRepository().getProductComponent("FtPolicyA 2006-01");
+     *  }
+     *  </pre>
      */
-    public String getXmlResourcePath(IProductCmpt productCmpt) throws CoreException {
-        String internalPackage = getBuilderSet().getPackage(DefaultBuilderSet.KIND_FORMULA_TEST_XML,
-                productCmpt.getIpsSrcFile());
-        return internalPackage.replace('.', '/') + "/" + getFileName(productCmpt.getName()) + ".xml";
+    private void generateMethodGetProductCmptType(IProductCmptType type, JavaCodeFragmentBuilder builder) throws CoreException {
+        appendLocalizedJavaDoc("METHOD_GET_RODUCTCMPT_TYPE", null, getIpsObject(), builder);
+        generateSignatureGetProductCmptGeneration(type, builder);
+        builder.openBracket();
+        
+        builder.append("return (");
+        builder.appendClassName(productCmptInterfaceBuilder.getQualifiedClassName(type));
+        builder.append(")");
+        builder.append(MethodNames.GET_REPOSITORY);
+        builder.append("().");
+        builder.append(MethodNames.GET_PRODUCT_COMPONENT);
+        builder.append("(\"");
+        builder.append(productCmpt.getRuntimeId());
+        builder.appendln("\");");
+        
+        builder.closeBracket();        
     }
     
     /*
-     * Returns the qualified name of the formula test stored on the product cmpt
+     * Code sample:
+     * 
+     * <pre>
+     *  public IMotorProductGen getMotorProductGen()
+     * </pre>
      */
-    public String getFormulaTestQualifiedName(IProductCmpt productCmpt) throws CoreException{
-        return productCmpt.getQualifiedName();
-    }
-    
-    private String getFileName(String name){
-        return name + RUNTIME_EXTENSION;
+    private void generateSignatureGetProductCmptGeneration(IProductCmptType type, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        String genName = productCmptInterfaceBuilder.getQualifiedClassName(type);
+        String methodName = policyCmptInterfaceBuilder.getMethodNameGetProductCmpt(type);
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, genName, methodName, new String[0], new String[0]);
     }
     
     /*
-     * Returns the package folder for the given ips sourcefile.
+     * Generates an empty method.
      */
-    private IFolder getXmlContentFileFolder(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String packageString = getBuilderSet().getPackage(DefaultBuilderSet.KIND_FORMULA_TEST_XML, ipsSrcFile);
-        IPath pathToPack = new Path(packageString.replace('.', '/'));
-        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination().getFolder(
-            pathToPack);
+    private void generateExecuteBusinessLogicMethod(IProductCmptType productCmptType,
+            List testMethods,
+            JavaCodeFragmentBuilder builder) {
+        String javaDoc = getJavaDocCommentForOverriddenMethod();
+        JavaCodeFragment body = new JavaCodeFragment();
+        builder.method(Modifier.PUBLIC, "void", "executeBusinessLogic", EMPTY_STRING_ARRAY,
+                EMPTY_STRING_ARRAY, body, javaDoc, ANNOTATION_MODIFIABLE);
     }
     
-    private String getContentAsString(InputStream is, String charSet) throws CoreException{
-        try {
-            return StringUtil.readFromInputStream(is, charSet);
-        } catch (IOException e) {
-            throw new CoreException(new IpsStatus(e));
+    /*
+     * Code sample:
+     * 
+     * <pre>
+     *  public void executeAsserts(IpsTestResult result) {
+     *      IFtPolicyType productCmpt = getFtPolicyType();
+     *      testFtPolicyA___2006__01___20070101(productCmpt, result);
+     *  }
+     * </pre>
+     */
+    private void generateExecuteAssertsMethod(IProductCmptType productCmptType, List testMethods, JavaCodeFragmentBuilder builder) throws CoreException {
+        String javaDoc = getJavaDocCommentForOverriddenMethod();
+        JavaCodeFragment body = new JavaCodeFragment();
+        
+        String genClassName = productCmptInterfaceBuilder.getQualifiedClassName(productCmptType);
+        body.appendClassName(genClassName);
+        body.append(" productCmpt = ");
+        body.append(policyCmptInterfaceBuilder.getMethodNameGetProductCmpt(productCmptType));
+        body.appendln("();");
+        body.appendln();
+        
+        // generate the test method call for each given test method
+        for (Iterator iter = testMethods.iterator(); iter.hasNext();) {
+            String testMethodName = (String)iter.next();
+            body.append(testMethodName);
+            body.append("(");
+            body.append("productCmpt");
+            body.appendln(", result);");
         }
-    }     
+        
+        builder.method(Modifier.PUBLIC, "void", "executeAsserts", new String[] { "result" },
+                new String[] { IpsTestResult.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
+    }
+    
+    /*
+     * Code sample:
+     * 
+     * <pre>
+     * public void testFtPolicyA___2006__01___20070101(IProductComponent productCmpt, IpsTestResult result) {
+     *      FtPolicyTypeGen productComponentGen = (FtPolicyTypeGen) productCmpt.getGenerationBase(
+     *          DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
+     *      Object formulaResult = null;
+     *      formulaResult = productComponentGen.computeFormulaResult(new Integer(1), null);
+     *      assertEquals(Decimal.valueOf("104.1"), formulaResult, result, productComponentGen.toString(), 
+     *          "formulaResult.Formeltest");
+     * </pre>
+     */
+    private List generateTestMethods(IProductCmpt productCmpt, JavaCodeFragmentBuilder codeBuilder) throws CoreException {
+        ArrayList testMethods = new ArrayList();
+        
+        IIpsObjectGeneration[] gen = productCmpt.getGenerations();
+        for (int i = 0; i < gen.length; i++) {
+            appendTestMethodsContentForGeneration((IProductCmptGeneration) gen[i], codeBuilder, testMethods);
+        }
+        
+        return testMethods;
+    }
+
+    /*
+     * @see generateTestMethods
+     */
+    private void appendTestMethodsContentForGeneration(IProductCmptGeneration generation, JavaCodeFragmentBuilder builder, ArrayList testMethods) throws CoreException {
+        String testMethodName = TEST_METHOD_PREFIX
+                + StringUtil.unqualifiedName(productCmptBuilder.getQualifiedClassName(generation));
+        appendLocalizedJavaDoc("METHOD_TEST_METHODS", policyCmptInterfaceBuilder
+                .getNameForGenerationConcept(productCmptType), getIpsObject(), builder);
+
+        builder.signature(Modifier.PUBLIC, "void", testMethodName, new String[] { "productCmpt", "result" },
+                new String[] { IProductComponent.class.getName(), IpsTestResult.class.getName() });  
+        builder.openBracket();
+        
+        JavaCodeFragment body = new JavaCodeFragment();
+        String productCmptGenClassName = productCmptGenImplClassBuilder.getQualifiedClassName(productCmptType);
+        body.appendClassName(productCmptGenClassName);
+        body.append(" productComponentGen = (");
+        body.appendClassName(productCmptGenClassName);
+        body.append(") productCmpt.getGenerationBase(");
+        body.appendClassName(DateUtil.class.getName());
+        body.append(".parseIsoDateStringToGregorianCalendar(\"");
+        body.append(DateUtil.gregorianCalendarToIsoDateString(generation.getValidFrom()));
+        body.appendln("\"));");
+        body.appendln();
+        body.appendln("Object formulaResult = null;");
+        IConfigElement[] formulas = generation.getConfigElements(ConfigElementType.FORMULA);
+        for (int i = 0; i < formulas.length; i++) {
+            IFormulaTestCase[] testCases = formulas[i].getFormulaTestCases();
+            for (int j = 0; j < testCases.length; j++) {
+                // append compute method call
+                IAttribute attribute = formulas[i].findPcTypeAttribute();
+                body.append("formulaResult = productComponentGen.");
+                body.append(productCmptGenImplClassBuilder.getMethodNameComputeValue(attribute));
+                body.append("(");
+
+                // append the method parameters in the correct order
+                Parameter[] params = attribute.getFormulaParameters();
+                Map identifierNameIdx = new HashMap(params.length);
+                for (int k = 0; k < params.length; k++) {
+                    identifierNameIdx.put(new Integer(params[k].getIndex()), params[k].getName());
+                }
+                List orderedInputValue = new ArrayList(params.length);
+                for (int k = 0; k < params.length; k++) {
+                    String identifier = (String) identifierNameIdx.get(new Integer(k));
+                    orderedInputValue.add(testCases[j].getFormulaTestInputValue(identifier));
+                }
+                for (int k = 0; k < orderedInputValue.size(); k++) {
+                    if (k > 0) {
+                        body.append(", ");
+                    }
+                    IFormulaTestInputValue inputValue = (IFormulaTestInputValue)orderedInputValue.get(k);
+                    if (inputValue == null){
+                        body.append("null");
+                    } else {
+                        DatatypeHelper inputValueHelper = project.getDatatypeHelper(inputValue.findDatatypeOfFormulaParameter());
+                        body.append(inputValueHelper.newInstance(inputValue.getValue()));
+                    }
+                }
+                body.appendln(");");
+                
+                // append assert method call
+                body.append("assertEquals(");
+                DatatypeHelper valueHelper = project.getDatatypeHelper(formulas[i].findPcTypeAttribute().findDatatype());
+                body.append(valueHelper.newInstance(testCases[j].getExpectedResult()));
+                body.append(", formulaResult, result, productComponentGen.toString(), \"");
+                body.append(formulas[i].getName());
+                body.append(".");
+                body.append(testCases[j].getName());
+                body.append("\"");
+                body.appendln(");");
+            }
+        }
+        builder.append(body);
+        builder.closeBracket();
+        
+        testMethods.add(testMethodName);
+    }
 }

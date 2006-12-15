@@ -191,7 +191,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         TestCaseBuilder testCaseBuilder = new TestCaseBuilder(this);
 
         // formula test builder
-        FormulaTestBuilder formulaTestBuilder = new FormulaTestBuilder(this);
+        FormulaTestBuilder formulaTestBuilder = new FormulaTestBuilder(this, KIND_FORMULA_TEST_CASE);
 
         // toc file builder
         TocFileBuilder tocFileBuilder = new TocFileBuilder(this);
@@ -230,6 +230,12 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         
         // test case builder
         testCaseBuilder.setJavaSourceFileBuilder(policyCmptImplClassBuilder);
+        
+        // formula test builder
+        formulaTestBuilder.setPolicyCmptInterfaceBuilder(policyCmptInterfaceBuilder);
+        formulaTestBuilder.setProductCmptInterfaceBuilder(productCmptInterfaceBuilder);
+        formulaTestBuilder.setProductCmptBuilder(productCmptGenerationImplBuilder);
+        formulaTestBuilder.setProductCmptGenImplClassBuilder(productCmptGenImplClassBuilder);
         
         // toc file builders
         tocFileBuilder.setProductCmptTypeImplClassBuilder(productCmptImplClassBuilder);
