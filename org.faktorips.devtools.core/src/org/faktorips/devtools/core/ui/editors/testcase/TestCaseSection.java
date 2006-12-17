@@ -2080,6 +2080,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				editField.getControl().setBackground(fFailureColor);
 				editField.getControl().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
 				editField.getControl().setToolTipText(expectedResult);
+                editField.getControl().setFocus();
 			}
 		});
 	}
@@ -2092,6 +2093,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 editField.getControl().setBackground(fOkColor);
                 editField.getControl().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
                 editField.getControl().setToolTipText(message);
+                editField.getControl().setFocus();
             }
         });
     }
