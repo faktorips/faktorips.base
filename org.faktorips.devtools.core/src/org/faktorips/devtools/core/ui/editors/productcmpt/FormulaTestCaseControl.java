@@ -272,16 +272,23 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         public String getColumnText(Object element, int columnIndex) {
             if (element instanceof ExtDataForFormulaTestCase){
                 ExtDataForFormulaTestCase ftc = (ExtDataForFormulaTestCase) element;
-                if (columnIndex == IDX_COLUMN_NAME){
+                IConfigElement ce = (IConfigElement)ftc.getFormulaTestCase().getParent();
+                ValueDatatype vd = ValueDatatype.STRING;
+                try {
+                    vd = ce.findValueDatatype();
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+                
+                if (columnIndex == IDX_COLUMN_NAME) {
                     return getTextInNullPresentationIfNull(ftc.getName());
-                } else if (columnIndex == IDX_COLUMN_EXPECTED_RESULT){
-                    return getTextInNullPresentationIfNull(ftc.getExpectedResult());
-                } else if (columnIndex == IDX_COLUMN_ACTUAL_RESULT){
+                } else if (columnIndex == IDX_COLUMN_EXPECTED_RESULT) {
+                    return IpsPlugin.getDefault().getIpsPreferences().formatValue(vd, ftc.getExpectedResult());
+                } else if (columnIndex == IDX_COLUMN_ACTUAL_RESULT) {
                     Object actualResult = ftc.getActualResult();
-                    if (actualResult == null){
-                        return ""; //$NON-NLS-1$
-                    }
-                    return actualResult.toString();
+                    String formatedActualResult = actualResult == null || actualResult.equals("") ? "" : IpsPlugin //$NON-NLS-1$ //$NON-NLS-2$
+                            .getDefault().getIpsPreferences().formatValue(vd, "" + actualResult); //$NON-NLS-1$
+                    return formatedActualResult;
                 }
             }
             return null;
@@ -715,10 +722,16 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     }
 
     private void createTableCellModifier(UIToolkit uiToolkit) {
+        ValueDatatype resultValueDatatype = ValueDatatype.STRING;
+        try {
+            resultValueDatatype = configElement.findValueDatatype();
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
         BeanTableCellModifier tableCellModifier = new BeanTableCellModifier(formulaTestCaseTableViewer, this);
         tableCellModifier.initModifier(uiToolkit, new String[] { null, IFormulaTestCase.PROPERTY_NAME,
                 IFormulaTestCase.PROPERTY_EXPECTED_RESULT, PROPERTY_ACTUAL_RESULT }, new ValueDatatype[] { null,
-                ValueDatatype.STRING, ValueDatatype.STRING, null });
+                ValueDatatype.STRING, resultValueDatatype, null });
         tableCellModifier.addListener(this);
     }
 

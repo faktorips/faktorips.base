@@ -479,7 +479,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             };
             BusyIndicator.showWhile(getDisplay(), calculate);
 
-            showFormulaResult(""+lastCalculatedResult); //$NON-NLS-1$
+            showFormulaResult(lastCalculatedResult); //$NON-NLS-1$
             if (storeExpectedResult){
                 formulaTestCase.setExpectedResult(lastCalculatedResult==null?null:lastCalculatedResult.toString());
             }
@@ -512,11 +512,20 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     /*
      * Displays the result of the formula
      */
-    private void showFormulaResult(String result){
+    private void showFormulaResult(Object result){
         if (updateBySelf()){
             return;
         }
-        formulaResult.setText(""+result); //$NON-NLS-1$
+        String resultToDisplay=""; //$NON-NLS-1$
+        IConfigElement configElement = (IConfigElement) formulaTestCase.getParent();
+        ValueDatatype vd;
+        try {
+            vd = configElement.findValueDatatype();
+            resultToDisplay = IpsPlugin.getDefault().getIpsPreferences().formatValue(vd, ""+result); //$NON-NLS-1$
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+        formulaResult.setText(resultToDisplay); //$NON-NLS-1$
         formulaResult.pack();
     }
     
