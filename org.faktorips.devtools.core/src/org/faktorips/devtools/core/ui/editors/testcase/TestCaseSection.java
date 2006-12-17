@@ -54,14 +54,17 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
+import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -107,10 +110,11 @@ import org.faktorips.util.message.MessageList;
  * Section to display and edit a ips test case.
  */
 public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
-	public static final String VALUESECTION = "VALUESECTION"; //$NON-NLS-1$
+    public static final String VALUESECTION = "VALUESECTION"; //$NON-NLS-1$
 	
     //Ui refresh intervall
     static final int REFRESH_INTERVAL = 400;
+
     
 	// The treeview which displays all test policy components and test values which are available in this test
 	private TreeViewer treeViewer;
@@ -202,9 +206,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      */
     private class ToggleContentTypeAction extends Action {
         private final int fActionContentType;
-        
+
         public ToggleContentTypeAction(int actionContentType) {
             super("", AS_RADIO_BUTTON); //$NON-NLS-1$
+            setId("ToggleContentTypeAction" + actionContentType);
             fActionContentType = actionContentType;
             if (actionContentType == TestCaseContentProvider.INPUT) {
                 buttonChecked();
@@ -1761,14 +1766,14 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      */
     protected void performRefresh() {
         treeViewer.refresh();
-        // reset the test runner status
+        
+        // reset the test status color of the title area
         postResetTestRunStatus();
-
+        
         // if in the meanwhile the test case type changed check for inconsistence between test case
         // and test case type, only if the data is changeable
         if (testCaseTypeChanged) {
             testCaseTypeChanged = false;
-            postResetTestRunStatus();
             refreshTreeAndDetailArea();
         }
     }
@@ -1889,7 +1894,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             public void run() {
                 if (isDisposed())
                     return;
-                form.getContent().setToolTipText(form.getContent().getToolTipText() + "\n" + failureToolTip); //$NON-NLS-1$
+                setFormToolTipText(getFormToolTipText() + "\n" + failureToolTip);
             }
         });
     }    
@@ -1904,21 +1909,19 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         postAddExpectedResultContextMenu(control, list, isSectionTitleMenu);
     }
     
-    private Control getSectionTitleControl(){
-        return form.getContent();
-    }
-    
     private void postAddExpectedResultContextMenu(final Control control,
             final List failureDetails,
             final boolean isSectionTitleMenu) {
         postAsyncRunnable(new Runnable() {
             public void run() {
-                if (isDisposed() || control == null || !isDataChangeable())
+                if (isDisposed() || control == null || !isDataChangeable()){
                     return;
-
-                if (failureDetails.size() == 0)
+                }
+                
+                if (failureDetails.size() == 0){
                     return;
-
+                }
+                
                 EditFieldMenu menuMgr = new EditFieldMenu("#PopupMenu", failureDetails); //$NON-NLS-1$
                 menuMgr.setRemoveAllWhenShown(true);
                 menuMgr.addMenuListener(menuMgr);
@@ -1945,7 +1948,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         // create context menu to store actual value as expected value
         List allFailuresCopy = new ArrayList();
         allFailuresCopy.addAll(allFailureDetails);
-        postAddExpectedResultContextMenu(getSectionTitleControl(), allFailuresCopy, true);
+        postAddExpectedResultContextMenu(form.getContent(), allFailuresCopy, true);
 	}
 
 	/**
@@ -2008,10 +2011,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	    // nothing to do
     }
     
-    void postAsyncRunnable(Runnable r) {
-        if (!isDisposed())
-            getDisplay().asyncExec(r);
-    }   
+	void postAsyncRunnable(Runnable r) {
+	    if (!isDisposed())
+	        getDisplay().asyncExec(r);
+	}   
 	
     /*
 	 * Returns <code>true</code> if the test run listener is relevant for this test case.<br>
@@ -2020,10 +2023,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 */
 	private boolean canListenToTestRun(String testCaseQualifiedName) {
         if (testCase.getIpsSrcFile().isDirty()){
-            postResetTestRunStatus();
             return false;
         }
-		return testCaseQualifiedName.equals(testCase.getQualifiedName());
+        return testCaseQualifiedName.equals(testCase.getQualifiedName());
 	}
 
 	void postSetTestRunStatus(final boolean isError, final boolean isFailure, final int failureCount) {
@@ -2031,12 +2033,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 			public void run() {
 				if (isDisposed())
                     return;
-                setTitleStatus(isError, isFailure, false, failureCount, form.getContent().getToolTipText());
+                setTitleStatus(isError, isFailure, false, failureCount, getFormToolTipText());
 			}
 
 		});
 	}
-	
+    
     /*
      * Sets the status in the section title. One of:<ul>
      * <li>error - color red, tooltip contains error ocurred (no further details)
@@ -2053,20 +2055,20 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         if (isError) {
             form.getContent().setBackground(fFailureColor);
             form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-            form.getContent().setToolTipText(Messages.TestCaseEditor_Title_Error);
+            setFormToolTipText(Messages.TestCaseEditor_Title_Error);
         } else if (isFailure) {
             form.getContent().setBackground(fFailureColor);
             form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-            form.getContent().setToolTipText(
+            setFormToolTipText(
                     NLS.bind(Messages.TestCaseEditor_Title_Failure, "" + failureCount) + titleMessage); //$NON-NLS-1$
         } else if (isOverridden) {
             form.getContent().setBackground(getDisplay().getSystemColor(SWT.COLOR_YELLOW));
             form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_BLACK));
-            form.getContent().setToolTipText(titleMessage);
+            setFormToolTipText(titleMessage);
         } else {
             form.getContent().setBackground(fOkColor);
             form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-            form.getContent().setToolTipText(Messages.TestCaseEditor_Title_Success);
+            setFormToolTipText(Messages.TestCaseEditor_Title_Success);
         }
     }
 
@@ -2078,7 +2080,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				editField.getControl().setBackground(fFailureColor);
 				editField.getControl().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
 				editField.getControl().setToolTipText(expectedResult);
-				editField.getControl().setFocus();
 			}
 		});
 	}
@@ -2091,7 +2092,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 editField.getControl().setBackground(fOkColor);
                 editField.getControl().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
                 editField.getControl().setToolTipText(message);
-                editField.getControl().setFocus();
             }
         });
     }
@@ -2124,7 +2124,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     public void resetTestRunStatus(){
         form.getContent().setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
         form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_BLACK));
-        form.getContent().setToolTipText(""); //$NON-NLS-1$
+        setFormToolTipText(""); //$NON-NLS-1$
         testCaseDetailArea.resetTestRun();
         allFailureDetails.clear();
     }
@@ -2270,5 +2270,40 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      */
     public boolean canNavigateToFailure() {
         return true;
+    }
+    
+    private void setFormToolTipText(String text){
+        getFormTitleLabel().setToolTipText(text);
+    }
+    
+    private String getFormToolTipText(){
+        String text = getFormTitleLabel().getToolTipText();
+        return text!=null?text:"";
+    }
+    
+    /*
+     * Returns the label of the title headline, must be done in this way, because
+     * between Eclipse 3.1 and Eclipse 3.2 the headline control changed. Thus search 
+     * for the lable statring at the form content control.
+     */
+    private Label getFormTitleLabel() {
+        Object content = form.getContent();
+        if (content instanceof Form) {
+            Form contentForm = (Form)content;
+            Control[] childs = contentForm.getChildren();
+            for (int i = 0; i < childs.length; i++) {
+                if (childs[i] instanceof Label) {
+                    return (Label)childs[i];
+                } else if (childs[i] instanceof Canvas) {
+                    Control[] childChilds = ((Canvas)childs[i]).getChildren();
+                    for (int j = 0; j < childChilds.length; j++) {
+                        if (childChilds[j] instanceof Label) {
+                            return (Label)childChilds[j];
+                        }
+                    }
+                }
+            }
+        }
+        throw new RuntimeException("Tooltip couldn't be determined because title label control doesn't exists.");
     }
 }
