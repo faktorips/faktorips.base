@@ -2282,12 +2282,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     }
     
     /*
-     * Returns the label of the title headline, must be done in this way, because
+     * Returns the control of the title headline, must be done in this way, because
      * between Eclipse 3.1 and Eclipse 3.2 the headline control changed. Thus search 
      * for the lable statring at the form content control.
      */
-    private Label getFormTitleLabel() {
-        Object content = form.getContent();
+    private Control getFormTitleLabel() {
+        Control content = form.getContent();
         if (content instanceof Form) {
             Form contentForm = (Form)content;
             Control[] childs = contentForm.getChildren();
@@ -2304,6 +2304,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             }
         }
-        throw new RuntimeException("Tooltip couldn't be determined because title label control doesn't exists.");
+        return content;
     }
 }
