@@ -34,6 +34,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
@@ -46,6 +47,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.ui.editors.testcase.TestCaseEditor;
 import org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart;
 
 /**
@@ -309,7 +311,14 @@ public class IpsTestAction extends IpsAction {
 	 * Displays the ips test run result view.
 	 */
 	private void showTestCaseResultView(String viewId) throws PartInitException {
-        IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId, null, IWorkbenchPage.VIEW_VISIBLE);
+        IWorkbenchPage wp = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IWorkbenchPart wpart = wp.getActivePart();
+        // activate the test case result view only if the test case editor is not the active part
+        if (wpart instanceof TestCaseEditor){
+            wp.showView(viewId, null, IWorkbenchPage.VIEW_VISIBLE);
+        } else {
+            wp.showView(viewId, null, IWorkbenchPage.VIEW_ACTIVATE);
+        }
     }
 
     public void setLauch(ILaunch launch) {
