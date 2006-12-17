@@ -70,8 +70,9 @@ public interface ITestCaseType extends IIpsObject {
      * Search and return the test parameter by the given name.
      * <p>
      * Returns <code>null</code> if the test parameter was not found.
+     * Returns the first test parameter if more than one test parameter found.
      * 
-     * @throws CoreException if more than one test parameter found.
+     * @throws CoreException if an error occurs.
      */
     public ITestParameter getTestParameterByName(String testParameterName) throws CoreException;
 
@@ -120,15 +121,17 @@ public interface ITestCaseType extends IIpsObject {
 
     /**
      * Returns the input test value parameter or <code>null</code> if not found.
-     * 
-     * @throws CoreException if more than one test value parameter found with the given name.
+     * Returns the first test parameter if more than one test parameter found.
+     *      
+     * @throws CoreException if an error occurs.
      */
     public ITestValueParameter getInputTestValueParameter(String inputTestValueParameter) throws CoreException;
 
     /**
      * Returns the input test policy component type parameter or <code>null</code> if not found.
+     * Returns the first test parameter if more than one test parameter found.
      * 
-     * @throws CoreException if more than one test value parameter found with the given name.
+     * @throws CoreException if an error occurs.
      */
     public ITestPolicyCmptTypeParameter getInputTestPolicyCmptTypeParameter(String inputTestPolicyCmptTypeParameter)
             throws CoreException;
@@ -153,8 +156,9 @@ public interface ITestCaseType extends IIpsObject {
 
     /**
      * Returns the expected result test value parameter or <code>null</code> if not found.
+     * Returns the first test parameter if more than one test parameter found.
      * 
-     * @throws CoreException if more than one test value parameter found with the given name.
+     * @throws CoreException if an error occurs.
      */
     public ITestValueParameter getExpectedResultTestValueParameter(String expResultTestValueParameter)
             throws CoreException;
@@ -162,8 +166,9 @@ public interface ITestCaseType extends IIpsObject {
     /**
      * Returns the expected result test policy component type parameter or <code>null</code> if
      * not found.
+     * Returns the first test parameter if more than one test parameter found.
      * 
-     * @throws CoreException if more than one test value parameter found with the given name.
+     * @throws CoreException if an error occurs.
      */
     public ITestPolicyCmptTypeParameter getExpectedResultTestPolicyCmptTypeParameter(String expResultTestPolicyCmptTypeParameter)
             throws CoreException;

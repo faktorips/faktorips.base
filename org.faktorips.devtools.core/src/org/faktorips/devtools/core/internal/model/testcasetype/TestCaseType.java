@@ -244,11 +244,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         if (foundTestParameter.size() == 0)
             return null;
 
-        if (foundTestParameter.size() == 1) {
-            return (ITestParameter)foundTestParameter.get(0);
-        }
-
-        throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCaseType_Error_MoreThanOneParamWithName, testParameterName)));
+        return (ITestParameter)foundTestParameter.get(0);
     }
     
     /**
