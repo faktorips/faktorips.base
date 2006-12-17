@@ -33,6 +33,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
@@ -308,7 +309,7 @@ public class IpsTestAction extends IpsAction {
 	 * Displays the ips test run result view.
 	 */
 	private void showTestCaseResultView(String viewId) throws PartInitException {
-        IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId);
+        IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId, null, IWorkbenchPage.VIEW_VISIBLE);
     }
 
     public void setLauch(ILaunch launch) {
