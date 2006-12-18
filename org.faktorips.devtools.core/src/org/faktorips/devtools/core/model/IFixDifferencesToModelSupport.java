@@ -31,6 +31,7 @@ public interface IFixDifferencesToModelSupport {
 
     /**
      * Fixes all differences between this element and its corresponding model element.
+     * The element should be saved before this method returns.
      * 
      * @throws CoreException
      */

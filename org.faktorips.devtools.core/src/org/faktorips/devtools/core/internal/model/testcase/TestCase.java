@@ -974,5 +974,6 @@ public class TestCase extends IpsObject implements ITestCase {
      */
     public void fixAllDifferencesToModel() throws CoreException {
         fixDifferences(computeDeltaToTestCaseType());
+        this.getIpsSrcFile().save(true, null);
     }
 }

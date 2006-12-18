@@ -320,7 +320,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             IIpsObjectGeneration generation = generations[i];
             if(generation instanceof IProductCmptGeneration){
                 ((IProductCmptGeneration)generation).fixDifferences(((IProductCmptGeneration)generation).computeDeltaToPolicyCmptType());
+                
             }
         }
+        this.getIpsSrcFile().save(true, null);
     }
 }

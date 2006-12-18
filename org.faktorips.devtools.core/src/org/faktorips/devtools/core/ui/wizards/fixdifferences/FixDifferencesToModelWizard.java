@@ -13,9 +13,13 @@
 
 package org.faktorips.devtools.core.ui.wizards.fixdifferences;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
@@ -40,13 +44,38 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
     }
 
     public boolean performFinish() {
-        IFixDifferencesToModelSupport[] elementsToFix = elementSelectionPage.getElementsToFix();
-        try {
-            for (int i = 0; i < elementsToFix.length; i++) {
-                elementsToFix[i].fixAllDifferencesToModel();
+        final IFixDifferencesToModelSupport[] elementsToFix = elementSelectionPage.getElementsToFix();
+        final IWorkspaceRunnable op = new IWorkspaceRunnable() {
+            public void run(IProgressMonitor monitor) {
+                monitor.beginTask("fixing differences to model", elementsToFix.length);
+                try {
+                    for (int i = 0; i < elementsToFix.length; i++) {
+                        elementsToFix[i].fixAllDifferencesToModel();
+                        monitor.worked(1);
+                    }
+                }
+                catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+                finally {
+                    monitor.done();
+                }
             }
+        };
+
+        try {
+            getContainer().run(true, true, new IRunnableWithProgress(){
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    try {
+                        IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(op, monitor);
+                    }
+                    catch (CoreException e) {
+                        IpsPlugin.logAndShowErrorDialog(e);
+                    }
+                }                
+            });
         }
-        catch (CoreException e) {
+        catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }
@@ -56,6 +85,7 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         // initialization is handled in the calling action, which transforms the selection to the
         // needed set.
+        setNeedsProgressMonitor(true);
     }
 
     public void addPages() {
