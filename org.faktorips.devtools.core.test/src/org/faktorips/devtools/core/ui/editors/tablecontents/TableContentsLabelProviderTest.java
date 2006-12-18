@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.ui.editors.tablecontents;
 
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -70,6 +71,8 @@ public class TableContentsLabelProviderTest extends AbstractIpsPluginTest {
         rowNull.setValue(2, null);
         
         labelProvider = new TableContentsLabelProvider();
+        labelProvider.setValueDatatypes(new ValueDatatype[] { column0.findValueDatatype(), column1.findValueDatatype(),
+                column2.findValueDatatype() });
     }
     
     public void testGetColumnImage(){
