@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IProject;
@@ -92,7 +93,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     /**
      * {@inheritDoc}
      */
-    public IIpsObject findIpsObject(IIpsProject project, QualifiedNameType nameType)
+    public IIpsObject findIpsObjectInternal(IIpsProject project, QualifiedNameType nameType, Set visitedEntries)
             throws CoreException {
         return referencedIpsProject.findIpsObject(nameType);
     }
@@ -100,17 +101,17 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     /**
      * {@inheritDoc}
      */
-    public void findIpsObjects(IIpsProject project, IpsObjectType type, List result)
+    public void findIpsObjectsInternal(IIpsProject project, IpsObjectType type, List result, Set visitedEntries)
             throws CoreException {
-        ((IpsProject)referencedIpsProject).findIpsObjects(type, result);
+        ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsObjects(referencedIpsProject, type, result, visitedEntries);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void findIpsObjectsStartingWith(IIpsProject project, IpsObjectType type, String prefix, boolean ignoreCase, List result)
+    public void findIpsObjectsStartingWithInternal(IIpsProject project, IpsObjectType type, String prefix, boolean ignoreCase, List result,Set visitedEntries)
             throws CoreException {
-        ((IpsProject)referencedIpsProject).findIpsObjectsStartingWith(type, prefix, ignoreCase, result);
+        ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsObjectsStartingWith(referencedIpsProject, type, prefix, ignoreCase, result, visitedEntries);
     }
     
     /**

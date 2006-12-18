@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -115,25 +116,26 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     /**
      * {@inheritDoc}
      */
-    public IIpsObject findIpsObject(IIpsProject ipsProject, QualifiedNameType qnt) throws CoreException {
+    public IIpsObject findIpsObjectInternal(IIpsProject ipsProject, QualifiedNameType qnt, Set visitedEntries) throws CoreException {
         return getIpsPackageFragmentRoot(ipsProject).findIpsObject(qnt);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void findIpsObjects(IIpsProject ipsProject, IpsObjectType type, List result) throws CoreException {
+    public void findIpsObjectsInternal(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException {
         ((ArchiveIpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsObjects(type, result);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void findIpsObjectsStartingWith(IIpsProject ipsProject,
+    public void findIpsObjectsStartingWithInternal(IIpsProject ipsProject,
             IpsObjectType type,
             String prefix,
             boolean ignoreCase,
-            List result) throws CoreException {
+            List result,
+            Set visitedEntries) throws CoreException {
         
         if (ignoreCase) {
             prefix = prefix.toLowerCase();

@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -218,21 +219,21 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     /**
      * {@inheritDoc}
      */
-    public IIpsObject findIpsObject(IIpsProject ipsProject, QualifiedNameType nameType) throws CoreException {
+    public IIpsObject findIpsObjectInternal(IIpsProject ipsProject, QualifiedNameType nameType, Set visitedEntries) throws CoreException {
         return getIpsPackageFragmentRoot(ipsProject).findIpsObject(nameType);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void findIpsObjects(IIpsProject ipsProject, IpsObjectType type, List result) throws CoreException {
+    public void findIpsObjectsInternal(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException {
         ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsObjects(type, result);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void findIpsObjectsStartingWith(IIpsProject ipsProject, IpsObjectType type, String prefix, boolean ignoreCase, List result)
+    protected void findIpsObjectsStartingWithInternal(IIpsProject ipsProject, IpsObjectType type, String prefix, boolean ignoreCase, List result, Set visitedEntries)
             throws CoreException {
         ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsObjectsStartingWith(type, prefix, ignoreCase,
                 result);

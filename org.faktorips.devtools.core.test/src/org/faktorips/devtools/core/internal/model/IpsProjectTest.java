@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -704,6 +705,35 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         props.setProductDefinitionProject(false);        
         ml = ipsProject.validate();
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS));  
+    }
+    
+    public void testValidateIpsObjectPathCycle() throws CoreException{
+        IIpsProject ipsProject2 = (IpsProject)this.newIpsProject("TestProject2");
+        IIpsObjectPath path = ipsProject2.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject);
+        ipsProject2.setIpsObjectPath(path);
+        
+        MessageList ml = ipsProject.validate();
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        
+        path = ipsProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject2);
+        ipsProject.setIpsObjectPath(path);
+        
+        List result = new ArrayList();
+        ipsProject.findAllIpsObjects(result);
+        // there is an cycle in the ref projects,
+        // if we get no stack overflow exception, then the test was successfully executed
+        
+        ml = ipsProject.validate();
+        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        
+        path = ipsProject.getIpsObjectPath();
+        path.removeProjectRefEntry(ipsProject2);
+        ipsProject.setIpsObjectPath(path);  
+        
+        ml = ipsProject.validate();
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
     }
     
     private void setVersion(String version) throws CoreException {

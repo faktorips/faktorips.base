@@ -18,7 +18,9 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -73,16 +75,19 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         IIpsObject motorCollision = project.findIpsObject(qntMotorCollision);
         
         List result = new ArrayList();
-        entry.findIpsObjectsStartingWith(project, IpsObjectType.POLICY_CMPT_TYPE, "motor", true, result);
+        
+        Set visitedEntries = new HashSet();
+        entry.findIpsObjectsStartingWith(project, IpsObjectType.POLICY_CMPT_TYPE, "motor", true, result, visitedEntries);
         assertEquals(2, result.size());
         assertTrue(result.contains(motorPolicy));
         assertTrue(result.contains(motorCollision));
         
         result = new ArrayList();
-        entry.findIpsObjectsStartingWith(project, IpsObjectType.POLICY_CMPT_TYPE, "motor", false, result);
+        visitedEntries.clear();
+        entry.findIpsObjectsStartingWith(project, IpsObjectType.POLICY_CMPT_TYPE, "motor", false, result, visitedEntries);
         assertEquals(0, result.size());
         
-        entry.findIpsObjectsStartingWith(project, IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result);
+        entry.findIpsObjectsStartingWith(project, IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result, visitedEntries);
         assertEquals(2, result.size());
         assertTrue(result.contains(motorPolicy));
         assertTrue(result.contains(motorCollision));

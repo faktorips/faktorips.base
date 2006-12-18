@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -65,13 +66,32 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     /**
      * Returns the first object with the indicated qualified name type found in the path entry.
      */
-    public abstract IIpsObject findIpsObject(IIpsProject ipsProject, QualifiedNameType nameType) throws CoreException;    
+    public final IIpsObject findIpsObject(IIpsProject ipsProject, QualifiedNameType nameType, Set visitedEntries) throws CoreException {
+        if (visitedEntries.contains(this)) {
+            return null;
+        }
+        visitedEntries.add(this);
+        return findIpsObjectInternal(ipsProject, nameType, visitedEntries);
+    }
+
+    public abstract IIpsObject findIpsObjectInternal(IIpsProject ipsProject, QualifiedNameType nameType, Set visitedEntries) throws CoreException;
 
     /**
      * Adds all objects of the given type found in the path entry to the result list. 
      */
-    public abstract void findIpsObjects(IIpsProject ipsProject, IpsObjectType type, List result) throws CoreException;
+    public final void findIpsObjects(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException {
+        if (visitedEntries.contains(this)) {
+            return;
+        }
+        visitedEntries.add(this);
+        findIpsObjectsInternal(ipsProject, type, result, visitedEntries);
+    }
     
+    /**
+     * Adds all objects of the given type found in the path entry to the result list. 
+     */
+    public abstract void findIpsObjectsInternal(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException;
+
     /**
      * Returns all objects of the given type starting with the given prefix found on the path.
      * 
@@ -79,12 +99,36 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
      * 
      * @throws CoreException if an error occurs while searching for the objects. 
      */
-    protected abstract void findIpsObjectsStartingWith(
+    protected final void findIpsObjectsStartingWith(
     		IIpsProject ipsProject, 
     		IpsObjectType type, 
     		String prefix, 
     		boolean ignoreCase, 
-    		List result ) throws CoreException;
+    		List result,
+            Set visitedEntries) throws CoreException {
+
+        if (visitedEntries.contains(this)) {
+            return;
+        }
+        visitedEntries.add(this);
+        findIpsObjectsStartingWithInternal(ipsProject, type, prefix, ignoreCase, result, visitedEntries);
+        
+    }
+
+    /**
+     * Returns all objects of the given type starting with the given prefix found on the path.
+     * 
+     * @param ignoreCase <code>true</code> if case differences should be ignored during the search.
+     * 
+     * @throws CoreException if an error occurs while searching for the objects. 
+     */
+    protected abstract void findIpsObjectsStartingWithInternal(
+            IIpsProject ipsProject, 
+            IpsObjectType type, 
+            String prefix, 
+            boolean ignoreCase, 
+            List result,
+            Set visitedEntries) throws CoreException;
 
     /**
      * Initializes the entry with the data stored in the xml element.

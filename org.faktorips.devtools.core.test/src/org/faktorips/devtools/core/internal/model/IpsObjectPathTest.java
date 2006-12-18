@@ -18,6 +18,8 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -219,7 +221,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         IIpsObject obj2 = newIpsObject(ipsProject2, IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy2");
         
         ArrayList result = new ArrayList();
-        path.findIpsObjectsStartingWith(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result);
+        Set visitedEntries = new HashSet();
+        path.findIpsObjectsStartingWith(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result, visitedEntries);
         assertEquals(2, result.size());
         assertTrue(result.contains(obj1));
         assertTrue(result.contains(obj2));

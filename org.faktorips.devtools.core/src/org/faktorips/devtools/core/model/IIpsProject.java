@@ -98,6 +98,13 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public final static String MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS = MSGCODE_PREFIX
             + "DuplicateBasePackageNameForGeneratedClassesInDifferentProjects"; //$NON-NLS-1$
     
+
+    /**
+     * Validation message code to indicate that there is a cycle in the ips object path.
+     */
+    public final static String MSGCODE_CYCLE_IN_IPS_OBJECT_PATH = MSGCODE_PREFIX
+    + "CycleInIpsObjectPath"; //$NON-NLS-1$
+    
     /**
      * Validation message code to indicate that there exist two runtime ids which collide.
      */

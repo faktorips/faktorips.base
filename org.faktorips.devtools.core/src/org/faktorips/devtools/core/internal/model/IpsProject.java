@@ -558,14 +558,16 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException {
-        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObject(this, nameType);
+        Set visitedEntries = new HashSet();
+        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObject(this, nameType, visitedEntries);
     }
 
     /**
      * {@inheritDoc}
      */
     public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
-        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObject(this, type, qualifiedName);
+        Set visitedEntries = new HashSet();
+        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObject(this, type, qualifiedName, visitedEntries);
     }
 
     /**
@@ -589,8 +591,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
             String prefix,
             boolean ignoreCase,
             List result) throws CoreException {
+        Set visitedEntries = new HashSet();
         ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObjectsStartingWith(this, type, prefix,
-            ignoreCase, result);
+            ignoreCase, result, visitedEntries);
     }
 
     /**
@@ -611,7 +614,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
 	 */
     public IIpsObject[] findIpsObjects(IpsObjectType type) throws CoreException {
-        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObjects(this, type);
+        Set visitedEntries = new HashSet();
+        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObjects(this, type, visitedEntries);
     }
 
     /**
@@ -619,17 +623,19 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * @throws CoreException
      */
     public void findAllIpsObjects(List result) throws CoreException{
-        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.POLICY_CMPT_TYPE, result);
-        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.PRODUCT_CMPT, result);
-        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TABLE_STRUCTURE, result);
-        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TABLE_CONTENTS, result);
-        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.BUSINESS_FUNCTION, result);
-        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TEST_CASE, result);
-        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TEST_CASE_TYPE, result);        
+        Set visitedEntries = new HashSet();
+        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.POLICY_CMPT_TYPE, result, visitedEntries);
+        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.PRODUCT_CMPT, result, visitedEntries);
+        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TABLE_STRUCTURE, result, visitedEntries);
+        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TABLE_CONTENTS, result, visitedEntries);
+        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.BUSINESS_FUNCTION, result, visitedEntries);
+        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TEST_CASE, result, visitedEntries);
+        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TEST_CASE_TYPE, result, visitedEntries);        
     }
     
     public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
-    	getIpsObjectPathInternal().findIpsObjects(this, type, result);
+        Set visitedEntries = new HashSet();
+    	getIpsObjectPathInternal().findIpsObjects(this, type, result, visitedEntries);
     }
 
     /**
@@ -1080,8 +1086,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		return result;
 	}
 
-    private void validateIpsObjectPathCycle(MessageList result, IpsProjectProperties props) {
-        // FIXME Joerg
+    private void validateIpsObjectPathCycle(MessageList result, IpsProjectProperties props) throws CoreException {
+        List visitedEntries = new ArrayList();
+        IpsObjectPath path = getIpsObjectPathInternal();
+        if (path.detectCycle(visitedEntries)){
+            String msg = Messages.IpsProject_msgCycleInIpsObjectPath;
+            result.add(new Message(MSGCODE_CYCLE_IN_IPS_OBJECT_PATH, msg, Message.ERROR, this));            
+        }
     }
 
     private void validateMigration(MessageList result, IpsProjectProperties props) {
@@ -1128,7 +1139,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     private void validateDuplicateTocFilePath(MessageList result, IpsProjectProperties props)
             throws CoreException {
-        IIpsObjectPath path = getIpsObjectPath();
+        IIpsObjectPath path = getIpsObjectPathInternal();
         if (path == null) {
             return;
         }
@@ -1140,7 +1151,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             if (! referencedProjects[i].isProductDefinitionProject()){
                 continue;
             }
-            IIpsObjectPath pathRelProject = referencedProjects[i].getIpsObjectPath();
+            IIpsObjectPath pathRelProject = ((IpsProject)referencedProjects[i]).getIpsObjectPathInternal();
             if (pathRelProject == null) {
                 continue;
             }
