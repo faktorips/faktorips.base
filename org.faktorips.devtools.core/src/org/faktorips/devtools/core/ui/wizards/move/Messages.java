@@ -44,8 +44,6 @@ public class Messages extends NLS {
 
 	public static String MovePage_targetLabel;
 
-	public static String MovePage_infoPackageWillBeCreated;
-
 	public static String MoveWizard_titleMove;
 
 	public static String MoveWizard_titleRename;
@@ -70,13 +68,9 @@ public class Messages extends NLS {
 
 	public static String RenamePage_newName;
 
-	public static String errorNameNotValid;
-
 	public static String RenamePage_errorFileExists;
 
 	public static String RenamePage_errorFolderExists;
-
-	public static String MovePage_labelDefaultPackage;
 
 	public static String RenamePage_labelVersionId;
 

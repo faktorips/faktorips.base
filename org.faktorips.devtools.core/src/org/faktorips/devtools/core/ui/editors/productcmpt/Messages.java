@@ -84,8 +84,6 @@ public class Messages extends NLS {
 
 	public static String ProductCmptEditor_title_GenerationMissmatch;
 
-	public static String RelationsContentProvider_msg_UnknownElementClass;
-
 	public static String GenerationsSection_titleShowGeneration;
 
 	public static String GenerationsSection_msgShowGeneration;
@@ -117,8 +115,6 @@ public class Messages extends NLS {
 	public static String SetTemplateDialog_msgTemplateDoesNotExist;
 
 	public static String ProductCmptEditor_msgTemplateNotFound;
-
-	public static String ProductCmptEditor_titleEmpty;
 
 	public static String GenerationEditDialog_titleChangeValidFromDate;
 

@@ -32,7 +32,6 @@ public class Messages extends NLS {
 
     public static String IpsPackagePage_msgNew; 
     public static String IpsPackagePage_labelSrcFolder;
-    public static String IpsPackagePage_labelPackage;
     public static String IpsPackagePage_labelName;
     public static String IpsPackagePage_msgRootMissing;
     public static String IpsPackagePage_msgRootNoIPSSrcFolder;
