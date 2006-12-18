@@ -87,6 +87,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         entry.findIpsObjectsStartingWith(project, IpsObjectType.POLICY_CMPT_TYPE, "motor", false, result, visitedEntries);
         assertEquals(0, result.size());
         
+        visitedEntries.clear();
         entry.findIpsObjectsStartingWith(project, IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result, visitedEntries);
         assertEquals(2, result.size());
         assertTrue(result.contains(motorPolicy));
