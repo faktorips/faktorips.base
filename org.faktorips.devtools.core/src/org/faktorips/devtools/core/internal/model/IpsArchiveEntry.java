@@ -54,7 +54,7 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         return "Archive:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
             +  "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
             +  "     type=\"archive\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-            +  "     referencedIpsProject=\"base\">      The other project used by this project." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+            +  "     file=\"base.jar\">      The archive file." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
             +  "  </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR;  //$NON-NLS-1$ //$NON-NLS-2$
     }
     

@@ -1076,8 +1076,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
         validateRequiredFeatures(result, props);
         validateMigration(result, props);
         validateDuplicateTocFilePath(result, props);
+        validateIpsObjectPathCycle(result, props); 
 		return result;
 	}
+
+    private void validateIpsObjectPathCycle(MessageList result, IpsProjectProperties props) {
+        // FIXME Joerg
+    }
 
     private void validateMigration(MessageList result, IpsProjectProperties props) {
         IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();

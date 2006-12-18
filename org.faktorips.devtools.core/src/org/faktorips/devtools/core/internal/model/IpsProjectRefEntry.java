@@ -51,7 +51,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
         return "Project Reference:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
             +  "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
             +  "     type=\"project\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-            +  "     file=\"base.jar\">      The archive file." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+            +  "     referencedIpsProject=\"base\">      The other project used by this project." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
             +  "  </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR;  //$NON-NLS-1$ //$NON-NLS-2$
     }
     
