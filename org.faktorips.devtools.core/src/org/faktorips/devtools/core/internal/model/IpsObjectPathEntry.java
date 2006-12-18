@@ -74,7 +74,10 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
         return findIpsObjectInternal(ipsProject, nameType, visitedEntries);
     }
 
-    public abstract IIpsObject findIpsObjectInternal(IIpsProject ipsProject, QualifiedNameType nameType, Set visitedEntries) throws CoreException;
+    /**
+     * Returns the first object with the indicated qualified name type found in the path entry.
+     */
+    protected abstract IIpsObject findIpsObjectInternal(IIpsProject ipsProject, QualifiedNameType nameType, Set visitedEntries) throws CoreException;
 
     /**
      * Adds all objects of the given type found in the path entry to the result list. 
@@ -90,7 +93,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     /**
      * Adds all objects of the given type found in the path entry to the result list. 
      */
-    public abstract void findIpsObjectsInternal(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException;
+    protected abstract void findIpsObjectsInternal(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException;
 
     /**
      * Returns all objects of the given type starting with the given prefix found on the path.
@@ -99,7 +102,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
      * 
      * @throws CoreException if an error occurs while searching for the objects. 
      */
-    protected final void findIpsObjectsStartingWith(
+    public final void findIpsObjectsStartingWith(
     		IIpsProject ipsProject, 
     		IpsObjectType type, 
     		String prefix, 
