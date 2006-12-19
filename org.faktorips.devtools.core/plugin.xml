@@ -228,7 +228,7 @@
 	    	<action
             class="org.faktorips.devtools.core.ui.wizards.fixdifferences.OpenFixDifferencesToModelWizardAction"
             enablesFor="*"
-            icon="icons/AddIpsNature.gif"
+            icon="icons/FixDifferencesToModel.gif"
             id="fixDifferencesAction"
             label="%fixDifferencesAction"
             menubarPath="additions">

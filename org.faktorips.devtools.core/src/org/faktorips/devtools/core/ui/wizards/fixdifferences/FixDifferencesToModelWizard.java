@@ -40,7 +40,7 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
         setWindowTitle(Messages.FixDifferencesToModelWizard_Title);
         this
                 .setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor(
-                        "wizards/NewIpsPackageWizard.png")); //$NON-NLS-1$
+                        "wizards/FixDifferencesToModelWizard.png")); //$NON-NLS-1$
     }
 
     public boolean performFinish() {

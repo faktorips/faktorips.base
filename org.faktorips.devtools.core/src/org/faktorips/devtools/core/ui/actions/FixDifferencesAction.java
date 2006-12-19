@@ -32,7 +32,7 @@ public class FixDifferencesAction extends Action {
         this.window = window;
         this.selection = selection;
         setText("Fix Differences");
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("NewIpsPackageFragment.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("FixDifferencesToModel.gif")); //$NON-NLS-1$
         this.setEnabled(true);
     }
 

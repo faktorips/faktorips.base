@@ -39,6 +39,7 @@ import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -222,7 +223,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         // Actions are unchecked as per default, check action for current layout
         if (isFlatLayout()) {
             flatLayoutAction.setChecked(true);
-        } else {
+        }
+        else {
             hierarchicalLayoutAction.setChecked(true);
         }
         IMenuManager mgr = getViewSite().getActionBars().getMenuManager();
@@ -325,7 +327,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         Object input = context.getInput();
         if (input instanceof IProductCmpt) {
             return reveal(context.getInput());
-        } else if (input instanceof IFileEditorInput) {
+        }
+        else if (input instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput)input).getFile();
             return reveal(file);
         }
@@ -336,23 +339,27 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         Object node;
         if (toReveal instanceof Object[]) {
             node = ((Object[])toReveal)[0];
-        } else {
+        }
+        else {
             node = toReveal;
         }
 
         if (node instanceof IProductCmptGeneration) {
             treeViewer.setSelection(new StructuredSelection(node), true);
             return true;
-        } else if (node instanceof IProductCmpt) {
+        }
+        else if (node instanceof IProductCmpt) {
             treeViewer.setSelection(new StructuredSelection(node), true);
             return true;
-        } else if (node instanceof IFile) {
+        }
+        else if (node instanceof IFile) {
             try {
                 IIpsSrcFile file = (IIpsSrcFile)IpsPlugin.getDefault().getIpsModel().getIpsElement((IFile)node);
                 IIpsObject obj = file.getIpsObject();
                 treeViewer.setSelection(new StructuredSelection(obj), true);
                 return true;
-            } catch (CoreException e) {
+            }
+            catch (CoreException e) {
                 IpsPlugin.log(e);
             }
         }
@@ -361,7 +368,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     protected class MenuBuilder implements IMenuListener {
         // hold references to enabled RetargetActions
-        private AbstractSelectionChangedListenerAction ipsDelete = new ModelExplorerDeleteAction(treeViewer, getSite().getShell());
+        private AbstractSelectionChangedListenerAction ipsDelete = new ModelExplorerDeleteAction(treeViewer, getSite()
+                .getShell());
         private IWorkbenchAction copy = ActionFactory.COPY.create(getSite().getWorkbenchWindow());
         private IWorkbenchAction paste = ActionFactory.PASTE.create(getSite().getWorkbenchWindow());
         private IWorkbenchAction delete = ActionFactory.DELETE.create(getSite().getWorkbenchWindow());
@@ -471,26 +479,29 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             IIpsPackageFragmentRoot root = null;
             if (object instanceof IIpsObject) {
                 root = ((IIpsObject)object).getIpsPackageFragment().getRoot();
-            } else if (object instanceof IIpsPackageFragment){
+            }
+            else if (object instanceof IIpsPackageFragment) {
                 root = ((IIpsPackageFragment)object).getRoot();
-            } else if (object instanceof IIpsPackageFragmentRoot){
+            }
+            else if (object instanceof IIpsPackageFragmentRoot) {
                 root = (IIpsPackageFragmentRoot)object;
             }
             return root;
         }
 
-        private boolean isRootArchive(Object object){
+        private boolean isRootArchive(Object object) {
             IIpsPackageFragmentRoot root = getPackageFragmentRoot(object);
             if (root != null) {
                 try {
                     return root.getIpsArchive() != null;
-                } catch (CoreException e) {
+                }
+                catch (CoreException e) {
                     IpsPlugin.log(e);
                 }
             }
             return false;
         }
-        
+
         protected void createObjectInfoActions(IMenuManager manager, Object selected) {
             if (selected instanceof IIpsElement) {
                 if (selected instanceof IProductCmpt) {
@@ -520,7 +531,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                         IpsPlugin.log(e);
                     }
                 }
-            } else {
+            }
+            else {
                 if (selected instanceof IProject) {
                     manager.add(openCloseAction((IProject)selected));
                 }
@@ -532,7 +544,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 CloseResourceAction close = new CloseResourceAction(getSite().getShell());
                 close.selectionChanged((IStructuredSelection)treeViewer.getSelection());
                 return close;
-            } else {
+            }
+            else {
                 OpenProjectAction open = new OpenProjectAction(getSite());
                 open.selectionChanged((IStructuredSelection)treeViewer.getSelection());
                 return open;
@@ -552,7 +565,10 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         protected void createFixDifferencesAction(IMenuManager manager, Object selected, IStructuredSelection selection) {
             if (selected instanceof IIpsElement) {
                 if (selected instanceof IIpsProject) {
-                    manager.add(new FixDifferencesAction(getSite().getWorkbenchWindow(), selection));
+                    IIpsProject project = (IIpsProject)selected;
+                    if (project.isProductDefinitionProject()) {
+                        manager.add(new FixDifferencesAction(getSite().getWorkbenchWindow(), selection));
+                    }
                 }
                 else if (selected instanceof IIpsPackageFragmentRoot) {
                     manager.add(new FixDifferencesAction(getSite().getWorkbenchWindow(), selection));
@@ -560,17 +576,29 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 else if (selected instanceof IIpsPackageFragment) {
                     manager.add(new FixDifferencesAction(getSite().getWorkbenchWindow(), selection));
                 }
+                else if (selected instanceof IFixDifferencesToModelSupport) {
+                    IFixDifferencesToModelSupport toFix = (IFixDifferencesToModelSupport) selected;
+                    try {
+                        if(toFix.containsDifferenceToModel()){
+                            manager.add(new FixDifferencesAction(getSite().getWorkbenchWindow(), selection));
+                        }
+                    }
+                    catch (CoreException e) {
+                        // ignore exception while creating the menu
+                    }
+                }
             }
         }
 
         private void createIpsArchiveAction(IMenuManager manager, Object selected) {
-            if (config.isAllowedIpsElementType(IIpsProject.class) || config.isAllowedIpsElementType(IIpsPackageFragmentRoot.class)) {
+            if (config.isAllowedIpsElementType(IIpsProject.class)
+                    || config.isAllowedIpsElementType(IIpsPackageFragmentRoot.class)) {
                 if (selected instanceof IIpsProject || selected instanceof IIpsPackageFragmentRoot) {
-                    if (selected instanceof IIpsPackageFragmentRoot){
+                    if (selected instanceof IIpsPackageFragmentRoot) {
                         try {
                             // don't enable menu for ips archives
-                            if (((IIpsPackageFragmentRoot)selected).getIpsArchive() != null){
-                               return;
+                            if (((IIpsPackageFragmentRoot)selected).getIpsArchive() != null) {
+                                return;
                             }
                         }
                         catch (CoreException e) {
@@ -581,11 +609,11 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 }
             }
         }
-        
+
         protected void createRefactorMenu(IMenuManager manager, Object selected) {
             if (selected instanceof IIpsElement & !(selected instanceof IIpsProject) | selected instanceof IFile
                     | selected instanceof IFolder) {
-                if (! isRootArchive(selected)) {
+                if (!isRootArchive(selected)) {
                     MenuManager subMm = new MenuManager(Messages.ModelExplorer_submenuRefactor);
                     subMm.add(rename);
                     subMm.add(move);
@@ -602,7 +630,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         protected void createPropertiesActions(IMenuManager manager, Object selected) {
             if (selected instanceof IIpsProject) {
                 manager.add(new IpsPropertiesAction(getSite(), treeViewer));
-            } else if (selected instanceof IProject) {
+            }
+            else if (selected instanceof IProject) {
                 if (((IProject)selected).isOpen()) {
                     manager.add(new IpsPropertiesAction(getSite(), treeViewer));
                 }

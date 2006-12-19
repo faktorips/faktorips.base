@@ -158,6 +158,12 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
                     else if (selected instanceof IIpsPackageFragment) {
                         addIpsElement((IIpsPackageFragment)selected);
                     }
+                    else if (selected instanceof IFixDifferencesToModelSupport){
+                        IFixDifferencesToModelSupport ipsElementToFix = (IFixDifferencesToModelSupport)selected;
+                        if(ipsElementToFix.containsDifferenceToModel()){
+                            ipsElementsToFix.add(ipsElementToFix);
+                        }
+                    }
                 }
             }
             catch (CoreException e) {
