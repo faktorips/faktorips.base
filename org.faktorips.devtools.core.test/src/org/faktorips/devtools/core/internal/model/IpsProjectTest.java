@@ -793,4 +793,25 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(4, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
     }    
+    
+    public void testFindAllIpsObjects() throws CoreException{
+        IIpsObject a = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.POLICY_CMPT_TYPE, "a");
+        IIpsObject b = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.PRODUCT_CMPT, "b");
+        IIpsObject c = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_STRUCTURE, "c");
+        IIpsObject d = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_CONTENTS, "d");
+        IIpsObject e = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.BUSINESS_FUNCTION, "e");
+        IIpsObject f = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TEST_CASE, "f");
+        IIpsObject g = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TEST_CASE_TYPE, "g");
+        
+        List result = new ArrayList(7);
+        ipsProject.findAllIpsObjects(result);
+        
+        assertTrue(result.contains(a));
+        assertTrue(result.contains(b));
+        assertTrue(result.contains(c));
+        assertTrue(result.contains(d));
+        assertTrue(result.contains(e));
+        assertTrue(result.contains(f));
+        assertTrue(result.contains(g));
+    }
 }

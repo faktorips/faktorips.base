@@ -625,11 +625,17 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public void findAllIpsObjects(List result) throws CoreException{
         Set visitedEntries = new HashSet();
         getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.POLICY_CMPT_TYPE, result, visitedEntries);
+        visitedEntries.clear();
         getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.PRODUCT_CMPT, result, visitedEntries);
+        visitedEntries.clear();
         getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TABLE_STRUCTURE, result, visitedEntries);
+        visitedEntries.clear();
         getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TABLE_CONTENTS, result, visitedEntries);
+        visitedEntries.clear();
         getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.BUSINESS_FUNCTION, result, visitedEntries);
+        visitedEntries.clear();
         getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TEST_CASE, result, visitedEntries);
+        visitedEntries.clear();
         getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TEST_CASE_TYPE, result, visitedEntries);        
     }
     
