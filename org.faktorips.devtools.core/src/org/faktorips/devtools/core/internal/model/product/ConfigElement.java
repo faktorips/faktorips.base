@@ -326,7 +326,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         }
 
         if (this.type == ConfigElementType.POLICY_ATTRIBUTE && !modelValueSet.containsValueSet(valueSet)) {
-            String text = NLS.bind("The value set {0} is not a subset of the value set {1} defined in the model!", valueSet.toShortString(), modelValueSet.toShortString());
+            String text = NLS.bind(Messages.ConfigElement_valueSetIsNotASubset, valueSet.toShortString(), modelValueSet.toShortString());
             list.add(new Message(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET, text, Message.ERROR, valueSet, IEnumValueSet.PROPERTY_VALUES));
             return;
         }

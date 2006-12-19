@@ -154,8 +154,8 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
                 }
                 EnumValueSetChooser chooser = new Chooser(workArea, uiToolkit, (IEnumValueSet)attrValueSet,
                         (IEnumValueSet)valueSet, enumType, uiController);
-                chooser.setSourceLabel("Additional Values defined in Model");
-                chooser.setTargetLabel("Values allowed in Product Component");
+                chooser.setSourceLabel(Messages.DefaultsAndRangesEditDialog_additionalValuesDefinedInModel);
+                chooser.setTargetLabel(Messages.DefaultsAndRangesEditDialog_valueDefinedInProductCmpt);
                 return chooser;
             }
         }
@@ -201,8 +201,8 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
             if (getSourceValueSet().containsValue(valueId)) {
                 return list;
             }
-            String text = NLS.bind("Der Wert {0} ist nicht in der im Modell definierten Wertemenge {1} enthalten.", valueId, getSourceValueSet().toShortString());
-            list.add(new Message("", text, Message.ERROR));
+            String text = NLS.bind(Messages.DefaultsAndRangesEditDialog_valueNotContainedInValueSet, valueId, getSourceValueSet().toShortString());
+            list.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
             return list;
         }
 

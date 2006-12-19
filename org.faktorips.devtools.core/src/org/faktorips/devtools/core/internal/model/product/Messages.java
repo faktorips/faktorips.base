@@ -36,6 +36,8 @@ public class Messages extends NLS {
 
 	public static String ConfigElement_valueIsNotInTheValueSetDefinedInTheModel;
 
+    public static String ConfigElement_valueSetIsNotASubset;
+
     public static String TableAccessFunctionFlFunctionAdapter_msgNoTableAccess;
 
 	public static String TableAccessFunctionFlFunctionAdapter_msgErrorDuringCodeGeneration;

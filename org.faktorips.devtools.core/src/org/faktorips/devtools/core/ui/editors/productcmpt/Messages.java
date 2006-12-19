@@ -30,7 +30,13 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String PropertiesPage_relations;
+	public static String DefaultsAndRangesEditDialog_additionalValuesDefinedInModel;
+
+    public static String DefaultsAndRangesEditDialog_valueDefinedInProductCmpt;
+
+    public static String DefaultsAndRangesEditDialog_valueNotContainedInValueSet;
+
+    public static String PropertiesPage_relations;
 
 	public static String PropertiesPage_noRelationsDefined;
 
