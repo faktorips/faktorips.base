@@ -255,6 +255,12 @@ public class IpsPreferences {
      * @see #NULL_REPRESENTATION_STRING
      */
     public String formatValue(EnumDatatype datatype, String id) {
+        if (id==null) {
+            return getNullPresentation();
+        }
+        if (datatype==null) {
+            return id;
+        }
         if (!datatype.isSupportingNames()) {
             return id;
         }

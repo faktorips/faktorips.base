@@ -35,6 +35,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -49,7 +50,7 @@ import org.faktorips.util.message.MessageList;
  * contains the source values, the right one the target values. The buttons between
  * the both lists allow to take values from one list to the other. 
  * <p>
- * At the right of the target list, two buttons allow to modify the sort order
+ * To the right of the target list, two buttons allow to modify the sort order
  * of the items in this list.
  * 
  * @author Thorsten Guenther
@@ -58,6 +59,9 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
 
     private static final int DATA_COLUMN = 1;
     private static final int IMG_COLUMN = 0;
+    
+    private Label sourceLabel;
+    private Label targetLabel;
     
 	private UIToolkit toolkit;
 	private TableViewer source;
@@ -87,9 +91,9 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
         
         this.setLayout(new GridLayout(4, false));
         
-        toolkit.createLabel(this, Messages.ListChooser_labelAvailableValues);
+        sourceLabel = toolkit.createLabel(this, Messages.ListChooser_labelAvailableValues);
         toolkit.createLabel(this, ""); //$NON-NLS-1$
-        toolkit.createLabel(this, Messages.ListChooser_lableChoosenValues);
+        targetLabel = toolkit.createLabel(this, Messages.ListChooser_lableChoosenValues);
         toolkit.createLabel(this, ""); //$NON-NLS-1$
         
         TableLayoutComposite srcParent = new TableLayoutComposite(this, SWT.NONE);
@@ -135,7 +139,21 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
         new TableColumn(parent, SWT.NONE).setResizable(false);
     }
 
-	/**
+    /**
+     * Sets the source section's label text.
+     */
+    public void setSourceLabel(String label) {
+        sourceLabel.setText(label);
+    }
+    
+    /**
+     * Sets the targets section's label text.
+     */
+    public void setTargetLabel(String label) {
+        targetLabel.setText(label);
+    }
+
+    /**
 	 * Set the content of the source-list.
 	 */
 	protected void setSourceContent(String[] srcContent) {

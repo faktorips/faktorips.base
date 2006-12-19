@@ -94,10 +94,16 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider  
     public final static String MSGCODE_MISSING_FORMULA = MSGCODE_PREFIX + "MissingFormula"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the value-set of the attribute is invalid.
+     * Validation message code to indicate that the value-set of the attribute (in the model) is invalid.
      */
     public final static String MSGCODE_UNKNWON_VALUESET = MSGCODE_PREFIX + "InvalidAttirbuteValueSet"; //$NON-NLS-1$
     
+    /**
+     * Validation message code to indicate that the config'elements value set is not a subset of the value set
+     * defined in the model. 
+     */
+    public final static String MSGCODE_VALUESET_IS_NOT_A_SUBSET = MSGCODE_PREFIX + "ValueSetIsNotASubset"; //$NON-NLS-1$
+
     /**
      * Validation message code to indicate that the type is not formula but formula test exists.
      */

@@ -84,6 +84,14 @@ public class EnumValueSetChooser extends ListChooser {
         super.setSourceContent(getSourceValues(sourceValueSet, targetValueSet, type));
     }
 
+    public IEnumValueSet getSourceValueSet() {
+        return sourceValueSet;
+    }
+
+    public IEnumValueSet getTargetValueSet() {
+        return targetValueSet;
+    }
+
     /**
      * Udates the target list with the given value set depending on the given type.
      */
@@ -126,7 +134,6 @@ public class EnumValueSetChooser extends ListChooser {
 		String old = targetValueSet.getValue(newIndex);
         targetValueSet.setValue(newIndex, value);
         targetValueSet.setValue(index, getIdForName(old));
-
 	}	
 	
 	/**
@@ -191,15 +198,7 @@ public class EnumValueSetChooser extends ListChooser {
 	private String[] mapIds2Names(String[] ids, EnumDatatype type) {
 		List result = new ArrayList();
 		for (int i = 0; i < ids.length; i++) {
-			String name;
-			if (type != null) {
-                name = IpsPlugin.getDefault().getIpsPreferences().formatValue(type, ids[i]);
-			} else {
-				name = ids[i];
-			}
-			if (name == null) {
-				name = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-			}
+			String name = IpsPlugin.getDefault().getIpsPreferences().formatValue(type, ids[i]);
 			id2name.put(name, ids[i]);
 			result.add(name);
 		}
@@ -212,11 +211,15 @@ public class EnumValueSetChooser extends ListChooser {
      */
     public MessageList getMessagesFor(String value) {
         String id = (String)this.id2name.get(value);
-        MessageList result = new MessageList();
         if(sourceValueSet == null){
-            return result;
+            return new MessageList();
         }
-        sourceValueSet.containsValue(id, result, targetValueSet, null);
+        return getMessagesForValue(id);
+    }
+    
+    protected MessageList getMessagesForValue(String valueId) {
+        MessageList result = new MessageList();
+        sourceValueSet.containsValue(valueId, result, targetValueSet, null);
         return result;
     }
 }

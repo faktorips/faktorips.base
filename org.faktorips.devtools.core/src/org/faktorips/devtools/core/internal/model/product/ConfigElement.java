@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.AllValuesValueSet;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValueSet;
+import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -229,7 +230,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		} else {
     		if (attribute.getAttributeType() == AttributeType.CHANGEABLE
     				|| attribute.getAttributeType() == AttributeType.CONSTANT) {
-    			validateValue(attribute, list);
+    			validateValueAndValueSet(attribute, list);
     		} else {
     			validateFormula(attribute, list);
     		}
@@ -279,8 +280,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		list.add(new Message(IConfigElement.MSGCODE_WRONG_FORMULA_DATATYPE,
 				text, Message.ERROR, this, PROPERTY_VALUE));
 	}
-
-	private void validateValue(IAttribute attribute, MessageList list)
+    
+	private void validateValueAndValueSet(IAttribute attribute, MessageList list)
 			throws CoreException {
 		
 		ValueDatatype valueDatatype = attribute.findDatatype();
@@ -324,7 +325,9 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             return;
         }
 
-        if (this.type != ConfigElementType.PRODUCT_ATTRIBUTE && !modelValueSet.containsValueSet(valueSet, list, valueSet, null)) {
+        if (this.type == ConfigElementType.POLICY_ATTRIBUTE && !modelValueSet.containsValueSet(valueSet)) {
+            String text = NLS.bind("The value set {0} is not a subset of the value set {1} defined in the model!", valueSet.toShortString(), modelValueSet.toShortString());
+            list.add(new Message(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET, text, Message.ERROR, valueSet, IEnumValueSet.PROPERTY_VALUES));
             return;
         }
 
@@ -337,14 +340,14 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 			// of type PRODUCT_ATTRIBUTE becomes an ALL_VALUES-valueset,
 			// but the valueset can not be changed for this type of config
 			// element.
-			if (this.type != ConfigElementType.PRODUCT_ATTRIBUTE) {
+			if (this.type == ConfigElementType.POLICY_ATTRIBUTE) {
 				if (!valueSet.containsValue(value)) {
 					list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(
                             Messages.ConfigElement_msgValueNotInValueset, value), Message.ERROR, this, PROPERTY_VALUE));
 				}
-			} else if (!modelValueSet.containsValue(value)) {
+			} else if (!modelValueSet.containsValue(value)) { // PRODUCT_ATTRIBUTE
 				list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(
-                        Messages.ConfigElement_msgValueNotInValueset, value), Message.ERROR, this, PROPERTY_VALUE));
+                        Messages.ConfigElement_valueIsNotInTheValueSetDefinedInTheModel, value), Message.ERROR, this, PROPERTY_VALUE));
 			}
 		}
 	}

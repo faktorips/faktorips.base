@@ -35,8 +35,6 @@ import org.faktorips.util.memento.Memento;
  */
 public class EnumValueSetControl extends TextButtonControl implements IDataChangeableReadWriteAccess {
 
-    private UIToolkit uiToolkit;
-
     /**
 	 * The config element which is based on the enum value set to modify.
 	 */
@@ -64,8 +62,6 @@ public class EnumValueSetControl extends TextButtonControl implements IDataChang
 	 */
 	private boolean dirty;
 	
-	private boolean enabled = true;
-
     private boolean dataChangeable;
 
 	
@@ -80,10 +76,10 @@ public class EnumValueSetControl extends TextButtonControl implements IDataChang
 	 */
 	public EnumValueSetControl(Composite parent, UIToolkit toolkit, IConfigElement configElement, Shell shell, IpsPartUIController controller) {
 		super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
-		this.uiToolkit = toolkit;
 		this.configElement = configElement;
 		this.shell = shell;
 		this.controller = controller;
+        getTextControl().setEditable(false);
 	}
 	
 	/**
@@ -91,7 +87,7 @@ public class EnumValueSetControl extends TextButtonControl implements IDataChang
 	 */
 	protected void buttonClicked() {
 		preserveState();
-		DefaultsAndRangesEditDialog dialog = new DefaultsAndRangesEditDialog(configElement, shell, !enabled);
+		DefaultsAndRangesEditDialog dialog = new DefaultsAndRangesEditDialog(configElement, shell, !dataChangeable);
         dialog.setDataChangeable(isDataChangeable());
 		if (dialog.open() == Dialog.OK) {
 			super.getTextControl().setText(configElement.getValueSet().toShortString());
@@ -127,19 +123,12 @@ public class EnumValueSetControl extends TextButtonControl implements IDataChang
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
     /**
      * {@inheritDoc}
      */
     public void setDataChangeable(boolean changeable) {
         this.dataChangeable = changeable;
-        uiToolkit.setDataChangeable(getTextControl(), changeable);
+        setButtonEnabled(changeable);
     }
 
     /**

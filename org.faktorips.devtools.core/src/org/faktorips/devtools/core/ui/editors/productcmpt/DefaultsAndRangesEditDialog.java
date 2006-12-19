@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
@@ -37,6 +38,8 @@ import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controller.DefaultUIController;
 import org.faktorips.devtools.core.ui.controller.fields.DefaultEditField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
@@ -44,6 +47,8 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.EnumValueSetChooser;
 import org.faktorips.devtools.core.ui.controls.RangeEditControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  *
@@ -51,6 +56,8 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
 public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
 
     private IConfigElement configElement;
+    
+    private IAttribute attribute = null;
     
     // edit fields
     private DefaultEditField defaultValueField;
@@ -72,12 +79,11 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.EditDialog#createWorkArea(org.eclipse.swt.widgets.Composite)
+     * {@inheritDoc}
      */
     protected Composite createWorkArea(Composite parent) throws CoreException {
+        attribute = configElement.findPcTypeAttribute();
         TabFolder folder = (TabFolder)parent;
-
         TabItem firstPage = new TabItem(folder, SWT.NONE);
         firstPage.setText(Messages.PolicyAttributeEditDialog_properties);
         firstPage.setControl(createFirstPage(folder));
@@ -97,7 +103,7 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
         
         try {
 			IValueSet valueSet = getValueSet();
-			ValueDatatype datatype = configElement.findPcTypeAttribute().findDatatype();
+			ValueDatatype datatype = attribute.findDatatype();
 			Combo combo = uiToolkit.createCombo(workArea);
 			if (valueSet.getValueSetType() == ValueSetType.ENUM) {
 				defaultValueField = new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype);
@@ -135,7 +141,6 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
                     valueSet = attrValueSet;
                 }
             }
-
             if (valueSet.getValueSetType() == ValueSetType.RANGE) {
                 RangeEditControl rangeEditControl = new RangeEditControl(workArea, uiToolkit, (RangeValueSet)valueSet,
                         uiController);
@@ -147,8 +152,11 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
                 if (type instanceof EnumDatatype) {
                     enumType = (EnumDatatype)type;
                 }
-                return new EnumValueSetChooser(workArea, uiToolkit, (IEnumValueSet)attrValueSet,
+                EnumValueSetChooser chooser = new Chooser(workArea, uiToolkit, (IEnumValueSet)attrValueSet,
                         (IEnumValueSet)valueSet, enumType, uiController);
+                chooser.setSourceLabel("Additional Values defined in Model");
+                chooser.setTargetLabel("Values allowed in Product Component");
+                return chooser;
             }
         }
         catch (CoreException e) {
@@ -166,23 +174,38 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
     }
 
     /**
-     * @return the most restrictive valueset defined for this config element and the
+     * Returns the most restrictive valueset defined for this config element and the
      * underlying attribute.
+     * 
      * @throws CoreException If an error occured during the search for the attribute.
      */
     private IValueSet getValueSet() throws CoreException {
         IValueSet valueSet = configElement.getValueSet();
-        
         if (valueSet.getValueSetType() != ValueSetType.ALL_VALUES) {
         	return valueSet;
         }
-        
-        IAttribute attribute = configElement.findPcTypeAttribute();
         if (attribute!=null) {
             return attribute.getValueSet();
         }
-        
         return null;
-    	
+    }
+    
+    class Chooser extends EnumValueSetChooser {
+
+        public Chooser(Composite parent, UIToolkit toolkit, IEnumValueSet source, IEnumValueSet target, EnumDatatype type, DefaultUIController uiController) {
+            super(parent, toolkit, source, target, type, uiController);
+        }
+
+        public MessageList getMessagesForValue(String valueId) {
+            MessageList list = new MessageList();
+            if (getSourceValueSet().containsValue(valueId)) {
+                return list;
+            }
+            String text = NLS.bind("Der Wert {0} ist nicht in der im Modell definierten Wertemenge {1} enthalten.", valueId, getSourceValueSet().toShortString());
+            list.add(new Message("", text, Message.ERROR));
+            return list;
+        }
+
+        
     }
 }

@@ -34,7 +34,9 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String TableAccessFunctionFlFunctionAdapter_msgNoTableAccess;
+	public static String ConfigElement_valueIsNotInTheValueSetDefinedInTheModel;
+
+    public static String TableAccessFunctionFlFunctionAdapter_msgNoTableAccess;
 
 	public static String TableAccessFunctionFlFunctionAdapter_msgErrorDuringCodeGeneration;
 

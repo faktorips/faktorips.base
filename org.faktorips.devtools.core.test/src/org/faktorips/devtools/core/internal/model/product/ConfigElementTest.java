@@ -318,7 +318,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	MessageList ml = ce.validate();
     	// no test for specific message codes because the codes are under controll
     	// of the value set.
-    	assertTrue(ml.getNoOfMessages() > 0); 
+    	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
     	
     	valueSet.setUpperBound("20");
     	policyCmptType.getIpsSrcFile().save(true, null);

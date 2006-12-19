@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.model.product;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 
 
 /**
