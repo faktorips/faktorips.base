@@ -378,6 +378,7 @@ public abstract class IpsObjectEditor extends FormEditor
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
         
         editorActivated();
+        refresh();
     }
     
     /**

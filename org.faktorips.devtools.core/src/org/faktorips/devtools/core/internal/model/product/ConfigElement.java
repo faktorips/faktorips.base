@@ -348,7 +348,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 			}
 		}
 	}
-
+    
 	/**
 	 * {@inheritDoc}
 	 */

@@ -239,6 +239,9 @@ public abstract class MessageHoverService {
         }
 
         void setVisible(boolean visible) {
+            if (fHoverShell.isDisposed()) {
+                return;
+            }
             if (visible) {
                 if (!fHoverShell.isVisible())
                     fHoverShell.setVisible(true);

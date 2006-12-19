@@ -389,9 +389,12 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(file.getIpsObject(), pdObject);
         
         assertNull(ipsProject.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "c.Unknown"));
+
+        // invalid package name as it contains a blank => should return null
+        assertNull(ipsProject.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "c a.Unknown"));
     }
 
-    public void testFindPdObjects() throws CoreException {
+    public void testFindIpsObjects() throws CoreException {
         // create the following types: Type0, a.b.Type1 and c.Type2
         root.getIpsPackageFragment("").createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type0", true, null);
         IIpsPackageFragment folderAB = root.createPackageFragment("a.b", true, null);

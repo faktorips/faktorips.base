@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -90,6 +89,10 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             return false;
         }
         
+        if ((value == null || value.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) && getContainsNull()) {
+            return true;
+        }
+
         for (Iterator it=elements.iterator(); it.hasNext(); ) {
             String each = (String)it.next();
             if (datatype.isParsable(each) && datatype.areValuesEqual(each, value)) {
@@ -97,10 +100,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             }
         }
         
-        if ((value == null || value.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) && getContainsNull()) {
-            return true;
-        }
-
         String text = Messages.EnumValueSet_msgValueNotInEnumeration;
         addMsg(list, MSGCODE_VALUE_NOT_CONTAINED, text, invalidObject, getProperty(invalidProperty, IConfigElement.PROPERTY_VALUE));
 

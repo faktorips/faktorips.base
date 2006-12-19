@@ -104,6 +104,9 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
             return findProductCmptType(qnt);
         }
         IIpsPackageFragment pack = getIpsPackageFragment(qnt.getPackageName());
+        if (pack==null) {
+            return null;
+        }
         IIpsSrcFile file = pack.getIpsSrcFile(qnt.getFileName());
         if (!file.exists()) {
             return null;
