@@ -67,7 +67,7 @@ public class ElementSelectionPage extends WizardPage {
         treeViewer.setInput(""); //$NON-NLS-1$
 
         treeViewer.setExpandedElements(contentProvider.getElements(null));
-        treeViewer.setAllChecked(true);
+        treeViewer.setCheckedElements(contentProvider.getAllElements());
         
         treeViewer.addCheckStateListener(new ICheckStateListener(){
 
@@ -189,6 +189,10 @@ public class ElementSelectionPage extends WizardPage {
          */
         public Object[] getElements(Object inputElement) {
             return packages.keySet().toArray();
+        }
+        
+        private Object[] getAllElements(){
+            return allElements;
         }
 
         /**
