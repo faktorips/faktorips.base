@@ -34,7 +34,11 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String IpsPartEditDialog_description;
+	public static String IpsObjectEditor_fileHasChangesOnDiskMessage;
+    public static String IpsObjectEditor_fileHasChangesOnDiskNoButton;
+    public static String IpsObjectEditor_fileHasChangesOnDiskTitle;
+    public static String IpsObjectEditor_fileHasChangesOnDiskYesButton;
+    public static String IpsPartEditDialog_description;
 	public static String IpsPartsComposite_buttonNew;
 	public static String IpsPartsComposite_buttonEdit;
     public static String IpsPartsComposite_buttonShow;
@@ -43,9 +47,6 @@ public class Messages extends NLS {
 	public static String IpsPartsComposite_buttonDown;
 	public static String DescriptionPage_description;
 	public static String DescriptionSection_description;
-	public static String IpsObjectEditor_msgResourceOutOfSync;
-	public static String IpsObjectEditor_msgOutOfSyncOptions;
 	public static String IpsObjectEditor_msgEditorWillBeClosed;
-	public static String IpsObjectEditor_msgOutOfSyncTitle;
 
 }

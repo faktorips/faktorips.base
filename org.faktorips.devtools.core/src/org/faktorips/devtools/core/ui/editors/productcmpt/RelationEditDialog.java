@@ -27,9 +27,11 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -85,8 +87,13 @@ public class RelationEditDialog extends IpsPartEditDialog {
         try {
             IProductCmptTypeRelation typeRelation = relation.findProductCmptTypeRelation();
             if (typeRelation != null) {
-            	String targetPolicyCmptType = typeRelation.findTarget().findPolicyCmptyType().getQualifiedName();
-            	targetControl.setPolicyCmptType(targetPolicyCmptType, true);
+                IProductCmptType productCmptType = typeRelation.findTarget();
+                if (productCmptType!=null) {
+                    IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptyType();
+                    if (policyCmptType!=null) {
+                        targetControl.setPolicyCmptType(policyCmptType.getQualifiedName(), true);
+                    }
+                }
             }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);

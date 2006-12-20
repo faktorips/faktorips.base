@@ -23,16 +23,20 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IStorageEditorInput;
+import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
@@ -71,8 +75,8 @@ import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
  * </ol>
  */
 public abstract class IpsObjectEditor extends FormEditor 
-    implements ContentsChangeListener, IModificationStatusChangeListener, IPartListener2,
-        IResourceChangeListener, IPropertyChangeListener {
+    implements ContentsChangeListener, IModificationStatusChangeListener,
+        IResourceChangeListener, IPropertyChangeListener{
 
     // the file that's being edited (if any)
     private IIpsSrcFile ipsSrcFile;
@@ -86,10 +90,19 @@ public abstract class IpsObjectEditor extends FormEditor
     private SelectionProviderDispatcher selectionProviderDispatcher;
 
     /*
-     * Storage for the user's decision of not to fix the differences between the
+     * Storage for the user's decision not to fix the differences between the
      * product definition structure and the model structure
      */
     private boolean dontFixDifferences = false;
+    
+    /*
+     * Storage for the user's decision not to load the changes made directly in the
+     * file system.
+     */
+    private boolean dontLoadChanges = false;
+    
+    
+    private ActivationListener activationListener;
     
     public IpsObjectEditor() {
         super();
@@ -145,7 +158,15 @@ public abstract class IpsObjectEditor extends FormEditor
             throw new PartInitException("Unsupported editor input type " + input.getClass().getName()); //$NON-NLS-1$
         }
 
-        // check if the ips src file is valid and could be edit in the editor,
+        if (ipsSrcFile.isMutable() && !ipsSrcFile.getEnclosingResource().isSynchronized(0)) {
+            try {
+                ipsSrcFile.getEnclosingResource().refreshLocal(0, null);
+            } catch (CoreException e) {
+                throw new PartInitException("Error refreshing resource " + ipsSrcFile.getEnclosingResource()); //$NON-NLS-1$
+            }
+        }
+        
+        // check if the ips src file is valid and could be edited in the editor,
         // if the ips src file doesn't exists (e.g. ips src file outside ips package)
         // close the editor and open the current file in the default text editor
         if (!ipsSrcFile.exists()) {
@@ -156,12 +177,11 @@ public abstract class IpsObjectEditor extends FormEditor
                 }
             };
             getSite().getShell().getDisplay().syncExec(closeRunnable);
+        } else {
+            activationListener = new ActivationListener(site.getPage());
+            selectionProviderDispatcher = new SelectionProviderDispatcher();
+            site.setSelectionProvider(selectionProviderDispatcher);
         }
-        
-        site.getPage().addPartListener(this);
-
-        selectionProviderDispatcher = new SelectionProviderDispatcher();
-        site.setSelectionProvider(selectionProviderDispatcher);
     }
 
     private void initFromStorageEditorInput(IStorageEditorInput input) throws PartInitException {
@@ -354,45 +374,36 @@ public abstract class IpsObjectEditor extends FormEditor
      * and is in sync.
      */
     protected boolean isSrcFileUsable() {
-        if (ipsSrcFile instanceof IpsSrcFileImmutable) {
-            return true;
-        }
-        if (ipsSrcFile.getCorrespondingFile() == null) {
-            return false;
-        }
         return ipsSrcFile != null && ipsSrcFile.exists()
-                && ipsSrcFile.getCorrespondingFile().isSynchronized(IResource.DEPTH_ONE);
+                && ipsSrcFile.getEnclosingResource().isSynchronized(IResource.DEPTH_ONE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public final void partActivated(IWorkbenchPartReference partRef) {
-        IWorkbenchPart part = partRef.getPart(false);
-        if (part != this) {
-            return;
-        }
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
-        IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(this);
-        IpsPlugin.getDefault().getIpsPreferences().addChangeListener(this);
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-        
+    protected void handleEditorActivation() {
+        checkForChangesMadeOutsideEclipse();
         editorActivated();
         refresh();
     }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void partDeactivated(IWorkbenchPartReference partRef) {
-        IWorkbenchPart part = partRef.getPart(false);
-        if (part != this) {
+
+    private void checkForChangesMadeOutsideEclipse() {
+        if (dontLoadChanges) {
             return;
         }
-        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
-        IpsPlugin.getDefault().getIpsModel().removeModificationStatusChangeListener(this);
-        IpsPlugin.getDefault().getIpsPreferences().removeChangeListener(this);
-        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        if (getIpsSrcFile().isMutable() && !getIpsSrcFile().getEnclosingResource().isSynchronized(0)) {
+            MessageDialog dlg = new MessageDialog(Display.getCurrent().getActiveShell(), Messages.IpsObjectEditor_fileHasChangesOnDiskTitle, (Image)null, 
+                    Messages.IpsObjectEditor_fileHasChangesOnDiskMessage, MessageDialog.QUESTION,
+                    new String[]{Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton, Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton}, 0);
+            dlg.open();
+            if (dlg.getReturnCode()==0) {
+                try {
+                    getIpsSrcFile().getEnclosingResource().refreshLocal(0, null);
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                dontLoadChanges = true;
+            }
+            
+        }
     }
 
     /**
@@ -477,76 +488,6 @@ public abstract class IpsObjectEditor extends FormEditor
     }
     
     /**
-     * {@inheritDoc}
-     */
-    public void partBroughtToTop(IWorkbenchPartReference partRef) {
-        if (partRef.getPart(false) != this) {
-            return;
-        }
-
-        if (ipsSrcFile instanceof IpsSrcFileImmutable) {
-            return;
-        }
-        if (!ipsSrcFile.getEnclosingResource().isSynchronized(IResource.DEPTH_ONE)) {
-            String msg = NLS.bind(Messages.IpsObjectEditor_msgResourceOutOfSync, ipsSrcFile.getName());
-            if (isDirty()) {
-                msg += Messages.IpsObjectEditor_msgOutOfSyncOptions;
-                boolean ok = MessageDialog.openQuestion(super.getSite().getShell(),
-                        Messages.IpsObjectEditor_msgOutOfSyncTitle, msg);
-                if (ok) {
-                    this.close(false);
-                } else {
-                    doSave(null);
-                }
-            } else {
-                msg += Messages.IpsObjectEditor_msgEditorWillBeClosed;
-                MessageDialog.openError(super.getSite().getShell(), Messages.IpsObjectEditor_msgOutOfSyncTitle, msg);
-                this.close(false);
-            }
-
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void partClosed(IWorkbenchPartReference partRef) {
-        IWorkbenchPart part = partRef.getPart(false);
-        if (part == this) {
-            ipsSrcFile.discardChanges();
-            part.getSite().getPage().removePartListener(this);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void partHidden(IWorkbenchPartReference partRef) {
-        // nothing to do
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void partInputChanged(IWorkbenchPartReference partRef) {
-        // nothing to do
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void partOpened(IWorkbenchPartReference partRef) {
-        // nothing to do
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void partVisible(IWorkbenchPartReference partRef) {
-        // nothing to do
-    }
-
-    /**
      * Returns the SelectionProviderDispatcher which is the ISelectionProvider for this IEditorPart.
      */
     public SelectionProviderDispatcher getSelectionProviderDispatcher() {
@@ -559,6 +500,9 @@ public abstract class IpsObjectEditor extends FormEditor
     public final void dispose() {
         super.dispose();
         selectionProviderDispatcher.dispose();
+        if (activationListener!=null) {
+            activationListener.dispose();
+        }
         disposeInternal();
     }
 
@@ -576,7 +520,7 @@ public abstract class IpsObjectEditor extends FormEditor
             refresh();        
         }
     }
-
+    
     public String toString() {
         return "Editor for " + getIpsSrcFile(); //$NON-NLS-1$
     }
@@ -600,4 +544,111 @@ public abstract class IpsObjectEditor extends FormEditor
             toFixIpsObject.fixAllDifferencesToModel();
         }
     }
+    
+    /**
+     * Internal part and shell activation listener for triggering state validation.
+     * 
+     * Copied from AbstractTextEditor
+     */
+    class ActivationListener implements IPartListener, IWindowListener {
+
+        /** Cache of the active workbench part. */
+        private IWorkbenchPart activePart;
+        /** Indicates whether activation handling is currently be done. */
+        private boolean isHandlingActivation= false;
+
+        private IPartService partService;
+
+        /**
+         * Creates this activation listener.
+         *
+         * @param partService the part service on which to add the part listener
+         * @since 3.1
+         */
+        public ActivationListener(IPartService partService) {
+            this.partService = partService;
+            partService.addPartListener(this);
+            PlatformUI.getWorkbench().addWindowListener(this);
+        }
+
+        /**
+         * Disposes this activation listener.
+         *
+         * @since 3.1
+         */
+        public void dispose() {
+            partService.removePartListener(this);
+            PlatformUI.getWorkbench().removeWindowListener(this);
+            partService= null;
+        }
+
+        public void partActivated(IWorkbenchPart part) {
+            activePart= part;
+            IpsPlugin.getDefault().getIpsModel().addChangeListener(IpsObjectEditor.this);
+            IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(IpsObjectEditor.this);
+            IpsPlugin.getDefault().getIpsPreferences().addChangeListener(IpsObjectEditor.this);
+            ResourcesPlugin.getWorkspace().addResourceChangeListener(IpsObjectEditor.this);
+            handleActivation();
+        }
+
+        public void partBroughtToTop(IWorkbenchPart part) {
+        }
+
+        public void partClosed(IWorkbenchPart part) {
+        }
+
+        public void partDeactivated(IWorkbenchPart part) {
+            activePart= null;
+            IpsPlugin.getDefault().getIpsModel().removeChangeListener(IpsObjectEditor.this);
+            IpsPlugin.getDefault().getIpsModel().removeModificationStatusChangeListener(IpsObjectEditor.this);
+            IpsPlugin.getDefault().getIpsPreferences().removeChangeListener(IpsObjectEditor.this);
+            ResourcesPlugin.getWorkspace().removeResourceChangeListener(IpsObjectEditor.this);
+        }
+
+        public void partOpened(IWorkbenchPart part) {
+        }
+
+        /**
+         * Handles the activation triggering a element state check in the editor.
+         */
+        private void handleActivation() {
+            if (isHandlingActivation)
+                return;
+
+            if (activePart == IpsObjectEditor.this) {
+                isHandlingActivation= true;
+                try {
+                    handleEditorActivation();
+                } finally {
+                    isHandlingActivation= false;
+                }
+            }
+        }
+
+        public void windowActivated(IWorkbenchWindow window) {
+            if (window == getEditorSite().getWorkbenchWindow()) {
+                /*
+                 * Workaround for problem described in
+                 * http://dev.eclipse.org/bugs/show_bug.cgi?id=11731
+                 * Will be removed when SWT has solved the problem.
+                 */
+                window.getShell().getDisplay().asyncExec(new Runnable() {
+                    public void run() {
+                        handleActivation();
+                    }
+                });
+            }
+        }
+
+        public void windowDeactivated(IWorkbenchWindow window) {
+        }
+
+        public void windowClosed(IWorkbenchWindow window) {
+        }
+
+        public void windowOpened(IWorkbenchWindow window) {
+        }
+    }
+
+    
 }

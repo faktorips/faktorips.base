@@ -40,8 +40,7 @@ public class TableStructureEditor extends IpsObjectEditor {
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
+     * {@inheritDoc}
      */
     protected void addPages() {
         try {
@@ -53,8 +52,7 @@ public class TableStructureEditor extends IpsObjectEditor {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.IpsObjectEditor#getUniformPageTitle()
+     * {@inheritDoc}
      */
     protected String getUniformPageTitle() {
         return Messages.TableStructureEditor_title + getIpsObject().getName();

@@ -28,9 +28,6 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
@@ -78,7 +75,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		try {
 			if (isSrcFileUsable()) {
 				IProductCmpt cmpt = (ProductCmpt)getIpsObject();
-				if (!getIpsSrcFile().isMutable() && cmpt.findProductCmptType() == null && !IpsPlugin.getDefault().isTestMode()) {
+				if (getIpsSrcFile().isMutable() && cmpt.findProductCmptType() == null && !IpsPlugin.getDefault().isTestMode()) {
 					String msg = NLS.bind(Messages.ProductCmptEditor_msgTemplateNotFound, cmpt.getPolicyCmptType());
 					SetTemplateDialog dialog = new SetTemplateDialog(cmpt, getSite().getShell(), msg);
 					dialog.open();
@@ -106,14 +103,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void init(IEditorSite site, IEditorInput input)
-			throws PartInitException {
-		super.init(site, input);
-	}
-    
 	/**
 	 * Returns the product component for the sourcefile edited with this editor.
 	 */
