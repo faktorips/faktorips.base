@@ -275,8 +275,7 @@ public class FailurePane {
      * Find java element in the given java project by the given class name.
      */
     private IJavaElement findElement(IJavaProject project, String className) throws CoreException {
-        IJavaElement element= project.findType(className);
-        return element;
+        return project==null?null:project.findType(className);
     }
     
 	/**
