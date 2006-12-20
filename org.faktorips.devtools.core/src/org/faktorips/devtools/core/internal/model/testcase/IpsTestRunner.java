@@ -22,8 +22,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -83,6 +87,7 @@ import org.faktorips.util.StringUtil;
  * @author Joerg Ortmann
  */
 public class IpsTestRunner implements IIpsTestRunner { 
+    private static DateFormat DEBUG_FORMAT;
     private static final int ACCEPT_TIMEOUT = 5000;
     
     public final static boolean TRACE_IPS_TEST_RUNNER;
@@ -514,9 +519,7 @@ public class IpsTestRunner implements IIpsTestRunner {
      * Parse the incomming message and fire the messages events to the registered listener.
      */
     private void parseMessage(String line) {
-        if (TRACE_IPS_TEST_RUNNER){
-            System.out.println(line); //$NON-NLS-1$
-        }
+        trace(line);
         if (line.startsWith(SocketIpsTestRunner.ALL_TESTS_STARTED)) {  
     		// format: 
             //   SocketIpsTestRunner.ALL_TESTS_STARTED(<count>) [<repositoryPackage>].[<testPackage>]:<testQualifiedName>{<testFullPath>},...
@@ -588,6 +591,19 @@ public class IpsTestRunner implements IIpsTestRunner {
         } else if (errorDetailList != null){
             // parse multiline stack elements
             parseErrorStack(errorDetailList, line);
+        }
+    }
+
+    private void trace(String line) {
+        if (TRACE_IPS_TEST_RUNNER) {
+            if (DEBUG_FORMAT == null){
+                DEBUG_FORMAT = new SimpleDateFormat("(HH:mm:ss.SSS): "); //$NON-NLS-1$
+            }
+            StringBuffer msgBuf = new StringBuffer(line.length() + 40);
+            msgBuf.append("IpsTestRunner "); //$NON-NLS-1$
+            DEBUG_FORMAT.format(new Date(), msgBuf, new FieldPosition(0));
+            msgBuf.append(line);
+            System.out.println(msgBuf.toString());            
         }
     }
 
