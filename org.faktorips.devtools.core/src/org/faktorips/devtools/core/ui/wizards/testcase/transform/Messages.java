@@ -33,7 +33,12 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String TransformWizard_title;
+	public static String TestCaseTransformer_Error_FileAlreadyExists;
+    public static String TestCaseTransformer_Error_TestAttributeWithTypeNotFound;
+    public static String TestCaseTransformer_Error_TestPolicyCmptTypeNotFound;
+    public static String TestCaseTransformer_MessageTextInput;
+    public static String TestCaseTransformer_MessageTextInputExpectedResult;
+    public static String TransformWizard_title;
 	public static String TransformWizard_SelectTarget_title;
 	public static String TransformWizard_SelectTarget_description;
 	public static String TransformWizard_SelectTestCaseType_title;

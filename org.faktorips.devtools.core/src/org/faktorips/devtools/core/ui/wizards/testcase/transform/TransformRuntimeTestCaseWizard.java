@@ -17,24 +17,24 @@
 
 package org.faktorips.devtools.core.ui.wizards.testcase.transform;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 
 /**
  * Import wizard to import runtime test cases as model test cases.<br>
@@ -68,7 +68,8 @@ public class TransformRuntimeTestCaseWizard extends Wizard implements IImportWiz
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		this.selectionSource = selection;
-		uiToolkit = new UIToolkit(null);		
+		uiToolkit = new UIToolkit(null);
+        setNeedsProgressMonitor(true);
 	}
 
 	/**
@@ -105,26 +106,27 @@ public class TransformRuntimeTestCaseWizard extends Wizard implements IImportWiz
 	 * {@inheritDoc}
 	 */
 	public boolean performFinish() {
-		try {
-			final TestCaseTransformer transformer = new TestCaseTransformer();
-			transformer.startTestRunnerJob(selectionSource, targetIpsPackageFragment, 
-					testCaseTypeName, newTestCaseNameExtension);
-            
-            WorkspaceJob job = transformer.getJob();
-            if (job != null){
-                job.addJobChangeListener(new JobChangeAdapter() {
-                    public void done(IJobChangeEvent event) {
-                        if (transformer.getLastException() != null) {
-                            IpsPlugin.log(transformer.getLastException());
-                        }
-                    }
-                });
+        try {
+            TestCaseTransformer transformer = new TestCaseTransformer(selectionSource, targetIpsPackageFragment,
+                    testCaseTypeName, newTestCaseNameExtension);
+            WorkbenchRunnableAdapter workbenchRunnableAdapter = new WorkbenchRunnableAdapter(transformer);
+            try {
+                getContainer().run(true, true, workbenchRunnableAdapter);
+            } catch (InterruptedException e) {
+                return false;
+            } catch (InvocationTargetException e) {
+                IpsPlugin.logAndShowErrorDialog(new IpsStatus(e.getCause()));
+                return true;
+            } catch (Exception e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+                return true;
             }
-		} catch (Exception e) {
-			IpsPlugin.logAndShowErrorDialog(e);
-		}
-		return true;
-	}
+            return true;
+        } catch (Exception e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+        return true;
+    }
 	
 	/**
 	 * Returns the ui toolkit for this wizard.
