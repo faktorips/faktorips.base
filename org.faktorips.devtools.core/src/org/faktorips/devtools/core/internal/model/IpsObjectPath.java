@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -472,15 +473,23 @@ public class IpsObjectPath implements IIpsObjectPath {
      * 
      * @throws CoreException If an error occurs while resolving the object path entries.
      */
-    public boolean detectCycle(List visitedEntries) throws CoreException {
+    public boolean detectCycle(IIpsProject project) throws CoreException {
+        return detectCycleInternal(project, new HashSet());
+    }
+
+    public boolean detectCycleInternal(IIpsProject project, Set visitedEntries) throws CoreException {
+        if (visitedEntries.contains(this)) {
+            return false;
+        }
+        visitedEntries.add(this);
+
         for (int i = 0; i < entries.length; i++) {
-            if (visitedEntries.contains(entries[i])){
-                return true;
-            }
-            visitedEntries.add(entries[i]);
-            if (entries[i] instanceof IIpsProjectRefEntry){
+            if (entries[i] instanceof IIpsProjectRefEntry) {
                 IpsProject refProject = (IpsProject)((IIpsProjectRefEntry)entries[i]).getReferencedIpsProject();
-                if (refProject.getIpsObjectPathInternal().detectCycle(visitedEntries)){
+                if (project.equals(refProject)) {
+                    return true;
+                }
+                if (refProject.getIpsObjectPathInternal().detectCycleInternal(project, visitedEntries)) {
                     return true;
                 }
             }

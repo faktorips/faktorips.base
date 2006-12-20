@@ -1093,9 +1093,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	}
 
     private void validateIpsObjectPathCycle(MessageList result, IpsProjectProperties props) throws CoreException {
-        List visitedEntries = new ArrayList();
-        IpsObjectPath path = getIpsObjectPathInternal();
-        if (path.detectCycle(visitedEntries)){
+        if (getIpsObjectPathInternal().detectCycle(this)){
             String msg = Messages.IpsProject_msgCycleInIpsObjectPath;
             result.add(new Message(MSGCODE_CYCLE_IN_IPS_OBJECT_PATH, msg, Message.ERROR, this));            
         }

@@ -753,6 +753,47 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ipsProject.findIpsObject(new QualifiedNameType("xyz", IpsObjectType.PRODUCT_CMPT));
         // there is an cycle in the ref projects,
         // if we get no stack overflow exception, then the test was successfully executed
+        
+        
+        IIpsProject ipsProject10 = (IpsProject)this.newIpsProject("TestProject10");
+        IIpsProject ipsProject11 = (IpsProject)this.newIpsProject("TestProject11");
+        IIpsProject ipsProject12 = (IpsProject)this.newIpsProject("TestProject12");
+        IIpsProject ipsProject13 = (IpsProject)this.newIpsProject("TestProject13");
+        
+        // test cycle in 4 projects
+        path = ipsProject10.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject11);
+        ipsProject10.setIpsObjectPath(path);
+        
+        path = ipsProject10.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject12);
+        ipsProject10.setIpsObjectPath(path);
+        
+        path = ipsProject11.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject13);
+        path.newIpsProjectRefEntry(ipsProject11); // invalid reference, should not result in a
+                                                  // stack overflow exception
+        ipsProject11.setIpsObjectPath(path);
+        
+        path = ipsProject12.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject13);
+        ipsProject12.setIpsObjectPath(path);        
+        
+        result = new ArrayList();
+        ipsProject.findAllIpsObjects(result);
+        
+        ml = ipsProject10.validate();
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        
+        path = ipsProject13.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject10);
+        ipsProject13.setIpsObjectPath(path);     
+        
+        ml = ipsProject10.validate();
+        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        
+        ml = ipsProject11.validate();
+        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
     }
     
     private void setVersion(String version) throws CoreException {
