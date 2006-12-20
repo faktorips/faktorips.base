@@ -442,7 +442,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         IAttribute[] attributesWithMissingConfigElements = delta.getAttributesWithMissingConfigElements();
         for (int i = 0; i < attributesWithMissingConfigElements.length; i++) {
             String text = NLS.bind(Messages.ProductCmptGeneration_msgAttributeWithMissingConfigElement, attributesWithMissingConfigElements[i]);
-            list.add(new Message("", text, Message.WARNING, this)); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT, text, Message.WARNING, this)); //$NON-NLS-1$
         }
 
         IProductCmptTypeRelation[] relationTypes = type.getRelations();

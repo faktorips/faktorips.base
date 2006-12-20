@@ -361,4 +361,20 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         ml = generation.validate();
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_INVALID_VALID_FROM));
     }
+
+    
+    public void testValidateAttributeWithMissingConfigElement() throws Exception{        
+        IPolicyCmptType pcType = newPolicyCmptType(root, "EmptyTestPcType");
+        IProductCmpt product = newProductCmpt(ipsProject, "EmptyTestProduct");
+        product.setPolicyCmptType(pcType.getQualifiedName());
+        IProductCmptGeneration gen = (IProductCmptGeneration)product.newGeneration();
+        MessageList msgList = gen.validate();
+        assertTrue(msgList.isEmpty());
+        
+        IAttribute attribute = pcType.newAttribute();
+        attribute.setName("test");        
+        msgList = gen.validate();
+        assertFalse(msgList.isEmpty());
+        assertNotNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT));
+    }
 }

@@ -61,6 +61,12 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * is for could not be found.
      */
     public final static String MSGCODE_NO_TEMPLATE = MSGCODE_PREFIX + "NoTemplate"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the template for the product this generation
+     * is for contains an attribute that has no corresponding config element configured in this generation.
+     */
+    public final static String MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT = MSGCODE_PREFIX + "AttributeWithMissingConfigElement"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that more than one relation of a specific type have the same target.
