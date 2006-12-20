@@ -55,6 +55,7 @@ import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -424,6 +425,9 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         result = ipsProject.findIpsObjects(IpsObjectType.PRODUCT_CMPT_TYPE);
         assertEquals(1, result.length);
+        
+        IIpsObject ipsObj = ipsProject.findIpsObject(pct.getQualifiedNameType());
+        assertEquals(pct, ipsObj);
     }
     
     public void testFindProductCmpts() throws CoreException {
@@ -737,6 +741,18 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         
         ml = ipsProject.validate();
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        
+        // test cycle if project has a self reference
+        path = ipsProject.getIpsObjectPath();
+        path.removeProjectRefEntry(ipsProject2);
+        path.newIpsProjectRefEntry(ipsProject);
+        ipsProject.setIpsObjectPath(path);
+        
+        result = new ArrayList();
+        ipsProject.findAllIpsObjects(result);
+        ipsProject.findIpsObject(new QualifiedNameType("xyz", IpsObjectType.PRODUCT_CMPT));
+        // there is an cycle in the ref projects,
+        // if we get no stack overflow exception, then the test was successfully executed
     }
     
     private void setVersion(String version) throws CoreException {

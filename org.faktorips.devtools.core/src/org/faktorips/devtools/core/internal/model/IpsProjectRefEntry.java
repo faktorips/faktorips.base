@@ -95,7 +95,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
      */
     public IIpsObject findIpsObjectInternal(IIpsProject project, QualifiedNameType nameType, Set visitedEntries)
             throws CoreException {
-        return referencedIpsProject.findIpsObject(nameType);
+        return ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsObject(referencedIpsProject, nameType, visitedEntries);
     }
 
     /**
