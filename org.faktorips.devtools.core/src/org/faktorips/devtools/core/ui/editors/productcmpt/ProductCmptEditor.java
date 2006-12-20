@@ -228,18 +228,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
         if (gen==null) {
             return false;
         }
-        if (!getIpsSrcFile().isMutable()) {
-            return false;
-        }
-        IpsPreferences pref = IpsPlugin.getDefault().getIpsPreferences();
-        if (pref.isWorkingModeBrowse()) {
-            return false;
-        }
 		// if generation is not effective in the current effective date, no editing is possible
 		if (!gen.equals(getGenerationEffectiveOnCurrentEffectiveDate())) {
 			return false;
 		}        
         if (gen.isValidFromInPast()) {
+            IpsPreferences pref = IpsPlugin.getDefault().getIpsPreferences();
             return pref.canEditRecentGeneration();
 		}
 		return true;
@@ -376,5 +370,15 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
         if (generationPropertiesPage!=null) {
             generationPropertiesPage.rebuildAfterActiveGenerationhasChanged();
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void setDataChangeable(boolean changeable) {
+        if (changeable){
+            changeable = isActiveGenerationEditable();
+        }
+        super.setDataChangeable(changeable);
     }
 }
