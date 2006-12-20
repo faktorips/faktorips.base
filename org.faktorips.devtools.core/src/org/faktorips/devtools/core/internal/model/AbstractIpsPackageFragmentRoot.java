@@ -159,6 +159,10 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
                 result.add(each);
             } else {
                 IPolicyCmptType eachPcType = getIpsProject().findPolicyCmptType(each.getPolicyCmptType());
+                if (eachPcType == null){
+                    // invalid product, cannot find policy cmpt type of product
+                    continue;
+                }
                 if (eachPcType.isSubtypeOf(pcType)) {
                     result.add(each);
                 }

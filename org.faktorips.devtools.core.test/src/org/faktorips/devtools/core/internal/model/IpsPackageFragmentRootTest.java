@@ -244,5 +244,21 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertFalse(list.contains(subFragment));
     }
     
+    public void testFindProductCmptsByPolicyCmptWithExistingProductCmptMissingPolicyCmpt() throws CoreException{
+        // find product cmpt by given policy cmpt name,
+        // the package fragment we search in, contains an invalid product cmpt (product cmpt without
+        // policy cmpt)
+        newPolicyCmptType(ipsRoot, "PolicyCmpt");
+        IProductCmpt pc = newProductCmpt(ipsRoot, "ProductCmpt1");
+        pc.setPolicyCmptType("PolicyCmpt");
+        List result = new ArrayList(1);
+        ipsRoot.findProductCmpts("PolicyCmpt", true, result);
+        assertEquals(1, result.size());
+        
+        result.clear();
+        newProductCmpt(ipsRoot, "ProductCmpt2");
+        ipsRoot.findProductCmpts("PolicyCmpt", true, result);
+        assertEquals(1, result.size());
+    }
 
 }
