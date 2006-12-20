@@ -17,6 +17,7 @@ package org.faktorips.devtools.core.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Date;
@@ -209,8 +210,37 @@ public class XmlUtil {
      */
     public static void writeXMLtoFile(File file, Document doc, String doctype, int indentWidth, String encoding)
             throws TransformerException {
+        writeXMLtoResult(new StreamResult(file), doc, doctype, indentWidth, encoding);
+    }
+
+    /**
+     * Writes a XML document to a file.
+     * <p>
+     * See also the <a
+     * href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java
+     * example</a>.
+     * </p>
+     * 
+     * @throws TransformerException
+     */
+    public static void writeXMLtoStream(OutputStream os, Document doc, String doctype, int indentWidth, String encoding)
+            throws TransformerException {
+        writeXMLtoResult(new StreamResult(os), doc, doctype, indentWidth, encoding);
+    }
+    
+    /**
+     * Writes a XML document to a dom result object.
+     * <p>
+     * See also the <a
+     * href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java
+     * example</a>.
+     * </p>
+     * 
+     * @throws TransformerException
+     */
+    private static void writeXMLtoResult(Result res, Document doc, String doctype, int indentWidth, String encoding)
+            throws TransformerException {
         Source src = new DOMSource(doc);
-        Result res = new StreamResult(file);
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         try {
             transformerFactory.setAttribute("indent-number", new Integer(4)); //$NON-NLS-1$
@@ -234,7 +264,9 @@ public class XmlUtil {
         }
         transformer.transform(src, res);
     }
-
+    
+    
+    
     public final static Element getFirstElement(Node parent, String tagName) {
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {

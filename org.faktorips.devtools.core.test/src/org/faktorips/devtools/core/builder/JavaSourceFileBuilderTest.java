@@ -64,7 +64,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         assertFalse(builder.generateCalled);
         
         //check file creation
-        IFile file = project.getIpsPackageFragmentRoots()[0].getArtefactDestination().getFile("TestPolicy.java");
+        IFile file = project.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile("TestPolicy.java");
         assertTrue(file.exists());
         
         //this checks if the merge.xml has been found since it will try to merge the content because
@@ -81,12 +81,12 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder.build(ipsSrcFile);
         builder.afterBuild(ipsSrcFile);
         //check file creation
-        IFile file = project.getIpsPackageFragmentRoots()[0].getArtefactDestination().getFile("TestPolicy.java");
+        IFile file = project.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile("TestPolicy.java");
         assertTrue(file.exists());
         
         //check file deletion
         builder.delete(ipsSrcFile);
-        file = project.getIpsPackageFragmentRoots()[0].getArtefactDestination().getFile("TestPolicy.java");
+        file = project.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile("TestPolicy.java");
         assertFalse(file.exists());
     }
     

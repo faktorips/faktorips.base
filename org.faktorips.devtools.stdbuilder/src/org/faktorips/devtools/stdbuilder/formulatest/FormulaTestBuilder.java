@@ -342,6 +342,15 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         return testMethods;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * Returns true.
+     */
+    public boolean buildsDerivedArtefacts() {
+        return true;
+    }
+
     /*
      * @see generateTestMethods
      */

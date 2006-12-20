@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -166,9 +167,21 @@ public class AddIpsNatureAction extends ActionDelegate {
             }
             IpsObjectPath path = new IpsObjectPath();
             path.setOutputDefinedPerSrcFolder(false);
-            path.setBasePackageNameForGeneratedJavaClasses(basePackageName);
+            path.setBasePackageNameForMergableJavaClasses(basePackageName);
             path.setOutputFolderForGeneratedJavaFiles(javaSrcFolder);
-            path.setBasePackageNameForExtensionJavaClasses(basePackageName);
+            path.setBasePackageNameForDerivedJavaClasses(basePackageName);
+            if(javaSrcFolder.exists()){
+                IFolder derivedsrcFolder = javaSrcFolder.getParent().getFolder(new Path("derived"));
+                derivedsrcFolder.create(true, true, new NullProgressMonitor());
+                derivedsrcFolder.setDerived(true);
+                IClasspathEntry derivedsrc = JavaCore.newSourceEntry(derivedsrcFolder.getFullPath());
+                IClasspathEntry[] rawClassPath = javaProject.getRawClasspath();
+                IClasspathEntry[] newClassPath = new IClasspathEntry[rawClassPath.length + 1];
+                System.arraycopy(rawClassPath, 0, newClassPath, 0, rawClassPath.length);
+                newClassPath[newClassPath.length - 1] = derivedsrc;
+                javaProject.setRawClasspath(newClassPath, new NullProgressMonitor());
+                path.setOutputFolderForDerivedSources(derivedsrcFolder);
+            }
             path.newSourceFolderEntry(ipsModelFolder);
             ipsProject.setIpsObjectPath(path);
 

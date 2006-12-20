@@ -109,16 +109,6 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertTrue(builder.deleteCalled);
     }
 
-    public void testClean() throws Exception {
-        IIpsProjectProperties props = ipsProject.getProperties();
-        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
-        ipsProject.setProperties(props);
-        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[0]);
-        ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSet(ipsProject, builderSet);
-        ipsProject.getProject().build(IncrementalProjectBuilder.CLEAN_BUILD, new NullProgressMonitor());
-        assertTrue(builderSet.cleanCalled);
-    }
-
     // TODO pk
     public void testDependencyGraphWithMultipleDelete() {
 

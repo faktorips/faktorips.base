@@ -256,12 +256,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 		path.setOutputDefinedPerSrcFolder(true);
 		IIpsSrcFolderEntry entry = path.newSourceFolderEntry(rootFolder);
 		entry
-				.setSpecificBasePackageNameForGeneratedJavaClasses("org.faktorips.sample.model");
-		entry.setSpecificOutputFolderForGeneratedJavaFiles(project
+				.setSpecificBasePackageNameForMergableJavaClasses("org.faktorips.sample.model");
+		entry.setSpecificOutputFolderForMergableJavaFiles(project
 				.getFolder("src"));
 		entry
-				.setSpecificBasePackageNameForExtensionJavaClasses("org.faktorips.sample.model");
-		entry.setSpecificOutputFolderForExtensionJavaFiles(project
+				.setSpecificBasePackageNameForDerivedJavaClasses("org.faktorips.sample.model");
+		entry.setSpecificOutputFolderForDerivedJavaFiles(project
 				.getFolder("extension"));
 		ipsProject.setIpsObjectPath(path);
 

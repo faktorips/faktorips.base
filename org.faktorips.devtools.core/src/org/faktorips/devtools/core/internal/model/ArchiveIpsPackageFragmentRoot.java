@@ -91,7 +91,7 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     /**
      * {@inheritDoc}
      */
-    public IFolder getArtefactDestination() throws CoreException {
+    public IFolder getArtefactDestination(boolean derived) throws CoreException {
         throw newExceptionMethodNotAvailableForArchvies();
     }
 

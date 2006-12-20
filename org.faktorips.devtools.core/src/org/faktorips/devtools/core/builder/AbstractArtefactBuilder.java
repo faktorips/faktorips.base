@@ -74,7 +74,14 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
 		// default implementation does nothing
 	}
 
-	/**
+    /**
+     * Returns false.
+     */
+	public boolean buildsDerivedArtefacts() {
+        return false;
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public String toString() {

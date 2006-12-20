@@ -1179,7 +1179,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         List tocPath = new ArrayList();
         IIpsSrcFolderEntry[] srcFolderEntries = ipsObjectPath.getSourceFolderEntries();
         for (int j = 0; j < srcFolderEntries.length; j++) {
-            String tocFilePath = srcFolderEntries[j].getBasePackageNameForGeneratedJavaClasses() + "." + srcFolderEntries[j].getBasePackageRelativeTocPath(); //$NON-NLS-1$
+            String tocFilePath = srcFolderEntries[j].getBasePackageNameForMergableJavaClasses() + "." + srcFolderEntries[j].getBasePackageRelativeTocPath(); //$NON-NLS-1$
             tocPath.add(tocFilePath);
         }
         return tocPath;

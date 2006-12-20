@@ -51,54 +51,54 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         IFolder out2 = ipsProject.getProject().getFolder("out2");
         path.setOutputFolderForGeneratedJavaFiles(out1);
         IIpsSrcFolderEntry entry = path.newSourceFolderEntry(src);
-        entry.setSpecificOutputFolderForGeneratedJavaFiles(out2);
+        entry.setSpecificOutputFolderForMergableJavaFiles(out2);
 
         path.setOutputDefinedPerSrcFolder(false);
-        assertEquals(out1, entry.getOutputFolderForGeneratedJavaFiles());
+        assertEquals(out1, entry.getOutputFolderForMergableJavaFiles());
 
         path.setOutputDefinedPerSrcFolder(true);
-        assertEquals(out2, entry.getOutputFolderForGeneratedJavaFiles());
+        assertEquals(out2, entry.getOutputFolderForMergableJavaFiles());
     }
 
     public void testGetBasePackageNameForGeneratedJavaClasses() {
         IFolder src = ipsProject.getProject().getFolder("src");
-        path.setBasePackageNameForGeneratedJavaClasses("pack1");
+        path.setBasePackageNameForMergableJavaClasses("pack1");
         IIpsSrcFolderEntry entry = path.newSourceFolderEntry(src);
-        entry.setSpecificBasePackageNameForGeneratedJavaClasses("pack2");
+        entry.setSpecificBasePackageNameForMergableJavaClasses("pack2");
 
         path.setOutputDefinedPerSrcFolder(false);
-        assertEquals("pack1", entry.getBasePackageNameForGeneratedJavaClasses());
+        assertEquals("pack1", entry.getBasePackageNameForMergableJavaClasses());
 
         path.setOutputDefinedPerSrcFolder(true);
-        assertEquals("pack2", entry.getBasePackageNameForGeneratedJavaClasses());
+        assertEquals("pack2", entry.getBasePackageNameForMergableJavaClasses());
     }
     
     public void testGetOutputFolderForExtensionJavaFiles() {
         IFolder src = ipsProject.getProject().getFolder("src");
         IFolder out1 = ipsProject.getProject().getFolder("out1");
         IFolder out2 = ipsProject.getProject().getFolder("out2");
-        path.setOutputFolderForExtensionJavaFiles(out1);
+        path.setOutputFolderForDerivedSources(out1);
         IIpsSrcFolderEntry entry = path.newSourceFolderEntry(src);
-        entry.setSpecificOutputFolderForExtensionJavaFiles(out2);
+        entry.setSpecificOutputFolderForDerivedJavaFiles(out2);
 
         path.setOutputDefinedPerSrcFolder(false);
-        assertEquals(out1, entry.getOutputFolderForExtensionJavaFiles());
+        assertEquals(out1, entry.getOutputFolderForDerivedJavaFiles());
 
         path.setOutputDefinedPerSrcFolder(true);
-        assertEquals(out2, entry.getOutputFolderForExtensionJavaFiles());
+        assertEquals(out2, entry.getOutputFolderForDerivedJavaFiles());
     }
 
     public void testGetBasePackageNameForExtensionJavaClasses() {
         IFolder src = ipsProject.getProject().getFolder("src");
-        path.setBasePackageNameForExtensionJavaClasses("pack1");
+        path.setBasePackageNameForDerivedJavaClasses("pack1");
         IIpsSrcFolderEntry entry = path.newSourceFolderEntry(src);
-        entry.setSpecificBasePackageNameForExtensionJavaClasses("pack2");
+        entry.setSpecificBasePackageNameForDerivedJavaClasses("pack2");
 
         path.setOutputDefinedPerSrcFolder(false);
-        assertEquals("pack1", entry.getBasePackageNameForExtensionJavaClasses());
+        assertEquals("pack1", entry.getBasePackageNameForDerivedJavaClasses());
 
         path.setOutputDefinedPerSrcFolder(true);
-        assertEquals("pack2", entry.getBasePackageNameForExtensionJavaClasses());
+        assertEquals("pack2", entry.getBasePackageNameForDerivedJavaClasses());
     }
     
     public void testInitFromXml() {
@@ -109,41 +109,41 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         
         entry.initFromXml((Element)nl.item(0), ipsProject.getProject());
         assertEquals(project.getFolder("ipssrc"), entry.getSourceFolder());
-        assertEquals(project.getFolder("generated"), entry.getSpecificOutputFolderForGeneratedJavaFiles());
-        assertEquals("org.sample.generated", entry.getSpecificBasePackageNameForGeneratedJavaClasses());
-        assertEquals(project.getFolder("extensions"), entry.getSpecificOutputFolderForExtensionJavaFiles());
-        assertEquals("org.sample.extensions", entry.getSpecificBasePackageNameForExtensionJavaClasses());
+        assertEquals(project.getFolder("generated"), entry.getSpecificOutputFolderForMergableJavaFiles());
+        assertEquals("org.sample.generated", entry.getSpecificBasePackageNameForMergableJavaClasses());
+        assertEquals(project.getFolder("extensions"), entry.getSpecificOutputFolderForDerivedJavaFiles());
+        assertEquals("org.sample.extensions", entry.getSpecificBasePackageNameForDerivedJavaClasses());
         assertEquals("motor.repository-toc.xml", entry.getBasePackageRelativeTocPath());
 
         entry.initFromXml((Element)nl.item(1), ipsProject.getProject());
-        assertNull(entry.getSpecificOutputFolderForGeneratedJavaFiles());
-        assertEquals("", entry.getSpecificBasePackageNameForGeneratedJavaClasses());
-        assertEquals("", entry.getSpecificBasePackageNameForExtensionJavaClasses());
+        assertNull(entry.getSpecificOutputFolderForMergableJavaFiles());
+        assertEquals("", entry.getSpecificBasePackageNameForMergableJavaClasses());
+        assertEquals("", entry.getSpecificBasePackageNameForDerivedJavaClasses());
     }
 
     public void testToXml() {
         IProject project = ipsProject.getProject();
         IpsSrcFolderEntry entry = new IpsSrcFolderEntry(path, project.getFolder("ipssrc").getFolder("modelclasses"));
-        entry.setSpecificOutputFolderForGeneratedJavaFiles(project.getFolder("javasrc").getFolder("modelclasses"));
-        entry.setSpecificBasePackageNameForGeneratedJavaClasses("org.faktorips.sample.model");
+        entry.setSpecificOutputFolderForMergableJavaFiles(project.getFolder("javasrc").getFolder("modelclasses"));
+        entry.setSpecificBasePackageNameForMergableJavaClasses("org.faktorips.sample.model");
         entry.setBasePackageRelativeTocPath("toc.xml");
         Element element = entry.toXml(newDocument());
         entry = new IpsSrcFolderEntry(path);
         entry.initFromXml(element, project);
         assertEquals("toc.xml", entry.getBasePackageRelativeTocPath());
         assertEquals(project.getFolder("ipssrc").getFolder("modelclasses"), entry.getSourceFolder());
-        assertEquals(project.getFolder("javasrc").getFolder("modelclasses"), entry.getSpecificOutputFolderForGeneratedJavaFiles());
-        assertEquals("org.faktorips.sample.model", entry.getSpecificBasePackageNameForGeneratedJavaClasses());
+        assertEquals(project.getFolder("javasrc").getFolder("modelclasses"), entry.getSpecificOutputFolderForMergableJavaFiles());
+        assertEquals("org.faktorips.sample.model", entry.getSpecificBasePackageNameForMergableJavaClasses());
         
         // null, default values for new entries
         entry = new IpsSrcFolderEntry(path, project.getFolder("ipssrc").getFolder("modelclasses"));
         element = entry.toXml(newDocument());
         entry = new IpsSrcFolderEntry(path);
         entry.initFromXml(element, project);
-        assertNull(entry.getSpecificOutputFolderForGeneratedJavaFiles());
-        assertNull(entry.getSpecificOutputFolderForExtensionJavaFiles());
-        assertEquals("", entry.getSpecificBasePackageNameForGeneratedJavaClasses());
-        assertEquals("", entry.getSpecificBasePackageNameForExtensionJavaClasses());
+        assertNull(entry.getSpecificOutputFolderForMergableJavaFiles());
+        assertNull(entry.getSpecificOutputFolderForDerivedJavaFiles());
+        assertEquals("", entry.getSpecificBasePackageNameForMergableJavaClasses());
+        assertEquals("", entry.getSpecificBasePackageNameForDerivedJavaClasses());
     }
     
     public void testValidate() throws CoreException{
@@ -157,14 +157,14 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
 
         // validate missing outputFolderGenerated
         IFolder folder1 = ipsProject.getProject().getFolder("none");
-        srcEntries[0].setSpecificOutputFolderForGeneratedJavaFiles(folder1);
+        srcEntries[0].setSpecificOutputFolderForMergableJavaFiles(folder1);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
         assertEquals(1, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_MISSING_FOLDER));
 
         // validate missing outputFolderExtension
-        srcEntries[0].setSpecificOutputFolderForExtensionJavaFiles(folder1);
+        srcEntries[0].setSpecificOutputFolderForDerivedJavaFiles(folder1);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
         assertEquals(2, ml.getNoOfMessages());
@@ -173,6 +173,6 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         path.newSourceFolderEntry(folder1);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
-        assertEquals(3, ml.getNoOfMessages());
+        assertEquals(5, ml.getNoOfMessages());
     }
 }

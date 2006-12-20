@@ -467,14 +467,14 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         long stamp = projectFile.getModificationStamp();
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         path.setOutputDefinedPerSrcFolder(false);
-        path.setBasePackageNameForGeneratedJavaClasses("some.name");
+        path.setBasePackageNameForMergableJavaClasses("some.name");
         ipsProject.setIpsObjectPath(path);
         assertTrue(stamp!=projectFile.getModificationStamp());
         
         // following line will receive a new IpsProject instance (as it is only a proxy)
         IIpsProject ipsProject2 = IpsPlugin.getDefault().getIpsModel().getIpsProject(ipsProject.getProject());
         // test if he changed object path is also available with the new instance
-        assertEquals("some.name", ipsProject2.getIpsObjectPath().getBasePackageNameForGeneratedJavaClasses());
+        assertEquals("some.name", ipsProject2.getIpsObjectPath().getBasePackageNameForMergableJavaClasses());
     }
 
     public void testFindReferencingProductCmptGenerations() throws CoreException {
@@ -663,6 +663,38 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_INVALID_MIGRATION_INFORMATION));
     }
     
+    public void testValidateIfOutputFolderSetForSrcFolderEntry() throws CoreException{
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        IIpsSrcFolderEntry srcFolder = path.newSourceFolderEntry((IFolder)root.getEnclosingResource());
+        srcFolder.setSpecificBasePackageNameForDerivedJavaClasses("srctest");
+        path.setBasePackageNameForMergableJavaClasses("test");
+        ipsProject.setIpsObjectPath(path);
+        
+        MessageList msgList = ipsProject.validate();
+        Message msg = msgList.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_DERIVED_MISSING);
+        assertNotNull(msg);
+        msg = msgList.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING);
+        assertNotNull(msg);
+        
+        IFolder outMerge = ipsProject.getProject().getFolder("src");
+        if(!outMerge.exists()){
+            outMerge.create(true, true, null);
+        }
+        path.setOutputFolderForGeneratedJavaFiles(outMerge);
+        IFolder outDerived = ipsProject.getProject().getFolder("derived");
+        if(!outDerived.exists()){
+            outDerived.create(true, true, null);
+        }
+        path.setOutputFolderForDerivedSources(outDerived);
+        ipsProject.setIpsObjectPath(path);
+
+        msgList = ipsProject.validate();
+        msg = msgList.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_DERIVED_MISSING);
+        assertNull(msg);
+        msg = msgList.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING);
+        assertNull(msg);
+    }
+    
     public void testValidateDuplicateBasePackageGenerated() throws Exception {
         IIpsProject ipsProject2 = (IpsProject)this.newIpsProject("TestProject2");
 
@@ -671,14 +703,35 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IIpsSrcFolderEntry srcFolder = path.newSourceFolderEntry((IFolder)root.getEnclosingResource());
-        srcFolder.setSpecificBasePackageNameForExtensionJavaClasses("srctest");
-        path.setBasePackageNameForGeneratedJavaClasses("test");
+        srcFolder.setSpecificBasePackageNameForDerivedJavaClasses("srctest");
+        IFolder outMerge = ipsProject.getProject().getFolder("src");
+        if(!outMerge.exists()){
+            outMerge.create(true, true, null);
+        }
+        path.setOutputFolderForGeneratedJavaFiles(outMerge);
+        IFolder outDerived = ipsProject.getProject().getFolder("derived");
+        if(!outDerived.exists()){
+            outDerived.create(true, true, null);
+        }
+        path.setOutputFolderForDerivedSources(outDerived);
+        path.setBasePackageNameForMergableJavaClasses("test");
         path.newIpsProjectRefEntry(ipsProject2);
         ipsProject.setIpsObjectPath(path);
         
         // check same base package name and product definition project
         path = ipsProject2.getIpsObjectPath();
-        path.setBasePackageNameForGeneratedJavaClasses("test");
+        IFolder outMerge2 = ipsProject2.getProject().getFolder("src");
+        if(!outMerge2.exists()){
+            outMerge2.create(true, true, null);
+        }
+        path.setOutputFolderForGeneratedJavaFiles(outMerge2);
+        IFolder outDerived2 = ipsProject2.getProject().getFolder("derived");
+        if(!outDerived2.exists()){
+            outDerived2.create(true, true, null);
+        }
+        path.setOutputFolderForDerivedSources(outDerived2);
+        
+        path.setBasePackageNameForMergableJavaClasses("test");
         ipsProject2.setIpsObjectPath(path);
         
         IIpsProjectProperties props = ipsProject2.getProperties();
@@ -690,7 +743,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         
         // check same base package name per src folder
         path = ipsProject2.getIpsObjectPath();
-        path.setBasePackageNameForGeneratedJavaClasses("test2");
+        path.setBasePackageNameForMergableJavaClasses("test2");
         path.setOutputDefinedPerSrcFolder(true);
         ipsProject2.setIpsObjectPath(path);
         ml = ipsProject.validate();
@@ -698,7 +751,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         
         // check different base package name
         path = ipsProject2.getIpsObjectPath();
-        path.setBasePackageNameForGeneratedJavaClasses("test2");
+        path.setBasePackageNameForMergableJavaClasses("test2");
         path.setOutputDefinedPerSrcFolder(false);
         ipsProject2.setIpsObjectPath(path);
         ml = ipsProject.validate();
@@ -706,7 +759,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         
         // check same base package name and product definition project
         path = ipsProject2.getIpsObjectPath();
-        path.setBasePackageNameForGeneratedJavaClasses("test");
+        path.setBasePackageNameForMergableJavaClasses("test");
         ipsProject2.setIpsObjectPath(path);        
         props = ipsProject2.getProperties();
         props.setProductDefinitionProject(false);        

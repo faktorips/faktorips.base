@@ -63,11 +63,14 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
     
     public void testGetArtefactDestination() throws CoreException{
-        IFolder destination = ipsRoot.getArtefactDestination();
+        IFolder destination = ipsRoot.getArtefactDestination(false);
         assertNotNull(destination);
         IIpsSrcFolderEntry srcEntry = ipsProject.getIpsObjectPath().getSourceFolderEntries()[0];
-        IPath outputPath = srcEntry.getOutputFolderForGeneratedJavaFiles().getProjectRelativePath();
+        IPath outputPath = srcEntry.getOutputFolderForMergableJavaFiles().getProjectRelativePath();
         assertEquals(outputPath, destination.getProjectRelativePath());
+        destination = ipsRoot.getArtefactDestination(true);
+        IPath outputPathDerived = srcEntry.getOutputFolderForDerivedJavaFiles().getProjectRelativePath();
+        assertEquals(outputPathDerived, destination.getProjectRelativePath());
     }
     
     public void testGetPdProject() {

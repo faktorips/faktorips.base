@@ -27,41 +27,52 @@ import org.eclipse.core.resources.IFolder;
 public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
 
     /**
+     * Message code constant identifying the message of a validation rule. 
+     */
+    public final static String MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING  = "OutputFolderMergableMissing";
+
+    /**
+     * Message code constant identifying the message of a validation rule. 
+     */
+    public final static String MSGCODE_OUTPUT_FOLDER_DERIVED_MISSING  = "OutputFolderDerivedMissing";
+
+    /**
      * Returns the folder containing the ips source files.
      */
     public IFolder getSourceFolder();
     
     /**
-     * Returns the output folder where the Java source files are generated into. If a specific output folder is set 
-     * for this entry, the specific output folder is returned, otherwise the ouput folder defined in the object path
-     * is returned.
+     * Returns the output folder for generated but mergable Java source files. The content of the
+     * java files in this folder are supposed to be merged with the newly generated content during
+     * every build cycle . If a specific output folder is set for this entry, the specific output
+     * folder is returned, otherwise the ouput folder defined in the object path is returned.
      */
-    public IFolder getOutputFolderForGeneratedJavaFiles();
+    public IFolder getOutputFolderForMergableJavaFiles();
     
     /**
-     * Returns the entry's own output folder where the Java source files are generated. This ouptput folder is used only
-     * for this entry.
+     * Returns the entry's own output folder for generated but mergable Java source files. This
+     * ouptput folder is used only for this entry.
      */
-    public IFolder getSpecificOutputFolderForGeneratedJavaFiles();
+    public IFolder getSpecificOutputFolderForMergableJavaFiles();
     
     /**
-     * Sets the entry's output folder where the Java source files are generated into.
+     * Sets the entry's output folder for generated but mergable Java source files.
      */
-    public void setSpecificOutputFolderForGeneratedJavaFiles(IFolder outputFolder);
+    public void setSpecificOutputFolderForMergableJavaFiles(IFolder outputFolder);
     
     /**
-     * Returns the name of the base package for the generated Java source files. If a specific base package name is set 
-     * for this entry, the specific base package name is returned, otherwise the base package name defined in the object path
-     * is returned.
+     * Returns the name of the base package for generated but mergable Java source files. If a
+     * specific base package name is set for this entry, the specific base package name is returned,
+     * otherwise the base package name defined in the object path is returned.
      */
-    public String getBasePackageNameForGeneratedJavaClasses();
+    public String getBasePackageNameForMergableJavaClasses();
 
     /**
      * Returns partial toc resource name. The fully qualified toc resource name is obtained
      * by adding this partial name to the base package name for generated Java classes.
      * 
      * @see #getTocPath()
-     * @see #getBasePackageNameForGeneratedJavaClasses()
+     * @see #getBasePackageNameForMergableJavaClasses()
      */
     public String getBasePackageRelativeTocPath();
     
@@ -73,53 +84,52 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
     public void setBasePackageRelativeTocPath(String newName);
 
     /**
-     * Returns the name of the entry's own base package for the generated Java source files. All generated Java types
-     * are contained in this package or one of the child packages.
+     * Returns the name of the entry's own base package for generated but mergable Java source
+     * files.
      */
-    public String getSpecificBasePackageNameForGeneratedJavaClasses();
+    public String getSpecificBasePackageNameForMergableJavaClasses();
 
     /**
-     * Sets the name of entry's own base package for the generated Java source files. All generated Java types
-     * are contained in this package or one of the child packages.
+     * Sets the name of entry's own base package for generated but mergable Java source files.
      */
-    public void setSpecificBasePackageNameForGeneratedJavaClasses(String name);
+    public void setSpecificBasePackageNameForMergableJavaClasses(String name);
     
     /**
-     * Returns the output folder containting the Java source files where the developer adds it's own code.
-     * If a specific output folder is set for this entry, the specific output folder is returned, 
-     * otherwise the ouput folder defined in the object path is returned.
+     * Returns the output folder containting generated derived Java source files. If a specific
+     * output folder is set for this entry, the specific output folder is returned, otherwise the
+     * ouput folder defined in the object path is returned.
      */
-    public IFolder getOutputFolderForExtensionJavaFiles();
+    public IFolder getOutputFolderForDerivedJavaFiles();
     
     /**
-     * Returns the entry's own output folder containing the Java source files where the developer adds it's
-     * own code. This ouptput folder is used only for this entry.
-     */
-    public IFolder getSpecificOutputFolderForExtensionJavaFiles();
-    
-    /**
-     * Sets the entry's output folder containg the Java source files where the developer adds it's own code.
+     * Returns the entry's own output folder containing generated derived Java source files.
      * This ouptput folder is used only for this entry.
      */
-    public void setSpecificOutputFolderForExtensionJavaFiles(IFolder outputFolder);
+    public IFolder getSpecificOutputFolderForDerivedJavaFiles();
     
     /**
-     * Returns the name of the base package for the Java source files where the developer adds it's own code. 
-     * If a specific base package name is set for this entry, the specific base package name is returned, 
+     * Sets the entry's output folder containg generated derived Java source files.
+     * This ouptput folder is used only for this entry.
+     */
+    public void setSpecificOutputFolderForDerivedJavaFiles(IFolder outputFolder);
+    
+    /**
+     * Returns the name of the base package for the generated derived Java source files. If a
+     * specific base package name is set for this entry, the specific base package name is returned,
      * otherwise the base package name defined in the object path is returned.
      */
-    public String getBasePackageNameForExtensionJavaClasses();
+    public String getBasePackageNameForDerivedJavaClasses();
     
     /**
-     * Returns the name of the entry's own base package for the Java source files where the developer adds it's 
-     * own code. All generated Java types are contained in this package or one of the child packages.
+     * Returns the name of the entry's own base package for generated derived Java source files. All
+     * generated Java types are contained in this package or one of the child packages.
      */
-    public String getSpecificBasePackageNameForExtensionJavaClasses();
+    public String getSpecificBasePackageNameForDerivedJavaClasses();
 
     /**
-     * Sets the name of the entry's own base package for the Java source files where the developer adds it's own code. 
+     * Sets the name of the entry's own base package for the generated derived Java source files. 
      * All generated Java types are contained in this package or one of the child packages.
      */
-    public void setSpecificBasePackageNameForExtensionJavaClasses(String name);
+    public void setSpecificBasePackageNameForDerivedJavaClasses(String name);
     
 }

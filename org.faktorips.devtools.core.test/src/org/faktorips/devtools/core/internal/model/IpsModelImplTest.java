@@ -48,24 +48,24 @@ public class IpsModelImplTest extends AbstractIpsPluginTest {
 
     public void testGetIpsObjectPath() throws CoreException{
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.getSourceFolderEntries()[0].setSpecificBasePackageNameForGeneratedJavaClasses("newpackage");
+        path.getSourceFolderEntries()[0].setSpecificBasePackageNameForMergableJavaClasses("newpackage");
         ipsProject.setIpsObjectPath(path);
         
         //path is created in the first call
         path = ipsProject.getIpsObjectPath();
-        assertEquals("newpackage", path.getSourceFolderEntries()[0].getSpecificBasePackageNameForGeneratedJavaClasses());
+        assertEquals("newpackage", path.getSourceFolderEntries()[0].getSpecificBasePackageNameForMergableJavaClasses());
 
         //path is read from the cache in the second call
         path = ipsProject.getIpsObjectPath();
-        assertEquals("newpackage", path.getSourceFolderEntries()[0].getSpecificBasePackageNameForGeneratedJavaClasses());
+        assertEquals("newpackage", path.getSourceFolderEntries()[0].getSpecificBasePackageNameForMergableJavaClasses());
 
         IIpsProject secondProject = newIpsProject("TestProject2");
         IIpsObjectPath secondPath = secondProject.getIpsObjectPath();
-        secondPath.getSourceFolderEntries()[0].setSpecificBasePackageNameForGeneratedJavaClasses("secondpackage");
+        secondPath.getSourceFolderEntries()[0].setSpecificBasePackageNameForMergableJavaClasses("secondpackage");
         secondProject.setIpsObjectPath(secondPath);
         
-        assertEquals("newpackage", path.getSourceFolderEntries()[0].getSpecificBasePackageNameForGeneratedJavaClasses());
-        assertEquals("secondpackage", secondPath.getSourceFolderEntries()[0].getSpecificBasePackageNameForGeneratedJavaClasses());
+        assertEquals("newpackage", path.getSourceFolderEntries()[0].getSpecificBasePackageNameForMergableJavaClasses());
+        assertEquals("secondpackage", secondPath.getSourceFolderEntries()[0].getSpecificBasePackageNameForMergableJavaClasses());
     }
     
     

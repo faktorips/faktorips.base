@@ -59,9 +59,12 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
      * Returns the artefact destination for the artefacts generated on behalf of the ips objects
      * within this ips package fragment root.
      */
-    public IFolder getArtefactDestination() throws CoreException {
+    public IFolder getArtefactDestination(boolean derived) throws CoreException {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)getIpsObjectPathEntry();
-        return entry.getOutputFolderForGeneratedJavaFiles();
+        if(derived){
+            return entry.getOutputFolderForDerivedJavaFiles();
+        }
+        return entry.getOutputFolderForMergableJavaFiles();
     }
 
     /**
@@ -260,7 +263,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
      */
     public String getJavaBasePackageNameForGeneratedJavaClasses() throws CoreException {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)getIpsObjectPathEntry();
-        return entry.getBasePackageNameForGeneratedJavaClasses();
+        return entry.getBasePackageNameForMergableJavaClasses();
     }
 
     /**
@@ -268,7 +271,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
      */
     public String getJavaBasePackageNameForExtensionJavaClasses() throws CoreException {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)getIpsObjectPathEntry();
-        return entry.getBasePackageNameForExtensionJavaClasses();
+        return entry.getBasePackageNameForDerivedJavaClasses();
     }
 
     /**

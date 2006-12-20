@@ -241,7 +241,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
     }
     
     private void addJavaFiles(IIpsPackageFragmentRoot root, JarOutputStream os, IProgressMonitor monitor)throws CoreException {
-        IFolder javaSrcFolder = root.getArtefactDestination();
+        IFolder javaSrcFolder = root.getArtefactDestination(false);
         IPackageFragmentRoot javaRoot = root.getIpsProject().getJavaProject().findPackageFragmentRoot(javaSrcFolder.getFullPath());
         if (javaRoot==null) {
             throw new CoreException(new IpsStatus("Can't find file Java root for IPS root " + root.getName())); //$NON-NLS-1$

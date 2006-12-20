@@ -119,13 +119,6 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     /**
-	 * {@inheritDoc}
-	 */
-	public void clean() throws CoreException {
-		// do nothing
-	}
-	
-    /**
      * {@inheritDoc}
      */
     public String getClassNameForTableBasedEnum(ITableStructure structure) {

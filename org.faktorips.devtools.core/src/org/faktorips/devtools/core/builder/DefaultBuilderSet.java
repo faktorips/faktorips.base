@@ -112,7 +112,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     public String getTocFilePackageName(IIpsPackageFragmentRoot root) throws CoreException {
         StringBuffer buf = new StringBuffer();
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
-        String basePackeName = entry.getBasePackageNameForGeneratedJavaClasses();
+        String basePackeName = entry.getBasePackageNameForDerivedJavaClasses();
         if (!StringUtils.isEmpty(basePackeName)) {
             buf.append(basePackeName).append('.');
         }
@@ -131,17 +131,22 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
             return null;
         }
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
-        String basePack = entry.getBasePackageNameForGeneratedJavaClasses();
+        String basePack = entry.getBasePackageNameForDerivedJavaClasses();
         String basePackInternal = QNameUtil.concat(basePack, INTERNAL_PACKAGE);
         IPath path = QNameUtil.toPath(basePackInternal);
         path = path.append(entry.getBasePackageRelativeTocPath());
-		IFolder folder = entry.getOutputFolderForGeneratedJavaFiles();
-        if (folder == null){
+		IFolder tocFileLocation = getTocFileLocation(root);
+        if (tocFileLocation == null){
             return null;
         }
-		return folder.getFile(path);
+		return tocFileLocation.getFile(path);
 	}
 
+    private IFolder getTocFileLocation(IIpsPackageFragmentRoot root) throws CoreException{
+        IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
+        return entry.getOutputFolderForDerivedJavaFiles();
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -150,9 +155,8 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
         if (tocFile==null) {
             return null;
         }
-        IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
-        IFolder folder = entry.getOutputFolderForGeneratedJavaFiles();
-        return tocFile.getFullPath().removeFirstSegments(folder.getFullPath().segmentCount()).toString();
+        IFolder tocFileLocation = getTocFileLocation(root);
+        return tocFile.getFullPath().removeFirstSegments(tocFileLocation.getFullPath().segmentCount()).toString();
     }
 
 	/**

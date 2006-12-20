@@ -443,4 +443,11 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         MutableClRuntimeRepositoryToc toc = getToc(ipsSrcFile.getIpsPackageFragment().getRoot());
         toc.removeEntry(ipsSrcFile.getQualifiedNameType().getName());
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean buildsDerivedArtefacts() {
+        return true;
+    }
 }

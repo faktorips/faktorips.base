@@ -87,5 +87,13 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
         return "";
     }
     
-    
+    /**
+     * {@inheritDoc}
+     * 
+     * Returns true.
+     */
+    public boolean buildsDerivedArtefacts() {
+        return true;
+    }
+
 }

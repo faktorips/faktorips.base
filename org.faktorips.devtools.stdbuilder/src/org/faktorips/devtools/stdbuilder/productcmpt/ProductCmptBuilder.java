@@ -193,4 +193,13 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     private String getUnchangedJavaSrcFilePrefix(IIpsSrcFile file) throws CoreException {
         return file.getQualifiedNameType().getUnqualifiedName() + ' ';
     }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * Returns true.
+     */
+    public boolean buildsDerivedArtefacts() {
+        return true;
+    }
 }

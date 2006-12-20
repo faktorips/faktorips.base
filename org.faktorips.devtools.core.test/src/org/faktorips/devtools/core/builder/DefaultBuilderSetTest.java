@@ -44,7 +44,8 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         project = newIpsProject("TestProject");
         IIpsObjectPath path = project.getIpsObjectPath();
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)path.getEntries()[0];
-        entry.setSpecificBasePackageNameForGeneratedJavaClasses("org.faktorips.sample");
+        entry.setSpecificBasePackageNameForMergableJavaClasses("org.faktorips.sample");
+        entry.setSpecificBasePackageNameForDerivedJavaClasses("org.faktorips.sample");
         entry.setBasePackageRelativeTocPath("motor/toc.xml");
         project.setIpsObjectPath(path);
 	}
@@ -54,7 +55,7 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         DefaultBuilderSet builderSet = new TestBuilderSet();
 		IFile file = builderSet.getRuntimeRepositoryTocFile(root);
 		assertNotNull(file);
-        assertEquals("src/org/faktorips/sample/internal/motor/toc.xml", file.getProjectRelativePath().toString());
+        assertEquals("extension/org/faktorips/sample/internal/motor/toc.xml", file.getProjectRelativePath().toString());
 	}
     
     public void testGetRuntimeRepositoryTocResourceName() throws CoreException {
@@ -87,10 +88,6 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
 			return null;
 		}
 
-        public void clean() throws CoreException {
-            
-        }
-	
         /**
          * {@inheritDoc}
          */

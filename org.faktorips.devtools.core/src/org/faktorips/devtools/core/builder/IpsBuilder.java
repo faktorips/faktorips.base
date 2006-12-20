@@ -41,10 +41,12 @@ import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -85,6 +87,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             // undetected as the validation result cache gets cleared in a resource change listener. 
             // it is not guaranteed that the listener is notified before the build starts!
             getIpsProject().getIpsModel().clearValidationCache();
+            createDerivedOutputFoldersIfNecessary(new SubProgressMonitor(monitor, 5));
             getProject().deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, 0);
             MessageList list = getIpsProject().validate();
             createMarkersFromMessageList(getProject(), list, IpsPlugin.PROBLEM_MARKER);
@@ -135,6 +138,27 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return getProject().getReferencedProjects();
     }
 
+    private void createDerivedOutputFoldersIfNecessary(IProgressMonitor monitor) throws CoreException{
+        IIpsObjectPath ipsObjectPath = getIpsProject().getIpsObjectPath();
+        IFolder derivedFolder = ipsObjectPath.getOutputFolderForDerivedSources();
+        String taskDescription = "Creating missing derived output folders";
+        if(derivedFolder != null){
+            if(!derivedFolder.exists()){
+                monitor.subTask(taskDescription);
+                derivedFolder.create(true, true, monitor);
+                derivedFolder.setDerived(true);
+            }
+        }
+        IIpsSrcFolderEntry[] entries = ipsObjectPath.getSourceFolderEntries();
+        for (int i = 0; i < entries.length; i++) {
+            IFolder folder = entries[i].getOutputFolderForDerivedJavaFiles();
+            if(folder != null && !folder.exists()){
+                monitor.subTask(taskDescription);
+                folder.create(true, true, monitor);
+                folder.setDerived(true);
+            }
+        }
+    }
     
     private void applyBuildCommand(IIpsArtefactBuilderSet currentBuilderSet, MultiStatus buildStatus, BuildCommand command, IProgressMonitor monitor) throws CoreException {
         // Despite the fact that generating is disabled in the faktor ips
@@ -199,7 +223,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
         for (int i = 0; i < roots.length; i++) {
             if (roots[i].isBasedOnSourceFolder()) {
-                removeEmptyFolders(roots[i].getArtefactDestination(), false);
+                removeEmptyFolders(roots[i].getArtefactDestination(false), false);
             }
         }
     }
@@ -247,7 +271,23 @@ public class IpsBuilder extends IncrementalProjectBuilder {
      * {@inheritDoc}
      */
     protected void clean(IProgressMonitor monitor) throws CoreException {
-        getIpsProject().getIpsArtefactBuilderSet().clean();
+        IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
+        for (int i = 0; i < roots.length; i++) {
+            IFolder destination = roots[i].getArtefactDestination(true);
+            //if the user decides not to consider the sources in this folder as derived 
+            //then the content should not be delete during a clean build
+            if(destination == null || !destination.isDerived()){
+                continue;
+            }
+            if(destination.exists()){
+                IResource[] members = destination.members();
+                for (int j = 0; j < members.length; j++) {
+                    if(members[j].exists()){
+                        members[j].delete(true, monitor);
+                    }
+                }
+            }
+        }
     }
 
     private void removeEmptyFolders(IFolder parent, boolean removeThisParent) throws CoreException {
@@ -345,7 +385,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             return;
         }
         try {
-            resource.deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
+            
             MessageList list = object.validate();
             createMarkersFromMessageList(resource, list, IpsPlugin.PROBLEM_MARKER);
         } catch (Exception e) {
@@ -356,6 +396,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 
     private void createMarkersFromMessageList(IResource resource, MessageList list, String markerType)
             throws CoreException {
+        resource.deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_ZERO);
         for (int i = 0; i < list.getNoOfMessages(); i++) {
             Message msg = list.getMessage(i);
             IMarker marker = resource.createMarker(markerType);

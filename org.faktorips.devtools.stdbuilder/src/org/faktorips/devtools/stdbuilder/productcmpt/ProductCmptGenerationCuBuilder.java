@@ -251,4 +251,12 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * Returns true.
+     */
+    public boolean buildsDerivedArtefacts() {
+        return true;
+    }
 }

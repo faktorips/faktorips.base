@@ -40,8 +40,6 @@ public class TestIpsArtefactBuilderSet implements IIpsArtefactBuilderSet {
     
     private IIpsArtefactBuilder[] artefactBuilders;
     
-    public boolean cleanCalled = false;
-    
     public TestIpsArtefactBuilderSet(){
         artefactBuilders = new IIpsArtefactBuilder[0];
     }
@@ -104,10 +102,6 @@ public class TestIpsArtefactBuilderSet implements IIpsArtefactBuilderSet {
 	public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
 		return null;
 	}
-
-    public void clean() throws CoreException {
-        cleanCalled = true;
-    }
 
     /**
      * {@inheritDoc}

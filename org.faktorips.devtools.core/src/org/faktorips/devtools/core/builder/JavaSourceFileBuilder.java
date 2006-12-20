@@ -720,8 +720,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
 		IFile file = getJavaFile(ipsSrcFile);
 		IContainer parent = file.getParent();
-		IFolder destination = ipsSrcFile.getIpsPackageFragment().getRoot()
-				.getArtefactDestination();
+		IFolder destination = getArtefactDestination(ipsSrcFile);
 		if (file.exists()) {
 			file.delete(true, null);
 			if (!parent.equals(destination) && parent instanceof IFolder) {
@@ -771,11 +770,23 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 		return doc.get();
 	}
 
-	// TODO check for qualified class name validity
-	public IFile getJavaFile(IIpsSrcFile ipsSrcFile) throws CoreException {
-		IFolder destinationFolder = ipsSrcFile.getIpsPackageFragment()
-				.getRoot().getArtefactDestination();
+    /**
+     * Returns the artefact destination. The destination can eiter be the output folder for merable
+     * artefacts or the one for derived artefacts. 
+     */ 
+    protected IFolder getArtefactDestination(IIpsSrcFile ipsSrcFile) throws CoreException{
+        if (buildsDerivedArtefacts()) {
+            return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true);
+        }
+        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(false);
+    }
 
+    /**
+     * Returns the IFile for the provided IIpsSrcFile. 
+     */
+	public IFile getJavaFile(IIpsSrcFile ipsSrcFile) throws CoreException {
+		IFolder destinationFolder = getArtefactDestination(ipsSrcFile);
+        
 		String name = getQualifiedClassName(ipsSrcFile);
 		int index = name.lastIndexOf('.');
 

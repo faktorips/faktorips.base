@@ -51,8 +51,11 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     /**
      * Returns the artefact destination for the artefacts generated on behalf of the ips objects within this
      * ips package fragment root.
+     * 
+     * @param derived determines if the artefact destination for derived resources or the destination for mergable
+     *      resources is to return. If set to true the destination for the derived artefacts will be returned. 
      */
-    public IFolder getArtefactDestination() throws CoreException;
+    public IFolder getArtefactDestination(boolean derived) throws CoreException;
 
     /**
      * Returns the package fragments contained in this root folder. 

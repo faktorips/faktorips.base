@@ -274,13 +274,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         }
         throw new RuntimeException("No builder of class " + builderClass + " defined."); //$NON-NLS-1$ //$NON-NLS-2$
     }
-
-    /**
-     * Does nothing.
-     * {@inheritDoc}
-     */
-    public void clean() throws CoreException {
-    }
     
     /**
      * {@inheritDoc}

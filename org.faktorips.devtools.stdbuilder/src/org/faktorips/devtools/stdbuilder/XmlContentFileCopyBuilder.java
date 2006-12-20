@@ -57,4 +57,12 @@ public class XmlContentFileCopyBuilder extends AbstractXmlFileBuilder {
         return "XmlContentFileCopyBuilder"; //$NON-NLS-1$
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * Returns true.
+     */
+    public boolean buildsDerivedArtefacts() {
+        return true;
+    }
 }
