@@ -42,25 +42,25 @@ public final class IpsObjectType {
      * Type for business function.
      */
     public final static IpsObjectType BUSINESS_FUNCTION = 
-        new IpsObjectType("BusinessFunction", Messages.IpsObjectType_nameBusinessFunction, "ipsbf", false, false, "BusinessFunction.gif", "BusinessFunctionDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
+        new IpsObjectType("BusinessFunction", Messages.IpsObjectType_nameBusinessFunction, "ipsbf", false, false, "BusinessFunction.gif", "BusinessFunctionDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     
     /**
      * Type for Policy component type.
      */
     public final static IpsObjectType POLICY_CMPT_TYPE = 
-        new IpsObjectType("PolicyCmptType", Messages.IpsObjectType_namePolicyClass, "ipspct", true, false, "PolicyCmptType.gif", "PolicyCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
+        new IpsObjectType("PolicyCmptType", Messages.IpsObjectType_namePolicyClass, "ipspct", true, false, "PolicyCmptType.gif", "PolicyCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     /**
      * Type for product component type.
      */
     public final static IpsObjectType PRODUCT_CMPT_TYPE = 
-        new IpsObjectType("ProductCmptType", Messages.IpsObjectType_nameProductClass, "ipsproductcmpttype", false, false, "PolicyCmptType.gif", "PolicyCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
+        new IpsObjectType("ProductCmptType", Messages.IpsObjectType_nameProductClass, "ipsproductcmpttype", false, false, "PolicyCmptType.gif", "PolicyCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     /**
      * Type for table structures.
      */
     public final static IpsObjectType TABLE_STRUCTURE = 
-        new IpsObjectType("TableStructure", Messages.IpsObjectType_nameTableStructure, "ipstablestructure", false, false, "TableStructure.gif", "TableStructureDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
+        new IpsObjectType("TableStructure", Messages.IpsObjectType_nameTableStructure, "ipstablestructure", false, false, "TableStructure.gif", "TableStructureDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     
     /**
      * Type for product components.
@@ -72,7 +72,7 @@ public final class IpsObjectType {
      * Type for tables contents objects.
      */
     public final static IpsObjectType TABLE_CONTENTS = 
-        new IpsObjectType("TableContents", Messages.IpsObjectType_nameTableContents, "ipstablecontents", false, true, "TableContents.gif", "TableContentsDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
+        new IpsObjectType("TableContents", Messages.IpsObjectType_nameTableContents, "ipstablecontents", false, true, "TableContents.gif", "TableContentsDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     
     /**
      * Type for test case types.
@@ -93,7 +93,7 @@ public final class IpsObjectType {
      * Ips source file type for ips objects in none ips source folder.
      */
     public final static IpsObjectType IPS_SOURCE_FILE =  
-        new IpsObjectType("Unknown", "Ips Source file", "*", false, true, "IpsSrcFile.gif", "IpsSrcFileDisabled.gif");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        new IpsObjectType("Unknown", "Ips Source file", "*", false, true, "IpsSrcFile.gif", "IpsSrcFileDisabled.gif");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
     /**
      * Returns the IpsObjectType that has the given file extension. 
