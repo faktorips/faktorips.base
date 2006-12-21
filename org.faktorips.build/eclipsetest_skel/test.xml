@@ -115,7 +115,7 @@
 		<mkdir dir="${install}" />
    	    
 	    <exec dir="." executable="unzip" failonerror="true">
-	    		<arg line="-o -qq eclipse31-test.zip -d ${install}" />
+	    		<arg line="-o -qq eclipse32-test.zip -d ${install}" />
 	    </exec>
 	    
 	    <exec dir="${install}" executable="tar">
