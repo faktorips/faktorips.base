@@ -413,10 +413,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
             if (selected == null) {
                 return;
             }
-            createEditActions(manager, selected);
             createNewMenu(manager, selected);
             manager.add(new Separator());
-            createOpenWithMenu(manager, (IStructuredSelection)treeViewer.getSelection());
+            createOpenMenu(manager, (IStructuredSelection)treeViewer.getSelection());
             manager.add(new Separator());
             createReorgActions(manager, selected);
             manager.add(new Separator());
@@ -431,13 +430,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
             createAdditionalActions(manager, structuredSelection);
             manager.add(new Separator());
             createPropertiesActions(manager, selected);
-        }
-
-        protected void createEditActions(IMenuManager manager, Object selected) {
-            if (selected instanceof IIpsObject || selected instanceof IFile || selected instanceof IRelation
-                    || selected instanceof IAttribute) {
-                manager.add(new OpenEditorAction(treeViewer));
-            }
         }
 
         protected void createNewMenu(IMenuManager manager, Object selected) {
@@ -472,9 +464,13 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
             manager.add(newMenu);
         }
 
-        protected void createOpenWithMenu(IMenuManager manager, IStructuredSelection selected) {
-            openActionGroup.setContext(new ActionContext(selected));
-            openActionGroup.fillContextMenu(manager);
+        protected void createOpenMenu(IMenuManager manager, IStructuredSelection selected) {
+            if (selected instanceof IIpsObject || selected instanceof IRelation || selected instanceof IAttribute) {
+                manager.add(new OpenEditorAction(treeViewer));
+            } else {
+                openActionGroup.setContext(new ActionContext(selected));
+                openActionGroup.fillContextMenu(manager);
+            }
         }
         
         protected void createReorgActions(IMenuManager manager, Object selected) {
