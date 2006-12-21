@@ -415,7 +415,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
             }
             createNewMenu(manager, selected);
             manager.add(new Separator());
-            createOpenMenu(manager, (IStructuredSelection)treeViewer.getSelection());
+            createOpenMenu(manager, selected, (IStructuredSelection)treeViewer.getSelection());
             manager.add(new Separator());
             createReorgActions(manager, selected);
             manager.add(new Separator());
@@ -464,11 +464,11 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
             manager.add(newMenu);
         }
 
-        protected void createOpenMenu(IMenuManager manager, IStructuredSelection selected) {
+        protected void createOpenMenu(IMenuManager manager, Object selected, IStructuredSelection structuredSelected) {
             if (selected instanceof IIpsObject || selected instanceof IRelation || selected instanceof IAttribute) {
                 manager.add(new OpenEditorAction(treeViewer));
             } else {
-                openActionGroup.setContext(new ActionContext(selected));
+                openActionGroup.setContext(new ActionContext(structuredSelected));
                 openActionGroup.fillContextMenu(manager);
             }
         }
