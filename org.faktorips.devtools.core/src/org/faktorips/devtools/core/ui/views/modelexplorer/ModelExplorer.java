@@ -63,7 +63,6 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.ui.actions.AbstractSelectionChangedListenerAction;
 import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
 import org.faktorips.devtools.core.ui.actions.ExpandCollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.FindPolicyReferencesAction;
@@ -377,8 +376,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
     protected class MenuBuilder implements IMenuListener {
         // hold references to enabled RetargetActions
         private ActionGroup openActionGroup =  new OpenActionGroup(ModelExplorer.this);    
-        private AbstractSelectionChangedListenerAction ipsDelete = new ModelExplorerDeleteAction(treeViewer, getSite()
-                .getShell());
+        private ModelExplorerDeleteAction deleteAction = new ModelExplorerDeleteAction(treeViewer, getSite().getShell());
         private IWorkbenchAction copy = ActionFactory.COPY.create(getSite().getWorkbenchWindow());
         private IWorkbenchAction paste = ActionFactory.PASTE.create(getSite().getWorkbenchWindow());
         private IWorkbenchAction delete = ActionFactory.DELETE.create(getSite().getWorkbenchWindow());
@@ -391,7 +389,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
                     new IpsCopyAction(treeViewer, getSite().getShell()));
             getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.PASTE.getId(),
                     new IpsPasteAction(treeViewer, getSite().getShell()));
-            getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.DELETE.getId(), ipsDelete);
+            getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.DELETE.getId(), deleteAction);
 
             getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.RENAME.getId(),
                     new RenameAction(getSite().getShell(), treeViewer));

@@ -17,31 +17,19 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 
-public class ProductEditorDeleteAction extends AbstractSelectionChangedListenerAction {
+public class ProductEditorDeleteAction extends IpsAction {
 
-    public ProductEditorDeleteAction(ISelectionProvider provider) {
-        super(provider);
+    private ProductCmptEditor editor;
+    
+    public ProductEditorDeleteAction(ProductCmptEditor editor) {
+        super(editor.getSelectionProviderDispatcher());
+        this.editor = editor;
     }    
-
-    /**
-     * Removes all <code>IIpsObjectPart</code>s in the selection from their <code>IIpsObject</code>s.
-     * {@inheritDoc}
-     */
-    protected void execute(IStructuredSelection selection) {
-        Object[] items= selection.toArray();
-        for (int i = 0; i < items.length; i++) {
-            IpsObjectPart part = canBeProcessed(items[i]);
-            if(part != null){
-                part.delete();
-            }
-        }
-    }
 
     /**
      * Defines which IpsObjectParts can be process by this action. Returns the IpsObjectPart if it can be processed, returns 
@@ -54,21 +42,21 @@ public class ProductEditorDeleteAction extends AbstractSelectionChangedListenerA
         return null;
     }
     
-    /**
-     * Removes this action and all delegates as listener of the selectionprovider given at
-     * instanciation and disables them.
-     */
-    public void disposeInternal(){
+    public void dispose(){
         setEnabled(false);
+        super.dispose();
     }
     
-    /** 
-     * Activates the action if the selection is a <code>IStructuredSelection</code> and 
-     * does not contain <code>IProductCmptTypeRelation</code>s. Disables this action otherwise.
-     * 
+    /**
      * {@inheritDoc}
      */
-    protected boolean isEnabled(ISelection selection){
+    protected boolean computeEnabledProperty(IStructuredSelection selection) {
+        if(!super.computeEnabledProperty(selection)){
+            return false;
+        }
+        if(!editor.isActiveGenerationEditable()){
+            return false;
+        }
         Object[] items= ((IStructuredSelection)selection).toArray();
         for (int i = 0; i < items.length; i++) {
             IpsObjectPart part = canBeProcessed(items[i]);
@@ -77,5 +65,18 @@ public class ProductEditorDeleteAction extends AbstractSelectionChangedListenerA
             }
         }
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void run(IStructuredSelection selection) {
+        Object[] items= selection.toArray();
+        for (int i = 0; i < items.length; i++) {
+            IpsObjectPart part = canBeProcessed(items[i]);
+            if(part != null){
+                part.delete();
+            }
+        }
     }
 }

@@ -70,6 +70,8 @@ public abstract class IpsAction extends Action {
 
     private IDataChangeableReadAccess ctrl;
     
+    private ISelectionChangedListener adjustEnableStateListener;
+    
 	/**
 	 * Creates a new IpsAction. This action uses the
 	 * <code>SelectionService</code> of the given WorkbenchWindow to retrieve
@@ -93,13 +95,12 @@ public abstract class IpsAction extends Action {
 	public IpsAction(ISelectionProvider selectionProvider) {
 		this.selectionProvider = selectionProvider;
         if (selectionProvider!=null) {
-            selectionProvider.addSelectionChangedListener(new ISelectionChangedListener() {
-
+            adjustEnableStateListener = new ISelectionChangedListener() {
                 public void selectionChanged(SelectionChangedEvent event) {
                     updateEnabledProperty();
                 }
-                
-            });
+            };
+            selectionProvider.addSelectionChangedListener(adjustEnableStateListener);
         }
 	}
     
@@ -453,5 +454,10 @@ public abstract class IpsAction extends Action {
         return true;
     }
 
+    public void dispose(){
+        if(adjustEnableStateListener != null){
+            selectionProvider.removeSelectionChangedListener(adjustEnableStateListener);
+        }
+    }
 
 }

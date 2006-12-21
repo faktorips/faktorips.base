@@ -38,6 +38,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.editor.IFormPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.IpsSrcFileImmutable;
@@ -224,6 +225,18 @@ public abstract class IpsObjectEditor extends FormEditor
     protected void setActivePage(int pageIndex) {
         super.setActivePage(pageIndex);
         refresh();
+    }
+
+    /**
+     * Returns the active IpsObjectEditorPage. If the active page is not an instance of IpsObjectEditorPage 
+     * <code>null</code> will be returned.
+     */
+    public IpsObjectEditorPage getActiveIpsObjectEditorPage(){
+        IFormPage page = getActivePageInstance();
+        if(page instanceof IpsObjectEditorPage){
+            return (IpsObjectEditorPage)getActivePageInstance();
+        }
+        return null;
     }
 
     /**

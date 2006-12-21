@@ -25,7 +25,7 @@ import org.eclipse.ui.actions.DeleteResourceAction;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.util.ArgumentCheck;
 
-public class ModelExplorerDeleteAction extends AbstractSelectionChangedListenerAction {
+public class ModelExplorerDeleteAction extends IpsAction {
     
     private DeleteResourceAction deleteAction;
 
@@ -40,12 +40,6 @@ public class ModelExplorerDeleteAction extends AbstractSelectionChangedListenerA
         }
     }
 
-    protected void execute(IStructuredSelection selection) {
-        if(canDelete(selection)){
-            deleteAction.run();
-        }
-    }
-    
     private boolean canDelete(IStructuredSelection selection){
         Object[] items= selection.toArray();
         boolean canDelete= true;
@@ -57,17 +51,21 @@ public class ModelExplorerDeleteAction extends AbstractSelectionChangedListenerA
         return canDelete;
     }
     
-    protected void disposeInternal(){
-        getSelectionProvider().removeSelectionChangedListener(deleteAction);
+    public void dispose(){
+        super.dispose();
+        selectionProvider.removeSelectionChangedListener(deleteAction);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected boolean isEnabled(ISelection selection) {
+    protected boolean computeEnabledProperty(IStructuredSelection selection) {
         if(selection instanceof IStructuredSelection){
             return canDelete((IStructuredSelection)selection);
         }
         return false;
+    }
+
+    public void run(IStructuredSelection selection) {
+        if(canDelete(selection)){
+            deleteAction.run();
+        }
     }
 }
