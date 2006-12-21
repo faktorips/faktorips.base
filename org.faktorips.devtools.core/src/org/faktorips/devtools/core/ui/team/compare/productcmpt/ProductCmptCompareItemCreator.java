@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItemCreator;
 
 /**
@@ -81,6 +82,11 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator{
                     IConfigElement[] ces = ((IProductCmptGeneration)gens[i]).getConfigElements();
                     for (int j = 0; j < ces.length; j++) {
                         new ProductCmptCompareItem(generation, ces[j]);
+                    }
+                    // tablecontentusages for each generation
+                    ITableContentUsage[] usages = ((IProductCmptGeneration)gens[i]).getTableContentUsages();
+                    for (int j = 0; j < usages.length; j++) {
+                        new ProductCmptCompareItem(generation, usages[j]);
                     }
                     // relations for each generation
                     IProductCmptRelation[] rels = ((IProductCmptGeneration)gens[i]).getRelations();

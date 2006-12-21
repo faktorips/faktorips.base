@@ -20,21 +20,25 @@ package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 import java.util.Comparator;
 
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 
 /**
  * Comparator for <code>ProductCmptCompareItem</code>s. Compares the actual
  * <code>IIpsElement</code>s referenced by each compare item. Sorts
  * <code>IProductCmptGeneration</code>s by their validFrom date,
- * <code>IProductCmptRelation</code>s by their name, which by convention contains the qualified
- * name of the referenced product component. <code>IConfigElement</code>s are sorted by their
- * PcTypeAttribute, which is at the same time their name. ConfigElements are put above relations.
+ * <code>IProductCmptRelation</code>s by their ID, which also defines the order they were added
+ * to the <code>ProductCmpt</code>. <code>IConfigElement</code>s and
+ * <code>ITableContentUsage</code>s are sorted in the following order: product attributes, table
+ * usages, formulas, policy attributes. Attributes are placed above relations in each generation.
  * <p>
  * The sorting of <code>ProductCmptCompareItem</code>s is necessary to ensure that differences in
  * product components (their structures) are consistent with differences in the text representation
- * displayed in the <code>ProductCmptCompareViewer</code>.
+ * displayed in the <code>ProductCmptCompareViewer</code>. Moreover the representation must be
+ * consistent with the ProductCmptEditor.
  * 
  * @see org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItem
  * 
@@ -53,20 +57,46 @@ public class ProductCmptCompareItemComparator implements Comparator {
                 return ((IProductCmptGeneration)element1).getGenerationNo()
                         - ((IProductCmptGeneration)element2).getGenerationNo();
             }
-            // Sort relations by name (qualified name of the target)
+            // Sort relations by ID
             if (element1 instanceof IProductCmptRelation && element2 instanceof IProductCmptRelation) {
-//                return element1.getName().compareTo(element2.getName());
                 // sort by ID 
                 return ((IProductCmptRelation)element1).getId() - ((IProductCmptRelation)element2).getId();
             }
-            // Sort configElements by type (which is at the same time their name)
-            if (element1 instanceof IConfigElement && element2 instanceof IConfigElement) {
-                String ce1 = ((IConfigElement)element1).getPcTypeAttribute();
-                String ce2 = ((IConfigElement)element2).getPcTypeAttribute();
-                return ce1.compareTo(ce2);
+            if ((element1 instanceof IConfigElement||element1 instanceof ITableContentUsage) 
+                    && (element2 instanceof IConfigElement||element2 instanceof ITableContentUsage)) {
+                int first= getOrderNumber(element1);
+                int second= getOrderNumber(element2);
+                return first-second;
             }
         }
         return 0;
+    }
+
+    /** 
+     * Sorts configElements and tableUsages in the following oder:
+     * <ul>
+     *  <li>product attribute</li>
+     *  <li>tableUsage</li>
+     *  <li>formula</li>
+     *  <li>policy attribute</li>
+     * </ul>
+     * @param element
+     * @return
+     */
+    private int getOrderNumber(IIpsElement element){
+        if(element instanceof IConfigElement){
+            IConfigElement ce= (IConfigElement) element;
+            if(ce.getType()==ConfigElementType.PRODUCT_ATTRIBUTE){
+                return 1;
+            }else if(ce.getType()==ConfigElementType.FORMULA){
+                return 3;
+            }else if(ce.getType()==ConfigElementType.POLICY_ATTRIBUTE){
+                return 4;
+            }
+        }else if(element instanceof ITableContentUsage){
+            return 2;
+        }
+        return 5;
     }
 
 }

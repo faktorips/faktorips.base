@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.core.resources.IFile;
 import org.faktorips.devtools.core.model.IAllValuesValueSet;
@@ -35,7 +37,9 @@ import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
 
 /**
@@ -109,43 +113,53 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
      * textranges works similarly to the initTreeContentString() method.
      */
     private int initGenerationContentString(StringBuffer sb, int offset) {
+        IProductCmptGeneration generation= (IProductCmptGeneration)getIpsElement();
         int currentLength= 0;
         sb.append(getContentString());
         currentLength += getContentString().length();
-        List ces = getConfigElements(children);
-        List rels = getRelations(children);
-        if (!ces.isEmpty()) {
+        List attributes = getConfigElementsAndTableContentUsages(children);
+        List relations = getRelations(children);
+        if (!attributes.isEmpty()) {
             sb.append(NEWLINE);
             currentLength += NEWLINE.length();
-            String attrHeader = getAttributeListHeader((IIpsObjectGeneration)getIpsElement());
+            String attrHeader = getAttributeListHeader(generation);
             sb.append(attrHeader);
             currentLength += attrHeader.length();
-            for (Iterator iter = ces.iterator(); iter.hasNext();) {
+            for (Iterator iter = attributes.iterator(); iter.hasNext();) {
                 sb.append(NEWLINE);
                 currentLength += NEWLINE.length();
                 ProductCmptCompareItem ce = (ProductCmptCompareItem)iter.next();
                 currentLength += ce.initTreeContentString(sb, currentLength+offset);
             }
         }
-        if (!ces.isEmpty() && !rels.isEmpty()) {
+        if (!relations.isEmpty()) {
             sb.append(NEWLINE);
             currentLength += NEWLINE.length();
         }
-        if (!rels.isEmpty()) {
-            String relationsHeader = getRelationListHeader((IIpsObjectGeneration)getIpsElement());
+        if (!relations.isEmpty()) {
+            String relationsHeader = getRelationListHeader(generation);
             sb.append(relationsHeader);
             currentLength += relationsHeader.length();
-            for (Iterator iter = rels.iterator(); iter.hasNext();) {
-                sb.append(NEWLINE);
-                currentLength += NEWLINE.length();
-                ProductCmptCompareItem rel = (ProductCmptCompareItem)iter.next();
-                currentLength += rel.initTreeContentString(sb, currentLength+offset);
+            String[] relationTypes= getRelationTypes(generation);
+            for (int i = 0; i < relationTypes.length; i++) {
+                List relationsByType= getRelations(relations, relationTypes[i]);
+                if(!relationsByType.isEmpty()){
+                    String relTypeHeader = getRelationTypeHeader(generation, relationTypes[i]);
+                    sb.append(relTypeHeader);
+                    currentLength += relTypeHeader.length();
+                }
+                for (Iterator iter = relationsByType.iterator(); iter.hasNext();) {
+                    sb.append(NEWLINE);
+                    currentLength += NEWLINE.length();
+                    ProductCmptCompareItem rel = (ProductCmptCompareItem)iter.next();
+                    currentLength += rel.initTreeContentString(sb, currentLength+offset);
+                }
             }
         }
         setRange(offset, currentLength);
         return currentLength;
     }
-    
+
     /**
      * Returns a string used as header for the list of attributes (configelements) in the string representation
      * of this CompareItem.
@@ -169,16 +183,26 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
         sb.append(validFrom).append(TAB).append(TAB).append(relString).append(COLON_BLANK);
         return sb.toString();
     }
+    /**
+     * Returns a string used as header for the list of relations of a common relationType (the given String).
+     */
+    private String getRelationTypeHeader(IIpsObjectGeneration gen, String relationType) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(NEWLINE);
+        String validFromSimple = simpleDateFormat.format(gen.getValidFrom().getTime());
+        sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(relationType);
+        return sb.toString();
+    }
 
     /**
      * Returns a list containing all <code>ProductCmptCompareItem</code>s in the given list that
      * contain a <code>IConfigElement</code>.
      */
-    private List getConfigElements(List elements) {
+    private List getConfigElementsAndTableContentUsages(List elements) {
         List ces = new ArrayList();
         for (Iterator iter = elements.iterator(); iter.hasNext();) {
             ProductCmptCompareItem item = (ProductCmptCompareItem)iter.next();
-            if (item.getIpsElement() instanceof IConfigElement) {
+            if (item.getIpsElement() instanceof IConfigElement || item.getIpsElement() instanceof ITableContentUsage) {
                 ces.add(item);
             }
         }
@@ -187,7 +211,23 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
 
     /**
      * Returns a list containing all <code>ProductCmptCompareItem</code>s in the given list that
-     * contain a <code>IProductComponentRelation</code>.
+     * contain an <code>IProductComponentRelation</code> with the given relationType.
+     */
+    private List getRelations(List elements, String relationType) {
+        List rels = new ArrayList();
+        for (Iterator iter = elements.iterator(); iter.hasNext();) {
+            ProductCmptCompareItem item = (ProductCmptCompareItem)iter.next();
+            if (item.getIpsElement() instanceof IProductCmptRelation) {
+                if(((IProductCmptRelation)item.getIpsElement()).getProductCmptTypeRelation().equals(relationType)){
+                    rels.add(item);
+                }
+            }
+        }
+        return rels;
+    }
+    /**
+     * Returns a list containing all <code>ProductCmptCompareItem</code>s in the given list that
+     * contain an <code>IProductComponentRelation</code>.
      */
     private List getRelations(List elements) {
         List rels = new ArrayList();
@@ -198,6 +238,26 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
             }
         }
         return rels;
+    }
+    
+    /**
+     * Returns all RelationTypes for the given <code>IProductCmptGeneration</code> in the order of occurance.
+     * Multiple occurances of the same ID are ignored.
+     * <p>
+     * Thus a list of relations with the IDs 1,2,1,3,1 returns the array {1,2,3}.
+     * 
+     * 
+     * @param gen
+     * @return
+     */
+    private String[] getRelationTypes(IProductCmptGeneration gen) {
+        // use TreeSet to avoid duplicate IDs and at the same time maintain their order.
+        Set relationTypes = new TreeSet();
+        IProductCmptRelation[] relations = gen.getRelations();
+        for (int i = 0; i < relations.length; i++) {
+            relationTypes.add(relations[i].getProductCmptTypeRelation());
+        }
+        return (String[])relationTypes.toArray(new String[relationTypes.size()]);
     }
 
     /**
@@ -210,55 +270,64 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
      */
     protected String initContentString() {
         StringBuffer sb = new StringBuffer();
-        if (getIpsElement() != null) {
-            if (getIpsElement() instanceof IProductCmptRelation) {
-                IProductCmptRelation rel = (IProductCmptRelation)getIpsElement();
-                String validFromSimple = simpleDateFormat.format(rel.getProductCmptGeneration().getValidFrom()
-                        .getTime());
-                sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(rel.getTarget());
-                sb.append(BLANK).append("(").append(rel.getId()).append(")");
-            } else if (getIpsElement() instanceof IConfigElement) {
-                IConfigElement configElement = (IConfigElement)getIpsElement();
-                String validFromSimple = simpleDateFormat
-                    .format(configElement.getProductCmptGeneration().getValidFrom().getTime());
-                if(configElement.getType() == ConfigElementType.PRODUCT_ATTRIBUTE){
-                    sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(COLON_BLANK);
-                    sb.append(configElement.getValue()).append(NEWLINE);
-                }else{
-                    sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(NEWLINE);
-                    sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB)
-                            .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PolicyAttributeEditDialog_defaultValue)
-                            .append(BLANK);
-                    sb.append(configElement.getValue()).append(NEWLINE);
-                    sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB)
-                            .append(Messages.ProductCmptCompareItem_ValueSet).append(COLON_BLANK);
-                    sb.append(getValueSetContent(configElement));
-                }
-            } else if (getIpsElement() instanceof IIpsObjectGeneration) {
-                IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
-                String validFromSimple = simpleDateFormat.format(gen.getValidFrom().getTime());
-                sb.append(validFromSimple).append(TAB).append(changingNamingConventionGenerationString).append(COLON_BLANK);
-                sb.append(QUOTE).append(gen.getName()).append(QUOTE).append(NEWLINE);
-                sb.append(validFromSimple).append(TAB).append(TAB)
-                        .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.GenerationEditDialog_labelValidFrom)
+        if (getIpsElement() == null) {
+            return sb.toString();
+        }
+        if (getIpsElement() instanceof IProductCmptRelation) {
+            IProductCmptRelation rel = (IProductCmptRelation)getIpsElement();
+            String validFromSimple = simpleDateFormat.format(rel.getProductCmptGeneration().getValidFrom()
+                    .getTime());
+            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB).append(rel.getTarget());
+            sb.append(BLANK).append("(").append(rel.getId()).append(")");
+        } else if (getIpsElement() instanceof IConfigElement) {
+            IConfigElement configElement = (IConfigElement)getIpsElement();
+            String validFromSimple = simpleDateFormat
+                .format(configElement.getProductCmptGeneration().getValidFrom().getTime());
+            if(configElement.getType() == ConfigElementType.PRODUCT_ATTRIBUTE){
+                sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(COLON_BLANK);
+                sb.append(configElement.getValue());
+            }else if(configElement.getType() == ConfigElementType.FORMULA){
+                sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(COLON_BLANK);
+                sb.append(configElement.getValue());
+            }else if(configElement.getType() == ConfigElementType.POLICY_ATTRIBUTE){
+                sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(NEWLINE);
+                sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB)
+                        .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PolicyAttributeEditDialog_defaultValue)
                         .append(BLANK);
-                sb.append(dateFormat.format(gen.getValidFrom().getTime()));
-            } else if (getIpsElement() instanceof IProductCmpt) {
-                IProductCmpt product = (IProductCmpt)getIpsElement();
-                sb.append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductCmptEditor_productComponent);
-                sb.append(QUOTE).append(product.getName()).append(QUOTE).append(NEWLINE);
-                sb.append(TAB).append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_attribute)
-                        .append(COLON_BLANK).append(NEWLINE);
-                sb.append(TAB).append(TAB).append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_template)
-                        .append(COLON_BLANK);
-                sb.append(QUOTE).append(product.getPolicyCmptType()).append(QUOTE).append(NEWLINE);
-                sb.append(TAB).append(TAB)
-                        .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_labelRuntimeId)
-                        .append(COLON_BLANK);
-                sb.append(QUOTE).append(product.getRuntimeId()).append(QUOTE);
-            } else if (getIpsElement() instanceof IIpsSrcFile) {
-                // no text for srcfile
+                sb.append(configElement.getValue()).append(NEWLINE);
+                sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB)
+                        .append(Messages.ProductCmptCompareItem_ValueSet).append(COLON_BLANK);
+                sb.append(getValueSetContent(configElement));
             }
+        } else if (getIpsElement() instanceof ITableContentUsage) {
+            ITableContentUsage usage = (ITableContentUsage)getIpsElement();
+            String validFromSimple = simpleDateFormat.format(((IIpsObjectGeneration)usage.getParent()).getValidFrom().getTime());
+            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(usage.getStructureUsage()).append(COLON_BLANK);
+            sb.append(usage.getTableContentName());
+        } else if (getIpsElement() instanceof IIpsObjectGeneration) {
+            IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
+            String validFromSimple = simpleDateFormat.format(gen.getValidFrom().getTime());
+            sb.append(validFromSimple).append(TAB).append(changingNamingConventionGenerationString).append(COLON_BLANK);
+            sb.append(QUOTE).append(gen.getName()).append(QUOTE).append(NEWLINE);
+            sb.append(validFromSimple).append(TAB).append(TAB)
+                    .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.GenerationEditDialog_labelValidFrom)
+                    .append(BLANK);
+            sb.append(dateFormat.format(gen.getValidFrom().getTime()));
+        } else if (getIpsElement() instanceof IProductCmpt) {
+            IProductCmpt product = (IProductCmpt)getIpsElement();
+            sb.append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductCmptEditor_productComponent);
+            sb.append(QUOTE).append(product.getName()).append(QUOTE).append(NEWLINE);
+            sb.append(TAB).append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_attribute)
+                    .append(COLON_BLANK).append(NEWLINE);
+            sb.append(TAB).append(TAB).append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_template)
+                    .append(COLON_BLANK);
+            sb.append(QUOTE).append(product.getPolicyCmptType()).append(QUOTE).append(NEWLINE);
+            sb.append(TAB).append(TAB)
+                    .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_labelRuntimeId)
+                    .append(COLON_BLANK);
+            sb.append(QUOTE).append(product.getRuntimeId()).append(QUOTE);
+        } else if (getIpsElement() instanceof IIpsSrcFile) {
+            // no text for srcfile
         }
         return sb.toString();
     }

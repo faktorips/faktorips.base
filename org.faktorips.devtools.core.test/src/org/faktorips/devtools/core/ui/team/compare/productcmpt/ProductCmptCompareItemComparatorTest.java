@@ -27,10 +27,12 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 
 public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest {
 
@@ -40,10 +42,13 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
     
     private ProductCmptCompareItem compareItemRoot;
     
-    private IConfigElement configElement1;
-    private IConfigElement configElement2;
+    private IConfigElement formula;
+    private IConfigElement policyAttribute;
+    private IConfigElement productAttribute;
+    private ITableContentUsage tableUsage;
     private IProductCmptRelation relation1;
     private IProductCmptRelation relation2;
+    private IProductCmptRelation relation3;
     
     protected void setUp() throws Exception {
         super.setUp();
@@ -62,15 +67,23 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
         calendar.add(Calendar.MONTH, 2);
         product.newGeneration(calendar);
 
-        configElement1 = generation1.newConfigElement();
-        configElement1.setPcTypeAttribute("configElement1");    // set name to ensure sorting order
-        configElement2 = generation1.newConfigElement();
-        configElement2.setPcTypeAttribute("configElement2");
-        relation1 = generation1.newRelation(productReferenced.getQualifiedName());
-        relation2 = generation1.newRelation(productReferenced2.getQualifiedName());
+        formula = generation1.newConfigElement();
+        formula.setType(ConfigElementType.FORMULA);
+        policyAttribute = generation1.newConfigElement();
+        policyAttribute.setType(ConfigElementType.POLICY_ATTRIBUTE);
+        productAttribute = generation1.newConfigElement();
+        productAttribute.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
+        tableUsage= generation1.newTableContentUsage();
+        tableUsage.setTableContentName("TestTableContents");
+        
+        relation1 = generation1.newRelation("RelationType");
+        relation1.setTarget(productReferenced.getQualifiedName());
+        relation2 = generation1.newRelation("OtherRelationType");
+        relation2.setTarget(productReferenced2.getQualifiedName());
+        relation3 = generation1.newRelation("RelationType");
+        relation3.setTarget(productReferenced2.getQualifiedName());
         
         IFile correspondingFile = product.getIpsSrcFile().getCorrespondingFile();
-
         compareItemRoot = (ProductCmptCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile));
     }
     
@@ -89,32 +102,32 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
         ProductCmptCompareItem compareItemGen2= (ProductCmptCompareItem) children[1];
         ProductCmptCompareItem compareItemGen3= (ProductCmptCompareItem) children[2];
         
-        // sort generations by number (gen1.getGenerationNumber()-gen2.getGenerationNumber())
         assertEquals(-1, comparator.compare(compareItemGen1, compareItemGen2));
         assertEquals(-1, comparator.compare(compareItemGen2, compareItemGen3));
         assertEquals(-2, comparator.compare(compareItemGen1, compareItemGen3));
         assertEquals(2, comparator.compare(compareItemGen3, compareItemGen1));
         assertEquals(0, comparator.compare(compareItemGen1, compareItemGen1));
 
-        // relations and configElements
+        // relations and attributes
         children= compareItemGen1.getChildren();
-        ProductCmptCompareItem compareItemConfigElement1= (ProductCmptCompareItem) children[0];
-        ProductCmptCompareItem compareItemConfigElement2= (ProductCmptCompareItem) children[1];
-        ProductCmptCompareItem compareItemRelation1= (ProductCmptCompareItem) children[2];
-        ProductCmptCompareItem compareItemRelation2= (ProductCmptCompareItem) children[3];
+        ProductCmptCompareItem compareItemAttribute1= (ProductCmptCompareItem) children[0];
+        ProductCmptCompareItem compareItemAttribute2= (ProductCmptCompareItem) children[1];
+        ProductCmptCompareItem compareItemAttribute3= (ProductCmptCompareItem) children[2];
+        ProductCmptCompareItem compareItemAttribute4= (ProductCmptCompareItem) children[3];
+        ProductCmptCompareItem compareItemRelation1= (ProductCmptCompareItem) children[4];
+        ProductCmptCompareItem compareItemRelation2= (ProductCmptCompareItem) children[5];
+        ProductCmptCompareItem compareItemRelation3= (ProductCmptCompareItem) children[6];
         
-        // sort configElements lexicographically
-        assertEquals(configElement1.getPcTypeAttribute().compareTo(configElement2.getPcTypeAttribute()),
-                comparator.compare(compareItemConfigElement1, compareItemConfigElement2));
-        assertEquals(configElement2.getPcTypeAttribute().compareTo(configElement1.getPcTypeAttribute()),
-                comparator.compare(compareItemConfigElement2, compareItemConfigElement1));
+        // attributes are sorted by type: productAttribute, tableUsage, formula, policyAttribute
+        assertEquals(compareItemAttribute1.getIpsElement(), productAttribute);
+        assertEquals(compareItemAttribute2.getIpsElement(), tableUsage);
+        assertEquals(compareItemAttribute3.getIpsElement(), formula);
+        assertEquals(compareItemAttribute4.getIpsElement(), policyAttribute);
         
-        // sort relations lexicographically
-//        assertEquals(relation1.getName().compareTo(relation2.getName()),
-//                comparator.compare(compareItemRelation1, compareItemRelation2));
-//        assertEquals(relation2.getName().compareTo(relation1.getName()),
-//                comparator.compare(compareItemRelation2, compareItemRelation1));
-        
+        // relations are sorted by insertion order (ID) and not relationType.
+        assertEquals(compareItemRelation1.getIpsElement(), relation1);
+        assertEquals(compareItemRelation2.getIpsElement(), relation2);
+        assertEquals(compareItemRelation3.getIpsElement(), relation3);
     }
 
 }
