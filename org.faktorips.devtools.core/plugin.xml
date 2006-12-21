@@ -213,25 +213,31 @@
          <actionSet id="org.faktorips.devtools.actions.NavigationActionSet"/>
       </perspectiveExtension>
    </extension>
-   <extension point="org.eclipse.ui.popupMenus">
-		<objectContribution id="addIpsNature" objectClass="org.eclipse.jdt.core.IJavaProject">
+   <extension point="org.eclipse.ui.popupMenus">  
+		<objectContribution adaptable="true" id="addIpsNature" objectClass="org.eclipse.jdt.core.IJavaProject">
+            <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
+			    <separator name="faktorIpsGroup"/>
+            </menu>
 			<action
 		    class="org.faktorips.devtools.core.ui.actions.AddIpsNatureAction"
 		    enablesFor="*"
 		    icon="icons/AddIpsNature.gif"
 		    id="addIpsNatureAction"
 		    label="%addIpsNatureAction"
-		    menubarPath="additions"/>
+		    menubarPath="faktorIPSMenu/faktorIpsGroup"/>
 		  		<!-- <filter name="nature" value="org.eclipse.emf.codegen.jet.IJETNature"/> -->
 		</objectContribution>
     	<objectContribution id="fixDifferencesAction" objectClass="org.eclipse.core.runtime.IAdaptable">
+            <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
+			    <separator name="faktorIpsGroup"/>
+            </menu>
 	    	<action
             class="org.faktorips.devtools.core.ui.wizards.fixdifferences.OpenFixDifferencesToModelWizardAction"
             enablesFor="*"
             icon="icons/FixDifferencesToModel.gif"
             id="fixDifferencesAction"
             label="%fixDifferencesAction"
-            menubarPath="additions">
+            menubarPath="faktorIPSMenu/faktorIpsGroup">
 	            <enablement>
 		             <or>
 			              <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
@@ -246,18 +252,20 @@
 	             </or>
 		      </visibility> 
     	</objectContribution>
-     <objectContribution
-           id="migrateIpsProject"
-           objectClass="org.eclipse.jdt.core.IJavaProject">
-        <action
-              class="org.faktorips.devtools.core.ui.wizards.migration.OpenMigrationWizardAction"
-              enablesFor="*"
-              icon="icons/MigrationWizard.gif"
-              id="migrateIpsProject"
-              label="%org.faktorips.devtools.core.Migrate.label"
-              menubarPath="additions"
-              tooltip="%org.faktorips.devtools.core.Migrate.tooltip"/>
-     </objectContribution>
+        <objectContribution id="migrateIpsProject"
+            objectClass="org.eclipse.jdt.core.IJavaProject">
+            <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
+			    <separator name="faktorIpsGroup"/>
+            </menu>            
+            <action
+            class="org.faktorips.devtools.core.ui.wizards.migration.OpenMigrationWizardAction"
+            enablesFor="*"
+            icon="icons/MigrationWizard.gif"
+            id="migrateIpsProject"
+            label="%org.faktorips.devtools.core.Migrate.label"
+            menubarPath="faktorIPSMenu/faktorIpsGroup"
+            tooltip="%org.faktorips.devtools.core.Migrate.tooltip"/>
+        </objectContribution>
   </extension>
   
    <extension point="org.eclipse.jdt.core.classpathVariableInitializer">            
