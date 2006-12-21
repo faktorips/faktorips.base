@@ -23,7 +23,6 @@ my $debug = "true";
 my $skel = <<CODE_HEADER;
 package --BASEPACKAGE--;
 
-import java.io.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -34,7 +33,6 @@ public class AutomatedSuite extends TestSuite {
 	public static Test suite(){
 		
 		TestSuite suite = new TestSuite();
-		FileOutputStream fout = null;
 
 		--TESTCASES--
 		
@@ -74,8 +72,7 @@ foreach $project (@projects){
 		
 			my $fullclassname = $package . "." . $classname;
 			$importstatements = $importstatements . "\nimport $fullclassname;";
-			$testcases = $testcases . "\n\t\tSystem.out.println(\"executing ".$classname . "\");";
-			$testcases = $testcases . "\n\t\ttry{ fout = new FileOutputStream (\"/tmp/trace\"); new PrintStream(fout).println (\"".$classname."\");fout.close();}catch (Exception e){  }";
+			$testcases = $testcases . "\n\t\tSystem.err.println(\"executing ".$classname . "\");";
 			$testcases = $testcases . "\n\t\tsuite.addTestSuite(" . $classname. ".class);";
 
 		    
