@@ -31,13 +31,21 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.actions.CloseResourceAction;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.views.framelist.FrameList;
+import org.eclipse.ui.views.navigator.IResourceNavigator;
+import org.eclipse.ui.views.navigator.OpenActionGroup;
+import org.eclipse.ui.views.navigator.ResourcePatternFilter;
+import org.eclipse.ui.views.navigator.ResourceSorter;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -96,7 +104,7 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
  * @author Stefan Widmaier
  */
 
-public class ModelExplorer extends ViewPart implements IShowInTarget {
+public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceNavigator {
 
     /**
      * Extension id of this views extension.
@@ -368,6 +376,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     protected class MenuBuilder implements IMenuListener {
         // hold references to enabled RetargetActions
+        private ActionGroup openActionGroup =  new OpenActionGroup(ModelExplorer.this);    
         private AbstractSelectionChangedListenerAction ipsDelete = new ModelExplorerDeleteAction(treeViewer, getSite()
                 .getShell());
         private IWorkbenchAction copy = ActionFactory.COPY.create(getSite().getWorkbenchWindow());
@@ -404,9 +413,10 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             if (selected == null) {
                 return;
             }
-
             createEditActions(manager, selected);
             createNewMenu(manager, selected);
+            manager.add(new Separator());
+            createOpenWithMenu(manager, (IStructuredSelection)treeViewer.getSelection());
             manager.add(new Separator());
             createReorgActions(manager, selected);
             manager.add(new Separator());
@@ -462,6 +472,11 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             manager.add(newMenu);
         }
 
+        protected void createOpenWithMenu(IMenuManager manager, IStructuredSelection selected) {
+            openActionGroup.setContext(new ActionContext(selected));
+            openActionGroup.fillContextMenu(manager);
+        }
+        
         protected void createReorgActions(IMenuManager manager, Object selected) {
             manager.add(copy);
             paste.setEnabled(true);
@@ -658,5 +673,82 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 modelExplorer.setFlatLayout(isFlatLayout);
             }
         }
+    }
+
+    //
+    // Methods for IResourceNavigator
+    //
+    
+    private ResourceSorter resourceSorter;
+    private IWorkingSet workingSet;
+    
+    /**
+     * {@inheritDoc}
+     */
+    public TreeViewer getViewer() {
+        return treeViewer;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSorter(ResourceSorter sorter) {
+        resourceSorter = sorter;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ResourceSorter getSorter() {
+        return resourceSorter;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setWorkingSet(IWorkingSet workingSet) {
+        this.workingSet = workingSet;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IWorkingSet getWorkingSet() {
+        return workingSet;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setLinkingEnabled(boolean enabled) {
+        // nothing to do
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isLinkingEnabled() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setFiltersPreference(String[] patterns) {
+        /// nothing to do
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public FrameList getFrameList() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ResourcePatternFilter getPatternFilter() {
+        throw new UnsupportedOperationException();
     }
 }
