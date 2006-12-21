@@ -22,6 +22,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -138,6 +139,20 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
         newTestParameter = parentTestPolicyCmptTypeParameter.newTestPolicyCmptTypeParamChild();
 
         newTestParameter.setRelation(relation);
+        
+        try {
+            IRelation modelRelation = newTestParameter.findRelation();
+            if (modelRelation != null){
+                IPolicyCmptType pcType = modelRelation.findTarget();
+                if (pcType != null){
+                    newTestParameter.setPolicyCmptType(pcType.getQualifiedName());
+                }
+            }
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+        
+  
         newTestParameter.setName(relation);
         // set the same role like the parent
         ITestPolicyCmptTypeParameter parent = (ITestPolicyCmptTypeParameter)newTestParameter.getParent();
