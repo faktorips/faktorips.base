@@ -297,6 +297,12 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     	if (product == null) {
     		return;
     	}
+        
+        if (errormsg == null) {
+            // return if called before the explorer is shown
+            return;
+        }
+        
     	this.file = product.getIpsSrcFile();
         try {
             

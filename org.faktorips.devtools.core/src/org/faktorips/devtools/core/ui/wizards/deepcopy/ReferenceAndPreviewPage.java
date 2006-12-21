@@ -58,7 +58,6 @@ import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureContentProvider;
 
 /**
  * Page to preview the changes to the names of copied products and to switch between a copy or a
@@ -600,7 +599,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
      * 
      * @author Thorsten Guenther
      */
-    private class ContentProvider extends ProductStructureContentProvider {
+    private class ContentProvider extends DeepCopyContentProvider {
 
         private Hashtable checkedNodes;
 

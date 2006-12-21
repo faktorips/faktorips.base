@@ -47,8 +47,6 @@ import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
-import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureContentProvider;
-import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureLabelProvider;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -184,8 +182,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
         tree = new CheckboxTreeViewer(root);
         tree.setUseHashlookup(true);
-        tree.setLabelProvider(new ProductStructureLabelProvider());
-        tree.setContentProvider(new ProductStructureContentProvider(true));
+        tree.setLabelProvider(new DeepCopyLabelProvider());
+        tree.setContentProvider(new DeepCopyContentProvider(true));
         tree.setInput(this.structure);
         tree.expandAll();
         setCheckedAll(tree.getTree().getItems(), true);
