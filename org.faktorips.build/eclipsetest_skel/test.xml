@@ -117,20 +117,14 @@
 	    <exec dir="." executable="unzip" failonerror="true">
 	    		<arg line="-o -qq eclipse32-test.zip -d ${install}" />
 	    </exec>
-	    
-	    <exec dir="${install}" executable="tar">
-			<arg line="-xzf ${currentDir}/${runtimeArchive}"/>
-	    </exec>
-            <exec dir="." executable="unzip" failonerror="true" >
-                        <arg line="-o -qq *faktorips*test*.zip -d ${install}" />
-            </exec>
-            <exec dir="." executable="unzip" failonerror="true">
-                        <arg line="-o -qq *emf*zip -d ${install}" />
-            </exec>
+	 
+        <exec dir="." executable="unzip" failonerror="true" >
+                    <arg line="-o -qq *faktorips*test*.zip -d ${install}" />
+        </exec>
 
-            <exec dir="." executable="unzip" failonerror="true">
-                        <arg line="-o -qq *faktorips*Test*.zip -d ${install}" />
-             </exec>
+        <exec dir="." executable="unzip" failonerror="true">
+                    <arg line="-o -qq *faktorips*Test*.zip -d ${install}" />
+         </exec>
 
 
 	
