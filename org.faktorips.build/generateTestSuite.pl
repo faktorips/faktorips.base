@@ -23,7 +23,7 @@ my $debug = "true";
 my $skel = <<CODE_HEADER;
 package --BASEPACKAGE--;
 
-
+import java.io.*
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -74,7 +74,12 @@ foreach $project (@projects){
 			my $fullclassname = $package . "." . $classname;
 			$importstatements = $importstatements . "\nimport $fullclassname;";
 			$testcases = $testcases . "\n\t\tSystem.out.println(\"executing ".$classname . "\");";
+			$testcases = $testcases . "\n\t\tfout = new FileOutputStream (\"/tmp/trace\"); new PrintStream(fout).println (\"".$classname."\");fout.close();";
 			$testcases = $testcases . "\n\t\tsuite.addTestSuite(" . $classname. ".class);";
+
+		    
+
+
 		}
 	}
 	
