@@ -73,6 +73,7 @@ foreach $project (@projects){
 		
 			my $fullclassname = $package . "." . $classname;
 			$importstatements = $importstatements . "\nimport $fullclassname;";
+			$testcases = $testcases . "\n\t\tSystem.out.println(\"executing ".$classname . "\");";
 			$testcases = $testcases . "\n\t\tsuite.addTestSuite(" . $classname. ".class);";
 		}
 	}
