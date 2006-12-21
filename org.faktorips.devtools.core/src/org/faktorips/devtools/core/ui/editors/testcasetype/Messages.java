@@ -71,6 +71,8 @@ public class Messages extends NLS {
     public static String TestCaseTypeSection_AttributeTable_ColumnTitleAttributeName;
     public static String TestCaseTypeSection_AttributeTable_ColumnTitleAttribute;
     public static String TestCaseTypeSection_AttributeTable_ColumnTitleAttributeType;
+    public static String TestCaseTypeSection_ErrorDialog_AddParameterPcTypeIsMissing;
+    public static String TestCaseTypeSection_ErrorDialog_AddParameterTitle;
     public static String TestCaseTypeSection_ErrorDialog_AttributeChangingNotAllowedBecausePolicyCmptTypeNotExists;
     public static String TestCaseTypeSection_ErrorDialog_AttributeChangingTitle;
     public static String RelationRefControl_Button_Browse;

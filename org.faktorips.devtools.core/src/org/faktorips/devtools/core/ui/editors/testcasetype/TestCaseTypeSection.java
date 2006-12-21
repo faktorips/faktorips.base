@@ -1587,11 +1587,22 @@ public class TestCaseTypeSection extends IpsSection  {
                 return;
             }
             refreshTreeAndDetails(wizard.getNewCreatedTestParameter()); 
-        } else {
+        } else if (selObject instanceof ITestPolicyCmptTypeParameter){
             // open wizard to add a new child test parameter
-            if (!(selObject instanceof ITestPolicyCmptTypeParameter))
-                return;
 
+            // check if the policy cmpt type exists and if not
+            // open a error dialog and cancel
+            try {
+                if (((ITestPolicyCmptTypeParameter)selObject).findPolicyCmptType() == null) {
+                    MessageDialog.openInformation(getShell(), Messages.TestCaseTypeSection_ErrorDialog_AddParameterTitle,
+                            Messages.TestCaseTypeSection_ErrorDialog_AddParameterPcTypeIsMissing);
+                    return;
+                }
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+                return;
+            }
+            
             Memento memento = testCaseType.newMemento();
             NewChildParameterWizard wizard = new NewChildParameterWizard(testCaseType,
                     (ITestPolicyCmptTypeParameter)selObject);
