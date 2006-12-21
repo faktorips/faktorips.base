@@ -23,7 +23,7 @@ my $debug = "true";
 my $skel = <<CODE_HEADER;
 package --BASEPACKAGE--;
 
-import java.io.*
+import java.io.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
