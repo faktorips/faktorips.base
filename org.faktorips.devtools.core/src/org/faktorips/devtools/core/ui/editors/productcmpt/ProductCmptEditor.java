@@ -168,7 +168,9 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			}
 			return;
 		}
-		handleWorkingDateMissmatch(getContainer().getShell());
+        if (!getContainer().isDisposed()){
+            handleWorkingDateMissmatch(getContainer().getShell());
+        }
 	}
 
     /**

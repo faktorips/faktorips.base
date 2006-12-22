@@ -108,13 +108,18 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         setPageComplete();
 
         super.setDescription(Messages.SourcePage_description);
+        
+        try {
+            this.namingStrategy = structure.getRoot().getProductCmpt().getIpsProject().getProductCmptNamingStrategy();
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public void createControl(Composite parent) {
-
         if (structure == null) {
             Label errormsg = new Label(parent, SWT.WRAP);
             GridData layoutData = new GridData(SWT.LEFT, SWT.TOP, true, false);
@@ -157,14 +162,6 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
             toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelReplacePattern);
             replaceInput = toolkit.createText(inputRoot);
-
-            try {
-                this.namingStrategy = structure.getRoot().getProductCmpt().getIpsProject()
-                        .getProductCmptNamingStrategy();
-            }
-            catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
 
             if (namingStrategy != null && namingStrategy.supportsVersionId()) {
                 String label = NLS.bind(Messages.ReferenceAndPreviewPage_labelVersionId, IpsPlugin.getDefault()
@@ -302,7 +299,16 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
      * Returns the package fragment which is to be used as target package for the copy.
      */
     public IIpsPackageFragment getTargetPackage() {
-        return targetInput.getPdPackageFragment();
+        if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
+            return targetInput.getPdPackageFragment();
+        } else if (type == DeepCopyWizard.TYPE_NEW_VERSION){
+            // the new version copy, copies the new product version in the same folder
+            IIpsPackageFragment source = structure.getRoot().getProductCmpt().getIpsPackageFragment();
+            IIpsPackageFragment target = source.getParentIpsPackageFragment();
+            return target!=null?target:source.getRoot().getDefaultIpsPackageFragment();
+        } else {
+            throw new RuntimeException("Unsupported type: " + type); //$NON-NLS-1$
+        }
     }
 
     public void checkStateChanged(CheckStateChangedEvent event) {

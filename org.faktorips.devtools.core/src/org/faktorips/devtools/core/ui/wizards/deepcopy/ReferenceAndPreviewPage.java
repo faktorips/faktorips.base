@@ -365,8 +365,12 @@ public class ReferenceAndPreviewPage extends WizardPage {
                 newName = namingStrategy.getProductCmptName(newName, sourcePage.getVersion());
             }
         }
-        else if (namingStrategy != null && namingStrategy.supportsVersionId()) {
+        else if (namingStrategy != null) {
             newName = namingStrategy.getNextName(productCmpt);
+        } else {
+            // programming error, should be assert before this page will be displayed
+            throw new RuntimeException(
+                    "No naming strategy exists, therefore the new product components couldn't be copied with the same name in the same directory!"); //$NON-NLS-1$
         }
 
         return newName;

@@ -87,12 +87,11 @@ public class IpsDeepCopyAction extends IpsAction {
 			} catch (CoreException e1) {
 				IpsPlugin.log(e1);
 			}
-			if (type == DeepCopyWizard.TYPE_NEW_VERSION && (ns == null || !ns.supportsVersionId())) {
+			if (type == DeepCopyWizard.TYPE_NEW_VERSION && ns == null) {
 				String title = NLS.bind(Messages.IpsDeepCopyAction_titleNoVersion, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
 				MessageDialog.openInformation(shell, title, Messages.IpsDeepCopyAction_msgNoVersion);
 				return;
 			}
-			
 			
 			DeepCopyWizard dcw = new DeepCopyWizard(root, type);
 			WizardDialog wd = new WizardDialog(shell, dcw);
