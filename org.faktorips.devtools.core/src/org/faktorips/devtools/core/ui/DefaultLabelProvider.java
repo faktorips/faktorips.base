@@ -79,7 +79,7 @@ public class DefaultLabelProvider extends LabelProvider {
         IIpsElement ipsElement = (IIpsElement)element;
         if (element instanceof IIpsPackageFragment) {
             if (ipsElement.getName().equals("")) { //$NON-NLS-1$
-                return "(default package)"; //$NON-NLS-1$
+                return Messages.DefaultLabelProvider_labelDefaultPackage;
             }
         }
         if (element instanceof IMethod) {
