@@ -17,25 +17,6 @@
 
 package org.faktorips.devtools.core.ui.test;
 
-import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
-import org.eclipse.debug.ui.CommonTab;
-import org.eclipse.debug.ui.ILaunchConfigurationDialog;
-import org.eclipse.debug.ui.ILaunchConfigurationTab;
-
-/**
- * Launch configuration tab group for ips tests.
- * 
- * @author Joerg Ortmann
- */
-public class IpsTestTabGroup extends AbstractLaunchConfigurationTabGroup {
-    /**
-     * {@inheritDoc}
-     */
-    public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-        ILaunchConfigurationTab[] tabs = null;
-        tabs = new ILaunchConfigurationTab[]{
-                new TestSelectionTab(),
-                new CommonTab()};
-        setTabs(tabs);
-    }
+public interface ITestConfigurationChangeListener {
+    public void testConfigurationHasChanged();
 }

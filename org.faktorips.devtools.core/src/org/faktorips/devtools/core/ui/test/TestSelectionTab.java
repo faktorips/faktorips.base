@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -29,21 +30,26 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
- * Launch configuration tab to select tests to execute with the ips test runner.
  * 
  * @author Joerg Ortmann
  */
-public class TestSelectionTab extends AbstractLaunchConfigurationTab {
+public class TestSelectionTab extends AbstractLaunchConfigurationTab implements  ITestConfigurationChangeListener{
     
     private UIToolkit toolkit = new UIToolkit(null);
-
-    private Text packageFragmentRootText;
-    private Text testCasesText;
-    private Text parameterText;
     
+    private TestSelectionComposite testSuiteSelectionComposite;
+    
+    private Text parameterText;
+
+    private Text projectText;
+
+    private IIpsProject project;
+
     /**
      * {@inheritDoc}
      */
@@ -53,19 +59,18 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab {
         main.setFont(parent.getFont());
         setControl(main);
         
-        Group tocGroup = toolkit.createGroup(main, Messages.TestSelectionTab_goupPackageFragmentRoots);
-        tocGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        Composite tocComp = toolkit.createLabelEditColumnComposite(tocGroup);
-        toolkit.createLabel(tocComp, Messages.TestSelectionTab_labelTocFiles);
-        packageFragmentRootText = toolkit.createText(tocComp);
-        packageFragmentRootText.addModifyListener(basicModifyListener);
+        Group projectGroup = toolkit.createGroup(main, Messages.TestSelectionTab_labelGroupProject);
+        projectGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        Composite projectDescr = toolkit.createLabelEditColumnComposite(projectGroup);
+        toolkit.createLabel(projectDescr, Messages.TestSelectionTab_labelProject);
+        projectText = toolkit.createText(projectDescr);
+        projectText.setEditable(false);
         
-        Group testCaseGroup = toolkit.createGroup(main, Messages.TestSelectionTab_groupTestSuites);
-        testCaseGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        Composite testCaseComp = toolkit.createLabelEditColumnComposite(testCaseGroup);
-        toolkit.createLabel(testCaseComp, Messages.TestSelectionTab_labelTestCasesPackages);
-        testCasesText = toolkit.createText(testCaseComp);
-        testCasesText.addModifyListener(basicModifyListener);
+        Group tocGroup = toolkit.createGroup(main, Messages.TestSelectionTab_labelGroupTestSelection);
+        tocGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        testSuiteSelectionComposite = new TestSelectionComposite(tocGroup);
+        testSuiteSelectionComposite.addChangeListener(this);
+        testSuiteSelectionComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
         Group parameterGroup = toolkit.createGroup(main, Messages.TestSelectionTab_groupParameter);
         parameterGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -91,22 +96,28 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab {
             String testCases = configuration.getAttribute(IpsTestRunnerDelegate.ATTR_TESTCASES, ""); //$NON-NLS-1$
             String maxHeapSize = configuration.getAttribute(IpsTestRunnerDelegate.ATTR_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
             
-            packageFragmentRootText.setText(packageFragmentRoot);
-            testCasesText.setText(testCases);
+            project = IpsTestRunner.getIpsProjectFromTocPath(packageFragmentRoot);
+            projectText.setText(project.getName());
+            testSuiteSelectionComposite.initContent(project, packageFragmentRoot, testCases);
             parameterText.setText(maxHeapSize);
         }
         catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+        
     }
 
     /**
      * {@inheritDoc}
      */
     public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-        configuration.setAttribute(IpsTestRunnerDelegate.ATTR_PACKAGEFRAGMENTROOT, packageFragmentRootText.getText());
-        configuration.setAttribute(IpsTestRunnerDelegate.ATTR_TESTCASES, testCasesText.getText());
-        configuration.setAttribute(IpsTestRunnerDelegate.ATTR_MAX_HEAP_SIZE, parameterText.getText());
+        try {
+            configuration.setAttribute(IpsTestRunnerDelegate.ATTR_PACKAGEFRAGMENTROOT, testSuiteSelectionComposite.getPackageFragmentRootText());
+            configuration.setAttribute(IpsTestRunnerDelegate.ATTR_TESTCASES, testSuiteSelectionComposite.getTestCasesText());
+            configuration.setAttribute(IpsTestRunnerDelegate.ATTR_MAX_HEAP_SIZE, parameterText.getText());       
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
     }
 
     /**
@@ -115,7 +126,14 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab {
     public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
         configuration.setAttribute(IpsTestRunnerDelegate.ATTR_PACKAGEFRAGMENTROOT, ""); //$NON-NLS-1$
         configuration.setAttribute(IpsTestRunnerDelegate.ATTR_TESTCASES, ""); //$NON-NLS-1$
-        configuration.setAttribute(IpsTestRunnerDelegate.ATTR_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
+        configuration.setAttribute(IpsTestRunnerDelegate.ATTR_MAX_HEAP_SIZE, ""); //$NON-NLS-1$        
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void testConfigurationHasChanged() {
+        updateLaunchConfigurationDialog();
     }
     
     /**

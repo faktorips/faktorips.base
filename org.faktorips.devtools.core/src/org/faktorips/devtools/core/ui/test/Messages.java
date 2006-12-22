@@ -21,13 +21,25 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.test.messages"; //$NON-NLS-1$
+    public static String TestSelectionComposite_labelButtonDelete;
     public static String TestSelectionTab_goupPackageFragmentRoots;
     public static String TestSelectionTab_groupParameter;
     public static String TestSelectionTab_groupTestSuites;
+    public static String TestSelectionTab_labelGroupProject;
+    public static String TestSelectionTab_labelGroupTestSelection;
     public static String TestSelectionTab_labelMaxHeapSize;
+    public static String TestSelectionTab_labelProject;
     public static String TestSelectionTab_labelTestCasesPackages;
     public static String TestSelectionTab_labelTocFiles;
     public static String TestSelectionTab_title;
+    public static String TestSelectionComposite_dialogTextSelectTestCase;
+    public static String TestSelectionComposite_dialogTitleSelectTestCase;
+    public static String TestSelectionComposite_errorProjectNotDetermined;
+    public static String TestSelectionComposite_labelButtonAddTestCase;
+    public static String TestSelectionComposite_labelButtonAddTestSuite;
+    public static String TestSelectionComposite_labelButtonDown;
+    public static String TestSelectionComposite_labelButtonUp;
+    
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

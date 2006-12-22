@@ -24,11 +24,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Path;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.internal.model.product.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
@@ -124,9 +130,13 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
      * {@inheritDoc}
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-        if (!ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
+        if (!IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType())) {
             return false;
         }
+        if (!ipsSrcFile.exists()){
+            return true;
+        }
+        
         productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
         if (!productCmpt.isValid()) {
             return false;
@@ -142,7 +152,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         project = productCmpt.getIpsProject();
-
+        
         return true;
     }
     
@@ -189,6 +199,37 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         return StringUtil.unqualifiedName(getQualifiedClassName());
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
+        IFile file = getFile(ipsSrcFile);
+        if (file.exists()) {
+            file.delete(true, null);
+        }
+    }
+    
+    /*
+     * Returns the file resource of the given ips source file.
+     */
+    private IFile getFile(IIpsSrcFile ipsSrcFile) throws CoreException {
+        IFile file = (IFile)ipsSrcFile.getEnclosingResource();
+        IFolder folder = getFolder(ipsSrcFile);
+        String fileName = StringUtil.getFilenameWithoutExtension(file.getName());
+        fileName = productCmptNamingStrategy.getJavaClassIdentifier(fileName);
+        return  folder.getFile(fileName + RUNTIME_EXTENSION + ".java");
+    }
+    
+    /*
+     * Returns the package folder for the given ips sourcefile.
+     */
+    private IFolder getFolder(IIpsSrcFile ipsSrcFile) throws CoreException {
+        String packageString = getBuilderSet().getPackage(DefaultBuilderSet.KIND_FORMULA_TEST_CASE, ipsSrcFile);
+        IPath pathToPack = new Path(packageString.replace('.', '/'));
+        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(false).getFolder(
+            pathToPack);
+    }
+    
     private IIpsSrcFile getVirtualIpsSrcFile(IIpsObject ipsObject) {
         String name = productCmptNamingStrategy.getJavaClassIdentifier(ipsObject.getName());
         return productCmpt.getIpsSrcFile().getIpsPackageFragment().getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
@@ -198,6 +239,10 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
      * {@inheritDoc}
      */
     protected JavaCodeFragment generateCodeForJavatype() throws CoreException {
+        if (productCmpt == null){
+            throw new CoreException(new IpsStatus("Product component not found! " + getIpsSrcFile()));
+        }
+        
         JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
         codeBuilder.classBegin(Modifier.PUBLIC, StringUtil.unqualifiedName(getQualifiedClassName()),
                 getSuperClassName(), new String[0]);
