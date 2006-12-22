@@ -55,7 +55,7 @@ public class XmlContentFileCopyBuilderTest extends AbstractIpsPluginTest {
             StandardBuilderSet.KIND_TABLE_CONTENT, contents.getIpsSrcFile());
         String packagePath = packageString.replace('.', '/');
         filePath = packagePath + "/TestTable.xml";
-        destination = contents.getIpsPackageFragment().getRoot().getArtefactDestination(false);
+        destination = contents.getIpsPackageFragment().getRoot().getArtefactDestination(true);
     }
 
     private IFile getContentsFile(){
