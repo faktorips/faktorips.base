@@ -23,17 +23,16 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 
 /**
  * Comparator for <code>ProductCmptCompareItem</code>s. Compares the actual
  * <code>IIpsElement</code>s referenced by each compare item. Sorts
- * <code>IProductCmptGeneration</code>s by their validFrom date,
- * <code>IProductCmptRelation</code>s by their ID, which also defines the order they were added
- * to the <code>ProductCmpt</code>. <code>IConfigElement</code>s and
- * <code>ITableContentUsage</code>s are sorted in the following order: product attributes, table
- * usages, formulas, policy attributes. Attributes are placed above relations in each generation.
+ * <code>IProductCmptGeneration</code>s by their validFrom date. <code>IConfigElement</code>s
+ * and <code>ITableContentUsage</code>s are sorted in the following order: product attributes,
+ * table usages, formulas, policy attributes. Attributes are placed above relations in each
+ * generation. <code>IProductCmptRelations</code> are <em>not</em> sorted, instead their natural
+ * order (in the XML file) is maintained.
  * <p>
  * The sorting of <code>ProductCmptCompareItem</code>s is necessary to ensure that differences in
  * product components (their structures) are consistent with differences in the text representation
@@ -56,11 +55,6 @@ public class ProductCmptCompareItemComparator implements Comparator {
             if (element1 instanceof IProductCmptGeneration && element2 instanceof IProductCmptGeneration) {
                 return ((IProductCmptGeneration)element1).getGenerationNo()
                         - ((IProductCmptGeneration)element2).getGenerationNo();
-            }
-            // Sort relations by ID
-            if (element1 instanceof IProductCmptRelation && element2 instanceof IProductCmptRelation) {
-                // sort by ID 
-                return ((IProductCmptRelation)element1).getId() - ((IProductCmptRelation)element2).getId();
             }
             if ((element1 instanceof IConfigElement||element1 instanceof ITableContentUsage) 
                     && (element2 instanceof IConfigElement||element2 instanceof ITableContentUsage)) {

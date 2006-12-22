@@ -80,7 +80,7 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
         relation1.setTarget(productReferenced.getQualifiedName());
         relation2 = generation1.newRelation("OtherRelationType");
         relation2.setTarget(productReferenced2.getQualifiedName());
-        relation3 = generation1.newRelation("RelationType");
+        relation3 = generation1.newRelation("RelationType", relation1);
         relation3.setTarget(productReferenced2.getQualifiedName());
         
         IFile correspondingFile = product.getIpsSrcFile().getCorrespondingFile();
@@ -124,10 +124,10 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
         assertEquals(compareItemAttribute3.getIpsElement(), formula);
         assertEquals(compareItemAttribute4.getIpsElement(), policyAttribute);
         
-        // relations are sorted by insertion order (ID) and not relationType.
-        assertEquals(compareItemRelation1.getIpsElement(), relation1);
-        assertEquals(compareItemRelation2.getIpsElement(), relation2);
-        assertEquals(compareItemRelation3.getIpsElement(), relation3);
+        // maintain order of relations as defined at creation (rel3 inserted before rel1) 
+        assertEquals(compareItemRelation1.getIpsElement(), relation3);
+        assertEquals(compareItemRelation2.getIpsElement(), relation1);
+        assertEquals(compareItemRelation3.getIpsElement(), relation2);
     }
 
 }
