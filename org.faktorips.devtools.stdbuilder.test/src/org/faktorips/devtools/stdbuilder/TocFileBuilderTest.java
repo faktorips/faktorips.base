@@ -104,7 +104,8 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         assertEquals(tableImplBuilder.getQualifiedClassName(structure), entry.getImplementationClassName());
         assertTrue(entry.isTableTocEntry());
     }
-    
+
+    /*
     public void test() throws Exception {
         
         // create a product component
@@ -225,6 +226,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         formulaTestEntry = toc2.getTestCaseTocEntryByQName(pcFromula.getQualifiedName());
         assertNull(formulaTestEntry);
     }
+    */
     
     public void testIfIdenticalTocFileIsNotWrittenAfterFullBuild() throws CoreException {
         // create a product component
