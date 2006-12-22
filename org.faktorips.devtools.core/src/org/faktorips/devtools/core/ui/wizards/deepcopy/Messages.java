@@ -31,6 +31,9 @@ public class Messages extends NLS {
     }
 
     public static String DeepCopyWizard_title;
+    public static String SourcePage_msgBadTargetPackage;
+    public static String SourcePage_msgWarningTargetIsDefaultPackage;
+    public static String SourcePage_msgWarningTargetWillBeCreated;
     public static String SourcePage_title;
     public static String SourcePage_description;
     public static String SourcePage_msgSelect;

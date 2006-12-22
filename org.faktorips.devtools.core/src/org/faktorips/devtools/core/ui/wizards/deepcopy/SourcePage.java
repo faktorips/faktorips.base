@@ -105,7 +105,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         super(PAGE_ID, getTitle(type), null);
         this.structure = structure;
         this.type = type;
-        setPageComplete();
+
+        setDescription(Messages.SourcePage_msgSelect);
 
         super.setDescription(Messages.SourcePage_description);
         
@@ -129,24 +130,31 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             return;
         }
 
-        checkStateListener = new CheckStateListener(null);
-
         UIToolkit toolkit = new UIToolkit(null);
         Composite root = toolkit.createComposite(parent);
         root.setLayout(new GridLayout(1, false));
         root.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         setControl(root);
 
+        Composite inputRoot = toolkit.createLabelEditColumnComposite(root);
+
+        toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelValidFrom);
+        toolkit.createFormLabel(inputRoot, IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
+        toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelTargetPackage);
+        targetInput = toolkit.createPdPackageFragmentRefControl(structure.getRoot().getProductCmpt()
+                .getIpsPackageFragment().getRoot(), inputRoot);
+        
+        // set target default
+        // use the source package as target if the wizard should create a new version of the product
+        if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
+            // the new version copy, copies the new product version in the same folder (default)
+            IIpsPackageFragment target = structure.getRoot().getProductCmpt().getIpsPackageFragment();
+            if (target != null) {
+                targetInput.setPdPackageFragment(target);
+            }
+        }
+        
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
-
-            Composite inputRoot = toolkit.createLabelEditColumnComposite(root);
-
-            toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelValidFrom);
-            toolkit.createFormLabel(inputRoot, IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
-            toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelTargetPackage);
-            targetInput = toolkit.createPdPackageFragmentRefControl(structure.getRoot().getProductCmpt()
-                    .getIpsPackageFragment().getRoot(), inputRoot);
-
             int ignore = getSegmentsToIgnore((IProductCmptReference[])structure.toArray(true));
             IIpsPackageFragment pack = structure.getRoot().getProductCmpt().getIpsPackageFragment();
             int segments = pack.getRelativePath().segmentCount();
@@ -162,19 +170,19 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
             toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelReplacePattern);
             replaceInput = toolkit.createText(inputRoot);
+        }
 
-            if (namingStrategy != null && namingStrategy.supportsVersionId()) {
-                String label = NLS.bind(Messages.ReferenceAndPreviewPage_labelVersionId, IpsPlugin.getDefault()
-                        .getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
-                toolkit.createFormLabel(inputRoot, label);
-                versionId = toolkit.createText(inputRoot);
-                versionId.setText(namingStrategy.getNextVersionId(structure.getRoot().getProductCmpt()));
-                versionId.addModifyListener(new ModifyListener() {
-                    public void modifyText(ModifyEvent e) {
-                        setPageComplete();
-                    }
-                });
-            }
+        if (namingStrategy != null && namingStrategy.supportsVersionId()) {
+            String label = NLS.bind(Messages.ReferenceAndPreviewPage_labelVersionId, IpsPlugin.getDefault()
+                    .getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
+            toolkit.createFormLabel(inputRoot, label);
+            versionId = toolkit.createText(inputRoot);
+            versionId.setText(namingStrategy.getNextVersionId(structure.getRoot().getProductCmpt()));
+            versionId.addModifyListener(new ModifyListener() {
+                public void modifyText(ModifyEvent e) {
+                    getWizard().getContainer().updateButtons();
+                }
+            });
         }
 
         tree = new CheckboxTreeViewer(root);
@@ -186,8 +194,15 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         setCheckedAll(tree.getTree().getItems(), true);
         tree.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         tree.addCheckStateListener(this);
+        checkStateListener = new CheckStateListener(null);
         tree.addCheckStateListener(checkStateListener);
-        setPageComplete();
+        
+        // add Listener to the target text control (must be done here after the default is set)
+        targetInput.getTextControl().addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                getWizard().getContainer().updateButtons();
+            }
+        });        
     }
 
     private void setCheckedAll(TreeItem[] items, boolean checked) {
@@ -229,29 +244,37 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     }
 
     /**
-     * Set the current completion state (and, if neccessary, messages for the user to help him to
-     * get the page complete).
+     * {@inheritDoc}
      */
-    private void setPageComplete() {
-        super.setPageComplete(tree != null && tree.getCheckedElements().length > 0);
+    public boolean canFlipToNextPage() {
+        boolean pageComplete = tree != null && tree.getCheckedElements().length > 0;
+        setMessage(null);
+        setErrorMessage(null);
 
-        if (namingStrategy != null && namingStrategy.supportsVersionId() && type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
+        if (namingStrategy != null && namingStrategy.supportsVersionId() ) {
             MessageList ml = namingStrategy.validateVersionId(versionId.getText());
             if (!ml.isEmpty()) {
-                super.setMessage(ml.getMessage(0).getText(), ERROR);
+                setErrorMessage(ml.getMessage(0).getText());
+                pageComplete = false;
+                
             }
-            return;
         }
 
-        if (tree != null && tree.getCheckedElements().length > 0) {
-            super.setMessage(null);
+        if (structure == null) {
+            setErrorMessage(Messages.SourcePage_msgCircleRelationShort);
+            pageComplete = false;
         }
-        else if (structure == null) {
-            super.setMessage(Messages.SourcePage_msgCircleRelationShort, ERROR);
+
+        if (getTargetPackage() != null && !getTargetPackage().exists()) {
+            setMessage(NLS.bind(Messages.SourcePage_msgWarningTargetWillBeCreated, getTargetPackage().getName()),
+                    WARNING);
+        } else if (getTargetPackage() != null && getTargetPackage().isDefaultPackage()) {
+            setMessage(Messages.SourcePage_msgWarningTargetIsDefaultPackage, WARNING);
+        } else if (getTargetPackage() == null){
+            setErrorMessage(Messages.SourcePage_msgBadTargetPackage);
         }
-        else {
-            super.setMessage(Messages.SourcePage_msgSelect, INFORMATION);
-        }
+        
+        return pageComplete;
     }
 
     public IProductCmptStructureReference[] getCheckedNodes() {
@@ -299,16 +322,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
      * Returns the package fragment which is to be used as target package for the copy.
      */
     public IIpsPackageFragment getTargetPackage() {
-        if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
-            return targetInput.getPdPackageFragment();
-        } else if (type == DeepCopyWizard.TYPE_NEW_VERSION){
-            // the new version copy, copies the new product version in the same folder
-            IIpsPackageFragment source = structure.getRoot().getProductCmpt().getIpsPackageFragment();
-            IIpsPackageFragment target = source.getParentIpsPackageFragment();
-            return target!=null?target:source.getRoot().getDefaultIpsPackageFragment();
-        } else {
-            throw new RuntimeException("Unsupported type: " + type); //$NON-NLS-1$
-        }
+        return targetInput.getPdPackageFragment();
     }
 
     public void checkStateChanged(CheckStateChangedEvent event) {
@@ -329,8 +343,6 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             setCheckState(((IProductCmptReference)changed).getProductCmpt(), new IProductCmptReference[] { root },
                     event.getChecked());
         }
-
-        setPageComplete();
     }
 
     private void setCheckState(IIpsElement toCompareWith, IProductCmptStructureReference[] nodes, boolean checked) {

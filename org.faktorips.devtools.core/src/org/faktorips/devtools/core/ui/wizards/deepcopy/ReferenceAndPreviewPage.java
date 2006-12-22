@@ -235,6 +235,12 @@ public class ReferenceAndPreviewPage extends WizardPage {
             catch (InterruptedException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
+        } else {
+            // if the page is invisible reset the page complete state (because the finishing state must be check
+            // if the page will be visible again (e.g. if the page was completed and finishing is
+            // enabled and the version id has changed on the first page, we must perform the finishing check here again,
+            // otherwise the user can finish on the page before without the validating on this page!)
+            super.setPageComplete(false);
         }
     }
 
@@ -364,9 +370,10 @@ public class ReferenceAndPreviewPage extends WizardPage {
             if (namingStrategy != null && namingStrategy.supportsVersionId()) {
                 newName = namingStrategy.getProductCmptName(newName, sourcePage.getVersion());
             }
-        }
-        else if (namingStrategy != null) {
-            newName = namingStrategy.getNextName(productCmpt);
+        } else if (namingStrategy != null) {
+            if (namingStrategy != null && namingStrategy.supportsVersionId()) {
+                newName = namingStrategy.getProductCmptName(namingStrategy.getKindId(newName), sourcePage.getVersion());
+            }
         } else {
             // programming error, should be assert before this page will be displayed
             throw new RuntimeException(
