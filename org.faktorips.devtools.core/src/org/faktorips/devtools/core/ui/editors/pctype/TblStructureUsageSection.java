@@ -85,7 +85,7 @@ public class TblStructureUsageSection extends SimpleIpsPartsSection {
                     // childs (maybe changed in a later version),)
                     // thus we downcast to the policy cmpt type to use the internal find method
                     try {
-                        productCmptType = ((PolicyCmptType)getPcType()).findProductCmptTypeInternal();
+                        productCmptType = ((PolicyCmptType)getPcType()).getProductCmptTypeInternal();
                     } catch (CoreException e) {
                         IpsPlugin.logAndShowErrorDialog(e);
                         return EMPTY_ARRAY;

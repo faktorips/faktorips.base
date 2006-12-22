@@ -134,11 +134,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         return new ProductCmptType(this);
     }
 
-
-    public IProductCmptType findProductCmptTypeInternal() throws CoreException {
-        if (StringUtils.isEmpty(unqalifiedProductCmptType)) {
-            return null;
-        }
+    
+    public IProductCmptType getProductCmptTypeInternal() throws CoreException {
         return new ProductCmptType(this);
     }
     
