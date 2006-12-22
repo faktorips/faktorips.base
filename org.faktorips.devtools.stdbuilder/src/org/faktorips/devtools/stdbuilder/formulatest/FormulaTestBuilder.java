@@ -226,7 +226,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     private IFolder getFolder(IIpsSrcFile ipsSrcFile) throws CoreException {
         String packageString = getBuilderSet().getPackage(DefaultBuilderSet.KIND_FORMULA_TEST_CASE, ipsSrcFile);
         IPath pathToPack = new Path(packageString.replace('.', '/'));
-        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(false).getFolder(
+        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getFolder(
             pathToPack);
     }
     
