@@ -228,6 +228,8 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         object = (IPolicyCmptType)sourceFile.getIpsObject();
         attribute = object.getAttributes()[0];
         assertEquals("something serious", attribute.getDescription());
+        
+        
     }
     
     public void testGetIpsObjectExtensionProperties() {

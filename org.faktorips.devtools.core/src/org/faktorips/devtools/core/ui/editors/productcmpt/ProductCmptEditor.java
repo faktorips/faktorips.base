@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
@@ -255,7 +254,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	
 	private void handleWorkingDateMissmatch() {
         // following if statement is there as closing the dialog triggers a window activated event
-        // and handling in the evant calls this method.  
+        // and handling the evant calls this method.  
         if (isHandlingWorkingDateMismatch) {
             return;
         }
