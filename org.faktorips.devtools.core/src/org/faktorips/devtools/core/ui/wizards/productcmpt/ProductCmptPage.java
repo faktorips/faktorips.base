@@ -157,9 +157,14 @@ public class ProductCmptPage extends IpsObjectPage {
 				versionId.setText(namingStrategy.getNextVersionId(null));
 				typeRefControl.setFocus();
 			}
-            if (obj instanceof IPolicyCmptType){
-                typeRefControl.setText(obj.getQualifiedName());
-                constName.setFocus();
+            if (obj instanceof IPolicyCmptType) {
+                // set default product cmpt type only if the selected obj is configurable by 
+                // product cmpt type
+                IPolicyCmptType pcType = (IPolicyCmptType)obj;
+                if (pcType.isConfigurableByProductCmptType()) {
+                    typeRefControl.setText(pcType.getProductCmptType());
+                    constName.setFocus();
+                }
             }
 		} else {
     		IProductCmpt productCmpt = (IProductCmpt)obj;
