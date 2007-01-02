@@ -17,15 +17,12 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
@@ -33,11 +30,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
-import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -57,8 +51,6 @@ public class GenerationsSection extends SimpleIpsPartsSection{
 	 */
 	private ProductCmptPropertiesPage page;
 	
-    private int lastNumberOfGenerations = 0;
-    
 	/**
 	 * Create a new Section to display generations.
 	 * @param page The page owning this section.
@@ -89,7 +81,7 @@ public class GenerationsSection extends SimpleIpsPartsSection{
         if (generation==null) {
             return;
         }
-        if (generation.equals(page.getProductCmptEditor().getGenerationEffectiveOnCurrentEffectiveDate())) {
+        if (generation==page.getProductCmptEditor().getGenerationEffectiveOnCurrentEffectiveDate()) {
             page.getProductCmptEditor().setActiveGeneration(generation, false);
             return;
         }
@@ -121,7 +113,7 @@ public class GenerationsSection extends SimpleIpsPartsSection{
      * A composite that shows a policy component's attributes in a viewer and 
      * allows to edit attributes in a dialog, create new attributes and delete attributes.
      */
-    public class GenerationsComposite extends IpsPartsComposite implements IDeleteListener, ContentsChangeListener {
+    public class GenerationsComposite extends IpsPartsComposite implements IDeleteListener {
 
         public GenerationsComposite(ITimedIpsObject ipsObject, Composite parent,
                 UIToolkit toolkit) {
@@ -139,17 +131,9 @@ public class GenerationsSection extends SimpleIpsPartsSection{
             });
             
 			addDeleteListener(this);
-			getViewer().getControl().addDisposeListener(new DisposeListener() {
-
-				public void widgetDisposed(DisposeEvent e) {
-                    getIpsObject().getIpsModel().removeChangeListener(GenerationsComposite.this);
-				}
-			});
-            
-            getIpsObject().getIpsModel().addChangeListener(this);
         }
         
-        public ITimedIpsObject getTimedPdObject() {
+        public ITimedIpsObject getTimedIpsObject() {
             return (ITimedIpsObject)getIpsObject();
         }
         
@@ -210,12 +194,12 @@ public class GenerationsSection extends SimpleIpsPartsSection{
 		 */
 		protected void updateButtonEnabledStates() {
 			super.updateButtonEnabledStates();
-			deleteButton.setEnabled(!(page.getProductCmpt().getGenerations().length == 1));
+			deleteButton.setEnabled(page.getProductCmpt().getGenerations().length>1);
 		}
     	
     	private class ContentProvider implements IStructuredContentProvider {
     		public Object[] getElements(Object inputElement) {
-    			 return getTimedPdObject().getGenerations();
+    			 return getTimedIpsObject().getGenerations();
     		}
     		public void dispose() {
     			// nothing todo
@@ -225,25 +209,6 @@ public class GenerationsSection extends SimpleIpsPartsSection{
     		}
     	}
     	
-        /**
-         * Refreshes the viewer if the number of generations has changed.
-         */
-        public void contentsChanged(ContentChangeEvent event) {
-            try {
-                if(event.getIpsSrcFile().getIpsObject().equals(getIpsObject())){
-                    IProductCmpt productCmpt = (IProductCmpt)getIpsObject();
-                    
-                    if(lastNumberOfGenerations != productCmpt.getNumOfGenerations()){
-                        refresh();
-                        lastNumberOfGenerations = productCmpt.getNumOfGenerations();
-                    }
-                }
-            } catch (CoreException e) {
-                IpsPlugin.logAndShowErrorDialog(e);
-            }
-        }
-
-        
     	private class LabelProvider extends DefaultLabelProvider  {
 
 			public String getText(Object element) {
@@ -272,7 +237,7 @@ public class GenerationsSection extends SimpleIpsPartsSection{
                 }
 				IProductCmptGeneration generation = (IProductCmptGeneration)element;
 				Image image = super.getImage(element); 
-				if (getActiveGeneration().equals(generation)) {
+				if (getActiveGeneration()==generation) {
 					return image;
 				} else {
 					return page.getProductCmptEditor().getUneditableGenerationImage(image);

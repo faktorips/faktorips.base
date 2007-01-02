@@ -36,6 +36,12 @@ public interface IIpsObject extends IIpsObjectPartContainer {
     public IIpsSrcFile getIpsSrcFile();
     
     /**
+     * Returns <code>true</code> if the object was created from a parsable file content,
+     * <code>false</code> otherwise.
+     */
+    public boolean isFromParsableFile();
+    
+    /**
      * Returns the object's qualified name. The qualified name is the name of the ips package fragment's
      * name followed by a dot followed by the object's unqualified name. So this is basically the
      * same concept as the qualified name of Java classes. 

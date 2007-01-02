@@ -277,9 +277,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected abstract void propertiesToXml(Element element);
 
     /** 
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.XmlSupport#initFromXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     public void initFromXml(Element element) {
     	initFromXml(element, null);

@@ -40,6 +40,8 @@ import org.w3c.dom.Element;
 public abstract class IpsObject extends IpsObjectPartContainer implements IIpsObject {
     
     private String description = ""; //$NON-NLS-1$
+    
+    private boolean fromParsableFile = false;
 
     protected IpsObject(IIpsSrcFile file) {
         super(file, ""); //$NON-NLS-1$
@@ -50,6 +52,24 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      */
     protected IpsObject() {
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isFromParsableFile() {
+        return fromParsableFile;
+    }
+
+    /**
+     * Marks the ips object as originating from an ips src file with an invalid file
+     * format.
+     */
+    void markAsFromUnparsableFile() {
+        fromParsableFile = false;
+        this.reinitPartCollections();
+    }
+    
+    
 
     /**
      * {@inheritDoc}
@@ -188,6 +208,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      * {@inheritDoc}
      */
     public void initFromXml(Element element) {
+        fromParsableFile = true;
         super.initFromXml(element);
     }
 
@@ -229,5 +250,9 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
             Message newMsg = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, property);
             list.add(newMsg);
         }
+    }
+    
+    public void invalidate() {
+        
     }
 }

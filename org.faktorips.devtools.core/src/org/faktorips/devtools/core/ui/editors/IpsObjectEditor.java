@@ -39,6 +39,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
+import org.faktorips.codegen.ClassNameUtil;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.IpsSrcFileImmutable;
@@ -79,6 +80,8 @@ public abstract class IpsObjectEditor extends FormEditor
     implements ContentsChangeListener, IModificationStatusChangeListener,
         IResourceChangeListener, IPropertyChangeListener{
 
+    public final static boolean TRACE = IpsPlugin.TRACE_UI;
+
     // the file that's being edited (if any)
     private IIpsSrcFile ipsSrcFile;
 
@@ -101,6 +104,14 @@ public abstract class IpsObjectEditor extends FormEditor
      * file system.
      */
     private boolean dontLoadChanges = false;
+    
+    /*
+     * True if the editor contains the pages that are shown for a parsable ips source file,
+     * false if an error page is shown.
+     */
+    private boolean pagesForParsableSrcFileShown;
+    
+    private boolean updatingPageStructure = false;
     
     private ActivationListener activationListener;
     
@@ -139,6 +150,9 @@ public abstract class IpsObjectEditor extends FormEditor
      * {@inheritDoc}
      */
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+        if (TRACE) {
+            logMethodStarted("init");
+        }
         super.init(site, input);
         IIpsModel model = IpsPlugin.getDefault().getIpsModel();
 
@@ -186,9 +200,15 @@ public abstract class IpsObjectEditor extends FormEditor
             selectionProviderDispatcher = new SelectionProviderDispatcher();
             site.setSelectionProvider(selectionProviderDispatcher);
         }
+        if (TRACE) {
+            logMethodFinished("init");
+        }
     }
 
     private void initFromStorageEditorInput(IStorageEditorInput input) throws PartInitException {
+        if (TRACE) {
+            logMethodStarted("initFromStorageEditorInput");
+        }
         try {
             IStorage storage = input.getStorage();
             IPath path = storage.getFullPath();
@@ -213,13 +233,88 @@ public abstract class IpsObjectEditor extends FormEditor
             }
             String name = path.lastSegment().substring(0, nameIndex) + extension;
             ipsSrcFile = new IpsSrcFileImmutable(name, storage.getContents());
-
+            if (TRACE) {
+                logMethodFinished("initFromStorageEditorInput");
+            }
         } catch (CoreException e) {
             throw new PartInitException(e.getStatus());
         } catch (Exception e) {
             IpsPlugin.log(e);
             throw new PartInitException(e.getMessage());
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void addPages() {
+        if (TRACE) {
+            logMethodStarted("addPages");
+        }        
+        pagesForParsableSrcFileShown = false;
+        try {
+            if (!getIpsSrcFile().isContentParsable()) {
+                if (TRACE) {
+                    log("addPages(): Page for unparsable files created.");
+                }
+                addPage(new UnparsableFilePage(this));
+                return;
+            }
+            if (!ipsSrcFile.exists()) {
+                if (TRACE) {
+                    log("addPages(): Page for missing files created.");
+                }
+                addPage(new MissingResourcePage(this));
+                return;
+            }
+            if (TRACE) {
+                logMethodStarted("addPagesForParsableSrcFile()");
+            }
+            addPagesForParsableSrcFile();
+            if (TRACE) {
+                logMethodFinished("addPagesForParsableSrcFile()");
+            }
+            pagesForParsableSrcFileShown = true;
+            if (TRACE) {
+                logMethodFinished("addPages");
+            }        
+        } catch (Exception e) {
+            IpsPlugin.log(e);
+        }
+    }
+    
+    protected void addPagesForParsableSrcFile() throws PartInitException, CoreException {
+        
+    }
+    
+    protected void updatePageStructure() {
+        if (TRACE) {
+            logMethodStarted("updatePageStructure");
+        }        
+        try {
+            if (getIpsSrcFile().isContentParsable()==pagesForParsableSrcFileShown) {
+                return;
+            }
+            updatingPageStructure = true;
+            ipsSrcFile.getIpsObject();
+            // remove all pages
+            for (int i=getPageCount(); i>0; i--) {
+                removePage(0);
+            }
+            if (TRACE) {
+                System.out.println("updatePageStructure(): Existing pages removed. Must recreate.");
+            }
+            addPages();
+            updatingPageStructure = false;
+            super.setActivePage(0); // also triggers the refresh
+            if (TRACE) {
+                logMethodFinished("updatePageStructure");
+            }        
+        } catch (CoreException e) {
+            updatingPageStructure = false;
+            IpsPlugin.log(e);
+            return;
+        } 
     }
 
     /**
@@ -246,8 +341,15 @@ public abstract class IpsObjectEditor extends FormEditor
      * {@inheritDoc}
      */
     protected void pageChange(int newPageIndex) {
-        super.pageChange(newPageIndex);
+        if (TRACE) {
+            logMethodStarted("pageChange(): newPage=" + newPageIndex);
+        }
+        super.pageChange(newPageIndex); // must be called even if the file isn't parsable, 
+        // (otherwise the unparsable file page wouldn't be shown)
         refresh();
+        if (TRACE) {
+            logMethodFinished("pageChange(): newPage=" + newPageIndex);
+        }
     }
 
     /**
@@ -256,10 +358,16 @@ public abstract class IpsObjectEditor extends FormEditor
      * <code>false</code>.
      */
     protected void refresh() {
+        if (updatingPageStructure) {
+            return;
+        }
         if (!ipsSrcFile.exists()) {
             return;
         }
         try {
+            if (!ipsSrcFile.isContentParsable()) {
+                return;
+            }
             // here we have to request the ips object once, to make sure that 
             // it's state is is synchronized with the enclosing resource.
             // otherwise if some part of the ui keeps a reference to the ips object, it won't contain
@@ -268,24 +376,40 @@ public abstract class IpsObjectEditor extends FormEditor
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
+        if (TRACE) {
+            logMethodStarted("refresh");
+        }        
         IEditorPart editor = getActivePageInstance();
         if (editor instanceof IpsObjectEditorPage) {
             IpsObjectEditorPage page = (IpsObjectEditorPage)editor;
             page.refresh();
         }
         updateDataChangeableState();
+        if (TRACE) {
+            logMethodFinished("refresh");
+        }        
     }
     
     /**
      * Evaluates the new data changeable state and updates it, if it has changed.
      */
     public void updateDataChangeableState() {
+        if (TRACE) {
+            logMethodStarted("updateDataChangeable");
+        }
+        boolean newState = computeDataChangeableState();
+        if (TRACE) {
+            log("Next data changeable state=" + newState + ", oldState=" + isDataChangeable());
+        }        
         setDataChangeable(computeDataChangeableState());
         IEditorPart editor = getActivePageInstance();
         if (editor instanceof IpsObjectEditorPage) {
             IpsObjectEditorPage page = (IpsObjectEditorPage)editor;
             page.updateDataChangeableState();
         }
+        if (TRACE) {
+            logMethodFinished("updateDataChangeable");
+        }        
     }
     
     /**
@@ -328,10 +452,16 @@ public abstract class IpsObjectEditor extends FormEditor
         display.syncExec(new Runnable() {
 
             public void run() {
+                if (TRACE) {
+                    logMethodStarted("contentsChanged(): Received content changed event for the file being edited." + event.getEventType());
+                }        
                 if (event.getEventType()==ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
-                    refreshInclStructuralChanges();
+                    updatePageStructure();
                 } else {
                     refresh();
+                }
+                if (TRACE) {
+                    logMethodFinished("contentChanged()");
                 }
             }
         });
@@ -397,9 +527,14 @@ public abstract class IpsObjectEditor extends FormEditor
         if (enclResource==null || event.getDelta().findMember(enclResource.getFullPath())==null) {
             return;
         }
+        if (TRACE) {
+            logMethodStarted("resourceChanged(): Received resource changed event for the file being edited.");
+        }
         if (!ipsSrcFile.exists()) {
             this.close(false);
-            return;
+        }
+        if (TRACE) {
+            logMethodFinished("resourceChanged()");
         }
     }
 
@@ -413,14 +548,23 @@ public abstract class IpsObjectEditor extends FormEditor
     }
 
     protected void handleEditorActivation() {
+        if (TRACE) {
+            logMethodStarted("handleEditorActivation()");
+        }
         checkForChangesMadeOutsideEclipse();
         editorActivated();
         refresh();
+        if (TRACE) {
+            logMethodFinished("handleEditorActivation()");
+        }
     }
 
     private void checkForChangesMadeOutsideEclipse() {
         if (dontLoadChanges) {
             return;
+        }
+        if (TRACE) {
+            logMethodStarted("checkForChangesMadeOutsideEclipse()");
         }
         if (getIpsSrcFile().isMutable() && !getIpsSrcFile().getEnclosingResource().isSynchronized(0)) {
             MessageDialog dlg = new MessageDialog(Display.getCurrent().getActiveShell(), Messages.IpsObjectEditor_fileHasChangesOnDiskTitle, (Image)null, 
@@ -429,7 +573,11 @@ public abstract class IpsObjectEditor extends FormEditor
             dlg.open();
             if (dlg.getReturnCode()==0) {
                 try {
+                    if (TRACE) {
+                        log("checkForChangesMadeOutsideEclipse(): Change found, sync file with filesystem (refreshLocal)");
+                    }
                     getIpsSrcFile().getEnclosingResource().refreshLocal(0, null);
+                    updatePageStructure();
                 } catch (CoreException e) {
                     throw new RuntimeException(e);
                 }
@@ -438,13 +586,22 @@ public abstract class IpsObjectEditor extends FormEditor
             }
             
         }
+        if (TRACE) {
+            logMethodFinished("checkForChangesMadeOutsideEclipse()");
+        }
     }
 
     /**
      * Called when the editor is activated (e.g. by clicking in it).
      */
     protected void editorActivated() {
+        if (TRACE) {
+            logMethodStarted("editorActivated()");
+        }
         checkForInconsistenciesToModel();
+        if (TRACE) {
+            logMethodFinished("editorActivated()");
+        }
     }
     
     /**
@@ -513,13 +670,16 @@ public abstract class IpsObjectEditor extends FormEditor
     protected Dialog createDialogToFixDifferencesToModel() throws CoreException{
         throw new UnsupportedOperationException();
     }
-
+    
     /**
      * Refreshes the UI and can handle structural changes which means not only the content of the
      * controls is updated but also new controls are created or existing ones are disposed if
      * neccessary.
      */
     protected void refreshInclStructuralChanges(){
+        if (updatingPageStructure) {
+            return;
+        }
         refresh();
     }
     
@@ -541,6 +701,9 @@ public abstract class IpsObjectEditor extends FormEditor
         }
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         disposeInternal();
+        if (TRACE) {
+            log("disposed.");
+        }
     }
 
     /**
@@ -553,8 +716,14 @@ public abstract class IpsObjectEditor extends FormEditor
      * {@inheritDoc}
      */
     public void propertyChange(PropertyChangeEvent event) {
+        if (TRACE) {
+            logMethodStarted("propertyChange(): Received property changed event " + event);
+        }
         if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
             refresh();        
+        }
+        if (TRACE) {
+            logMethodFinished("propertyChange()");
         }
     }
     
@@ -696,5 +865,24 @@ public abstract class IpsObjectEditor extends FormEditor
         }
     }
 
+    private void logMethodStarted(String msg) {
+        logInternal("." + msg + " - started"); //$NON-NLS-1$ $NON-NLS-2$
+    }
     
+    private void logMethodFinished(String msg) {
+        logInternal("." + msg + " - finished"); //$NON-NLS-1$ $NON-NLS-2$
+    }
+    
+    private void log(String msg) {
+        logInternal(": " + msg);
+    }
+
+    private void logInternal(String msg) {
+        String file = ipsSrcFile==null ? "null" : ipsSrcFile.getName(); // $NON-NLS-1$
+        System.out.println(getLogPrefix() + msg + ", IpsSrcFile=" + file + ", Thread=" + Thread.currentThread().getName()); //$NON-NLS-1$ $NON-NLS-2$
+    }
+    
+    private String getLogPrefix() {
+        return "IpsObjectEditor";
+    }
 }

@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.editors.DescriptionPage;
@@ -31,18 +33,14 @@ public class PctEditor extends IpsObjectEditor {
     public PctEditor() {
         super();
     }
-
-    /** 
+    
+    /**
      * {@inheritDoc}
      */
-    protected void addPages() {
-        try {
-            addPage(new StructurePage(this));
-            addPage(new BehaviourPage(this));
-            addPage(new DescriptionPage(this));
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+    protected void addPagesForParsableSrcFile() throws PartInitException, CoreException {
+        addPage(new StructurePage(this));
+        addPage(new BehaviourPage(this));
+        addPage(new DescriptionPage(this));
     }
 
     IPolicyCmptType getPolicyCmptType() {

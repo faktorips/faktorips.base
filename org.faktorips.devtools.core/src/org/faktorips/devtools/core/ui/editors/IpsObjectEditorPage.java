@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 
 /**
- *
+ * Abstract base class for pages of an ips object editor.
  */
 public abstract class IpsObjectEditorPage extends FormPage implements IDataChangeableReadAccessWithListenerSupport {
     

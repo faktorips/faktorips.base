@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
@@ -46,10 +47,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 
 	private GenerationPropertiesPage generationPropertiesPage;
 
-	private ProductCmptPropertiesPage productCmptPropertiesPage;
-
-	private DescriptionPage descriptionPage;
-
 	// flag is true if the user has manually chosen the active generation
     private boolean activeGenerationManuallySet = false;
 	
@@ -65,42 +62,35 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	public ProductCmptEditor() {
 		super();
 	}
-
-	/**
+    
+    /**
 	 * {@inheritDoc}
 	 */
-	protected void addPages() {
-		try {
-			if (isSrcFileUsable()) {
-				IProductCmpt cmpt = (ProductCmpt)getIpsObject();
-				if (getIpsSrcFile().isMutable() && cmpt.findProductCmptType() == null && !IpsPlugin.getDefault().isTestMode()) {
-					String msg = NLS.bind(Messages.ProductCmptEditor_msgTemplateNotFound, cmpt.getPolicyCmptType());
-					SetTemplateDialog dialog = new SetTemplateDialog(cmpt, getSite().getShell(), msg);
-					dialog.open();
-				}
-				
-				generationPropertiesPage = new GenerationPropertiesPage(this);
-                productCmptPropertiesPage = new ProductCmptPropertiesPage(this);
-				descriptionPage = new DescriptionPage(this);
-				
-				addPage(generationPropertiesPage);
-				addPage(productCmptPropertiesPage);
-				addPage(descriptionPage);
-                IIpsObjectGeneration gen = getGenerationEffectiveOnCurrentEffectiveDate();
-                if (gen==null) {
-                    gen = cmpt.getGenerations()[cmpt.getNumOfGenerations()-1];            
-                }
-                setActiveGeneration(gen, false);
-			}
-			else {
-				MissingResourcePage page = new MissingResourcePage(this, getIpsSrcFile());
-				addPage(page);
-			}
-		} catch (Exception e) {
-			IpsPlugin.logAndShowErrorDialog(e);
+	protected void addPagesForParsableSrcFile() throws PartInitException , CoreException {
+		IProductCmpt cmpt = (ProductCmpt)getIpsObject();
+		if (getIpsSrcFile().isMutable() && cmpt.findProductCmptType() == null && !IpsPlugin.getDefault().isTestMode()) {
+			String msg = NLS.bind(Messages.ProductCmptEditor_msgTemplateNotFound, cmpt.getPolicyCmptType());
+			SetTemplateDialog dialog = new SetTemplateDialog(cmpt, getSite().getShell(), msg);
+			dialog.open();
 		}
+        this.generationPropertiesPage = new GenerationPropertiesPage(this);
+		addPage(generationPropertiesPage);
+		addPage(new ProductCmptPropertiesPage(this));
+		addPage(new DescriptionPage(this));
+        IIpsObjectGeneration gen = getGenerationEffectiveOnCurrentEffectiveDate();
+        if (gen==null) {
+            gen = cmpt.getGenerations()[cmpt.getNumOfGenerations()-1];            
+        }
+        setActiveGeneration(gen, false);
 	}
-
+    
+    private GenerationPropertiesPage getGenerationPropertiesPage() {
+        if (generationPropertiesPage.getPartControl()==null || generationPropertiesPage.getPartControl().isDisposed()) {
+            return null;
+        }
+        return generationPropertiesPage;
+    }
+    
 	/**
 	 * Returns the product component for the sourcefile edited with this editor.
 	 */
@@ -112,13 +102,19 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			throw new RuntimeException(e);
 		}
 	}
-
+    
 	/**
 	 * {@inheritDoc}
 	 */
 	public void editorActivated() {
+	    if (TRACE) {
+         logMethodStarted("editorActivated()");   
+        }
         updateChosenActiveGeneration();
 		super.editorActivated();
+        if (TRACE) {
+             logMethodFinished("editorActivated()");   
+            }
 	}
 
 	/**
@@ -139,6 +135,14 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 * is asked to create a new one. 
 	 */
 	private void updateChosenActiveGeneration() {
+        try {
+            if (!getIpsSrcFile().isContentParsable()) {
+                return;
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return;
+        }
 		IProductCmpt prod = getProductCmpt();
 		GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
 		IProductCmptGeneration generation = (IProductCmptGeneration)prod.getGenerationByEffectiveDate(workingDate);
@@ -190,13 +194,13 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		if (generation == null) {
 			return;
 		}
-		if (!generation.equals(getActiveGeneration())) {
+		if (generation!=getActiveGeneration()) {
 			super.setActiveGeneration(generation);
-            if (generationPropertiesPage!=null) {
+            if (getGenerationPropertiesPage()!=null) {
                 generationPropertiesPage.rebuildInclStructuralChanges();
             }
+            refresh();
 		}
-        refresh();
         activeGenerationManuallySet = manuallySet;
 	}
     
@@ -343,7 +347,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
-        if (generationPropertiesPage!=null) {
+        if (getGenerationPropertiesPage()!=null) {
             generationPropertiesPage.rebuildInclStructuralChanges();
         }
     }
@@ -357,4 +361,22 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
         }
         super.setDataChangeable(changeable);
     }
+    
+    private void logMethodStarted(String msg) {
+        logInternal("." + msg + " - started"); //$NON-NLS-1$ $NON-NLS-2$
+    }
+    
+    private void logMethodFinished(String msg) {
+        logInternal("." + msg + " - finished"); //$NON-NLS-1$ $NON-NLS-2$
+    }
+    
+    private void logInternal(String msg) {
+        String file = getIpsSrcFile()==null ? "null" : getIpsSrcFile().getName(); // $NON-NLS-1$
+        System.out.println(getLogPrefix() + msg + ", IpsSrcFile=" + file + ", Thread=" + Thread.currentThread().getName()); //$NON-NLS-1$ $NON-NLS-2$
+    }
+    
+    private String getLogPrefix() {
+        return "ProductCmptEditor";
+    }
+    
 }

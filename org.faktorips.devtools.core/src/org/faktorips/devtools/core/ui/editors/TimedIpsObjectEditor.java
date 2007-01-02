@@ -40,6 +40,14 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
     }
     
     /**
+     * {@inheritDoc}
+     */
+    protected void addPages() {
+        // setActiveGeneration(null);
+        super.addPages();
+    }
+
+    /**
      * Returns the generation currently selected to display and edit.
      */
     public IIpsObjectGeneration getActiveGeneration() {
@@ -50,6 +58,9 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
      * Sets the generation active on this editor.
      */
     public void setActiveGeneration(IIpsObjectGeneration generation) {
+        if (TRACE) {
+            System.out.println("TimedIpsObjectEditor.setActiveGeneration(): New generation " + generation);
+        }
     	this.generation = generation;
     }
     

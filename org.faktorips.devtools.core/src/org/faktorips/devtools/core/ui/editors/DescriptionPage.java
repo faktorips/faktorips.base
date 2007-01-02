@@ -33,8 +33,7 @@ public class DescriptionPage extends IpsObjectEditorPage {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage#createPageContent(org.eclipse.swt.widgets.Composite, org.faktorips.devtools.core.ui.UIToolkit)
+     * {@inheritDoc}
      */
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
 		formBody.setLayout(createPageLayout(1, false));

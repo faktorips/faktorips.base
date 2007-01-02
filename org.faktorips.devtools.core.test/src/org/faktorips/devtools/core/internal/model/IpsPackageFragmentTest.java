@@ -78,7 +78,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         assertEquals("products.folder", pack.getName());
     }
 
-    public void testGetPdRootFolder() {
+    public void testGetIpsRootFolder() {
         assertEquals(rootPackage, pack.getRoot());
     }
 
@@ -142,7 +142,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     /*
      * Class under test for IpsSrcFile createPdFile(String, String, boolean, IProgressMonitor)
      */
-    public void testCreatePdFileStringStringbooleanIProgressMonitor() throws CoreException, IOException {
+    public void testCreateIpsFileStringStringbooleanIProgressMonitor() throws CoreException, IOException {
         IIpsSrcFile file = pack.createIpsFile("file." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension()
         		, "blabla", true, null);
         assertTrue(file.exists());
@@ -155,6 +155,17 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     	IIpsSrcFile file = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Test", true, null);
     	IProductCmpt product = (IProductCmpt)file.getIpsObject();
     	assertFalse(StringUtils.isEmpty(product.getRuntimeId()));
+    }
+    
+    public void testFindIpsObjects_PackContainsInvalidFile() throws CoreException {
+        IIpsSrcFile srcFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Test", true, null);
+        IFile file = srcFile.getCorrespondingFile();
+        file.setContents(new ByteArrayInputStream("Bla".getBytes()), true, false, null);
+        
+        ArrayList result = new ArrayList();
+        pack.findIpsObjects(IpsObjectType.PRODUCT_CMPT, result);
+        assertEquals(1, result.size());
+        assertEquals(srcFile.getIpsObject(), result.get(0));
     }
     
     public void testFindIpsObjectsStartingWith() throws CoreException {
@@ -190,7 +201,6 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         pack2.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", true, result);
         assertEquals(0, result.size());
         
-
         // ipsobjecttype null
         try {
             pack.findIpsObjectsStartingWith(null, "M", true, result);

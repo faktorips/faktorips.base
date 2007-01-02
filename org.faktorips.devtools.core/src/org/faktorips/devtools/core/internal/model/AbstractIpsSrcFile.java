@@ -99,9 +99,6 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
             throw new CoreException(new IpsStatus("Can't get ips object because file does not exist." + this)); //$NON-NLS-1$
         }
         IpsSrcFileContent content = getContent();
-        if (!content.isParsable()) {
-            throw new CoreException(new IpsStatus("Can't get ips object because file content is not parsable." + this)); //$NON-NLS-1$
-        }
         return content.getIpsObject();
     }
     

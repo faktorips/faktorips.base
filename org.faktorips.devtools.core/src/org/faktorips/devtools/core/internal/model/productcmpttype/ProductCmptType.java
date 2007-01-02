@@ -459,4 +459,11 @@ public class ProductCmptType implements IProductCmptType {
     public IIpsObject getIpsObject() {
         return this;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isFromParsableFile() {
+        return policyCmptType.isFromParsableFile();
+    }
 }

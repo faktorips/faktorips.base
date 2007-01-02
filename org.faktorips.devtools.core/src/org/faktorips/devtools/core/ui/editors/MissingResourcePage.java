@@ -15,15 +15,14 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.productcmpt;
+package org.faktorips.devtools.core.ui.editors;
 
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
+import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
 
 
 /**
@@ -38,16 +37,13 @@ public class MissingResourcePage extends IpsObjectEditorPage {
 	 */
     public final static String PAGE_ID = "MissingResource"; //$NON-NLS-1$
 
-    private IIpsSrcFile missing;
-	
 	/**
 	 * Creates a new saying that the given file is missing.
 	 * 
 	 * @param editor The owner of this page
 	 */
-    public MissingResourcePage(IpsObjectEditor editor, IIpsSrcFile missing) {
+    public MissingResourcePage(IpsObjectEditor editor) {
         super(editor, PAGE_ID, ""); //$NON-NLS-1$
-        this.missing = missing;
     }
     
     /**
@@ -55,7 +51,8 @@ public class MissingResourcePage extends IpsObjectEditorPage {
      */
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
     	Composite root = new Composite(formBody, SWT.NONE);
-    	String filename = missing==null?"null":missing.getName(); //$NON-NLS-1$
+        IIpsSrcFile file = getIpsObjectEditor().getIpsSrcFile();
+    	String filename = file==null?"null":file.getName(); //$NON-NLS-1$
     	toolkit.createLabel(root, NLS.bind(Messages.MissingResourcePage_msgFileOutOfSync, filename));
     }
 }

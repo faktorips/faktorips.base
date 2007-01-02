@@ -80,6 +80,9 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     public final static String PROBLEM_MARKER = PLUGIN_ID + ".problemmarker"; //$NON-NLS-1$
 
+    public final static boolean TRACE_UI = Boolean.valueOf(
+            Platform.getDebugOption("org.faktorips.devtools.core/trace/ui")).booleanValue(); //$NON-NLS-1$
+
     private boolean testMode = false;
     private ITestAnswerProvider testAnswerProvider;
 

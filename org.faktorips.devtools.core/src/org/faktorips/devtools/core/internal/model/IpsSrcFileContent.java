@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * 
@@ -80,6 +81,7 @@ public class IpsSrcFileContent {
             parsable = true;
         } catch (Exception e) {
             parsable = false;
+            ipsObject.markAsFromUnparsableFile();
         } finally {
             this.modified = wasModified; // set back modified flag
             setModified(newModified); // and use setter to trigger notification
@@ -94,6 +96,7 @@ public class IpsSrcFileContent {
             parsable = true;
         } catch (Exception e) {
             parsable = false;
+            ipsObject.markAsFromUnparsableFile();
         } finally {
             wholeContentChanged();
         }
@@ -204,9 +207,18 @@ public class IpsSrcFileContent {
                 System.out.println("IpsSrcFileContent.initContentFromFile: Content read from disk, file=" +  file //$NON-NLS-1$
                         + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
             }
+        } catch (SAXException e) {
+            parsable = false;
+            ipsObject.markAsFromUnparsableFile();
+            if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                System.out.println("IpsSrcFileContent.initContentFromFile: Error parsing xml , file=" +  file //$NON-NLS-1$
+                        + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
+            }
+            return;
         } catch (Exception e) {
             parsable = false;
-            IpsPlugin.log(new IpsStatus("Error reading xml doc from file " + file, e)); //$NON-NLS-1$
+            ipsObject.markAsFromUnparsableFile();
+            IpsPlugin.log(e);
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                 System.out.println("IpsSrcFileContent.initContentFromFile: Error reading content from disk, file=" +  file //$NON-NLS-1$
                         + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$

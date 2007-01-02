@@ -54,7 +54,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
 	private RelationsSection relationsSection;
 
-	/**
+	/*
 	 * Layout for this page (see pageRoot) - if the content-structure for this
 	 * page changes, the current set top level composite is disposed and a
 	 * completely new one is created. This is to avoid complex code for
@@ -62,13 +62,13 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 	 */
 	private StackLayout stack;
 
-	/**
+	/*
 	 * The composite which serves as root-composite for this page. This composit
 	 * is controlled by the Forms-framework, so it should not be disposed.
 	 */
 	private Composite pageRoot;
 
-	/**
+	/*
 	 * The toolkit to make ui-construction easier.
 	 */
 	private UIToolkit toolkit;

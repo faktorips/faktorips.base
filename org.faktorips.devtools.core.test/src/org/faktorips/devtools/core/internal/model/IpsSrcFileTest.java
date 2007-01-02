@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -89,7 +90,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         assertEquals(parsableFile, lastModStatusEvent.getIpsSrcFile());
     }
     
-    public void testContentIsParsable() throws CoreException {
+    public void testIsContentParsable() throws CoreException {
         assertFalse(unparsableFile.isContentParsable());
         assertTrue(parsableFile.isContentParsable());
     }
@@ -136,18 +137,28 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         assertEquals(parsableFile.getName(), file.getName());
     }
     
-    public void testGetPdObject() throws CoreException {
-        IIpsObject pdObject = parsableFile.getIpsObject();
-        assertNotNull(pdObject);
+    public void testGetIpsObject() throws CoreException {
+        IIpsObject ipsObject = parsableFile.getIpsObject();
+        assertNotNull(ipsObject);
+        assertTrue(ipsObject.isFromParsableFile());
         
-        pdObject.setDescription("blabla");
-        assertSame(pdObject, parsableFile.getIpsObject());
+        ipsObject.setDescription("blabla");
+        assertSame(ipsObject, parsableFile.getIpsObject());
         
-        try {
-            unparsableFile.getIpsObject();
-            fail();
-        } catch (CoreException e) {
-        }
+        ipsObject = unparsableFile.getIpsObject();
+        assertNotNull(ipsObject);
+        assertFalse(ipsObject.isFromParsableFile());
+        
+        // change from unparsable to parsable
+        InputStream is = parsableFile.getCorrespondingFile().getContents();
+        unparsableFile.getCorrespondingFile().setContents(is, true, true, null);
+        assertSame(ipsObject, unparsableFile.getIpsObject());
+        assertTrue(ipsObject.isFromParsableFile());
+        
+        // otherway round
+        unparsableFile.getCorrespondingFile().setContents(new ByteArrayInputStream("Blabla".getBytes()), true, true, null);
+        assertSame(ipsObject, unparsableFile.getIpsObject());
+        assertFalse(ipsObject.isFromParsableFile());
     }
 
     public void testGetElementName() {
