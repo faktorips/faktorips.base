@@ -133,9 +133,12 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      * {@inheritDoc}
      */
     public IIpsObjectGeneration getGenerationByEffectiveDate(GregorianCalendar date) {
+        if (date==null) {
+            return null;
+        }
         for (Iterator it=generations.iterator(); it.hasNext();) {
             IIpsObjectGeneration each = (IIpsObjectGeneration)it.next();
-            if (each.getValidFrom().equals(date)) {
+            if (date.equals(each.getValidFrom())) {
                 return each;
             }
         }
