@@ -669,7 +669,7 @@ public class ParametersEditControl extends Composite implements  IDataChangeable
 
 	private class ParametersCellModifier implements ICellModifier {
 		public boolean canModify(Object element, String property) {
-            if (isDataChangeable()){
+            if (!isDataChangeable()){
                 return false;
             }
 			if (property.equals(PROPERTIES[TYPE_PROP]))
