@@ -28,12 +28,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
-import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
 
 /**
  * Page to display a generation's properties.
@@ -100,17 +98,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 		stack.topControl = root;
 
 		buildContent(toolkit, root);
-        updateTabname();
-        ContentsChangeListenerForWidget listener = new ContentsChangeListenerForWidget() {
-            
-            public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
-                if (event.getIpsSrcFile().equals(((ProductCmptEditor)getEditor()).getIpsSrcFile())) {
-                    updateTabname();
-                }
-            }
-        };
-        listener.setWidget(formBody);
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(listener); 
 	}
 
 	/**
@@ -164,13 +151,21 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 	}
 
     /**
+     * {@inheritDoc}
+     */
+    protected void refresh() {
+        updateTabname();
+        super.refresh();
+    }
+
+    /**
      * Refreshes the page when the active generation has chanaged.
      * 
      * A call to this method causes the currently displayed composite to be
      * disposed. A completely new composite is created and stacked on top of the
      * layout. This is done to avoid complex code for structural updates.
      */
-    protected void rebuildAfterActiveGenerationhasChanged() {
+    protected void rebuildInclStructuralChanges() {
         // if stack == null, the page contents are not created yet, so do
         // nothing.
         if (stack != null) {

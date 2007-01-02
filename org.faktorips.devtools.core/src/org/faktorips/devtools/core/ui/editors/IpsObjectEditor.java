@@ -53,7 +53,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 
 /**
- * TODO comment 
+ * Base class for all editors to edit ips objects.
  * 
  * <p>This editor uses an implementation of ISelectionProvider where ISelectionProviders
  * used on the different pages of this editor can be registered. The ISelectionProvider of this
@@ -101,7 +101,6 @@ public abstract class IpsObjectEditor extends FormEditor
      * file system.
      */
     private boolean dontLoadChanges = false;
-    
     
     private ActivationListener activationListener;
     
@@ -154,6 +153,10 @@ public abstract class IpsObjectEditor extends FormEditor
             initFromStorageEditorInput((IStorageEditorInput)input);
             setPartName(((IStorageEditorInput)input).getName());
         }
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(IpsObjectEditor.this);
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(IpsObjectEditor.this);
+        IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(IpsObjectEditor.this);
+        IpsPlugin.getDefault().getIpsPreferences().addChangeListener(IpsObjectEditor.this);
 
         if (ipsSrcFile == null) {
             throw new PartInitException("Unsupported editor input type " + input.getClass().getName()); //$NON-NLS-1$
@@ -317,10 +320,21 @@ public abstract class IpsObjectEditor extends FormEditor
     /**
      * {@inheritDoc}
      */
-    public void contentsChanged(ContentChangeEvent event) {
-        if (event.getIpsSrcFile().equals(ipsSrcFile)) {
-            refresh();
+    public void contentsChanged(final ContentChangeEvent event) {
+        if (!event.getIpsSrcFile().equals(ipsSrcFile)) {
+            return;
         }
+        Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
+        display.syncExec(new Runnable() {
+
+            public void run() {
+                if (event.getEventType()==ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
+                    refreshInclStructuralChanges();
+                } else {
+                    refresh();
+                }
+            }
+        });
     }
     
     /**
@@ -374,11 +388,18 @@ public abstract class IpsObjectEditor extends FormEditor
     }
 
     /**
-     * We have to close the editor if the underlying resource is removed. {@inheritDoc}
+     * We have to close the editor if the underlying resource is removed. 
+     * 
+     * {@inheritDoc}
      */
     public void resourceChanged(IResourceChangeEvent event) {
+        IResource enclResource = ipsSrcFile.getEnclosingResource();
+        if (enclResource==null || event.getDelta().findMember(enclResource.getFullPath())==null) {
+            return;
+        }
         if (!ipsSrcFile.exists()) {
             this.close(false);
+            return;
         }
     }
 
@@ -464,7 +485,7 @@ public abstract class IpsObjectEditor extends FormEditor
                             try {
                                 IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(
                                         new DifferenceFixer(toFixIpsObject), null);
-                                refreshAfterModelDifferencesAreFixed();
+                                refreshInclStructuralChanges();
                             } catch (CoreException e) {
                                 IpsPlugin.logAndShowErrorDialog(e);
                                 return;
@@ -494,9 +515,11 @@ public abstract class IpsObjectEditor extends FormEditor
     }
 
     /**
-     * Refresh after the differences are fixed.
+     * Refreshes the UI and can handle structural changes which means not only the content of the
+     * controls is updated but also new controls are created or existing ones are disposed if
+     * neccessary.
      */
-    protected void refreshAfterModelDifferencesAreFixed(){
+    protected void refreshInclStructuralChanges(){
         refresh();
     }
     
@@ -516,6 +539,7 @@ public abstract class IpsObjectEditor extends FormEditor
         if (activationListener!=null) {
             activationListener.dispose();
         }
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         disposeInternal();
     }
 
@@ -596,11 +620,10 @@ public abstract class IpsObjectEditor extends FormEditor
         }
 
         public void partActivated(IWorkbenchPart part) {
+            if (part!=IpsObjectEditor.this) {
+                return;
+            }
             activePart= part;
-            IpsPlugin.getDefault().getIpsModel().addChangeListener(IpsObjectEditor.this);
-            IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(IpsObjectEditor.this);
-            IpsPlugin.getDefault().getIpsPreferences().addChangeListener(IpsObjectEditor.this);
-            ResourcesPlugin.getWorkspace().addResourceChangeListener(IpsObjectEditor.this);
             handleActivation();
         }
 
@@ -608,16 +631,26 @@ public abstract class IpsObjectEditor extends FormEditor
         }
 
         public void partClosed(IWorkbenchPart part) {
+            if (part!=IpsObjectEditor.this) {
+                return;
+            }
+            ipsSrcFile.discardChanges();
+            removeListeners();
         }
 
         public void partDeactivated(IWorkbenchPart part) {
+            if (part!=IpsObjectEditor.this) {
+                return;
+            }
             activePart= null;
+        }
+        
+        private void removeListeners() {
             IpsPlugin.getDefault().getIpsModel().removeChangeListener(IpsObjectEditor.this);
             IpsPlugin.getDefault().getIpsModel().removeModificationStatusChangeListener(IpsObjectEditor.this);
             IpsPlugin.getDefault().getIpsPreferences().removeChangeListener(IpsObjectEditor.this);
-            ResourcesPlugin.getWorkspace().removeResourceChangeListener(IpsObjectEditor.this);
         }
-
+        
         public void partOpened(IWorkbenchPart part) {
         }
 
@@ -640,16 +673,16 @@ public abstract class IpsObjectEditor extends FormEditor
 
         public void windowActivated(IWorkbenchWindow window) {
             if (window == getEditorSite().getWorkbenchWindow()) {
+                handleActivation();
                 /*
                  * Workaround for problem described in
                  * http://dev.eclipse.org/bugs/show_bug.cgi?id=11731
                  * Will be removed when SWT has solved the problem.
-                 */
                 window.getShell().getDisplay().asyncExec(new Runnable() {
                     public void run() {
-                        handleActivation();
                     }
                 });
+                 */
             }
         }
 

@@ -18,6 +18,8 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -53,6 +55,9 @@ public class IpsSrcFileContent {
     
     private boolean parsable = true;
 
+    // see the wasModStampTriggeredBySave() for details.
+    private List modStampsAfterSave = null;
+    
     public IpsSrcFileContent(IpsObject ipsObject) {
         ArgumentCheck.notNull(ipsObject);
         this.ipsObject = ipsObject;
@@ -227,6 +232,10 @@ public class IpsSrcFileContent {
                     IFile file = ipsObject.getIpsSrcFile().getCorrespondingFile();
                     file.setContents(is, force, true, monitor);
                     modificationStamp = file.getModificationStamp();
+                    if (modStampsAfterSave==null) {
+                        modStampsAfterSave = new ArrayList(1);
+                    }
+                    modStampsAfterSave.add(new Long(modificationStamp));
                     markAsUnmodified();
                     if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                         System.out.println("IpsSrcFileContent.save() finished. ModStamp=" + modificationStamp + ", " + IpsSrcFileContent.this); //$NON-NLS-1$ //$NON-NLS-2$
@@ -241,6 +250,21 @@ public class IpsSrcFileContent {
             
         };
         ResourcesPlugin.getWorkspace().run(runnable, monitor);
+    }
+    
+    /**
+     * Returns <code>true</code> if the given mod stamp is the result of saving the content to disk
+     * via the save() method. The method should be called by the IpsModel's resource delta visitor only!
+     */
+    boolean wasModStampCreatedBySave(long modStamp) {
+        if (modStampsAfterSave==null) {
+            return false;
+        }
+        boolean rc = modStampsAfterSave.remove(new Long(modStamp));
+        if (modStampsAfterSave.size()==0) {
+            modStampsAfterSave = null;
+        }
+        return rc;
     }
     
     /**

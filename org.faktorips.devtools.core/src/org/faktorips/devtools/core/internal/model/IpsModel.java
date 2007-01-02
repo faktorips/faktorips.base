@@ -1208,6 +1208,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         IpsSrcFileContent content = (IpsSrcFileContent)ipsObjectsMap.get(file);
         long resourceModStamp = enclResource.getModificationStamp();
+        
+        // new content
         if (content == null) {
             content = new IpsSrcFileContent((IpsObject)file.getIpsObjectType().newObject(file));
             ipsObjectsMap.put(file, content);
@@ -1215,21 +1217,25 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 System.out.println("IpsModel.getIpsSrcFileContent(): New content created for " + file + ", Thead: " //$NON-NLS-1$ //$NON-NLS-2$
                         + Thread.currentThread().getName());
             }
-        } else {
-            if (content.getModificationStamp() == resourceModStamp) {
-                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                    System.out.println("IpsModel.getIpsSrcFileContent(): Content returned from cache, file=" + file //$NON-NLS-1$
-                            + ", FileModStamp=" + resourceModStamp + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$
-                }
-                return content;
+            content.initContentFromFile();
+            return content;
+        } 
+        
+        // existing, synchronized content 
+        if (content.getModificationStamp() == resourceModStamp) {
+            if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                System.out.println("IpsModel.getIpsSrcFileContent(): Content returned from cache, file=" + file //$NON-NLS-1$
+                        + ", FileModStamp=" + resourceModStamp + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$
             }
+            return content;
         }
+        // existing, but unsynchronized content
         content.initContentFromFile();
         return content;
     }
 
     /**
-     * Returns <code>true</code> if the ips source file' content is in sny with the 
+     * Returns <code>true</code> if the ips source file' content is in sync with the 
      * enclosing resource storing it's contents. 
      */
     public synchronized boolean isInSyncWithEnclosingResource(IIpsSrcFile file) {
@@ -1285,7 +1291,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     return true;
                 }
                 IpsSrcFile srcFile = (IpsSrcFile)element;
-                boolean isInSync = isInSyncWithEnclosingResource(srcFile);
+                IpsSrcFileContent content = getIpsSrcFileContent(srcFile);
+                boolean isInSync = content==null || content.wasModStampCreatedBySave(srcFile.getEnclosingResource().getModificationStamp());
+                
+                // boolean isInSync = isInSyncWithEnclosingResource(srcFile);
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out
                             .println("IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change/delete on disk with modStamp " //$NON-NLS-1$

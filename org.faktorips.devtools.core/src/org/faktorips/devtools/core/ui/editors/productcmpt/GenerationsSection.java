@@ -255,7 +255,9 @@ public class GenerationsSection extends SimpleIpsPartsSection{
                 if (page.getProductCmptEditor().isEffectiveOnCurrentEffectiveDate(gen)) {
                     comment = comment + " wirksam am " + IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate();
                 }
-                if (gen.isValidFromInPast() && !IpsPlugin.getDefault().getIpsPreferences().canEditRecentGeneration()) {
+                Boolean validFromInPast = gen.isValidFromInPast(); 
+                if ((validFromInPast==null || validFromInPast.booleanValue()) 
+                    && !IpsPlugin.getDefault().getIpsPreferences().canEditRecentGeneration()) {
                     if (!comment.equals("")) {
                         comment = comment + ",";
                     }

@@ -70,9 +70,10 @@ public interface IIpsObjectGeneration extends IIpsObjectPart {
     public void setValidFrom(GregorianCalendar validFrom);
 
     /**
-     * Returns <code>true</code> if the valid from date is in the past, otherwise <code>false</code>.
+     * Returns <code>Boolean.TRUE</code> if the valid from date is in the past, otherwise <code>Boolean.FALSE</code>.
+     * Returns <code>null</code> if valid from is <code>null</code>.
      */
-    public boolean isValidFromInPast();
+    public Boolean isValidFromInPast();
     
     /**
      * Returns the date this generations is no longer valid or null, if this generation

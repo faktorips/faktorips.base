@@ -160,14 +160,14 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
      * Returns <code>true</code> if the content in this section can be changed by the user,
      * otherwise <code>false</code>.
      */
-    public final boolean isDataChangeable() {
+    public boolean isDataChangeable() {
         return changeable;
     }
     
     /**
      * Enables or disables that the section's content can be changed by the user.
      */
-    public final void setDataChangeable(boolean changeable) {
+    public void setDataChangeable(boolean changeable) {
         this.changeable = changeable;
         toolkit.setDataChangeable(section.getClient(), changeable);
         if (dataChangeableStateChangeListeners==null) {

@@ -34,20 +34,15 @@ public abstract class AbstractCardinalityField extends DefaultEditField {
 	 */
 	public Object getValue() {
 		String text = getText();
-        
 		if (StringUtils.isEmpty(text)) {
-            throw new RuntimeException("Can't return an Integer, field is empty."); //$NON-NLS-1$
+            return null;
         }
-
-        Integer retValue = null;
 		if (text.equals("*")) { //$NON-NLS-1$
-			retValue = new Integer(Integer.MAX_VALUE);
+			return new Integer(Integer.MAX_VALUE);
 		}
 		else {
-			retValue = Integer.valueOf(text);
+			return Integer.valueOf(text);
 		}
-
-		return retValue;
 	}
 
 	/**

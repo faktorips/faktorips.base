@@ -20,7 +20,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -32,7 +31,6 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -79,11 +77,11 @@ public class ProductAttributesSection extends IpsSection {
 	 */
 	private CompositeUIController uiMasterController = null;
 	
-	private ProductCmptTypeRefControl policyCmptType;
+	private ProductCmptTypeRefControl policyCmptTypeControl;
     private MyModifyListener policyCmptTypeListener;
 	
-	private Text runtimeId;
-    private Text validTo;
+	private Text runtimeIdText;
+    private Text validToText;
     private GregorianCalendarField validToField;
 	private ProductCmptEditor editor;
 	
@@ -127,33 +125,33 @@ public class ProductAttributesSection extends IpsSection {
 		// this product component is based on.
 		toolkit.createLabel(rootPane, Messages.ProductAttributesSection_template);
 
-		policyCmptType = new ProductCmptTypeRefControl(product.getIpsProject(), rootPane, toolkit);
-		policyCmptType.getTextControl().setEnabled(false);
-		ProductCmptTypeField field = new ProductCmptTypeField(policyCmptType);
+		policyCmptTypeControl = new ProductCmptTypeRefControl(product.getIpsProject(), rootPane, toolkit);
+		policyCmptTypeControl.getTextControl().setEnabled(false);
+		ProductCmptTypeField field = new ProductCmptTypeField(policyCmptTypeControl);
 		
 		// create label and text control for the runtime id representing the displayed product component
 		toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelRuntimeId);
-		runtimeId = toolkit.createText(rootPane);
-		editControls.add(runtimeId);
+		runtimeIdText = toolkit.createText(rootPane);
+		editControls.add(runtimeIdText);
 
         // create label and text control for the valid-to date of the displayed product component
         toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelValidTo);
-        validTo = toolkit.createText(rootPane);
-        validTo.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
-        editControls.add(validTo);
+        validToText = toolkit.createText(rootPane);
+        validToText.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+        editControls.add(validToText);
 
 		IpsObjectUIController controller = new IpsObjectUIController(product);
 		controller.add(field, product, IProductCmpt.PROPERTY_POLICY_CMPT_TYPE);
-		controller.add(runtimeId, product, IProductCmpt.PROPERTY_RUNTIME_ID);
-        validToField = new GregorianCalendarField(validTo);
+		controller.add(runtimeIdText, product, IProductCmpt.PROPERTY_RUNTIME_ID);
+        validToField = new GregorianCalendarField(validToText);
         controller.add(validToField, product, IProductCmpt.PROPERTY_VALID_TO);
 
         // handle invalid values - the gregorian calendar field transforms all invalid values 
         // to null, so invalid strings like "egon" can not be validated in the normal way by
         // validating the object itself
-        validTo.addModifyListener(new ModifyListener() {
+        validToText.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
-                String value = validTo.getText();
+                String value = validToText.getText();
                 if (value.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
                     return;
                 }
@@ -179,7 +177,7 @@ public class ProductAttributesSection extends IpsSection {
 		uiMasterController.updateUI();
 		
         policyCmptTypeListener = new MyModifyListener();
-        policyCmptType.getTextControl().addModifyListener(policyCmptTypeListener);
+        policyCmptTypeControl.getTextControl().addModifyListener(policyCmptTypeListener);
         
 		// update enablement state of runtime-id-input if preference changed
 		IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(new IPropertyChangeListener() {
@@ -187,8 +185,8 @@ public class ProductAttributesSection extends IpsSection {
 				if (!event.getProperty().equals(IpsPreferences.MODIFY_RUNTIME_ID)) {
 					return;
 				}
-				if (!runtimeId.isDisposed()) {
-				    runtimeId.setEnabled(isEnabled() && IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
+				if (!runtimeIdText.isDisposed()) {
+				    runtimeIdText.setEnabled(isEnabled() && IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
 				    layout();
 				}
                 else {
@@ -208,34 +206,22 @@ public class ProductAttributesSection extends IpsSection {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setEnabled(boolean enabled) {
-		// TODO: pruefen, ob dies die setEditable() Methode ist
-        if (isEnabled() == enabled) {
-			return;
-		}
-		
-		if (isDisposed()) {
-			return;
-		}
-		
-		// to get the disabled look, we have to disable all the input-fields manually :-(
-		for (Iterator iter = editControls.iterator(); iter.hasNext();) {
-			Control element = (Control) iter.next();
-			element.setEnabled(enabled);
-			
-		}
-		
-		policyCmptType.setButtonEnabled(enabled);
-		runtimeId.setEnabled(enabled && IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
-		
-		rootPane.layout(true);
-		rootPane.redraw();
-	}
+    /**
+     * {@inheritDoc}
+     */
+	public void setDataChangeable(boolean changeable) {
+        super.setDataChangeable(changeable);
+        // sort of a hack here 
+        runtimeIdText.setEnabled(changeable && IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
+        if (changeable) {
+            policyCmptTypeControl.setButtonEnabled(true);
+        } else {
+            policyCmptTypeControl.setButtonEnabled(editor.couldDateBeChangedIfProductCmptTypeWasntMissing());
+        }
+    }
 
-	private class ProductCmptTypeField extends IpsObjectField {
+
+    private class ProductCmptTypeField extends IpsObjectField {
 
 		/**
 		 * @param control
@@ -286,11 +272,11 @@ public class ProductAttributesSection extends IpsSection {
 	private class MyModifyListener implements ModifyListener {
 		
 		public void modifyText(ModifyEvent e) {
-            policyCmptType.getTextControl().removeModifyListener(this);
+            policyCmptTypeControl.getTextControl().removeModifyListener(this);
 			uiMasterController.updateUI();
 			uiMasterController.updateModel();
 			editor.checkForInconsistenciesToModel();
-            policyCmptType.getTextControl().addModifyListener(this);
+            policyCmptTypeControl.getTextControl().addModifyListener(this);
 		}
 	}
 

@@ -23,15 +23,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -60,6 +57,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
     // The working date that is used in the editor. This has to be stored in the editor
     // as it can differ from the global working date when the user changes the global working date.
     private GregorianCalendar workingDateUsedInEditor = null;
+    
+    private boolean isHandlingWorkingDateMismatch = false;
     
 	/**
 	 * Creates a new editor for product components.
@@ -168,9 +167,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			}
 			return;
 		}
-        if (!getContainer().isDisposed()){
-            handleWorkingDateMissmatch(getContainer().getShell());
-        }
+        handleWorkingDateMissmatch();
 	}
 
     /**
@@ -197,7 +194,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		if (!generation.equals(getActiveGeneration())) {
 			super.setActiveGeneration(generation);
             if (generationPropertiesPage!=null) {
-                generationPropertiesPage.rebuildAfterActiveGenerationhasChanged();
+                generationPropertiesPage.rebuildInclStructuralChanges();
             }
 		}
         refresh();
@@ -215,7 +212,11 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
             return false;
         }
     }
-
+    
+    boolean couldDateBeChangedIfProductCmptTypeWasntMissing() {
+        return super.computeDataChangeableState();
+    }
+    
     /**
      * Returns <code>true</code> if the active generation is editable, otherwise <code>false</code>.
      */
@@ -233,8 +234,11 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		// if generation is not effective in the current effective date, no editing is possible
 		if (!gen.equals(getGenerationEffectiveOnCurrentEffectiveDate())) {
 			return false;
-		}        
-        if (gen.isValidFromInPast()) {
+		}
+        if (!gen.getIpsSrcFile().isMutable()) {
+            return false;
+        }
+        if (gen.isValidFromInPast()!=null && gen.isValidFromInPast().booleanValue()) {
             IpsPreferences pref = IpsPlugin.getDefault().getIpsPreferences();
             return pref.canEditRecentGeneration();
 		}
@@ -249,103 +253,55 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		setActiveGeneration(generation, false);
 	}
 	
-	private void handleWorkingDateMissmatch(Shell shell) {
+	private void handleWorkingDateMissmatch() {
+        // following if statement is there as closing the dialog triggers a window activated event
+        // and handling in the evant calls this method.  
+        if (isHandlingWorkingDateMismatch) {
+            return;
+        }
+        isHandlingWorkingDateMismatch = true;
 		IProductCmpt cmpt = getProductCmpt();
-		GenerationSelectionDialog dialog = new GenerationSelectionDialog(shell, cmpt);
-		dialog.open();
-		CloseHandler handler = new CloseHandler(dialog);
-		if (!IpsPlugin.getDefault().isTestMode()) {
-			dialog.getShell().addShellListener(handler);
-			dialog.getShell().addDisposeListener(handler);
-		}
-		else {
-			dialog.close();
-			handler.widgetDisposed(null);
-		}
-	}
-	
-	private abstract class AbstractCloseHandler extends ShellAdapter implements DisposeListener {
-		public void widgetDisposed(DisposeEvent e) {
-			finish();
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public void shellClosed(ShellEvent e) {
-			finish();
-		}
-
-		protected abstract void finish();
-	}
-	
-	private class CloseHandler extends AbstractCloseHandler {
-		private GenerationSelectionDialog dialog;
-		
-		public CloseHandler(GenerationSelectionDialog dialog) {
-			this.dialog = dialog;
-		}
-		
-		public void widgetDisposed(DisposeEvent e) {
-			finish();
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public void shellClosed(ShellEvent e) {
-			finish();
-		}
-		
-		protected void finish() {
-			boolean ok = true;
-			int choice = GenerationSelectionDialog.CHOICE_BROWSE;
-			if (IpsPlugin.getDefault().isTestMode()) {
-				choice = IpsPlugin.getDefault().getTestAnswerProvider().getIntAnswer();
-			}
-			else {
-				ok = dialog.getReturnCode() == GenerationSelectionDialog.OK;
-				if (ok) {
-					choice = dialog.getChoice();
-				}
-			}
-			
-			if (!ok) {
-				close(false);
-				return;
-			}
-		
-			IProductCmpt cmpt = getProductCmpt();
-			GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-            workingDateUsedInEditor = workingDate;
-			switch (choice) {
-			case GenerationSelectionDialog.CHOICE_BROWSE:
-				setActiveGeneration(cmpt.findGenerationEffectiveOn(workingDate), false);
-				break;
-
-			case GenerationSelectionDialog.CHOICE_CREATE:
-				setActiveGeneration(cmpt.newGeneration(workingDate), false);
-				break;
-
-			case GenerationSelectionDialog.CHOICE_SWITCH:
-				IProductCmptGeneration generation = dialog.getSelectedGeneration();
-				if (generation == null) {
-					generation = (IProductCmptGeneration) getProductCmpt()
-							.getFirstGeneration();
-				}
-                setActiveGeneration(generation, true);
-				IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
-				prefs.setWorkingDate(generation.getValidFrom());
-				break;
-
-			default:
-				IpsPlugin.log(new IpsStatus("Unknown choice: " //$NON-NLS-1$
-						+ dialog.getChoice()));
-				break;
-			}
-		}
-	}
+		GenerationSelectionDialog dialog = new GenerationSelectionDialog(getContainer().getShell(), cmpt);
+		dialog.open(); // closing the dialog triggers an window activation event
+        isHandlingWorkingDateMismatch = false;
+        int choice = GenerationSelectionDialog.CHOICE_BROWSE;
+        if (IpsPlugin.getDefault().isTestMode()) {
+            choice = IpsPlugin.getDefault().getTestAnswerProvider().getIntAnswer();
+        }
+        else {
+            if (dialog.getReturnCode() == GenerationSelectionDialog.OK) {
+                choice = dialog.getChoice();
+            }
+        }
+        GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
+        workingDateUsedInEditor = workingDate;
+        switch (choice) {
+            case GenerationSelectionDialog.CHOICE_BROWSE:
+                setActiveGeneration(cmpt.findGenerationEffectiveOn(workingDate), false);
+                break;
     
+            case GenerationSelectionDialog.CHOICE_CREATE:
+                setActiveGeneration(cmpt.newGeneration(workingDate), false);
+                break;
+    
+            case GenerationSelectionDialog.CHOICE_SWITCH:
+                IProductCmptGeneration generation = dialog.getSelectedGeneration();
+                if (generation == null) {
+                    generation = (IProductCmptGeneration) getProductCmpt()
+                            .getFirstGeneration();
+                }
+                setActiveGeneration(generation, true);
+                IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
+                prefs.setWorkingDate(generation.getValidFrom());
+                break;
+    
+            default:
+                IpsPlugin.log(new IpsStatus("Unknown choice: " //$NON-NLS-1$
+                        + dialog.getChoice()));
+                break;
+        }
+	}
+	
     /**
      * {@inheritDoc}
      * @throws CoreException 
@@ -364,13 +320,32 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
         
         return new ProductCmptDeltaDialog(generations, deltas, getSite().getShell());
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void contentsChanged(final ContentChangeEvent event) {
+        if (event.getIpsSrcFile().equals(getIpsSrcFile())) {
+            if (event.getEventType()==ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
+                this.workingDateUsedInEditor = null;
+                this.activeGenerationManuallySet = false;
+            }
+        }
+        super.contentsChanged(event);
+    }
 
     /**
      * {@inheritDoc}
      */
-    protected void refreshAfterModelDifferencesAreFixed() {
+    protected void refreshInclStructuralChanges() {
+        try {
+            getIpsSrcFile().getIpsObject();
+            updateChosenActiveGeneration();
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
         if (generationPropertiesPage!=null) {
-            generationPropertiesPage.rebuildAfterActiveGenerationhasChanged();
+            generationPropertiesPage.rebuildInclStructuralChanges();
         }
     }
 

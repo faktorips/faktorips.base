@@ -102,7 +102,10 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     /**
      * {@inheritDoc}
      */
-    public boolean isValidFromInPast() {
+    public Boolean isValidFromInPast() {
+        if (validFrom==null) {
+            return null;
+        }
         GregorianCalendar now = new GregorianCalendar();        
         // because now contains the current time incliding hour, minute and second, but
         // validFrom does not, we have to set the fields for hour, minute, second and millisecond
@@ -113,7 +116,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         now.set(GregorianCalendar.MINUTE, 0);
         now.set(GregorianCalendar.SECOND, 0);
         now.set(GregorianCalendar.MILLISECOND, 0);
-        return validFrom.before(now);
+        return Boolean.valueOf(validFrom.before(now));
     }
 
     /**

@@ -50,7 +50,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
     
     /**
      * Cache the choice (view, set working date or create new generation) because
-     * if the choice is needed, this dialog is allready disposed and the information 
+     * if the choice is needed, this dialog is already disposed and the information 
      * about the choice can not be requested from the buttons, because these buttons 
      * are disposed, too.
      */
@@ -96,7 +96,6 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 		this.cmpt = cmpt;
 		prefs = IpsPlugin.getDefault().getIpsPreferences();
 		generationConceptName = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
-		setBlockOnOpen(false);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
 
@@ -109,10 +108,12 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 		Composite selectPane = new Composite(workArea, SWT.None);
 		selectPane.setLayout(new GridLayout(2, false));
         
-        if (cmpt.getValidTo() == null || cmpt.getValidTo().after(prefs.getWorkingDate())) {            
+        if (cmpt.getIpsSrcFile().isMutable()
+                && (cmpt.getValidTo() == null || cmpt.getValidTo().after(prefs.getWorkingDate()))) {
             createButton = new Button(selectPane, SWT.RADIO);
             Label l1 = new Label(selectPane, SWT.NONE);
-            l1.setText(NLS.bind(Messages.GenerationSelectionDialog_labelCreate, generationConceptName, prefs.getFormattedWorkingDate()));
+            l1.setText(NLS.bind(Messages.GenerationSelectionDialog_labelCreate, generationConceptName, prefs
+                    .getFormattedWorkingDate()));
             l1.addMouseListener(new ActivateButtonOnClickListener(createButton));
             choices.put(createButton, new Integer(CHOICE_CREATE));
         }

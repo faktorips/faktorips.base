@@ -139,7 +139,8 @@ public class IpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile {
      * {@inheritDoc}
      */
 	public boolean isMutable() {
-		return true;
+		IFile file = (IFile)getEnclosingResource();
+        return file.exists() && !file.isReadOnly();
 	}
 
     /**

@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureExplorer.GenerationRootNode;
 
 /**
- * Provides the elements of the FaktorIps-Model for the department.
+ * Provides the elements of product structure
  * 
  * @author Thorsten Guenther
  */
