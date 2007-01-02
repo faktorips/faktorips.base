@@ -177,10 +177,10 @@ public class ParametersEditControl extends Composite implements  IDataChangeable
 		int[] indc= getTable().getSelectionIndices();
 		if (indc.length == 0)
 			return false;
-		for (int i= 0; i < indc.length; i++) {
-			if (indc[i] == 0)
-				return false;
-		}
+		for (int i = 0; i < indc.length; i++) {
+            if (up && indc[i] == 0 || !up && indc[i] == getTable().getItems().length - 1)
+                return false;
+        }
 		return true;
 	}
 	
