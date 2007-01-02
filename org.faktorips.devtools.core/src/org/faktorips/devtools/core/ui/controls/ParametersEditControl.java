@@ -365,6 +365,14 @@ public class ParametersEditControl extends Composite implements  IDataChangeable
 	}
 
 	private void updateButtonsEnabledState() {
+        if (!isDataChangeable()){
+            uiToolkit.setDataChangeable(fUpButton, false);
+            uiToolkit.setDataChangeable(fDownButton, false);
+            uiToolkit.setDataChangeable(fAddButton, false);
+            uiToolkit.setDataChangeable(fRemoveButton, false);
+            return;
+        }
+        
 	    if (fUpButton!=null) {
 			fUpButton.setEnabled(canMove(true));
 	    }
@@ -706,10 +714,7 @@ public class ParametersEditControl extends Composite implements  IDataChangeable
     public void setDataChangeable(boolean changeable) {
         this.dataChangeable = changeable;
 
-        uiToolkit.setDataChangeable(fUpButton, changeable);
-        uiToolkit.setDataChangeable(fDownButton, changeable);
-        uiToolkit.setDataChangeable(fAddButton, changeable);
-        uiToolkit.setDataChangeable(fRemoveButton, changeable);
+        updateButtonsEnabledState();        
     }
 
     /**
