@@ -138,6 +138,14 @@ public class MethodsSection extends SimpleIpsPartsSection {
             return getPcType().moveMethods(indexes, up);
         }
         
+        /**
+         * {@inheritDoc}
+         */
+        public void setDataChangeable(boolean flag) {
+            super.setDataChangeable(flag);
+            overrideButton.setEnabled(flag);
+        }
+
         private class MethodContentProvider implements IStructuredContentProvider {
     		public Object[] getElements(Object inputElement) {
     			return getPcType().getMethods();
