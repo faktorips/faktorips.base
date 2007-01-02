@@ -66,7 +66,7 @@ public class SelectionProviderDispatcher implements ISelectionProvider, ISelecti
     }
 
     private ISelectionProviderActivation determineCurrentActivation(){
-        if(currentActivation != null && !currentActivation.isDisposed()) {
+        if(currentActivation != null && !currentActivation.isDisposed() && currentActivation.isActivated()) {
             return currentActivation;
         }
         currentActivation = null;
