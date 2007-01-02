@@ -209,16 +209,16 @@ public class ParametersEditControl extends Composite implements  IDataChangeable
 		
 		tc= new TableColumn(table, SWT.NONE, TYPE_PROP);
 		tc.setResizable(true);
-		tc.setText("Datatype"); //$NON-NLS-1$
+		tc.setText(Messages.ParametersEditControl_columnLabelDatatype);
 		
 		tc= new TableColumn(table, SWT.NONE, NEWNAME_PROP);
 		tc.setResizable(true);
-		tc.setText("Name"); //$NON-NLS-1$
+		tc.setText(Messages.ParametersEditControl_columnLabelName);
 
 		if (fCanAddParameters && defaultValueForNewParameters){
 			tc= new TableColumn(table, SWT.NONE, DEFAULT_PROP);
 			tc.setResizable(true);
-			tc.setText("Default Value"); //$NON-NLS-1$
+			tc.setText(Messages.ParametersEditControl_columnLabelDefaultValue);
 		}	
 		
 		GridData gd= new GridData(GridData.FILL_BOTH);
@@ -348,8 +348,8 @@ public class ParametersEditControl extends Composite implements  IDataChangeable
 			addSpacer(buttonComposite);
 
 		if (fCanMoveParameters) {
-			fUpButton= createButton(buttonComposite, "Move up", true); //$NON-NLS-1$
-			fDownButton= createButton(buttonComposite, "Move down", false); //$NON-NLS-1$
+			fUpButton= createButton(buttonComposite, Messages.ParametersEditControl_buttonLabelMoveUp, true);
+			fDownButton= createButton(buttonComposite, Messages.ParametersEditControl_buttonLabelMoveDown, false);
 		}
 		updateButtonsEnabledState();
 		if (buttonComposite.getChildren().length==0) {
@@ -409,7 +409,7 @@ public class ParametersEditControl extends Composite implements  IDataChangeable
 	
 	private Button createAddButton(Composite buttonComposite) {
 		Button button= new Button(buttonComposite, SWT.PUSH);
-		button.setText("Add"); //$NON-NLS-1$
+		button.setText(Messages.ParametersEditControl_buttonLabelAdd);
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -427,7 +427,7 @@ public class ParametersEditControl extends Composite implements  IDataChangeable
 
 	private Button createRemoveButton(Composite buttonComposite) {
 		final Button button= new Button(buttonComposite, SWT.PUSH);
-		button.setText("Remove"); //$NON-NLS-1$
+		button.setText(Messages.ParametersEditControl_buttonLabelRemove);
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {

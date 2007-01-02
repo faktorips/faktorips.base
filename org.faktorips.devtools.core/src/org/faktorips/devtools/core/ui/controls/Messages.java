@@ -34,7 +34,21 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String RangeEditControl_titleRange;
+	public static String ParametersEditControl_buttonLabelAdd;
+
+    public static String ParametersEditControl_buttonLabelMoveDown;
+
+    public static String ParametersEditControl_buttonLabelMoveUp;
+
+    public static String ParametersEditControl_buttonLabelRemove;
+
+    public static String ParametersEditControl_columnLabelDatatype;
+
+    public static String ParametersEditControl_columnLabelDefaultValue;
+
+    public static String ParametersEditControl_columnLabelName;
+
+    public static String RangeEditControl_titleRange;
 
 	public static String RangeEditControl_labelMinimum;
 
