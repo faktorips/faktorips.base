@@ -34,31 +34,27 @@ public class TestCaseEditor extends IpsObjectEditor {
     /**
      * (@inheritDoc)
      */
-    protected void addPages() {
-        try {
-            if (getTestCase().findTestCaseType() == null && Boolean.TRUE.equals(isDataChangeable())) {
-                String msg = NLS.bind(Messages.TestCaseEditor_Information_TemplateNotFound, getTestCase()
-                        .getTestCaseType());
-                SetTemplateDialog dialog = new SetTemplateDialog(getTestCase(), getSite().getShell(), msg);
-                int button = dialog.open();
-                if (button != SetTemplateDialog.OK) {
-                    addPage(new FormPage(this, "Empty", "")); //$NON-NLS-1$ //$NON-NLS-2$
-                    this.close(false);
-                    return;
-                }
+    protected void addPagesForParsableSrcFile() throws CoreException {
+        if (getTestCase().findTestCaseType() == null && Boolean.TRUE.equals(isDataChangeable())) {
+            String msg = NLS.bind(Messages.TestCaseEditor_Information_TemplateNotFound, getTestCase()
+                    .getTestCaseType());
+            SetTemplateDialog dialog = new SetTemplateDialog(getTestCase(), getSite().getShell(), msg);
+            int button = dialog.open();
+            if (button != SetTemplateDialog.OK) {
+                addPage(new FormPage(this, "Empty", "")); //$NON-NLS-1$ //$NON-NLS-2$
+                this.close(false);
+                return;
             }
-            TestCaseContentProvider contentProviderInput = new TestCaseContentProvider(TestCaseContentProvider.COMBINED,
-                    getTestCase());
-
-            editorPage = new TestCaseEditorPage(this, Messages.TestCaseEditor_Combined_Title,
-                    contentProviderInput, Messages.TestCaseEditor_Combined_SectionTitle,
-                    Messages.TestCaseEditor_Combined_Description);
-            
-            addPage(editorPage);
-            addPage(new DescriptionPage(this));
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
         }
+        TestCaseContentProvider contentProviderInput = new TestCaseContentProvider(TestCaseContentProvider.COMBINED,
+                getTestCase());
+
+        editorPage = new TestCaseEditorPage(this, Messages.TestCaseEditor_Combined_Title,
+                contentProviderInput, Messages.TestCaseEditor_Combined_SectionTitle,
+                Messages.TestCaseEditor_Combined_Description);
+        
+        addPage(editorPage);
+        addPage(new DescriptionPage(this));
     }
 
     /**

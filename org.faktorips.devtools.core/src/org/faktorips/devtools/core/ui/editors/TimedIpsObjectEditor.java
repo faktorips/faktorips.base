@@ -40,14 +40,6 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
     }
     
     /**
-     * {@inheritDoc}
-     */
-    protected void addPages() {
-        // setActiveGeneration(null);
-        super.addPages();
-    }
-
-    /**
      * Returns the generation currently selected to display and edit.
      */
     public IIpsObjectGeneration getActiveGeneration() {

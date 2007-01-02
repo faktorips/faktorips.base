@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.ui.editors.tablecontents;
 
-import org.faktorips.devtools.core.IpsPlugin;
+import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 
@@ -41,12 +41,8 @@ public class TableContentsEditor extends TimedIpsObjectEditor {
     /** 
      * {@inheritDoc}
      */
-    protected void addPages() {
-        try {
-            addPage(new ContentPage(this));
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+    protected void addPagesForParsableSrcFile() throws PartInitException {
+        addPage(new ContentPage(this));
     }
 
     /** 

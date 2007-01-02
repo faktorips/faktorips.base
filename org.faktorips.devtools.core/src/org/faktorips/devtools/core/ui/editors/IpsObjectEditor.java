@@ -39,7 +39,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
-import org.faktorips.codegen.ClassNameUtil;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.IpsSrcFileImmutable;
@@ -247,7 +246,7 @@ public abstract class IpsObjectEditor extends FormEditor
     /**
      * {@inheritDoc}
      */
-    protected void addPages() {
+    final protected void addPages() {
         if (TRACE) {
             logMethodStarted("addPages");
         }        
@@ -283,9 +282,7 @@ public abstract class IpsObjectEditor extends FormEditor
         }
     }
     
-    protected void addPagesForParsableSrcFile() throws PartInitException, CoreException {
-        
-    }
+    protected abstract void addPagesForParsableSrcFile() throws PartInitException, CoreException;
     
     protected void updatePageStructure() {
         if (TRACE) {

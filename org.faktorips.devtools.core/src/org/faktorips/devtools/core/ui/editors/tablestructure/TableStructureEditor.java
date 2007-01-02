@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
-import org.faktorips.devtools.core.IpsPlugin;
+import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.editors.DescriptionPage;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
@@ -42,13 +42,9 @@ public class TableStructureEditor extends IpsObjectEditor {
     /** 
      * {@inheritDoc}
      */
-    protected void addPages() {
-        try {
-            addPage(new StructurePage(this));
-            addPage(new DescriptionPage(this));
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+    protected void addPagesForParsableSrcFile() throws PartInitException {
+        addPage(new StructurePage(this));
+        addPage(new DescriptionPage(this));
     }
 
     /** 

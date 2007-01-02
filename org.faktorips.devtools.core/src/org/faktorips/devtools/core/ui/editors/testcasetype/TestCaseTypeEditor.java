@@ -2,6 +2,7 @@ package org.faktorips.devtools.core.ui.editors.testcasetype;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.ui.editors.DescriptionPage;
@@ -30,16 +31,12 @@ public class TestCaseTypeEditor extends IpsObjectEditor {
     /**
      * (@inheritDoc)
      */
-    protected void addPages() {
-        try {
-            editorPage = new TestCaseTypeEditorPage(this, Messages.TestCaseTypeEditor_PageName, Messages.TestCaseTypeEditor_SectionTitle_Structure,
-                    Messages.TestCaseTypeEditor_SectionTitle_Details);
-            
-            addPage(editorPage);
-            addPage(new DescriptionPage(this));
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+    protected void addPagesForParsableSrcFile() throws PartInitException {
+        editorPage = new TestCaseTypeEditorPage(this, Messages.TestCaseTypeEditor_PageName, Messages.TestCaseTypeEditor_SectionTitle_Structure,
+                Messages.TestCaseTypeEditor_SectionTitle_Details);
+        
+        addPage(editorPage);
+        addPage(new DescriptionPage(this));
     }
 
     /**
