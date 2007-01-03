@@ -224,7 +224,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         for (int i = 0; i < projects.length; i++) {
             IIpsPackageFragmentRoot[] roots = projects[i].getIpsPackageFragmentRoots();
             for (int j = 0; j < roots.length; j++) {
-                if (tocPath.equals(getRepPckNameFromPckFrgmtRoot(roots[i]))){
+                if (tocPath.equals(getRepPckNameFromPckFrgmtRoot(roots[j]))){
                     return projects[i];
                 }
             }

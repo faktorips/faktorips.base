@@ -51,9 +51,9 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.PdObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.PdPackageSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.runtime.test.AbstractIpsTestRunner;
 import org.faktorips.util.ArgumentCheck;
@@ -85,12 +85,16 @@ public class TestSelectionComposite extends Composite  {
     
     private class TestSuiteLabelProvider extends DefaultLabelProvider{
         public String getText(Object element) {
-            String text = super.getText(element);
+            String text = ""; //$NON-NLS-1$
             String pckFrgmtRootName = ""; //$NON-NLS-1$
             if (element instanceof IIpsObject) {
+                text = ((IIpsObject)element).getQualifiedName();
                 pckFrgmtRootName = ((IIpsObject)element).getIpsPackageFragment().getRoot().getName();
-            } else if (element instanceof IIpsPackageFragment){
-                pckFrgmtRootName = ((IIpsPackageFragment)element).getRoot().getName();
+            } else {
+                text = super.getText(element);
+                if (element instanceof IIpsPackageFragment){
+                    pckFrgmtRootName = ((IIpsPackageFragment)element).getRoot().getName();
+                }
             }
             return text + (pckFrgmtRootName.length()>0?" (" + pckFrgmtRootName + ")":""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
@@ -259,18 +263,26 @@ public class TestSelectionComposite extends Composite  {
     }
 
     private void newTest(Composite buttonComposite) {
-        OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(buttonComposite.getShell(), Messages.TestSelectionComposite_dialogTitleSelectTestCase, Messages.TestSelectionComposite_dialogTextSelectTestCase);
-        dialog.setMultipleSelection(true);
+        PdObjectSelectionDialog dialog = new PdObjectSelectionDialog(buttonComposite.getShell(),
+                Messages.TestSelectionComposite_dialogTitleSelectTestCase,
+                Messages.TestSelectionComposite_dialogTextSelectTestCase);
+        dialog.setMultipleSelection(false);
         try {
             dialog.setElements(getAllIpsTestObjects());
-            dialog.setTypes(new IpsObjectType[]{IpsObjectType.TEST_CASE, IpsObjectType.PRODUCT_CMPT});
             dialog.setFilter(""); //$NON-NLS-1$
             if (dialog.open() == Window.OK) {
                 Object[] result = dialog.getResult();
+                Object lastAdded = null;
                 for (int i = 0; i < result.length; i++) {
-                    content.add(result[i]);
+                    if (!content.contains(result[i])){
+                        content.add(result[i]);
+                    }
+                    lastAdded = result[i];
                 }
                 viewer.refresh();
+                if (lastAdded != null){
+                    viewer.setSelection(new StructuredSelection(lastAdded));
+                }
                 notifyListener();
             }
         }
@@ -359,10 +371,12 @@ public class TestSelectionComposite extends Composite  {
             }
             IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
             for (int j = 0; j < roots.length; j++) {
-                IIpsPackageFragment frgmt = roots[j].getIpsPackageFragment(qualifiedName);
-                if (frgmt!=null){
-                    content.add(frgmt);
-                    continue;
+                IIpsPackageFragment[] frgmts = roots[j].getIpsPackageFragments();
+                for (int k = 0; k < frgmts.length; k++) {
+                    if (frgmts[k].getName().equals(qualifiedName)){
+                        content.add(frgmts[k]);
+                        continue;
+                    }
                 }
             }
         }
