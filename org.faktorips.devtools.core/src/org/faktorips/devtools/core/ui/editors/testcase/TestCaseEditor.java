@@ -4,7 +4,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.ui.forms.editor.FormPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.editors.DescriptionPage;
@@ -35,16 +34,11 @@ public class TestCaseEditor extends IpsObjectEditor {
      * (@inheritDoc)
      */
     protected void addPagesForParsableSrcFile() throws CoreException {
-        if (getTestCase().findTestCaseType() == null && Boolean.TRUE.equals(isDataChangeable())) {
+        if (getTestCase().findTestCaseType() == null && computeDataChangeableState()) {
             String msg = NLS.bind(Messages.TestCaseEditor_Information_TemplateNotFound, getTestCase()
                     .getTestCaseType());
             SetTemplateDialog dialog = new SetTemplateDialog(getTestCase(), getSite().getShell(), msg);
-            int button = dialog.open();
-            if (button != SetTemplateDialog.OK) {
-                addPage(new FormPage(this, "Empty", "")); //$NON-NLS-1$ //$NON-NLS-2$
-                this.close(false);
-                return;
-            }
+            dialog.open();
         }
         TestCaseContentProvider contentProviderInput = new TestCaseContentProvider(TestCaseContentProvider.COMBINED,
                 getTestCase());
