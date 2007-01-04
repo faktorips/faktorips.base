@@ -50,6 +50,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -473,15 +474,24 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
         
         protected void createReorgActions(IMenuManager manager, Object selected) {
             manager.add(copy);
+            manager.add(paste);
+            manager.add(delete);
+
+            copy.setEnabled(true);
             paste.setEnabled(true);
             delete.setEnabled(true);
+
+            if (selected instanceof IIpsObjectPart){
+                copy.setEnabled(false);
+                paste.setEnabled(false);
+                delete.setEnabled(false);
+                return;
+            }
+            
             if (isRootArchive(selected)) {
                 paste.setEnabled(false);
                 delete.setEnabled(false);
             }
-            manager.add(paste);
-            manager.add(delete);
-
         }
 
         private IIpsPackageFragmentRoot getPackageFragmentRoot(Object object) {
