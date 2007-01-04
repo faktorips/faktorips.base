@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartState;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -505,6 +506,19 @@ public class IpsPasteAction extends IpsAction {
 
             return null;
         }
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean computeEnabledProperty(IStructuredSelection selection) {
+        // disable action if the selection contains at least one ips object part
+        Object[] objects= selection.toArray();
+        for (int i = 0; i < objects.length; i++) {
+            if(objects[i] instanceof IIpsObjectPart){
+                return false;
+            }
+        }
+        return true;
     }
 }
