@@ -145,26 +145,16 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                 .getIpsPackageFragment().getRoot(), inputRoot);
         
         // set target default
-        // use the source package as target if the wizard should create a new version of the product
-        if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
-            // the new version copy, copies the new product version in the same folder (default)
-            IIpsPackageFragment target = structure.getRoot().getProductCmpt().getIpsPackageFragment();
-            if (target != null) {
-                targetInput.setPdPackageFragment(target);
-            }
+        int ignore = getSegmentsToIgnore((IProductCmptReference[])structure.toArray(true));
+        IIpsPackageFragment pack = structure.getRoot().getProductCmpt().getIpsPackageFragment();
+        int segments = pack.getRelativePath().segmentCount();
+        if (segments - ignore >= 0) {
+            IPath path = pack.getRelativePath().removeLastSegments(segments - ignore);
+            pack = pack.getRoot().getIpsPackageFragment(path.toString().replace('/', '.'));
+            targetInput.setPdPackageFragment(pack);
         }
         
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
-            int ignore = getSegmentsToIgnore((IProductCmptReference[])structure.toArray(true));
-            IIpsPackageFragment pack = structure.getRoot().getProductCmpt().getIpsPackageFragment();
-            int segments = pack.getRelativePath().segmentCount();
-
-            if (segments - ignore >= 0) {
-                IPath path = pack.getRelativePath().removeLastSegments(segments - ignore);
-                pack = pack.getRoot().getIpsPackageFragment(path.toString().replace('/', '.'));
-                targetInput.setPdPackageFragment(pack);
-            }
-
             toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelSearchPattern);
             searchInput = toolkit.createText(inputRoot);
 
