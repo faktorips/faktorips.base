@@ -1325,7 +1325,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 body.appendClassName(ObjectProperty.class);
                 body.append("[]{");
                 for (int j = 0; j < validatedAttributes.length; j++) {
-                    IAttribute attr = getPcType().getSupertypeHierarchy().findAttribute(getPcType(), validatedAttributes[j]);
+                    IAttribute attr = getPcType().findAttributeInSupertypeHierarchy(validatedAttributes[j]);
                     String propertyConstName = interfaceBuilder.getPropertyName(attr, attr.findDatatype());
                     body.append(" new ");
                     body.appendClassName(ObjectProperty.class);

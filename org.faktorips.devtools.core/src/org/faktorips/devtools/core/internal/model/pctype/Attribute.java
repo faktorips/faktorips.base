@@ -117,19 +117,18 @@ public class Attribute extends IpsObjectPart implements IAttribute {
     }
 
     /**
-     * Returns the first attribute found with the same name in the supertypes hierarchy or
-     * <code>null</code> if no such attribute exists.
-     * 
-     * @throws CoreException
-     * 
-     * @throws CoreException if an error occurs while searching the attribute.
+     * {@inheritDoc}
      */
-    private IAttribute findSupertypeAttribute() throws CoreException {
+    public IAttribute findSupertypeAttribute() throws CoreException {
         IPolicyCmptType supertype = getPolicyCmptType().findSupertype();
         if (supertype == null) {
             return null;
         }
-        return supertype.findAttributeInSupertypeHierarchy(name);
+        IAttribute a = supertype.findAttributeInSupertypeHierarchy(name);
+        if (this==a) {
+            return null; // can happen if the type hierarchy contains a cycle
+        }
+        return a;
     }
 
     /**

@@ -305,4 +305,13 @@ public interface IAttribute extends IMember, IValueDatatypeProvider {
      */
     public void setOverwrites(boolean overwrites);
     
+    /**
+     * Returns the first attribute found with the same name in the supertypes hierarchy or
+     * <code>null</code> if no such attribute exists.
+     * 
+     * @throws CoreException if an error occurs while searching the attribute.
+     */
+    public IAttribute findSupertypeAttribute() throws CoreException;
+
+    
 }

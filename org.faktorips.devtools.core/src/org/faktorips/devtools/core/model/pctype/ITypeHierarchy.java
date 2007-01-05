@@ -20,7 +20,8 @@ package org.faktorips.devtools.core.model.pctype;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 
 /**
- *
+ * Represents the hierarchy formed by the subtype/supertype relationship
+ * between types. 
  */
 public interface ITypeHierarchy {
     
@@ -28,6 +29,11 @@ public interface ITypeHierarchy {
      * Returns the type this hierarchy was computed for.
      */
     public IPolicyCmptType getType();
+    
+    /**
+     * Returns <code>true</code> if the type's hierarchy contains a cycle, otherwise <code>false</code>. 
+     */
+    public boolean containsCycle();
     
     /**
      * Returns the supertype for the given type or null if the type either has
@@ -85,6 +91,12 @@ public interface ITypeHierarchy {
      * or any of it's supertyes found in the hierarchy.
      */
     public IRelation[] getAllRelations(IPolicyCmptType type);
+
+    /**
+     * Returns all rules of the given type either defined in the type itself
+     * or any of it's supertyes found in the hierarchy.
+     */
+    public IValidationRule[] getAllRules(IPolicyCmptType type);
 
     /**
      * Returns all table structure usages of the given type either defined in the type itself

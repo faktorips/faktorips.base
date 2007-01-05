@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.Described;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -152,17 +153,17 @@ public class RulesSection extends SimpleIpsPartsSection {
     	
     	private class ContentProvider implements IStructuredContentProvider {
     		public Object[] getElements(Object inputElement) {
-    			ArrayList result = new ArrayList();
     			try {
 					IPolicyCmptType type = page.getProductCmpt().findPolicyCmptType();
-					while (type != null) {
-						result.addAll(Arrays.asList(type.getRules()));
-						type = type.findSupertype();
-					}
+                    if (type==null) {
+                        return new Object[0];
+                    }
+                    ITypeHierarchy hierarchy = type.getSupertypeHierarchy();
+                    return hierarchy.getAllRules(type);
 				} catch (CoreException e) {
 					IpsPlugin.log(e);
+                    return new Object[0];
 				}
-    			return (IValidationRule[])result.toArray(new IValidationRule[result.size()]);
     		}
     		
     		public void dispose() {
@@ -176,5 +177,5 @@ public class RulesSection extends SimpleIpsPartsSection {
     	}
 
     }
-
+    
 }

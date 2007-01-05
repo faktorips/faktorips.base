@@ -74,8 +74,9 @@ public class RelationsContentProvider implements ITreeContentProvider {
     }
 
     private String[] getRelationTypes(IProductCmptType pcType) throws CoreException {
+        Set typesHandled = new HashSet();
         List result = new ArrayList();
-        while (pcType != null) {
+        while (pcType != null && !typesHandled.contains(pcType)) {
             IProductCmptTypeRelation[] relations = pcType.getRelations();
             int index = 0;
             for (int i = 0; i < relations.length; i++) {
@@ -87,6 +88,7 @@ public class RelationsContentProvider implements ITreeContentProvider {
                     index++;
                 }
             }
+            typesHandled.add(pcType);
             pcType = pcType.findSupertype();
         }
         return (String[])result.toArray(new String[result.size()]);

@@ -27,7 +27,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -568,6 +567,14 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         rules.toArray(r);
         return r;
     }
+    
+    /*
+     * Returns the list holding the rules as a reference. Package private for use in
+     * TypeHierarchy.
+     */
+    List getRulesList() {
+        return rules;
+    }
 
     /**
      * {@inheritDoc}
@@ -720,21 +727,12 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
         TypeHierarchy supertypeHierarchy = null;
-        try {
-            supertypeHierarchy = TypeHierarchy.getSupertypeHierarchy(this);
-        } catch (CycleException e) {
-            StringBuffer msg = new StringBuffer("Cycle detected in type hierarchy: "); //$NON-NLS-1$
-            IIpsElement[] path = e.getCyclePath();
-            for (int i = 0; i < path.length; i++) {
-                msg.append(path[i].getName());
-                if (i + 1 < path.length) {
-                    msg.append(" --> "); //$NON-NLS-1$
-                }
-            }
+        supertypeHierarchy = TypeHierarchy.getSupertypeHierarchy(this);
+        if (supertypeHierarchy.containsCycle()) {
+            String msg = "Cycle detected in type hierarchy."; //$NON-NLS-1$
             list.add(new Message(MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg.toString(), Message.ERROR, this, IPolicyCmptType.PROPERTY_SUPERTYPE));
             return;
         }
-
         validateSupertypeHierarchy(supertypeHierarchy, list);
 
         IPolicyCmptType supertypeObj = null;
@@ -936,24 +934,14 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      * {@inheritDoc}
      */
     public ITypeHierarchy getSupertypeHierarchy() throws CoreException {
-        try {
-            return TypeHierarchy.getSupertypeHierarchy(this);
-        } catch (CycleException e) {
-            IpsStatus status = new IpsStatus("Cycle in Type Hierarchy", e); //$NON-NLS-1$
-            throw new CoreException(status);
-        }
+        return TypeHierarchy.getSupertypeHierarchy(this);
     }
 
     /**
      * {@inheritDoc}
      */
     public ITypeHierarchy getSubtypeHierarchy() throws CoreException {
-        try {
-            return TypeHierarchy.getSubtypeHierarchy(this);
-        } catch (CycleException e) {
-            IpsStatus status = new IpsStatus("Cycle in Type Hierarchy", e); //$NON-NLS-1$
-            throw new CoreException(status);
-        }
+        return TypeHierarchy.getSubtypeHierarchy(this);
     }
 
     /**

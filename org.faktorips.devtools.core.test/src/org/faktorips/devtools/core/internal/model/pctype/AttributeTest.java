@@ -65,6 +65,28 @@ public class AttributeTest extends AbstractIpsPluginTest {
         attribute = pcType.newAttribute();
     }
     
+    public void testFindSupertypeAttribute() throws CoreException {
+        attribute.setName("a");
+        IPolicyCmptType supertype = newPolicyCmptType(project, "Supertype");
+        IPolicyCmptType supersupertype = newPolicyCmptType(project, "SuperSupertype");
+        pcType.setSupertype(supertype.getQualifiedName());
+        supertype.setSupertype(supersupertype.getQualifiedName());
+        
+        assertNull(attribute.findSupertypeAttribute());
+        
+        IAttribute aInSupertype = supersupertype.newAttribute();
+        aInSupertype.setName("a");
+        
+        assertEquals(aInSupertype, attribute.findSupertypeAttribute());
+        
+        // cycle in type hierarchy
+        supersupertype.setSupertype(pcType.getQualifiedName());
+        assertEquals(aInSupertype, attribute.findSupertypeAttribute());
+
+        aInSupertype.delete();
+        assertNull(attribute.findSupertypeAttribute()); // this should not return a itself!
+    }
+    
     public void testGetConfigElementType() {
         attribute.setProductRelevant(false);
         assertNull(attribute.getConfigElementType());
