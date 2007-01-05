@@ -255,5 +255,11 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
         msgList = msgList.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS);
         assertFalse(msgList.isEmpty());
         
+        // test correct index (column) of message
+        key.setKeyItems(new String[] {"c0", range.getName(), "c1"});
+        msgList = key.validate();
+        assertFalse(msgList.isEmpty());
+        msgList = msgList.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS, 1);
+        assertFalse(msgList.isEmpty());
     }
 }

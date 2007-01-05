@@ -209,7 +209,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
 
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 MessageList list = key.validate();
-                return list.getMessagesFor(element);
+                return list.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS, key.getIndexForKeyItemName((String)element));
             }
 		    
 		};
