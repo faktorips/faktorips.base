@@ -153,17 +153,14 @@ public class TypeHierarchy implements ITypeHierarchy {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.ITypeHierarchy#getType()
+     * {@inheritDoc}
      */
     public IPolicyCmptType getType() {
         return pcType;
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.pctype.ITypeHierarchy#getSupertype(org.faktorips.devtools.core.model.pctype.IPolicyCmptType)
+     * {@inheritDoc}
      */
     public IPolicyCmptType getSupertype(IPolicyCmptType type) {
         Node node = (Node)nodes.get(type);
@@ -184,8 +181,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.ITypeHierarchy#getAllSupertypesInclSelf(org.faktorips.devtools.core.model.pctype.IPolicyCmptType)
+     * {@inheritDoc}
      */
     public IPolicyCmptType[] getAllSupertypesInclSelf(IPolicyCmptType type) {
         List result = new ArrayList();
@@ -203,8 +199,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.ITypeHierarchy#isSupertypeOf(org.faktorips.devtools.core.model.pctype.IPolicyCmptType, org.faktorips.devtools.core.model.pctype.IPolicyCmptType)
+     * {@inheritDoc}
      */
     public boolean isSupertypeOf(IPolicyCmptType candidate, IPolicyCmptType subtype) {
         IPolicyCmptType currSupertype = getSupertype(subtype);
@@ -218,9 +213,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.pctype.ITypeHierarchy#isSubtypeOf(org.faktorips.devtools.core.model.pctype.IPolicyCmptType, org.faktorips.devtools.core.model.pctype.IPolicyCmptType)
+     * {@inheritDoc}
      */
     public boolean isSubtypeOf(IPolicyCmptType candidate, IPolicyCmptType supertype) {
         IPolicyCmptType[] subtypes = getSubtypes(supertype);
@@ -280,8 +273,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.ITypeHierarchy#getAllAttributes(org.faktorips.devtools.core.model.pctype.IPolicyCmptType)
+     * {@inheritDoc}
      */
     public IAttribute[] getAllAttributes(IPolicyCmptType type) {
         List attributes = new ArrayList();
@@ -315,11 +307,9 @@ public class TypeHierarchy implements ITypeHierarchy {
         return (IAttribute[])attributes.toArray(new IAttribute[attributes.size()]);
 	}
 	
-		/**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.pctype.ITypeHierarchy#getAllMethods(org.faktorips.devtools.core.model.pctype.IPolicyCmptType)
-     */
+	/**
+     * {@inheritDoc}
+	 */
     public IMethod[] getAllMethods(IPolicyCmptType type) {
         List methods = new ArrayList();
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
@@ -342,9 +332,8 @@ public class TypeHierarchy implements ITypeHierarchy {
 	}
 
 	/** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.ITypeHierarchy#findAttribute(org.faktorips.devtools.core.model.pctype.IPolicyCmptType, java.lang.String)
-     */
+     * {@inheritDoc}
+	 */
     public IAttribute findAttribute(IPolicyCmptType type, String attributeName) {
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
         for (int i=0; i<types.length; i++) {
@@ -357,9 +346,8 @@ public class TypeHierarchy implements ITypeHierarchy {
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.ITypeHierarchy#findRelation(org.faktorips.devtools.core.model.pctype.IPolicyCmptType, java.lang.String)
-     */ 
+     * {@inheritDoc}
+     */
     public IRelation findRelation(IPolicyCmptType type, String targetRole) {
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
         for (int i=0; i<types.length; i++) {
