@@ -39,7 +39,7 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Runs the given runnable/action as an atomic workspace operation like the <code>run</code>
      * method in IWorkspace. All ips source file change events are queued until the action is
-     * finished and then broadcastet. If an ips source file is change more than one, only one change
+     * finished and then broadcasted. If an ips source file is changed more than once, only one change
      * event is sent.
      * 
      * @throws CoreException

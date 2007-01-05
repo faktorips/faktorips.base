@@ -635,13 +635,14 @@ public abstract class IpsObjectEditor extends FormEditor
                 return;
             }
             final Dialog dialog = createDialogToFixDifferencesToModel();
+            
             if (getSite() != null) {
                 Runnable checkAndFixRunnable = new Runnable() {
                     public void run() {
+                        consumeNextWindowActivatedEvent();
                         if (dialog.open() == Dialog.OK) {
                             try {
-                                IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(
-                                        new DifferenceFixer(toFixIpsObject), null);
+                                toFixIpsObject.fixAllDifferencesToModel();
                                 refreshInclStructuralChanges();
                             } catch (CoreException e) {
                                 IpsPlugin.logAndShowErrorDialog(e);
@@ -742,6 +743,11 @@ public abstract class IpsObjectEditor extends FormEditor
     public String toString() {
         return "Editor for " + getIpsSrcFile(); //$NON-NLS-1$
     }
+    
+    protected void consumeNextWindowActivatedEvent() {
+        activationListener.consumeNextWindowActivatedEvent = true;
+    }
+    
 
     /**
      * Class to fix differences to the model as workspace runnable
@@ -776,7 +782,9 @@ public abstract class IpsObjectEditor extends FormEditor
         private boolean isHandlingActivation= false;
 
         private IPartService partService;
-
+        
+        private boolean consumeNextWindowActivatedEvent = false;
+        
         /**
          * Creates this activation listener.
          *
@@ -854,7 +862,11 @@ public abstract class IpsObjectEditor extends FormEditor
 
         public void windowActivated(IWorkbenchWindow window) {
             if (window == getEditorSite().getWorkbenchWindow()) {
-                handleActivation();
+                if (consumeNextWindowActivatedEvent) {
+                    consumeNextWindowActivatedEvent = false;
+                } else {
+                    handleActivation();
+                }
                 /*
                  * Workaround for problem described in
                  * http://dev.eclipse.org/bugs/show_bug.cgi?id=11731
