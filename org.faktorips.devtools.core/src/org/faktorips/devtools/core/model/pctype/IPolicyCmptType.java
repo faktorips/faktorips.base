@@ -254,11 +254,21 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     public IAttribute[] getAttributes();
     
     /**
-     * Returns the attribute with the given name. If more than one attribute
-     * with the name exist, the first attribute with the name is returned.
-     * Returns <code>null</code> if no attribute with the given name exists. 
+     * Returns the attribute with the given name defined in <strong>this</strong> type
+     * (This method does not search the supertype hierarchy.)
+     * If more than one attribute with the name exist, the first attribute with the name is returned.
+     * Returns <code>null</code> if no attribute with the given name exists.
      */
     public IAttribute getAttribute(String name);
+
+    /**
+     * Searches this type and it's supertyes for an attribute with the given name.
+     * If more than one attribute with the name exist, the first attribute with the name is returned.
+     * Returns <code>null</code> if no attribute with the given name is found.
+     * 
+     * @throws CoreException if an error occurs while searching.
+     */
+    public IAttribute findAttributeInSupertypeHierarchy(String name) throws CoreException;
     
     /**
      * Creates a new attribute and returns it.

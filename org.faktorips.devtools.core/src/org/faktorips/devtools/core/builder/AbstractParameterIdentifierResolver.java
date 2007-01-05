@@ -165,8 +165,7 @@ public abstract class AbstractParameterIdentifierResolver implements
         
 		IAttribute attribute = null;
 		try {
-			attribute = pcType.getSupertypeHierarchy().findAttribute(pcType,
-					attributeName);
+			attribute = pcType.findAttributeInSupertypeHierarchy(attributeName);
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
 			String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute, attributeName, pcType);

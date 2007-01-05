@@ -171,12 +171,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		if (pcType == null) {
 			return null;
 		}
-		IAttribute a = pcType.getAttribute(this.pcTypeAttribute);
-		if (a != null) {
-			return a;
-		}
-		ITypeHierarchy hierarchy = pcType.getSupertypeHierarchy();
-		return hierarchy.findAttribute(pcType, pcTypeAttribute);
+        return pcType.findAttributeInSupertypeHierarchy(pcTypeAttribute);
 	}
     
     /**

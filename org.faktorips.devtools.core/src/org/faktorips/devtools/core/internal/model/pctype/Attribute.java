@@ -129,9 +129,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         if (supertype == null) {
             return null;
         }
-        // use the supertype to searchc because the findAttribute-Method of TypeHierarchy
-        // searches the given type, too. So we can avoid to find this attribute.
-        return supertype.getSupertypeHierarchy().findAttribute(supertype, name);
+        return supertype.findAttributeInSupertypeHierarchy(name);
     }
 
     /**

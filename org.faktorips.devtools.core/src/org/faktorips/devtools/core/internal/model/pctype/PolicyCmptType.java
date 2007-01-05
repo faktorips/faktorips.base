@@ -321,6 +321,15 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
+    public IAttribute findAttributeInSupertypeHierarchy(String name) throws CoreException {
+        FindAttributeInTypeHierarchyVisitor visitor = new FindAttributeInTypeHierarchyVisitor(name);
+        visitor.start(this);
+        return visitor.getAttribute();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public int getNumOfAttributes() {
         return attributes.size();
     }
@@ -1310,6 +1319,30 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             }
             qNames.add(new QualifiedNameType(currentType.getSupertype(), IpsObjectType.POLICY_CMPT_TYPE));
             return true;
+        }
+        
+    }
+    
+    class FindAttributeInTypeHierarchyVisitor extends PolicyCmptTypeHierarchyVisitor {
+
+        private String attributeName;
+        private IAttribute attribute = null;
+        
+        public FindAttributeInTypeHierarchyVisitor(String attributeName) {
+            super();
+            this.attributeName = attributeName;
+        }
+        
+        public IAttribute getAttribute() {
+            return attribute;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IPolicyCmptType currentType) {
+            attribute = currentType.getAttribute(attributeName);
+            return attribute==null;
         }
         
     }

@@ -69,6 +69,23 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         pcType.setConfigurableByProductCmptType(false);
     }
     
+    public void testFindAttributeInSupertypeHierarchy() throws CoreException {
+        assertNull(pcType.findAttributeInSupertypeHierarchy("unkown"));
+        IAttribute a1 = pcType.newAttribute();
+        a1.setName("a1");
+        assertNull(pcType.findAttributeInSupertypeHierarchy("unkown"));
+        assertEquals(a1, pcType.findAttributeInSupertypeHierarchy("a1"));
+        
+        IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
+        IAttribute a2 = supertype.newAttribute();
+        a2.setName("a2");
+        pcType.setSupertype(supertype.getQualifiedName());
+        
+        assertNull(pcType.findAttributeInSupertypeHierarchy("unkown"));
+        assertEquals(a1, pcType.findAttributeInSupertypeHierarchy("a1"));
+        assertEquals(a2, pcType.findAttributeInSupertypeHierarchy("a2"));
+    }
+    
     public void testIsSubtype() throws CoreException {
         assertFalse(pcType.isSubtypeOf(null));
         

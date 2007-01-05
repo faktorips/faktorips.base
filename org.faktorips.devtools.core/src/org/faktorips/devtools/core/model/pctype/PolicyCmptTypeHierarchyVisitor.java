@@ -45,7 +45,10 @@ public abstract class PolicyCmptTypeHierarchyVisitor {
     }
 
     private void visit(IPolicyCmptType currentType, Set typesHandled) throws CoreException {
-        visit(currentType);
+        boolean continueVisiting = visit(currentType);
+        if (!continueVisiting) {
+            return;
+        }
         IPolicyCmptType supertype = currentType.findSupertype();
         if (supertype!=null && !typesHandled.contains(supertype)) {
             typesHandled.add(supertype);
