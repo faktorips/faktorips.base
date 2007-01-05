@@ -34,11 +34,13 @@ public class TestCaseEditor extends IpsObjectEditor {
      * (@inheritDoc)
      */
     protected void addPagesForParsableSrcFile() throws CoreException {
-        if (getTestCase().findTestCaseType() == null && computeDataChangeableState()) {
-            String msg = NLS.bind(Messages.TestCaseEditor_Information_TemplateNotFound, getTestCase()
-                    .getTestCaseType());
-            SetTemplateDialog dialog = new SetTemplateDialog(getTestCase(), getSite().getShell(), msg);
-            dialog.open();
+        // open the select template dialog if the templ. is missing and the data is changeable
+        if (getTestCase().findTestCaseType() == null 
+                && couldDateBeChangedIfTestCaseTypeWasntMissing()
+                && !IpsPlugin.getDefault().isTestMode()) {
+            String msg = NLS
+                    .bind(Messages.TestCaseEditor_Information_TemplateNotFound, getTestCase().getTestCaseType());
+            postOpenDialogInUiThread(new SetTemplateDialog(getTestCase(), getSite().getShell(), msg));
         }
         TestCaseContentProvider contentProviderInput = new TestCaseContentProvider(TestCaseContentProvider.COMBINED,
                 getTestCase());
@@ -76,4 +78,24 @@ public class TestCaseEditor extends IpsObjectEditor {
     protected Dialog createDialogToFixDifferencesToModel() throws CoreException {
         return new TestCaseDeltaDialog(getTestCase().computeDeltaToTestCaseType(), getSite().getShell());
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean computeDataChangeableState() {
+        if (!couldDateBeChangedIfTestCaseTypeWasntMissing()) {
+            return false;
+        }
+        try {
+            return getTestCase().findTestCaseType() != null;
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return false;
+        }
+    }  
+    
+    private boolean couldDateBeChangedIfTestCaseTypeWasntMissing() {
+        return super.computeDataChangeableState();
+    }
+    
 }

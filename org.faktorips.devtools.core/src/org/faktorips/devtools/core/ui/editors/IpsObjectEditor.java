@@ -199,6 +199,9 @@ public abstract class IpsObjectEditor extends FormEditor
             selectionProviderDispatcher = new SelectionProviderDispatcher();
             site.setSelectionProvider(selectionProviderDispatcher);
         }
+        
+        setDataChangeable(computeDataChangeableState());
+
         if (TRACE) {
             logMethodFinished("init");
         }
@@ -657,6 +660,18 @@ public abstract class IpsObjectEditor extends FormEditor
             return;
         }
     }    
+    
+    /**
+     * Opens the given dialog by the ui thread at the next reasonable opportunity.
+     */
+    protected void postOpenDialogInUiThread(final Dialog dialog){
+        Runnable checkAndFixRunnable = new Runnable() {
+            public void run() {
+                dialog.open();
+            }
+        };
+        getSite().getShell().getDisplay().asyncExec(checkAndFixRunnable);
+    }
     
     /**
      * Creates a dialog to disblay the differences to the model and ask the user if the

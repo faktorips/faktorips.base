@@ -68,11 +68,13 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	protected void addPagesForParsableSrcFile() throws PartInitException , CoreException {
 		IProductCmpt cmpt = (ProductCmpt)getIpsObject();
-		if (getIpsSrcFile().isMutable() && cmpt.findProductCmptType() == null && !IpsPlugin.getDefault().isTestMode()) {
-			String msg = NLS.bind(Messages.ProductCmptEditor_msgTemplateNotFound, cmpt.getPolicyCmptType());
-			SetTemplateDialog dialog = new SetTemplateDialog(cmpt, getSite().getShell(), msg);
-			dialog.open();
-		}
+        // open the select template dialog if the templ. is missing and the data is changeable 
+		if (getProductCmpt().findProductCmptType() == null 
+                && couldDateBeChangedIfProductCmptTypeWasntMissing()
+                && !IpsPlugin.getDefault().isTestMode()) {
+            String msg = NLS.bind(Messages.ProductCmptEditor_msgTemplateNotFound, cmpt.getPolicyCmptType());
+            postOpenDialogInUiThread(new SetTemplateDialog(cmpt, getSite().getShell(), msg));
+        }
         this.generationPropertiesPage = new GenerationPropertiesPage(this);
 		addPage(generationPropertiesPage);
 		addPage(new ProductCmptPropertiesPage(this));
@@ -204,8 +206,11 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
         activeGenerationManuallySet = manuallySet;
 	}
     
+    /**
+     * {@inheritDoc}
+     */
     protected boolean computeDataChangeableState() {
-        if (!super.computeDataChangeableState()) {
+        if (!couldDateBeChangedIfProductCmptTypeWasntMissing()) {
             return false;
         }
         try {
