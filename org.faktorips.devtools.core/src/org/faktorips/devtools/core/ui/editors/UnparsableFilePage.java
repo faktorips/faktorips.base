@@ -30,13 +30,13 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  */
 public class UnparsableFilePage extends IpsObjectEditorPage {
 
-    public final static String PAGE_ID = "UnparsableFile";
+    public final static String PAGE_ID = "UnparsableFile"; //$NON-NLS-1$
 
     /**
      * @param editor
      */
     public UnparsableFilePage(IpsObjectEditor editor) {
-        super(editor, PAGE_ID, "UnparsableFileContents");
+        super(editor, PAGE_ID, "UnparsableFileContents"); //$NON-NLS-1$
     }
 
     /**
@@ -44,7 +44,7 @@ public class UnparsableFilePage extends IpsObjectEditorPage {
      */
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));
-        toolkit.createLabel(formBody, "File content is not parsable.");
+        toolkit.createLabel(formBody, Messages.UnparsableFilePage_fileContentIsNotParsable);
         Text xmlText = toolkit.createMultilineText(formBody);
         try {
             xmlText.setText(getIpsObjectEditor().getIpsSrcFile().getContentFromEnclosingResource());

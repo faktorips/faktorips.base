@@ -150,7 +150,7 @@ public abstract class IpsObjectEditor extends FormEditor
      */
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         if (TRACE) {
-            logMethodStarted("init");
+            logMethodStarted("init"); //$NON-NLS-1$
         }
         super.init(site, input);
         IIpsModel model = IpsPlugin.getDefault().getIpsModel();
@@ -203,13 +203,13 @@ public abstract class IpsObjectEditor extends FormEditor
         setDataChangeable(computeDataChangeableState());
 
         if (TRACE) {
-            logMethodFinished("init");
+            logMethodFinished("init"); //$NON-NLS-1$
         }
     }
 
     private void initFromStorageEditorInput(IStorageEditorInput input) throws PartInitException {
         if (TRACE) {
-            logMethodStarted("initFromStorageEditorInput");
+            logMethodStarted("initFromStorageEditorInput"); //$NON-NLS-1$
         }
         try {
             IStorage storage = input.getStorage();
@@ -236,7 +236,7 @@ public abstract class IpsObjectEditor extends FormEditor
             String name = path.lastSegment().substring(0, nameIndex) + extension;
             ipsSrcFile = new IpsSrcFileImmutable(name, storage.getContents());
             if (TRACE) {
-                logMethodFinished("initFromStorageEditorInput");
+                logMethodFinished("initFromStorageEditorInput"); //$NON-NLS-1$
             }
         } catch (CoreException e) {
             throw new PartInitException(e.getStatus());
@@ -251,34 +251,34 @@ public abstract class IpsObjectEditor extends FormEditor
      */
     final protected void addPages() {
         if (TRACE) {
-            logMethodStarted("addPages");
+            logMethodStarted("addPages"); //$NON-NLS-1$
         }        
         pagesForParsableSrcFileShown = false;
         try {
             if (!getIpsSrcFile().isContentParsable()) {
                 if (TRACE) {
-                    log("addPages(): Page for unparsable files created.");
+                    log("addPages(): Page for unparsable files created."); //$NON-NLS-1$
                 }
                 addPage(new UnparsableFilePage(this));
                 return;
             }
             if (!ipsSrcFile.exists()) {
                 if (TRACE) {
-                    log("addPages(): Page for missing files created.");
+                    log("addPages(): Page for missing files created."); //$NON-NLS-1$
                 }
                 addPage(new MissingResourcePage(this));
                 return;
             }
             if (TRACE) {
-                logMethodStarted("addPagesForParsableSrcFile()");
+                logMethodStarted("addPagesForParsableSrcFile()"); //$NON-NLS-1$
             }
             addPagesForParsableSrcFile();
             if (TRACE) {
-                logMethodFinished("addPagesForParsableSrcFile()");
+                logMethodFinished("addPagesForParsableSrcFile()"); //$NON-NLS-1$
             }
             pagesForParsableSrcFileShown = true;
             if (TRACE) {
-                logMethodFinished("addPages");
+                logMethodFinished("addPages"); //$NON-NLS-1$
             }        
         } catch (Exception e) {
             IpsPlugin.log(e);
@@ -289,7 +289,7 @@ public abstract class IpsObjectEditor extends FormEditor
     
     protected void updatePageStructure() {
         if (TRACE) {
-            logMethodStarted("updatePageStructure");
+            logMethodStarted("updatePageStructure"); //$NON-NLS-1$
         }        
         try {
             if (getIpsSrcFile().isContentParsable()==pagesForParsableSrcFileShown) {
@@ -302,13 +302,13 @@ public abstract class IpsObjectEditor extends FormEditor
                 removePage(0);
             }
             if (TRACE) {
-                System.out.println("updatePageStructure(): Existing pages removed. Must recreate.");
+                System.out.println("updatePageStructure(): Existing pages removed. Must recreate."); //$NON-NLS-1$
             }
             addPages();
             updatingPageStructure = false;
             super.setActivePage(0); // also triggers the refresh
             if (TRACE) {
-                logMethodFinished("updatePageStructure");
+                logMethodFinished("updatePageStructure"); //$NON-NLS-1$
             }        
         } catch (CoreException e) {
             updatingPageStructure = false;
@@ -342,13 +342,13 @@ public abstract class IpsObjectEditor extends FormEditor
      */
     protected void pageChange(int newPageIndex) {
         if (TRACE) {
-            logMethodStarted("pageChange(): newPage=" + newPageIndex);
+            logMethodStarted("pageChange(): newPage=" + newPageIndex); //$NON-NLS-1$
         }
         super.pageChange(newPageIndex); // must be called even if the file isn't parsable, 
         // (otherwise the unparsable file page wouldn't be shown)
         refresh();
         if (TRACE) {
-            logMethodFinished("pageChange(): newPage=" + newPageIndex);
+            logMethodFinished("pageChange(): newPage=" + newPageIndex); //$NON-NLS-1$
         }
     }
 
@@ -377,7 +377,7 @@ public abstract class IpsObjectEditor extends FormEditor
             IpsPlugin.log(e);
         }
         if (TRACE) {
-            logMethodStarted("refresh");
+            logMethodStarted("refresh"); //$NON-NLS-1$
         }        
         IEditorPart editor = getActivePageInstance();
         if (editor instanceof IpsObjectEditorPage) {
@@ -386,7 +386,7 @@ public abstract class IpsObjectEditor extends FormEditor
         }
         updateDataChangeableState();
         if (TRACE) {
-            logMethodFinished("refresh");
+            logMethodFinished("refresh"); //$NON-NLS-1$
         }        
     }
     
@@ -395,11 +395,11 @@ public abstract class IpsObjectEditor extends FormEditor
      */
     public void updateDataChangeableState() {
         if (TRACE) {
-            logMethodStarted("updateDataChangeable");
+            logMethodStarted("updateDataChangeable"); //$NON-NLS-1$
         }
         boolean newState = computeDataChangeableState();
         if (TRACE) {
-            log("Next data changeable state=" + newState + ", oldState=" + isDataChangeable());
+            log("Next data changeable state=" + newState + ", oldState=" + isDataChangeable()); //$NON-NLS-1$ //$NON-NLS-2$
         }        
         setDataChangeable(computeDataChangeableState());
         IEditorPart editor = getActivePageInstance();
@@ -408,7 +408,7 @@ public abstract class IpsObjectEditor extends FormEditor
             page.updateDataChangeableState();
         }
         if (TRACE) {
-            logMethodFinished("updateDataChangeable");
+            logMethodFinished("updateDataChangeable"); //$NON-NLS-1$
         }        
     }
     
@@ -453,7 +453,7 @@ public abstract class IpsObjectEditor extends FormEditor
 
             public void run() {
                 if (TRACE) {
-                    logMethodStarted("contentsChanged(): Received content changed event for the file being edited." + event.getEventType());
+                    logMethodStarted("contentsChanged(): Received content changed event for the file being edited." + event.getEventType()); //$NON-NLS-1$
                 }        
                 if (event.getEventType()==ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
                     updatePageStructure();
@@ -461,7 +461,7 @@ public abstract class IpsObjectEditor extends FormEditor
                     refresh();
                 }
                 if (TRACE) {
-                    logMethodFinished("contentChanged()");
+                    logMethodFinished("contentChanged()"); //$NON-NLS-1$
                 }
             }
         });
@@ -528,13 +528,13 @@ public abstract class IpsObjectEditor extends FormEditor
             return;
         }
         if (TRACE) {
-            logMethodStarted("resourceChanged(): Received resource changed event for the file being edited.");
+            logMethodStarted("resourceChanged(): Received resource changed event for the file being edited."); //$NON-NLS-1$
         }
         if (!ipsSrcFile.exists()) {
             this.close(false);
         }
         if (TRACE) {
-            logMethodFinished("resourceChanged()");
+            logMethodFinished("resourceChanged()"); //$NON-NLS-1$
         }
     }
 
@@ -549,13 +549,13 @@ public abstract class IpsObjectEditor extends FormEditor
 
     protected void handleEditorActivation() {
         if (TRACE) {
-            logMethodStarted("handleEditorActivation()");
+            logMethodStarted("handleEditorActivation()"); //$NON-NLS-1$
         }
         checkForChangesMadeOutsideEclipse();
         editorActivated();
         refresh();
         if (TRACE) {
-            logMethodFinished("handleEditorActivation()");
+            logMethodFinished("handleEditorActivation()"); //$NON-NLS-1$
         }
     }
 
@@ -564,7 +564,7 @@ public abstract class IpsObjectEditor extends FormEditor
             return;
         }
         if (TRACE) {
-            logMethodStarted("checkForChangesMadeOutsideEclipse()");
+            logMethodStarted("checkForChangesMadeOutsideEclipse()"); //$NON-NLS-1$
         }
         if (getIpsSrcFile().isMutable() && !getIpsSrcFile().getEnclosingResource().isSynchronized(0)) {
             MessageDialog dlg = new MessageDialog(Display.getCurrent().getActiveShell(), Messages.IpsObjectEditor_fileHasChangesOnDiskTitle, (Image)null, 
@@ -574,7 +574,7 @@ public abstract class IpsObjectEditor extends FormEditor
             if (dlg.getReturnCode()==0) {
                 try {
                     if (TRACE) {
-                        log("checkForChangesMadeOutsideEclipse(): Change found, sync file with filesystem (refreshLocal)");
+                        log("checkForChangesMadeOutsideEclipse(): Change found, sync file with filesystem (refreshLocal)"); //$NON-NLS-1$
                     }
                     getIpsSrcFile().getEnclosingResource().refreshLocal(0, null);
                     updatePageStructure();
@@ -587,7 +587,7 @@ public abstract class IpsObjectEditor extends FormEditor
             
         }
         if (TRACE) {
-            logMethodFinished("checkForChangesMadeOutsideEclipse()");
+            logMethodFinished("checkForChangesMadeOutsideEclipse()"); //$NON-NLS-1$
         }
     }
 
@@ -596,11 +596,11 @@ public abstract class IpsObjectEditor extends FormEditor
      */
     protected void editorActivated() {
         if (TRACE) {
-            logMethodStarted("editorActivated()");
+            logMethodStarted("editorActivated()"); //$NON-NLS-1$
         }
         checkForInconsistenciesToModel();
         if (TRACE) {
-            logMethodFinished("editorActivated()");
+            logMethodFinished("editorActivated()"); //$NON-NLS-1$
         }
     }
     
@@ -715,7 +715,7 @@ public abstract class IpsObjectEditor extends FormEditor
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         disposeInternal();
         if (TRACE) {
-            log("disposed.");
+            log("disposed."); //$NON-NLS-1$
         }
     }
 
@@ -730,13 +730,13 @@ public abstract class IpsObjectEditor extends FormEditor
      */
     public void propertyChange(PropertyChangeEvent event) {
         if (TRACE) {
-            logMethodStarted("propertyChange(): Received property changed event " + event);
+            logMethodStarted("propertyChange(): Received property changed event " + event); //$NON-NLS-1$
         }
         if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
             refresh();        
         }
         if (TRACE) {
-            logMethodFinished("propertyChange()");
+            logMethodFinished("propertyChange()"); //$NON-NLS-1$
         }
     }
     
@@ -890,23 +890,23 @@ public abstract class IpsObjectEditor extends FormEditor
     }
 
     private void logMethodStarted(String msg) {
-        logInternal("." + msg + " - started"); //$NON-NLS-1$ $NON-NLS-2$
+        logInternal("." + msg + " - started"); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
     }
     
     private void logMethodFinished(String msg) {
-        logInternal("." + msg + " - finished"); //$NON-NLS-1$ $NON-NLS-2$
+        logInternal("." + msg + " - finished"); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
     }
     
     private void log(String msg) {
-        logInternal(": " + msg);
+        logInternal(": " + msg); //$NON-NLS-1$
     }
 
     private void logInternal(String msg) {
-        String file = ipsSrcFile==null ? "null" : ipsSrcFile.getName(); // $NON-NLS-1$
-        System.out.println(getLogPrefix() + msg + ", IpsSrcFile=" + file + ", Thread=" + Thread.currentThread().getName()); //$NON-NLS-1$ $NON-NLS-2$
+        String file = ipsSrcFile==null ? "null" : ipsSrcFile.getName(); // $NON-NLS-1$ //$NON-NLS-1$
+        System.out.println(getLogPrefix() + msg + ", IpsSrcFile=" + file + ", Thread=" + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
     }
     
     private String getLogPrefix() {
-        return "IpsObjectEditor";
+        return "IpsObjectEditor"; //$NON-NLS-1$
     }
 }

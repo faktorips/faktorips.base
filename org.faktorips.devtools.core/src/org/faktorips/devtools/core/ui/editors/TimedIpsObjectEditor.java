@@ -51,7 +51,7 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
      */
     public void setActiveGeneration(IIpsObjectGeneration generation) {
         if (TRACE) {
-            System.out.println("TimedIpsObjectEditor.setActiveGeneration(): New generation " + generation);
+            System.out.println("TimedIpsObjectEditor.setActiveGeneration(): New generation " + generation); //$NON-NLS-1$
         }
     	this.generation = generation;
     }
