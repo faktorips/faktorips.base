@@ -216,17 +216,17 @@ public class GenerationsSection extends SimpleIpsPartsSection{
 					return super.getText(element);
 				}
                 IProductCmptGeneration gen = (IProductCmptGeneration)element;
-                String comment = "";
+                String comment = ""; //$NON-NLS-1$
                 if (page.getProductCmptEditor().isEffectiveOnCurrentEffectiveDate(gen)) {
-                    comment = comment + " wirksam am " + IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate();
+                    comment = comment + Messages.GenerationsSection_validFrom + IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate();
                 }
                 Boolean validFromInPast = gen.isValidFromInPast(); 
                 if ((validFromInPast==null || validFromInPast.booleanValue()) 
                     && !IpsPlugin.getDefault().getIpsPreferences().canEditRecentGeneration()) {
-                    if (!comment.equals("")) {
-                        comment = comment + ",";
+                    if (!comment.equals("")) { //$NON-NLS-1$
+                        comment = comment + ","; //$NON-NLS-1$
                     }
-                    comment = comment + " nicht ändernbar, da Beginn in Vergangenheit";
+                    comment = comment + Messages.GenerationsSection_validFromInPast;
                 }
 				return super.getText(element) + comment;
 			}

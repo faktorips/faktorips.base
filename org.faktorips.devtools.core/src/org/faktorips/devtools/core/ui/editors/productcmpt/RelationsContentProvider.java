@@ -47,7 +47,7 @@ public class RelationsContentProvider implements ITreeContentProvider {
      */ 
     public Object[] getElements(Object inputElement) {
     	if (!(inputElement instanceof IProductCmptGeneration)) {
-            throw new RuntimeException("Unkown input element type " + inputElement.getClass());
+            throw new RuntimeException("Unkown input element type " + inputElement.getClass()); //$NON-NLS-1$
         }
 		IProductCmptGeneration generation = (IProductCmptGeneration)inputElement;
 		try {
@@ -60,7 +60,7 @@ public class RelationsContentProvider implements ITreeContentProvider {
 			    return getRelationTypes(pcType);
             }
 		} catch (CoreException e) {
-            throw new RuntimeException("Error getting element ", e);
+            throw new RuntimeException("Error getting element ", e); //$NON-NLS-1$
 		}
     }
     

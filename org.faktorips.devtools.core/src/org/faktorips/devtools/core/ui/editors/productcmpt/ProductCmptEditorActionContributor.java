@@ -60,7 +60,7 @@ public class ProductCmptEditorActionContributor extends EditorActionBarContribut
     public void setActiveEditor(IEditorPart targetEditor) {
         if(!(targetEditor instanceof ProductCmptEditor)){
             IpsPlugin.log(new IpsStatus(getClass().getName() + 
-                ": This editor action contributor expects to be registered with an " + 
+                ": This editor action contributor expects to be registered with an " +  //$NON-NLS-1$
                 ProductCmptEditor.class.getName()));
         }
         ProductCmptEditor pcEditor = (ProductCmptEditor)targetEditor;

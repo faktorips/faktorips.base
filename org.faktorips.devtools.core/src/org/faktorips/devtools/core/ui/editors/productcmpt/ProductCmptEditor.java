@@ -110,12 +110,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	public void editorActivated() {
 	    if (TRACE) {
-         logMethodStarted("editorActivated()");   
+         logMethodStarted("editorActivated()");    //$NON-NLS-1$
         }
         updateChosenActiveGeneration();
 		super.editorActivated();
         if (TRACE) {
-             logMethodFinished("editorActivated()");   
+             logMethodFinished("editorActivated()");    //$NON-NLS-1$
             }
 	}
 
@@ -368,20 +368,20 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
     }
     
     private void logMethodStarted(String msg) {
-        logInternal("." + msg + " - started"); //$NON-NLS-1$ $NON-NLS-2$
+        logInternal("." + msg + " - started"); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
     }
     
     private void logMethodFinished(String msg) {
-        logInternal("." + msg + " - finished"); //$NON-NLS-1$ $NON-NLS-2$
+        logInternal("." + msg + " - finished"); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
     }
     
     private void logInternal(String msg) {
-        String file = getIpsSrcFile()==null ? "null" : getIpsSrcFile().getName(); // $NON-NLS-1$
-        System.out.println(getLogPrefix() + msg + ", IpsSrcFile=" + file + ", Thread=" + Thread.currentThread().getName()); //$NON-NLS-1$ $NON-NLS-2$
+        String file = getIpsSrcFile()==null ? "null" : getIpsSrcFile().getName(); // $NON-NLS-1$ //$NON-NLS-1$
+        System.out.println(getLogPrefix() + msg + ", IpsSrcFile=" + file + ", Thread=" + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
     }
     
     private String getLogPrefix() {
-        return "ProductCmptEditor";
+        return "ProductCmptEditor"; //$NON-NLS-1$
     }
     
 }

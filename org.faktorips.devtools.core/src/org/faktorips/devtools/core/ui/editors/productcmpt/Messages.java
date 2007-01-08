@@ -36,6 +36,10 @@ public class Messages extends NLS {
 
     public static String DefaultsAndRangesEditDialog_valueNotContainedInValueSet;
 
+    public static String GenerationsSection_validFrom;
+
+    public static String GenerationsSection_validFromInPast;
+
     public static String PropertiesPage_relations;
 
 	public static String PropertiesPage_noRelationsDefined;
