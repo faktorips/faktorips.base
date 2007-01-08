@@ -102,26 +102,26 @@ public class Migration_0_9_41 extends AbstractMigrationOperation {
     }
     
     private void changeIpsSrcFolderEntry(Element el, Document doc) throws CoreException{
-        String outputFolderMergable = el.getAttribute("outputFolderGenerated"); //outputFolderMergable
-        String basePackageMergable = el.getAttribute("basePackageGenerated"); //basePackageMergable
+        String outputFolderMergable = el.getAttribute("outputFolderGenerated"); //outputFolderMergable //$NON-NLS-1$
+        String basePackageMergable = el.getAttribute("basePackageGenerated"); //basePackageMergable //$NON-NLS-1$
         //outputFolderExtension should not have a value
         //basePackageExtension should not have a value
         
-        el.removeAttribute("outputFolderGenerated");
-        el.removeAttribute("basePackageGenerated");
-        el.removeAttribute("outputFolderExtension");
-        el.removeAttribute("basePackageExtension");
-        el.setAttribute("outputFolderMergable", outputFolderMergable);
-        el.setAttribute("basePackageMergable", basePackageMergable);
+        el.removeAttribute("outputFolderGenerated"); //$NON-NLS-1$
+        el.removeAttribute("basePackageGenerated"); //$NON-NLS-1$
+        el.removeAttribute("outputFolderExtension"); //$NON-NLS-1$
+        el.removeAttribute("basePackageExtension"); //$NON-NLS-1$
+        el.setAttribute("outputFolderMergable", outputFolderMergable); //$NON-NLS-1$
+        el.setAttribute("basePackageMergable", basePackageMergable); //$NON-NLS-1$
         if(!StringUtils.isEmpty(outputFolderMergable)){
-            String folderPath = outputFolderMergable + "derived";
-            el.setAttribute("outputFolderDerived", folderPath);
+            String folderPath = outputFolderMergable + "derived"; //$NON-NLS-1$
+            el.setAttribute("outputFolderDerived", folderPath); //$NON-NLS-1$
             createDerivedSrcFolder(folderPath);
         }
         else{
-            el.setAttribute("outputFolderDerived","");
+            el.setAttribute("outputFolderDerived",""); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        el.setAttribute("basePackageDerived", !StringUtils.isEmpty(basePackageMergable) ? basePackageMergable : "");
+        el.setAttribute("basePackageDerived", !StringUtils.isEmpty(basePackageMergable) ? basePackageMergable : ""); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     private void createDerivedSrcFolder(String path) throws CoreException{
@@ -147,25 +147,25 @@ public class Migration_0_9_41 extends AbstractMigrationOperation {
     }
     
     private void changeIpsObjectPathAttributes(Element el, Document doc) throws CoreException{
-        String outputFolderMergableSources = el.getAttribute("outputFolderGenerated"); //outputFolderMergableSources
-        String basePackageMergable = el.getAttribute("basePackageGenerated"); //basePackageMergable
+        String outputFolderMergableSources = el.getAttribute("outputFolderGenerated"); //outputFolderMergableSources //$NON-NLS-1$
+        String basePackageMergable = el.getAttribute("basePackageGenerated"); //basePackageMergable //$NON-NLS-1$
         //outputFolderExtension should not have a value
         //basePackageExtension should not have a value
         
-        el.removeAttribute("outputFolderGenerated");
-        el.removeAttribute("basePackageGenerated");
-        el.removeAttribute("outputFolderExtension");
-        el.removeAttribute("basePackageExtension");
-        el.setAttribute("outputFolderMergableSources", outputFolderMergableSources);
-        el.setAttribute("basePackageMergable", basePackageMergable);
+        el.removeAttribute("outputFolderGenerated"); //$NON-NLS-1$
+        el.removeAttribute("basePackageGenerated"); //$NON-NLS-1$
+        el.removeAttribute("outputFolderExtension"); //$NON-NLS-1$
+        el.removeAttribute("basePackageExtension"); //$NON-NLS-1$
+        el.setAttribute("outputFolderMergableSources", outputFolderMergableSources); //$NON-NLS-1$
+        el.setAttribute("basePackageMergable", basePackageMergable); //$NON-NLS-1$
         if(!StringUtils.isEmpty(outputFolderMergableSources)){
-            String folderPath = "derived";
-            el.setAttribute("outputFolderDerivedSources", folderPath);
+            String folderPath = "derived"; //$NON-NLS-1$
+            el.setAttribute("outputFolderDerivedSources", folderPath); //$NON-NLS-1$
             createDerivedSrcFolder(folderPath);
         }
         else{
-            el.setAttribute("outputFolderDerivedSources", "");
+            el.setAttribute("outputFolderDerivedSources", ""); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        el.setAttribute("basePackageDerived", !StringUtils.isEmpty(basePackageMergable) ? basePackageMergable : "");
+        el.setAttribute("basePackageDerived", !StringUtils.isEmpty(basePackageMergable) ? basePackageMergable : ""); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

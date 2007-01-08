@@ -157,7 +157,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
      */
     private void createDerivedFolderAndRefreshClasspathEntries(IFolder folder, IProgressMonitor monitor) throws CoreException{
         if (folder != null && !folder.exists()) {
-            monitor.subTask("Creating missing derived output folders");
+            monitor.subTask(Messages.IpsBuilder_subTaskMissingDerivedFolders);
             folder.create(true, true, monitor);
             folder.setDerived(true);
             IJavaProject jProject = getIpsProject().getJavaProject();
@@ -432,6 +432,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
      */
     private IIpsObject buildIpsSrcFile(IIpsArtefactBuilderSet ipsArtefactBuilderSet, IIpsSrcFile file, MultiStatus buildStatus, IProgressMonitor monitor) throws CoreException {
         if (!file.isContentParsable()) {
+            IMarker marker = file.getCorrespondingResource().createMarker(IpsPlugin.PROBLEM_MARKER);
+            marker.setAttribute(IMarker.MESSAGE, Messages.IpsBuilder_ipsSrcFileNotParsable);
+            marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
             return null;
         }
         IIpsObject ipsObject = file.getIpsObject();

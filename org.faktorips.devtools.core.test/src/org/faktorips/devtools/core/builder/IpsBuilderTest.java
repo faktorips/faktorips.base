@@ -9,9 +9,13 @@
 
 package org.faktorips.devtools.core.builder;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -19,6 +23,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -92,6 +97,22 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertEquals(msgList.getNoOfMessages(), markers.length);
     }
 
+    public void testMarkerForNotParsableIpsSrcFiles() throws CoreException{
+        IFile file = ((IContainer)root.getCorrespondingResource()).getFile(new Path("test." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension()));
+        file.create(new ByteArrayInputStream("".getBytes()), true, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        IMarker[] markers = file.findMarkers(IMarker.PROBLEM, true, 0);
+        boolean isMessageThere = false;
+        for (int i = 0; i < markers.length; i++) {
+            String msg = (String)markers[i].getAttribute(IMarker.MESSAGE);
+            if(msg.equals(Messages.IpsBuilder_ipsSrcFileNotParsable)){
+                isMessageThere = true;
+            }
+        }
+        assertTrue("The expected message could not be found", isMessageThere);
+        
+    }
+    
     public void testRemoveResource() throws CoreException {
         TestRemoveIpsArtefactBuilder builder = new TestRemoveIpsArtefactBuilder();
 
