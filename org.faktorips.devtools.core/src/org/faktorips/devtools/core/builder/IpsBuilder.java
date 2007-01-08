@@ -32,6 +32,8 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -138,25 +140,29 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return getProject().getReferencedProjects();
     }
 
-    private void createDerivedOutputFoldersIfNecessary(IProgressMonitor monitor) throws CoreException{
+    private void createDerivedOutputFoldersIfNecessary(IProgressMonitor monitor) throws CoreException {
         IIpsObjectPath ipsObjectPath = getIpsProject().getIpsObjectPath();
         IFolder derivedFolder = ipsObjectPath.getOutputFolderForDerivedSources();
-        String taskDescription = "Creating missing derived output folders";
-        if(derivedFolder != null){
-            if(!derivedFolder.exists()){
-                monitor.subTask(taskDescription);
-                derivedFolder.create(true, true, monitor);
-                derivedFolder.setDerived(true);
-            }
-        }
+        createDerivedFolderAndRefreshClasspathEntries(derivedFolder, monitor);
+
         IIpsSrcFolderEntry[] entries = ipsObjectPath.getSourceFolderEntries();
         for (int i = 0; i < entries.length; i++) {
             IFolder folder = entries[i].getOutputFolderForDerivedJavaFiles();
-            if(folder != null && !folder.exists()){
-                monitor.subTask(taskDescription);
-                folder.create(true, true, monitor);
-                folder.setDerived(true);
-            }
+            createDerivedFolderAndRefreshClasspathEntries(folder, monitor);
+        }
+    }
+    
+    /*
+     * Because of a bug in eclipse it is necessary to set the raw classpath again after the derived folder has been created. 
+     */
+    private void createDerivedFolderAndRefreshClasspathEntries(IFolder folder, IProgressMonitor monitor) throws CoreException{
+        if (folder != null && !folder.exists()) {
+            monitor.subTask("Creating missing derived output folders");
+            folder.create(true, true, monitor);
+            folder.setDerived(true);
+            IJavaProject jProject = getIpsProject().getJavaProject();
+            IClasspathEntry[] classpathEntries = jProject.getRawClasspath();
+            jProject.setRawClasspath(classpathEntries, monitor);
         }
     }
     
