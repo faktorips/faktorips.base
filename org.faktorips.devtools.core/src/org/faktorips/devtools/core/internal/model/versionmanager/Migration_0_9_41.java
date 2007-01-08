@@ -114,8 +114,9 @@ public class Migration_0_9_41 extends AbstractMigrationOperation {
         el.setAttribute("outputFolderMergable", outputFolderMergable);
         el.setAttribute("basePackageMergable", basePackageMergable);
         if(!StringUtils.isEmpty(outputFolderMergable)){
-            el.setAttribute("outputFolderDerived","derived");
-            createDerivedSrcFolder();
+            String folderPath = outputFolderMergable + "derived";
+            el.setAttribute("outputFolderDerived", folderPath);
+            createDerivedSrcFolder(folderPath);
         }
         else{
             el.setAttribute("outputFolderDerived","");
@@ -123,8 +124,8 @@ public class Migration_0_9_41 extends AbstractMigrationOperation {
         el.setAttribute("basePackageDerived", !StringUtils.isEmpty(basePackageMergable) ? basePackageMergable : "");
     }
     
-    private void createDerivedSrcFolder() throws CoreException{
-        IFolder derivedsrcFolder = getIpsProject().getProject().getFolder(new Path("derived"));
+    private void createDerivedSrcFolder(String path) throws CoreException{
+        IFolder derivedsrcFolder = getIpsProject().getProject().getFolder(new Path(path));
         if(!derivedsrcFolder.exists()){
             derivedsrcFolder.create(true, true, new NullProgressMonitor());
         }
@@ -158,8 +159,9 @@ public class Migration_0_9_41 extends AbstractMigrationOperation {
         el.setAttribute("outputFolderMergableSources", outputFolderMergableSources);
         el.setAttribute("basePackageMergable", basePackageMergable);
         if(!StringUtils.isEmpty(outputFolderMergableSources)){
-            el.setAttribute("outputFolderDerivedSources", "derived");
-            createDerivedSrcFolder();
+            String folderPath = "derived";
+            el.setAttribute("outputFolderDerivedSources", folderPath);
+            createDerivedSrcFolder(folderPath);
         }
         else{
             el.setAttribute("outputFolderDerivedSources", "");
