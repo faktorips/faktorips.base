@@ -20,6 +20,7 @@ package org.faktorips.devtools.stdbuilder.productcmpt;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
@@ -103,6 +104,7 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
 
     /*
      * Test method for 'org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder.delete(IIpsSrcFile)'
+     */ 
     public void testDelete() throws CoreException {
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         IFile javaFile = builder.getGeneratedJavaFile(productCmptGen);
@@ -112,7 +114,4 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
         project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertFalse(javaFile.exists());
     }
-     */
-    
-
 }
