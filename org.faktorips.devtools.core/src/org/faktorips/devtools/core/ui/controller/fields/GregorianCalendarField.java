@@ -22,10 +22,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -63,13 +66,18 @@ public class GregorianCalendarField extends DefaultEditField {
         }
         
         try {
-			Date date = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM).parse(text);
-			GregorianCalendar gc = new GregorianCalendar();
-			gc.setTime(date);
-			return gc;
-		} catch (ParseException e) {
-	        return null;
-		}
+            Date date = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM).parse(text);
+            GregorianCalendar gc = new GregorianCalendar();
+            gc.setTime(date);
+            return gc;
+        } catch (ParseException e) {
+            // the text is not parseable, return null as value,
+            // because only valid GregorianCalendar values could be stored in the object,
+            // log this failure to inform the user that the entered value will be ignored
+            IpsPlugin.log(new IpsStatus(IpsStatus.WARNING, NLS.bind(
+                    "Can't parse {0} to a date! The value will be ignored.", text), e)); //$NON-NLS-1$
+            return null;
+        }
     }
 
     /**
