@@ -75,6 +75,7 @@ public class ContentChangeEvent {
     }
     
     private ContentChangeEvent(IIpsSrcFile file, IIpsObjectPart[] parts) {
+        this.ipsSrcFile = file;
         this.movedParts = parts;
         this.type = TYPE_PARTS_CHANGED_POSITIONS;
     }
