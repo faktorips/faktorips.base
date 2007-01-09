@@ -29,12 +29,12 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
     /**
      * Message code constant identifying the message of a validation rule. 
      */
-    public final static String MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING  = "OutputFolderMergableMissing";
+    public final static String MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING  = "OutputFolderMergableMissing"; //$NON-NLS-1$
 
     /**
      * Message code constant identifying the message of a validation rule. 
      */
-    public final static String MSGCODE_OUTPUT_FOLDER_DERIVED_MISSING  = "OutputFolderDerivedMissing";
+    public final static String MSGCODE_OUTPUT_FOLDER_DERIVED_MISSING  = "OutputFolderDerivedMissing"; //$NON-NLS-1$
 
     /**
      * Returns the folder containing the ips source files.

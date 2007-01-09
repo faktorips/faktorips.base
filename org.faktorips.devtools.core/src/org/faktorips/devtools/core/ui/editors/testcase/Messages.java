@@ -39,6 +39,7 @@ public class Messages extends NLS {
 	public static String TestCaseEditor_Title_Success;
 	public static String TestCaseEditor_Combined_SectionTitle;
 	public static String TestCaseEditor_Combined_Description;
+    public static String TestCaseSection_1;
 	public static String TestCaseSection_ButtonAdd;
 	public static String TestCaseSection_ButtonRemove;
 	public static String TestCaseSection_ButtonProductCmpt;

@@ -8,7 +8,7 @@
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
  * 
- * Mitwirkende:  Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  
+ * Mitwirkende:ï¿½ Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de ï¿½
  **************************************************************************************************/
 
 package org.faktorips.devtools.core.ui.wizards.fixdifferences;
@@ -30,6 +30,9 @@ public class Messages extends NLS {
 	}
 
     public static String ElementSelectionPage_SelectElementsMessage;
+    public static String FixDifferencesToModelWizard_beginTask;
     public static String FixDifferencesToModelWizard_Title;
+    public static String OpenFixDifferencesToModelWizardAction_fixingNotPossibleReason;
+    public static String OpenFixDifferencesToModelWizardAction_fixingNotPossibleTitle;
 
 }

@@ -25,7 +25,7 @@ public interface IIpsObjectPath {
     /**
      * Message code constant identifying the message of a validation rule. 
      */
-    public final static String MSGCODE_SRC_FOLDER_ENTRY_MISSING  = "SourceFolderEntryMissing";
+    public final static String MSGCODE_SRC_FOLDER_ENTRY_MISSING  = "SourceFolderEntryMissing"; //$NON-NLS-1$
     
     /**
      * Returns the path' entries.

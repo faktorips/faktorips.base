@@ -171,7 +171,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             path.setOutputFolderForGeneratedJavaFiles(javaSrcFolder);
             path.setBasePackageNameForDerivedJavaClasses(basePackageName);
             if(javaSrcFolder.exists()){
-                IFolder derivedsrcFolder = javaSrcFolder.getParent().getFolder(new Path("derived"));
+                IFolder derivedsrcFolder = javaSrcFolder.getParent().getFolder(new Path("derived")); //$NON-NLS-1$
                 derivedsrcFolder.create(true, true, new NullProgressMonitor());
                 derivedsrcFolder.setDerived(true);
                 IClasspathEntry derivedsrc = JavaCore.newSourceEntry(derivedsrcFolder.getFullPath());

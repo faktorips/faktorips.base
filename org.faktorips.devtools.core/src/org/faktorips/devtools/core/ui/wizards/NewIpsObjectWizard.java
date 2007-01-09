@@ -88,7 +88,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
         final IIpsPackageFragment pack = objectPage.getIpsPackageFragment();
         IWorkspaceRunnable op= new IWorkspaceRunnable() {
             public void run(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
-                monitor.beginTask("Creating object", 2);
+                monitor.beginTask("Creating object", 2); //$NON-NLS-1$
                 IIpsSrcFile srcFile = pack.createIpsFile(ipsObjectType, objectPage.getIpsObjectName(), true, null);
                 monitor.worked(1);
                 finishIpsObject(srcFile.getIpsObject());

@@ -70,7 +70,7 @@ public class DeepCopyLabelProvider implements ILabelProvider {
             return ((IProductCmptTypeRelationReference)element).getRelation().getImage();
         }
         
-        return IpsPlugin.getDefault().getImage("<undefined>");
+        return IpsPlugin.getDefault().getImage("<undefined>"); //$NON-NLS-1$
     }
 
     /**
@@ -83,7 +83,7 @@ public class DeepCopyLabelProvider implements ILabelProvider {
         else if (element instanceof IProductCmptTypeRelationReference) {
             return ((IProductCmptTypeRelationReference)element).getRelation().getName();
         }
-        return "<undefined>";
+        return Messages.DeepCopyLabelProvider_textUndefined;
     }
 
 }

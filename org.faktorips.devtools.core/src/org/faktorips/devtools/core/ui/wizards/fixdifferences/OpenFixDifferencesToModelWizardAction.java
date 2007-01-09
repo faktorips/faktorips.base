@@ -8,7 +8,7 @@
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
  * 
- * Mitwirkende:  Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  
+ * Mitwirkende:ï¿½ Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de ï¿½
  **************************************************************************************************/
 
 package org.faktorips.devtools.core.ui.wizards.fixdifferences;
@@ -89,8 +89,8 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
 
         if (dirtyeditor) {
             MessageDialog
-                    .openError(window.getShell(), "Fixing Differences not Possible",
-                            "The differences can be fixed only if all open documents are saved. Please save all documents and try again.");
+                    .openError(window.getShell(), Messages.OpenFixDifferencesToModelWizardAction_fixingNotPossibleTitle,
+                            Messages.OpenFixDifferencesToModelWizardAction_fixingNotPossibleReason);
             return;
         }
 

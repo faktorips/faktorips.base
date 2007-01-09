@@ -209,7 +209,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         public ToggleContentTypeAction(int actionContentType) {
             super("", AS_RADIO_BUTTON); //$NON-NLS-1$
-            setId("ToggleContentTypeAction" + actionContentType);
+            setId("ToggleContentTypeAction" + actionContentType); //$NON-NLS-1$
             fActionContentType = actionContentType;
             if (actionContentType == TestCaseContentProvider.INPUT) {
                 buttonChecked();
@@ -1894,7 +1894,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             public void run() {
                 if (isDisposed())
                     return;
-                setFormToolTipText(getFormToolTipText() + "\n" + failureToolTip);
+                setFormToolTipText(getFormToolTipText() + Messages.TestCaseSection_1 + failureToolTip);
             }
         });
     }    
@@ -2280,7 +2280,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     
     private String getFormToolTipText(){
         String text = getFormTitleLabel().getToolTipText();
-        return text!=null?text:"";
+        return text!=null?text:""; //$NON-NLS-1$
     }
     
     /*

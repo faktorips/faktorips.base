@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
+import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
 
 /**
@@ -278,7 +279,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
             String validFromSimple = simpleDateFormat.format(rel.getProductCmptGeneration().getValidFrom()
                     .getTime());
             sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB).append(rel.getTarget());
-            sb.append(BLANK).append("(").append(rel.getId()).append(")");
+            sb.append(BLANK).append("(").append(rel.getId()).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
         } else if (getIpsElement() instanceof IConfigElement) {
             IConfigElement configElement = (IConfigElement)getIpsElement();
             String validFromSimple = simpleDateFormat

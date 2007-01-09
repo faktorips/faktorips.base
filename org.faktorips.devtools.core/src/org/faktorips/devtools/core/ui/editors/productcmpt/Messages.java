@@ -40,6 +40,16 @@ public class Messages extends NLS {
 
     public static String GenerationsSection_validFromInPast;
 
+    public static String ProductCmptCompareItem_AllValues;
+
+    public static String ProductCmptCompareItem_Attribute;
+
+    public static String ProductCmptCompareItem_Relation;
+
+    public static String ProductCmptCompareItem_SourceFile;
+
+    public static String ProductCmptCompareItem_ValueSet;
+
     public static String PropertiesPage_relations;
 
 	public static String PropertiesPage_noRelationsDefined;

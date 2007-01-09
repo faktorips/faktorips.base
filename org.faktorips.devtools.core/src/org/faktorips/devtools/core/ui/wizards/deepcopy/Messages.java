@@ -30,6 +30,7 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
+    public static String DeepCopyLabelProvider_textUndefined;
     public static String DeepCopyWizard_title;
     public static String SourcePage_msgBadTargetPackage;
     public static String SourcePage_msgWarningTargetIsDefaultPackage;
