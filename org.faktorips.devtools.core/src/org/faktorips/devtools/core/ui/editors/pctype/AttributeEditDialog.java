@@ -675,12 +675,10 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 			if (!isDataChangeable()) {
 			    return; // don't enabled if the dialog does not allow to change anything
             }
-            datatypeField.getControl().setEnabled(enabled);
-			modifierField.getControl().setEnabled(enabled);
-			attributeTypeField.getControl().setEnabled(enabled);
-			productRelevantField.getControl().setEnabled(enabled);
+            uiToolkit.setDataChangeable(datatypeField.getControl(), enabled);
+            uiToolkit.setDataChangeable(modifierField.getControl(), enabled);
+            uiToolkit.setDataChangeable(attributeTypeField.getControl(), enabled);
+            uiToolkit.setDataChangeable(productRelevantField.getControl(), enabled);
 		}
-    	
     }
-
 }
