@@ -22,7 +22,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * An event that signals the change of an ips source file's content. 
  */
-public class ContentChangeEvent {
+public class ContentChangeEvent  {
 
     public final static int TYPE_WHOLE_CONTENT_CHANGED = 1;
 
