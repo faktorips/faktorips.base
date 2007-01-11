@@ -323,6 +323,5 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
                 
             }
         }
-        this.getIpsSrcFile().save(true, null);
     }
 }

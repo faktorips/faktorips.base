@@ -36,5 +36,12 @@ public interface IFixDifferencesToModelSupport {
      * @throws CoreException
      */
     public void fixAllDifferencesToModel() throws CoreException;
+    
+    /**
+     * Returns the IPS source file this object is stored in.
+     * Duplicated here for cleaner inheritance.
+     * @see org.faktorips.devtools.core.model.IIpsObject#getIpsSrcFile()
+     */
+    public IIpsSrcFile getIpsSrcFile();
 
 }

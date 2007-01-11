@@ -231,4 +231,76 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     	assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENCY_IN_POLICY_CMPT_TYPE_HIERARCHY));
     	
     }
+
+    /**
+     * Test method for {@link org.faktorips.devtools.core.model.IFixDifferencesToModelSupport#containsDifferenceToModel()}.
+     * @throws CoreException 
+     */
+    public void testContainsDifferenceToModel() throws CoreException {
+        PolicyCmptType testType = newPolicyCmptType(ipsProject, "TestType");
+        IAttribute a1 = testType.newAttribute();
+        a1.setName("A1");
+        
+        IProductCmpt product = newProductCmpt(ipsProject, "TestProduct");
+        product.setPolicyCmptType(testType.getQualifiedName());
+        IProductCmptGeneration gen = (IProductCmptGeneration)product.newGeneration();
+        IConfigElement ce1 = gen.newConfigElement();
+        ce1.setPcTypeAttribute("A1");
+        ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
+        
+        testType.newAttribute().setName("A2");
+        
+        IProductCmpt product2 = newProductCmpt(ipsProject, "TestProduct2");
+        product2.setPolicyCmptType(testType.getQualifiedName());
+        gen = (IProductCmptGeneration)product2.newGeneration();
+        ce1 = gen.newConfigElement();
+        ce1.setPcTypeAttribute("A1");
+        ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
+        IConfigElement ce2 = gen.newConfigElement();
+        ce2.setPcTypeAttribute("A2");
+        ce2.setType(ConfigElementType.POLICY_ATTRIBUTE);
+        
+        assertEquals(true, product.containsDifferenceToModel());
+        assertEquals(false, product2.containsDifferenceToModel());
+        testType.getAttribute("A2").delete();
+        assertEquals(false, product.containsDifferenceToModel());
+        assertEquals(true, product2.containsDifferenceToModel());       
+    }
+
+    /**
+     * Test method for {@link org.faktorips.devtools.core.model.IFixDifferencesToModelSupport#fixAllDifferencesToModel()}.
+     * @throws CoreException 
+     */
+    public void testFixAllDifferencesToModel() throws CoreException {
+        PolicyCmptType testType = newPolicyCmptType(ipsProject, "TestType");
+        IAttribute a1 = testType.newAttribute();
+        a1.setName("A1");
+        
+        IProductCmpt product = newProductCmpt(ipsProject, "TestProduct");
+        product.setPolicyCmptType(testType.getQualifiedName());
+        IProductCmptGeneration gen = (IProductCmptGeneration)product.newGeneration();
+        IConfigElement ce1 = gen.newConfigElement();
+        ce1.setPcTypeAttribute("A1");
+        ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
+        
+        testType.newAttribute().setName("A2");
+        
+        IProductCmpt product2 = newProductCmpt(ipsProject, "TestProduct2");
+        product2.setPolicyCmptType(testType.getQualifiedName());
+        gen = (IProductCmptGeneration)product2.newGeneration();
+        ce1 = gen.newConfigElement();
+        ce1.setPcTypeAttribute("A1");
+        ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
+        IConfigElement ce2 = gen.newConfigElement();
+        ce2.setPcTypeAttribute("A2");
+        ce2.setType(ConfigElementType.POLICY_ATTRIBUTE);
+        
+        assertEquals(true, product.containsDifferenceToModel());
+        product.fixAllDifferencesToModel();
+        assertEquals(false, product.containsDifferenceToModel());
+        
+        assertEquals(false, product2.containsDifferenceToModel());
+        product2.fixAllDifferencesToModel();
+        assertEquals(false, product2.containsDifferenceToModel());
+    }
 }

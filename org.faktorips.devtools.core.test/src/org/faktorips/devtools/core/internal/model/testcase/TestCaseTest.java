@@ -376,5 +376,41 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         assertTrue(testRuleParametersList.contains(ruleA));
         assertTrue(testRuleParametersList.contains(ruleB));
         assertTrue(testRuleParametersList.contains(ruleC));
-    }    
+    }   
+
+    /**
+     * Test method for {@link org.faktorips.devtools.core.model.IFixDifferencesToModelSupport#containsDifferenceToModel()}.
+     * @throws CoreException 
+     */
+    public void testContainsDifferenceToModel() throws CoreException {
+        ITestCaseType testCaseTypeX = (ITestCaseType) newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "testCaseTypeX");
+        
+        ITestCase testCaseX = (ITestCase) newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "testCaseTypeX");
+        testCaseX.setTestCaseType(testCaseTypeX.getName());
+        
+        assertEquals(false, testCaseX.containsDifferenceToModel());
+        testCaseTypeX.newInputTestValueParameter().setName("inputTestValueX");
+        assertEquals(true, testCaseX.containsDifferenceToModel());       
+    } 
+
+    /**
+     * Test method for {@link org.faktorips.devtools.core.model.IFixDifferencesToModelSupport#fixAllDifferencesToModel()}.
+     * @throws CoreException 
+     */
+    public void testFixAllDifferencesToModel() throws CoreException {
+        ITestCaseType testCaseTypeX = (ITestCaseType) newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "testCaseTypeX");
+        
+        ITestCase testCaseX = (ITestCase) newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "testCaseTypeX");
+        testCaseX.setTestCaseType(testCaseTypeX.getName());
+        
+        assertEquals(false, testCaseX.containsDifferenceToModel());
+        testCaseX.fixAllDifferencesToModel();
+        assertEquals(false, testCaseX.containsDifferenceToModel());
+        
+        testCaseTypeX.newInputTestValueParameter().setName("inputTestValueX");
+        
+        assertEquals(true, testCaseX.containsDifferenceToModel());
+        testCaseX.fixAllDifferencesToModel();
+        assertEquals(false, testCaseX.containsDifferenceToModel());
+    }
 }

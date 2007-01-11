@@ -8,7 +8,7 @@
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
  * 
- * Mitwirkende:� Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de �
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
  **************************************************************************************************/
 
 package org.faktorips.devtools.core.ui.wizards.fixdifferences;
@@ -51,6 +51,7 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
                 try {
                     for (int i = 0; i < elementsToFix.length; i++) {
                         elementsToFix[i].fixAllDifferencesToModel();
+                        elementsToFix[i].getIpsSrcFile().save(true, null);
                         monitor.worked(1);
                     }
                 }
