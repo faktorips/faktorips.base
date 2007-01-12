@@ -1,0 +1,175 @@
+/***************************************************************************************************
+ * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere. Alle Rechte vorbehalten. Dieses Programm und
+ * alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, etc.) dürfen nur unter
+ * den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung
+ * Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann. Mitwirkende: Faktor Zehn GmbH -
+ * initial API and implementation
+ **************************************************************************************************/
+
+package org.faktorips.devtools.ant;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+
+/**
+ * Implements a custom Ant-Task, which triggers a full build on the current Workspace. Alternatively
+ * one or more <b>EclipseProject</b> nested tags can be specified to indicate for which projects a
+ * full build should be executed. The <b>EclipseProject</b> tag has a <b>name</b> attribute where
+ * the name of the eclipse project within the workspace can be specified. If the specified project
+ * doesn't exist in the workspace the EclipseProject entry will be ignored during build and a
+ * information will be logged to system out.
+ * 
+ * @author Marcel Senf <marcel.senf@faktorzehn.de>
+ * @author Peter Erzberger <peter.erzberger@faktorzehn.de>
+ */
+public class FullBuildTask extends Task {
+
+    private List eclipseProjects = new ArrayList();
+
+    public void addEclipseProject(EclipseProject eclipsProject) {
+        eclipseProjects.add(eclipsProject);
+    }
+
+    /**
+     * Excecutes the Ant-Task {@inheritDoc}
+     */
+    public void execute() throws BuildException {
+
+        System.out.println("FullBuildTask: execution started");
+        // Fetch Workspace
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+
+        // Create ProgressMonitor
+        IProgressMonitor monitor = new NullProgressMonitor();
+
+        try {
+            IProject projects[] = null;
+            if (eclipseProjects.isEmpty()) {
+                workspace.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+
+                // Iterate over Projects in Workspace to find Warning and Errormarkers
+                projects = workspace.getRoot().getProjects();
+            } else {
+                projects = buildEclipseProjects(workspace);
+            }
+
+            handleMarkers(projects);
+        } catch (BuildException e) {
+            throw e;
+        } catch (CoreException e) {
+            throw new BuildException(e.getStatus().toString());
+        } catch (Exception e) {
+            throw new BuildException(e);
+        } finally {
+            System.out.println("FullBuildTask: execution finished");
+        }
+    }
+
+    private IProject[] buildEclipseProjects(IWorkspace workspace) throws CoreException {
+        List existingProjects = new ArrayList();
+        for (Iterator it = eclipseProjects.iterator(); it.hasNext();) {
+            EclipseProject eclipseProject = (EclipseProject)it.next();
+            String name = eclipseProject.getName();
+            if (name != null) {
+                IProject project = workspace.getRoot().getProject(name);
+                if (project.exists()) {
+                    existingProjects.add(project);
+                    System.out.println("FullBuildTask: start buidling project " + project.getName());
+                    project.build(IncrementalProjectBuilder.FULL_BUILD, null);
+                    System.out.println("FullBuildTask: finished buidling project " + project.getName());
+                } else {
+                    logProblem(project, IMarker.SEVERITY_WARNING, "Unable to locate the project " + project.getName()
+                            + "within the workspace. The project will be skipped.");
+
+                }
+            }
+        }
+        return (IProject[])existingProjects.toArray(new IProject[existingProjects.size()]);
+
+    }
+
+    private void logProblem(IProject project, int severity, String text) {
+        System.out.println("Project: " + project.getName() + ", " + getSeverityText(severity) + ": " + text);
+
+    }
+
+    private void handleMarkers(IProject[] projects) throws CoreException {
+        Set projectsWithErrors = new HashSet();
+        for (int i = 0; i < projects.length; i++) {
+            IProject project = projects[i];
+            IMarker markers[] = project.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+            for (int j = 0; j < markers.length; j++) {
+                IMarker marker = markers[j];
+                Integer severity = (Integer)marker.getAttribute(IMarker.SEVERITY);
+                if (severity != null && severity.intValue() == IMarker.SEVERITY_ERROR) {
+                    projectsWithErrors.add(project);
+                }
+                logProblem(project, severity.intValue(), marker.getAttribute(IMarker.MESSAGE, "Problem has no message"));
+            }
+        }
+
+        if (projectsWithErrors.size() > 0) {
+            throw new BuildException("Unable to complete the build. Errors occured in the following projects: "
+                    + getErroneousProjectsAsText(projectsWithErrors));
+        }
+    }
+
+    private String getSeverityText(int severity) {
+        if (severity == IMarker.SEVERITY_ERROR) {
+            return "ERROR";
+        }
+        if (severity == IMarker.SEVERITY_WARNING) {
+            return "WARNING";
+        }
+        if (severity == IMarker.SEVERITY_INFO) {
+            return "INFO";
+        }
+        throw new IllegalArgumentException("Unexpected severity: " + severity);
+    }
+
+    private String getErroneousProjectsAsText(Set projectSet) {
+        StringBuffer buf = new StringBuffer();
+        for (Iterator it = projectSet.iterator(); it.hasNext();) {
+            IProject project = (IProject)it.next();
+            buf.append(project.getName());
+            if (it.hasNext()) {
+                buf.append(", ");
+            }
+        }
+        return buf.toString();
+    }
+
+    /**
+     * This class covers the nested tag EclipseProject.
+     * 
+     * @author Peter Erzberger
+     */
+    public static class EclipseProject {
+
+        private String name;
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+}
