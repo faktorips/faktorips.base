@@ -240,6 +240,15 @@ public class JavaCodeFragment {
         }
 	}
 	
+    /**
+     * Adds an import entry to this code fragment.
+     * 
+     * @param qualifiedClassName the java class that is added to the import declaration
+     */
+    public void addImport(String qualifiedClassName){
+        importDecl.add(qualifiedClassName);
+    }
+    
 	/**
 	 * Appends a line seperator to the sourcecode. 
 	 */
