@@ -59,6 +59,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
@@ -979,6 +980,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
         ((IpsModel)getIpsModel()).getIpsArtefactBuilderSet(this, true);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector() {
+        return IpsPlugin.getDefault().getIpsLoggingFrameworkConnector(
+                getPropertiesInternal().getLoggingFrameworkConnectorId());
+    }
+    
     /**
      * {@inheritDoc}
      */

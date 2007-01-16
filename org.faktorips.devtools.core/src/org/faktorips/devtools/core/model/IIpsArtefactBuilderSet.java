@@ -156,6 +156,12 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 	 */
 	public String getLabel();
 
+    public boolean hasLogStatementBuilder();
+    
+    public void setIpsLoggingFrameworkConnector(IIpsLoggingFrameworkConnector logStmtBuilder);
+    
+    public IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector();
+    
 	/**
 	 * Initializes this set. Creation of IpsArtefactBuilders has to go here
 	 * instead of the constructor of the set implementation.

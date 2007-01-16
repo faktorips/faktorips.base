@@ -50,6 +50,7 @@ import org.faktorips.devtools.core.internal.model.pctype.ProductRelevantIcon;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.internal.model.versionmanager.IpsContentMigrationOperation;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -123,6 +124,9 @@ public class IpsPlugin extends AbstractUIPlugin {
      * All available feature version managers
      */
     private IIpsFeatureVersionManager[] featureVersionManagers;
+    
+    
+    private IIpsLoggingFrameworkConnector[] loggingFrameworkConnectors;
 
     // Factories for creating controls depending on the datatype
     private ValueDatatypeControlFactory[] controlFactories = new ValueDatatypeControlFactory[] {
@@ -476,16 +480,66 @@ public class IpsPlugin extends AbstractUIPlugin {
                 if (elements[j].getName().equals("externalValueConverter")) { //$NON-NLS-1$
                     try {
                         format.addValueConverter((IValueConverter)elements[j].createExecutableExtension("class")); //$NON-NLS-1$
-                    }
-                    catch (CoreException e) {
+                    } catch (CoreException e) {
                         IpsPlugin.log(e);
                     }
                 }
             }
-
         }
     }
 
+    /**
+     * Returns the <code>IIpsLoggingFrameworkConnector</code> for the provided id. If no
+     * <code>IIpsLoggingFrameworkConnector</code> with the provided id is found <code>null</code>
+     * will be returned.
+     */
+    public IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector(String id) {
+        IIpsLoggingFrameworkConnector[] builders = getIpsLoggingFrameworkConnectors();
+        for (int i = 0; i < builders.length; i++) {
+            if (id.equals(builders[i].getId())) {
+                return builders[i];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the <code>IIpsLoggingFrameworkConnector</code> that are registered at the according
+     * extension-point.
+     */
+    public IIpsLoggingFrameworkConnector[] getIpsLoggingFrameworkConnectors() {
+
+        if (loggingFrameworkConnectors == null) {
+            ArrayList builders = new ArrayList();
+            IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID,
+                    "loggingFrameworkConnector");
+            IExtension[] extensions = extensionPoint.getExtensions();
+            for (int i = 0; i < extensions.length; i++) {
+                IExtension extension = extensions[i];
+                IConfigurationElement[] configElements = extension.getConfigurationElements();
+                for (int j = 0; j < configElements.length; j++) {
+                    IConfigurationElement configElement = configElements[i];
+                    if ("loggingFrameworkConnector".equals(configElement.getName())) {
+                        try {
+                            IIpsLoggingFrameworkConnector connector = (IIpsLoggingFrameworkConnector)configElement
+                                    .createExecutableExtension("class");
+                            connector.setId(extension.getUniqueIdentifier() == null ? "" : extension
+                                    .getUniqueIdentifier());
+                            builders.add(connector);
+
+                        } catch (CoreException e) {
+                            log(new IpsStatus("Unable to create the log statement builder with the id "
+                                    + extension.getUniqueIdentifier(), e));
+                        }
+                    }
+                }
+            }
+            loggingFrameworkConnectors = (IIpsLoggingFrameworkConnector[])builders
+                    .toArray(new IIpsLoggingFrameworkConnector[builders.size()]);
+        }
+        return loggingFrameworkConnectors;
+    }
+    
     /**
      * Opens an editor for the IpsObject contained in the given IpsSrcFile.
      * 

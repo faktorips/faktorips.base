@@ -269,6 +269,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 		// Dies muss ueberarbeitet werden
 		IIpsProjectProperties props = ipsProject.getProperties();
 		props.setBuilderSetId("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
+        props.setLoggingFrameworkConnectorId("org.faktorips.devtools.core.javaUtilLoggingConnector");
 		props.setPredefinedDatatypesUsed(new String[] { "Decimal", "Money", "Integer", 
 				"String", "Boolean" });
 		props.setJavaSrcLanguage(Locale.GERMAN);

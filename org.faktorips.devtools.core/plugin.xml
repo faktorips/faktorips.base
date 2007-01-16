@@ -11,6 +11,7 @@
    <extension-point id="externalTableFormat" name="ExternalTableFormat" schema="schema/externalTableFormat.exsd"/>
    <extension-point id="externalValueConverter" name="ExternalValueConverter" schema="schema/externalValueConverter.exsd"/>
    <extension-point id="faktorIpsFeatureVersionManager" name="FaktorIpsFeatureVersionManager" schema="schema/faktorIpsFeatureVersionManager.exsd"/>
+   <extension-point id="loggingFrameworkConnector" name="Logging Framework Connector" schema="schema/loggingFrameworkConnector.exsd"/>
    
 <!-- 
     Product Definition Perspective
@@ -949,4 +950,10 @@
          </launchMode>
       </launchConfigurationTabGroup>
     </extension>
+   <extension
+         id="javaUtilLoggingConnector"
+         name="Java Util Logging Connector"
+         point="org.faktorips.devtools.core.loggingFrameworkConnector">
+      <loggingFrameworkConnector class="org.faktorips.devtools.core.builder.JavaUtilLoggingFrameworkConnector"/>
+   </extension>
 </plugin>

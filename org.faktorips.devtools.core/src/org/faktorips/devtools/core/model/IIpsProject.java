@@ -462,6 +462,15 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IIpsArtefactBuilderSet getIpsArtefactBuilderSet();
 
     /**
+     * Returns the <code>{@link IIpsLoggingFrameworkConnector}</code> for the IpsProject property
+     * <i>loggingFrameworkConnector</i> configured in the .ipsproject file for this project. If no
+     * connector counld be found for the declared IpsProject property  <code>null</code> will be returned.
+     * Valid connector ids are the ids of the extensions of the extension-point 
+     * <code>org.faktorips.devtools.core.loggingFrameworkConnector</code>.
+     */
+    public IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector();
+    
+    /**
      * Reinitializes the <code>IpsProject</code>s <code>IpsArtefactBuilderSet</code>.
      * 
      * @throws CoreException when an exception arises during reinitialization

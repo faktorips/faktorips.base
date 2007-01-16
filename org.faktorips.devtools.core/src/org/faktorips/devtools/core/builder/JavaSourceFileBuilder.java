@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -52,6 +54,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -650,6 +653,34 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 		return Modifier.PUBLIC + Modifier.ABSTRACT;
 	}
 
+    protected String getLoggerInstanceExpession() {
+        throw new RuntimeException("Subclassses of this builder that want to use logging must override this method " +
+                "to provide the expression for the logger instance.");
+    }
+    
+    public void writeInfoLoggingStmt(JavaCodeFragmentBuilder builder, String message){
+        ArrayList usedClasses = new ArrayList();
+        String loggingStmt = getBuilderSet().getIpsLoggingFrameworkConnector().getLogStmtForMessage(
+                IIpsLoggingFrameworkConnector.LEVEL_INFO, message, getLoggerInstanceExpession(), usedClasses);
+        builder.append(loggingStmt);
+        builder.append(";");
+        for (Iterator it = usedClasses.iterator(); it.hasNext();) {
+            String className = (String)it.next();
+            builder.getFragment().addImport(className);
+        }
+    }
+
+    public void writeInfoLoggingStmtWithCondition(JavaCodeFragmentBuilder builder, String message){
+        ArrayList usedClasses = new ArrayList();
+        builder.append("if (");
+        builder.append(getBuilderSet().getIpsLoggingFrameworkConnector().getLogConditionExp(
+                IIpsLoggingFrameworkConnector.LEVEL_INFO, getLoggerInstanceExpession(), usedClasses));
+        builder.append(")");
+        builder.openBracket();
+        writeInfoLoggingStmt(builder, message);
+        builder.closeBracket();
+    }
+    
 	/**
 	 * Implementation of the build procedure of this builder.
 	 */

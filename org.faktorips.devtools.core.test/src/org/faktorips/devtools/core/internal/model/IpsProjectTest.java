@@ -44,6 +44,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.TestEnumType;
+import org.faktorips.devtools.core.builder.JavaUtilLoggingFrameworkConnector;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
@@ -924,4 +925,10 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertTrue(result.contains(f));
         assertTrue(result.contains(g));
     }
+    
+    public void testGetIpsLoggingFrameworkConnector(){
+        JavaUtilLoggingFrameworkConnector connector = (JavaUtilLoggingFrameworkConnector)ipsProject.getIpsLoggingFrameworkConnector();
+        assertNotNull(connector);
+    }
+    
 }

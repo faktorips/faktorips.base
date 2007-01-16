@@ -268,5 +268,20 @@ public interface IIpsProjectProperties {
      * @param version The minimum version number for this feature.
      */
     public void setMinRequiredVersionNumber(String featureId, String version);
+    
+    /**
+     * Returns the id of the logging framework connector that will be used for this project.
+     * Possible values for this id are the ids of the extensions of the extension-point
+     * <code>org.faktorips.devtools.core.loggingFrameworkConnector</code>
+     */
+    public String getLoggingFrameworkConnectorId();
+
+    /**
+     * Sets the id of the logging framework connector that will be used for this project. Possible
+     * values for this id are the ids of the extensions of the extension-point
+     * <code>org.faktorips.devtools.core.loggingFrameworkConnector</code>
+     */
+    public void setLoggingFrameworkConnectorId(String loggingFrameworkConnectorId);
+
 
 }

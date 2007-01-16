@@ -74,6 +74,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 	private String changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
 	private IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
 	private String builderSetId = ""; //$NON-NLS-1$
+    private String loggingFrameworkConnectorId="";
     private IIpsArtefactBuilderSetConfig builderSetConfig = new IpsArtefactBuilderSetConfig();
 	private IIpsObjectPath path = new IpsObjectPath();
 	private String[] predefinedDatatypesUsed = new String[0];
@@ -343,6 +344,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         Element builderSetEl = doc.createElement(IIpsArtefactBuilderSet.XML_ELEMENT);
         projectEl.appendChild(builderSetEl);
         builderSetEl.setAttribute("id", builderSetId); //$NON-NLS-1$
+        builderSetEl.setAttribute("loggingFrameworkConnectorId", loggingFrameworkConnectorId); //$NON-NLS-1$
         builderSetEl.appendChild(builderSetConfig.toXml(doc));
         
         // generated sourcecode
@@ -395,8 +397,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         Element artefactEl = XmlUtil.getFirstElement(element, IIpsArtefactBuilderSet.XML_ELEMENT);
         if(artefactEl != null) {
             builderSetId = artefactEl.getAttribute("id"); //$NON-NLS-1$
+            loggingFrameworkConnectorId = artefactEl.getAttribute("loggingFrameworkConnectorId"); //$NON-NLS-1$
         } else {
         	builderSetId = ""; //$NON-NLS-1$
+            loggingFrameworkConnectorId = ""; //$NON-NLS-1$
         }
         Element artefactConfigEl = XmlUtil.getFirstElement(artefactEl, IIpsArtefactBuilderSetConfig.XML_ELEMENT);
         if(artefactConfigEl != null){
@@ -765,6 +769,20 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      */
     public void setMinRequiredVersionNumber(String featureId, String version) {
         requiredFeatures.put(featureId, version);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getLoggingFrameworkConnectorId() {
+        return loggingFrameworkConnectorId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setLoggingFrameworkConnectorId(String loggingFrameworkConnectorId) {
+        this.loggingFrameworkConnectorId = loggingFrameworkConnectorId;
     }
     
     

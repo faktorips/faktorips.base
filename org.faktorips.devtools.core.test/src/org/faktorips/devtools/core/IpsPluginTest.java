@@ -17,9 +17,14 @@
 
 package org.faktorips.devtools.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
 
 /**
  * 
@@ -65,5 +70,14 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
         public void propertyChange(PropertyChangeEvent event) {
             lastEvent = event;
         }
+    }
+    
+    public void testGetIpsLoggingFrameworkConnectors() throws CoreException{
+        IIpsLoggingFrameworkConnector[] connectors = IpsPlugin.getDefault().getIpsLoggingFrameworkConnectors();
+        List connectorIds = new ArrayList();
+        for (int i = 0; i < connectors.length; i++) {
+            connectorIds.add(connectors[i].getId());
+        }
+        assertTrue(connectorIds.contains("javaUtilLoggingConnector"));
     }
 }

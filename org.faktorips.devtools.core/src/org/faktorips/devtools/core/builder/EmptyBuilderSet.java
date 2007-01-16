@@ -25,6 +25,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
@@ -147,5 +148,32 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
+    }
+
+    /**
+     * Returns <code>null</code>.
+     * {@inheritDoc}
+     */
+    public IIpsLoggingFrameworkConnector getLogStatmentBuilder() {
+        return null;
+    }
+
+    /**
+     * Ignores the setting.
+     * {@inheritDoc}
+     */
+    public void setIpsLoggingFrameworkConnector(IIpsLoggingFrameworkConnector logStmtBuilder) {
+    }
+
+    public IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector() {
+        return null;
+    }
+
+    /**
+     * Return false.
+     * {@inheritDoc}
+     */
+    public boolean hasLogStatementBuilder() {
+        return false;
     }
 }

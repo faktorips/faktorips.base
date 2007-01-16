@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.builder;
 
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
 
 /**
  * Abstract implementation that can be used as a base class for real builder sets. 
@@ -28,8 +29,10 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
 
 	private String id;
 	private String label;
-	
-	public AbstractBuilderSet() {
+    private IIpsLoggingFrameworkConnector logStatementBuilder;
+
+
+    public AbstractBuilderSet() {
 		super();
 	}
 	
@@ -48,6 +51,27 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
 	public void setLabel(String label) {
 		this.label = label;
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector() {
+        return logStatementBuilder;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasLogStatementBuilder() {
+        return logStatementBuilder != null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setIpsLoggingFrameworkConnector(IIpsLoggingFrameworkConnector logStmtBuilder) {
+        logStatementBuilder = logStmtBuilder;
+    }
 
 	public String toString() {
 		return id;

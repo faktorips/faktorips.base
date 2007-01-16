@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.ILog;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
-import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -34,7 +33,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.IdentifierResolver;
 
-public class TestIpsArtefactBuilderSet implements IIpsArtefactBuilderSet {
+public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
 
     public final static String ID = "testbuilderset";
     
