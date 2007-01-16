@@ -1016,14 +1016,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         // first, get all datatypes defined by the ips-plugin itself
         // to get them at top of the list...
         for (int i = 0; i < extensions.length; i++) {
-            if (extensions[i].getNamespaceIdentifier().equals(IpsPlugin.PLUGIN_ID)) {
+            if (extensions[i].getNamespace().equals(IpsPlugin.PLUGIN_ID)) {
                 createDatatypeDefinition(extensions[i]);
             }
         }
 
         // and second, get the rest.
         for (int i = 0; i < extensions.length; i++) {
-            if (!extensions[i].getNamespaceIdentifier().equals(IpsPlugin.PLUGIN_ID)) {
+            if (!extensions[i].getNamespace().equals(IpsPlugin.PLUGIN_ID)) {
                 createDatatypeDefinition(extensions[i]);
             }
         }
@@ -1355,7 +1355,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     }
                     Class builderSetClass = null;
                     try {
-                        builderSetClass = Platform.getBundle(extension.getNamespaceIdentifier()).loadClass(builderSetClassName);
+                        builderSetClass = Platform.getBundle(extension.getNamespace()).loadClass(builderSetClassName);
                     } catch (ClassNotFoundException e) {
                         IpsPlugin.log(new IpsStatus("Unable to load the IpsArtefactBuilderSet class " + builderSetClassName +  //$NON-NLS-1$
                                 " specified with the extension id " + extension.getUniqueIdentifier())); //$NON-NLS-1$
