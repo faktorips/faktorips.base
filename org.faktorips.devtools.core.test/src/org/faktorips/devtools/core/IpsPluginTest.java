@@ -78,6 +78,6 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
         for (int i = 0; i < connectors.length; i++) {
             connectorIds.add(connectors[i].getId());
         }
-        assertTrue(connectorIds.contains("javaUtilLoggingConnector"));
+        assertTrue(connectorIds.contains("org.faktorips.devtools.core.javaUtilLoggingConnector"));
     }
 }
