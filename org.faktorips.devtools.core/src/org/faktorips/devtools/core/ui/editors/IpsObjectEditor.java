@@ -14,7 +14,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IStorage;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -166,10 +165,6 @@ public abstract class IpsObjectEditor extends FormEditor
             initFromStorageEditorInput((IStorageEditorInput)input);
             setPartName(((IStorageEditorInput)input).getName());
         }
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(IpsObjectEditor.this);
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(IpsObjectEditor.this);
-        IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(IpsObjectEditor.this);
-        IpsPlugin.getDefault().getIpsPreferences().addChangeListener(IpsObjectEditor.this);
 
         if (ipsSrcFile == null) {
             throw new PartInitException("Unsupported editor input type " + input.getClass().getName()); //$NON-NLS-1$
@@ -202,6 +197,10 @@ public abstract class IpsObjectEditor extends FormEditor
         
         setDataChangeable(computeDataChangeableState());
 
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(IpsObjectEditor.this);
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(IpsObjectEditor.this);
+        IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(IpsObjectEditor.this);
+        IpsPlugin.getDefault().getIpsPreferences().addChangeListener(IpsObjectEditor.this);
         if (TRACE) {
             logMethodFinished("init"); //$NON-NLS-1$
         }
@@ -524,7 +523,8 @@ public abstract class IpsObjectEditor extends FormEditor
      */
     public void resourceChanged(IResourceChangeEvent event) {
         IResource enclResource = ipsSrcFile.getEnclosingResource();
-        if (enclResource==null || event.getDelta().findMember(enclResource.getFullPath())==null) {
+        if (enclResource == null || event.getDelta() == null
+                || event.getDelta().findMember(enclResource.getFullPath()) == null) {
             return;
         }
         if (TRACE) {
@@ -746,27 +746,6 @@ public abstract class IpsObjectEditor extends FormEditor
     
     protected void consumeNextWindowActivatedEvent() {
         activationListener.consumeNextWindowActivatedEvent = true;
-    }
-    
-
-    /**
-     * Class to fix differences to the model as workspace runnable
-     * 
-     * @author Joerg Ortmann
-     */
-    private class DifferenceFixer implements IWorkspaceRunnable {
-        private IFixDifferencesToModelSupport toFixIpsObject;
-        
-        public DifferenceFixer(IFixDifferencesToModelSupport toFixIpsObject) {
-            this.toFixIpsObject = toFixIpsObject;
-        }
-        
-        /**
-         * {@inheritDoc}
-         */
-        public void run(IProgressMonitor monitor) throws CoreException {
-            toFixIpsObject.fixAllDifferencesToModel();
-        }
     }
     
     /**

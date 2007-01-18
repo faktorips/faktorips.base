@@ -279,6 +279,10 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     protected void clean(IProgressMonitor monitor) throws CoreException {
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
         for (int i = 0; i < roots.length; i++) {
+            
+            if(!roots[i].isBasedOnSourceFolder()){
+                continue;
+            }
             IFolder destination = roots[i].getArtefactDestination(true);
             //if the user decides not to consider the sources in this folder as derived 
             //then the content should not be delete during a clean build
