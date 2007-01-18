@@ -17,6 +17,7 @@
 
 package org.faktorips.sourcecode;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -161,8 +162,6 @@ public class JavaCodeFragmentTest extends TestCase
 		assertEquals("Hello world!", builder.getFragment().getSourcecode()); 
 	}
 	
-	
-	
 	public void testEquals()
 	{
 		ImportDeclaration id1 = new ImportDeclaration();
@@ -176,4 +175,11 @@ public class JavaCodeFragmentTest extends TestCase
 		id2.add("java.util.*");
 		assertFalse(fragment1.equals(new JavaCodeFragment("return", id2)));
 	}
+    
+    public void testAddImport(){
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.addImport(Calendar.class.getName());
+        assertEquals(1, fragment.getImportDeclaration().getNoOfImports());
+        assertTrue(fragment.getImportDeclaration().isCovered(Calendar.class));
+    }
 }
