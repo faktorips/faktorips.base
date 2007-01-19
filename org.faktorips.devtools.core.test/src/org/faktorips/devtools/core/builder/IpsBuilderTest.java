@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.builder;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,11 +26,15 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.IpsArchiveEntry;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.IpsProject;
+import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
+import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -269,6 +274,34 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
     }
 
+    public void testCleanBuild() throws CoreException{
+        newPolicyCmptType(ipsProject, "mycompany.motor.MotorPolicy");
+        IFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
+        archiveFile.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        
+        File file = archiveFile.getLocation().toFile();
+        CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(ipsProject.getIpsPackageFragmentRoots(), file);
+        operation.setInclJavaBinaries(true);
+        operation.setInclJavaSources(true);
+        operation.run(null);
+
+        IIpsProject project2 = newIpsProject("TestProject2");
+        IFile archiveFile2 = project2.getProject().getFile(archiveFile.getLocation());
+
+        IpsArchiveEntry archiveEntry = new IpsArchiveEntry((IpsObjectPath)project2.getIpsObjectPath());
+        archiveEntry.setArchiveFile(archiveFile2);
+        IIpsObjectPathEntry[] entries = project2.getIpsObjectPath().getEntries();
+        IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length + 1];
+        System.arraycopy(entries, 0, newEntries, 0, entries.length);
+        newEntries[newEntries.length - 1] = archiveEntry;
+        IIpsObjectPath newPath = project2.getIpsObjectPath();
+        newPath.setEntries(newEntries);
+        project2.setIpsObjectPath(newPath);
+        
+        project2.getProject().build(IncrementalProjectBuilder.CLEAN_BUILD, null);
+
+    }
+    
     private static class TestRemoveIpsArtefactBuilder extends AbstractArtefactBuilder {
 
         /**
