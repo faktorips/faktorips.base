@@ -182,7 +182,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     private IFolder getXmlContentFileFolder(IIpsSrcFile ipsSrcFile) throws CoreException {
         String packageString = getBuilderSet().getPackage(DefaultBuilderSet.KIND_TEST_CASE_XML, ipsSrcFile);
         IPath pathToPack = new Path(packageString.replace('.', '/'));
-        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(false).getFolder(
+        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getFolder(
             pathToPack);
     }
     
