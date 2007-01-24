@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.ui.actions.WrapperAction;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorer;
@@ -51,7 +50,7 @@ public class ProductExplorer extends ModelExplorer {
 
 	protected ModelExplorerConfiguration createConfig() {
 		return new ModelExplorerConfiguration(new Class[] { IProductCmpt.class,
-				ITableContents.class, ITestCase.class, ITestCaseType.class}
+				ITableContents.class, ITestCase.class}
 				, new Class[]{IFile.class, IFolder.class, IProject.class});
 	}
     /**

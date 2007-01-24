@@ -1894,7 +1894,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             public void run() {
                 if (isDisposed())
                     return;
-                setFormToolTipText(getFormToolTipText() + Messages.TestCaseSection_1 + failureToolTip);
+                setFormToolTipText(getFormToolTipText() + "\n" + failureToolTip); //$NON-NLS-1$
             }
         });
     }    

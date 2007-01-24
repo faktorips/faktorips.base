@@ -83,7 +83,9 @@ import org.faktorips.devtools.core.ui.actions.NewIpsPacketAction;
 import org.faktorips.devtools.core.ui.actions.NewPolicyComponentTypeAction;
 import org.faktorips.devtools.core.ui.actions.NewProductComponentAction;
 import org.faktorips.devtools.core.ui.actions.NewTableContentAction;
+import org.faktorips.devtools.core.ui.actions.NewTableStructureAction;
 import org.faktorips.devtools.core.ui.actions.NewTestCaseAction;
+import org.faktorips.devtools.core.ui.actions.NewTestCaseTypeAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.RenameAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
@@ -446,18 +448,26 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
                 if (config.isAllowedIpsElementType(ITableContents.class)) {
                     newMenu.add(new NewTableContentAction(getSite().getWorkbenchWindow()));
                 }
+                if (config.isAllowedIpsElementType(ITestCase.class)) {
+                    newMenu.add(new NewTestCaseAction(getSite().getWorkbenchWindow()));
+                }
                 if (config.isAllowedIpsElementType(IPolicyCmptType.class)) {
                     newMenu.add(new NewPolicyComponentTypeAction(getSite().getWorkbenchWindow()));
                 }
+                if (config.isAllowedIpsElementType(ITableStructure.class)) {
+                    newMenu.add(new NewTableStructureAction(getSite().getWorkbenchWindow()));
+                }
+                if (config.isAllowedIpsElementType(ITestCaseType.class)) {
+                    newMenu.add(new NewTestCaseTypeAction(getSite().getWorkbenchWindow()));
+                }
+                
                 if (selected instanceof IProductCmpt) {
+                    newMenu.add(new Separator());
                     newMenu
                             .add(new IpsDeepCopyAction(getSite().getShell(), treeViewer,
                                     DeepCopyWizard.TYPE_NEW_VERSION));
                     newMenu.add(new IpsDeepCopyAction(getSite().getShell(), treeViewer,
                             DeepCopyWizard.TYPE_COPY_PRODUCT));
-                }
-                if (config.isAllowedIpsElementType(ITestCase.class)) {
-                    newMenu.add(new NewTestCaseAction(getSite().getWorkbenchWindow()));
                 }
             }
             manager.add(newMenu);
