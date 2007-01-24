@@ -117,6 +117,11 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
      */
     public AbstractMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) throws CoreException {
         String version = projectToMigrate.getProperties().getMinRequiredVersionNumber(getFeatureId());
+        if (version == null){
+            // no version entry was found in the properties, therefore no migration operation will be available
+            // for this project
+            return new AbstractMigrationOperation[0];
+        }
         return getMigrationOperations(projectToMigrate, version);
     }
 
