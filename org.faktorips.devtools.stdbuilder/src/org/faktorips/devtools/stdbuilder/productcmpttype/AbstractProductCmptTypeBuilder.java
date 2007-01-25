@@ -25,7 +25,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
@@ -141,30 +140,20 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
     /*
      * Generates the sourcecode of the generated Java class or interface.
      */
-    protected JavaCodeFragment generateCodeForJavatype() throws CoreException {
-        JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
-        generateTypeJavadoc(codeBuilder);
-        if (generatesInterface()) {
-            codeBuilder.interfaceBegin(getUnqualifiedClassName(), getExtendedInterfaces());
-        } else {
-            codeBuilder.classBegin(getClassModifier(), getUnqualifiedClassName(), getSuperclass(),
-                getExtendedInterfaces());
-        }
-        JavaCodeFragmentBuilder fieldCodeBuilder = new JavaCodeFragmentBuilder();
-        JavaCodeFragmentBuilder methodCodeBuilder = new JavaCodeFragmentBuilder();
+    protected void generateCodeForJavatype() throws CoreException {
 
-        generateCodeForTableUsages(fieldCodeBuilder, methodCodeBuilder);
-        
-        generateCodeForAttributes(fieldCodeBuilder, methodCodeBuilder);
-        generateCodeForRelations(fieldCodeBuilder, methodCodeBuilder);
-        generateOtherCode(fieldCodeBuilder, methodCodeBuilder);
-
-        codeBuilder.append(fieldCodeBuilder.getFragment());
-        generateConstructors(codeBuilder);
-        codeBuilder.append(methodCodeBuilder.getFragment());
-
-        codeBuilder.classEnd();
-        return codeBuilder.getFragment();
+        TypeSection mainSection = getMainTypeSection();
+        mainSection.setClassModifier(getClassModifier());
+        mainSection.setSuperClass(getSuperclass());
+        mainSection.setExtendedInterfaces(getExtendedInterfaces());
+        mainSection.setUnqualifiedName(getUnqualifiedClassName());
+        mainSection.setClass(!generatesInterface());
+        generateCodeForAttributes(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateCodeForRelations(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateConstructors(mainSection.getConstructorSectionBuilder());
+        generateTypeJavadoc(mainSection.getJavaDocForTypeSectionBuilder());
+        generateCodeForTableUsages(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateOtherCode(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
     }
 
     /**

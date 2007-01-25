@@ -24,7 +24,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
@@ -105,31 +104,44 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
     /**
      * Generates the sourcecode of the generated Java class or interface.
      */
-    protected JavaCodeFragment generateCodeForJavatype() throws CoreException {
-        JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
-        generateTypeJavadoc(codeBuilder);
-        if (generatesInterface()) {
-            codeBuilder.interfaceBegin(getUnqualifiedClassName(), getExtendedInterfaces());
-        } else {
-            codeBuilder.classBegin(getClassModifier(), getUnqualifiedClassName(), getSuperclass(),
-                getExtendedInterfaces());
-        }
-        JavaCodeFragmentBuilder memberVarCodeBuilder = new JavaCodeFragmentBuilder();
-        JavaCodeFragmentBuilder methodCodeBuilder = new JavaCodeFragmentBuilder();
-
-        generateCodeForAttributes(memberVarCodeBuilder, methodCodeBuilder);
-        generateCodeForRelations(memberVarCodeBuilder, methodCodeBuilder);
-        generateOther(memberVarCodeBuilder, methodCodeBuilder);
-        generateCodeForMethodsDefinedInModel(methodCodeBuilder);
-
-        codeBuilder.append(memberVarCodeBuilder.getFragment());
-        generateConstructors(codeBuilder);
-        codeBuilder.append(methodCodeBuilder.getFragment());
-
-        codeBuilder.classEnd();
-        return codeBuilder.getFragment();
+    protected void generateCodeForJavatype() throws CoreException {
+        TypeSection mainSection = getMainTypeSection();
+        mainSection.setClassModifier(getClassModifier());
+        mainSection.setSuperClass(getSuperclass());
+        mainSection.setExtendedInterfaces(getExtendedInterfaces());
+        mainSection.setUnqualifiedName(getUnqualifiedClassName());
+        mainSection.setClass(!generatesInterface());
+        generateCodeForAttributes(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateCodeForRelations(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateOther(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateCodeForMethodsDefinedInModel(mainSection.getMethodSectionBuilder());
+        generateConstructors(mainSection.getConstructorSectionBuilder());
+        generateTypeJavadoc(mainSection.getJavaDocForTypeSectionBuilder());
+        generateConstants(mainSection.getConstantSectionBuilder());
+        generateInnerClasses();
     }
 
+    /**
+     * Subclasses of this builder can generate inner classes within this method. Inner classes are created by
+     * calling the <code>createInnerClassSection()</code> method.
+     * 
+     * @throws CoreException exceptions during generation time can be wrapped into CoreExceptions and 
+     *  propagated by this method
+     */
+    protected void generateInnerClasses() throws CoreException{
+        
+    }
+
+    /**
+     * Constants are supposed to be generated within this method. Especially the generated
+     * code should be passed to the provided builder.
+     * 
+     * @throws CoreException exceptions during generation time can be wrapped into CoreExceptions and 
+     *  propagated by this method
+     */
+    protected void generateConstants(JavaCodeFragmentBuilder builder) throws CoreException{
+    }
+    
     /**
      * Generates the Javadoc for the Java class or interface.
      * 
@@ -172,6 +184,13 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
      */
     protected abstract String[] getExtendedInterfaces() throws CoreException;
 
+    /**
+     * Constructors are supposed to be generated within this method. Especially the generated
+     * code should be passed to the provided builder.
+     * 
+     * @throws CoreException exceptions during generation time can be wrapped into CoreExceptions and 
+     *  propagated by this method
+     */
     protected abstract void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException;
 
     /*

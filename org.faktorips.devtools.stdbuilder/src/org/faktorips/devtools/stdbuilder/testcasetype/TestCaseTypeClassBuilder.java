@@ -130,18 +130,17 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * {@inheritDoc}
      */
-    protected JavaCodeFragment generateCodeForJavatype() throws CoreException {
+    protected void generateCodeForJavatype() throws CoreException {
         
-        JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
-        
-        codeBuilder.classBegin(Modifier.PUBLIC, getUnqualifiedClassName(), getSuperClassName() , new String[0]);
-        buildMemberVariables(codeBuilder, testCaseType);
-        buildConstructor(codeBuilder);
-        buildHelperMethods(codeBuilder);
-        buildSuperMethodImplementation(codeBuilder, testCaseType);
-        codeBuilder.classEnd();
-        
-        return codeBuilder.getFragment();
+        TypeSection mainSection = getMainTypeSection();
+        mainSection.setClassModifier(Modifier.PUBLIC);
+        mainSection.setUnqualifiedName(getUnqualifiedClassName());
+        mainSection.setSuperClass(getSuperClassName());
+
+        buildMemberVariables(mainSection.getAttributesSectionBuilder(), testCaseType);
+        buildConstructor(mainSection.getConstructorSectionBuilder());
+        buildHelperMethods(mainSection.getMethodSectionBuilder());
+        buildSuperMethodImplementation(mainSection.getMethodSectionBuilder(), testCaseType);
     }
     
     protected String getSuperClassName(){

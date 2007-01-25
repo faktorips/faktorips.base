@@ -238,24 +238,21 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * {@inheritDoc}
      */
-    protected JavaCodeFragment generateCodeForJavatype() throws CoreException {
+    protected void generateCodeForJavatype() throws CoreException {
         if (productCmpt == null){
             throw new CoreException(new IpsStatus("Product component not found! " + getIpsSrcFile()));
         }
-        
-        JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
-        codeBuilder.classBegin(Modifier.PUBLIC, StringUtil.unqualifiedName(getQualifiedClassName()),
-                getSuperClassName(), new String[0]);
+        TypeSection mainSection = getMainTypeSection();
+        mainSection.setClassModifier(Modifier.PUBLIC);
+        mainSection.setUnqualifiedName(StringUtil.unqualifiedName(getQualifiedClassName()));
+        mainSection.setSuperClass(getSuperClassName());
 
-        generateConstructor(codeBuilder);
-        generateMethodGetProductCmptType(productCmptType, codeBuilder);
+        generateConstructor(mainSection.getConstructorSectionBuilder());
+        generateMethodGetProductCmptType(productCmptType, mainSection.getMethodSectionBuilder());
         
-        List testMethods = generateTestMethods(productCmpt, codeBuilder);
-        generateExecuteBusinessLogicMethod(productCmptType, testMethods ,codeBuilder);
-        generateExecuteAssertsMethod(productCmptType, testMethods ,codeBuilder);
-        
-        codeBuilder.classEnd();
-        return codeBuilder.getFragment();
+        List testMethods = generateTestMethods(productCmpt, mainSection.getMethodSectionBuilder());
+        generateExecuteBusinessLogicMethod(productCmptType, testMethods ,mainSection.getMethodSectionBuilder());
+        generateExecuteAssertsMethod(productCmptType, testMethods ,mainSection.getMethodSectionBuilder());
     }
     
     /*

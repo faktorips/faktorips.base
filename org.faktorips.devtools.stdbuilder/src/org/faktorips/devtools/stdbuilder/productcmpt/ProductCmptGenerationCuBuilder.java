@@ -108,28 +108,28 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     /**
      * {@inheritDoc}
      */
-    protected JavaCodeFragment generateCodeForJavatype() throws CoreException {
+    protected void generateCodeForJavatype() throws CoreException {
         if(generation == null){
             addToBuildStatus(new IpsStatus("The generation needs to be set for this " + ProductCmptGenerationCuBuilder.class));
-            return new JavaCodeFragment();
+            return;
         }
         IPolicyCmptType pcType = generation.getProductCmpt().findPolicyCmptType();
-        JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
-        codeBuilder.classBegin(Modifier.PUBLIC, getUnqualifiedClassName(),
-                productCmptGenImplBuilder.getQualifiedClassName(pcType.getIpsSrcFile()), new String[0]);
-        buildConstructor(codeBuilder);
+        TypeSection mainSection = getMainTypeSection();
+        mainSection.setClassModifier(Modifier.PUBLIC);
+        mainSection.setUnqualifiedName(getUnqualifiedClassName());
+        mainSection.setSuperClass(productCmptGenImplBuilder.getQualifiedClassName(pcType.getIpsSrcFile()));
+
+        buildConstructor(mainSection.getConstructorSectionBuilder());
         IConfigElement[] elements = generation.getConfigElements(ConfigElementType.FORMULA);
         for (int i = 0; i < elements.length; i++) {
             try {
                 if(!elements[i].validate().containsErrorMsg()){
-                    generateMethodComputeValue(elements[i], codeBuilder);
+                    generateMethodComputeValue(elements[i], mainSection.getMethodSectionBuilder());
                 }
             } catch (Exception e) {
                 addToBuildStatus(new IpsStatus("Error generating code for " + elements[i], e));
             }
         }
-        codeBuilder.classEnd();
-        return codeBuilder.getFragment();
     }
 
     /*

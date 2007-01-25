@@ -45,6 +45,9 @@ public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkCo
         if(level == IIpsLoggingFrameworkConnector.LEVEL_ERROR){
             return "Level.SEVERE";
         }
+        if(level == IIpsLoggingFrameworkConnector.LEVEL_DEBUG){
+            return "Level.FINE";
+        }
         if(level == IIpsLoggingFrameworkConnector.LEVEL_TRACE){
             return "Level.FINEST";
         }
@@ -68,6 +71,9 @@ public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkCo
         }
         if(level == IIpsLoggingFrameworkConnector.LEVEL_ERROR){
             return "severe";
+        }
+        if(level == IIpsLoggingFrameworkConnector.LEVEL_DEBUG){
+            return "fine";
         }
         if(level == IIpsLoggingFrameworkConnector.LEVEL_TRACE){
             return "finest";

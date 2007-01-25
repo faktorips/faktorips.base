@@ -48,6 +48,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -653,33 +654,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 		return Modifier.PUBLIC + Modifier.ABSTRACT;
 	}
 
-    protected String getLoggerInstanceExpession() {
-        throw new RuntimeException("Subclassses of this builder that want to use logging must override this method " +
-                "to provide the expression for the logger instance.");
-    }
-    
-    public void writeInfoLoggingStmt(JavaCodeFragmentBuilder builder, String message){
-        ArrayList usedClasses = new ArrayList();
-        String loggingStmt = getBuilderSet().getIpsLoggingFrameworkConnector().getLogStmtForMessage(
-                IIpsLoggingFrameworkConnector.LEVEL_INFO, message, getLoggerInstanceExpession(), usedClasses);
-        builder.append(loggingStmt);
-        builder.append(";");
-        for (Iterator it = usedClasses.iterator(); it.hasNext();) {
-            String className = (String)it.next();
-            builder.getFragment().addImport(className);
-        }
-    }
-
-    public void writeInfoLoggingStmtWithCondition(JavaCodeFragmentBuilder builder, String message){
-        ArrayList usedClasses = new ArrayList();
-        builder.append("if (");
-        builder.append(getBuilderSet().getIpsLoggingFrameworkConnector().getLogConditionExp(
-                IIpsLoggingFrameworkConnector.LEVEL_INFO, getLoggerInstanceExpession(), usedClasses));
-        builder.append(")");
-        builder.openBracket();
-        writeInfoLoggingStmt(builder, message);
-        builder.closeBracket();
-    }
     
 	/**
 	 * Implementation of the build procedure of this builder.
