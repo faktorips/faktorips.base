@@ -28,9 +28,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.Section;
-import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
-import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccessWithListenerSupport;
+import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
+import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.ArgumentCheck;
 

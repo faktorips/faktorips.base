@@ -8,7 +8,7 @@
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
  * 
- * Mitwirkende:  Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  
+ * Mitwirkende:ï¿½ Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de ï¿½
  **************************************************************************************************/
 
 package org.faktorips.devtools.core.model;
@@ -31,7 +31,6 @@ public interface IFixDifferencesToModelSupport {
 
     /**
      * Fixes all differences between this element and its corresponding model element.
-     * The element should be saved before this method returns.
      * 
      * @throws CoreException
      */

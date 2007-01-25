@@ -17,12 +17,12 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
+import junit.framework.TestCase;
+
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-
-import junit.framework.TestCase;
 
 public class SelectionProviderDispatcherTest extends TestCase {
 

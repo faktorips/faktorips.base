@@ -34,8 +34,10 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.ui.editors.DescriptionPage;
+import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.ProductCmptDeltaDialog;
+import org.faktorips.values.DateUtil;
 
 /**
  * Editor to a edit a product component.
@@ -45,18 +47,29 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.Prod
  */
 public class ProductCmptEditor extends TimedIpsObjectEditor {
 
-	private GenerationPropertiesPage generationPropertiesPage;
+    /*
+     * Setting key for user's decision not to choose a new product component type, because the old
+     * can't be found.
+     */
+    private final static String SETTING_WORK_WITH_MISSING_TYPE = "workWithMissingType";
 
-	// flag is true if the user has manually chosen the active generation
-    private boolean activeGenerationManuallySet = false;
-	
-    // The working date that is used in the editor. This has to be stored in the editor
-    // as it can differ from the global working date when the user changes the global working date.
-    private GregorianCalendar workingDateUsedInEditor = null;
-    
+    /*
+     * Setting key for the working date used in the editor. This might differ from the one
+     * defined in the preferences.
+     */
+    private final static String SETTING_WORKING_DATE = "workingDate";
+
+    /*
+     * Setting key for user's decision not to choose a new product component type, because the old
+     * can't be found.
+     */
+    private final static String SETTING_ACTIVE_GENERATION_MANUALLY_SET = "activeGenerationManuallySet";
+
+    private GenerationPropertiesPage generationPropertiesPage;
+
     private boolean isHandlingWorkingDateMismatch = false;
     
-	/**
+    /**
 	 * Creates a new editor for product components.
 	 */
 	public ProductCmptEditor() {
@@ -68,12 +81,18 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	protected void addPagesForParsableSrcFile() throws PartInitException , CoreException {
 		IProductCmpt cmpt = (ProductCmpt)getIpsObject();
+        IIpsObjectEditorSettings settings = getSettings();
         // open the select template dialog if the templ. is missing and the data is changeable 
 		if (getProductCmpt().findProductCmptType() == null 
                 && couldDateBeChangedIfProductCmptTypeWasntMissing()
-                && !IpsPlugin.getDefault().isTestMode()) {
+                && !IpsPlugin.getDefault().isTestMode()
+                && !settings.getBoolean(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE)) {
             String msg = NLS.bind(Messages.ProductCmptEditor_msgTemplateNotFound, cmpt.getPolicyCmptType());
-            postOpenDialogInUiThread(new SetTemplateDialog(cmpt, getSite().getShell(), msg));
+            SetTemplateDialog d = new SetTemplateDialog(cmpt, getSite().getShell(), msg);
+            int rc = d.open();
+            if (rc==Dialog.CANCEL) {
+                getSettings().put(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE, true);
+            }
         }
         this.generationPropertiesPage = new GenerationPropertiesPage(this);
 		addPage(generationPropertiesPage);
@@ -104,6 +123,20 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			throw new RuntimeException(e);
 		}
 	}
+    
+    private GregorianCalendar getWorkingDateUsedInEditor() {
+        String s = getSettings().get(getIpsSrcFile(), SETTING_WORKING_DATE);
+        try {
+            return DateUtil.parseIsoDateStringToGregorianCalendar(s);
+        } catch (IllegalArgumentException e) {
+            IpsPlugin.log(e); // if it can't be parsed we use null.
+            return null;
+        }
+    }
+    
+    private void setWorkingDateUsedInEditor(GregorianCalendar date) {
+        getSettings().put(getIpsSrcFile(), SETTING_WORKING_DATE, DateUtil.gregorianCalendarToIsoDateString(date));
+    }
     
 	/**
 	 * {@inheritDoc}
@@ -150,7 +183,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		IProductCmptGeneration generation = (IProductCmptGeneration)prod.getGenerationByEffectiveDate(workingDate);
 
         if (generation!=null) {
-            workingDateUsedInEditor = workingDate;
+            setWorkingDateUsedInEditor(workingDate);
             if (!generation.equals(getActiveGeneration())) {
                 // we found a generation matching the working date, but the found one is not active,
                 // so make it active.
@@ -159,7 +192,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
             return;
         }
         // no generation for the _exact_ current working date.
-		if (workingDate.equals(workingDateUsedInEditor)) {
+		if (workingDate.equals(getWorkingDateUsedInEditor())) {
 			// check happned before and user decided not to create a new generation - dont bother 
 			// the user with repeating questions.
             return;
@@ -167,7 +200,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
 		if (prefs.isWorkingModeBrowse()) {
 			// just browsing - show the generation valid at working date
-			if (!activeGenerationManuallySet) {
+			if (!getSettings().getBoolean(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET)) {
 				showGenerationEffectiveOn(prefs.getWorkingDate());
 			}
 			return;
@@ -179,14 +212,18 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
      * {@inheritDoc}
      */
 	public void propertyChange(PropertyChangeEvent event) {
+        if (!isActive()) {
+            super.propertyChange(event);
+            return;
+        }
 		String property = event.getProperty();
 		if (property.equals(IpsPreferences.WORKING_DATE)) {
-			activeGenerationManuallySet = false;
+			getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, false);
 			updateChosenActiveGeneration();
 		} else if (property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
             refresh();
 		} else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
-			activeGenerationManuallySet = false;
+            getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, false);
             // refresh is done in superclass
 		}
         super.propertyChange(event);
@@ -203,7 +240,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
             }
             refresh();
 		}
-        activeGenerationManuallySet = manuallySet;
+        getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, manuallySet);
 	}
     
     /**
@@ -275,14 +312,13 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
         int choice = GenerationSelectionDialog.CHOICE_BROWSE;
         if (IpsPlugin.getDefault().isTestMode()) {
             choice = IpsPlugin.getDefault().getTestAnswerProvider().getIntAnswer();
-        }
-        else {
+        } else {
             if (dialog.getReturnCode() == GenerationSelectionDialog.OK) {
                 choice = dialog.getChoice();
             }
         }
         GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-        workingDateUsedInEditor = workingDate;
+        setWorkingDateUsedInEditor(workingDate);
         switch (choice) {
             case GenerationSelectionDialog.CHOICE_BROWSE:
                 setActiveGeneration(cmpt.findGenerationEffectiveOn(workingDate), false);
@@ -335,8 +371,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
     public void contentsChanged(final ContentChangeEvent event) {
         if (event.getIpsSrcFile().equals(getIpsSrcFile())) {
             if (event.getEventType()==ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
-                this.workingDateUsedInEditor = null;
-                this.activeGenerationManuallySet = false;
+                setWorkingDateUsedInEditor(null);
+                getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, false);
             }
         }
         super.contentsChanged(event);

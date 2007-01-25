@@ -19,6 +19,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ISavedState;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -64,7 +66,9 @@ import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.EnumDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditFieldChangesBroadcaster;
+import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
 import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
 import org.faktorips.devtools.extsystems.IValueConverter;
 import org.faktorips.util.ArgumentCheck;
@@ -83,9 +87,6 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     public final static boolean TRACE_UI = Boolean.valueOf(
             Platform.getDebugOption("org.faktorips.devtools.core/trace/ui")).booleanValue(); //$NON-NLS-1$
-
-    private boolean testMode = false;
-    private ITestAnswerProvider testAnswerProvider;
 
     /**
      * Returns the full extension id. This is the plugin's id plus the plugin relative extension id
@@ -115,16 +116,11 @@ public class IpsPlugin extends AbstractUIPlugin {
     // listener
     private IIpsTestRunner ipsTestRunner;
 
-    /**
-     * All available external table formats
-     */
+    // All available external table formats
     private AbstractExternalTableFormat[] externalTableFormats;
 
-    /**
-     * All available feature version managers
-     */
+    // All available feature version managers
     private IIpsFeatureVersionManager[] featureVersionManagers;
-    
     
     private IIpsLoggingFrameworkConnector[] loggingFrameworkConnectors;
 
@@ -135,6 +131,11 @@ public class IpsPlugin extends AbstractUIPlugin {
     // Broadcaster for broadcasting delayed change events triggerd by edit fields
     private EditFieldChangesBroadcaster editFieldChangeBroadcaster;
 
+    private IpsObjectEditorSettings ipsEditorSettings;
+    
+    private boolean testMode = false;
+    private ITestAnswerProvider testAnswerProvider;
+    
     /**
      * Returns the shared instance.
      */
@@ -164,6 +165,9 @@ public class IpsPlugin extends AbstractUIPlugin {
         super.start(context);
         preferences = new IpsPreferences(getPreferenceStore());
         docBuilderFactory = DocumentBuilderFactory.newInstance();
+        ipsEditorSettings = new IpsObjectEditorSettings();
+        ResourcesPlugin.getWorkspace().addSaveParticipant(this, ipsEditorSettings);
+        ipsEditorSettings.load(getStateLocation());
         model = new IpsModel();
         model.startListeningToResourceChanges();
     }
@@ -336,6 +340,14 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public IpsPreferences getIpsPreferences() {
         return preferences;
+    }
+    
+    /**
+     * Returns the settings for ips object editors.
+     * @return
+     */
+    public IIpsObjectEditorSettings getIpsEditorSettings() {
+        return ipsEditorSettings;
     }
 
     /**

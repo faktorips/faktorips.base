@@ -17,9 +17,9 @@
 
 package org.faktorips.devtools.core.builder;
 
-import org.faktorips.util.StringUtil;
-
 import junit.framework.TestCase;
+
+import org.faktorips.util.StringUtil;
 
 public class MessageFragmentTest extends TestCase {
 

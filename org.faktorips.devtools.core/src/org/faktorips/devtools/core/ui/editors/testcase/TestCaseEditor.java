@@ -7,6 +7,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.editors.DescriptionPage;
+import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.testcase.deltapresentation.TestCaseDeltaDialog;
 
@@ -16,6 +17,12 @@ import org.faktorips.devtools.core.ui.editors.testcase.deltapresentation.TestCas
  * @author Joerg Ortmann
  */
 public class TestCaseEditor extends IpsObjectEditor {
+
+    /*
+     * Setting key for user's decision not to choose a new test case type, because the old
+     * can't be found.
+     */
+    private final static String SETTING_WORK_WITH_MISSING_TYPE = "workWithMissingType";
 
     TestCaseEditorPage editorPage;
     
@@ -34,13 +41,18 @@ public class TestCaseEditor extends IpsObjectEditor {
      * (@inheritDoc)
      */
     protected void addPagesForParsableSrcFile() throws CoreException {
+        IIpsObjectEditorSettings settings = getSettings();
         // open the select template dialog if the templ. is missing and the data is changeable
         if (getTestCase().findTestCaseType() == null 
                 && couldDateBeChangedIfTestCaseTypeWasntMissing()
-                && !IpsPlugin.getDefault().isTestMode()) {
-            String msg = NLS
-                    .bind(Messages.TestCaseEditor_Information_TemplateNotFound, getTestCase().getTestCaseType());
-            postOpenDialogInUiThread(new SetTemplateDialog(getTestCase(), getSite().getShell(), msg));
+                && !IpsPlugin.getDefault().isTestMode()
+                && !settings.getBoolean(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE)) {            
+            String msg = NLS.bind(Messages.TestCaseEditor_Information_TemplateNotFound, getTestCase().getTestCaseType());
+            SetTemplateDialog d = new SetTemplateDialog(getTestCase(), getSite().getShell(), msg); 
+            int rc = d.open();
+            if (rc==Dialog.CANCEL) {
+                getSettings().put(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE, true);
+            }
         }
         TestCaseContentProvider contentProviderInput = new TestCaseContentProvider(TestCaseContentProvider.COMBINED,
                 getTestCase());

@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
-
 import junit.framework.TestCase;
+
+import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
 
 public class JavaStandardLoggingLogStmtBuilderTest extends TestCase {
 

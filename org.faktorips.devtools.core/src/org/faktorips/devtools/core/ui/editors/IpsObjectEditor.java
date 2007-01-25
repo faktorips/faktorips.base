@@ -80,6 +80,12 @@ public abstract class IpsObjectEditor extends FormEditor
 
     public final static boolean TRACE = IpsPlugin.TRACE_UI;
 
+    /*
+     * Setting key for user's decision not to fix the differences between the
+     * product definition structure and the model structure
+     */
+    private final static String SETTING_DONT_FIX_DIFFERENCES = "dontFixDifferences";
+
     // the file that's being edited (if any)
     private IIpsSrcFile ipsSrcFile;
 
@@ -91,12 +97,6 @@ public abstract class IpsObjectEditor extends FormEditor
     // the editor's ISelectionProvider 
     private SelectionProviderDispatcher selectionProviderDispatcher;
 
-    /*
-     * Storage for the user's decision not to fix the differences between the
-     * product definition structure and the model structure
-     */
-    private boolean dontFixDifferences = false;
-    
     /*
      * Storage for the user's decision not to load the changes made directly in the
      * file system.
@@ -546,6 +546,13 @@ public abstract class IpsObjectEditor extends FormEditor
         return ipsSrcFile != null && ipsSrcFile.exists()
                 && ipsSrcFile.getEnclosingResource().isSynchronized(IResource.DEPTH_ONE);
     }
+    
+    /**
+     * Returns <code>true</code> if this is the active editor, otherwise <code>false</code>. 
+     */
+    protected boolean isActive() {
+        return this==getSite().getPage().getActiveEditor();
+    }
 
     protected void handleEditorActivation() {
         if (TRACE) {
@@ -617,7 +624,7 @@ public abstract class IpsObjectEditor extends FormEditor
             // e.g. if the product cmpt editor is open and the product cmpt was moved
             return;
         }
-        if (dontFixDifferences) {
+        if (getSettings().getBoolean(getIpsSrcFile(), SETTING_DONT_FIX_DIFFERENCES)) {
             // user decided not to fix the differences some time ago...
             return;
         }           
@@ -629,50 +636,23 @@ public abstract class IpsObjectEditor extends FormEditor
         if (!(getIpsObject() instanceof IFixDifferencesToModelSupport)) {
             return;
         }
-        final IFixDifferencesToModelSupport toFixIpsObject = (IFixDifferencesToModelSupport)getIpsObject();
+        IFixDifferencesToModelSupport toFixIpsObject = (IFixDifferencesToModelSupport)getIpsObject();
         try {
             if (!toFixIpsObject.containsDifferenceToModel()){
                 return;
             }
-            final Dialog dialog = createDialogToFixDifferencesToModel();
-            
-            if (getSite() != null) {
-                Runnable checkAndFixRunnable = new Runnable() {
-                    public void run() {
-                        consumeNextWindowActivatedEvent();
-                        if (dialog.open() == Dialog.OK) {
-                            try {
-                                toFixIpsObject.fixAllDifferencesToModel();
-                                refreshInclStructuralChanges();
-                            } catch (CoreException e) {
-                                IpsPlugin.logAndShowErrorDialog(e);
-                                return;
-                            }
-                        } else {
-                            dontFixDifferences = true;
-                        }
-                    }
-                };
-                getSite().getShell().getDisplay().asyncExec(checkAndFixRunnable);
+            Dialog dialog = createDialogToFixDifferencesToModel();
+            if (dialog.open() == Dialog.OK) {
+                toFixIpsObject.fixAllDifferencesToModel();
+                refreshInclStructuralChanges();
+            } else {
+                getSettings().put(getIpsSrcFile(), SETTING_DONT_FIX_DIFFERENCES, true);
             }
-        }
-        catch (CoreException e) {
+        } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return;
         }
     }    
-    
-    /**
-     * Opens the given dialog by the ui thread at the next reasonable opportunity.
-     */
-    protected void postOpenDialogInUiThread(final Dialog dialog){
-        Runnable checkAndFixRunnable = new Runnable() {
-            public void run() {
-                dialog.open();
-            }
-        };
-        getSite().getShell().getDisplay().asyncExec(checkAndFixRunnable);
-    }
     
     /**
      * Creates a dialog to disblay the differences to the model and ask the user if the
@@ -732,6 +712,9 @@ public abstract class IpsObjectEditor extends FormEditor
         if (TRACE) {
             logMethodStarted("propertyChange(): Received property changed event " + event); //$NON-NLS-1$
         }
+        if (!isActive()) {
+            return;
+        }
         if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
             refresh();        
         }
@@ -740,12 +723,15 @@ public abstract class IpsObjectEditor extends FormEditor
         }
     }
     
-    public String toString() {
-        return "Editor for " + getIpsSrcFile(); //$NON-NLS-1$
+    /**
+     * Returns the settings for ips object editors. This method never returns <code>null</code>.
+     */
+    protected IIpsObjectEditorSettings getSettings() {
+        return IpsPlugin.getDefault().getIpsEditorSettings();
     }
     
-    protected void consumeNextWindowActivatedEvent() {
-        activationListener.consumeNextWindowActivatedEvent = true;
+    public String toString() {
+        return "Editor for " + getIpsSrcFile(); //$NON-NLS-1$
     }
     
     /**
@@ -755,14 +741,10 @@ public abstract class IpsObjectEditor extends FormEditor
      */
     class ActivationListener implements IPartListener, IWindowListener {
 
-        /** Cache of the active workbench part. */
-        private IWorkbenchPart activePart;
         /** Indicates whether activation handling is currently be done. */
         private boolean isHandlingActivation= false;
 
         private IPartService partService;
-        
-        private boolean consumeNextWindowActivatedEvent = false;
         
         /**
          * Creates this activation listener.
@@ -791,7 +773,6 @@ public abstract class IpsObjectEditor extends FormEditor
             if (part!=IpsObjectEditor.this) {
                 return;
             }
-            activePart= part;
             handleActivation();
         }
 
@@ -804,13 +785,13 @@ public abstract class IpsObjectEditor extends FormEditor
             }
             ipsSrcFile.discardChanges();
             removeListeners();
+            if (!IpsPlugin.getDefault().getWorkbench().isClosing()) {
+                IIpsObjectEditorSettings settings = IpsPlugin.getDefault().getIpsEditorSettings();
+                settings.remove(ipsSrcFile);
+            }
         }
 
         public void partDeactivated(IWorkbenchPart part) {
-            if (part!=IpsObjectEditor.this) {
-                return;
-            }
-            activePart= null;
         }
         
         private void removeListeners() {
@@ -829,7 +810,7 @@ public abstract class IpsObjectEditor extends FormEditor
             if (isHandlingActivation)
                 return;
 
-            if (activePart == IpsObjectEditor.this) {
+            if (isActive()) {
                 isHandlingActivation= true;
                 try {
                     handleEditorActivation();
@@ -841,11 +822,7 @@ public abstract class IpsObjectEditor extends FormEditor
 
         public void windowActivated(IWorkbenchWindow window) {
             if (window == getEditorSite().getWorkbenchWindow()) {
-                if (consumeNextWindowActivatedEvent) {
-                    consumeNextWindowActivatedEvent = false;
-                } else {
-                    handleActivation();
-                }
+                handleActivation();
                 /*
                  * Workaround for problem described in
                  * http://dev.eclipse.org/bugs/show_bug.cgi?id=11731
