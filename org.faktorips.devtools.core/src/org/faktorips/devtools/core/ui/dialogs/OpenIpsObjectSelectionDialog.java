@@ -21,6 +21,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.custom.ViewForm;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -34,6 +38,7 @@ import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 
@@ -46,6 +51,9 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
     private Object[] fElements;
     private IpsObjectType[] types;
     private Table filterList;
+    
+    private ViewForm fForm;
+    private CLabel packageInfo;
 
     /**
      * Creates a list selection dialog.
@@ -109,16 +117,41 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
         createFilterText(contents);
         createTypeList(contents);
         createFilteredList(contents);
-
+        createPackageInfo(contents);
+        
         setListElements(fElements);
 
         setSelection(getInitialElementSelections().toArray());
-
+        
         return contents;
     }
-
+    
+    private void createPackageInfo(Composite contents) {
+        fForm = new ViewForm(contents, SWT.BORDER | SWT.FLAT);
+        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+        gd.horizontalSpan = 2;
+        fForm.setLayoutData(gd);
+        packageInfo = new CLabel(fForm, SWT.FLAT);
+        fForm.setContent(packageInfo);
+        packageInfo.setLayoutData(new GridData(GridData.FILL_BOTH));
+        fFilteredList.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                Object[] selection = fFilteredList.getSelection();
+                if (selection.length != 1) {
+                    packageInfo.setText(""); //$NON-NLS-1$
+                    packageInfo.setImage(null);
+                } else if (selection[0] instanceof IIpsObject) {
+                    IIpsPackageFragment frgmt = ((IIpsObject)selection[0]).getIpsPackageFragment();
+                    String packageSource = frgmt.getName();
+                    packageSource += " - " + frgmt.getIpsProject().getName() + "/" + frgmt.getRoot().getName(); //$NON-NLS-1$ //$NON-NLS-2$
+                    packageInfo.setText(packageSource);
+                    packageInfo.setImage(fFilteredList.getLabelProvider().getImage(frgmt));
+                }
+            }
+        });
+    }
+    
     private void createTypeList(Composite contents) {
-
         ExpandableComposite composite = new ExpandableComposite(contents, SWT.NONE);
         composite.setText(Messages.OpenIpsObjectSelectionDialog_Filter);
         composite.addExpansionListener(new ExpansionAdapter() {
