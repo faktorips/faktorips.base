@@ -81,6 +81,16 @@ public class IpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */ 
+    public void markAsDirty() {
+        IpsSrcFileContent content = getContent();
+        if (content!=null) {
+            content.markAsModified();
+        }
+    }
+
     /** 
      * {@inheritDoc}
      */

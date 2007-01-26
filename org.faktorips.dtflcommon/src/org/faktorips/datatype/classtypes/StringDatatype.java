@@ -34,9 +34,15 @@ public class StringDatatype extends ValueClassDatatype {
 		super(String.class, name);
 	}
 	
-	/**
-	 * Overridden Method.
-	 * @see org.faktorips.datatype.ValueDatatype#getValue(java.lang.String)
+    /**
+     * {@inheritDoc}
+     */
+	public boolean isParsable(String value) {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
 	 */
 	public Object getValue(String value) {
 		return value;

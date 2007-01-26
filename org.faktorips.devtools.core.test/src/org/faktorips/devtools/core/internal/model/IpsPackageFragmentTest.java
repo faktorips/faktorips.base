@@ -132,6 +132,28 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         assertEquals(1, pack.getChildren().length);
     }
 
+    public void testGetIpsSrcFiles() throws CoreException {
+        assertEquals(0, pack.getIpsSrcFiles().length);
+        
+        pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "MotorProduct", true, null);
+        IIpsSrcFile[] children = pack.getIpsSrcFiles();
+        assertEquals(1, children.length);
+        String filename = IpsObjectType.POLICY_CMPT_TYPE.getFileName("MotorProduct");
+        assertEquals(pack.getIpsSrcFile(filename), children[0]);
+        
+        // folders should be ignored
+        IFolder folder = (IFolder)pack.getCorrespondingResource();
+        IFolder subfolder = folder.getFolder("subfolder");
+        subfolder.create(true, true, null);
+        assertEquals(1, pack.getIpsSrcFiles().length);
+        
+        // files with unkown file extentions should be ignored
+        IFile newFile = folder.getFile("Blabla.unkownExtension");
+        ByteArrayInputStream is = new ByteArrayInputStream("Contents".getBytes());
+        newFile.create(is, true, null);
+        assertEquals(1, pack.getIpsSrcFiles().length);
+    }
+
     public void testGetIpsSrcFile() {
     	String fileName = "file." +  IpsObjectType.POLICY_CMPT_TYPE.getFileExtension();
         IIpsSrcFile file = pack.getIpsSrcFile(fileName);

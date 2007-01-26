@@ -48,6 +48,11 @@ public interface IIpsSrcFile extends IIpsElement {
     public void markAsClean();
     
     /**
+     * Marks the file as containing unsaved changes.
+     */
+    public void markAsDirty();
+    
+    /**
      * Discard all changes that haven't been saved yet. If the file
      * is not dirty, nothing happens.
      */

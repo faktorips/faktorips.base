@@ -86,7 +86,7 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
     /**
      * {@inheritDoc}
      */
-    public Datatype getWrapperType() {
+    public ValueDatatype getWrapperType() {
         return null;
     }
 
@@ -112,8 +112,12 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
      * {@inheritDoc}
      */
     public boolean isNull(String valueString) {
-        Object value = getValue(valueString);
-        
+        Object value;
+        try {
+            value = getValue(valueString);
+        } catch (Exception e) {
+            return false; // => value can't be parsed, so it's also not null
+        }
         if (value==null) {
             if (isNullObject) {
 //                TODO: What's this? throw new RuntimeException("Class " + clazz + " implements NullObject, so the value must not be null.");
@@ -132,10 +136,16 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
      */
     public boolean isParsable(String value) {
         try {
+            if ("".equals(value)) { 
+                // by default the empty space is not parsable. This has to be handled explicitly as 
+                // most value classes assume that the value of the string "" is null. This is however
+                // more a convenience. In the IDE context it is bothering if null can be represented by
+                // null or the string "".
+                return false;
+            }
             if (isNull(value)) {
                 return true;
             }
-            
             getValue(value);
             return true;
             

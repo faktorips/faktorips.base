@@ -55,6 +55,13 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
     /**
      * {@inheritDoc}
      */
+    public IIpsElement[] getChildren() throws CoreException {
+        return getIpsSrcFiles();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public IIpsPackageFragment getParentIpsPackageFragment() {
         int lastIndex = getName().lastIndexOf("."); //$NON-NLS-1$
         if (lastIndex < 0) {

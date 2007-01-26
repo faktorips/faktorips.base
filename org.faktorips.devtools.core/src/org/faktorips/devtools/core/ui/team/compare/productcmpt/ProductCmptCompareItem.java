@@ -40,7 +40,6 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
-import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
 
 /**
@@ -355,19 +354,25 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
         } else if (set instanceof IRangeValueSet) {
             IRangeValueSet rangeSet = (IRangeValueSet)set;
             sb.append("["); //$NON-NLS-1$
-            sb.append(rangeSet.getUpperBound());
+            String unlimited = "unlimited";
+            if (rangeSet.getLowerBound()==null) {
+                sb.append(unlimited);
+            } else {
+                sb.append(rangeSet.getLowerBound());
+            }
             sb.append(".."); //$NON-NLS-1$
-            sb.append(rangeSet.getLowerBound());
+            if (rangeSet.getUpperBound()==null) {
+                sb.append(unlimited);
+            } else {
+                sb.append(rangeSet.getUpperBound());
+            }
             sb.append("]"); //$NON-NLS-1$
         } else if (set instanceof IAllValuesValueSet) {
             sb.append("["); //$NON-NLS-1$
             sb.append(Messages.ProductCmptCompareItem_AllValues);
             sb.append("]"); //$NON-NLS-1$
-        } else{
-//            sb.append("["); //$NON-NLS-1$
-//            sb.append(Messages.ProductCmptCompareItem_AllValues);
-//            sb.append("]"); //$NON-NLS-1$
-//            sb.append("ValueSet not found: "+set);
+        } else {
+            sb.append("Unknown value set type " + set.getClass());
         }
         return sb;
     }

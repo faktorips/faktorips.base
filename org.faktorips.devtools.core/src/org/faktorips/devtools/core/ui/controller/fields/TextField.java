@@ -41,47 +41,42 @@ public class TextField extends DefaultEditField {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#getControl()
+     * {@inheritDoc}
      */
     public Control getControl() {
         return text;
     }
     
     /**
-     * Returns the text control this is an assist for. 
+     * Returns the text control this is an edit field for. 
      */
     public Text getTextControl() {
         return text;
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#getValue()
+     * {@inheritDoc}
      */
     public Object getValue() {
         return super.prepareObjectForGet(text.getText());
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#setValue(java.lang.Object)
+     * {@inheritDoc}
      */
     public void setValue(Object newValue) {
         setText((String)super.prepareObjectForSet(newValue));
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#getText()
+     * {@inheritDoc}
      */
     public String getText() {
         return text.getText();
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#setText(java.lang.String)
+     * {@inheritDoc}
      */
     public void setText(String newText) {
         immediatelyNotifyListener = true;
@@ -94,24 +89,21 @@ public class TextField extends DefaultEditField {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#insertText(java.lang.String)
+     * {@inheritDoc}
      */
     public void insertText(String insertText) {
         text.insert(insertText);
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#selectAll()
+     * {@inheritDoc}
      */
     public void selectAll() {
         text.selectAll();
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.fields.DefaultEditField#addListenerToControl()
+     * {@inheritDoc}
      */
     protected void addListenerToControl() {
         text.addModifyListener(new ModifyListener() {

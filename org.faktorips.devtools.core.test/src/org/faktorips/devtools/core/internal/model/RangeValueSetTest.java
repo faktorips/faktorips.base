@@ -79,13 +79,25 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 	public void testCreateFromXml() throws CoreException {
 		Document doc = getTestDocument();
 		Element root = doc.getDocumentElement();
-		Element element = XmlUtil.getFirstElement(root);
+		
+        // old format
+        Element element = XmlUtil.getFirstElement(root);
 		IRangeValueSet range = new RangeValueSet(ce, 1);
 		range.initFromXml(element);
 		assertEquals("42", range.getLowerBound());
 		assertEquals("trulala", range.getUpperBound());
 		assertEquals("4",range.getStep());
 		assertTrue(range.getContainsNull());
+        
+        // new format
+        element = XmlUtil.getElement(root, 1);
+        range = new RangeValueSet(ce, 1);
+        range.initFromXml(element);
+        assertEquals("1", range.getLowerBound());
+        assertEquals("10", range.getUpperBound());
+        assertEquals("2",range.getStep());
+        assertTrue(range.getContainsNull());
+        
 	}
 
 	public void testToXml() {
@@ -230,8 +242,8 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 	    range.validate(list);
 	    assertFalse(list.isEmpty());
 
-	    range.setLowerBound("");
-	    range.setUpperBound("");
+	    range.setLowerBound(null);
+	    range.setUpperBound(null);
         list.clear();
         range.validate(list);
         assertFalse(list.containsErrorMsg());

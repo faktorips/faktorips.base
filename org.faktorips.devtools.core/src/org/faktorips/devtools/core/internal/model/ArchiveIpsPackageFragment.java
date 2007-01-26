@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsArchive;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -84,21 +83,22 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
     /**
      * {@inheritDoc}
      */
-    public IIpsElement[] getChildren() throws CoreException {
+    public IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
         IIpsArchive archive = root.getIpsArchive();
         if (archive==null) {
-            return new IIpsElement[0];
+            return new IIpsSrcFile[0];
         }
         Set set = archive.getQNameTypes(getName());
-        IIpsElement[] children = new IIpsElement[set.size()];
+        IIpsSrcFile[] srcFiles = new IIpsSrcFile[set.size()];
         int i = 0;
         for (Iterator it = set.iterator(); it.hasNext(); i++) {
             QualifiedNameType qnt = (QualifiedNameType)it.next();
-            children[i] = new ArchiveIpsSrcFile(this, qnt.getFileName());
+            srcFiles[i] = new ArchiveIpsSrcFile(this, qnt.getFileName());
         }
-        return children;
+        return srcFiles;
     }
+    
 
     /**
      * {@inheritDoc}

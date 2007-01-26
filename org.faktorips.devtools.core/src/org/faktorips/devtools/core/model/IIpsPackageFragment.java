@@ -39,6 +39,13 @@ public interface IIpsPackageFragment extends IIpsElement {
     public final static char SEPARATOR = '.';
     
     /**
+     * Returns all ips source files in the package. Returns an empty array if the package is empty.
+     * 
+     * @throws CoreException if an error occurs while searching for the files.
+     */
+    public IIpsSrcFile[] getIpsSrcFiles() throws CoreException;
+    
+    /**
      * Returns the packagefragment which contains this one or null if this one is the default-package.
      */
     public IIpsPackageFragment getParentIpsPackageFragment();

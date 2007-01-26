@@ -132,10 +132,10 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
     /**
      * {@inheritDoc}
      */
-    public IIpsElement[] getChildren() throws CoreException {
+    public IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();
         IResource[] members = folder.members();
-        IIpsElement[] children = new IIpsElement[members.length];
+        IIpsSrcFile[] children = new IIpsSrcFile[members.length];
         int counter = 0;
         for (int i = 0; i < children.length; i++) {
             if (members[i].getType() == IResource.FILE) {
@@ -149,7 +149,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         if (counter == children.length) {
             return children;
         }
-        IIpsElement[] shrinked = new IIpsElement[counter];
+        IIpsSrcFile[] shrinked = new IIpsSrcFile[counter];
         System.arraycopy(children, 0, shrinked, 0, counter);
         return shrinked;
     }

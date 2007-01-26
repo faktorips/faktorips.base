@@ -138,11 +138,8 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
 
     private void connectToModel() {
         upperfield = new TextField(upper);
-        upperfield.setSupportsNull(false);
         lowerfield = new TextField(lower);
-        lowerfield.setSupportsNull(false);
         stepfield = new TextField(step);
-        stepfield.setSupportsNull(false);
     	containsNullField = new CheckboxField(containsNullCB);
         uiController.add(upperfield, range, IRangeValueSet.PROPERTY_UPPERBOUND);
         uiController.add(lowerfield, range, IRangeValueSet.PROPERTY_LOWERBOUND);

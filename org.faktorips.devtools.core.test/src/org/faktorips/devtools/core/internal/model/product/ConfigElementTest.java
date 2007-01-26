@@ -567,7 +567,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     
     private class InvalidDatatype implements ValueDatatype {
 
-		public Datatype getWrapperType() {
+		public ValueDatatype getWrapperType() {
 			return null;
 		}
 

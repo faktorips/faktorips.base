@@ -105,7 +105,7 @@ public class TableStructureEnumDatatypeAdapter extends AbstractDatatype implemen
 	/**
 	 * {@inheritDoc}
 	 */
-	public Datatype getWrapperType() {
+	public ValueDatatype getWrapperType() {
 		return null;
 	}
 

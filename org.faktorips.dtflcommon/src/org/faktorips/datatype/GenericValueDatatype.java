@@ -191,7 +191,10 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         this.qualifiedName = qualifiedName;
     }
 
-    public Datatype getWrapperType() {
+    /**
+     * {@inheritDoc}
+     */
+    public ValueDatatype getWrapperType() {
         return null;
     }
 

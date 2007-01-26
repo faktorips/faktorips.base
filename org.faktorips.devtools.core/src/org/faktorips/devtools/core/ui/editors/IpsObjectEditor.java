@@ -103,6 +103,8 @@ public abstract class IpsObjectEditor extends FormEditor
      */
     private boolean dontLoadChanges = false;
     
+    private boolean isCheckingForChangesMadeOutsideEclipse = false;
+    
     /*
      * True if the editor contains the pages that are shown for a parsable ips source file,
      * false if an error page is shown.
@@ -567,34 +569,39 @@ public abstract class IpsObjectEditor extends FormEditor
     }
 
     private void checkForChangesMadeOutsideEclipse() {
-        if (dontLoadChanges) {
+        if (dontLoadChanges || isCheckingForChangesMadeOutsideEclipse) {
             return;
         }
-        if (TRACE) {
-            logMethodStarted("checkForChangesMadeOutsideEclipse()"); //$NON-NLS-1$
-        }
-        if (getIpsSrcFile().isMutable() && !getIpsSrcFile().getEnclosingResource().isSynchronized(0)) {
-            MessageDialog dlg = new MessageDialog(Display.getCurrent().getActiveShell(), Messages.IpsObjectEditor_fileHasChangesOnDiskTitle, (Image)null, 
-                    Messages.IpsObjectEditor_fileHasChangesOnDiskMessage, MessageDialog.QUESTION,
-                    new String[]{Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton, Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton}, 0);
-            dlg.open();
-            if (dlg.getReturnCode()==0) {
-                try {
-                    if (TRACE) {
-                        log("checkForChangesMadeOutsideEclipse(): Change found, sync file with filesystem (refreshLocal)"); //$NON-NLS-1$
-                    }
-                    getIpsSrcFile().getEnclosingResource().refreshLocal(0, null);
-                    updatePageStructure();
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                dontLoadChanges = true;
+        try {
+            isCheckingForChangesMadeOutsideEclipse = true;
+            if (TRACE) {
+                logMethodStarted("checkForChangesMadeOutsideEclipse()"); //$NON-NLS-1$
             }
-            
-        }
-        if (TRACE) {
-            logMethodFinished("checkForChangesMadeOutsideEclipse()"); //$NON-NLS-1$
+            if (getIpsSrcFile().isMutable() && !getIpsSrcFile().getEnclosingResource().isSynchronized(0)) {
+                MessageDialog dlg = new MessageDialog(Display.getCurrent().getActiveShell(), Messages.IpsObjectEditor_fileHasChangesOnDiskTitle, (Image)null, 
+                        Messages.IpsObjectEditor_fileHasChangesOnDiskMessage, MessageDialog.QUESTION,
+                        new String[]{Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton, Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton}, 0);
+                dlg.open();
+                if (dlg.getReturnCode()==0) {
+                    try {
+                        if (TRACE) {
+                            log("checkForChangesMadeOutsideEclipse(): Change found, sync file with filesystem (refreshLocal)"); //$NON-NLS-1$
+                        }
+                        getIpsSrcFile().getEnclosingResource().refreshLocal(0, null);
+                        updatePageStructure();
+                    } catch (CoreException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    dontLoadChanges = true;
+                }
+                
+            }
+            if (TRACE) {
+                logMethodFinished("checkForChangesMadeOutsideEclipse()"); //$NON-NLS-1$
+            }
+        } finally {
+            isCheckingForChangesMadeOutsideEclipse = false;
         }
     }
 
@@ -735,14 +742,12 @@ public abstract class IpsObjectEditor extends FormEditor
     }
     
     /**
-     * Internal part and shell activation listener for triggering state validation.
+     * Internal part and shell activation listener.
      * 
-     * Copied from AbstractTextEditor
+     * 
+     * Copied from AbstractTextEditor.
      */
     class ActivationListener implements IPartListener, IWindowListener {
-
-        /** Indicates whether activation handling is currently be done. */
-        private boolean isHandlingActivation= false;
 
         private IPartService partService;
         
@@ -773,7 +778,7 @@ public abstract class IpsObjectEditor extends FormEditor
             if (part!=IpsObjectEditor.this) {
                 return;
             }
-            handleActivation();
+            handleEditorActivation();
         }
 
         public void partBroughtToTop(IWorkbenchPart part) {
@@ -803,35 +808,9 @@ public abstract class IpsObjectEditor extends FormEditor
         public void partOpened(IWorkbenchPart part) {
         }
 
-        /**
-         * Handles the activation triggering a element state check in the editor.
-         */
-        private void handleActivation() {
-            if (isHandlingActivation)
-                return;
-
-            if (isActive()) {
-                isHandlingActivation= true;
-                try {
-                    handleEditorActivation();
-                } finally {
-                    isHandlingActivation= false;
-                }
-            }
-        }
-
         public void windowActivated(IWorkbenchWindow window) {
             if (window == getEditorSite().getWorkbenchWindow()) {
-                handleActivation();
-                /*
-                 * Workaround for problem described in
-                 * http://dev.eclipse.org/bugs/show_bug.cgi?id=11731
-                 * Will be removed when SWT has solved the problem.
-                window.getShell().getDisplay().asyncExec(new Runnable() {
-                    public void run() {
-                    }
-                });
-                 */
+                checkForChangesMadeOutsideEclipse();
             }
         }
 

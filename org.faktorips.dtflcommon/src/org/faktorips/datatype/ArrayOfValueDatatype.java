@@ -164,7 +164,7 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
     /**
      * {@inheritDoc}
      */
-    public Datatype getWrapperType() {
+    public ValueDatatype getWrapperType() {
         return null;
     }
 

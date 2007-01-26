@@ -46,7 +46,7 @@ public class PrimitiveBooleanDatatype extends AbstractPrimitiveDatatype {
     /**
      * {@inheritDoc}
      */
-    public Datatype getWrapperType() {
+    public ValueDatatype getWrapperType() {
         return Datatype.BOOLEAN;
     }
 	

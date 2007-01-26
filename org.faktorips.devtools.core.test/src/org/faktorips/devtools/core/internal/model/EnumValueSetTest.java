@@ -347,7 +347,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 		/**
 		 * {@inheritDoc}
 		 */
-		public Datatype getWrapperType() {
+		public ValueDatatype getWrapperType() {
 			return null;
 		}
 

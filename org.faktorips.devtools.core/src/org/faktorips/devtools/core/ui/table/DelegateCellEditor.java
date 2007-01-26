@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dï¿½rfen nur unter den Bedingungen der 
+ * Faktor-Zehn-Community Lizenzvereinbarung ï¿½ Version 0.1 (vor Grï¿½ndung Community) 
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -26,7 +26,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.AbstractPrimitiveDatatype;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.util.ArgumentCheck;
 
@@ -54,7 +53,7 @@ public class DelegateCellEditor extends CellEditor {
         public String getDefaultValue() {
             return null;
         }
-        public Datatype getWrapperType() {
+        public ValueDatatype getWrapperType() {
             return null;
         }
         public boolean supportsCompare() {

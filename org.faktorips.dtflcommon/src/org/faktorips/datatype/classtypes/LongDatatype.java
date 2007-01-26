@@ -37,8 +37,7 @@ public class LongDatatype extends ValueClassDatatype implements NumericDatatype 
 	}
 	
 	/**
-	 * Overridden Method.
-	 * @see org.faktorips.datatype.ValueDatatype#getValue(java.lang.String)
+     * {@inheritDoc}
 	 */
 	public Object getValue(String s) {
         if (StringUtils.isEmpty(s)) {

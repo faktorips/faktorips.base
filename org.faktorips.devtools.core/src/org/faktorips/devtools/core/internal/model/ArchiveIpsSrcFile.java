@@ -77,6 +77,13 @@ public class ArchiveIpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile
     /**
      * {@inheritDoc}
      */
+    public void markAsDirty() {
+        throw new RuntimeException("Can't mark an file in an archive as dirty!");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void discardChanges() {
         // never dirty => nothing to do
     }

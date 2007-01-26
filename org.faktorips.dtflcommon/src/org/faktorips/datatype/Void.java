@@ -58,7 +58,7 @@ public class Void extends AbstractDatatype implements ValueDatatype {
     /** 
      * {@inheritDoc}
      */
-    public Datatype getWrapperType() {
+    public ValueDatatype getWrapperType() {
         return null;
     }
 	

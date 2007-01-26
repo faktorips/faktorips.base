@@ -18,8 +18,8 @@
 package org.faktorips.fl;
 
 import org.faktorips.datatype.AbstractDatatype;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ValueDatatype;
 
 /**
  * Datatype for the test enum.
@@ -65,7 +65,7 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
     /**
      * {@inheritDoc}
      */
-    public Datatype getWrapperType() {
+    public ValueDatatype getWrapperType() {
         return null;
     }
 

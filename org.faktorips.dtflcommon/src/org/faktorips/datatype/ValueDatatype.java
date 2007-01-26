@@ -28,7 +28,7 @@ public interface ValueDatatype extends Datatype {
      * datatype that represents the wrapper class. Returns <code>null</code> if this datatype
      * does not represent a primitive. 
      */
-    public Datatype getWrapperType();
+    public ValueDatatype getWrapperType();
     
 	/**
 	 * Returns <code>true</code> if the given string can be parsed to a value of this datatype.
@@ -38,7 +38,7 @@ public interface ValueDatatype extends Datatype {
 	
 	/**
 	 * Returns <code>true</code> if the given string is <code>null</code> or the representation of the NullObject 
-     * (if the datatype value class makes use of the null object pattern.
+     * (if the datatype value class makes use of the null object pattern.)
 	 * Returns <code>false</code> otherwise.
 	 */
 	public boolean isNull(String value);

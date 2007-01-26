@@ -59,35 +59,22 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class FormulasSection extends IpsSection {
 
-	/**
-	 * Generation which holds the informations to display
-	 */
+	// Generation which holds the informations to display
 	private IProductCmptGeneration generation;
 
-	/**
-	 * Pane which serves as parent for all controlls created inside this
-	 * section.
-	 */
+	// Pane which serves as parent for all controlls created inside this
 	private Composite rootPane;
 
-	/**
-	 * Toolkit to handle common ui-operations
-	 */
+	// Toolkit to handle common ui-operations
 	private UIToolkit toolkit;
 
-	/**
-	 * List of controls displaying data (needed to enable/disable).
-	 */
+	// List of controls displaying data (needed to enable/disable).
 	private List editControls = new ArrayList();
 
-	/**
-	 * Controller to handle update of ui and model automatically.
-	 */
+	// Controller to handle update of ui and model automatically.
 	private CompositeUIController uiMasterController;
 
-	/**
-	 * Label which is displayed if no formulas are defined.
-	 */
+	// Label which is displayed if no formulas are defined.
 	private Label noFormulasLabel;
 
 	public FormulasSection(IProductCmptGeneration generation, Composite parent,
@@ -127,6 +114,7 @@ public class FormulasSection extends IpsSection {
 	 */
 	protected void performRefresh() {
 		uiMasterController.updateUI();
+        throw new RuntimeException("MyException");
 	}
 
 	/**

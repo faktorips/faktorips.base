@@ -39,7 +39,7 @@ public class PrimitiveIntegerDatatype extends AbstractPrimitiveDatatype implemen
     /**
      * {@inheritDoc}
      */
-    public Datatype getWrapperType() {
+    public ValueDatatype getWrapperType() {
         return Datatype.INTEGER;
     }
     

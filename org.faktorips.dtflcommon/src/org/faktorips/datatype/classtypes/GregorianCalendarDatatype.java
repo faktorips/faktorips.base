@@ -35,8 +35,7 @@ public class GregorianCalendarDatatype extends ValueClassDatatype {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.datatype.ValueDatatype#getValue(java.lang.String)
+     * {@inheritDoc}
      */
     public Object getValue(String value) {
         if (timeInfoIncluded) {
@@ -57,8 +56,7 @@ public class GregorianCalendarDatatype extends ValueClassDatatype {
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.datatype.ValueDatatype#valueToString(java.lang.Object)
+     * {@inheritDoc}
      */
 	public String valueToString(Object value) {
         if (timeInfoIncluded) {

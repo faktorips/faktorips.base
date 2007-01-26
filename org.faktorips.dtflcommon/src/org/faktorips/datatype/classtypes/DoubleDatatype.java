@@ -43,9 +43,7 @@ public class DoubleDatatype extends ValueClassDatatype implements NumericDatatyp
     }
 
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.ValueDatatype#getValue(java.lang.String)
+     * {@inheritDoc}
      */
     public Object getValue(String s) {
         if (StringUtils.isEmpty(s)) {

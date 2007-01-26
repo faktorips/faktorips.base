@@ -48,7 +48,7 @@ public class DecimalDatatype extends ValueClassDatatype implements NumericDataty
     /**
      * {@inheritDoc}
      */
-    public boolean hasNullObject() {
+	public boolean hasNullObject() {
         return true;
     }
 
