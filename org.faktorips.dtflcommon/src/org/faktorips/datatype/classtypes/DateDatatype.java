@@ -17,7 +17,6 @@
 
 package org.faktorips.datatype.classtypes;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -64,7 +63,7 @@ public class DateDatatype extends ValueClassDatatype {
             }
             return formatter.parse(value);
         }
-        catch(ParseException e){
+        catch (Exception e){
             IllegalArgumentException ill = new IllegalArgumentException(
                     "Unable to convert the provided string parameter: \"" + value + "\"  into a " + 
                     Date.class + " instance");
