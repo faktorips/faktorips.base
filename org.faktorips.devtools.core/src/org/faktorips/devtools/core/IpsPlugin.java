@@ -19,7 +19,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ISavedState;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -530,7 +529,7 @@ public class IpsPlugin extends AbstractUIPlugin {
                 IExtension extension = extensions[i];
                 IConfigurationElement[] configElements = extension.getConfigurationElements();
                 for (int j = 0; j < configElements.length; j++) {
-                    IConfigurationElement configElement = configElements[i];
+                    IConfigurationElement configElement = configElements[j];
                     if ("loggingFrameworkConnector".equals(configElement.getName())) {
                         try {
                             IIpsLoggingFrameworkConnector connector = (IIpsLoggingFrameworkConnector)configElement

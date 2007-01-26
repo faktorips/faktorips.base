@@ -229,6 +229,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     private void generateLoggerConstantIfNecessary() throws CoreException{
         if(!loggerInstanceGenerated){
             generateLoggerInstance(mainSection.getConstantSectionBuilder());
+            loggerInstanceGenerated = true;
         }
     }
 
@@ -252,7 +253,36 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         return "LOGGER";
     }
 
-    private void generateLoggingStmt(int level, JavaCodeFragment frag, String message) throws CoreException{
+    protected final void generateLoggingStmtForMessageExpression(int level, JavaCodeFragment frag, String messageExp) throws CoreException{
+        if(!checkLoggingGenerationConditions()){
+            return;
+        }
+        generateLoggerConstantIfNecessary();
+        ArrayList usedClasses = new ArrayList();
+        String loggingStmt = getBuilderSet().getIpsLoggingFrameworkConnector().getLogStmtForMessageExp(
+                level, messageExp, getLoggerInstanceExpession(), usedClasses);
+        frag.append(loggingStmt);
+        frag.append(";");
+        addLoggingConnectorImports(usedClasses, frag);
+    }
+
+    protected final void generateLoggingStmtWithConditionForMessageExpression(int level, JavaCodeFragment frag, String messageExp) throws CoreException{
+        if(!checkLoggingGenerationConditions()){
+            return;
+        }
+        generateLoggerConstantIfNecessary();
+        ArrayList usedClasses = new ArrayList();
+        frag.append("if (");
+        frag.append(getBuilderSet().getIpsLoggingFrameworkConnector().getLogConditionExp(
+                level, getLoggerInstanceExpession(), usedClasses));
+        frag.append(")");
+        frag.appendOpenBracket();
+        generateLoggingStmtForMessageExpression(level, frag, messageExp);
+        frag.appendCloseBracket();
+        addLoggingConnectorImports(usedClasses, frag);
+    }
+    
+    protected final void generateLoggingStmt(int level, JavaCodeFragment frag, String message) throws CoreException{
         if(!checkLoggingGenerationConditions()){
             return;
         }
@@ -265,7 +295,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         addLoggingConnectorImports(usedClasses, frag);
     }
     
-    private void generateLoggingCondition(int level, JavaCodeFragment frag) throws CoreException{
+    protected final void generateLoggingCondition(int level, JavaCodeFragment frag) throws CoreException{
         if (!checkLoggingGenerationConditions()) {
             return;
         }
@@ -276,7 +306,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         addLoggingConnectorImports(usedClasses, frag);
     }
 
-    private void generateLoggingStmtWithCondition(int level, JavaCodeFragment frag, String message) throws CoreException{
+    protected final void generateLoggingStmtWithCondition(int level, JavaCodeFragment frag, String message) throws CoreException{
         if(!checkLoggingGenerationConditions()){
             return;
         }
@@ -287,18 +317,72 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
                 level, getLoggerInstanceExpession(), usedClasses));
         frag.append(")");
         frag.appendOpenBracket();
-        generateInfoLoggingStmt(frag, message);
+        generateLoggingStmt(level, frag, message);
         frag.appendCloseBracket();
         addLoggingConnectorImports(usedClasses, frag);
     }
 
+    protected final void generateMethodEnteringLoggingStmt(JavaCodeFragment frag,
+            String className,
+            String methodName,
+            String[] parameters) throws CoreException {
+        if (!checkLoggingGenerationConditions()) {
+            return;
+        }
+        StringBuffer message = new StringBuffer();
+        message.append("\"");
+        message.append("Entering method: ");
+        if (className != null) {
+            message.append(className);
+            message.append('.');
+        }
+        message.append(methodName);
+        if (parameters != null && parameters.length > 0) {
+            message.append(", parameters: ");
+            for (int i = 0; i < parameters.length; i++) {
+                message.append(parameters[i]);
+                message.append("=");
+                message.append("\"");
+                message.append("+");
+                message.append(parameters[i]);
+                if (i < parameters.length - 1) {
+                    message.append("+");
+                    message.append("\"");
+                    message.append(", ");
+                }
+            }
+        } else {
+            message.append("\"");
+        }
+        generateLoggingStmtWithConditionForMessageExpression(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag, message.toString());
+    }
+    
+    protected final void generateMethodExitingLoggingStmt(JavaCodeFragment frag, String className, String methodName, String returnVariable) throws CoreException{
+        if(!checkLoggingGenerationConditions()){
+            return;
+        }
+        StringBuffer message = new StringBuffer();
+        message.append("\"");
+        message.append("Exiting method: ");
+        if(className != null){
+            message.append(className);
+            message.append('.');
+        }
+        message.append(methodName);
+        message.append(", return value: ");
+        message.append("\"");
+        message.append("+ ");
+        message.append(returnVariable);
+        generateLoggingStmtWithConditionForMessageExpression(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag, message.toString());
+    }
+    
     /**
      * Generates a debug level logging statement.
      * 
      * @param frag the {@link JavaCodeFragment} where the code is written to
      * @param message the message text that will be logged
      */
-    public void generateDebugLoggingStmt(JavaCodeFragment frag, String message) throws CoreException{
+    protected final void generateDebugLoggingStmt(JavaCodeFragment frag, String message) throws CoreException{
         generateLoggingStmt(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag, message);
     }
 
@@ -308,7 +392,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * 
      * @param frag the {@link JavaCodeFragment} where the code is written to
      */
-    public void generateDebugLoggingCondition(JavaCodeFragment frag) throws CoreException{
+    protected final void generateDebugLoggingCondition(JavaCodeFragment frag) throws CoreException{
         generateLoggingCondition(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag);
     }
 
@@ -319,7 +403,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @param frag the {@link JavaCodeFragment} where the code is written to
      * @param message the message text that will be logged
      */
-    public void generateDebugLoggingStmtWithCondition(JavaCodeFragment frag, String message) throws CoreException{
+    protected final void generateDebugLoggingStmtWithCondition(JavaCodeFragment frag, String message) throws CoreException{
         generateLoggingStmtWithCondition(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag, message);
     }
 
@@ -329,7 +413,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @param frag the {@link JavaCodeFragment} where the code is written to
      * @param message the message text that will be logged
      */
-    public void generateInfoLoggingStmt(JavaCodeFragment frag, String message) throws CoreException{
+    protected final void generateInfoLoggingStmt(JavaCodeFragment frag, String message) throws CoreException{
         generateLoggingStmt(IIpsLoggingFrameworkConnector.LEVEL_INFO, frag, message);
     }
 
@@ -339,7 +423,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * 
      * @param frag the {@link JavaCodeFragment} where the code is written to
      */
-    public void generateInfoLoggingCondition(JavaCodeFragment frag) throws CoreException {
+    protected final void generateInfoLoggingCondition(JavaCodeFragment frag) throws CoreException {
         generateLoggingCondition(IIpsLoggingFrameworkConnector.LEVEL_INFO, frag);
     }
 
@@ -350,7 +434,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @param frag the {@link JavaCodeFragment} where the code is written to
      * @param message the message text that will be logged
      */
-    public void generateInfoLoggingStmtWithCondition(JavaCodeFragment frag, String message) throws CoreException{
+    protected final void generateInfoLoggingStmtWithCondition(JavaCodeFragment frag, String message) throws CoreException{
         generateLoggingStmtWithCondition(IIpsLoggingFrameworkConnector.LEVEL_INFO, frag, message);
     }
 
@@ -360,7 +444,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @param frag the {@link JavaCodeFragment} where the code is written to
      * @param message the message text that will be logged
      */
-    public void generateWarningLoggingStmt(JavaCodeFragment frag, String message) throws CoreException{
+    protected final void generateWarningLoggingStmt(JavaCodeFragment frag, String message) throws CoreException{
         generateLoggingStmt(IIpsLoggingFrameworkConnector.LEVEL_WARNING, frag, message);
     }
 
@@ -370,7 +454,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * 
      * @param frag the {@link JavaCodeFragment} where the code is written to
      */
-    public void generateWarningLoggingCondition(JavaCodeFragment frag) throws CoreException {
+    protected final void generateWarningLoggingCondition(JavaCodeFragment frag) throws CoreException {
         generateLoggingCondition(IIpsLoggingFrameworkConnector.LEVEL_WARNING, frag);
     }
 
@@ -381,7 +465,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @param frag the {@link JavaCodeFragment} where the code is written to
      * @param message the message text that will be logged
      */
-    public void generateWarningLoggingStmtWithCondition(JavaCodeFragment frag, String message) throws CoreException{
+    protected final void generateWarningLoggingStmtWithCondition(JavaCodeFragment frag, String message) throws CoreException{
         generateLoggingStmtWithCondition(IIpsLoggingFrameworkConnector.LEVEL_WARNING, frag, message);
     }
 
@@ -391,7 +475,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @param frag the {@link JavaCodeFragment} where the code is written to
      * @param message the message text that will be logged
      */
-    public void generateErrorLoggingStmt(JavaCodeFragment frag, String message) throws CoreException{
+    protected final void generateErrorLoggingStmt(JavaCodeFragment frag, String message) throws CoreException{
         generateLoggingStmt(IIpsLoggingFrameworkConnector.LEVEL_ERROR, frag, message);
     }
 
@@ -401,7 +485,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * 
      * @param frag the {@link JavaCodeFragment} where the code is written to
      */
-    public void generateErrorLoggingCondition(JavaCodeFragment frag) throws CoreException {
+    protected final void generateErrorLoggingCondition(JavaCodeFragment frag) throws CoreException {
         generateLoggingCondition(IIpsLoggingFrameworkConnector.LEVEL_ERROR, frag);
     }
 
@@ -412,7 +496,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @param frag the {@link JavaCodeFragment} where the code is written to
      * @param message the message text that will be logged
      */
-    public void generateErrorLoggingStmtWithCondition(JavaCodeFragment frag, String message) throws CoreException{
+    protected final void generateErrorLoggingStmtWithCondition(JavaCodeFragment frag, String message) throws CoreException{
         generateLoggingStmtWithCondition(IIpsLoggingFrameworkConnector.LEVEL_ERROR, frag, message);
     }
     

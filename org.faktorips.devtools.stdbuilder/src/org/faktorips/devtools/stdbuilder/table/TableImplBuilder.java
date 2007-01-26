@@ -830,7 +830,11 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             IUniqueKey key,
             JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
-
+        
+        //logging
+        generateMethodEnteringLoggingStmt(methodBody, keyClassName, methodName, parameterNames);
+        methodBody.appendln();
+        
         if(parameterNames.length > 0){
             methodBody.appendln("if (");
 
@@ -843,40 +847,54 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             }
             methodBody.append(")");
             methodBody.appendOpenBracket();
+            generateMethodExitingLoggingStmt(methodBody, keyClassName, methodName, "null");
             methodBody.appendln("return null;");
             methodBody.appendCloseBracket();
             
         }
         String mapName = StringUtils.uncapitalise(combinedKeyName) + "Map";
         String treeName = StringUtils.uncapitalise(combinedKeyName) + "Tree";
+        String returnVariableName = "returnValue";
         if (key.containsColumns()) {
             if (key.containsRanges()) {
                 String[] rangeParameterNames = new String[parameterNames.length
                         - keyClassParameterNames.length];
                 System.arraycopy(parameterNames, keyClassParameterNames.length,
                         rangeParameterNames, 0, rangeParameterNames.length);
-                methodBody.append(createFindMethodReturnFrag(returnTypeName));
-                methodBody.append(createFindMethodGetValueFrag(false, mapName, keyClassName,
-                        keyClassParameterNames, rangeParameterNames));
+                generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName, methodName, 
+                        createFindMethodGetValueFrag(false, mapName, keyClassName, keyClassParameterNames, rangeParameterNames));
             } else {
-                methodBody.append(createFindMethodReturnFrag(returnTypeName));
-                methodBody.append(createFindMethodGetMapEntryFrag(mapName, keyClassName,
-                        keyClassParameterNames));
+                generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName, methodName, 
+                        createFindMethodGetMapEntryFrag(mapName, keyClassName, keyClassParameterNames));
             }
         } else {
-            methodBody.append(createFindMethodReturnFrag(returnTypeName));
-            methodBody.append(createFindMethodGetValueFrag(true, treeName, keyClassName,
-                    keyClassParameterNames, parameterNames));
+            generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName, methodName, 
+                    createFindMethodGetValueFrag(true, treeName, keyClassName, keyClassParameterNames, parameterNames));
         }
-        methodBody.append(';');
-
+        methodBody.appendln(';');
         codeBuilder.method(Modifier.PUBLIC, returnTypeName, methodName,
                 parameterNames, parameterTypes, methodBody, getLocalizedText(getIpsObject(), FIND_JAVADOC));
     }
 
-    private JavaCodeFragment createFindMethodReturnFrag(String returnTypeName) {
+    private void generateReturnFindMethodReturnStmt(JavaCodeFragment methodBody, String returnTypeName, 
+            String returnVariableName, String keyClassName, String methodName, JavaCodeFragment getValueFrag) 
+        throws CoreException{
+        methodBody.append(createFindMethodReturnVariable(returnVariableName, returnTypeName));
+        methodBody.append(getValueFrag);
+        methodBody.appendln(';');
+        generateMethodExitingLoggingStmt(methodBody, keyClassName, methodName, returnVariableName);
+        methodBody.appendln();
+        methodBody.append("return ");
+        methodBody.append(returnVariableName);
+        methodBody.appendln();
+    }
+    
+    private JavaCodeFragment createFindMethodReturnVariable(String returnVariable, String returnTypeName) {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("return (");
+        fragment.appendClassName(returnTypeName);
+        fragment.append(' ');
+        fragment.append(returnVariable);
+        fragment.append(" = (");
         fragment.appendClassName(returnTypeName);
         fragment.append(") ");
         return fragment;

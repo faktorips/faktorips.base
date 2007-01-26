@@ -107,4 +107,5 @@ Export-Package: org.apache.poi.ddf,
  org.faktorips.devtools.extsystems,
  org.faktorips.devtools.extsystems.excel
 Bundle-ClassPath: faktorips-core.jar,
- lib/poi-2.5.1-final-20040804.jar
+ lib/poi-2.5.1-final-20040804.jar,
+ lib/log4j-1.2.14.jar
