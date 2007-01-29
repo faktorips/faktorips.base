@@ -21,6 +21,7 @@ import java.util.GregorianCalendar;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
@@ -38,12 +39,14 @@ public class TableStructureEnumDatatypeAdapterTest extends AbstractIpsPluginTest
 
 	private IIpsProject ipsProject;
     
+    ITableStructure structure;
     TableStructureEnumDatatypeAdapter adapter;
 	
 	protected void setUp() throws Exception {
 		super.setUp();
 		ipsProject = newIpsProject("TestProject");
-        ITableStructure structure = (ITableStructure)this.newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, "tables.Structure");
+        structure = (ITableStructure)this.newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, "tables.Structure");
+        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
         IColumn col1 = structure.newColumn();
         col1.setName("Col1");
         col1.setDatatype(Datatype.MONEY.getQualifiedName());
@@ -85,12 +88,22 @@ public class TableStructureEnumDatatypeAdapterTest extends AbstractIpsPluginTest
         assertEquals("10EUR", values[0]);
         assertEquals("20 EUR", values[1]);
         assertEquals(null, values[2]);
+        
+        values = adapter.getAllValueIds(false);
+        assertEquals(2, values.length);
+        assertEquals("10EUR", values[0]);
+        assertEquals("20 EUR", values[1]);
+
+        structure.setTableStructureType(TableStructureType.ENUMTYPE_PRODUCTDEFINTION);
+        values = adapter.getAllValueIds(false);
+        assertEquals(0, values.length);
     }
     
     public void testIsParsable() {
         assertTrue(adapter.isParsable("10EUR"));
         assertTrue(adapter.isParsable("10 EUR"));
         assertFalse(adapter.isParsable("30EUR"));
+        assertTrue(adapter.isParsable(null));
     }
     
 }
