@@ -114,7 +114,6 @@ public class FormulasSection extends IpsSection {
 	 */
 	protected void performRefresh() {
 		uiMasterController.updateUI();
-        throw new RuntimeException("MyException");
 	}
 
 	/**
