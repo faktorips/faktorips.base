@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -31,7 +32,6 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -65,7 +65,6 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     
     public IpsProjectRefEntry(IpsObjectPath path, IIpsProject referencedIpsProject) {
         super(path);
-        ArgumentCheck.notNull(referencedIpsProject);
         this.referencedIpsProject = referencedIpsProject;
     }
 
@@ -95,7 +94,11 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
      */
     public IIpsObject findIpsObjectInternal(IIpsProject project, QualifiedNameType nameType, Set visitedEntries)
             throws CoreException {
-        return ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsObject(referencedIpsProject, nameType, visitedEntries);
+        
+        if (referencedIpsProject!=null) {
+            return ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsObject(referencedIpsProject, nameType, visitedEntries);
+        }
+        return null;
     }
 
     /**
@@ -103,7 +106,10 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
      */
     public void findIpsObjectsInternal(IIpsProject project, IpsObjectType type, List result, Set visitedEntries)
             throws CoreException {
-        ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsObjects(referencedIpsProject, type, result, visitedEntries);
+        
+        if (referencedIpsProject!=null) {
+            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsObjects(referencedIpsProject, type, result, visitedEntries);
+        }
     }
 
     /**
@@ -111,7 +117,10 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
      */
     public void findIpsObjectsStartingWithInternal(IIpsProject project, IpsObjectType type, String prefix, boolean ignoreCase, List result,Set visitedEntries)
             throws CoreException {
-        ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsObjectsStartingWith(referencedIpsProject, type, prefix, ignoreCase, result, visitedEntries);
+        
+        if (referencedIpsProject!=null) {
+            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsObjectsStartingWith(referencedIpsProject, type, prefix, ignoreCase, result, visitedEntries);
+        }
     }
     
     /**
@@ -119,7 +128,9 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
      */
     public void initFromXml(Element element, IProject project) {
         String projectName = element.getAttribute("referencedIpsProject"); //$NON-NLS-1$
-        referencedIpsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectName);
+        if (!StringUtils.isEmpty(projectName)) {
+            referencedIpsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectName);
+        }
     }
 
     /**
@@ -128,7 +139,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     public Element toXml(Document doc) {
         Element element = doc.createElement(XML_ELEMENT);
         element.setAttribute("type", TYPE_PROJECT_REFERENCE); //$NON-NLS-1$
-        element.setAttribute("referencedIpsProject", referencedIpsProject.getName()); //$NON-NLS-1$
+        element.setAttribute("referencedIpsProject", referencedIpsProject==null?"":referencedIpsProject.getName()); //$NON-NLS-1$ //$NON-NLS-2$
         return element;
     }
 
@@ -138,7 +149,13 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     public MessageList validate() throws CoreException {
         MessageList result = new MessageList();
         IIpsProject project = getReferencedIpsProject();
-        if(! project.exists()){
+        if(project==null){
+            String text = Messages.IpsProjectRefEntry_noReferencedProjectSpecified;
+            Message msg = new Message(MSGCODE_PROJECT_NOT_SPECIFIED, text, Message.ERROR, this);
+            result.add(msg);
+            return result;
+        }
+        if (!project.exists()){
             String text = NLS.bind(Messages.IpsProjectRefEntry_msgMissingReferencedProject, project.getName());
             Message msg = new Message(MSGCODE_MISSING_PROJECT, text, Message.ERROR, this);
             result.add(msg);
@@ -150,7 +167,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
      * {@inheritDoc}
      */
     public String toString() {
-        return "ProjectRefEntry[" + referencedIpsProject.getName() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+        return "ProjectRefEntry[" + (referencedIpsProject==null?"null":referencedIpsProject.getName()) + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
 }

@@ -64,17 +64,27 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
     public void testValidate() throws CoreException{
         IIpsProjectProperties props = ipsProject.getProperties();
         IIpsObjectPath path = props.getIpsObjectPath();
-        ipsProject = this.newIpsProject("TestProject2");
-        path.newIpsProjectRefEntry(ipsProject);
+        IIpsProject refProject = this.newIpsProject("TestProject2");
+        path.newIpsProjectRefEntry(refProject);
+        ipsProject.setProperties(props);
         
         MessageList ml = ipsProject.validate();
         assertEquals(0, ml.getNoOfMessages());
         
         // validate missing project reference
-        path.newIpsProjectRefEntry(IpsPlugin.getDefault().getIpsModel().getIpsProject("none"));
+        refProject = IpsPlugin.getDefault().getIpsModel().getIpsProject("none");
+        path.newIpsProjectRefEntry(refProject);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
         assertEquals(1, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IIpsProjectRefEntry.MSGCODE_MISSING_PROJECT));
+        
+        // validate empty project name
+        path.removeProjectRefEntry(refProject);
+        path.newIpsProjectRefEntry(null);
+        ipsProject.setProperties(props);
+        ml = ipsProject.validate();
+        assertEquals(1, ml.getNoOfMessages());
+        assertNotNull(ml.getMessageByCode(IIpsProjectRefEntry.MSGCODE_PROJECT_NOT_SPECIFIED));
     }
 }

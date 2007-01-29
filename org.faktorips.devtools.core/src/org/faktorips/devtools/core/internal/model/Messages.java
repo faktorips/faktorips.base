@@ -54,6 +54,8 @@ public class Messages extends NLS {
 
     public static String IpsProject_msgCycleInIpsObjectPath;
 
+    public static String IpsProjectRefEntry_noReferencedProjectSpecified;
+
     public static String IpsSrcFolderEntry_outputfoldermergablesrcmissing;
 
     public static String IpsSrcFolderEntry_outputfoldersrcderivedmissing;

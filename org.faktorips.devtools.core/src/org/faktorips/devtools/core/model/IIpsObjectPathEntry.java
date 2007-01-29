@@ -41,6 +41,11 @@ public interface IIpsObjectPathEntry {
     /**
      * Validation message code to indicate that the related project is missing.
      */
+    public final static String MSGCODE_PROJECT_NOT_SPECIFIED = MSGCODE_PREFIX + "ProjectNotSpecified"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the related project is missing.
+     */
     public final static String MSGCODE_MISSING_PROJECT = MSGCODE_PREFIX + "MissingProject"; //$NON-NLS-1$
     
     /**
