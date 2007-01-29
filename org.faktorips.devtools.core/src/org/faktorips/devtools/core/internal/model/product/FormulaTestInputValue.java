@@ -170,8 +170,7 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
             IPolicyCmptType policyCmptType = (IPolicyCmptType) datatype;
             IAttribute attribute = policyCmptType.getAttribute(attributeName);
             if (attribute == null){
-                throw new CoreException(new IpsStatus(NLS.bind(
-                        Messages.FormulaTestInputValue_CoreException_AttributeOfParameterNotFound, attributeName, identifier)));
+                return null;
             }
             datatype = attribute.findDatatype();
         }

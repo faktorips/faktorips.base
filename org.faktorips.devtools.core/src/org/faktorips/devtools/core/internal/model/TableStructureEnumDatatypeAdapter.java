@@ -26,6 +26,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -49,35 +50,44 @@ public class TableStructureEnumDatatypeAdapter extends AbstractDatatype implemen
 	private IIpsProject project;
 	private ITableContents contents;
 	private int idIndex;
-	private ValueDatatype datatype;
+    
+	private ValueDatatype idColumnDatatype;
 	
 	public TableStructureEnumDatatypeAdapter(ITableStructure table, IIpsProject project) {
 		ArgumentCheck.notNull(table);
 		this.table = table;
 		this.project = project;
 	}
+    
+    /**
+     * Returns the table structure this is an adpater for.
+     */
+    public ITableStructure getTableStructure() {
+        return table;
+    }
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public String[] getAllValueIds(boolean includeNull) {
-		if (getContentGeneration() == null) {
-			return new String[0];
+		if (table.getTableStructureType()==TableStructureType.ENUMTYPE_PRODUCTDEFINTION || getContentGeneration() == null) {
+			if (includeNull) {
+			    return new String[]{null};
+            } else {
+                return new String[0];
+            }
 		}
 		
 		IRow[] rows = getContentGeneration().getRows();
 		int size = rows.length;
-
 		if (includeNull) {
-			size++;
+			size++; 
 		}
-		
 		String[] result = new String[size];
-		
 		for (int i = 0; i < rows.length; i++) {
 			result[i] = rows[i].getValue(getIdIndex());
 		}
-
+        // if null should be included the last array entry now contains null.
 		return result;
 	}
 
@@ -118,13 +128,13 @@ public class TableStructureEnumDatatypeAdapter extends AbstractDatatype implemen
                 return true;
             }
 
-            if (datatype == null) {
+            if (idColumnDatatype == null) {
                 return Arrays.asList(getAllValueIds(false)).contains(value);
             }
 
             String[] values = getAllValueIds(false);
             for (int i = 0; i < values.length; i++) {
-                if (datatype.areValuesEqual(value, values[i])) {
+                if (idColumnDatatype.areValuesEqual(value, values[i])) {
                     return true;
                 }
             }
@@ -183,11 +193,11 @@ public class TableStructureEnumDatatypeAdapter extends AbstractDatatype implemen
 	}
 
 	public boolean areValuesEqual(String valueA, String valueB) {
-		if (datatype == null) {
+		if (idColumnDatatype == null) {
 			return ObjectUtils.equals(valueA, valueB);
 		}
 		
-		return ((ValueDatatype)datatype).areValuesEqual(valueA, valueB);
+		return ((ValueDatatype)idColumnDatatype).areValuesEqual(valueA, valueB);
 	}
 	
 	private ITableContents getContents() {
@@ -234,17 +244,11 @@ public class TableStructureEnumDatatypeAdapter extends AbstractDatatype implemen
 		try {
 			Datatype type = project.findDatatype(idColumn.getDatatype());
 			if (type.isValueDatatype()) {
-				datatype = (ValueDatatype)type;
+				idColumnDatatype = (ValueDatatype)type;
 			}
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
 		}
 	}
 
-    /**
-     * @return the table
-     */
-    public ITableStructure getTable() {
-        return table;
-    }
 }
