@@ -333,12 +333,14 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForAttribute(IAttribute attribute, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateCodeForAttribute(IAttribute attribute, DatatypeHelper datatypeHelper, 
+            JavaCodeFragmentBuilder constantBuilder, JavaCodeFragmentBuilder memberVarsBuilder, 
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         if (!(attribute.getModifier() == org.faktorips.devtools.core.model.pctype.Modifier.PUBLISHED)) {
             return;
         }
-        generateFieldConstantForProperty(attribute, datatypeHelper.getDatatype(), memberVarsBuilder);
-        super.generateCodeForAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
+        generateFieldConstantForProperty(attribute, datatypeHelper.getDatatype(), constantBuilder);
+        super.generateCodeForAttribute(attribute, datatypeHelper, constantBuilder, memberVarsBuilder, methodsBuilder);
     }
 
     /**
@@ -346,13 +348,13 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateCodeForConstantAttribute(IAttribute attribute,
             DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder memberVarsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+            JavaCodeFragmentBuilder constantBuilder,
+            JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
      
         if (attribute.isProductRelevant()) {
             generateMethodGetPropertyValue(attribute, datatypeHelper, methodsBuilder);
         } else {
-            generateFieldConstPropertyValue(attribute, datatypeHelper, memberVarsBuilder);
+            generateFieldConstPropertyValue(attribute, datatypeHelper, constantBuilder);
         }
     }
 

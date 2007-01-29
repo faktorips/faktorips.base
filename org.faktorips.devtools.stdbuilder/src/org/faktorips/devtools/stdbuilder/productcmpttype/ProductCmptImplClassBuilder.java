@@ -232,7 +232,7 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
     protected void generateCodeForConstantAttribute(IAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+            JavaCodeFragmentBuilder methodsBuilder, JavaCodeFragmentBuilder constantBuilder) throws CoreException {
         
         // nothing to do
     }

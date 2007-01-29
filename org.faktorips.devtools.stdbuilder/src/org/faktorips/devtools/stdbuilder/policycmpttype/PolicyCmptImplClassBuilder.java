@@ -271,21 +271,22 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     protected void generateCodeForAttribute(IAttribute attribute,
             DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder constantBuilder,
+            JavaCodeFragmentBuilder memberVarsBuilder, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         if(org.faktorips.devtools.core.model.pctype.Modifier.PUBLIC.equals(attribute.getModifier())){
-            interfaceBuilder.generateFieldConstantForProperty(attribute, datatypeHelper.getDatatype(), memberVarsBuilder);
+            interfaceBuilder.generateFieldConstantForProperty(attribute, datatypeHelper.getDatatype(), constantBuilder);
         }
-        super.generateCodeForAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
+        super.generateCodeForAttribute(attribute, datatypeHelper, constantBuilder, memberVarsBuilder, methodsBuilder);
     }
     /**
      * {@inheritDoc}
      */
     protected void generateCodeForConstantAttribute(IAttribute attribute,
             DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder memberVarsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+            JavaCodeFragmentBuilder constantBuilder,
+            JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
      
         if (attribute.isProductRelevant()) {
             generateMethodAttributeGetterFromProductCmpt(attribute, datatypeHelper, methodsBuilder);
@@ -293,7 +294,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             if (attribute.getModifier() == org.faktorips.devtools.core.model.pctype.Modifier.PUBLISHED) {
                 return;
             }
-            interfaceBuilder.generateFieldConstPropertyValue(attribute, datatypeHelper, memberVarsBuilder);
+            interfaceBuilder.generateFieldConstPropertyValue(attribute, datatypeHelper, constantBuilder);
         }
     }
 

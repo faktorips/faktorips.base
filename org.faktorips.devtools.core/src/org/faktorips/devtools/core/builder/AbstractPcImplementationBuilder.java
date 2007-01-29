@@ -85,7 +85,9 @@ public abstract class AbstractPcImplementationBuilder extends
 		
 	
 
-	protected void generateCodeForAttribute(IAttribute attribute, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+	protected void generateCodeForAttribute(IAttribute attribute, DatatypeHelper datatypeHelper, 
+            JavaCodeFragmentBuilder constantBuilder, JavaCodeFragmentBuilder memberVarsBuilder, 
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 		generateCodeForMemberVariable(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
 		generateGetterForAttribute(attribute, datatypeHelper, methodsBuilder);
 		if (attribute.isChangeable()) {

@@ -111,7 +111,8 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
         mainSection.setExtendedInterfaces(getExtendedInterfaces());
         mainSection.setUnqualifiedName(getUnqualifiedClassName());
         mainSection.setClass(!generatesInterface());
-        generateCodeForAttributes(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateCodeForAttributes(mainSection.getConstantSectionBuilder(), 
+                mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
         generateCodeForRelations(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
         generateOther(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
         generateCodeForMethodsDefinedInModel(mainSection.getMethodSectionBuilder());
@@ -196,8 +197,9 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
     /*
      * Generates the code for all attributes.
      */
-    private void generateCodeForAttributes(JavaCodeFragmentBuilder memberVarsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    private void generateCodeForAttributes(JavaCodeFragmentBuilder constantBuilder,
+                                           JavaCodeFragmentBuilder memberVarsBuilder,
+                                           JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         IAttribute[] attributes = getPcType().getAttributes();
         for (int i = 0; i < attributes.length; i++) {
             IAttribute a = attributes[i];
@@ -208,7 +210,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
                     if (helper == null) {
                         throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));             //$NON-NLS-1$
                     }
-                    generateCodeForAttribute(a, helper, memberVarsBuilder, methodsBuilder);
+                    generateCodeForAttribute(a, helper, constantBuilder, memberVarsBuilder, methodsBuilder);
                 } catch (Exception e) {
 
                     throw new CoreException(new IpsStatus(IStatus.ERROR,
@@ -225,12 +227,14 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
      * 
      * @param attribute The attribute sourcecode should be generated for.
      * @param datatypeHelper The datatype code generation helper for the attribute's datatype.
+     * @param constantBuilder TODO
      * @param memberVarsBuilder The code fragment builder to build the memeber variabales section.
      * @param memberVarsBuilder The code fragment builder to build the method section.
      */
     protected abstract void generateCodeForAttribute(IAttribute attribute,
             DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder constantBuilder,
+            JavaCodeFragmentBuilder memberVarsBuilder, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
     /*

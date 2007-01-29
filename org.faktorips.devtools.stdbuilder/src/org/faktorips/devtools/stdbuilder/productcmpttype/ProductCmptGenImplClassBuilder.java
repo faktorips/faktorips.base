@@ -532,7 +532,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForConstantAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateCodeForConstantAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder, JavaCodeFragmentBuilder constantBuilder) throws CoreException {
         generateFieldValue(a, datatypeHelper, memberVarsBuilder);
         generateMethodGetValue(a, datatypeHelper, methodsBuilder);
         generateMethodSetValue(a, datatypeHelper, methodsBuilder);

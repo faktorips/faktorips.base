@@ -148,7 +148,8 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
         mainSection.setExtendedInterfaces(getExtendedInterfaces());
         mainSection.setUnqualifiedName(getUnqualifiedClassName());
         mainSection.setClass(!generatesInterface());
-        generateCodeForAttributes(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateCodeForAttributes(mainSection.getConstantSectionBuilder(), 
+                mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
         generateCodeForRelations(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
         generateConstructors(mainSection.getConstructorSectionBuilder());
         generateTypeJavadoc(mainSection.getJavaDocForTypeSectionBuilder());
@@ -195,8 +196,8 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
      * Loops over the attributes and generates code for an attribute if it is valid.
      * Takes care of proper exception handling.
      */
-    private void generateCodeForAttributes(JavaCodeFragmentBuilder fieldsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    private void generateCodeForAttributes(JavaCodeFragmentBuilder constantBuilder,
+            JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         IAttribute[] attributes = getProductCmptType().findPolicyCmptyType().getAttributes();
         for (int i = 0; i < attributes.length; i++) {
             IAttribute a = attributes[i];
@@ -210,7 +211,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
                     if (helper == null) {
                         throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));            
                     }
-                    generateCodeForAttribute(a, helper, fieldsBuilder, methodsBuilder);
+                    generateCodeForAttribute(a, helper, fieldsBuilder, methodsBuilder, constantBuilder);
                 } catch (Exception e) {
                     throw new CoreException(new IpsStatus(IStatus.ERROR,
                             "Error building attribute " + attributes[i].getName() + " of "
@@ -245,12 +246,12 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
     protected void generateCodeForAttribute(IAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder fieldsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+            JavaCodeFragmentBuilder methodsBuilder, JavaCodeFragmentBuilder constantBuilder) throws CoreException {
 
         if (attribute.isChangeable()) {
             generateCodeForChangeableAttribute(attribute, datatypeHelper, fieldsBuilder, methodsBuilder);
         } else if (attribute.getAttributeType()==AttributeType.CONSTANT) {
-            generateCodeForConstantAttribute(attribute, datatypeHelper, fieldsBuilder, methodsBuilder);
+            generateCodeForConstantAttribute(attribute, datatypeHelper, fieldsBuilder, methodsBuilder, constantBuilder);
         } else if (attribute.isDerived()) {
             generateCodeForComputedAndDerivedAttribute(attribute, datatypeHelper, fieldsBuilder, methodsBuilder);
         } else {
@@ -268,7 +269,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
             IAttribute a, 
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder fieldsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
+            JavaCodeFragmentBuilder methodsBuilder, JavaCodeFragmentBuilder constantBuilder) throws CoreException;
     
     protected abstract void generateCodeForComputedAndDerivedAttribute(
             IAttribute a, 

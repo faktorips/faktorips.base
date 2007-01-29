@@ -52,8 +52,8 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
      */
     protected void generateCodeForAttribute(IAttribute attribute,
             DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder memberVarsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+            JavaCodeFragmentBuilder constantBuilder,
+            JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         if (attribute.isProductRelevant() && getPcType().findProductCmptType()==null) {
             return;
@@ -62,7 +62,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         if (type == AttributeType.CHANGEABLE) {
             generateCodeForChangeableAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
         } else if (type == AttributeType.CONSTANT) {
-            generateCodeForConstantAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
+            generateCodeForConstantAttribute(attribute, datatypeHelper, constantBuilder, memberVarsBuilder, methodsBuilder);
         } else if (type == AttributeType.DERIVED_ON_THE_FLY) {
             generateCodeForDerivedAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
         } else if (type == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL) {
@@ -74,8 +74,8 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
     protected abstract void generateCodeForConstantAttribute(IAttribute attribute,
             DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder memberVarsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
+            JavaCodeFragmentBuilder constantBuilder,
+            JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
     protected abstract void generateCodeForChangeableAttribute(IAttribute attribute,
             DatatypeHelper datatypeHelper,
