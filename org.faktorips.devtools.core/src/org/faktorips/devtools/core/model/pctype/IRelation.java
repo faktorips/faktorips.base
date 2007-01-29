@@ -359,7 +359,7 @@ public interface IRelation extends IIpsObjectPart {
     public void setProductRelevant(boolean newValue);
     
     /**
-     * Returns the qualified name of the container relation.
+     * Returns the name of the container relation.
      * <p>
      * Example:
      * <br>
@@ -375,7 +375,7 @@ public interface IRelation extends IIpsObjectPart {
     public String getContainerRelation();     
 
     /**
-     * Returns true if this relation bases on a container relation.
+     * Returns <code>true</code> if this relation is based on a container relation.
      */
     public boolean hasContainerRelation();
     
