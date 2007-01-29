@@ -556,7 +556,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln("// TODO " + getLocalizedText(getIpsSrcFile(), EXECUTEBUSINESSLOGIC_TODO));
         codeBuilder.method(Modifier.PUBLIC, "void", "executeBusinessLogic", 
-                EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY, body, javaDoc, ANNOTATION_MODIFIABLE);
+                EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY, body, javaDoc, ANNOTATION_GENERATED);
     }
     
     /*
@@ -581,7 +581,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.append(getLocalizedText(getIpsSrcFile(), RUNTIME_EXCEPTION_NO_ASSERTS));
         body.append("\");");
         codeBuilder.method(Modifier.PUBLIC, "void", "executeAsserts", new String[]{"result"}, 
-                new String[]{IpsTestResult.class.getName()}, body, javaDoc, ANNOTATION_MODIFIABLE);
+                new String[]{IpsTestResult.class.getName()}, body, javaDoc, ANNOTATION_GENERATED);
     }
     
     /*

@@ -88,7 +88,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
     public TableImplBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(TableImplBuilder.class));
-        setLoggingCodeGenerationEnabled(true);
     }
 
     public void setTableRowBuilder(TableRowBuilder tableRowBuilder) {

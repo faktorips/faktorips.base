@@ -24,6 +24,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
+import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
@@ -152,8 +153,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
 
         //configuration properties
-        Boolean generateChangeListener = config.getBooleanPropertyValue(BasePolicyCmptTypeBuilder.CONFIG_PROPERTY_GENERATE_CHANGELISTENER);
-        
+        boolean generateChangeListener = config.getBooleanPropertyValue(BasePolicyCmptTypeBuilder.CONFIG_PROPERTY_GENERATE_CHANGELISTENER, false);
         
         // create policy component type builders
         PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(
@@ -245,6 +245,21 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         tocFileBuilder.setTestCaseTypeClassBuilder(testCaseTypeClassBuilder);
         tocFileBuilder.setTestCaseBuilder(testCaseBuilder);
         tocFileBuilder.setFormulaTestBuilder(formulaTestBuilder);
+        
+        // set generate logging state for the builders
+        boolean generateLogging = config.getBooleanPropertyValue(DefaultJavaSourceFileBuilder.CONFIG_PROPERTY_GENERATE_LOGGING, false);
+
+        tableImplBuilder.setLoggingCodeGenerationEnabled(generateLogging); 
+        productCmptGenInterfaceBuilder.setLoggingCodeGenerationEnabled(generateLogging);
+        productCmptGenImplClassBuilder.setLoggingCodeGenerationEnabled(generateLogging);
+        productCmptInterfaceBuilder.setLoggingCodeGenerationEnabled(generateLogging); 
+        productCmptImplClassBuilder.setLoggingCodeGenerationEnabled(generateLogging);
+        policyCmptImplClassBuilder.setLoggingCodeGenerationEnabled(generateLogging);
+        policyCmptInterfaceBuilder.setLoggingCodeGenerationEnabled(generateLogging); 
+        productCmptGenerationImplBuilder.setLoggingCodeGenerationEnabled(generateLogging);
+        testCaseTypeClassBuilder.setLoggingCodeGenerationEnabled(generateLogging);
+        formulaTestBuilder.setLoggingCodeGenerationEnabled(generateLogging);
+        
         
         builders = new IIpsArtefactBuilder[] { 
                 tableImplBuilder, 

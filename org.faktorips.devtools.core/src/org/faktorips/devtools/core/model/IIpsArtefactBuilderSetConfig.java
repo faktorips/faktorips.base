@@ -48,12 +48,13 @@ public interface IIpsArtefactBuilderSetConfig{
     public String getPropertyValue(String propertyName);
 
     /**
-     * Returns the Boolean value of the property of the provided property name.
-     * Returns <code>null</code> if the property with the specified property name is not found.
+     * Returns the boolean value of the property of the provided property name.
+     * Returns the default value if the property with the specified property name is not found.
      * 
-     * @see Boolean#valueOf(java.lang.String)
+     * @see Boolean#valueOf(java.lang.String) this method is used for converting boolean string 
+     *      representations into boolean values
      */
-    public Boolean getBooleanPropertyValue(String propertName);
+    public boolean getBooleanPropertyValue(String propertName, boolean defaultValue);
 
     /**
      * @param doc The document to create the element with.

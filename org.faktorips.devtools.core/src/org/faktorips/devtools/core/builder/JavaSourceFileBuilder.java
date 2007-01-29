@@ -86,14 +86,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
 	/**
 	 * This constant is supposed to be used as a javadoc annotation. It becomes
-	 * relevant if the merging capabilities are activated. It indicates that a
-	 * piece of code was generated in the first place and will not be overridden
-	 * by the generator by further builds.
-	 */
-	public final static String[] ANNOTATION_MODIFIABLE = new String[] { "modifiable" }; //$NON-NLS-1$
-
-	/**
-	 * This constant is supposed to be used as a javadoc annotation. It becomes
 	 * relevant if the merging capabilities are activated. It indicates that within a
 	 * generated piece of code only the parts that are outside the braces defined
 	 * by the markers <code>//begin-user-code</code> and <code>//end-user-code</code>

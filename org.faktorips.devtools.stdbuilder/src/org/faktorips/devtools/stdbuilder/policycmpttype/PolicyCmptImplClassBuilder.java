@@ -76,7 +76,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private ProductCmptGenImplClassBuilder productCmptGenImplBuilder;
 
-    public PolicyCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId, Boolean changeListenerSupportActive) {
+    public PolicyCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId, boolean changeListenerSupportActive) {
         super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class), changeListenerSupportActive);
         setMergeEnabled(true);
     }
@@ -389,7 +389,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         String[] paramTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(
                 parameters, a.getIpsProject(), this);
 
-        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_MODIFIABLE);
+        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureGetPropertyValue(a, datatypeHelper, builder);
         builder.openBracket();
 
@@ -1664,9 +1664,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateCodeForMethodDefinedInModel(IMethod method, Datatype returnType, Datatype[] paramTypes, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         if (method.getModifier()==org.faktorips.devtools.core.model.pctype.Modifier.PUBLISHED) {
-            methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_MODIFIABLE);
+            methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         } else {
-            methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_MODIFIABLE);
+            methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
         }
         interfaceBuilder.generateSignatureForMethodDefinedInModel(method, method.getJavaModifier(),
                 returnType, paramTypes, methodsBuilder);

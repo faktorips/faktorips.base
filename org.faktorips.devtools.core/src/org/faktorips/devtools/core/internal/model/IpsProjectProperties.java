@@ -684,8 +684,19 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "from the modeling and product definition capabilities and you can write your own builder/generators." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "A different builder set is defined by providing an extension for the extension point" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "\"org.faktorips.devtools.core.artefactbuilderset\" defined by FaktorIPS" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "<IpsArtefactBuilderSet id=\"org.faktorips.devtools.stdbuilder.ipsstdbuilderset\"/>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
+        + "A builder set is activated for an Ips project by defining the IpsArtefactBuilderSet tag." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "The attribute \"id\" specifies the builder set implementation that is registered as an extension." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "The unique identifier of the extension is to specify." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "With the optional attribute \"loggingFrameworkConnectorId\" a logging framework connector can be specified for a builder set. " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "Logging framework connectors can be used by builder sets to generate logging statements for the registered logging framework." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "Logging framework connectors have to be registered as eclipse plugins with the extension point" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "\"org.faktorips.devtools.core.loggingFrameworkConnector\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "Faktorips provides 2 implementations for logging framework connectors. A connector to the java util logging framework and" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "one to the log4j framework. Java util logging is specified by the id=\"org.faktorips.devtools.core.javaUtilLoggingConnector\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "The log4j framework is specified by the id=\"org.faktorips.devtools.core.log4jLoggingConnector\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "<IpsArtefactBuilderSet id=\"org.faktorips.devtools.stdbuilder.ipsstdbuilderset\" " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "loggingFrameworkConnectorId=\"org.faktorips.devtools.core.javaUtilLoggingConnector\" />" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
     

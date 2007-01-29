@@ -59,10 +59,10 @@ import org.faktorips.util.message.MessageList;
 public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder {
 
     // property key for the constructor's Javadoc.
-    private final static String CONSTRUCTOR_JAVADOC = "CONSTRUCTOR_JAVADOC";
+    private final static String CONSTRUCTOR_JAVADOC = "CONSTRUCTOR_JAVADOC"; //$NON-NLS-1$
 
     // property key for the compute method Javadoc.
-    private final static String COMPUTE_METHOD_JAVADOC = "COMPUTE_METHOD_JAVADOC";
+    private final static String COMPUTE_METHOD_JAVADOC = "COMPUTE_METHOD_JAVADOC"; //$NON-NLS-1$
 
     // the product component generation sourcecode is generated for.
     private IProductCmptGeneration generation;
@@ -110,7 +110,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
      */
     protected void generateCodeForJavatype() throws CoreException {
         if(generation == null){
-            addToBuildStatus(new IpsStatus("The generation needs to be set for this " + ProductCmptGenerationCuBuilder.class));
+            addToBuildStatus(new IpsStatus("The generation needs to be set for this " + ProductCmptGenerationCuBuilder.class)); //$NON-NLS-1$
             return;
         }
         IPolicyCmptType pcType = generation.getProductCmpt().findPolicyCmptType();
@@ -127,7 +127,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
                     generateMethodComputeValue(elements[i], mainSection.getMethodSectionBuilder());
                 }
             } catch (Exception e) {
-                addToBuildStatus(new IpsStatus("Error generating code for " + elements[i], e));
+                addToBuildStatus(new IpsStatus("Error generating code for " + elements[i], e)); //$NON-NLS-1$
             }
         }
     }
@@ -149,10 +149,10 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         String genName = getChangesInTimeNamingConvention(generation).getGenerationConceptNameSingular(language);
         String javaDoc = getLocalizedText(getIpsSrcFile(), CONSTRUCTOR_JAVADOC, genName);
         String className = getUnqualifiedClassName();
-        String[] argNames = new String[] { "productCmpt" };
+        String[] argNames = new String[] { "productCmpt" }; //$NON-NLS-1$
         String[] argClassNames = new String[] { productCmptImplBuilder.getQualifiedClassName(generation.getProductCmpt().findProductCmptType()) };
         JavaCodeFragment body = new JavaCodeFragment(
-                "super(productCmpt);");
+                "super(productCmpt);"); //$NON-NLS-1$
         codeBuilder.method(Modifier.PUBLIC, null, className, argNames,
             argClassNames, body, javaDoc);
     }
@@ -174,32 +174,32 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         productCmptGenImplBuilder.generateSignatureComputeValue(attribute, datatypeHelper, Modifier.PUBLIC, true, builder);
         builder.openBracket();
-        builder.append("try {");
-        builder.append("return ");
+        builder.append("try {"); //$NON-NLS-1$
+        builder.append("return "); //$NON-NLS-1$
         builder.append(compileFormulaToJava(formulaElement, attribute));
-        builder.appendln(";");
-        builder.append("} catch (Exception e) {");
+        builder.appendln(";"); //$NON-NLS-1$
+        builder.append("} catch (Exception e) {"); //$NON-NLS-1$
         builder.appendClassName(StringBuffer.class);
-        builder.append(" parameterValues=new StringBuffer();");
+        builder.append(" parameterValues=new StringBuffer();"); //$NON-NLS-1$
         Parameter[] parameters = attribute.getFormulaParameters();
         for (int i = 0; i < parameters.length; i++) {
             if (i>0) {
-                builder.append("parameterValues.append(\", \");");
+                builder.append("parameterValues.append(\", \");"); //$NON-NLS-1$
             }
-            builder.append("parameterValues.append(\"" + parameters[i].getName() + "=\");");
+            builder.append("parameterValues.append(\"" + parameters[i].getName() + "=\");"); //$NON-NLS-1$ //$NON-NLS-2$
             ValueDatatype valuetype = attribute.getIpsProject().findValueDatatype(parameters[i].getDatatype());
             if (valuetype!=null && valuetype.isPrimitive()) { // optimitation: we search for value types only as only those can be primitives!
-                builder.append("parameterValues.append(" + parameters[i].getName() + ");");
+                builder.append("parameterValues.append(" + parameters[i].getName() + ");"); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
-                builder.append("parameterValues.append(" + parameters[i].getName() + " == null ? \"null\" : " + parameters[i].getName() + ".toString());");
+                builder.append("parameterValues.append(" + parameters[i].getName() + " == null ? \"null\" : " + parameters[i].getName() + ".toString());"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
         }
-        builder.append("throw new ");
+        builder.append("throw new "); //$NON-NLS-1$
         builder.appendClassName(FormulaExecutionException.class);
-        builder.append("(toString(), ");  
+        builder.append("(toString(), ");   //$NON-NLS-1$
         builder.appendQuoted(StringUtils.escape(formulaElement.getValue()));
-        builder.appendln(", parameterValues.toString(), e);");
-        builder.appendln("}");
+        builder.appendln(", parameterValues.toString(), e);"); //$NON-NLS-1$
+        builder.appendln("}"); //$NON-NLS-1$
         
         builder.closeBracket();
     }
@@ -208,7 +208,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         String formula = formulaElement.getValue();
         if (StringUtils.isEmpty(formula)) {
             JavaCodeFragment fragment = new JavaCodeFragment();
-            fragment.append("null");
+            fragment.append("null"); //$NON-NLS-1$
             return fragment;
         }
         try {
@@ -222,31 +222,31 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
                 ConversionCodeGenerator conversion = compiler.getConversionCodeGenerator();
                 JavaCodeFragment convertedFrag = conversion.getConversionCode(result.getDatatype(), attributeDatatype, result.getCodeFragment());
                 if(convertedFrag == null){
-                    return new JavaCodeFragment("// Unable to convert the expression \"" + 
-                            result.getCodeFragment().getSourcecode() + "\" of datatype " + result.getDatatype() + 
-                            " to the datatype " + attributeDatatype);
+                    return new JavaCodeFragment("// Unable to convert the expression \"" +  //$NON-NLS-1$
+                            result.getCodeFragment().getSourcecode() + "\" of datatype " + result.getDatatype() +  //$NON-NLS-1$
+                            " to the datatype " + attributeDatatype); //$NON-NLS-1$
                 }
                 return convertedFrag;
             }
             JavaCodeFragment fragment = new JavaCodeFragment();
             fragment
-                    .appendln("// The expression compiler reported the following errors while compiling the formula:");
-            fragment.append("// ");
+                    .appendln("// The expression compiler reported the following errors while compiling the formula:"); //$NON-NLS-1$
+            fragment.append("// "); //$NON-NLS-1$
             fragment.appendln(formula);
             MessageList messages = result.getMessages();
             for (int i = 0; i < messages.getNoOfMessages(); i++) {
-                fragment.append("// ");
+                fragment.append("// "); //$NON-NLS-1$
                 fragment.append(messages.getText());
             }
             return fragment;
         } catch (CoreException e) {
-            addToBuildStatus(new IpsStatus("Error compiling formula " + formulaElement.getValue()
-                    + " of config element " + formulaElement + ".", e));
+            addToBuildStatus(new IpsStatus("Error compiling formula " + formulaElement.getValue() //$NON-NLS-1$
+                    + " of config element " + formulaElement + ".", e)); //$NON-NLS-1$ //$NON-NLS-2$
             JavaCodeFragment fragment = new JavaCodeFragment();
-            fragment.appendln("// An excpetion occured while compiling the following formula:");
-            fragment.append("// ");
+            fragment.appendln("// An excpetion occured while compiling the following formula:"); //$NON-NLS-1$
+            fragment.append("// "); //$NON-NLS-1$
             fragment.appendln(formula);
-            fragment.append("// See the error log for details.");
+            fragment.append("// See the error log for details."); //$NON-NLS-1$
             return fragment;
         }
     }

@@ -24,6 +24,8 @@ import org.apache.log4j.Logger;
 import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
 
 /**
+ * An implementation of the <code>IIpsLoggingFrameworkConnector</code> interface that connects
+ * to the Log4j logging framework. 
  * 
  * @author Peter Erzberger
  */

@@ -64,6 +64,14 @@ import org.faktorips.util.StringUtil;
  */
 public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder {
 
+    /**
+     * Configuration property that is supposed to be used to read a configuration value from
+     * the IIpsArtefactBuilderSetConfig object provided by the initialize method of an
+     * IIpsArtefactBuilderSet instance.
+     */
+    public final static String CONFIG_PROPERTY_GENERATE_LOGGING = "generateLoggingStatements"; //$NON-NLS-1$
+
+    
     private boolean loggingGenerationEnabled = false;
     private TypeSection mainSection;
     private List innerClassesSections;
@@ -139,8 +147,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             return section;
         }
         throw new RuntimeException(
-                "This exception occures when the list for inner class sections has not been properly initialized. " +
-                "Initialization takes place in the generate() method of the class " + 
+                "This exception occures when the list for inner class sections has not been properly initialized. " + //$NON-NLS-1$
+                "Initialization takes place in the generate() method of the class " +  //$NON-NLS-1$
                 DefaultJavaSourceFileBuilder.class);
     }
     
@@ -240,7 +248,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         ArrayList usedClasses = new ArrayList();
         IIpsLoggingFrameworkConnector connector = getBuilderSet().getIpsLoggingFrameworkConnector();
         JavaCodeFragment value = new JavaCodeFragment();
-        value.append(getBuilderSet().getIpsLoggingFrameworkConnector().getLoggerInstanceStmt(getUnqualifiedClassName() + ".class.getName()", usedClasses));
+        value.append(getBuilderSet().getIpsLoggingFrameworkConnector().getLoggerInstanceStmt(getUnqualifiedClassName() + ".class.getName()", usedClasses)); //$NON-NLS-1$
         addLoggingConnectorImports(usedClasses, value);
         builder.varDeclaration(Modifier.PUBLIC | Modifier.FINAL | Modifier.STATIC, 
                 connector.getLoggerClassName(), getLoggerInstanceExpession(), value);
@@ -250,7 +258,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * Returns the constant name of the logger instance. Can be overridden by subclasses.
      */
     protected String getLoggerInstanceExpession() {
-        return "LOGGER";
+        return "LOGGER"; //$NON-NLS-1$
     }
 
     protected final void generateLoggingStmtForMessageExpression(int level, JavaCodeFragment frag, String messageExp) throws CoreException{
@@ -262,7 +270,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         String loggingStmt = getBuilderSet().getIpsLoggingFrameworkConnector().getLogStmtForMessageExp(
                 level, messageExp, getLoggerInstanceExpession(), usedClasses);
         frag.append(loggingStmt);
-        frag.append(";");
+        frag.append(";"); //$NON-NLS-1$
         addLoggingConnectorImports(usedClasses, frag);
     }
 
@@ -272,10 +280,10 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         }
         generateLoggerConstantIfNecessary();
         ArrayList usedClasses = new ArrayList();
-        frag.append("if (");
+        frag.append("if ("); //$NON-NLS-1$
         frag.append(getBuilderSet().getIpsLoggingFrameworkConnector().getLogConditionExp(
                 level, getLoggerInstanceExpession(), usedClasses));
-        frag.append(")");
+        frag.append(")"); //$NON-NLS-1$
         frag.appendOpenBracket();
         generateLoggingStmtForMessageExpression(level, frag, messageExp);
         frag.appendCloseBracket();
@@ -291,7 +299,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         String loggingStmt = getBuilderSet().getIpsLoggingFrameworkConnector().getLogStmtForMessage(
                 level, message, getLoggerInstanceExpession(), usedClasses);
         frag.append(loggingStmt);
-        frag.append(";");
+        frag.append(";"); //$NON-NLS-1$
         addLoggingConnectorImports(usedClasses, frag);
     }
     
@@ -312,10 +320,10 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         }
         generateLoggerConstantIfNecessary();
         ArrayList usedClasses = new ArrayList();
-        frag.append("if (");
+        frag.append("if ("); //$NON-NLS-1$
         frag.append(getBuilderSet().getIpsLoggingFrameworkConnector().getLogConditionExp(
                 level, getLoggerInstanceExpession(), usedClasses));
-        frag.append(")");
+        frag.append(")"); //$NON-NLS-1$
         frag.appendOpenBracket();
         generateLoggingStmt(level, frag, message);
         frag.appendCloseBracket();
@@ -330,29 +338,29 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             return;
         }
         StringBuffer message = new StringBuffer();
-        message.append("\"");
-        message.append("Entering method: ");
+        message.append("\""); //$NON-NLS-1$
+        message.append("Entering method: "); //$NON-NLS-1$
         if (className != null) {
             message.append(className);
             message.append('.');
         }
         message.append(methodName);
         if (parameters != null && parameters.length > 0) {
-            message.append(", parameters: ");
+            message.append(", parameters: "); //$NON-NLS-1$
             for (int i = 0; i < parameters.length; i++) {
                 message.append(parameters[i]);
-                message.append("=");
-                message.append("\"");
-                message.append("+");
+                message.append("="); //$NON-NLS-1$
+                message.append("\""); //$NON-NLS-1$
+                message.append("+"); //$NON-NLS-1$
                 message.append(parameters[i]);
                 if (i < parameters.length - 1) {
-                    message.append("+");
-                    message.append("\"");
-                    message.append(", ");
+                    message.append("+"); //$NON-NLS-1$
+                    message.append("\""); //$NON-NLS-1$
+                    message.append(", "); //$NON-NLS-1$
                 }
             }
         } else {
-            message.append("\"");
+            message.append("\""); //$NON-NLS-1$
         }
         generateLoggingStmtWithConditionForMessageExpression(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag, message.toString());
     }
@@ -362,16 +370,16 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             return;
         }
         StringBuffer message = new StringBuffer();
-        message.append("\"");
-        message.append("Exiting method: ");
+        message.append("\""); //$NON-NLS-1$
+        message.append("Exiting method: "); //$NON-NLS-1$
         if(className != null){
             message.append(className);
             message.append('.');
         }
         message.append(methodName);
-        message.append(", return value: ");
-        message.append("\"");
-        message.append("+ ");
+        message.append(", return value: "); //$NON-NLS-1$
+        message.append("\""); //$NON-NLS-1$
+        message.append("+ "); //$NON-NLS-1$
         message.append(returnVariable);
         generateLoggingStmtWithConditionForMessageExpression(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag, message.toString());
     }

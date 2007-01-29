@@ -323,7 +323,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         String javaDoc = getJavaDocCommentForOverriddenMethod();
         JavaCodeFragment body = new JavaCodeFragment();
         builder.method(Modifier.PUBLIC, "void", "executeBusinessLogic", EMPTY_STRING_ARRAY,
-                EMPTY_STRING_ARRAY, body, javaDoc, ANNOTATION_MODIFIABLE);
+                EMPTY_STRING_ARRAY, body, javaDoc, ANNOTATION_GENERATED);
     }
     
     /*

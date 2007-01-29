@@ -35,9 +35,12 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     
     private boolean changeListenerSupportActive;
     
-    public BasePolicyCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId, LocalizedStringsSet stringsSet, Boolean isChangeListenerSupportActive) {
+    public BasePolicyCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, 
+                                     String kindId, 
+                                     LocalizedStringsSet stringsSet, 
+                                     boolean isChangeListenerSupportActive) {
         super(builderSet, kindId, stringsSet);
-        this.changeListenerSupportActive = isChangeListenerSupportActive != null ? isChangeListenerSupportActive.booleanValue() : false;
+        this.changeListenerSupportActive = isChangeListenerSupportActive;
     }
 
     public boolean isChangeListenerSupportActive(){

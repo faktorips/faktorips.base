@@ -50,7 +50,6 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     public ProductCmptBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet);
         generationBuilder = new ProductCmptGenerationCuBuilder(builderSet, kindId);
-        
     }
 
     public void setProductCmptImplBuilder(ProductCmptImplClassBuilder builder) {
@@ -65,7 +64,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
      * {@inheritDoc}
      */
     public String getName() {
-        return "ProductCmptBuilder";
+        return "ProductCmptBuilder"; //$NON-NLS-1$
     }
 
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
@@ -172,8 +171,8 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         int date = validFrom.get(GregorianCalendar.DATE);
         String name = getUnchangedJavaSrcFilePrefix(generation.getIpsSrcFile()) + 
                 + validFrom.get(GregorianCalendar.YEAR)
-                + (month<10?"0"+month:""+month)
-                + (date<10?"0"+date:""+date);
+                + (month<10?"0"+month:""+month) //$NON-NLS-1$ //$NON-NLS-2$
+                + (date<10?"0"+date:""+date); //$NON-NLS-1$ //$NON-NLS-2$
         name = generation.getIpsProject().getProductCmptNamingStrategy().getJavaClassIdentifier(name);
         return generation.getProductCmpt().getIpsSrcFile().getIpsPackageFragment().getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
     }
@@ -202,4 +201,12 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     public boolean buildsDerivedArtefacts() {
         return true;
     }
+    
+    /**
+     * Delegates to the ProductCmptGenerationBuilder.
+     */
+    public void setLoggingCodeGenerationEnabled(boolean enabled){
+        generationBuilder.setLoggingCodeGenerationEnabled(enabled);
+    }
+
 }
