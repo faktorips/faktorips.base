@@ -99,9 +99,10 @@ public class ContentPage extends IpsObjectEditorPage {
         GridLayout layout = new GridLayout(1, false);
         formBody.setLayout(layout);
           
-        DeleteRowAction deleteRowAction = new DeleteRowAction(tableViewer, this);
         Table table= createTable(formBody);
-        initTableViewer(table, toolkit, formBody, deleteRowAction);
+        initTableViewer(table, toolkit, formBody);
+        DeleteRowAction deleteRowAction = new DeleteRowAction(tableViewer, this);
+        initTablePopupMenu(table, deleteRowAction);
 
         /* Create a single row if an empty tablecontents is opened. 
          * Otherwise no editing is possible.
@@ -162,7 +163,7 @@ public class ContentPage extends IpsObjectEditorPage {
      * @param toolkit
      * @param formBody
      */
-    private void initTableViewer(Table table, UIToolkit toolkit, Composite formBody, DeleteRowAction deleteRowAction){
+    private void initTableViewer(Table table, UIToolkit toolkit, Composite formBody){
         try{            
             table.removeAll();
             increaseHeightOfTableRow(table, getTableContents().getNumOfColumns());
@@ -208,15 +209,6 @@ public class ContentPage extends IpsObjectEditorPage {
             labelProvider.setValueDatatypes(datatypes);
             tableViewer.setSorter(new TableSorter());
             tableViewer.addSelectionChangedListener(new RowDeletor());
-
-            // popupmenu
-            MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-            menuMgr.setRemoveAllWhenShown(false);
-            menuMgr.add(deleteRowAction);
-            Menu menu = menuMgr.createContextMenu(table);
-            table.setMenu(menu);
-//            do not register to avoid mb additions
-//            getSite().registerContextMenu(menuMgr, tableViewer);
             
             new TableMessageHoverService(tableViewer){
                 protected MessageList getMessagesFor(Object element) throws CoreException {
@@ -229,6 +221,21 @@ public class ContentPage extends IpsObjectEditorPage {
         }catch(CoreException e){
             IpsPlugin.log(e);
         }
+    }
+    /**
+     * Adds the given deleteRowAction to the popupmenu of th given table.
+     * @param table
+     * @param deleteRowAction
+     */
+    private void initTablePopupMenu(Table table, DeleteRowAction deleteRowAction){
+        // popupmenu
+        MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+        menuMgr.setRemoveAllWhenShown(false);
+        menuMgr.add(deleteRowAction);
+        Menu menu = menuMgr.createContextMenu(table);
+        table.setMenu(menu);
+//        do not register to avoid mb additions
+//        getSite().registerContextMenu(menuMgr, tableViewer);
     }
 
 
