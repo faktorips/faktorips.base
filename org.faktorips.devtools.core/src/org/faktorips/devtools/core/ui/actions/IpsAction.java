@@ -61,7 +61,10 @@ import org.faktorips.util.StringUtil;
  * @author Stefan Widmaier
  */
 public abstract class IpsAction extends Action {
+    
     private static final String ARCHIVE_LINK = "ARCHIVE_LINK"; //$NON-NLS-1$
+
+    private final static IIpsObject[] EMPTY_IPS_OBJECT_ARRAY = new IIpsObject[0];;
     
 	// The source of objects to modify by this action.
 	protected ISelectionProvider selectionProvider;
@@ -343,7 +346,6 @@ public abstract class IpsAction extends Action {
         return content;
     }
     
-    private final static IIpsObject[] EMPTY_IPS_OBJECT_ARRAY = new IIpsObject[0];;
     
     /**
      * Returns all objects which are represented by links inside the clipboard. If there are no resource links inside the clipboard an
