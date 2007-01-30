@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?><umlet_diagram><element><type>com.umlet.element.base.Relation</type><coordinates><x>570</x><y>40</y><w>220</w><h>130</h></coordinates><panel_attributes>lt=-
-m1=0..1
-m2=0..1
-r1=Folgeversion</panel_attributes><additional_attributes>70;110;200;110;200;20;20;20;20;60</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>360</x><y>340</y><w>280</w><h>120</h></coordinates><panel_attributes>HausratProduktGeneration
+<?xml version="1.0" encoding="UTF-8"?><umlet_diagram><element><type>com.umlet.element.base.Class</type><coordinates><x>360</x><y>340</y><w>280</w><h>120</h></coordinates><panel_attributes>HausratProduktGeneration
 --
 gueltigAb : GregorianCalendar
 produktname : String
 wertebereichWohnflaeche : IntegerRange
-vorschlagVersSummeProQm : Decimal
+vorschlagVersSummeProQm : Money
 wertebereichVersSumme : MoneyRange
 
-</panel_attributes><additional_attributes>transparentSelection=false</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>360</x><y>100</y><w>280</w><h>140</h></coordinates><panel_attributes>HausratProdukt
+</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>570</x><y>40</y><w>220</w><h>130</h></coordinates><panel_attributes>lt=-
+m1=0..1
+m2=0..1
+r1=Folgeversion</panel_attributes><additional_attributes>70;110;200;110;200;20;20;20;20;60</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>360</x><y>100</y><w>280</w><h>140</h></coordinates><panel_attributes>HausratProdukt
 --
-</panel_attributes><additional_attributes>transparentSelection=false</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>10</x><y>100</y><w>210</w><h>140</h></coordinates><panel_attributes>HausratVertrag
+</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>10</x><y>100</y><w>210</w><h>140</h></coordinates><panel_attributes>HausratVertrag
 --
 wirksamAb
 wohnflaeche : Integer
@@ -19,7 +19,7 @@ wohnflaeche : Integer
 versSumme: Money
 plz : String
 /tarifzone : String
-</panel_attributes><additional_attributes>transparentSelection=false</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>100</x><y>220</y><w>280</w><h>200</h></coordinates><panel_attributes>lt=&lt;-
+</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>100</x><y>220</y><w>280</w><h>200</h></coordinates><panel_attributes>lt=&lt;-
 m1= 1
 m2= *
 r1=/gültigeGeneration</panel_attributes><additional_attributes>260;180;20;180;20;20</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>470</x><y>220</y><w>40</w><h>140</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
