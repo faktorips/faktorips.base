@@ -204,21 +204,6 @@ public interface IProductCmptNamingStrategy {
 	public Element toXml(Document doc);
     
     /**
-     * Finds the runtime id to use for the given product component. The result
-     * of this method is not ensured to be the same for different calls. This
-     * method should only be used to find the id for a new product component,
-     * but does not set the runtime id for the product component.
-     * 
-     * @param productCmpt
-     *            The completeley initialized product component to find the
-     *            runtime id for.
-     * @throws CoreException
-     *             if an error occurs during evaluation.
-     */
-    public String getUniqueRuntimeId(IProductCmpt productCmpt)
-            throws CoreException;
-    
-    /**
      * Finds the runtime id to use for the given project and product component name.
      * The result of this method is not ensured to be the same for different calls.
      * This method should only be used to find the id for a new product component,

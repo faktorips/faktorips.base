@@ -1065,13 +1065,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getUniqueRuntimeId(IProductCmpt productCmpt) throws CoreException {
-        return getPropertiesInternal().getProductCmptNamingStrategy().getUniqueRuntimeId(productCmpt);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public String getRuntimeIdPrefix() {
 		return getPropertiesInternal().getRuntimeIdPrefix();
 	}

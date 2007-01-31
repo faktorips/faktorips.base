@@ -483,15 +483,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public String getRuntimeIdPrefix();
     
     /**
-     * Returns the runtime id evaluated for the given product component. It is <strong>
-     * not</strong> ensured that the same id is returend for different calls.
-     * 
-     * @param productCmpt The product component to find the runtime id for.
-     * @throws CoreException if an error occurs during evaluation.
-     */
-    public String getUniqueRuntimeId(IProductCmpt productCmpt) throws CoreException;
-   
-    /**
      * Returns the stratgey used to name product components. This method never returns
      * <code>null</code>.
      */

@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
@@ -309,18 +308,6 @@ public abstract class AbstractProductCmptNamingStrategy implements
 	 */
 	protected abstract Element toXmlSubclass(Document doc);
 	
-    /**
-     * {@inheritDoc}
-     */
-    public String getUniqueRuntimeId(IProductCmpt productCmpt) throws CoreException {
-        return getUniqueRuntimeId(productCmpt.getIpsProject(), productCmpt.getName());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public abstract String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreException;
-    
     /**
      * {@inheritDoc}
      */

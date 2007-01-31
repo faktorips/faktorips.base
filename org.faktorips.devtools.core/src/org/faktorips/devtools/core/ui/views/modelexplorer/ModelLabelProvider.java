@@ -34,12 +34,8 @@ public class ModelLabelProvider implements ILabelProvider {
 
 	public Image getImage(Object element) {
 		if(element instanceof IIpsElement){
-			/*if (element instanceof IIpsPackageFragment) {
-				return IpsPlugin.getDefault().getImage("folder_open.gif"); //$NON-NLS-1$
-			} else{*/
-				return ((IIpsElement) element).getImage();
-			//}
-		}else if(element instanceof IResource){
+		    return ((IIpsElement) element).getImage();
+		} else if(element instanceof IResource){
             // check if the resource is an ips source file, in this case return the image of the ips source,
             // remark: if we use the IWorkbenchAdapter to retrieve the image, we get the
             // standard icon of the ips object (resolved by the filename and defined in the extension point)

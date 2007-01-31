@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -179,8 +180,10 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             IpsModel model = (IpsModel)getIpsModel();
             try {
                 model.stopBroadcastingChangesMadeByCurrentThread();
-                IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile .getIpsObject();
-                productCmpt.setRuntimeId(getIpsProject().getUniqueRuntimeId(productCmpt));
+                IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+                IIpsProject project = getIpsProject();
+                String runtimeId = project.getProductCmptNamingStrategy().getUniqueRuntimeId(project, productCmpt.getName());
+                productCmpt.setRuntimeId(runtimeId);
                 ipsSrcFile .save(force, monitor);
             } finally {
                 model.resumeBroadcastingChangesMadeByCurrentThread();
@@ -282,7 +285,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             
             if (template instanceof IProductCmpt) {
                 ((IProductCmpt)newObject).setPolicyCmptType(((IProductCmpt)template).getPolicyCmptType());
-                ((IProductCmpt)newObject).setRuntimeId(newObject.getIpsProject().getUniqueRuntimeId((IProductCmpt)newObject));
             }
             file.save(true, null);
         } finally {
