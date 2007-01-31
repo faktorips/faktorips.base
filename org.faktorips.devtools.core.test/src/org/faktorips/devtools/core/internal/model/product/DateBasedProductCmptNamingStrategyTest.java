@@ -20,9 +20,10 @@ package org.faktorips.devtools.core.internal.model.product;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.util.message.MessageList;
@@ -45,11 +46,14 @@ public class DateBasedProductCmptNamingStrategyTest extends AbstractIpsPluginTes
 	protected void setUp() throws Exception {
 		super.setUp();
 		ipsProject = newIpsProject("TestProject");
-		strategy = new DateBasedProductCmptNamingStrategy();
+		IIpsProjectProperties props = ipsProject.getProperties();
+        strategy = new DateBasedProductCmptNamingStrategy();
 		strategy.setIpsProject(ipsProject);
 		strategy.setVersionIdSeparator(" ");
 		strategy.setDateFormatPattern("yyyy-MM-dd");
 		strategy.setPostfixAllowed(false);
+        props.setProductCmptNamingStrategy(strategy);
+        ipsProject.setProperties(props);
 	}
 
 	/*
@@ -122,18 +126,17 @@ public class DateBasedProductCmptNamingStrategyTest extends AbstractIpsPluginTes
 
     public void testGetUniqueRuntimeId() throws Exception {
         String prefix = ipsProject.getIpsProject().getRuntimeIdPrefix();
+
+        String id = strategy.getUniqueRuntimeId(ipsProject, "TestProduct 2005-01-01");
+        assertEquals(prefix + "TestProduct 2005-01-01", id);
         
-        IProductCmpt cmpt = newProductCmpt(ipsProject, "TestProduct 2005-01-01");
-        
-        String id = strategy.getUniqueRuntimeId(cmpt);
+        newProductCmpt(ipsProject, "TestProduct 2005-01-01");
+        id = strategy.getUniqueRuntimeId(ipsProject, "TestProduct 2005-01-01");
         assertEquals(prefix + "TestProduct1 2005-01-01", id);
         
-        IProductCmpt cmpt2 = newProductCmpt(ipsProject, "TestProduct1 2005-01-01");
-        id = strategy.getUniqueRuntimeId(cmpt2);
-        assertEquals(prefix + "TestProduct11 2005-01-01", id);
-        
-        cmpt2 = newProductCmpt(ipsProject, "TestProduct2 2005-01-01");
-        id = strategy.getUniqueRuntimeId(cmpt);
-        assertEquals(prefix + "TestProduct3 2005-01-01", id);
+        newProductCmpt(ipsProject, "pack2.TestProduct 2005-01-01");
+        id = strategy.getUniqueRuntimeId(ipsProject, "TestProduct 2005-01-01");
+        assertEquals(prefix + "TestProduct2 2005-01-01", id);
     }
+    
 }

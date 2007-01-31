@@ -96,17 +96,18 @@ public class NoVersionIdProductCmptNamingStrategyTest extends AbstractIpsPluginT
     
 
     public void testGetUniqueRuntimeId() throws Exception {
-        IProductCmpt cmpt = newProductCmpt(project, "TestProductCmpt");
+        String id = strategy.getUniqueRuntimeId(project, "TestProductCmpt");
+        assertEquals(prefix + "TestProductCmpt", id);
         
-        String id = strategy.getUniqueRuntimeId(cmpt);
-        assertEquals(prefix + cmpt.getName() + "1", id);
+        newProductCmpt(project, "TestProductCmpt");
+        id = strategy.getUniqueRuntimeId(project, "TestProductCmpt");
+        assertEquals(prefix + "TestProductCmpt1", id);
         
-        IProductCmpt cmpt2 = newProductCmpt(project, "TestProductCmpt1");
-        id = strategy.getUniqueRuntimeId(cmpt2);
-        assertEquals(prefix + cmpt.getName() + "11", id);
-        
-        cmpt2 = newProductCmpt(project, "TestProductCmpt2");
-        id = strategy.getUniqueRuntimeId(cmpt);
-        assertEquals(prefix + cmpt.getName() + "3", id);
+        newProductCmpt(project, "test.TestProductCmpt");
+        id = strategy.getUniqueRuntimeId(project, "TestProductCmpt");
+        assertEquals(prefix + "TestProductCmpt2", id);
+
+        id = strategy.getUniqueRuntimeId(project, "TestProductCmpt1");
+        assertEquals(prefix + "TestProductCmpt11", id);
     }
 }

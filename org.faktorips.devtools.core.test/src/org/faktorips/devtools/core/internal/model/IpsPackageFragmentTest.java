@@ -315,6 +315,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     	
     	assertFalse(template.getRuntimeId().equals(copy.getRuntimeId()));
     	assertFalse(StringUtils.isEmpty(copy.getRuntimeId()));
+        assertEquals("copy", copy.getRuntimeId());
     }
     
 }
