@@ -262,8 +262,6 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         if (getTargetPackage() != null && !getTargetPackage().exists()) {
             setMessage(NLS.bind(Messages.SourcePage_msgWarningTargetWillBeCreated, getTargetPackage().getName()),
                     WARNING);
-        } else if (getTargetPackage() != null && getTargetPackage().isDefaultPackage()) {
-            setMessage(Messages.SourcePage_msgWarningTargetIsDefaultPackage, WARNING);
         } else if (getTargetPackage() == null){
             setErrorMessage(Messages.SourcePage_msgBadTargetPackage);
         }
