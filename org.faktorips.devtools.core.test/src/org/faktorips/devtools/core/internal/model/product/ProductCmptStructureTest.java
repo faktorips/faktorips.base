@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 
@@ -152,5 +153,11 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         assertEquals(1, ptsus.length);
         tcu = ptsus[0].getTableContentUsage();
         assertEquals("tableContent2", tcu.getTableContentName());
+    }
+    
+    public void testToArray() throws Exception {
+        IProductCmptStructureReference[] array = structure.toArray(true);
+        assertEquals(3, array.length);
+        
     }
 }

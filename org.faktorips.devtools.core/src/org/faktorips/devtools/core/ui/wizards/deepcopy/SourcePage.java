@@ -86,7 +86,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
     private int type;
 
-    private static final String PAGE_ID = "deepCopyWizard.source"; //$NON-NLS-1$
+    static final String PAGE_ID = "deepCopyWizard.source"; //$NON-NLS-1$
 
     private static String getTitle(int type) {
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
@@ -145,14 +145,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                 .getIpsPackageFragment().getRoot(), inputRoot);
         
         // set target default
-        int ignore = getSegmentsToIgnore((IProductCmptReference[])structure.toArray(true));
-        IIpsPackageFragment pack = structure.getRoot().getProductCmpt().getIpsPackageFragment();
-        int segments = pack.getRelativePath().segmentCount();
-        if (segments - ignore >= 0) {
-            IPath path = pack.getRelativePath().removeLastSegments(segments - ignore);
-            pack = pack.getRoot().getIpsPackageFragment(path.toString().replace('/', '.'));
-            targetInput.setPdPackageFragment(pack);
-        }
+        targetInput.setPdPackageFragment(getPackage());
         
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelSearchPattern);
@@ -231,6 +224,17 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         }
 
         return ignore;
+    }
+    
+    IIpsPackageFragment getPackage() {
+        int ignore = getSegmentsToIgnore((IProductCmptReference[])structure.toArray(true));
+        IIpsPackageFragment pack = structure.getRoot().getProductCmpt().getIpsPackageFragment();
+        int segments = pack.getRelativePath().segmentCount();
+        if (segments - ignore > 0) {
+            IPath path = pack.getRelativePath().removeLastSegments(segments - ignore);
+            pack = pack.getRoot().getIpsPackageFragment(path.toString().replace('/', '.'));
+        }
+        return pack;
     }
 
     /**

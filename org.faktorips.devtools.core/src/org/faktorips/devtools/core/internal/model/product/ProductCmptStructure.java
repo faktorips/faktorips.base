@@ -115,6 +115,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	 */
 	public IProductCmptStructureReference[] toArray(boolean productCmptOnly) {
 		List result = new ArrayList();
+        result.add(root);
 		addChildrenToList(root, result, productCmptOnly);
 		
 		if (productCmptOnly) {
