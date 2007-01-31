@@ -141,11 +141,7 @@ public class FormulasSection extends IpsSection {
 	
         for (int i = 0; i < usages.length; i++) {
             try {
-                ITableStructureUsage tsu = null;
-                IProductCmptType type = generation.getProductCmpt().findProductCmptType();
-                if (type!=null) {
-                    tsu = type.getTableStructureUsage(usages[i].getStructureUsage());
-                }
+                ITableStructureUsage tsu = findTableStructureUsage(usages[i].getStructureUsage());
                 
                 // create label here to avoid lost label in case of exception
                 toolkit.createFormLabel(rootPane, StringUtils.capitalise(usages[i].getStructureUsage()));
@@ -183,6 +179,23 @@ public class FormulasSection extends IpsSection {
 		rootPane.layout(true);
 		rootPane.redraw();
 	}
+    
+    private ITableStructureUsage findTableStructureUsage(String rolename) throws CoreException {
+        IProductCmptType type = generation.getProductCmpt().findProductCmptType();
+        if (type==null) {
+            return null;
+        }
+        List typesVisited = new ArrayList();
+        while (type!=null && !typesVisited.contains(type)) {
+            ITableStructureUsage tsu = type.getTableStructureUsage(rolename);
+            if (tsu!=null) {
+                return tsu;
+            }
+            typesVisited.add(type);
+            type = type.findSupertype();
+        }
+        return null;
+    }
 
 	/**
 	 * {@inheritDoc}

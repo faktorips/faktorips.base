@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
  * 
+ * 
  * @author Thorsten Guenther
  */
 public class TableContentsUsageRefControl extends TableContentsRefControl {
@@ -46,6 +47,9 @@ public class TableContentsUsageRefControl extends TableContentsRefControl {
         this.structureUsage = structureUsage;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected IIpsObject[] getIpsObjects() throws CoreException {
         if (structureUsage==null) {
             return new IIpsObject[0];

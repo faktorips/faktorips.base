@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 
 
 /**
- * A control to edit policy component type references.  
+ * A control to edit table content references.  
  */
 public class TableContentsRefControl extends IpsObjectRefControl {
 
@@ -39,19 +39,18 @@ public class TableContentsRefControl extends IpsObjectRefControl {
     }
     
     /**
-     * Returns the table structure entered in this control. Returns <code>null</code>
-     * if the text in the control does not identify a table structure.
+     * Returns the table contents entered in this control. Returns <code>null</code>
+     * if the text in the control does not identify a table contents.
      * 
      * @throws CoreException if an exception occurs while searching for
-     * the table structure.
+     * the table contents.
      */
     public ITableContents findTableContents() throws CoreException {
         return (ITableContents)getIpsProject().findIpsObject(IpsObjectType.TABLE_CONTENTS, getText());
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.IpsObjectRefControl#getIpsObjects()
+     * {@inheritDoc}
      */
     protected IIpsObject[] getIpsObjects() throws CoreException {
         return getIpsProject().findIpsObjects(IpsObjectType.TABLE_CONTENTS);
