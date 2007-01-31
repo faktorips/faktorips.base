@@ -62,7 +62,6 @@ import org.apache.commons.lang.StringUtils;
  */
 public class LocalizeHelper {
     File sourceRoot;
-    
     File targetRoot;
     String targetLang;
     List modifiedFiles = new ArrayList();
