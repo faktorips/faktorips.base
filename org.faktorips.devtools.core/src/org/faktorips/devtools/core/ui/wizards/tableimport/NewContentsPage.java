@@ -197,9 +197,9 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
         IIpsPackageFragmentRoot root = sourceFolderControl.getPdPckFragmentRoot();
         packageControl.setPdPckFragmentRoot(root);
         if (root!=null) {
-            structureControl.setPdProject(root.getIpsProject());
+            structureControl.setIpsProject(root.getIpsProject());
         } else {
-            structureControl.setPdProject(null);
+            structureControl.setIpsProject(null);
         }
     }
     

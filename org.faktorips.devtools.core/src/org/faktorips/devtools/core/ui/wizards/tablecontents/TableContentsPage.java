@@ -111,9 +111,9 @@ public class TableContentsPage extends IpsObjectPage {
         super.sourceFolderChanged();
         IIpsPackageFragmentRoot root = getPdPackageFragmentRoot();
         if (root!=null) {
-            structureControl.setPdProject(root.getIpsProject());
+            structureControl.setIpsProject(root.getIpsProject());
         } else {
-            structureControl.setPdProject(null);
+            structureControl.setIpsProject(null);
         }
     }
     

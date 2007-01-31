@@ -123,7 +123,7 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
         try {
             IIpsObject[] objects;
             if (control != null) {
-                objects = control.getPdObjects();    
+                objects = control.getIpsObjects();    
             } else {
                 objects = ipsProject.findIpsObjects(ipsObjectType);
             }

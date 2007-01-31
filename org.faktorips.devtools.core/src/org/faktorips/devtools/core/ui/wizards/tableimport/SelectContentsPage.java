@@ -159,15 +159,15 @@ public class SelectContentsPage extends WizardPage implements ValueChangeListene
     
     protected void projectChanged() {
         if ("".equals(projectField.getText())) { //$NON-NLS-1$
-            contentsControl.setPdProject(null);
+            contentsControl.setIpsProject(null);
             return;
         }
         IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectField.getText());
         if (project.exists()) {
-            contentsControl.setPdProject(project);
+            contentsControl.setIpsProject(project);
             return;
         }
-        contentsControl.setPdProject(null);
+        contentsControl.setIpsProject(null);
     }
     
     private void setTableContents(ITableContents contents) {
@@ -187,7 +187,7 @@ public class SelectContentsPage extends WizardPage implements ValueChangeListene
     
     public void setIpsProject(IIpsProject project) {
         projectControl.setIpsProject(project);
-        contentsControl.setPdProject(project);
+        contentsControl.setIpsProject(project);
     }
     
     public void valueChanged(FieldValueChangedEvent e) {

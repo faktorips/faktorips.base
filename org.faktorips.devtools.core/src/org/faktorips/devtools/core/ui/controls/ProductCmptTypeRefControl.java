@@ -43,7 +43,7 @@ public class ProductCmptTypeRefControl extends IpsObjectRefControl {
     /** 
      * {@inheritDoc}
      */
-    protected IIpsObject[] getPdObjects() throws CoreException {
+    protected IIpsObject[] getIpsObjects() throws CoreException {
     	if (getIpsProject()==null) {
     		return new IIpsObject[0];
     	}

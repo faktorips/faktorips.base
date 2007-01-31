@@ -51,9 +51,9 @@ public class TableContentsRefControl extends IpsObjectRefControl {
     
     /** 
      * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.IpsObjectRefControl#getPdObjects()
+     * @see org.faktorips.devtools.core.ui.controls.IpsObjectRefControl#getIpsObjects()
      */
-    protected IIpsObject[] getPdObjects() throws CoreException {
+    protected IIpsObject[] getIpsObjects() throws CoreException {
         return getIpsProject().findIpsObjects(IpsObjectType.TABLE_CONTENTS);
     }
 

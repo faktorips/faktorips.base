@@ -61,7 +61,7 @@ abstract class IpsObjectRefControl extends TextButtonControl {
         ContentAssistHandler.createHandlerForText(text, CompletionUtil.createContentAssistant(completionProcessor));
     }
     
-    public void setPdProject(IIpsProject project) {
+    public void setIpsProject(IIpsProject project) {
         this.ipsProject = project;
         setButtonEnabled(project!=null && project.exists());
     }
@@ -73,7 +73,7 @@ abstract class IpsObjectRefControl extends TextButtonControl {
     protected void buttonClicked() {
         try {
             PdObjectSelectionDialog dialog = new PdObjectSelectionDialog(getShell(), dialogTitle, dialogMessage);
-            dialog.setElements(getPdObjects());
+            dialog.setElements(getIpsObjects());
             dialog.setFilter(StringUtil.unqualifiedName(super.getText()));
             if (dialog.open()==Window.OK) {
                 if (dialog.getResult().length>0) {
@@ -88,6 +88,9 @@ abstract class IpsObjectRefControl extends TextButtonControl {
         }
     }
     
-    protected abstract IIpsObject[] getPdObjects() throws CoreException;
+    /**
+     * Returns all ips objects that can be chosen by the user.
+     */
+    protected abstract IIpsObject[] getIpsObjects() throws CoreException;
     
 }

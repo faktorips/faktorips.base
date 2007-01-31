@@ -46,10 +46,9 @@ public class RelationTargetRefControl extends PcTypeRefControl {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.IpsObjectRefControl#getPdObjects()
+     * {@inheritDoc}
      */
-    protected IIpsObject[] getPdObjects() throws CoreException {
+    protected IIpsObject[] getIpsObjects() throws CoreException {
         if (policyCmptTypeTarget == null)
             return new IIpsObject[0];
         

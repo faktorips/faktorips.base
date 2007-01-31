@@ -212,9 +212,9 @@ public class ProductCmptPage extends IpsObjectPage {
         super.sourceFolderChanged();
         IIpsPackageFragmentRoot root = getPdPackageFragmentRoot();
         if (root!=null) {
-        	typeRefControl.setPdProject(root.getIpsProject());
+        	typeRefControl.setIpsProject(root.getIpsProject());
         } else {
-        	typeRefControl.setPdProject(null);
+        	typeRefControl.setIpsProject(null);
         }
         updateEnableState();
     }

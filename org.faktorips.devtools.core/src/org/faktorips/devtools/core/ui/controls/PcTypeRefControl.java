@@ -39,10 +39,9 @@ public class PcTypeRefControl extends IpsObjectRefControl {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.IpsObjectRefControl#getPdObjects()
+     * {@inheritDoc}
      */
-    protected IIpsObject[] getPdObjects() throws CoreException {
+    protected IIpsObject[] getIpsObjects() throws CoreException {
         return getIpsProject().findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE);
     }
     

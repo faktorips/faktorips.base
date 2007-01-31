@@ -46,11 +46,11 @@ public class TableContentsUsageRefControl extends TableContentsRefControl {
         this.structureUsage = structureUsage;
     }
 
-    protected IIpsObject[] getPdObjects() throws CoreException {
+    protected IIpsObject[] getIpsObjects() throws CoreException {
         if (structureUsage==null) {
             return new IIpsObject[0];
         }
-        IIpsObject[] allFound = super.getPdObjects();
+        IIpsObject[] allFound = super.getIpsObjects();
         String[] structures = structureUsage.getTableStructures();
         List result = new ArrayList();
         

@@ -66,9 +66,9 @@ public class PcTypePage extends IpsObjectPage implements ValueChangeListener {
         super.sourceFolderChanged();
         IIpsPackageFragmentRoot root = getPdPackageFragmentRoot();
         if (root!=null) {
-            superTypeControl.setPdProject(root.getIpsProject());
+            superTypeControl.setIpsProject(root.getIpsProject());
         } else {
-            superTypeControl.setPdProject(null);
+            superTypeControl.setIpsProject(null);
         }
     }
     
