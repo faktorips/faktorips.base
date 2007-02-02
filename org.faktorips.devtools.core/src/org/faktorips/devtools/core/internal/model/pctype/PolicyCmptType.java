@@ -913,7 +913,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             throw new CoreException(new IpsStatus(e));
         }
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -1251,6 +1251,15 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
+    public ITableStructureUsage findTableStructureUsageInSupertypeHierarchy(String tableStructureUsageRole) throws CoreException{
+        FindTableStructureUsageInTypeHierarchyVisitor visitor = new FindTableStructureUsageInTypeHierarchyVisitor(tableStructureUsageRole);
+        visitor.start(this);
+        return visitor.getTableStructureUsage();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     public ITableStructureUsage getTableStructureUsage(String roleName) {
         for (Iterator it = tableStuctureUsages.iterator(); it.hasNext();) {
             ITableStructureUsage tsu = (ITableStructureUsage)it.next();
@@ -1261,7 +1270,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         return null;
     }
     
-    class IsAggregrateRootVisitor extends PolicyCmptTypeHierarchyVisitor {
+    private static class IsAggregrateRootVisitor extends PolicyCmptTypeHierarchyVisitor {
 
         private boolean root = true;
         
@@ -1286,7 +1295,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         
     }
     
-    class AddQNamesFromTypeHierarchyVisitor extends PolicyCmptTypeHierarchyVisitor {
+    private class AddQNamesFromTypeHierarchyVisitor extends PolicyCmptTypeHierarchyVisitor {
 
         private Set qNames;
 
@@ -1311,7 +1320,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         
     }
     
-    class FindAttributeInTypeHierarchyVisitor extends PolicyCmptTypeHierarchyVisitor {
+    private static class FindAttributeInTypeHierarchyVisitor extends PolicyCmptTypeHierarchyVisitor {
 
         private String attributeName;
         private IAttribute attribute = null;
@@ -1332,6 +1341,31 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             attribute = currentType.getAttribute(attributeName);
             return attribute==null;
         }
+    }
+    
+    
+    static class FindTableStructureUsageInTypeHierarchyVisitor extends PolicyCmptTypeHierarchyVisitor {
+
+        private String tableUsageRoleName;
+        private ITableStructureUsage tableStructureUsage = null;
+        
+        public FindTableStructureUsageInTypeHierarchyVisitor(String tableUsageRoleName) {
+            super();
+            this.tableUsageRoleName = tableUsageRoleName;
+        }
+        
+        public ITableStructureUsage getTableStructureUsage() {
+            return tableStructureUsage;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IPolicyCmptType currentType) {
+            tableStructureUsage = currentType.getTableStructureUsage(tableUsageRoleName);
+            return tableStructureUsage==null;
+        }
         
     }
+    
 }

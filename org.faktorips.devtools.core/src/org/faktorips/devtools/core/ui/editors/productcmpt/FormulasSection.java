@@ -185,16 +185,7 @@ public class FormulasSection extends IpsSection {
         if (type==null) {
             return null;
         }
-        List typesVisited = new ArrayList();
-        while (type!=null && !typesVisited.contains(type)) {
-            ITableStructureUsage tsu = type.getTableStructureUsage(rolename);
-            if (tsu!=null) {
-                return tsu;
-            }
-            typesVisited.add(type);
-            type = type.findSupertype();
-        }
-        return null;
+        return type.findTableStructureUsageInSupertypeHierarchy(rolename);
     }
 
 	/**

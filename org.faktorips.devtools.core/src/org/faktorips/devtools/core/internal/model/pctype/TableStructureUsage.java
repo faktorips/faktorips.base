@@ -30,12 +30,12 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType.FindTableStructureUsageInTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -376,19 +376,11 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
             Message msg = new Message(MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLESTRUCTURE);
             list.add(msg);
         }
-        
-        // check that the role name is not in use by another usage within the supertype hierarchy
+
         IPolicyCmptType pcType = (IPolicyCmptType)getIpsObject();
-        ITypeHierarchy hierarchy = pcType.getSupertypeHierarchy();
-        ITableStructureUsage[] tblUsages = hierarchy.getAllTableStructureUsages(pcType);
-        for (int i = 0; i < tblUsages.length; i++) {
-            if (tblUsages[i] != this && roleName.equals(tblUsages[i].getRoleName())){
-                String text = NLS.bind(Messages.TableStructureUsage_msgSameRoleName, roleName);
-                Message msg = new Message(MSGCODE_SAME_ROLENAME, text, Message.ERROR, this, PROPERTY_ROLENAME);
-                list.add(msg);
-                break;
-            }
-        }
+
+        validateRoleNameInSupertypeHierarchy(pcType, list);
+        validateDuplicateRoleName(pcType, list);
         
         // check if the policy cmpt is configurable by product, if the policy cmpt type is not
         // configurable by product no table content usage is allowed
@@ -399,6 +391,29 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
                         this);
                 list.add(msg);
             }
+        }
+    }
+    
+    private void validateDuplicateRoleName(IPolicyCmptType pcType, MessageList msgList){
+        ITableStructureUsage[] tabeStructureUsages = pcType.getTableStructureUsages();
+        for (int i = 0; i < tabeStructureUsages.length; i++) {
+            if(!(tabeStructureUsages[i].getId() == getId()) && 
+                    tabeStructureUsages[i].getRoleName().equals(getRoleName())){
+                String text = NLS.bind(Messages.TableStructureUsage_SameRoleName, getRoleName());
+                msgList.add(new Message(MSGCODE_SAME_ROLENAME, text, Message.ERROR));
+            }
+        }
+    }
+
+    private void validateRoleNameInSupertypeHierarchy(IPolicyCmptType policyCmptType, MessageList msgList) throws CoreException{
+        IPolicyCmptType superType = policyCmptType.findSupertype();
+        FindTableStructureUsageInTypeHierarchyVisitor visitor = 
+            new FindTableStructureUsageInTypeHierarchyVisitor(getRoleName());
+        visitor.start(superType);
+        if(visitor.getTableStructureUsage() != null){
+            String msg = NLS.bind(Messages.TableStructureUsage_RoleNameAlreadyInSupertype, getRoleName());
+            msgList.add(new Message(MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE, 
+                    msg, Message.ERROR));
         }
     }
 }

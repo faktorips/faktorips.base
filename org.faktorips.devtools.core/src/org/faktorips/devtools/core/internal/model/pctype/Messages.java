@@ -78,6 +78,10 @@ public class Messages extends NLS {
 
 	public static String Method_msgDatatypeNotFound;
 
+    public static String TableStructureUsage_RoleNameAlreadyInSupertype;
+
+    public static String TableStructureUsage_SameRoleName;
+
 	public static String ValidationRule_msgFunctionNotExists;
 
 	public static String ValidationRule_msgIgnored;

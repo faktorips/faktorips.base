@@ -52,17 +52,21 @@ public interface ITableStructureUsage extends IIpsObjectPart {
     public final static String MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE = MSGCODE_PREFIX + "MustReferenceAtLeast1Structure"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that the policy cmpt type is not configurable by product.
+     */ 
+    public final static String MSGCODE_POLICYCMPTTYPE_IS_NOT_CONFIGURABLE_BY_PRODUCT = MSGCODE_PREFIX + "PolicycmpttypeIsNotConfigurableByProduct"; //$NON-NLS-1$
+
+    /**
+     * Validation message code that identifies the validation rule that checks if role name is already defined in the super type.
+     */ 
+    public final static String MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE = MSGCODE_PREFIX + "RoleNameAlreadyInSupertype"; //$NON-NLS-1$
+    
+    /**
      * Validation message code to indicate that the table structure usage has the same rolename as at least one other
      * usage in the supertype hierarchy.
      */ 
     public final static String MSGCODE_SAME_ROLENAME = MSGCODE_PREFIX + "SameRoleName"; //$NON-NLS-1$
 
-    /**
-     * Validation message code to indicate that the policy cmpt type is not configurable by product.
-     */ 
-    public final static String MSGCODE_POLICYCMPTTYPE_IS_NOT_CONFIGURABLE_BY_PRODUCT = MSGCODE_PREFIX + "PolicycmpttypeIsNotConfigurableByProduct"; //$NON-NLS-1$
-
-    
     /**
      * Returns the role name.
      */

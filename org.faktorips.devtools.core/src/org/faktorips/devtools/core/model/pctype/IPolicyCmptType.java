@@ -511,7 +511,16 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      * exists.
      */
     public ITableStructureUsage getTableStructureUsage(String roleName);
-    
+
+    /**
+     * Looks for the ITableStructureUsage with the specified roleName starting from this policy component type and visiting up the
+     * supertype hierarchy. If no ITableStructureUsage is found <code>null</code> will be returned.
+     * 
+     * @param roleName the role name of the ITableStructureUsage in question 
+     * @return the ITableStructureUsage for the provided name or <code>null</code> if non is found
+     */
+    public ITableStructureUsage findTableStructureUsageInSupertypeHierarchy(String roleName) throws CoreException;
+
     /**
      * Moves the table structure usages identified by the indexes up or down by one position.
      * If one of the indexes is 0 (the first object), no object is moved up. 

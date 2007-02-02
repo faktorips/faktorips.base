@@ -415,6 +415,14 @@ public class ProductCmptType implements IProductCmptType {
         return tblStructureUsages;
     }
 
+    public ITableStructureUsage findTableStructureUsageInSupertypeHierarchy(String tableStructureUsageRole) throws CoreException{
+        org.faktorips.devtools.core.model.pctype.ITableStructureUsage pcStructureUsage = 
+            policyCmptType.findTableStructureUsageInSupertypeHierarchy(tableStructureUsageRole);
+        if(pcStructureUsage == null){
+            return null;
+        }
+        return new TableStructureUsage(pcStructureUsage);
+    }
     
     /**
      * {@inheritDoc}

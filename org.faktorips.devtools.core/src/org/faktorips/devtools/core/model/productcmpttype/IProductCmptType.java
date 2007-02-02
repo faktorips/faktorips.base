@@ -102,6 +102,15 @@ public interface IProductCmptType extends IIpsObject {
     public ITableStructureUsage getTableStructureUsage(String roleName);
     
     /**
+     * Looks for the ITableStructureUsage with the specified roleName starting from this policy component type and visiting up the
+     * supertype hierarchy. If no ITableStructureUsage is found <code>null</code> will be returned.
+     * 
+     * @param roleName the role name of the ITableStructureUsage in question 
+     * @return the ITableStructureUsage for the provided name or <code>null</code> if non is found
+     */
+    public ITableStructureUsage findTableStructureUsageInSupertypeHierarchy(String roleName) throws CoreException;
+
+    /**
      * Creates a new table usage and returns it.
      */
     public ITableStructureUsage newTableStructureUsage();
