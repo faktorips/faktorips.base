@@ -165,7 +165,8 @@ Es gilt das Recht der Bundesrepublik Deutschland.
          id="org.faktorips.devtools.core"
          download-size="0"
          install-size="0"
-         version="1.0.0.rc2"/>
+         version="1.0.0.rc2"
+         unpack="false"/>
 
    <plugin
          id="org.faktorips.devtools.stdbuilder"
