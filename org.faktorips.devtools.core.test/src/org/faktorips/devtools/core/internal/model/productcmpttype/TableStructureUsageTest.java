@@ -118,6 +118,28 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         
     }
     
+    public void testValidate_SameRolename() throws CoreException{
+        tableStructureUsage.setRoleName("role1");
+        MessageList ml = tableStructureUsage.validate();
+        assertNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_SAME_ROLENAME));
+        
+        productCmptType.newTableStructureUsage().setRoleName("role1");
+        ml = tableStructureUsage.validate();
+        assertNotNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_SAME_ROLENAME));
+        
+        tableStructureUsage.setRoleName("roleA");
+        ml = tableStructureUsage.validate();
+        assertNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_SAME_ROLENAME));
+        
+        // check for same role names in one of the supertype of the policy cmpt
+        IPolicyCmptType pcTypeSuper = newPolicyCmptType(project, "test.policyCmptTypeSuper");
+        policyCmptType.setSupertype(pcTypeSuper.getQualifiedName());
+        pcTypeSuper.newTableStructureUsage().setRoleName("roleA");
+        
+        ml = tableStructureUsage.validate();
+        assertNotNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_SAME_ROLENAME));
+    }
+    
     public void testvalidate_PolicycmpttypeIsNotConfigurableByProduct() throws CoreException{
         policyCmptType.setConfigurableByProductCmptType(true);
         MessageList ml = tableStructureUsage.validate();

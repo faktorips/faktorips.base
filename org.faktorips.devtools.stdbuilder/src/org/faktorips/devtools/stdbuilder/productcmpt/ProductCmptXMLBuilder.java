@@ -36,20 +36,20 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * Copies the product cmpt xml file to the output location (=java source folder).
- * For relations the target runtime id is added to the xml.
  * 
  * @author Thorsten Guenther
  */
 public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
 
+    /**
+     * @param type
+     * @param builderSet
+     * @param kind
+     */
     public ProductCmptXMLBuilder(IpsObjectType type, IIpsArtefactBuilderSet builderSet, String kind) {
         super(type, builderSet, kind);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
         Element root = productCmpt.toXml(IpsPlugin.getDefault().newDocumentBuilder().newDocument());
@@ -66,6 +66,10 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
         }
     }
 
+    /**
+     * @param generation
+     * @param node
+     */
     private void updateTargetRuntimeId(IProductCmptGeneration generation, Element generationElement) {
         NodeList relationNodes = generationElement.getElementsByTagName(IProductCmptRelation.TAG_NAME);
         IProductCmptRelation[] relations = generation.getRelations();

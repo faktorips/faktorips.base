@@ -156,31 +156,26 @@ public class TableStructureUsagePcTypeTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE));
         
     }
-
-    public void testValidateDuplicateRoleName() throws CoreException{
+    
+    public void testValidate_SameRolename() throws CoreException{
         tableStructureUsage.setRoleName("role1");
         MessageList ml = tableStructureUsage.validate();
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
-
-        tableStructureUsage = pcType.newTableStructureUsage();
-        tableStructureUsage.setRoleName("role1");
+        
+        pcType.newTableStructureUsage().setRoleName("role1");
         ml = tableStructureUsage.validate();
         assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
         
-    }
-    
-    public void testValidateRoleNameInSupertypeHierarchy() throws CoreException{
-        IPolicyCmptType a = newPolicyCmptType(project, "a");
-        ITableStructureUsage aStructureUsage = a.newTableStructureUsage();
-        aStructureUsage.setRoleName("usage");
-
-        IPolicyCmptType b = newPolicyCmptType(project, "b");
-        ITableStructureUsage bStructureUsage = b.newTableStructureUsage();
-        bStructureUsage.setRoleName("usage");
+        tableStructureUsage.setRoleName("roleA");
+        ml = tableStructureUsage.validate();
+        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
         
-        b.setSupertype(b.getQualifiedName());
+        // check for same role names in one of the supertype of the policy cmpt
+        IPolicyCmptType pcTypeSuper = newPolicyCmptType(project, "test.policyCmptTypeSuper");
+        pcType.setSupertype(pcTypeSuper.getQualifiedName());
+        pcTypeSuper.newTableStructureUsage().setRoleName("roleA");
         
-        MessageList ml = bStructureUsage.validate();
-        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
+        ml = tableStructureUsage.validate();
+        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
     }
 }

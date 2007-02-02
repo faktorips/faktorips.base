@@ -964,18 +964,4 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         pcType.getTableStructureUsages()[0] = null;
         assertNotNull(pcType.getTableStructureUsages()[0]);
     }
-    
-    public void testFindTableStructureUsageInSupertypeHierarchy() throws CoreException{
-        IPolicyCmptType a = newPolicyCmptType(root, "a");
-        ITableStructureUsage aStructureUsage = a.newTableStructureUsage();
-        aStructureUsage.setRoleName("aRole");
-        ITableStructureUsage aStructureUsage2 = a.newTableStructureUsage();
-        aStructureUsage2.setRoleName("aRole2");
-        IPolicyCmptType b = newPolicyCmptType(root, "b");
-        ITableStructureUsage bStructureUsage = b.newTableStructureUsage();
-        bStructureUsage.setRoleName("bRole");
-        b.setSupertype(a.getQualifiedName());
-        ITableStructureUsage aStructureUsageCompare = b.findTableStructureUsageInSupertypeHierarchy("aRole");
-        assertEquals(aStructureUsage, aStructureUsageCompare);
-    }
 }
