@@ -25,7 +25,9 @@ import org.faktorips.util.ArgumentCheck;
 
 
 /**
- *
+ * An edit field for Integer.
+ * 
+ * @author Jan Ortmann
  */
 public class IntegerField extends DefaultEditField {
 
@@ -47,10 +49,10 @@ public class IntegerField extends DefaultEditField {
     /** 
      * {@inheritDoc}
      */
-    public Object getValue() {
+    public Object parseContent() {
     	String text = getText();
         if (text != null && text.length() == 0) {
-            throw new RuntimeException("Can't return an Integer, field is empty."); //$NON-NLS-1$
+            return null;
         }
         text = (String)super.prepareObjectForGet(text);
         if (text == null) {

@@ -32,12 +32,11 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 
 /**
- * Post change events to several listeners.<br>
- * The events will be broadcasted after a specified delay. If the edit field which initiates this
- * event sends a new change event, but the previous events wasn't broadcated jet - because the delay
- * wasn't reached - then the delay will be retriggered again.<br>
+ * Posts change events to several listeners. The events will be broadcasted after a specified delay. 
+ * If the edit field which initiates this event sends a new change event, but the previous events wasn't broadcated yet 
+ * - because the treshold wasn't reached - then the wait time will be reset to zero again.<br>
  * If an edit field sends a change event but there is an outstanding event from another edit field,
- * then the outstanding event will be directly broadcast (flushed) and the new event will be delayed.
+ * then the outstanding event will be directly broadcasted (flushed) and the new event will be delayed.
  * 
  * @author Jan Ortmann
  */

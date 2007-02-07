@@ -61,7 +61,7 @@ public class TextButtonField extends DefaultEditField {
     /** 
      * {@inheritDoc}
      */
-    public Object getValue() {
+    public Object parseContent() {
     	return super.prepareObjectForGet(control.getTextControl().getText());
     }
 

@@ -242,7 +242,7 @@ public class ProductAttributesSection extends IpsSection {
 			return super.getText();
 		}
 
-		public Object getValue() {
+		public Object parseContent() {
 			return getText();
 		}
 

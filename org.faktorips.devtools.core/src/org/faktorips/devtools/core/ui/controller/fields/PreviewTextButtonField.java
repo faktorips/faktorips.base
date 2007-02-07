@@ -52,7 +52,7 @@ public class PreviewTextButtonField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
-    public Object getValue() {
+    public Object parseContent() {
         return control.getText();
     }
 

@@ -58,10 +58,9 @@ public class LabelField extends DefaultEditField {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#getValue()
+     * {@inheritDoc}
      */
-    public Object getValue() {
+    public Object parseContent() {
         return super.prepareObjectForGet(label.getText());
     }
 

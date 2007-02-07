@@ -51,7 +51,7 @@ public class ComboField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */
-    public Object getValue() {
+    public Object parseContent() {
         return super.prepareObjectForGet(getText());
     }
 

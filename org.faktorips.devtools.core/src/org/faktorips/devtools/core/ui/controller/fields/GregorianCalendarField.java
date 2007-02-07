@@ -54,7 +54,7 @@ public class GregorianCalendarField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */ 
-    public Object getValue() {
+    public Object parseContent() {
     	String text = getText();
     	
         text = (String)super.prepareObjectForGet(text);

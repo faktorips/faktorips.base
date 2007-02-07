@@ -57,7 +57,7 @@ public class TextField extends DefaultEditField {
     /** 
      * {@inheritDoc}
      */
-    public Object getValue() {
+    public Object parseContent() {
         return super.prepareObjectForGet(text.getText());
     }
 

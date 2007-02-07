@@ -30,7 +30,8 @@ import org.eclipse.swt.widgets.Text;
  * @author Thorsten Guenther
  */
 public class CardinalityField extends AbstractCardinalityField {
-	private Text text;
+	
+    private Text text;
 
 	/**
 	 * {@inheritDoc}
@@ -39,8 +40,8 @@ public class CardinalityField extends AbstractCardinalityField {
 		super();
 		this.text = text;
 	}
-
-	/**
+    
+    /**
 	 * {@inheritDoc}
 	 */
 	protected void addListenerToControl() {

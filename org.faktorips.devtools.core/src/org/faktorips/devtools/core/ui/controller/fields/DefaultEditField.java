@@ -27,7 +27,7 @@ import org.faktorips.util.message.MessageList;
 
 
 /**
- *
+ * @author Jan Ortmann
  */
 public abstract class DefaultEditField implements EditField {
     
@@ -35,15 +35,35 @@ public abstract class DefaultEditField implements EditField {
     private List changeListeners;
     private boolean supportNull = true;
     
+    /**
+     * Returns the value shown in the edit field's underlying control. If the control's content
+     * can't be parsed to an instance of the appropriate datatype, <code>null</code> is returned. 
+     * 
+     * {@inheritDoc}
+     */
+    public final Object getValue() {
+        try {
+            return parseContent();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    /**
+     * Parses the content shown in the edit field's underlying control.
+     * 
+     * @throws Exception if the content can't be parsed.
+     */
+    protected abstract Object parseContent() throws Exception;
     
     /**
      * {@inheritDoc}
      */
     public boolean isTextContentParsable() {
         try {
-            getValue();
+            parseContent();
             return true;
-        } catch (Exception e) {
+        } catch (Exception e ) {
             return false;
         }
     }
@@ -100,7 +120,8 @@ public abstract class DefaultEditField implements EditField {
     }
     
     /**
-     * Sends the given event to all registered listeners. In delayed manner.
+     * Sends the given event to all registered listeners (in delayed manner).
+     * 
      * @see EditFieldChangesBroadcaster
      */
     protected void notifyChangeListeners(FieldValueChangedEvent event) {
@@ -110,26 +131,21 @@ public abstract class DefaultEditField implements EditField {
     /**
      * Sends the given event to all registered listeners.
      * 
-     * @param event The event which wille send to the listener
-     * @param immediately <code>true</code> the event will be directly broadcast to all registered
+     * @param event The event which we'll send to the listeners
+     * @param broadcastImmediately <code>true</code> the event will be directly broadcast to all registered
      *            listener <code>false</code> the event will be delayed send to the listeners.
      * @see EditFieldChangesBroadcaster
      */
-    protected void notifyChangeListeners(FieldValueChangedEvent event, boolean immediately) {
-        if (!notifyChangeListeners) {
+    protected void notifyChangeListeners(FieldValueChangedEvent event, boolean broadcastImmediately) {
+        if (!notifyChangeListeners || changeListeners==null) {
             return;
         }
         
-        if (changeListeners == null){
-            return;
-        }
-
-        if (immediately) {
+        if (broadcastImmediately) {
             // notify change listeners immediately
             IpsPlugin.getDefault().getEditFieldChangeBroadcaster().broadcastImmediately(event,
                     (ValueChangeListener[])changeListeners.toArray(new ValueChangeListener[changeListeners.size()]));
-        }
-        else {
+        } else {
             // notify change listeners in delayed manner
             IpsPlugin.getDefault().getEditFieldChangeBroadcaster().broadcastDelayed(event,
                     (ValueChangeListener[])changeListeners.toArray(new ValueChangeListener[changeListeners.size()]));
@@ -138,7 +154,7 @@ public abstract class DefaultEditField implements EditField {
  
     /**
      * Returns the null-representation-string defined by the user (see IpsPreferences)
-     * if the given object is null, the unmodified object otherwise.
+     * if the given object is <code>null</code>, the unmodified object otherwise.
      */
     Object prepareObjectForSet(Object object) {
     	if (object == null && supportNull) {
@@ -148,7 +164,7 @@ public abstract class DefaultEditField implements EditField {
     }
 
     /**
-     * Returns null if the given value is the null-representation-string, 
+     * Returns <code>null</code> if the given value is the null-representation-string, 
      * the unmodified value otherwise.
      */
     Object prepareObjectForGet(Object value) {
@@ -165,5 +181,12 @@ public abstract class DefaultEditField implements EditField {
      */
     public void setSupportsNull(boolean supportsNull) {
     	this.supportNull = supportsNull;
+    }
+    
+    /**
+     * Returns whether null is replaced by the null representation string or not.
+     */
+    public boolean supportsNull() {
+        return supportNull;
     }
 }

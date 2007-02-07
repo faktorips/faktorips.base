@@ -97,8 +97,8 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     protected IpsPartUIController createUIController(IIpsObjectPart part) {
         IpsPartUIController controller = new IpsPartUIController(part) {
 
-			protected MessageList validatePartAndUpdateUI() {
-			    MessageList messages = super.validatePartAndUpdateUI();
+			protected MessageList validatePartContainerAndUpdateUI() {
+			    MessageList messages = super.validatePartContainerAndUpdateUI();
 				return validateAndUpdateDialogUI(messages);
 			}
         };

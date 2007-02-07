@@ -35,8 +35,7 @@ public class CheckboxField extends DefaultEditField {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#getControl()
+     * {@inheritDoc}
      */
     public Control getControl() {
         return checkbox;
@@ -47,56 +46,49 @@ public class CheckboxField extends DefaultEditField {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#getValue()
+     * {@inheritDoc}
      */
-    public Object getValue() {
+    public Object parseContent() {
         return new Boolean(checkbox.isChecked());
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#setValue(java.lang.Object)
+     * {@inheritDoc}
      */
     public void setValue(Object newValue) {
         checkbox.setChecked(((Boolean)newValue).booleanValue());
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#getText()
+     * {@inheritDoc}
      */
     public String getText() {
         return checkbox.isChecked()?"true":"false"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#setText(java.lang.String)
+     * {@inheritDoc}
      */
     public void setText(String newText) {
         checkbox.setChecked(Boolean.valueOf(newText).booleanValue());
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#insertText(java.lang.String)
+     * {@inheritDoc}
      */
     public void insertText(String text) {
         // nothing to do
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#selectAll()
+     * {@inheritDoc}
      */
     public void selectAll() {
         // nothing to do
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.fields.DefaultEditField#addListenerToControl()
+     * {@inheritDoc}
      */
     protected void addListenerToControl() {
         checkbox.getButton().addSelectionListener(new SelectionListener() {

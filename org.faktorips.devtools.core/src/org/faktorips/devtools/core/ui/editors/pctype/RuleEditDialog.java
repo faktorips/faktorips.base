@@ -213,8 +213,8 @@ public class RuleEditDialog extends IpsPartEditDialog {
             super(pdPart);
         }
         
-        public MessageList validatePartAndUpdateUI() {
-            MessageList list = super.validatePartAndUpdateUI();
+        protected MessageList validatePartContainerAndUpdateUI() {
+            MessageList list = super.validatePartContainerAndUpdateUI();
             rfControl.updateValidationStatus();
             return list;
         }

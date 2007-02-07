@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -32,15 +31,11 @@ public abstract class AbstractCardinalityField extends DefaultEditField {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object getValue() {
+	public Object parseContent() {
 		String text = getText();
-		if (StringUtils.isEmpty(text)) {
-            return null;
-        }
 		if (text.equals("*")) { //$NON-NLS-1$
 			return new Integer(Integer.MAX_VALUE);
-		}
-		else {
+		} else {
 			return Integer.valueOf(text);
 		}
 	}

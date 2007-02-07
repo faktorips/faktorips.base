@@ -250,7 +250,9 @@ public class RelationEditDialog extends IpsPartEditDialog {
         targetRoleSingularField = new TextField(targetRoleSingularText);
         targetRolePluralField = new TextField(targetRolePluralText);
         minCardinalityField = new CardinalityField(minCardinalityText);
+        minCardinalityField.setSupportsNull(false);
         maxCardinalityField = new CardinalityField(maxCardinalityText);
+        maxCardinalityField.setSupportsNull(false);
         
     }
     
