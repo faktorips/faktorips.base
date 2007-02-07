@@ -113,7 +113,7 @@ public class JavaNamingConvention {
     }
     
     /**
-     * Returns the method name for the method with that a multie value property is read. 
+     * Returns the method name for the method with that a multi value property is read. 
      */
     public String getMultiValueGetterMethodName(String propertyNamePlural) {
 		return "get" + StringUtils.capitalise(propertyNamePlural); //$NON-NLS-1$

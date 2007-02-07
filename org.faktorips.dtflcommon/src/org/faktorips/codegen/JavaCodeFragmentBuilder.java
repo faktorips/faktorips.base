@@ -193,16 +193,7 @@ public class JavaCodeFragmentBuilder {
             String[] argName,
             Class[] argClass) {
 
-        String[] argClassNames = toStringArray(argClass);
-        String returnTypeName = null;
-        if (returnType != null) {
-            if (returnType == Void.class) {
-                returnTypeName = "void";
-            } else {
-                returnTypeName = returnType.getName();
-            }
-        }
-        methodBegin(modifier, returnTypeName, methodName, argName, argClassNames);
+        methodBegin(modifier, returnType, methodName, argName, argClass, null);
     }
 
     /**
@@ -223,17 +214,10 @@ public class JavaCodeFragmentBuilder {
             Class[] argClass,
             Class[] exceptionClasses) {
 
-        String[] argClassNames = toStringArray(argClass);
-        String[] exceptionClassNames = toStringArray(exceptionClasses);
-        String returnTypeName = null;
-        if (returnType != null) {
-            if (returnType == Void.class) {
-                returnTypeName = "void";
-            } else {
-                returnTypeName = returnType.getName();
-            }
+        signatureInternal(modifier, methodName, new ClassAsParameterTypeSupport(argName, argClass, exceptionClasses, returnType), false);
+        if (!Modifier.isAbstract(modifier)) {
+            openBracket();
         }
-        methodBegin(modifier, returnTypeName, methodName, argName, argClassNames, exceptionClassNames);
     }
 
     /**
@@ -318,17 +302,6 @@ public class JavaCodeFragmentBuilder {
         methodEnd();
     }
 
-    private String[] toStringArray(Class[] classes) {
-        if (classes == null) {
-            return null;
-        }
-        String[] classNames = new String[classes.length];
-        for (int i = 0; i < classes.length; i++) {
-            classNames[i] = classes[i].getName();
-        }
-        return classNames;
-    }
-
     /**
      * Creates the Java source code for a method signature. If the method is non abstract the
      * generated code ends with an opening bracket '{'. If the method is abstract the code ends with
@@ -376,30 +349,6 @@ public class JavaCodeFragmentBuilder {
             String[] javaDocAnnotations) {
 
         javaDoc(javaDoc, javaDocAnnotations);
-        methodBegin(modifier, returnType, methodName, argName, argClass);
-    }
-
-    /**
-     * Creates the Java source code for a method signature. If the method is non abstract the
-     * generated code ends with an opening bracket '{'. If the method is abstract the code ends with
-     * the argument list's closing bracket ')'.
-     * 
-     * @param modifier Access modifier according to java.lang.reflect.Modifier.
-     * @param returnType the className that the methods returns an instance of or null to indicate
-     *            no return type in case of a constructor.
-     * @param methodName
-     * @param argName Argument names.
-     * @param argClass Argument classes.
-     * @param javaDoc the java documentation for this method signature
-     */
-    public void methodBegin(int modifier,
-            Class returnType,
-            String methodName,
-            String[] argName,
-            Class[] argClass,
-            String javaDoc) {
-
-        javaDoc(javaDoc);
         methodBegin(modifier, returnType, methodName, argName, argClass);
     }
 
@@ -516,36 +465,48 @@ public class JavaCodeFragmentBuilder {
             String[] argName,
             String[] argClass,
             boolean argFinal) {
-        if (argName != null && argName.length != argClass.length) {
-            throw new RuntimeException("Named and Class array must have the same length. Names:"
-                    + argName + " Classes:" + argClass);
-        }
+        signatureInternal(modifier, methodName, new StringAsParameterTypeSupport(argName, argClass, null, returnType), argFinal);
+    }
+
+    private void signatureInternal(int modifier,
+            String methodName,
+            MethodSignatureTypesSupport support,
+            boolean argFinal) {
         lastMethodModifier = modifier;
         append(Modifier.toString(modifier));
         append(' ');
-        if (returnType != null) {
-                appendClassName(returnType);
+        if (support.hasReturnType()) {
+                support.appendReturnType();
                 append(' ');
         }
         append(methodName);
         append('(');
-        if (argName != null) {
-            for (int i = 0; i < argName.length; i++) {
-                if (i > 0) {
-                    append(", ");
-                }
-                if(argFinal){
-                    append("final ");
-                }
-                appendClassName(argClass[i]);
-                append(' ');
-                append(argName[i]);
+        for (int i = 0; i < support.getNumberOfParameters(); i++) {
+            if (i > 0) {
+                append(", ");
             }
+            if(argFinal){
+                append("final ");
+            }
+            support.appendParameterType(i);
+            append(' ');
+            support.appendParameterName(i);
         }
         append(')');
-       
+        
+        if (support.getNumberOfExceptionExtensions() == 0) {
+            return;
+        }
+        append(" throws ");
+        for (int i = 0, max = support.getNumberOfExceptionExtensions(); i < max; i++) {
+            if (i>0) {
+                append(", ");
+            }
+            support.appendExceptionExtension(i);
+        }
     }
     
+
     /**
      * Creates the Java source code for a method signature. 
      * 
@@ -565,17 +526,7 @@ public class JavaCodeFragmentBuilder {
             String[] argClass,
             String[] exceptionClasses) {
         
-        signature(modifier, returnType, methodName, argName, argClass);
-        if (exceptionClasses==null || exceptionClasses.length==0) {
-            return;
-        }
-        append(" throws ");
-        for (int i=0, max=exceptionClasses.length; i<max; i++) {
-            if (i>0) {
-                append(", ");
-            }
-            appendClassName(exceptionClasses[i]);
-        }
+        signatureInternal(modifier, methodName, new StringAsParameterTypeSupport(argName, argClass, exceptionClasses, returnType), false);
     }
     
     /**
@@ -888,5 +839,131 @@ public class JavaCodeFragmentBuilder {
     
     public String toString() {
     	return fragment.toString();
+    }
+    
+    
+    /**
+     * The <code>method</code> methods of this builder accept <code>java.lang.String</code> or
+     * <code>java.lang.Class</code> values for defining the type of a parameter or the return type
+     * of a method. The slight variations on how to process the two different types a covered by
+     * implementations of this class.
+     * 
+     * @author Peter Erzberger
+     */
+    private static abstract class MethodSignatureTypesSupport{
+        
+        protected void check(String[] parameterNames, Object[] parameterTypes){
+            if (parameterNames != null && parameterNames.length != parameterTypes.length) {
+                throw new RuntimeException("Named and Class array must have the same length");
+            }
+        }
+        
+        public abstract boolean hasReturnType();
+        
+        public abstract void appendReturnType();
+        
+        public abstract int getNumberOfParameters();
+        
+        public abstract void appendParameterName(int index);
+        
+        public abstract void appendParameterType(int index);
+        
+        public abstract void appendExceptionExtension(int index);
+        
+        public abstract int getNumberOfExceptionExtensions();
+    }
+    
+    private class ClassAsParameterTypeSupport extends MethodSignatureTypesSupport{
+        
+        private String[] parameterNames = null;
+        private Class[] parameterTypes = null;
+        private Class returnType = null;
+        private Class[] exceptionClasses = null;
+        
+        /**
+         * 
+         */
+        public ClassAsParameterTypeSupport(String[] parameterNames, Class[] parameterTypes, Class[] exceptionClasses, Class returnType) {
+            check(parameterNames, parameterTypes);
+            this.parameterNames = parameterNames;
+            this.parameterTypes = parameterTypes;
+            this.exceptionClasses = exceptionClasses;
+            this.returnType = returnType;
+        }
+        
+        public void appendParameterName(int index) {
+            append(parameterNames[index]);
+        }
+        
+        public void appendParameterType(int index) {
+            appendClassName(parameterTypes[index]);
+        }
+        
+        public void appendReturnType() {
+            appendClassName(returnType);
+        }
+        
+        public int getNumberOfParameters() {
+            return parameterNames == null ? 0 : parameterNames.length;
+        }
+        
+        public boolean hasReturnType() {
+            return returnType != null;
+        }
+        
+        public void appendExceptionExtension(int index) {
+            appendClassName(exceptionClasses[index]);
+        }
+        
+        public int getNumberOfExceptionExtensions() {
+            return exceptionClasses == null ? 0 : exceptionClasses.length;
+        }
+    }
+    
+    private class StringAsParameterTypeSupport extends MethodSignatureTypesSupport{
+        
+        private String[] parameterNames = null;
+        private String[] parameterTypes = null;
+        private String[] exceptionClasses = null;
+        private String returnType = null;
+        
+        /**
+         * 
+         */
+        public StringAsParameterTypeSupport(String[] parameterNames, String[] parameterTypes, String[] exceptionClasses, String returnType) {
+            check(parameterNames, parameterTypes);
+            this.parameterNames = parameterNames;
+            this.parameterTypes = parameterTypes;
+            this.exceptionClasses = exceptionClasses;
+            this.returnType = returnType;
+        }
+        
+        public void appendParameterName(int index) {
+            append(parameterNames[index]);
+        }
+        
+        public void appendParameterType(int index) {
+            appendClassName(parameterTypes[index]);
+        }
+        
+        public void appendReturnType() {
+            appendClassName(returnType);
+        }
+        
+        public int getNumberOfParameters() {
+            return parameterNames == null ? 0 : parameterNames.length;
+        }
+        
+        public boolean hasReturnType() {
+            return returnType != null;
+        }
+        
+        public void appendExceptionExtension(int index) {
+            appendClassName(exceptionClasses[index]);
+        }
+        
+        public int getNumberOfExceptionExtensions() {
+            return exceptionClasses == null ? 0 : exceptionClasses.length;
+        }
     }
 }

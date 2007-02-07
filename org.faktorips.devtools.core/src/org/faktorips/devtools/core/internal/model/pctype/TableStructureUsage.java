@@ -399,7 +399,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         for (int i = 0; i < tabeStructureUsages.length; i++) {
             if(!(tabeStructureUsages[i].getId() == getId()) && 
                     tabeStructureUsages[i].getRoleName().equals(getRoleName())){
-                String text = NLS.bind(Messages.TableStructureUsage_SameRoleName, getRoleName());
+                String text = NLS.bind(Messages.TableStructureUsage_msgSameRoleName, getRoleName());
                 msgList.add(new Message(MSGCODE_SAME_ROLENAME, text, Message.ERROR));
             }
         }
@@ -411,7 +411,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
             new FindTableStructureUsageInTypeHierarchyVisitor(getRoleName());
         visitor.start(superType);
         if(visitor.getTableStructureUsage() != null){
-            String msg = NLS.bind(Messages.TableStructureUsage_RoleNameAlreadyInSupertype, getRoleName());
+            String msg = NLS.bind(Messages.TableStructureUsage_msgRoleNameAlreadyInSupertype, getRoleName());
             msgList.add(new Message(MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE, 
                     msg, Message.ERROR));
         }

@@ -198,7 +198,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     private void generateMethodDoInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        builder.methodBegin(Modifier.PROTECTED, Void.class, "doInitPropertiesFromXml", 
+        builder.methodBegin(Modifier.PROTECTED, Void.TYPE, "doInitPropertiesFromXml", 
                 new String[]{"configMap"}, new Class[]{Map.class});
         
         builder.appendln("super.doInitPropertiesFromXml(configMap);");

@@ -78,9 +78,9 @@ public class Messages extends NLS {
 
 	public static String Method_msgDatatypeNotFound;
 
-    public static String TableStructureUsage_RoleNameAlreadyInSupertype;
+    public static String TableStructureUsage_msgRoleNameAlreadyInSupertype;
 
-    public static String TableStructureUsage_SameRoleName;
+    public static String TableStructureUsage_msgSameRoleName;
 
 	public static String ValidationRule_msgFunctionNotExists;
 
@@ -173,8 +173,6 @@ public class Messages extends NLS {
     public static String TableStructureUsage_msgInvalidRoleName;
 
     public static String TableStructureUsage_msgAtLeastOneStructureMustBeReferenced;
-
-    public static String TableStructureUsage_msgSameRoleName;
 
     public static String PolicyCmptType_msgSuperTypeNotProdRelevantIfProductRelevant;
 

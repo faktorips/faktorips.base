@@ -537,6 +537,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             generateMethodAddObject(relation, methodsBuilder);
             generateMethodRemoveObject(relation, methodsBuilder);
             generateNewChildMethodsIfApplicable(relation, target, methodsBuilder);
+            generateMethodGetRefObjectAtIndex(relation, methodsBuilder);
         }
     }
     
@@ -1091,5 +1092,39 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     public String getFieldNameGetMaxCardinalityFor(IRelation relation){
         return getLocalizedText(getPcType(), "FIELD_MAX_CARDINALITY_NAME", 
                 StringUtils.upperCase(relation.getTargetRoleSingular()));
+    }
+    
+    /**
+     * Returns the name of the method that returns a reference object at a specified index.
+     */
+    public String getMethodNameGetRefObjectAtIndex(IRelation relation){
+        //TODO extend JavaNamingConvensions for relation accessor an mutator methods 
+        return "get" + relation.getTargetRoleSingular();
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public IMotorCoverage getMotorCoverage(int index)
+     * </pre>
+     */
+    public void generateSignatureGetRefObjectAtIndex(IRelation relation, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
+        appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT_BY_INDEX", relation.getTargetRoleSingular(), relation, methodBuilder);
+        methodBuilder.signature(java.lang.reflect.Modifier.PUBLIC, getQualifiedClassName(relation.findTarget()), 
+                    getMethodNameGetRefObjectAtIndex(relation), 
+                    new String[]{"index"}, new String[]{Integer.TYPE.getName()});
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public IMotorCoverage getMotorCoverage(int index);
+     * </pre>
+     */
+    protected void generateMethodGetRefObjectAtIndex(IRelation relation, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
+        generateSignatureGetRefObjectAtIndex(relation, methodBuilder);
+        methodBuilder.append(';');
     }
  }

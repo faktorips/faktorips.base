@@ -212,7 +212,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     
     protected void generateMethodEffectiveFromHasChanged(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Void.class, MethodNames.EFFECTIVE_FROM_HAS_CHANGED, new String[0], new Class[0]);
+        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Void.TYPE, MethodNames.EFFECTIVE_FROM_HAS_CHANGED, new String[0], new Class[0]);
         methodsBuilder.appendln("super." + MethodNames.EFFECTIVE_FROM_HAS_CHANGED + "();");
 
         IRelation[] relations = getPolicyCmptType().getRelations();
@@ -250,7 +250,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateMethodRemoveChildModelObjectInternal(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         String paramName = "childToRemove";
-        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Void.class, MethodNames.REMOVE_CHILD_MODEL_OBJECT_INTERNAL, 
+        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Void.TYPE, MethodNames.REMOVE_CHILD_MODEL_OBJECT_INTERNAL, 
                 new String[] {paramName}, new Class[]{IModelObject.class});
         methodsBuilder.appendln("super." + MethodNames.REMOVE_CHILD_MODEL_OBJECT_INTERNAL + "(" + paramName + ");");
         IRelation[] relations = getPcType().getRelations();
@@ -546,6 +546,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             generateMethodGetNumOfForNoneContainerRelation(relation, methodsBuilder);
             generateMethodContainsObjectForNoneContainerRelation(relation, methodsBuilder);
             generateMethodGetAllRefObjectsForNoneContainerRelation(relation, methodsBuilder);
+            generateMethodGetRefObjectAtIndex(relation, methodsBuilder);
             generateNewChildMethodsIfApplicable(relation, target, methodsBuilder);
             generateMethodAddObject(relation, methodsBuilder);
             generateMethodRemoveObject(relation, methodsBuilder);
@@ -1693,7 +1694,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     private void generateMethodInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_RESTRAINED_MODIFIABLE);
-        builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.class, MethodNames.INIT_PROPERTIES_FROM_XML, new String[]{"propMap"}, new Class[]{HashMap.class});
+        builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.TYPE, MethodNames.INIT_PROPERTIES_FROM_XML, new String[]{"propMap"}, new Class[]{HashMap.class});
         builder.appendln("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap);");
         IAttribute[] attributes = getPolicyCmptType().getAttributes();
         for (int i = 0; i < attributes.length; i++) {
@@ -1926,7 +1927,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     private void generateMethodSetParentModelObjectInternal(JavaCodeFragmentBuilder methodBuilder) {
         methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        methodBuilder.methodBegin(Modifier.PUBLIC, Void.class, MethodNames.SET_PARENT, 
+        methodBuilder.methodBegin(Modifier.PUBLIC, Void.TYPE, MethodNames.SET_PARENT, 
                 new String[]{"newParent"}, new Class[]{AbstractModelObject.class});
         methodBuilder.appendln("if (" + FIELD_PARENT_MODEL_OBJECT + "!=null && " + FIELD_PARENT_MODEL_OBJECT + "!=newParent) {");
         methodBuilder.appendln(FIELD_PARENT_MODEL_OBJECT + "." + MethodNames.REMOVE_CHILD_MODEL_OBJECT_INTERNAL + "(this);");
@@ -1974,7 +1975,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     private void generateMethodNotifyChangeListeners(JavaCodeFragmentBuilder methodBuilder) {
         methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        methodBuilder.methodBegin(Modifier.PUBLIC, Void.class, MethodNames.NOTIFIY_CHANGE_LISTENERS, 
+        methodBuilder.methodBegin(Modifier.PUBLIC, Void.TYPE, MethodNames.NOTIFIY_CHANGE_LISTENERS, 
                 new String[]{"event"}, new Class[]{ModelObjectChangedEvent.class});
         
         methodBuilder.appendln("super." + MethodNames.NOTIFIY_CHANGE_LISTENERS+ "(event);");
@@ -2008,7 +2009,25 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.appendln("return null;");
         methodsBuilder.methodEnd();
     }
-    
-    
+
+    /**
+     * <pre>
+     * public IMotorCoverage getMotorCoverage(int index) {
+     *      return (IMotorCoverage)motorCoverages.get(index);
+     * }
+     * </pre>
+     */
+    protected void generateMethodGetRefObjectAtIndex(IRelation relation, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
+        String className = interfaceBuilder.getQualifiedClassName(relation.findTarget());
+        String field = getFieldNameForRelation(relation);
+        interfaceBuilder.generateSignatureGetRefObjectAtIndex(relation, methodBuilder);
+        methodBuilder.openBracket();
+        methodBuilder.append("return (");
+        methodBuilder.appendClassName(className);
+        methodBuilder.append(')');
+        methodBuilder.append(field);
+        methodBuilder.append(".get(index);");
+        methodBuilder.closeBracket();
+    }
    
 }

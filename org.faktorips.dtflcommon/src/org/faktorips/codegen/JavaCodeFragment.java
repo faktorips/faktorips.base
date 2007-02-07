@@ -197,6 +197,10 @@ public class JavaCodeFragment {
 	 * @throws NullPointerException if clazz is null.
 	 */
 	public void appendClassName(Class clazz) {
+        if(clazz.isArray()){
+            appendClassName(clazz.getComponentType());
+            append(" []");
+        }
 	    appendClassName(clazz.getName());
 	}
     
