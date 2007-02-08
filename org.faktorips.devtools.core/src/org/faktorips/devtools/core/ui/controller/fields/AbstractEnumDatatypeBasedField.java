@@ -137,7 +137,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	 * Returns the value of the currently selected index (which is the id of the
 	 * enumeration value). Returns null if no value is selected.
 	 */
-	public Object parseValue() {
+	public Object parseContent() {
 	    int selectedIndex = getCombo().getSelectionIndex();
 		if (selectedIndex == -1) {
 			return null;
