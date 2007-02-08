@@ -38,7 +38,7 @@ public class Migration_1_0_0_rc2 extends AbstractMigrationOperation {
      * {@inheritDoc}
      */
     public boolean isEmpty() {
-        return false;
+        return true;
     }
 
     /**
