@@ -94,7 +94,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 		 * {@inheritDoc}
 		 */
 		public Object parseContent() {
-			String s = (String)super.getValue();
+			String s = (String)super.parseContent();
 			if (s==null) {
 				return null;
 			} else if (s.equals(trueRepresentation)) {
