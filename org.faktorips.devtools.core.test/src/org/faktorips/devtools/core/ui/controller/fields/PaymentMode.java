@@ -1,0 +1,142 @@
+/*******************************************************************************
+ * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+ *
+ * Alle Rechte vorbehalten.
+ *
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ *   http://www.faktorips.org/legal/cl-v01.html
+ * eingesehen werden kann.
+ *
+ * Mitwirkende:
+ *   Faktor Zehn GmbH - initial API and implementation 
+ *
+ *******************************************************************************/
+
+package org.faktorips.devtools.core.ui.controller.fields;
+
+import org.faktorips.datatype.AbstractDatatype;
+import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ValueDatatype;
+
+public class PaymentMode extends AbstractDatatype implements EnumDatatype {
+
+    public final static String ANNUAL_ID = "1";
+    public final static String MONTHLY_ID = "12";
+    
+    public final static String ANNUAL_NAME = "annual";
+    public final static String MONTHLY_NAME = "monthly";
+
+    /**
+     * {@inheritDoc}
+     */
+    public String[] getAllValueIds(boolean includeNull) {
+        if (includeNull) {
+            return new String[]{null, ANNUAL_ID, MONTHLY_ID};
+        }
+        return new String[]{ANNUAL_ID, MONTHLY_ID};
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ValueDatatype getWrapperType() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isParsable(String value) {
+        if (value==null) {
+            return true;
+        }
+        return value.equals(ANNUAL_ID) || value.equals(MONTHLY_ID);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getName() {
+        return "PaymentMode";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDefaultValue() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getQualifiedName() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isPrimitive() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isValueDatatype() {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getJavaClassName() {
+        return null;
+    }
+
+
+    public boolean isSupportingNames() {
+        return true;
+    }
+
+
+    public String getValueName(String id) {
+        if (id.equals(null)) {
+            return null;
+        }
+        if (id.equals(ANNUAL_ID)) {
+            return ANNUAL_NAME;
+        } 
+        if (id.equals(MONTHLY_ID)) {
+            return MONTHLY_NAME;
+        }
+        throw new IllegalArgumentException();
+    }
+
+
+    public boolean isNull(String value) {
+        if (value==null) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public boolean supportsCompare() {
+        return false;
+    }
+
+
+    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+        return 0;
+    }
+
+
+    public boolean areValuesEqual(String valueA, String valueB) {
+        return false;
+    }
+}

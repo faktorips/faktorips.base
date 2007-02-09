@@ -21,9 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 
-import org.faktorips.datatype.AbstractDatatype;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.PrimitiveIntegerDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
@@ -88,6 +86,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertTrue(set.containsValue("10 EUR"));
         assertFalse(set.containsValue("15 EUR"));
         assertFalse(set.containsValue("abc"));
+        assertFalse(set.containsValue(null));
         
         set.addValue(null);
         assertTrue(set.containsValue(null));
@@ -331,104 +330,5 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertFalse(set.getContainsNull());
         assertEquals(0, set.size());
     	
-    }
-    
-    
-    class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDatatype {
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public String[] getAllValueIds(boolean includeNull) {
-			return new String[]{"annual", "monthly"};
-		}
-
-		
-		/**
-		 * {@inheritDoc}
-		 */
-		public ValueDatatype getWrapperType() {
-			return null;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public boolean isParsable(String value) {
-			return false;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public String getName() {
-			return null;
-		}
-
-		/**
-         * {@inheritDoc}
-		 */
-		public String getDefaultValue() {
-            return null;
-        }
-
-        /**
-		 * {@inheritDoc}
-		 */
-		public String getQualifiedName() {
-			return null;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public boolean isPrimitive() {
-			return false;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public boolean isValueDatatype() {
-			return false;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public String getJavaClassName() {
-			return null;
-		}
-
-
-		public boolean isSupportingNames() {
-			return false;
-		}
-
-
-		public String getValueName(String id) {
-			throw new RuntimeException("Not supported");
-		}
-
-
-        public boolean isNull(String value) {
-            return false;
-        }
-
-
-        public boolean supportsCompare() {
-            return false;
-        }
-
-
-        public int compare(String valueA, String valueB) throws UnsupportedOperationException {
-            return 0;
-        }
-
-
-        public boolean areValuesEqual(String valueA, String valueB) {
-            return false;
-        }
-
     }
 }
