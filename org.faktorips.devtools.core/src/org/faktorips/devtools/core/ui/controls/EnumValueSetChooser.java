@@ -124,16 +124,10 @@ public class EnumValueSetChooser extends ListChooser {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void valueMoved(String value, int index, boolean up) {
-		int newIndex;
-		if (up) {
-			newIndex = index - 1;
-		} else {
-			newIndex = index + 1;
-		}
-		String old = targetValueSet.getValue(newIndex);
-        targetValueSet.setValue(newIndex, value);
-        targetValueSet.setValue(index, getIdForName(old));
+	public void valueMoved(String textShown, int oldIndex, int newIndex, boolean up) {
+		String tmp = targetValueSet.getValue(newIndex);
+        targetValueSet.setValue(newIndex, getIdForName(textShown));
+        targetValueSet.setValue(oldIndex, tmp);
 	}	
 	
 	/**

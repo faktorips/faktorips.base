@@ -228,11 +228,13 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
 	
 	/**
 	 * This method is called, when the order of items has changed in the target list.
-	 * @param value The value moved.
-	 * @param index The index, the value is located.
+     * 
+	 * @param text The text presentation of the value moved.
+	 * @param oldIndex The index, the value was located.
+     * @param newIndex The index, the value is moved to.
 	 * @param up <code>true</code> if the value is moved upwards, <code>false</code> otherwise.
 	 */
-	public abstract void valueMoved(String value, int index, boolean up);
+	public abstract void valueMoved(String text, int oldIndex, int newIndex, boolean up);
 	
     public abstract MessageList getMessagesFor(String value);
     
@@ -271,7 +273,8 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
 		 */
 		public void widgetSelected(SelectionEvent e) {
 			int[] selected = targetTable.getSelectionIndices();
-			
+			int[] newSelection = new int[selected.length];
+            
 			if (selected.length == 0) {
 				return;
 			}
@@ -287,12 +290,12 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
                     String newTxt = targetTable.getItem(selected[i]).getText(DATA_COLUMN);
                     String oldTxt = targetTable.getItem(selected[i]-1).getText(DATA_COLUMN);
 
-                    valueMoved(newTxt, selected[i], true);
+                    valueMoved(newTxt, selected[i], selected[i]-1, true);
 					targetTable.getItem(selected[i]-1).setText(DATA_COLUMN, newTxt);
                     targetTable.getItem(selected[i]).setText(DATA_COLUMN, oldTxt);
-					selected[i]--;
+                    newSelection[i] = selected[i]-1;
+                    selected[i]--;
 				}
-				targetTable.setSelection(selected);
 			} else {
 				if (selected[selected.length-1] == targetTable.getItemCount()-1) {
 					// allready at bottom
@@ -303,15 +306,15 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
                     String newTxt = targetTable.getItem(selected[i]).getText(DATA_COLUMN);
                     String oldTxt = targetTable.getItem(selected[i]+1).getText(DATA_COLUMN);
 
-                    valueMoved(newTxt, selected[i], false);
+                    valueMoved(newTxt, selected[i], selected[i]+1, false);
 					targetTable.getItem(selected[i]+1).setText(DATA_COLUMN, newTxt);
                     targetTable.getItem(selected[i]).setText(DATA_COLUMN, oldTxt);
+                    newSelection[i] = selected[i]+1;
 					selected[i]++;
 				}
-                targetTable.setSelection(selected);
 			}
-
             target.setInput(getData(targetTable.getItems()));
+            targetTable.setSelection(newSelection);
 		}
 
 		/**
