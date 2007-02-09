@@ -27,8 +27,8 @@ import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * An implementation of AbstractEnumDatatypeBasedFields that displays the values
- * of an EnumValueSets. If the EnumDatatype the EnumValueSet bases on supports
+ * An implementation of AbstractEnumDatatypeBasedField that displays the values
+ * of an EnumValueSet. If the EnumDatatype the EnumValueSet is based on, supports
  * value names these are displayed instead of the value ids.
  * 
  * @author Peter Erzberger
@@ -60,12 +60,12 @@ public class EnumValueSetField extends AbstractEnumDatatypeBasedField {
         ids.addAll(Arrays.asList(valueSet.getValues()));
 		ArrayList names = new ArrayList(ids.size());
 		for (int i = 0; i < ids.size(); i++) {
-			names.add(getValueName(valueSet.getValue(i)));
+			names.add(getDisplayTextForValue(valueSet.getValue(i)));
 		}
         // add the null representation entry if not exists in list
         if (!valueSet.containsValue(null)) {
-            names.add(0, getValueName(null));
-            ids.add(0, getValueName(null));
+            names.add(0, getDisplayTextForValue(null));
+            ids.add(0, getDisplayTextForValue(null));
         }
 		initialize((String[])ids.toArray(new String[ids.size()]), (String[]) names.toArray(new String[names.size()]));
 	}

@@ -77,22 +77,25 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
         
     	ValueDatatype datatype = getValueDatatype();
-    	
     	if (datatype == null) {
             addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown, invalidObject, getProperty(invalidProperty, IConfigElement.PROPERTY_VALUE));
-    		return false;
+            // if the value is null we can still decide if the value is part of the set
+            if (value == null && getContainsNull()) {
+                return true;
+            }
+            return false;
     	}
     	
+        if (value == null && getContainsNull()) {
+            return true;
+        }
+
         if (!datatype.isParsable(value)) {
             String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsable, value, datatype.getName());
             addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, getProperty(invalidProperty, IConfigElement.PROPERTY_VALUE));
             return false;
         }
         
-        if ((value == null || value.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) && getContainsNull()) {
-            return true;
-        }
-
         for (Iterator it=elements.iterator(); it.hasNext(); ) {
             String each = (String)it.next();
             if (datatype.isParsable(each) && datatype.areValuesEqual(each, value)) {

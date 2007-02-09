@@ -28,10 +28,8 @@ import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.TableCellEditor;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * A control factory for the datytpes boolean and primitve boolean.
@@ -70,59 +68,6 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 	}
     
 	/**
-	 * Inner class of the enhanced combo field control.
-	 * 
-	 * @author Joerg Ortmann
-	 */
-	class BooleanComboField extends ComboField {
-		
-		private String trueRepresentation;
-		private String falseRepresentation;
-
-		/**
-		 * @param combo
-		 */
-		public BooleanComboField(Combo combo, String trueRepresentation, String falseRepresentation) {
-			super(combo);
-			ArgumentCheck.notNull(trueRepresentation);
-			ArgumentCheck.notNull(falseRepresentation);
-			this.trueRepresentation = trueRepresentation;
-			this.falseRepresentation = falseRepresentation;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public Object parseContent() {
-			String s = (String)super.parseContent();
-			if (s==null) {
-				return null;
-			} else if (s.equals(trueRepresentation)) {
-				return Boolean.TRUE.toString();
-			} else if (s.equals(falseRepresentation)) {
-					return Boolean.FALSE.toString();
-			}
-			throw new RuntimeException("Unknown value " + s); //$NON-NLS-1$
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public void setValue(Object newValue) {
-			if (newValue==null) {
-				super.setValue(newValue);
-				return;
-			}
-			boolean bool = Boolean.valueOf((String)newValue).booleanValue();
-			if (bool) {
-				super.setValue(trueRepresentation);
-			} else {
-				super.setValue(falseRepresentation);
-			}
-		}	
-	}
-
-    /**
      * Creates a <code>ComboCellEditor</code> containig a <code>Combo</code> using 
      * {@link #createControl(UIToolkit, Composite, ValueDatatype, IValueSet)}. 
      * {@inheritDoc}

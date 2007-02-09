@@ -26,7 +26,7 @@ import org.faktorips.util.ArgumentCheck;
 
 
 /**
- *
+ * Edit field for text controls.
  */
 public class TextField extends DefaultEditField {
 

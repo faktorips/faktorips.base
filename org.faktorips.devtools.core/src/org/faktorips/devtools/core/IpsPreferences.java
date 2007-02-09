@@ -268,6 +268,9 @@ public class IpsPreferences {
         if (enumTypeDisplay.equals(EnumTypeDisplay.ID)) {
             return id;
         }
+        if (!datatype.isParsable(id)) {
+            return id;
+        }
         String name = datatype.getValueName(id);
         if (enumTypeDisplay.equals(EnumTypeDisplay.NAME_AND_ID)){
             return name + " (" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -292,13 +295,13 @@ public class IpsPreferences {
         }
     }
     
-    /*
+    /**
      * Returns the enum type display. Specifies the text display of enum type edit fields. E.g.
      * diplay id or name only, or display both.
      * 
      * @see EnumTypeDisplay
      */
-    private EnumTypeDisplay getEnumTypeDisplay() {
+    public EnumTypeDisplay getEnumTypeDisplay() {
         String id = prefStore.getString(ENUM_TYPE_DISPLAY);
         EnumTypeDisplay enumTypeDisplay = (EnumTypeDisplay)EnumTypeDisplay.getEnumType().getEnumValue(id);
         if (enumTypeDisplay == null) {
@@ -308,7 +311,16 @@ public class IpsPreferences {
         }
         return enumTypeDisplay;
     }
-    
+
+    /**
+     * Sets the enum type display.
+     * 
+     * @throws NullPointerException if etDisplay is <code>null</code>
+     */
+    public void setEnumTypeDisplay(EnumTypeDisplay etDisplay) {
+        ArgumentCheck.notNull(etDisplay);
+        prefStore.setValue(ENUM_TYPE_DISPLAY, etDisplay.getId());
+    }
 
     /**
      * Returns whether the navigation from product component to model is active (<code>true</code>)

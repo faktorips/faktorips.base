@@ -31,11 +31,15 @@ import org.faktorips.util.ArgumentCheck;
  * An abstract base class for fields dealing with enums. It
  * expects a Combo as GUI Control. Subclasses are reponsible for filling the
  * Combo. Therefor the protected initialize method can be utilized within the
- * implementation. If the provided Datatype is an enum datatype and supports names for the
- * enumeration values the names are displayed in the combo but the getValue()
+ * implementation. The combo's items are filled not directly with the ids of
+ * the enum values but the IpsPreferences#formatValue(..) method is used to
+ * get the text to display. But the getValue()
  * and setValue() methods still expect the ids that identify the values. This
  * implementation doesn't adjust to changes of the values it represents.
  * Therefor the reinit() method has to be explicitly called.
+ * 
+ * @see IpsPreferences#formatValue(EnumDatatype, String)
+ * @see IpsPreferences#getEnumTypeDisplay()
  * 
  * @author Peter Erzberger
  */
@@ -94,24 +98,21 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	 * Implementations of the <code>reInitInteral()</code> method need to call
 	 * this method to initialize this edit field correctly.
 	 */
-	protected final void initialize(String[] ids, String[] names) {
-
+	protected final void initialize(String[] ids, String[] texts) {
 		this.ids = ids;
-		
 		for (int i = 0; i < this.ids.length; i++) {
 			this.ids[i] = (String)super.prepareObjectForSet(this.ids[i]);
 		}
-		
-		String[] myNames = new String[names.length];
-		for (int i = 0; i < names.length; i++) {
-			myNames[i] = (String)super.prepareObjectForSet(names[i]);
+		if (texts==null || texts.length==0) {
+            setItems(ids);
+            return;
+        }
+		String[] textsToShow = new String[texts.length];
+		for (int i = 0; i < textsToShow.length; i++) {
+            textsToShow[i] = (String)super.prepareObjectForSet(texts[i]);
 		}
-
-		if (myNames != null && myNames.length > 0) {
-			setItems(myNames);
-			return;
-		}
-		setItems(ids);
+		setItems(textsToShow);
+		return;
 	}
 	
 	private void setItems(String[] items) {
@@ -119,7 +120,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 		if (invalidValue != null) {
             // there is an invalid value in the list, add this value to the items if the invalid
             // value is currently not in the list
-            String valueToAdd = (String)super.prepareObjectForSet(getValueName(invalidValue));
+            String valueToAdd = (String)super.prepareObjectForSet(getDisplayTextForValue(invalidValue));
             if (!Arrays.asList(getCombo().getItems()).contains(valueToAdd)) {
                 getCombo().add(valueToAdd);
             }
@@ -161,7 +162,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
         
         isParsable = datatype.isParsable((String) newValue);
         if (isParsable) {
-            super.setValue(getValueName((String) newValue));
+            super.setValue(getDisplayTextForValue((String) newValue));
         }
         
         /* 
@@ -170,7 +171,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
          * using this mehtod if it valid before (for example the value-set changed).
          * So we can add the value as invalid value. 
          */
-		if (!ObjectUtils.equals(getValue(), newValue)) {
+		if (!ObjectUtils.equals(getValue(), newValue)) { 
             setInvalidValue((String)newValue);
             // because this is an invalid value (not in enum value set, we
             // must reinit the item in the drop down, only so we can select the invalid value
@@ -180,17 +181,11 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	}
 	
     /**
-     * Returns the value name for the given id. The ips property @see {@link IpsPreferences#ENUM_TYPE_DISPLAY} 
-     * specifies the format of the name.
+     * Returns the text to be displayed in the combo for the given value id. 
+     * The ips property @see {@link IpsPreferences#ENUM_TYPE_DISPLAY} specifies the format.
      */
-	public String getValueName(String id) {
-		String noNullId = (String)super.prepareObjectForSet(id);
-        if (datatype instanceof EnumDatatype && ((EnumDatatype)datatype).isSupportingNames()) {
-            return IpsPlugin.getDefault().getIpsPreferences().formatValue(datatype, noNullId);
-        }
-        else {
-            return noNullId;
-        }
+	public String getDisplayTextForValue(String id) {
+	    return IpsPlugin.getDefault().getIpsPreferences().formatValue(datatype, id);
 	}
 
 	/**
