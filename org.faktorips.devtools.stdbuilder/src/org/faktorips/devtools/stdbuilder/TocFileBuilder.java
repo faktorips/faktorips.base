@@ -155,6 +155,17 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             }
             long modStamp = getToc(root).getModificationStamp();
             packFrgmtRootTocModStamps.put(root, new Long(modStamp));
+            // next lines are a workaround for a bug in PDE
+            // if we create the folder in afterBuildProcess, it is marked in the MANIFEST section
+            // for exported packages as not existing (but it's there).
+            IFile tocFile = getBuilderSet().getRuntimeRepositoryTocFile(root);
+            if (tocFile==null) {
+                continue;
+            }
+            IFolder tocFolder = (IFolder)tocFile.getParent();
+            if (!tocFolder.exists()) {
+                createFolder(tocFolder);
+            }
         }
     }
 
