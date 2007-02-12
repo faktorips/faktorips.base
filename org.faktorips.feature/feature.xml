@@ -199,7 +199,8 @@ Es gilt das Recht der Bundesrepublik Deutschland.
          id="org.faktorips.util"
          download-size="0"
          install-size="0"
-         version="1.0.0.rc2-b"/>
+         version="1.0.0.rc2-b"
+         unpack="false"/>
 
    <plugin
          id="org.faktorips.valuetypes"
