@@ -160,7 +160,6 @@ public class AddIpsNatureAction extends ActionDelegate {
                 props.setJavaSrcLanguage(Locale.ENGLISH);
             }
             props.setMinRequiredVersionNumber("org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            props.setChangesOverTimeNamingConventionIdForGeneratedCode(IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getId());
             ipsProject.setProperties(props);
             IFolder ipsModelFolder = ipsProject.getProject().getFolder(sourceFolderName);
             if (!ipsModelFolder.exists()) {
