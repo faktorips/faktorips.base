@@ -171,5 +171,13 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
      *          ips project. 
      * @see IIpsArtefactBuilderSetConfig class description
 	 */
-	public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException;	
+	public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException;
+    
+    /**
+     * Subclasses should reimplement this method if an aggregate root builder is contained
+     * @return <code>true</code> if this builder set contains an builder which requires to be called for the aggregate root 
+     * object if any child (regardless of the relations depth) has been modified. Only composite-relations are allowed for this
+     * dependency scan. <code>false</code> if only builder are contained which need only a dependency scan of depth one. 
+     */
+    public boolean containsAggregateRootBuilder();
 }

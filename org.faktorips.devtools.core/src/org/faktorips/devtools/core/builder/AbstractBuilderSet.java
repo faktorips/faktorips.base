@@ -76,4 +76,11 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
 	public String toString() {
 		return id;
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean containsAggregateRootBuilder() {
+        return false;
+    }
 }

@@ -344,6 +344,35 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertTrue(dependsOnList.contains(b.getQualifiedNameType()));
     }
     
+    public void testDependsOnComposition() throws Exception {
+        IPolicyCmptType a = newPolicyCmptType(root, "AggregateRoot");
+        IPolicyCmptType d1 = newPolicyCmptType(root, "Detail1");
+        IPolicyCmptType d2 = newPolicyCmptType(root, "Detail2");
+        IPolicyCmptType s2 = newPolicyCmptType(root, "SupertypeOfDetail2");
+        
+       
+        IRelation rel = a.newRelation();
+        rel.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        rel.setTarget(d1.getQualifiedName());
+        
+        rel = d1.newRelation();
+        rel.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        rel.setTarget(d2.getQualifiedName());
+        
+        d2.setSupertype(s2.getQualifiedName());
+        
+        assertEquals(1, a.dependsOn().length);
+
+        // if an artefact builder set could be set with containsAggregateRoot() == true, 
+        // the follwing asserts should apply
+//        List dependsOn = Arrays.asList(a.dependsOn());
+//        assertEquals(3, dependsOn.size());
+//        assertTrue(dependsOn.contains(d1.getQualifiedNameType()));
+//        assertTrue(dependsOn.contains(d2.getQualifiedNameType()));
+//        assertTrue(dependsOn.contains(s2.getQualifiedNameType()));
+        
+    }
+    
     public void testGetPdObjectType() {
         assertEquals(IpsObjectType.POLICY_CMPT_TYPE, pcType.getIpsObjectType());
     }

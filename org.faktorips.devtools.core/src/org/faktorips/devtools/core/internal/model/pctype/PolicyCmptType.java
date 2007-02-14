@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1040,7 +1041,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         }
     }
 
-    private void addQualifiedNameTypesForRelationTargets(Set qualifiedNameTypes, boolean excludeNonProductRelations) {
+    private void addQualifiedNameTypesForRelationTargets(Set qualifiedNameTypes, boolean excludeNonProductRelations) throws CoreException {
         IRelation[] relations = getRelations();
         for (int i = 0; i < relations.length; i++) {
             if (excludeNonProductRelations && !relations[i].isProductRelevant()) {
@@ -1048,6 +1049,12 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             }
             String qualifiedName = relations[i].getTarget();
             qualifiedNameTypes.add(new QualifiedNameType(qualifiedName, IpsObjectType.POLICY_CMPT_TYPE));
+
+            if (relations[i].isCompositionMasterToDetail()
+                    && this.getIpsProject().getIpsArtefactBuilderSet().containsAggregateRootBuilder()) {
+                IPolicyCmptType target = getIpsProject().findPolicyCmptType(qualifiedName);
+                qualifiedNameTypes.addAll(Arrays.asList(target.dependsOn()));
+            }
         }
     }
 
