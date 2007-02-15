@@ -87,9 +87,16 @@ public interface IIpsProjectNamingConventions {
     public MessageList validateUnqualifiedIpsObjectName(IpsObjectType type, String name)  throws CoreException ;
     
     /**
-     * Validates if the given name is a valid for ips packages.
+     * Validates if the given name is valid for ips packages.
      * 
      * @throws CoreException if an error occurs while validating the name.
      */
     public MessageList validateIpsPackageName(String name) throws CoreException;
+    
+    /**
+     * Validates if the given name is valid for ips package roots.
+     * 
+     * @throws CoreException if an error occurs while validating the name.
+     */
+    public MessageList validateIpsPackageRootName(String name) throws CoreException;
 }

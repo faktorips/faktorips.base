@@ -21,10 +21,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.ide.IDE;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -40,6 +43,7 @@ import org.faktorips.util.message.MessageList;
  * @author Daniel Hohenberger
  */
 public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConventions {
+    
     private IIpsProject ipsProject;
     
     private Map errorMsgTxtNameIsEmpty = new HashMap(1);
@@ -263,5 +267,12 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
             return ml;
         }
         return ml;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public MessageList validateIpsPackageRootName(String name) throws CoreException {
+        return new MessageList();
     }    
 }

@@ -35,16 +35,14 @@ public class LabelField extends DefaultEditField {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.fields.DefaultEditField#addListenerToControl()
+     * {@inheritDoc}
      */
     protected void addListenerToControl() {
         // no change listeners for labels neccessary
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#getControl()
+     * {@inheritDoc}
      */
     public Control getControl() {
         return label;
@@ -65,40 +63,35 @@ public class LabelField extends DefaultEditField {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#setValue(java.lang.Object)
+     * {@inheritDoc}
      */
     public void setValue(Object newValue) {
         label.setText((String)super.prepareObjectForSet(newValue));
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#getText()
+     * {@inheritDoc}
      */
     public String getText() {
         return label.getText();
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#setText(java.lang.String)
+     * {@inheritDoc}
      */
     public void setText(String newText) {
         label.setText(newText);
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#insertText(java.lang.String)
+     * {@inheritDoc}
      */
     public void insertText(String text) {
         label.setText(text);
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.EditField#selectAll()
+     * {@inheritDoc}
      */
     public void selectAll() {
         // nothing to do

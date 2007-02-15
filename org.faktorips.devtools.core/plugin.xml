@@ -866,7 +866,7 @@
                value="icons/FaktorIpsIcon128.gif"/>
          <property
                name="windowImages"
-               value="icons/FaktorIpsIcon16.gif,icons/FaktorIpsIcon32.gif"/>
+               value="icons/FaktorIpsIcon16.gif,icons/FaktorIpsIcon32.gif,icons/FaktorIpsIcon48.gif,icons/FaktorIpsIcon64.gif,icons/FaktorIpsIcon128.gif"/>
       </product>
    </extension>
    <extension

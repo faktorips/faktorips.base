@@ -25,17 +25,16 @@ import org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction;
  * @author Joerg Ortmann
  */
 public class OpenNewTestCaseTypeWizardAction extends OpenNewWizardAction {
+
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction#createWizard()
+     * {@inheritDoc}
      */
     public INewWizard createWizard() {
         return new NewTestCaseTypeWizard();
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
+     * {@inheritDoc}
      */
     public void dispose() {
         // nothing to do

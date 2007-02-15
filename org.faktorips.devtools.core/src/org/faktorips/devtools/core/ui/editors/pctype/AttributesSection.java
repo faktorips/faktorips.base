@@ -167,9 +167,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
          * {@inheritDoc}
          */
         protected IIpsObjectPart newIpsPart() {
-            IAttribute a = getPcType().newAttribute();
-            a.setProductRelevant(getPcType().isConfigurableByProductCmptType());
-            return a;
+            return getPcType().newAttribute();
         }
 
         /**

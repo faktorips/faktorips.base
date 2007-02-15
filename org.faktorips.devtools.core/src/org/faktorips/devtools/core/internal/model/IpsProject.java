@@ -323,7 +323,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot(String name) {
         try {
-            if(!getNamingConventions().validateIpsPackageName(name).containsErrorMsg()){
+            if(!getNamingConventions().validateIpsPackageRootName(name).containsErrorMsg()){
                 return new IpsPackageFragmentRoot(this, name);
             }
         }

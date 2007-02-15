@@ -51,7 +51,7 @@ public class EnumValueField extends ComboField {
         getCombo().setText(newValue.getName());
     }
     
-    public Object parseValue() {
+    public Object parseContent() {
         return getEnumValue();
     }
     
