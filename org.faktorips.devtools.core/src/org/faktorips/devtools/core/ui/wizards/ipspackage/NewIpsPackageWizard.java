@@ -76,7 +76,7 @@ public class NewIpsPackageWizard extends Wizard implements INewWizard {
      */
     public final boolean performFinish() {
         try {
-            IIpsPackageFragment pack = packagePage.getIpsPackageFragment();
+            IIpsPackageFragment pack = packagePage.getParentPackageFragment();
             pack.createSubPackage(packagePage.getIpsPackageName(), true, null);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);

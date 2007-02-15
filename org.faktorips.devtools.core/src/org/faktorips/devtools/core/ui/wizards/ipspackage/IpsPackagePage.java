@@ -202,10 +202,14 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         return nameText;
     }
 
+    /**
+     * Returns the name of the package to be created, relative to the closest corresponding package
+     * as given by getPdPackageFragment().
+     */
     public String getIpsPackageName() {
-        String parentPackageName = getPdPackageFragment().getName();
+        String parentPackageName = getParentPackageFragment().getName();
         String packageName = nameField.getText();
-        if(parentPackageName.length() == packageName.length()){
+        if (parentPackageName.length() == packageName.length()) {
             return ""; //$NON-NLS-1$
         }
         if (parentPackageName.length() > 0) {
@@ -216,8 +220,14 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         }
     }
 
-    public IIpsPackageFragment getPdPackageFragment() {
-        IIpsPackageFragmentRoot root = getPdPackageFragmentRoot();
+    /**
+     * Returns the already existing package fragment corresponding to the longest possible substring
+     * of the desired package name. If no such package fragment is found, the default package
+     * fragment is returned.
+     */
+    public IIpsPackageFragment getParentPackageFragment() {
+        IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
+        if(root==null) return null;
         String packageName = nameField.getText();
         IIpsPackageFragment pack = root.getIpsPackageFragment(packageName);
         if (pack != null && pack.exists()) {
@@ -237,7 +247,10 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         return sourceFolderField.getText();
     }
 
-    public IIpsPackageFragmentRoot getPdPackageFragmentRoot() {
+    /**
+     * Returns the package fragment root corresponding to the selected source folder.
+     */
+    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
         return sourceFolderControl.getPdPckFragmentRoot();
     }
 
@@ -257,7 +270,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     }
 
     private void replacePackageFragment(IIpsPackageFragment pack) {
-        IIpsPackageFragment oldPack = getPdPackageFragment();
+        IIpsPackageFragment oldPack = getParentPackageFragment();
         nameField.setText(pack.getName().concat(nameField.getText().substring(oldPack.getName().length())));
         nameField.selectAll();
         nameField.getTextControl().setFocus();
@@ -267,15 +280,11 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         sourceFolderControl.setPdPckFragmentRoot(root);
     }
 
-    public IIpsPackageFragment getIpsPackageFragment() {
-        return getPdPackageFragment();
-    }
-
     public IIpsProject getIpsProject() {
-        if (getIpsPackageFragment() == null) {
+        if (getParentPackageFragment() == null) {
             return null;
         }
-        return getIpsPackageFragment().getIpsProject();
+        return getParentPackageFragment().getIpsProject();
     }
 
     /**
@@ -325,12 +334,18 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     protected void validatePage() throws CoreException {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
         setErrorMessage(null);
-        MessageList ml = getIpsProject().getNamingConventions().validateIpsPackageName(nameField.getText());
+        IIpsProject project = getIpsProject();
+        if (project==null) {
+            setErrorMessage(Messages.IpsPackagePage_msgSelectSourceFolder);
+            return;
+        }
+        MessageList ml = project.getNamingConventions().validateIpsPackageName(nameField.getText());
         if (!ml.isEmpty()) {
-            if(ml.containsErrorMsg()){
+            if (ml.containsErrorMsg()) {
                 setErrorMessage(ml.getText());
                 return;
-            }else{
+            }
+            else {
                 setMessage(ml.getText(), IMessageProvider.WARNING);
             }
         }
@@ -376,7 +391,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      * The method validates the source folder.
      */
     private void validatePackage() {
-        IIpsPackageFragment pack = getPdPackageFragment();
+        IIpsPackageFragment pack = getParentPackageFragment();
         if (pack != null && !pack.exists()) {
             setErrorMessage(NLS.bind(Messages.IpsPackagePage_msgPackageMissing, pack.getName()));
         }
@@ -390,12 +405,13 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      */
     protected void validateName() {
         String name = getIpsPackageName();
-        String parentPackageName = getPdPackageFragment().getName();
+        String parentPackageName = getParentPackageFragment().getName();
         // must not be empty
         if (name.length() == 0) {
-            if(parentPackageName.length()>0){
+            if (parentPackageName.length() > 0) {
                 setErrorMessage(NLS.bind(Messages.IpsPackagePage_PackageAllreadyExists, parentPackageName));
-            }else{
+            }
+            else {
                 setErrorMessage(Messages.IpsPackagePage_msgEmptyName);
             }
             return;
@@ -418,7 +434,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
                     IMessageProvider.WARNING);
             return;
         }
-        IIpsPackageFragment pack = getPdPackageFragment();
+        IIpsPackageFragment pack = getParentPackageFragment();
         IIpsPackageFragment ipsPackage = pack.getRoot().getIpsPackageFragment(
                 pack.isDefaultPackage() ? name : (pack.getName() + "." + name)); //$NON-NLS-1$
         IFolder folder = (IFolder)ipsPackage.getCorrespondingResource();
