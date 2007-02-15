@@ -17,10 +17,13 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.builder.EmptyBuilderSet;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -363,14 +366,16 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         
         assertEquals(1, a.dependsOn().length);
 
-        // if an artefact builder set could be set with containsAggregateRoot() == true, 
-        // the follwing asserts should apply
-//        List dependsOn = Arrays.asList(a.dependsOn());
-//        assertEquals(3, dependsOn.size());
-//        assertTrue(dependsOn.contains(d1.getQualifiedNameType()));
-//        assertTrue(dependsOn.contains(d2.getQualifiedNameType()));
-//        assertTrue(dependsOn.contains(s2.getQualifiedNameType()));
-        
+        IIpsProjectProperties props = ipsProject.getProperties();
+        props.setBuilderSetId(AggregateRootBuilderSet.ID);
+        ipsProject.setProperties(props);
+        ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSet(ipsProject, new AggregateRootBuilderSet());
+
+        List dependsOn = Arrays.asList(a.dependsOn());
+        assertEquals(3, dependsOn.size());
+        assertTrue(dependsOn.contains(d1.getQualifiedNameType()));
+        assertTrue(dependsOn.contains(d2.getQualifiedNameType()));
+        assertTrue(dependsOn.contains(s2.getQualifiedNameType()));
     }
     
     public void testGetPdObjectType() {
@@ -1006,5 +1011,19 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         b.setSupertype(a.getQualifiedName());
         ITableStructureUsage aStructureUsageCompare = b.findTableStructureUsageInSupertypeHierarchy("aRole");
         assertEquals(aStructureUsage, aStructureUsageCompare);
+    }
+    
+    private class AggregateRootBuilderSet extends EmptyBuilderSet {
+
+        public final static String ID = "AggregateRootBuilderSet";
+        
+        public boolean containsAggregateRootBuilder() {
+            return true;
+        }
+        
+        public String getId() {
+            return ID;
+        }
+        
     }
 }
