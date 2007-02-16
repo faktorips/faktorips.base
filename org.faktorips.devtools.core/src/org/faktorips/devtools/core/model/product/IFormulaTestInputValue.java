@@ -48,6 +48,21 @@ public interface IFormulaTestInputValue extends IIpsObjectPart {
     public final static String MSGCODE_FORMULA_PARAMETER_HAS_UNSUPPORTED_DATATYPE = MSGCODE_PREFIX + "FormulaParameterHasUnsupportedDatatype"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that the datatype of the related attribute wasn't found.
+     */
+    public final static String MSGCODE_DATATYPE_NOT_FOUND = MSGCODE_PREFIX + "DatatypeNotFound"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the datatype of the related attribute wasn't found.
+     */
+    public final static String MSGCODE_DATATYPE_OF_RELATED_ATTRIBUTE_NOT_FOUND = MSGCODE_PREFIX + "DatatypeOfRelatedAttributeNotFound"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the related attribute wasn't found.
+     */
+    public final static String MSGCODE_RELATED_ATTRIBUTE_NOT_FOUND = MSGCODE_PREFIX + "RelatedAttributeNotFound"; //$NON-NLS-1$
+    
+    /**
      * Sets the identifier of the formula test input.
      */
     public void setIdentifier(String identifier);

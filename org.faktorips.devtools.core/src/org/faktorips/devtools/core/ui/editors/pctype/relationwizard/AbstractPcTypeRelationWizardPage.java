@@ -63,15 +63,13 @@ abstract class AbstractPcTypeRelationWizardPage extends WizardPage {
 		if (wizard.getTargetPolicyCmptType()==null)
 			return false;
 		
-		// check if the current page is complete 
-		// and get the next not hidden page
-		canFlipToNextPage = isPageComplete();
+		// check if the current page is not a hidden page
 		if (getNextPage() != null){
 			canFlipToNextPage = ((AbstractPcTypeRelationWizardPage)getNextPage()).isPageVisible();
 		}else{
 			canFlipToNextPage = false;
 		}
-			
+
     	return canFlipToNextPage;
     }
 
@@ -91,6 +89,18 @@ abstract class AbstractPcTypeRelationWizardPage extends WizardPage {
 	    setControl(c);
 	}
 	
+    /**
+     * This method returns false to disable the finish button.
+     * {@inheritDoc}
+     */
+    public boolean isPageComplete() {
+        if (wizard.isValidationError()){
+            return false;
+        } else {
+            return super.isPageComplete();
+        }
+    }
+    
 	//
 	// Abstract methods.
 	//

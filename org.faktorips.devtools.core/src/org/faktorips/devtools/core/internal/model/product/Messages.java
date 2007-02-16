@@ -38,6 +38,12 @@ public class Messages extends NLS {
 
     public static String ConfigElement_valueSetIsNotASubset;
 
+    public static String FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_AttributeNotFound;
+
+    public static String FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_DatatypeOfParameterNotFound;
+
+    public static String FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_DataypeNotFound;
+
     public static String ProductCmptGeneration_msgAttributeWithMissingConfigElement;
 
     public static String TableAccessFunctionFlFunctionAdapter_msgNoTableAccess;
@@ -97,8 +103,6 @@ public class Messages extends NLS {
     public static String ConfigElement_msgInvalidAttributeValueset;
 
     public static String FormulaTestInputValue_CoreException_WrongIdentifierForParameter;
-
-    public static String FormulaTestInputValue_CoreException_AttributeOfParameterNotFound;
 
     public static String FormulaTestInputValue_ValidationMessage_FormulaParameterNotFound;
 

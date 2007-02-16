@@ -163,13 +163,18 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
             // thus policy is the policy cmpt type datatype and attribute is the attribute inside policy
             String parameterName = param.getName();
             if (!identifier.startsWith(parameterName)) {
-                throw new CoreException(new IpsStatus(NLS.bind(Messages.FormulaTestInputValue_CoreException_WrongIdentifierForParameter,
-                        parameterName, identifier)));
+                // error because the PolicyCmptType datatype was found with an invalid identifier,
+                // this should never happen
+                throw new CoreException(new IpsStatus(NLS.bind(
+                        Messages.FormulaTestInputValue_CoreException_WrongIdentifierForParameter, parameterName,
+                        identifier)));
             }
             String attributeName = identifier.substring(parameterName.length() + 1);
             IPolicyCmptType policyCmptType = (IPolicyCmptType) datatype;
             IAttribute attribute = policyCmptType.getAttribute(attributeName);
             if (attribute == null){
+                // attribute not found, therfore the datatype couldn't be determined, 
+                // remark this inconsistence will be reported in the vaildate method
                 return null;
             }
             datatype = attribute.findDatatype();
@@ -185,16 +190,46 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
 
         Parameter param = findFormulaParameter();
         if (param == null) {
-            String text = NLS.bind(Messages.FormulaTestInputValue_ValidationMessage_FormulaParameterNotFound, identifier);
+            String text = NLS.bind(Messages.FormulaTestInputValue_ValidationMessage_FormulaParameterNotFound,
+                    identifier);
             list.add(new Message(MSGCODE_FORMULA_PARAMETER_NOT_FOUND, text, Message.ERROR, this, PROPERTY_IDENTIFIER));
         } else {
             Datatype datatype = findDatatypeOfFormulaParameter();
-            if (!(datatype instanceof ValueDatatype)) {
-                String text = NLS.bind(Messages.FormulaTestInputValue_ValidationMessage_UnsupportedDatatype,
-                        datatype, identifier);
+            if (datatype == null) {
+                // check the cause of the missing datatype
+                boolean knownReason = false;
+                Datatype datatypeOfParam = getIpsProject().findDatatype(param.getDatatype());
+                if (datatypeOfParam instanceof IPolicyCmptType) {
+                    IPolicyCmptType policyCmptType = (IPolicyCmptType)datatypeOfParam;
+                    String attributeName = identifier.substring(param.getName().length() + 1);
+                    IAttribute attribute = policyCmptType.getAttribute(attributeName);
+                    if (attribute == null) {
+                        // attribute not found
+                        knownReason = true;
+                        String text = NLS.bind(Messages.FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_AttributeNotFound, attributeName);
+                        list.add(new Message(MSGCODE_RELATED_ATTRIBUTE_NOT_FOUND, text, Message.ERROR, this,
+                                PROPERTY_IDENTIFIER));
+                    } else if (attribute.findDatatype() == null) {
+                        // datatype of attribute not found
+                        knownReason = true;
+                        String text = NLS.bind(Messages.FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_DatatypeOfParameterNotFound,
+                                attribute.getDatatype(), identifier);
+                        list.add(new Message(MSGCODE_DATATYPE_OF_RELATED_ATTRIBUTE_NOT_FOUND, text, Message.WARNING,
+                                this, PROPERTY_IDENTIFIER));
+                    }
+                }
+                if (!knownReason) {
+                    // unknown reason
+                    String text = NLS.bind(Messages.FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_DataypeNotFound, param.getDatatype());
+                    list.add(new Message(MSGCODE_DATATYPE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_IDENTIFIER));
+                }
+            } else if (!(datatype instanceof ValueDatatype)) {
+                String text = NLS.bind(Messages.FormulaTestInputValue_ValidationMessage_UnsupportedDatatype, datatype,
+                        identifier);
                 list.add(new Message(MSGCODE_FORMULA_PARAMETER_HAS_UNSUPPORTED_DATATYPE, text, Message.ERROR, this,
                         PROPERTY_IDENTIFIER));
             } else {
+                // the datatype was found, check if the value is valid for the datatype
                 ValidationUtils.checkValue(datatype.getQualifiedName(), value, this, PROPERTY_VALUE, list);
             }
         }

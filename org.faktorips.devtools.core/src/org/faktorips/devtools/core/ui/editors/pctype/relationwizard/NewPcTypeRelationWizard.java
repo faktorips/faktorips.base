@@ -59,7 +59,7 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	private IRelation relation;
 	private IRelation reverseRelation;
 	private IPolicyCmptType targetPolicyCmptType;
-	
+    
 	/* State variables */
 	private Memento mementoTargetBeforeNewRelation;
 	
@@ -555,7 +555,23 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	}
 
 	/**
-	 * Returns true if there was an error.
+     * Returns <code>true</code> if the relation or reverse relation contains a validation error.
+     * Otherwise <code>false</code>.
+     */
+    boolean isValidationError() {
+        try {
+            return ((relation == null ? false
+                    : relation.validate().containsErrorMsg()) || (reverseRelation == null ? false : reverseRelation
+                            .validate().containsErrorMsg()));
+        } catch (CoreException e) {
+            showErrorPage(e);
+            return false;
+        }
+    }
+
+	/**
+	 * Returns <code>true</code> if there was an error (e.g. Exception an occured). Note: validation errors
+     * should be checked by using @see @link #isValidationError()}
 	 */
 	public boolean isError() {
 		return isError;
@@ -600,6 +616,12 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
      * {@inheritDoc}
      */
     public void contentsChanged(ContentChangeEvent event) {
-        updateNewReverseRelationAndRelationContainer(event);
+        if (event.isAffected(relation) || event.isAffected(reverseRelation)) {
+            updateNewReverseRelationAndRelationContainer(event);
+            // update the button enable state (e.g. finish and next)
+            if (getContainer() != null){
+                getContainer().updateButtons();
+            }
+        }
     }
 }
