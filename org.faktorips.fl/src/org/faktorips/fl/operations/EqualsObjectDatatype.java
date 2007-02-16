@@ -24,6 +24,7 @@ import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.functions.Messages;
 import org.faktorips.util.message.Message;
+import org.faktorips.values.ObjectUtil;
 
 
 /**
@@ -34,8 +35,16 @@ public class EqualsObjectDatatype extends AbstractBinaryOperation {
 
     public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "EQUALS-OPERATION"; //$NON-NLS-1$
     
+    protected EqualsObjectDatatype(String operator, Datatype lhsDatatype, Datatype rhsDatatype){
+        super(operator, lhsDatatype, rhsDatatype);
+    }
+    
     public EqualsObjectDatatype (Datatype type) {
         super("=", type, type); //$NON-NLS-1$
+    }
+
+    public EqualsObjectDatatype (Datatype lhsDatatype, Datatype rhsDatatype) {
+        super("=", lhsDatatype, rhsDatatype); //$NON-NLS-1$
     }
 
     /** 
@@ -63,11 +72,16 @@ public class EqualsObjectDatatype extends AbstractBinaryOperation {
                 return new CompilationResultImpl(msg);
             }
         }
-        lhs.getCodeFragment().append(".equals("); //$NON-NLS-1$
-        lhs.add(rhs);
-        lhs.getCodeFragment().append(')');
-        lhs.setDatatype(Datatype.PRIMITIVE_BOOLEAN);
-        return lhs;
+        CompilationResultImpl result = new CompilationResultImpl();
+        result.setDatatype(Datatype.PRIMITIVE_BOOLEAN);
+        JavaCodeFragment frag = result.getCodeFragment(); 
+        frag.appendClassName(ObjectUtil.class);
+        frag.append(".equals("); //$NON-NLS-1$
+        frag.append(rhs.getCodeFragment());
+        frag.append(", ");
+        frag.append(lhs.getCodeFragment());
+        frag.append(')');
+        return result;
     }
 
 }

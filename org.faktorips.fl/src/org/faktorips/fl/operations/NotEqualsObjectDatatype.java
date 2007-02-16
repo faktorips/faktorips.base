@@ -19,28 +19,36 @@ package org.faktorips.fl.operations;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.ExprCompiler;
 
 
 /**
- * Operation for the equality check for two decimals. 
+ * Equals operation for none primitive datatypes that are tested for equality with
+ * the equals() Method.
  */
-public class NotEqualsDecimalDecimal extends AbstractBinaryOperation {
+public class NotEqualsObjectDatatype extends EqualsObjectDatatype {
 
-    public NotEqualsDecimalDecimal() {
-        super("!=", Datatype.DECIMAL, Datatype.DECIMAL); //$NON-NLS-1$
+    public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "NOTEQUALS-OPERATION"; //$NON-NLS-1$
+    
+    public NotEqualsObjectDatatype (Datatype type) {
+        super("!=", type, type); //$NON-NLS-1$
+    }
+
+    public NotEqualsObjectDatatype (Datatype lhsDatatype, Datatype rhsDatatype) {
+        super("!=", lhsDatatype, rhsDatatype); //$NON-NLS-1$
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.fl.BinaryOperation#generate(org.faktorips.fl.CompilationResultImpl, org.faktorips.fl.CompilationResultImpl)
+     * {@inheritDoc}
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs,
             CompilationResultImpl rhs) {
-        lhs.getCodeFragment().append(".notEqualsIgnoreScale("); //$NON-NLS-1$
-        lhs.add(rhs);
-        lhs.getCodeFragment().append(')');
-        lhs.setDatatype(Datatype.PRIMITIVE_BOOLEAN);
-        return lhs;
+        CompilationResultImpl result = super.generate(lhs, rhs);
+        CompilationResultImpl newResult = new CompilationResultImpl();
+        newResult.getCodeFragment().append('!');
+        newResult.getCodeFragment().append(result.getCodeFragment());
+        newResult.setDatatype(result.getDatatype());
+        return newResult;
     }
 
 }

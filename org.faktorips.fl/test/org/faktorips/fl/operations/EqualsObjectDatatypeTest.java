@@ -56,4 +56,25 @@ public class EqualsObjectDatatypeTest extends CompilerAbstractTest {
         execAndTestSuccessfull("beFalse=beFalse", Boolean.TRUE, Datatype.BOOLEAN);
     }
 
+    public void testDecimal() throws Exception{
+        compiler.setBinaryOperations(new BinaryOperation[]{new EqualsObjectDatatype(Datatype.DECIMAL, Datatype.DECIMAL)});
+        compiler.setEnsureResultIsObject(false);
+        execAndTestSuccessfull("1=2", false);
+        execAndTestSuccessfull("1.0=1.0", true); 
+    }
+
+    public void testMoney() throws Exception{
+        compiler.setBinaryOperations(new BinaryOperation[]{new EqualsObjectDatatype(Datatype.MONEY, Datatype.MONEY)});
+        compiler.setEnsureResultIsObject(false);
+        execAndTestSuccessfull("1EUR=2EUR", false);
+        execAndTestSuccessfull("1.23EUR=1.23EUR", true); 
+    }
+
+    public void testString() throws Exception{
+        compiler.setBinaryOperations(new BinaryOperation[]{new EqualsObjectDatatype(Datatype.STRING, Datatype.STRING)});
+        compiler.setEnsureResultIsObject(false);
+        execAndTestSuccessfull("\"abc\" = \"cde\"", false);
+        execAndTestSuccessfull("\"abc\" = \"abc\"", true); 
+    }
+
 }

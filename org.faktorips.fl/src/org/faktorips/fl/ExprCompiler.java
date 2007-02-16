@@ -35,11 +35,8 @@ import org.faktorips.fl.operations.AddMoneyMoney;
 import org.faktorips.fl.operations.AddStringString;
 import org.faktorips.fl.operations.DivideDecimalDecimal;
 import org.faktorips.fl.operations.DivideMoneyDecimal;
-import org.faktorips.fl.operations.EqualsDecimalDecimal;
-import org.faktorips.fl.operations.EqualsMoneyMoney;
 import org.faktorips.fl.operations.EqualsObjectDatatype;
 import org.faktorips.fl.operations.EqualsPrimtiveType;
-import org.faktorips.fl.operations.EqualsStringString;
 import org.faktorips.fl.operations.GreaterThanDecimalDecimal;
 import org.faktorips.fl.operations.GreaterThanMoneyMoney;
 import org.faktorips.fl.operations.GreaterThanOrEqualDecimalDecimal;
@@ -57,8 +54,7 @@ import org.faktorips.fl.operations.MultiplyDecimalMoney;
 import org.faktorips.fl.operations.MultiplyIntInt;
 import org.faktorips.fl.operations.MultiplyIntegerMoney;
 import org.faktorips.fl.operations.MultiplyMoneyDecimal;
-import org.faktorips.fl.operations.NotEqualsDecimalDecimal;
-import org.faktorips.fl.operations.NotEqualsMoneyMoney;
+import org.faktorips.fl.operations.NotEqualsObjectDatatype;
 import org.faktorips.fl.operations.ParenthesisDecimal;
 import org.faktorips.fl.operations.ParenthesisInt;
 import org.faktorips.fl.operations.ParenthesisMoney;
@@ -278,14 +274,14 @@ public class ExprCompiler {
         // equals operation
         register(new EqualsPrimtiveType(Datatype.PRIMITIVE_INT));
         register(new EqualsPrimtiveType(Datatype.PRIMITIVE_BOOLEAN));
-        register(new EqualsDecimalDecimal());
-        register(new EqualsMoneyMoney());
-        register(new EqualsStringString());
+        register(new EqualsObjectDatatype(Datatype.DECIMAL));
+        register(new EqualsObjectDatatype(Datatype.MONEY));
+        register(new EqualsObjectDatatype(Datatype.STRING));
         register(new EqualsObjectDatatype(AnyDatatype.INSTANCE));
 
         // not equals operation
-        register(new NotEqualsDecimalDecimal());
-        register(new NotEqualsMoneyMoney());
+        register(new NotEqualsObjectDatatype(Datatype.DECIMAL));
+        register(new NotEqualsObjectDatatype(Datatype.MONEY));
 
         // parenthesis operation
         register(new ParenthesisInt());
