@@ -720,14 +720,16 @@ public class IpsTestRunner implements IIpsTestRunner {
 	}
 	
     private void notifyTestEntry(String qualifiedName, String fullPath) {
-        for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {
+        List copy = new ArrayList(fIpsTestRunListeners);
+        for (Iterator iter = copy.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
 			listener.testTableEntry(qualifiedName, fullPath);
 		}
     }
     
     private void notifyTestEntries(String[] qualifiedNames, String[] fullPaths) {
-        for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {
+        List copy = new ArrayList(fIpsTestRunListeners);
+        for (Iterator iter = copy.iterator(); iter.hasNext();) {
             IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
             listener.testTableEntries(qualifiedNames, fullPaths);
         }
@@ -742,8 +744,9 @@ public class IpsTestRunner implements IIpsTestRunner {
                 // ignore exception
             }
         testRunnerMonitor.subTask(qualifiedTestName);
-            
-        for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {
+        
+        List copy = new ArrayList(fIpsTestRunListeners);
+        for (Iterator iter = copy.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
 			listener.testStarted(qualifiedTestName);
 		}
@@ -751,15 +754,17 @@ public class IpsTestRunner implements IIpsTestRunner {
     
     private void notifyTestFinished(String qualifiedTestName) {
         testRunnerMonitor.worked(1);
-        
-        for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {
-			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
-			listener.testFinished(qualifiedTestName);
-		}
+        List copy = new ArrayList(fIpsTestRunListeners);
+        for (Iterator iter = copy.iterator(); iter.hasNext();) {
+            IIpsTestRunListener listener = (IIpsTestRunListener)iter.next();
+            listener.testFinished(qualifiedTestName);
+        }
     }
     
     private void notifyTestFailureOccured(String testFailureOccured, String[] failureDetails) {
-        for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {
+        // defensive copy to avoid concurrent modification exceptions
+        List copy = new ArrayList(fIpsTestRunListeners);        
+        for (Iterator iter = copy.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
 			listener.testFailureOccured(testFailureOccured, failureDetails);
 		}
@@ -767,8 +772,8 @@ public class IpsTestRunner implements IIpsTestRunner {
     
 	private void notifyTestRunStarted(int count, String repositoryPackage, String testPackage) {
         testRunnerMonitor.beginTask(Messages.IpsTestRunner_Job_Name, count);
-        
-        for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {
+        List copy = new ArrayList(fIpsTestRunListeners); 
+        for (Iterator iter = copy.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
 			listener.testRunStarted(count, repositoryPackage, testPackage);
 		}		
@@ -776,15 +781,16 @@ public class IpsTestRunner implements IIpsTestRunner {
 	
 	private void notifyTestRunEnded(String elapsedTime) {
         testRunnerMonitor.done();
-        
-        for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {
+        List copy = new ArrayList(fIpsTestRunListeners); 
+        for (Iterator iter = copy.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
 			listener.testRunEnded(elapsedTime);
 		}		
 	} 
 
 	private void notifyTestErrorOccured(String qualifiedTestName, String[] errorDetails) {
-        for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {
+        List copy = new ArrayList(fIpsTestRunListeners); 
+        for (Iterator iter = copy.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
 			listener.testErrorOccured(qualifiedTestName, errorDetails);
 		}
