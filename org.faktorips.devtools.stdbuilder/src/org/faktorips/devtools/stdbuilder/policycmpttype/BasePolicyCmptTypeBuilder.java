@@ -60,6 +60,9 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         }
         AttributeType type = attribute.getAttributeType();
         if (type == AttributeType.CHANGEABLE) {
+            if(attribute.getOverwrites()){
+                return;
+            }
             generateCodeForChangeableAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
         } else if (type == AttributeType.CONSTANT) {
             generateCodeForConstantAttribute(attribute, datatypeHelper, constantBuilder, memberVarsBuilder, methodsBuilder);

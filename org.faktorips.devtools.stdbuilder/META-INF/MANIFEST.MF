@@ -14,10 +14,10 @@ Require-Bundle: org.eclipse.ui,
  org.junit,
  org.faktorips.devtools.core,
  org.faktorips.fl,
- org.faktorips.runtime,
  org.faktorips.util,
  org.faktorips.valuetypes,
- org.faktorips.dtflcommon
+ org.faktorips.dtflcommon,
+ org.faktorips.runtime
 Eclipse-AutoStart: true
 Export-Package: org.faktorips.devtools.stdbuilder,
  org.faktorips.devtools.stdbuilder.policycmpttype,

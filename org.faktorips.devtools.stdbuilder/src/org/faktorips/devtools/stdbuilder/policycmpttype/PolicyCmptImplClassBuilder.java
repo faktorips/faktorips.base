@@ -466,6 +466,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     
     /**
      * Code sample:
+     * 
      * <pre>
      * public void setPremium(Money newValue) {
      *     this.premium = newValue;
@@ -1401,6 +1402,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, null, getUnqualifiedClassName(),
                 paramNames, paramTypes);
         builder.append("super(productCmpt);");
+        generateInitializationForOverrideAttributes(builder);
         builder.methodEnd();
     }
     
@@ -1421,7 +1423,19 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, null, getUnqualifiedClassName(),
                 new String[0], new String[0]);
         builder.append("super();");
+        generateInitializationForOverrideAttributes(builder);
         builder.methodEnd();
+    }
+
+    private void generateInitializationForOverrideAttributes(JavaCodeFragmentBuilder builder){
+        IAttribute[] attributes = getPcType().getAttributes();
+        for (int i = 0; i < attributes.length; i++) {
+            if(attributes[i].isChangeable() && attributes[i].getOverwrites()){
+                DatatypeHelper helper = getPcType().getIpsProject().getDatatypeHelper(attributes[i].getValueDatatype());
+                JavaCodeFragment initialValueExpression = helper.newInstance(attributes[i].getDefaultValue());
+                interfaceBuilder.generateCallToMethodSetPropertyValue(attributes[i], helper, initialValueExpression, builder);
+            }
+        }
     }
     
     /**
@@ -1436,11 +1450,25 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodInitialize(JavaCodeFragmentBuilder builder) throws CoreException {
+        IAttribute[] attributes = getPcType().getAttributes();
+        ArrayList selectedValues = new ArrayList();
+        for (int i = 0; i < attributes.length; i++) {
+            IAttribute a = attributes[i];
+            if (!a.validate().containsErrorMsg()) {
+                if (a.isProductRelevant() && a.isChangeable() && !a.getOverwrites()) {
+                    selectedValues.add(a);
+                }
+            }
+        }
         appendLocalizedJavaDoc("METHOD_INITIALIZE", getPcType(), builder);
         builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(),
                 getMethodNameInitialize(), new String[0], new String[0]);
         if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
             builder.append("super." + getMethodNameInitialize() + "();");
+        }
+        if(selectedValues.isEmpty()){
+            builder.methodEnd();
+            return;
         }
         if (getPcType().findProductCmptType()==null) {
             builder.methodEnd();
@@ -1450,18 +1478,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.appendln("if (" + method + "()==null) {");
         builder.appendln("return;");
         builder.appendln("}");
-        IAttribute[] attributes = getPcType().getAttributes();
-        for (int i = 0; i < attributes.length; i++) {
-            IAttribute a = attributes[i];
-            if (!a.validate().containsErrorMsg()) {
-                if (a.isProductRelevant() && a.getAttributeType() == AttributeType.CHANGEABLE) {
-                    DatatypeHelper datatype = a.getIpsProject().findDatatypeHelper(a.getDatatype());
-                    builder.append(getFieldNameForAttribute(a));
-                    builder.append(" = ");
-                    builder.append(getMethodNameGetValueFromProductCmpt(a, datatype));
-                    builder.append(";");
-                }
-            }
+        for (Iterator it = selectedValues.iterator(); it.hasNext();) {
+            IAttribute a = (IAttribute)it.next();
+            DatatypeHelper datatype = a.getIpsProject().findDatatypeHelper(a.getDatatype());
+            builder.append(getFieldNameForAttribute(a));
+            builder.append(" = ");
+            builder.append(getMethodNameGetValueFromProductCmpt(a, datatype));
+            builder.append(";");
         }
         builder.methodEnd();
     }
@@ -1693,17 +1716,27 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      */
     private void generateMethodInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
-        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_RESTRAINED_MODIFIABLE);
-        builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.TYPE, MethodNames.INIT_PROPERTIES_FROM_XML, new String[]{"propMap"}, new Class[]{HashMap.class});
-        builder.appendln("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap);");
+
         IAttribute[] attributes = getPolicyCmptType().getAttributes();
+        ArrayList selectedAttributes = new ArrayList();
         for (int i = 0; i < attributes.length; i++) {
             IAttribute a = attributes[i];
             if (a.getAttributeType()==AttributeType.DERIVED_ON_THE_FLY 
                     || a.getAttributeType()==AttributeType.CONSTANT
+                    || a.getOverwrites()
                     || !a.isValid()) {
                 continue;
             }
+            selectedAttributes.add(a);
+        }
+        if(selectedAttributes.isEmpty()){
+            return;
+        }
+        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.TYPE, MethodNames.INIT_PROPERTIES_FROM_XML, new String[]{"propMap"}, new Class[]{HashMap.class});
+        builder.appendln("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap);");
+        for (Iterator it = selectedAttributes.iterator(); it.hasNext();) {
+            IAttribute a = (IAttribute)it.next();
             Datatype datatype = a.findDatatype();
             DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(datatype);
             builder.append("if (propMap.containsKey(");
@@ -1714,6 +1747,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             builder.append(helper.newInstanceFromExpression(expr));
             builder.appendln(";");
             builder.appendln("}");
+            
         }
         builder.appendln(MARKER_BEGIN_USER_CODE);
         builder.appendln(MARKER_END_USER_CODE);
@@ -1829,11 +1863,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
     
     private void generateMethodGetRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
-        methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_RESTRAINED_MODIFIABLE);
+        methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
         productCmptGenInterfaceBuilder.generateSignatureGetRangeFor(a, helper, methodBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendOpenBracket();
-        body.appendln(MARKER_BEGIN_USER_CODE);
         body.append("return ");
         if(a.isProductRelevant()){
             
@@ -1847,17 +1880,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             body.appendln(";");
             
         }
-        body.appendln(MARKER_END_USER_CODE);
         body.appendCloseBracket();
         methodBuilder.append(body);
     }
     
     private void generateMethodGetAllowedValuesFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
-        methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_RESTRAINED_MODIFIABLE);
+        methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
         productCmptGenInterfaceBuilder.generateSignatureGetAllowedValuesFor(a, helper.getDatatype(), methodBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendOpenBracket();
-        body.appendln(MARKER_BEGIN_USER_CODE);
         body.append("return ");
         if(a.isProductRelevant()){
             
@@ -1871,7 +1902,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             body.appendln(";");
             
         }
-        body.appendln(MARKER_END_USER_CODE);
         body.appendCloseBracket();
         methodBuilder.append(body);
     }

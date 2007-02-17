@@ -478,6 +478,18 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.appendln(";");
     }
     
+    public String getMethodNametSetPropertyValue(IAttribute a, DatatypeHelper datatypeHelper){
+        return getJavaNamingConvention().getSetterMethodName(a.getName(), datatypeHelper.getDatatype());
+    }
+    
+    public void generateCallToMethodSetPropertyValue(IAttribute a, DatatypeHelper datatypeHelper, 
+            JavaCodeFragment value, JavaCodeFragmentBuilder builder){
+        builder.append(getMethodNametSetPropertyValue(a, datatypeHelper));
+        builder.append('(');
+        builder.append(value);
+        builder.append(");");
+    }
+    
     /**
      * Code sample:
      * <pre>
@@ -490,7 +502,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         int modifier = java.lang.reflect.Modifier.PUBLIC;
-        String methodName = getJavaNamingConvention().getSetterMethodName(a.getName(), datatypeHelper.getDatatype());
+        String methodName = getMethodNametSetPropertyValue(a, datatypeHelper);
         String paramName = getParamNameForSetPropertyValue(a);
         methodsBuilder.signature(modifier, "void", methodName, new String[]{paramName}, new String[]{datatypeHelper.getJavaClassName()});
     }
