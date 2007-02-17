@@ -96,7 +96,6 @@ public class IpsPlugin extends AbstractUIPlugin {
     public final static String getFullExtensionId(String pluginRelativeEnxtensionId) {
         ArgumentCheck.notNull(pluginRelativeEnxtensionId);
         return PLUGIN_ID + '.' + pluginRelativeEnxtensionId;
-        
     }
 
     // The shared instance.
