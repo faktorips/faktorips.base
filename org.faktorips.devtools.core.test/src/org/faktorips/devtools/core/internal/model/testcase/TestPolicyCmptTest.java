@@ -296,6 +296,8 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         attr.setName("attrCoverage");
         attr.setDatatype("String");
         attr.setDefaultValue("attrCoverage_Default");
+        attr.setProductRelevant(true);
+
         IProductCmptGeneration generation = (IProductCmptGeneration) product.newGeneration(new GregorianCalendar(1742, 12, 1));
         IConfigElement ce = generation.newConfigElement();
         ce.setPcTypeAttribute(attr.getName());

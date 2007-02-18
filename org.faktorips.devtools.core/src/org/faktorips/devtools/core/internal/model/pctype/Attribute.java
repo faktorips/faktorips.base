@@ -58,7 +58,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
 
     // member variables.
     private String datatype = ""; //$NON-NLS-1$
-    private boolean productRelevant = true;
+    private boolean productRelevant = false;
     private AttributeType attributeType = AttributeType.CHANGEABLE;
     private String defaultValue = null;
     private Modifier modifier = Modifier.PUBLISHED;

@@ -372,6 +372,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertTrue(msgList.isEmpty());
         
         IAttribute attribute = pcType.newAttribute();
+        attribute.setProductRelevant(true);
         attribute.setName("test");        
         msgList = gen.validate();
         assertFalse(msgList.isEmpty());

@@ -84,8 +84,10 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         
         IAttribute a1 = pcType.newAttribute();
         a1.setName("a1");
+        a1.setProductRelevant(true);
         IAttribute a2 = supertype.newAttribute();
         a2.setName("a2");
+        a2.setProductRelevant(true);
         IAttribute a3 = pcType.newAttribute();
         a3.setName("a3");
         a3.setProductRelevant(false);
@@ -156,9 +158,11 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         
         IAttribute a1 = pcType.newAttribute();
         a1.setName("a1");
+        a1.setProductRelevant(true);
         a1.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         IAttribute a2 = supertype.newAttribute();
         a2.setName("a2");
+        a2.setProductRelevant(true);
         a2.setAttributeType(AttributeType.CHANGEABLE);
         
         IConfigElement ce1 = generation.newConfigElement();
@@ -200,6 +204,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         
         IAttribute a1 = pcType.newAttribute();
         a1.setName("a1");
+        a1.setProductRelevant(true);
         a1.setValueSetType(ValueSetType.RANGE);
         IRangeValueSet valueSet = (IRangeValueSet)a1.getValueSet();
         valueSet.setLowerBound("10");
@@ -276,6 +281,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         // does it work along the pctype hierarchy?
         IAttribute a2 = supertype.newAttribute();
         a2.setName("a2");
+        a2.setProductRelevant(true);
         a2.setValueSetType(ValueSetType.RANGE);
         valueSet = (IRangeValueSet)a2.getValueSet();
         valueSet.setLowerBound("10");

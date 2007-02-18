@@ -240,6 +240,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         PolicyCmptType testType = newPolicyCmptType(ipsProject, "TestType");
         IAttribute a1 = testType.newAttribute();
         a1.setName("A1");
+        a1.setProductRelevant(true);
         
         IProductCmpt product = newProductCmpt(ipsProject, "TestProduct");
         product.setPolicyCmptType(testType.getQualifiedName());
@@ -248,7 +249,9 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         ce1.setPcTypeAttribute("A1");
         ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
         
-        testType.newAttribute().setName("A2");
+        IAttribute a2 = testType.newAttribute();
+        a2.setName("A2");
+        a2.setProductRelevant(true);
         
         IProductCmpt product2 = newProductCmpt(ipsProject, "TestProduct2");
         product2.setPolicyCmptType(testType.getQualifiedName());
@@ -275,7 +278,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         PolicyCmptType testType = newPolicyCmptType(ipsProject, "TestType");
         IAttribute a1 = testType.newAttribute();
         a1.setName("A1");
-        
+        a1.setProductRelevant(true);
+
         IProductCmpt product = newProductCmpt(ipsProject, "TestProduct");
         product.setPolicyCmptType(testType.getQualifiedName());
         IProductCmptGeneration gen = (IProductCmptGeneration)product.newGeneration();
@@ -283,7 +287,9 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         ce1.setPcTypeAttribute("A1");
         ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
         
-        testType.newAttribute().setName("A2");
+        IAttribute a2 = testType.newAttribute();
+        a2.setName("A2");
+        a2.setProductRelevant(true);
         
         IProductCmpt product2 = newProductCmpt(ipsProject, "TestProduct2");
         product2.setPolicyCmptType(testType.getQualifiedName());

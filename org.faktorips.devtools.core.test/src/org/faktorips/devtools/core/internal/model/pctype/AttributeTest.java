@@ -363,6 +363,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     }
 
     public void testValidate_noInputParameters() throws Exception {
+        attribute.setProductRelevant(true);
     	MessageList ml = attribute.validate();
     	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_NO_INPUT_PARAMETERS));
     	

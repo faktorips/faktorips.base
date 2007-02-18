@@ -160,6 +160,8 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         IPolicyCmptType pcType = newPolicyCmptType(ipsProject, "policyCmptType1");
         IAttribute attribute = pcType.newAttribute();
         attribute.setName("attribute1");
+        attribute.setProductRelevant(true);
+
         attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         attribute.setDatatype(Datatype.STRING.getQualifiedName());
         Parameter[] params = new Parameter[3];
