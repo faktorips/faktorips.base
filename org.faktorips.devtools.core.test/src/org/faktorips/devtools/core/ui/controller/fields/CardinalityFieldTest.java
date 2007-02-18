@@ -20,8 +20,9 @@ package org.faktorips.devtools.core.ui.controller.fields;
 import junit.framework.TestCase;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * 
@@ -29,8 +30,15 @@ import org.eclipse.swt.widgets.Text;
  */
 public class CardinalityFieldTest extends TestCase {
 
+    private Shell shell;
+    
+    protected void setUp() {
+        shell = PlatformUI.getWorkbench().getDisplay().getShells()[0];
+    }
+    
+
     public void testSetText() {
-        Text text = new Text(Display.getDefault().getActiveShell(), SWT.NONE);
+        Text text = new Text(shell, SWT.NONE);
         CardinalityField field = new CardinalityField(text);
         
         field.setText("1");
@@ -50,7 +58,7 @@ public class CardinalityFieldTest extends TestCase {
     }
     
     public void testSetValue() {
-        Text text = new Text(Display.getDefault().getActiveShell(), SWT.NONE);
+        Text text = new Text(shell, SWT.NONE);
         CardinalityField field = new CardinalityField(text);
         
         field.setValue(new Integer(1));
