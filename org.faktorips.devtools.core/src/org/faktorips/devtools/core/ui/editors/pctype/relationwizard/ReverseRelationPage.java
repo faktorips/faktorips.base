@@ -34,6 +34,9 @@ public class ReverseRelationPage extends AbstractPcTypeRelationWizardPage {
 	private Button useExistingRelation;
 	private Button noReverseRelation;
 	private Button prevSelection;
+
+    // indicate if the page was shown before
+    private boolean visibleBefore = false;
 		
 	public ReverseRelationPage(NewPcTypeRelationWizard newPcTypeRelationWizard) {
 		super(PAGE_ID, Messages.NewPcTypeRelationWizard_reverseRelation_title,
@@ -67,8 +70,8 @@ public class ReverseRelationPage extends AbstractPcTypeRelationWizardPage {
 		
 		// set the default selection
 		newReverseRelation.setSelection(true);
+        
 		prevSelection = newReverseRelation;
-		wizard.setNewReverseRelation();
 	}
 
 	/**
@@ -82,7 +85,7 @@ public class ReverseRelationPage extends AbstractPcTypeRelationWizardPage {
 	 */
 	protected boolean updateControlStatus() {
 		wizard.setFocusIfPageChanged(newReverseRelation);
-		
+        
 		return true;
 	}
 
@@ -98,16 +101,15 @@ public class ReverseRelationPage extends AbstractPcTypeRelationWizardPage {
 			// other wise enable next wizard page
 			if (prevSelection != e.getSource()){
 				prevSelection = (Button) e.getSource();
+				wizard.storeReverseRelation(null);
 				if (e.getSource() == useExistingRelation) {
-					wizard.storeReverseRelation(null);
 					wizard.restoreMementoTargetBeforeChange();
 					wizard.setExistingReverseRelation();
 					wizard.updateDescriptionReverseRelationPropertiesPage(Messages.NewPcTypeRelationWizard_reverseRelationProp_description_existing);
 				}else if(e.getSource() == newReverseRelation){
-					wizard.restoreMementoTargetBeforeChange();
+                    wizard.restoreMementoTargetBeforeChange();
 					wizard.setNewReverseRelation();
 				}else if(e.getSource() == noReverseRelation){
-					wizard.storeReverseRelation(null);
 					wizard.restoreMementoTargetBeforeChange();
 					wizard.setNoneReverseRelation();
 				}
@@ -142,6 +144,11 @@ public class ReverseRelationPage extends AbstractPcTypeRelationWizardPage {
      * {@inheritDoc}
      */
     public boolean canFlipToNextPage() {
+        if (!visibleBefore ){
+            visibleBefore = true;
+            // indicate that a new reverse relation will be created (default)
+            wizard.setNewReverseRelation();
+        }
         boolean canFlipToNextPage = super.canFlipToNextPage();
         
         if (useExistingRelation.getSelection() && ! wizard.relationsExists()){
@@ -155,5 +162,5 @@ public class ReverseRelationPage extends AbstractPcTypeRelationWizardPage {
         }
         
         return canFlipToNextPage;
-    }    
+    }
 }

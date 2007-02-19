@@ -21,9 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.IPageChangedListener;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.PageChangedEvent;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -44,7 +47,7 @@ import org.faktorips.util.memento.Memento;
 /**
  * Relation wizard class.
  */
-public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeListener{
+public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeListener, IPageChangedListener{
 	private final static int NEW_REVERSE_RELATION = 0;
 	private final static int USE_EXISTING_REVERSE_RELATION = 1;
 	private final static int NONE_REVERSE_RELATION = 2;
@@ -115,7 +118,7 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
         
     	// add listener on model,
 		// if the model changed check if the new relation has to be updated
-		relation.getIpsModel().addChangeListener(this);          
+		relation.getIpsModel().addChangeListener(this);  
 	}
     
     /*
@@ -190,7 +193,12 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 			addPage(reverseRelationPropertiesPage);
 			
 			pages.add(errorPage);
-			addPage(errorPage);			
+			addPage(errorPage);	
+            
+            // add listener for page changes
+            if (getContainer() instanceof WizardDialog){
+                ((WizardDialog)getContainer()).addPageChangedListener(this);
+            }
 		} catch (Exception e) {
 			IpsPlugin.logAndShowErrorDialog(e);
 		}
@@ -442,6 +450,7 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	 * Additional the correct reverse relation names will be set in both relation.
 	 */
 	void storeReverseRelation(IRelation reverseRelation){
+	    this.reverseRelation = reverseRelation;
 		if (reverseRelation != null){
 			relation.setReverseRelation(reverseRelation.getTargetRoleSingular());
             if (!reverseRelation.isCompositionDetailToMaster()) {
@@ -450,7 +459,6 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 		}else{
 			relation.setReverseRelation(""); //$NON-NLS-1$
 		}
-		this.reverseRelation = reverseRelation;
 	}
 	
     /**
@@ -480,19 +488,26 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	}
 	
 	/**
-	 * Returns true if the revese relation is an existing relation on the target.
+	 * Returns true if the reverse relation is an existing relation on the target.
 	 */
 	boolean isExistingReverseRelation() {
 		return reverseRelationManipulation == USE_EXISTING_REVERSE_RELATION;
 	}	
 	
 	/**
-	 * Returns true if the revese relation is new relation on the target.
+	 * Returns true if the reverse relation is new relation on the target.
 	 */
 	boolean isNewReverseRelation() {
 		return reverseRelationManipulation == NEW_REVERSE_RELATION;
 	}
 
+    /**
+     * Returns true if none reverse relation should be defined.
+     */
+    boolean isNoneReverseRelation() {
+        return reverseRelationManipulation == NONE_REVERSE_RELATION;
+    }
+    
 	/**
 	 * Sets that the revese relation is an existing relation on the target.
 	 */
@@ -622,6 +637,16 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
             if (getContainer() != null){
                 getContainer().updateButtons();
             }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void pageChanged(PageChangedEvent event) {
+        // update the button enable state (e.g. finish and next)
+        if (getContainer() != null){
+            getContainer().updateButtons();
         }
     }
 }
