@@ -74,7 +74,7 @@ import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.BundleContext;
 
 /**
- * The main plugin class.
+ * The main plugin class. 
  * 
  * @author Jan Ortmann
  */
