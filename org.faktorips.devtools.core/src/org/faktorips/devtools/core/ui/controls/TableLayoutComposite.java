@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 /**
- * These class is copied from org.eclipse.jdt.internal.ui.util.TableLayoutComposite to avoid warning
+ * This class is copied from org.eclipse.jdt.internal.ui.util.TableLayoutComposite to avoid warning
  * caused by discouraged access.
  * 
  * A special composite to layout columns inside a table. The composite is needed since we have
