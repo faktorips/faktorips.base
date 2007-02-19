@@ -21,9 +21,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -31,17 +28,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccessWithListenerSupport;
 import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 
 
 /**
@@ -178,49 +171,58 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
         
         // show errors or warnings in the editor message area
         // Disabled: should be tested (usability) first
+        // 
         // refreshMessage();
     }
 
     /*
      * Sets the editor message if the current ips object contains errors/warnings or remove the
      * error/warning message if the ips object contains no error/warning.
+     * 
+     * 
      */
-    void refreshMessage() {
-        Control content = getManagedForm().getForm().getContent();
-        if (content instanceof Form) {
-            Form contentForm = (Form)content;
-            try {
-                MessageList ml = getIpsObject().validate();
-                int errors = 0;
-                int warnings = 0;
-                for (int i = 0; i < ml.getNoOfMessages(); i++) {
-                    if (ml.getMessage(i).getSeverity() == Message.ERROR) {
-                        errors ++;
-                    } else if (ml.getMessage(i).getSeverity() == Message.WARNING){
-                        warnings ++;
-                    }
-                }
-                if (errors > 0) {
-                    // display only the first error text and the number of errors.
-                    Message errorMsg = ml.getFirstMessage(Message.ERROR);
-                    String errorText = errorMsg == null ? "" : errorMsg.getText() + (errors > 1 ? ", ..." : ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    errorText = (errors > 1 ? NLS.bind(Messages.IpsObjectEditorPage_ErrorsTitle, "" + errors) : Messages.IpsObjectEditorPage_ErrorTitle) + errorText; //$NON-NLS-2$ //$NON-NLS-1$
-                    contentForm.setMessage(errorText, IMessageProvider.ERROR);
-                } else if (warnings > 0) {
-                    // display only the first warning text and the number of warnings.
-                    Message warningMsg = ml.getFirstMessage(Message.WARNING);
-                    String warningText = warningMsg == null ? "" : warningMsg.getText() + (warnings > 1 ? ", ..." : ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    warningText = (warnings > 1 ? NLS.bind(Messages.IpsObjectEditorPage_WarningsTitle, "" + warnings) : Messages.IpsObjectEditorPage_WarningTitle) //$NON-NLS-2$
-                            + warningText;
-                    contentForm.setMessage(warningText, IMessageProvider.WARNING);
-                } else {
-                    contentForm.setMessage(null);
-                }
-            } catch (CoreException e) {
-                IpsPlugin.logAndShowErrorDialog(e);
-            }
-        }
-    }
+    
+// !!! 
+// Note: this method is commented as it is not used at the moment (see above)
+// and we use 3.2 API Form.setMessage() but on our build system 3.1 is still installed!
+// !!!
+    
+//    void refreshMessage() {
+//        Control content = getManagedForm().getForm().getContent();
+//        if (content instanceof Form) {
+//            Form contentForm = (Form)content;
+//            try {
+//                MessageList ml = getIpsObject().validate();
+//                int errors = 0;
+//                int warnings = 0;
+//                for (int i = 0; i < ml.getNoOfMessages(); i++) {
+//                    if (ml.getMessage(i).getSeverity() == Message.ERROR) {
+//                        errors ++;
+//                    } else if (ml.getMessage(i).getSeverity() == Message.WARNING){
+//                        warnings ++;
+//                    }
+//                }
+//                if (errors > 0) {
+//                    // display only the first error text and the number of errors.
+//                    Message errorMsg = ml.getFirstMessage(Message.ERROR);
+//                    String errorText = errorMsg == null ? "" : errorMsg.getText() + (errors > 1 ? ", ..." : ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//                    errorText = (errors > 1 ? NLS.bind(Messages.IpsObjectEditorPage_ErrorsTitle, "" + errors) : Messages.IpsObjectEditorPage_ErrorTitle) + errorText; //$NON-NLS-2$ //$NON-NLS-1$
+//                    contentForm.setMessage(errorText, IMessageProvider.ERROR);
+//                } else if (warnings > 0) {
+//                    // display only the first warning text and the number of warnings.
+//                    Message warningMsg = ml.getFirstMessage(Message.WARNING);
+//                    String warningText = warningMsg == null ? "" : warningMsg.getText() + (warnings > 1 ? ", ..." : ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//                    warningText = (warnings > 1 ? NLS.bind(Messages.IpsObjectEditorPage_WarningsTitle, "" + warnings) : Messages.IpsObjectEditorPage_WarningTitle) //$NON-NLS-2$
+//                            + warningText;
+//                    // contentForm.setMessage(warningText, IMessageProvider.WARNING);
+//                } else {
+//                    // contentForm.setMessage(null);
+//                }
+//            } catch (CoreException e) {
+//                IpsPlugin.logAndShowErrorDialog(e);
+//            }
+//        }
+//    }
     
     private void refresh(Composite composite) {
         Control[] children =composite.getChildren();
@@ -232,7 +234,6 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
                 refresh((Composite)children[i]);
             }
         }
-        
     }
     
     /**
