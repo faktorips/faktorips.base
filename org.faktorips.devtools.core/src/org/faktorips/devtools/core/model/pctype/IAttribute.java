@@ -282,8 +282,8 @@ public interface IAttribute extends IMember, IValueDatatypeProvider {
 
     /**
      * Sets the type of the value set defining the values valid for this attribute.
-     * If the type of the currently existing value set is the same as the one to set, all
-     * old informations (e.g. bounds and step for a range value set) are removed.
+     * If the type of the current value set is the same as the new type, the attribute
+     * remains unchanged. 
      */
     public void setValueSetType(ValueSetType type);
     
