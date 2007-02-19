@@ -43,6 +43,7 @@ public class Messages extends NLS {
     public static String AddIpsNatureAction_ProjectType;
     public static String AddIpsNatureAction_runtimeIdPrefix;
     public static String AddIpsNatureAction_sourceFolderName;
+    public static String AddIpsNatureAction_TheSourceFolderMustBeADirectChildOfTheProject;
     public static String DeleteRowAction_Label;
     public static String DeleteRowAction_Tooltip;
     public static String FindProductReferencesAction_description;

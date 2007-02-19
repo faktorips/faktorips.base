@@ -27,6 +27,12 @@ import org.eclipse.core.resources.IFolder;
 public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
 
     /**
+     * Message code constant to indicate the source folder must be a direct child of the project
+     * and it isn't. 
+     */
+    public final static String MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROHECT = "SourceFolder must be a direct child of the project."; //$NON-NLS-1$
+
+    /**
      * Message code constant identifying the message of a validation rule. 
      */
     public final static String MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING  = "OutputFolderMergableMissing"; //$NON-NLS-1$

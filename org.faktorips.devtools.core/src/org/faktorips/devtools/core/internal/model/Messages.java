@@ -60,6 +60,8 @@ public class Messages extends NLS {
 
     public static String IpsSrcFolderEntry_outputfoldersrcderivedmissing;
 
+    public static String IpsSrcFolderEntry_srcFolderMustBeADirectChildOfTheProject;
+
     public static String ValidationUtils_msgObjectDoesNotExist;
 
 	public static String ValidationUtils_msgDatatypeDoesNotExist;

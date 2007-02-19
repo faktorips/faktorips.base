@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -369,6 +370,9 @@ public class AddIpsNatureAction extends ActionDelegate {
                 // the source folder name is empty
                 newValidationStatus = IMessageProvider.ERROR;
                 message = Messages.AddIpsNatureAction_ErrorNoSourceFolderName;
+            } else if (!(new Path("").isValidSegment(sourceFolderName))) { //$NON-NLS-1$
+                newValidationStatus = IMessageProvider.ERROR;
+                message = Messages.AddIpsNatureAction_TheSourceFolderMustBeADirectChildOfTheProject;
             } else {
                 allowFinish = true;
             }

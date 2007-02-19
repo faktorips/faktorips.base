@@ -306,6 +306,11 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
      */
     private MessageList validateFolder(IFolder folder) {
         MessageList result = new MessageList();
+        if (folder.getProjectRelativePath().segmentCount()>1){
+            String text = NLS.bind(Messages.IpsSrcFolderEntry_srcFolderMustBeADirectChildOfTheProject, folder.getProjectRelativePath().toString());
+            Message msg = new Message(MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROHECT, text, Message.ERROR, this);
+            result.add(msg);
+        }
         if (!folder.exists()){
             String text = NLS.bind(Messages.IpsSrcFolderEntry_msgMissingFolder, folder.getName());
             Message msg = new Message(MSGCODE_MISSING_FOLDER, text, Message.ERROR, this);
