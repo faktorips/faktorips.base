@@ -176,14 +176,16 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
         }
         refresh((Composite)getPartControl());
         
-        refreshMessage();
+        // show errors or warnings in the editor message area
+        // Disabled: should be tested (usability) first
+        // refreshMessage();
     }
 
     /*
      * Sets the editor message if the current ips object contains errors/warnings or remove the
      * error/warning message if the ips object contains no error/warning.
      */
-    private void refreshMessage() {
+    void refreshMessage() {
         Control content = getManagedForm().getForm().getContent();
         if (content instanceof Form) {
             Form contentForm = (Form)content;
