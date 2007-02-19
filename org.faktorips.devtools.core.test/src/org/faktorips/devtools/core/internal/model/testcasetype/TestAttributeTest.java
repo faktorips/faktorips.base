@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model.testcasetype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
@@ -204,41 +205,40 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME));
     }
 
-// TODO Joerg: remove if not necessary
-//    public void testValidateExpectedOrComputedButNotExpectedRes() throws Exception{
-//        IPolicyCmptType pct = newPolicyCmptType(project, "policyCmptType");
-//        IAttribute attr = pct.newAttribute();
-//        attr.setName("attribute1");
-//        
-//        ((ITestPolicyCmptTypeParameter)testAttribute.getParent()).setPolicyCmptType(pct.getQualifiedName());
-//        testAttribute.setAttribute(attr.getName());
-//        MessageList ml = testAttribute.validate();
-//        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_OR_COMPUTED_BUT_NOT_EXPECTED_RES));
-//
-//        attr.setAttributeType(AttributeType.COMPUTED);
-//        testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
-//        ml = testAttribute.validate();
-//        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_OR_COMPUTED_BUT_NOT_EXPECTED_RES));
-//        testAttribute.setTestAttributeType(TestParameterType.INPUT);
-//        ml = testAttribute.validate();
-//        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_OR_COMPUTED_BUT_NOT_EXPECTED_RES));
-//
-//        attr.setAttributeType(AttributeType.DERIVED);
-//        testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
-//        ml = testAttribute.validate();
-//        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_OR_COMPUTED_BUT_NOT_EXPECTED_RES));
-//        testAttribute.setTestAttributeType(TestParameterType.INPUT);
-//        ml = testAttribute.validate();
-//        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_OR_COMPUTED_BUT_NOT_EXPECTED_RES));
-//
-//        attr.setAttributeType(AttributeType.CHANGEABLE);
-//        testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
-//        ml = testAttribute.validate();
-//        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_OR_COMPUTED_BUT_NOT_EXPECTED_RES));
-//        testAttribute.setTestAttributeType(TestParameterType.INPUT);
-//        ml = testAttribute.validate();
-//        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_OR_COMPUTED_BUT_NOT_EXPECTED_RES));
-//    }
+    public void testValidateExpectedOrComputedButNotExpectedRes() throws Exception{
+        IPolicyCmptType pct = newPolicyCmptType(project, "policyCmptType");
+        IAttribute attr = pct.newAttribute();
+        attr.setName("attribute1");
+        
+        ((ITestPolicyCmptTypeParameter)testAttribute.getParent()).setPolicyCmptType(pct.getQualifiedName());
+        testAttribute.setAttribute(attr.getName());
+        MessageList ml = testAttribute.validate();
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ATTRIBUTES_NOT_SUPPORTED));
+
+        attr.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
+        testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
+        ml = testAttribute.validate();
+        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ATTRIBUTES_NOT_SUPPORTED));
+        testAttribute.setTestAttributeType(TestParameterType.INPUT);
+        ml = testAttribute.validate();
+        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ATTRIBUTES_NOT_SUPPORTED));
+
+        attr.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
+        testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
+        ml = testAttribute.validate();
+        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ATTRIBUTES_NOT_SUPPORTED));
+        testAttribute.setTestAttributeType(TestParameterType.INPUT);
+        ml = testAttribute.validate();
+        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ATTRIBUTES_NOT_SUPPORTED));
+
+        attr.setAttributeType(AttributeType.CHANGEABLE);
+        testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
+        ml = testAttribute.validate();
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ATTRIBUTES_NOT_SUPPORTED));
+        testAttribute.setTestAttributeType(TestParameterType.INPUT);
+        ml = testAttribute.validate();
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ATTRIBUTES_NOT_SUPPORTED));
+    }
     
     public void testValidateDuplicateAttributeType() throws Exception{
         testAttribute.setName("a");

@@ -237,15 +237,14 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
             }
         }
         
-// TODO Joerg: remove if not necessary
-//        // check that a derived or computed test attribute must have the expected result type
-//        if (modelAttribute != null){
-//            if (modelAttribute.isDerivedOrComputed() && type != TestParameterType.EXPECTED_RESULT){
-//                String text = NLS.bind(Messages.TestAttribute_ValidationError_WrongParameterTypeIfDerivedOrComputed, type.getName());
-//                Message msg = new Message(MSGCODE_DERIVED_OR_COMPUTED_BUT_NOT_EXPECTED_RES, text, Message.ERROR, this,
-//                        PROPERTY_TEST_ATTRIBUTE_TYPE);
-//                messageList.add(msg);
-//            }
-//        }
+        // check that derived arrtibutes are not supported
+        if (modelAttribute != null){
+            if (modelAttribute.isDerived()){
+                String text = Messages.TestAttribute_ValidationWarning_DerivedAttributesAreNotSupported;
+                Message msg = new Message(MSGCODE_DERIVED_ATTRIBUTES_NOT_SUPPORTED, text, Message.WARNING, this,
+                        PROPERTY_TEST_ATTRIBUTE_TYPE);
+                messageList.add(msg);
+            }
+        }
     }
 }
