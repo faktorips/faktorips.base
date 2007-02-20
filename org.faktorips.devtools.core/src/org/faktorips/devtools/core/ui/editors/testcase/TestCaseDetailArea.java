@@ -707,9 +707,9 @@ public class TestCaseDetailArea {
     /**
      * Stores the given actual value as expected result.
      */
-    void storeActualValueInExpResult(String editFieldUniqueKey, String actualValue, String message) {
+    boolean storeActualValueInExpResult(String editFieldUniqueKey, String actualValue, String message) {
         if (! testCaseSection.isDataChangeable()){
-            return;
+            return false;
         }
         EditField editField = (EditField)allEditFields.get(editFieldUniqueKey);
         if (editField == null) {
@@ -719,7 +719,9 @@ public class TestCaseDetailArea {
         if (editField != null) {
             updateValue(editField, actualValue);
             testCaseSection.postSetOverriddenValueBackgroundAndToolTip(editField, message);
+            return true;
         }
+        return false;
     }
 
     private void updateValue(EditField editField, String actualValue) {

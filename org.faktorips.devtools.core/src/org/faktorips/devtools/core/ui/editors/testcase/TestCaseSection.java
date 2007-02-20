@@ -396,13 +396,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         }                        
                     }
                     for (Iterator iter = failureDetailsList.iterator(); iter.hasNext();) {
-                        FailureDetails failureDetails = (FailureDetails)iter.next();
-                        testCaseDetailArea.storeActualValueInExpResult(getUniqueEditFieldKey(failureDetails
-                                .getObjectName(), failureDetails.getAttributeName()), failureDetails.getActualValue(),
-                                failureDetails.getMessage());
+                        storeActualAsExpectedValue((FailureDetails)iter.next());
                     }
                     testCaseDetailArea.updateUi();
                 }
+
             };
             if (failureDetailsList.size()>1){
                 actionStoreActualValue.setText(Messages.TestCaseSection_Action_StoreExpectedResults);
@@ -414,6 +412,22 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             actionStoreActualValue.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseStoreExpResult.gif")); //$NON-NLS-1$
             
             manager.add(actionStoreActualValue);
+        }
+
+    }   
+    
+    private void storeActualAsExpectedValue(FailureDetails failureDetails) {
+        if (!testCaseDetailArea.storeActualValueInExpResult(getUniqueEditFieldKey(failureDetails.getObjectName(),
+                failureDetails.getAttributeName()), failureDetails.getActualValue(), failureDetails.getMessage())) {
+            String uniqueKeyWithOffset = failureDetails.getObjectName();
+            uniqueKeyWithOffset = uniqueKeyWithOffset
+                    .replaceAll("\\.", TestCaseHierarchyPath.OFFSET_SEPARATOR + "0\\.");
+            if (!testCaseDetailArea.storeActualValueInExpResult(getUniqueEditFieldKey(uniqueKeyWithOffset,
+                    failureDetails.getAttributeName()), failureDetails.getActualValue(), failureDetails.getMessage())) {
+                testCaseDetailArea.storeActualValueInExpResult(getUniqueEditFieldKey(uniqueKeyWithOffset
+                        + TestCaseHierarchyPath.OFFSET_SEPARATOR + "0", failureDetails.getAttributeName()),
+                        failureDetails.getActualValue(), failureDetails.getMessage());
+            }
         }
     }
     
@@ -1866,9 +1880,14 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         // indicate edit fiels as failure
         if (!testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails)) {
             // field couldn't be marked as failure, try to identify the first field
-            uniqueEditFieldKey = getUniqueEditFieldKey(failureDetailsObj.getObjectName()
+            String fieldKeyWithOffset = failureDetailsObj.getObjectName();
+            fieldKeyWithOffset = fieldKeyWithOffset.replaceAll("\\.", TestCaseHierarchyPath.OFFSET_SEPARATOR + "0\\.");
+            uniqueEditFieldKey = getUniqueEditFieldKey(fieldKeyWithOffset
                     + TestCaseHierarchyPath.OFFSET_SEPARATOR + "0", failureDetailsObj.getAttributeName());
-            testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails);
+            if (!testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails)){
+                uniqueEditFieldKey = getUniqueEditFieldKey(fieldKeyWithOffset, failureDetailsObj.getAttributeName());
+                testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails);
+            }
         }
 
         // create context menu to store actual value
@@ -2231,12 +2250,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     titleMessage += titleMessage.length()>0? "\n" + formatedMessage : formatedMessage; //$NON-NLS-1$
                     form.getContent().setBackground(fFailureColor);
                     form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-
-                    String objectName = failureDetails[1];
-                    String attributeName = failureDetails[2];
-                    String actualValue = failureDetails[4];
-                    String uniqueKey = getUniqueEditFieldKey(objectName, attributeName);
-                    testCaseDetailArea.storeActualValueInExpResult(uniqueKey, actualValue, formatedMessage);                    
+                    
+                    if (failureDetails.length > 4){
+                        failureDetails[5] = formatedMessage;
+                    }
+                    
+                    storeActualAsExpectedValue(new FailureDetails(failureDetails));
                 }
                 if (failureDetailsList.size()>0){
                     // set the status in the title
