@@ -140,7 +140,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
             String version = versionToStart;
             while (compareToCurrentVersion(version) < 0) {
                 String underscoreVersion = version.replace('.', '_');
-                underscoreVersion = version.replace('-', '_');
+                underscoreVersion = underscoreVersion.replace('-', '_');
                 Class clazz = Class.forName("org.faktorips.devtools.core.internal.model.versionmanager.Migration_" + underscoreVersion, true, loader); //$NON-NLS-1$
                 Constructor constructor = clazz.getConstructor(new Class[] {IIpsProject.class, String.class});
                 migrationOperation = (AbstractMigrationOperation)constructor.newInstance(new Object[] {projectToMigrate, getFeatureId()});
