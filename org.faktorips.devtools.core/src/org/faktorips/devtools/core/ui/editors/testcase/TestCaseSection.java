@@ -1086,10 +1086,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             return TestCaseSection.VALUESECTION + ((ITestValue)selected).getTestValueParameter();
         }
         
-		if (selected instanceof ITestPolicyCmptRelation){
-			ITestPolicyCmptRelation relation = (ITestPolicyCmptRelation) selected;
-			uniquePath = "." + relation.getTestPolicyCmptTypeParameter() + relation.getId(); //$NON-NLS-1$
-		}
+		if (selected instanceof ITestPolicyCmptRelation) {
+            ITestPolicyCmptRelation relation = (ITestPolicyCmptRelation)selected;
+            uniquePath = "." + relation.getTestPolicyCmptTypeParameter() + TestCaseHierarchyPath.OFFSET_SEPARATOR + relation.getId(); //$NON-NLS-1$
+        }
 		ITestPolicyCmpt currTestPolicyCmpt = getTestPolicyCmpFromDomainObject(selected);
 		if (currTestPolicyCmpt == null){
 			return ""; //$NON-NLS-1$
@@ -1864,7 +1864,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 .getAttributeName());
 
         // indicate edit fiels as failure
-        testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails);
+        if (!testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails)) {
+            // field couldn't be marked as failure, try to identify the first field
+            uniqueEditFieldKey = getUniqueEditFieldKey(failureDetailsObj.getObjectName()
+                    + TestCaseHierarchyPath.OFFSET_SEPARATOR + "0", failureDetailsObj.getAttributeName());
+            testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails);
+        }
 
         // create context menu to store actual value
         EditField editField = testCaseDetailArea.getEditField(getUniqueEditFieldKey(failureDetailsObj.getObjectName(),

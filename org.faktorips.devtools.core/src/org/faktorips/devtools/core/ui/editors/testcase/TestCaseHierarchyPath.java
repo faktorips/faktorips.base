@@ -28,9 +28,12 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
  * @author Joerg Ortmann
  */
 public class TestCaseHierarchyPath{
-	// Seperator between each hierarchy element
+	// Separator between each hierarchy element
 	public static final String SEPARATOR = "//"; //$NON-NLS-1$
-	    
+	
+    // Separator between the path and the offset index
+    public static final String OFFSET_SEPARATOR = "#"; //$NON-NLS-1$
+    
 	// Contains the complete hierarchy path
 	private String hierarchyPath = ""; //$NON-NLS-1$
 	
@@ -62,7 +65,7 @@ public class TestCaseHierarchyPath{
                 if (relations[i].getTestPolicyCmptTypeParameter().equals(testPolicyCmpt.getTestPolicyCmptTypeParameter()))
                     offset ++;
             }
-            pathWithOffset = testPolicyCmpt.getTestPolicyCmptTypeParameter() + offset + (pathWithOffset.length()>0? "." + pathWithOffset: ""); //$NON-NLS-1$ //$NON-NLS-2$
+            pathWithOffset = testPolicyCmpt.getTestPolicyCmptTypeParameter() + OFFSET_SEPARATOR + offset + (pathWithOffset.length()>0? "." + pathWithOffset: ""); //$NON-NLS-1$ //$NON-NLS-2$
             testPolicyCmpt = parent;
         }
 
@@ -78,7 +81,7 @@ public class TestCaseHierarchyPath{
             if (testPolicyCmpt.getTestPolicyCmptTypeParameter().equals(tpcs[i]))
                 offset ++;
         }
-        pathWithOffset = testPolicyCmpt.getTestPolicyCmptTypeParameter() + offset + (pathWithOffset.length()>0? "." + pathWithOffset: ""); //$NON-NLS-1$ //$NON-NLS-2$
+        pathWithOffset = testPolicyCmpt.getTestPolicyCmptTypeParameter() + OFFSET_SEPARATOR + offset + (pathWithOffset.length()>0? "." + pathWithOffset: ""); //$NON-NLS-1$ //$NON-NLS-2$
         return pathWithOffset;
     }
     

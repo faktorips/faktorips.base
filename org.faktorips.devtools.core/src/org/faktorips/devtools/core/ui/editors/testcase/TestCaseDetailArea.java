@@ -685,10 +685,11 @@ public class TestCaseDetailArea {
     /**
      * Mark the test attribute value field or test value field - which is identified by the given
      * key - as failure.
+     * Returns <code>true</code> if the field was found otherwise <code>false</code>.
      * 
      * @param failureDetails2
      */
-    void markEditFieldAsFailure(String editFieldUniqueKey, String failureMessage, String[] failureDetails2) {
+    boolean markEditFieldAsFailure(String editFieldUniqueKey, String failureMessage, String[] failureDetails2) {
         failureMessageCache.put(editFieldUniqueKey, failureMessage);
         failureDetailCache.put(editFieldUniqueKey, failureDetails2);
         EditField editField = (EditField)allEditFields.get(editFieldUniqueKey);
@@ -698,7 +699,9 @@ public class TestCaseDetailArea {
         }
         if (editField != null) {
             testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureMessage);
+            return true;
         }
+        return false;
     }
 
     /**
