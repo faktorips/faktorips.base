@@ -77,7 +77,9 @@ public class TableContentsCellModifier extends ValueCellModifier {
                 row= (IRow) element;
             }
             if(row!=null){
-                row.setValue(columnIndex, (String)value);
+                if (value == null || ! row.getValue(columnIndex).equals(value)){
+                    row.setValue(columnIndex, (String)value);
+                }
                 tableViewer.refresh(row);
             }
         }
