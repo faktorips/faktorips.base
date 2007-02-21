@@ -156,7 +156,7 @@ public abstract class DefaultEditField implements EditField {
      * Returns the null-representation-string defined by the user (see IpsPreferences)
      * if the given object is <code>null</code>, the unmodified object otherwise.
      */
-    Object prepareObjectForSet(Object object) {
+    public Object prepareObjectForSet(Object object) {
     	if (object == null && supportNull) {
     		return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
     	}
@@ -167,7 +167,7 @@ public abstract class DefaultEditField implements EditField {
      * Returns <code>null</code> if the given value is the null-representation-string, 
      * the unmodified value otherwise.
      */
-    Object prepareObjectForGet(Object value) {
+    public Object prepareObjectForGet(Object value) {
     	if (supportNull && IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(value)) {
     		return null;
     	}

@@ -46,6 +46,23 @@ public class BooleanComboFieldTest extends TestCase {
         field.setText("unkown");
         assertEquals("false", field.getValue()); 
         assertTrue(field.isTextContentParsable());
+        
+        
+        c = new Combo(Display.getDefault().getActiveShell(), SWT.READ_ONLY);
+        c.setItems(new String[]{"<null>", "Yes", "No"});
+        field = new BooleanComboField(c, "Yes", "No");
+
+        field.setText("Yes");
+        assertEquals("true", field.getValue());
+        
+        field.setText("No");
+        assertEquals("false", field.getValue());
+        
+        field.setText("unknown");
+        assertEquals("false", field.getValue()); 
+        
+        field.setText("<null>");
+        assertEquals(null, field.getValue());          
     }
     
     public void testSetValue() {
