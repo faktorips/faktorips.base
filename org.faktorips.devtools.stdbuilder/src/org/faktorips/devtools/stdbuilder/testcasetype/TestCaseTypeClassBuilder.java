@@ -31,7 +31,6 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
@@ -464,24 +463,10 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         	ITestValueParameter policyTypeParam = valueParams[i];
             DatatypeHelper dataTypeHelper = getCachedDatatypeHelper(policyTypeParam);
             
-            if (dataTypeHelper.getDatatype().isPrimitive()) {
-                body.appendln(variablePrefix + StringUtils.capitalise(policyTypeParam.getName()) + " = ");
-                body.append(dataTypeHelper.newInstanceFromExpression("getValueFromNode(element, \"" + policyTypeParam.getName() + "\")"));
-                body.appendln(";");
-            }
-            else {
-                body.appendln("value = getValueFromNode(element, \"" + policyTypeParam.getName() + "\");");
-                body.appendln(variablePrefix + StringUtils.capitalise(policyTypeParam.getName()) + " = ");
-                // add check for null value
-                body.append(" value == null ? null : ");
-                // add valueOf Method
-                body.appendClassName(dataTypeHelper.getJavaClassName());
-                String valueOfMethod = "valueOf";
-                if (dataTypeHelper.getDatatype() instanceof GenericValueDatatype){
-                    valueOfMethod = ((GenericValueDatatype) dataTypeHelper.getDatatype()).getValueOfMethodName();
-                }
-                body.appendln("." + valueOfMethod + "(value);");
-            }
+            body.appendln("value = getValueFromNode(element, \"" + policyTypeParam.getName() + "\");");
+            body.append(variablePrefix + StringUtils.capitalise(policyTypeParam.getName()) + " = ");
+            body.append(dataTypeHelper.newInstanceFromExpression("value"));
+            body.appendln(";");
         }
     }
     
