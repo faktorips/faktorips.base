@@ -210,4 +210,12 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         }
         updateTabText(partControl.getParent());
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean computeDataChangeableState() {
+        return ((ProductCmptEditor)getIpsObjectEditor()).isActiveGenerationEditable();
+    }
+    
 }

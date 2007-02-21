@@ -143,13 +143,13 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	public void editorActivated() {
 	    if (TRACE) {
-         logMethodStarted("editorActivated()");    //$NON-NLS-1$
+         logMethodStarted("=== editorActivated() ===");    //$NON-NLS-1$
         }
         updateChosenActiveGeneration();
 		super.editorActivated();
         if (TRACE) {
-             logMethodFinished("editorActivated()");    //$NON-NLS-1$
-            }
+             logMethodFinished("=== editorActivated() ===");    //$NON-NLS-1$
+        }
 	}
 
 	/**
@@ -391,16 +391,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
         if (getGenerationPropertiesPage()!=null) {
             generationPropertiesPage.rebuildInclStructuralChanges();
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected void setDataChangeable(boolean changeable) {
-        if (changeable){
-            changeable = isActiveGenerationEditable();
-        }
-        super.setDataChangeable(changeable);
     }
     
     private void logMethodStarted(String msg) {
