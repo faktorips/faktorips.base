@@ -456,25 +456,31 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * For each test policy component type parameter in the given policyTypeParams list.
      */    
     private void buildInitForTestValueParameter(JavaCodeFragment body, ITestValueParameter[] valueParams, String variablePrefix) throws CoreException {
+        body.appendln("String value = null;");
         for (int i = 0; i < valueParams.length; i++) {
             if (!valueParams[i].isValid()){
                 continue;
             }
         	ITestValueParameter policyTypeParam = valueParams[i];
-            body.appendln(variablePrefix + StringUtils.capitalise(policyTypeParam.getName()) + " = ");
             DatatypeHelper dataTypeHelper = getCachedDatatypeHelper(policyTypeParam);
             
             if (dataTypeHelper.getDatatype().isPrimitive()) {
+                body.appendln(variablePrefix + StringUtils.capitalise(policyTypeParam.getName()) + " = ");
                 body.append(dataTypeHelper.newInstanceFromExpression("getValueFromNode(element, \"" + policyTypeParam.getName() + "\")"));
                 body.appendln(";");
             }
             else {
+                body.appendln("value = getValueFromNode(element, \"" + policyTypeParam.getName() + "\");");
+                body.appendln(variablePrefix + StringUtils.capitalise(policyTypeParam.getName()) + " = ");
+                // add check for null value
+                body.append(" value == null ? null : ");
+                // add valueOf Method
                 body.appendClassName(dataTypeHelper.getJavaClassName());
                 String valueOfMethod = "valueOf";
                 if (dataTypeHelper.getDatatype() instanceof GenericValueDatatype){
                     valueOfMethod = ((GenericValueDatatype) dataTypeHelper.getDatatype()).getValueOfMethodName();
                 }
-                body.appendln("." + valueOfMethod + "(getValueFromNode(element, \"" + policyTypeParam.getName() + "\"));");
+                body.appendln("." + valueOfMethod + "(value);");
             }
         }
     }
