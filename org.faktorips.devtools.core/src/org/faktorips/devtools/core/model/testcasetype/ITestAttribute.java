@@ -61,9 +61,9 @@ public interface ITestAttribute extends IIpsObjectPart {
     public final static String MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME = MSGCODE_PREFIX + "DuplicateTestAttributeName"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that derived attributes are not supported.
+     * Validation message code to indicate that derived (computed on the fly) attributes are not supported.
      */
-    public final static String MSGCODE_DERIVED_ATTRIBUTES_NOT_SUPPORTED = MSGCODE_PREFIX + "DerivedAttributesNotSupported"; //$NON-NLS-1$
+    public final static String MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED = MSGCODE_PREFIX + "DerivedAttributesOnTheFlyNotSupported"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the attribute and the attribute type is already given.<br>

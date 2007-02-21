@@ -213,31 +213,31 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         ((ITestPolicyCmptTypeParameter)testAttribute.getParent()).setPolicyCmptType(pct.getQualifiedName());
         testAttribute.setAttribute(attr.getName());
         MessageList ml = testAttribute.validate();
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ATTRIBUTES_NOT_SUPPORTED));
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
 
         attr.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
         ml = testAttribute.validate();
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ATTRIBUTES_NOT_SUPPORTED));
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
         testAttribute.setTestAttributeType(TestParameterType.INPUT);
         ml = testAttribute.validate();
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ATTRIBUTES_NOT_SUPPORTED));
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
 
         attr.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
         testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
         ml = testAttribute.validate();
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ATTRIBUTES_NOT_SUPPORTED));
+        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
         testAttribute.setTestAttributeType(TestParameterType.INPUT);
         ml = testAttribute.validate();
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ATTRIBUTES_NOT_SUPPORTED));
+        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
 
         attr.setAttributeType(AttributeType.CHANGEABLE);
         testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
         ml = testAttribute.validate();
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ATTRIBUTES_NOT_SUPPORTED));
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
         testAttribute.setTestAttributeType(TestParameterType.INPUT);
         ml = testAttribute.validate();
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ATTRIBUTES_NOT_SUPPORTED));
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
     }
     
     public void testValidateDuplicateAttributeType() throws Exception{

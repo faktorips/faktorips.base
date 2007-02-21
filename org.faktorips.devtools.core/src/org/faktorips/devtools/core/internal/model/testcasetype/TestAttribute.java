@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
@@ -237,11 +238,11 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
             }
         }
         
-        // check that derived arrtibutes are not supported
+        // check that derived (computed on the fly) arrtibutes are not supported
         if (modelAttribute != null){
-            if (modelAttribute.isDerived()){
-                String text = Messages.TestAttribute_ValidationWarning_DerivedAttributesAreNotSupported;
-                Message msg = new Message(MSGCODE_DERIVED_ATTRIBUTES_NOT_SUPPORTED, text, Message.WARNING, this,
+            if (AttributeType.DERIVED_ON_THE_FLY.equals(modelAttribute.getAttributeType())){
+                String text = Messages.TestAttribute_ValidationWarning_DerivedOnTheFlyAttributesAreNotSupported;
+                Message msg = new Message(MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED, text, Message.WARNING, this,
                         PROPERTY_TEST_ATTRIBUTE_TYPE);
                 messageList.add(msg);
             }
