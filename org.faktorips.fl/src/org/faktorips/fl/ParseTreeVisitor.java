@@ -203,7 +203,7 @@ class ParseTreeVisitor implements FlParserVisitor {
     public Object visit(ASTIdentifierNode node, Object data) {
         String identifier = node.getLastToken().toString();
         CompilationResultImpl result = (CompilationResultImpl)compiler.getIdentifierResolver().compile(identifier, compiler.getLocale());
-        result.addIdentifierUsed(identifier); // note: add methd does not create duplicates
+        result.addIdentifierUsed(identifier); // note: add method does not create duplicates
         return result;
     }
 
@@ -361,7 +361,9 @@ class ParseTreeVisitor implements FlParserVisitor {
         for (int i=0; i<operations.length; i++) {
             // exact match?
             if (operations[i].getDatatype().equals(argResult.getDatatype())) {
-                return operations[i].generate(argResult);
+                CompilationResultImpl compilationResult = operations[i].generate(argResult);
+                compilationResult.addIdentifiersUsed(argResult.getIdentifiersUsedAsSet());
+                return compilationResult;                
             }
             // match with implicit casting
             if (compiler.getConversionCodeGenerator().canConvert(argResult.getDatatype(), operations[i].getDatatype())) {
@@ -374,7 +376,9 @@ class ParseTreeVisitor implements FlParserVisitor {
         	getConversionCode(argResult.getDatatype(), operation.getDatatype(), argResult.getCodeFragment()); 
             CompilationResultImpl convertedArgResult = new CompilationResultImpl(converted, operation.getDatatype());
             convertedArgResult.addMessages(argResult.getMessages());
-            return operation.generate(convertedArgResult);
+            CompilationResultImpl compilationResult = operation.generate(convertedArgResult);
+            compilationResult.addIdentifiersUsed(argResult.getIdentifiersUsedAsSet());
+            return compilationResult;
         }
         Object[] replacements = new Object[]{operator, argResult.getDatatype().getName()}; 
         String text = ExprCompiler.localizedStrings.getString(ExprCompiler.UNDEFINED_OPERATOR, compiler.getLocale(), replacements); 
@@ -387,7 +391,7 @@ class ParseTreeVisitor implements FlParserVisitor {
 		SimpleNode lhsNode = (SimpleNode) node.jjtGetChild(0);
 		SimpleNode rhsNode = (SimpleNode) node.jjtGetChild(1);
 		CompilationResultImpl lhsResult = (CompilationResultImpl) lhsNode.jjtAccept(this, data);
-		CompilationResultImpl rhsResult = (CompilationResultImpl)rhsNode.jjtAccept(this, data);
+		CompilationResultImpl rhsResult = (CompilationResultImpl) rhsNode.jjtAccept(this, data);
 		
 		if (lhsResult.failed()) {
 	        lhsResult.addMessages(rhsResult.getMessages());
@@ -403,7 +407,10 @@ class ParseTreeVisitor implements FlParserVisitor {
             // exact match?
             if (operations[i].getLhsDatatype().equals(lhsResult.getDatatype())
                 && operations[i].getRhsDatatype().equals(rhsResult.getDatatype())) {
-                return operations[i].generate(lhsResult, rhsResult);
+                CompilationResultImpl compilationResult = operations[i].generate(lhsResult, rhsResult);
+                compilationResult.addIdentifiersUsed(lhsResult.getIdentifiersUsedAsSet());
+                compilationResult.addIdentifiersUsed(rhsResult.getIdentifiersUsedAsSet());
+                return compilationResult;
             }
             // match with implicit casting
             if (compiler.getConversionCodeGenerator().canConvert(lhsResult.getDatatype(), operations[i].getLhsDatatype())

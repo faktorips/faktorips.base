@@ -464,7 +464,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         attributeInput = pcTypeInput.newAttribute();
         attributeInput.setName("attributeInput2");
         attributeInput.setAttributeType(AttributeType.CHANGEABLE);
-        attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attributeInput.setDatatype(Datatype.STRING.getQualifiedName());
         IPolicyCmptType pcType = newPolicyCmptType(project, "policyCmptType1");
         IAttribute attribute = pcType.newAttribute();
         attribute.setName("attribute1");
@@ -504,6 +504,18 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         configElement.setValue(null);
         identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
         assertEquals(0, identifierInFormula.size());
+        
+        // check with WENN formula (implicit cast e.g. Integer)
+        configElement.setValue("WENN(policyInputX.attributeInput2 = \"1\"; 1; 10)");
+        identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
+        assertEquals(1, identifierInFormula.size());   
+        assertTrue(identifierInFormula.contains("policyInputX.attributeInput2"));
+        
+        // check with WENN formula (binary operation exact match?)
+        configElement.setValue("WENN(policyInputX.attributeInput1 = 1;1;10)");
+        identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
+        assertEquals(1, identifierInFormula.size());   
+        assertTrue(identifierInFormula.contains("policyInputX.attributeInput1"));        
     }
     
     public void testGetIdentifierUsedInFormulaWithEnum() throws CoreException{
