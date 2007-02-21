@@ -24,6 +24,7 @@ import java.util.GregorianCalendar;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
@@ -235,7 +236,7 @@ public class IpsPreferences {
         if (datatype instanceof EnumDatatype) {
             return formatValue((EnumDatatype)datatype, value);
         }
-        if (datatype instanceof BooleanDatatype) {
+        if (datatype instanceof BooleanDatatype || datatype instanceof PrimitiveBooleanDatatype) {
             if (Boolean.valueOf(value).booleanValue()) {
                 return BooleanControlFactory.TRUE_REPRESENATION;
             }

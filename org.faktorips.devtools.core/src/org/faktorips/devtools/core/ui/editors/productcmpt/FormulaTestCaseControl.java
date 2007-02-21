@@ -215,8 +215,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         if (StringUtils.isEmpty(actualResult)){
             return TEST_UNKNOWN;
         }
-        String expectedResult = formulaTestCase.getExpectedResult();
-        
+        String expectedResult = formatValue(formulaTestCase.getFormulaTestCase(), formulaTestCase.getExpectedResult());
         if (StringUtils.isEmpty(expectedResult)){
             if (StringUtils.isNotEmpty(actualResult)){
                 return TEST_ERROR;
@@ -285,10 +284,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                 } else if (columnIndex == IDX_COLUMN_EXPECTED_RESULT) {
                     return IpsPlugin.getDefault().getIpsPreferences().formatValue(vd, ftc.getExpectedResult());
                 } else if (columnIndex == IDX_COLUMN_ACTUAL_RESULT) {
-                    Object actualResult = ftc.getActualResult();
-                    String formatedActualResult = actualResult == null || actualResult.equals("") ? "" : IpsPlugin //$NON-NLS-1$ //$NON-NLS-2$
-                            .getDefault().getIpsPreferences().formatValue(vd, "" + actualResult); //$NON-NLS-1$
-                    return formatedActualResult;
+                    return (String)ftc.getActualResult();
                 }
             }
             return null;
@@ -612,9 +608,9 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                     ExtDataForFormulaTestCase element = (ExtDataForFormulaTestCase)iter.next();
                     Object result = ""; //$NON-NLS-1$
                     try {
-                        IConfigElement configElement = (IConfigElement) element.getParent();
+                        IConfigElement configElement = (IConfigElement)element.getParent();
                         MessageList mlConfigElement = configElement.validate();
-                        if ( configElement.isValid()){
+                        if (configElement.isValid()) {
                             MessageList ml = element.validate();
                             if (ml.getNoOfMessages() == 0) {
                                 result = element.execute();
@@ -622,10 +618,11 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                         } else {
                             element.setMessage(mlConfigElement.getFirstMessage(Message.ERROR).getText());
                         }
+                        element.setActualResult(IpsPlugin.getDefault().getIpsPreferences().formatValue(
+                                configElement.findValueDatatype(), (String)(result == null ? null : result.toString())));
                     } catch (Exception e) {
                         IpsPlugin.logAndShowErrorDialog(e);
                     }
-                    element.setActualResult(""+result); //$NON-NLS-1$
                     int testResultStatus = getFormulaTestCaseTestStatus(element);
                     if (testResultStatus != TEST_OK){
                         isCalculationErrorOrFailure = true;
@@ -762,8 +759,8 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                     if (status == TEST_FAILURE) {
                         Object actualResult = ftc.getActualResult();
                         String actualResultStr = actualResult == null ? ""+null : actualResult.toString(); //$NON-NLS-1$
-                        String text = NLS.bind(Messages.FormulaTestCaseControl_TestFailureMessage_ExpectedButWas, ftc
-                                .getExpectedResult(), actualResultStr);
+                        String text = NLS.bind(Messages.FormulaTestCaseControl_TestFailureMessage_ExpectedButWas, formatValue(ftc.getFormulaTestCase(), ftc
+                                .getExpectedResult()), actualResultStr);
                         Message msg = new Message("NONE", text, Message.INFO, this, PROPERTY_ACTUAL_RESULT); //$NON-NLS-1$
                         ml.add(msg);
                     } else if (status == TEST_ERROR) {
@@ -793,6 +790,19 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         };
     }
 
+    private String formatValue(IFormulaTestCase ftc, String value) {
+        String expectedResult = null;
+        try {
+            expectedResult = ftc.getExpectedResult();
+            IConfigElement configElement = (IConfigElement)ftc.getParent();
+            expectedResult = IpsPlugin.getDefault().getIpsPreferences().formatValue(configElement.findValueDatatype(),
+                    (String)(expectedResult == null ? null : expectedResult.toString()));
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+        return expectedResult;
+    }
+    
     /*
      * Method to indicate that the selection in the formula test case table has changed
      */
@@ -907,7 +917,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     private void calculateAndStoreActualResult(){
         ExtDataForFormulaTestCase tc = getSelectedFormulaTestCase();
         if (tc != null){
-            tc.setActualResult("" + formulaTestInputValuesControl.calculateFormulaIfValid()); //$NON-NLS-1$
+            tc.setActualResult((String)formulaTestInputValuesControl.calculateFormulaIfValid()); //$NON-NLS-1$
         }
     }
 

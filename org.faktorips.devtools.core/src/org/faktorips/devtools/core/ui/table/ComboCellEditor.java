@@ -22,6 +22,10 @@ import java.util.Arrays;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
+import org.faktorips.datatype.PrimitiveBooleanDatatype;
+import org.faktorips.datatype.classtypes.BooleanDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.controlfactories.Messages;
 import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
 
 /**
@@ -50,10 +54,18 @@ public class ComboCellEditor extends TableCellEditor {
      * {@inheritDoc}
      */
     protected Object doGetValue() { 
-        Object field = comboControl.getData();
-        if (field instanceof EnumDatatypeField){
+        Object data = comboControl.getData();
+        if (data instanceof EnumDatatypeField){
             // map the id by using the stored EnumDatatypeField
-            return ((EnumDatatypeField)field).getValue();
+            return ((EnumDatatypeField)data).getValue();
+        } else if (data instanceof BooleanDatatype || data instanceof PrimitiveBooleanDatatype) {
+            if (comboControl.getText().equals(Messages.BooleanControlFactory_Yes)){
+                return Boolean.TRUE.toString();
+            } else if (comboControl.getText().equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
+                return null;
+            } else {
+                return Boolean.FALSE.toString();
+            }
         } else {
             return comboControl.getText();
         }
@@ -73,10 +85,20 @@ public class ComboCellEditor extends TableCellEditor {
      */
     protected void doSetValue(Object value) {
         if((comboControl != null) && value instanceof String){
-            Object field = comboControl.getData();
-            if (field instanceof EnumDatatypeField){
+            Object data = comboControl.getData();
+            if (data instanceof EnumDatatypeField){
                 // map the value by using the stored EnumDatatypeField
-                ((EnumDatatypeField)field).setValue(value);
+                ((EnumDatatypeField)data).setValue(value);
+            }  else if (data instanceof BooleanDatatype  || data instanceof PrimitiveBooleanDatatype) {
+                if (Boolean.TRUE.toString().equals(value)){
+                    comboControl.select(getIndexForValue(Messages.BooleanControlFactory_Yes));  
+                } else if (value == null) {
+                    IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+                } else if (Boolean.FALSE.toString().equals(value)) {
+                    comboControl.select(getIndexForValue(Messages.BooleanControlFactory_No));  
+                } else {
+                    comboControl.select(getIndexForValue((String) value)); 
+                }
             } else {
                 comboControl.select(getIndexForValue((String) value));  
             }

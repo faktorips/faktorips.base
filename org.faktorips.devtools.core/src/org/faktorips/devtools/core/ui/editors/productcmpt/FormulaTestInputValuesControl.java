@@ -469,6 +469,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
                         return;
                     try {
                         lastCalculatedResult = formulaTestCase.execute();
+                        lastCalculatedResult = lastCalculatedResult==null?null:lastCalculatedResult.toString();
                     }
                     catch (Exception e) {
                         showFormulaResult(NLS.bind(
@@ -481,7 +482,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
 
             showFormulaResult(lastCalculatedResult); //$NON-NLS-1$
             if (storeExpectedResult){
-                formulaTestCase.setExpectedResult(lastCalculatedResult==null?null:lastCalculatedResult.toString());
+                formulaTestCase.setExpectedResult((String)lastCalculatedResult);
             }
             return lastCalculatedResult;
         } catch (Exception e) {
@@ -521,7 +522,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         ValueDatatype vd;
         try {
             vd = configElement.findValueDatatype();
-            resultToDisplay = IpsPlugin.getDefault().getIpsPreferences().formatValue(vd, ""+result); //$NON-NLS-1$
+            resultToDisplay = IpsPlugin.getDefault().getIpsPreferences().formatValue(vd,(String) (result==null?null:result.toString())); //$NON-NLS-1$
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }

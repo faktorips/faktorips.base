@@ -22,7 +22,9 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.datatype.classtypes.BooleanDatatype;
 import org.faktorips.devtools.core.internal.model.ValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -74,7 +76,14 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
      */
     public TableCellEditor createCellEditor(UIToolkit toolkit, ValueDatatype dataType, ValueSet valueSet, TableViewer tableViewer, int columnIndex) {
         Combo comboControl= (Combo) createControl(toolkit, tableViewer.getTable(), dataType, valueSet);
-        return new ComboCellEditor(tableViewer, columnIndex, comboControl);
+        TableCellEditor tableCellEditor = new ComboCellEditor(tableViewer, columnIndex, comboControl);
+        // stores the boolean datatype object as data object in the combo,
+        // to indicate that the to be displayed data will be mapped as boolean
+        if (Datatype.PRIMITIVE_BOOLEAN.equals(dataType)){
+            comboControl.setData(new PrimitiveBooleanDatatype());
+        } else {
+            comboControl.setData(new BooleanDatatype());
+        }
+        return tableCellEditor;
     }
-
 }
