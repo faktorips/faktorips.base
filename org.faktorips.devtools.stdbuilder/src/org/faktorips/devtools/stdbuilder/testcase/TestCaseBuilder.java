@@ -40,7 +40,6 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -350,7 +349,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                         throw new RuntimeException(e);
                     }                   
                 } else if (relations[i].isAccoziation()){
-                    relationType = RelationType.ASSOZIATION.getName().toLowerCase();
+                    relationType = "association"; // @see AbstractModelObject
                     Element testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, relations[i].getTestPolicyCmptTypeParameter());
                     testPolicyCmptElem.setAttribute("target", relations[i].getTarget());
                     testPolicyCmptElem.setAttribute("type", relationType);
