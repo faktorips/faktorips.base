@@ -18,9 +18,13 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -60,5 +64,25 @@ public class StructurePage extends PctEditorPage {
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+        registerContentsChangeListener();
 	}
+    
+    private void registerContentsChangeListener(){
+        final ContentsChangeListener changeListener = new ContentsChangeListener(){
+            public void contentsChanged(ContentChangeEvent event) {
+                if(getPartControl().isVisible() &&
+                   event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED &&
+                   event.getIpsSrcFile().equals(getIpsObject().getIpsSrcFile())){
+                    refresh();
+                }
+            }
+        };
+        getIpsObject().getIpsModel().addChangeListener(changeListener);
+        getPartControl().addDisposeListener(new DisposeListener(){
+            public void widgetDisposed(DisposeEvent e) {
+                getIpsObject().getIpsModel().removeChangeListener(changeListener);
+            }
+        });
+    }
+
 }

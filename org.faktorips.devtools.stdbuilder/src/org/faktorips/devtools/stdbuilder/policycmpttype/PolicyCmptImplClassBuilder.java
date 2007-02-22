@@ -1625,7 +1625,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         body.appendln("//begin-user-code");
         body.append("if(");
+        String[] javaDocAnnotation = ANNOTATION_RESTRAINED_MODIFIABLE;
         if(r.isCheckValueAgainstValueSetRule()){
+            javaDocAnnotation = ANNOTATION_GENERATED;
             IAttribute attr = getPcType().getAttribute(r.getValidatedAttributeAt(0));
             Datatype attrDatatype = attr.findDatatype();
             body.append('!');
@@ -1681,7 +1683,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         builder.method(java.lang.reflect.Modifier.PROTECTED, Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(),
             getMethodNameExecRule(r), new String[] { "ml", parameterBusinessFunction },
-            new String[] { MessageList.class.getName(), String.class.getName() }, body, javaDoc, ANNOTATION_RESTRAINED_MODIFIABLE);
+            new String[] { MessageList.class.getName(), String.class.getName() }, body, javaDoc, javaDocAnnotation);
     }
 
     /**
