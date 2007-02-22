@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -80,7 +81,10 @@ public class StructurePage extends PctEditorPage {
         getIpsObject().getIpsModel().addChangeListener(changeListener);
         getPartControl().addDisposeListener(new DisposeListener(){
             public void widgetDisposed(DisposeEvent e) {
-                getIpsObject().getIpsModel().removeChangeListener(changeListener);
+                IIpsModel model = IpsPlugin.getDefault().getIpsModel();
+                if(model != null){
+                    model.removeChangeListener(changeListener);
+                }
             }
         });
     }
