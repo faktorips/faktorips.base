@@ -62,7 +62,7 @@ public class ProductCmptPropertiesPage extends IpsObjectEditorPage {
 		
         Composite top = createGridComposite(toolkit, formBody, 2, true,
                 GridData.FILL_BOTH);
-        new ProductAttributesSection(getProductCmpt(), top, toolkit, getProductCmptEditor());
+        new ComponentPropertiesSection(getProductCmpt(), top, toolkit, getProductCmptEditor());
         new GenerationsSection(this, top, toolkit);
         
         Composite bottom = createGridComposite(toolkit, formBody, 1, true,

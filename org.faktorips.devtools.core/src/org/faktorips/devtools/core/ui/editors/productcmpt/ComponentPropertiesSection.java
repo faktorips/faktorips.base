@@ -55,7 +55,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public class ProductAttributesSection extends IpsSection {
+public class ComponentPropertiesSection extends IpsSection {
 
 	/**
 	 * Product component which holds the informations to display
@@ -92,7 +92,7 @@ public class ProductAttributesSection extends IpsSection {
 	 * @param parent The parent to link the ui-items to.
 	 * @param toolkit The toolkit to use for easier ui-handling
 	 */
-	public ProductAttributesSection(IProductCmpt product, Composite parent, UIToolkit toolkit, ProductCmptEditor editor) {
+	public ComponentPropertiesSection(IProductCmpt product, Composite parent, UIToolkit toolkit, ProductCmptEditor editor) {
 		super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
         this.product = product;
 		this.editor = editor;
