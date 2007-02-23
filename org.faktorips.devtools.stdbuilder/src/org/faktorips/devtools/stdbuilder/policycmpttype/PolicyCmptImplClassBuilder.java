@@ -32,6 +32,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.MessageFragment;
@@ -416,11 +417,16 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 builder.append(" = ");
                 Datatype paramDataype = a.getIpsProject().findDatatype(parameters[i].getDatatype());
                 DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(paramDataype);
-                if (helper != null) {
-                    JavaCodeFragment nullExpressionFragment = helper.nullExpression();
-                    builder.append(nullExpressionFragment);
-                } else {
-                    builder.append("null");
+                if(paramDataype.isPrimitive()){
+                    builder.append(((ValueDatatype)paramDataype).getDefaultValue());
+                }
+                else{
+                    if (helper != null) {
+                        JavaCodeFragment nullExpressionFragment = helper.nullExpression();
+                        builder.append(nullExpressionFragment);
+                    } else {
+                        builder.append("null");
+                    }
                 }
                 builder.appendln(";");
                 if (i > 0) {
