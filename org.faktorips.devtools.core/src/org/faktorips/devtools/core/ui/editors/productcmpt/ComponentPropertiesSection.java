@@ -162,8 +162,7 @@ public class ComponentPropertiesSection extends IpsSection {
                     if (!parsed.equals(value)) {
                         throw new ParseException(value + " parsed to " + parsed, 0); //$NON-NLS-1$
                     }
-                }
-                catch (ParseException e1) {
+                } catch (ParseException e1) {
                     MessageList list = new MessageList();
                     String msg = NLS.bind(Messages.ProductAttributesSection_msgInvalidDate, value);
                     list.add(new Message("", msg, Message.ERROR, product, IProductCmpt.PROPERTY_VALID_TO)); //$NON-NLS-1$
@@ -186,15 +185,12 @@ public class ComponentPropertiesSection extends IpsSection {
 					return;
 				}
 				if (!runtimeIdText.isDisposed()) {
-				    runtimeIdText.setEnabled(isEnabled() && IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
-				    layout();
-				}
-                else {
+                    updateRuntimeIdEnableState();
+				} else {
                     IpsPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
                 }
 			}
 		});
-
 	}
 
 	/**
@@ -204,6 +200,7 @@ public class ComponentPropertiesSection extends IpsSection {
 		if (uiMasterController != null) {
 			uiMasterController.updateUI();
 		}
+        updateRuntimeIdEnableState();
 	}
 
     /**
@@ -211,8 +208,7 @@ public class ComponentPropertiesSection extends IpsSection {
      */
 	public void setDataChangeable(boolean changeable) {
         super.setDataChangeable(changeable);
-        // sort of a hack here 
-        runtimeIdText.setEnabled(changeable && IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
+        updateRuntimeIdEnableState();
         if (changeable) {
             policyCmptTypeControl.setButtonEnabled(true);
         } else {
@@ -220,6 +216,9 @@ public class ComponentPropertiesSection extends IpsSection {
         }
     }
 
+    private void updateRuntimeIdEnableState() {
+        runtimeIdText.setEnabled(isDataChangeable() & IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
+    }
 
     private class ProductCmptTypeField extends IpsObjectField {
 

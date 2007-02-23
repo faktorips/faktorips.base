@@ -73,11 +73,7 @@ public class UIToolkit {
             return;
         }
         if (c instanceof Text) {
-            if (formToolkit!=null) {
-                ((Text)c).setEditable(changeable);
-            } else {
-                ((Text)c).setEnabled(changeable);
-            }
+            ((Text)c).setEnabled(changeable);
             return;
         }
         if (c instanceof Checkbox) {
@@ -92,7 +88,7 @@ public class UIToolkit {
             ((Button)c).setEnabled(changeable);
             return;
         }
-        // note: this has to definitly the last if statement as other control might derive from composite
+        // note: this has to definitly the last if statement as other controls might derive from composite
         if (c instanceof Composite) {
             Control[] children = ((Composite)c).getChildren();
             for (int i = 0; i < children.length; i++) {
