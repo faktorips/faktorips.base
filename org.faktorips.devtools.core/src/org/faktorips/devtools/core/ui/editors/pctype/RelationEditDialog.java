@@ -253,7 +253,6 @@ public class RelationEditDialog extends IpsPartEditDialog {
         minCardinalityField.setSupportsNull(false);
         maxCardinalityField = new CardinalityField(maxCardinalityText);
         maxCardinalityField.setSupportsNull(false);
-        
     }
     
     /*
@@ -292,7 +291,15 @@ public class RelationEditDialog extends IpsPartEditDialog {
         maxCardinalityProductSideField = new CardinalityField(maxCardinalityText);
         
         // sets the initial state of the product side controls
-        setProdRelevantEnabled(relation.isProductRelevant());
+        Runnable updateProdRelEnableState = new Runnable(){
+            /**
+             * {@inheritDoc}
+             */
+            public void run() {
+                setProdRelevantEnabled(relation.isProductRelevant());
+            }
+        };
+        getShell().getDisplay().asyncExec(updateProdRelEnableState);
         
         // hook listener for product relevant checkbox
         //   sets the enable state of the product side controls
@@ -305,12 +312,12 @@ public class RelationEditDialog extends IpsPartEditDialog {
 
     /*
      * Sets the enabled state of the product relevant property controls.
-     */ 
+     */
     private void setProdRelevantEnabled(boolean isProdRelevantEnabled) {
         targetRoleSingularProductSideField.getControl().setEnabled(isProdRelevantEnabled);
         targetRolePluralProductSideField.getControl().setEnabled(isProdRelevantEnabled);
         minCardinalityProductSideField.getControl().setEnabled(isProdRelevantEnabled);
-        maxCardinalityProductSideField.getControl().setEnabled(isProdRelevantEnabled); 
+        maxCardinalityProductSideField.getControl().setEnabled(isProdRelevantEnabled);
     }
     
     /**
