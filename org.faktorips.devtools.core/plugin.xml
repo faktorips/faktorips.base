@@ -394,11 +394,11 @@
 	    </category>
      	<wizard
 	       id = "newPcTypeWizard"
-           name = "%newPcTypeWizard"
+           name = "%NewPcTypeWizard.name"
     	   class="org.faktorips.devtools.core.ui.wizards.policycmpttype.NewPcTypeWizard"
     	   category="org.faktorips.devtools"
     	   icon="icons/NewPolicyCmptTypeWizard.gif">
-    	   <description>Creates a new Policy Class</description>
+    	   <description>%NewPcTypeWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
       <wizard
@@ -406,8 +406,8 @@
             class="org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductCmptWizard"
             icon="icons/NewProductCmptWizard.gif"
             id="newProductCmptWizard"
-            name="%newProductCmptWizard">
-    	   <description>Creates a new Product Component</description>
+            name="%NewProductCmptWizard.name">
+    	   <description>%NewProductCmptWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
       <wizard
@@ -415,8 +415,8 @@
             class="org.faktorips.devtools.core.ui.wizards.tablestructure.NewTableStructureWizard"
             icon="icons/NewTableStructureWizard.gif"
             id="newTableStructureWizard"
-            name="%newTableStructureWizard">
-    	   <description>Creates a new Product Component</description>
+            name="%NewTableStructureWizard.name">
+    	   <description>%NewTableStructureWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
       <wizard
@@ -424,17 +424,8 @@
             class="org.faktorips.devtools.core.ui.wizards.tablecontents.NewTableContentsWizard"
             icon="icons/NewTableContentsWizard.gif"
             id="newTableContentsWizard"
-            name="%newTableContentsWizard">
-    	   <description>Creates a new Product Component</description>
-    	   <selection class="org.eclipse.core.resources.IResource"/>
-	    </wizard>
-      <wizard
-            category="org.faktorips.devtools"
-            class="org.faktorips.devtools.core.ui.wizards.testcase.NewTestCaseWizard"
-            icon="icons/NewTestCase.gif"
-            id="newTestCaseWizard"
-            name="%newTestCaseWizard">
-    	   <description>Creates a new Test Case</description>
+            name="%NewTableContentsWizard.name">
+    	   <description>%NewTableContentsWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
       <wizard
@@ -442,8 +433,17 @@
             class="org.faktorips.devtools.core.ui.wizards.testcasetype.NewTestCaseTypeWizard"
             icon="icons/NewTestCaseType.gif"
             id="newTestCaseTypeWizard"
-            name="%newTestCaseTypeWizard">
-    	   <description>Creates a new Test Case Type</description>
+            name="%NewTestCaseTypeWizard.name">
+    	   <description>%NewTestCaseTypeWizard.description</description>
+    	   <selection class="org.eclipse.core.resources.IResource"/>
+	    </wizard>
+      <wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.core.ui.wizards.testcase.NewTestCaseWizard"
+            icon="icons/NewTestCase.gif"
+            id="newTestCaseWizard"
+            name="%NewTestCaseWizard.name">
+    	   <description>%NewTestCaseWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
       <wizard
@@ -451,8 +451,8 @@
             class="org.faktorips.devtools.core.ui.wizards.ipspackage.NewIpsPackageWizard"
             icon="icons/NewIpsPackageFragment.gif"
             id="newIpsPackageWizard"
-            name="%newIpsPackageWizard">
-         <description/>
+            name="%NewIpsPackageWizard.name">
+         <description>%NewIpsPackageWizard.description</description>
          <selection class="org.eclipse.core.resources.IResource"/>
       </wizard>
     </extension>
@@ -461,18 +461,18 @@
         point = "org.eclipse.ui.exportWizards">
      	<wizard
 	       id = "tableExportWizard"
-           name = "%tableExportWizard"
+           name = "%TableExportWizard.name"
     	   class="org.faktorips.devtools.core.ui.wizards.tableexport.TableExportWizard"
     	   icon="icons/ExportTableContents.gif">
-    	   <description>Exports table contents</description>
+    	   <description>%TableExportWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
      	<wizard
 	       id = "ipsArchiveExportWizard"
-           name = "%ipsArchiveExportWizard"
+           name = "%IpsArchiveExportWizard.name"
     	   class="org.faktorips.devtools.core.ui.wizards.ipsarchiveexport.IpsArchiveExportWizard"
     	   icon="icons/ExportTableContents.gif">
-    	   <description>Exports Ips archive</description>
+    	   <description>%IpsArchiveExportWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
     </extension>
@@ -481,10 +481,10 @@
         point = "org.eclipse.ui.importWizards">
      	<wizard
 	       id = "tableImportWizard"
-           name = "%tableImportWizard"
+           name = "%TableImportWizard.name"
     	   class="org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard"
     	   icon="icons/ImportTableContents.gif">
-    	   <description>Imports table contents</description>
+    	   <description>%TableImportWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
 		<wizard
