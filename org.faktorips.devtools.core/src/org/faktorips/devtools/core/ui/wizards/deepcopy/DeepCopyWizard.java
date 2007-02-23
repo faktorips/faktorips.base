@@ -124,8 +124,9 @@ public class DeepCopyWizard extends Wizard {
 		settingsFilename = path.append("deepCopyWizard.settings").toOSString(); //$NON-NLS-1$
 
 		settings = new DialogSettings(SETTINGS_SECTION_SIZE);
-		settings.put(SETTINGS_SIZE_X, 0);
-		settings.put(SETTINGS_SIZE_Y, 0);
+        // set default size if no settings exists
+		settings.put(SETTINGS_SIZE_X, 800);
+		settings.put(SETTINGS_SIZE_Y, 600);
 		try {
 			settings.load(settingsFilename);
 		} catch (IOException e) {
