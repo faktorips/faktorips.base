@@ -57,7 +57,7 @@ import org.apache.commons.lang.StringUtils;
  * as value-Prefix.
  * <p>
  * Note: No translation is done by this class!
- * 
+ *  
  * @author Thorsten Guenther
  */
 public class LocalizeHelper {
