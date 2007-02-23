@@ -36,6 +36,7 @@ public class Messages extends NLS {
 
 	public static String TestAttribute_ValidationWarning_DerivedOnTheFlyAttributesAreNotSupported;
     public static String TestPolicyCmptTypeParameter_ValidationError_FlagRequiresIsTrueButPolicyCmptTypeIsNotConfByProduct;
+    public static String TestPolicyCmptTypeParameter_ValidationWarning_AccosiationTargetNotInTestCaseType;
     public static String TestValueParameter_ValidateError_ValueDatatypeNotFound;
     public static String TestPolicyCmptTypeParameter_ValidationError_PolicyCmptTypeNotExists;
     public static String TestPolicyCmptTypeParameter_ValidationError_MinGreaterThanMax;

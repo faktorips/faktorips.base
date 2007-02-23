@@ -183,4 +183,16 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
             list.add(msg);
         }
     }
+
+    /**
+     * Return the test case type this parameter belongs to.
+     */
+    public TestCaseType getTestCaseType(){
+        if (isRoot()){
+            return (TestCaseType)getParent();
+        } else {
+            ITestParameter root = getRootParameter();
+            return (TestCaseType)root.getParent();
+        }
+    }
 }

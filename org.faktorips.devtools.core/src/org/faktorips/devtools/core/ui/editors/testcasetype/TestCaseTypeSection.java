@@ -84,6 +84,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
@@ -1014,31 +1015,44 @@ public class TestCaseTypeSection extends IpsSection  {
             // Spacer between test policy cmpt type param and test attribute
             toolkit.createVerticalSpacer(details, 10).setBackground(details.getBackground());
             
-            Composite tableBtnComposite = toolkit.getFormToolkit().createComposite(details);
-            tableBtnComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-            GridLayout tableBtnLayout = new GridLayout(2, false);
-            tableBtnLayout.horizontalSpacing = 0;
-            tableBtnLayout.marginWidth = 0;
-            tableBtnLayout.marginHeight = 3;
-            tableBtnComposite.setLayout(structureLayout);
-            
-            // create the attribute table
-            final TableViewer attributeTableViewer = createTestAttributeTable(tableBtnComposite);
-            objectCache.putAttributeTable(testParam, attributeTableViewer);
-            
-            // stores the index of the test attributes for faster move up/down
-            ITestAttribute[] testAttributes = testPolicyCmptTypeParam.getTestAttributes();
-            for (int i = 0; i < testAttributes.length; i++) {
-                objectCache.putAttributeIdx(testAttributes[i], i);
+            Composite composite = toolkit.getFormToolkit().createComposite(details);
+            composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+            if (!isAssociation(testPolicyCmptTypeParam)) {
+                GridLayout tableBtnLayout = new GridLayout(2, false);
+                tableBtnLayout.horizontalSpacing = 0;
+                tableBtnLayout.marginWidth = 0;
+                tableBtnLayout.marginHeight = 3;
+                composite.setLayout(structureLayout);
+
+                // create the attribute table
+                final TableViewer attributeTableViewer = createTestAttributeTable(composite);
+                objectCache.putAttributeTable(testParam, attributeTableViewer);
+
+                // stores the index of the test attributes for faster move up/down
+                ITestAttribute[] testAttributes = testPolicyCmptTypeParam.getTestAttributes();
+                for (int i = 0; i < testAttributes.length; i++) {
+                    objectCache.putAttributeIdx(testAttributes[i], i);
+                }
+                // set the test attribute table input and pack the columns of the table
+                attributeTableViewer.setInput(testAttributes);
+                repackAttributeTable(attributeTableViewer);
+
+                SectionButtons currSectionButtons = new SectionButtons();
+                currSectionButtons.createButtons(composite, section);
+                objectCache.putSectionButtons(testParam, currSectionButtons);
+            } else {
+                composite.setLayout(new GridLayout(1, true));
+
+                FormText text = toolkit.getFormToolkit().createFormText(composite, false); //$NON-NLS-1$
+                GridData gridData = new GridData(GridData.FILL_BOTH);
+                gridData.heightHint = 60;
+                gridData.widthHint = 100;
+                text.setLayoutData(gridData);
+                text.setText(NLS.bind(Messages.TestCaseTypeSection_FormText_InfoAssociation_1
+                        + Messages.TestCaseTypeSection_FormText_InfoAssociation_2
+                        + Messages.TestCaseTypeSection_FormText_InfoAssociation_3,
+                        testPolicyCmptTypeParam.getRelation()), true, false);
             }
-            // set the test attribute table input and pack the columns of the table
-            attributeTableViewer.setInput(testAttributes);
-            repackAttributeTable(attributeTableViewer);
-            
-            SectionButtons currSectionButtons = new SectionButtons();
-            currSectionButtons.createButtons(tableBtnComposite, section);
-            objectCache.putSectionButtons(testParam, currSectionButtons);
-            
         } else if (testParam instanceof ITestValueParameter){
             createTestValueParamDetails(editFieldsComposite, (ITestValueParameter)testParam, uiController);
         }
@@ -1211,27 +1225,43 @@ public class TestCaseTypeSection extends IpsSection  {
     private void createTestParamDetails(Composite editFieldsComposite,
             ITestParameter testParam,
             IpsPartUIController uiController) {
+        
         Label label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Name);
         EditField editFieldName = new TextField(toolkit.createText(editFieldsComposite));
         editFieldName.setText(testParam.getName());
         addSectionSelectionListeners(editFieldName, label,testParam);
         objectCache.putFirstEditFieldInSection(testParam, editFieldName);
-        
-        label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_TestParameterType);
-        EditField editFieldType = new EnumValueField(toolkit.createCombo(editFieldsComposite, TestParameterType
-                .getEnumType()), TestParameterType.getEnumType());
-        addSectionSelectionListeners(editFieldType, label, testParam);
-
         uiController.add(editFieldName, ITestParameter.PROPERTY_NAME);
-        uiController.add(editFieldType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
-        
-        // remove enties in the combo box depending on the given test parameter
-        if (testParam instanceof ITestValueParameter){
-            ((Combo)editFieldType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.COMBINED));
-        } else if (testParam instanceof ITestRuleParameter){
-            ((Combo)editFieldType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.COMBINED));            
-            ((Combo)editFieldType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.INPUT)); 
+
+        if (!(testParam instanceof ITestPolicyCmptTypeParameter && isAssociation((ITestPolicyCmptTypeParameter)testParam))){
+            label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_TestParameterType);
+            EditField editFieldType = new EnumValueField(toolkit.createCombo(editFieldsComposite, TestParameterType
+                    .getEnumType()), TestParameterType.getEnumType());
+            addSectionSelectionListeners(editFieldType, label, testParam);
+            uiController.add(editFieldType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
+
+            if (testParam instanceof ITestValueParameter || testParam instanceof ITestRuleParameter){
+                // remove enties in the combo box depending on the given test parameter
+                ((Combo)editFieldType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.COMBINED));
+                if (testParam instanceof ITestRuleParameter){
+                    ((Combo)editFieldType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.INPUT));
+                }
+            }
+        } 
+    }
+
+    private boolean isAssociation(ITestPolicyCmptTypeParameter testParam) {
+        try {
+            IRelation relation = ((ITestPolicyCmptTypeParameter)testParam).findRelation();
+            if (relation != null){
+                if (relation.isAssoziation()){
+                    return true;
+                }
+            }
+        } catch (CoreException e) {
+            // ignore exception, inconsitence are displayed as validation errors
         }
+        return false;
     }
 
     /*
@@ -1363,29 +1393,30 @@ public class TestCaseTypeSection extends IpsSection  {
     private void createTestPolicyCmptTypeParamDetails(Composite editFieldsComposite,
             ITestPolicyCmptTypeParameter parameter,
             IpsPartUIController uiController) {
-        Label label = toolkit.createFormLabel(editFieldsComposite,
-                Messages.TestCaseTypeSection_EditFieldLabel_RequiresProduct);
-        EditField editFieldReqProd = new CheckboxField(toolkit.createCheckbox(editFieldsComposite));
-        addSectionSelectionListeners(editFieldReqProd, label, parameter);
-
+        Label label = null;
+        if (!(parameter instanceof ITestPolicyCmptTypeParameter && isAssociation((ITestPolicyCmptTypeParameter)parameter))) {
+            label = toolkit.createFormLabel(editFieldsComposite,
+                    Messages.TestCaseTypeSection_EditFieldLabel_RequiresProduct);
+            EditField editFieldReqProd = new CheckboxField(toolkit.createCheckbox(editFieldsComposite));
+            addSectionSelectionListeners(editFieldReqProd, label, parameter);
+            uiController.add(editFieldReqProd, ITestPolicyCmptTypeParameter.PROPERTY_REQUIRES_PRODUCTCMT);
+        }
+        
         // min and max instances only for child parameters
         label = toolkit.createFormLabel(editFieldsComposite,
                 Messages.TestCaseTypeSection_EditFieldLabel_MinInstances);
         EditField editFieldMin = new CardinalityField(toolkit.createText(editFieldsComposite));
         editFieldMin.setText("" + parameter.getMinInstances()); //$NON-NLS-1$
         addSectionSelectionListeners(editFieldMin, label, parameter);
+        uiController.add(editFieldMin, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
 
         label = toolkit.createFormLabel(editFieldsComposite,
                 Messages.TestCaseTypeSection_EditFieldLabel_MaxInstances);
         EditField editFieldMax = new CardinalityField(toolkit.createText(editFieldsComposite));
         editFieldMax.setText("" + parameter.getMaxInstances()); //$NON-NLS-1$
         addSectionSelectionListeners(editFieldMax, label, parameter);
-
-        // connect to model
-        uiController.add(editFieldReqProd, ITestPolicyCmptTypeParameter.PROPERTY_REQUIRES_PRODUCTCMT);
-        uiController.add(editFieldMin, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
         uiController.add(editFieldMax, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
-        
+
         // disable min and max for root parameter
         if (parameter.isRoot()){
             editFieldMin.getControl().setEnabled(false);

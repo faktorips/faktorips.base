@@ -20,11 +20,13 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
@@ -36,12 +38,13 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
 
     private ITestPolicyCmptTypeParameter policyCmptTypeParameterInput;
     private IIpsProject project;
+    private ITestCaseType testCaseType;
     
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
-        ITestCaseType type = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
-        policyCmptTypeParameterInput = type.newInputTestPolicyCmptTypeParameter();
+        testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
+        policyCmptTypeParameterInput = testCaseType.newInputTestPolicyCmptTypeParameter();
     }
 
     public void testIsRootParameter() {
@@ -324,6 +327,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
         IPolicyCmptType policyCmptTypeTarget = newPolicyCmptType(project, "policyCmptTarget");
         IRelation rel1 = policyCmptType.newRelation();
+        rel1.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);        
         rel1.setTargetRoleSingular("relation1");
         rel1.setTarget(policyCmptTypeTarget.getQualifiedName());
         
@@ -384,4 +388,28 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         ml = policyCmptTypeParameterInput.validate();
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_REQUIRES_PROD_BUT_POLICY_CMPT_TYPE_IS_NOT_CONF_BY_PROD));  
     }     
+    
+    public void testValidateTargetOfAssociationNotExistsInTestCaseType() throws Exception{
+        IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
+        IPolicyCmptType policyCmptTypeTarget = newPolicyCmptType(project, "policyCmptTarget");
+        IRelation rel1 = policyCmptType.newRelation();
+        rel1.setRelationType(RelationType.ASSOZIATION);
+        rel1.setTargetRoleSingular("relation1");
+        rel1.setTarget(policyCmptTypeTarget.getQualifiedName());
+        
+        policyCmptTypeParameterInput.setPolicyCmptType(policyCmptType.getQualifiedName());
+        ITestPolicyCmptTypeParameter paramChild = policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
+        paramChild.setRelation(rel1.getName());
+        paramChild.setPolicyCmptType(policyCmptTypeTarget.getQualifiedName());
+        
+        MessageList ml = policyCmptTypeParameterInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
+        assertEquals(ml.getFirstMessage(Message.WARNING).getCode(), ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE);
+        
+        ITestPolicyCmptTypeParameter targetOfAss = testCaseType.newInputTestPolicyCmptTypeParameter();
+        targetOfAss.setName("xyz");
+        targetOfAss.setPolicyCmptType(policyCmptTypeTarget.getQualifiedName());
+        ml = policyCmptTypeParameterInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
+    }
 }

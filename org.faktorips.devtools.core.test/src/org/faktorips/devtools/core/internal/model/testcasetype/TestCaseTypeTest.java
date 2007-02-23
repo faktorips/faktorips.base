@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
@@ -247,5 +248,28 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
         List testRuleParametersList = Arrays.asList(testRuleParameters);
         assertTrue(testRuleParametersList.contains(rule1));
         assertTrue(testRuleParametersList.contains(rule2));
+    }
+    
+    public void testGetAllTestParameter() throws CoreException{
+        ITestPolicyCmptTypeParameter testParameter1 = type.newInputTestPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter testParameter1_1 = testParameter1.newTestPolicyCmptTypeParamChild();
+        ITestPolicyCmptTypeParameter testParameter1_2 = testParameter1.newTestPolicyCmptTypeParamChild();
+        ITestPolicyCmptTypeParameter testParameter1_1_1 = testParameter1_1.newTestPolicyCmptTypeParamChild();
+        ITestPolicyCmptTypeParameter testParameter2 = type.newExpectedResultPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter testParameter3 = type.newCombinedPolicyCmptTypeParameter();
+        ITestRuleParameter ruleParameter = type.newExpectedResultRuleParameter();
+        ITestValueParameter valueParameter = type.newInputTestValueParameter();
+        
+        ITestParameter[] params = ((TestCaseType)type).getAllTestParameter();
+        List paramsList = Arrays.asList(params);
+        assertEquals(""+8, ""+params.length);
+        assertTrue(paramsList.contains(testParameter1));
+        assertTrue(paramsList.contains(testParameter1_1));
+        assertTrue(paramsList.contains(testParameter1_2));
+        assertTrue(paramsList.contains(testParameter1_1_1));
+        assertTrue(paramsList.contains(testParameter2));
+        assertTrue(paramsList.contains(testParameter3));
+        assertTrue(paramsList.contains(ruleParameter));
+        assertTrue(paramsList.contains(valueParameter));
     }
 }

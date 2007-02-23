@@ -95,6 +95,13 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     public final static String MSGCODE_REQUIRES_PROD_BUT_POLICY_CMPT_TYPE_IS_NOT_CONF_BY_PROD = MSGCODE_PREFIX
             + "RequiresProdButPolicyCmptTypeIsNotConfByProd"; //$NON-NLS-1$
     
+    
+    /**
+     * Validation message code to indicate that the target of an accociation is not in the test case type. 
+     */
+    public final static String MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE = MSGCODE_PREFIX
+    + "TargetOfAssociationNotExistsInTestcasetype"; //$NON-NLS-1$
+    
     /**
      * Returns the qualified name of policy component class.
      */

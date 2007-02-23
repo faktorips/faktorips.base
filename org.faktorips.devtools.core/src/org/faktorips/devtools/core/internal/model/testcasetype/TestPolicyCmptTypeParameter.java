@@ -579,6 +579,35 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                         list.add(msg);
                     }
                 }
+                
+
+                // ckeck if the target of an association exists
+                if (relationFound.isAssoziation()){
+                    ITestParameter targetOfAssoziationInTestCaseType = null;
+                    ITestParameter[] allTestParameter = getTestCaseType().getAllTestParameter();
+                    for (int i = 0; i < allTestParameter.length; i++) {
+                        if (allTestParameter[i] instanceof ITestPolicyCmptTypeParameter){
+                            ITestPolicyCmptTypeParameter tPCTP = (ITestPolicyCmptTypeParameter) allTestParameter[i];
+                            boolean isTestObject = false;
+                            isTestObject = isRoot();
+                            if (!isTestObject){
+                                // check if the test parameter implements an accosiation
+                                IRelation relation = tPCTP.findRelation();
+                                isTestObject =  (relation == null) || ! relation.isAssoziation();
+                            }
+                            if (isTestObject && tPCTP.getPolicyCmptType().equals(relationFound.getTarget())){
+                                targetOfAssoziationInTestCaseType = tPCTP;
+                                break;
+                            }
+                        }
+                    }
+                    if (targetOfAssoziationInTestCaseType == null){
+                        String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationWarning_AccosiationTargetNotInTestCaseType, policyCmptType, relation);
+                        Message msg = new Message(MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE, text, Message.WARNING, this,
+                                PROPERTY_POLICYCMPTTYPE); //$NON-NLS-1$
+                        list.add(msg);          
+                    }
+                }
             }
         } // check relation end
         

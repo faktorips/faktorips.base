@@ -541,4 +541,26 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             getValidationRules(testPolicyCmptTypeParameters[i].getTestPolicyCmptTypeParamChilds(), validationRules);
         }
     }
+
+    /**
+     * Returns all test parameters inside the test case type.
+     */
+    public ITestParameter[] getAllTestParameter() throws CoreException {
+        List allParameters = new ArrayList();
+        ITestParameter[] parameters = getTestParameters();
+        for (int i = 0; i < parameters.length; i++) {
+            getAllChildTestParameter(parameters[i], allParameters);
+        }
+        return (ITestParameter[]) allParameters.toArray(new ITestParameter[allParameters.size()]);
+    }
+
+    private void getAllChildTestParameter(ITestParameter testParameter, List allParameters) throws CoreException {
+        allParameters.add(testParameter);
+        IIpsElement[] elems = testParameter.getChildren();
+        for (int i = 0; i < elems.length; i++) {
+            if (elems[i] instanceof ITestParameter){
+                getAllChildTestParameter((ITestParameter)elems[i], allParameters);
+            }
+        }
+    }
 }

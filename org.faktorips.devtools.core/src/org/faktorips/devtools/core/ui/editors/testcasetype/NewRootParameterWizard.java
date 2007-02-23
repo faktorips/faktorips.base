@@ -276,7 +276,7 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
      * Resets the state of the wizard, means clear all fields
      */
     public void resetWizard() {
-        if (newTestParameter != null){
+        if (newTestParameter != null && ! newTestParameter.isDeleted()){
             newTestParameter.delete();
         }
         
