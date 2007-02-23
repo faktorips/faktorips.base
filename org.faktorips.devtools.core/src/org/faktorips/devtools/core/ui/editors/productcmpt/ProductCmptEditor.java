@@ -152,6 +152,25 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
         }
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    protected void checkForInconsistenciesToModel() {
+        if (TRACE) {
+            logMethodStarted("checkForInconsistenciesToModel");
+        }
+        if (isGenerationEditable((IProductCmptGeneration)getActiveGeneration())) {
+            super.checkForInconsistenciesToModel();
+        } else {
+            if (TRACE) {
+                logInternal("checkForInconsistenciesToModel - no need to check, generation is not editable.");
+            }
+        }
+        if (TRACE) {
+            logMethodFinished("checkForInconsistenciesToModel");
+        }
+    }
+
 	/**
 	 * {@inheritDoc}
 	 */

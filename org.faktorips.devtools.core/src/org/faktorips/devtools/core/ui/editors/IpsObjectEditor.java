@@ -92,7 +92,7 @@ public abstract class IpsObjectEditor extends FormEditor
     // dirty flag
     private boolean dirty = false;
 
-    private Boolean contentChangeable;
+    private Boolean contentChangeable = null;
     
     // the editor's ISelectionProvider 
     private SelectionProviderDispatcher selectionProviderDispatcher;
@@ -622,7 +622,7 @@ public abstract class IpsObjectEditor extends FormEditor
     /**
      * Does what the methodname says :-)
      */
-    public final void checkForInconsistenciesToModel() {
+    protected void checkForInconsistenciesToModel() {
         if (TRACE) {
             logMethodStarted("checkForInconsistenciesToModel");
         }
