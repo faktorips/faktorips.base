@@ -21,6 +21,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
@@ -63,6 +66,23 @@ import org.w3c.dom.Element;
 public class TestCaseBuilder extends AbstractArtefactBuilder {
 
     private JavaSourceFileBuilder javaSourceFileBuilder;
+    
+    private Map objectIdMap = new HashMap();
+
+    private Map targetObjectIdMap = new HashMap();
+    
+    /*
+     * Class to generate an unique object id within the input and the expected result.
+     */
+    private class ObjectId {
+        int objectId = 0;
+        public int nextValue(){
+            return objectId++;
+        }
+        public String toString(){
+            return ""+objectId;
+        }
+    }
     
     /**
      * @param builderSet
@@ -222,10 +242,30 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         addTestRules(doc, expectedResult, testCase.getExpectedResultTestRules());
         
         // add test policy cmpt (input and expected)
-        addTestPolicyCmpts(doc, input, testCase.getInputTestPolicyCmpts(), null, true);
-        addTestPolicyCmpts(doc, expectedResult, testCase.getExpectedResultTestPolicyCmpts(), null, false);
+        // remark: the object id will be only unique in the input and unique in the expected result,
+        // the same object id in the input could be differ to the object id in the expected result,
+        // because the object id will be used to resolve the references in the input or expected result;
+        // references from the input to the exp. result are not supported!
+        addTestPolicyCmpts(doc, input, testCase.getInputTestPolicyCmpts(), null, true, new ObjectId());
+        resolveAssociations();
+        
+        addTestPolicyCmpts(doc, expectedResult, testCase.getExpectedResultTestPolicyCmpts(), null, false, new ObjectId());
+        resolveAssociations();
         
         return testCaseElm;
+    }
+
+    private void resolveAssociations() {
+        for (Iterator iter = targetObjectIdMap.keySet().iterator(); iter.hasNext();) {
+            ITestPolicyCmpt target = (ITestPolicyCmpt)iter.next();
+            String objectId = (String)objectIdMap.get(target);
+            if (objectId != null){
+                Element elem = (Element) targetObjectIdMap.get(target);
+                elem.setAttribute("targetId", objectId);
+            }
+        }
+        targetObjectIdMap.clear();
+        objectIdMap.clear();
     }
 
     /*
@@ -276,7 +316,8 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             Element parent,
             ITestPolicyCmpt[] testPolicyCmpt,
             ITestPolicyCmptRelation relation,
-            boolean isInput) throws CoreException {
+            boolean isInput,
+            ObjectId objectId) throws CoreException {
         if (testPolicyCmpt == null) {
             return;
         }
@@ -300,6 +341,9 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                         .getTestPolicyCmptTypeParameter());
                 testPolicyCmptElem.setAttribute("name", testPolicyCmpt[i].getName());
             }
+            int currObjectId = objectId.nextValue();
+            objectIdMap.put(testPolicyCmpt[i], "" + currObjectId);
+            testPolicyCmptElem.setAttribute("objectId", ""+currObjectId);
             
             IProductCmpt productCmpt = testPolicyCmpt[i].findProductCmpt();
             IPolicyCmptType pcType = null;
@@ -325,15 +369,19 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             }
             testPolicyCmptElem.setAttribute("class", javaSourceFileBuilder.getQualifiedClassName(pcType));
             addTestAttrValues(doc, testPolicyCmptElem, testPolicyCmpt[i].getTestAttributeValues(), isInput);
-            addRelations(doc, testPolicyCmptElem, testPolicyCmpt[i].getTestPolicyCmptRelations(), isInput);                
+            addRelations(doc, testPolicyCmptElem, testPolicyCmpt[i].getTestPolicyCmptRelations(), isInput, objectId);                
         }
     }
     
     /*
      * Add the given relations to the given element.
      */
-    private void addRelations(Document doc, Element parent, ITestPolicyCmptRelation[] relations, boolean isInput) throws CoreException{
-        if (relations == null){
+    private void addRelations(Document doc,
+            Element parent,
+            ITestPolicyCmptRelation[] relations,
+            boolean isInput,
+            ObjectId objectId) throws CoreException {
+        if (relations == null) {
             return;
         }
         if (relations.length > 0){
@@ -341,23 +389,36 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                 if (!relations[i].isValid()){
                     continue;
                 }
+                if (! relationsParentSameType(relations[i], isInput)){
+                    continue;
+                }
                 String relationType = "";
                 if (relations[i].isComposition()) {
                     try {
-                        addTestPolicyCmpts(doc, parent, new ITestPolicyCmpt[]{relations[i].findTarget()}, relations[i], isInput);
+                        addTestPolicyCmpts(doc, parent, new ITestPolicyCmpt[]{relations[i].findTarget()}, relations[i], isInput, objectId);
                     } catch (CoreException e) {
                         throw new RuntimeException(e);
-                    }                   
+                    }
                 } else if (relations[i].isAccoziation()){
                     relationType = "association"; // @see AbstractModelObject
                     Element testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, relations[i].getTestPolicyCmptTypeParameter());
                     testPolicyCmptElem.setAttribute("target", relations[i].getTarget());
                     testPolicyCmptElem.setAttribute("type", relationType);
+                    ITestPolicyCmpt target = relations[i].findTarget();
+                    targetObjectIdMap.put(target, testPolicyCmptElem);
                 }
             }
         }
     }
     
+    private boolean relationsParentSameType(ITestPolicyCmptRelation relation, boolean isInput) throws CoreException {
+        ITestPolicyCmptTypeParameter param = relation.findTestPolicyCmptTypeParameter();
+        if (param == null){
+            return false;
+        }
+        return param.isInputParameter() && isInput || param.isExpextedResultParameter() && !isInput;
+    }
+
     /*
      * Add the given test attributes to the given element.
      */ 

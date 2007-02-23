@@ -580,7 +580,6 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                     }
                 }
                 
-
                 // ckeck if the target of an association exists
                 if (relationFound.isAssoziation()){
                     ITestParameter targetOfAssoziationInTestCaseType = null;
@@ -591,13 +590,19 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                             boolean isTestObject = false;
                             isTestObject = isRoot();
                             if (!isTestObject){
-                                // check if the test parameter implements an accosiation
+                                // check if the test parameter implements no accosiation
+                                // because we search only for non accosiations
                                 IRelation relation = tPCTP.findRelation();
                                 isTestObject =  (relation == null) || ! relation.isAssoziation();
                             }
-                            if (isTestObject && tPCTP.getPolicyCmptType().equals(relationFound.getTarget())){
-                                targetOfAssoziationInTestCaseType = tPCTP;
-                                break;
+                            if (isTestObject && tPCTP.getPolicyCmptType().equals(relationFound.getTarget())) {
+                                // check if the parameter type matches, if the parameter type is unequal then
+                                // the object will not be generated in the test case and thus it is not available
+                                if (tPCTP.getTestParameterType().equals(this.getTestParameterType())
+                                        || tPCTP.isCombinedParameter()) {
+                                    targetOfAssoziationInTestCaseType = tPCTP;
+                                    break;
+                                }
                             }
                         }
                     }

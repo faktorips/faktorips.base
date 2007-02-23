@@ -22,6 +22,7 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -89,10 +90,30 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
         controller.add(editFieldMax, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
         controller.add(editFieldReqProd, ITestPolicyCmptTypeParameter.PROPERTY_REQUIRES_PRODUCTCMT);
         
+        editFieldMin.getControl().setEnabled(true);
+        editFieldMax.getControl().setEnabled(true);
+        editFieldReqProd.getControl().setEnabled(true);
+        
         // min and max are not editable for root parameters
         if (testParameter.isRoot()){
             editFieldMin.getControl().setEnabled(false);
             editFieldMax.getControl().setEnabled(false);
+            return;
+        }
+        
+        // req product cmpt is not editable for associations
+        if (testParameter instanceof ITestPolicyCmptTypeParameter){
+            ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter = (ITestPolicyCmptTypeParameter) testParameter;
+            IRelation relation;
+            try {
+                relation = testPolicyCmptTypeParameter.findRelation();
+                if (relation != null && relation.isAssoziation()){
+                    editFieldReqProd.getControl().setEnabled(false);
+                }
+            } catch (CoreException e) {
+                // ignore exception while searching for the model relation,
+                // will be reported in previous wizard pages!
+            }
         }
     }
 

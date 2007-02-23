@@ -1229,25 +1229,24 @@ public class TestCaseTypeSection extends IpsSection  {
         Label label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Name);
         EditField editFieldName = new TextField(toolkit.createText(editFieldsComposite));
         editFieldName.setText(testParam.getName());
-        addSectionSelectionListeners(editFieldName, label,testParam);
+        addSectionSelectionListeners(editFieldName, label, testParam);
         objectCache.putFirstEditFieldInSection(testParam, editFieldName);
         uiController.add(editFieldName, ITestParameter.PROPERTY_NAME);
 
-        if (!(testParam instanceof ITestPolicyCmptTypeParameter && isAssociation((ITestPolicyCmptTypeParameter)testParam))){
-            label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_TestParameterType);
-            EditField editFieldType = new EnumValueField(toolkit.createCombo(editFieldsComposite, TestParameterType
-                    .getEnumType()), TestParameterType.getEnumType());
-            addSectionSelectionListeners(editFieldType, label, testParam);
-            uiController.add(editFieldType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
+        label = toolkit.createFormLabel(editFieldsComposite,
+                Messages.TestCaseTypeSection_EditFieldLabel_TestParameterType);
+        EditField editFieldType = new EnumValueField(toolkit.createCombo(editFieldsComposite, TestParameterType
+                .getEnumType()), TestParameterType.getEnumType());
+        addSectionSelectionListeners(editFieldType, label, testParam);
+        uiController.add(editFieldType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
 
-            if (testParam instanceof ITestValueParameter || testParam instanceof ITestRuleParameter){
-                // remove enties in the combo box depending on the given test parameter
-                ((Combo)editFieldType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.COMBINED));
-                if (testParam instanceof ITestRuleParameter){
-                    ((Combo)editFieldType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.INPUT));
-                }
+        if (testParam instanceof ITestValueParameter || testParam instanceof ITestRuleParameter) {
+            // remove enties in the combo box depending on the given test parameter
+            ((Combo)editFieldType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.COMBINED));
+            if (testParam instanceof ITestRuleParameter) {
+                ((Combo)editFieldType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.INPUT));
             }
-        } 
+        }
     }
 
     private boolean isAssociation(ITestPolicyCmptTypeParameter testParam) {

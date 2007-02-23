@@ -401,15 +401,43 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         ITestPolicyCmptTypeParameter paramChild = policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
         paramChild.setRelation(rel1.getName());
         paramChild.setPolicyCmptType(policyCmptTypeTarget.getQualifiedName());
+        paramChild.setTestParameterType(TestParameterType.INPUT);
         
         MessageList ml = policyCmptTypeParameterInput.validate();
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
         assertEquals(ml.getFirstMessage(Message.WARNING).getCode(), ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE);
         
         ITestPolicyCmptTypeParameter targetOfAss = testCaseType.newInputTestPolicyCmptTypeParameter();
+        paramChild.setTestParameterType(TestParameterType.INPUT);
+        targetOfAss.setTestParameterType(TestParameterType.COMBINED);
         targetOfAss.setName("xyz");
         targetOfAss.setPolicyCmptType(policyCmptTypeTarget.getQualifiedName());
         ml = policyCmptTypeParameterInput.validate();
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
+        
+        paramChild.setTestParameterType(TestParameterType.EXPECTED_RESULT);
+        targetOfAss.setTestParameterType(TestParameterType.COMBINED);
+        ml = policyCmptTypeParameterInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
+       
+        paramChild.setTestParameterType(TestParameterType.EXPECTED_RESULT);
+        targetOfAss.setTestParameterType(TestParameterType.INPUT);
+        ml = policyCmptTypeParameterInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
+        
+        paramChild.setTestParameterType(TestParameterType.INPUT);
+        targetOfAss.setTestParameterType(TestParameterType.EXPECTED_RESULT);
+        ml = policyCmptTypeParameterInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
+        
+        paramChild.setTestParameterType(TestParameterType.COMBINED);
+        targetOfAss.setTestParameterType(TestParameterType.EXPECTED_RESULT);
+        ml = policyCmptTypeParameterInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
+        
+        paramChild.setTestParameterType(TestParameterType.COMBINED);
+        targetOfAss.setTestParameterType(TestParameterType.INPUT);
+        ml = policyCmptTypeParameterInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
     }
 }
