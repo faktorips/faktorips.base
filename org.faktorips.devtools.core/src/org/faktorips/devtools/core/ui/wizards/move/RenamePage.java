@@ -55,39 +55,25 @@ import org.faktorips.util.message.MessageList;
  */
 public class RenamePage extends WizardPage implements ModifyListener {
 	
-	/**
-	 * The input field holding the complete new name.
-	 */
+	// The input field holding the complete new name.
 	private Text newName;
 	
-	/**
-	 * Input holding the version id part of the name. 
-	 */
+	// Input holding the version id part of the name. 
 	private Text versionId;
 	
-	/**
-	 * Input for the constant part of the name.
-	 */
+	// Input for the constant part of the name.
 	private Text constNamePart;
 
-    /**
-     * Input for the runtime id.
-     */
+	// Input for the runtime id.
     private Text runtimeId;
     
-	/**
-	 * The object to rename
-	 */
+	// The object to rename
 	private IIpsElement renameObject;
 	
-	/**
-	 * The page-id to identify this page.
-	 */
+	// The page-id to identify this page.
 	private static final String PAGE_ID = "MoveWizard.configure"; //$NON-NLS-1$
 
-	/**
-	 * The naming strategy to use for move/rename.
-	 */
+	// The naming strategy to use for move/rename.
 	private IProductCmptNamingStrategy namingStrategy;
 	
 	/**
@@ -298,6 +284,12 @@ public class RenamePage extends WizardPage implements ModifyListener {
             }
         }
 		
+        // if the new name is the same as the old name, no error is shown and it
+        // also not possible to click finish
+        if (newName.getText().equals(renameObject.getName())) {
+            return;
+        }
+        
         // validate that an object with the name not exists
 		IIpsPackageFragment pack = null;
 		if (renameObject instanceof IProductCmpt || renameObject instanceof ITableContents || renameObject instanceof ITestCase) {
@@ -365,7 +357,7 @@ public class RenamePage extends WizardPage implements ModifyListener {
 	}
 	
 	/**
-	 * Returns the name the user has entered. The name is allways qualified with the package name
+	 * Returns the name the user has entered. The name is always qualified with the package name
 	 * of the package containing the object to rename.
 	 */
 	public String getNewName() {
