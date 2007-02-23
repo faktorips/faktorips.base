@@ -19,8 +19,8 @@ package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.IValueDatatypeProvider;
 import org.faktorips.devtools.core.model.IValueSet;
+import org.faktorips.devtools.core.model.IValueSetOwner;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 
@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.product.ConfigElementType;
 /**
  * A policy component type's attribute.
  */
-public interface IAttribute extends IMember, IValueDatatypeProvider {
+public interface IAttribute extends IMember, IValueSetOwner {
 
     // property names
     public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$

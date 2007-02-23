@@ -71,7 +71,9 @@ import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 
 /**
- *  
+ * Dialog to edit an attribute.
+ * 
+ * @author Jan Ortmann
  */
 public class AttributeEditDialog extends IpsPartEditDialog implements ParameterListChangeListener {
 

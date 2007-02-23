@@ -17,21 +17,23 @@
 
 package org.faktorips.devtools.core.model;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.datatype.ValueDatatype;
-
 /**
- * A value datatype provider is a class that can be asked for a <class>ValueDatatype</code>.
- *  
- * @author Thorsten Guenther
+ * Interface that marks an object as owning a value set.
+ * 
+ * @author Jan Ortmann
  */
-public interface IValueDatatypeProvider {
+public interface IValueSetOwner extends IValueDatatypeProvider {
 
-	/**
-	 * Returns the <code>ValueDatatype</code> if available or null if not. This
-	 * means, that null is returned if a datatype is available that is not a 
-	 * <code>ValueDatatype</code>.
-	 */
-	public ValueDatatype getValueDatatype() throws CoreException;
-	
+    /**
+     * Returns the set of allowed values.
+     */
+    public IValueSet getValueSet();
+
+    /**
+     * Sets the type of the value set defining the values valid for this attribute.
+     * If the type of the current value set is the same as the new type, the attribute
+     * remains unchanged. 
+     */
+    public void setValueSetType(ValueSetType type);
+    
 }

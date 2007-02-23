@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -155,6 +156,11 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
      * <code>ValueDatatype</code>.
      */
 	public ValueDatatype getValueDatatype() {
-		return ((IValueDatatypeProvider)parent).getValueDatatype();
+		try {
+            return ((IValueDatatypeProvider)parent).getValueDatatype();
+        }
+        catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
 	}
 }

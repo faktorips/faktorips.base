@@ -402,7 +402,7 @@ public abstract class IpsObjectEditor extends FormEditor
         if (TRACE) {
             log("Next data changeable state=" + newState + ", oldState=" + isDataChangeable()); //$NON-NLS-1$ //$NON-NLS-2$
         }        
-        setDataChangeable(computeDataChangeableState());
+        setDataChangeable(newState);
         IEditorPart editor = getActivePageInstance();
         if (editor instanceof IpsObjectEditorPage) {
             IpsObjectEditorPage page = (IpsObjectEditorPage)editor;
@@ -433,9 +433,10 @@ public abstract class IpsObjectEditor extends FormEditor
     }
     
     /**
-     * Sets the content changeable state.
+     * Sets the content changeable state. This method is final. If you want to change an editor's
+     * data changeable behaviour override {@link #computeDataChangeableState()}.
      */
-    protected void setDataChangeable(boolean changeable) {
+    final protected void setDataChangeable(boolean changeable) {
         this.contentChangeable = Boolean.valueOf(changeable);
         if (getIpsSrcFile()!=null) {
             this.setTitleImage(getIpsSrcFile().getIpsObjectType().getImage(changeable));
@@ -622,17 +623,25 @@ public abstract class IpsObjectEditor extends FormEditor
      * Does what the methodname says :-)
      */
     public final void checkForInconsistenciesToModel() {
+        if (TRACE) {
+            logMethodStarted("checkForInconsistenciesToModel");
+        }
         if (isDataChangeable()==null || !isDataChangeable().booleanValue()) {
-            // no modifications for read-only-editors
+            if (TRACE) {
+                logMethodFinished("checkForInconsistenciesToModel - no need to check, content is read-only.");
+            }
             return;
         }
         if (!getIpsSrcFile().exists()){
-            // dont't check for inconsistencies if the src file not exists,
-            // e.g. if the product cmpt editor is open and the product cmpt was moved
+            if (TRACE) {
+                logMethodFinished("checkForInconsistenciesToModel - no need to check, file does not exists.");
+            }
             return;
         }
         if (getSettings().getBoolean(getIpsSrcFile(), SETTING_DONT_FIX_DIFFERENCES)) {
-            // user decided not to fix the differences some time ago...
+            if (TRACE) {
+                logMethodFinished("checkForInconsistenciesToModel - no need to check, user decided no to fix.");
+            }
             return;
         }           
         if (getContainer() == null) {
@@ -646,14 +655,23 @@ public abstract class IpsObjectEditor extends FormEditor
         IFixDifferencesToModelSupport toFixIpsObject = (IFixDifferencesToModelSupport)getIpsObject();
         try {
             if (!toFixIpsObject.containsDifferenceToModel()){
+                if (TRACE) {
+                    logMethodFinished("checkForInconsistenciesToModel - no differences found.");
+                }
                 return;
             }
             Dialog dialog = createDialogToFixDifferencesToModel();
             if (dialog.open() == Dialog.OK) {
+                if (TRACE) {
+                    log("checkForInconsistenciesToModel - differences found, start fixing differenced.");
+                }
                 toFixIpsObject.fixAllDifferencesToModel();
                 refreshInclStructuralChanges();
             } else {
                 getSettings().put(getIpsSrcFile(), SETTING_DONT_FIX_DIFFERENCES, true);
+            }
+            if (TRACE) {
+                logMethodFinished("checkForInconsistenciesToModel");
             }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);

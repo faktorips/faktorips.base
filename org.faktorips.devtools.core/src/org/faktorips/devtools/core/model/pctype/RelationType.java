@@ -38,7 +38,7 @@ public class RelationType extends DefaultEnumValue {
         enumType = new DefaultEnumType("RelationType", RelationType.class); //$NON-NLS-1$
         COMPOSITION_MASTER_TO_DETAIL = new RelationType(enumType, "comp", "Composition (Master to Detail)"); //$NON-NLS-1$ //$NON-NLS-2$
         COMPOSITION_DETAIL_TO_MASTER = new RelationType(enumType, "reverseComp", "Composition (Detail to Master)"); //$NON-NLS-1$ //$NON-NLS-2$
-        ASSOZIATION = new RelationType(enumType, "ass", "Assoziation"); //$NON-NLS-1$ //$NON-NLS-2$
+        ASSOZIATION = new RelationType(enumType, "ass", "Association"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     public final static EnumType getEnumType() {

@@ -43,8 +43,8 @@ public class NewPcTypeRelationWizardTest  extends AbstractIpsPluginTest {
         assertNull(NewPcTypeRelationWizard.getCorrespondingRelationType(relation.getRelationType()));
         
         // ASSOZIATION => ASSOZIATION
-        relation.setRelationType(RelationType.ASSOZIATION);
-        assertEquals(RelationType.ASSOZIATION, NewPcTypeRelationWizard.getCorrespondingRelationType(relation.getRelationType()));
+        relation.setRelationType(RelationType.ASSOCIATION);
+        assertEquals(RelationType.ASSOCIATION, NewPcTypeRelationWizard.getCorrespondingRelationType(relation.getRelationType()));
         
         // COMPOSITION => REVERSE_COMPOSITION
         relation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
@@ -65,12 +65,12 @@ public class NewPcTypeRelationWizardTest  extends AbstractIpsPluginTest {
         policyCmptTypeSuper1.newRelation().setTargetRoleSingular("dummy");
         IRelation superRelation = policyCmptTypeSuper1.newRelation();
         superRelation.setTargetRoleSingular("realtionSuper");
-        superRelation.setRelationType(RelationType.ASSOZIATION);
+        superRelation.setRelationType(RelationType.ASSOCIATION);
         IRelation relation12 = policyCmptType1.newRelation();
         relation12.setTargetRoleSingular("realtion12");
         
         IRelation relation21 = policyCmptType2.newRelation();
-        relation21.setRelationType(RelationType.ASSOZIATION);
+        relation21.setRelationType(RelationType.ASSOCIATION);
         
         // don't find any relations because no relation on policyCmptType1 have policyCmptType2 as target
         List result = ReverseRelationPropertiesPage.getCorrespondingTargetRelations(relation21, policyCmptType1);

@@ -52,6 +52,7 @@ import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
+import org.faktorips.runtime.DefaultUnresolvedReference;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IUnresolvedReference;
@@ -195,7 +196,17 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         buildValidation(methodsBuilder);
         generateMethodInitPropertiesFromXml(methodsBuilder);
         generateMethodCreateChildFromXml(methodsBuilder);
-        generateMethodCreateUnresolvedReference(methodsBuilder);
+        boolean hasAssociation = false;
+        IRelation[] relations = getPcType().getRelations();
+        for (int i = 0; i < relations.length; i++) {
+            if (relations[i].isAssoziation()) {
+                hasAssociation = true;
+                break;
+            }
+        } 
+        if (hasAssociation) {
+            generateMethodCreateUnresolvedReference(methodsBuilder);
+        }
     }
     
     protected void generateMethodGetEffectiveFromAsCalendarForAggregateRoot(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -1427,7 +1438,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.methodEnd();
     }
 
-    private void generateInitializationForOverrideAttributes(JavaCodeFragmentBuilder builder){
+    private void generateInitializationForOverrideAttributes(JavaCodeFragmentBuilder builder) throws CoreException{
         IAttribute[] attributes = getPcType().getAttributes();
         for (int i = 0; i < attributes.length; i++) {
             if(attributes[i].isChangeable() && attributes[i].getOverwrites()){
@@ -1841,6 +1852,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      *     Object objectId,
      *     String targetRole,
      *     String targetId) throws Exception {
+     * 
+     *     if ("InsuredPeson".equals(targetRole)) {
+     *         return new DefaultUnresolvedReference(this, objectId, "setInsuredPerson", IInsuredPerson.class, targetId);
+     *     }
+     *     return super.createUnresolvedReference(objectId, targetRole, targetId);
      * }
      * </pre>
      */
@@ -1854,13 +1870,27 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 argNames, 
                 argClasses, 
                 new Class[]{Exception.class});
-        
-        builder.appendClassName(IUnresolvedReference.class);
-        builder.appendln(" ref = super." + MethodNames.CREATE_UNRESOLVED_REFERENCE + "(objectId, targetRole, targetId);");
-        builder.appendln("if (ref!=null) {");
-        builder.appendln("return ref;");
-        builder.appendln("}");
-        builder.appendln("return null;");
+
+        IRelation[] relations = getPcType().getRelations();
+        for (int i = 0; i < relations.length; i++) {
+            if (!relations[i].isValid() || !relations[i].isAssoziation()) {
+                continue;
+            }
+            IRelation association = relations[i];
+            String targetClass = interfaceBuilder.getQualifiedClassName(association.findTarget());
+            builder.append("if (");
+            builder.appendQuoted(association.getTargetRoleSingular());
+            builder.append(".equals(targetRole)) {");
+            builder.append("return new ");
+            builder.appendClassName(DefaultUnresolvedReference.class);
+            builder.append("(this, objectId, ");
+            builder.appendQuoted(interfaceBuilder.getMethodNameAddOrSetObject(association));
+            builder.append(", ");
+            builder.appendClassName(targetClass);
+            builder.append(".class, targetId);");
+            builder.append("}");
+        }
+        builder.appendln("return super." + MethodNames.CREATE_UNRESOLVED_REFERENCE + "(objectId, targetRole, targetId);");
         builder.methodEnd();
     }
     

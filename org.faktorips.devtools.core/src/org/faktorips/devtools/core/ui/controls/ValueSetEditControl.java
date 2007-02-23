@@ -34,8 +34,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.RangeValueSet;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
+import org.faktorips.devtools.core.model.IValueSetOwner;
 import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.DefaultUIController;
@@ -56,7 +56,7 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
     private ValueDatatype datatype; // The datatype the values in the set are values of.
 
     private Composite valueSetArea; // is used to change the layout
-    private IAttribute attribute;
+    private IValueSetOwner attribute;
     private UIToolkit toolkit;
     private DefaultUIController uiController;
     private TableElementValidator tableElementValidator;
@@ -74,10 +74,10 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
      * the following general layout is used. the main layout is a gridlayout with one collom. in the first row there is
      * a composite with a gridlayout with 2 columns generated. In the second row there is a stacklayout used . 
      */
-    public ValueSetEditControl(Composite parent, UIToolkit toolkit, DefaultUIController uiController, IAttribute attribute,
+    public ValueSetEditControl(Composite parent, UIToolkit toolkit, DefaultUIController uiController, IValueSetOwner owner                                                       ,
             TableElementValidator tableElementValidator) {
         super(parent, SWT.NONE);
-        this.attribute = attribute;
+        this.attribute = owner;
         this.toolkit = toolkit;
         this.uiController = uiController;
         this.tableElementValidator = tableElementValidator;
@@ -110,7 +110,7 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
     	if (valueSet.getValueSetType() == ValueSetType.ENUM) {
     		EnumDatatype enumType = null;
     		try {
-				Datatype type = attribute.findDatatype();
+				Datatype type = attribute.getValueDatatype();
 				if (type instanceof EnumDatatype) {
 					enumType = (EnumDatatype)type;
 				}
