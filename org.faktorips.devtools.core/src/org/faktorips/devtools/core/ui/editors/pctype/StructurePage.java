@@ -69,6 +69,9 @@ public class StructurePage extends PctEditorPage {
 	}
     
     private void registerContentsChangeListener(){
+        //refreshing the page after a change in the PolicyCmptType occured is necessary since there
+        //is a dependency from attributes that are displayed in the GeneralInfoSection and the
+        //attributes respectively IpsPart that are displayed in the other sections. 
         final ContentsChangeListener changeListener = new ContentsChangeListener(){
             public void contentsChanged(ContentChangeEvent event) {
                 if(getPartControl().isVisible() &&
