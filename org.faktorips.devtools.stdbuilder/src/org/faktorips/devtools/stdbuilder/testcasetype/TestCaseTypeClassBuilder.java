@@ -416,8 +416,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             body.appendClassName(IObjectReferenceStore.class);
             body.append(" ");
             body.append(objectReferenceStoreName);
-            body.appendln("  = new DefaultObjectReferenceStore();");
-            body.appendln();
+            body.appendln("  = new ");
+            body.appendClassName(DefaultObjectReferenceStore.class);
+            body.appendln("();");
             
             body.appendClassName(Element.class);
             body.appendln(" childElement = null;");
