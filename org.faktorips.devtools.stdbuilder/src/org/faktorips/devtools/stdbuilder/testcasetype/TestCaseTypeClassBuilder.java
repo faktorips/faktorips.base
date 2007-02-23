@@ -44,6 +44,8 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
+import org.faktorips.runtime.DefaultObjectReferenceStore;
+import org.faktorips.runtime.DefaultReferenceResolver;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.runtime.test.IpsTestCase2;
@@ -391,15 +393,34 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * Example:
      * <p>
      * <pre>
-    *   childElement  = XmlUtil.getFirstElement(element, "[PolicyCmptTypeParameter.name]");
-    *   if (inputElement!=null){
-    *        [PolicyCmptTypeParameter.name] = new [PolicyCmptTypeParameter.name]();
-    *        @see #buildConstrutorForTestPolicyCmptParameter
-    *   }
+     *  DefaultReferenceResolver referenceResolver = new DefaultReferenceResolver();
+     *  DefaultObjectReferenceStore objectReferenceStore = new DefaultObjectReferenceStore();
+     *  Element childElement = null;
+     *   childElement  = XmlUtil.getFirstElement(element, "[PolicyCmptTypeParameter.name]");
+     *   if (inputElement!=null){
+     *        [PolicyCmptTypeParameter.name] = new [PolicyCmptTypeParameter.name]();
+     *        @see #buildConstrutorForTestPolicyCmptParameter
+     *   }
+     *   ...
+     *   try {
+     *      referenceResolver.resolve(objectReferenceStore);
+     *   }
+     *   catch (Exception e) {
+     *      throw new RuntimeException(e);
+     *   };
      * </pre>
      */    
     private void buildInitForTestPolicyCmptParameter(JavaCodeFragment body, ITestPolicyCmptTypeParameter[] policyTypeParams, String variablePrefix) throws CoreException {
+        String objectReferenceStoreName = "objectReferenceStore";
         if (policyTypeParams.length > 0){
+            body.appendClassName(DefaultReferenceResolver.class);
+            body.appendln(" referenceResolver = new DefaultReferenceResolver();");
+            body.appendClassName(DefaultObjectReferenceStore.class);
+            body.append(" ");
+            body.append(objectReferenceStoreName);
+            body.appendln("  = new DefaultObjectReferenceStore();");
+            body.appendln();
+            
             body.appendClassName(Element.class);
             body.appendln(" childElement = null;");
         }
@@ -413,8 +434,20 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             body.appendClassName(XmlUtil.class);
             body.appendln(".getFirstElement(element, \"" + policyTypeParams[i].getName() + "\");");
             body.appendln("if (childElement != null){");
-            buildConstrutorForTestPolicyCmptParameter(body, policyTypeParam, variablePrefix);
+            buildConstrutorForTestPolicyCmptParameter(body, policyTypeParam, variablePrefix, objectReferenceStoreName);
             body.appendln("}");
+        }
+        
+        if (policyTypeParams.length > 0){
+            body.appendln();
+            body.appendln("try{");
+            body.append("referenceResolver.resolve(");
+            body.append(objectReferenceStoreName);
+            body.appendln(");");
+            body.appendln("} catch (Exception e){");
+            body.append("throw new ");
+            body.appendln("RuntimeException(e);");
+            body.appendln("};");
         }
     }
 
@@ -427,14 +460,14 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      *       try {
      *           String className = childElement.getAttribute("class");
      *           inputTcPolicyA_1 =([PolicyCmptTypeParameter.name]) Class.forName(className, true, [PolicyCmptTypeParameter.name].class.getClassLoader()).newInstance();
-     *           inputTcPolicyA_1.initFromXml(childElement, true, getRepository(), null);
+     *           inputTcPolicyA_1.initFromXml(childElement, true, getRepository(), <objectReferenceStoreName>);
      *       }
      *       catch (Exception e) {
      *           throw new RuntimeException(e);
      *       }
      * </pre>
-     */    
-    protected void buildConstrutorForTestPolicyCmptParameter(JavaCodeFragment body, ITestPolicyCmptTypeParameter policyTypeParam, String variablePrefix) throws CoreException{
+     */
+    protected void buildConstrutorForTestPolicyCmptParameter(JavaCodeFragment body, ITestPolicyCmptTypeParameter policyTypeParam, String variablePrefix, String objectReferenceStoreName) throws CoreException{
         String qualifiedPolicyCmptName = getQualifiedNameFromTestPolicyCmptParam(policyTypeParam); 
         String variableName = variablePrefix + policyTypeParam.getName();
         body.appendln("try {");
@@ -446,7 +479,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.appendClassName(qualifiedPolicyCmptName);
         body.appendln(".class.getClassLoader()).newInstance();");
         body.append(variableName);
-        body.appendln(".initFromXml(childElement, true, getRepository(), null);");
+        body.append(".initFromXml(childElement, true, getRepository(), ");
+        body.append(objectReferenceStoreName);
+        body.appendln(");");
         body.appendln("} catch (Exception e) {throw new RuntimeException(e);}");
     }
     
