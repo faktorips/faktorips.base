@@ -30,7 +30,7 @@ public class RelationType extends DefaultEnumValue {
 
     public final static RelationType COMPOSITION_DETAIL_TO_MASTER;
     
-    public final static RelationType ASSOZIATION;
+    public final static RelationType ASSOCIATION;
     
     private final static DefaultEnumType enumType; 
     
@@ -38,7 +38,7 @@ public class RelationType extends DefaultEnumValue {
         enumType = new DefaultEnumType("RelationType", RelationType.class); //$NON-NLS-1$
         COMPOSITION_MASTER_TO_DETAIL = new RelationType(enumType, "comp", "Composition (Master to Detail)"); //$NON-NLS-1$ //$NON-NLS-2$
         COMPOSITION_DETAIL_TO_MASTER = new RelationType(enumType, "reverseComp", "Composition (Detail to Master)"); //$NON-NLS-1$ //$NON-NLS-2$
-        ASSOZIATION = new RelationType(enumType, "ass", "Association"); //$NON-NLS-1$ //$NON-NLS-2$
+        ASSOCIATION = new RelationType(enumType, "ass", "Association"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     public final static EnumType getEnumType() {
@@ -66,7 +66,7 @@ public class RelationType extends DefaultEnumValue {
     }
     
     public boolean isAssoziation() {
-        return this==ASSOZIATION;
+        return this==ASSOCIATION;
     }
     
     private RelationType(DefaultEnumType type, String id, String name) {

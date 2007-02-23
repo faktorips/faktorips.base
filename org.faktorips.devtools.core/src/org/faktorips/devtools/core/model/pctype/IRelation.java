@@ -58,7 +58,7 @@ public interface IRelation extends IIpsObjectPart {
 	public static final int CARDINALITY_ONE = 1;
 	public static final int CARDINALITY_MANY = Integer.MAX_VALUE;
 
-    public final static RelationType DEFAULT_RELATION_TYPE = RelationType.ASSOZIATION; 
+    public final static RelationType DEFAULT_RELATION_TYPE = RelationType.ASSOCIATION; 
     /**
      * Prefix for all message codes of this class.
      */

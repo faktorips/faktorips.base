@@ -645,7 +645,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     public void testIsAggregateRoot() throws CoreException {
     	assertTrue(pcType.isAggregateRoot());
     	
-    	pcType.newRelation().setRelationType(RelationType.ASSOZIATION);
+    	pcType.newRelation().setRelationType(RelationType.ASSOCIATION);
     	assertTrue(pcType.isAggregateRoot());
 
     	pcType.newRelation().setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
@@ -660,7 +660,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     	subtype.setSupertype(supertype.getQualifiedName());
     	subtype.getIpsSrcFile().save(true, null);
     	
-    	supertype.newRelation().setRelationType(RelationType.ASSOZIATION);
+    	supertype.newRelation().setRelationType(RelationType.ASSOCIATION);
     	assertTrue(subtype.isAggregateRoot());
     	supertype.newRelation().setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
     	assertTrue(subtype.isAggregateRoot());

@@ -180,7 +180,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
 			try {
 				IProductCmpt p = (IProductCmpt)relations[i].getIpsProject().findIpsObject(IpsObjectType.PRODUCT_CMPT, relations[i].getTarget());
 				if (p != null) {
-					if(type.getRelationType().equals(RelationType.ASSOZIATION)){
+					if(type.getRelationType().equals(RelationType.ASSOCIATION)){
 						children.add(new ProductCmptReference(this, parent, p));
 						continue;
 					}

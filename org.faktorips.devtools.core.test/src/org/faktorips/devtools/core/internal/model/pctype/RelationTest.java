@@ -132,7 +132,7 @@ public class RelationTest extends AbstractIpsPluginTest {
         MessageList ml = relation.validate();
         assertNull(ml.getMessageByCode(IRelation.MSGCODE_REVERSE_RELATION_MISMATCH)); // applies only to associations
 
-        relation.setRelationType(RelationType.ASSOZIATION);
+        relation.setRelationType(RelationType.ASSOCIATION);
         ml = relation.validate();
         assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_REVERSE_RELATION_MISMATCH));
         
@@ -150,8 +150,8 @@ public class RelationTest extends AbstractIpsPluginTest {
     
     public void testSetType() {
         relation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
-        relation.setRelationType(RelationType.ASSOZIATION);
-        assertEquals(RelationType.ASSOZIATION, relation.getRelationType());
+        relation.setRelationType(RelationType.ASSOCIATION);
+        assertEquals(RelationType.ASSOCIATION, relation.getRelationType());
         assertTrue(relation.getIpsObject().getIpsSrcFile().isDirty());
     }
     
@@ -159,7 +159,7 @@ public class RelationTest extends AbstractIpsPluginTest {
         Document doc = this.getTestDocument();
         relation.initFromXml((Element)doc.getDocumentElement());
         assertEquals(42, relation.getId());
-        assertEquals(RelationType.ASSOZIATION, relation.getRelationType());
+        assertEquals(RelationType.ASSOCIATION, relation.getRelationType());
         assertTrue(relation.isReadOnlyContainer());
         assertEquals("MotorPart", relation.getTarget());
         assertEquals("blabla", relation.getDescription());
@@ -181,7 +181,7 @@ public class RelationTest extends AbstractIpsPluginTest {
      */
     public void testToXml() {
         relation = pcType.newRelation(); 
-        relation.setRelationType(RelationType.ASSOZIATION);
+        relation.setRelationType(RelationType.ASSOCIATION);
         relation.setReadOnlyContainer(true);
         relation.setTarget("target");
         relation.setTargetRoleSingular("targetRoleSingular");
@@ -202,7 +202,7 @@ public class RelationTest extends AbstractIpsPluginTest {
         Relation copy = new Relation();
         copy.initFromXml(element);
         assertEquals(4, copy.getId());
-        assertEquals(RelationType.ASSOZIATION, copy.getRelationType());
+        assertEquals(RelationType.ASSOCIATION, copy.getRelationType());
         assertTrue(copy.isReadOnlyContainer());
         assertEquals("target", copy.getTarget());
         assertEquals("targetRoleSingular", copy.getTargetRoleSingular());
@@ -547,10 +547,10 @@ public class RelationTest extends AbstractIpsPluginTest {
 		rel2.setReverseRelation(relation.getTargetRoleSingular());
 		rel2.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
 		relation.setReverseRelation("test");
-		relation.setRelationType(RelationType.ASSOZIATION);
+		relation.setRelationType(RelationType.ASSOCIATION);
 		MessageList ml = relation.validate();
 		assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_REVERSE_ASSOCIATION_MISSMATCH));
-		rel2.setRelationType(RelationType.ASSOZIATION);
+		rel2.setRelationType(RelationType.ASSOCIATION);
 		ml = relation.validate();
 		assertNull(ml.getMessageByCode(IRelation.MSGCODE_REVERSE_ASSOCIATION_MISSMATCH));
     }

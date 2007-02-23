@@ -101,7 +101,7 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
      */
     public static RelationType getCorrespondingRelationType(RelationType sourceRelType){
         return sourceRelType == null                ? null :
-               sourceRelType.isAssoziation()        ? RelationType.ASSOZIATION :
+               sourceRelType.isAssoziation()        ? RelationType.ASSOCIATION :
                sourceRelType.isCompositionDetailToMaster() ? RelationType.COMPOSITION_MASTER_TO_DETAIL :
                sourceRelType.isCompositionMasterToDetail()        ? RelationType.COMPOSITION_DETAIL_TO_MASTER : null;
     }

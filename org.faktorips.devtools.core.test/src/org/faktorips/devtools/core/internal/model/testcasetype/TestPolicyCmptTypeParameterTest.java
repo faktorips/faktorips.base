@@ -393,7 +393,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
         IPolicyCmptType policyCmptTypeTarget = newPolicyCmptType(project, "policyCmptTarget");
         IRelation rel1 = policyCmptType.newRelation();
-        rel1.setRelationType(RelationType.ASSOZIATION);
+        rel1.setRelationType(RelationType.ASSOCIATION);
         rel1.setTargetRoleSingular("relation1");
         rel1.setTarget(policyCmptTypeTarget.getQualifiedName());
         
