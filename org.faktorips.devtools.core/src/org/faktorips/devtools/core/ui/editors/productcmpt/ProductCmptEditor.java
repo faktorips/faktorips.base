@@ -143,12 +143,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	public void editorActivated() {
 	    if (TRACE) {
-         logMethodStarted("=== editorActivated() ===");    //$NON-NLS-1$
+         logMethodStarted("editorActivated()");    //$NON-NLS-1$
         }
         updateChosenActiveGeneration();
 		super.editorActivated();
         if (TRACE) {
-             logMethodFinished("=== editorActivated() ===");    //$NON-NLS-1$
+             logMethodFinished("editorActivated()");    //$NON-NLS-1$
         }
 	}
 
@@ -159,11 +159,20 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
         if (TRACE) {
             logMethodStarted("checkForInconsistenciesToModel");
         }
-        if (isGenerationEditable((IProductCmptGeneration)getActiveGeneration())) {
+        boolean allGenerationsEditabled = true;
+        IIpsObjectGeneration[] gens = getProductCmpt().getGenerations();
+        for (int i = 0; i < gens.length; i++) {
+            IProductCmptGeneration gen = (IProductCmptGeneration)gens[i];
+            if (!isGenerationEditable(gen)) {
+                allGenerationsEditabled = false;
+                break;
+            }
+        }
+        if (allGenerationsEditabled) {
             super.checkForInconsistenciesToModel();
         } else {
             if (TRACE) {
-                logInternal("checkForInconsistenciesToModel - no need to check, generation is not editable.");
+                logInternal("checkForInconsistenciesToModel - no need to check, at least one of the generations is not editable.");
             }
         }
         if (TRACE) {

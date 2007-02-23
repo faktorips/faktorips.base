@@ -35,31 +35,21 @@ import org.faktorips.util.memento.Memento;
  */
 public class EnumValueSetControl extends TextButtonControl implements IDataChangeableReadWriteAccess {
 
-    /**
-	 * The config element which is based on the enum value set to modify.
-	 */
+	// The config element which is based on the enum value set to modify.
 	private IConfigElement configElement;
 	
-	/**
-	 * The shell to details dialog within.
-	 */
+	// The shell to details dialog within.
 	private Shell shell;
 	
-	/**
-	 * The controller to notify if detail modifiation has finished.
-	 */
+	// The controller to notify if detail modifiation has finished.
 	private IpsPartUIController controller; 
 	
-	/**
-	 * The state of the config element before opening the detail edit dialog. Used to handle the
-	 * cancel button properly
-	 */
+	// The state of the config element before opening the detail edit dialog. Used to handle the
+	// cancel button properly
 	private Memento state;
 	
-	/**
-	 * The state of the ips source file before opening the detail edit dialog. Used to handle the
-	 * cancel button properly
-	 */
+	// The state of the ips source file before opening the detail edit dialog. Used to handle the
+	// cancel button properly
 	private boolean dirty;
 	
     private boolean dataChangeable;
@@ -116,7 +106,6 @@ public class EnumValueSetControl extends TextButtonControl implements IDataChang
 			// no state was preserved, so dont do anything.
 			return;
 		}
-		
 		configElement.setState(state);
 		if (!dirty) {
 			configElement.getIpsObject().getIpsSrcFile().markAsClean();
@@ -128,7 +117,7 @@ public class EnumValueSetControl extends TextButtonControl implements IDataChang
      */
     public void setDataChangeable(boolean changeable) {
         this.dataChangeable = changeable;
-        setButtonEnabled(changeable);
+        getTextControl().setEnabled(dataChangeable);
     }
 
     /**

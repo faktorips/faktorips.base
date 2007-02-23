@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -27,7 +26,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -162,11 +160,6 @@ public class DefaultsAndRangesSection extends IpsSection {
         }
     }
 
-    /**
-     * @param element
-     * @param dataType
-     * @param controller
-     */
     private void createEditControlForDefaultValue(IConfigElement element, ValueDatatype dataType, IpsPartUIController controller) {
         toolkit.createFormLabel(rootPane, StringUtils.capitalise(element.getName()));
         toolkit.createFormLabel(rootPane, Messages.PolicyAttributeEditDialog_defaultValue);
@@ -226,19 +219,5 @@ public class DefaultsAndRangesSection extends IpsSection {
     protected void performRefresh() {
     	uiMasterController.updateUI();
     }
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setEnabled(boolean enabled) {
-		// to get the disabled look, we have to disable all the input-fields manually :-(
-		for (Iterator iter = editControls.iterator(); iter.hasNext();) {
-			Control element = (Control) iter.next();
-			element.setEnabled(enabled);
-			
-		}
-		rootPane.layout(true);
-		rootPane.redraw();
-	}
 
 }
