@@ -157,7 +157,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
      */
     protected void checkForInconsistenciesToModel() {
         if (TRACE) {
-            logMethodStarted("checkForInconsistenciesToModel");
+            logMethodStarted("checkForInconsistenciesToModel"); //$NON-NLS-1$
         }
         boolean allGenerationsEditabled = true;
         IIpsObjectGeneration[] gens = getProductCmpt().getGenerations();
@@ -172,11 +172,11 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
             super.checkForInconsistenciesToModel();
         } else {
             if (TRACE) {
-                logInternal("checkForInconsistenciesToModel - no need to check, at least one of the generations is not editable.");
+                logInternal("checkForInconsistenciesToModel - no need to check, at least one of the generations is not editable."); //$NON-NLS-1$
             }
         }
         if (TRACE) {
-            logMethodFinished("checkForInconsistenciesToModel");
+            logMethodFinished("checkForInconsistenciesToModel"); //$NON-NLS-1$
         }
     }
 
