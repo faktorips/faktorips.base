@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.runtime.DefaultObjectReferenceStore;
 import org.faktorips.runtime.DefaultReferenceResolver;
+import org.faktorips.runtime.IObjectReferenceStore;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.runtime.test.IpsTestCase2;
@@ -393,8 +394,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * Example:
      * <p>
      * <pre>
-     *  DefaultReferenceResolver referenceResolver = new DefaultReferenceResolver();
-     *  DefaultObjectReferenceStore objectReferenceStore = new DefaultObjectReferenceStore();
+     *  IObjectReferenceStore objectReferenceStore = new DefaultObjectReferenceStore();
      *  Element childElement = null;
      *   childElement  = XmlUtil.getFirstElement(element, "[PolicyCmptTypeParameter.name]");
      *   if (inputElement!=null){
@@ -403,19 +403,17 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      *   }
      *   ...
      *   try {
-     *      referenceResolver.resolve(objectReferenceStore);
+     *      new DefaultReferenceResolver().resolve(objectReferenceStore);
      *   }
      *   catch (Exception e) {
      *      throw new RuntimeException(e);
      *   };
      * </pre>
-     */    
+     */
     private void buildInitForTestPolicyCmptParameter(JavaCodeFragment body, ITestPolicyCmptTypeParameter[] policyTypeParams, String variablePrefix) throws CoreException {
         String objectReferenceStoreName = "objectReferenceStore";
         if (policyTypeParams.length > 0){
-            body.appendClassName(DefaultReferenceResolver.class);
-            body.appendln(" referenceResolver = new DefaultReferenceResolver();");
-            body.appendClassName(DefaultObjectReferenceStore.class);
+            body.appendClassName(IObjectReferenceStore.class);
             body.append(" ");
             body.append(objectReferenceStoreName);
             body.appendln("  = new DefaultObjectReferenceStore();");
@@ -441,7 +439,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         if (policyTypeParams.length > 0){
             body.appendln();
             body.appendln("try{");
-            body.append("referenceResolver.resolve(");
+            body.append("new ");
+            body.appendClassName(DefaultReferenceResolver.class);
+            body.append("().resolve(");
             body.append(objectReferenceStoreName);
             body.appendln(");");
             body.appendln("} catch (Exception e){");
