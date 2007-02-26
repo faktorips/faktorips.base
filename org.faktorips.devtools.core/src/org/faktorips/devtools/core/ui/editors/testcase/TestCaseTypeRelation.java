@@ -196,16 +196,27 @@ public class TestCaseTypeRelation implements Validatable {
                 }
 			}
 		}
+        
+        // get the validation messages of the number of instances from the parent test policy cmpt,
+        // thus it could be displayed on the relation symbol
+        MessageList ml = parentTestPolicyCmpt.validate();
+        
+        MessageList mlMin = ml.getMessagesFor(parentTestPolicyCmpt, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
+        for (Iterator iter = mlMin.iterator(); iter.hasNext();) {
+            Message msg = (Message)iter.next();
+            if (msg.getText().indexOf("\"" + getName()+ "\"")>=0){ //$NON-NLS-1$ //$NON-NLS-2$
+                messages.put(msg.getCode(), msg);
+            }
+        }
+        MessageList mlMax = ml.getMessagesFor(parentTestPolicyCmpt, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
+        for (Iterator iter = mlMax.iterator(); iter.hasNext();) {
+            Message msg = (Message)iter.next();
+            messages.put(msg.getCode(), msg);
+        }
+        
         // add the unique test relation messages to the list of messages
         for (Iterator iter = messages.values().iterator(); iter.hasNext();) {
             list.add((Message)iter.next());
         }
-        
-        // get the validation messages of the number of instances from the parent test policy cmpt,
-        // thus it could be displayed
-        // on the relation symbol
-        MessageList msgList = parentTestPolicyCmpt.validate();
-        list.add(msgList.getMessagesFor(parentTestPolicyCmpt, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES));
-        list.add(msgList.getMessagesFor(parentTestPolicyCmpt, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES));
 	}
 }
