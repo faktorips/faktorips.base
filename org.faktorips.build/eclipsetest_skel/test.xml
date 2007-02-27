@@ -124,7 +124,7 @@
         </exec>
 		<echo message="extracting faktorips-feature" />
         <exec dir="." executable="unzip" failonerror="true">
-                    <arg line=" *faktorips*Test*.zip " />
+                    <arg line="-o -qq *faktorips*Test*.zip " />
          </exec>
 
 
