@@ -115,15 +115,15 @@
 		<mkdir dir="${install}" />
    	    
 	    <exec dir="." executable="unzip" failonerror="true">
-	    		<arg line=" eclipse322-test.zip -d ${install}" />
+	    		<arg line="-o -qq eclipse322-test.zip -d ${install}" />
 	    </exec>
 	 
         <exec dir="." executable="unzip" failonerror="true" >
-                    <arg line="-o -qq *faktorips*test*.zip -d ${install}" />
+                    <arg line="-o -qq *faktorips*test*.zip " />
         </exec>
 
         <exec dir="." executable="unzip" failonerror="true">
-                    <arg line="-o -qq *faktorips*Test*.zip -d ${install}" />
+                    <arg line=" *faktorips*Test*.zip " />
          </exec>
 
 
