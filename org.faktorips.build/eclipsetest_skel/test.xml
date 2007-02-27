@@ -7,7 +7,7 @@
 	<property file="label.properties" />
 	
 	<!--default directory where test-eclipse will be installed-->
-	<property name="install" value="${basedir}/test-eclipse" />
+	<property name="install" value="${basedir}/eclipse" />
 	
 	<!--suffix added to report name to identify which platform tests results come from-->
 	<property name="platform" value="${os}.${ws}.${arch}" />
