@@ -439,7 +439,10 @@ class ParseTreeVisitor implements FlParserVisitor {
 	            convertedRhsResult.addMessages(rhsResult.getMessages());
                 convertedRhsResult.addIdentifiersUsed(rhsResult.getIdentifiersUsedAsSet());
             }
-            return operation.generate(convertedLhsResult, convertedRhsResult);
+            CompilationResultImpl result = operation.generate(convertedLhsResult, convertedRhsResult);
+            result.addIdentifiersUsed(convertedLhsResult.getIdentifiersUsedAsSet());
+            result.addIdentifiersUsed(convertedRhsResult.getIdentifiersUsedAsSet());
+            return result;
         }
         Object[] replacements = new Object[]{operator, lhsResult.getDatatype().getName() + ", " + rhsResult.getDatatype().getName()};  //$NON-NLS-1$
         String text = ExprCompiler.localizedStrings.getString(ExprCompiler.UNDEFINED_OPERATOR, compiler.getLocale(), replacements); 
