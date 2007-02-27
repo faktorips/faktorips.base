@@ -97,6 +97,7 @@ public class RelationTargetPage extends AbstractPcTypeRelationWizardPage  {
 					// update the buttons to enable next if an existing target was chosen
 					getContainer().updateButtons();
 				}
+                setDefaults();
 			}
 		});
 		
@@ -167,12 +168,12 @@ public class RelationTargetPage extends AbstractPcTypeRelationWizardPage  {
 	 * Set default values depending on the type of relation.
 	 */
 	private void setDefaults() {
-		wizard.setDefaultsByRelationType(wizard.getRelation());
+		wizard.setDefaultsByRelationTypeAndTarget(wizard.getRelation());
 		wizard.getUiControllerRelation().updateUI();
 		
 		if (wizard.isNewReverseRelation() && wizard.getReverseRelation() != null){
 			wizard.getReverseRelation().setRelationType(NewPcTypeRelationWizard.getCorrespondingRelationType(wizard.getRelation().getRelationType()));
-            wizard.setDefaultsByRelationType(wizard.getReverseRelation());
+            wizard.setDefaultsByRelationTypeAndTarget(wizard.getReverseRelation());
             wizard.getUiControllerReverseRelation().updateUI();
 		}
 	}

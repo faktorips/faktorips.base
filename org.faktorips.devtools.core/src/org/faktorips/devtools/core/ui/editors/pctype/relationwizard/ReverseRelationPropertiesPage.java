@@ -349,7 +349,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 			newReverseRelation.setReadOnlyContainer(true);
         }
         
-		wizard.setDefaultsByRelationType(newReverseRelation);
+		wizard.setDefaultsByRelationTypeAndTarget(newReverseRelation);
 		wizard.storeReverseRelation(newReverseRelation);
 	}
 	

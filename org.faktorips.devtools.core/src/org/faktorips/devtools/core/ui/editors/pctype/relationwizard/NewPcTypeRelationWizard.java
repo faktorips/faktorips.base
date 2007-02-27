@@ -320,12 +320,14 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	/**
 	 * Set the default values depending on the relation type and read-only container flag.
 	 */
-	void setDefaultsByRelationType(IRelation newRelation){
+	void setDefaultsByRelationTypeAndTarget(IRelation newRelation){
 		RelationType type = newRelation.getRelationType();
 		if (type != null) {
-			if (type.isCompositionMasterToDetail()) {
+            boolean targetIsProductRelevantOrNull = getTargetPolicyCmptType()==null?true:getTargetPolicyCmptType().isConfigurableByProductCmptType();
+			boolean defaultProductRelevant = newRelation.getPolicyCmptType().isConfigurableByProductCmptType() && targetIsProductRelevantOrNull;
+            if (type.isCompositionMasterToDetail()) {
 				newRelation.setMaxCardinality(Integer.MAX_VALUE);
-				newRelation.setProductRelevant(newRelation.getPolicyCmptType().isConfigurableByProductCmptType());
+                newRelation.setProductRelevant(defaultProductRelevant);
 			} else if (type.isCompositionDetailToMaster()) {
 				newRelation.setMinCardinality(1);
 				newRelation.setMaxCardinality(1);
@@ -338,7 +340,7 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 				if (newRelation.isReadOnlyContainer()){
 					newRelation.setMaxCardinality(Integer.MAX_VALUE);
 				}
-				newRelation.setProductRelevant(newRelation.getPolicyCmptType().isConfigurableByProductCmptType());
+				newRelation.setProductRelevant(defaultProductRelevant);
 			}
 		}
 	}
