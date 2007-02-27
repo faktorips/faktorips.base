@@ -9,7 +9,7 @@
 		</filelist>
 
 		<!-- eclipse libraries -->
-		<fileset dir="/usr/lib/eclipse-3.1/">
+		<fileset dir="/usr/lib/eclipse-3.2.2/">
 			<patternset>
 					<include name="plugins/org.eclipse.jface*.jar" />
 					<include name="plugins/org.eclipse.text*.jar" />
