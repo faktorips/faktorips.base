@@ -80,6 +80,8 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         productCmpt.getIpsSrcFile().save(true, null);
         
         pcTypeInput = newPolicyCmptType(project, "policyCmptTypeInput");
+        
+        newDefinedEnumDatatype((IpsProject)project, new Class[]{TestEnumType.class});
     }
     
     public void testValidate_UnknownAttribute() throws CoreException {
@@ -474,7 +476,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         params[0] = new Parameter(0, "param1", Datatype.INTEGER.getQualifiedName());
         params[1] = new Parameter(1, "param2", Datatype.INTEGER.getQualifiedName());
         params[2] = new Parameter(2, "policyInputX", pcTypeInput.getQualifiedName());
-        
+
         attribute.setFormulaParameters(params);
         
         ((IProductCmptGeneration)configElement.getParent()).getProductCmpt().setPolicyCmptType(pcType.getQualifiedName());
@@ -515,7 +517,18 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         configElement.setValue("WENN(policyInputX.attributeInput1 = 1;1;10)");
         identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
         assertEquals(1, identifierInFormula.size());   
-        assertTrue(identifierInFormula.contains("policyInputX.attributeInput1"));        
+        assertTrue(identifierInFormula.contains("policyInputX.attributeInput1")); 
+        
+        params = new Parameter[1];
+        params[0] = new Parameter(0, "testEnum", "TestEnumType");
+        attribute.setFormulaParameters(params);
+        
+        // check with WENN formula and operation with implicit casting 
+        // (e.g. the first argument of a formula is an enum type)
+        configElement.setValue("WENN(testEnum = TestEnumType.1;1;10)");
+        identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
+        assertEquals(1, identifierInFormula.size());   
+        assertTrue(identifierInFormula.contains("testEnum"));
     }
     
     public void testGetIdentifierUsedInFormulaWithEnum() throws CoreException{
