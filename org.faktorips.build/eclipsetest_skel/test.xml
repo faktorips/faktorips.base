@@ -13,7 +13,7 @@
 	<property name="platform" value="${os}.${ws}.${arch}" />
 
 	<!-- The root of the eclipse installation -->
-	<property name="eclipse-home" value="${install}/eclipse" />
+	<property name="eclipse-home" value="${install}" />
 
 	<!-- The directory that will contain the xml and html results from the tests that are run -->
  	<property name="results" value="${basedir}/results" />
