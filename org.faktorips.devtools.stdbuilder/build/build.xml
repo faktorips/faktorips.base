@@ -20,6 +20,7 @@
 					<include name="plugins/org.eclipse.swt*.jar" />
 					<include name="plugins/org.eclipse.ui*.jar" />
 					<include name="plugins/org.eclipse.search*.jar" />
+				    <include name="plugins/org.eclipse.equinox*.jar" />
 			</patternset>
 		</fileset>
 		

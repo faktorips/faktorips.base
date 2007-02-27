@@ -24,6 +24,7 @@
 					<include name="plugins/org.eclipse.compare*.jar"/>
 					<include name="plugins/org.eclipse.debug.core*.jar" />
 					<include name="plugins/org.eclipse.debug.ui*.jar" />
+  				    <include name="plugins/org.eclipse.equinox*.jar" />
 			</patternset>
 		</fileset>
 		
