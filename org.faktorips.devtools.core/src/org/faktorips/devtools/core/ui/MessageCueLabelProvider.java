@@ -34,6 +34,8 @@ import org.faktorips.util.message.MessageList;
  * The message cue label provider takes a given label provider and
  * decorates the image with a message cue image. The text is returned
  * unchanged.
+ * 
+ * @author Jan Ortmann
  */
 public class MessageCueLabelProvider extends LabelProvider {
     
@@ -41,16 +43,12 @@ public class MessageCueLabelProvider extends LabelProvider {
 
     private HashMap cachedProblemImageDescriptors = new HashMap();
     
-    /**
-     * 
-     */
     public MessageCueLabelProvider(ILabelProvider baseProvider) {
         this.baseProvider = baseProvider;
     }
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
+     * {@inheritDoc}
      */
     public Image getImage(Object element) {
         MessageList list = null;
@@ -101,8 +99,7 @@ public class MessageCueLabelProvider extends LabelProvider {
     }
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
+     * {@inheritDoc}
      */
     public String getText(Object element) {
         return baseProvider.getText(element);
