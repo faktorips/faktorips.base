@@ -42,6 +42,11 @@ public interface IRow extends IIpsObjectPart {
     public final static String MSGCODE_VALUE_NOT_PARSABLE = "VALUE_NOT_PARSABLE"; //$NON-NLS-1$
     
     /**
+     * Identifies a validation rule.
+     */
+    public final static String MSGCODE_VALID_NAME_WHEN_TABLE_ENUM_TYPE = "ValidNameWhenEnumTypeContent"; //$NON-NLS-1$
+
+    /**
      * Returns the row number as string.
      *  
      * @see org.faktorips.devtools.core.model.IIpsElement#getName()

@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature.nls1"
       label="FaktorIPS-Language Pack 1"
-      version="1.0.0.rc3"
+      version="1.0.0.rc4"
       provider-name="FaktorZehn GmbH">
 
    <description url="http://www.faktorips.org">

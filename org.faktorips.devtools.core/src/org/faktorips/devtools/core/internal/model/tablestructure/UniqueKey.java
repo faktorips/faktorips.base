@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
@@ -114,7 +115,7 @@ public class UniqueKey extends Key implements IUniqueKey {
         return;
     }
 
-    private void validateTableBaseEnumConstrains(MessageList list){
+    private void validateTableBaseEnumConstrains(MessageList list) throws CoreException{
         if(getTableStructure().isModelEnumType()){
             IUniqueKey[] keys = getTableStructure().getUniqueKeys();
             if(keys.length < 2){
@@ -128,6 +129,15 @@ public class UniqueKey extends Key implements IUniqueKey {
             if(keys[1].equals(this)){
                 if(getNumOfKeyItems() > 1){
                     list.add(new Message(IUniqueKey.MSGCODE_ENUM_TABLE_NAME_KEY, Messages.UniqueKey_secondKeyOnlyOneItem, Message.ERROR, this, IUniqueKey.PROPERTY_KEY_ITEMS));
+                    return;
+                }
+                if(getNumOfKeyItems() == 1){
+                    IKeyItem item = keys[1].getKeyItemAt(0);
+                    Datatype datatype = getIpsProject().findValueDatatype(item.getDatatype());
+                    if(!Datatype.STRING.equals(datatype)){
+                        list.add(new Message(IUniqueKey.MSGCODE_ENUM_TABLE_NAME_KEY_DATATYPE, Messages.UniqueKey_datatypeMustBeString, Message.ERROR, this, IUniqueKey.PROPERTY_KEY_ITEMS));
+                        return;
+                    }
                 }
             }
         }

@@ -23,9 +23,20 @@ package org.faktorips.devtools.core.model.tablestructure;
  */
 public interface IUniqueKey extends IKey {
 
+    /**
+     * Identifies a validation rule. 
+     */
     public final static String MSGCODE_ENUM_TABLE_ID_KEY = "EnumTableIdKeyOnlyOneItem";
 
+    /**
+     * Identifies a validation rule. 
+     */
     public final static String MSGCODE_ENUM_TABLE_NAME_KEY = "EnumTableNameKeyOnlyOneItem";
+
+    /**
+     * Identifies a validation rule. 
+     */
+    public final static String MSGCODE_ENUM_TABLE_NAME_KEY_DATATYPE = "EnumTableNameKeyMustBeString";
     
     /**
      * The name of the unique key is the concatenation of it's items separated

@@ -64,6 +64,8 @@ public class Messages extends NLS {
 
     public static String TableStructure_needsTwoKeys;
 
+    public static String UniqueKey_datatypeMustBeString;
+
     public static String UniqueKey_firstKeyOnlyOneItem;
 
 	public static String UniqueKey_msgTooLessItems;

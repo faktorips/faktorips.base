@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
-import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -107,13 +106,6 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
      * {@inheritDoc}
      */
     public String getClassNameForTableBasedEnum(ITableStructure structure) {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableStructureEnumDatatypeAdapter datatype) {
         return null;
     }
 

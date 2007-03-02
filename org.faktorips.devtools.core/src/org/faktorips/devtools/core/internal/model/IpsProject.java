@@ -56,7 +56,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -902,12 +901,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
         if(datatype instanceof ArrayOfValueDatatype){
         	return new ValueSetType[] {ValueSetType.ALL_VALUES};
-        }
-        if (datatype instanceof TableStructureEnumDatatypeAdapter) {
-            TableStructureEnumDatatypeAdapter adapter = (TableStructureEnumDatatypeAdapter)datatype;
-            if (adapter.getTableStructure().getTableStructureType()==TableStructureType.ENUMTYPE_PRODUCTDEFINTION) {
-                return new ValueSetType[] {ValueSetType.ALL_VALUES};
-            }
         }
         return new ValueSetType[] { ValueSetType.ALL_VALUES, ValueSetType.ENUM };
     }

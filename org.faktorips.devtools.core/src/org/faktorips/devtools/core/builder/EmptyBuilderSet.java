@@ -23,7 +23,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
-import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
@@ -126,13 +125,6 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     public String getClassNameForTableBasedEnum(ITableStructure structure) {
         return null;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-	public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableStructureEnumDatatypeAdapter datatype) {
-		return null;
-	}
     
     /**
      * @return the string <i>emptyBuilderSet</i>

@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
-import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -319,13 +318,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 return builders[i];            }
         }
         throw new RuntimeException("No builder of class " + builderClass + " defined."); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableStructureEnumDatatypeAdapter datatype) {
-        return new TableStructureEnumDatatypeHelper(datatype);
     }
 
     public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype) {
