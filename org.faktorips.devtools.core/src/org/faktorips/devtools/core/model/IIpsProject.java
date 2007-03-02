@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.MessageList;
 
 
@@ -531,4 +532,12 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @throws CoreException if an error occurs during search.
      */
     public MessageList checkForDuplicateRuntimeIds() throws CoreException;
+    
+    /**
+     * Fills the provided <code>java.util.List</code> with <code>ITableContent</code> objects that are found in the
+     * workspace and are based on the provided <code>ITableStructure</code>.
+     * 
+     * @throws CoreException if an error occurs during search.
+     */
+    public void findTableContents(ITableStructure structure, List tableContents) throws CoreException;
 }

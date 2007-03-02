@@ -23,6 +23,10 @@ package org.faktorips.devtools.core.model.tablestructure;
  */
 public interface IUniqueKey extends IKey {
 
+    public final static String MSGCODE_ENUM_TABLE_ID_KEY = "EnumTableIdKeyOnlyOneItem";
+
+    public final static String MSGCODE_ENUM_TABLE_NAME_KEY = "EnumTableNameKeyOnlyOneItem";
+    
     /**
      * The name of the unique key is the concatenation of it's items separated
      * by a comma and a space character (<code>", "</code>).

@@ -97,6 +97,7 @@ public class UniqueKey extends Key implements IUniqueKey {
             validateItem(items[i], i, list);
         }
         validateItemSequence(list);
+        validateTableBaseEnumConstrains(list);
     }
     
     private void validateItem(String item, int itemmIndex, MessageList list) {
@@ -113,6 +114,24 @@ public class UniqueKey extends Key implements IUniqueKey {
         return;
     }
 
+    private void validateTableBaseEnumConstrains(MessageList list){
+        if(getTableStructure().isModelEnumType()){
+            IUniqueKey[] keys = getTableStructure().getUniqueKeys();
+            if(keys.length < 2){
+                return;
+            }
+            if(keys[0].equals(this)){
+                if(getNumOfKeyItems() > 1){
+                    list.add(new Message(IUniqueKey.MSGCODE_ENUM_TABLE_ID_KEY, Messages.UniqueKey_firstKeyOnlyOneItem, Message.ERROR, this, IUniqueKey.PROPERTY_KEY_ITEMS));
+                }
+            }
+            if(keys[1].equals(this)){
+                if(getNumOfKeyItems() > 1){
+                    list.add(new Message(IUniqueKey.MSGCODE_ENUM_TABLE_NAME_KEY, Messages.UniqueKey_secondKeyOnlyOneItem, Message.ERROR, this, IUniqueKey.PROPERTY_KEY_ITEMS));
+                }
+            }
+        }
+    }
     
     /**
      * {@inheritDoc}

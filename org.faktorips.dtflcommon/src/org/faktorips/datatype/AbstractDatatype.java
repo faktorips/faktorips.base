@@ -29,7 +29,7 @@ public abstract class AbstractDatatype implements Datatype {
     /**
      * {@inheritDoc}
      */
-    public MessageList validate() {
+    public MessageList validate() throws Exception{
         return new MessageList();
     }
 

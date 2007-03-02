@@ -62,6 +62,7 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -199,6 +200,34 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 	    assertEquals(TestEnumType.class.getName(), types[3].getJavaClassName());
     }
     
+    public void testGetValueDatatypesTableBasedEnum() throws CoreException{
+        ITableStructure structure = (ITableStructure)newIpsObject(this.root, IpsObjectType.TABLE_STRUCTURE, "EnumType");
+        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
+        ITableContents contents1 = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "PaymentMode");
+        contents1.newGeneration();
+        contents1.setTableStructure(structure.getQualifiedName());
+        ITableContents contents2 = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Gender");
+        contents2.setTableStructure(structure.getQualifiedName());
+        contents2.newGeneration();
+        
+        ITableStructure structure2 = (ITableStructure)newIpsObject(this.root, IpsObjectType.TABLE_STRUCTURE, "EnumType2");
+        structure2.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
+        ITableContents contents3 = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "AgeCalculationStrategy");
+        contents3.newGeneration();
+        
+        ValueDatatype[] datatypes = ipsProject.getValueDatatypes(false);
+        List datatypeList = new ArrayList();
+        for (int i = 0; i < datatypes.length; i++) {
+            datatypeList.add(datatypes[i].getQualifiedName());
+        }
+        assertTrue(datatypeList.contains("PaymentMode"));
+        assertTrue(datatypeList.contains("Gender"));
+        assertFalse(datatypeList.contains("EnumType"));
+        assertFalse(datatypeList.contains("EnumType2"));
+        assertFalse(datatypeList.contains("AgeCalculationStrategy"));
+        
+    }
+    
     public void testGetValueDatatypes_boolean_boolean() throws CoreException {
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName(), Datatype.PRIMITIVE_INT.getQualifiedName()});
@@ -260,10 +289,12 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testFindValueDatatypeTableBasedEunm() throws CoreException {
         ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, "table.Structure");
         structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
-        structure.getIpsSrcFile().save(true, null);
+        assertNull(ipsProject.findValueDatatype("PaymentMode"));
         
-        assertNotNull(ipsProject.findValueDatatype("table.Structure"));
-        assertNull(ipsProject.findValueDatatype("table.Structurex"));
+        ITableContents contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "PaymentMode");
+        contents.setTableStructure(structure.getQualifiedName());
+        contents.newGeneration();
+        assertNotNull(ipsProject.findValueDatatype("PaymentMode"));
     }
     
     public void testGetDatatypeHelper() throws CoreException {
@@ -282,6 +313,18 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         createRefProject();
         helper = ipsProject.getDatatypeHelper(Datatype.MONEY);
         assertEquals(MoneyHelper.class, helper.getClass());
+    }
+    
+    public void testGetDatatypeHelperTableBasedEnum() throws CoreException{
+        ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, "table.Structure");
+        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
+        ITableContents contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "PaymentMode");
+        contents.setTableStructure(structure.getQualifiedName());
+        contents.newGeneration();
+        DatatypeHelper helper = ipsProject.getDatatypeHelper(new TableContentsEnumDatatypeAdapter(contents));
+        assertNotNull(helper);
+        assertEquals(new TableContentsEnumDatatypeAdapter(contents), helper.getDatatype());
+
     }
     
     public void testFindDatatypeString() throws Exception{
@@ -931,4 +974,17 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNotNull(connector);
     }
     
+    public void testFindTableContents() throws CoreException{
+        ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, "EnumTable");
+        ITableContents contents1 = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "PaymentMode");
+        contents1.setTableStructure(structure.getQualifiedName());
+        ITableContents contents2 = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "Gender");
+        contents2.setTableStructure(structure.getQualifiedName());
+        
+        ArrayList tableContents = new ArrayList();
+        ipsProject.findTableContents(structure, tableContents);
+        assertEquals(2, tableContents.size());
+        assertTrue(tableContents.contains(contents1));
+        assertTrue(tableContents.contains(contents2));
+    }
 }

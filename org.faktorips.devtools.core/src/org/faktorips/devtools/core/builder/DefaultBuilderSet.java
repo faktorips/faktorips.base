@@ -165,7 +165,9 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
 
         if (IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType())) {
-            return getInternalPackageName(ipsSrcFile);
+            if(KIND_TABLE_IMPL.equals(kind) || KIND_TABLE_ROW.equals(kind)){
+                return getInternalPackageName(ipsSrcFile);
+            }
         }
 
         if (IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
@@ -228,8 +230,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
             }
         }
 
-        throw new IllegalArgumentException("No package has been defined for the provided kind: " //$NON-NLS-1$
-                + kind + " and IpsSrcFile: " + ipsSrcFile); //$NON-NLS-1$
+        return null;
     }
 
     /**

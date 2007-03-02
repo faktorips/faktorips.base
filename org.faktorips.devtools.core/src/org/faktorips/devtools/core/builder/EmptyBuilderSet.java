@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
@@ -175,5 +176,10 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
      */
     public boolean hasLogStatementBuilder() {
         return false;
+    }
+
+    public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

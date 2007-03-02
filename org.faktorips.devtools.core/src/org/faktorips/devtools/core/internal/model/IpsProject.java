@@ -80,6 +80,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -671,10 +672,16 @@ public class IpsProject extends IpsElement implements IIpsProject {
         
         // add enum types defined in tables
 		try {
-			IIpsObject[] structures = findIpsObjects(IpsObjectType.TABLE_STRUCTURE);
+			IIpsObject[] structures = (IIpsObject[])findIpsObjects(IpsObjectType.TABLE_STRUCTURE);
 	        for (int i = 0; i < structures.length; i++) {
-				if (((ITableStructure)structures[i]).isEnumType()) {
-					result.add(new TableStructureEnumDatatypeAdapter((ITableStructure)structures[i], this));
+                ITableStructure structure = (ITableStructure)structures[i]; 
+				if (structure.isModelEnumType()) {
+                    ArrayList enumTableContents = new ArrayList(structures.length);
+                    findTableContents(structure, enumTableContents);
+                    for (Iterator it = enumTableContents.iterator(); it.hasNext();) {
+                        ITableContents contents = (ITableContents)it.next();
+                        result.add(new TableContentsEnumDatatypeAdapter(contents));
+                    }
 				}
 			}
 		} catch (CoreException e) {
@@ -815,28 +822,31 @@ public class IpsProject extends IpsElement implements IIpsProject {
     			"\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
     }
 
-    private ValueDatatype findValueDatatype(IpsProject ipsProject, String qualifiedName, HashSet visitedProjects) throws CoreException {
-            ValueDatatype datatype = ((IpsModel)getIpsModel()).getValueDatatype(ipsProject, qualifiedName);
-            if (datatype!=null) {
-            	return datatype;
+    private ValueDatatype findValueDatatype(IpsProject ipsProject, String qualifiedName, HashSet visitedProjects)
+            throws CoreException {
+        ValueDatatype datatype = ((IpsModel)getIpsModel()).getValueDatatype(ipsProject, qualifiedName);
+        if (datatype != null) {
+            return datatype;
+        }
+
+        ITableContents contents = (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, qualifiedName);
+        if (contents != null) {
+            ITableStructure structure = contents.findTableStructure();
+            if (structure != null && structure.isModelEnumType()) {
+                return new TableContentsEnumDatatypeAdapter(contents);
             }
-            
-            ITableStructure structure = (ITableStructure)ipsProject.findIpsObject(IpsObjectType.TABLE_STRUCTURE, qualifiedName);
-            if (structure != null && structure.isEnumType()) {
-            	return new TableStructureEnumDatatypeAdapter(structure, ipsProject);
-            }
-            
-            IIpsProject[] projects = ((IpsProject)ipsProject).getIpsObjectPathInternal().getReferencedIpsProjects();
-            for (int i = 0; i < projects.length; i++) {
-                if(!visitedProjects.contains(projects[i])){
-                	visitedProjects.add(projects[i]);
-                	datatype = findValueDatatype((IpsProject)projects[i], qualifiedName, visitedProjects);
-                	if (datatype!=null) {
-                		return datatype;
-                	}
+        }
+        IIpsProject[] projects = ((IpsProject)ipsProject).getIpsObjectPathInternal().getReferencedIpsProjects();
+        for (int i = 0; i < projects.length; i++) {
+            if (!visitedProjects.contains(projects[i])) {
+                visitedProjects.add(projects[i]);
+                datatype = findValueDatatype((IpsProject)projects[i], qualifiedName, visitedProjects);
+                if (datatype != null) {
+                    return datatype;
                 }
             }
-            return null;
+        }
+        return null;
     }
 
     /**
@@ -849,8 +859,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if(datatype instanceof ArrayOfValueDatatype){
         	return new ArrayOfValueDatatypeHelper(datatype);
         }
-        if (datatype instanceof TableStructureEnumDatatypeAdapter) {
-            return getIpsArtefactBuilderSet().getDatatypeHelperForTableBasedEnum((TableStructureEnumDatatypeAdapter)datatype);
+        if (datatype instanceof TableContentsEnumDatatypeAdapter) {
+            return getIpsArtefactBuilderSet().getDatatypeHelperForTableBasedEnum((TableContentsEnumDatatypeAdapter)datatype);
         }
         DatatypeHelper helper = ((IpsModel)getIpsModel()).getDatatypeHelper(this,
             (ValueDatatype)datatype);
@@ -860,8 +870,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         try {
             IIpsProject[] projects = getIpsObjectPathInternal().getReferencedIpsProjects();
             for (int i = 0; i < projects.length; i++) {
-                //helper = ((IpsModel)getIpsModel()).getDatatypeHelper(projects[i],
-                 //   (ValueDatatype)datatype);
             	helper = projects[i].getDatatypeHelper(datatype);
                 if (helper != null) {
                     return helper;
@@ -953,6 +961,18 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		return null;
 	}
 	
+    //TODO write test case
+    public void findTableContents(ITableStructure structure, List tableContents) throws CoreException{
+        List alltableContents = new ArrayList();
+        findIpsObjects(IpsObjectType.TABLE_CONTENTS, alltableContents);
+        for (Iterator it = alltableContents.iterator(); it.hasNext();) {
+            ITableContents content = (ITableContents)it.next();
+            if(content.getTableStructure().equals(structure.getQualifiedName())){
+                tableContents.add(content);
+            }
+        }
+    }
+    
 	/**
      * Overridden.
      */

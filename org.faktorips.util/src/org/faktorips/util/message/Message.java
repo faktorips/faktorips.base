@@ -291,5 +291,4 @@ public class Message {
     public int hashCode() {
         return text.hashCode();
     }
-
 }

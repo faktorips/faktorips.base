@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.ui;
 
 import java.util.ArrayList;
 
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -47,6 +48,7 @@ import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
+import org.faktorips.util.message.Message;
 import org.faktorips.values.EnumType;
 import org.faktorips.values.EnumValue;
 
@@ -636,6 +638,26 @@ public class UIToolkit {
 	public TestCaseTypeRefControl createTestCaseTypeRefControl(IIpsProject project,
 			Composite parent) {
 		return new TestCaseTypeRefControl(project, parent, this);
-	}	
+	}
+
+    /**
+     * Converts the severity constant from <code>{@link Message}</code> to the constant of
+     * <code>{@link IMessageProvider}</code>.
+     */
+    //TODO move to Message when the class is moved to the core project
+    public int convertToJFaceSeverity(int severity){
+        
+        switch(severity){
+            case Message.ERROR:
+                return IMessageProvider.ERROR;
+            case Message.INFO:
+                return IMessageProvider.INFORMATION;
+            case Message.WARNING:
+                return IMessageProvider.WARNING;
+            case Message.NONE:
+                return IMessageProvider.NONE;
+        }
+        return IMessageProvider.NONE;
+    }
 
 }

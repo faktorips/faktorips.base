@@ -411,6 +411,21 @@ public class KeyEditDialog extends IpsPartEditDialog {
         candidatesViewer.refresh();
         setTitle(buildTitle());
         updateButtonEnabledState();
+        validate();
+    }
+    
+    private void validate(){
+        try {
+            MessageList msgList = key.validate();
+            if(msgList.isEmpty()){
+               setMessage(null);
+               return;
+            }
+            Message msg = msgList.getMessage(0);
+            setMessage(msg.getText(), uiToolkit.convertToJFaceSeverity(msg.getSeverity()));
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
     }
     
     private void updateButtonEnabledState() {

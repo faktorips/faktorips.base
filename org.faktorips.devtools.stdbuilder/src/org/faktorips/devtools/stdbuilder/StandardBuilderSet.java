@@ -25,15 +25,19 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
+import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.stdbuilder.enums.EnumClassesBuilder;
+import org.faktorips.devtools.stdbuilder.enums.EnumTypeInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
@@ -64,6 +68,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private TableImplBuilder tableImplBuilder;
     private TableRowBuilder tableRowBuilder;
     private PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder;
+    private EnumClassesBuilder enumClassesBuilder;
 
     /**
      * {@inheritDoc}
@@ -135,8 +140,28 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
                 return policyCmptInterfaceBuilder.getMethodNameGetPropertyValue(attribute, datatype);    
             }
-            
         };
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
+        String returnValue = super.getPackage(kind, ipsSrcFile);
+        if(returnValue != null){
+            return returnValue;
+        }
+        if (IpsObjectType.TABLE_CONTENTS.equals(ipsSrcFile.getIpsObjectType()) &&
+                EnumClassesBuilder.PACKAGE_STRUCTURE_KIND_ID.equals(kind)) {
+            return getPackageName(ipsSrcFile);
+        }
+        
+        if (IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType()) &&
+                EnumTypeInterfaceBuilder.PACKAGE_STRUCTURE_KIND_ID.equals(kind)) {
+            return getPackageName(ipsSrcFile);
+        }
+        
+        throw new IllegalArgumentException("Unexpected kind id " + kind + " for the IpsObjectType: " + ipsSrcFile.getIpsObjectType());
     }
 
     public boolean isSupportFlIdentifierResolver() {
@@ -195,7 +220,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         // toc file builder
         TocFileBuilder tocFileBuilder = new TocFileBuilder(this);
-        
+       
+        EnumTypeInterfaceBuilder enumTypeInterfaceBuilder = new EnumTypeInterfaceBuilder(this, EnumTypeInterfaceBuilder.PACKAGE_STRUCTURE_KIND_ID);
+        enumClassesBuilder = new EnumClassesBuilder(this, EnumClassesBuilder.PACKAGE_STRUCTURE_KIND_ID, enumTypeInterfaceBuilder);
         //
         // wire up the builders
         //
@@ -259,6 +286,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         productCmptGenerationImplBuilder.setLoggingCodeGenerationEnabled(generateLogging);
         testCaseTypeClassBuilder.setLoggingCodeGenerationEnabled(generateLogging);
         formulaTestBuilder.setLoggingCodeGenerationEnabled(generateLogging);
+        enumClassesBuilder.setLoggingCodeGenerationEnabled(generateLogging);
+        enumTypeInterfaceBuilder.setLoggingCodeGenerationEnabled(generateLogging);
         
         
         builders = new IIpsArtefactBuilder[] { 
@@ -276,6 +305,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 testCaseTypeClassBuilder,
                 testCaseBuilder,
                 formulaTestBuilder,
+                enumClassesBuilder,
+                enumTypeInterfaceBuilder,
                 tocFileBuilder };
     }
     
@@ -295,5 +326,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableStructureEnumDatatypeAdapter datatype) {
         return new TableStructureEnumDatatypeHelper(datatype);
+    }
+
+    public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype) {
+        return new TableContentsEnumDatatypeHelper(datatype, enumClassesBuilder);
     }
 }

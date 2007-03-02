@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
+import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
@@ -99,6 +100,14 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 	 */
 	public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableStructureEnumDatatypeAdapter datatype);
 	
+    /**
+     * Returns the datatype helper used for the enum type that is defined by a 
+     * table contents. 
+     * 
+     * @throws NullPointerException if structure is <code>null</code>.
+     * @throws IllegalArgumentException if the structure does not define an enum type. 
+     */
+    public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype);
 
 	/**
 	 * Returns the file that contain the runtime repository toc file.
@@ -156,10 +165,16 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 	 */
 	public String getLabel();
 
-    public boolean hasLogStatementBuilder();
-    
+    /**
+     * The framework sets the <code>IIpsLoggingFrameworkConnector</code> that is registered with the IIpsProject to
+     * this <code>IIpsArtefactBuilderSet</code> at initialization time. This method is not supposed to be called by
+     * clients of this class.
+     */
     public void setIpsLoggingFrameworkConnector(IIpsLoggingFrameworkConnector logStmtBuilder);
-    
+
+    /**
+     * Returns the <code>IIpsLoggingFrameworkConnector</code> of this <code>IIpsArtefactBuilderSet</code>.
+     */
     public IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector();
     
 	/**

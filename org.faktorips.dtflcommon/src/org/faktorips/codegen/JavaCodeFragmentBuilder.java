@@ -255,6 +255,34 @@ public class JavaCodeFragmentBuilder {
      * @param methodName the name of the method.
      * @param argName Argument names.
      * @param argClass Argument classes.
+     * @param exceptionClasses Exception classes that can be thrown by the generated method 
+     * @param body the method body
+     * @param javadoc the java documentation
+     */
+    public void method(int modifier,
+            Class returnType,
+            String methodName,
+            String[] argName,
+            Class[] argClass,
+            Class[] exceptionClasses,
+            JavaCodeFragment body,
+            String javadoc) {
+
+        javaDoc(javadoc);
+        methodBegin(modifier, returnType, methodName, argName, argClass, exceptionClasses);
+        append(body);
+        methodEnd();
+    }
+    
+    /**
+     * Creates the Java source code for a method including signature, body and java doc.
+     * 
+     * @param modifier Access modifier according to java.lang.reflect.Modifier.
+     * @param returnType the className that the methods returnds an instance of or null to indicate
+     *            no return type in case of a constructor.
+     * @param methodName the name of the method.
+     * @param argName Argument names.
+     * @param argClass Argument classes.
      * @param body the method body
      * @param javadoc the java documentation
      * @param javaDocAnnotations annotations of the java documentation
@@ -819,6 +847,9 @@ public class JavaCodeFragmentBuilder {
      * @param annotations
      */
     public void javaDoc(String text, String[] annotations) {
+        if(text == null && annotations == null){
+            return;
+        }
         fragment.appendln("/**");
         if(text != null){
             String[] lines = StringUtils.split(text, SystemUtils.LINE_SEPARATOR);

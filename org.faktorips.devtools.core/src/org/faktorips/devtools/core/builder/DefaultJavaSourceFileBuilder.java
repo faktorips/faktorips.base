@@ -93,7 +93,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * Calls the generateCodeForJavatype() method and adds the package and import declarations to the
      * content.
      */
-    public final String generate() throws CoreException {
+    protected String generate() throws CoreException {
     	IImportContainer importContainer = getImportContainer();
         StringBuffer content = new StringBuffer();
         String pack = getPackage();

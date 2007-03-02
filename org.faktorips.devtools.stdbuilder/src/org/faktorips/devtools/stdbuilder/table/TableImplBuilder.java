@@ -127,8 +127,21 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         fRanges = null;
     }
 
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
-        return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.TABLE_STRUCTURE);
+    protected String generate() throws CoreException{
+        if(getTableStructure().isEnumType()){
+            return null;
+        }
+        return super.generate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+        if(ipsSrcFile.getIpsObjectType().equals(IpsObjectType.TABLE_STRUCTURE)){
+            return true;
+        }
+        return false;
     }
 
     private Set getIndicesForKeysWithSameDatatypeSequence() throws CoreException {

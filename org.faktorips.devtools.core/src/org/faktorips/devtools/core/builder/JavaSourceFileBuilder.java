@@ -255,7 +255,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	public IIpsSrcFile getIpsSrcFile() {
 		return ipsSrcFile;
 	}
-
+    
 	/**
 	 * Convenience method that delegates the call to the package structure and
 	 * returns the package name for the java class that is build by this

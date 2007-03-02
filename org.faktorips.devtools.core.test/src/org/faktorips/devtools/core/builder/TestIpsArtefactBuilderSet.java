@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
@@ -130,6 +131,13 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
      * {@inheritDoc}
      */
     public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) throws CoreException {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype) {
         return null;
     }
 }

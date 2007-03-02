@@ -361,6 +361,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (ipsFolder == null){
             return null;
         }
+        
         return ipsFolder.getIpsSrcFile(resource.getName());
     }
     

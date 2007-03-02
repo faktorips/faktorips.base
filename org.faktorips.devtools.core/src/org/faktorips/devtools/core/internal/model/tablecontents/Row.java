@@ -85,7 +85,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 	 * {@inheritDoc}
 	 */
     public String getName() {
-        return "" + getId(); //$NON-NLS-1$
+        return String.valueOf(getId());
     }
 
 	/**

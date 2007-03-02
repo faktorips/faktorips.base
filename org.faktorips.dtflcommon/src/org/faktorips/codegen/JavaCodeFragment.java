@@ -234,7 +234,9 @@ public class JavaCodeFragment {
 	 */
 	public void appendClassName(String qualifiedClassName) {
         append(StringUtil.unqualifiedName(qualifiedClassName));
-        
+        if(qualifiedClassName.indexOf('.') < 0){
+            return;
+        }
         int bracketIndex = qualifiedClassName.indexOf("[]");
         if (bracketIndex > -1) {
             importDecl.add(qualifiedClassName.substring(0, bracketIndex));

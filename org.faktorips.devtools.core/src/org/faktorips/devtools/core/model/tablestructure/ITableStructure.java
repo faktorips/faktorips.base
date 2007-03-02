@@ -51,7 +51,19 @@ public interface ITableStructure extends IIpsObject {
 	 * or ENUMTYPE_PRODUCTDEFINTION
 	 */
 	public boolean isEnumType();
-	
+
+    /**
+     * Returns true if this table structure is an enum type which values are defined at product
+     * definition time. 
+     */
+    public boolean isProductDefinitionEnumType();
+
+    /**
+     * Returns true if this table structure is an enum type which values are defined at model
+     * definition time.
+     */
+    public boolean isModelEnumType();
+    
 	/**
      * Returns the functions to access the table in the formula language.
      */

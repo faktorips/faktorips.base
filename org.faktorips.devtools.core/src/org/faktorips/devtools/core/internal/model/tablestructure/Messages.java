@@ -62,6 +62,10 @@ public class Messages extends NLS {
 
 	public static String ForeignKey_msgKeyDatatypeMismatch;
 
+    public static String TableStructure_needsTwoKeys;
+
+    public static String UniqueKey_firstKeyOnlyOneItem;
+
 	public static String UniqueKey_msgTooLessItems;
 
 	public static String UniqueKey_msgKeyItemMismatch;
@@ -81,6 +85,8 @@ public class Messages extends NLS {
 	public static String ColumnRange_msgDatatypeInvalidForRange;
 
     public static String Column_msgInvalidName;
+
+    public static String UniqueKey_secondKeyOnlyOneItem;
 
     public static String UniqueKey_wrong_sequence;
 }

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -36,6 +37,8 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 
@@ -583,5 +586,33 @@ public class TableStructure extends IpsObject implements ITableStructure {
 	public boolean isEnumType() {
 		return type == TableStructureType.ENUMTYPE_MODEL || type == TableStructureType.ENUMTYPE_PRODUCTDEFINTION;
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isProductDefinitionEnumType(){
+        return type == TableStructureType.ENUMTYPE_PRODUCTDEFINTION;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isModelEnumType(){
+        return type == TableStructureType.ENUMTYPE_MODEL;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
+        if(isModelEnumType()){
+            IUniqueKey[] keys = getUniqueKeys();
+            if(keys.length < 2){
+                list.add(new Message("", Messages.TableStructure_needsTwoKeys, Message.ERROR, this, ITableStructure.PROPERTY_TYPE)); //$NON-NLS-1$
+                return;
+            }
+        }
+    }
 
 }
