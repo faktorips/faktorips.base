@@ -79,6 +79,8 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 	private IWorkbenchAction savePerspectiveAction;
 
 	private OpenPerspectiveAction openSynchronizePerspectiveAction;
+    
+    private OpenPerspectiveAction openCVSPerspectiveAction;
 
 	private OpenPerspectiveAction openDepartmentPerspectiveAction;
 	
@@ -431,6 +433,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 //		menu.add(editActionSetAction);
 		menu.add(openDepartmentPerspectiveAction);
 		menu.add(openSynchronizePerspectiveAction);
+        menu.add(openCVSPerspectiveAction);
 		menu.add(new Separator());
 		addKeyboardShortcuts(menu);
 		menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -783,6 +786,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 		PerspectiveMenu m = new PerspecitveHandler(getWindow(), "unknown"); //$NON-NLS-1$
 		openDepartmentPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId("org.faktorips.devtools.core.productDefinitionPerspective"), m);  //$NON-NLS-1$
 		openSynchronizePerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.team.ui.TeamSynchronizingPerspective"), m); //$NON-NLS-1$
+        openCVSPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.team.cvs.ui.cvsPerspective"), m); //$NON-NLS-1$
 		
 		pinEditorContributionItem = ContributionItemFactory.PIN_EDITOR
 				.create(window);
