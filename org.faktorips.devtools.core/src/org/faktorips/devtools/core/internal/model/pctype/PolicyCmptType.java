@@ -1050,7 +1050,10 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             String qualifiedName = relations[i].getTarget();
             qualifiedNameTypes.add(new QualifiedNameType(qualifiedName, IpsObjectType.POLICY_CMPT_TYPE));
 
-            if (relations[i].isCompositionMasterToDetail()
+            // an additional condition "&& this.isAggregateRoot()" will _not_ be helpfull, because this
+            // method is called recursively for the detail and so on. But this detail is not an 
+            // aggregate root and the recursion will terminate to early.
+            if (relations[i].isCompositionMasterToDetail() 
                     && this.getIpsProject().getIpsArtefactBuilderSet().containsAggregateRootBuilder()) {
                 IPolicyCmptType target = getIpsProject().findPolicyCmptType(qualifiedName);
                 qualifiedNameTypes.addAll(Arrays.asList(target.dependsOn()));
