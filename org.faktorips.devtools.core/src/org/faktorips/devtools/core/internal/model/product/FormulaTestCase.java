@@ -434,8 +434,10 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
                 break;
             }
         }
-        if (isIdentifierMismatch){
-            String text = NLS.bind(Messages.FormulaTestCase_ValidationMessage_MismatchBetweenFormulaInputValuesAndIdentifierInFormula, name);
+        if (isIdentifierMismatch) {
+            String text = NLS.bind(
+                    Messages.FormulaTestCase_ValidationMessage_MismatchBetweenFormulaInputValuesAndIdentifierInFormula,
+                    name, ((IConfigElement)getParent()).getName());
             list.add(new Message(MSGCODE_IDENTIFIER_MISMATCH, text, Message.WARNING, this, PROPERTY_NAME));
         }
     }
