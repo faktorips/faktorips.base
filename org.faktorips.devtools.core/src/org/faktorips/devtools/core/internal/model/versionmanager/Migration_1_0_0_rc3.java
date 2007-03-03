@@ -14,9 +14,9 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Peter Erzberger
  */
-public class Migration_1_0_0_rc4 extends AbstractMigrationOperation {
+public class Migration_1_0_0_rc3 extends AbstractMigrationOperation {
 
-    public Migration_1_0_0_rc4(IIpsProject projectToMigrate, String featureId) {
+    public Migration_1_0_0_rc3(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
     }
 
