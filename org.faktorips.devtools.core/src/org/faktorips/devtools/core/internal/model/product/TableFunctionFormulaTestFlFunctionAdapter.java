@@ -90,6 +90,8 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
      * Returns <code>true</code> if the given row matches the given unique key values
      */
     private boolean matchesUniqueKey(List keyColumsIdxs, List datatypesKeyColumns, CompilationResult[] args, IRow row) throws Exception{
+        List usedIdx = new ArrayList(args.length);
+        
         if (keyColumsIdxs.size() == 0){
             return false;
         }
@@ -101,15 +103,16 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
                 String argDatatype = args[i].getDatatype().getName();
                 for (int k = 0; k < datatypesKeyColumns.size(); k++) {
                     String datatypeOfKey = (String) datatypesKeyColumns.get(k);
-                    if (argDatatype.equals(datatypeOfKey)){
+                    if (argDatatype.equals(datatypeOfKey) &&  ! usedIdx.contains(k)){
                         intIdxArg = k;
                         break;
                     }
                 }
                 if (intIdxArg>=0){
+                    usedIdx.add(intIdxArg);
                     break;
                 }
-            }       
+            }
             
             if (intIdxArg == -1){
                 // wrong datatype of key and args
