@@ -300,10 +300,5 @@ public class ExprCompilerTest extends CompilerAbstractTest {
         assertEquals(2, result.getIdentifiersUsed().length);
         assertEquals("a", result.getIdentifiersUsed()[0]);
         assertEquals("b", result.getIdentifiersUsed()[1]);
-        
-        result = compiler.compile("b + a");
-        assertEquals(2, result.getIdentifiersUsed().length);
-        assertEquals("b", result.getIdentifiersUsed()[0]);
-        assertEquals("a", result.getIdentifiersUsed()[1]);
     }
 }
