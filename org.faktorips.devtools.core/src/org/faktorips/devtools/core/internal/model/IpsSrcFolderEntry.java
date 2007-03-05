@@ -283,7 +283,12 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     public MessageList validate() throws CoreException {
         MessageList result = new MessageList();
         // the sourceFolder will never be null (see this#initFromXml)
-        result.add(validateFolder(sourceFolder));
+        result.add(validateIfFolderExists(sourceFolder));
+        if (sourceFolder.getProjectRelativePath().segmentCount()>1){
+            String text = NLS.bind(Messages.IpsSrcFolderEntry_srcFolderMustBeADirectChildOfTheProject, sourceFolder.getProjectRelativePath().toString());
+            Message msg = new Message(MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROHECT, text, Message.ERROR, this);
+            result.add(msg);
+        }
 
         if(outputFolderMergable == null && getIpsObjectPath().getOutputFolderForGeneratedJavaFiles() == null){
             result.add(new Message(MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING, Messages.IpsSrcFolderEntry_outputfoldermergablesrcmissing, Message.ERROR)); //$NON-NLS-1$
@@ -293,10 +298,10 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         }
         
         if (outputFolderMergable != null) {
-            result.add(validateFolder(outputFolderMergable));
+            result.add(validateIfFolderExists(outputFolderMergable));
         }
         if (outputFolderDerived != null) {
-            result.add(validateFolder(outputFolderDerived));
+            result.add(validateIfFolderExists(outputFolderDerived));
         }
         return result;
     }
@@ -304,13 +309,8 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     /*
      * Validate that the given folder exists.
      */
-    private MessageList validateFolder(IFolder folder) {
+    private MessageList validateIfFolderExists(IFolder folder) {
         MessageList result = new MessageList();
-        if (folder.getProjectRelativePath().segmentCount()>1){
-            String text = NLS.bind(Messages.IpsSrcFolderEntry_srcFolderMustBeADirectChildOfTheProject, folder.getProjectRelativePath().toString());
-            Message msg = new Message(MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROHECT, text, Message.ERROR, this);
-            result.add(msg);
-        }
         if (!folder.exists()){
             String text = NLS.bind(Messages.IpsSrcFolderEntry_msgMissingFolder, folder.getName());
             Message msg = new Message(MSGCODE_MISSING_FOLDER, text, Message.ERROR, this);
