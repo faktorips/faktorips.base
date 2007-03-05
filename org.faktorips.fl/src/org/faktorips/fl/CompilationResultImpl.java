@@ -17,7 +17,7 @@
 
 package org.faktorips.fl;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
 
@@ -122,7 +122,7 @@ public class CompilationResultImpl implements CompilationResult {
             return;
         }
         if (identifiersUsed==null) {
-            identifiersUsed = new HashSet(2);
+            identifiersUsed = new LinkedHashSet(2);
         }
         identifiersUsed.addAll(otherIdenifiers);
     }
@@ -210,7 +210,7 @@ public class CompilationResultImpl implements CompilationResult {
      */
     public void addIdentifierUsed(String identifier) {
         if (identifiersUsed==null) {
-            identifiersUsed = new HashSet(2);
+            identifiersUsed = new LinkedHashSet(2);
         }
         identifiersUsed.add(identifier);
     }
@@ -222,7 +222,7 @@ public class CompilationResultImpl implements CompilationResult {
     public void addIdentifiersUsed(Set identifiers) {
         if (identifiersUsed==null) {
             if (identifiers!=null) {
-                identifiersUsed = new HashSet(identifiers);
+                identifiersUsed = new LinkedHashSet(identifiers);
             }
             return;
         } 
