@@ -103,13 +103,13 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
                 String argDatatype = args[i].getDatatype().getName();
                 for (int k = 0; k < datatypesKeyColumns.size(); k++) {
                     String datatypeOfKey = (String) datatypesKeyColumns.get(k);
-                    if (argDatatype.equals(datatypeOfKey) &&  ! usedIdx.contains(k)){
+                    if (argDatatype.equals(datatypeOfKey) &&  ! usedIdx.contains(new Integer(k))){
                         intIdxArg = k;
                         break;
                     }
                 }
                 if (intIdxArg>=0){
-                    usedIdx.add(intIdxArg);
+                    usedIdx.add(new Integer(intIdxArg));
                     break;
                 }
             }
