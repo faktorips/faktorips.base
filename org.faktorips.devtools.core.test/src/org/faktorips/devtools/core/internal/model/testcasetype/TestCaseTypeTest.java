@@ -226,8 +226,13 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
         assertEquals(0, testRuleParameters.length);
         
         // create policy cmpts with validation rules 
+        IPolicyCmptType policyCmptTypeBase = newPolicyCmptType(root, "PolicyCmptBase");
         IPolicyCmptType policyCmptType1 = newPolicyCmptType(root, "PolicyCmpt1");
+        policyCmptType1.setSupertype(policyCmptTypeBase.getQualifiedName());
         IPolicyCmptType policyCmptType2 = newPolicyCmptType(root, "PolicyCmpt2");
+        IValidationRule ruleBase = policyCmptTypeBase.newRule();
+        ruleBase.setName("RuleBase");
+        ruleBase.setMessageCode("RuleBase");
         IValidationRule rule1 = policyCmptType1.newRule();
         rule1.setName("Rule1");
         rule1.setMessageCode("Rule1");
@@ -244,10 +249,11 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
         childParam1.setRelation("Relation1");
         childParam1.setName("ChildPolicyCmpt2");
         testRuleParameters = type.getTestRuleCandidates();
-        assertEquals(2, testRuleParameters.length);
+        assertEquals(3, testRuleParameters.length);
         List testRuleParametersList = Arrays.asList(testRuleParameters);
         assertTrue(testRuleParametersList.contains(rule1));
         assertTrue(testRuleParametersList.contains(rule2));
+        assertTrue(testRuleParametersList.contains(ruleBase));
     }
     
     public void testGetAllTestParameter() throws CoreException{

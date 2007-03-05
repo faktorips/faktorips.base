@@ -537,7 +537,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             if (policyCmptType == null){
                 continue;
             }
-            validationRules.addAll(Arrays.asList(policyCmptType.getRules()));
+            validationRules.addAll(Arrays.asList(policyCmptType.getSupertypeHierarchy().getAllRules(policyCmptType)));
             getValidationRules(testPolicyCmptTypeParameters[i].getTestPolicyCmptTypeParamChilds(), validationRules);
         }
     }
