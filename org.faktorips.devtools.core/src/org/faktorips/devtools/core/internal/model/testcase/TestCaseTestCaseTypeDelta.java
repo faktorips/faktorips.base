@@ -75,6 +75,7 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     
     // Contains the test case objects with missing test case type parameter
     private List testCaseSideObjects;
+    private boolean errorInTestCaseType;
     
     public TestCaseTestCaseTypeDelta(ITestCase testCase, ITestCaseType testCaseType) throws CoreException {
         ArgumentCheck.notNull(testCase);
@@ -82,6 +83,11 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         this.testCase = testCase;
         this.testCaseType = testCaseType;
 
+        if (testCaseType.validate().containsErrorMsg()){
+            errorInTestCaseType = true;
+            return;
+        }
+        
         // test case side
         computeTestValueWithMissingTestParameter();
         computeTestRuleWithMissingTestParameter();
@@ -544,7 +550,9 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
      * {@inheritDoc}
      */
     public boolean isEmpty() {
-        return testValuesWithMissingTestValueParam.length == 0 && testPolicyCmptsWithMissingTypeParam.length == 0
+        return errorInTestCaseType
+                || testValuesWithMissingTestValueParam.length == 0 
+                && testPolicyCmptsWithMissingTypeParam.length == 0
                 && testPolicyCmptRelationsWithMissingTypeParam.length == 0
                 && testAttributeValuesWithMissingTestAttribute.length == 0
                 && testAttributesWithMissingTestAttributeValue.length == 0
