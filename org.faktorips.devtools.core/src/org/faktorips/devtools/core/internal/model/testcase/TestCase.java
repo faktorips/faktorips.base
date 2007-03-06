@@ -277,6 +277,8 @@ public class TestCase extends IpsObject implements ITestCase {
         for (int i = 0; i < testValueParametersWithMissingTestValue.length; i++) {
             ITestValue testValue = newTestValue();
             testValue.setTestValueParameter(testValueParametersWithMissingTestValue[i].getName());
+            // set default value to null
+            testValue.setValue(null);
         }
         
         // add missing test policy cmpt type parameters
