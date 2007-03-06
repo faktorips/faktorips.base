@@ -114,9 +114,13 @@ public abstract class IpsObjectEditor extends FormEditor
     private boolean updatingPageStructure = false;
     
     private ActivationListener activationListener;
+
+    /* Updates the title image if there are ips marker changes on the editor's input */
+    private IpsObjectEditorErrorTickUpdater errorTickupdater;
     
     public IpsObjectEditor() {
         super();
+        errorTickupdater = new IpsObjectEditorErrorTickUpdater(this);
     }
 
     public IIpsSrcFile getIpsSrcFile() {
@@ -439,7 +443,7 @@ public abstract class IpsObjectEditor extends FormEditor
     final protected void setDataChangeable(boolean changeable) {
         this.contentChangeable = Boolean.valueOf(changeable);
         if (getIpsSrcFile()!=null) {
-            this.setTitleImage(getIpsSrcFile().getIpsObjectType().getImage(changeable));
+            this.setTitleImage(errorTickupdater.getDecoratedImage());
         }
     }
     
@@ -718,6 +722,7 @@ public abstract class IpsObjectEditor extends FormEditor
             activationListener.dispose();
         }
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        errorTickupdater.dispose();
         disposeInternal();
         if (TRACE) {
             log("disposed."); //$NON-NLS-1$
@@ -861,5 +866,12 @@ public abstract class IpsObjectEditor extends FormEditor
     
     private String getLogPrefix() {
         return "IpsObjectEditor"; //$NON-NLS-1$
+    }
+
+    /**
+     * Updates the title image with the given image.
+     */
+    public void updatedTitleImage(Image newImage) {
+        setTitleImage(newImage);
     }
 }

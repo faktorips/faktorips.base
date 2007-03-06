@@ -134,6 +134,9 @@ public class IpsPlugin extends AbstractUIPlugin {
     
     private boolean testMode = false;
     private ITestAnswerProvider testAnswerProvider;
+
+    // Manager to update ips problem marker
+    private IpsProblemMarkerManager ipsProblemMarkerManager;
     
     /**
      * Returns the shared instance.
@@ -768,5 +771,15 @@ public class IpsPlugin extends AbstractUIPlugin {
             editFieldChangeBroadcaster = new EditFieldChangesBroadcaster();
         }
         return editFieldChangeBroadcaster;
+    }
+
+    /**
+     * Returns the ips problem marker manager which manages ips marker updates.
+     */
+    public IpsProblemMarkerManager getIpsProblemMarkerManager() {
+        if (ipsProblemMarkerManager == null){
+            ipsProblemMarkerManager = new IpsProblemMarkerManager();
+        }
+        return ipsProblemMarkerManager;
     }
 }
