@@ -33,8 +33,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -826,9 +824,10 @@ public class IpsTestRunner implements IIpsTestRunner {
             }
             
         });
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-
-        job.setRule(workspace.getRoot());
+        // we don't need to specify a rule here, because the ips test runner
+        // didn't depend on a rule, there will be no blocking events (e.g. builder could be depend
+        // on job finishing or somthing else)
+        job.setRule(null);
         job.schedule();
         jobRunning = true;
     }
