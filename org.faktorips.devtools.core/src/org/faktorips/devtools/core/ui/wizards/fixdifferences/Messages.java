@@ -29,6 +29,7 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
+    public static String ElementSelectionPage_ElementSelectionPage_NoElementsFoundMessage;
     public static String ElementSelectionPage_SelectElementsMessage;
     public static String FixDifferencesToModelWizard_beginTask;
     public static String FixDifferencesToModelWizard_Title;

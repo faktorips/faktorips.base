@@ -111,10 +111,6 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
                     addPreselection((IIpsProject)selected);
                 }
             }
-            action.setEnabled(preSelected.size() > 0);
-        }
-        else {
-            action.setEnabled(false);
         }
     }
     

@@ -8,7 +8,7 @@
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
  * 
- * Mitwirkende:  Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  
+ * Mitwirkende:ï¿½ Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de ï¿½
  **************************************************************************************************/
 
 package org.faktorips.devtools.core.ui.wizards.fixdifferences;
@@ -49,7 +49,11 @@ public class ElementSelectionPage extends WizardPage {
         super(Messages.ElementSelectionPage_SelectElementsMessage);
         this.ipsElementsToFix = ipsElementsToFix;
         this.setTitle(Messages.FixDifferencesToModelWizard_Title);
-        this.setMessage(Messages.ElementSelectionPage_SelectElementsMessage);
+        if (!(ipsElementsToFix.size() > 0)){
+            this.setMessage(Messages.ElementSelectionPage_ElementSelectionPage_NoElementsFoundMessage);
+        } else {
+            this.setMessage(Messages.ElementSelectionPage_SelectElementsMessage);
+        }
     }
 
     /**
@@ -94,11 +98,9 @@ public class ElementSelectionPage extends WizardPage {
             }
             
         });
-        setPageComplete(false);
+        setPageComplete(getElementsToFix().length > 0);
         super.setControl(root);
     }
-
-
 
     /**
      * @return all IIpsElements to be fixed.
