@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -191,6 +192,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     // Contains the menu in the title if available
     private Menu sectionTitleContextMenu;
+
+    private IEditorSite site;
     
     /*
      * State class contains the enable state of all actions (for buttons and context menu)
@@ -421,11 +424,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 failureDetails.getAttributeName()), failureDetails.getActualValue(), failureDetails.getMessage())) {
             String uniqueKeyWithOffset = failureDetails.getObjectName();
             uniqueKeyWithOffset = uniqueKeyWithOffset
-                    .replaceAll("\\.", TestCaseHierarchyPath.OFFSET_SEPARATOR + "0\\.");
+                    .replaceAll("\\.", TestCaseHierarchyPath.OFFSET_SEPARATOR + "0\\."); //$NON-NLS-1$ //$NON-NLS-2$
             if (!testCaseDetailArea.storeActualValueInExpResult(getUniqueEditFieldKey(uniqueKeyWithOffset,
                     failureDetails.getAttributeName()), failureDetails.getActualValue(), failureDetails.getMessage())) {
                 testCaseDetailArea.storeActualValueInExpResult(getUniqueEditFieldKey(uniqueKeyWithOffset
-                        + TestCaseHierarchyPath.OFFSET_SEPARATOR + "0", failureDetails.getAttributeName()),
+                        + TestCaseHierarchyPath.OFFSET_SEPARATOR + "0", failureDetails.getAttributeName()), //$NON-NLS-1$
                         failureDetails.getActualValue(), failureDetails.getMessage());
             }
         }
@@ -537,12 +540,13 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             TestCaseContentProvider contentProvider, final String title, String detailTitle, ScrolledForm form,
             IEditorSite site) {
         super(parent, Section.NO_TITLE, GridData.FILL_BOTH, toolkit);
-        
+
         this.editor = editor;
         this.contentProvider = contentProvider;
         this.form = form;
         this.sectionTreeStructureTitle = title;
         this.sectionDetailTitle = detailTitle;
+        this.site = site;
         
         initControls();
         setText(title);
@@ -1869,7 +1873,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		failureCount ++;
 		
         FailureDetails failureDetailsObj = new FailureDetails(failureDetails);
-        String formatedFailure = failureDetailsToString(failureDetails);
+        final String formatedFailure = failureDetailsToString(failureDetails);
 
         // inform about the failure in the form title
         postAddFailureTooltipInFormTitle(formatedFailure);
@@ -1881,12 +1885,25 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         if (!testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails)) {
             // field couldn't be marked as failure, try to identify the first field
             String fieldKeyWithOffset = failureDetailsObj.getObjectName();
-            fieldKeyWithOffset = fieldKeyWithOffset.replaceAll("\\.", TestCaseHierarchyPath.OFFSET_SEPARATOR + "0\\.");
+            fieldKeyWithOffset = fieldKeyWithOffset.replaceAll("\\.", TestCaseHierarchyPath.OFFSET_SEPARATOR + "0\\."); //$NON-NLS-1$ //$NON-NLS-2$
             uniqueEditFieldKey = getUniqueEditFieldKey(fieldKeyWithOffset
-                    + TestCaseHierarchyPath.OFFSET_SEPARATOR + "0", failureDetailsObj.getAttributeName());
+                    + TestCaseHierarchyPath.OFFSET_SEPARATOR + "0", failureDetailsObj.getAttributeName()); //$NON-NLS-1$
             if (!testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails)){
                 uniqueEditFieldKey = getUniqueEditFieldKey(fieldKeyWithOffset, failureDetailsObj.getAttributeName());
                 testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails);
+                if (!testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails)){
+                    fieldKeyWithOffset = failureDetailsObj.getObjectName();
+                    // // field couldn't be marked as failure, try to identify with obj0.child0 => obj#0.child#0
+                    String lastKey = fieldKeyWithOffset.substring(fieldKeyWithOffset.length()-1, fieldKeyWithOffset.length());
+                    fieldKeyWithOffset = fieldKeyWithOffset.substring(0, fieldKeyWithOffset.length()-1) + TestCaseHierarchyPath.OFFSET_SEPARATOR + lastKey;
+                    fieldKeyWithOffset = fieldKeyWithOffset.replaceAll("[0-9]\\.", TestCaseHierarchyPath.OFFSET_SEPARATOR + "0\\."); //$NON-NLS-1$ //$NON-NLS-2$
+                    uniqueEditFieldKey = getUniqueEditFieldKey(fieldKeyWithOffset, failureDetailsObj.getAttributeName());
+                    if (!testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails)){
+                        postSetStatusBarMessage(NLS.bind(Messages.TestCaseSection_StatusMessage_FieldNotFound, formatedFailure));
+                    } else {
+                        postSetStatusBarMessage(""); //$NON-NLS-1$
+                    }
+                }
             }
         }
 
@@ -1900,6 +1917,17 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         // store the failure details for later use (e.g. store all actual values)
         allFailureDetails.add(failureDetailsObj);
 	}
+    
+    public void postSetStatusBarMessage(final String message) {
+        postAsyncRunnable(new Runnable() {
+            public void run() {
+                IStatusLineManager statusLineManager = site.getActionBars().getStatusLineManager();
+                if (statusLineManager != null) {
+                    statusLineManager.setMessage(message);
+                }
+            }
+        });
+    }    
     
     /*
      * Returns the unique key to indicate the edit field

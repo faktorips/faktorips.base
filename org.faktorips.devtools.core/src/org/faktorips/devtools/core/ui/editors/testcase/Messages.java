@@ -49,6 +49,7 @@ public class Messages extends NLS {
 	public static String TestCaseSection_DialogSelectProductCmpt_Description;
 	public static String TestCaseSection_DialogSelectTestRelation_Title;
 	public static String TestCaseSection_DialogSelectTestRelation_Description;
+    public static String TestCaseSection_StatusMessage_FieldNotFound;
 	public static String TestPolicyCmptSelectionDialog_Title;
 	public static String TestPolicyCmptSelectionDialog_Error_NoTestPolicyCmptFound;
 	public static String TestPolicyCmptSelectionDialog_Description;
