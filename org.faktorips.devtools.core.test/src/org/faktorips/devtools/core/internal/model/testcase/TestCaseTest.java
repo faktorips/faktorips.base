@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
@@ -59,6 +60,9 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = super.newIpsProject("TestProject");
         root = ipsProject.getIpsPackageFragmentRoots()[0];
+        
+        newPolicyCmptType(ipsProject, "testCaseTypeX");
+        
         testCaseType = (ITestCaseType) newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "testCaseType1");
         testCaseType.newInputTestValueParameter().setName("inputTestValue0");
         testCaseType.newInputTestValueParameter().setName("inputTestValue1");
@@ -389,7 +393,9 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         testCaseX.setTestCaseType(testCaseTypeX.getName());
         
         assertEquals(false, testCaseX.containsDifferenceToModel());
-        testCaseTypeX.newInputTestValueParameter().setName("inputTestValueX");
+        ITestValueParameter parameter = testCaseTypeX.newInputTestValueParameter();
+        parameter.setName("inputTestValueX");
+        parameter.setDatatype("String");
         assertEquals(true, testCaseX.containsDifferenceToModel());       
     } 
 
@@ -407,7 +413,9 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         testCaseX.fixAllDifferencesToModel();
         assertEquals(false, testCaseX.containsDifferenceToModel());
         
-        testCaseTypeX.newInputTestValueParameter().setName("inputTestValueX");
+        ITestValueParameter parameter = testCaseTypeX.newInputTestValueParameter();
+        parameter.setName("inputTestValueX");
+        parameter.setDatatype("String");
         
         assertEquals(true, testCaseX.containsDifferenceToModel());
         testCaseX.fixAllDifferencesToModel();

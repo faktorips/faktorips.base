@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -35,6 +36,7 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseHierarchyPath;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
@@ -50,6 +52,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     private ITestCase testCase;
     private ITestPolicyCmpt testPolicyCmptObjectExpected;
     private ITestPolicyCmpt testPolicyCmptObjectInput;
+    private ITestCaseType testCaseType;
     
     /**
      * @see AbstractIpsPluginTest#setUp()
@@ -57,10 +60,20 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
-        ITestCaseType testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
-        testCaseType.newInputTestPolicyCmptTypeParameter().setName("testValueParameter1");
-        testCaseType.newExpectedResultPolicyCmptTypeParameter().setName("testValueParameter2");
-        testCaseType.newCombinedPolicyCmptTypeParameter().setName("testValueParameter3");
+        newPolicyCmptType(project, "testValueParameter1");
+        newPolicyCmptType(project, "testValueParameter2");
+        newPolicyCmptType(project, "testValueParameter3");
+        
+        testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
+        ITestPolicyCmptTypeParameter parameter = testCaseType.newInputTestPolicyCmptTypeParameter();
+        parameter.setName("testValueParameter1");
+        parameter.setPolicyCmptType("testValueParameter1");
+        ITestPolicyCmptTypeParameter parameter2 = testCaseType.newExpectedResultPolicyCmptTypeParameter();
+        parameter2.setName("testValueParameter2");
+        parameter2.setPolicyCmptType("testValueParameter2");
+        ITestPolicyCmptTypeParameter parameter3 = testCaseType.newCombinedPolicyCmptTypeParameter();
+        parameter3.setName("testValueParameter3");
+        parameter3.setPolicyCmptType("testValueParameter3");
         
         testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "PremiumCalculation");
         (testPolicyCmptObjectInput = testCase.newTestPolicyCmpt()).setTestPolicyCmptTypeParameter("testValueParameter1");
@@ -284,6 +297,9 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     public void testUpdateDefaultTestAttributeValues() throws CoreException{
         // create model objects
         IPolicyCmptType policy = newPolicyCmptType(project, "Policy");
+        IRelation relation = policy.newRelation();
+        relation.setTargetRoleSingular("childPolicyCmptType");
+        relation.setTarget("Coverage");
         IPolicyCmptType coverage = newPolicyCmptType(project, "Coverage");
         IProductCmpt product = newProductCmpt(project, "Product");
         product.setPolicyCmptType(coverage.getQualifiedName());
@@ -307,6 +323,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         ITestPolicyCmptTypeParameter tp = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter();
         tp.setPolicyCmptType(policy.getQualifiedName());
         ITestPolicyCmptTypeParameter tpChild = tp.newTestPolicyCmptTypeParamChild();
+        tpChild.setTestParameterType(TestParameterType.INPUT);
         tpChild.setName("childPolicyCmptType");
         tpChild.setRelation("childPolicyCmptType");
         tpChild.setPolicyCmptType("childPolicyCmptType");
@@ -324,7 +341,9 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         ITestPolicyCmpt tcChild = tr.newTargetTestPolicyCmptChild();
         tcChild.setTestPolicyCmptTypeParameter(tpChild.getName());
         tcChild.setName(tpChild.getName());
+        
         // use delta fix to add all missing test attributes
+        
         testCase.fixDifferences(testCase.computeDeltaToTestCaseType());
         String path = testPolicyCmptObjectInput.getTestParameterName() + TestCaseHierarchyPath.SEPARATOR + tpChild.getRelation() +  TestCaseHierarchyPath.SEPARATOR + tpChild.getName();
         tcChild = testCase.findTestPolicyCmpt(path);
