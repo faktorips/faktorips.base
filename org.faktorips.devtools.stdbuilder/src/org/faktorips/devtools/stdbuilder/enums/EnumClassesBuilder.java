@@ -186,6 +186,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
      * </pre>
      */
     private void generateField(JavaCodeFragmentBuilder memberBuilder, IColumn column, Datatype datatype) throws CoreException{
+        memberBuilder.javaDoc(null, ANNOTATION_GENERATED);
         memberBuilder.varDeclaration(Modifier.PRIVATE, datatype.getJavaClassName(), getFieldName(column));
     }
 
@@ -301,7 +302,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         //the number of columns retrieved from the table contents object can differ from the one
         //retrieved from the table structure. This inconsistency is allowed in the model and is shown 
         //to the user as an error. The builder still has to cope with this inconsistency.
-        int numberOfColumns = getTableContents().getNumOfColumns();
+        int numberOfColumns = Math.min(getTableContents().getNumOfColumns(), columns.length);
         List datatypHelpers = new ArrayList();
         for (int i = 0; i < numberOfColumns; i++) {
             Datatype datatype = columns[i].findValueDatatype();
@@ -317,7 +318,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
             for (int j = 0; j < numberOfColumns; j++) {
                 DatatypeHelper helper = (DatatypeHelper)datatypHelpers.get(j);
                 value.append(helper.newInstance(rows[i].getValue(j)));
-                if(j < columns.length - 1){
+                if(j < numberOfColumns - 1){
                     value.appendln(", ");
                 }
             }

@@ -165,7 +165,9 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         codeBuilder.append(section.getConstantSectionBuilder().getFragment());
         codeBuilder.appendln();
         codeBuilder.append(section.getAttributesSectionBuilder().getFragment());
+        codeBuilder.appendln();
         codeBuilder.append(section.getConstructorSectionBuilder().getFragment());
+        codeBuilder.appendln();
         codeBuilder.append(section.getMethodSectionBuilder().getFragment());
 
         if(innerClassSections != null){
