@@ -109,7 +109,7 @@ public class TableContentsPage extends IpsObjectPage {
      */
     protected void sourceFolderChanged() {
         super.sourceFolderChanged();
-        IIpsPackageFragmentRoot root = getPdPackageFragmentRoot();
+        IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
         if (root!=null) {
             structureControl.setIpsProject(root.getIpsProject());
         } else {

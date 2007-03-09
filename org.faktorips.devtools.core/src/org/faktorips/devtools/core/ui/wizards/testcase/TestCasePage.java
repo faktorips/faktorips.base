@@ -69,7 +69,7 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
      */
     protected void sourceFolderChanged() {
         super.sourceFolderChanged();
-        IIpsPackageFragmentRoot root = getPdPackageFragmentRoot();
+        IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
         if (root!=null) {
             superTypeControl.setIpsProject(root.getIpsProject());
         } else {

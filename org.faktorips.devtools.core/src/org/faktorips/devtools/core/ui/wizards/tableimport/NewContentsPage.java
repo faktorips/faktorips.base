@@ -195,7 +195,7 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
     
     protected void sourceFolderChanged() {
         IIpsPackageFragmentRoot root = sourceFolderControl.getPdPckFragmentRoot();
-        packageControl.setPdPckFragmentRoot(root);
+        packageControl.setIpsPckFragmentRoot(root);
         if (root!=null) {
             structureControl.setIpsProject(root.getIpsProject());
         } else {
@@ -211,7 +211,7 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
     }
     
     private void setPdPackageFragment(IIpsPackageFragment pack) {
-        packageControl.setPdPackageFragment(pack);
+        packageControl.setIpsPackageFragment(pack);
         if (pack!=null) {
             setPdPackageFragmentRoot(pack.getRoot());    
         }
@@ -222,7 +222,7 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
     }
     
     public IIpsPackageFragment getIpsPackageFragment() {
-        return packageControl.getPdPackageFragment();
+        return packageControl.getIpsPackageFragment();
     }
     
     public IIpsProject getIpsProject() {
@@ -283,7 +283,7 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
             setErrorMessage(Messages.NewContentsPage_msgEmptyContent);
             return;
         }
-        IIpsPackageFragment pack = packageControl.getPdPackageFragment();
+        IIpsPackageFragment pack = packageControl.getIpsPackageFragment();
         try {
 	        if (pack.getIpsProject().findIpsObject(IpsObjectType.TABLE_CONTENTS, StringUtil.qualifiedName(pack.getName(), contentsField.getText())) != null) {
 	            setErrorMessage(NLS.bind(Messages.NewContentsPage_msgExistingContent, contentsField.getText()));
@@ -312,7 +312,7 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
 	 * The method validates the source folder.
 	 */
 	private void validatePackage() {
-	    IIpsPackageFragment pack = packageControl.getPdPackageFragment();
+	    IIpsPackageFragment pack = packageControl.getIpsPackageFragment();
         if (pack!=null && !pack.exists()) {
             setErrorMessage(NLS.bind(Messages.NewContentsPage_msgPackageMissing, pack.getName())); 
         }

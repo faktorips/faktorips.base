@@ -39,19 +39,19 @@ public class IpsPckFragmentRefControl extends TextButtonControl {
         super(parent, toolkit, Messages.IpsPckFragmentRefControl_titleBrowse);
     }
     
-    public void setPdPckFragmentRoot(IIpsPackageFragmentRoot root) {
+    public void setIpsPckFragmentRoot(IIpsPackageFragmentRoot root) {
         this.root = root;
         setButtonEnabled(root!=null && root.exists());
     }
 
-    public IIpsPackageFragment getPdPackageFragment() {
+    public IIpsPackageFragment getIpsPackageFragment() {
         if (root==null) {
             return null;
         }
         return root.getIpsPackageFragment(text.getText());
     }
     
-    public void setPdPackageFragment(IIpsPackageFragment newPack) {
+    public void setIpsPackageFragment(IIpsPackageFragment newPack) {
         if (newPack==null) {
             text.setText(""); //$NON-NLS-1$
         } else {

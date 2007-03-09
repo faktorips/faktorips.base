@@ -145,7 +145,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                 .getIpsPackageFragment().getRoot(), inputRoot);
         
         // set target default
-        targetInput.setPdPackageFragment(getPackage());
+        targetInput.setIpsPackageFragment(getPackage());
         
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelSearchPattern);
@@ -314,7 +314,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
      * Returns the package fragment which is to be used as target package for the copy.
      */
     public IIpsPackageFragment getTargetPackage() {
-        return targetInput.getPdPackageFragment();
+        return targetInput.getIpsPackageFragment();
     }
 
     public void checkStateChanged(CheckStateChangedEvent event) {

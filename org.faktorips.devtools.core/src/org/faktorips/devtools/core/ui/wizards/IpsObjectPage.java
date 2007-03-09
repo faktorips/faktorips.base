@@ -158,7 +158,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
      */
     protected void setDefaults(IResource selectedResource) throws CoreException {
         if (selectedResource==null) {
-            setPdPackageFragmentRoot(null);
+            setIpsPackageFragmentRoot(null);
             return;
         }
         IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
@@ -167,22 +167,22 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
             try {
                 roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
                 if (roots.length>0) {
-                    setPdPackageFragmentRoot(roots[0]);
+                    setIpsPackageFragmentRoot(roots[0]);
                 }
             } catch (CoreException e) {
                 IpsPlugin.log(e); // user can still work with the system, just so the defaults are missing
                 // so just log it. 
             }
         } else if (element instanceof IIpsPackageFragmentRoot) {
-            setPdPackageFragmentRoot((IIpsPackageFragmentRoot)element);
+            setIpsPackageFragmentRoot((IIpsPackageFragmentRoot)element);
         } else if (element instanceof IIpsPackageFragment) {
             IIpsPackageFragment pack = (IIpsPackageFragment)element;
-            setPdPackageFragment(pack);
+            setIpsPackageFragment(pack);
         } else if (element instanceof IIpsSrcFile) {
             IIpsPackageFragment pack = (IIpsPackageFragment)element.getParent();
-            setPdPackageFragment(pack);
+            setIpsPackageFragment(pack);
         } else {
-            setPdPackageFragmentRoot(null);    
+            setIpsPackageFragmentRoot(null);    
         }
     }
     
@@ -220,13 +220,13 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         return sourceFolderField.getText();
     }
     
-    public IIpsPackageFragmentRoot getPdPackageFragmentRoot() {
+    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
         return sourceFolderControl.getPdPckFragmentRoot();
     }
     
     protected void sourceFolderChanged() {
         IIpsPackageFragmentRoot root = sourceFolderControl.getPdPckFragmentRoot();
-        packageControl.setPdPckFragmentRoot(root);
+        packageControl.setIpsPckFragmentRoot(root);
     }
     
     protected void packageChanged() {
@@ -237,26 +237,26 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         
     }
     
-    private void setPdPackageFragment(IIpsPackageFragment pack) {
-        packageControl.setPdPackageFragment(pack);
+    private void setIpsPackageFragment(IIpsPackageFragment pack) {
+        packageControl.setIpsPackageFragment(pack);
         if (pack!=null) {
-            setPdPackageFragmentRoot(pack.getRoot());    
+            setIpsPackageFragmentRoot(pack.getRoot());    
         }
     }
     
-    private void setPdPackageFragmentRoot(IIpsPackageFragmentRoot root) {
+    private void setIpsPackageFragmentRoot(IIpsPackageFragmentRoot root) {
         sourceFolderControl.setPdPckFragmentRoot(root);
     }
     
     public IIpsPackageFragment getIpsPackageFragment() {
-        return packageControl.getPdPackageFragment();
+        return packageControl.getIpsPackageFragment();
     }
     
     public IIpsProject getIpsProject() {
-    	if (getIpsPackageFragment()==null) {
+    	if (getIpsPackageFragmentRoot() == null) {
     		return null;
     	}
-    	return getIpsPackageFragment().getIpsProject();
+    	return getIpsPackageFragmentRoot().getIpsProject();
     }
     
     /**
@@ -350,7 +350,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
 	 * The method validates the source folder.
 	 */
 	private void validatePackage() {
-	    IIpsPackageFragment pack = packageControl.getPdPackageFragment(); 
+	    IIpsPackageFragment pack = packageControl.getIpsPackageFragment(); 
         if (pack!=null && !pack.exists()) {
             setErrorMessage(NLS.bind(Messages.IpsObjectPage_msgPackageMissing, pack.getName())); 
         }
@@ -363,6 +363,9 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
 	 * </p>
 	 */
 	protected void validateName() {
+        if(getIpsProject() == null){
+            return;
+        }
 	    // validate naming conventions
         String name=nameField.getText();
         IIpsProjectNamingConventions namingConventions = getIpsProject().getNamingConventions();
@@ -389,10 +392,10 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         }
 		
         // validate to indicate that the object not exists
-		IIpsPackageFragment pack = packageControl.getPdPackageFragment();
-		String filename = getIpsObjectType().getFileName(name);
+		IIpsPackageFragment pack = packageControl.getIpsPackageFragment();
 		if (pack!=null) {
 		    IFolder folder = (IFolder)pack.getCorrespondingResource();
+		    String filename = getIpsObjectType().getFileName(name);
 		    if (folder.getFile(filename).exists()) {
 		        setErrorMessage(Messages.IpsObjectPage_msgObjectAllreadyExists);
 		        return;

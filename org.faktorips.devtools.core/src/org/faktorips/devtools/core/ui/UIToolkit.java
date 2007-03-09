@@ -424,7 +424,7 @@ public class UIToolkit {
 	public IpsPckFragmentRefControl createPdPackageFragmentRefControl(
 			IIpsPackageFragmentRoot root, Composite parent) {
 		IpsPckFragmentRefControl control = createPdPackageFragmentRefControl(parent);
-		control.setPdPckFragmentRoot(root);
+		control.setIpsPckFragmentRoot(root);
 		return control;
 	}
 
