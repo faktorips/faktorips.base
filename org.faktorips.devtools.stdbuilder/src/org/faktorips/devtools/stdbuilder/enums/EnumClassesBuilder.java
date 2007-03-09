@@ -99,19 +99,20 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         appendLocalizedJavaDoc("CLASS_DESCRIPTION", getTableContents().getName(), 
                 getTableContents(), getMainTypeSection().getJavaDocForTypeSectionBuilder());
 
+        generateCodeForColumns(memberBuilder, methodBuilder, tableStructure);
+        generateConstantForSerialVersionNumber(getMainTypeSection().getConstantSectionBuilder());
+        
         EnumValueAttributesInfo info = createEnumValueAttributesInfo(getTableContents());
         if(!info.isValid){
             return;
         }
         generateConstructor(getMainTypeSection().getConstructorSectionBuilder(), tableStructure, info.idKeyItem, info.nameKeyItem);
-        generateCodeForColumns(memberBuilder, methodBuilder, tableStructure);
         generateConstantsForEnumValues(getMainTypeSection().getConstantSectionBuilder(), tableStructure);
         generateMethodGetAllEnumValues(methodBuilder);
         generateMethodGetEnumValue(methodBuilder, info.idKeyItem, info.idDatatype);
         generateMethodIsEnumValue(methodBuilder, info.idKeyItem, info.idDatatype);
         generateMethodReadResolve(methodBuilder, info.idKeyItem);
         generateMethodToString(methodBuilder, info.nameKeyItem, info.idKeyItem);
-        generateConstantForSerialVersionNumber(getMainTypeSection().getConstantSectionBuilder());
     }
     
     private EnumValueAttributesInfo createEnumValueAttributesInfo(ITableContents tableContents) throws CoreException{
@@ -486,6 +487,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append("(");
         methodBody.append(idKeyItem.getName());
         methodBody.append(");");
+        methodBuilder.javaDoc(null, ANNOTATION_GENERATED);
         methodBuilder.method(Modifier.PRIVATE, Object.class, "readResolve", 
                 new String[0], new Class[0], new Class[]{ObjectStreamException.class}, methodBody, null); 
 
@@ -513,7 +515,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append(idKeyItem.getName());
         methodBody.append(" + \")\";");
 
-        methodBuilder.javaDoc("{@inheritDoc}");
+        methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
         methodBuilder.method(Modifier.PUBLIC, String.class, "toString", 
                 new String[0], new Class[0],  methodBody, null); 
     }
