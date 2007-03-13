@@ -53,22 +53,30 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     protected void generateCodeForAttribute(IAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder constantBuilder,
-            JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        if (attribute.isProductRelevant() && getPcType().findProductCmptType()==null) {
+        if (attribute.isProductRelevant() && getPcType().findProductCmptType() == null) {
             return;
         }
         AttributeType type = attribute.getAttributeType();
         if (type == AttributeType.CHANGEABLE) {
-            if(attribute.getOverwrites()){
+            if (attribute.getOverwrites()) {
                 return;
             }
             generateCodeForChangeableAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
         } else if (type == AttributeType.CONSTANT) {
-            generateCodeForConstantAttribute(attribute, datatypeHelper, constantBuilder, memberVarsBuilder, methodsBuilder);
+            generateCodeForConstantAttribute(attribute, datatypeHelper, constantBuilder, memberVarsBuilder,
+                    methodsBuilder);
         } else if (type == AttributeType.DERIVED_ON_THE_FLY) {
+            if (attribute.getOverwrites()) {
+                return;
+            }
             generateCodeForDerivedAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
         } else if (type == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL) {
+            if (attribute.getOverwrites()) {
+                return;
+            }
             generateCodeForComputedAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
         } else {
             throw new RuntimeException("Unkown attribute type " + type);
