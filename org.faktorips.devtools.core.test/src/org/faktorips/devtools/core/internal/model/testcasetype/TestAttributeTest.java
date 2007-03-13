@@ -256,4 +256,18 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         ml = testAttribute.validate();
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE));
     }    
+   
+    public void testValidateNameMustNotBeEmpty() throws Exception{
+        testAttribute.setName("attribute1");
+        MessageList ml = testAttribute.validate();
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NAME_IS_EMPTY));
+        
+        testAttribute.setName("");
+        ml = testAttribute.validate();
+        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NAME_IS_EMPTY));
+        
+        testAttribute.setName(null);
+        ml = testAttribute.validate();
+        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NAME_IS_EMPTY));        
+    }    
 }

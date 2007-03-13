@@ -34,7 +34,8 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String TestAttribute_ValidationWarning_DerivedOnTheFlyAttributesAreNotSupported;
+	public static String TestAttribute_TestAttribute_Error_NameIsEmpty;
+    public static String TestAttribute_ValidationWarning_DerivedOnTheFlyAttributesAreNotSupported;
     public static String TestPolicyCmptTypeParameter_ValidationError_FlagRequiresIsTrueButPolicyCmptTypeIsNotConfByProduct;
     public static String TestPolicyCmptTypeParameter_ValidationWarning_AccosiationTargetNotInTestCaseType;
     public static String TestValueParameter_ValidateError_ValueDatatypeNotFound;

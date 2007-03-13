@@ -194,6 +194,13 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
     protected void validateThis(MessageList messageList) throws CoreException {
         super.validateThis(messageList);
         
+        // check if the name is not empty
+        if (StringUtils.isEmpty(getName())){
+            String text = Messages.TestAttribute_TestAttribute_Error_NameIsEmpty;
+            Message msg = new Message(MSGCODE_ATTRIBUTE_NAME_IS_EMPTY, text, Message.ERROR, this, ITestAttribute.PROPERTY_NAME);
+            messageList.add(msg);
+        }
+        
         // check if the attribute exists
         IAttribute modelAttribute = findAttribute();
         if (modelAttribute == null){

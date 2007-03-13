@@ -223,6 +223,8 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
         ITestAttribute testAttribute = findTestAttribute();
         if (testAttribute == null) {
             // the test attribute wasn't found, do nothing
+            // this is an error which will be validated in the validate method
+            return;
         }
         
         IAttribute modelAttribute = testAttribute.findAttribute();

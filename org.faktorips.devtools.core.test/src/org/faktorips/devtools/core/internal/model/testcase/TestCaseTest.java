@@ -22,17 +22,21 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
+import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
@@ -405,7 +409,6 @@ public class TestCaseTest extends AbstractIpsPluginTest {
      */
     public void testFixAllDifferencesToModel() throws CoreException {
         ITestCaseType testCaseTypeX = (ITestCaseType) newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "testCaseTypeX");
-        
         ITestCase testCaseX = (ITestCase) newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "testCaseTypeX");
         testCaseX.setTestCaseType(testCaseTypeX.getName());
         
@@ -413,12 +416,49 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         testCaseX.fixAllDifferencesToModel();
         assertEquals(false, testCaseX.containsDifferenceToModel());
         
+        PolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "PolicyCmptType");
+        IAttribute attribute = policyCmptType.newAttribute();
+        attribute.setName("Attribute1");
+        attribute.setDatatype("String");
+        attribute.setDefaultValue("Test1");
+        attribute = policyCmptType.newAttribute();
+        attribute.setName("Attribute2");
+        attribute.setDatatype("String");
+        attribute.setDefaultValue("Test2");
+        
+        ITestPolicyCmptTypeParameter policyCmptParam = testCaseTypeX.newInputTestPolicyCmptTypeParameter();
+        policyCmptParam.setPolicyCmptType(policyCmptType.getQualifiedName());
+        policyCmptParam.setName("PolicyCmptType");
+        ITestAttribute testAttribute = policyCmptParam.newInputTestAttribute();
+        testAttribute.setAttribute("Attribute1");
+        testAttribute.setName("Attribute1");
+        
         ITestValueParameter parameter = testCaseTypeX.newInputTestValueParameter();
-        parameter.setName("inputTestValueX");
+        parameter.setName("inputTestValueX1");
+        parameter.setDatatype("String");
+        parameter = testCaseTypeX.newInputTestValueParameter();
+        parameter.setName("inputTestValueX2");
         parameter.setDatatype("String");
         
         assertEquals(true, testCaseX.containsDifferenceToModel());
         testCaseX.fixAllDifferencesToModel();
         assertEquals(false, testCaseX.containsDifferenceToModel());
+        
+        // further check to ensure that the old default values will not be overridden
+        ITestAttributeValue testAttributeValue = testCaseX.getInputTestPolicyCmpts()[0].getTestAttributeValues()[0];
+        assertEquals("Test1", testAttributeValue.getValue());
+        testAttributeValue.setValue("1234");
+        
+        testAttribute = policyCmptParam.newInputTestAttribute();
+        testAttribute.setName("Attribute2");
+        testAttribute.setAttribute("Attribute2");
+        
+        assertEquals(true, testCaseX.containsDifferenceToModel());
+        testCaseX.fixAllDifferencesToModel();
+        assertEquals(false, testCaseX.containsDifferenceToModel());
+        
+        assertEquals("1234", testAttributeValue.getValue());
+        testAttributeValue = testCaseX.getInputTestPolicyCmpts()[0].getTestAttributeValues()[1];
+        assertEquals("Test2", testAttributeValue.getValue());
     }
 }

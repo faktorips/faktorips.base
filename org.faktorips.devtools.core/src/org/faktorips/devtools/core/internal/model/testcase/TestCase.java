@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
@@ -307,8 +308,9 @@ public class TestCase extends IpsObject implements ITestCase {
             for (int j = 0; j < testPolicyCmpts.length; j++) {
                 ITestAttributeValue testAttributeValue = testPolicyCmpts[j].newTestAttributeValue();
                 testAttributeValue.setTestAttribute(testAttributesWithMissingTestAttributeValue[i].getName());
-                // set default for the added test attribute value
-                testPolicyCmpts[j].updateDefaultTestAttributeValues();
+                // set default for the new added test attribute value only
+                IProductCmptGeneration generation = ((TestPolicyCmpt)testPolicyCmpts[j]).findProductCmpsCurrentGeneration();
+                ((TestAttributeValue)testAttributeValue).setDefaultTestAttributeValueInternal(generation);
             }
         }
         

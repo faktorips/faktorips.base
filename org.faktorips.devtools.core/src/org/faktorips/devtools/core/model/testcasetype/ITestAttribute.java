@@ -72,6 +72,11 @@ public interface ITestAttribute extends IIpsObjectPart {
     public final static String MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE = MSGCODE_PREFIX + "DuplicateAttributeAndType"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that the attribute name must not be empty.
+     */
+    public final static String MSGCODE_ATTRIBUTE_NAME_IS_EMPTY = MSGCODE_PREFIX + "AttributeNameIsEmpty"; //$NON-NLS-1$
+    
+    /**
      * Sets the attribute's name.
      */
     public void setName(String newName);
