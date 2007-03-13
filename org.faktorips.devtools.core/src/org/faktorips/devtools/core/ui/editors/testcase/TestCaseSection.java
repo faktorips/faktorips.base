@@ -1462,7 +1462,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             }
         }
-		redrawForm();
+        redrawForm();
 	}
 
     /*
@@ -1875,6 +1875,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
         
         // if not all fields are visible, first show all fields
+        // to ensure that the error will be visible
         if (!actionAll.isChecked()){
             postShowAll();
         }
@@ -2020,7 +2021,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		isTestRunError = false;
 		isTestRunFailure = false;
 		failureCount = 0;
-		postShowAll();
 	}
 
 	/**
