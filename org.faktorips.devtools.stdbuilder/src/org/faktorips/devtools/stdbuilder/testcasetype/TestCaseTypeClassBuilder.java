@@ -493,7 +493,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * For each test policy component type parameter in the given policyTypeParams list.
      */    
     private void buildInitForTestValueParameter(JavaCodeFragment body, ITestValueParameter[] valueParams, String variablePrefix) throws CoreException {
-        body.appendln("String value = null;");
+        if (valueParams.length > 0){
+            body.appendln("String value = null;");
+        }
         for (int i = 0; i < valueParams.length; i++) {
             if (!valueParams[i].isValid()){
                 continue;
