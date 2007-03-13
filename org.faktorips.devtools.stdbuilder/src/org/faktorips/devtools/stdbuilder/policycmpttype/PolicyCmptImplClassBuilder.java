@@ -59,12 +59,13 @@ import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IUnresolvedReference;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.faktorips.runtime.ModelObjectChangedEvent;
+import org.faktorips.runtime.IModelObjectChangedEvent;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
 import org.faktorips.runtime.internal.DependantObject;
 import org.faktorips.runtime.internal.MethodNames;
+import org.faktorips.runtime.internal.ModelObjectChangedEvent;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Element;
@@ -501,8 +502,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append("this.");
         methodsBuilder.append(getFieldNameForAttribute(a));
         methodsBuilder.appendln(" = " + interfaceBuilder.getParamNameForSetPropertyValue(a) + ";");
-        String eventClassName = QNameUtil.getUnqualifiedName(ModelObjectChangedEvent.class.getName());
-        generateChangeListenerSupport( methodsBuilder, eventClassName + ".PROPERTY_CHANGED", getFieldNameForAttribute(a) );
+        String eventClassName = QNameUtil.getUnqualifiedName(IModelObjectChangedEvent.class.getName());
+        generateChangeListenerSupport( methodsBuilder, eventClassName + ".MUTABLE_PROPERTY_CHANGED", getFieldNameForAttribute(a) );
         
         methodsBuilder.closeBracket();
     }
@@ -898,8 +899,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));
             }
         }
-        String eventClassName = QNameUtil.getUnqualifiedName(ModelObjectChangedEvent.class.getName());
-        generateChangeListenerSupport(methodsBuilder, eventClassName + ".PROPERTY_CHILD_ADDED" , fieldname, paramName);
+        String eventClassName = QNameUtil.getUnqualifiedName(IModelObjectChangedEvent.class.getName());
+        generateChangeListenerSupport(methodsBuilder, eventClassName + ".RELATION_OBJECT_ADDED" , fieldname, paramName);
         methodsBuilder.closeBracket();
     }
     
@@ -985,8 +986,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         } else {
             methodsBuilder.append(';');
         }
-        String eventClassName = QNameUtil.getUnqualifiedName(ModelObjectChangedEvent.class.getName());
-        generateChangeListenerSupport(methodsBuilder, eventClassName + ".PROPERTY_CHILD_REMOVED", fieldname, paramName);
+        String eventClassName = QNameUtil.getUnqualifiedName(IModelObjectChangedEvent.class.getName());
+        generateChangeListenerSupport(methodsBuilder, eventClassName + ".RELATION_OBJECT_REMOVED", fieldname, paramName);
         methodsBuilder.closeBracket();
     }
     
@@ -1037,8 +1038,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodsBuilder.appendln("}");
         }
         
-        String eventClassName = QNameUtil.getUnqualifiedName(ModelObjectChangedEvent.class.getName());
-        generateChangeListenerSupport(methodsBuilder, eventClassName + ".PROPERTY_CHILD_CHANGED", fieldname, paramName);
+        String eventClassName = QNameUtil.getUnqualifiedName(IModelObjectChangedEvent.class.getName());
+        generateChangeListenerSupport(methodsBuilder, eventClassName + ".RELATION_OBJECT_CHANGED", fieldname, paramName);
         methodsBuilder.closeBracket();
     }
     
@@ -1094,8 +1095,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodsBuilder.append(generateCodeToSynchronizeReverseAssoziation(fieldname, 
                     getQualifiedClassName(target), relation, reverseRelation));
         }
-        String eventClassName = QNameUtil.getUnqualifiedName(ModelObjectChangedEvent.class.getName());
-        generateChangeListenerSupport(methodsBuilder, eventClassName + ".PROPERTY_CHILD_CHANGED", fieldname, paramName);
+        String eventClassName = QNameUtil.getUnqualifiedName(IModelObjectChangedEvent.class.getName());
+        generateChangeListenerSupport(methodsBuilder, eventClassName + ".RELATION_OBJECT_CHANGED", fieldname, paramName);
         methodsBuilder.closeBracket();
     }
     
@@ -2044,7 +2045,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private void generateMethodNotifyChangeListeners(JavaCodeFragmentBuilder methodBuilder) {
         methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         methodBuilder.methodBegin(Modifier.PUBLIC, Void.TYPE, MethodNames.NOTIFIY_CHANGE_LISTENERS, 
-                new String[]{"event"}, new Class[]{ModelObjectChangedEvent.class});
+                new String[]{"event"}, new Class[]{IModelObjectChangedEvent.class});
         
         methodBuilder.appendln("super." + MethodNames.NOTIFIY_CHANGE_LISTENERS+ "(event);");
         methodBuilder.appendln("if (" + FIELD_PARENT_MODEL_OBJECT + "!=null) {");
