@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -137,39 +138,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
                 IStructuredSelection sel = (IStructuredSelection)this.selection;
                 for (Iterator iter = sel.iterator(); iter.hasNext();) {
                     Object selected = iter.next();
-                    if (selected instanceof IJavaProject) {
-                        IIpsProject project = getIpsProject((IJavaProject)selected);
-                        addIpsElement(project, ipsElementsToFix);
-                    }
-                    else if (selected instanceof IIpsProject) {
-                        addIpsElement((IIpsProject)selected, ipsElementsToFix);
-                    }
-                    else if (selected instanceof IPackageFragmentRoot) {
-                        IIpsPackageFragmentRoot root = getIpsProject(((IPackageFragmentRoot)selected).getJavaProject())
-                                .findIpsPackageFragmentRoot(((IPackageFragmentRoot)selected).getElementName());
-                        addIpsElement(root, ipsElementsToFix);
-                    }
-                    else if (selected instanceof IIpsPackageFragmentRoot) {
-                        addIpsElement((IIpsPackageFragmentRoot)selected, ipsElementsToFix);
-                    }
-                    else if (selected instanceof IPackageFragment) {
-                        IIpsProject project = getIpsProject(((IPackageFragment)selected).getJavaProject());
-                        IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
-                        for (int i = 0; i < roots.length; i++) {
-                            IIpsPackageFragment pack = roots[i].getIpsPackageFragment(((IPackageFragment)selected)
-                                    .getElementName());
-                            addIpsElement(pack, ipsElementsToFix);
-                        }
-                    }
-                    else if (selected instanceof IIpsPackageFragment) {
-                        addIpsElement((IIpsPackageFragment)selected, ipsElementsToFix);
-                    }
-                    else if (selected instanceof IFixDifferencesToModelSupport){
-                        IFixDifferencesToModelSupport ipsElementToFix = (IFixDifferencesToModelSupport)selected;
-                        if(ipsElementToFix.containsDifferenceToModel()){
-                            ipsElementsToFix.add(ipsElementToFix);
-                        }
-                    }
+                    addElementToFix(ipsElementsToFix, selected);
                 }
             }
             catch (CoreException e) {
@@ -180,6 +149,42 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
         return ipsElementsToFix;
     }
 
+    private void addElementToFix(Set ipsElementsToFix, Object selected) throws CoreException {
+        if (selected instanceof IJavaProject) {
+            IIpsProject project = getIpsProject((IJavaProject)selected);
+            addIpsElement(project, ipsElementsToFix);
+        } else if (selected instanceof IIpsProject) {
+            addIpsElement((IIpsProject)selected, ipsElementsToFix);
+        } else if (selected instanceof IPackageFragmentRoot) {
+            IIpsPackageFragmentRoot root = getIpsProject(((IPackageFragmentRoot)selected).getJavaProject())
+                    .findIpsPackageFragmentRoot(((IPackageFragmentRoot)selected).getElementName());
+            addIpsElement(root, ipsElementsToFix);
+        } else if (selected instanceof IIpsPackageFragmentRoot) {
+            addIpsElement((IIpsPackageFragmentRoot)selected, ipsElementsToFix);
+        } else if (selected instanceof IPackageFragment) {
+            IIpsProject project = getIpsProject(((IPackageFragment)selected).getJavaProject());
+            IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
+            for (int i = 0; i < roots.length; i++) {
+                IIpsPackageFragment pack = roots[i].getIpsPackageFragment(((IPackageFragment)selected)
+                        .getElementName());
+                addIpsElement(pack, ipsElementsToFix);
+            }
+        } else if (selected instanceof IIpsPackageFragment) {
+            addIpsElement((IIpsPackageFragment)selected, ipsElementsToFix);
+        } else if (selected instanceof IFixDifferencesToModelSupport) {
+            IFixDifferencesToModelSupport ipsElementToFix = (IFixDifferencesToModelSupport)selected;
+            if (ipsElementToFix.containsDifferenceToModel()) {
+                ipsElementsToFix.add(ipsElementToFix);
+            }
+        } else if (selected instanceof IResource){
+            Object objToAdd = IpsPlugin.getDefault().getIpsModel().getIpsElement((IResource)selected);
+            if (objToAdd instanceof IIpsSrcFile){
+                objToAdd = ((IIpsSrcFile)objToAdd).getIpsObject();
+            }
+            addElementToFix(ipsElementsToFix, objToAdd);
+        }
+    }
+    
     private IIpsProject getIpsProject(IJavaProject jProject) {
         return IpsPlugin.getDefault().getIpsModel().getIpsProject(jProject.getProject());
     }

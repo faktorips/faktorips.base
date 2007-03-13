@@ -242,14 +242,16 @@
 	            <enablement>
 		             <or>
 			              <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
-			              <objectClass name="org.eclipse.core.resources.IFolder"/>
+			              <objectClass name="org.eclipse.core.resources.IResource"/>
+			              <objectClass name="org.faktorips.devtools.core.model.IFixDifferencesToModelSupport"/>
 		             </or>
 	            </enablement> 
             </action>
 		      <visibility>
 	             <or>
 		              <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
-		              <objectClass name="org.eclipse.core.resources.IFolder"/>
+		              <objectClass name="org.eclipse.core.resources.IResource"/>
+		              <objectClass name="org.faktorips.devtools.core.model.IFixDifferencesToModelSupport"/>
 	             </or>
 		      </visibility> 
     	</objectContribution>
