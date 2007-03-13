@@ -76,4 +76,17 @@ public class TestRuleViolationType extends DefaultEnumValue {
     public String getText() {
         return text;
     }
+    
+    /**
+     * Maps the rule values id to the corresponding name, if the given string is no id
+     * return the given string without mapping.
+     */
+    public static String mapRuleValueTest(String id) {
+        if (id.equals(TestRuleViolationType.VIOLATED.getId())){
+            return TestRuleViolationType.VIOLATED.getText();
+        } else if (id.equals(TestRuleViolationType.NOT_VIOLATED.getId())){
+            return TestRuleViolationType.NOT_VIOLATED.getText();
+        }
+        return id;
+    }    
 }

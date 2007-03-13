@@ -60,6 +60,7 @@ import org.eclipse.ui.progress.UIJob;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
+import org.faktorips.devtools.core.model.testcase.TestRuleViolationType;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -727,24 +728,30 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 * Converts the given failure details to one failure detail row.
 	 */
 	private String failureDetailsToString(String[] failureDetails){
-		String failureFormat= Messages.IpsTestRunnerViewPart_FailureFormat_FailureIn;
+		String[] failureDetailsCopy = new String[failureDetails.length];
+        System.arraycopy(failureDetails, 0, failureDetailsCopy, 0, failureDetails.length);
+        
+        String failureFormat= Messages.IpsTestRunnerViewPart_FailureFormat_FailureIn;
 		String failureActual = Messages.IpsTestRunnerViewPart_FailureFormat_Actual;
 		String failureExpected = Messages.IpsTestRunnerViewPart_FailureFormat_Expected;
 		String failureFormatAttribute= Messages.IpsTestRunnerViewPart_FailureFormat_Attribute;
 		String failureFormatObject= Messages.IpsTestRunnerViewPart_FailureFormat_Object;
         String failureFormatMessage = Messages.IpsTestRunnerViewPart_FailureFormat_Message;
         
-		if (failureDetails.length>3)
+        failureDetailsCopy[3] = TestRuleViolationType.mapRuleValueTest(failureDetailsCopy[3]);
+        failureDetailsCopy[4] = TestRuleViolationType.mapRuleValueTest(failureDetailsCopy[4]);
+        
+		if (failureDetailsCopy.length>3)
 			failureFormat= failureFormat + (failureExpected); //$NON-NLS-1$
-		if (failureDetails.length>4)
+		if (failureDetailsCopy.length>4)
 			failureFormat= failureFormat + (failureActual); //$NON-NLS-1$
-		if (failureDetails.length>1)
-			failureFormat= failureFormat + (!"<null>".equals(failureDetails[1])?failureFormatObject:""); //$NON-NLS-1$ //$NON-NLS-2$
-		if (failureDetails.length>2)
-			failureFormat= failureFormat + (!"<null>".equals(failureDetails[2])?failureFormatAttribute:""); //$NON-NLS-1$ //$NON-NLS-2$
-		if (failureDetails.length>5)
-		    failureFormat= failureFormat + (!"<null>".equals(failureDetails[5])?failureFormatMessage:""); //$NON-NLS-1$ //$NON-NLS-2$
-		return MessageFormat.format(failureFormat, failureDetails); 
+		if (failureDetailsCopy.length>1)
+			failureFormat= failureFormat + (!"<null>".equals(failureDetailsCopy[1])?failureFormatObject:""); //$NON-NLS-1$ //$NON-NLS-2$
+		if (failureDetailsCopy.length>2)
+			failureFormat= failureFormat + (!"<null>".equals(failureDetailsCopy[2])?failureFormatAttribute:""); //$NON-NLS-1$ //$NON-NLS-2$
+		if (failureDetailsCopy.length>5)
+		    failureFormat= failureFormat + (!"<null>".equals(failureDetailsCopy[5])?failureFormatMessage:""); //$NON-NLS-1$ //$NON-NLS-2$
+		return MessageFormat.format(failureFormat, failureDetailsCopy); 
 	}
 	
 	//

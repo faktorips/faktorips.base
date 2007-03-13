@@ -208,6 +208,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         }
         // generate constant variables to indicate violated or not violated failure
         codeBuilder.javaDoc("", ANNOTATION_GENERATED);
+        // it is important that the "violated" and "notViolated" will be used as variable content
+        // the ui depends on this hardcoded value to enable the feature: save actual as expected result
         codeBuilder.varDeclaration(Modifier.PRIVATE + Modifier.FINAL + Modifier.STATIC, String.class, 
                 violatedConstantName, new JavaCodeFragment("\"violated\""));
         codeBuilder.javaDoc("", ANNOTATION_GENERATED);

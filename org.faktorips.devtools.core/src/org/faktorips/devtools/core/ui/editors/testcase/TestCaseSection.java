@@ -420,18 +420,41 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     }   
     
     private void storeActualAsExpectedValue(FailureDetails failureDetails) {
-        if (!testCaseDetailArea.storeActualValueInExpResult(getUniqueEditFieldKey(failureDetails.getObjectName(),
-                failureDetails.getAttributeName()), failureDetails.getActualValue(), failureDetails.getMessage())) {
-            String uniqueKeyWithOffset = failureDetails.getObjectName();
-            uniqueKeyWithOffset = uniqueKeyWithOffset
-                    .replaceAll("\\.", TestCaseHierarchyPath.OFFSET_SEPARATOR + "0\\."); //$NON-NLS-1$ //$NON-NLS-2$
-            if (!testCaseDetailArea.storeActualValueInExpResult(getUniqueEditFieldKey(uniqueKeyWithOffset,
-                    failureDetails.getAttributeName()), failureDetails.getActualValue(), failureDetails.getMessage())) {
-                testCaseDetailArea.storeActualValueInExpResult(getUniqueEditFieldKey(uniqueKeyWithOffset
-                        + TestCaseHierarchyPath.OFFSET_SEPARATOR + "0", failureDetails.getAttributeName()), //$NON-NLS-1$
-                        failureDetails.getActualValue(), failureDetails.getMessage());
-            }
+        testCaseDetailArea.storeActualValueInExpResult(findUniqueEditFieldKey(failureDetails), failureDetails
+                .getActualValue(), failureDetails.getMessage());
+    }
+    
+    private String findUniqueEditFieldKey(FailureDetails failureDetails) {
+        String uniqueEditFieldKey = getUniqueEditFieldKey(failureDetails.getObjectName(), failureDetails
+                .getAttributeName());
+        EditField editField = testCaseDetailArea.getEditField(uniqueEditFieldKey);
+        if (editField != null){
+            return uniqueEditFieldKey;
         }
+        
+        // field wasn't found, maybe the 0 index was not given
+        // identify with obj.child => obj#0.child#0
+        String fieldKeyWithOffset = failureDetails.getObjectName().replaceAll(
+                "\\.", TestCaseHierarchyPath.OFFSET_SEPARATOR + "0\\."); //$NON-NLS-1$ //$NON-NLS-2$
+        uniqueEditFieldKey = getUniqueEditFieldKey(
+                fieldKeyWithOffset + TestCaseHierarchyPath.OFFSET_SEPARATOR + "0", failureDetails.getAttributeName()); //$NON-NLS-1$
+        editField = testCaseDetailArea.getEditField(uniqueEditFieldKey);
+        if (editField != null){
+            return uniqueEditFieldKey;
+        }
+
+        // field wasn't found, maybe the separator wasn't correct used
+        // identify with obj0.child0 => obj#0.child#0
+        fieldKeyWithOffset = failureDetails.getObjectName();
+        String lastKey = fieldKeyWithOffset.substring(fieldKeyWithOffset.length()-1, fieldKeyWithOffset.length());
+        fieldKeyWithOffset = fieldKeyWithOffset.substring(0, fieldKeyWithOffset.length()-1) + TestCaseHierarchyPath.OFFSET_SEPARATOR + lastKey;
+        fieldKeyWithOffset = fieldKeyWithOffset.replaceAll("[0-9]\\.", TestCaseHierarchyPath.OFFSET_SEPARATOR + "0\\."); //$NON-NLS-1$ //$NON-NLS-2$
+        uniqueEditFieldKey = getUniqueEditFieldKey(fieldKeyWithOffset, failureDetails.getAttributeName());
+        editField = testCaseDetailArea.getEditField(uniqueEditFieldKey);
+        if (editField != null){
+            return uniqueEditFieldKey;
+        }
+        return null;
     }
     
     /*
@@ -1810,8 +1833,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         String[] failureDetailsToFormat = new String[failureDetails.length];
         System.arraycopy(failureDetails, 0, failureDetailsToFormat, 0 , failureDetails.length);
         
-        failureDetailsToFormat[3] = mapRuleValueTest(failureDetailsToFormat[3]);
-        failureDetailsToFormat[4] = mapRuleValueTest(failureDetailsToFormat[4]);
+        failureDetailsToFormat[3] = TestRuleViolationType.mapRuleValueTest(failureDetailsToFormat[3]);
+        failureDetailsToFormat[4] = TestRuleViolationType.mapRuleValueTest(failureDetailsToFormat[4]);
         
         if (failureDetailsToFormat.length>1)
 		    failureFormat= failureFormat + (!"<null>".equals(failureDetailsToFormat[1])?failureFormatObject:""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1826,19 +1849,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		return MessageFormat.format(failureFormat, failureDetailsToFormat); 
 	}
 	
-    /*
-     * Maps the rule values id to the corresponding name, if the given string is no id
-     * return the given string without mapping.
-     */
-    private String mapRuleValueTest(String id) {
-        if (id.equals(TestRuleViolationType.VIOLATED.getId())){
-            return TestRuleViolationType.VIOLATED.getText();
-        } else if (id.equals(TestRuleViolationType.NOT_VIOLATED.getId())){
-            return TestRuleViolationType.NOT_VIOLATED.getText();
-        }
-        return id;
-    }
-
     /*
      * Converts the given failure details to one store actual value in expected result detail row.
      */
@@ -1878,35 +1888,16 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         // inform about the failure in the form title
         postAddFailureTooltipInFormTitle(formatedFailure);
 
-        String uniqueEditFieldKey = getUniqueEditFieldKey(failureDetailsObj.getObjectName(), failureDetailsObj
-                .getAttributeName());
-
         // indicate edit fiels as failure
-        if (!testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails)) {
-            // field couldn't be marked as failure, try to identify the first field
-            String fieldKeyWithOffset = failureDetailsObj.getObjectName();
-            fieldKeyWithOffset = fieldKeyWithOffset.replaceAll("\\.", TestCaseHierarchyPath.OFFSET_SEPARATOR + "0\\."); //$NON-NLS-1$ //$NON-NLS-2$
-            uniqueEditFieldKey = getUniqueEditFieldKey(fieldKeyWithOffset
-                    + TestCaseHierarchyPath.OFFSET_SEPARATOR + "0", failureDetailsObj.getAttributeName()); //$NON-NLS-1$
-            if (!testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails)){
-                uniqueEditFieldKey = getUniqueEditFieldKey(fieldKeyWithOffset, failureDetailsObj.getAttributeName());
-                testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails);
-                if (!testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails)){
-                    fieldKeyWithOffset = failureDetailsObj.getObjectName();
-                    // // field couldn't be marked as failure, try to identify with obj0.child0 => obj#0.child#0
-                    String lastKey = fieldKeyWithOffset.substring(fieldKeyWithOffset.length()-1, fieldKeyWithOffset.length());
-                    fieldKeyWithOffset = fieldKeyWithOffset.substring(0, fieldKeyWithOffset.length()-1) + TestCaseHierarchyPath.OFFSET_SEPARATOR + lastKey;
-                    fieldKeyWithOffset = fieldKeyWithOffset.replaceAll("[0-9]\\.", TestCaseHierarchyPath.OFFSET_SEPARATOR + "0\\."); //$NON-NLS-1$ //$NON-NLS-2$
-                    uniqueEditFieldKey = getUniqueEditFieldKey(fieldKeyWithOffset, failureDetailsObj.getAttributeName());
-                    if (!testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails)){
-                        postSetStatusBarMessage(NLS.bind(Messages.TestCaseSection_StatusMessage_FieldNotFound, formatedFailure));
-                    } else {
-                        postSetStatusBarMessage(""); //$NON-NLS-1$
-                    }
-                }
-            }
+        if (!testCaseDetailArea.markEditFieldAsFailure(findUniqueEditFieldKey(failureDetailsObj), formatedFailure,
+                failureDetails)) {
+            // field wasn't found, set message in the status bar to inform user about missing failure indicator
+            postSetStatusBarMessage(NLS.bind(Messages.TestCaseSection_StatusMessage_FieldNotFound, formatedFailure));
+        } else {
+            // field was successfully marked as failure
+            postSetStatusBarMessage(""); //$NON-NLS-1$
         }
-
+        
         // create context menu to store actual value
         EditField editField = testCaseDetailArea.getEditField(getUniqueEditFieldKey(failureDetailsObj.getObjectName(),
                 failureDetailsObj.getAttributeName()));
