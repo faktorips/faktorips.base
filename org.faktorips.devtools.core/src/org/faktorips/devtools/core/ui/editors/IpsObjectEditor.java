@@ -14,6 +14,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IStorage;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -656,7 +657,7 @@ public abstract class IpsObjectEditor extends FormEditor
         if (!(getIpsObject() instanceof IFixDifferencesToModelSupport)) {
             return;
         }
-        IFixDifferencesToModelSupport toFixIpsObject = (IFixDifferencesToModelSupport)getIpsObject();
+        final IFixDifferencesToModelSupport toFixIpsObject = (IFixDifferencesToModelSupport)getIpsObject();
         try {
             if (!toFixIpsObject.containsDifferenceToModel()){
                 if (TRACE) {
@@ -669,7 +670,12 @@ public abstract class IpsObjectEditor extends FormEditor
                 if (TRACE) {
                     log("checkForInconsistenciesToModel - differences found, start fixing differenced.");
                 }
-                toFixIpsObject.fixAllDifferencesToModel();
+                IWorkspaceRunnable fix = new IWorkspaceRunnable(){
+                    public void run(IProgressMonitor monitor) throws CoreException {
+                        toFixIpsObject.fixAllDifferencesToModel();
+                    }
+                };
+                IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(fix, null);
                 refreshInclStructuralChanges();
             } else {
                 getSettings().put(getIpsSrcFile(), SETTING_DONT_FIX_DIFFERENCES, true);
