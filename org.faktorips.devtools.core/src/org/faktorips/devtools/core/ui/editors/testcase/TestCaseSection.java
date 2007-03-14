@@ -1723,7 +1723,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 */
 	private void redrawForm() {
 		// redraw the form
-		form.setRedraw(false);
+	    form.setRedraw(false);
+        testCaseDetailArea.pack();
 		pack();
 		getParent().layout(true);
         form.reflow(true);
@@ -2095,6 +2096,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             boolean isOverridden,
             int failureCount,
             String titleMessage) {
+        
+	    form.setDelayedReflow(true);
+        
         if (isError) {
             form.getContent().setBackground(fFailureColor);
             form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));

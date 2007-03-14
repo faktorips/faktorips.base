@@ -683,6 +683,13 @@ public class TestCaseDetailArea {
     }
 
     /**
+     * Packs the detail area.
+     */
+    public void pack(){
+        dynamicArea.pack();
+    }
+    
+    /**
      * Mark the test attribute value field or test value field - which is identified by the given
      * key - as failure.
      * Returns <code>true</code> if the field was found otherwise <code>false</code>.
