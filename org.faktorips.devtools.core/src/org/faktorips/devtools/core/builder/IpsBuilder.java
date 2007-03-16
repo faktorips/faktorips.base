@@ -651,16 +651,20 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
             if (builder.isBuilderFor(ipsSrcFile)) {
+                long begin = 0;
                 try {
-                    if(TRACE_BUILDER_TRACE){
+                    if (TRACE_BUILDER_TRACE) {
+                        begin = System.currentTimeMillis();
                         System.out.println(builder.getName() + ": Start building " + ipsSrcFile); //$NON-NLS-1$
                     }
                     builder.beforeBuild(ipsSrcFile, status);
                     builder.build(ipsSrcFile);
                 } finally {
                     builder.afterBuild(ipsSrcFile);
-                    if(TRACE_BUILDER_TRACE){
-                        System.out.println(builder.getName() + ": Finished building " + ipsSrcFile); //$NON-NLS-1$
+                    if (TRACE_BUILDER_TRACE) {
+                        System.out
+                                .println(builder.getName()
+                                        + ": Finished building " + ipsSrcFile + ". Duration: " + (System.currentTimeMillis() - begin)); //$NON-NLS-1$
                     }
                 }
             }
