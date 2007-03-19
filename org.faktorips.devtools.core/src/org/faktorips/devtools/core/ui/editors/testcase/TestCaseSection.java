@@ -2019,6 +2019,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         });
         
+        // redraw all fields and reset the color of all fields
+        postShowAll();
+        
 		isTestRunError = false;
 		isTestRunFailure = false;
 		failureCount = 0;
