@@ -1,7 +1,7 @@
 <project name="org.faktorips.util" default="buildjar">
 	
-		<!-- set global properties for this build -->
-		
+			<!-- set global properties for this build -->
+	
 			<!-- src -->
 			<property name="src" location="../src"/>
 			<property name="test_src" location="../test" />
@@ -12,16 +12,13 @@
 			<!-- jars -->
 			<property name="temp_jarfile" location="results/temp_faktorips.${projectname}.jar" />
 		    <property name="jarfile" location="results/faktorips.${projectname}.jar" />
+		    <property name="src_jarfile" location="results/faktorips.${projectname}src.jar" />
 	
 			<!-- classpath -->
-	
-			
 			<path id="classpath" refid="classpath" />
-				
 	
 			<!-- logdir -->
 			<property name="log" location="logs" />
-
 
 
 	    <!-- wipes out -->
@@ -132,6 +129,11 @@
 						<exclude name="**/*Test.java"/>
 					</patternset>
 				</fileset>
+				<manifest>
+					<attribute name="Implementation-Title" value="${manifest-title}"/>
+					<attribute name="Implementation-Version" value="${manifest-version}"/>
+					<attribute name="Implementation-Vendor" value="${manifest-vendor}"/>
+				</manifest>		
         	</jar>
         		
         	<delete file="${jarfile}" />
@@ -140,6 +142,20 @@
         	
         </target>
 	
+	<!-- build src jarfile -->
+    <target name="buildsrcjar" depends="">
+    	<jar destfile="${temp_jarfile}" >
+			<fileset dir="${src}" />
+			<manifest>
+				<attribute name="Implementation-Title" value="${manifest-title}"/>
+				<attribute name="Implementation-Version" value="${manifest-version}"/>
+				<attribute name="Implementation-Vendor" value="${manifest-vendor}"/>
+			</manifest>
+    	</jar>
+    	<delete file="${src_jarfile}" />
+    	<copy file="${temp_jarfile}" tofile="${src_jarfile}"/>
+    	<delete file="${temp_jarfile}"/>
+    </target>	
 	
 	<!-- build jarfile -->
     <target name="buildjarWithoutTest" depends="compile">
@@ -161,5 +177,20 @@
     	
     </target>
 
+	<!-- build specific jarfile (e.g. client jar) with limited class files in property: selectedDir and selectedFiles -->
+    <target name="buildSpecificJar" depends="">
+    	<jar destfile="${temp_jarfile}" >
+			<fileset dir="${selectedDir}" includes="${selectedFiles}" >
+			</fileset>
+			<manifest>
+				<attribute name="Implementation-Title" value="${manifest-title}"/>
+				<attribute name="Implementation-Version" value="${manifest-version}"/>
+				<attribute name="Implementation-Vendor" value="${manifest-vendor}"/>
+			</manifest>
+    	</jar>
+    	<delete file="${jarfile}" />
+    	<copy file="${temp_jarfile}" tofile="${jarfile}"/>
+    	<delete file="${temp_jarfile}"/>
+    </target>	
 	
 </project>
