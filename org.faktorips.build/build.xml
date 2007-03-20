@@ -10,9 +10,9 @@
 		  	<property name="classes" location="classes"/>
 		
 			<!-- jars -->
-			<property name="temp_jarfile" location="results/temp_faktorips.${projectname}.jar" />
-		    <property name="jarfile" location="results/faktorips.${projectname}.jar" />
-		    <property name="src_jarfile" location="results/faktorips.${projectname}src.jar" />
+			<property name="temp_jarfile" location="results/temp_faktorips-${projectname}.jar" />
+		    <property name="jarfile" location="results/faktorips-${projectname}.jar" />
+		    <property name="src_jarfile" location="results/faktorips-${projectname}-src.zip" />
 	
 			<!-- classpath -->
 			<path id="classpath" refid="classpath" />
