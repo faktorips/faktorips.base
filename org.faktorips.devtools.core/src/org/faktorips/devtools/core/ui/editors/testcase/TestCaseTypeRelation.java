@@ -204,14 +204,16 @@ public class TestCaseTypeRelation implements Validatable {
         MessageList mlMin = ml.getMessagesFor(parentTestPolicyCmpt, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
         for (Iterator iter = mlMin.iterator(); iter.hasNext();) {
             Message msg = (Message)iter.next();
-            if (msg.getText().indexOf("\"" + getName()+ "\"")>=0){ //$NON-NLS-1$ //$NON-NLS-2$
+            if (ifMessageRelevant(msg)){
                 messages.put(msg.getCode(), msg);
             }
         }
         MessageList mlMax = ml.getMessagesFor(parentTestPolicyCmpt, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
         for (Iterator iter = mlMax.iterator(); iter.hasNext();) {
             Message msg = (Message)iter.next();
-            messages.put(msg.getCode(), msg);
+            if (ifMessageRelevant(msg)){
+                messages.put(msg.getCode(), msg);
+            }
         }
         
         // add the unique test relation messages to the list of messages
@@ -219,4 +221,11 @@ public class TestCaseTypeRelation implements Validatable {
             list.add((Message)iter.next());
         }
 	}
+
+    /*
+     * Returns true if the message is relevant for this relation.
+     */
+    private boolean ifMessageRelevant(Message msg) {
+        return (msg.getText().indexOf("\"" + getName()+ "\"")>=0); //$NON-NLS-1$ //$NON-NLS-2$
+    }
 }
