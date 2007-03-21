@@ -127,8 +127,11 @@ public class ProductCmptPage extends IpsObjectPage {
         versionId.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				IProductCmptNamingStrategy ns = getNamingStrategy();
-				showMessage(ns.validateVersionId(versionId.getText()));
-				updateFullName();
+                if (ns != null) {
+                    showMessage(ns.validateVersionId(versionId.getText()));
+                }
+                updateFullName();
+                updateRuntimeId();
 			}
 		});
         
@@ -137,9 +140,9 @@ public class ProductCmptPage extends IpsObjectPage {
                 IProductCmptNamingStrategy ns = getNamingStrategy();
                 if (ns != null) {
                     showMessage(ns.validateKindId(constName.getText()));
-                    updateFullName();
-                    updateRuntimeId();
                 }
+                updateFullName();
+                updateRuntimeId();
             }
 		});
     }
