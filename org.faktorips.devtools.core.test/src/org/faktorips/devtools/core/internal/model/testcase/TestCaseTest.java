@@ -460,5 +460,19 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         assertEquals("1234", testAttributeValue.getValue());
         testAttributeValue = testCaseX.getInputTestPolicyCmpts()[0].getTestAttributeValues()[1];
         assertEquals("Test2", testAttributeValue.getValue());
+        
+        // test the correct default values
+        MessageList ml = testCaseX.validate();
+        assertEquals(ml.getNoOfMessages(), 0);
+        parameter = testCaseTypeX.newInputTestValueParameter();
+        parameter.setName("testBoolean");
+        parameter.setDatatype("Boolean");
+        
+        System.out.println(testCaseTypeX.validate());
+        
+        testCaseX.fixAllDifferencesToModel();
+        assertEquals(false, testCaseX.containsDifferenceToModel());
+        ml = testCaseX.validate();
+        assertFalse(ml.containsErrorMsg());        
     }
 }

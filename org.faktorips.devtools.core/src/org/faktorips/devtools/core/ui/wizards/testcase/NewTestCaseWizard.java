@@ -21,8 +21,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.testcasetype.TestValueParameter;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -92,30 +94,34 @@ public class NewTestCaseWizard extends NewIpsObjectWizard {
      */
     private void generateDefaultContent(ITestParameter[] parameter, ITestCase testCase) throws CoreException{
     	for (int i = 0; i < parameter.length; i++) {
-    		if (parameter[i] instanceof ITestValueParameter){
-    			ITestValue testValue = testCase.newTestValue();
-    			testValue.setTestValueParameter(parameter[i].getName());
-    		}else if(parameter[i] instanceof ITestPolicyCmptTypeParameter){
-    			ITestPolicyCmptTypeParameter testCaseTypeParam = (ITestPolicyCmptTypeParameter) parameter[i];
-    			ITestPolicyCmpt testPolicyCmpt = testCase.newTestPolicyCmpt();
-    			testPolicyCmpt.setTestPolicyCmptTypeParameter(parameter[i].getName());
-    			testPolicyCmpt.setName(
-    					testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, testPolicyCmpt.getTestPolicyCmptTypeParameter()));
-    			// add the attributes which are defined in the test case type parameter
-    			ITestAttribute attributes[] = testCaseTypeParam.getTestAttributes();
-    			for (int j = 0; j < attributes.length; j++) {
-    				ITestAttribute attribute = attributes[j];
-    				ITestAttributeValue attrValue = testPolicyCmpt.newTestAttributeValue();
-    				attrValue.setTestAttribute(attribute.getName());
+            if (parameter[i] instanceof ITestValueParameter) {
+                ITestValue testValue = testCase.newTestValue();
+                testValue.setTestValueParameter(parameter[i].getName());
+                ValueDatatype valueDatatype = ((TestValueParameter)parameter[i]).findValueDatatype();
+                if (valueDatatype != null){
+                    testValue.setValue(valueDatatype.getDefaultValue());
+                }
+            } else if (parameter[i] instanceof ITestPolicyCmptTypeParameter) {
+                ITestPolicyCmptTypeParameter testCaseTypeParam = (ITestPolicyCmptTypeParameter)parameter[i];
+                ITestPolicyCmpt testPolicyCmpt = testCase.newTestPolicyCmpt();
+                testPolicyCmpt.setTestPolicyCmptTypeParameter(parameter[i].getName());
+                testPolicyCmpt.setName(testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, testPolicyCmpt
+                        .getTestPolicyCmptTypeParameter()));
+                // add the attributes which are defined in the test case type parameter
+                ITestAttribute attributes[] = testCaseTypeParam.getTestAttributes();
+                for (int j = 0; j < attributes.length; j++) {
+                    ITestAttribute attribute = attributes[j];
+                    ITestAttributeValue attrValue = testPolicyCmpt.newTestAttributeValue();
+                    attrValue.setTestAttribute(attribute.getName());
                     // set the default value if the test attribute is an input test attribute
-                    if (attribute.isInputAttribute()){
+                    if (attribute.isInputAttribute()) {
                         IAttribute modelAttribute = attribute.findAttribute();
-                        if (modelAttribute != null){
+                        if (modelAttribute != null) {
                             attrValue.setValue(modelAttribute.getDefaultValue());
                         }
                     }
-    			}
-    		}
-    	}
+                }
+            }
+        }
     }
 }

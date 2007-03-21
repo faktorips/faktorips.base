@@ -26,8 +26,10 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObject;
+import org.faktorips.devtools.core.internal.model.testcasetype.TestValueParameter;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -278,8 +280,11 @@ public class TestCase extends IpsObject implements ITestCase {
         for (int i = 0; i < testValueParametersWithMissingTestValue.length; i++) {
             ITestValue testValue = newTestValue();
             testValue.setTestValueParameter(testValueParametersWithMissingTestValue[i].getName());
-            // set default value to null
-            testValue.setValue(null);
+            // set default value to default
+            ValueDatatype valueDatatype = ((TestValueParameter)testValueParametersWithMissingTestValue[i]).findValueDatatype();
+            if (valueDatatype != null){
+                testValue.setValue(valueDatatype.getDefaultValue());
+            }            
         }
         
         // add missing test policy cmpt type parameters
