@@ -226,6 +226,11 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
                 // controller updates the model later
                 getCurrentRelation().setProductRelevant(productRelevantCheckbox.getButton().getSelection());
                 setProdRelevantEnabled(getCurrentRelation().isProductRelevant());
+                if (!productRelevantCheckbox.getButton().getSelection()){
+                    // not product relevant, reset product relevant role names
+                    targetRolePluralProdRelevantField.setText("");
+                    targetRoleSingularProdRelevantField.setText("");
+                }
             }
         });
 		productRelevantField = new CheckboxField(productRelevantCheckbox);
