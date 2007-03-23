@@ -129,6 +129,27 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @see IIpsObjectPath
      */
     public IIpsProject[] getReferencedIpsProjects() throws CoreException ;
+
+    /**
+     * Returns <code>true</code> if this project is referenced by the other project.
+     * Returns <code>false</code> if the other project is <code>null</code> or the other project
+     * is this project.
+     * 
+     * @param considerIndirect <code>true</code> if the method should return <code>true</code> for indirect
+     * references.
+     *  
+     * @throws CoreException if an error occurs.
+     */
+    public boolean isReferencedBy(IIpsProject otherProject, boolean considerIndirect) throws CoreException;
+    
+    /**
+     * Returns all ips projects that reference this one in their ips object path.
+     * 
+     * @param includeIndirect <code>true</code> if also indirect references should
+
+     * @throws CoreException if an errors occurs while searching the projects
+     */
+    public IIpsProject[] getReferencingProjects(boolean includeIndirect) throws CoreException;
     
     /**
      * Returns <code>true</code> if this project depends on the other project,
@@ -178,8 +199,29 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns a copy of the project's object path. Note that a copy and not a reference is returned. If you want
      * to update the project's path, the updated object path has to b e explicitly set on the project via the
      * <code>setIpsObjectPath()</code> method.
+     * 
+     * @throws CoreException if an error occurs while retrieving the path
      */
     public IIpsObjectPath getIpsObjectPath() throws CoreException;
+    
+    /**
+     * Returns <code>true</code> if the given object is accessible via the project's object path,
+     * otherwise <code>false</code>. 
+     * <p>
+     * If the ips object is stored in one the project's source folders, it is of cource accessible
+     * via the project's object path. But if the ips object belongs to a different project, it
+     * is only accessible via the project's object path if the other project is (directly or indirectly)
+     * referenced in the path.
+     * <p>
+     * If two objects with the same qualified name exist on the ips object path, only the first one
+     * (defined by the order of the object path entries) is accessible, the second one is shadowed
+     * by the first one. 
+     * <p>
+     * If the given ipsObject is <code>null</code>, the method returns <code>false</code>.
+     * 
+     * @throws CoreException if an error occurs while searching the path
+     */
+    public boolean isAccessibleViaIpsObjectPath(IIpsObject ipsObject) throws CoreException;
     
     /**
      * Returns all output folders specified in the project's object path.

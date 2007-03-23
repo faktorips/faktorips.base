@@ -164,5 +164,10 @@ public class DependencyGraph {
             }
         }
     }
+
+    public String toString() {
+        return "DependencyGraph for " + ipsProject.getName();
+    }
+    
     
 }

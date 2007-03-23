@@ -91,11 +91,75 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         baseProject.setProperties(props);
     }
     
+    
     private void makeIpsProjectDependOnBaseProject() throws CoreException {
         IIpsProjectProperties props = ipsProject.getProperties();
         IIpsObjectPath path = props.getIpsObjectPath();
         path.newIpsProjectRefEntry(baseProject);
         ipsProject.setProperties(props);
+    }
+    
+    public void testIsReferencedBy() throws CoreException {
+        assertFalse(baseProject.isReferencedBy(null, true));
+        assertFalse(baseProject.isReferencedBy(baseProject, true));
+        assertFalse(baseProject.isReferencedBy(ipsProject, true));
+        
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(baseProject);
+        ipsProject.setIpsObjectPath(path);
+        assertTrue(baseProject.isReferencedBy(ipsProject, true));
+        assertTrue(baseProject.isReferencedBy(ipsProject, false));
+
+        IIpsProject ipsProject2 = newIpsProject("IpsProject2");
+        path = ipsProject2.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject);
+        ipsProject2.setIpsObjectPath(path);
+        assertTrue(baseProject.isReferencedBy(ipsProject, false));
+        assertFalse(baseProject.isReferencedBy(ipsProject2, false));
+        assertTrue(baseProject.isReferencedBy(ipsProject, true));
+        assertTrue(baseProject.isReferencedBy(ipsProject2, true));
+    }    
+    
+    public void testGetReferencingProjects() throws CoreException {
+        assertEquals(0, baseProject.getReferencingProjects(true).length);
+        
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(baseProject);
+        ipsProject.setIpsObjectPath(path);
+
+        assertEquals(1, baseProject.getReferencingProjects(true).length);
+        assertEquals(ipsProject, baseProject.getReferencingProjects(true)[0]);
+
+        IIpsProject ipsProject2 = newIpsProject("IpsProject2");
+        path = ipsProject2.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject);
+        ipsProject2.setIpsObjectPath(path);
+        
+        assertEquals(1, baseProject.getReferencingProjects(false).length);
+        assertEquals(ipsProject, baseProject.getReferencingProjects(false)[0]);
+        
+        assertEquals(2, baseProject.getReferencingProjects(true).length);
+        List list = Arrays.asList(baseProject.getReferencingProjects(true));
+        assertTrue(list.contains(ipsProject));
+        assertTrue(list.contains(ipsProject2));
+    }
+    
+    public void testIsAccessibleViaIpsObjectPath() throws CoreException {
+        assertFalse(ipsProject.isAccessibleViaIpsObjectPath(null));
+        
+        IIpsObject obj1 = newPolicyCmptType(baseProject, "Object");
+        assertTrue(baseProject.isAccessibleViaIpsObjectPath(obj1));
+        assertFalse(ipsProject.isAccessibleViaIpsObjectPath(obj1));
+        
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(baseProject);
+        ipsProject.setIpsObjectPath(path);
+        assertTrue(ipsProject.isAccessibleViaIpsObjectPath(obj1));
+        
+        // create a second object with the same qualified name that shadows the first object
+        IIpsObject obj2 = newPolicyCmptType(ipsProject, "Object");
+        assertTrue(ipsProject.isAccessibleViaIpsObjectPath(obj2));
+        assertFalse(ipsProject.isAccessibleViaIpsObjectPath(obj1));
     }
     
     public void testValidate() throws Exception {

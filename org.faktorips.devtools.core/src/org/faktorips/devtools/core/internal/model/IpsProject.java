@@ -224,6 +224,50 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public IIpsProject[] getReferencedIpsProjects() throws CoreException {
         return getIpsObjectPathInternal().getReferencedIpsProjects();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isReferencedBy(IIpsProject otherProject, boolean considerIndirect) throws CoreException {
+        if (otherProject==null || otherProject==this) {
+            return false;
+        }
+        Set projectsVisited = new HashSet();
+        return isReferencedBy(otherProject, considerIndirect, projectsVisited);
+    }
+    
+    private boolean isReferencedBy(IIpsProject otherProject, boolean considerIndirect, Set projectsVisited) throws CoreException {
+        IIpsObjectPath otherPath = ((IpsProject)otherProject).getIpsObjectPathInternal();
+        IIpsProject[] referencedProjects = otherPath.getReferencedIpsProjects();
+        for (int i = 0; i < referencedProjects.length; i++) {
+            if (this.equals(referencedProjects[i])) {
+                return true;
+            }
+            if (projectsVisited.contains(referencedProjects[i])) {
+                continue;
+            }
+            if (considerIndirect && isReferencedBy(referencedProjects[i], considerIndirect, projectsVisited)) {
+                return true;
+            }
+            projectsVisited.add(referencedProjects[i]);
+        }
+        return false;
+    }
+    
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsProject[] getReferencingProjects(boolean includeIndirect) throws CoreException {
+        IIpsProject[] projects = getIpsModel().getIpsProjects();
+        List result = new ArrayList(projects.length);
+        for (int i = 0; i < projects.length; i++) {
+            if (isReferencedBy(projects[i], includeIndirect)) {
+                result.add(projects[i]);
+            }
+        }
+        return (IIpsProject[])result.toArray(new IIpsProject[result.size()]);
+    }
 
     /**
 	 * {@inheritDoc}
@@ -272,7 +316,18 @@ public class IpsProject extends IpsElement implements IIpsProject {
     	return getIpsObjectPathInternal().getOutputFolders();
     }
 
-	/**
+    /**
+     * {@inheritDoc}
+     */
+	public boolean isAccessibleViaIpsObjectPath(IIpsObject ipsObject) throws CoreException {
+        if (ipsObject==null) {
+            return false;
+        }
+        IIpsObject objectOnPath = getIpsObjectPathInternal().findIpsObject(this, ipsObject.getQualifiedNameType(), new HashSet());
+        return ipsObject==objectOnPath;
+    }
+
+    /**
 	 * Returns a <strong>reference</strong> to the ips object path, in
 	 * contrast to the getIpsObjectPath() method that returns a copy.
 	 */
