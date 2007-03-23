@@ -141,7 +141,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     // map containing ClassLoaderProviders per IpsProject
     private Map classLoaderProviderMap = new HashMap();
 
-    // map containing CachedIpsObjects as values and IpsSrcFiles as keys.
+    // map containing IpsSrcFileContents as values and IpsSrcFiles as keys.
     private Map ipsObjectsMap = new HashMap(1000);
 
     // validation result cache
@@ -155,7 +155,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             System.out.println("IpsModel.Constructor(): IpsModel created."); //$NON-NLS-1$
         }
     }
-
+    
     public void startListeningToResourceChanges() {
         getWorkspace().addResourceChangeListener(this);
     }
