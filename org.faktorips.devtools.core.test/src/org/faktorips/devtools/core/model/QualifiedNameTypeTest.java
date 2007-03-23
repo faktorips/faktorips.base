@@ -36,19 +36,19 @@ public class QualifiedNameTypeTest extends TestCase {
         try {
             QualifiedNameType.newQualifedNameType("Motorpolicy");
             fail();
-        } catch (CoreException e) {
+        } catch (IllegalArgumentException e) {
         }
         
         try {
             QualifiedNameType.newQualifedNameType("Motorpolicy.");
             fail();
-        } catch (CoreException e) {
+        } catch (IllegalArgumentException e) {
         }
         
         try {
             QualifiedNameType.newQualifedNameType("Motorpolicy.invalidextension");
             fail();
-        } catch (CoreException e) {
+        } catch (IllegalArgumentException e) {
         }
     }
     

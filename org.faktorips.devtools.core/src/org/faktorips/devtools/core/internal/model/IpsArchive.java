@@ -295,11 +295,11 @@ public class IpsArchive implements IIpsArchive {
     }
     
     private QualifiedNameType getQualifiedNameType(JarEntry jarEntry) {
-        String path = jarEntry.getName().substring(IPSOBJECT_FOLDER_NAME_LENGTH+1); // qName path begins after "ipsobject/"
         try {
+            String path = jarEntry.getName().substring(IPSOBJECT_FOLDER_NAME_LENGTH+1); // qName path begins after "ipsobject/"
             return QualifiedNameType.newQualifedNameType(path);
-        } catch (CoreException e) {
-            return null; // path can't be parsed. e.g. unkown file extension
+        } catch (Exception e) {
+            return null; // the entry does not contain an ips object
         }
     }
     

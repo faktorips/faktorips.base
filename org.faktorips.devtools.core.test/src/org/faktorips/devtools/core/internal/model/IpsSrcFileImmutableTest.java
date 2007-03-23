@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -164,4 +166,21 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         assertTrue(srcFileImmutable.isHistoric());
     }
 
+    public void testIsContentParsable() throws CoreException {
+        IpsSrcFileImmutable srcFile= new IpsSrcFileImmutable("TestSrcFileImmutable.ipsproduct", file.getContents());
+        assertTrue(srcFile.isContentParsable());
+        
+        srcFile = new IpsSrcFileImmutable("Test.ipsproduct", new ByteArrayInputStream(new byte[100]));
+        assertFalse(srcFile.isContentParsable());
+    }
+    
+    public void testGetQualifiedNameType() {
+        IpsSrcFileImmutable srcFile = new IpsSrcFileImmutable("Test.ipsproduct", new ByteArrayInputStream(new byte[100]));
+        QualifiedNameType qnt = srcFile.getQualifiedNameType();
+        assertEquals(IpsObjectType.PRODUCT_CMPT, qnt.getIpsObjectType());
+        assertEquals("Test", qnt.getUnqualifiedName());
+        assertEquals("", qnt.getPackageName());
+        assertEquals(IpsObjectType.PRODUCT_CMPT, qnt.getIpsObjectType());
+    }
+    
 }

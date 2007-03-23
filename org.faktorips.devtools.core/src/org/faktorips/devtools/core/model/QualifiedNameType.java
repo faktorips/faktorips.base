@@ -38,23 +38,23 @@ public class QualifiedNameType {
     /**
      * Returns the qualified name type for he given path. 
      * 
-     * @param pathToFile a relative to an ips src file, e.g. base/motor/MotorPolicy.ipspct
+     * @param pathToFile a relative path to an ips src file, e.g. base/motor/MotorPolicy.ipspct
      * @return The qualified name type
      * 
-     * @throws CoreException if the path can't be parsed to a qualified name type
+     * @throws IllegalArgumentException if the path can't be parsed to a qualified name type
      */
-    public final static QualifiedNameType newQualifedNameType(String pathToFile) throws CoreException {
+    public final static QualifiedNameType newQualifedNameType(String pathToFile) {
         int index = pathToFile.lastIndexOf('.');
         if (index==-1 || index==pathToFile.length()-1) {
-            throw new CoreException(new IpsStatus("Path " + pathToFile + " can't be parsed to a qualified name type.")); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IllegalArgumentException("Path " + pathToFile + " can't be parsed to a qualified name type."); //$NON-NLS-1$ //$NON-NLS-2$
         }
         IpsObjectType type = IpsObjectType.getTypeForExtension(pathToFile.substring(index+1));
         if (type==null) {
-            throw new CoreException(new IpsStatus("Path " + pathToFile + " does not specifiy an ips object type.")); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IllegalArgumentException("Path " + pathToFile + " does not specifiy an ips object type."); //$NON-NLS-1$ //$NON-NLS-2$
         }
         String qName = pathToFile.substring(0, index).replace(IPath.SEPARATOR, IpsPackageFragment.SEPARATOR);
         if (qName.equals("")) { //$NON-NLS-1$
-            throw new CoreException(new IpsStatus("Path " + pathToFile + " does not specifiy a qualified name.")); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IllegalArgumentException("Path " + pathToFile + " does not specifiy a qualified name."); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return new QualifiedNameType(qName, type);
     }

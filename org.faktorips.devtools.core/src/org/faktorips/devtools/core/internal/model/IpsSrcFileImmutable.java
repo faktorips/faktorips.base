@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
 
@@ -69,7 +70,7 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
 	public boolean isHistoric() {
         return true;
     }
-
+    
     /**
      * Returns null.
 	 */
@@ -97,7 +98,7 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
             Document doc =IpsPlugin.getDefault().newDocumentBuilder().parse(in);
             ipsObject.initFromXml(doc.getDocumentElement());
 		} catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(new IpsStatus(e));
+            IpsPlugin.log(new IpsStatus(e));
 		}
 	}
 	
@@ -128,6 +129,13 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
 	public boolean isMutable() {
 		return false;
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isContentParsable() {
+        return ipsObject.isFromParsableFile();
+    }
 
     /**
      * {@inheritDoc}
@@ -135,4 +143,13 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
     public IIpsObject getIpsObject() throws CoreException {
         return ipsObject;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public QualifiedNameType getQualifiedNameType() {
+        return QualifiedNameType.newQualifedNameType(name);
+    }
+    
+    
 }

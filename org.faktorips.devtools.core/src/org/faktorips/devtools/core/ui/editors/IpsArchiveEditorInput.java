@@ -40,7 +40,7 @@ public class IpsArchiveEditorInput implements IEditorInput {
     }
     
     /**
-     * Returns the ips source file this is an editor input from. The source file cmes from an ips archive.
+     * Returns the ips source file this is an editor input from. The source file comes from an ips archive.
      */
     public IIpsSrcFile getIpsSrcFile() {
         return srcFile;

@@ -112,7 +112,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
     }
     
     private String getKey(IIpsSrcFile file) {
-        return file.getCorrespondingFile().getFullPath().toString();
+        return file.getQualifiedNameType().toString();
     }
 
     /**
