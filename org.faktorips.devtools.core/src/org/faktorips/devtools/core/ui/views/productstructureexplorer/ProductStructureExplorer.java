@@ -37,6 +37,7 @@ import org.eclipse.jface.viewers.ViewerLabel;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
@@ -221,6 +222,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 			public void run() {
 				tree.setInput(null);
 				tree.refresh();
+                showEmptyMessage();
 			}
 		
 			public ImageDescriptor getImageDescriptor() {
@@ -238,37 +240,45 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      * {@inheritDoc}
      */
 	public void createPartControl(Composite parent) {
-		parent.setLayout(new GridLayout(1, false));
-		errormsg = new Label(parent, SWT.WRAP);
-		GridData layoutData = new GridData(SWT.LEFT, SWT.TOP, true, false);
-		layoutData.exclude = true;
-		errormsg.setLayoutData(layoutData);
-		errormsg.setVisible(false);
+        parent.setLayout(new GridLayout(1, true));
+        errormsg = new Label(parent, SWT.WRAP);
+        GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        layoutData.exclude = true;
+        errormsg.setLayoutData(layoutData);
+        errormsg.setVisible(false);
 
-		tree = new TreeViewer(parent);
-		tree.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		rootNode = new GenerationRootNode();
-		contentProvider = new ProductStructureContentProvider(false);
+        // dnd for label
+        DropTarget dropTarget = new DropTarget(errormsg, DND.DROP_LINK);
+        dropTarget.addDropListener(new ProductCmptDropListener());
+        dropTarget.setTransfer(new Transfer[] { FileTransfer.getInstance()});
+        
+        tree = new TreeViewer(parent);
+        tree.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        rootNode = new GenerationRootNode();
+        contentProvider = new ProductStructureContentProvider(false);
         contentProvider.setGenerationRootNode(rootNode);
-		tree.setContentProvider(contentProvider);
+        tree.setContentProvider(contentProvider);
 
         ProductStructureLabelProvider labelProvider = new ProductStructureLabelProvider();
         labelProvider.setGenerationRootNode(rootNode);
         tree.setLabelProvider(new DecoratingLabelProvider(labelProvider, new IpsProblemsLabelDecorator()));
-        
+
         tree.addDoubleClickListener(new TreeViewerDoubleclickListener(tree));
         tree.expandAll();
-        tree.addDragSupport(DND.DROP_LINK, new Transfer[] {FileTransfer.getInstance()}, new IpsElementDragListener(tree));
-        tree.addDropSupport(DND.DROP_LINK, new Transfer[] {FileTransfer.getInstance()}, new ProductCmptDropListener());
+        tree.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new IpsElementDragListener(
+                tree));
+        tree.addDropSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new ProductCmptDropListener());
 
         MenuManager menumanager = new MenuManager();
         menumanager.setRemoveAllWhenShown(false);
         menumanager.add(new OpenEditorAction(tree));
         menumanager.add(new FindProductReferencesAction(tree));
-        menumanager.add(new ShowAttributesAction(tree)); 
-        
+        menumanager.add(new ShowAttributesAction(tree));
+
         Menu menu = menumanager.createContextMenu(tree.getControl());
         tree.getControl().setMenu(menu);
+        
+        showEmptyMessage();
     }
 
     /**
@@ -305,21 +315,13 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         
     	this.file = product.getIpsSrcFile();
         try {
-            
-        	errormsg.setVisible(false);
-    		((GridData)errormsg.getLayoutData()).exclude = true;
-        	
-    		tree.getTree().setVisible(true);
-    		((GridData)tree.getTree().getLayoutData()).exclude = false;
-    		tree.getTree().getParent().layout();
-    		rootNode.storeProductCmpt(product);
-			tree.setInput(product.getStructure());
-            tree.expandAll();
+            rootNode.storeProductCmpt(product);
+            showTreeInput(product.getStructure());
 		} catch (CycleException e) {
 			handleCircle(e);
 		}
     }
-    
+
     private void refresh() {
         Control ctrl = tree.getControl();
         
@@ -339,17 +341,10 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                                 handleCircle(e);
                                 return;
                             }
+                            showTreeInput(input);
+                        } else {
+                            showEmptyMessage();
                         }
-
-                        errormsg.setVisible(false);
-                        ((GridData)errormsg.getLayoutData()).exclude = true;
-
-                        tree.getTree().setVisible(true);
-                        ((GridData)tree.getTree().getLayoutData()).exclude = false;
-                        tree.getTree().getParent().layout();
-                        tree.setInput(input);
-                        rootNode.refreshText();
-                        tree.expandAll();
                     }
                 }
             };
@@ -371,13 +366,24 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     
     private void handleCircle(CycleException e) {
 		IpsPlugin.log(e);
-		tree.getTree().setVisible(false);
 		((GridData)tree.getTree().getLayoutData()).exclude = true;
 		String msg = Messages.ProductStructureExplorer_labelCircleRelation;
 		IIpsElement[] cyclePath = e.getCyclePath();
 		StringBuffer path = new StringBuffer();
-		for (int i = cyclePath.length-1; i >= 0; i--) {
-			path.append(cyclePath[i].getName());
+		
+        // don't show first element if the first elemet is no product relevant node (e.g. effective
+        // date info node)
+        IIpsElement[] cyclePathCpy;
+        if (cyclePath[0] == null) {
+            cyclePathCpy = new IIpsElement[cyclePath.length -1];
+            System.arraycopy(cyclePath, 1, cyclePathCpy, 0, cyclePath.length -1);
+        } else {
+            cyclePathCpy = new IIpsElement[cyclePath.length];
+            System.arraycopy(cyclePath, 0, cyclePathCpy, 0, cyclePath.length);
+        }
+        
+        for (int i = cyclePathCpy.length-1; i >= 0; i--) {
+			path.append(cyclePathCpy[i] == null?"":cyclePathCpy[i].getName()); //$NON-NLS-1$
 			if (i%2 != 0) {
 				path.append(" -> "); //$NON-NLS-1$
 			}
@@ -386,12 +392,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 			}
 		}
 
-		
-		errormsg.setText(msg + path);
-		
-		errormsg.setVisible(true);
-		((GridData)errormsg.getLayoutData()).exclude = false;
-		errormsg.getParent().layout();
+        String message = msg + " " + path; //$NON-NLS-1$
+        showErrorMsg(message);
     }
 
     /**
@@ -453,5 +455,32 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         IpsPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
         super.dispose();
+    }
+
+    private void showErrorMsg(String message) {
+        tree.getTree().setVisible(false);
+        errormsg.setText(message); 
+        errormsg.setVisible(true);
+        ((GridData)errormsg.getLayoutData()).exclude = false;
+        errormsg.getParent().layout();
+    }
+    
+    private void showTreeInput(Object input) {
+        errormsg.setVisible(false);
+        ((GridData)errormsg.getLayoutData()).exclude = true;
+        
+        tree.getTree().setVisible(true);
+        ((GridData)tree.getTree().getLayoutData()).exclude = false;
+        tree.getTree().getParent().layout();
+        
+        tree.setInput(input);
+        tree.expandAll();
+
+        rootNode.refreshText();
+    }    
+
+    private void showEmptyMessage() {
+        showErrorMsg(Messages.ProductStructureExplorer_infoMessageEmptyView_1 +
+                Messages.ProductStructureExplorer_infoMessageEmptyView_2);
     }
 }

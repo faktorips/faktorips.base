@@ -30,6 +30,8 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
     public static String ProductStructureContentProvider_treeNodeText_GenerationCurrentWorkingDate;
+    public static String ProductStructureExplorer_infoMessageEmptyView_1;
+    public static String ProductStructureExplorer_infoMessageEmptyView_2;
     public static String ProductStructureExplorer_label_NoGenerationForCurrentWorkingDate;
     public static String ProductStructureLabelProvider_undefined;
 	public static String ProductStructureExplorer_labelCircleRelation;
