@@ -146,6 +146,20 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
     
     /**
+     * 
+     * {@inheritDoc}
+     */
+    public IIpsArchiveEntry[] getArchiveEntries() {
+        ArrayList archiveEntries = new ArrayList();
+        for (int i = 0; i < entries.length; i++) {
+            if(entries[i].getType().equals(IIpsObjectPathEntry.TYPE_ARCHIVE)){
+                archiveEntries.add(entries[i]);
+            }
+        }
+        return (IIpsArchiveEntry[])archiveEntries.toArray(new IIpsArchiveEntry[archiveEntries.size()]);
+    }
+
+    /**
      * {@inheritDoc}
      */
     public IIpsObjectPathEntry[] getEntries() {

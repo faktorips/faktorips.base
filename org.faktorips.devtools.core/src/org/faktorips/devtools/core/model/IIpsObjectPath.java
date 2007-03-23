@@ -43,6 +43,11 @@ public interface IIpsObjectPath {
     public IIpsProjectRefEntry[] getProjectRefEntries();
 
     /**
+     * Returns the ips archive entries of this ips project path.
+     */
+    public IIpsArchiveEntry[] getArchiveEntries();
+    
+    /**
      * Sets the path' entries.
      */
     public void setEntries(IIpsObjectPathEntry[] newEntries);

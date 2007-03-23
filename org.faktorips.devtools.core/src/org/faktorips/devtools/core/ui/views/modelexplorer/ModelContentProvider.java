@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -57,7 +58,7 @@ public class ModelContentProvider implements ITreeContentProvider {
         return filter(getUnfilteredChildren(parentElement));
     }
     
-    /**
+    /*
      * Returns the array of children of the given parentElement without filtering out children of a specific type
      * or with a specific name.
      */
@@ -88,7 +89,7 @@ public class ModelContentProvider implements ITreeContentProvider {
                     // filter out java classpath entries and outputlocations
                     // (used for folders in IpsProjects)
                     if (parentElement instanceof IFolder) {
-                        return getNonJavaResources((IFolder)parentElement);
+                        return getNonJavaResourcesAndNonActiveIpsArchives((IFolder)parentElement);
                     }
                 }
             }
@@ -120,14 +121,15 @@ public class ModelContentProvider implements ITreeContentProvider {
         ;
     }
 
-    /**
+    /*
      * Filters the contents of the given <code>IFolder</code> using the javaproject's classpath
      * entries and outputlocations the folder is contained in. If the given folder does not contain
      * any children an empty array is returned. If the <code>IProject</code> returned by
      * <code>IResource#getProject()</code> is null or does not have java nature, an empty array is
-     * returned.
+     * returned.<br>
+     * And filter ips archive files which are specified in the ips object path.
      */
-    private Object[] getNonJavaResources(IFolder folder) {
+    private Object[] getNonJavaResourcesAndNonActiveIpsArchives(IFolder folder) {
         try {
             IProject project = folder.getProject();
             IResource[] children = folder.members();
@@ -142,6 +144,10 @@ public class ModelContentProvider implements ITreeContentProvider {
 
             List childResources = new ArrayList();
             for (int i = 0; i < children.length; i++) {
+                if (isIpsArchiveFromIpsObjectPath(project, (IResource)children[i])){
+                    // filter out ips archive files which are specified in the ipsobjectpath
+                    continue;
+                }
                 if (!isJavaResource(javaProject, (IResource)children[i])) {
                     childResources.add(children[i]);
                 }
@@ -156,7 +162,32 @@ public class ModelContentProvider implements ITreeContentProvider {
         }
     }
 
-    /**
+    /*
+     * Returns <code>true</code> if the given resource is a ips archive file which is specified
+     * in the ips object path, otherwise return <code>false</code>.
+     */
+    private boolean isIpsArchiveFromIpsObjectPath(IProject project, IResource resource) {
+        if (! (resource instanceof IFile)){
+            return false;
+        }
+        try {
+            if (project.hasNature(IIpsProject.NATURE_ID)){
+                // check if one of the archive entries in the ips object path is the given file
+                IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
+                IIpsArchiveEntry[] archiveEntries = ipsProject.getIpsObjectPath().getArchiveEntries();
+                for (int i = 0; i < archiveEntries.length; i++) {
+                    if (archiveEntries[i].getArchiveFile().equals(resource)){
+                        return true;
+                    }
+                }
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        return false;
+    }
+
+    /*
      * Examins the given <code>JavaProject</code> and its relation to the given
      * <code>IResource</code>. Returns true if the given resource corresponds to a classpath
      * entry of the javaproject. Returns true if the given resource corresponds to a folder that is
@@ -229,7 +260,7 @@ public class ModelContentProvider implements ITreeContentProvider {
         }
     }
 
-    /**
+    /*
      * This method returns all files and <code>IpsPackageFragment</code>s contained in the given
      * <code>IpsPackageFragment</code>. If the given <code>IpsPackageFragment</code> is the
      * defaultPackageFragment of its <code>IpsPackageFragmentRoot</code>, only the contained
@@ -245,7 +276,7 @@ public class ModelContentProvider implements ITreeContentProvider {
         }
     }
 
-    /**
+    /*
      * Returns an empty array in flat layout style. In hierarchical layout returns all
      * <code>IpsPacakgeFragment</code>s that correspond to a subfolder of the given
      * packagefragments underlying folder.
@@ -289,7 +320,7 @@ public class ModelContentProvider implements ITreeContentProvider {
         return concatenate(pcts.toArray(), filesNonIps);
     }
 
-    /**
+    /*
      * Returns a new object array containig all <code>IIpsElement</code>s and
      * <code>IResource</code>s of the given array that are allowed by the configuration. Hidden
      * <code>IResource</code>s (files and folders starting with ".") and class-files are not

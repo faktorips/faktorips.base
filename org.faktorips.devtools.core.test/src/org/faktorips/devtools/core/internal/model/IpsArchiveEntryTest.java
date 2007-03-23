@@ -26,11 +26,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsArchive;
+import org.faktorips.devtools.core.model.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -128,6 +130,12 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     public void testValidate() throws CoreException {
         MessageList ml = entry.validate();
         assertEquals(0, ml.getNoOfMessages());
+        
+        IIpsProjectProperties props = project.getProperties();
+        IIpsObjectPath path = props.getIpsObjectPath();
+        IIpsArchiveEntry[] archiveEntries = path.getArchiveEntries();
+        assertEquals(1, archiveEntries.length);
+        assertEquals(entry.getArchiveFile(), archiveEntries[0].getArchiveFile());
         
         entry.setArchiveFile(project.getProject().getFile("NoneExistingFile"));
         ml = entry.validate();
