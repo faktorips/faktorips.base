@@ -120,10 +120,21 @@ public class ProductCmptDeltaDialog extends TitleAreaDialog {
 		toolkit.createVerticalSpacer(listParent, 1);
 
 		// adding data and behaviour
-		getShell().setText(Messages.ProductCmptDeltaDialog_title);
-		setMessage(Messages.ProductCmptDeltaDialog_message, IMessageProvider.INFORMATION);
-		tree.setContentProvider(new ProductCmptDeltaContentProvider());
-		tree.setLabelProvider(new ProductCmptDeltaLabelProvider());
+        getShell().setText(Messages.ProductCmptDeltaDialog_title);
+        
+        if (isProductEditableInAllGenerations()) {
+            setMessage(Messages.ProductCmptDeltaDialog_message, IMessageProvider.INFORMATION);
+        } else {
+            // set warning to inform that recent generation could not be edit,
+            // but with this wizard recent generation could be changed
+            setMessage(Messages.ProductCmptDeltaDialog_message
+                    + "\n" //$NON-NLS-1$
+                    + NLS.bind(Messages.ProductCmptDeltaDialog_messageWarningRecentGenerationCouldBeChanged,
+                            genTextPlural), IMessageProvider.WARNING);
+        }
+
+        tree.setContentProvider(new ProductCmptDeltaContentProvider());
+        tree.setLabelProvider(new ProductCmptDeltaLabelProvider());
 		
 		generationsList.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -140,8 +151,9 @@ public class ProductCmptDeltaDialog extends TitleAreaDialog {
 		
 		return root;
 	}
-	
-	/**
+
+
+    /**
 	 * {@inheritDoc}
 	 */
 	protected Control createButtonBar(Composite parent) {
@@ -149,6 +161,14 @@ public class ProductCmptDeltaDialog extends TitleAreaDialog {
 		super.getButton(OK).setText(Messages.ProductCmptDeltaDialog_fix);
 		super.getButton(CANCEL).setText(Messages.ProductCmptDeltaDialog_ignore);
 		return buttons; 
+	}
+
+    /*
+	 * Returns <code>true</code> if the user can edit recent generations, if
+	 * recent generations couldn't be edit return <code>false</code>.
+	 */
+	private boolean isProductEditableInAllGenerations() {
+	    return IpsPlugin.getDefault().getIpsPreferences().canEditRecentGeneration();
 	}
 
 	private void updateDeltaView() {

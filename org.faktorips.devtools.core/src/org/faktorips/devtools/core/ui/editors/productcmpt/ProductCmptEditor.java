@@ -154,27 +154,14 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 
     /**
      * {@inheritDoc}
+     * 
+     * The method is overridden, to enable access from classes in same package.
      */
     protected void checkForInconsistenciesToModel() {
         if (TRACE) {
             logMethodStarted("checkForInconsistenciesToModel"); //$NON-NLS-1$
         }
-        boolean allGenerationsEditabled = true;
-        IIpsObjectGeneration[] gens = getProductCmpt().getGenerations();
-        for (int i = 0; i < gens.length; i++) {
-            IProductCmptGeneration gen = (IProductCmptGeneration)gens[i];
-            if (!isGenerationEditable(gen)) {
-                allGenerationsEditabled = false;
-                break;
-            }
-        }
-        if (allGenerationsEditabled) {
-            super.checkForInconsistenciesToModel();
-        } else {
-            if (TRACE) {
-                logInternal("checkForInconsistenciesToModel - no need to check, at least one of the generations is not editable."); //$NON-NLS-1$
-            }
-        }
+        super.checkForInconsistenciesToModel();
         if (TRACE) {
             logMethodFinished("checkForInconsistenciesToModel"); //$NON-NLS-1$
         }

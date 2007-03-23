@@ -46,6 +46,8 @@ public class Messages extends NLS {
 
 	public static String ProductCmptDeltaContentProvider_msgValuesetMismatch;
 
+    public static String ProductCmptDeltaDialog_messageWarningRecentGenerationCouldBeChanged;
+
 	public static String ProductCmptDeltaType_missingAttribute;
 
 	public static String ProductCmptDeltaType_missingCfgElement;
