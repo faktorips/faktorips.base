@@ -105,6 +105,12 @@
    <feature url="features/org.faktorips.feature.nls1_1.0.0.rc4.jar" id="org.faktorips.feature.nls1" version="1.0.0.rc4">
       <category name="FaktorIPS 1.0.0.rc4"/>
    </feature>
+   <feature url="features/org.faktorips.feature_1.0.0.jar" id="org.faktorips.feature" version="1.0.0">
+      <category name="Faktor-IPS 1.0.0"/>
+   </feature>
+   <feature url="features/org.faktorips.feature.nls1_1.0.0.jar" id="org.faktorips.feature.nls1" version="1.0.0">
+      <category name="Faktor-IPS 1.0.0"/>
+   </feature>
    <category-def name="FaktorIPS 0.9.32" label="FaktorIPS 0.9.32">
       <description>
          A product modeling and definition system, mainly targeted for the insurance industry. Version 0.9.32
@@ -158,4 +164,5 @@
    <category-def name="FaktorIPS 1.0.0.rc2-c" label="FaktorIPS 1.0.0.rc2-c"/>
    <category-def name="FaktorIPS 1.0.0.rc3" label="FaktorIPS 1.0.0.rc3"/>
    <category-def name="FaktorIPS 1.0.0.rc4" label="FaktorIPS 1.0.0.rc4"/>
+   <category-def name="Faktor-IPS 1.0.0" label="Faktor-IPS 1.0.0"/>
 </site>
