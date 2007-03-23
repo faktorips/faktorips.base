@@ -77,11 +77,15 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         super();
     }
 
+    private MultiStatus createInitialMultiStatus(){
+        return new MultiStatus(IpsPlugin.PLUGIN_ID, 0, Messages.IpsBuilder_msgBuildResults, null);
+    }
+    
     /**
      * {@inheritDoc}
      */
     protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
-        MultiStatus buildStatus = new MultiStatus(IpsPlugin.PLUGIN_ID, 0, Messages.IpsBuilder_msgBuildResults, null);
+        MultiStatus buildStatus = createInitialMultiStatus();
         try {
             monitor.beginTask("build", 100000); //$NON-NLS-1$
             monitor.subTask(Messages.IpsBuilder_validatingProject);
@@ -442,9 +446,22 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             return null;
         }
         IIpsObject ipsObject = file.getIpsObject();
-        applyBuildCommand(ipsArtefactBuilderSet,buildStatus, new BuildArtefactBuildCommand(file), monitor);
+        MultiStatus newStatus = createInitialMultiStatus();
+        applyBuildCommand(ipsArtefactBuilderSet, newStatus, new BuildArtefactBuildCommand(file), monitor);
+        if(!newStatus.isOK()){
+            fillMultiStatusWithMessageList(newStatus, ipsObject.validate());
+        }
+        buildStatus.add(newStatus);
         updateMarkers(buildStatus, ipsObject);
         return ipsObject;
+    }
+
+    private void fillMultiStatusWithMessageList(MultiStatus status, MessageList list)
+            throws CoreException {
+        for (int i = 0; i < list.getNoOfMessages(); i++) {
+            Message msg = list.getMessage(i);
+            status.add(new IpsStatus(getMarkerSeverity(msg), msg.getText(), null));
+        }
     }
 
     

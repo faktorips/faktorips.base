@@ -33,6 +33,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -500,4 +501,22 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 					.getResourceAsStream(ipsProjectFileName), true, null);
 		}
 	}
+    
+	/**
+     * Subclasses can use this method to print out the MultiStatus of a CoreException. This is expecially interesting for 
+     * testcases that start a build because normally all you get is a ResourceException with no detailed information.
+     *  
+     * @param status the status of a CoreException
+	 */
+    protected void printOriginalStatus(IStatus status){
+        System.out.println(status.getMessage());
+        if(status.getChildren().length == 0){
+            return;
+        }
+        IStatus[] statuus = status.getChildren();
+        for (int i = 0; i < statuus.length; i++) {
+            printOriginalStatus(statuus[i]);
+        }
+    }
+
 }

@@ -1448,7 +1448,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private void generateInitializationForOverrideAttributes(JavaCodeFragmentBuilder builder) throws CoreException{
         IAttribute[] attributes = getPcType().getAttributes();
         for (int i = 0; i < attributes.length; i++) {
-            if(attributes[i].isChangeable() && attributes[i].getOverwrites()){
+            if(attributes[i].isChangeable() && attributes[i].getOverwrites() && attributes[i].validate().isEmpty()){
                 DatatypeHelper helper = getPcType().getIpsProject().getDatatypeHelper(attributes[i].getValueDatatype());
                 JavaCodeFragment initialValueExpression = helper.newInstance(attributes[i].getDefaultValue());
                 interfaceBuilder.generateCallToMethodSetPropertyValue(attributes[i], helper, initialValueExpression, builder);
