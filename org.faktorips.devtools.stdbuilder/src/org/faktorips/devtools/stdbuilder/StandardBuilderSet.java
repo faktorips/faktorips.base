@@ -47,6 +47,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClass
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.table.TableContentBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableRowBuilder;
 import org.faktorips.devtools.stdbuilder.testcase.TestCaseBuilder;
@@ -205,8 +206,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         tableImplBuilder.setTableRowBuilder(tableRowBuilder);
 
         // table content builders
-        IIpsArtefactBuilder tableContentCopyBuilder = new XmlContentFileCopyBuilder(
-                IpsObjectType.TABLE_CONTENTS, this, KIND_TABLE_CONTENT);
+        IIpsArtefactBuilder tableContentCopyBuilder = new TableContentBuilder(this, KIND_TABLE_CONTENT);
 
         // test case type builders
         TestCaseTypeClassBuilder testCaseTypeClassBuilder = new TestCaseTypeClassBuilder(this, KIND_TEST_CASE_TYPE_CLASS);
