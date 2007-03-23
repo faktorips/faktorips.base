@@ -424,8 +424,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
             manager.add(new Separator());
             createProjectActions(manager, selected, (IStructuredSelection)treeViewer.getSelection());
             manager.add(new Separator());
-            createFixDifferencesAction(manager, selected, (IStructuredSelection)treeViewer.getSelection());
             createTestCaseAction(manager, selected);
+            createFixDifferencesAction(manager, selected, (IStructuredSelection)treeViewer.getSelection());
             createRefactorMenu(manager, selected);
             createIpsArchiveAction(manager, selected);
             createAdditionalActions(manager, structuredSelection);
@@ -592,13 +592,17 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
         }
 
         protected void createFixDifferencesAction(IMenuManager manager, Object selected, IStructuredSelection selection) {
+            // show fix differences menu only for the model explorer
+            if (! ModelExplorer.this.isModelExplorer()){
+                return;
+            }
             if (selected instanceof IIpsElement) {
                 if (selected instanceof IIpsProject) {
                     IIpsProject project = (IIpsProject)selected;
                     if (project.isProductDefinitionProject()) {
                         manager.add(new FixDifferencesAction(getSite().getWorkbenchWindow(), selection));
                     }
-                }
+                } 
                 else if (selected instanceof IIpsPackageFragmentRoot) {
                     manager.add(new FixDifferencesAction(getSite().getWorkbenchWindow(), selection));
                 }
@@ -606,20 +610,16 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
                     manager.add(new FixDifferencesAction(getSite().getWorkbenchWindow(), selection));
                 }
                 else if (selected instanceof IFixDifferencesToModelSupport) {
-                    IFixDifferencesToModelSupport toFix = (IFixDifferencesToModelSupport) selected;
-                    try {
-                        if(toFix.containsDifferenceToModel()){
-                            manager.add(new FixDifferencesAction(getSite().getWorkbenchWindow(), selection));
-                        }
-                    }
-                    catch (CoreException e) {
-                        // ignore exception while creating the menu
-                    }
+                    manager.add(new FixDifferencesAction(getSite().getWorkbenchWindow(), selection));
                 }
             }
         }
 
         private void createIpsArchiveAction(IMenuManager manager, Object selected) {
+            // show ips archive menu only for the model explorer
+            if (! ModelExplorer.this.isModelExplorer()){
+                return;
+            }            
             if (config.isAllowedIpsElementType(IIpsProject.class)
                     || config.isAllowedIpsElementType(IIpsPackageFragmentRoot.class)) {
                 if (selected instanceof IIpsProject || selected instanceof IIpsPackageFragmentRoot) {
@@ -765,4 +765,14 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
     public ResourcePatternFilter getPatternFilter() {
         throw new UnsupportedOperationException();
     }
+    
+    /**
+     * Returns <code>true</code> if this class is a kind of model explorer,
+     * the model explorer is an explorer with enhanced functionality. 
+     * Other derived explorer classes should return <code>false</code> if
+     * a restriced menu operations should be provided.
+     */
+    protected boolean isModelExplorer() {
+        return true;
+    }    
 }

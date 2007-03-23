@@ -181,4 +181,11 @@ public class ProductExplorer extends ModelExplorer {
             manager.add(replaceMenu);
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean isModelExplorer() {
+        return false;
+    }       
 }
