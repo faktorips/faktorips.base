@@ -21,7 +21,6 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -50,6 +49,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     public CoreVersionManager() {
         super();
         loader = getClass().getClassLoader();
+        version = IpsPlugin.getInstalledFaktorIpsVersion();
     }
     
     /**
@@ -69,9 +69,6 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
      * {@inheritDoc}
      */
     public String getCurrentVersion() {
-        if (version == null) {
-            version = (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
         return version;
     }
 

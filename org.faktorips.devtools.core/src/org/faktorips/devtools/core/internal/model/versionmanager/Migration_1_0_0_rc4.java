@@ -31,7 +31,7 @@ public class Migration_1_0_0_rc4 extends AbstractMigrationOperation {
      * {@inheritDoc}
      */
     public String getTargetVersion() {
-        return "1.0.0"; //$NON-NLS-1$
+        return "1.0.0.rfinal"; //$NON-NLS-1$
     }
 
     /**

@@ -139,6 +139,13 @@ public class IpsPlugin extends AbstractUIPlugin {
     private IpsProblemMarkerManager ipsProblemMarkerManager;
     
     /**
+     * Returns the number of the installed Faktor-IPS version. 
+     */
+    public final static String getInstalledFaktorIpsVersion() {
+        return (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    
+    /**
      * Returns the shared instance.
      */
     public static IpsPlugin getDefault() {
