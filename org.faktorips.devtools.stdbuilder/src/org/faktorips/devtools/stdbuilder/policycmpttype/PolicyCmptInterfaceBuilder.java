@@ -979,9 +979,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     }
     
     public String getPropertyName(IAttribute a, Datatype datatype){
-        if(datatype.isPrimitive()){
-            return getLocalizedText(a, "FIELD_PROPERTY_PRIMITIVE_NAME", StringUtils.upperCase(a.getName()));    
-        }
         return getLocalizedText(a, "FIELD_PROPERTY_NAME", StringUtils.upperCase(a.getName()));
     }
     
