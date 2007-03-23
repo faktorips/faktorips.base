@@ -684,7 +684,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                     if (TRACE_BUILDER_TRACE) {
                         System.out
                                 .println(builder.getName()
-                                        + ": Finished building " + ipsSrcFile + ". Duration: " + (System.currentTimeMillis() - begin)); //$NON-NLS-1$
+                                        + ": Finished building " + ipsSrcFile + ". Duration: " + (System.currentTimeMillis() - begin)); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
             }

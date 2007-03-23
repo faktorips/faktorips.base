@@ -228,8 +228,8 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
                 setProdRelevantEnabled(getCurrentRelation().isProductRelevant());
                 if (!productRelevantCheckbox.getButton().getSelection()){
                     // not product relevant, reset product relevant role names
-                    targetRolePluralProdRelevantField.setText("");
-                    targetRoleSingularProdRelevantField.setText("");
+                    targetRolePluralProdRelevantField.setText(""); //$NON-NLS-1$
+                    targetRoleSingularProdRelevantField.setText(""); //$NON-NLS-1$
                 }
             }
         });

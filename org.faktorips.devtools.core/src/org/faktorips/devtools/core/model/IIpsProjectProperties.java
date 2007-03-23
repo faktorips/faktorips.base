@@ -35,7 +35,7 @@ public interface IIpsProjectProperties {
 	
 	public final static String PROPERTY_BUILDER_SET_ID = "builderSetId"; //$NON-NLS-1$
 	
-    public final static String PROPERTY_CONTAINER_RELATIONS_MUST_BE_IMPLEMENTED = "containerRelationIsImplementedRuleEnabled"; // $NON-NLS-1$
+    public final static String PROPERTY_CONTAINER_RELATIONS_MUST_BE_IMPLEMENTED = "containerRelationIsImplementedRuleEnabled"; // $NON-NLS-1$ //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.

@@ -62,6 +62,10 @@ public class Messages extends NLS {
 
     public static String IpsSrcFolderEntry_srcFolderMustBeADirectChildOfTheProject;
 
+    public static String TableContentsEnumDatatypeAdapter_1;
+
+    public static String TableContentsEnumDatatypeAdapter_3;
+
     public static String ValidationUtils_msgObjectDoesNotExist;
 
 	public static String ValidationUtils_msgDatatypeDoesNotExist;

@@ -26,17 +26,17 @@ public interface IUniqueKey extends IKey {
     /**
      * Identifies a validation rule. 
      */
-    public final static String MSGCODE_ENUM_TABLE_ID_KEY = "EnumTableIdKeyOnlyOneItem";
+    public final static String MSGCODE_ENUM_TABLE_ID_KEY = "EnumTableIdKeyOnlyOneItem"; //$NON-NLS-1$
 
     /**
      * Identifies a validation rule. 
      */
-    public final static String MSGCODE_ENUM_TABLE_NAME_KEY = "EnumTableNameKeyOnlyOneItem";
+    public final static String MSGCODE_ENUM_TABLE_NAME_KEY = "EnumTableNameKeyOnlyOneItem"; //$NON-NLS-1$
 
     /**
      * Identifies a validation rule. 
      */
-    public final static String MSGCODE_ENUM_TABLE_NAME_KEY_DATATYPE = "EnumTableNameKeyMustBeString";
+    public final static String MSGCODE_ENUM_TABLE_NAME_KEY_DATATYPE = "EnumTableNameKeyMustBeString"; //$NON-NLS-1$
     
     /**
      * The name of the unique key is the concatenation of it's items separated

@@ -51,19 +51,19 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
      * Setting key for user's decision not to choose a new product component type, because the old
      * can't be found.
      */
-    private final static String SETTING_WORK_WITH_MISSING_TYPE = "workWithMissingType";
+    private final static String SETTING_WORK_WITH_MISSING_TYPE = "workWithMissingType"; //$NON-NLS-1$
 
     /*
      * Setting key for the working date used in the editor. This might differ from the one
      * defined in the preferences.
      */
-    private final static String SETTING_WORKING_DATE = "workingDate";
+    private final static String SETTING_WORKING_DATE = "workingDate"; //$NON-NLS-1$
 
     /*
      * Setting key for user's decision not to choose a new product component type, because the old
      * can't be found.
      */
-    private final static String SETTING_ACTIVE_GENERATION_MANUALLY_SET = "activeGenerationManuallySet";
+    private final static String SETTING_ACTIVE_GENERATION_MANUALLY_SET = "activeGenerationManuallySet"; //$NON-NLS-1$
 
     private GenerationPropertiesPage generationPropertiesPage;
 

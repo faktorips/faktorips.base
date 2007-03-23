@@ -48,6 +48,8 @@ public class Messages extends NLS {
 
     public static String ProductCmptCompareItem_SourceFile;
 
+    public static String ProductCmptCompareItem_unlimited;
+
     public static String ProductCmptCompareItem_ValueSet;
 
     public static String PropertiesPage_relations;

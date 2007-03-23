@@ -32,26 +32,26 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkConnector {
 
-    private String id = "";
+    private String id = ""; //$NON-NLS-1$
     
     private String getLevelExp(int level){
         
         if(level == IIpsLoggingFrameworkConnector.LEVEL_INFO){
-            return "Level.INFO";
+            return "Level.INFO"; //$NON-NLS-1$
         }
         if(level == IIpsLoggingFrameworkConnector.LEVEL_WARNING){
-            return "Level.WARNING";
+            return "Level.WARNING"; //$NON-NLS-1$
         }
         if(level == IIpsLoggingFrameworkConnector.LEVEL_ERROR){
-            return "Level.SEVERE";
+            return "Level.SEVERE"; //$NON-NLS-1$
         }
         if(level == IIpsLoggingFrameworkConnector.LEVEL_DEBUG){
-            return "Level.FINE";
+            return "Level.FINE"; //$NON-NLS-1$
         }
         if(level == IIpsLoggingFrameworkConnector.LEVEL_TRACE){
-            return "Level.FINEST";
+            return "Level.FINEST"; //$NON-NLS-1$
         }
-        throw new IllegalArgumentException("The specified logging level is not defined: " + level);
+        throw new IllegalArgumentException("The specified logging level is not defined: " + level); //$NON-NLS-1$
     }
     
     /**
@@ -59,26 +59,26 @@ public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkCo
      */
     public String getLogConditionExp(int level, String loggerExpression, List usedClasses) {
         usedClasses.add(Level.class.getName());
-        return loggerExpression + ".isLoggable(" + getLevelExp(level) + ")";
+        return loggerExpression + ".isLoggable(" + getLevelExp(level) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private String getLevelMethodName(int level){
         if(level == IIpsLoggingFrameworkConnector.LEVEL_INFO){
-            return "info";
+            return "info"; //$NON-NLS-1$
         }
         if(level == IIpsLoggingFrameworkConnector.LEVEL_WARNING){
-            return "warning";
+            return "warning"; //$NON-NLS-1$
         }
         if(level == IIpsLoggingFrameworkConnector.LEVEL_ERROR){
-            return "severe";
+            return "severe"; //$NON-NLS-1$
         }
         if(level == IIpsLoggingFrameworkConnector.LEVEL_DEBUG){
-            return "fine";
+            return "fine"; //$NON-NLS-1$
         }
         if(level == IIpsLoggingFrameworkConnector.LEVEL_TRACE){
-            return "finest";
+            return "finest"; //$NON-NLS-1$
         }
-        throw new IllegalArgumentException("The specified logging level is not defined: " + level);
+        throw new IllegalArgumentException("The specified logging level is not defined: " + level); //$NON-NLS-1$
     }
 
     /**
@@ -87,11 +87,11 @@ public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkCo
     public String getLogStmtForMessage(int level, String msgConstant, String loggerInstanceExp, List usedClasses) {
         StringBuffer buf = new StringBuffer();
         buf.append(loggerInstanceExp);
-        buf.append(".");
+        buf.append("."); //$NON-NLS-1$
         buf.append(getLevelMethodName(level));
-        buf.append("(\"");
+        buf.append("(\""); //$NON-NLS-1$
         buf.append(msgConstant);
-        buf.append("\")");
+        buf.append("\")"); //$NON-NLS-1$
         return buf.toString();
     }
 
@@ -101,11 +101,11 @@ public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkCo
     public String getLogStmtForMessageExp(int level, String msgExp, String loggerInstanceExp, List usedClasses) {
         StringBuffer buf = new StringBuffer();
         buf.append(loggerInstanceExp);
-        buf.append(".");
+        buf.append("."); //$NON-NLS-1$
         buf.append(getLevelMethodName(level));
-        buf.append("(");
+        buf.append("("); //$NON-NLS-1$
         buf.append(msgExp);
-        buf.append(")");
+        buf.append(")"); //$NON-NLS-1$
         return buf.toString();
     }
 
@@ -119,13 +119,13 @@ public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkCo
         usedClasses.add(Level.class.getName());
         StringBuffer buf = new StringBuffer();
         buf.append(loggerInstanceExp);
-        buf.append(".log(");
+        buf.append(".log("); //$NON-NLS-1$
         buf.append(getLevelExp(level));
-        buf.append(", ");
+        buf.append(", "); //$NON-NLS-1$
         buf.append(msgExp);
-        buf.append(", ");
+        buf.append(", "); //$NON-NLS-1$
         buf.append(throwableExp);
-        buf.append(")");
+        buf.append(")"); //$NON-NLS-1$
         return buf.toString();
     }
 
@@ -142,9 +142,9 @@ public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkCo
     public String getLoggerInstanceStmt(String scopeExp, List usedClasses) {
         usedClasses.add(Logger.class.getName());
         StringBuffer buf = new StringBuffer();
-        buf.append("Logger.getLogger(");
+        buf.append("Logger.getLogger("); //$NON-NLS-1$
         buf.append(scopeExp);
-        buf.append(")");
+        buf.append(")"); //$NON-NLS-1$
         return buf.toString();
     }
 

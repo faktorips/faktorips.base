@@ -22,7 +22,7 @@ public class TestCaseEditor extends IpsObjectEditor {
      * Setting key for user's decision not to choose a new test case type, because the old
      * can't be found.
      */
-    private final static String SETTING_WORK_WITH_MISSING_TYPE = "workWithMissingType";
+    private final static String SETTING_WORK_WITH_MISSING_TYPE = "workWithMissingType"; //$NON-NLS-1$
 
     TestCaseEditorPage editorPage;
     

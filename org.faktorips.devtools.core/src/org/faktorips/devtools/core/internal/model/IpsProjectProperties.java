@@ -74,7 +74,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 	private String changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
 	private IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
 	private String builderSetId = ""; //$NON-NLS-1$
-    private String loggingFrameworkConnectorId="";
+    private String loggingFrameworkConnectorId=""; //$NON-NLS-1$
     private IIpsArtefactBuilderSetConfig builderSetConfig = new IpsArtefactBuilderSetConfig();
 	private IIpsObjectPath path = new IpsObjectPath();
 	private String[] predefinedDatatypesUsed = new String[0];

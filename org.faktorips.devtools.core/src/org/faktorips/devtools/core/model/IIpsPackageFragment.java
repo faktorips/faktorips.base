@@ -37,7 +37,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      * Constant that represents the name of the default package to make it
      * explicit that the default package name is an empty string.
      */
-    public final static String NAME_OF_THE_DEFAULT_PACKAGE = "";
+    public final static String NAME_OF_THE_DEFAULT_PACKAGE = ""; //$NON-NLS-1$
     
     /**
      * The char used as separator for subpackages.

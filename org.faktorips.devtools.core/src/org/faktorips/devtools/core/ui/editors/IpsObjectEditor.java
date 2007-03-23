@@ -85,7 +85,7 @@ public abstract class IpsObjectEditor extends FormEditor
      * Setting key for user's decision not to fix the differences between the
      * product definition structure and the model structure
      */
-    private final static String SETTING_DONT_FIX_DIFFERENCES = "dontFixDifferences";
+    private final static String SETTING_DONT_FIX_DIFFERENCES = "dontFixDifferences"; //$NON-NLS-1$
 
     // the file that's being edited (if any)
     private IIpsSrcFile ipsSrcFile;
@@ -629,23 +629,23 @@ public abstract class IpsObjectEditor extends FormEditor
      */
     protected void checkForInconsistenciesToModel() {
         if (TRACE) {
-            logMethodStarted("checkForInconsistenciesToModel");
+            logMethodStarted("checkForInconsistenciesToModel"); //$NON-NLS-1$
         }
         if (isDataChangeable()==null || !isDataChangeable().booleanValue()) {
             if (TRACE) {
-                logMethodFinished("checkForInconsistenciesToModel - no need to check, content is read-only.");
+                logMethodFinished("checkForInconsistenciesToModel - no need to check, content is read-only."); //$NON-NLS-1$
             }
             return;
         }
         if (!getIpsSrcFile().exists()){
             if (TRACE) {
-                logMethodFinished("checkForInconsistenciesToModel - no need to check, file does not exists.");
+                logMethodFinished("checkForInconsistenciesToModel - no need to check, file does not exists."); //$NON-NLS-1$
             }
             return;
         }
         if (getSettings().getBoolean(getIpsSrcFile(), SETTING_DONT_FIX_DIFFERENCES)) {
             if (TRACE) {
-                logMethodFinished("checkForInconsistenciesToModel - no need to check, user decided no to fix.");
+                logMethodFinished("checkForInconsistenciesToModel - no need to check, user decided no to fix."); //$NON-NLS-1$
             }
             return;
         }           
@@ -661,14 +661,14 @@ public abstract class IpsObjectEditor extends FormEditor
         try {
             if (!toFixIpsObject.containsDifferenceToModel()){
                 if (TRACE) {
-                    logMethodFinished("checkForInconsistenciesToModel - no differences found.");
+                    logMethodFinished("checkForInconsistenciesToModel - no differences found."); //$NON-NLS-1$
                 }
                 return;
             }
             Dialog dialog = createDialogToFixDifferencesToModel();
             if (dialog.open() == Dialog.OK) {
                 if (TRACE) {
-                    log("checkForInconsistenciesToModel - differences found, start fixing differenced.");
+                    log("checkForInconsistenciesToModel - differences found, start fixing differenced."); //$NON-NLS-1$
                 }
                 IWorkspaceRunnable fix = new IWorkspaceRunnable(){
                     public void run(IProgressMonitor monitor) throws CoreException {
@@ -681,7 +681,7 @@ public abstract class IpsObjectEditor extends FormEditor
                 getSettings().put(getIpsSrcFile(), SETTING_DONT_FIX_DIFFERENCES, true);
             }
             if (TRACE) {
-                logMethodFinished("checkForInconsistenciesToModel");
+                logMethodFinished("checkForInconsistenciesToModel"); //$NON-NLS-1$
             }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);

@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dï¿½rfen nur unter den Bedingungen der 
+ * Faktor-Zehn-Community Lizenzvereinbarung ï¿½ Version 0.1 (vor Grï¿½ndung Community) 
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -37,11 +37,11 @@ public class Migration_1_0_0_rc2_b extends AbstractMigrationOperation {
     }
 
     public String getDescription() {
-        return "Some bugs fixed";
+        return "Some bugs fixed"; //$NON-NLS-1$
     }
 
     public String getTargetVersion() {
-        return "1.0.0.rc2-c";
+        return "1.0.0.rc2-c"; //$NON-NLS-1$
     }
 
     public boolean isEmpty() {

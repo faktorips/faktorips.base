@@ -533,23 +533,23 @@ public class IpsPlugin extends AbstractUIPlugin {
         if (loggingFrameworkConnectors == null) {
             ArrayList builders = new ArrayList();
             IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID,
-                    "loggingFrameworkConnector");
+                    "loggingFrameworkConnector"); //$NON-NLS-1$
             IExtension[] extensions = extensionPoint.getExtensions();
             for (int i = 0; i < extensions.length; i++) {
                 IExtension extension = extensions[i];
                 IConfigurationElement[] configElements = extension.getConfigurationElements();
                 for (int j = 0; j < configElements.length; j++) {
                     IConfigurationElement configElement = configElements[j];
-                    if ("loggingFrameworkConnector".equals(configElement.getName())) {
+                    if ("loggingFrameworkConnector".equals(configElement.getName())) { //$NON-NLS-1$
                         try {
                             IIpsLoggingFrameworkConnector connector = (IIpsLoggingFrameworkConnector)configElement
-                                    .createExecutableExtension("class");
-                            connector.setId(extension.getUniqueIdentifier() == null ? "" : extension
+                                    .createExecutableExtension("class"); //$NON-NLS-1$
+                            connector.setId(extension.getUniqueIdentifier() == null ? "" : extension //$NON-NLS-1$
                                     .getUniqueIdentifier());
                             builders.add(connector);
 
                         } catch (CoreException e) {
-                            log(new IpsStatus("Unable to create the log statement builder with the id "
+                            log(new IpsStatus("Unable to create the log statement builder with the id " //$NON-NLS-1$
                                     + extension.getUniqueIdentifier(), e));
                         }
                     }

@@ -68,8 +68,8 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
             buf.append(builder.buildError(message));
         }
         else{
-            throw new IllegalArgumentException("The value of the parameter level is not valid. " +
-                    "Use the level constants of " + IIpsLoggingFrameworkConnector.class + ".");
+            throw new IllegalArgumentException("The value of the parameter level is not valid. " + //$NON-NLS-1$
+                    "Use the level constants of " + IIpsLoggingFrameworkConnector.class + "."); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return buf.toString();
 
@@ -118,7 +118,7 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
      */
     public String getLoggerInstanceStmt(String scopeExp, List usedClasses) {
         usedClasses.add(Logger.class.getName());
-        return "Logger.getLogger(" + scopeExp + ")";
+        return "Logger.getLogger(" + scopeExp + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 
@@ -144,71 +144,71 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
         }
         
         public String buildDebug(String message) {
-            return ".isDebugEnabled()";
+            return ".isDebugEnabled()"; //$NON-NLS-1$
         }
 
         public String buildError(String message) {
             usedClasses.add(Level.class.getName());
-            return ".isEnabledFor(Level.ERROR)";
+            return ".isEnabledFor(Level.ERROR)"; //$NON-NLS-1$
         }
 
         public String buildInfo(String message) {
-            return ".isInfoEnabled()";
+            return ".isInfoEnabled()"; //$NON-NLS-1$
         }
 
         public String buildTrace(String message) {
-            return ".isTraceEnabled()";
+            return ".isTraceEnabled()"; //$NON-NLS-1$
         }
 
         public String buildWarning(String message) {
             usedClasses.add(Level.class.getName());
-            return ".isEnabledFor(Level.WARN)";
+            return ".isEnabledFor(Level.WARN)"; //$NON-NLS-1$
         }
     }
     
     private static class LogStmtForMessageBuilder implements Builder{
 
         public String buildDebug(String message) {
-            return ".debug(\"" + message + "\")";
+            return ".debug(\"" + message + "\")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         public String buildError(String message) {
-            return ".error(\"" + message + "\")";
+            return ".error(\"" + message + "\")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         public String buildInfo(String message) {
-            return ".info(\"" + message + "\")";
+            return ".info(\"" + message + "\")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         public String buildTrace(String message) {
-            return ".trace(\"" + message + "\")";
+            return ".trace(\"" + message + "\")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         public String buildWarning(String message) {
-            return ".warn(\"" + message + "\")";
+            return ".warn(\"" + message + "\")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
     
     private static class LogStmtForMessageExpBuilder implements Builder{
 
         public String buildDebug(String message) {
-            return ".debug(" + message + ")";
+            return ".debug(" + message + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         public String buildError(String message) {
-            return ".error(" + message + ")";
+            return ".error(" + message + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         public String buildInfo(String message) {
-            return ".info(" + message + ")";
+            return ".info(" + message + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         public String buildTrace(String message) {
-            return ".trace(" + message + ")";
+            return ".trace(" + message + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         public String buildWarning(String message) {
-            return ".warn(" + message + ")";
+            return ".warn(" + message + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -221,23 +221,23 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
         }
         
         public String buildDebug(String message) {
-            return ".debug(" + message + ", " + throwableExp + ")";
+            return ".debug(" + message + ", " + throwableExp + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
         public String buildError(String message) {
-            return ".error(" + message + ", " + throwableExp + ")";
+            return ".error(" + message + ", " + throwableExp + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
         public String buildInfo(String message) {
-            return ".info(" + message + ", " + throwableExp + ")";
+            return ".info(" + message + ", " + throwableExp + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
         public String buildTrace(String message) {
-            return ".trace(" + message + ", " + throwableExp + ")";
+            return ".trace(" + message + ", " + throwableExp + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
         public String buildWarning(String message) {
-            return ".warn(" + message + ", " + throwableExp + ")";
+            return ".warn(" + message + ", " + throwableExp + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 

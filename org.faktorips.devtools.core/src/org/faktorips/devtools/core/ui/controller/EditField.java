@@ -31,7 +31,7 @@ public interface EditField {
      * Message code to indicate an edit field's underlying control does not contain information
      * that is parsable to the value of the expected datatype.
      */
-    public final static String INVALID_VALUE = "EditFieldContainsInvalidValue";
+    public final static String INVALID_VALUE = "EditFieldContainsInvalidValue"; //$NON-NLS-1$
     
     /**
      * Returns the control this is a helper for.

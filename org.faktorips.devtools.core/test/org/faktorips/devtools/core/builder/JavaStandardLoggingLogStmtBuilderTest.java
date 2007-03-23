@@ -35,12 +35,12 @@ public class JavaStandardLoggingLogStmtBuilderTest extends TestCase {
     
     public final void testGetLogConditionExp() {
         ArrayList usedClasses = new ArrayList();
-        String loggerExp = loggingFrameworkConnector.getLoggerInstanceStmt("\"com.foo\"", usedClasses);
+        String loggerExp = loggingFrameworkConnector.getLoggerInstanceStmt("\"com.foo\"", usedClasses); //$NON-NLS-1$
         String stmt = loggingFrameworkConnector.getLogConditionExp(IIpsLoggingFrameworkConnector.LEVEL_ERROR, loggerExp, usedClasses);
-        assertEquals("Logger.getLogger(\"com.foo\").isLoggable(Level.SEVERE)", stmt);
+        assertEquals("Logger.getLogger(\"com.foo\").isLoggable(Level.SEVERE)", stmt); //$NON-NLS-1$
         
         //test against the java compiler of the real code
-        Logger.getLogger("com.foo").isLoggable(Level.SEVERE);
+        Logger.getLogger("com.foo").isLoggable(Level.SEVERE); //$NON-NLS-1$
         
         assertEquals(2, usedClasses.size());
         assertEquals(Logger.class.getName(), usedClasses.get(0));
@@ -48,46 +48,46 @@ public class JavaStandardLoggingLogStmtBuilderTest extends TestCase {
     }
 
     public final void testGetLogStmtForMessage() {
-        String loggerExp = "LOGGER";
+        String loggerExp = "LOGGER"; //$NON-NLS-1$
         ArrayList usedClasses = new ArrayList();
         String stmt = loggingFrameworkConnector.getLogStmtForMessage(
-                IIpsLoggingFrameworkConnector.LEVEL_ERROR, "Message", loggerExp, usedClasses);
-        assertEquals("LOGGER.severe(\"Message\")", stmt);
+                IIpsLoggingFrameworkConnector.LEVEL_ERROR, "Message", loggerExp, usedClasses); //$NON-NLS-1$
+        assertEquals("LOGGER.severe(\"Message\")", stmt); //$NON-NLS-1$
 
 //      test against the java compiler of the real code
-        Logger LOGGER = Logger.getLogger("com.foo");
-        LOGGER.severe("Message");
+        Logger LOGGER = Logger.getLogger("com.foo"); //$NON-NLS-1$
+        LOGGER.severe("Message"); //$NON-NLS-1$
         assertEquals(0, usedClasses.size());
     }
 
     private String getMessage(){
-        return "Message";
+        return "Message"; //$NON-NLS-1$
     }
     
     public final void testGetLogStmtForMsgExp() {
-        String loggerExp = "LOGGER";
+        String loggerExp = "LOGGER"; //$NON-NLS-1$
         ArrayList usedClasses = new ArrayList();
         String stmt = loggingFrameworkConnector.getLogStmtForMessageExp(
-                IIpsLoggingFrameworkConnector.LEVEL_ERROR, "getMessage()", loggerExp, usedClasses);
-        assertEquals("LOGGER.severe(getMessage())", stmt);
+                IIpsLoggingFrameworkConnector.LEVEL_ERROR, "getMessage()", loggerExp, usedClasses); //$NON-NLS-1$
+        assertEquals("LOGGER.severe(getMessage())", stmt); //$NON-NLS-1$
 
 //      test against the java compiler of the real code
-        Logger LOGGER = Logger.getLogger("com.foo");
+        Logger LOGGER = Logger.getLogger("com.foo"); //$NON-NLS-1$
         LOGGER.severe(getMessage());
         assertEquals(0, usedClasses.size());
     }
 
     public final void testGetLogStmtForThrowable() {
-        String loggerExp = "LOGGER";
+        String loggerExp = "LOGGER"; //$NON-NLS-1$
         ArrayList usedClasses = new ArrayList();
         String stmt = loggingFrameworkConnector.getLogStmtForThrowable(
-                IIpsLoggingFrameworkConnector.LEVEL_ERROR, "\"Message\"", "exception", loggerExp, usedClasses);
-        assertEquals("LOGGER.log(Level.SEVERE, \"Message\", exception)", stmt);
+                IIpsLoggingFrameworkConnector.LEVEL_ERROR, "\"Message\"", "exception", loggerExp, usedClasses); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("LOGGER.log(Level.SEVERE, \"Message\", exception)", stmt); //$NON-NLS-1$
 
 //      test against the java compiler of the real code
-        Logger LOGGER = Logger.getLogger("com.foo");
+        Logger LOGGER = Logger.getLogger("com.foo"); //$NON-NLS-1$
         Exception exception = null;
-        LOGGER.log(Level.SEVERE, "Message", exception);
+        LOGGER.log(Level.SEVERE, "Message", exception); //$NON-NLS-1$
         assertEquals(1, usedClasses.size());
         assertEquals(Level.class.getName(), usedClasses.get(0));
     }
@@ -99,12 +99,12 @@ public class JavaStandardLoggingLogStmtBuilderTest extends TestCase {
 
     public final void testGetLoggerInstanceStmtStringStringList() {
         ArrayList usedClasses = new ArrayList();
-        String stmt = loggingFrameworkConnector.getLoggerInstanceStmt("\"com.foo\"", usedClasses);
-        assertEquals("Logger.getLogger(\"com.foo\")", stmt);
+        String stmt = loggingFrameworkConnector.getLoggerInstanceStmt("\"com.foo\"", usedClasses); //$NON-NLS-1$
+        assertEquals("Logger.getLogger(\"com.foo\")", stmt); //$NON-NLS-1$
         assertEquals(1, usedClasses.size());
         assertEquals(Logger.class.getName(), usedClasses.get(0));
         
 //      test against the java compiler of the real code
-        Logger.getLogger("com.foo");
+        Logger.getLogger("com.foo"); //$NON-NLS-1$
     }
 }

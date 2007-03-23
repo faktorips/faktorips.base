@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
+import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
 
 /**
@@ -354,7 +355,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
         } else if (set instanceof IRangeValueSet) {
             IRangeValueSet rangeSet = (IRangeValueSet)set;
             sb.append("["); //$NON-NLS-1$
-            String unlimited = "unlimited";
+            String unlimited = Messages.ProductCmptCompareItem_unlimited;
             if (rangeSet.getLowerBound()==null) {
                 sb.append(unlimited);
             } else {
@@ -372,7 +373,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
             sb.append(Messages.ProductCmptCompareItem_AllValues);
             sb.append("]"); //$NON-NLS-1$
         } else {
-            sb.append("Unknown value set type " + set.getClass());
+            sb.append("Unknown value set type " + set.getClass()); //$NON-NLS-1$
         }
         return sb;
     }

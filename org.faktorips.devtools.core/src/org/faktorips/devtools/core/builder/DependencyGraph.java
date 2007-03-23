@@ -166,7 +166,7 @@ public class DependencyGraph {
     }
 
     public String toString() {
-        return "DependencyGraph for " + ipsProject.getName();
+        return "DependencyGraph for " + ipsProject.getName(); //$NON-NLS-1$
     }
     
     

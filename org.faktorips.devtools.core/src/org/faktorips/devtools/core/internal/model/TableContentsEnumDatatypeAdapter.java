@@ -124,11 +124,11 @@ public class TableContentsEnumDatatypeAdapter extends AbstractDatatype implement
         MessageList msgList = new MessageList();
         ITableContents currentTableContents = (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, tableContents.getQualifiedName());
         if(currentTableContents == null){
-            msgList.add(new Message("", "The table contents this datatype bases on doesn't exist.", Message.ERROR));
+            msgList.add(new Message("", Messages.TableContentsEnumDatatypeAdapter_1, Message.ERROR)); //$NON-NLS-1$
         }
         MessageList tableContentsMsgList = tableContents.validate();
         if(!tableContentsMsgList.isEmpty()){
-            msgList.add(new Message("", "The table contents this datatype bases on is not valid", tableContentsMsgList.getSeverity()));
+            msgList.add(new Message("", Messages.TableContentsEnumDatatypeAdapter_3, tableContentsMsgList.getSeverity())); //$NON-NLS-1$
         }
         return msgList;
     }
