@@ -19,9 +19,11 @@ package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.PdPackageSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
@@ -33,15 +35,24 @@ public class IpsPckFragmentRefControl extends TextButtonControl {
 
     private IIpsPackageFragmentRoot root;
     
+    private IpsPckFragmenCompletionProcessor completionProcessor;
+    
     public IpsPckFragmentRefControl(
             Composite parent, 
             UIToolkit toolkit) {
         super(parent, toolkit, Messages.IpsPckFragmentRefControl_titleBrowse);
+        
+        completionProcessor = new IpsPckFragmenCompletionProcessor(this);
+        ContentAssistHandler.createHandlerForText(text, CompletionUtil.createContentAssistant(completionProcessor));
     }
     
     public void setIpsPckFragmentRoot(IIpsPackageFragmentRoot root) {
         this.root = root;
         setButtonEnabled(root!=null && root.exists());
+    }
+    
+    public IIpsPackageFragmentRoot getIpsPckFragmentRoot() {
+        return root;
     }
 
     public IIpsPackageFragment getIpsPackageFragment() {

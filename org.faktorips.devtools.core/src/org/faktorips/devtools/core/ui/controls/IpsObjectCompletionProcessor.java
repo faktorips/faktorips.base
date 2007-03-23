@@ -25,7 +25,6 @@ import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -50,32 +49,6 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
         ipsObjectType = type;
         control = null;
     }
-    
-    /**
-	 * Creates completion proposals for every package matching the given prefix.
-	 * 
-	 * @param packages
-	 *            The array of packages to check
-	 * @param prefix
-	 *            The prefix to check the packages against
-	 * @param replacementLength
-	 *            The replacement length given to the new completion proposal
-	 * @param result
-	 *            The list to add new completion proposals to.
-	 */
-	private void matchPackages(IIpsPackageFragment[] packages, String prefix,
-			int replacementLength, List result) {
-		String lowerPrefix = prefix.toLowerCase();
-		for (int i = 0; i < packages.length; i++) {
-			String name = packages[i].getName();
-			if (name.toLowerCase().startsWith(lowerPrefix)) {
-				CompletionProposal proposal = new CompletionProposal(name, 0,
-						replacementLength, name.length(), packages[i]
-								.getImage(), name, null, ""); //$NON-NLS-1$
-				result.add(proposal);
-			}
-		}
-	}
     
     /**
 	 * Returns whether the given qualified name will match the given package and
@@ -127,46 +100,43 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
             } else {
                 objects = ipsProject.findIpsObjects(ipsObjectType);
             }
-            for (int i=0; i<objects.length; i++) {
-            	if (match(matchPack, matchName, objects[i].getQualifiedName())) {
+            for (int i = 0; i < objects.length; i++) {
+                if (match(matchPack, matchName, objects[i].getQualifiedName())) {
                     String qName = objects[i].getQualifiedName();
-                    String displayText = objects[i].getName() + " - " + objects[i].getParent().getParent().getName(); //$NON-NLS-1$
-                    CompletionProposal proposal = new CompletionProposal(
-                            qName, 0, documentOffset, qName.length(),  
+                    String displayText = objects[i].getName()
+                            + " - " + mapDefaultPackageName(objects[i].getParent().getParent().getName()); //$NON-NLS-1$
+                    CompletionProposal proposal = new CompletionProposal(qName, 0, documentOffset, qName.length(),
                             objects[i].getImage(), displayText, null, objects[i].getDescription());
                     result.add(proposal);
                 }
             }
-            
-            // find packages of the project this completion processor was created in
+
             IIpsProject prj = ipsProject;
             if (prj == null && control != null) {
-            	prj = control.getIpsProject();
+                prj = control.getIpsProject();
             }
-
             if (prj == null) {
-            	return;
+                return;
             }
 
+            // find packages of the project this completion processor was created in
             IIpsPackageFragmentRoot[] roots = prj.getIpsPackageFragmentRoots();
             for (int i = 0; i < roots.length; i++) {
-				matchPackages(roots[i].getIpsPackageFragments(), match, documentOffset, result);
-			}
+                matchPackages(roots[i].getIpsPackageFragments(), prefix, documentOffset, result);
+            }
 
             // find packages of projects, the project of this compeltion processor refers to...
             IIpsProject[] projects = prj.getIpsObjectPath().getReferencedIpsProjects();
             for (int i = 0; i < projects.length; i++) {
-				roots = projects[i].getIpsPackageFragmentRoots();
-				for (int j = 0; j < projects.length; j++) {
-					matchPackages(roots[j].getIpsPackageFragments(), match, documentOffset, result);
-				}
-			}
-
+                roots = projects[i].getIpsPackageFragmentRoots();
+                for (int j = 0; j < projects.length; j++) {
+                    matchPackages(roots[j].getIpsPackageFragments(), prefix, documentOffset, result);
+                }
+            }
         } catch (Exception e) {
             setErrorMessage(Messages.IpsObjectCompletionProcessor_msgInternalError);
             IpsPlugin.log(e);
             return;
         }
-        
 	}
 }

@@ -34,6 +34,8 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
+    public static String AbstractCompletionProcessor_labelDefaultPackage;
+
     public static String DefaultLabelProvider_labelDefaultPackage;
 
     public static String FaktorIpsPreferencePage_labelEnumTypeDisplay;

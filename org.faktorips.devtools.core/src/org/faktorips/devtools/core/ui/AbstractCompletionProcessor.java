@@ -20,14 +20,19 @@ package org.faktorips.devtools.core.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.contentassist.IContentAssistSubjectControl;
 import org.eclipse.jface.contentassist.ISubjectControlContentAssistProcessor;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 
 
@@ -141,6 +146,49 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
 		return proposals;
     }
     
+
+    /**
+     * Creates completion proposals for every package matching the given prefix.
+     * 
+     * @param packages
+     *            The array of packages to check
+     * @param prefix
+     *            The prefix to check the packages against
+     * @param replacementLength
+     *            The replacement length given to the new completion proposal
+     * @param result
+     *            The list to add new completion proposals to.
+     */
+    protected void matchPackages(IIpsPackageFragment[] packages, String prefix,
+            int replacementLength, List result) {
+        String lowerPrefix = prefix.toLowerCase();
+        for (int i = 0; i < packages.length; i++) {
+            String name = packages[i].getName();
+            if (name.length() == 0) {
+                // don't show default package,
+                // the default package could be entered by leaving the edit field empty
+                continue;
+            }
+            if (name.toLowerCase().startsWith(lowerPrefix)) {
+                CompletionProposal proposal = new CompletionProposal(name, 0,
+                        replacementLength, name.length(), packages[i]
+                                .getImage(), name, null, ""); //$NON-NLS-1$
+                result.add(proposal);
+            }
+        }
+    }
+
+    /**
+     * Returns the displayed default package name "(default package)" if the given package name
+     * is empty, otherwise returns the given package name without change.
+     */
+    protected String mapDefaultPackageName(String packageName) {
+        if (StringUtils.isEmpty(packageName)){
+            packageName = Messages.AbstractCompletionProcessor_labelDefaultPackage;
+        }
+        return packageName;
+    }
+
     protected abstract void doComputeCompletionProposals(
             String prefix, int documentOffset, List result) throws Exception; 
 
