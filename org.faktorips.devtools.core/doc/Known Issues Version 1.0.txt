@@ -1,0 +1,3 @@
+
+- Bei der Ausführung von Formeltestcases die Aufzählungstypen verwenden, die im gleichen IpsProjekt definiert werden, 
+  Exceptions auftreten.
