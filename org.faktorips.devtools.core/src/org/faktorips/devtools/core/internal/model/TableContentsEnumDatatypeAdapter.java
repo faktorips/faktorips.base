@@ -64,12 +64,14 @@ public class TableContentsEnumDatatypeAdapter extends AbstractDatatype implement
     /**
      * {@inheritDoc}
      */
-    //TODO include null?
     public String[] getAllValueIds(boolean includeNull) {
         IRow[] rows = generation.getRows();
-        String[] ids = new String[rows.length];
+        String[] ids = new String[includeNull ? rows.length + 1 : rows.length];
         for (int i = 0; i < rows.length; i++) {
             ids[i] = rows[i].getValue(0);
+        }
+        if(includeNull){
+            ids[rows.length] = null;
         }
         return ids;
     }
@@ -78,7 +80,6 @@ public class TableContentsEnumDatatypeAdapter extends AbstractDatatype implement
      * {@inheritDoc}
      */
     public String getValueName(String id) {
-//        TODO check if this is correct
         if(id == null){
             return null;
         }
@@ -166,7 +167,7 @@ public class TableContentsEnumDatatypeAdapter extends AbstractDatatype implement
      */
     public boolean isParsable(String value) {
         if(value == null){
-            return false;
+            return true;
         }
         IRow[] rows = generation.getRows();
         for (int i = 0; i < rows.length; i++) {

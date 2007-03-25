@@ -21,11 +21,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Element;
 
 
@@ -203,4 +211,32 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         rows.clear();
         objectHasChanged();
     }
+
+    public ITableContents getTableContents(){
+        return (ITableContents)parent;
+    }
+    
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
+        if(!list.isEmpty()){
+            return;
+        }
+        ITableStructure structure = getTableContents().findTableStructure();
+        if(structure.isEnumType()){
+            IColumn column = getTableContents().findTableStructure().getColumn(0);
+            ValueDatatype idDatatype = column.findValueDatatype();
+            IRow[] rows = getRows();
+            for (int i = 0; i < rows.length; i++) {
+                for (int j = i + 1; j < rows.length; j++) {
+                    if(idDatatype.areValuesEqual(rows[i].getValue(0), rows[j].getValue(0))){
+                        list.add(new Message("", "There is already a value defined with the same id.", 
+                                Message.ERROR, new ObjectProperty[]{new ObjectProperty(rows[i], IRow.PROPERTY_VALUE, 0), 
+                                new ObjectProperty(rows[j], IRow.PROPERTY_VALUE, 0)}));
+                    }
+                }
+            }
+        }
+    }
+    
+    
 }

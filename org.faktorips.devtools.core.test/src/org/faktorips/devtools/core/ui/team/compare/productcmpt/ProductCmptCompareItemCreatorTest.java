@@ -32,8 +32,6 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
-import org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItem;
-import org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator;
 
 public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
 

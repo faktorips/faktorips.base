@@ -17,10 +17,10 @@
 
 package org.faktorips.devtools.core.model;
 
+import junit.framework.TestCase;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-
-import junit.framework.TestCase;
 
 public class QualifiedNameTypeTest extends TestCase {
 

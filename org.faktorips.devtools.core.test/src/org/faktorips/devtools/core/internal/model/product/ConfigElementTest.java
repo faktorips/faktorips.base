@@ -561,12 +561,12 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         // check with non enum datatype (unknow identifier)
         configElement.setValue("TestEnumType.test");
         List identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
-        assertTrue(identifierInFormula.size()==0);
+        assertTrue(identifierInFormula.size() == 1);
         
         // check with enum datatype
         configElement.setValue("TestEnumType.1");
         identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
-        assertEquals(0, identifierInFormula.size());
+        assertEquals(1, identifierInFormula.size());
     }
     
     public void testMoveFormulaTestCases(){

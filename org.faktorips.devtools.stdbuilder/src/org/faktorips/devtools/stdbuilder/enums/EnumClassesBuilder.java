@@ -381,7 +381,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
     public JavaCodeFragment generateCallMethodGetEnumValue(ITableContents tableContents, String value) throws CoreException{
         ArgumentCheck.notNull(tableContents);
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append(StringUtils.capitalise(tableContents.getName()));
+        fragment.appendClassName(getPackage(tableContents.getIpsSrcFile()) + '.' +StringUtils.capitalise(tableContents.getName()));
         fragment.append('.');
         fragment.append(getMethodNameGetEnumValue(tableContents));
         fragment.append('(');

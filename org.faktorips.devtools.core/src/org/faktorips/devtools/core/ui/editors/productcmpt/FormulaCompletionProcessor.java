@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -106,14 +105,9 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
 		EnumDatatype[] enumTypes = ipsProject.findEnumDatatypes();
 		for (int i = 0; i < enumTypes.length; i++) {
 			if(enumTypes[i].getName().equals(enumTypeName)){
-				String[] valueIds = enumTypes[i].getAllValueIds(true);
+				String[] valueIds = enumTypes[i].getAllValueIds(false);
 				for (int t = 0; t < valueIds.length; t++) {
 					String valueId = valueIds[t];
-					
-					if (valueId == null) {
-						valueId = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-					}
-					
 		    		if(valueId.startsWith(enumValuePrefix)){
 		    			addEnumValueToResult(result, enumTypes[i], valueId, replacementOffset, enumValuePrefix.length());
 		    		}

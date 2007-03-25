@@ -17,12 +17,11 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
+import junit.framework.TestCase;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
-import org.faktorips.devtools.core.ui.controlfactories.BooleanComboField;
-
-import junit.framework.TestCase;
 
 /**
  * 

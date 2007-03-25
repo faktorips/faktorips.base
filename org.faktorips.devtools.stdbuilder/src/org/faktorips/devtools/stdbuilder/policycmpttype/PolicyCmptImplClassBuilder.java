@@ -56,10 +56,10 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBui
 import org.faktorips.runtime.DefaultUnresolvedReference;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IModelObjectChangedEvent;
 import org.faktorips.runtime.IUnresolvedReference;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.faktorips.runtime.IModelObjectChangedEvent;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;

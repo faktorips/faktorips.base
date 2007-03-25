@@ -25,13 +25,11 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.internal.model.AllValuesValueSet;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValueSet;
@@ -45,7 +43,6 @@ import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
@@ -53,7 +50,6 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.DefaultIdentifierResolver;
 import org.faktorips.fl.ExcelFunctionsResolver;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
@@ -595,79 +591,26 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         }
         
         ExprCompiler compiler = getExprCompiler();
-        // if the default identifier is used, register the param identifier in default way
-        //   otherwise the expr compiler from the bulder will be used
-        if (compiler.getIdentifierResolver() instanceof DefaultIdentifierResolver){
-            registerParamIndentifers(compiler, attribute);
-        }
+
+        //a new identifier resolver is assigned to the compiler to make sure that the enum
+        //identifiers can be removed savely from the identifier list retured by the compilation result
+        //enum identifiers have to be removed from the list because they represent a constant value
+        //of an enumeration type which is not of interest in this context.
+        AbstractParameterIdentifierResolver resolver = new AbstractParameterIdentifierResolver(){
+            protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
+                return "";
+            }
+        };
+        resolver.setIpsProject(getIpsProject());
+        resolver.setParameters(attribute.getFormulaParameters());
         
+        compiler.setIdentifierResolver(resolver);
         CompilationResult compilationResult = compiler.compile(value);
         // store identifiers in the cache
-        identifierInFormulaCached = removeEnumDatatypeValueIdentifiers(compilationResult.getIdentifiersUsed());
-        
-        removeEnumDatatypeValueIdentifiers(identifierInFormulaCached);
+        identifierInFormulaCached = resolver.removeIdentifieresOfEnumDatatypes(compilationResult.getIdentifiersUsed());
         
         previousFormulaValue = getValue();
         return identifierInFormulaCached;
     }
-    
-    /*
-     * Returns the given list without enum value identifiers.
-     */
-    private String[] removeEnumDatatypeValueIdentifiers(String[] identifiers) throws CoreException {
-        List result = new ArrayList(identifiers.length);
-        
-        for (int i = 0; i < identifiers.length; i++) {
-            String paramName;
-            int pos = identifiers[i].indexOf('.');
-            if (pos == -1) {
-                paramName = identifiers[i];
-            } else {
-                paramName = identifiers[i].substring(0, pos);
-            }
-            
-            EnumDatatype enumType = getIpsProject().findEnumDatatype(paramName);
-            if(enumType == null){
-                result.add(identifiers[i]);
-            }
-        }
-        return (String[]) result.toArray(new String[result.size()]);        
-    }
-
-    /*
-     * Adds the default identifier resolver
-     */
-    private void registerParamIndentifers(ExprCompiler compiler, IAttribute attribute) throws CoreException {
-        DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
-        compiler.setIdentifierResolver(resolver);
-        Parameter[] params = attribute.getFormulaParameters();
-        for (int i = 0; i < params.length; i++) {
-            // get the datatype and the helper for generating the code fragment of the formula
-            String datatypeName = params[i].getDatatype();
-            Datatype datatype = getIpsProject().findDatatype(datatypeName);
-            if (datatype instanceof IPolicyCmptType) {
-                // if the datatype specifies a policy cmpt type add all identifiets of all
-                // attributes
-                IPolicyCmptType pcType = (IPolicyCmptType)datatype;
-                IAttribute[] attributes = pcType.getAttributes();
-                for (int j = 0; j < attributes.length; j++) {
-                    Datatype attrDatatype = attributes[j].findDatatype();
-                    if (attrDatatype == null) {
-                        throw new CoreException(new IpsStatus(NLS.bind(
-                                Messages.FormulaTestCase_CoreException_DatatypeNotFoundOrWrongConfigured, attributes[j],
-                                pcType.getQualifiedName() + "." + attributes[j].getName()))); //$NON-NLS-1$
-                    }
-                    resolver.register(params[i].getName() + "." + attributes[j].getName(), new JavaCodeFragment(), attrDatatype); //$NON-NLS-1$
-                }
-            } else {
-                DatatypeHelper dataTypeHelper = getIpsProject().findDatatypeHelper(datatypeName);
-                if (dataTypeHelper == null) {
-                    throw new CoreException(new IpsStatus(NLS.bind(
-                            Messages.FormulaTestCase_CoreException_DatatypeNotFoundOrWrongConfigured, datatypeName,
-                            params[i].getName())));
-                }
-                resolver.register(params[i].getName(), dataTypeHelper.nullExpression(), dataTypeHelper.getDatatype());
-            }
-        }
-    }    
+   
 }

@@ -1353,7 +1353,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         }
     }
     
-    
     static class FindTableStructureUsageInTypeHierarchyVisitor extends PolicyCmptTypeHierarchyVisitor {
 
         private String tableUsageRoleName;
