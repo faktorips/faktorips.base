@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.testcase;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -468,11 +469,47 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         parameter.setName("testBoolean");
         parameter.setDatatype("Boolean");
         
-        System.out.println(testCaseTypeX.validate());
-        
         testCaseX.fixAllDifferencesToModel();
         assertEquals(false, testCaseX.containsDifferenceToModel());
         ml = testCaseX.validate();
         assertFalse(ml.containsErrorMsg());        
+    }
+    
+    public void testGetAllTestPolicyCmpts() throws CoreException{
+        ITestPolicyCmpt testPolicyCmptRoot1 = testCase.newTestPolicyCmpt();
+        testPolicyCmptRoot1.setName("root");
+        ITestPolicyCmptRelation testPolicyCmptRelation = testPolicyCmptRoot1.newTestPolicyCmptRelation();
+        ITestPolicyCmpt testPolicyCmpt = testPolicyCmptRelation.newTargetTestPolicyCmptChild();
+        testPolicyCmpt.setName("root1_child1");
+        testPolicyCmptRelation = testPolicyCmptRoot1.newTestPolicyCmptRelation();
+        testPolicyCmpt = testPolicyCmptRelation.newTargetTestPolicyCmptChild();
+        testPolicyCmpt.setName("root1_child2");
+        
+        ITestPolicyCmpt testPolicyCmptRoot2 = testCase.newTestPolicyCmpt();
+        testPolicyCmptRoot2.setName("root2");
+        testPolicyCmptRelation = testPolicyCmptRoot2.newTestPolicyCmptRelation();
+        testPolicyCmpt = testPolicyCmptRelation.newTargetTestPolicyCmptChild();
+        testPolicyCmpt.setName("root2_child1");
+        testPolicyCmptRelation = testPolicyCmpt.newTestPolicyCmptRelation();
+        testPolicyCmpt = testPolicyCmptRelation.newTargetTestPolicyCmptChild();
+        testPolicyCmpt.setName("root2_child1_child1");
+        
+        testPolicyCmptRelation = testPolicyCmptRoot2.newTestPolicyCmptRelation();
+        testPolicyCmpt = testPolicyCmptRelation.newTargetTestPolicyCmptChild();
+        testPolicyCmpt.setName("root2_child2");
+        
+        ITestPolicyCmpt[] allTestPolicyCmpt = testCase.getAllTestPolicyCmpt();
+        List allTestPolicyCmptNames = new ArrayList();
+        for (int i = 0; i < allTestPolicyCmpt.length; i++) {
+            allTestPolicyCmptNames.add(allTestPolicyCmpt[i].getName());
+        }
+        assertEquals(7, allTestPolicyCmptNames.size());
+        assertTrue(allTestPolicyCmptNames.contains("root"));
+        assertTrue(allTestPolicyCmptNames.contains("root1_child1"));
+        assertTrue(allTestPolicyCmptNames.contains("root1_child2"));
+        assertTrue(allTestPolicyCmptNames.contains("root2"));
+        assertTrue(allTestPolicyCmptNames.contains("root2_child1"));
+        assertTrue(allTestPolicyCmptNames.contains("root2_child1_child1"));
+        assertTrue(allTestPolicyCmptNames.contains("root2_child2"));
     }
 }

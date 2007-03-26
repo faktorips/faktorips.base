@@ -81,6 +81,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
@@ -1093,7 +1094,28 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		return resultArray;
 	}
 	
-	/**
+    /**
+     * {@inheritDoc}
+     */
+	public ITestCase[] findReferencingTestCases(String qualifiedProductCmptName) throws CoreException {
+        ArrayList result = new ArrayList();
+        IIpsObject[] allTestCases = this.findIpsObjects(IpsObjectType.TEST_CASE);
+        
+        for (int i = 0; i < allTestCases.length; i++) {
+            QualifiedNameType[] qualifiedNameTypes = allTestCases[i].dependsOn();
+            for (int j = 0; j < qualifiedNameTypes.length; j++) {
+                if (IpsObjectType.PRODUCT_CMPT.equals(qualifiedNameTypes[j].getIpsObjectType())){
+                    result.add(allTestCases[i]);
+                    break;
+                }
+            }
+        }
+        ITestCase[] resultArray = new ITestCase[result.size()];
+        result.toArray(resultArray);
+        return resultArray;
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public IPolicyCmptType[] findReferencingPolicyCmptTypes(IPolicyCmptType pcType) throws CoreException{

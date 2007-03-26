@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -462,14 +463,20 @@ public class MoveOperation implements IRunnableWithProgress {
             
 			// first, find all objects refering the source (which will be deleted later)
 			IProductCmptGeneration[] refs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedName());
-			
+            ITestCase[] testCaseRefs = source.getIpsProject().findReferencingTestCases(source.getQualifiedName());
+            
 			// second, create the target
 			createCopy(source.getIpsSrcFile(), targetFile, monitor);
 			
-			// third, update references
+			// third a), update references to product cmpt generations
 			for (int i = 0; i < refs.length; i++) {
 				fixRelations(refs[i], source.getQualifiedName(), targetFile.getIpsObject().getQualifiedName(), monitor);
-			}			
+			}
+			
+			// third b), update references to test cases
+			for (int i = 0; i < testCaseRefs.length; i++) {
+			    fixRelations(testCaseRefs[i], source.getQualifiedName(), targetFile.getIpsObject().getQualifiedName(), monitor);
+			}
 			
 			// fourthly, delete the source
 			source.getEnclosingResource().delete(true, monitor);
@@ -530,6 +537,22 @@ public class MoveOperation implements IRunnableWithProgress {
 		generation.getIpsObject().getIpsSrcFile().save(true, monitor);
 	}
 
+    /**
+     * Resets the product component of all test policy cmpt of the given test case, if the product
+     * component equals the old name, to the new name.
+     * 
+     * @throws CoreException
+     */
+    private void fixRelations(ITestCase testCase, String oldName, String newName, IProgressMonitor monitor)
+            throws CoreException {
+        ITestPolicyCmpt[] allTestPolicyCmpt = testCase.getAllTestPolicyCmpt();
+        for (int i = 0; i < allTestPolicyCmpt.length; i++) {
+            if (oldName.equals(allTestPolicyCmpt[i].getProductCmpt())){
+                allTestPolicyCmpt[i].setProductCmpt(newName);
+            }
+        }
+    }
+    
 	/**
 	 * Check all targets not to exist. If an existing target is found, a core exception is thrown.
 	 * 

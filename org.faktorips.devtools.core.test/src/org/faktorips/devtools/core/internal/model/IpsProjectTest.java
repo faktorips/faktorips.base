@@ -64,6 +64,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -664,6 +665,17 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(expectedSet, resultSet);
         assertFalse(resultSet.contains(pcTypeNoRef));
         assertFalse(resultSet.contains(null));
+    }
+    
+    public void testFindReferencingTestCases() throws CoreException{
+        ITestCase testCase = (ITestCase) newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "TestCase1");
+        IProductCmpt productCmpt1 = (IProductCmpt)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "ProductCmpt1");
+        newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "ProductCmpt2");
+        
+        testCase.newTestPolicyCmpt().setProductCmpt(productCmpt1.getQualifiedName());
+        ITestCase[] testCases = ipsProject.findReferencingTestCases(productCmpt1.getQualifiedName());
+        assertEquals(1, testCases.length);
+        assertEquals(testCase, testCases[0]);
     }
     
     public void testFindEnumDatatypes() throws CoreException{

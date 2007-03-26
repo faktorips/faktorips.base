@@ -144,6 +144,12 @@ public interface ITestCase extends IIpsObject, IFixDifferencesToModelSupport {
     public ITestPolicyCmpt[] getExpectedResultTestPolicyCmpts();
 
     /**
+     * Returns all test policy cmpts of this test case.<br>
+     * Returns an empty array if the test case has no test policy cmpts.
+     */
+    public ITestPolicyCmpt[] getAllTestPolicyCmpt() throws CoreException;
+
+    /**
      * Creates a new test value object.
      */
     public ITestValue newTestValue();

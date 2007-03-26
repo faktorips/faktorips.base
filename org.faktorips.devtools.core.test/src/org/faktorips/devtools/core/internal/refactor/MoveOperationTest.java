@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -152,6 +153,37 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         
     }
 
+    /**
+     * Test if the references of product components will be correctly updated in ips test cases,
+     *
+     * @throws Exception
+     */
+    public void testMoveProductRefByTestCase() throws Exception{
+        IProductCmpt source = content.getStandardVehicle();
+        IIpsSrcFile target = source.getIpsPackageFragment().getRoot().getIpsPackageFragment("test.my.pack").getIpsSrcFile(source.getName() + ".ipsproduct");
+        String targetName = target.getIpsPackageFragment().getName() + "." + source.getName();
+        assertFalse(target.exists());
+        assertTrue(source.getIpsSrcFile().exists());
+        
+        IIpsProject ipsProject = content.getProject();
+        ITestCase testCase = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "TestCase1");
+        ITestPolicyCmpt testPolicyCmpt = testCase.newTestPolicyCmpt();
+        testPolicyCmpt.setProductCmpt(source.getQualifiedName());
+        
+        MoveOperation move = new MoveOperation(source, targetName);
+        move.run(null);
+        
+        // assert move
+        assertFalse(target.isDirty());
+        assertTrue(target.exists());
+        assertFalse(source.getIpsSrcFile().exists()); 
+        
+        // assert references to test case
+        IProductCmpt productCmpt = ipsProject.findProductCmptByRuntimeId(source.getRuntimeId());
+        assertEquals(productCmpt.getQualifiedName(), testPolicyCmpt.getProductCmpt());
+        assertEquals(productCmpt, testPolicyCmpt.findProductCmpt());
+    }
+    
     /**
      * For this test, one package of the comfort-product of the default test content is renamed. After that, the new 
      * package is expected to be existant and the references to the contained objects have to be the same as to the source.

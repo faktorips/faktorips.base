@@ -179,6 +179,32 @@ public class TestCase extends IpsObject implements ITestCase {
         return (QualifiedNameType[])qualifiedNameTypes.toArray(new QualifiedNameType[0]);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public ITestPolicyCmpt[] getAllTestPolicyCmpt() throws CoreException{
+        List allPolicyCmpts = new ArrayList();
+        ITestPolicyCmpt[] testCmpts = getTestPolicyCmpts();
+        for (int i = 0; i < testCmpts.length; i++) {
+            addChildTestPolicyCmpt(allPolicyCmpts, testCmpts[i]);
+        }
+        return (ITestPolicyCmpt[]) allPolicyCmpts.toArray(new ITestPolicyCmpt[allPolicyCmpts.size()]);
+    }
+    
+    /*
+     * Adds all test policy cmpts and its child test policy cmpts to the given list.
+     */
+    private void addChildTestPolicyCmpt(List allPolicyCmpts, ITestPolicyCmpt cmpt) throws CoreException {
+        allPolicyCmpts.add(cmpt);
+        ITestPolicyCmptRelation[] testRelations = cmpt.getTestPolicyCmptRelations();
+        for (int i = 0; i < testRelations.length; i++) {
+            // get the dependencies for the childs of the given test policy cmpt
+            if (testRelations[i].isComposition()){
+                addChildTestPolicyCmpt(allPolicyCmpts, testRelations[i].findTarget());
+            }
+        }
+    }
+
     /*
      * Adds the dependencies to the given list for the given test policy cmpt and their childs
      */

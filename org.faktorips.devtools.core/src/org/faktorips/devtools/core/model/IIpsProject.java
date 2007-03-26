@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.util.message.MessageList;
 
 
@@ -391,6 +392,14 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @throws CoreException if an exception occurs while searching.
      */
     public IProductCmptGeneration[] findReferencingProductCmptGenerations(String qualifiedProductCmptName) throws CoreException;
+
+    /**
+     * Returns all test cases that refer to the product component identified by the
+     * given qualified name. Returns an empty array if none is found.
+     * 
+     * @throws CoreException if an exception occurs while searching.
+     */
+    public ITestCase[] findReferencingTestCases(String qualifiedProductCmptName) throws CoreException;
 
     /**
      * Returns the supertype of the given policy component type, and all policy component types 
