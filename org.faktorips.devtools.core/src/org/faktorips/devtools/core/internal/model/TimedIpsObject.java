@@ -79,6 +79,13 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     	return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObjectGeneration getGeneration(int index) {
+        return (IIpsObjectGeneration)generations.get(index);
+    }
+
     /** 
      * {@inheritDoc}
      */

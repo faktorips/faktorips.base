@@ -23,8 +23,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 
 /**
- * Provides the elements of the FaktorIps-Model for the department.
- * 
  * @author Thorsten Guenther
  */
 public class SearchResultContentProvider implements ITreeContentProvider {

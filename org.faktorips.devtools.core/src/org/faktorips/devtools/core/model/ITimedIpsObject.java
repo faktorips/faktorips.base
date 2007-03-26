@@ -46,6 +46,13 @@ public interface ITimedIpsObject extends IIpsObject {
     public IIpsObjectGeneration[] getGenerations();
 
     /**
+     * Returns the index at the specified index.
+     * 
+     * @throws IndexOutOfBoundsException if the index is out of bounds.
+     */
+    public IIpsObjectGeneration getGeneration(int index);
+    
+    /**
      * @return Returns the first generation of this timed ips object or <code>null</code>, if no
      *         generation exists.
      */

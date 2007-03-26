@@ -78,6 +78,13 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
     
     /**
+     * {@inheritDoc}
+     */
+    public IProductCmptGeneration getProductCmptGeneration(int index) {
+        return (IProductCmptGeneration)getGeneration(index);
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public IProductCmptKind findProductCmptKind() throws CoreException {

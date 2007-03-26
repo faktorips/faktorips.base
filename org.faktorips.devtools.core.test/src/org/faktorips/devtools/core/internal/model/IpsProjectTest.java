@@ -590,7 +590,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     	IIpsPackageFragmentRoot[] roots = this.ipsProject.getIpsPackageFragmentRoots();
     	assertEquals(roots.length, 1);
     	
-    	IIpsPackageFragment pack = roots[0].getIpsPackageFragment("");
+    	IIpsPackageFragment pack = roots[0].getIpsPackageFragment(IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE);
     	IProductCmpt tobereferenced = (IProductCmpt)this.newIpsObject(pack, IpsObjectType.PRODUCT_CMPT, "tobereferenced");
     	IProductCmpt noref = (IProductCmpt)this.newIpsObject(pack, IpsObjectType.PRODUCT_CMPT, "noref");
     	IProductCmpt ref1 = (IProductCmpt)this.newIpsObject(pack, IpsObjectType.PRODUCT_CMPT, "ref1");
@@ -599,17 +599,29 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     	IProductCmptGeneration genNoref = (IProductCmptGeneration)noref.newGeneration();
     	IProductCmptGeneration genTobereferenced = (IProductCmptGeneration)tobereferenced.newGeneration();
     	
-    	GregorianCalendar cal = new GregorianCalendar(2005, 1, 1);
+        IProductCmptGeneration[] result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedName());
+        assertEquals(0, result.length);
+
+        GregorianCalendar cal = new GregorianCalendar(2005, 1, 1);
     	gen1.setValidFrom(cal);
     	genNoref.setValidFrom(cal);
     	genTobereferenced.setValidFrom(cal);
     	gen1.newRelation("xxx").setTarget(tobereferenced.getQualifiedName());
         IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(cal);
     	
-    	IProductCmptGeneration[] result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedName());
-    	assertEquals(result.length, 1);
-    	assertEquals(result[0], gen1);
+    	result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedName());
+    	assertEquals(1, result.length);
+    	assertEquals(gen1, result[0]);
+        
+        IProductCmptGeneration gen2 = (IProductCmptGeneration)ref1.newGeneration();
+        gen2.setValidFrom(cal);
+        gen2.newRelation("xxx").setTarget(tobereferenced.getQualifiedName());
+        result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedName());
+        assertEquals(2, result.length);
+        assertEquals(gen1, result[0]);
+        assertEquals(gen2, result[1]);
     }
+    
     public void testFindReferencingPolicyCmptTypes() throws CoreException{
         IPolicyCmptType pcTypeReferenced = newPolicyCmptType(root, "tobereferenced");
         IPolicyCmptType pcType = newPolicyCmptType(root, "TestPCType");

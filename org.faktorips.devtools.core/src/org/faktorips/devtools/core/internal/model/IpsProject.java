@@ -62,6 +62,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -1070,29 +1071,27 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	public IProductCmptGeneration[] findReferencingProductCmptGenerations(String qualifiedProductCmptName) throws CoreException {
 		ArrayList result = new ArrayList();
 		IIpsObject[] allProductCmpts = this.findIpsObjects(IpsObjectType.PRODUCT_CMPT);
-		
 		for (int i = 0; i < allProductCmpts.length; i++) {
-			IProductCmptGeneration generation = (IProductCmptGeneration) ((IProductCmpt) allProductCmpts[i])
-					.findGenerationEffectiveOn(IpsPlugin.getDefault()
-							.getIpsPreferences().getWorkingDate());
-			if (generation == null) {
-				// it is possible have the working date set to a date in the past
-				// where no generation exists for a product cmpt. In this case,
-				// we ignore this product cmpt.
-				continue;
-			}
-			IProductCmptRelation[] relations = generation.getRelations();
-			for (int j = 0; j < relations.length; j++) {
-				if (relations[j].getTarget().equals(qualifiedProductCmptName)) {
-					result.add(generation);
-					break;
-				}
-			}
+            findReferencingProductCmptGenerations((IProductCmpt)allProductCmpts[i], qualifiedProductCmptName, result);
 		}
 		IProductCmptGeneration[] resultArray = new IProductCmptGeneration[result.size()];
 		result.toArray(resultArray);
 		return resultArray;
 	}
+    
+    private void findReferencingProductCmptGenerations(IProductCmpt toBeSearched, String qualifiedProductCmptName, List result) throws CoreException {
+        int max = toBeSearched.getNumOfGenerations();
+        for (int i = 0; i < max; i++) {
+            IProductCmptGeneration generation = toBeSearched.getProductCmptGeneration(i);
+            IProductCmptRelation[] relations = generation.getRelations();
+            for (int j = 0; j < relations.length; j++) {
+                if (relations[j].getTarget().equals(qualifiedProductCmptName)) {
+                    result.add(generation);
+                    break;
+                }
+            }
+        }
+    }
 	
     /**
      * {@inheritDoc}

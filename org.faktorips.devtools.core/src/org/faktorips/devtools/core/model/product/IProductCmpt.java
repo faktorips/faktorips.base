@@ -47,7 +47,14 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
      * policy cmpt type that is referenced by this product component.  
      */
     public final static String MSGCODE_INCONSISTENCY_IN_POLICY_CMPT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistencyInPolicyCmptTypeHierarchy"; //$NON-NLS-1$
-    
+
+    /**
+     * Returns the product component's generation at the specified index.
+     * 
+     * @throws IndexOutOfBoundsException if the index is out of bounds.
+     */
+    public IProductCmptGeneration getProductCmptGeneration(int index);
+
     /**
      * Returns the product component's kind or <code>null</code> if the kind can't be
      * found.
@@ -98,7 +105,7 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
      * @throws CoreException if an exception occurs while searching for the type.
      */
     public IProductCmptType findProductCmptType() throws CoreException;
-
+    
     /**
      * Searches the relation with the given name in the policy component type 
      * this product component is based on.
