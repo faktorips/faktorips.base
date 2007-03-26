@@ -197,7 +197,7 @@ public class CompilationResultImpl implements CompilationResult {
     /**
      * {@inheritDoc}
      */
-    public String[] getIdentifiersUsed() {
+    public String[] getResolvedIdentifiers() {
         if (identifiersUsed==null) {
             return new String[0];
         }
@@ -233,7 +233,7 @@ public class CompilationResultImpl implements CompilationResult {
     
     public void addAllIdentifierUsed(CompilationResult[] argResults) {
         for (int i = 0; i < argResults.length; i++) {
-            addIdentifier(argResults[i].getIdentifiersUsed());
+            addIdentifier(argResults[i].getResolvedIdentifiers());
         }
     }
     

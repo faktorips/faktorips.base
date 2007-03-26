@@ -203,7 +203,10 @@ class ParseTreeVisitor implements FlParserVisitor {
     public Object visit(ASTIdentifierNode node, Object data) {
         String identifier = node.getLastToken().toString();
         CompilationResultImpl result = (CompilationResultImpl)compiler.getIdentifierResolver().compile(identifier, compiler.getLocale());
-        result.addIdentifierUsed(identifier); // note: add method does not create duplicates
+        if (! result.failed()){
+            // add the identifier only if there are no errors in the compilation result
+            result.addIdentifierUsed(identifier); // note: add method does not create duplicates
+        }
         return result;
     }
 

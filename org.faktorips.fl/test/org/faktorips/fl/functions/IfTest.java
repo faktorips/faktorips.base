@@ -100,7 +100,7 @@ public class IfTest extends FunctionAbstractTest {
         resolver.register("param3", new JavaCodeFragment(StringUtils.escape("3")), Datatype.PRIMITIVE_INT);
         resolver.register("param4", new JavaCodeFragment(StringUtils.escape("4")), Datatype.PRIMITIVE_INT);
         CompilationResult result = execAndTestSuccessfull("IF(param1=param2; param3; param4)", new Integer(4), Datatype.INTEGER);
-        List identifier = Arrays.asList(result.getIdentifiersUsed());
+        List identifier = Arrays.asList(result.getResolvedIdentifiers());
         assertTrue(identifier.contains("param1"));
         assertTrue(identifier.contains("param2"));
         assertTrue(identifier.contains("param3"));

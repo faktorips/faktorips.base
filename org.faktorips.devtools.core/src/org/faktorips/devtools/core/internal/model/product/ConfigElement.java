@@ -606,14 +606,9 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         
         compiler.setIdentifierResolver(resolver);
         CompilationResult compilationResult = compiler.compile(value);
-        if (compilationResult.failed()){
-            // error in compilation result,
-            // thus the identifiers could not be determined correctly
-             return new String[0];
-        }
         
-        // store identifiers in the cache
-        identifierInFormulaCached = resolver.removeIdentifieresOfEnumDatatypes(compilationResult.getIdentifiersUsed());
+        // store the resolved identifiers in the cache
+        identifierInFormulaCached = resolver.removeIdentifieresOfEnumDatatypes(compilationResult.getResolvedIdentifiers());
         
         previousFormulaValue = getValue();
         return identifierInFormulaCached;

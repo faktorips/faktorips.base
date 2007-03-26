@@ -46,10 +46,10 @@ public interface CompilationResult {
     public MessageList getMessages();
     
     /**
-     * Returns the identifiers that are used in the formula. Returns an empty list if the
-     * formula does not contain any identifiers.
+     * Returns the recognized (resolved) identifiers that are used in the formula. Returns an empty
+     * list if the formula does not contain any identifiers.
      */
-    public String[] getIdentifiersUsed();
+    public String[] getResolvedIdentifiers();
     
     /**
      * Returns <code>true</code> if the given candidate identifier is used as identifier.

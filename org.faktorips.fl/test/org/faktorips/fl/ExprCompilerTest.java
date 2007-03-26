@@ -290,20 +290,20 @@ public class ExprCompilerTest extends CompilerAbstractTest {
             
         });
         CompilationResult result = compiler.compile("1");
-        assertEquals(0, result.getIdentifiersUsed().length);
+        assertEquals(0, result.getResolvedIdentifiers().length);
 
         result = compiler.compile("a + 1");
-        assertEquals(1, result.getIdentifiersUsed().length);
-        assertEquals("a", result.getIdentifiersUsed()[0]);
+        assertEquals(1, result.getResolvedIdentifiers().length);
+        assertEquals("a", result.getResolvedIdentifiers()[0]);
         
         result = compiler.compile("a + b");
-        assertEquals(2, result.getIdentifiersUsed().length);
-        assertEquals("a", result.getIdentifiersUsed()[0]);
-        assertEquals("b", result.getIdentifiersUsed()[1]);
+        assertEquals(2, result.getResolvedIdentifiers().length);
+        assertEquals("a", result.getResolvedIdentifiers()[0]);
+        assertEquals("b", result.getResolvedIdentifiers()[1]);
         
         result = compiler.compile("b + a");
-        assertEquals(2, result.getIdentifiersUsed().length);
-        assertEquals("b", result.getIdentifiersUsed()[0]);
-        assertEquals("a", result.getIdentifiersUsed()[1]);
+        assertEquals(2, result.getResolvedIdentifiers().length);
+        assertEquals("b", result.getResolvedIdentifiers()[0]);
+        assertEquals("a", result.getResolvedIdentifiers()[1]);
     }
 }
