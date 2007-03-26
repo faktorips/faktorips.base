@@ -198,13 +198,14 @@ public class RenamePage extends WizardPage implements ModifyListener {
 	 * as error-message. 
 	 *  
 	 * @param list The list to look for messages in.
-	 * @return <code>true</code> if a message was found and set, <code>false</code> otherwise.
+	 * @return <code>true</code> if an error message was found and set, <code>false</code> otherwise.
 	 */
 	private boolean setMessageFromList(MessageList list) {
 		if (!list.isEmpty()) {
             String text = list.getFirstMessage(list.getSeverity()).getText();
             if (list.getSeverity() == Message.ERROR){
                 setMessage(text, DialogPage.ERROR);
+                return true;
             } else if (list.getSeverity() == Message.WARNING){
                 setMessage(text, DialogPage.WARNING);
             } else if (list.getSeverity() == Message.INFO){
@@ -212,121 +213,115 @@ public class RenamePage extends WizardPage implements ModifyListener {
             } else {
                 setMessage(text, DialogPage.NONE);
             }
-			return true;
-		} else {
-			setMessage(null);
-			return false;
-		}
+        }
+		return false;
 	}
 	
 	/**
-	 * Set the current completion state (and, if neccessary, messages for the user
-	 * to help him to get the page complete).
-	 */
-	private void setPageComplete() {
+     * Set the current completion state (and, if neccessary, messages for the user to help him to
+     * get the page complete).
+     */
+    private void setPageComplete() {
 
-		super.setMessage(null);
-		super.setPageComplete(false);
-		
-		if (newName == null) {
-			// page not yet created, do nothing.
-			return;
-		}
+        super.setMessage(null);
+        super.setPageComplete(false);
+
+        if (newName == null) {
+            // page not yet created, do nothing.
+            return;
+        }
 
         // validate the name conventions
-		if (namingStrategy != null && namingStrategy.supportsVersionId() && versionId != null) {
-			// name check for product cmpt
+        if (namingStrategy != null && namingStrategy.supportsVersionId() && versionId != null) {
+            // name check for product cmpt
             if (setMessageFromList(namingStrategy.validateVersionId(versionId.getText()))) {
-				return;
-			}
-			
-			if (setMessageFromList(namingStrategy.validateKindId(constNamePart.getText()))) {
-				return;
-			}
+                return;
+            }
+
+            if (setMessageFromList(namingStrategy.validateKindId(constNamePart.getText()))) {
+                return;
+            }
             MessageList ml = new MessageList();
-            
+
             try {
                 validateForRuntimeId(ml);
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                 // error during validation show error dialog and exit
                 IpsPlugin.logAndShowErrorDialog(e);
                 return;
             }
-            if (setMessageFromList(ml)){
+            if (setMessageFromList(ml)) {
                 return;
             }
-		}
-        else {
+        } else {
             String name = newName.getText();
             IIpsProjectNamingConventions pnc = renameObject.getIpsProject().getNamingConventions();
             try {
                 MessageList ml = null;
                 if (renameObject instanceof IIpsObject) {
                     // ips object, validate the unqualified ips object name
-                    ml = pnc.validateUnqualifiedIpsObjectName(
-                            ((IIpsObject)renameObject).getIpsObjectType(), name);
+                    ml = pnc.validateUnqualifiedIpsObjectName(((IIpsObject)renameObject).getIpsObjectType(), name);
                     validateForRuntimeId(ml);
-                }
-                else {
+                } else {
                     // no ips object, validate for ips package name
                     ml = pnc.validateIpsPackageName(name);
                 }
-                if (setMessageFromList(ml)){
+                if (setMessageFromList(ml)) {
                     return;
                 }
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                 // error during validation of the name,
                 // show error dialog and exit
                 IpsPlugin.logAndShowErrorDialog(e);
                 return;
             }
         }
-		
+
         // if the new name is the same as the old name, no error is shown and it
         // also not possible to click finish
         if (newName.getText().equals(renameObject.getName())) {
             return;
         }
-        
+
         // validate that an object with the name not exists
-		IIpsPackageFragment pack = null;
-		if (renameObject instanceof IProductCmpt || renameObject instanceof ITableContents || renameObject instanceof ITestCase) {
+        IIpsPackageFragment pack = null;
+        if (renameObject instanceof IProductCmpt || renameObject instanceof ITableContents
+                || renameObject instanceof ITestCase) {
             pack = ((IIpsObject)renameObject).getIpsPackageFragment();
-			IIpsSrcFile newFile = pack.getIpsSrcFile(((IIpsObject)renameObject).getIpsObjectType().getFileName(newName.getText()));
-			if (newFile.exists()) {
-				setMessage(Messages.RenamePage_errorFileExists, ERROR);
-				return;
-			} else {
-				// fix for windows: can not rename to an object with a name only
-				// different in case.
-				if (hasContentWithNameEqualsIgnoreCase((IFolder)pack.getCorrespondingResource(), ((IIpsObject)renameObject).getIpsObjectType().getFileName(newName.getText()))) {
-					setMessage(Messages.RenamePage_errorFileExists, ERROR);
-					return;
-				}
-			}
-		}
-		else if (renameObject instanceof IIpsPackageFragment){
-			pack = (IIpsPackageFragment)renameObject;
-			IFolder folder = (IFolder)pack.getCorrespondingResource();
-			IFolder newFolder = folder.getParent().getFolder(new Path(newName.getText()));
-			
-			if (newFolder.exists()) {
-				setMessage(Messages.RenamePage_errorFolderExists, ERROR);
-				return;
-			} else {
-				// fix for windows: can not rename to an object with a name only
-				// different in case.
-				if (hasContentWithNameEqualsIgnoreCase(folder.getParent(), newName.getText())) {
-					setMessage(Messages.RenamePage_errorFolderExists, ERROR);
-					return;
-				}
-			}
-		}
-		
-		super.setPageComplete(true);
-	}
+            IIpsSrcFile newFile = pack.getIpsSrcFile(((IIpsObject)renameObject).getIpsObjectType().getFileName(
+                    newName.getText()));
+            if (newFile.exists()) {
+                setMessage(Messages.RenamePage_errorFileExists, ERROR);
+                return;
+            } else {
+                // fix for windows: can not rename to an object with a name only
+                // different in case.
+                if (hasContentWithNameEqualsIgnoreCase((IFolder)pack.getCorrespondingResource(),
+                        ((IIpsObject)renameObject).getIpsObjectType().getFileName(newName.getText()))) {
+                    setMessage(Messages.RenamePage_errorFileExists, ERROR);
+                    return;
+                }
+            }
+        } else if (renameObject instanceof IIpsPackageFragment) {
+            pack = (IIpsPackageFragment)renameObject;
+            IFolder folder = (IFolder)pack.getCorrespondingResource();
+            IFolder newFolder = folder.getParent().getFolder(new Path(newName.getText()));
+
+            if (newFolder.exists()) {
+                setMessage(Messages.RenamePage_errorFolderExists, ERROR);
+                return;
+            } else {
+                // fix for windows: can not rename to an object with a name only
+                // different in case.
+                if (hasContentWithNameEqualsIgnoreCase(folder.getParent(), newName.getText())) {
+                    setMessage(Messages.RenamePage_errorFolderExists, ERROR);
+                    return;
+                }
+            }
+        }
+
+        super.setPageComplete(true);
+    }
 
     private void validateForRuntimeId(MessageList ml) throws CoreException {
         if (renameObject instanceof IProductCmpt) {
