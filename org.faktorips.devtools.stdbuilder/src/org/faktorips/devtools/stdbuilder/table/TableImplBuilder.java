@@ -230,7 +230,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         fAllItemParameterTypes = new ArrayList(keys.length);
         fRanges = new HashMap(keys.length);
         for (int i = 0; i < keys.length; i++) {
-            StringBuffer keyClassName = new StringBuffer();
             String[] keyItems = keys[i].getKeyItemNames();
             ArrayList parameters = new ArrayList();
             ArrayList allParameterTypes = new ArrayList();
@@ -242,7 +241,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 allParameterTypes.add(getJavaClassName(keyItems[j]));
 
                 if (getTableStructure().hasColumn(keyItems[j])) {
-                    keyClassName.append(StringUtils.capitalise(keyItems[j]));
                     keyClassParameterNames.add(StringUtils.uncapitalise(keyItems[j]));
                     keyClassParameterTypes.add(getJavaClassName(keyItems[j]));
                     parameters.add(StringUtils.uncapitalise(keyItems[j]));
@@ -257,8 +255,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             }
 
             if (isColumn) {
-                keyClassName.append("Key");
-                fKeyClassNames[i] = keyClassName.toString();
+                fKeyClassNames[i] = "UniqueKey" + i;
                 fKeyClassParameterNames.add(keyClassParameterNames.toArray(new String[0]));
                 fKeyClassParameterTypes.add(keyClassParameterTypes.toArray(new String[0]));
             } else {
