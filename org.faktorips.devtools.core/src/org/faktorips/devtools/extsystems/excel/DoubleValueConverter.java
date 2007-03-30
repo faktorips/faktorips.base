@@ -19,6 +19,7 @@ package org.faktorips.devtools.extsystems.excel;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
 import org.faktorips.devtools.extsystems.IValueConverter;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -37,7 +38,10 @@ public class DoubleValueConverter implements IValueConverter {
 	 */
 	public String getIpsValue(Object externalDataValue, MessageList messageList) {
 		if (externalDataValue instanceof Double) {
-			return ((Double) externalDataValue).toString();
+            // format double values without decimal places to int string representation
+            // maybe an import from excel returns a string formated cells (with numeric value inside)
+            // as double (e.g. 1 will be 1.0)
+			return AbstractExternalTableFormat.doubleToStringWithoutDecimalPlaces((Double)externalDataValue);
 		}
 		String msg = NLS.bind(Messages.DoubleValueConverter_msgConversionErrorExtern, externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
 		messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$

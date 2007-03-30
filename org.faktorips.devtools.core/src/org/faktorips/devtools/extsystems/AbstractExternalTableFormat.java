@@ -55,6 +55,25 @@ public abstract class AbstractExternalTableFormat {
 	 */
 	private List converter = new ArrayList();
 
+    /**
+     * Returns the given Double as string. If the Double has no decimal places
+     * then the Double will be returned as intg string. 
+     * Example: "1.0" will be returned as "1" but "1.2" will be returned as "1.2"
+     */
+    public static String doubleToStringWithoutDecimalPlaces(Double externalDataValue){
+        // Workaround: if the external data is double without decimal places (n.0),
+        // e.g. if the external data represents the numeric id of an enum value set,
+        // then it is important to import the value as int value ("1.0" will be "1"),
+        // otherwise the id couldn't be mapped correctly to the enum identifier.
+        // The extenal data interprets a "1" always as "1.0", 
+        // even if the column or cell is formatted as text
+        int intValue = externalDataValue.intValue();
+        if (Double.valueOf(""+intValue).equals(externalDataValue)){ //$NON-NLS-1$
+            return "" + intValue; //$NON-NLS-1$
+        }
+        return externalDataValue.toString();
+    }
+
 	/**
 	 * @return The human readable name of this external table format.
 	 */
@@ -236,17 +255,8 @@ public abstract class AbstractExternalTableFormat {
 		 * {@inheritDoc}
 		 */
 		public String getIpsValue(Object externalDataValue, MessageList messageList) {
-            // workaround if the external data is double without decimal places (n.0),
-            // e.g. if the external data represents the numeric id of an enum value set,
-            // then it is important to import the value as int value ("1.0" will be "1"),
-            // otherwise the id couldn't be mapped correctly to the enum identifier.
-            // The extenal data interprets a "1" always as "1.0", 
-            // even if the column or cell is formatted as text
             if (externalDataValue instanceof Double){
-                int intValue = ((Double)externalDataValue).intValue();
-                if (Double.valueOf(""+intValue).equals(externalDataValue)){ //$NON-NLS-1$
-                    return "" + intValue; //$NON-NLS-1$
-                }
+                return doubleToStringWithoutDecimalPlaces((Double)externalDataValue);
             }
 			return externalDataValue.toString();
 		}
