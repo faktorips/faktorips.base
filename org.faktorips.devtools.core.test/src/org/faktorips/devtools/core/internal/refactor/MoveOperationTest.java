@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -69,15 +70,15 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     	assertFalse(target.exists());
         assertTrue(source.getIpsSrcFile().exists());
     	
-        IProductCmptGeneration[] sourceRefs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedName());
+        IProductCmptGeneration[] sourceRefs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedNameType());
         
         MoveOperation move = new MoveOperation(source, source.getIpsPackageFragment().getName() + "." + "Moved" + source.getName());
         move.run(null);
         
         assertTrue(target.exists());
         assertFalse(source.getIpsSrcFile().exists());        
-        IIpsObject targetObject = target.getIpsObject();
-        IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(targetObject.getQualifiedName());
+        IProductCmpt targetObject = (IProductCmpt) target.getIpsObject();
+        IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(targetObject.getQualifiedNameType());
         
         assertEquals(sourceRefs.length, targetRefs.length);
         
@@ -97,7 +98,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     	assertFalse(target.exists());
         assertTrue(source.getIpsSrcFile().exists());
     	
-        IProductCmptGeneration[] sourceRefs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedName());
+        IProductCmptGeneration[] sourceRefs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedNameType());
         
         MoveOperation move = new MoveOperation(new IIpsElement[] {sourcePackage}, new String[] {"renamed"});
         move.run(null);
@@ -109,8 +110,8 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         
         assertTrue(vehicleFile.exists());
         
-        IIpsObject targetObject = vehicleFile.getIpsObject();
-        IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(targetObject.getQualifiedName());
+        IProductCmpt targetObject = (IProductCmpt)vehicleFile.getIpsObject();
+        IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(targetObject.getQualifiedNameType());
         
         assertEquals(sourceRefs.length, targetRefs.length);
         
@@ -134,7 +135,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     	assertFalse(target.exists());
         assertTrue(source.getIpsSrcFile().exists());
     	
-        IProductCmptGeneration[] sourceRefs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedName());
+        IProductCmptGeneration[] sourceRefs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedNameType());
         
         MoveOperation move = new MoveOperation(source, targetName);
         move.run(null);
@@ -146,11 +147,10 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         
         assertTrue(target.exists());
         assertFalse(source.getIpsSrcFile().exists());        
-        IIpsObject targetObject = target.getIpsObject();
-        IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(targetObject.getQualifiedName());
+        IProductCmpt targetObject = (IProductCmpt)target.getIpsObject();
+        IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(targetObject.getQualifiedNameType());
         
         assertEquals(sourceRefs.length, targetRefs.length);
-        
     }
 
     /**
@@ -183,7 +183,43 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertEquals(productCmpt.getQualifiedName(), testPolicyCmpt.getProductCmpt());
         assertEquals(productCmpt, testPolicyCmpt.findProductCmpt());
     }
-    
+
+    /**
+     * Test if the references of table contents will be correctly updated in product cmpts,
+     *
+     * @throws Exception
+     */
+    public void testTableContentRefByProductCmpt() throws Exception{
+        // create table content
+        IIpsSrcFile file = content.getStandardVehicle().getIpsPackageFragment().createIpsFile(IpsObjectType.TABLE_CONTENTS, "table", true, null);
+        assertTrue(file.exists());
+        ITableContents tableContent = (ITableContents)file.getIpsObject();
+        assertNotNull(tableContent);
+        
+        // add ref to table content
+        IProductCmpt productCmpt = content.getStandardVehicle();
+        IIpsObjectGeneration[] generations = productCmpt.getGenerations();
+        for (int i = 0; i < generations.length; i++) {
+            ITableContentUsage tableContentUsage = ((IProductCmptGeneration)generations[i]).newTableContentUsage();
+            tableContentUsage.setTableContentName(tableContent.getQualifiedName());
+        }
+        
+        new MoveOperation(new IIpsElement[] {file.getIpsObject()}, new String[] {"table"}).run(null);
+        IIpsSrcFile target = content.getStandardVehicle().getIpsPackageFragment().getRoot().getDefaultIpsPackageFragment().getIpsSrcFile(IpsObjectType.TABLE_CONTENTS.getFileName("table"));
+
+        // assert move
+        assertTrue(target.exists());
+        assertFalse(file.exists());
+        
+        // assert references to moved table content in product componet
+        for (int i = 0; i < generations.length; i++) {
+            ITableContentUsage[] tableContentUsages = ((IProductCmptGeneration)generations[i]).getTableContentUsages();
+            for (int j = 0; j < tableContentUsages.length; j++) {
+                assertEquals(target.getIpsObject().getQualifiedName(), tableContentUsages[j].getTableContentName());
+            }
+        }
+    }
+
     /**
      * For this test, one package of the comfort-product of the default test content is renamed. After that, the new 
      * package is expected to be existant and the references to the contained objects have to be the same as to the source.
@@ -202,7 +238,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(testCase.getIpsSrcFile().exists());
         assertTrue(tableContents.getIpsSrcFile().exists());
     	
-        IProductCmptGeneration[] sourceRefs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedName());
+        IProductCmptGeneration[] sourceRefs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedNameType());
         
         MoveOperation move = new MoveOperation(new IIpsElement[] {sourcePackage}, target);
         move.run(null);
@@ -219,8 +255,8 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         
         assertTrue(vehicleFile.exists());
         
-        IIpsObject targetObject = vehicleFile.getIpsObject();
-        IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(targetObject.getQualifiedName());
+        IProductCmpt targetObject = (IProductCmpt)vehicleFile.getIpsObject();
+        IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(targetObject.getQualifiedNameType());
         
         assertEquals(sourceRefs.length, targetRefs.length);
         assertTrue(target.getIpsSrcFile(IpsObjectType.TABLE_CONTENTS.getFileName("tablecontents")).exists());
@@ -275,7 +311,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertFalse(target.exists());
         assertTrue(source.getIpsSrcFile().exists());
         
-        IProductCmptGeneration[] sourceRefs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedName());
+        IProductCmptGeneration[] sourceRefs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedNameType());
         
         MoveOperation move = new MoveOperation(new IIpsElement[] {sourcePackage}, target);
         move.run(null);
@@ -289,8 +325,8 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         
         assertTrue(vehicleFile.exists());
         
-        IIpsObject targetObject = vehicleFile.getIpsObject();
-        IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(targetObject.getQualifiedName());
+        IProductCmpt targetObject = (IProductCmpt)vehicleFile.getIpsObject();
+        IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(targetObject.getQualifiedNameType());
         
         assertEquals(sourceRefs.length, targetRefs.length);
     }

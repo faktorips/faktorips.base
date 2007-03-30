@@ -599,29 +599,28 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     	IProductCmptGeneration genNoref = (IProductCmptGeneration)noref.newGeneration();
     	IProductCmptGeneration genTobereferenced = (IProductCmptGeneration)tobereferenced.newGeneration();
     	
-        IProductCmptGeneration[] result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedName());
-        assertEquals(0, result.length);
-
-        GregorianCalendar cal = new GregorianCalendar(2005, 1, 1);
+    	IProductCmptGeneration[] result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedNameType());
+    	assertEquals(0, result.length);
+    	
+    	GregorianCalendar cal = new GregorianCalendar(2005, 1, 1);
     	gen1.setValidFrom(cal);
     	genNoref.setValidFrom(cal);
     	genTobereferenced.setValidFrom(cal);
     	gen1.newRelation("xxx").setTarget(tobereferenced.getQualifiedName());
         IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(cal);
     	
-    	result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedName());
+    	result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedNameType());
     	assertEquals(1, result.length);
     	assertEquals(gen1, result[0]);
-        
+    	
         IProductCmptGeneration gen2 = (IProductCmptGeneration)ref1.newGeneration();
         gen2.setValidFrom(cal);
         gen2.newRelation("xxx").setTarget(tobereferenced.getQualifiedName());
-        result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedName());
+        result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedNameType());
         assertEquals(2, result.length);
         assertEquals(gen1, result[0]);
-        assertEquals(gen2, result[1]);
+        assertEquals(gen2, result[1]);	
     }
-    
     public void testFindReferencingPolicyCmptTypes() throws CoreException{
         IPolicyCmptType pcTypeReferenced = newPolicyCmptType(root, "tobereferenced");
         IPolicyCmptType pcType = newPolicyCmptType(root, "TestPCType");

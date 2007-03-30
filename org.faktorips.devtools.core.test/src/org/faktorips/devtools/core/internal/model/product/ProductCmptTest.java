@@ -18,11 +18,13 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -42,6 +44,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptKind;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -141,10 +144,11 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         c.setSupertype(a.getQualifiedName());
         IPolicyCmptType d = newPolicyCmptType(root, "D");
         relation = c.newRelation();
+        relation.setTargetRoleSingular("relationD");
         relation.setTarget(d.getQualifiedName());
-        IProductCmpt productCmpt = (IProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT, "product");
-        productCmpt.setPolicyCmptType(c.getQualifiedName());
-        QualifiedNameType[] dependsOn = productCmpt.dependsOn();
+        IProductCmpt productCmptC = (IProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT, "productC");
+        productCmptC.setPolicyCmptType(c.getQualifiedName());
+        QualifiedNameType[] dependsOn = productCmptC.dependsOn();
         List dependsOnAsList = CollectionUtil.toArrayList(dependsOn);
         assertTrue(dependsOnAsList.contains(c.getQualifiedNameType()));
         assertTrue(dependsOnAsList.contains(a.getQualifiedNameType()));
@@ -152,15 +156,43 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         
         a.getRelations()[0].setProductRelevant(false);
         c.getRelations()[0].setProductRelevant(false);
-        dependsOn = productCmpt.dependsOn();
+        dependsOn = productCmptC.dependsOn();
         dependsOnAsList = CollectionUtil.toArrayList(dependsOn);
         dependsOnAsList.contains(a.getQualifiedNameType());
         dependsOnAsList.contains(c.getQualifiedNameType());
         assertEquals(2, dependsOn.length);
         
-        productCmpt = (IProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT, "deckung");
-        dependsOn = productCmpt.dependsOn();
+        IProductCmpt productCmptTmp = (IProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT, "deckung");
+        dependsOn = productCmptTmp.dependsOn();
         assertEquals(0, dependsOn.length);
+        
+        // test dependency to product cmpts in all generations
+        IProductCmpt productCmptD = (IProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT, "productD");
+        productCmptD.setPolicyCmptType(d.getQualifiedName());
+        IProductCmpt productCmptD2 = (IProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT, "productD2");
+        productCmptD2.setPolicyCmptType(d.getQualifiedName());
+        c.getRelations()[0].setProductRelevant(true);
+
+        // generation1
+        IProductCmptGeneration generation = (IProductCmptGeneration) productCmptC.newGeneration();
+        generation.setValidFrom(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+
+        IProductCmptRelation productCmptRelation = generation.newRelation("relationD");
+        productCmptRelation.setTarget(productCmptD.getQualifiedName());
+        // generation2
+        generation = (IProductCmptGeneration) productCmptC.newGeneration(new GregorianCalendar(1990, 1, 1));
+        productCmptRelation = generation.newRelation("relationD");
+        productCmptRelation.setTarget(productCmptD2.getQualifiedName());
+        
+        dependsOnAsList = CollectionUtil.toArrayList(productCmptC.dependsOn());
+        assertEquals(5, dependsOnAsList.size());
+        assertTrue(dependsOnAsList.contains(c.getQualifiedNameType()));
+        assertTrue(dependsOnAsList.contains(a.getQualifiedNameType()));
+        assertTrue(dependsOnAsList.contains(d.getQualifiedNameType()));        
+        assertTrue(dependsOnAsList.contains(productCmptD.getQualifiedNameType()));
+        assertTrue(dependsOnAsList.contains(productCmptD2.getQualifiedNameType()));
+        
+        
     }
 
     public void testDependsOnWithFormula() throws CoreException{

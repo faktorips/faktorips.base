@@ -32,12 +32,14 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
     public ReferencesToProductSearchQuery(IProductCmpt referenced) {
         super(referenced);
     }
+    
     /**
      * @inheritDoc
      */
 	protected IIpsElement[] findReferences() throws CoreException{
-    	return referenced.getIpsProject().findReferencingProductCmptGenerations(referenced.getQualifiedName());
+	    return referenced.getIpsProject().findReferencingProductCmptGenerations(referenced.getQualifiedNameType());
 	}
+    
     /**
      * @inheritDoc
      */

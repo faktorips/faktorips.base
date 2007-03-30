@@ -45,6 +45,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptKind;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.Message;
@@ -245,10 +246,27 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     	IPolicyCmptType pcType = findPolicyCmptType();
     	if (pcType!=null) {
             qaTypes.addAll(Arrays.asList(((PolicyCmptType)pcType).dependsOn(true)));
-    	}        
+    	}
+        
+    	// add dependency to related product cmpt's
+        IIpsObjectGeneration[] generations = getGenerations();
+        for (int i = 0; i < generations.length; i++) {
+            addRelatedProductCmptQualifiedNameTypes(qaTypes, (IProductCmptGeneration) generations[i]);
+        }
+        
         return (QualifiedNameType[])qaTypes.toArray(new QualifiedNameType[qaTypes.size()]);
     }
-
+    
+    /*
+     * Add the qualified name types of all relations inside the given generation to the given set
+     */
+    private void addRelatedProductCmptQualifiedNameTypes(Set qaTypes, IProductCmptGeneration generation) {
+        IProductCmptRelation[] relations = generation.getRelations();
+        for (int j = 0; j < relations.length; j++) {
+            qaTypes.add(new QualifiedNameType(relations[j].getTarget(), IpsObjectType.PRODUCT_CMPT));
+        }
+    }
+    
     /**
      * {@inheritDoc}
      */

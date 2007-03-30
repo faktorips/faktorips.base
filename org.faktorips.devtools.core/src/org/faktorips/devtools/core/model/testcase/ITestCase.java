@@ -212,5 +212,11 @@ public interface ITestCase extends IIpsObject, IFixDifferencesToModelSupport {
      * 
      * @see ITestCase#getTestRuleCandidates()
      */
-    public IValidationRule findValidationRule(String validationRuleName) throws CoreException;    
+    public IValidationRule findValidationRule(String validationRuleName) throws CoreException;
+
+    /**
+     * Retruns all referenced product cmpts qualified name. Returns an empty string if no product cmpts
+     * are related.
+     */
+    public String[] getReferencedProductCmpts() throws CoreException;    
 }

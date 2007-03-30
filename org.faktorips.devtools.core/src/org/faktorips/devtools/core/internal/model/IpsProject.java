@@ -62,7 +62,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -79,6 +78,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -531,7 +531,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	}
 
 	/**
-     * Overridden.
+     * {@inheritDoc}
      */
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("IpsProject.gif"); //$NON-NLS-1$
@@ -552,7 +552,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsProject getIpsProject() {
         return this;
@@ -1010,8 +1010,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		}
 		return null;
 	}
-	
-    //TODO write test case
+
+    /**
+     * {@inheritDoc}
+     */
     public void findTableContents(ITableStructure structure, List tableContents) throws CoreException{
         List alltableContents = new ArrayList();
         findIpsObjects(IpsObjectType.TABLE_CONTENTS, alltableContents);
@@ -1024,7 +1026,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
     
 	/**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsPackageFragmentRoot[] getSourceIpsPackageFragmentRoots() throws CoreException {
         List result = new ArrayList();
@@ -1067,19 +1069,33 @@ public class IpsProject extends IpsElement implements IIpsProject {
     
     /**
      * {@inheritDoc}
+     * Find all product cmpt generations which refer to other procuct coponents and table contents. 
      */
-	public IProductCmptGeneration[] findReferencingProductCmptGenerations(String qualifiedProductCmptName) throws CoreException {
-		ArrayList result = new ArrayList();
-		IIpsObject[] allProductCmpts = this.findIpsObjects(IpsObjectType.PRODUCT_CMPT);
-		for (int i = 0; i < allProductCmpts.length; i++) {
-            findReferencingProductCmptGenerations((IProductCmpt)allProductCmpts[i], qualifiedProductCmptName, result);
-		}
+	public IProductCmptGeneration[] findReferencingProductCmptGenerations(QualifiedNameType qualifiedNameType) throws CoreException {
+        Set result = new HashSet();
+        String qualifiedName = qualifiedNameType.getName();
+        IIpsObject[] allProductCmpts = this.findIpsObjects(IpsObjectType.PRODUCT_CMPT);
+		if (IpsObjectType.PRODUCT_CMPT.equals(qualifiedNameType.getIpsObjectType())){
+            for (int i = 0; i < allProductCmpts.length; i++) {
+                findReferencingProductCmptGenerationsToProductCmpts((IProductCmpt)allProductCmpts[i], qualifiedName, result);
+            }
+        } else if (IpsObjectType.TABLE_CONTENTS.equals(qualifiedNameType.getIpsObjectType())){
+            for (int i = 0; i < allProductCmpts.length; i++) {
+                findReferencingProductCmptGenerationsToTableContents((IProductCmpt)allProductCmpts[i], qualifiedName, result);
+            }
+        }
 		IProductCmptGeneration[] resultArray = new IProductCmptGeneration[result.size()];
 		result.toArray(resultArray);
 		return resultArray;
 	}
     
-    private void findReferencingProductCmptGenerations(IProductCmpt toBeSearched, String qualifiedProductCmptName, List result) throws CoreException {
+    /*
+     * Finds all product cmpt generations of the given product cmpt which refers to the given product cmpt.
+     * The result will be added to the given set.
+     */
+    private void findReferencingProductCmptGenerationsToProductCmpts(IProductCmpt toBeSearched,
+            String qualifiedProductCmptName,
+            Set result) throws CoreException {
         int max = toBeSearched.getNumOfGenerations();
         for (int i = 0; i < max; i++) {
             IProductCmptGeneration generation = toBeSearched.getProductCmptGeneration(i);
@@ -1092,18 +1108,38 @@ public class IpsProject extends IpsElement implements IIpsProject {
             }
         }
     }
+
+    /*
+     * Finds all product cmpt generations of the given product cmpt which refers to the given table contents.
+     * The result will be added to the given set.
+     */
+    private void findReferencingProductCmptGenerationsToTableContents(IProductCmpt toBeSearched,
+            String qualifiedTableContentsName,
+            Set result) throws CoreException {
+        int max = toBeSearched.getNumOfGenerations();
+        for (int i = 0; i < max; i++) {
+            IProductCmptGeneration generation = toBeSearched.getProductCmptGeneration(i);
+            ITableContentUsage[] tcus = generation.getTableContentUsages();
+            for (int j = 0; j < tcus.length; j++) {
+                if (tcus[j].getTableContentName().equals(qualifiedTableContentsName)) {
+                    result.add(generation);
+                    break;
+                }
+            }
+        }
+    }
 	
     /**
      * {@inheritDoc}
      */
 	public ITestCase[] findReferencingTestCases(String qualifiedProductCmptName) throws CoreException {
         ArrayList result = new ArrayList();
-        IIpsObject[] allTestCases = this.findIpsObjects(IpsObjectType.TEST_CASE);
+        IIpsObject[] allTestCases = (IIpsObject[])this.findIpsObjects(IpsObjectType.TEST_CASE);
         
         for (int i = 0; i < allTestCases.length; i++) {
-            QualifiedNameType[] qualifiedNameTypes = allTestCases[i].dependsOn();
-            for (int j = 0; j < qualifiedNameTypes.length; j++) {
-                if (IpsObjectType.PRODUCT_CMPT.equals(qualifiedNameTypes[j].getIpsObjectType())){
+            String[] productCmptQualifiedNames = ((ITestCase)allTestCases[i]).getReferencedProductCmpts();
+            for (int j = 0; j < productCmptQualifiedNames.length; j++) {
+                if (qualifiedProductCmptName.equals(productCmptQualifiedNames[j])){
                     result.add(allTestCases[i]);
                     break;
                 }

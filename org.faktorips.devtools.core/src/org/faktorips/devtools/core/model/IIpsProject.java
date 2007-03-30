@@ -386,12 +386,12 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException;
 
     /**
-     * Returns all product component generation that refer to the product component identified by the
-     * given qualified name. Returns an empty array if none is found.
+     * Returns all product component generation that refer to the given object, identified by the qualified name type. 
+     * Returns an empty array if none is found.
      * 
      * @throws CoreException if an exception occurs while searching.
      */
-    public IProductCmptGeneration[] findReferencingProductCmptGenerations(String qualifiedProductCmptName) throws CoreException;
+    public IProductCmptGeneration[] findReferencingProductCmptGenerations(QualifiedNameType qualifiedNameType) throws CoreException;
 
     /**
      * Returns all test cases that refer to the product component identified by the

@@ -512,4 +512,25 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         assertTrue(allTestPolicyCmptNames.contains("root2_child1_child1"));
         assertTrue(allTestPolicyCmptNames.contains("root2_child2"));
     }
+    
+    public void testGetReferencedProductCmpts() throws CoreException{
+        IProductCmpt prodCmpt1 = newProductCmpt(root, "ProductCmpt1");
+        IProductCmpt prodCmpt2 = newProductCmpt(root, "ProductCmpt2");
+
+        List referencedProductCmpts = CollectionUtil.toArrayList(testCase.getReferencedProductCmpts());
+        assertEquals(0, referencedProductCmpts.size());
+
+        ITestPolicyCmpt testPolicyCmpt1 = testCase.newTestPolicyCmpt();
+        testPolicyCmpt1.setProductCmpt(prodCmpt1.getQualifiedName());
+        referencedProductCmpts = CollectionUtil.toArrayList(testCase.getReferencedProductCmpts());
+        assertEquals(1, referencedProductCmpts.size());
+        assertEquals(prodCmpt1.getQualifiedName(), ((String)referencedProductCmpts.get(0)));
+
+        ITestPolicyCmptRelation testRelation1 = testPolicyCmpt1.newTestPolicyCmptRelation();
+        ITestPolicyCmpt testPolicyCmpt2 = testRelation1.newTargetTestPolicyCmptChild();
+        testPolicyCmpt2.setProductCmpt(prodCmpt2.getQualifiedName());
+        referencedProductCmpts = CollectionUtil.toArrayList(testCase.getReferencedProductCmpts());
+        assertEquals(2, referencedProductCmpts.size());
+        
+    }
 }

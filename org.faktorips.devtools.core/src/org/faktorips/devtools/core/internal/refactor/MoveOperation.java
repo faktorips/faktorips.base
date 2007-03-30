@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -444,17 +445,29 @@ public class MoveOperation implements IRunnableWithProgress {
 	 */
 	private void move(ITableContents source, IIpsSrcFile targetFile, IProgressMonitor monitor) {
 		try {
+            IProductCmptGeneration[] refs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedNameType());
+
+            // copy
 			createCopy(source.getIpsSrcFile(), targetFile, monitor);
+            
+            // update references
+            for (int i = 0; i < refs.length; i++) {
+                fixTableContentsRelations(refs[i], source.getQualifiedName(), targetFile.getIpsObject().getQualifiedName(), monitor);
+            }
+            
+            // delete the source
 			source.getEnclosingResource().delete(true, monitor);
-		} catch (CoreException e) {
+
+        
+        } catch (CoreException e) {
 			Shell shell = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
 			MessageDialog.openError(shell, Messages.MoveOperation_titleAborted, Messages.MoveOperation_msgAborted);
 			IpsPlugin.log(e);
 		}		
 		
 	}
-	
-	/**
+
+    /**
 	 * Moves one product component to the given target file.
 	 */
 	private void move(IProductCmpt source, IIpsSrcFile targetFile, IProgressMonitor monitor) {
@@ -462,7 +475,7 @@ public class MoveOperation implements IRunnableWithProgress {
             String runtimeId = source.getRuntimeId();
             
 			// first, find all objects refering the source (which will be deleted later)
-			IProductCmptGeneration[] refs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedName());
+			IProductCmptGeneration[] refs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedNameType());
             ITestCase[] testCaseRefs = source.getIpsProject().findReferencingTestCases(source.getQualifiedName());
             
 			// second, create the target
@@ -537,6 +550,30 @@ public class MoveOperation implements IRunnableWithProgress {
 		generation.getIpsObject().getIpsSrcFile().save(true, monitor);
 	}
 
+    /**
+     * Resets the target of all table content usages of the given generation, if the table content
+     * usage equals the old name, to the new name.
+     * 
+     * @param generation The generation to fix the table content.
+     * @param oldName The old, qualified name of the target.
+     * @param newName The new, qualified name of the target
+     * @param monitor Progress monitor to show progress.
+     */
+    private void fixTableContentsRelations(IProductCmptGeneration generation,
+            String oldName,
+            String newName,
+            IProgressMonitor monitor) throws CoreException {
+        ITableContentUsage[] tcu = generation.getTableContentUsages();
+
+        for (int i = 0; i < tcu.length; i++) {
+            String target = tcu[i].getTableContentName();
+            if (target.equals(oldName)) {
+                tcu[i].setTableContentName(newName);
+            }
+        }
+        generation.getIpsObject().getIpsSrcFile().save(true, monitor);
+    }    
+    
     /**
      * Resets the product component of all test policy cmpt of the given test case, if the product
      * component equals the old name, to the new name.

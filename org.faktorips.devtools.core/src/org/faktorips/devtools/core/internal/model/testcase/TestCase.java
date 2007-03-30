@@ -175,10 +175,29 @@ public class TestCase extends IpsObject implements ITestCase {
         ITestPolicyCmpt[] testCmpts = getTestPolicyCmpts();
         for (int i = 0; i < testCmpts.length; i++) {
             addQualifiedNameTypesForTestPolicyCmpt(qualifiedNameTypes, testCmpts[i]);
-        }
+        }        
         return (QualifiedNameType[])qualifiedNameTypes.toArray(new QualifiedNameType[0]);
     }
 
+    /*
+     * Adds the dependencies to the given list for the given test policy cmpt and their childs
+     */
+    private void addQualifiedNameTypesForTestPolicyCmpt(Set qualifiedNameTypes, ITestPolicyCmpt cmpt) throws CoreException {
+        if (cmpt == null){
+            return;
+        }
+        if (StringUtils.isNotEmpty(cmpt.getProductCmpt())){
+            qualifiedNameTypes.add(new QualifiedNameType(cmpt.getProductCmpt(), IpsObjectType.PRODUCT_CMPT));
+        }
+        ITestPolicyCmptRelation[] testRelations = cmpt.getTestPolicyCmptRelations();
+        for (int i = 0; i < testRelations.length; i++) {
+            // get the dependencies for the childs of the given test policy cmpt
+            if (testRelations[i].isComposition()){
+                addQualifiedNameTypesForTestPolicyCmpt(qualifiedNameTypes, testRelations[i].findTarget());
+            }
+        }
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -205,25 +224,20 @@ public class TestCase extends IpsObject implements ITestCase {
         }
     }
 
-    /*
-     * Adds the dependencies to the given list for the given test policy cmpt and their childs
+    /**
+     * {@inheritDoc}
      */
-    private void addQualifiedNameTypesForTestPolicyCmpt(Set qualifiedNameTypes, ITestPolicyCmpt cmpt) throws CoreException {
-        if (cmpt == null){
-            return;
-        }
-        if (StringUtils.isNotEmpty(cmpt.getProductCmpt())){
-            qualifiedNameTypes.add(new QualifiedNameType(cmpt.getProductCmpt(), IpsObjectType.PRODUCT_CMPT));
-        }
-        ITestPolicyCmptRelation[] testRelations = cmpt.getTestPolicyCmptRelations();
-        for (int i = 0; i < testRelations.length; i++) {
-            // get the dependencies for the childs of the given test policy cmpt
-            if (testRelations[i].isComposition()){
-                addQualifiedNameTypesForTestPolicyCmpt(qualifiedNameTypes, testRelations[i].findTarget());
+    public String[] getReferencedProductCmpts() throws CoreException {
+        List relatedProductCmpts = new ArrayList();
+        ITestPolicyCmpt[] allTestPolicyCmpt = getAllTestPolicyCmpt();
+        for (int i = 0; i < allTestPolicyCmpt.length; i++) {
+            if (StringUtils.isNotEmpty(allTestPolicyCmpt[i].getProductCmpt())){
+                relatedProductCmpts.add(allTestPolicyCmpt[i].getProductCmpt());
             }
         }
+        return (String[])relatedProductCmpts.toArray(new String[relatedProductCmpts.size()]);
     }
-
+    
     /**
      * {@inheritDoc}
      */
