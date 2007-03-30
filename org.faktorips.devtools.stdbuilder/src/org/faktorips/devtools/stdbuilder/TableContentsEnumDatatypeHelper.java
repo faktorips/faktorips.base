@@ -41,7 +41,7 @@ public class TableContentsEnumDatatypeHelper extends AbstractDatatypeHelper {
      */
     public JavaCodeFragment newInstance(String value) {
         try {
-            return enumClassesBuilder.generateCallMethodGetEnumValue(getTableContentsEnumDatatypeAdapter().getTableContents(), value);
+            return enumClassesBuilder.generateCallMethodGetEnumValue(getTableContentsEnumDatatypeAdapter().getTableContents(), value, false);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -70,6 +70,10 @@ public class TableContentsEnumDatatypeHelper extends AbstractDatatypeHelper {
      * {@inheritDoc}
      */
     protected JavaCodeFragment valueOfExpression(String expression) {
-        return newInstance(expression);
+        try {
+            return enumClassesBuilder.generateCallMethodGetEnumValue(getTableContentsEnumDatatypeAdapter().getTableContents(), expression, true);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -35,7 +35,7 @@ public class TableContentBuilder extends XmlContentFileCopyBuilder {
         
         ITableContents contents = (ITableContents)ipsSrcFile.getIpsObject();
         ITableStructure structure = contents.findTableStructure();
-        if(structure == null || structure.isEnumType()){
+        if(structure == null || structure.isModelEnumType()){
             return;
         }
         super.build(ipsSrcFile);

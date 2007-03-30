@@ -128,7 +128,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     protected String generate() throws CoreException{
-        if(getTableStructure().isEnumType()){
+        if(getTableStructure().isModelEnumType()){
             return null;
         }
         return super.generate();

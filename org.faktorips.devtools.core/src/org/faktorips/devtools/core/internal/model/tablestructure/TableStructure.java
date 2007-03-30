@@ -579,20 +579,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
         }
 		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isEnumType() {
-		return type == TableStructureType.ENUMTYPE_MODEL || type == TableStructureType.ENUMTYPE_PRODUCTDEFINTION;
-	}
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isProductDefinitionEnumType(){
-        return type == TableStructureType.ENUMTYPE_PRODUCTDEFINTION;
-    }
     
     /**
      * {@inheritDoc}

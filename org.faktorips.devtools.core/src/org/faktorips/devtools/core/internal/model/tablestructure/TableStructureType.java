@@ -46,7 +46,8 @@ public class TableStructureType extends DefaultEnumValue {
 	/**
 	 * EnumType, values are part of the product definition - this table structure represents an EnumType.
 	 */
-	public static final TableStructureType ENUMTYPE_PRODUCTDEFINTION;
+    //this value is currently disabled since the builder doesn't support this feature yet. pk 2007-03-30
+//	public static final TableStructureType ENUMTYPE_PRODUCTDEFINTION;
 
     private final static DefaultEnumType enumType; 
     
@@ -55,7 +56,8 @@ public class TableStructureType extends DefaultEnumValue {
         SINGLE_CONTENT = new TableStructureType(enumType, "singleContent", Messages.TableStructureType_labelSingleContent); //$NON-NLS-1$
         MULTIPLE_CONTENTS = new TableStructureType(enumType, "multipleContents", Messages.TableStructureType_lableMultipleContents); //$NON-NLS-1$
         ENUMTYPE_MODEL = new TableStructureType(enumType, "enumTypeModel", Messages.TableStructureType_labelEnumTypeModel); //$NON-NLS-1$
-        ENUMTYPE_PRODUCTDEFINTION = new TableStructureType(enumType, "enumTypeProductDefinition", Messages.TableStructureType_labelEnumTypeProductDefinition); //$NON-NLS-1$
+        //this value is currently disabled since the builder doesn't support this feature yet. pk 2007-03-30
+//        ENUMTYPE_PRODUCTDEFINTION = new TableStructureType(enumType, "enumTypeProductDefinition", Messages.TableStructureType_labelEnumTypeProductDefinition); //$NON-NLS-1$
     }
 
 	

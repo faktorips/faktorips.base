@@ -37,7 +37,7 @@ public class TableRowBuilder extends JavaSourceFileBuilder {
     }
 
     protected String generate() throws CoreException {
-        if(((ITableStructure)getIpsObject()).isEnumType()){
+        if(((ITableStructure)getIpsObject()).isModelEnumType()){
             return null;
         }
         TableRowGenerator generator = new TableRowGenerator();

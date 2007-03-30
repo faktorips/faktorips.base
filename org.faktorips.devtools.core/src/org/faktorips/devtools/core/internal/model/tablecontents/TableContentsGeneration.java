@@ -222,7 +222,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
             return;
         }
         ITableStructure structure = getTableContents().findTableStructure();
-        if(structure.isEnumType()){
+        if(structure.isModelEnumType()){
             IColumn column = getTableContents().findTableStructure().getColumn(0);
             ValueDatatype idDatatype = column.findValueDatatype();
             IRow[] rows = getRows();

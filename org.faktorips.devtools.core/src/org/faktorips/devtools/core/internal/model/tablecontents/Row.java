@@ -186,7 +186,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     }
     
     private void validateNameColumnIfTableBasedEnum(MessageList msgList, ITableStructure structure, IUniqueKey[] uniqueKeys){
-        if(!structure.isEnumType()){
+        if(!structure.isModelEnumType()){
             return;
         }
        //TODO pk: this is already implemented in UniqueKey. Can we get rid of this?

@@ -372,13 +372,10 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /**
-     * TODO comment
-     * @param tableContents
-     * @param value
-     * @return
-     * @throws CoreException 
+     * This method expects a value that is either a constant or an expression of the regarding datatype. The parameter valueIsExpression
+     * needs to be true when a constant value is provided and false otherwise.
      */
-    public JavaCodeFragment generateCallMethodGetEnumValue(ITableContents tableContents, String value) throws CoreException{
+    public JavaCodeFragment generateCallMethodGetEnumValue(ITableContents tableContents, String value, boolean valueIsExpression) throws CoreException{
         ArgumentCheck.notNull(tableContents);
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(getPackage(tableContents.getIpsSrcFile()) + '.' +StringUtils.capitalise(tableContents.getName()));
@@ -393,11 +390,16 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         if(helper == null){
             return fragment;
         }
-        fragment.append(helper.newInstance(value));
+        if(valueIsExpression){
+            fragment.append(helper.newInstanceFromExpression(value));
+        }
+        else{
+            fragment.append(helper.newInstance(value));
+        }
         fragment.append(')');
         return fragment;
     }
-    
+
     /*
      * Code sample:
      * <pre>
