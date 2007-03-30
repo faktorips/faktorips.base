@@ -27,6 +27,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObject;
+import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -1011,10 +1012,22 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         new AddQNamesFromTypeHierarchyVisitor(qualifiedNameTypes).start(this);
         addQualifiedNameTypesForRelationTargets(qualifiedNameTypes, excludeNonProductRelations);
         addQualifiedNameTypesForFormulaParameters(qualifiedNameTypes);
-
+        addQualifiedNameTypesForTableBasedEnums(qualifiedNameTypes);
         return (QualifiedNameType[])qualifiedNameTypes.toArray(new QualifiedNameType[qualifiedNameTypes.size()]);
     }
 
+    private void addQualifiedNameTypesForTableBasedEnums(Set qualifedNameTypes) throws CoreException{
+        IAttribute[] attributes = getAttributes();
+        for (int i = 0; i < attributes.length; i++) {
+            Datatype datatype = attributes[i].findDatatype();
+            if(datatype instanceof TableContentsEnumDatatypeAdapter){
+                TableContentsEnumDatatypeAdapter enumDatatype = (TableContentsEnumDatatypeAdapter)datatype;
+                qualifedNameTypes.add(enumDatatype.getTableContents().getQualifiedNameType());
+                qualifedNameTypes.add(new QualifiedNameType(enumDatatype.getTableContents().getTableStructure(), IpsObjectType.TABLE_STRUCTURE));
+            }
+        }
+    }
+    
     private void addQualifiedNameTypesForFormulaParameters(Set qualifiedNameTypes) throws CoreException {
         IAttribute[] attributes = getAttributes();
         IIpsProject ipsProject = getIpsProject();
@@ -1374,7 +1387,5 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             tableStructureUsage = currentType.getTableStructureUsage(tableUsageRoleName);
             return tableStructureUsage==null;
         }
-        
     }
-    
 }

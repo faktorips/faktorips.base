@@ -21,9 +21,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.EmptyBuilderSet;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.tablecontents.Row;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableContentsGeneration;
+import org.faktorips.devtools.core.internal.model.tablestructure.Column;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
+import org.faktorips.devtools.core.internal.model.tablestructure.UniqueKey;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -33,6 +41,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
@@ -345,6 +354,54 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertEquals(2, dependsOnList.size());
         assertTrue(dependsOnList.contains(a.getQualifiedNameType()));
         assertTrue(dependsOnList.contains(b.getQualifiedNameType()));
+    }
+    
+    public void testDependsOnTableBasedEnums() throws CoreException{
+        
+        TableStructure structure = (TableStructure)newIpsObject(root, IpsObjectType.TABLE_STRUCTURE, "TestEnumType");
+        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
+        Column idColumn = (Column)structure.newColumn();
+        idColumn.setDatatype(Datatype.STRING.getQualifiedName());
+        idColumn.setName("id");
+        Column nameColumn = (Column)structure.newColumn();
+        nameColumn.setDatatype(Datatype.STRING.getQualifiedName());
+        nameColumn.setName("name");
+        UniqueKey uniqueKey = (UniqueKey)structure.newUniqueKey();
+        uniqueKey.addKeyItem("id");
+        uniqueKey.addKeyItem("name");
+        
+        TableContents contents = (TableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "TestGender");
+        contents.setTableStructure(structure.getQualifiedName());
+        contents.newColumn("1");
+        contents.newColumn("male");
+        TableContentsGeneration generation = (TableContentsGeneration)contents.newGeneration();
+        Row row = (Row)generation.newRow();
+        row.setValue(0, "1");
+        row.setValue(1, "male");
+        row = (Row)generation.newRow();
+        row.setValue(0, "2");
+        row.setValue(1, "female");
+        
+        IPolicyCmptType a = newPolicyCmptType(root, "A");
+        Attribute aAttr = (Attribute)a.newAttribute();
+        aAttr.setAttributeType(AttributeType.CHANGEABLE);
+        aAttr.setDatatype("TestGender");
+        aAttr.setModifier(Modifier.PUBLIC);
+        aAttr.setName("aAttr");
+        
+        //make sure the policy component type is valid
+        assertTrue(a.validate().isEmpty());
+        
+        //make sure datatype is available
+        Datatype datatype = contents.getIpsProject().findDatatype("TestGender");
+        assertNotNull(datatype);
+
+        //expect dependency on the TableContents and Tablestructure defined above
+        QualifiedNameType[] nameTypes = a.dependsOn();
+        List nameTypeList = Arrays.asList(nameTypes);
+        assertTrue(nameTypeList.contains(contents.getQualifiedNameType()));
+        assertTrue(nameTypeList.contains(structure.getQualifiedNameType()));
+        
     }
     
     public void testDependsOnComposition() throws Exception {
