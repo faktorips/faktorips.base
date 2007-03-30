@@ -45,6 +45,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptKind;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -174,14 +175,14 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         c.getRelations()[0].setProductRelevant(true);
 
         // generation1
-        IProductCmptGeneration generation = (IProductCmptGeneration) productCmptC.newGeneration();
-        generation.setValidFrom(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+        IProductCmptGeneration generation1 = (IProductCmptGeneration) productCmptC.newGeneration();
+        generation1.setValidFrom(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
 
-        IProductCmptRelation productCmptRelation = generation.newRelation("relationD");
+        IProductCmptRelation productCmptRelation = generation1.newRelation("relationD");
         productCmptRelation.setTarget(productCmptD.getQualifiedName());
         // generation2
-        generation = (IProductCmptGeneration) productCmptC.newGeneration(new GregorianCalendar(1990, 1, 1));
-        productCmptRelation = generation.newRelation("relationD");
+        IProductCmptGeneration generation2 = (IProductCmptGeneration) productCmptC.newGeneration(new GregorianCalendar(1990, 1, 1));
+        productCmptRelation = generation2.newRelation("relationD");
         productCmptRelation.setTarget(productCmptD2.getQualifiedName());
         
         dependsOnAsList = CollectionUtil.toArrayList(productCmptC.dependsOn());
@@ -192,7 +193,20 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertTrue(dependsOnAsList.contains(productCmptD.getQualifiedNameType()));
         assertTrue(dependsOnAsList.contains(productCmptD2.getQualifiedNameType()));
         
+        // test dependency to table content usage
+        ITableContents tableContents1 = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "table1");
+        ITableContents tableContents2 = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "table2");
+        generation1.newTableContentUsage().setTableContentName(tableContents1.getQualifiedName());
         
+        dependsOnAsList = CollectionUtil.toArrayList(productCmptC.dependsOn());
+        assertEquals(6, dependsOnAsList.size());
+        assertTrue(dependsOnAsList.contains(tableContents1.getQualifiedNameType()));
+        
+        generation2.newTableContentUsage().setTableContentName(tableContents2.getQualifiedName());
+        
+        dependsOnAsList = CollectionUtil.toArrayList(productCmptC.dependsOn());
+        assertEquals(7, dependsOnAsList.size());
+        assertTrue(dependsOnAsList.contains(tableContents2.getQualifiedNameType()));
     }
 
     public void testDependsOnWithFormula() throws CoreException{

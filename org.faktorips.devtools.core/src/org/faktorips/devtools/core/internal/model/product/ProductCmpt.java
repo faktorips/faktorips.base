@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptKind;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -248,17 +249,30 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             qaTypes.addAll(Arrays.asList(((PolicyCmptType)pcType).dependsOn(true)));
     	}
         
-    	// add dependency to related product cmpt's
+    	// add dependency to related product cmpt's and
+    	// add dependency to table contents
         IIpsObjectGeneration[] generations = getGenerations();
         for (int i = 0; i < generations.length; i++) {
             addRelatedProductCmptQualifiedNameTypes(qaTypes, (IProductCmptGeneration) generations[i]);
+            addRelatedTableContentsQualifiedNameTypes(qaTypes, (IProductCmptGeneration) generations[i]);
         }
         
         return (QualifiedNameType[])qaTypes.toArray(new QualifiedNameType[qaTypes.size()]);
     }
     
     /*
-     * Add the qualified name types of all relations inside the given generation to the given set
+     * Add the qualified name types of all related table contents inside the given generation to the given set
+     */
+    private void addRelatedTableContentsQualifiedNameTypes(Set qaTypes, IProductCmptGeneration generation) {
+        ITableContentUsage[] tableContentUsages = generation.getTableContentUsages();
+        for (int i = 0; i < tableContentUsages.length; i++) {
+            qaTypes.add(new QualifiedNameType(tableContentUsages[i].getTableContentName(),
+                    IpsObjectType.TABLE_CONTENTS));
+        }
+    }
+
+    /*
+     * Add the qualified name types of all related product cmpt's inside the given generation to the given set
      */
     private void addRelatedProductCmptQualifiedNameTypes(Set qaTypes, IProductCmptGeneration generation) {
         IProductCmptRelation[] relations = generation.getRelations();
