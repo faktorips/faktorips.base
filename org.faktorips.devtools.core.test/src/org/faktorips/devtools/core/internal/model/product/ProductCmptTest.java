@@ -17,14 +17,19 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -355,4 +360,59 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         product2.fixAllDifferencesToModel();
         assertEquals(false, product2.containsDifferenceToModel());
     }
+    
+    /**
+     * Test if a runtime id change will be correctly updated in the product component which 
+     * referenced the product cmpt on which the runtime id was changed.
+     */
+    public void testRuntimeIdDependency() throws CoreException{
+        IPolicyCmptType c = newPolicyCmptType(root, "C");
+        IPolicyCmptType d = newPolicyCmptType(root, "D");
+        IRelation relation = c.newRelation();
+        relation.setProductRelevant(true);
+        relation.setTargetRoleSingular("relationD");
+        relation.setTarget(d.getQualifiedName());
+        IProductCmpt productCmptC = (IProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT, "tests.productC");
+        productCmptC.setPolicyCmptType(c.getQualifiedName());
+        
+        IProductCmpt productCmptD = (IProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT, "tests.productD");
+        productCmptD.setPolicyCmptType(d.getQualifiedName());
+
+        IProductCmptGeneration generation1 = (IProductCmptGeneration) productCmptC.newGeneration();
+        generation1.setValidFrom(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+        IProductCmptRelation productCmptRelation = generation1.newRelation("relationD");
+        productCmptRelation.setTarget(productCmptD.getQualifiedName());
+        
+        incrementalBuild();
+        
+        // product cmpt C depends on product D
+        // change the runtime id of product D and assert that the target runtime id in product C 
+        // was updated after rebuild
+        productCmptD.setRuntimeId("newRuntimeId");
+        productCmptD.getIpsSrcFile().save(true, null);
+        
+        incrementalBuild();
+        
+        // check if the target runtime id was updated in product cmpt c runtime xml
+        String packageOfProductC = ipsProject.getIpsArtefactBuilderSet().getPackage(
+                DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION_IMPL, productCmptC.getIpsSrcFile());
+        String productCXmlFile = packageOfProductC + "." + "productC";
+        productCXmlFile = productCXmlFile.replaceAll("\\.", "/");
+        productCXmlFile += ".xml";
+        IFile file = ipsProject.getProject().getFile("bin//" + productCXmlFile);
+        try {
+            InputStream is = file.getContents();
+            if (is==null) {
+                throw new RuntimeException("Can't find resource " + productCXmlFile);
+            }
+            String generatedXml = getDocumentBuilder().parse(is).getDocumentElement().toString();
+            String patternStr = ".*targetRuntimeId=\"(.*)\".*";
+            Pattern pattern = Pattern.compile(patternStr);
+            Matcher matcher = pattern.matcher(generatedXml);
+            assertTrue(matcher.find());
+            assertEquals("newRuntimeId", matcher.group(matcher.groupCount()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }    
 }
