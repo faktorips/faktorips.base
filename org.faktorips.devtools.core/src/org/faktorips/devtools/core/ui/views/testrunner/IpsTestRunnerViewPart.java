@@ -745,10 +745,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 			failureFormat= failureFormat + (failureExpected); //$NON-NLS-1$
 		if (failureDetailsCopy.length>4)
 			failureFormat= failureFormat + (failureActual); //$NON-NLS-1$
+		if (failureDetailsCopy.length>2)
+		    failureFormat= failureFormat + (!"<null>".equals(failureDetailsCopy[2])?failureFormatAttribute:""); //$NON-NLS-1$ //$NON-NLS-2$
 		if (failureDetailsCopy.length>1)
 			failureFormat= failureFormat + (!"<null>".equals(failureDetailsCopy[1])?failureFormatObject:""); //$NON-NLS-1$ //$NON-NLS-2$
-		if (failureDetailsCopy.length>2)
-			failureFormat= failureFormat + (!"<null>".equals(failureDetailsCopy[2])?failureFormatAttribute:""); //$NON-NLS-1$ //$NON-NLS-2$
 		if (failureDetailsCopy.length>5)
 		    failureFormat= failureFormat + (!"<null>".equals(failureDetailsCopy[5])?failureFormatMessage:""); //$NON-NLS-1$ //$NON-NLS-2$
 		return MessageFormat.format(failureFormat, failureDetailsCopy); 

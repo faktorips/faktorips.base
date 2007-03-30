@@ -1837,19 +1837,25 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         failureDetailsToFormat[3] = TestRuleViolationType.mapRuleValueTest(failureDetailsToFormat[3]);
         failureDetailsToFormat[4] = TestRuleViolationType.mapRuleValueTest(failureDetailsToFormat[4]);
         
+        failureDetailsToFormat[1] = getLastObjectIdentifier(failureDetailsToFormat[1]);
+        
+        if (failureDetailsToFormat.length>3)
+            failureFormat= failureFormat + (failureExpected); //$NON-NLS-1$
+        if (failureDetailsToFormat.length>4)
+            failureFormat= failureFormat + (failureActual); //$NON-NLS-1$
+        if (failureDetailsToFormat.length>2)
+            failureFormat= failureFormat + (!"<null>".equals(failureDetailsToFormat[2])?failureFormatAttribute:"");		 //$NON-NLS-1$ //$NON-NLS-2$
         if (failureDetailsToFormat.length>1)
 		    failureFormat= failureFormat + (!"<null>".equals(failureDetailsToFormat[1])?failureFormatObject:""); //$NON-NLS-1$ //$NON-NLS-2$
-		if (failureDetailsToFormat.length>2)
-		    failureFormat= failureFormat + (!"<null>".equals(failureDetailsToFormat[2])?failureFormatAttribute:"");		 //$NON-NLS-1$ //$NON-NLS-2$
-		if (failureDetailsToFormat.length>3)
-			failureFormat= failureFormat + (failureExpected); //$NON-NLS-1$
-		if (failureDetailsToFormat.length>4)
-			failureFormat= failureFormat + (failureActual); //$NON-NLS-1$
 		if (failureDetailsToFormat.length>5)
 		    failureFormat= failureFormat + (!"<null>".equals(failureDetailsToFormat[5])?failureFormatMessage:""); //$NON-NLS-1$ //$NON-NLS-2$
 		return MessageFormat.format(failureFormat, failureDetailsToFormat); 
 	}
 	
+    private String getLastObjectIdentifier(String objectPath) {
+        return StringUtil.unqualifiedName(objectPath);
+    }
+
     /*
      * Converts the given failure details to one store actual value in expected result detail row.
      */
