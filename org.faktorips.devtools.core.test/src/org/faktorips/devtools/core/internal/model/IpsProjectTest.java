@@ -616,11 +616,14 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IProductCmptGeneration gen2 = (IProductCmptGeneration)ref1.newGeneration();
         gen2.setValidFrom(cal);
         gen2.newRelation("xxx").setTarget(tobereferenced.getQualifiedName());
-        result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedNameType());
-        assertEquals(2, result.length);
-        assertEquals(gen1, result[0]);
-        assertEquals(gen2, result[1]);	
+        IProductCmptGeneration[] generations = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedNameType());
+        
+        List resultList = Arrays.asList((IProductCmptGeneration[])generations);
+        assertEquals(2, resultList.size());
+        assertTrue(resultList.contains(gen1));
+        assertTrue(resultList.contains(gen2));	
     }
+    
     public void testFindReferencingPolicyCmptTypes() throws CoreException{
         IPolicyCmptType pcTypeReferenced = newPolicyCmptType(root, "tobereferenced");
         IPolicyCmptType pcType = newPolicyCmptType(root, "TestPCType");
