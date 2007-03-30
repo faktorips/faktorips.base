@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
 /**
 * View object for the table structure usage.
 * 
-* @author JOerg Ortmann
+* @author Joerg Ortmann
 */
 public class TableStructureUsage extends IpsObjectPart implements ITableStructureUsage {
     final static String TAG_NAME = "TableStructureUsage"; //$NON-NLS-1$
@@ -94,6 +94,20 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         return tableStructureUsage.getIpsObject();
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public void setDescription(String newDescription) {
+        tableStructureUsage.setDescription(newDescription);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDescription() {
+        return tableStructureUsage.getDescription();
+    }
+
     /**
      * {@inheritDoc}
      */
