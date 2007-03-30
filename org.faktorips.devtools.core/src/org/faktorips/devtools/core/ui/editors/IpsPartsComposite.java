@@ -429,7 +429,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             }
             dialog.setDataChangeable(isDataChangeable());
             dialog.open();
-            if (dialog.getReturnCode()==Window.CANCEL) {
+            if (dialog.getReturnCode()==Window.CANCEL && file.isMutable()) {
                 part.setState(memento);
                 if (!dirty) {
                     file.markAsClean();
