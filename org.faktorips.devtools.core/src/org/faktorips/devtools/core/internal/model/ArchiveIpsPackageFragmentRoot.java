@@ -61,6 +61,13 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     public boolean isBasedOnSourceFolder() {
         return false;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isBasedOnIpsArchive() {
+        return true;
+    }
 
     /**
      * {@inheritDoc}

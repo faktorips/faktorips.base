@@ -56,6 +56,13 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public boolean isBasedOnIpsArchive() {
+        return false;
+    }
+
+    /**
      * Returns the artefact destination for the artefacts generated on behalf of the ips objects
      * within this ips package fragment root.
      */

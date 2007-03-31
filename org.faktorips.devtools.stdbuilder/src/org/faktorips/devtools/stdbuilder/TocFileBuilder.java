@@ -272,16 +272,20 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 							.newDocumentBuilder();
 					doc = builder.parse(is);
 				} catch (Exception e) {
-					throw new CoreException(new IpsStatus(
-							"Error parsing toc contents.", e)); //$NON-NLS-1$
+				    // can happen if the file is deleted in the filesystem, but the workspace has not been synchronized
+                    // nothing seriuos, we just write the file again
+                    doc = null; 
+                    tocFile.refreshLocal(1, null);
 				}
-				Element tocEl = doc.getDocumentElement();
-				try {
-					toc.initFromXml(tocEl);
-				} catch (Exception e) {
-					throw new CoreException(new IpsStatus(
-							"Error initializing toc from xml!", e)); //$NON-NLS-1$
-				}
+                if (doc!=null) {
+                    Element tocEl = doc.getDocumentElement();
+                    try {
+                        toc.initFromXml(tocEl);
+                    } catch (Exception e) {
+                        throw new CoreException(new IpsStatus(
+                                "Error initializing toc from xml!", e)); //$NON-NLS-1$
+                    }
+                }
 			}
 			tocFileMap.put(tocFile, toc);
 		}

@@ -43,7 +43,7 @@ public class WrapperAction extends IpsAction {
      * Creates a new wrapper action for the given ids. The WrapperAction therefor searches action definitions
      * of extensions/plugins to retrieve the classname of the actual action.
      * <p>
-     * Firstly all actionset definitions are searched for the given actionset id and action id. Secondly all
+     * First all actionset definitions are searched for the given actionset id and action id. Secondly all
      * popup menu definitions are searched for the given action id, the actionset id is ignored in this case.
      * <p>
      * The found classname is used to instanciate the requested delegate action. If no action delegate

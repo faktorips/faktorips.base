@@ -144,6 +144,16 @@ public class ModelExplorerConfiguration {
      * <code>IIpsProject</code>, false otherwise.
      */
     public boolean representsFile(Object item) {
-        return item instanceof IIpsObject || item instanceof IFile;
+        if (item instanceof IIpsObject) {
+            return true;
+        }
+        if (item instanceof IFile) {
+            return true;
+        }
+        if (item instanceof IIpsPackageFragmentRoot) {
+            IIpsPackageFragmentRoot root = (IIpsPackageFragmentRoot)item;
+            return root.isBasedOnIpsArchive();
+        }
+        return false;
     }
 }

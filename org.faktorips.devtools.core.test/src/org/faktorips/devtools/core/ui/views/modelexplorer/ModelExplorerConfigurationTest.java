@@ -20,8 +20,10 @@ package org.faktorips.devtools.core.ui.views.modelexplorer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -143,7 +145,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         assertFalse(config.representsFolder(file));
         assertFalse(config.representsFolder(pcType));
     }
-    public void testRepresentsFile(){
+    public void testRepresentsFile() throws CoreException{
         assertFalse(config.representsFile(proj));
         assertFalse(config.representsFile(proj.getCorrespondingResource()));
         assertFalse(config.representsFile(folder));
@@ -151,5 +153,12 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         assertFalse(config.representsFile(defaultPackage));
         assertTrue(config.representsFile(file));
         assertTrue(config.representsFile(pcType));
+        
+        IIpsObjectPath path = proj.getIpsObjectPath();
+        path.newArchiveEntry(proj.getProject().getFile("Archive.ipsar"));
+        proj.setIpsObjectPath(path);
+        IIpsPackageFragmentRoot archiveRoot = proj.findIpsPackageFragmentRoot("Archive.ipsar");
+        assertTrue(archiveRoot.isBasedOnIpsArchive());
+        assertTrue(config.representsFile(archiveRoot));
     }
 }

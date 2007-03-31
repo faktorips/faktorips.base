@@ -98,7 +98,7 @@ public class ProductExplorer extends ModelExplorer {
                 , Messages.ProductExplorer_actionSwitchBranch_tooltip
                 , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.updateSwitch"); //$NON-NLS-1$ //$NON-NLS-2$
         private WrapperAction team_showResourceHistory= new WrapperAction(treeViewer, Messages.ProductExplorer_actionShowResourceHistory_label
-                , Messages.ProductExplorer_actionShowResourceHistory_tooltip, "ShowResourceHistoryAction.gif" //$NON-NLS-1$
+                , Messages.ProductExplorer_actionShowResourceHistory_tooltip, "HistoryAction.gif" //$NON-NLS-1$
                 , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.showHistory"); //$NON-NLS-1$ //$NON-NLS-2$
         
         private WrapperAction team_restoreFromRepository= new WrapperAction(treeViewer, Messages.ProductExplorer_actionRestoreFromRepositoryAction_label

@@ -22,7 +22,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.IPageListener;
@@ -43,6 +45,8 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.ide.IDEActionFactory;
+import org.eclipse.ui.ide.IIDEActionConstants;
+import org.eclipse.ui.internal.provisional.application.IActionBarConfigurer2;
 import org.faktorips.devtools.core.IpsPlugin;
 
 /**
@@ -82,7 +86,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
     
     private OpenPerspectiveAction openCVSPerspectiveAction;
 
-	private OpenPerspectiveAction openDepartmentPerspectiveAction;
+	private OpenPerspectiveAction openProductDefinitionPerspectiveAction;
 	
 	private IWorkbenchAction resetPerspectiveAction;
 
@@ -175,6 +179,8 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 	private IWorkbenchAction openProjectAction;
 
 	private IWorkbenchAction closeProjectAction;
+    
+    private IWorkbenchAction cleanProjectsAction;
 
 	// contribution items
 	// @issue should obtain from ContributionItemFactory
@@ -242,13 +248,6 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void fillActionBars(int flags) {
-		super.fillActionBars(flags);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	protected void fillMenuBar(IMenuManager menuBar) {
 		menuBar.add(createFileMenu());
 		menuBar.add(createEditMenu());
@@ -263,7 +262,29 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 		}
 	}
 
-	/**
+    /**
+     * {@inheritDoc}
+     */
+	protected void fillCoolBar(ICoolBarManager coolBar) {
+        IActionBarConfigurer2 actionBarConfigurer = (IActionBarConfigurer2) getActionBarConfigurer();
+        coolBar.add(new GroupMarker(IIDEActionConstants.GROUP_FILE));
+        { // File Group
+            IToolBarManager fileToolBar = actionBarConfigurer.createToolBarManager();
+            fileToolBar.add(new GroupMarker(
+                    IWorkbenchActionConstants.SAVE_GROUP));
+            fileToolBar.add(saveAction);
+            fileToolBar.add(new GroupMarker(IWorkbenchActionConstants.SAVE_EXT));
+            fileToolBar.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+
+            // Add to the cool bar manager
+            coolBar.add(actionBarConfigurer.createToolBarContributionItem(fileToolBar,
+                    IWorkbenchActionConstants.TOOLBAR_FILE));
+        }
+
+        coolBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+    }
+
+    /**
 	 * Creates and returns the File menu.
 	 */
 	private MenuManager createFileMenu() {
@@ -414,7 +435,8 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 		menu.add(new GroupMarker(IWorkbenchActionConstants.OPEN_EXT));
 		menu.add(new Separator());
 		menu.add(new GroupMarker(IWorkbenchActionConstants.BUILD_EXT));
-		menu.add(new Separator());
+		menu.add(cleanProjectsAction);
+        menu.add(new Separator());
 
 		menu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 		menu.add(new GroupMarker(IWorkbenchActionConstants.PROJ_END));
@@ -431,7 +453,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
 		menu.add(resetPerspectiveAction);
 //		menu.add(editActionSetAction);
-		menu.add(openDepartmentPerspectiveAction);
+		menu.add(openProductDefinitionPerspectiveAction);
 		menu.add(openSynchronizePerspectiveAction);
         menu.add(openCVSPerspectiveAction);
 		menu.add(new Separator());
@@ -599,6 +621,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 		exportResourcesAction = null;
 		openProjectAction = null;
 		closeProjectAction = null;
+        cleanProjectsAction = null;
 		newWizardMenu = null;
 		pinEditorContributionItem = null;
 		prefListener = null;
@@ -779,12 +802,15 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
 		openProjectAction = IDEActionFactory.OPEN_PROJECT.create(window);
 		register(openProjectAction);
-
+        
 		closeProjectAction = IDEActionFactory.CLOSE_PROJECT.create(window);
 		register(closeProjectAction);
+        
+        cleanProjectsAction = IDEActionFactory.BUILD_CLEAN.create(window);
+        register(cleanProjectsAction);
 
 		PerspectiveMenu m = new PerspecitveHandler(getWindow(), "unknown"); //$NON-NLS-1$
-		openDepartmentPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId("org.faktorips.devtools.core.productDefinitionPerspective"), m);  //$NON-NLS-1$
+		openProductDefinitionPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId("org.faktorips.devtools.core.productDefinitionPerspective"), m);  //$NON-NLS-1$
 		openSynchronizePerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.team.ui.TeamSynchronizingPerspective"), m); //$NON-NLS-1$
         openCVSPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.team.cvs.ui.cvsPerspective"), m); //$NON-NLS-1$
 		

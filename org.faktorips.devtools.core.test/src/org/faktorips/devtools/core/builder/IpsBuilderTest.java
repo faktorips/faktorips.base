@@ -24,6 +24,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.swt.internal.ole.win32.ISpecifyPropertyPages;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsArchiveEntry;
@@ -76,6 +77,43 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         root = ipsProject.getIpsPackageFragmentRoots()[0];
     }
 
+    public void testIsFullBuildTriggeredAfterChangesToIpsArchiveOnObjectPath() throws CoreException {
+        IFile archive = ipsProject.getProject().getFile("archive.ipsar");
+        IIpsProject project2 = newIpsProject("Project2");
+        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project2, archive.getLocation().toFile());
+        op.run(null);
+        archive.refreshLocal(1, null);
+        assertTrue(archive.exists());
+        
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        path.newArchiveEntry(archive);
+        ipsProject.setIpsObjectPath(path);
+        
+        AssertThatFullBuildIsTriggeredBuilder builder = new AssertThatFullBuildIsTriggeredBuilder();
+        setTestArtefactBuilder(ipsProject, builder);
+        builder.called = false;
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        assertTrue(builder.called);
+        
+        builder.buildKind = -1;
+        builder.called = false;
+        archive.touch(null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        assertTrue(builder.called);
+        assertEquals(IncrementalProjectBuilder.FULL_BUILD, builder.buildKind);
+    }
+
+    public void testIsFullBuildTriggeredAfterChangesToIpsProjectFile() throws CoreException {
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        AssertThatFullBuildIsTriggeredBuilder builder = new AssertThatFullBuildIsTriggeredBuilder();
+        setTestArtefactBuilder(ipsProject, builder); // this changes the properties file!
+        builder.buildKind = -1;
+        builder.called = false;
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        assertTrue(builder.called);
+        assertEquals(IncrementalProjectBuilder.FULL_BUILD, builder.buildKind);
+    }
+    
     public void testMarkerHandling() throws Exception {
         IPolicyCmptType pcType = newPolicyCmptType(root, "TestPolicy");
         pcType.setSupertype("unknownSupertype");
@@ -302,6 +340,60 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     }
     
+    private void setTestArtefactBuilder(IIpsProject project, IIpsArtefactBuilder builder) throws CoreException {
+        IIpsProjectProperties props = project.getProperties();
+        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
+        project.setProperties(props);
+        ((IpsModel)project.getIpsModel()).setIpsArtefactBuilderSet(project, new TestIpsArtefactBuilderSet(
+                new IIpsArtefactBuilder[] { builder }));
+    }
+    
+    class AssertThatFullBuildIsTriggeredBuilder extends AbstractArtefactBuilder {
+
+        boolean called = false;
+        int buildKind = -1;
+        
+        /**
+         * @param builderSet
+         */
+        public AssertThatFullBuildIsTriggeredBuilder() {
+            super(new TestIpsArtefactBuilderSet());
+        }
+        
+        public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+            called = true;
+            this.buildKind = buildKind;
+        }
+
+
+        /**
+         * {@inheritDoc}
+         */
+        public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public String getName() {
+            return "AssertThatFullBuildIsTriggeredBuilder";
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+            return false;
+        }
+        
+    }
+
     private static class TestRemoveIpsArtefactBuilder extends AbstractArtefactBuilder {
 
         /**

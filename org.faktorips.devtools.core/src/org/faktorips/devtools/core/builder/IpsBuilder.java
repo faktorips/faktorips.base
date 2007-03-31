@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -38,6 +39,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.IpsSrcFile;
+import org.faktorips.devtools.core.model.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -108,8 +110,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             IIpsArtefactBuilderSet ipsArtefactBuilderSet = getIpsProject().getIpsArtefactBuilderSet();
             applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new BeforeBuildProcessCommand(kind), monitor);
             monitor.worked(100);
-            if (kind == IncrementalProjectBuilder.FULL_BUILD || kind == IncrementalProjectBuilder.CLEAN_BUILD
-                    || getDelta(getProject()) == null) {
+            if (isFullBuildRequired(kind)) {
                 // delta not available
                 monitor.subTask(Messages.IpsBuilder_startFullBuild);
                 fullBuild(ipsArtefactBuilderSet, buildStatus, new SubProgressMonitor(monitor, 99700));
@@ -142,6 +143,28 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             monitor.done();
         }
         return getProject().getReferencedProjects();
+    }
+    
+    private boolean isFullBuildRequired(int kind) throws CoreException {
+        if (kind==FULL_BUILD || kind==CLEAN_BUILD) {
+            return true;
+        }
+        if (getDelta(getProject()) == null) {
+            return true;
+        }
+        IResourceDelta delta = getDelta(getProject());
+        IIpsProject ipsProject = getIpsProject();
+        if (delta.findMember(ipsProject.getIpsProjectPropertiesFile().getProjectRelativePath())!=null) {
+            return true;
+        }
+        IIpsArchiveEntry[] entries = ipsProject.getIpsObjectPath().getArchiveEntries();
+        for (int i = 0; i < entries.length; i++) {
+            IFile archiveFile = entries[i].getArchiveFile();
+            if (archiveFile!=null && delta.findMember(archiveFile.getProjectRelativePath())!=null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void createDerivedOutputFoldersIfNecessary(IProgressMonitor monitor) throws CoreException {

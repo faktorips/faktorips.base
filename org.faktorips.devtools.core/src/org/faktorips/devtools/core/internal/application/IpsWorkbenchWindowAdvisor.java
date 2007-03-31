@@ -43,4 +43,18 @@ class IpsWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		return new IpsActionBarAdvisor(configurer);
 	}
 	
+    /**
+     * {@inheritDoc}
+     */
+    public void preWindowOpen() {
+        IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
+
+        // show the progress indicator, which are hidden by default
+        configurer.setShowPerspectiveBar(false);
+        configurer.setShowFastViewBars(true);
+        configurer.setShowProgressIndicator(true);
+        configurer.setTitle(Messages.IpsWorkbenchAdvisor_title);
+    }
+
+    
 }
