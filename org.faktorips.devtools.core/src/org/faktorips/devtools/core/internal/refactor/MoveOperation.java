@@ -491,7 +491,7 @@ public class MoveOperation implements IRunnableWithProgress {
 			    fixRelations(testCaseRefs[i], source.getQualifiedName(), targetFile.getIpsObject().getQualifiedName(), monitor);
 			}
 			
-			// fourthly, delete the source
+			// fourth, delete the source
 			source.getEnclosingResource().delete(true, monitor);
             
             // at least, update the runtime id of the moved product cmpt to the original runtime id
@@ -547,7 +547,7 @@ public class MoveOperation implements IRunnableWithProgress {
 			}
 		}
 		
-		generation.getIpsObject().getIpsSrcFile().save(true, monitor);
+		generation.getIpsSrcFile().save(true, monitor);
 	}
 
     /**
@@ -571,7 +571,7 @@ public class MoveOperation implements IRunnableWithProgress {
                 tcu[i].setTableContentName(newName);
             }
         }
-        generation.getIpsObject().getIpsSrcFile().save(true, monitor);
+        generation.getIpsSrcFile().save(true, monitor);
     }    
     
     /**
@@ -588,6 +588,7 @@ public class MoveOperation implements IRunnableWithProgress {
                 allTestPolicyCmpt[i].setProductCmpt(newName);
             }
         }
+        testCase.getIpsSrcFile().save(true, null);
     }
     
 	/**

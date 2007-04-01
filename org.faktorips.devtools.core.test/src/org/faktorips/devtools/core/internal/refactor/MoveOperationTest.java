@@ -169,6 +169,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         ITestCase testCase = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "TestCase1");
         ITestPolicyCmpt testPolicyCmpt = testCase.newTestPolicyCmpt();
         testPolicyCmpt.setProductCmpt(source.getQualifiedName());
+        testCase.getIpsSrcFile().save(true, null);
         
         MoveOperation move = new MoveOperation(source, targetName);
         move.run(null);
@@ -182,6 +183,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         IProductCmpt productCmpt = ipsProject.findProductCmptByRuntimeId(source.getRuntimeId());
         assertEquals(productCmpt.getQualifiedName(), testPolicyCmpt.getProductCmpt());
         assertEquals(productCmpt, testPolicyCmpt.findProductCmpt());
+        assertFalse(testCase.getIpsSrcFile().isDirty());
     }
 
     /**
