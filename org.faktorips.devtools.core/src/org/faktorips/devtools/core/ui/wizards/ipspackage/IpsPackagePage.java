@@ -16,9 +16,7 @@ package org.faktorips.devtools.core.ui.wizards.ipspackage;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -46,7 +44,7 @@ import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.util.message.MessageList;
 
 /**
- * 
+ * The page of the NewIpsPackageWizard.
  */
 public class IpsPackagePage extends WizardPage implements ValueChangeListener {
 
@@ -74,11 +72,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     // subclasses can add their own controls.
     private Composite nameComposite;
 
-    /**
-     * @param pageName
-     * @param selection
-     * @throws JavaModelException
-     */
     public IpsPackagePage(IStructuredSelection selection) throws JavaModelException {
         super(Messages.IpsPackagePage_title);
         if (selection.getFirstElement() instanceof IResource) {
@@ -96,9 +89,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+     * {@inheritDoc}
      */
     public final void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
@@ -399,9 +390,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
 
     /**
      * The method validates the name.
-     * <p>
-     * Subclasses may extend this method to perform their own validation.
-     * </p>
      */
     protected void validateName() {
         String name = getIpsPackageName();
@@ -422,16 +410,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         }
         if (name.trim().equals(EMPTY_STRING)) {
             setErrorMessage(Messages.IpsPackagePage_InvalidPackageName);
-            return;
-        }
-        IStatus status = JavaConventions.validatePackageName(name);
-        if (status.getSeverity() == IStatus.ERROR) {
-            setErrorMessage(NLS.bind(Messages.IpsPackagePage_InvalidPackageName, status.getMessage()));
-            return;
-        }
-        if (status.getSeverity() == IStatus.WARNING) {
-            this.setMessage(NLS.bind(Messages.IpsPackagePage_msgNameDiscouraged, status.getMessage()),
-                    IMessageProvider.WARNING);
             return;
         }
         IIpsPackageFragment pack = getParentPackageFragment();

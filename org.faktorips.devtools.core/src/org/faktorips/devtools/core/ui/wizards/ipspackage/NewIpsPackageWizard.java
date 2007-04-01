@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 
 
 /**
- *
+ * Wizard zum Anlegen eines neuen Packages.
  */
 public class NewIpsPackageWizard extends Wizard implements INewWizard {
 
@@ -41,8 +41,7 @@ public class NewIpsPackageWizard extends Wizard implements INewWizard {
     }
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.wizard.IWizard#addPages()
+     * {@inheritDoc}
      */
     public final void addPages() {
         try {
@@ -55,24 +54,22 @@ public class NewIpsPackageWizard extends Wizard implements INewWizard {
     }
     
     /** 
-     * Overridden method.
+     * @param selection
+     * @return
      * @throws JavaModelException
-     * @see org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard#createFirstPage()
      */
     protected IpsPackagePage createFirstPage(IStructuredSelection selection) throws JavaModelException {
         return new IpsPackagePage(selection);
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard#createAdditionalPages()
+     * Nothing to do.
      */
     protected void createAdditionalPages() {
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.wizard.IWizard#performFinish()
+     * {@inheritDoc}
      */
     public final boolean performFinish() {
         try {
@@ -86,9 +83,7 @@ public class NewIpsPackageWizard extends Wizard implements INewWizard {
     
 
     /** 
-     * Overridden method.
-     * 
-     * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
+     * {@inheritDoc}
      */
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.selection = selection;
