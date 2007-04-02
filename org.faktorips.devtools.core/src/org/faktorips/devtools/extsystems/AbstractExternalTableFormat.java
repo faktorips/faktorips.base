@@ -211,6 +211,9 @@ public abstract class AbstractExternalTableFormat {
 	 *            The string to use to replace <code>null</code>. This value
 	 *            can be used for systems with no own <code>null</code>-representation
 	 *            (MS-Excel, for example).
+     * @param ignoreColumnHeaderRow
+     *            <code>true</code> if the first row contains column header and should be ignored
+     *            <code>false</code> if the to be imported content contains no column header row.
 	 * @param list
 	 *            A list for messages describing any problems occured during the
 	 *            import. If no messages of severity ERROR are contained in this
@@ -221,7 +224,9 @@ public abstract class AbstractExternalTableFormat {
 	public abstract IWorkspaceRunnable getImportTableOperation(
 			ITableStructure structure, IPath filename,
 			ITableContentsGeneration targetGeneration,
-			String nullRepresentationString, MessageList list);
+			String nullRepresentationString, 
+            boolean ignoreColumnHeaderRow,
+            MessageList list);
 
 	/**
 	 * @param source The identification of the resource to check (for example, a qualified filename).

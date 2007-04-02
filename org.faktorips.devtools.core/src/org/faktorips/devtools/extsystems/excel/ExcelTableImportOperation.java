@@ -82,14 +82,21 @@ public class ExcelTableImportOperation implements IWorkspaceRunnable {
      */
     private MessageList messageList;
 
+    /**
+     * <code>true</code> if the first row contains column header and should be ignored
+     * <code>false</code> if the to be imported content contains no column header row.
+     */
+    private boolean ignoreColumnHeaderRow;
+
     public ExcelTableImportOperation(ITableStructure structure, String sourceFile,
             ITableContentsGeneration targetGeneration, AbstractExternalTableFormat format,
-            String nullRepresentationString, MessageList list) {
+            String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList list) {
         this.sourceFile = sourceFile;
         this.structure = structure;
         this.targetGeneration = targetGeneration;
         this.format = format;
         this.nullRepresentationString = nullRepresentationString;
+        this.ignoreColumnHeaderRow = ignoreColumnHeaderRow;
         this.messageList = list;
     }
 
@@ -154,7 +161,10 @@ public class ExcelTableImportOperation implements IWorkspaceRunnable {
 
     private void fillGeneration(ITableContentsGeneration generation, HSSFSheet sheet, IProgressMonitor monitor)
             throws CoreException {
-        for (int i = 1;; i++) { // row 0 is the header
+        // row 0 is the header if ignoreColumnHeaderRow is true,
+        // otherwise row 0 contains data
+        int startRow = ignoreColumnHeaderRow?1:0;
+        for (int i = startRow;; i++) {
             HSSFRow sheetRow = sheet.getRow(i);
             if (sheetRow == null) {
                 // no more rows, we are finished whit this sheet.

@@ -24,6 +24,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -237,11 +238,11 @@ public class SelectContentsPage extends WizardPage implements ValueChangeListene
         try {
             ITableContents contents = getTableContents();
             if (contents == null) {
-                setErrorMessage(Messages.SelectContentsPage_msgMissingContent);
+                setErrorMessage(NLS.bind(Messages.SelectContentsPage_msgMissingContent, contentsControl.getText()));
                 return;
             }
             if (!contents.exists()) {
-                setErrorMessage(Messages.SelectContentsPage_msgMissingContent);
+                setErrorMessage(NLS.bind(Messages.SelectContentsPage_msgMissingContent, contentsControl.getText()));
                 return;
             }
         } catch (CoreException e) {

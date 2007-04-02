@@ -18,6 +18,7 @@
 package org.faktorips.devtools.extsystems.excel;
 
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
 import org.faktorips.devtools.extsystems.IValueConverter;
 import org.faktorips.util.message.MessageList;
 
@@ -35,10 +36,10 @@ public class StringValueConverter implements IValueConverter {
 	 * {@inheritDoc}
 	 */
 	public String getIpsValue(Object externalDataValue, MessageList messageList) {
-		if (externalDataValue == null) {
-			return null;
-		}
-		return externalDataValue.toString();
+        if (externalDataValue instanceof Double){
+            return AbstractExternalTableFormat.doubleToStringWithoutDecimalPlaces((Double)externalDataValue);
+        }
+		return externalDataValue==null?null:externalDataValue.toString();
 	}
 
 	/**

@@ -271,6 +271,10 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
         if (getErrorMessage()!=null) {
             return;
         }
+        validateStructure();
+        if (getErrorMessage()!=null) {
+            return;
+        }
         validateContent();
         if (getErrorMessage()!=null) {
             return;
@@ -291,6 +295,17 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
         } catch (CoreException e) {
         	IpsPlugin.logAndShowErrorDialog(e);
         	setErrorMessage(e.getMessage());
+        }
+    }
+    
+    private void validateStructure() {
+        try {
+            if (structureControl.findTableStructure() == null) {
+                setErrorMessage(NLS.bind(Messages.NewContentsPage_msgTableStructureNotExists, structureField.getText()));
+            }
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            setErrorMessage(e.getMessage());
         }
     }
     

@@ -34,7 +34,9 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String TableImport_title;
+	public static String NewContentsPage_msgTableStructureNotExists;
+    public static String SelectFileAndImportMethodPage_labelFirstRowContainsColumnHeader;
+    public static String TableImport_title;
     public static String NewContentsPage_title;
     public static String SelectContentsPage_title;
     public static String NewContentsPage_labelContents;

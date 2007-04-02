@@ -89,7 +89,7 @@ public class TableImportWizard extends Wizard implements IImportWizard {
 
             MessageList messageList = new MessageList();
             IWorkspaceRunnable runnable = format.getImportTableOperation(structure, new Path(filename),
-                    generation, nullRepresentation, messageList);
+                    generation, nullRepresentation, filePage.isImportIgnoreColumnHeaderRow(), messageList);
 
             /*
              * use a ProgressMonitorDialog to display the progress and allow the user to cancel the

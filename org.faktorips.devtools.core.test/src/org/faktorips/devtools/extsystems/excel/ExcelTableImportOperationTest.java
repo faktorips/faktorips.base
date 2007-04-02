@@ -130,7 +130,7 @@ public class ExcelTableImportOperationTest extends AbstractIpsPluginTest {
         MessageList ml = new MessageList();
         createValid();
         ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
-                "NULL", ml);
+                "NULL", true, ml);
         op.run(new NullProgressMonitor());
         assertTrue(ml.isEmpty());
     }
@@ -143,7 +143,7 @@ public class ExcelTableImportOperationTest extends AbstractIpsPluginTest {
         IColumn col = structure.newColumn();
 
         ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
-                "NULL", ml);
+                "NULL", true, ml);
         op.run(new NullProgressMonitor());
         assertFalse(ml.isEmpty());
 
@@ -161,11 +161,33 @@ public class ExcelTableImportOperationTest extends AbstractIpsPluginTest {
         assertFalse(ml.isEmpty());
     }
 
+    public void testImportFirstRowContainsNoColumnHeader() throws Exception{
+        MessageList ml = new MessageList();
+        createValid();
+
+        ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
+                "NULL", false, ml);
+        op.run(new NullProgressMonitor());
+        
+        assertEquals(4, importTarget.getRows().length);
+    }
+    
+    public void testImportFirstRowContainsColumnHeader() throws Exception{
+        MessageList ml = new MessageList();
+        createValid();
+        
+        ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
+                "NULL", true, ml);
+        op.run(new NullProgressMonitor());
+        
+        assertEquals(3, importTarget.getRows().length);
+    }
+    
     public void testImportInvalid() throws Exception {
         MessageList ml = new MessageList();
         createInvalid();
         ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
-                "NULL", ml);
+                "NULL", true, ml);
         op.run(new NullProgressMonitor());
         assertEquals(6, ml.getNoOfMessages());
     }

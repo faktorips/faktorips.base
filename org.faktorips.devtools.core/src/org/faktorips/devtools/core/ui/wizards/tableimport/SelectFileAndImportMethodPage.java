@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.FileSelectionControl;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
 import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
@@ -56,6 +57,7 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
     private CheckboxField importIntoNewField;
     private CheckboxField importExistingReplaceField;
     private CheckboxField importExistingAppendField;
+    private CheckboxField importIgnoreColumnHeaderRowField;
     
     // true if the input is validated and errors are displayed in the messes area.
     protected boolean validateInput = true;
@@ -87,19 +89,16 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
 	public void valueChanged(FieldValueChangedEvent e) {
         if (e.field == filenameField) {
             filenameChanged();
-        }
-        if (e.field == importIntoExistingField) {
+        } else if (e.field == importIntoExistingField) {
             importIntoExistingChanged();
-        }
-        if (e.field == importIntoNewField) {
+        } else if (e.field == importIntoNewField) {
             importIntoNewChanged();
-        }
-        if (e.field == importExistingAppendField) {
+        } else if (e.field == importExistingAppendField) {
             importExistingAppendChanged();
-        }
-        if (e.field == importExistingReplaceField) {
+        } else if (e.field == importExistingReplaceField) {
             importExistingReplaceChanged();
         }
+        
         if (validateInput) { // don't validate during control creating!
             try {
                 validatePage();    
@@ -264,6 +263,10 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
 
         setDefaults(initialSelection);
         
+        Checkbox ignoreColumnHeaderRow = toolkit.createCheckbox(pageControl, Messages.SelectFileAndImportMethodPage_labelFirstRowContainsColumnHeader);
+        importIgnoreColumnHeaderRowField = new CheckboxField(ignoreColumnHeaderRow);
+        importIgnoreColumnHeaderRowField.addChangeListener(this);
+        
         Composite additionals = toolkit.createLabelEditColumnComposite(pageControl);
         toolkit.createLabel(additionals, Messages.SelectFileAndImportMethodPage_labelNullRepresentation);
         nullRepresentation = toolkit.createText(additionals);
@@ -333,6 +336,10 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
             return importExistingAppendField.getCheckbox().isChecked();
         }
         return false;
+    }
+    
+    public boolean isImportIgnoreColumnHeaderRow(){
+        return importIgnoreColumnHeaderRowField.getCheckbox().isChecked();
     }
     
     public String getNullRepresentation() {
