@@ -108,10 +108,14 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             }
             monitor.subTask(Messages.IpsBuilder_preparingBuild);
             IIpsArtefactBuilderSet ipsArtefactBuilderSet = getIpsProject().getIpsArtefactBuilderSet();
+            boolean isFullBuildRequired = isFullBuildRequired(kind);
+            if (isFullBuildRequired) {
+                kind = IncrementalProjectBuilder.FULL_BUILD;
+            }
             applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new BeforeBuildProcessCommand(kind), monitor);
             monitor.worked(100);
-            if (isFullBuildRequired(kind)) {
-                // delta not available
+            if (isFullBuildRequired) {
+                kind = IncrementalProjectBuilder.FULL_BUILD;
                 monitor.subTask(Messages.IpsBuilder_startFullBuild);
                 fullBuild(ipsArtefactBuilderSet, buildStatus, new SubProgressMonitor(monitor, 99700));
             } else {
@@ -149,10 +153,10 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         if (kind==FULL_BUILD || kind==CLEAN_BUILD) {
             return true;
         }
-        if (getDelta(getProject()) == null) {
+        IResourceDelta delta = getDelta(getProject());
+        if (delta == null) {
             return true;
         }
-        IResourceDelta delta = getDelta(getProject());
         IIpsProject ipsProject = getIpsProject();
         if (delta.findMember(ipsProject.getIpsProjectPropertiesFile().getProjectRelativePath())!=null) {
             return true;
