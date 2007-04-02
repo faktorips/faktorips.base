@@ -103,7 +103,8 @@ public abstract class IpsObjectPartContainerUIController extends DefaultUIContro
                     fieldMessages = list.getMessagesFor(mapping.getObject(), mapping.getPropertyName());
                 } else {
                     fieldMessages = new MessageList();
-                    fieldMessages.add(Message.newError(EditField.INVALID_VALUE, Messages.getString("IpsObjectPartContainerUIController.invalidValue"))); //$NON-NLS-1$
+                    fieldMessages.add(Message.newError(EditField.INVALID_VALUE,
+                            Messages.IpsObjectPartContainerUIController_invalidValue));
                 }
                 mapping.getField().setMessages(fieldMessages);
             }
