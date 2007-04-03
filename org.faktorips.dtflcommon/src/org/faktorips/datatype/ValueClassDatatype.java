@@ -175,7 +175,15 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
         if (!supportsCompare()) {
             throw new UnsupportedOperationException("Datatype " + getQualifiedName() + " does not support comparison of values");
         }
-        return ((Comparable)getValue(valueA)).compareTo(getValue(valueB));
+        Comparable valA = (Comparable)getValue(valueA);
+        if (valA==null) {
+            return -1;
+        }
+        Comparable valB = (Comparable)getValue(valueB);
+        if (valB==null) {
+            return 1;
+        }
+        return valA.compareTo(valB);
     }
 
 
