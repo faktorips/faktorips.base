@@ -723,12 +723,16 @@ public abstract class IpsObjectEditor extends FormEditor
      */
     public final void dispose() {
         super.dispose();
-        selectionProviderDispatcher.dispose();
+        if (selectionProviderDispatcher!=null) {
+            selectionProviderDispatcher.dispose();
+        }
         if (activationListener!=null) {
             activationListener.dispose();
         }
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-        errorTickupdater.dispose();
+        if (errorTickupdater!=null) {
+            errorTickupdater.dispose();
+        }
         disposeInternal();
         if (TRACE) {
             log("disposed."); //$NON-NLS-1$
