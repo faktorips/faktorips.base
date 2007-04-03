@@ -344,7 +344,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
     private void generateMethodGetAllEnumValues(JavaCodeFragmentBuilder methodBuilder) throws CoreException{
 
         //TODO java naming convensions
-        String methodName = "get" + StringUtils.capitalise(getTableContents().getName()) + "s";
+        String methodName = "getAllValues";
         
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return ");
