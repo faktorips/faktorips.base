@@ -105,10 +105,15 @@ public class FailurePane {
             if (innerSeparatorIndex != -1){
                 testName= testName.substring(0, innerSeparatorIndex);
             }
-            String lineNumber= traceLine;
-            lineNumber= lineNumber.substring(lineNumber.indexOf(':') + 1, lineNumber.lastIndexOf(')'));
-            line = Integer.valueOf(lineNumber).intValue();
-            fileName= traceLine.substring(traceLine.lastIndexOf('(') + 1, traceLine.lastIndexOf(':'));
+            try {
+                String lineNumber= traceLine;
+                lineNumber= lineNumber.substring(lineNumber.indexOf(':') + 1, lineNumber.lastIndexOf(')'));
+                line = Integer.valueOf(lineNumber).intValue();
+                fileName= traceLine.substring(traceLine.lastIndexOf('(') + 1, traceLine.lastIndexOf(':'));
+            } catch (NumberFormatException e) {
+                // ignore number exception,
+                // the results is an invalid element, see #isValidElement()
+            }
         }
         
         public String getFileName() {
@@ -180,7 +185,8 @@ public class FailurePane {
                         navigate = openEditor(getSelectedTableRowText());
                     }
                     if (!navigate) {
-                        // navigate to corresponding test case
+                        // navigate to corresponding test case, if no source navigation is allowed
+                        // or the source navigation failed (e.g. no stacktrace line, but failure line indicator)
                         new OpenTestInEditorAction(viewPart, viewPart.getSelectedTestFullPath(), getSelectedTableRowText()).run();
                     }
                 }

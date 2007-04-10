@@ -38,6 +38,7 @@ public class Messages extends NLS {
     public static String TestCaseTransformer_Error_TestPolicyCmptTypeNotFound;
     public static String TestCaseTransformer_MessageTextInput;
     public static String TestCaseTransformer_MessageTextInputExpectedResult;
+    public static String TestCaseTransformer_WarningNoTestCasesFound;
     public static String TransformWizard_title;
 	public static String TransformWizard_SelectTarget_title;
 	public static String TransformWizard_SelectTarget_description;

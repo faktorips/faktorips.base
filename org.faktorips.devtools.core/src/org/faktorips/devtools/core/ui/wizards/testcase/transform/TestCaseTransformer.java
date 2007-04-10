@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
@@ -66,6 +67,8 @@ import org.w3c.dom.Text;
  */
 public class TestCaseTransformer implements IWorkspaceRunnable {
     
+    private static final Object RUNTIME_TEST_CASES_EXTENSION = "xml"; //$NON-NLS-1$
+
     private ITestCaseType type;
 
     private Exception lastException;
@@ -392,7 +395,7 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
             String nameExtension,
             IProgressMonitor monitor) throws CoreException {
         monitor.internalWorked(1);
-        if (!file.getFileExtension().equals("xml")) { //$NON-NLS-1$
+        if (!file.getFileExtension().equals(RUNTIME_TEST_CASES_EXTENSION)) { //$NON-NLS-1$
             return;
         }
         createTestCaseFromRuntimeXml(file, testCaseTypeName, root, packageName, nameExtension);
@@ -474,5 +477,8 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
             monitor = new NullProgressMonitor();
         }
         startTransforming(monitor);
+        if (importedTestCase == 0){
+            IpsPlugin.log(new IpsStatus(IStatus.WARNING, NLS.bind(Messages.TestCaseTransformer_WarningNoTestCasesFound, RUNTIME_TEST_CASES_EXTENSION), null));
+        }
     }
 }
