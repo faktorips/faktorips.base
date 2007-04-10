@@ -42,6 +42,9 @@ public class PcTypeRefControl extends IpsObjectRefControl {
      * {@inheritDoc}
      */
     protected IIpsObject[] getIpsObjects() throws CoreException {
+        if (getIpsProject()==null) {
+            return new IIpsObject[0];
+        }
         return getIpsProject().findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE);
     }
     

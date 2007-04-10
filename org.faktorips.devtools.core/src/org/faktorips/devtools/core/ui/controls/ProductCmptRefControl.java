@@ -56,8 +56,7 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.IpsObjectRefControl#getIpsObjects()
+     * {@inheritDoc}
      */
     protected IIpsObject[] getIpsObjects() throws CoreException {
     	IProductCmpt[] cmpts = getIpsProject().findProductCmpts(qualifiedTypeName, includeCmptsForSubtypes);
