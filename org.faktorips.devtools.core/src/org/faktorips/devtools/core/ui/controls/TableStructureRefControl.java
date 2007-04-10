@@ -46,6 +46,9 @@ public class TableStructureRefControl extends IpsObjectRefControl {
      * the table structure.
      */
     public ITableStructure findTableStructure() throws CoreException {
+        if (getIpsProject()==null) {
+            return null;
+        }
         return (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, getText());
     }
     
