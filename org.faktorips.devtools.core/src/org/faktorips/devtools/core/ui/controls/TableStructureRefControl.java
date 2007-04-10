@@ -53,10 +53,12 @@ public class TableStructureRefControl extends IpsObjectRefControl {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.IpsObjectRefControl#getIpsObjects()
+     * {@inheritDoc}
      */
     protected IIpsObject[] getIpsObjects() throws CoreException {
+        if (getIpsProject()==null) {
+            return null;
+        }
         return getIpsProject().findIpsObjects(IpsObjectType.TABLE_STRUCTURE);
     }
 

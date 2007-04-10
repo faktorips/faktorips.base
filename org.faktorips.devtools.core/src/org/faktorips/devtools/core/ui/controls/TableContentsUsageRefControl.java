@@ -55,6 +55,9 @@ public class TableContentsUsageRefControl extends TableContentsRefControl {
             return new IIpsObject[0];
         }
         IIpsObject[] allFound = super.getIpsObjects();
+        if (allFound.length==0) {
+            return allFound;
+        }
         String[] structures = structureUsage.getTableStructures();
         List result = new ArrayList();
         

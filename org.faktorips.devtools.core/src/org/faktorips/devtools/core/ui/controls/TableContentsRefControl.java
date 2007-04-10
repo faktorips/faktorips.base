@@ -46,6 +46,9 @@ public class TableContentsRefControl extends IpsObjectRefControl {
      * the table contents.
      */
     public ITableContents findTableContents() throws CoreException {
+        if (getIpsProject()==null) {
+            return null;
+        }
         return (ITableContents)getIpsProject().findIpsObject(IpsObjectType.TABLE_CONTENTS, getText());
     }
     
@@ -53,6 +56,9 @@ public class TableContentsRefControl extends IpsObjectRefControl {
      * {@inheritDoc}
      */
     protected IIpsObject[] getIpsObjects() throws CoreException {
+        if (getIpsProject()==null) {
+            return new IIpsObject[0];
+        }
         return getIpsProject().findIpsObjects(IpsObjectType.TABLE_CONTENTS);
     }
 

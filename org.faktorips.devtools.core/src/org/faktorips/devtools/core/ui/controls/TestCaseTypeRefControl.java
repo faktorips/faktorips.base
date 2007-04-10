@@ -37,10 +37,12 @@ public class TestCaseTypeRefControl extends IpsObjectRefControl {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.IpsObjectRefControl#getIpsObjects()
+     * {@inheritDoc}
      */
     protected IIpsObject[] getIpsObjects() throws CoreException {
+        if (getIpsProject()==null) {
+            return new IIpsObject[0];
+        }
         return getIpsProject().findIpsObjects(IpsObjectType.TEST_CASE_TYPE);
     }
 
