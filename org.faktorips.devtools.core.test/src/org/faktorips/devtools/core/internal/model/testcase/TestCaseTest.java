@@ -345,13 +345,17 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         IPolicyCmptType policyCmptTypeB = newPolicyCmptType(root, "PolicyCmptB");
         policyCmptTypeB.setSupertype(policyCmptTypeA.getQualifiedName());
         IPolicyCmptType policyCmptTypeC = newPolicyCmptType(root, "PolicyCmptC");
-        policyCmptTypeC.setSupertype(policyCmptTypeA.getQualifiedName());
+        policyCmptTypeC.setSupertype(policyCmptTypeB.getQualifiedName());
+        IPolicyCmptType policyCmptTypeD = newPolicyCmptType(root, "PolicyCmptD");
+        policyCmptTypeD.setSupertype(policyCmptTypeC.getQualifiedName());
         
-        // create product cmpts for B and C (will be added in the test case)
+        // create product cmpts will be added in the test case
         IProductCmpt productCmptB = newProductCmpt(root, "ProductCmptB");
         productCmptB.setPolicyCmptType(policyCmptTypeB.getQualifiedName());
         IProductCmpt productCmptC = newProductCmpt(root, "ProductCmptC");
         productCmptC.setPolicyCmptType(policyCmptTypeC.getQualifiedName());
+        IProductCmpt productCmptD = newProductCmpt(root, "ProductCmptD");
+        productCmptD.setPolicyCmptType(policyCmptTypeD.getQualifiedName());
         
         IValidationRule ruleA = policyCmptTypeA.newRule();
         ruleA.setName("RuleA");
@@ -362,6 +366,9 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         IValidationRule ruleC = policyCmptTypeC.newRule();
         ruleC.setName("RuleC");
         ruleC.setMessageCode("RuleC");
+        IValidationRule ruleD = policyCmptTypeD.newRule();
+        ruleD.setName("RuleD");
+        ruleD.setMessageCode("RuleD");
         
         // create parameter for the abstract policy cmpt
         ITestPolicyCmptTypeParameter paramA1 = testCaseType.newInputTestPolicyCmptTypeParameter();
@@ -370,7 +377,10 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         ITestPolicyCmptTypeParameter paramA2 = testCaseType.newInputTestPolicyCmptTypeParameter();
         paramA2.setPolicyCmptType(policyCmptTypeA.getQualifiedName());
         paramA2.setName("PolicyCmptA2");
-
+        ITestPolicyCmptTypeParameter paramA3 = testCaseType.newInputTestPolicyCmptTypeParameter();
+        paramA3.setPolicyCmptType(policyCmptTypeA.getQualifiedName());
+        paramA3.setName("PolicyCmptA3");
+        
         ITestPolicyCmpt tpcB = testCase.newTestPolicyCmpt();
         tpcB.setTestPolicyCmptTypeParameter(paramA1.getName());
         tpcB.setProductCmpt(productCmptB.getQualifiedName());
@@ -385,8 +395,28 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         assertTrue(testRuleParametersList.contains(ruleA));
         assertTrue(testRuleParametersList.contains(ruleB));
         assertTrue(testRuleParametersList.contains(ruleC));
-    }   
-
+        
+        testCase.removeTestObject(tpcC);
+        assertEquals(1, testCase.getAllTestPolicyCmpt().length);
+        testRuleParameters = testCase.getTestRuleCandidates();
+        assertEquals(2, testRuleParameters.length);
+        testRuleParametersList = Arrays.asList(testRuleParameters);
+        assertTrue(testRuleParametersList.contains(ruleA));
+        assertTrue(testRuleParametersList.contains(ruleB));
+        
+        ITestPolicyCmpt tpcD = testCase.newTestPolicyCmpt();
+        tpcD.setTestPolicyCmptTypeParameter(paramA3.getName());
+        tpcD.setProductCmpt(productCmptD.getQualifiedName());
+        
+        testRuleParameters = testCase.getTestRuleCandidates();
+        assertEquals(4, testRuleParameters.length);
+        testRuleParametersList = Arrays.asList(testRuleParameters);
+        assertTrue(testRuleParametersList.contains(ruleA));
+        assertTrue(testRuleParametersList.contains(ruleB));
+        assertTrue(testRuleParametersList.contains(ruleC));        
+        assertTrue(testRuleParametersList.contains(ruleD));        
+    }
+    
     /**
      * Test method for {@link org.faktorips.devtools.core.model.IFixDifferencesToModelSupport#containsDifferenceToModel()}.
      * @throws CoreException 

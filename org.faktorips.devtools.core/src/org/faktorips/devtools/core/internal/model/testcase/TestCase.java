@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -882,7 +883,9 @@ public class TestCase extends IpsObject implements ITestCase {
             return;
         }
         if (!pctOfPc.equals(pct)){
-            validationRules.addAll(Arrays.asList(pctOfPc.getRules()));
+            // add all rules inside the supertype hierarchy
+            ITypeHierarchy supertypeHierarchy = pctOfPc.getSupertypeHierarchy();
+            validationRules.addAll(Arrays.asList(supertypeHierarchy.getAllRules(pctOfPc)));
         }
     }
     
