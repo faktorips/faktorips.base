@@ -181,7 +181,15 @@ public class ClassLoaderProvider {
 		}
 		int index = jarFile.getName().lastIndexOf('.');
 		String name =  jarFile.getName();
-		File copy = File.createTempFile(name.substring(0,index-1),name.substring(index));
+		File copy;
+        if (index==-1) {
+            copy = File.createTempFile(name + "tmp", "jar");
+        } else if (index<3) {
+            // File.createTempFile required that the prefix is at least three characters long!
+            copy = File.createTempFile(name.substring(0, index) + "tmp", name.substring(index));
+        } else {
+            copy = File.createTempFile(name.substring(0, index),name.substring(index));
+        }
 		copy.deleteOnExit();
 		InputStream is = new FileInputStream(jarFile);
 		FileOutputStream os = new FileOutputStream(copy);
