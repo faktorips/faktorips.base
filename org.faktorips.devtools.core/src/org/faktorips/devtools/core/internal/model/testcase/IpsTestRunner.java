@@ -261,12 +261,13 @@ public class IpsTestRunner implements IIpsTestRunner {
             
             if (ipsProject == null){
                 trace("Cancel test run, no project found.");
+                resetLauchAndTestRun();
                 return;
             }
 
             // if no launch exists first create a new lauch
             //   the run method will be called later by using a new UI Job
-            if (launch == null && ! launchDelegateStarted){
+            if (launch == null){
                 ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
                 trace("Create new lauch configuration.");
                 ILaunchConfiguration launchConfiguration = createConfiguration(classpathRepositories, testsuites, manager);
@@ -284,8 +285,8 @@ public class IpsTestRunner implements IIpsTestRunner {
             launchDelegateStarted = false;
 
             if (launch == null){
-                trace("Cancel test run, no project found.");
-                isStarted = false;
+                trace("Cancel test run, no lauch found.");
+                resetLauchAndTestRun();
                 return;
             }
             
@@ -295,12 +296,14 @@ public class IpsTestRunner implements IIpsTestRunner {
             
             if (vmInstall == null){
                 trace("Cancel test run, VM not found.");
+                resetLauchAndTestRun();
                 return;
             }
             
             IVMRunner vmRunner = vmInstall.getVMRunner(mode);
             if (vmRunner == null){
                 trace("Cancel test run, VM Runner not found.");
+                resetLauchAndTestRun();
                 return;
             }
             
@@ -351,12 +354,18 @@ public class IpsTestRunner implements IIpsTestRunner {
             connect();
             trace("Stream finished.");
         } finally {
-            launch.terminate();
-            
-            launch = null;
-            launchStartTime = 0;
-            isStarted = false;
+            resetLauchAndTestRun();
         }
+    }
+
+    private void resetLauchAndTestRun() throws DebugException {
+        if (launch != null){
+            launch.terminate();
+        }
+        
+        launch = null;
+        launchStartTime = 0;
+        isStarted = false;
     }
 
     private void setVmConfigMaxHeapSize(VMRunnerConfiguration vmConfig, String maxHeapSize){
