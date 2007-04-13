@@ -187,17 +187,21 @@ public class IpsTestAction extends IpsAction {
 		}
 	}
 	
-    public void run(String tocFile, String testCasePackages){
+    public void run(String tocFile, String testCasePackages, boolean forceStart){
         try {
             showTestCaseResultView(IpsTestRunnerViewPart.EXTENSION_ID);
 
             IIpsTestRunner testRunner = IpsPlugin.getDefault().getIpsTestRunner();
             testRunner.setLauch(launch);
-            testRunner.startTestRunnerJob(tocFile, testCasePackages, mode);
+            testRunner.startTestRunnerJob(tocFile, testCasePackages, mode, forceStart);
         }
         catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+    }
+    
+    public void run(String tocFile, String testCasePackages){
+        run(tocFile, testCasePackages, false);
     }
     
 	/*

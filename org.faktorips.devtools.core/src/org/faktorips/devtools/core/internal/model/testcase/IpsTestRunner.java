@@ -40,9 +40,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -65,6 +63,7 @@ import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.SocketUtil;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.progress.UIJob;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -130,10 +129,11 @@ public class IpsTestRunner implements IIpsTestRunner {
     
     // The job to run the test
     private TestRunnerJob job;
-    
-    // Indicates that a job is currently running
-    private boolean jobRunning;
+    private boolean launchDelegateStarted = false;
+    private long launchStartTime;
 
+    boolean isStarted = false;
+    
     /*
      * Job class to run the selected tests.
      */
@@ -165,6 +165,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
+            
             return Status.OK_STATUS;
         }
     }
@@ -229,89 +230,135 @@ public class IpsTestRunner implements IIpsTestRunner {
         }
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void run(String classpathRepositories, String testsuites, String mode) throws CoreException {
-        // if the classpathRepository or the testsuite are not enclosed in "{...}" then 
-        // enclosed it, therefore the strings will be correctly interpreted as one entry
-        if (! (classpathRepositories.indexOf("{")>=0)) //$NON-NLS-1$
-            classpathRepositories = "{" + classpathRepositories + "}"; //$NON-NLS-1$ //$NON-NLS-2$
-        if (! (testsuites.indexOf("{")>=0)) //$NON-NLS-1$
-            testsuites = "{" + testsuites + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+        trace("IpsTestRunner.run()");
         
-        this.classpathRepositories= classpathRepositories;
-    	this.testsuites = testsuites;
-    	
-        if (ipsProject == null){
-            ipsProject = getIpsProjectFromTocPath(classpathRepositories);
-        }
+        isStarted = true;
         
-        if (ipsProject == null){
+        if (launchStartTime > 0){
+            trace("Cancel test runner, because runner is running");
             return;
         }
-    	
-    	IVMInstall vmInstall= getVMInstall(ipsProject.getJavaProject());
         
-        if (vmInstall == null)
-            return;
-        IVMRunner vmRunner = vmInstall.getVMRunner(mode);
-        if (vmRunner == null)
-            return;
-
-        String[] classPath = computeClasspath(ipsProject.getJavaProject());
-        
-        VMRunnerConfiguration vmConfig= new VMRunnerConfiguration(SocketIpsTestRunner.class.getName(), classPath);
-        String[] args = new String[4];
-        
-        port= SocketUtil.findFreePort();  //$NON-NLS-1$        
-        
-        // sets the arguments for the socket test runner
-        args[0]= Integer.toString(port);
-        args[1] = classpathRepositories;
-        args[2] = testsuites;
-        args[3] = ""; //$NON-NLS-1$
-        // create the string containing the additional repository packages
-        for (Iterator iter = getAllRepositoryPackagesAsString(ipsProject).iterator(); iter.hasNext();) {
-            args[3] += "{" + (String) iter.next() + "}"; //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        
-        vmConfig.setProgramArguments(args);
-
-        // sets the max heap size of the test runner virtual machine
-        if (StringUtils.isEmpty(testRunnerMaxHeapSize)){
-            // set the default size to 64
-            testRunnerMaxHeapSize = "64"; //$NON-NLS-1$
-        }
-        setVmConfigMaxHeapSize(vmConfig, testRunnerMaxHeapSize);
-        
-        ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-        
-        if (launch == null){
-            ILaunchConfiguration launchConfiguration = createConfiguration(classpathRepositories, testsuites, manager);
-    
-            launch= new Launch(launchConfiguration, mode, null);
-            if (launchConfiguration != null){
-                setDefaultSourceLocatorInternal(launch, launchConfiguration);
-                lauchInUiThreadIfNecessary(launchConfiguration, mode);
+        try {
+            // if the classpathRepository or the testsuite are not enclosed in "{...}" then 
+            // enclosed it, therefore the strings will be correctly interpreted as one entry
+            if (! (classpathRepositories.indexOf("{")>=0)) //$NON-NLS-1$
+                classpathRepositories = "{" + classpathRepositories + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+            if (! (testsuites.indexOf("{")>=0)) //$NON-NLS-1$
+                testsuites = "{" + testsuites + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+            
+            this.classpathRepositories= classpathRepositories;
+            this.testsuites = testsuites;
+            
+            if (ipsProject == null){
+                ipsProject = getIpsProjectFromTocPath(classpathRepositories);
             }
-        } else {
+            
+            if (ipsProject == null){
+                trace("Cancel test run, no project found.");
+                return;
+            }
+
+            // if no launch exists first create a new lauch
+            //   the run method will be called later by using a new UI Job
+            if (launch == null && ! launchDelegateStarted){
+                ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+                trace("Create new lauch configuration.");
+                ILaunchConfiguration launchConfiguration = createConfiguration(classpathRepositories, testsuites, manager);
+   
+                launch = new Launch(launchConfiguration, mode, null);
+                launchDelegateStarted = true;
+                if (launchConfiguration != null){
+                    setDefaultSourceLocatorInternal(launch, launchConfiguration);
+                    lauchInUiThreadIfNecessary(launchConfiguration, mode);
+                }
+                
+                isStarted = false;
+                return;
+            }
+            launchDelegateStarted = false;
+
+            if (launch == null){
+                trace("Cancel test run, no project found.");
+                isStarted = false;
+                return;
+            }
+            
+            launchStartTime = System.currentTimeMillis();
+
+            IVMInstall vmInstall= getVMInstall(ipsProject.getJavaProject());
+            
+            if (vmInstall == null){
+                trace("Cancel test run, VM not found.");
+                return;
+            }
+            
+            IVMRunner vmRunner = vmInstall.getVMRunner(mode);
+            if (vmRunner == null){
+                trace("Cancel test run, VM Runner not found.");
+                return;
+            }
+            
+            String[] classPath = computeClasspath(ipsProject.getJavaProject());
+            
+            VMRunnerConfiguration vmConfig= new VMRunnerConfiguration(SocketIpsTestRunner.class.getName(), classPath);
+            String[] args = new String[4];
+            
+            port= SocketUtil.findFreePort();  //$NON-NLS-1$        
+            
+            // sets the arguments for the socket test runner
+            args[0]= Integer.toString(port);
+            args[1] = classpathRepositories;
+            args[2] = testsuites;
+            args[3] = ""; //$NON-NLS-1$
+            // create the string containing the additional repository packages
+            for (Iterator iter = getAllRepositoryPackagesAsString(ipsProject).iterator(); iter.hasNext();) {
+                args[3] += "{" + (String) iter.next() + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            
+            vmConfig.setProgramArguments(args);
+
+            // sets the max heap size of the test runner virtual machine
+            if (StringUtils.isEmpty(testRunnerMaxHeapSize)){
+                // set the default size to 64
+                testRunnerMaxHeapSize = "64"; //$NON-NLS-1$
+            }
+            setVmConfigMaxHeapSize(vmConfig, testRunnerMaxHeapSize);
+            
+            ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+            
             ILaunchConfiguration launchConfiguration = launch.getLaunchConfiguration();
             // overwrite default max heap size if specified in the current lauch
-            String maxHeapSizeInConfiguration = launchConfiguration.getAttribute(IpsTestRunnerDelegate.ATTR_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
-            if (StringUtils.isNotEmpty(maxHeapSizeInConfiguration)){
+            String maxHeapSizeInConfiguration = launchConfiguration.getAttribute(IpsTestRunnerDelegate.ATTR_MAX_HEAP_SIZE,
+                    ""); //$NON-NLS-1$
+            if (StringUtils.isNotEmpty(maxHeapSizeInConfiguration)) {
                 setVmConfigMaxHeapSize(vmConfig, maxHeapSizeInConfiguration);
             }
             setDefaultSourceLocatorInternal(launch, launchConfiguration);
+
+            trace("Run VM Runner.");
+
             testStartTime = System.currentTimeMillis();
             vmRunner.run(vmConfig, launch, null);
             manager.addLaunch(launch);
+
+            trace("Connect.");
             connect();
+            trace("Stream finished.");
+        } finally {
+            launch.terminate();
+            
+            launch = null;
+            launchStartTime = 0;
+            isStarted = false;
         }
-        launch = null;
     }
-    
+
     private void setVmConfigMaxHeapSize(VMRunnerConfiguration vmConfig, String maxHeapSize){
         String testRunnerMaxHeapSizeArg = "-Xmx" + maxHeapSize + "m"; //$NON-NLS-1$ //$NON-NLS-2$
         vmConfig.setVMArguments(new String[]{testRunnerMaxHeapSizeArg});
@@ -324,14 +371,16 @@ public class IpsTestRunner implements IIpsTestRunner {
         if (IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow() == null) {
             UIJob uiJob = new UIJob("IPS Testrunner") { //$NON-NLS-1$
                 public IStatus runInUIThread(IProgressMonitor monitor) {
+                    trace("Lauch configuration (" + launchConfiguration.getName() + ") in UI Job 'IPS Testrunner'");
                     DebugUITools.launch(launchConfiguration, mode);
                     return Job.ASYNC_FINISH;
                 }
             };
             uiJob.setSystem(true);
+            trace("Run UI Job...");
             uiJob.run(new NullProgressMonitor());
-        }
-        else {
+        } else {
+            trace("Lauch configuration: " + launchConfiguration.getName());
             DebugUITools.launch(launchConfiguration, mode);
         }
     }
@@ -801,14 +850,27 @@ public class IpsTestRunner implements IIpsTestRunner {
         startTestRunnerJob(classpathRepository, testsuite, null);
 	}
     
+    public synchronized void startTestRunnerJob(String classpathRepository, String testsuite, String mode) throws CoreException{
+        startTestRunnerJob(classpathRepository, testsuite, null, false);
+    }
+    
     /**
      * Starts the test runner.
      */
-    public synchronized void startTestRunnerJob(String classpathRepository, String testsuite, String mode) throws CoreException{
-        if (jobRunning){
+    public synchronized void startTestRunnerJob(String classpathRepository, String testsuite, String mode, boolean forceStart) throws CoreException{
+        trace("Start test runner Job");
+
+        if (isStarted || !forceStart && (launchDelegateStarted || launchStartTime > 0)){
+            MessageDialog.openWarning(null, "Test ausführen", "Der Testrunner konnte nicht gestartet werden, da schon ein Testrunner läuft.");
+            trace("Cancel test runner start because a test run is already started.");
             return;
         }
-        
+
+        if (job != null){
+            trace("Cancel previous job.");
+            job.cancel();
+        }
+
         // first check the heap size, to display an error if there is a wrong value,
         // this is the last chance to display the error, otherwise the error will only be logged in the background
         testRunnerMaxHeapSize = IpsPlugin.getDefault().getIpsPreferences().getIpsTestRunnerMaxHeapSize();
@@ -817,19 +879,12 @@ public class IpsTestRunner implements IIpsTestRunner {
         }
         
         job = new TestRunnerJob(this, classpathRepository, testsuite, mode);
-
-        job.addJobChangeListener(new JobChangeAdapter() {
-            public void done(IJobChangeEvent event) {
-                jobRunning = false;
-            }
-            
-        });
+        
         // we don't need to specify a rule here, because the ips test runner
         // didn't depend on a rule, there will be no blocking events (e.g. builder could be depend
         // on job finishing or somthing else)
         job.setRule(null);
         job.schedule();
-        jobRunning = true;
     }
 
     public void setLauch(ILaunch launch) {

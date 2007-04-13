@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dï¿½rfen nur unter den Bedingungen der 
+ * Faktor-Zehn-Community Lizenzvereinbarung ï¿½ Version 0.1 (vor Grï¿½ndung Community) 
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -17,10 +17,16 @@
 
 package org.faktorips.devtools.core.ui.test;
 
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -40,6 +46,14 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
     public static final String ATTR_TESTCASES = IpsPlugin.PLUGIN_ID + ".ATTR_TESTCASES"; //$NON-NLS-1$
     public static final String ATTR_MAX_HEAP_SIZE = IpsPlugin.PLUGIN_ID + ".ATTR_MAX_HEAP_SIZE"; //$NON-NLS-1$
     
+    private static DateFormat DEBUG_FORMAT;
+    
+    public final static boolean TRACE_IPS_TEST_RUNNER;
+    
+    static {
+        TRACE_IPS_TEST_RUNNER = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/testrunner")).booleanValue(); //$NON-NLS-1$
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -53,14 +67,17 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
         
         if (IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow() != null){
             // the current thread is an ui thread, thus we can start the test directly
+            trace("Launch in existing UI Thread.");
             startTest(configuration, mode, launch);
             return;
         }
         
         // it is necessary that we execute the test in an ui thread (e.g. check for open editors in
         // DebugUiTools or open view is only possible if we run in an ui thread)
+        trace("Launch in new UI Thread.");
         UIJob uiJob = new UIJob("IPS Testrunner delegate") { //$NON-NLS-1$
             public IStatus runInUIThread(IProgressMonitor monitor) {
+                trace("Lauch configuration (" + configuration.getName() + ") in UI Job 'IPS Testrunner delegate'");
                 try {
                     startTest(configuration, mode, launch);
                 }
@@ -84,6 +101,19 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
         
         IpsTestAction runTestAction = new IpsTestAction(null, mode);
         runTestAction.setLauch(launch);
-        runTestAction.run(packageFragment, testCases);
+        runTestAction.run(packageFragment, testCases, true);
+    }
+    
+    private void trace(String line) {
+        if (TRACE_IPS_TEST_RUNNER) {
+            if (DEBUG_FORMAT == null){
+                DEBUG_FORMAT = new SimpleDateFormat("(HH:mm:ss.SSS): "); //$NON-NLS-1$
+            }
+            StringBuffer msgBuf = new StringBuffer(line.length() + 40);
+            msgBuf.append("IpsTestRunnerDelegate "); //$NON-NLS-1$
+            DEBUG_FORMAT.format(new Date(), msgBuf, new FieldPosition(0));
+            msgBuf.append(line);
+            System.out.println(msgBuf.toString());            
+        }
     }
 }
