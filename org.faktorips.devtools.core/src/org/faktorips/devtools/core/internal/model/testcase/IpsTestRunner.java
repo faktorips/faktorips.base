@@ -172,6 +172,8 @@ public class IpsTestRunner implements IIpsTestRunner {
             }
             return Status.OK_STATUS;
         }
+        
+        
     }
     
     // avoid creating new instances (use getDefault instead)
@@ -366,9 +368,6 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
 
     private void resetLauchAndTestRun() throws DebugException {
-        if (launch != null){
-            launch.terminate();
-        }
         trace("Reset lauch and test run."); //$NON-NLS-1$
         
         launchStartTime = 0;
@@ -847,6 +846,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 	
 	private void notifyTestRunEnded(String elapsedTime) {
         testRunnerMonitor.done();
+        job.done(new IpsStatus(IStatus.OK, "", null));
         List copy = new ArrayList(fIpsTestRunListeners); 
         for (Iterator iter = copy.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
