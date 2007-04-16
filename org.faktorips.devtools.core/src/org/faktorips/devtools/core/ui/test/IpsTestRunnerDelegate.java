@@ -65,6 +65,13 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
             monitor = new NullProgressMonitor();
         }
         
+        if (!IpsPlugin.getDefault().getIpsTestRunner().canStartNewTestRunner()){
+            monitor.worked(1);
+            monitor.done();
+            monitor.setCanceled(true);
+            return;
+        }
+        
         if (IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow() != null){
             // the current thread is an ui thread, thus we can start the test directly
             trace("Launch in existing UI Thread.");
@@ -101,7 +108,7 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
         
         IpsTestAction runTestAction = new IpsTestAction(null, mode);
         runTestAction.setLauch(launch);
-        runTestAction.run(packageFragment, testCases, true);
+        runTestAction.run(packageFragment, testCases);
     }
     
     private void trace(String line) {

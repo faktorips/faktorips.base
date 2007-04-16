@@ -113,15 +113,11 @@ public interface IIpsTestRunner {
      * @param classpathRepository the repository where the test are selected from
      * @param testPackage the package including the tests
      * @param mode The mode to run the test whith @see org.eclipse.debug.core.ILaunchManager#DEBUG_MODE/RUN_MODE
-     * @param forceStart <code>true</code> to force the start of the test runner (i.e. don't check if a test runner is already starting)
+     * @param launch An existing launch to run/debug the test runner with
      * 
      * @throws CoreException if an error occured.
      */
-    public void startTestRunnerJob(String classpathRepository, String testPackage, String mode, boolean forceStart) throws CoreException;
+    public void startTestRunnerJob(String classpathRepository, String testPackage, String mode, ILaunch launch) throws CoreException;
     
-    /**
-     * Sets the launch to run the tests with.<br>
-     * If no launch is set, a new launch will be created.
-     */
-    public void setLauch(ILaunch launch);
+    public boolean canStartNewTestRunner();
 }

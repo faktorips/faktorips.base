@@ -187,21 +187,16 @@ public class IpsTestAction extends IpsAction {
 		}
 	}
 	
-    public void run(String tocFile, String testCasePackages, boolean forceStart){
+    public void run(String tocFile, String testCasePackages){
         try {
             showTestCaseResultView(IpsTestRunnerViewPart.EXTENSION_ID);
 
             IIpsTestRunner testRunner = IpsPlugin.getDefault().getIpsTestRunner();
-            testRunner.setLauch(launch);
-            testRunner.startTestRunnerJob(tocFile, testCasePackages, mode, forceStart);
+            testRunner.startTestRunnerJob(tocFile, testCasePackages, mode, launch);
         }
         catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
-    }
-    
-    public void run(String tocFile, String testCasePackages){
-        run(tocFile, testCasePackages, false);
     }
     
 	/*
@@ -304,10 +299,7 @@ public class IpsTestAction extends IpsAction {
 			// run the test
 			IIpsTestRunner testRunner = IpsPlugin.getDefault().getIpsTestRunner();
 			testRunner.setIpsProject(ipsProject);
-            if (launch != null){
-                testRunner.setLauch(launch);
-            }
-            testRunner.startTestRunnerJob(testRootsString, testPackagesString, mode);
+            testRunner.startTestRunnerJob(testRootsString, testPackagesString, mode, launch);
 		}
 	}
     
