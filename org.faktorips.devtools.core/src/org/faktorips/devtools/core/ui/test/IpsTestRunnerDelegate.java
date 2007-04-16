@@ -95,7 +95,7 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
             }
         };
         uiJob.setSystem(true);
-        uiJob.run(monitor);
+        uiJob.schedule();
     }
     
     /*

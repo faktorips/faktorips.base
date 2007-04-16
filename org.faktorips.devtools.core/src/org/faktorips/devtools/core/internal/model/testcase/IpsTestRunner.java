@@ -37,7 +37,6 @@ import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
@@ -363,7 +362,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         trace("Connect."); //$NON-NLS-1$
         connect();
         trace("Stream finished."); //$NON-NLS-1$
-        
+
         resetLauchAndTestRun();
     }
 
@@ -385,16 +384,19 @@ public class IpsTestRunner implements IIpsTestRunner {
         if (IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow() == null) {
             UIJob uiJob = new UIJob("IPS Testrunner") { //$NON-NLS-1$
                 public IStatus runInUIThread(IProgressMonitor monitor) {
-                    monitor.beginTask("IPS Testrunner", 1); //$NON-NLS-1$
                     trace("Lauch configuration (" + launchConfiguration.getName() + ") in UI Job 'IPS Testrunner'"); //$NON-NLS-1$ //$NON-NLS-2$
-                    DebugUITools.launch(launchConfiguration, mode);
-                    monitor.done();
+                    try {
+                        launchConfiguration.launch(mode, monitor);
+                    } catch (CoreException e) {
+                        e.printStackTrace();
+                    }
                     return Job.ASYNC_FINISH;
                 }
+                
             };
             uiJob.setSystem(true);
             trace("Run UI Job..."); //$NON-NLS-1$
-            uiJob.run(new NullProgressMonitor());
+            uiJob.schedule();
         } else {
             trace("Lauch configuration: " + launchConfiguration.getName()); //$NON-NLS-1$
             DebugUITools.launch(launchConfiguration, mode);
@@ -902,6 +904,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         // we don't need to specify a rule here, because the ips test runner
         // didn't depend on a rule, there will be no blocking events (e.g. builder could be depend
         // on job finishing or somthing else)
+        job.setSystem(false);
         job.setRule(null);
         job.schedule();
     }
