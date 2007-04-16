@@ -24,13 +24,13 @@
 
 	    <!-- wipes out -->
 		<target name="clean">
-			<delete includeemptydirs="true" >
+			<delete failonerror="false" includeemptydirs="true" >
 				<fileset dir="${classes}">
 					<exclude name=".keep"/>
 					<include name="**/*" />
 				</fileset>
 			</delete>
-			<delete includeemptydirs="true" >
+			<delete failonerror="false" includeemptydirs="true" >
 				<fileset dir="${test_classes}">
 					<exclude name=".keep"/>
 					<include name="**/*" />
