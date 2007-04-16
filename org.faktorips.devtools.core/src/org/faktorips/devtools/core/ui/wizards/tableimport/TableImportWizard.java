@@ -17,6 +17,7 @@ package org.faktorips.devtools.core.ui.wizards.tableimport;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -39,12 +40,16 @@ import org.faktorips.util.message.MessageList;
  * @author Thorsten Waertel, Thorsten Guenther
  */
 public class TableImportWizard extends Wizard implements IImportWizard {
+    public static String ID = "org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard"; //$NON-NLS-1$
+    private static String DIALOG_SETTINGS_KEY = "TableImportWizard"; //$NON-NLS-1$
 
     private IStructuredSelection selection;
     private SelectFileAndImportMethodPage filePage;
     private NewContentsPage newContentsPage;
     private SelectContentsPage selectContentsPage;
 
+    private boolean hasNewDialogSettings;
+    
     /**
      * Create a new import-wizard.
      */
@@ -52,6 +57,15 @@ public class TableImportWizard extends Wizard implements IImportWizard {
         super();
         setWindowTitle(Messages.TableImport_title);
         this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/TableImportWizard.png")); //$NON-NLS-1$
+
+        IDialogSettings workbenchSettings= IpsPlugin.getDefault().getDialogSettings();
+        IDialogSettings section= workbenchSettings.getSection(DIALOG_SETTINGS_KEY); //$NON-NLS-1$
+        if (section == null)
+            hasNewDialogSettings = true;
+        else {
+            hasNewDialogSettings = false;
+            setDialogSettings(section);
+        }
     }
 
     /**
@@ -105,6 +119,16 @@ public class TableImportWizard extends Wizard implements IImportWizard {
                 getShell().getDisplay().syncExec(new ResultDisplayer(getShell(), messageList));
             }
 
+            // save the dialog settings
+            if (hasNewDialogSettings) {
+                IDialogSettings workbenchSettings = IpsPlugin.getDefault().getDialogSettings();
+                IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY);
+                section = workbenchSettings.addNewSection(DIALOG_SETTINGS_KEY);
+                setDialogSettings(section);
+            }
+            selectContentsPage.saveWidgetValues();
+            newContentsPage.saveWidgetValues();
+            filePage.saveWidgetValues();
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occured during the import process.", e)); //$NON-NLS-1$
         }

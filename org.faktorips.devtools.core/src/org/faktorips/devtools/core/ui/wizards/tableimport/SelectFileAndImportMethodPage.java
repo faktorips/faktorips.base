@@ -20,16 +20,18 @@ package org.faktorips.devtools.core.ui.wizards.tableimport;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.WizardDataTransferPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
@@ -45,9 +47,14 @@ import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
  * 
  * @author Thorsten Waertel
  */
-public class SelectFileAndImportMethodPage extends WizardPage implements
+public class SelectFileAndImportMethodPage extends WizardDataTransferPage implements
 		ValueChangeListener {
-	
+    public static final String PAGE_NAME= "SelectFileAndImportMethodPage"; //$NON-NLS-1$
+
+    // Stored widget contents
+    private static final String FIRST_ROW_HAS_COLUMN_NAMES = PAGE_NAME + ".SELECTED_TREE_ELEMENTS"; //$NON-NLS-1$
+    private static final String NULL_REPRESENTATION = PAGE_NAME + ".NULL_REPRESENTATION"; //$NON-NLS-1$
+    
     private Combo fileFormatControl;
     private Text nullRepresentation;
     
@@ -273,6 +280,8 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
         nullRepresentation.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
 
         validateInput = true;
+        
+        restoreWidgetValues();
 	}
 
     /**
@@ -345,4 +354,42 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
     public String getNullRepresentation() {
     	return nullRepresentation.getText();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void restoreWidgetValues() {
+        IDialogSettings settings = getDialogSettings();
+        if (settings == null){
+            return;
+        }
+        ((Checkbox)importIgnoreColumnHeaderRowField.getControl()).setChecked(settings.getBoolean(FIRST_ROW_HAS_COLUMN_NAMES));
+        nullRepresentation.setText(settings.get(NULL_REPRESENTATION));
+        
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void saveWidgetValues() {
+        IDialogSettings settings = getDialogSettings();
+        if (settings == null){
+            return;
+        }
+        settings.put(FIRST_ROW_HAS_COLUMN_NAMES, ((Checkbox)importIgnoreColumnHeaderRowField.getControl()).isChecked());
+        settings.put(NULL_REPRESENTATION, nullRepresentation.getText());
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean allowNewContainerName() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void handleEvent(Event event) {
+    }    
 }

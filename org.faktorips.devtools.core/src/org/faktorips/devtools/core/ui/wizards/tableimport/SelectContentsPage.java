@@ -29,6 +29,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -48,6 +49,9 @@ import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
  * @author Thorsten Waertel
  */
 public class SelectContentsPage extends WizardPage implements ValueChangeListener {
+    public static final String PAGE_NAME= "SelectContentsPage"; //$NON-NLS-1$
+
+    // Stored widget contents
 	
     // the resource that was selected in the workbench or null if none.
     private IResource selectedResource;
@@ -261,5 +265,24 @@ public class SelectContentsPage extends WizardPage implements ValueChangeListene
         boolean complete = !"".equals(projectField.getText()) //$NON-NLS-1$
         && !"".equals(contentsField.getText()); //$NON-NLS-1$
         setPageComplete(complete);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void saveWidgetValues() {
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean allowNewContainerName() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void handleEvent(Event event) {
     }
 }
