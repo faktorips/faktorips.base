@@ -1876,45 +1876,60 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void testFailureOccured(String qualifiedTestName, String[] failureDetails) {
+	public void testFailureOccured(final String qualifiedTestName, final String[] failureDetails) {
 		if (! canListenToTestRun(qualifiedTestName)){
 			return;
         }
         
-        // if not all fields are visible, first show all fields
-        // to ensure that the error will be visible
-        if (!actionAll.isChecked()){
-            postShowAll();
-        }
+        isTestRunFailure = true;
+        failureCount ++;
         
-		isTestRunFailure = true;
-		failureCount ++;
-		
-        FailureDetails failureDetailsObj = new FailureDetails(failureDetails);
+        final FailureDetails failureDetailsObj = new FailureDetails(failureDetails);
         final String formatedFailure = failureDetailsToString(failureDetails);
-
-        // inform about the failure in the form title
-        postAddFailureTooltipInFormTitle(formatedFailure);
-
-        // indicate edit fiels as failure
-        if (!testCaseDetailArea.markEditFieldAsFailure(findUniqueEditFieldKey(failureDetailsObj), formatedFailure,
-                failureDetails)) {
-            // field wasn't found, set message in the status bar to inform user about missing failure indicator
-            postSetStatusBarMessage(NLS.bind(Messages.TestCaseSection_StatusMessage_FieldNotFound, formatedFailure));
-        } else {
-            // field was successfully marked as failure
-            postSetStatusBarMessage(""); //$NON-NLS-1$
-        }
-        
-        // create context menu to store actual value
-        EditField editField = testCaseDetailArea.getEditField(getUniqueEditFieldKey(failureDetailsObj.getObjectName(),
-                failureDetailsObj.getAttributeName()));
-        if (editField != null){
-            postAddExpectedResultContextMenu(editField.getControl(), failureDetailsObj, false);
-        }
         
         // store the failure details for later use (e.g. store all actual values)
         allFailureDetails.add(failureDetailsObj);
+        
+        // display failure in several gui controls 
+        postAsyncRunnable(new Runnable() {
+            public void run() {
+                if(isDisposed()) 
+                    return;
+                
+                // if not all fields are visible, first show all fields
+                // to ensure that the error will be visible
+                if (!actionAll.isChecked()){
+                    showAll(true);
+                    actionAll.setChecked(true);
+                }
+
+                // inform about the failure in the form title
+                setFormToolTipText(getFormToolTipText() + "\n" + formatedFailure); //$NON-NLS-1$
+
+                // indicate edit fiels as failure and set message in status line if the field couldn't be found
+                String message = ""; //$NON-NLS-1$
+                if (!testCaseDetailArea.markEditFieldAsFailure(findUniqueEditFieldKey(failureDetailsObj), formatedFailure,
+                        failureDetails)) {
+                    // field wasn't found, set message in the status bar to inform user about missing failure indicator
+                    message = NLS.bind(Messages.TestCaseSection_StatusMessage_FieldNotFound, formatedFailure);
+                } 
+                IStatusLineManager statusLineManager = site.getActionBars().getStatusLineManager();
+                if (statusLineManager != null) {
+                    statusLineManager.setMessage(message);
+                }
+                
+                // create context menu to store actual value
+                EditField editField = testCaseDetailArea.getEditField(getUniqueEditFieldKey(failureDetailsObj.getObjectName(),
+                        failureDetailsObj.getAttributeName()));
+                if (editField != null){
+                    ArrayList list = new ArrayList(1);
+                    list.add(failureDetails);
+                    
+                    TestCaseSection.this.addExpectedResultContextMenu(editField.getControl(), list, false);
+                }
+                
+            }
+        });
 	}
     
     public void postSetStatusBarMessage(final String message) {
@@ -1940,16 +1955,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
     }
     
-    private void postAddFailureTooltipInFormTitle(final String failureToolTip) {
-        postAsyncRunnable(new Runnable() {
-            public void run() {
-                if (isDisposed())
-                    return;
-                setFormToolTipText(getFormToolTipText() + "\n" + failureToolTip); //$NON-NLS-1$
-            }
-        });
-    }    
-    
     void postAddExpectedResultContextMenu(Control control, String[] failureDetails){
         postAddExpectedResultContextMenu(control, new FailureDetails(failureDetails), false);
     }
@@ -1969,23 +1974,27 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     return;
                 }
                 
-                if (failureDetails.size() == 0){
-                    return;
-                }
-                
-                EditFieldMenu menuMgr = new EditFieldMenu("#PopupMenu", failureDetails); //$NON-NLS-1$
-                menuMgr.setRemoveAllWhenShown(true);
-                menuMgr.addMenuListener(menuMgr);
-
-                Menu menu = menuMgr.createContextMenu(control);
-                control.setMenu(menu);
-                if (isSectionTitleMenu) {
-                    sectionTitleContextMenu = menu;
-                }
+                addExpectedResultContextMenu(control, failureDetails, isSectionTitleMenu);
             }
         });
     }
 
+    private void addExpectedResultContextMenu(final Control control, final List failureDetails, final boolean isSectionTitleMenu) {
+        if (failureDetails.size() == 0){
+            return;
+        }
+        
+        EditFieldMenu menuMgr = new EditFieldMenu("#PopupMenu", failureDetails); //$NON-NLS-1$
+        menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.addMenuListener(menuMgr);
+
+        Menu menu = menuMgr.createContextMenu(control);
+        control.setMenu(menu);
+        if (isSectionTitleMenu) {
+            sectionTitleContextMenu = menu;
+        }
+    }
+    
 	/**
      * {@inheritDoc}
      */	
