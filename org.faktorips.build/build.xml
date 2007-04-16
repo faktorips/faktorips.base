@@ -7,7 +7,8 @@
 			<property name="test_src" location="../test" />
 		
 			<!-- classes -->
-		  	<property name="classes" location="classes"/>
+		  	<property name="classes" location="classes/java"/>
+		  	<property name="test_classes" location="classes/test"/>
 		
 			<!-- jars -->
 			<property name="temp_jarfile" location="results/temp_faktorips-${projectname}.jar" />
@@ -25,6 +26,12 @@
 		<target name="clean">
 			<delete includeemptydirs="true" >
 				<fileset dir="${classes}">
+					<exclude name=".keep"/>
+					<include name="**/*" />
+				</fileset>
+			</delete>
+			<delete includeemptydirs="true" >
+				<fileset dir="${test_classes}">
 					<exclude name=".keep"/>
 					<include name="**/*" />
 				</fileset>
@@ -48,7 +55,8 @@
 	
 		<!-- init directories -->
 	    <target name="init" >
-
+			<mkdir dir="${classes}"/>
+			<mkdir dir="${test_classes}"/>
 	    </target>
 	    	
 	
@@ -58,7 +66,7 @@
         <target name="compile" depends="init">
 			<javac encoding="UTF-8" srcdir="${src}" destdir="${classes}" classpathref="classpath"/> 
         	
-        	<copy todir="${classes}">
+        	<copy todir="${test_classes}">
         	    <fileset dir="${test_src}">
         	      <include name="**/*.properties" />
         	      <include name="**/*.xml" />
@@ -73,7 +81,7 @@
         	      <include name="**/*.ipsproduct" />
         	    </fileset>
         	</copy>
-        	<javac encoding="UTF-8" srcdir="${test_src}" destdir="${classes}" classpathref="classpath" />
+        	<javac encoding="UTF-8" srcdir="${test_src}:${src}" destdir="${test_classes}" classpathref="classpath" />
         </target>
 
 	
@@ -95,6 +103,7 @@
 	    		<formatter type="xml" usefile="true"/>
 	    		<classpath>
 	    		    <pathelement location="${classes}"/>
+	    		    <pathelement location="${test_classes}"/>
 	    		    <pathelement path="${java.class.path}"/> 
 	    			<path refid="classpath" />
 	    		</classpath>
