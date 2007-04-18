@@ -1285,18 +1285,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     validationResultCache.clear();
                     return false;
                 }
-                final IIpsElement element = getIpsElement(resource);
-                if (element == null) {
-                    return true;
-                }
-                if (!(element instanceof IIpsSrcFile)) {
+                final IIpsElement element = findIpsElement(resource);
+                if (!(element instanceof IIpsSrcFile)) { // this includes element==null!
                     return true;
                 }
                 IpsSrcFile srcFile = (IpsSrcFile)element;
                 IpsSrcFileContent content = getIpsSrcFileContent(srcFile);
                 boolean isInSync = content==null || content.wasModStampCreatedBySave(srcFile.getEnclosingResource().getModificationStamp());
-                
-                // boolean isInSync = isInSyncWithEnclosingResource(srcFile);
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out
                             .println("IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change/delete on disk with modStamp " //$NON-NLS-1$
