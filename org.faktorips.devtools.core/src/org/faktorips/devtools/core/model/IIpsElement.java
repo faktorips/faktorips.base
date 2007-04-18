@@ -39,9 +39,8 @@ public interface IIpsElement {
     public IIpsProject getIpsProject();
 
     /**
-     * Returns true if this element exists. Every ancestor up to the <code>IIpsProject</code> is
-     * an existing element, and if this element has a corresponding resource, that resource exists
-     * as well.
+     * Returns true if this element exists. This is the case if every ancestor up to the <code>IIpsProject</code>
+     * does exist and, if this element has a corresponding resource, that resource exists as well.
      */
     public boolean exists();
 
