@@ -32,6 +32,7 @@ import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
 import org.faktorips.util.message.MessageList;
 
 /**
+ * Table format for Microsoft's Excel.
  * 
  * @author Thorsten Guenther
  */
