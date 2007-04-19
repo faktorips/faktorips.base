@@ -52,6 +52,8 @@ public class Messages extends NLS {
 
     public static String IpsObjectPath_srcfolderentrymissing;
 
+    public static String IpsProject_javaProjectHasInvalidBuildPath;
+
     public static String IpsProject_msgCycleInIpsObjectPath;
 
     public static String IpsProjectRefEntry_noReferencedProjectSpecified;

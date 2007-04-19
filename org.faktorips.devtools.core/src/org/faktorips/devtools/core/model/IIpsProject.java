@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaModelMarker;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
@@ -94,6 +95,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public final static String MSGCODE_INVALID_MIGRATION_INFORMATION = MSGCODE_PREFIX + "InvalidMigrationInformation"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that the corresponding Java Project has build path errors.
+     */
+    public final static String MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS = MSGCODE_PREFIX + "JavaProjectHasBuildPathErrors"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that the base package generated name is duplicated specified
      * in different projects.
      */
@@ -122,6 +128,24 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public IJavaProject getJavaProject();
 
+    /**
+     * Returns <code>true</code> if the corresponding Java Project doesn't contain any errors that 
+     * prevent executing the Java bytecode. A Java project is considered error free if it doesn't
+     * contain any problem marker indicating that the Java sourcecode couldn't be compiled.
+     * Returns <code>null</code> if either the corresponding platform project is closed, the 
+     * Java corresponding project doesn't exist or it hasn't been build yet.
+     * Returns <code>false</code> otherwise.
+     * 
+     * @param checkRequiredJavaProjects <code>true</code> if the Java project's required by this
+     * Java project are also checked.
+     * 
+     * @throws CoreException if an error occurs while checking the Java project.
+     * 
+     * @see IJavaModelMarker#BUILDPATH_PROBLEM_MARKER
+     * @see IJavaModelMarker#JAVA_MODEL_PROBLEM_MARKER
+     */
+    public Boolean isJavaProjectErrorFree(boolean checkRequiredJavaProjects) throws CoreException; 
+    
     /**
      * Returns all ips projects referenced in the project's ips object path.
      * 

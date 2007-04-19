@@ -20,7 +20,6 @@ package org.faktorips.devtools.core.model;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsPackageFragment;
 import org.faktorips.util.ArgumentCheck;
 

@@ -32,6 +32,7 @@ import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -39,7 +40,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaModelMarker;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.osgi.util.NLS;
@@ -220,6 +223,72 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProject(getName());
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public Boolean isJavaProjectErrorFree(boolean checkReferencedJavaProjects) throws CoreException {
+        return isJavaProjectErrorFree(getJavaProject(), checkReferencedJavaProjects);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    private Boolean isJavaProjectErrorFree(IJavaProject javaProject, boolean checkReferencedJavaProjects) throws CoreException {
+        IProject project = javaProject.getProject();
+        if (!project.isAccessible()) {
+            return null;
+        }
+        if (!javaProject.exists()) {
+            return null;
+        }
+        // implementation note: if the java project has buildpath problems it also hasn't got a build state
+        // so we first have to check for markers (=> project has been build at least once) and then condiser the
+        // build state
+        IMarker[] markers = project.findMarkers(IJavaModelMarker.BUILDPATH_PROBLEM_MARKER, false, IResource.DEPTH_ZERO);
+        if (containsErrorMarker(markers)) {
+            return Boolean.FALSE;
+        }
+        markers = project.findMarkers(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, false, IResource.DEPTH_INFINITE);
+        if (containsErrorMarker(markers)) {
+            return Boolean.FALSE;
+        }
+        if (checkReferencedJavaProjects) {
+            List refProjectcs = getJavaProjectsReferencedInClasspath(javaProject);
+            for (Iterator it=refProjectcs.iterator(); it.hasNext(); ) {
+                IJavaProject refProject = (IJavaProject)it.next();
+                Boolean errorFree = isJavaProjectErrorFree(refProject, true);
+                if (errorFree!=null && !errorFree.booleanValue()) {
+                    return errorFree;
+                }
+            }
+        }
+        if (!javaProject.hasBuildState()) {
+            return null;
+        }
+        return Boolean.TRUE;
+    }
+
+    private boolean containsErrorMarker(IMarker[] markers) {
+        for (int i = 0; i < markers.length; i++) {
+            if (markers[i].getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR)==IMarker.SEVERITY_ERROR) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private List getJavaProjectsReferencedInClasspath(IJavaProject javaProject) throws JavaModelException {
+        List result = new ArrayList();
+        IClasspathEntry[] entries = javaProject.getRawClasspath();
+        for (int i = 0; i < entries.length; i++) {
+            if (entries[i].getEntryKind()==IClasspathEntry.CPE_PROJECT) {
+                IJavaProject refProject = javaProject.getJavaModel().getJavaProject(entries[i].getPath().lastSegment());
+                result.add(refProject);
+            }
+        }
+        return result;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -1199,6 +1268,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	 */
 	public MessageList validate() throws CoreException {
 		MessageList result = new MessageList();
+        validateJavaProjectBuildPath(result);
 		if (!getIpsProjectPropertiesFile().exists()) {
 			String text = Messages.IpsProject_msgMissingDotIpsprojectFile;
 			Message msg = new Message(IIpsProject.MSGCODE_MISSING_PROPERTY_FILE, text, Message.ERROR, this);
@@ -1225,6 +1295,22 @@ public class IpsProject extends IpsElement implements IIpsProject {
         validateIpsObjectPathCycle(result, props); 
 		return result;
 	}
+    
+    private void validateJavaProjectBuildPath(MessageList result) throws JavaModelException {
+        IJavaProject javaProject = getJavaProject();
+        if (!javaProject.exists()) {
+            return;
+        }
+        IClasspathEntry[] entries = javaProject.getRawClasspath();
+        for (int i = 0; i < entries.length; i++) {
+            if (!JavaConventions.validateClasspathEntry(javaProject, entries[i], true).isOK()) {
+                String text = Messages.IpsProject_javaProjectHasInvalidBuildPath;
+                Message msg = new Message(IIpsProject.MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS, text, Message.ERROR, this);
+                result.add(msg); 
+                return;
+            }
+        }
+    }
 
     private void validateIpsObjectPathCycle(MessageList result, IpsProjectProperties props) throws CoreException {
         if (getIpsObjectPathInternal().detectCycle(this)){
