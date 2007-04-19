@@ -29,8 +29,6 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
 
 /**
  * A workbench window action delegate to open a new wizard dialog. 
@@ -45,38 +43,30 @@ public abstract class OpenNewWizardAction implements IWorkbenchWindowActionDeleg
     private IWorkbenchWindow window;
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
+     * {@inheritDoc}
      */
     public void init(IWorkbenchWindow window) {
         this.window = window;
     }
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+     * {@inheritDoc}
      */
     public void selectionChanged(IAction action, ISelection selection) {
         // nothing to do
     }
     
 	/**
-	 * Implementations return the Wizard to be displayed in the
-	 * WizardDialog. 
+	 * Implementations return the Wizard to be displayed in the WizardDialog. 
 	 */
 	public abstract INewWizard createWizard();
 	
 	/** 
-	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+     * {@inheritDoc}
 	 */
-	public void run(IAction action)
-	{
+	public void run(IAction action) {
 		INewWizard wizard = createWizard();
 		IStructuredSelection selection = getCurrentSelection();
-		if (selection==null) {
-			IpsPlugin.log(new IpsStatus("No selection available, can't open wizard!")); //$NON-NLS-1$
-			return;
-		}
 		wizard.init(window.getWorkbench(), selection);
 		WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
 		dialog.open();

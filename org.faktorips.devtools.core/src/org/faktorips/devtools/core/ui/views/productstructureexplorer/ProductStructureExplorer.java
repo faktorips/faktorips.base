@@ -277,6 +277,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         Menu menu = menumanager.createContextMenu(tree.getControl());
         tree.getControl().setMenu(menu);
+        getSite().setSelectionProvider(tree);
         
         showEmptyMessage();
     }

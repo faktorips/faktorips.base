@@ -42,6 +42,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -88,20 +89,34 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
      */
     public IpsObjectPage(IStructuredSelection selection, String pageName) throws JavaModelException {
         super(pageName);
-        if (selection.getFirstElement() instanceof IResource) {
-            selectedResource = (IResource)selection.getFirstElement();
-        } else if (selection.getFirstElement() instanceof IJavaElement) {
-            selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();                
-        } else if (selection.getFirstElement() instanceof IIpsElement) {
-        	selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource();
-        } else {
-            selectedResource = null;
+        selectedResource = getSelectedResourceFromSelection(selection);
+    }
+    
+    private IResource getSelectedResourceFromSelection(IStructuredSelection selection) {
+        if (selection==null) {
+            return null;
         }
+        try {
+            Object element = selection.getFirstElement();
+            if (element instanceof IResource) {
+                return (IResource)selection.getFirstElement();
+            } else if (element instanceof IJavaElement) {
+                return ((IJavaElement)element).getCorrespondingResource();                
+            } else if (element instanceof IIpsElement) {
+                return ((IIpsElement)element).getEnclosingResource();
+            } else if (element instanceof IProductCmptReference) {
+                return ((IProductCmptReference)element).getProductCmpt().getEnclosingResource();
+            }
+        } catch (Exception e) {
+            // if we can't get the selected ressource, we can't put default in the controls
+            // but no need to bother the user with this, so we just log the exception
+            IpsPlugin.log(e);
+        }
+        return null;
     }
     
     /**
-     * Overridden method.
-     * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+     * {@inheritDoc}
      */
     public final void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
@@ -159,6 +174,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     protected void setDefaults(IResource selectedResource) throws CoreException {
         if (selectedResource==null) {
             setIpsPackageFragmentRoot(null);
+            sourceFolderControl.setFocus();
             return;
         }
         IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
