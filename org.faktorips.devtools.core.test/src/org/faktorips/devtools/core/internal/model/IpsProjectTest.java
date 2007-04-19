@@ -28,8 +28,11 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -92,6 +95,86 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         baseProject.setProperties(props);
     }
     
+    public void testValidate_JavaCodeContainsError() throws CoreException {
+        MessageList list = ipsProject.validate();
+        assertFalse(list.containsErrorMsg());
+        
+        // remove src folder => build path error
+        IFolder srcFolder = ipsProject.getProject().getFolder("src");
+        srcFolder.delete(true, null);
+        list = ipsProject.validate();
+        assertNotNull(list.getMessageByCode(IIpsProject.MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS));
+    }
+    
+    public void testIsJavaProjectErrorFree_OnlyThisProject() throws CoreException {
+        assertNull(ipsProject.isJavaProjectErrorFree(false));
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        assertNotNull(ipsProject.isJavaProjectErrorFree(false));
+        assertTrue(ipsProject.isJavaProjectErrorFree(false).booleanValue());
+        
+        // delete the source folder => inconsistent class path
+        IFolder srcFolder = ipsProject.getProject().getFolder("src");
+        srcFolder.delete(true, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        assertFalse(ipsProject.isJavaProjectErrorFree(false).booleanValue());
+
+        // recreate source folder
+        srcFolder.create(true, true, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        assertTrue(ipsProject.isJavaProjectErrorFree(false).booleanValue());
+        
+        // create Java sourcefile with compile error
+        IFile srcFile = srcFolder.getFile("Bla.java");
+        srcFile.create(new ByteArrayInputStream("wrong code".getBytes()), true, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        assertFalse(ipsProject.isJavaProjectErrorFree(false).booleanValue());
+
+        // change Java Sourcefile to contain warnings
+        String code = "import java.lang.String; public class Bla { }";
+        srcFile.setContents(new ByteArrayInputStream(code.getBytes()), true, false, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        assertTrue(ipsProject.isJavaProjectErrorFree(false).booleanValue());
+        
+        // create Java sourcefile with compile error
+        srcFile.delete(true, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        assertTrue(ipsProject.isJavaProjectErrorFree(false).booleanValue());
+
+        // project closed
+        ipsProject.getProject().close(null);
+        assertNull(ipsProject.isJavaProjectErrorFree(false));
+        
+        // project does not exist
+        IIpsProject project2 = IpsPlugin.getDefault().getIpsModel().getIpsProject("Project2");
+        assertNull(project2.isJavaProjectErrorFree(false));
+    }
+    
+    public void testIsJavaProjectErrorFree_WithRefToOtherProjects() throws CoreException {
+        IIpsProject ipsProject2 = newIpsProject("Project2");
+        IIpsProject ipsProject3 = newIpsProject("Project3");
+        IJavaProject javaProject1 = ipsProject.getJavaProject();
+        IJavaProject javaProject2 = ipsProject2.getJavaProject();
+        IJavaProject javaProject3 = ipsProject3.getJavaProject();
+        
+        IClasspathEntry refEntry = JavaCore.newProjectEntry(new Path("/Project2"));
+        addClasspathEntry(javaProject1, refEntry);
+
+        refEntry = JavaCore.newProjectEntry(new Path("/Project3"));
+        addClasspathEntry(javaProject2, refEntry);
+        
+        assertNull(ipsProject3.isJavaProjectErrorFree(true));
+        assertNull(ipsProject2.isJavaProjectErrorFree(true));
+        assertNull(ipsProject.isJavaProjectErrorFree(true));
+
+        // delete the source folder => inconsistent class path
+        IFolder srcFolder = javaProject3.getProject().getFolder("src");
+        srcFolder.delete(true, null);
+        ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        
+        assertFalse(ipsProject3.isJavaProjectErrorFree(true).booleanValue());
+        assertFalse(ipsProject2.isJavaProjectErrorFree(true).booleanValue());
+        assertFalse(ipsProject.isJavaProjectErrorFree(true).booleanValue());
+    }
     
     private void makeIpsProjectDependOnBaseProject() throws CoreException {
         IIpsProjectProperties props = ipsProject.getProperties();
@@ -164,7 +247,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
     
     public void testValidate() throws Exception {
-        Thread.sleep(500); // TODO here we have a threading issue
+        Thread.sleep(500); 
         // if the validate is called too fast, the .ipsproject-file is not written to disk and so can't be parsed!
     	MessageList list = ipsProject.validate();
     	assertTrue(list.isEmpty());

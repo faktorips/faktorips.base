@@ -234,10 +234,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 		if (!extFolder.exists()) {
 			extFolder.create(true, true, null);
 		}
-		IPackageFragmentRoot srcRoot = javaProject
-				.getPackageFragmentRoot(srcFolder);
-		IPackageFragmentRoot extRoot = javaProject
-				.getPackageFragmentRoot(extFolder);
+		IPackageFragmentRoot srcRoot = javaProject.getPackageFragmentRoot(srcFolder);
+		IPackageFragmentRoot extRoot = javaProject.getPackageFragmentRoot(extFolder);
 		IClasspathEntry[] entries = new IClasspathEntry[2];
 		entries[0] = JavaCore.newSourceEntry(srcRoot.getPath());
 		entries[1] = JavaCore.newSourceEntry(extRoot.getPath());
@@ -246,6 +244,14 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 		addSystemLibraries(javaProject);
 		return javaProject;
 	}
+    
+    protected void addClasspathEntry(IJavaProject project, IClasspathEntry entry) throws JavaModelException {
+        IClasspathEntry[] entries = project.getRawClasspath();
+        IClasspathEntry[] newEntries = new IClasspathEntry[entries.length+1];
+        System.arraycopy(entries, 0, newEntries, 0, entries.length);
+        newEntries[entries.length] = entry;
+        project.setRawClasspath(newEntries, null);
+    }
 
 	protected void addIpsCapabilities(IProject project) throws CoreException {
 		Util.addNature(project, IIpsProject.NATURE_ID);
