@@ -31,30 +31,6 @@ import org.faktorips.devtools.core.model.IIpsProject;
 public interface IIpsTestRunner {
 
     /**
-     * Run the given ips test.
-     * 
-     * @param classpathRepository the name of the repository in the classpath which contains 
-     *                            the to be tested testsuite.
-     * @param testsuite the name of the testsuite which will be executed.
-     * 
-     * @throws CoreException if an error occured.
-     */
-	public void run(String classpathRepository, String testsuite) throws CoreException;
-
-    /**
-     * Run the given ips test in the given mode.
-     * 
-     * @param classpathRepository the name of the repository in the classpath which contains 
-     *                            the to be tested testsuite.
-     * @param testsuite the name of the testsuite which will be executed.
-     * 
-     * @param mode The mode to run the test with (run, debug) @see ILaunchManager#DEBUG_MODE/RUN_MODE
-     * 
-     * @throws CoreException if an error occured.
-     */
-    public void run(String classpathRepository, String testsuite, String mode) throws CoreException;
-    
-    /**
      * Terminates the currently lauched test run process.
      * 
      * @throws CoreException if an error occurs.
@@ -102,22 +78,14 @@ public interface IIpsTestRunner {
      * @param classpathRepository the repository where the test are selected from
      * @param testPackage the package including the tests
      * @param mode The mode to run the test whith @see org.eclipse.debug.core.ILaunchManager#DEBUG_MODE/RUN_MODE
-     * 
-     * @throws CoreException if an error occured.
-     */
-    public void startTestRunnerJob(String classpathRepository, String testPackage, String mode) throws CoreException;
-    
-    /**
-     * Starts a new job for running tests.
-     * 
-     * @param classpathRepository the repository where the test are selected from
-     * @param testPackage the package including the tests
-     * @param mode The mode to run the test whith @see org.eclipse.debug.core.ILaunchManager#DEBUG_MODE/RUN_MODE
      * @param launch An existing launch to run/debug the test runner with
      * 
      * @throws CoreException if an error occured.
      */
     public void startTestRunnerJob(String classpathRepository, String testPackage, String mode, ILaunch launch) throws CoreException;
     
-    public boolean canStartNewTestRunner();
+    /**
+     * Returns <code>true</code> if a new test can be started.
+     */
+    public boolean isRunningTestRunner();
 }

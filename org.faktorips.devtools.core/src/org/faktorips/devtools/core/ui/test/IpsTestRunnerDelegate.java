@@ -65,7 +65,7 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
             monitor = new NullProgressMonitor();
         }
         
-        if (!IpsPlugin.getDefault().getIpsTestRunner().canStartNewTestRunner()){
+        if (IpsPlugin.getDefault().getIpsTestRunner().isRunningTestRunner()){
             monitor.worked(1);
             monitor.done();
             monitor.setCanceled(true);

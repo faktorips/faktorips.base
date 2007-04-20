@@ -35,8 +35,10 @@ public class Messages extends NLS {
 	}
 
 	public static String IpsTestRunner_Error_CouldNotConnect;
+    public static String IpsTestRunner_InfoDialogProjectWasNotBuild_Text;
     public static String IpsTestRunner_InfoDialogTestAlreadyRunning_Text;
-    public static String IpsTestRunner_InfoDialogTestAlreadyRunning_Title;
+    public static String IpsTestRunner_InfoDialogTestCouldNotStarted_Title;
+    public static String IpsTestRunner_InfoDialogErrorsInProject_Text;
 	public static String IpsTestRunner_Job_Name;
     public static String IpsTestRunner_lauchConfigurationDefaultName;
 	public static String TestAttributeValue_ValidateError_TestAttributeNotFound;

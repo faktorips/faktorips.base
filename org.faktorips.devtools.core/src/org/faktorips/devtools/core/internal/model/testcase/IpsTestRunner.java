@@ -56,6 +56,7 @@ import org.eclipse.debug.core.sourcelookup.containers.WorkspaceSourceContainer;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
@@ -229,27 +230,13 @@ public class IpsTestRunner implements IIpsTestRunner {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void run(String classpathRepositories, String testsuites) throws CoreException {
-        run(classpathRepositories, testsuites, ILaunchManager.RUN_MODE);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void run(String classpathRepositories, String testsuites, String mode) throws CoreException {
-        run(classpathRepositories, testsuites, mode, null);
-    }
-    
-    /**
+    /*
      * Run the test with the given launch.
      */
     private void run(String classpathRepositories, String testsuites, String mode, ILaunch launch) throws CoreException {
         trace("IpsTestRunner.run()"); //$NON-NLS-1$
         
-        if (launchStartTime > 0){
+        if (isRunningTestRunner()){
             trace("Cancel test runner, because runner is running"); //$NON-NLS-1$
             return;
         }
@@ -274,7 +261,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             return;
         }
 
-        // if no launch exists first create a new lauch
+        // if no launch is given first create a new lauch
         //   the run method will be called later by using a new UI Job and a given launch
         if (launch == null) {
             ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
@@ -352,18 +339,38 @@ public class IpsTestRunner implements IIpsTestRunner {
             setVmConfigMaxHeapSize(vmConfig, maxHeapSizeInConfiguration);
         }
         setDefaultSourceLocatorInternal(launch, launchConfiguration);
-
+        
+        // set additional vm arguments
+        setAdditionalVmArguments(vmConfig, launchConfiguration);
+        
         trace("Run VM Runner."); //$NON-NLS-1$
-
         testStartTime = System.currentTimeMillis();
         vmRunner.run(vmConfig, launch, null);
         manager.addLaunch(launch);
 
         trace("Connect."); //$NON-NLS-1$
         connect();
-        trace("Stream finished."); //$NON-NLS-1$
+        trace("Tester stream finished."); //$NON-NLS-1$
 
         resetLauchAndTestRun();
+    }
+
+    /**
+     * Set the additional vm argurments specified in the launch configuration
+     */
+    private void setAdditionalVmArguments(VMRunnerConfiguration vmConfig, ILaunchConfiguration launchConfiguration) throws CoreException {
+        String vmArgsInConfig = launchConfiguration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, (String)null);
+        if (StringUtils.isNotEmpty(vmArgsInConfig)){
+            String vmArguments[] = vmConfig.getVMArguments();
+            String[] vmArgumentsFromLaunchConfig = new String[0];
+            if (vmArgsInConfig != null){
+                vmArgumentsFromLaunchConfig = DebugPlugin.parseArguments(vmArgsInConfig);
+            }
+            String vmArgumentsNew[] = new String[vmArguments.length + vmArgumentsFromLaunchConfig.length];
+            System.arraycopy(vmArguments, 0, vmArgumentsNew, 0, vmArguments.length);
+            System.arraycopy(vmArgumentsFromLaunchConfig, 0, vmArgumentsNew, vmArguments.length, vmArgumentsFromLaunchConfig.length);
+            vmConfig.setVMArguments(vmArgumentsNew);
+        }
     }
 
     private void resetLauchAndTestRun() throws DebugException {
@@ -848,7 +855,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 	
 	private void notifyTestRunEnded(String elapsedTime) {
         testRunnerMonitor.done();
-        job.done(new IpsStatus(IStatus.OK, "", null));
+        job.done(new IpsStatus(IStatus.OK, "", null)); //$NON-NLS-1$
         List copy = new ArrayList(fIpsTestRunListeners); 
         for (Iterator iter = copy.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
@@ -868,12 +875,8 @@ public class IpsTestRunner implements IIpsTestRunner {
      * {@inheritDoc}
 	 */
 	public void startTestRunnerJob(String classpathRepository, String testsuite) throws CoreException{
-        startTestRunnerJob(classpathRepository, testsuite, null);
-	}
-    
-    public synchronized void startTestRunnerJob(String classpathRepository, String testsuite, String mode) throws CoreException{
         startTestRunnerJob(classpathRepository, testsuite, null, null);
-    }
+	}
     
     /**
      * Starts the test runner.
@@ -881,16 +884,30 @@ public class IpsTestRunner implements IIpsTestRunner {
     public synchronized void startTestRunnerJob(String classpathRepository, String testsuite, String mode, ILaunch launch) throws CoreException{
         trace("Start test runner Job"); //$NON-NLS-1$
 
-        if (!canStartNewTestRunner()){
-            MessageDialog.openWarning(null, Messages.IpsTestRunner_InfoDialogTestAlreadyRunning_Title, Messages.IpsTestRunner_InfoDialogTestAlreadyRunning_Text);
+        
+        if (isRunningTestRunner()){
+            MessageDialog.openWarning(null, Messages.IpsTestRunner_InfoDialogTestCouldNotStarted_Title, Messages.IpsTestRunner_InfoDialogTestAlreadyRunning_Text);
             trace("Cancel test runner start because a test run is already started."); //$NON-NLS-1$
-            if (launch != null && launch.canTerminate()){
-                launch.terminate();
-            }
+            // terminate the given launch if possible
+            terminateLaunch(launch);
             return;
         }
 
-        this.launch = launch;
+        Boolean javaProjectErrorFree = ipsProject.isJavaProjectErrorFree(true);
+        // check if there are errors in the java project and referenced java projects
+        if (Boolean.FALSE.equals(javaProjectErrorFree)){
+            MessageDialog.openWarning(null, Messages.IpsTestRunner_InfoDialogTestCouldNotStarted_Title, Messages.IpsTestRunner_InfoDialogErrorsInProject_Text);
+            trace("Cancel test runner start because the project contains errors."); //$NON-NLS-1$
+            terminateLaunch(launch);
+            return;
+        }
+        // check if the java project was build
+        if (javaProjectErrorFree == null){
+            MessageDialog.openWarning(null, Messages.IpsTestRunner_InfoDialogTestCouldNotStarted_Title, Messages.IpsTestRunner_InfoDialogProjectWasNotBuild_Text);
+            trace("Cancel test runner start because the project wasn't build."); //$NON-NLS-1$
+            terminateLaunch(launch);
+            return;
+        }
 
         // first check the heap size, to display an error if there is a wrong value,
         // this is the last chance to display the error, otherwise the error will only be logged in the background
@@ -909,18 +926,27 @@ public class IpsTestRunner implements IIpsTestRunner {
         job.schedule();
     }
 
+    private void terminateLaunch(ILaunch launch) throws DebugException {
+        if (launch != null && launch.canTerminate()){
+            launch.terminate();
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
-    public boolean canStartNewTestRunner() {
+    public boolean isRunningTestRunner() {
         trace("Check if a new test runner can start."); //$NON-NLS-1$
         if (isInsideTimeIntervall(launchStartTime)){
             trace("Cannot start the test runner, a test runner is already running."); //$NON-NLS-1$
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
     
+    /*
+     * Check is the current system time is greater than the last start time plus a specific intervall.
+     */
     private boolean isInsideTimeIntervall(long timeToCheck){
         return System.currentTimeMillis() < (timeToCheck + MAX_START_TIME_INTERVAL);
     }    

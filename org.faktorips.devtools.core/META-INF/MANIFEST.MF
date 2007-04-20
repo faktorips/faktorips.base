@@ -31,7 +31,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.team.cvs.core,
  org.eclipse.update.core,
  org.eclipse.debug.ui,
- org.eclipse.emf.codegen
+ org.eclipse.emf.codegen,
+ org.eclipse.jdt.debug.ui
 Eclipse-AutoStart: true
 Export-Package: org.apache.poi.ddf,
  org.apache.poi.dev,
