@@ -171,7 +171,7 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
             }
             String attributeName = identifier.substring(parameterName.length() + 1);
             IPolicyCmptType policyCmptType = (IPolicyCmptType) datatype;
-            IAttribute attribute = policyCmptType.getAttribute(attributeName);
+            IAttribute attribute = policyCmptType.findAttributeInSupertypeHierarchy(attributeName);
             if (attribute == null){
                 // attribute not found, therfore the datatype couldn't be determined, 
                 // remark this inconsistence will be reported in the vaildate method
@@ -200,9 +200,11 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
                 boolean knownReason = false;
                 Datatype datatypeOfParam = getIpsProject().findDatatype(param.getDatatype());
                 if (datatypeOfParam instanceof IPolicyCmptType) {
-                    IPolicyCmptType policyCmptType = (IPolicyCmptType)datatypeOfParam;
+                    IAttribute attribute = null;
                     String attributeName = identifier.substring(param.getName().length() + 1);
-                    IAttribute attribute = policyCmptType.getAttribute(attributeName);
+                    IPolicyCmptType policyCmptType = (IPolicyCmptType)datatypeOfParam;
+
+                    attribute = policyCmptType.findAttributeInSupertypeHierarchy(attributeName);
                     if (attribute == null) {
                         // attribute not found
                         knownReason = true;
