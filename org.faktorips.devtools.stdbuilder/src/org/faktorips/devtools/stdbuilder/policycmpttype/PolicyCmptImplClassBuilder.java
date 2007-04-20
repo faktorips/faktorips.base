@@ -182,9 +182,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         IPolicyCmptType type = getPcType();
         generateMethodInitialize(methodsBuilder);
         if (type.findProductCmptType()!=null) {
-            generateMethodGetProductCmpt(methodsBuilder);
-            generateMethodGetProductCmptGeneration(methodsBuilder);
-            generateMethodSetProductCmpt(methodsBuilder);
+            if(hasValidProductCmptTypeName()){
+                generateMethodGetProductCmpt(methodsBuilder);
+                generateMethodGetProductCmptGeneration(methodsBuilder);
+                generateMethodSetProductCmpt(methodsBuilder);
+            }
             generateMethodEffectiveFromHasChanged(methodsBuilder);
         }
         if (type.isAggregateRoot()) {

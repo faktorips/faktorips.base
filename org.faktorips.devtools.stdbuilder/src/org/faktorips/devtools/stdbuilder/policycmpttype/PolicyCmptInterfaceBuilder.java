@@ -156,9 +156,11 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateOther(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         if (getPcType().findProductCmptType()!=null) {
-            generateMethodGetProductCmpt(methodsBuilder);
-            generateMethodSetProductCmpt(methodsBuilder);
-            generateMethodGetProductCmptGeneration(getProductCmptType(), methodsBuilder);
+            if (hasValidProductCmptTypeName()) {
+                generateMethodGetProductCmpt(methodsBuilder);
+                generateMethodSetProductCmpt(methodsBuilder);
+                generateMethodGetProductCmptGeneration(getProductCmptType(), methodsBuilder);
+            }
         }
         generateCodeForValidationRules(memberVarsBuilder);
     }

@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.util.message.MessageList;
 
 /**
  * 
@@ -47,6 +48,15 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         return changeListenerSupportActive;
     }
     
+    /**
+     * This validation is necessary because otherwise a java class file is created with a wrong java class name
+     * this causes jmerge to throw an exception
+     */
+    protected boolean hasValidProductCmptTypeName() throws CoreException{
+        MessageList msgList = getPcType().validate();
+        return msgList.getMessageByCode(IPolicyCmptType.MSGCODE_INVALID_PRODUCT_CMPT_TYPE_NAME) == null;
+    }
+
     /**
      * {@inheritDoc}
      */

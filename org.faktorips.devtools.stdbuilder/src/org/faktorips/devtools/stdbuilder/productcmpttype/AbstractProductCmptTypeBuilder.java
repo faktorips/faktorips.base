@@ -43,6 +43,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * 
@@ -73,10 +75,18 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
      */
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IPolicyCmptType type = (IPolicyCmptType)ipsSrcFile.getIpsObject();
-        if (type.findProductCmptType()!=null) {
+        if (type.findProductCmptType() != null) {
+            MessageList msgList = type.validate();
+            //this validation is necessary because otherwise a java class file is created with a wrong java class name
+            //this causes jmerge to throw an exception
+            Message msg = msgList.getMessageByCode(IPolicyCmptType.MSGCODE_INVALID_PRODUCT_CMPT_TYPE_NAME);
+            if (msg != null) {
+                return;
+            }
+
             // this condition can't be handled in isBuilderFor() as the isBuilderFor() method
-            // is also called in the case the file has been deleted. In this case, the 
-            // file's ips object can't be accessed. 
+            // is also called in the case the file has been deleted. In this case, the
+            // file's ips object can't be accessed.
             super.build(ipsSrcFile);
         }
     }
