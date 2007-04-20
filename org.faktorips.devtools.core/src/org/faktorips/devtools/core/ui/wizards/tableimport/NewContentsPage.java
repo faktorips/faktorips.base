@@ -178,10 +178,23 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
         } else if (element instanceof IIpsSrcFile) {
             IIpsPackageFragment pack = (IIpsPackageFragment)element.getParent();
             setPdPackageFragment(pack);
+            // sets the default table structure
+            try {
+                if (((IIpsSrcFile)element).getIpsObject() instanceof ITableContents){
+                    ITableContents tableContents = (ITableContents)((IIpsSrcFile)element).getIpsObject();
+                    structureControl.setText(tableContents.getTableStructure());
+                } else if (((IIpsSrcFile)element).getIpsObject() instanceof ITableStructure){
+                    ITableStructure tableStructure = (ITableStructure)((IIpsSrcFile)element).getIpsObject();
+                    structureControl.setText(tableStructure.getQualifiedName());
+                }
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
         } else {
             setPdPackageFragmentRoot(null);
             return;
         }
+        
         validatePage();    
     }
     

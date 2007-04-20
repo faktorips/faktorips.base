@@ -120,9 +120,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -130,20 +128,15 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         // nothing else to do
     }
     
-    
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#newPart(java.lang.String, int)
+     * {@inheritDoc}
      */
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
     	String xmlTagName = xmlTag.getNodeName();
@@ -215,7 +208,10 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     public ITableContents getTableContents(){
         return (ITableContents)parent;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
         if(!list.isEmpty()){
@@ -237,6 +233,28 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
             }
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IRow insertRowAfter(int rowIndex) {
+        int newRowIndex = (rowIndex+1)>getNumOfRows()?getNumOfRows():rowIndex+1;
+        Row newRow = new Row(this, getNextPartId());
+        rows.add(newRowIndex, newRow);
+        newRow.setRowNumber(newRowIndex);
+        refreshRowNumbers();
+        return newRow;
+    }
     
+    /*
+     * Refreshs the row number of all rows.
+     */
+    private void refreshRowNumbers(){
+        int index=0;
+        for (Iterator iter = rows.iterator(); iter.hasNext();) {
+            Row row = (Row)iter.next();
+            row.setRowNumber(index++);
+        }
+    }
     
 }

@@ -122,6 +122,19 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         formulaTestInputValue.setIdentifier("param1");
         formulaTestInputValue.setValue("10");
         assertEquals(Datatype.INTEGER, formulaTestInputValue.findDatatypeOfFormulaParameter());
+        
+        // check attribute in supertype
+        IPolicyCmptType superType = newPolicyCmptType(ipsProject, "base");
+        pcTypeInput.setSupertype(superType.getQualifiedName());
+        IAttribute attrInSuperType = superType.newAttribute();
+        attrInSuperType.setName("super");
+        attrInSuperType.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attribute.setAttributeType(AttributeType.CHANGEABLE);
+        formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
+        formulaTestInputValue.setIdentifier("policyInputX.super");
+        formulaTestInputValue.setValue("10");
+        assertEquals(Datatype.INTEGER, formulaTestInputValue.findDatatypeOfFormulaParameter());
+        
         // param2
         formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
         formulaTestInputValue.setIdentifier("param2");

@@ -49,6 +49,7 @@ public class TableImportWizard extends Wizard implements IImportWizard {
     private SelectContentsPage selectContentsPage;
 
     private boolean hasNewDialogSettings;
+    private boolean importIntoExisting;
     
     /**
      * Create a new import-wizard.
@@ -73,12 +74,15 @@ public class TableImportWizard extends Wizard implements IImportWizard {
      */
     public void addPages() {
         try {
+            // create pages
             filePage = new SelectFileAndImportMethodPage(null);
             addPage(filePage);
             newContentsPage = new NewContentsPage(selection);
             addPage(newContentsPage);
             selectContentsPage = new SelectContentsPage(selection);
             addPage(selectContentsPage);
+            
+            filePage.setImportIntoExisting(importIntoExisting);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
@@ -178,6 +182,14 @@ public class TableImportWizard extends Wizard implements IImportWizard {
         this.selection = selection;
     }
 
+    /**
+     * Sets if the table content will be imported into the existing table content (<code>true</code>),
+     * or not (<code>false</code>)
+     */
+    public void setImportIntoExisting(boolean importIntoExisting){
+        this.importIntoExisting = importIntoExisting;
+    }
+    
     /**
      * {@inheritDoc}
      */

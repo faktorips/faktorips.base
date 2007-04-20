@@ -156,4 +156,25 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         assertNull(generation.getRow(-1));
         assertNull(generation.getRow(42));
     }
+    
+    public void testGetRowIndex(){
+        IRow row = generation.newRow();
+        assertEquals(0, row.getRowNumber());
+        row = generation.newRow();
+        assertEquals(1, row.getRowNumber());
+        row = generation.newRow();
+        assertEquals(2, row.getRowNumber());
+    }
+
+    public void testInsertRowAfter(){
+        IRow row1 = generation.newRow();
+        assertEquals(0, row1.getRowNumber());
+        IRow row2 = generation.insertRowAfter(0);
+        assertEquals(1, row2.getRowNumber());
+        IRow row3 = generation.insertRowAfter(0);
+        assertEquals(1, row3.getRowNumber());
+        assertEquals(2, row2.getRowNumber());
+        IRow row4 = generation.insertRowAfter(999);
+        assertEquals(3, row4.getRowNumber());
+    }
 }

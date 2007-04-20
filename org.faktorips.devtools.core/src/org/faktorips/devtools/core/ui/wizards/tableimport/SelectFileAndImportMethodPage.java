@@ -75,6 +75,8 @@ public class SelectFileAndImportMethodPage extends WizardDataTransferPage implem
     private AbstractExternalTableFormat[] formats;
     
     private IResource initialSelection;
+
+    private boolean importIntoExisting;
     
 	/**
      * 
@@ -282,6 +284,10 @@ public class SelectFileAndImportMethodPage extends WizardDataTransferPage implem
         validateInput = true;
         
         restoreWidgetValues();
+
+        // init controls
+        importIntoExistingField.getCheckbox().setChecked(importIntoExisting);
+        importIntoExistingChanged();
 	}
 
     /**
@@ -327,6 +333,9 @@ public class SelectFileAndImportMethodPage extends WizardDataTransferPage implem
         boolean complete = !"".equals(filenameField.getText()) //$NON-NLS-1$
         && fileFormatControl.getSelectionIndex() != -1;
         setPageComplete(complete);
+        if (getContainer() != null){
+            getContainer().updateButtons();
+        }
     }
     
     public boolean isImportIntoExisting() {
@@ -392,4 +401,11 @@ public class SelectFileAndImportMethodPage extends WizardDataTransferPage implem
      */
     public void handleEvent(Event event) {
     }    
+    
+    /**
+     * Sets the checkbox import into existing table.
+     */
+    void setImportIntoExisting(boolean importIntoExisting){
+        this.importIntoExisting = importIntoExisting;
+    }
 }

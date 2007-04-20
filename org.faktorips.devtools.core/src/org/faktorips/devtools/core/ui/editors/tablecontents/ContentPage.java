@@ -27,12 +27,14 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -64,6 +66,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.table.TableCellEditor;
 import org.faktorips.devtools.core.ui.wizards.tableexport.TableExportWizard;
+import org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -83,7 +86,8 @@ public class ContentPage extends IpsObjectEditorPage {
 	final static String PAGE_ID = "Contents"; //$NON-NLS-1$
     
     private TableViewer tableViewer;
-    
+
+    private Table table;
 
 	public ContentPage(IpsObjectEditor editor) {
 		super(editor, PAGE_ID, Messages.ContentPage_title);
@@ -99,10 +103,11 @@ public class ContentPage extends IpsObjectEditorPage {
         GridLayout layout = new GridLayout(1, false);
         formBody.setLayout(layout);
           
-        Table table= createTable(formBody);
+        table= createTable(formBody);
         initTableViewer(table, toolkit, formBody);
+        NewRowAction newRowAction = new NewRowAction(tableViewer, this);
         DeleteRowAction deleteRowAction = new DeleteRowAction(tableViewer, this);
-        initTablePopupMenu(table, deleteRowAction);
+        initTablePopupMenu(table, deleteRowAction, newRowAction);
 
         /* Create a single row if an empty tablecontents is opened. 
          * Otherwise no editing is possible.
@@ -114,8 +119,10 @@ public class ContentPage extends IpsObjectEditorPage {
         tableViewer.setInput(getTableContents());
 
         ScrolledForm form= getManagedForm().getForm();
+        form.getToolBarManager().add(newRowAction);
         form.getToolBarManager().add(deleteRowAction);
         form.getToolBarManager().add(new Separator());
+        form.getToolBarManager().add(new OpenTableImportWizardAction(getSite().getWorkbenchWindow(), getTableContents()));
         form.getToolBarManager().add(new OpenTableExportWizardAction(getSite().getWorkbenchWindow(), getTableContents()));
         form.updateToolBar();
 	}
@@ -227,10 +234,11 @@ public class ContentPage extends IpsObjectEditorPage {
      * @param table
      * @param deleteRowAction
      */
-    private void initTablePopupMenu(Table table, DeleteRowAction deleteRowAction){
+    private void initTablePopupMenu(Table table, DeleteRowAction deleteRowAction, NewRowAction newRowAction){
         // popupmenu
         MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         menuMgr.setRemoveAllWhenShown(false);
+        menuMgr.add(newRowAction);
         menuMgr.add(deleteRowAction);
         Menu menu = menuMgr.createContextMenu(table);
         table.setMenu(menu);
@@ -511,7 +519,7 @@ public class ContentPage extends IpsObjectEditorPage {
     
 
     /**
-     * Action that opens the wizard for exporting TableContents to M$-Excel files.
+     * Action that opens the wizard for exporting TableContents.
      * 
      * @author Stefan Widmaier
      */
@@ -543,5 +551,61 @@ public class ContentPage extends IpsObjectEditorPage {
             dialog.open();
         }
     }
+
+    /**
+     * Action that opens the wizard for importing TableContents.
+     */
+    private class OpenTableImportWizardAction extends Action {
+        
+        /**
+         * The TableContents to be exported.
+         */
+        ITableContents tableContents;
+        IWorkbenchWindow window;
+        
+        public OpenTableImportWizardAction(IWorkbenchWindow window, ITableContents tableContents) {
+            this.tableContents= tableContents;
+            this.window= window;
+            setText(Messages.ContentPage_ImportTableAction_label);
+            setToolTipText(Messages.ContentPage_ImportTableAction_tooltip);
+            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ImportTableContents.gif")); //$NON-NLS-1$
+        }
+        
+        /**
+         * Opens a TableExportWizard that is initialized with the <code>TableContents</code> this action 
+         * was created with.
+         * {@inheritDoc}
+         */
+        public void run() {
+            if (getIpsObject().getIpsSrcFile().isDirty()){
+                boolean confirmation = MessageDialog.openConfirm(getSite().getShell(), Messages.ContentPage_ConfirmDialogDirtyEditor_Title, Messages.ContentPage_ConfirmDialogDirtyEditor_text);
+                if (!confirmation){
+                    return;
+                }
+                try {
+                    getIpsObject().getIpsSrcFile().save(true, null);
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                    return;
+                }
+            }
+            
+            TableImportWizard wizard= new TableImportWizard();
+            wizard.init(window.getWorkbench(), new StructuredSelection(tableContents));
+            wizard.setImportIntoExisting(true);
+            WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
+            if (dialog.open() == Window.OK){
+                tableViewer.setInput(getTableContents());
+                tableViewer.refresh(true);
+                redrawTable();
+            }
+        }
+    }
     
+    /**
+     * Redraws the table.
+     */
+    void redrawTable(){
+        table.redraw();
+    }
 }

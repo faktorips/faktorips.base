@@ -30,7 +30,7 @@ public interface ITableContentsGeneration extends IIpsObjectGeneration {
     public IRow[] getRows();
     
     /**
-     * Returns the row of the table at the given index.
+     * Returns the row of the table at the given index (the first element has the index 0).
      * Returns null if the given index is out of bounds (less than zero or
      * greater or equal than the number of rows).
      */
@@ -45,6 +45,12 @@ public interface ITableContentsGeneration extends IIpsObjectGeneration {
      * Creates a new row.
      */
     public IRow newRow();
+
+    /**
+     * Creates a new row after the given row index.<br>
+     * If the index is greater than the number of rows the row will be added at the end.
+     */
+    public IRow insertRowAfter(int rowIndex);
     
     /**
      * removes all rows
