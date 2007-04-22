@@ -27,7 +27,10 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -47,6 +50,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
@@ -85,9 +89,13 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         IResourceChangeListener, IPropertyChangeListener {
     public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productStructureExplorer"; //$NON-NLS-1$
 
+    private static String MENU_INFO_GROUP = "goup.info"; //$NON-NLS-1$
+    private static String MENU_FILTER_GROUP = "goup.filter"; //$NON-NLS-1$
+    
     private TreeViewer tree; 
     private IIpsSrcFile file;
     private ProductStructureContentProvider contentProvider;
+    private ProductStructureLabelProvider labelProvider;
     private GenerationRootNode rootNode;
     private Label errormsg;
 
@@ -179,61 +187,143 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      */
     public void init(IViewSite site) throws PartInitException {
     	super.init(site);
+        
+        IActionBars actionBars = getViewSite().getActionBars();
+        initMenu(actionBars.getMenuManager());
+        initToolBar(actionBars.getToolBarManager());
+        
+    }
 
-        Action refreshAction= new Action() { //$NON-NLS-1$
+    private void initMenu(IMenuManager menuManager) {
+        menuManager.add(new Separator(MENU_INFO_GROUP));
+        Action showRelationNodeAction = createShowRelationNodeAction();
+        showRelationNodeAction.setChecked(false);
+        menuManager.appendToGroup(MENU_INFO_GROUP, showRelationNodeAction);
+        Action showRoleNameAction = createShowTableRoleNameAction();        
+        showRelationNodeAction.setChecked(false);
+        menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);        
+        
+        menuManager.add(new Separator(MENU_FILTER_GROUP));
+        Action showReferencedProductAction = createShowReferencedProductCmptAction();
+        showReferencedProductAction.setChecked(true);
+        menuManager.appendToGroup(MENU_FILTER_GROUP, showReferencedProductAction);
+        Action showReferencedTableAction = createShowReferencedTables();
+        showReferencedTableAction.setChecked(true);
+        menuManager.appendToGroup(MENU_FILTER_GROUP, showReferencedTableAction);        
+    }
 
-    		public ImageDescriptor getImageDescriptor() {
-    			return IpsPlugin.getDefault().getImageDescriptor("Refresh.gif"); //$NON-NLS-1$
-    		}
-    		
-			public void run() {
+    private Action createShowReferencedTables() {
+        return new Action(Messages.ProductStructureExplorer_menuShowReferencedTables_name, Action.AS_CHECK_BOX) {
+            public ImageDescriptor getImageDescriptor() {
+                return null;
+            }
+            public void run() {
+                contentProvider.setShowTableContents(!contentProvider.isShowTableContents());
                 refresh();
-		        tree.expandAll();
-			}
+            }
+            public String getToolTipText() {
+                return Messages.ProductStructureExplorer_menuShowReferencedTables_tooltip;
+            }
+        };
+    }
 
-			public String getToolTipText() {
-				return Messages.ProductStructureExplorer_tooltipRefreshContents;
-			}
-		};
+    private Action createShowReferencedProductCmptAction() {
+        return new Action(Messages.ProductStructureExplorer_menuShowReferencedProductCmpt_name, Action.AS_CHECK_BOX) {
+            public ImageDescriptor getImageDescriptor() {
+                return null;
+            }
+            public void run() {
+                contentProvider.setShowProductCmpts(!contentProvider.isShowProductCmpts());
+                refresh();
+            }
+            public String getToolTipText() {
+                return Messages.ProductStructureExplorer_menuShowReferencedProductCmpt_tooltip;
+            }
+        };
+    }
+
+    private Action createShowTableRoleNameAction() {
+        return new Action(Messages.ProductStructureExplorer_menuShowTableRoleName_name, Action.AS_CHECK_BOX) {
+            public ImageDescriptor getImageDescriptor() {
+                return null;
+            }
+            public void run() {
+                labelProvider.setShowTableStructureUsageName(!labelProvider.isShowTableStructureUsageName());
+                refresh();
+            }
+            public String getToolTipText() {
+                return Messages.ProductStructureExplorer_menuShowTableRoleName_tooltip;
+            }
+        };
+    }
+
+    private Action createShowRelationNodeAction() {
+        return new Action(Messages.ProductStructureExplorer_menuShowRelationNodes_name, Action.AS_CHECK_BOX) {
+            public ImageDescriptor getImageDescriptor() {
+                return IpsPlugin.getDefault().getImageDescriptor("ShowRelationTypeNodes.gif"); //$NON-NLS-1$
+            }
+            public void run() {
+                contentProvider.setRelationTypeShowing(!contentProvider.isRelationTypeShowing());
+                refresh();
+            }
+            public String getToolTipText() {
+                return Messages.ProductStructureExplorer_tooltipToggleRelationTypeNodes;
+            }
+        };
+    }
+
+    private void initToolBar(IToolBarManager toolBarManager) {
+        Action refreshAction= new Action() {
+            public ImageDescriptor getImageDescriptor() {
+                return IpsPlugin.getDefault().getImageDescriptor("Refresh.gif"); //$NON-NLS-1$
+            }
+            
+            public void run() {
+                refresh();
+                tree.expandAll();
+            }
+
+            public String getToolTipText() {
+                return Messages.ProductStructureExplorer_tooltipRefreshContents;
+            }
+        };
         getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
         IWorkbenchAction retargetAction = ActionFactory.REFRESH.create(getViewSite().getWorkbenchWindow());
         retargetAction.setImageDescriptor(refreshAction.getImageDescriptor());
         retargetAction.setToolTipText(refreshAction.getToolTipText());
         getViewSite().getActionBars().getToolBarManager().add(retargetAction);
 
-    	site.getActionBars().getToolBarManager().add(new Action("", Action.AS_CHECK_BOX) { //$NON-NLS-1$
+        // collapse all action
+        toolBarManager.add(new Action() {
+            public void run() {
+                tree.collapseAll();
+            }
+        
+            public ImageDescriptor getImageDescriptor() {
+                return IpsPlugin.getDefault().getImageDescriptor("CollapseAll.gif"); //$NON-NLS-1$
+            }
 
-    		public ImageDescriptor getImageDescriptor() {
-    			return IpsPlugin.getDefault().getImageDescriptor("ShowRelationTypeNodes.gif"); //$NON-NLS-1$
-    		}
-    		
-			public void run() {
-				contentProvider.setRelationTypeShowing(!contentProvider.isRelationTypeShowing());
-                refresh();
-			}
-
-			public String getToolTipText() {
-				return Messages.ProductStructureExplorer_tooltipToggleRelationTypeNodes;
-			}
-		});
-    	
-    	site.getActionBars().getToolBarManager().add(new Action() {
-		
-			public void run() {
-				tree.setInput(null);
-				tree.refresh();
+            public String getToolTipText() {
+                return Messages.ProductStructureExplorer_menuCollapseAll_toolkit;
+            }
+        });
+        
+        // clear action
+        toolBarManager.add(new Action() {
+            public void run() {
+                tree.setInput(null);
+                tree.refresh();
                 showEmptyMessage();
-			}
-		
-			public ImageDescriptor getImageDescriptor() {
-    			return IpsPlugin.getDefault().getImageDescriptor("Clear.gif"); //$NON-NLS-1$
-			}
+            }
+        
+            public ImageDescriptor getImageDescriptor() {
+                return IpsPlugin.getDefault().getImageDescriptor("Clear.gif"); //$NON-NLS-1$
+            }
 
-			public String getToolTipText() {
-				return Messages.ProductStructureExplorer_tooltipClear;
-			}
-		
-		});
+            public String getToolTipText() {
+                return Messages.ProductStructureExplorer_tooltipClear;
+            }
+        });
     }
 
     /**
@@ -259,7 +349,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         contentProvider.setGenerationRootNode(rootNode);
         tree.setContentProvider(contentProvider);
 
-        ProductStructureLabelProvider labelProvider = new ProductStructureLabelProvider();
+        labelProvider = new ProductStructureLabelProvider();
         labelProvider.setGenerationRootNode(rootNode);
         tree.setLabelProvider(new DecoratingLabelProvider(labelProvider, new IpsProblemsLabelDecorator()));
 

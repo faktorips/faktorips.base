@@ -49,6 +49,10 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 	private IProductCmptReference root;
 	
     private GenerationRootNode generationRootNode;
+
+    // filter
+    private boolean showProductCmpts = true;
+    private boolean showTableContents = true;
     
 	/**
 	 * Creates a new content provider.
@@ -63,22 +67,25 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      * {@inheritDoc}
      */
     public Object[] getChildren(Object parentElement) {
-        Object[] childsForRelationProductCmpts = new Object[0];
         List children = new ArrayList();
-    	// add product cmpt relation and product cmpts
-        if (!fShowRelationType && parentElement instanceof IProductCmptReference) {
-            childsForRelationProductCmpts = structure.getChildProductCmptReferences((IProductCmptReference)parentElement);
-    	} 
-    	else if (parentElement instanceof IProductCmptReference) {
-            childsForRelationProductCmpts = structure.getChildProductCmptTypeRelationReferences((IProductCmptReference)parentElement);
-    	}
-    	else if (parentElement instanceof IProductCmptStructureReference) {
-            childsForRelationProductCmpts = structure.getChildProductCmptReferences((IProductCmptStructureReference)parentElement);
-    	}
-        children.addAll(Arrays.asList(childsForRelationProductCmpts));
+
+        if (showProductCmpts){
+            Object[] childsForRelationProductCmpts = new Object[0];
+        	// add product cmpt relation and product cmpts
+            if (!fShowRelationType && parentElement instanceof IProductCmptReference) {
+                childsForRelationProductCmpts = structure.getChildProductCmptReferences((IProductCmptReference)parentElement);
+        	} 
+        	else if (parentElement instanceof IProductCmptReference) {
+                childsForRelationProductCmpts = structure.getChildProductCmptTypeRelationReferences((IProductCmptReference)parentElement);
+        	}
+        	else if (parentElement instanceof IProductCmptStructureReference) {
+                childsForRelationProductCmpts = structure.getChildProductCmptReferences((IProductCmptStructureReference)parentElement);
+        	}
+            children.addAll(Arrays.asList(childsForRelationProductCmpts));
+        }
         
         // add table content usages
-        if (parentElement instanceof IProductCmptReference){
+        if (showTableContents && parentElement instanceof IProductCmptReference){
             children.addAll(Arrays.asList(structure.getChildProductCmptStructureTblUsageReference((IProductCmptReference)parentElement)));
         }
         
@@ -150,15 +157,52 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
         root = structure.getRoot();
     }
 
+    /**
+     * Returns <code>true</code> if the relation type will be displayed besides the related product cmpt.
+     */
     public boolean isRelationTypeShowing() {
     	return fShowRelationType;
     }
-    
+
+    /**
+     * Sets if the relation type will be shown or hidden.
+     */
     public void setRelationTypeShowing(boolean showRelationType) {
     	fShowRelationType = showRelationType;
     }
 
+    /**
+     * Sets the root node.
+     */
     public void setGenerationRootNode(GenerationRootNode generationRootNode) {
         this.generationRootNode = generationRootNode;
+    }
+
+    /**
+     * Returns <code>true</code> if the related product cmpts will be shown or hidden.
+     */
+    public boolean isShowProductCmpts() {
+        return showProductCmpts;
+    }
+
+    /**
+     * Returns <code>true</code> if the related table contents cmpts will be shown or hidden.
+     */
+    public boolean isShowTableContents() {
+        return showTableContents;
+    }
+
+    /**
+     * Set <code>true</code> to show related product cmpts.
+     */
+    public void setShowProductCmpts(boolean showProductCmpts) {
+        this.showProductCmpts = showProductCmpts;
+    }
+
+    /**
+     * Set <code>true</code> to show related table contents.
+     */
+    public void setShowTableContents(boolean showTableContents) {
+        this.showTableContents = showTableContents;
     }
 }

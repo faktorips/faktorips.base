@@ -24,6 +24,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.CycleException;
@@ -343,7 +344,10 @@ public class ProductCmptStructure implements IProductCmptStructure {
         IProductCmptStructureReference[] children = ((ProductCmptReference)parent).getChildren();
         for (int i = 0; i < children.length; i++) {
             if (children[i] instanceof ProductCmptStructureTblUsageReference) {
-                tblUsageReferences.add(children[i]);
+                ProductCmptStructureTblUsageReference tblUsageReference = (ProductCmptStructureTblUsageReference)children[i];
+                if (StringUtils.isNotEmpty(tblUsageReference.getTableContentUsage().getTableContentName())){
+                    tblUsageReferences.add(children[i]);
+                }
             }
         }
         return (IProductCmptStructureTblUsageReference[])tblUsageReferences

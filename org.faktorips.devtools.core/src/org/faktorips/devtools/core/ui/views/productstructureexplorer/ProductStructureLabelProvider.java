@@ -36,6 +36,8 @@ public class ProductStructureLabelProvider implements ILabelProvider {
 
 	private List listeners = new ArrayList();
 	
+    private boolean showTableStructureUsageName = false;
+    
     private GenerationRootNode generationRootNode;
     
 	/**
@@ -97,8 +99,9 @@ public class ProductStructureLabelProvider implements ILabelProvider {
         }
         else if (element instanceof IProductCmptStructureTblUsageReference) {
             ITableContentUsage tcu = ((IProductCmptStructureTblUsageReference)element).getTableContentUsage();
-            return tcu.getStructureUsage() + " : " + StringUtil.unqualifiedName(tcu.getTableContentName()); //$NON-NLS-1$
-        }        
+            String tableUsageLabelText = showTableStructureUsageName?tcu.getStructureUsage() + " : ":"";
+            return  tableUsageLabelText + StringUtil.unqualifiedName(tcu.getTableContentName()); //$NON-NLS-1$
+        }
         else if (element instanceof ViewerLabel){
             return ((ViewerLabel)element).getText();
         }
@@ -108,4 +111,19 @@ public class ProductStructureLabelProvider implements ILabelProvider {
     public void setGenerationRootNode(GenerationRootNode generationRootNode) {
         this.generationRootNode = generationRootNode;
     }
+
+    /**
+     * Definines if the table content usage role name will be displayed beside the referenced table content (<code>true</code>),
+     * or if the corresponding table structure usage name will be hidden (<code>false</code>).
+     */
+    public void setShowTableStructureUsageName(boolean showTableStructureUsageName) {
+        this.showTableStructureUsageName = showTableStructureUsageName;
+    }
+
+    /**
+     * Returns <code>true</code> if the table structure usage role name will be displayed or not.
+     */
+    public boolean isShowTableStructureUsageName() {
+        return showTableStructureUsageName;
+    }    
 }
