@@ -204,9 +204,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);        
         
         menuManager.add(new Separator(MENU_FILTER_GROUP));
-        Action showReferencedProductAction = createShowReferencedProductCmptAction();
-        showReferencedProductAction.setChecked(true);
-        menuManager.appendToGroup(MENU_FILTER_GROUP, showReferencedProductAction);
         Action showReferencedTableAction = createShowReferencedTables();
         showReferencedTableAction.setChecked(true);
         menuManager.appendToGroup(MENU_FILTER_GROUP, showReferencedTableAction);        
@@ -223,21 +220,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             }
             public String getToolTipText() {
                 return Messages.ProductStructureExplorer_menuShowReferencedTables_tooltip;
-            }
-        };
-    }
-
-    private Action createShowReferencedProductCmptAction() {
-        return new Action(Messages.ProductStructureExplorer_menuShowReferencedProductCmpt_name, Action.AS_CHECK_BOX) {
-            public ImageDescriptor getImageDescriptor() {
-                return null;
-            }
-            public void run() {
-                contentProvider.setShowProductCmpts(!contentProvider.isShowProductCmpts());
-                refresh();
-            }
-            public String getToolTipText() {
-                return Messages.ProductStructureExplorer_menuShowReferencedProductCmpt_tooltip;
             }
         };
     }

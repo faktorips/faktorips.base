@@ -34,8 +34,6 @@ public class Messages extends NLS {
     public static String ProductStructureExplorer_infoMessageEmptyView_2;
     public static String ProductStructureExplorer_label_NoGenerationForCurrentWorkingDate;
     public static String ProductStructureExplorer_menuCollapseAll_toolkit;
-    public static String ProductStructureExplorer_menuShowReferencedProductCmpt_name;
-    public static String ProductStructureExplorer_menuShowReferencedProductCmpt_tooltip;
     public static String ProductStructureExplorer_menuShowReferencedTables_name;
     public static String ProductStructureExplorer_menuShowReferencedTables_tooltip;
     public static String ProductStructureExplorer_menuShowRelationNodes_name;
