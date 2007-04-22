@@ -40,6 +40,8 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -125,8 +127,39 @@ public class ContentPage extends IpsObjectEditorPage {
         form.getToolBarManager().add(new OpenTableImportWizardAction(getSite().getWorkbenchWindow(), getTableContents()));
         form.getToolBarManager().add(new OpenTableExportWizardAction(getSite().getWorkbenchWindow(), getTableContents()));
         form.updateToolBar();
+
+        // FS#822 workaround to activate the correct cell editor (row and column), 
+        // after scrolling and activating another cell the table on a different page.
+        // To fix this problem selection listeners will be added to deactivate the current cell editor first
+        // if the user scrolls to another cell in the table
+        table.getVerticalBar().addSelectionListener(new SelectionListener(){
+            public void widgetDefaultSelected(SelectionEvent e) {
+                deactivateCellEditors();
+            }
+            public void widgetSelected(SelectionEvent e) {
+                deactivateCellEditors();
+            }
+        });
+        table.getHorizontalBar().addSelectionListener(new SelectionListener(){
+            public void widgetDefaultSelected(SelectionEvent e) {
+                deactivateCellEditors();
+            }
+            public void widgetSelected(SelectionEvent e) {
+                deactivateCellEditors();
+            }
+        });        
 	}
 
+    /*
+     * Deactivates all active cell editor (i.e. the current active cell editor)
+     */
+    private void deactivateCellEditors() {
+        CellEditor[] cellEditors = tableViewer.getCellEditors();
+        for (int i = 0; i < cellEditors.length; i++) {
+            cellEditors[i].deactivate();
+        }
+    }
+    
     /**
      * Creates a Table with the given formBody as a parent and returns it. Inits the look, layout of
      * the table and adds a KeyListener that enables the editing of the first cell in the currently
