@@ -74,17 +74,17 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
         
         if (IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow() != null){
             // the current thread is an ui thread, thus we can start the test directly
-            trace("Launch in existing UI Thread.");
+            trace("Launch in existing UI Thread."); //$NON-NLS-1$
             startTest(configuration, mode, launch);
             return;
         }
         
         // it is necessary that we execute the test in an ui thread (e.g. check for open editors in
         // DebugUiTools or open view is only possible if we run in an ui thread)
-        trace("Launch in new UI Thread.");
+        trace("Launch in new UI Thread."); //$NON-NLS-1$
         UIJob uiJob = new UIJob("IPS Testrunner delegate") { //$NON-NLS-1$
             public IStatus runInUIThread(IProgressMonitor monitor) {
-                trace("Lauch configuration (" + configuration.getName() + ") in UI Job 'IPS Testrunner delegate'");
+                trace("Lauch configuration (" + configuration.getName() + ") in UI Job 'IPS Testrunner delegate'"); //$NON-NLS-1$ //$NON-NLS-2$
                 try {
                     startTest(configuration, mode, launch);
                 }
