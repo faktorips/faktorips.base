@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature"
       label="FaktorIPS"
-      version="1.0.0.rfinal"
+      version="1.0.1"
       provider-name="FaktorZehn GmbH"
       plugin="org.faktorips.devtools.core">
    <install-handler/>
@@ -165,54 +165,54 @@ Es gilt das Recht der Bundesrepublik Deutschland.
          id="org.faktorips.devtools.core"
          download-size="0"
          install-size="0"
-         version="1.0.0.rfinal"
+         version="1.0.1"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.devtools.stdbuilder"
          download-size="0"
          install-size="0"
-         version="1.0.0.rfinal"
+         version="1.0.1"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.dtflcommon"
          download-size="0"
          install-size="0"
-         version="1.0.0.rfinal"
+         version="1.0.1"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.fl"
          download-size="0"
          install-size="0"
-         version="1.0.0.rfinal"
+         version="1.0.1"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.runtime"
          download-size="0"
          install-size="0"
-         version="1.0.0.rfinal"/>
+         version="1.0.1"/>
 
    <plugin
          id="org.faktorips.util"
          download-size="0"
          install-size="0"
-         version="1.0.0.rfinal"
+         version="1.0.1"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.valuetypes"
          download-size="0"
          install-size="0"
-         version="1.0.0.rfinal"/>
+         version="1.0.1"/>
 
    <plugin
          id="org.faktorips.devtools.ant"
          download-size="0"
          install-size="0"
-         version="1.0.0.rfinal"
+         version="1.0.1"
          unpack="false"/>
 
 </feature>
