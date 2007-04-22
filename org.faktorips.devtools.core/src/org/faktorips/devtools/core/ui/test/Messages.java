@@ -22,6 +22,7 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.test.messages"; //$NON-NLS-1$
     public static String TestSelectionComposite_labelButtonDelete;
+    public static String TestSelectionTab_ErrorUnknownProjekt;
     public static String TestSelectionTab_groupParameter;
     public static String TestSelectionTab_labelGroupProject;
     public static String TestSelectionTab_labelGroupTestSelection;
