@@ -49,8 +49,7 @@ public class NewRowAction extends IpsAction {
         setControlWithDataChangeableSupport(page);
         setText(Messages.NewRowAction_Label);
         setToolTipText(Messages.NewRowAction_Tooltip);
-        // FIXME Joerg anderes Image PB klauen
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("New.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("InsertRowAfter.gif")); //$NON-NLS-1$
     }
     
     /**
