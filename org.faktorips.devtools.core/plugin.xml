@@ -710,7 +710,7 @@
    </extension>
    <extension
          id="productDefinitionTool"
-         name="Faktor IPS"
+         name="Faktor-IPS"
          point="org.eclipse.core.runtime.applications">
       <application>
          <run class="org.faktorips.devtools.core.internal.application.IpsApplication"/>
