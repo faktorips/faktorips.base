@@ -352,6 +352,10 @@ public class IpsTestRunner implements IIpsTestRunner {
         connect();
         trace("Tester stream finished."); //$NON-NLS-1$
 
+        if (testRunnerMonitor != null){
+            testRunnerMonitor.done();
+        }
+        
         resetLauchAndTestRun();
     }
 
@@ -893,6 +897,14 @@ public class IpsTestRunner implements IIpsTestRunner {
             return;
         }
 
+        if (ipsProject == null){
+            MessageDialog.openWarning(null, Messages.IpsTestRunner_InfoDialogTestCouldNotStarted_Title, Messages.IpsTestRunner_Error_ProjectTheTestBelongsToNotFound);
+            trace("Cancel test run, no project found."); //$NON-NLS-1$
+            // terminate the given launch if possible
+            terminateLaunch(launch);
+            return;
+        }
+        
         Boolean javaProjectErrorFree = ipsProject.isJavaProjectErrorFree(true);
         // check if there are errors in the java project and referenced java projects
         if (Boolean.FALSE.equals(javaProjectErrorFree)){

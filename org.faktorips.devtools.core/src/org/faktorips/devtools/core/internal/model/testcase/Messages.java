@@ -35,6 +35,7 @@ public class Messages extends NLS {
 	}
 
 	public static String IpsTestRunner_Error_CouldNotConnect;
+    public static String IpsTestRunner_Error_ProjectTheTestBelongsToNotFound;
     public static String IpsTestRunner_InfoDialogProjectWasNotBuild_Text;
     public static String IpsTestRunner_InfoDialogTestAlreadyRunning_Text;
     public static String IpsTestRunner_InfoDialogTestCouldNotStarted_Title;
