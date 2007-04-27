@@ -233,6 +233,11 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
                 addIpsElements((IIpsPackageFragment)element, ipsElementsToFix);
             }
         }
+        // add all elements in child packages
+        IIpsPackageFragment[] childIpsPackageFragments = pack.getChildIpsPackageFragments();
+        for (int i = 0; i < childIpsPackageFragments.length; i++) {
+            addIpsElements(childIpsPackageFragments[i], ipsElementsToFix);
+        }
     }
 
     /**
