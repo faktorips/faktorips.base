@@ -660,4 +660,12 @@ public class UIToolkit {
         return IMessageProvider.NONE;
     }
 
+    /**
+     * Disposes the toolkit.
+     */    
+    public void dispose(){
+        if (formToolkit != null){
+            formToolkit.dispose();
+        }
+    }
 }

@@ -315,8 +315,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     	 */
     
     	public void dispose() {
-            fFailureColor.dispose();
-            fOkColor.dispose();
     	}
     
     	/**
@@ -615,6 +613,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * {@inheritDoc}
      */    
     public void dispose() {
+        fFailureColor.dispose();
+        fOkColor.dispose();
+
         removeAllListener();
         super.dispose();
     }
@@ -1753,7 +1754,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 * Returns the selected test case type relation object or <code>null</code> if the user select nothing.
 	 */
 	private TestCaseTypeRelation selectTestCaseTypeRelationByDialog(ITestPolicyCmpt parentTestPolicyCmpt) throws CoreException {
-		ElementListSelectionDialog selectDialog = 
+        ElementListSelectionDialog selectDialog = 
 			new ElementListSelectionDialog(getShell(), new TestCaseTypeRelationLabelProvider());
 		selectDialog.setTitle(Messages.TestCaseSection_DialogSelectTestRelation_Title);
 		selectDialog.setMessage(Messages.TestCaseSection_DialogSelectTestRelation_Description);

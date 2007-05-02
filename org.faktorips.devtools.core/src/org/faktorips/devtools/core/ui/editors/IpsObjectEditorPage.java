@@ -260,7 +260,12 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
         }
         dataChangeableStateChangeListeners.remove(listener);
     }
-    
-    
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    public void dispose() {
+        uiToolkit.dispose();
+        super.dispose();
+    }
 }

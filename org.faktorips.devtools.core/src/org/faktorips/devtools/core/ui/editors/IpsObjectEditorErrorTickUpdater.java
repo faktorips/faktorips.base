@@ -83,6 +83,7 @@ public class IpsObjectEditorErrorTickUpdater implements IIpsProblemChangedListen
 
     public void dispose() {
         decorator.dispose();
+        
         IpsPlugin.getDefault().getIpsProblemMarkerManager().removeListener(this);
     }
 }

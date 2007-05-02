@@ -66,7 +66,8 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                 return getRegistry().get(
                         new JavaElementImageDescriptor(baseImage, computeAdornmentFlags(element), new Point(
                                 bounds.width, bounds.height)));
-            } catch (CoreException e) {
+            }
+            catch (CoreException e) {
                 IpsPlugin.log(e);
             }
         }
@@ -141,10 +142,16 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
         return this.registry;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String decorateText(String text, Object element) {
         return text;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void addListener(ILabelProviderListener listener) {
         if (listeners == null) {
             listeners = new ArrayList();
@@ -153,21 +160,35 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void dispose() {
+        registry.dispose();
+        
         this.listeners = null;
         this.registry = null;
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
     public boolean isLabelProperty(Object element, String property) {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void removeListener(ILabelProviderListener listener) {
         if (listener != null) {
             this.listeners.remove(listener);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void decorate(Object element, IDecoration decoration) {
         try {
             int adornmentFlags = computeAdornmentFlags(element);
@@ -187,5 +208,4 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     public void setFlatLayout(boolean isFlatLayout) {
         this.isFlatLayout = isFlatLayout;
     }
-
 }
