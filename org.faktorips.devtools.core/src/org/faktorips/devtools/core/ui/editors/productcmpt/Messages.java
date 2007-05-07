@@ -36,6 +36,14 @@ public class Messages extends NLS {
 
     public static String DefaultsAndRangesEditDialog_valueNotContainedInValueSet;
 
+    public static String FormulaTestInputValuesControl_PreconditionDialogExecuteFormula_ConfirmBuildProject;
+
+    public static String FormulaTestInputValuesControl_PreconditionDialogExecuteFormula_ErrorDurringBuild;
+
+    public static String FormulaTestInputValuesControl_PreconditionDialogExecuteFormula_ErrorsInProject;
+
+    public static String FormulaTestInputValuesControl_PreconditionDialogExecuteFormula_Title;
+
     public static String GenerationsSection_validFrom;
 
     public static String GenerationsSection_validFromInPast;

@@ -600,6 +600,12 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     protected void executeClicked() {
         isCalculationErrorOrFailure = false;
         
+        if (formulaTestCases.size() > 0
+                && !FormulaTestInputValuesControl.checkPrecondition(this.getShell(), 
+                        ((ExtDataForFormulaTestCase)formulaTestCases.get(0)).getFormulaTestCase())) {
+            return;
+        }
+        
         Runnable calculate = new Runnable() {
             public void run() {
                 if (isDisposed())

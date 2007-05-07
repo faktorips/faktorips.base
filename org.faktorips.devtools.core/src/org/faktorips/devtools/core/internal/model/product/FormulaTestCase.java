@@ -227,19 +227,22 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         ExprEvaluator processor = getExprEvaluatorInternal();
         return processor.evaluate(formula);
     }
-    
+
     /**
-     * {@inheritDoc}
+     * Executes the given java code fragment.
      */
-    public Object execute(JavaCodeFragment javaCodeFragment) throws Exception {
-        ExprEvaluator processor = getExprEvaluatorInternal();
+    public Object execute(JavaCodeFragment javaCodeFragment, ClassLoader classLoader) throws Exception {
+        ExprEvaluator processor = getExprEvaluatorInternal(classLoader);
         return processor.evaluate(javaCodeFragment);
     }
     
     private ExprEvaluator getExprEvaluatorInternal() throws CoreException {
+        return getExprEvaluatorInternal(((IpsProject)getIpsProject()).getClassLoaderProviderForJavaProject().getClassLoader());
+    }
+    
+    private ExprEvaluator getExprEvaluatorInternal(ClassLoader classLoader) throws CoreException {
         ExprCompiler compiler = getPreviewExprCompiler();
-        ClassLoader cl = ((IpsProject)getIpsProject()).getClassLoaderProviderForJavaProject().getClassLoader();
-        return new ExprEvaluator(compiler, cl);
+        return new ExprEvaluator(compiler, classLoader);
     }
     
     /**

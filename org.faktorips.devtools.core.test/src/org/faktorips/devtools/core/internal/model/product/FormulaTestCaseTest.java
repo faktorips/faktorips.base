@@ -22,9 +22,7 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -38,14 +36,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.tablecontents.IRow;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.values.Decimal;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -59,12 +50,19 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = super.newIpsProject("TestProject");
         IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "policyCmpt");
+        IAttribute attributeInput = policyCmptType.newAttribute();
+        attributeInput.setName("attributeInput");
+        attributeInput.setAttributeType(AttributeType.CHANGEABLE);
+        attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
+        
         productCmpt = newProductCmpt(ipsProject, "productCmpt");
         productCmpt.setPolicyCmptType(policyCmptType.getQualifiedName());
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
+        generation.setValidFrom(new GregorianCalendar(2007, 1, 1));
         configElement = generation.newConfigElement();
         configElement.setType(ConfigElementType.FORMULA);
         formulaTestCase = configElement.newFormulaTestCase();
+        configElement.setValue("1");
     }
     
     public void testInitFromXml() {
@@ -130,104 +128,6 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         assertEquals(new Integer(600), result);
     }
 
-    public void testExecuteWithFunctionAndSimpleTable() throws Exception{
-        createDefaultPolicyCmptsAndTblUsage();
-        
-        // create table
-        ITableStructure table = (ITableStructure)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0],
-                IpsObjectType.TABLE_STRUCTURE, "Testtable");
-        table.setTableStructureType(TableStructureType.SINGLE_CONTENT);
-        IColumn column = table.newColumn();
-        column.setName("key");
-        column.setDatatype("Integer");
-        column = table.newColumn();
-        column.setName("value");
-        column.setDatatype("Decimal");
-        IUniqueKey tableKey = table.newUniqueKey();
-        tableKey.addKeyItem("key");
-        ITableContents tableContents = (ITableContents)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0],
-                IpsObjectType.TABLE_CONTENTS, "Testtable");
-        tableContents.setTableStructure(table.getQualifiedName());
-        tableContents.newColumn("");
-        tableContents.newColumn("0");
-        ITableContentsGeneration tcg = (ITableContentsGeneration)tableContents
-                .newGeneration((GregorianCalendar)GregorianCalendar.getInstance());
-        IRow row = tcg.newRow();
-        row.setValue(0, "0");
-        row.setValue(1, "1.2");
-
-        IFormulaTestInputValue formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
-        formulaTestInputValue.setIdentifier("param1");
-        formulaTestInputValue.setValue("0");
-        
-        configElement.setValue("1 + RatePlan.value(param1)");
-        Object result = formulaTestCase.execute();
-        assertEquals(Decimal.valueOf("2.2"), result);
-        
-        // Decimal add if result is Integer
-        formulaTestInputValue.setValue("101");
-        configElement.setValue("WENN(ISTLEER(RatePlan.value(param1));1;RatePlan.value(param1)) +  100");
-        result = formulaTestCase.execute();
-        assertEquals(Decimal.valueOf("101"), result);
-    }
-    
-    public void testExecuteWithFunctionAndTableTwoKeys() throws Exception{
-        createDefaultPolicyCmptsAndTblUsage();
-        
-        // create table
-        ITableStructure table = (ITableStructure)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_STRUCTURE, "Testtable");
-        table.setTableStructureType(TableStructureType.SINGLE_CONTENT);
-        IColumn column =table.newColumn();
-        column.setName("key1");
-        column.setDatatype("Integer");
-        column =table.newColumn();
-        column.setName("key2");
-        column.setDatatype("String");        
-        column =table.newColumn();
-        column.setName("value");
-        column.setDatatype("Decimal");
-        // add dummy key to check the table access function
-        IUniqueKey tableKey0 = table.newUniqueKey();
-        tableKey0.addKeyItem("key2");
-        tableKey0.addKeyItem("key1");
-        IUniqueKey tableKey = table.newUniqueKey();
-        tableKey.addKeyItem("key1");
-        tableKey.addKeyItem("key2");
-        // add dummy key to check the table access function
-        IUniqueKey tableKey2 = table.newUniqueKey();
-        tableKey2.addKeyItem("value");
-        ITableContents tableContents = (ITableContents)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_CONTENTS, "Testtable");
-        tableContents.setTableStructure(table.getQualifiedName());
-        tableContents.newColumn("0");
-        tableContents.newColumn("0");        
-        tableContents.newColumn("0");
-        ITableContentsGeneration tcg = (ITableContentsGeneration) tableContents.newGeneration((GregorianCalendar)GregorianCalendar.getInstance());
-        IRow row = tcg.newRow();
-        row.setValue(0,"0");
-        row.setValue(1, "001");
-        row.setValue(2, "1.1");
-        row = tcg.newRow();
-        row.setValue(0,"0");
-        row.setValue(1, "002");
-        row.setValue(2, "2.2");        
-        IFormulaTestInputValue formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
-        formulaTestInputValue.setIdentifier("param1");
-        formulaTestInputValue.setValue("0");
-        
-        configElement.setValue("RatePlan.value(param1; \"001\") + 1");
-        Object result = formulaTestCase.execute();
-        assertEquals(Decimal.valueOf("2.1"), result);
-        
-        configElement.setValue("RatePlan.value(param1; \"002\") + 1");
-        result = formulaTestCase.execute();
-        assertEquals(Decimal.valueOf("3.2"), result);
-        
-        // optional test to check the identifer inside a table access method
-        String[] identifiers = ((IConfigElement)formulaTestCase.getParent()).getIdentifierUsedInFormula(); 
-        assertEquals(1, identifiers.length);
-        assertEquals("param1", identifiers[0]);
-    }    
-    
     public void testAddOrDeleteFormulaTestInputValues(){
         IFormulaTestInputValue value1 = formulaTestCase.newFormulaTestInputValue();
         value1.setIdentifier("value1");
@@ -322,6 +222,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         
         IPolicyCmptType pcType = newPolicyCmptType(ipsProject, "policyCmptType1");
         IAttribute attribute = pcType.newAttribute();
+        attribute.setProductRelevant(true);
         attribute.setName("attribute1");
         attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
