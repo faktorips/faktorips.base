@@ -102,6 +102,7 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
                 testSuiteSelectionComposite.initContent(project, packageFragmentRoot, testCases);
             } else {
                 projectText.setText(Messages.TestSelectionTab_ErrorUnknownProjekt);
+                new UIToolkit(null).setDataChangeable(testSuiteSelectionComposite, false);
             }
             parameterText.setText(maxHeapSize);
         }
@@ -115,9 +116,11 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
      */
     public void performApply(ILaunchConfigurationWorkingCopy configuration) {
         try {
-            configuration.setAttribute(IpsTestRunnerDelegate.ATTR_PACKAGEFRAGMENTROOT, testSuiteSelectionComposite.getPackageFragmentRootText());
-            configuration.setAttribute(IpsTestRunnerDelegate.ATTR_TESTCASES, testSuiteSelectionComposite.getTestCasesText());
-            configuration.setAttribute(IpsTestRunnerDelegate.ATTR_MAX_HEAP_SIZE, parameterText.getText());       
+            if (project != null){
+                configuration.setAttribute(IpsTestRunnerDelegate.ATTR_PACKAGEFRAGMENTROOT, testSuiteSelectionComposite.getPackageFragmentRootText());
+                configuration.setAttribute(IpsTestRunnerDelegate.ATTR_TESTCASES, testSuiteSelectionComposite.getTestCasesText());
+                configuration.setAttribute(IpsTestRunnerDelegate.ATTR_MAX_HEAP_SIZE, parameterText.getText());  
+            }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
