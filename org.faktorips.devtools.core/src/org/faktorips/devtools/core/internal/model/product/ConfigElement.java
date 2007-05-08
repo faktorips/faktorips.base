@@ -598,7 +598,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         //of an enumeration type which is not of interest in this context.
         AbstractParameterIdentifierResolver resolver = new AbstractParameterIdentifierResolver(){
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-                return "";
+                return ""; //$NON-NLS-1$
             }
         };
         resolver.setIpsProject(getIpsProject());
