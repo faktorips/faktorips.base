@@ -55,7 +55,7 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         return "Archive:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
             +  "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
             +  "     type=\"archive\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-            +  "     file=\"base." + IIpsArchiveEntry.FILE_EXTENSION + "\">      The archive file." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+            +  "     file=\"base." + IIpsArchiveEntry.FILE_EXTENSION + "\">      The archive file." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
             +  "  </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR;  //$NON-NLS-1$ //$NON-NLS-2$
     }
     
