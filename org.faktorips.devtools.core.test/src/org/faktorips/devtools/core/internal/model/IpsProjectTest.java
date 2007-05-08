@@ -1160,4 +1160,27 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertTrue(tableContents.contains(contents1));
         assertTrue(tableContents.contains(contents2));
     }
+    
+    public void testIsResourceExcludedFromProductDefinition() throws CoreException{
+        IFolder folder1 = ipsProject.getProject().getFolder("exludedFolderWithFile");
+        IFile file = ipsProject.getProject().getFile("exludedFolderWithFile/build.xml");
+        IFolder folder2 = ipsProject.getProject().getFolder("exludedFolder");
+
+        folder1.create(true, true, null);
+        file.create(new ByteArrayInputStream("test".getBytes()), true, null);
+        folder2.create(true, true, null);
+        
+        assertFalse(ipsProject.isResourceExcludedFromProductDefinition(folder2));
+        assertFalse(ipsProject.isResourceExcludedFromProductDefinition(file));
+        assertFalse(ipsProject.isResourceExcludedFromProductDefinition(folder1));
+        
+        IpsProjectProperties props = (IpsProjectProperties)ipsProject.getProperties();
+        props.addResourcesPathExcludedFromTheProductDefiniton("exludedFolderWithFile/build.xml");
+        props.addResourcesPathExcludedFromTheProductDefiniton("exludedFolder");
+        ipsProject.setProperties(props);
+        
+        assertTrue(ipsProject.isResourceExcludedFromProductDefinition(folder2));
+        assertTrue(ipsProject.isResourceExcludedFromProductDefinition(file));
+        assertFalse(ipsProject.isResourceExcludedFromProductDefinition(folder1));
+    }
 }

@@ -18,10 +18,14 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -43,6 +47,7 @@ import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -83,7 +88,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean javaProjectContainsClassesForDynamicDatatypes = false;
     private boolean containerRelationIsImplementedRuleEnabled = true;
     private Hashtable requiredFeatures = new Hashtable();
-
+    // hidden resource names in the model and product explorer
+    private Set resourcesPathExcludedFromTheProductDefiniton= new HashSet(10);
+    
     /**
      * Default constructor.
      */
@@ -377,6 +384,17 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		datatypesEl.appendChild(definedDatatypesEl);
 		writeDefinedDataTypesToXML(doc, definedDatatypesEl);
 		
+        // excludes resources from product definition
+        createResourcesExcludedFromProductDefinitionComment(projectEl);
+        Element resourcesExcludedFromProdDefEl = doc.createElement("ResourcesExcludedFromProductDefinition"); //$NON-NLS-1$
+        projectEl.appendChild(resourcesExcludedFromProdDefEl);
+        for (Iterator iter = resourcesPathExcludedFromTheProductDefiniton.iterator(); iter.hasNext();) {
+            String exclResource = (String)iter.next();
+            Element resourceExcludedEl = doc.createElement("Resource"); //$NON-NLS-1$
+            resourceExcludedEl.setAttribute("path", exclResource); //$NON-NLS-1$
+            resourcesExcludedFromProdDefEl.appendChild(resourceExcludedEl);
+        }
+        
 		return projectEl;
 	}
 	
@@ -424,9 +442,11 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         initDefinedDatatypesFromXml(ipsProject, XmlUtil.getFirstElement(datatypesEl, "DatatypeDefinitions")); //$NON-NLS-1$
         
         initRequiredFeatures(XmlUtil.getFirstElement(element, "RequiredIpsFeatures")); //$NON-NLS-1$
+        
+        initResourcesExcludedFromProductDefinition(XmlUtil.getFirstElement(element, "ResourcesExcludedFromProductDefinition")); //$NON-NLS-1$
 	}
 	
-	/**
+    /**
      * @param firstElement
      */
     private void initRequiredFeatures(Element el) {
@@ -479,6 +499,21 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
     }
     
+    private void initResourcesExcludedFromProductDefinition(Element element) {
+        if (element == null){
+            return;
+        }
+        NodeList nl = element.getElementsByTagName("Resource"); //$NON-NLS-1$
+        int length = nl.getLength();
+        for (int i = 0; i < length; i++) {
+            Element child = (Element)nl.item(i);
+            Attr path = child.getAttributeNode("path"); //$NON-NLS-1$
+            if (path != null && StringUtils.isNotEmpty(path.getValue())){
+                resourcesPathExcludedFromTheProductDefiniton.add(path.getValue());
+            }
+        }
+    }
+
     private void writeDefinedDataTypesToXML(Document doc, Element parent) {
 		for (int i=0; i<definedDatatypes.length; i++) {
 			Element datatypeEl = doc.createElement("Datatype"); //$NON-NLS-1$
@@ -694,25 +729,38 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "Faktorips provides 2 implementations for logging framework connectors. A connector to the java util logging framework and" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "one to the log4j framework. Java util logging is specified by the id=\"org.faktorips.devtools.core.javaUtilLoggingConnector\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "The log4j framework is specified by the id=\"org.faktorips.devtools.core.log4jLoggingConnector\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "<IpsArtefactBuilderSet id=\"org.faktorips.devtools.stdbuilder.ipsstdbuilderset\" " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "loggingFrameworkConnectorId=\"org.faktorips.devtools.core.javaUtilLoggingConnector\" />" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
     
     private void createRequiredIpsFeaturesComment(Node parentEl) {
-        String s = "Required Ips-Features" + SystemUtils.LINE_SEPARATOR + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
+        String s = "Required Ips-Features" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$ //$NON-NLS-2$
         + "In this section, all required features are listed with the minimum version for these features." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "By default, the feature with id  \"org.faktorips.feature\" is required allways (because this is the core " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "feature of FaktorIps. Other features can be required if plugins providing extensions for any extension points"  + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "defined by FaktorIps are used." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "If a required feature is missing or a required feature has a version less than the minimum version number " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "this project will not be build (an error is created)." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "<RequiredIpsFeatures>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <RequiredIpsFeature id=\"org.faktorips.feature\"    The id of the required feature." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "        minVersion=\"0.9.38\"                           The minimum version number of this feature" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "/<RequiredIpsFeatures>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "</RequiredIpsFeatures>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + ""; //$NON-NLS-1$
+        createDescriptionComment(s, parentEl);
+    }
+    
+    private void createResourcesExcludedFromProductDefinitionComment(Node parentEl){
+        String s = "Resources excluded from the product definition" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
+        + "In this section, all resources which will be excluded (hidden) in the product definition are listed." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "The resource must be identified by its full path, relative to the project the resource belongs to." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
+        + "<ResourcesExcludedFromProductDefinition>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "    <Resource path=\"src\"/>" + "              Example: The 1st excluded resource, identified by its path." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
+        + "    <Resource path=\"build/build.xml\"/>" + "  Example: The 2nd excluded resource, identified by its path." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
+        + "</ResourcesExcludedFromProductDefinition>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + ""; //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
@@ -795,6 +843,20 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public void setLoggingFrameworkConnectorId(String loggingFrameworkConnectorId) {
         this.loggingFrameworkConnectorId = loggingFrameworkConnectorId;
     }
-    
-    
+
+    /**
+     * Adds the given resource path to the list of exludes resources in the product definition.
+     */
+    public void addResourcesPathExcludedFromTheProductDefiniton(String resourcesPath) {
+        resourcesPathExcludedFromTheProductDefiniton.add(resourcesPath);
+    }
+
+
+    /**
+     * Returns <code>true</code> if the given resource will be excluded from the product definition.<br>
+     * If the given resource is relevant for the product definition the method returns <code>false</code>.
+     */
+    public boolean isResourceExcludedFromProductDefinition(String location) {
+        return resourcesPathExcludedFromTheProductDefiniton.contains(location);
+    }
 }

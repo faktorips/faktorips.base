@@ -615,4 +615,10 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @throws CoreException if an error occurs during search.
      */
     public void findTableContents(ITableStructure structure, List tableContents) throws CoreException;
+
+    /**
+     * Returns <code>true</code> if the given resource will be excluded from the product definition.<br>
+     * If the given resource is relevant for the product definition the method returns <code>false</code>.
+     */
+    public boolean isResourceExcludedFromProductDefinition(IResource resource);
 }

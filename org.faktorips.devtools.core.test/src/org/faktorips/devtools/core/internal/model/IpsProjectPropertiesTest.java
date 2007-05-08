@@ -94,6 +94,9 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         datatype.setGetNameMethodName("getMe");
         props.addDefinedDatatype(datatype);
         
+        props.addResourcesPathExcludedFromTheProductDefiniton("a.xml");
+        props.addResourcesPathExcludedFromTheProductDefiniton("src/a");
+        
 		Element projectEl = props.toXml(newDocument());
 
 		props = new IpsProjectProperties();
@@ -126,6 +129,9 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         DynamicEnumDatatype newDatatype = (DynamicEnumDatatype)props.getDefinedDatatypes()[0];
         assertEquals("getMe", newDatatype.getGetNameMethodName());
         assertTrue(newDatatype.isSupportingNames());
+        
+        assertTrue(props.isResourceExcludedFromProductDefinition("a.xml"));
+        assertTrue(props.isResourceExcludedFromProductDefinition("src/a"));
 	}
 	
 	public void testAddDefinedDatatype() {
@@ -196,6 +202,10 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         
         assertEquals("min.Version", props.getMinRequiredVersionNumber("required.id"));
         assertEquals(2, props.getRequiredIpsFeatureIds().length);
+        
+        // test resource filter
+        assertTrue(props.isResourceExcludedFromProductDefinition("src"));
+        assertTrue(props.isResourceExcludedFromProductDefinition("build/build.xml"));
 	}
 	
 	public void testGetLocale() {

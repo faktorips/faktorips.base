@@ -48,4 +48,8 @@
 		        getAllValuesMethod=""/>
 		</DatatypeDefinitions>
 	</Datatypes>
+	<ResourcesExcludedFromProductDefinition>
+		<Resource path="src"/>
+		<Resource path="build/build.xml"/>
+	</ResourcesExcludedFromProductDefinition>
 </IpsProject>

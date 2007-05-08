@@ -1519,5 +1519,22 @@ public class IpsProject extends IpsElement implements IIpsProject {
                     cmpt2.getQualifiedName(), projectName });
             list.add(new Message(MSGCODE_RUNTIME_ID_COLLISION, msg, Message.ERROR, objects));
         }
-    }    
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isResourceExcludedFromProductDefinition(IResource resource) {
+        IpsProjectProperties props = (IpsProjectProperties)getPropertiesInternal();
+        String projectPath = this.getProject().getLocation().toString();
+        String resourcePath = resource.getLocation().toString();
+        if (! resourcePath.startsWith(projectPath)){
+            throw new RuntimeException("Invalid project path " + projectPath + " of resource: " + resourcePath); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        if (resourcePath.length() <= projectPath.length()){
+            return false;
+        }
+        String location = resourcePath.substring(projectPath.length() +1);
+        return props.isResourceExcludedFromProductDefinition(location);
+    }
 }
