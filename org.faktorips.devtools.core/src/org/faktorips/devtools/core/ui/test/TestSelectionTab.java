@@ -103,6 +103,7 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
             } else {
                 projectText.setText(Messages.TestSelectionTab_ErrorUnknownProjekt);
                 new UIToolkit(null).setDataChangeable(testSuiteSelectionComposite, false);
+                setErrorMessage(Messages.TestSelectionTab_ErrorUnknownProjekt);
             }
             parameterText.setText(maxHeapSize);
         }
