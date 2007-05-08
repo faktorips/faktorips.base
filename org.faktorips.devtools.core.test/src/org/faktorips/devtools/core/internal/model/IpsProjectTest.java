@@ -1162,6 +1162,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
     
     public void testIsResourceExcludedFromProductDefinition() throws CoreException{
+        assertFalse(ipsProject.isResourceExcludedFromProductDefinition(null));
+        
         IFolder folder1 = ipsProject.getProject().getFolder("exludedFolderWithFile");
         IFile file = ipsProject.getProject().getFile("exludedFolderWithFile/build.xml");
         IFolder folder2 = ipsProject.getProject().getFolder("exludedFolder");

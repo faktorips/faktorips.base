@@ -619,6 +619,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * Returns <code>true</code> if the given resource will be excluded from the product definition.<br>
      * If the given resource is relevant for the product definition the method returns <code>false</code>.
+     * Returns <code>false</code> if resource is <code>null</code>.
      */
     public boolean isResourceExcludedFromProductDefinition(IResource resource);
 }

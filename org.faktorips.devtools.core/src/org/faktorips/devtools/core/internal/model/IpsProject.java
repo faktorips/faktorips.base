@@ -1525,6 +1525,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public boolean isResourceExcludedFromProductDefinition(IResource resource) {
+        if (resource==null) {
+            return false;
+        }
         IpsProjectProperties props = (IpsProjectProperties)getPropertiesInternal();
         String projectPath = this.getProject().getLocation().toString();
         String resourcePath = resource.getLocation().toString();
