@@ -44,7 +44,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         this.changeListenerSupportActive = isChangeListenerSupportActive;
     }
 
-    public boolean isChangeListenerSupportActive(){
+    public boolean isChangeListenerSupportActive() {
         return changeListenerSupportActive;
     }
     

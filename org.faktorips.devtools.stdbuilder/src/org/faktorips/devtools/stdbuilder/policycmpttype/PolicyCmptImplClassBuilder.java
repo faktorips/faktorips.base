@@ -1954,8 +1954,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         generateMethodGetParentModelObject(methodBuilder);
         generateMethodSetParentModelObjectInternal(methodBuilder);
-        generateMethodExistsChangeListenerToBeInformed(methodBuilder);
-        generateMethodNotifyChangeListeners(methodBuilder);
+        if (isChangeListenerSupportActive()) {
+            generateMethodExistsChangeListenerToBeInformed(methodBuilder);
+            generateMethodNotifyChangeListeners(methodBuilder);
+        }
     }
     
     /**
