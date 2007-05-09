@@ -270,7 +270,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (type == null) {
             return false;
         }
-        IProductCmptTypeRelation relationType = type.getRelation(relation);
+        IProductCmptTypeRelation relationType = type.findRelationInHierarchy(relation);
         if (relationType == null) {
             return false;
         }

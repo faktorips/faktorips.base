@@ -110,7 +110,33 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest {
 		assertEquals("CoverageType", relations[0].getTargetRoleSingular());
 		assertEquals("BenefitType", relations[1].getTargetRoleSingular());
 	}
-	
+    
+    public void testFindRelationInHierarchy() throws CoreException {
+        assertNull(productCmptType.findRelationInHierarchy(null));
+        
+        IRelation r0 = policyCmptType.newRelation();
+        r0.setProductRelevant(false);
+        r0.setTargetRoleSingular("Coverage");
+        r0.setTargetRoleSingularProductSide("CoverageType");
+        assertNull(productCmptType.findRelationInHierarchy("CoverageType"));
+        assertNull(productCmptType.findRelationInHierarchy("UnknownRelation"));
+        
+        r0.setProductRelevant(true);
+        IProductCmptTypeRelation productRelation = productCmptType.getRelations()[0];
+        assertEquals(productRelation, productCmptType.findRelationInHierarchy("CoverageType"));
+        
+        IPolicyCmptType subPolicyCmptType = (IPolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "motor.SubMotorPolicy");
+        subPolicyCmptType.setSupertype(policyCmptType.getQualifiedName());
+        IProductCmptType subProductCmptType = new ProductCmptType((PolicyCmptType)subPolicyCmptType);
+        assertEquals(productRelation, subProductCmptType.findRelationInHierarchy("CoverageType"));
+        assertNull(subProductCmptType.findRelationInHierarchy("UnknownRelation"));
+        
+        IPolicyCmptType superPolicyCmptType = (IPolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "motor.SuperMotorPolicy");
+        policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
+        assertEquals(productRelation, subProductCmptType.findRelationInHierarchy("CoverageType"));
+        assertNull(subProductCmptType.findRelationInHierarchy("UnknownRelation"));
+    }
+    
 	public void testGetAttributes() {
 		IAttribute[] attributes = productCmptType.getAttributes();
 		assertEquals(0, attributes.length);

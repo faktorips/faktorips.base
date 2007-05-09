@@ -42,7 +42,33 @@ import org.w3c.dom.Element;
 public class ProductCmptRelation extends AtomicIpsObjectPart implements
 		IProductCmptRelation {
 
-
+    /**
+     * @param target
+     *            The product component that will be used as target for the new
+     *            relation.
+     * @param relationType
+     *            The type of the new relation.
+     * @return <code>true</code> if it is possible to create a valid relation
+     *         with the given parameters at this time, <code>false</code>
+     *         otherwise.
+     * @throws CoreException
+     *             if an error occurs during supertype-evaluation
+     */
+    public static boolean willBeValid(IProductCmpt target, IProductCmptTypeRelation relationType) throws CoreException {
+        if (target == null || relationType == null) {
+            return false;
+        }
+        IRelation policyRelation = relationType.findPolicyCmptTypeRelation();
+        if (policyRelation==null) {
+            return false;
+        }
+        IPolicyCmptType actualTargetType = target.findPolicyCmptType();
+        if (actualTargetType==null) {
+            return false;
+        }
+        return actualTargetType.isSubtypeOrSameType(policyRelation.findTarget());
+    }
+    
 	private String productCmptTypeRelation = ""; //$NON-NLS-1$
 
 	private String target = ""; //$NON-NLS-1$
@@ -232,33 +258,6 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
 		
 	}
 
-	/**
-	 * @param target
-	 *            The product component that will be used as target for the new
-	 *            relation.
-	 * @param relationType
-	 *            The type of the new relation.
-	 * @return <code>true</code> if it is possible to create a valid relation
-	 *         with the given parameters at this time, <code>false</code>
-	 *         otherwise.
-	 * @throws CoreException
-	 *             if an error occurs during supertype-evaluation
-	 */
-	public static boolean willBeValid(IProductCmpt target, IProductCmptTypeRelation relationType) throws CoreException {
-		if (target == null || relationType == null) {
-			return false;
-		}
-        IRelation policyRelation = relationType.findPolicyCmptTypeRelation();
-        if (policyRelation==null) {
-            return false;
-        }
-        IPolicyCmptType actualTargetType = target.findPolicyCmptType();
-        if (actualTargetType==null) {
-            return false;
-        }
-        return actualTargetType.isSubtypeOrSameType(policyRelation.findTarget());
-	}
-	
 	/**
 	 * Overridden.
 	 */

@@ -78,6 +78,32 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertTrue(generation.canCreateValidRelation(target, "testRelation"));
     }
     
+    /**
+     * test for bug #829
+     * @throws Exception
+     */
+    public void testCanCreateValidRelation_RelationDefinedInSupertypeHierarchyOfSourceType() throws Exception {
+        // create a subtype of the existing policy component type
+        IPolicyCmptType subpolicyCmptType = newPolicyCmptType(ipsProject, "Subtype");
+        subpolicyCmptType.setSupertype(policyCmptType.getQualifiedName());
+        
+        IProductCmpt productCmpt2 = (IProductCmpt)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "TestProduct2");
+        productCmpt2.setPolicyCmptType(subpolicyCmptType.getQualifiedName());
+        IProductCmptGeneration generation2 = (IProductCmptGeneration)productCmpt2.newGeneration();
+
+        IPolicyCmptType targetType = newPolicyCmptType(ipsProject, "target.TargetPolicy");
+        IProductCmpt target = newProductCmpt(ipsProject, "target.Target");
+        target.setPolicyCmptType(targetType.getQualifiedName());
+        
+        IRelation rel = policyCmptType.newRelation();
+        rel.setTarget(targetType.getQualifiedName());
+        rel.setTargetRoleSingular("testRelation");
+        rel.setTargetRoleSingularProductSide("testRelation");
+        
+        assertTrue(generation2.canCreateValidRelation(target, "testRelation"));
+    }
+    
+    
     public void testGetChildren() throws CoreException  {
         IConfigElement cf0 = generation.newConfigElement();
         IProductCmptRelation r0 = generation.newRelation("targetRole");

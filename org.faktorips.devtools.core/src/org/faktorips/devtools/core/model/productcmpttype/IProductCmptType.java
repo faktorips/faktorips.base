@@ -62,7 +62,7 @@ public interface IProductCmptType extends IIpsObject {
      * @throws CoreException if an error occurs while searching for the supertype.
 	 */
 	public IProductCmptType findSupertype() throws CoreException;
-	
+    
 	/**
 	 * Returns the attributes defined for this type or an empty array is no relation
 	 * is defined. Note that computed or derived attributes are not returned as these 
@@ -86,6 +86,19 @@ public interface IProductCmptType extends IIpsObject {
      * @throws NullPointerException if name is <code>null</code>.
      */
 	public IProductCmptTypeRelation getRelation(String relationName);
+
+    /**
+     * Returns the first relation with the indicated name in this type or one of it's
+     * supertypes. Returns <code>null</code> if no such relation exists.
+     * <p>
+     * Note that a relation's name is equal to it's target role singular, so you
+     * can also use the target role singular as parameter.
+     * <p>
+     * Returns <code>null</code> if relationName is <code>null</code>.
+     * 
+     * @throws CoreException if an error occurs while searching the supertype hierarchy.
+     */
+    public IProductCmptTypeRelation findRelationInHierarchy(String relationName) throws CoreException;
     
     /**
      * Returns the table structure usages defined for this type or an empty array is no usage

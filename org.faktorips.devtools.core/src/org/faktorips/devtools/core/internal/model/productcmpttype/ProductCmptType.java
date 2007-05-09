@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -385,8 +386,20 @@ public class ProductCmptType implements IProductCmptType {
 		}
 		return null;
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+	public IProductCmptTypeRelation findRelationInHierarchy(String relationName) throws CoreException {
+        if (relationName==null) {
+            return null;
+        }
+        FindRelationInTypeHierarchyVisitor visitor = new FindRelationInTypeHierarchyVisitor(relationName);
+        visitor.start(this);
+        return visitor.getRelation();
+    }
 
-	/**
+    /**
 	 * {@inheritDoc}
 	 */
 	public IIpsObjectPart newPart(Class partType) {
@@ -474,4 +487,29 @@ public class ProductCmptType implements IProductCmptType {
     public boolean isFromParsableFile() {
         return policyCmptType.isFromParsableFile();
     }
+    
+    private static class FindRelationInTypeHierarchyVisitor extends ProductCmptTypeHierarchyVisitor {
+
+        private String relationName;
+        private IProductCmptTypeRelation relation = null;
+        
+        public FindRelationInTypeHierarchyVisitor(String relationName) {
+            super();
+            this.relationName = relationName;
+        }
+        
+        public IProductCmptTypeRelation getRelation() {
+            return relation;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IProductCmptType currentType) {
+            relation = currentType.getRelation(relationName);
+            return relation==null;
+        }
+    }
+    
 }
+
