@@ -164,10 +164,11 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
      * {@inheritDoc}
      */
     public void dispose() {
-        registry.dispose();
-        
+        if (registry!=null) {
+            registry.dispose();
+            registry = null;
+        }
         this.listeners = null;
-        this.registry = null;
     }
     
     /**
@@ -181,7 +182,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
      * {@inheritDoc}
      */
     public void removeListener(ILabelProviderListener listener) {
-        if (listener != null) {
+        if (listener != null && listeners!=null ) {
             this.listeners.remove(listener);
         }
     }
