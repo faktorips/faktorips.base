@@ -225,6 +225,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
     
     /**
      * {@inheritDoc}
+     * @throws CoreException 
+     */
+    public ClassLoader getClassLoaderForJavaProject() throws CoreException {
+        return new ClassLoaderProvider(getJavaProject(), true).getClassLoader();
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public Boolean isJavaProjectErrorFree(boolean checkReferencedJavaProjects) throws CoreException {
         return isJavaProjectErrorFree(getJavaProject(), checkReferencedJavaProjects);

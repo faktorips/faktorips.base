@@ -127,6 +127,14 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns the corresponding Java project.
      */
     public IJavaProject getJavaProject();
+    
+    /**
+     * Returns a ClassLoader that loads the classes that are accessible via the Java project's
+     * build path.
+     * 
+     * @throws CoreException if an error occurs while creating the classloader. 
+     */
+    public ClassLoader getClassLoaderForJavaProject() throws CoreException;
 
     /**
      * Returns <code>true</code> if the corresponding Java Project doesn't contain any errors that 

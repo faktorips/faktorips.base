@@ -33,7 +33,6 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.IIpsProjectProperties;
 
 /**
  * 
@@ -51,11 +50,8 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
-        IIpsProjectProperties props = ipsProject.getProperties();
-        props.setJavaProjectContainsClassesForDynamicDatatypes(true);
-        ipsProject.setProperties(props);
         javaProject = ipsProject.getJavaProject();
-        provider = new ClassLoaderProvider(ipsProject);
+        provider = new ClassLoaderProvider(javaProject, true);
     }
 
     /**
@@ -71,7 +67,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
         Listener l0 = new Listener();
         IClasspathContentsChangeListener l1 = new IClasspathContentsChangeListener() {
 
-            public void classpathContentsChanges(IIpsProject project) {
+            public void classpathContentsChanges(IJavaProject project) {
                 provider.removeClasspathChangeListener(this);
             }
             
@@ -110,7 +106,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
         assertNull(listener.project);
         provider.addClasspathChangeListener(listener);
         deleteClassFile();
-        assertEquals(ipsProject, listener.project);
+        assertEquals(javaProject, listener.project);
 
         cl = provider.getClassLoader();
         try {
@@ -135,7 +131,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
         provider.addClasspathChangeListener(listener);
 
         deleteJarFile();
-        assertEquals(ipsProject, listener.project);
+        assertEquals(javaProject, listener.project);
         cl = provider.getClassLoader();
         try {
             Class.forName("org.faktorips.test.ClassInAJar", true, cl);
@@ -146,7 +142,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
         // after re-adding the jar, the class should be loaded again
         listener.project = null;
         createJarFile();
-        assertEquals(ipsProject, listener.project);
+        assertEquals(javaProject, listener.project);
         cl = provider.getClassLoader();
         Class.forName("org.faktorips.test.ClassInAJar", true, cl);
     }
@@ -202,12 +198,12 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
     
     class Listener implements IClasspathContentsChangeListener {
 
-        private IIpsProject project = null;
+        private IJavaProject project = null;
         
         /**
          * {@inheritDoc}
          */
-        public void classpathContentsChanges(IIpsProject project) {
+        public void classpathContentsChanges(IJavaProject project) {
             this.project = project;
         }
         

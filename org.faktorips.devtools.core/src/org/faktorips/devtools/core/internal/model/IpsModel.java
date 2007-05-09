@@ -1183,7 +1183,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         ArgumentCheck.notNull(ipsProject);
         ClassLoaderProvider provider = (ClassLoaderProvider)classLoaderProviderMap.get(ipsProject);
         if (provider == null) {
-            provider = new ClassLoaderProvider(ipsProject);
+            provider = new ClassLoaderProvider(ipsProject.getJavaProject(), ipsProject.getProperties().isJavaProjectContainsClassesForDynamicDatatypes());
             classLoaderProviderMap.put(ipsProject, provider);
         }
         return provider;

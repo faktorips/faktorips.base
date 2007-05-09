@@ -40,7 +40,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -50,7 +49,9 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ClassLoaderProvider {
 
-	private IIpsProject ipsProject;
+	// private IIpsProject ipsProject;
+    private boolean includeProjectsOutputLocation;
+    private IJavaProject javaProject;
 	private URLClassLoader classLoader;
 	
 	// a list of IResources that contain the class files, either an IFile if it's a Jar-File or an
@@ -63,9 +64,10 @@ public class ClassLoaderProvider {
 	// resource change listener that is used to test for changes of the classpath elements (jars and class directories)
 	private IResourceChangeListener changeListener; 
 	
-	public ClassLoaderProvider(IIpsProject project) {
+	public ClassLoaderProvider(IJavaProject project, boolean includeProjectsOutputLocation) {
 		ArgumentCheck.notNull(project);
-		this.ipsProject = project;
+		javaProject = project;
+        this.includeProjectsOutputLocation = includeProjectsOutputLocation;
 	}
 	
 	/**
@@ -74,9 +76,9 @@ public class ClassLoaderProvider {
 	public ClassLoader getClassLoader() throws CoreException {
 		if (classLoader==null) {
 			try {
-				classLoader = getProjectClassloader(ipsProject.getJavaProject());
+				classLoader = getProjectClassloader(javaProject);
 				changeListener = new ChangeListener();
-				ipsProject.getProject().getWorkspace().addResourceChangeListener(
+				javaProject.getProject().getWorkspace().addResourceChangeListener(
 						changeListener,
 						IResourceChangeEvent.POST_CHANGE
 								| IResourceChangeEvent.PRE_BUILD);
@@ -86,13 +88,6 @@ public class ClassLoaderProvider {
 			}
 		}
 		return classLoader;
-	}
-	
-	/**
-	 * Returns the ips project for that this instance provides the classloader.
-	 */
-	public IIpsProject getIPsProject() {
-		return ipsProject;
 	}
 	
 	/**
@@ -119,7 +114,7 @@ public class ClassLoaderProvider {
 		List copy = new ArrayList(classpathContentsChangeListeners);
 		for (Iterator it=copy.iterator(); it.hasNext(); ) {
 			IClasspathContentsChangeListener listener = (IClasspathContentsChangeListener)it.next();
-			listener.classpathContentsChanges(ipsProject);
+			listener.classpathContentsChanges(javaProject);
 		}
 		classLoader = null;
 	}
@@ -131,19 +126,19 @@ public class ClassLoaderProvider {
 	private URLClassLoader getProjectClassloader(IJavaProject project)
 			throws IOException, CoreException {
 		List urlsList = new ArrayList();
-		accumulateClasspath(project, urlsList, true);
+		accumulateClasspath(project, urlsList);
 		URL[] urls = (URL[]) urlsList.toArray(new URL[urlsList.size()]);
 		return new URLClassLoader(urls, ClassLoader.getSystemClassLoader());
 	}
 
-	private void accumulateClasspath(IJavaProject project, List urlsList, boolean javaProjectBelongsToIpsProject)
+	private void accumulateClasspath(IJavaProject project, List urlsList)
 			throws IOException, CoreException {
 		
 		IPath projectPath = project.getProject().getLocation();
 		IPath root = projectPath.removeLastSegments(project.getProject()
 				.getFullPath().segmentCount());
 		
-		if (!javaProjectBelongsToIpsProject || ipsProject.getProperties().isJavaProjectContainsClassesForDynamicDatatypes()) {
+		if (project!=javaProject || includeProjectsOutputLocation) {
 			IPath outLocation = project.getOutputLocation();
 			IPath output = root.append(outLocation);
 			urlsList.add(output.toFile().toURL());
@@ -166,7 +161,7 @@ public class ClassLoaderProvider {
 		if (requiredProjectNames != null && requiredProjectNames.length > 0) {
 			for (int i = 0; i < requiredProjectNames.length; i++) {
 				accumulateClasspath(project.getJavaModel().getJavaProject(
-						requiredProjectNames[i]), urlsList, false);
+						requiredProjectNames[i]), urlsList);
 			}
 		}
 	}

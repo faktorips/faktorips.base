@@ -95,6 +95,17 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         baseProject.setProperties(props);
     }
     
+    public void testGetJavaProject() {
+        IJavaProject javaProject = ipsProject.getJavaProject();
+        assertNotNull(javaProject);
+        assertEquals(ipsProject.getProject(), javaProject.getProject());
+    }
+    
+    public void testGetClassLoaderForJavaProject() throws CoreException {
+        ClassLoader cl = ipsProject.getClassLoaderForJavaProject();
+        assertNotNull(cl);
+    }
+    
     public void testValidate_JavaCodeContainsError() throws CoreException {
         MessageList list = ipsProject.validate();
         assertFalse(list.containsErrorMsg());

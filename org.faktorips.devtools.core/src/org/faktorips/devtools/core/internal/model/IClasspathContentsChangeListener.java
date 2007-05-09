@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model;
 
-import org.faktorips.devtools.core.model.IIpsProject;
+import org.eclipse.jdt.core.IJavaProject;
 
 /**
  * A listener that listens to chnages to classpath contents that is either a Jar file in the classpath
@@ -28,8 +28,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 public interface IClasspathContentsChangeListener {
 
 	/**
-	 * Is called when the contents of the indicated ips project's classpath ( or more 
-	 * precisely the Java project that belongs to the ips project) has changed.
+	 * Is called when the contents of the indicated Java project's classpath has changed.
 	 */
-	public void classpathContentsChanges(IIpsProject project);
+	public void classpathContentsChanges(IJavaProject project);
 }

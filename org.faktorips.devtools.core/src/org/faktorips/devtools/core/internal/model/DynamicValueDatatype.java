@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -167,9 +168,10 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 		/**
 		 * {@inheritDoc}
 		 */
-		public void classpathContentsChanges(IIpsProject project) {
+		public void classpathContentsChanges(IJavaProject project) {
 			clearCache();
-			((IpsProject)ipsProject).getClassLoaderProviderForJavaProject().removeClasspathChangeListener(listener);
+            IpsProject ipsProject = (IpsProject)IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getProject());
+			ipsProject.getClassLoaderProviderForJavaProject().removeClasspathChangeListener(listener);
 			listener = null;
 		}
 		
