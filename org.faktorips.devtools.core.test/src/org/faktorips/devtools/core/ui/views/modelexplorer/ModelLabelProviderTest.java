@@ -174,12 +174,26 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         resName= flatProvider.getText(subFolder);
         assertEquals(subFolder.getName(), resName);
         
-        // non ips projects
+        // non ips projects in model explorer
         IProject platformProject= newPlatformProject("PlatformProject");
         resName= hierarchyProvider.getText(platformProject);
-        assertEquals(platformProject.getName()+" ("+Messages.ModelLabelProvider_LabelNoProductDefinitionProject+")", resName);
+        assertEquals(platformProject.getName()+" ("+Messages.ModelExplorer_nonIpsProjectLabel+")", resName);
         resName= flatProvider.getText(platformProject);
-        assertEquals(platformProject.getName()+" ("+Messages.ModelLabelProvider_LabelNoProductDefinitionProject+")", resName);
+        assertEquals(platformProject.getName()+" ("+Messages.ModelExplorer_nonIpsProjectLabel+")", resName);
+        
+        // non ips projects in product definition explorer
+        hierarchyProvider.setProductDefinitionLabelProvider(true);
+        flatProvider.setProductDefinitionLabelProvider(true);
+        resName= hierarchyProvider.getText(platformProject);
+        assertEquals(platformProject.getName()+" ("+Messages.ModelLabelProvider_noProductDefinitionProjectLabel+")", resName);
+        resName= flatProvider.getText(platformProject);
+        assertEquals(platformProject.getName()+" ("+Messages.ModelLabelProvider_noProductDefinitionProjectLabel+")", resName);
+        
+        name= hierarchyProvider.getText(proj);
+        assertEquals(proj.getName() + " ("+Messages.ModelLabelProvider_noProductDefinitionProjectLabel+")", name);
+        
+        name= flatProvider.getText(proj);
+        assertEquals(proj.getName() + " ("+Messages.ModelLabelProvider_noProductDefinitionProjectLabel+")", name);
     }
     
     // format: "<attributeName><blank>:<blank><dataType>,<blank><attributeType>" 

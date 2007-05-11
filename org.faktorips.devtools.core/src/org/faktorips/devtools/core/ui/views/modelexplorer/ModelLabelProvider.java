@@ -96,12 +96,14 @@ public class ModelLabelProvider implements ILabelProvider {
             } else if (productDefinitionLabelProvider && element instanceof IIpsProject && !((IIpsProject)element).isProductDefinitionProject()) {
                 // if this label provider shows product definition aspects then show additional text for no product definition project
                 return ((IIpsProject)element).getName()
-                        + NLS.bind(" ({0})", Messages.ModelLabelProvider_LabelNoProductDefinitionProject); //$NON-NLS-1$
+                        + NLS.bind(" ({0})", Messages.ModelLabelProvider_noProductDefinitionProjectLabel); //$NON-NLS-1$
             }
             return ((IIpsElement)element).getName();
         } else if (element instanceof IProject && ((IProject)element).isOpen()) {
+            String labelAddition = productDefinitionLabelProvider ? Messages.ModelLabelProvider_noProductDefinitionProjectLabel
+                    : Messages.ModelExplorer_nonIpsProjectLabel;
             return ((IProject)element).getName()
-                    + NLS.bind(" ({0})", Messages.ModelLabelProvider_LabelNoProductDefinitionProject); //$NON-NLS-1$
+                    + NLS.bind(" ({0})", labelAddition); //$NON-NLS-1$
         } else {
             return ((IResource)element).getName();
         }
