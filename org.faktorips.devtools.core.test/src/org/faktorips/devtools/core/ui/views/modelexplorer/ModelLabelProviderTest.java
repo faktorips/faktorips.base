@@ -146,14 +146,14 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         
         // other types: returned String equals getName()
         String name= hierarchyProvider.getText(proj);
-        assertEquals(proj.getName(), name);
+        assertEquals(proj.getName()+" ("+Messages.ModelLabelProvider_LabelNoProductDefinitionProject+")", name);
         name= hierarchyProvider.getText(root);
         assertEquals(root.getName(), name);
         name= hierarchyProvider.getText(polCmptType);
         assertEquals(polCmptType.getName(), name);
         
         name= flatProvider.getText(proj);
-        assertEquals(proj.getName(), name);
+        assertEquals(proj.getName()+" ("+Messages.ModelLabelProvider_LabelNoProductDefinitionProject+")", name);
         name= flatProvider.getText(root);
         assertEquals(root.getName(), name);
         name= flatProvider.getText(polCmptType);
@@ -177,9 +177,9 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         // non ips projects
         IProject platformProject= newPlatformProject("PlatformProject");
         resName= hierarchyProvider.getText(platformProject);
-        assertEquals(platformProject.getName()+" ("+Messages.ModelExplorer_nonIpsProjectLabel+")", resName);
+        assertEquals(platformProject.getName()+" ("+Messages.ModelLabelProvider_LabelNoProductDefinitionProject+")", resName);
         resName= flatProvider.getText(platformProject);
-        assertEquals(platformProject.getName()+" ("+Messages.ModelExplorer_nonIpsProjectLabel+")", resName);
+        assertEquals(platformProject.getName()+" ("+Messages.ModelLabelProvider_LabelNoProductDefinitionProject+")", resName);
     }
     
     // format: "<attributeName><blank>:<blank><dataType>,<blank><attributeType>" 
