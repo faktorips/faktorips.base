@@ -58,11 +58,11 @@ public class ModelContentProvider implements ITreeContentProvider {
         return filter(getUnfilteredChildren(parentElement));
     }
     
-    /*
+    /**
      * Returns the array of children of the given parentElement without filtering out children of a specific type
      * or with a specific name.
      */
-    private Object[] getUnfilteredChildren(Object parentElement) {
+    protected Object[] getUnfilteredChildren(Object parentElement) {
         if (parentElement instanceof IIpsElement) {
             if (parentElement instanceof IAttribute || parentElement instanceof IProductCmpt) {
                 return EMPTY_ARRAY;

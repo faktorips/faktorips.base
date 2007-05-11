@@ -29,6 +29,8 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
+    public static String ProductExplorer_MenuShowNoProdDefProjects_Title;
+    public static String ProductExplorer_MenuShowNoProdDefProjects_Tooltip;
     public static String ProductExplorer_subMenuTeam;
     public static String ProductExplorer_subMenuCompareWith;
     public static String ProductExplorer_subMenuReplaceWith;

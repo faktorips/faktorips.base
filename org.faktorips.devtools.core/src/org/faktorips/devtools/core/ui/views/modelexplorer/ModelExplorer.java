@@ -211,7 +211,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
          */
         setFlatLayout(isFlatLayout);
 
-        createMenu();
+        createMenu(getViewSite().getActionBars().getMenuManager());
         createContextMenu();
         createToolBar();
     }
@@ -222,7 +222,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
     /**
      * Create menu for layout styles.
      */
-    private void createMenu() {
+    protected void createMenu(IMenuManager menuManager) {
         IAction flatLayoutAction = new LayoutAction(this, true);
         flatLayoutAction.setText(Messages.ModelExplorer_actionFlatLayout);
         flatLayoutAction.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ModelExplorerFlatLayout.gif")); //$NON-NLS-1$
@@ -237,11 +237,10 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
         else {
             hierarchicalLayoutAction.setChecked(true);
         }
-        IMenuManager mgr = getViewSite().getActionBars().getMenuManager();
         IMenuManager layoutMenu = new MenuManager(Messages.ModelExplorer_submenuLayout);
         layoutMenu.add(flatLayoutAction);
         layoutMenu.add(hierarchicalLayoutAction);
-        mgr.add(layoutMenu);
+        menuManager.add(layoutMenu);
     }
 
     protected void createContextMenu() {
@@ -767,6 +766,13 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
     }
     
     /**
+     * @return Returns the contentProvider.
+     */
+    protected ModelContentProvider getContentProvider() {
+        return contentProvider;
+    }
+
+    /**
      * Returns <code>true</code> if this class is a kind of model explorer,
      * the model explorer is an explorer with enhanced functionality. 
      * Other derived explorer classes should return <code>false</code> if
@@ -774,5 +780,5 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
      */
     protected boolean isModelExplorer() {
         return true;
-    }    
+    }
 }

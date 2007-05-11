@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.views.productdefinitionexplorer;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -34,21 +35,27 @@ import org.faktorips.devtools.core.model.IIpsProject;
  */
 public class ProductExplorerFilter extends ViewerFilter {
 	
-	public ProductExplorerFilter(){}
+	private boolean excludeNoIpsProductDefinitionProjects;
+
+    public ProductExplorerFilter(){}
 	
 	/**
-	 * Returns <code>true</code> for all <code>IIpsElement</code>s except 
-	 * <code>IIpsProject</code>s that do not have the isProductdefinitionProject
-	 *  flag set to true. 
+     *  Returns <code>false</code> if the element is an <code>IFile</code> with name ".ipsproject".
      *  <p>
-     *  Returns false if the element is an <code>IFile</code> with name ".ipsproject".
+     *  Returns <code>false</code> if the resource is excluded in the ips project properties.
      *  <p>
-     *  True is returned for all other types.
+     *  Returns <code>true</code> otherwise.
 	 */
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		if(element instanceof IIpsProject){
-			return ((IIpsProject)element).isProductDefinitionProject();
-		}
+        if (excludeNoIpsProductDefinitionProjects) {
+            if (element instanceof IIpsProject) {
+                if (!((IIpsProject)element).isProductDefinitionProject()) {
+                    return false;
+                }
+            } else if (element instanceof IProject) {
+                return false;
+            }
+        }
         
         if (!isAllowedReosource(element)){
             return false;
@@ -85,5 +92,12 @@ public class ProductExplorerFilter extends ViewerFilter {
             return true;
         }
         return !ipsProject.isResourceExcludedFromProductDefinition(resource);
+    }
+    
+    /**
+     * Set if no ips product definition projects should be excluded (<code>true</code>) or not (<code>false</code>).
+     */
+    public void setExcludeNoIpsProductDefinitionProjects(boolean excludeNoIpsProductDefinitionProjects) {
+        this.excludeNoIpsProductDefinitionProjects = excludeNoIpsProductDefinitionProjects;
     }
 }

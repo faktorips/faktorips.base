@@ -6,11 +6,13 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -62,44 +64,44 @@ public class ModelLabelProvider implements ILabelProvider {
 		}
 		return null;
 	}
-	
+
 	public String getText(Object element) {
-		if(element instanceof IIpsElement){
-			if (element instanceof IIpsPackageFragment) {
-				IIpsPackageFragment fragment= (IIpsPackageFragment) element;
-				if(fragment.isDefaultPackage()){
-					return Messages.ModelExplorer_defaultPackageLabel;
-				}
-				if (isFlatLayout) {
+		if (element instanceof IIpsElement) {
+            if (element instanceof IIpsPackageFragment) {
+                IIpsPackageFragment fragment = (IIpsPackageFragment)element;
+                if (fragment.isDefaultPackage()) {
+                    return Messages.ModelExplorer_defaultPackageLabel;
+                }
+                if (isFlatLayout) {
                     return fragment.getName();
-				} else {
+                } else {
                     String name = fragment.getName();
                     int index = name.lastIndexOf('.');
-                    if (index==-1) {
+                    if (index == -1) {
                         return name;
                     }
-                    return name.substring(index+1);
-				}
-				
-			} else if (element instanceof IAttribute) {
-				IAttribute attrib = (IAttribute) element;
-				StringBuffer sb= new StringBuffer();
-				sb.append(attrib.getName());
-				sb.append(" : "); //$NON-NLS-1$
-				sb.append(attrib.getDatatype());
-				sb.append(", "); //$NON-NLS-1$
-				sb.append(attrib.getAttributeType().getId());
-				return sb.toString();
-			}
-			return ((IIpsElement) element).getName();
-		}else{
-			if(element instanceof IProject){
-				if(((IProject)element).isOpen()){
-					return ((IProject)element).getName()+" ("+Messages.ModelExplorer_nonIpsProjectLabel+")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				}
-			}
-			return ((IResource)element).getName();
-		}
+                    return name.substring(index + 1);
+                }
+            } else if (element instanceof IAttribute) {
+                IAttribute attrib = (IAttribute)element;
+                StringBuffer sb = new StringBuffer();
+                sb.append(attrib.getName());
+                sb.append(" : "); //$NON-NLS-1$
+                sb.append(attrib.getDatatype());
+                sb.append(", "); //$NON-NLS-1$
+                sb.append(attrib.getAttributeType().getId());
+                return sb.toString();
+            } else if (element instanceof IIpsProject && !((IIpsProject)element).isProductDefinitionProject()) {
+                return ((IIpsProject)element).getName()
+                        + NLS.bind(" ({0})", Messages.ModelLabelProvider_LabelNoProductDefinitionProject); //$NON-NLS-1$
+            }
+            return ((IIpsElement)element).getName();
+        } else if (element instanceof IProject && ((IProject)element).isOpen()) {
+            return ((IProject)element).getName()
+                    + NLS.bind(" ({0})", Messages.ModelLabelProvider_LabelNoProductDefinitionProject); //$NON-NLS-1$
+        } else {
+            return ((IResource)element).getName();
+        }
 	}
 
 	public void addListener(ILabelProviderListener listener) {

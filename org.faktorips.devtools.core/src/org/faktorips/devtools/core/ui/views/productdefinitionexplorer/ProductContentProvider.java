@@ -24,12 +24,12 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration;
 
 public class ProductContentProvider extends ModelContentProvider {
     
-
     public ProductContentProvider(ModelExplorerConfiguration config, boolean flatLayout) {
         super(config, flatLayout);
     }
@@ -65,5 +65,19 @@ public class ProductContentProvider extends ModelContentProvider {
                 return childPackages;
             }
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected Object[] getUnfilteredChildren(Object parentElement) {
+        // exclude all non ips project definition projects
+        if (parentElement instanceof IIpsProject){
+            IIpsProject ipsProject = (IIpsProject)parentElement;
+            if (!ipsProject.isProductDefinitionProject()){
+                return EMPTY_ARRAY;
+            }
+        }
+        return super.getUnfilteredChildren(parentElement);
     }
 }

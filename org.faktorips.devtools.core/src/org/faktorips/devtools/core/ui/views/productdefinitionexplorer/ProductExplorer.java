@@ -20,12 +20,17 @@ package org.faktorips.devtools.core.ui.views.productdefinitionexplorer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -43,6 +48,16 @@ import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfigura
  */
 public class ProductExplorer extends ModelExplorer {
     public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productDefinitionExplorer"; //$NON-NLS-1$
+    
+    private static String MENU_FILTER_GROUP = "goup.filter"; //$NON-NLS-1$
+
+    private static final String FILTER_MEMENTO = "filter"; //$NON-NLS-1$
+
+    private static final String EXCLUDE_NON_IPSPRODDEF_PROJECTS_KEY = "exclude_non_ipsproddef_projects"; //$NON-NLS-1$
+
+    private boolean excludeNoIpsProductDefinitionProjects = false;
+
+    private ProductExplorerFilter filter;
     
 	public ProductExplorer() {
 		super();
@@ -62,9 +77,12 @@ public class ProductExplorer extends ModelExplorer {
     protected ModelContentProvider createContentProvider() {
         return new ProductContentProvider(config, isFlatLayout);
     }
+    
 	protected void createFilters(TreeViewer tree) {
 		super.createFilters(tree);
-		tree.addFilter(new ProductExplorerFilter());
+        filter = new ProductExplorerFilter();
+		tree.addFilter(filter);
+        filter.setExcludeNoIpsProductDefinitionProjects(excludeNoIpsProductDefinitionProjects);
 	}
 
     protected void createContextMenu() {
@@ -187,5 +205,59 @@ public class ProductExplorer extends ModelExplorer {
      */
     protected boolean isModelExplorer() {
         return false;
-    }       
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void init(IViewSite site, IMemento memento) throws PartInitException {
+        super.init(site, memento);
+        if (memento != null) {
+            IMemento filterMemento = memento.getChild(FILTER_MEMENTO);
+            if (filterMemento != null) {
+                Integer exludeNonPredDefProjects = filterMemento.getInteger(EXCLUDE_NON_IPSPRODDEF_PROJECTS_KEY);
+                if (exludeNonPredDefProjects != null){
+                    excludeNoIpsProductDefinitionProjects = exludeNonPredDefProjects.intValue() == 1;
+                }
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void saveState(IMemento memento) {
+        super.saveState(memento);
+        IMemento layout = memento.createChild(FILTER_MEMENTO);
+        layout.putInteger(EXCLUDE_NON_IPSPRODDEF_PROJECTS_KEY, excludeNoIpsProductDefinitionProjects ? 1 : 0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void createMenu(IMenuManager menuManager) {
+        super.createMenu(menuManager);
+        
+        menuManager.add(new Separator(MENU_FILTER_GROUP));
+        Action showNoIpsProdDefProjectsAction = createShowNoIpsProductDefinitionAction();
+        showNoIpsProdDefProjectsAction.setChecked(!excludeNoIpsProductDefinitionProjects);
+        menuManager.appendToGroup(MENU_FILTER_GROUP, showNoIpsProdDefProjectsAction);     
+    }
+
+    private Action createShowNoIpsProductDefinitionAction() {
+        return new Action(Messages.ProductExplorer_MenuShowNoProdDefProjects_Title, Action.AS_CHECK_BOX) {
+            public ImageDescriptor getImageDescriptor() {
+                return null;
+            }
+            public void run() {
+                excludeNoIpsProductDefinitionProjects = ! excludeNoIpsProductDefinitionProjects;
+                filter.setExcludeNoIpsProductDefinitionProjects(excludeNoIpsProductDefinitionProjects);
+                treeViewer.refresh();
+            }
+            public String getToolTipText() {
+                return Messages.ProductExplorer_MenuShowNoProdDefProjects_Tooltip;
+            }
+        };
+
+    }
 }
