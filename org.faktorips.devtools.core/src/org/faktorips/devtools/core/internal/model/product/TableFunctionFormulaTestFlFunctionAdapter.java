@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.net.URLClassLoader;
 
 import org.apache.commons.lang.StringUtils;
@@ -27,13 +28,11 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ConversionMatrix;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -41,6 +40,7 @@ import org.faktorips.fl.FlFunction;
 import org.faktorips.fl.FunctionSignature;
 import org.faktorips.fl.FunctionSignatureImpl;
 import org.faktorips.runtime.ClassloaderRuntimeRepository;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -200,18 +200,22 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
      * Returns the corresponding table content.
      */
     private Object getTableContentValue(CompilationResult[] argResults) throws Exception{
-        ITableStructure tableStructure = tableContents.findTableStructure();
-        
+        // create the classloader to run the table access function with and to create the runtime repository
         IIpsProject ipsProject = tableContents.getIpsProject();
         
-        // create the classloader to run the table access function with
-        ClassLoader runtimeClassLoader = ((IpsProject)ipsProject).getClassLoaderProviderForJavaProject().getClassLoader();
-        // make sure that the correct runtime classes from the current jvm will be used
-        ClassLoader classLoader = URLClassLoader.newInstance(((URLClassLoader)runtimeClassLoader).getURLs(), getClass().getClassLoader());
-
+        ClassLoader classLoaderForJavaProject = ipsProject.getClassLoaderForJavaProject();
+        // accumulate the runtime classes from the current jvm, thus if a class exists in the
+        // projects classpath and in the current jvm then the class from the current jvm will be choosen, 
+        // otherwise a ClassCastException will be thrown if the repository tries to instantiate the class
+        ClassLoader classLoader = URLClassLoader.newInstance((URL[])((URLClassLoader)classLoaderForJavaProject).getURLs(), getClass().getClassLoader());
         IIpsArtefactBuilderSet ipsArtefactBuilderSet = ipsProject.getIpsArtefactBuilderSet();
-        ClassloaderRuntimeRepository repository = ClassloaderRuntimeRepository.create(ipsArtefactBuilderSet.getRuntimeRepositoryTocResourceName(tableStructure.getIpsPackageFragment().getRoot()), classLoader);
+        IRuntimeRepository repository = ClassloaderRuntimeRepository.create(ipsArtefactBuilderSet.getRuntimeRepositoryTocResourceName(tableContents.getIpsPackageFragment().getRoot()), classLoader);
+        
+        // search the table in the repository
         ITable table = repository.getTable(tableContents.getQualifiedName());
+        if (table == null){
+            throw new RuntimeException("Table '" + tableContents.getQualifiedName() + "' doesn't exists in the repository!"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
         
         // find the correct getter method via reflections
         Class[] argClasses = new Class[argResults.length];
@@ -221,7 +225,6 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
             Class runtimeClass = classLoader.loadClass(argResults[i].getDatatype().getJavaClassName());
             argClasses[i] = runtimeClass;
         }
-        
         Method findRowMethod = table.getClass().getMethod("findRow", argClasses); //$NON-NLS-1$
         Object runtimeRow = findRowMethod.invoke(table, argValues);
         if (runtimeRow == null){

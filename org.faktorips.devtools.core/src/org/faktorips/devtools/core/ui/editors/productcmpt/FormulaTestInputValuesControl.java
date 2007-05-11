@@ -509,6 +509,9 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
      */
     protected static boolean checkPrecondition(Shell shell, IFormulaTestCase formulaTestCase) {
         try {
+            if (formulaTestCase == null){
+                return false;
+            }
             Boolean projectIsErrorFree = formulaTestCase.getIpsProject().isJavaProjectErrorFree(false);
             if (projectIsErrorFree == null){
                 // the project hasn't been build yet, ask if the project should be build now
