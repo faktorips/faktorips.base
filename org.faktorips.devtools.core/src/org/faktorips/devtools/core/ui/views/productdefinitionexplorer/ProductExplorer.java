@@ -49,12 +49,13 @@ import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfigura
 public class ProductExplorer extends ModelExplorer {
     public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productDefinitionExplorer"; //$NON-NLS-1$
     
-    private static String MENU_FILTER_GROUP = "goup.filter"; //$NON-NLS-1$
-
-    private static final String FILTER_MEMENTO = "filter"; //$NON-NLS-1$
-
     private static final String EXCLUDE_NON_IPSPRODDEF_PROJECTS_KEY = "exclude_non_ipsproddef_projects"; //$NON-NLS-1$
 
+    /**
+     * Used for saving the current layout style and filter in a eclipse memento.
+     */
+    private static final String MEMENTO = "productExplorer.memento"; //$NON-NLS-1$
+    
     private boolean excludeNoIpsProductDefinitionProjects = false;
 
     private ProductExplorerFilter filter;
@@ -214,7 +215,7 @@ public class ProductExplorer extends ModelExplorer {
     public void init(IViewSite site, IMemento memento) throws PartInitException {
         super.init(site, memento);
         if (memento != null) {
-            IMemento filterMemento = memento.getChild(FILTER_MEMENTO);
+            IMemento filterMemento = memento.getChild(MEMENTO);
             if (filterMemento != null) {
                 Integer exludeNonPredDefProjects = filterMemento.getInteger(EXCLUDE_NON_IPSPRODDEF_PROJECTS_KEY);
                 if (exludeNonPredDefProjects != null){
@@ -229,16 +230,14 @@ public class ProductExplorer extends ModelExplorer {
      */
     public void saveState(IMemento memento) {
         super.saveState(memento);
-        IMemento layout = memento.createChild(FILTER_MEMENTO);
+        IMemento layout = memento.createChild(MEMENTO);
         layout.putInteger(EXCLUDE_NON_IPSPRODDEF_PROJECTS_KEY, excludeNoIpsProductDefinitionProjects ? 1 : 0);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void createMenu(IMenuManager menuManager) {
-        super.createMenu(menuManager);
-        
+    protected void createAdditionalMenuEntries(IMenuManager menuManager) {
         menuManager.add(new Separator(MENU_FILTER_GROUP));
         Action showNoIpsProdDefProjectsAction = createShowNoIpsProductDefinitionAction();
         showNoIpsProdDefProjectsAction.setChecked(!excludeNoIpsProductDefinitionProjects);

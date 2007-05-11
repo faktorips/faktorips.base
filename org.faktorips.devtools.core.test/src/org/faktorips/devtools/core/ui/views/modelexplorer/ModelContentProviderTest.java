@@ -384,6 +384,14 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
 
         children= flatProvider.getElements(IpsPlugin.getDefault().getIpsModel());
         assertEquals(5, children.length);
+        
+        flatProvider.setExcludeNoIpsProjects(true);
+        children= flatProvider.getElements(IpsPlugin.getDefault().getIpsModel());
+        assertEquals(3, children.length);
+        
+        hierarchyProvider.setExcludeNoIpsProjects(true);
+        children= flatProvider.getElements(IpsPlugin.getDefault().getIpsModel());
+        assertEquals(3, children.length);
     }
 
     /*

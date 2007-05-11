@@ -30,7 +30,9 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String ModelExplorer_submenuNew;
+	public static String ModelExplorer_menuShowNoIpsProjectsTitl;
+    public static String ModelExplorer_menuShowNoIpsProjectsTooltip;
+    public static String ModelExplorer_submenuNew;
 	public static String ModelExplorer_submenuLayout;
 	public static String ModelExplorer_actionFlatLayout;
 	public static String ModelExplorer_actionHierarchicalLayout;

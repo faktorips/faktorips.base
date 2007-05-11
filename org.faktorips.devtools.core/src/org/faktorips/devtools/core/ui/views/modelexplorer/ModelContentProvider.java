@@ -43,6 +43,8 @@ public class ModelContentProvider implements ITreeContentProvider {
 
     private ModelExplorerConfiguration configuration;
 
+    private boolean excludeNoIpsProjects;
+
     /**
      * Constructs a ModelContentProvider using the given Configuration and the given layout style.
      */
@@ -403,7 +405,13 @@ public class ModelContentProvider implements ITreeContentProvider {
         if (inputElement instanceof IIpsModel) {
             try {
                 IIpsModel model = (IIpsModel)inputElement;
-                return concatenate(model.getIpsProjects(), model.getNonIpsProjects());
+                if (excludeNoIpsProjects){
+                    // return only ips projects
+                    return model.getIpsProjects();
+                } else {
+                    // return alll kind of projects (ips- and no ips projects)
+                    return concatenate(model.getIpsProjects(), model.getNonIpsProjects());
+                }
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 return EMPTY_ARRAY;
@@ -442,4 +450,10 @@ public class ModelContentProvider implements ITreeContentProvider {
         return result;
     }
 
+    /**
+     * Set <code>true</code> to exlude no ips projects or <code>false</code> to show no ips projects.
+     */
+    public void setExcludeNoIpsProjects(boolean excludeNoIpsProjects) {
+        this.excludeNoIpsProjects = excludeNoIpsProjects;
+    }
 }

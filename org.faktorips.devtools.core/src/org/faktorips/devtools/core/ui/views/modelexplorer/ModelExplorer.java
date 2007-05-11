@@ -16,6 +16,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -114,18 +115,20 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modelExplorer"; //$NON-NLS-1$
 
     private static final int HIERARCHICAL_LAYOUT = 0;
-
     private static final int FLAT_LAYOUT = 1;
 
+    protected static String MENU_FILTER_GROUP = "goup.filter"; //$NON-NLS-1$
+    
     /**
-     * Used for saving the current layout style in a eclipse memento.
+     * Used for saving the current layout style and filter in a eclipse memento.
      */
-    private static final String LAYOUT_MEMENTO = "layout"; //$NON-NLS-1$
+    private static final String MEMENTO = "modelExplorer.memento"; //$NON-NLS-1$
 
     /**
-     * Used for saving the current layout style in a eclipse memento.
+     * Used for saving the current layout and filter style in a eclipse memento.
      */
     private static final String LAYOUT_STYLE_KEY = "style"; //$NON-NLS-1$
+    protected static final String FILTER_KEY = "filter"; //$NON-NLS-1$
 
     /**
      * The TreeViewer displaying the object model.
@@ -156,6 +159,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
      */
     protected boolean isFlatLayout = false;
 
+    /** Flag that indicates if non ips projects will be excluded or not */
+    private boolean excludeNoIpsProjects = false;
+
     public ModelExplorer() {
         super();
         config = createConfig();
@@ -173,6 +179,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
     }
 
     public void createPartControl(Composite parent) {
+        // init saved state
+        contentProvider.setExcludeNoIpsProjects(excludeNoIpsProjects);
+        
         treeViewer = new TreeViewer(parent);
         treeViewer.setContentProvider(contentProvider);
         treeViewer.setLabelProvider(labelProvider);
@@ -211,7 +220,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
          */
         setFlatLayout(isFlatLayout);
 
-        createMenu(getViewSite().getActionBars().getMenuManager());
+        IMenuManager menuManager = getViewSite().getActionBars().getMenuManager();
+        createMenu(menuManager);
+        createAdditionalMenuEntries(menuManager);
         createContextMenu();
         createToolBar();
     }
@@ -219,10 +230,10 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
     protected void createFilters(TreeViewer tree) {
     }
 
-    /**
+    /*
      * Create menu for layout styles.
      */
-    protected void createMenu(IMenuManager menuManager) {
+    private void createMenu(IMenuManager menuManager) {
         IAction flatLayoutAction = new LayoutAction(this, true);
         flatLayoutAction.setText(Messages.ModelExplorer_actionFlatLayout);
         flatLayoutAction.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ModelExplorerFlatLayout.gif")); //$NON-NLS-1$
@@ -241,6 +252,16 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
         layoutMenu.add(flatLayoutAction);
         layoutMenu.add(hierarchicalLayoutAction);
         menuManager.add(layoutMenu);
+    }
+    
+    /**
+     * Create additional menu entries e.g. filters
+     */
+    protected void createAdditionalMenuEntries(IMenuManager menuManager){
+        menuManager.add(new Separator(MENU_FILTER_GROUP));
+        Action showNoIpsProjectsAction = createShowNoIpsProjectsAction();
+        showNoIpsProjectsAction.setChecked(!excludeNoIpsProjects);
+        menuManager.appendToGroup(MENU_FILTER_GROUP, showNoIpsProjectsAction);   
     }
 
     protected void createContextMenu() {
@@ -297,9 +318,12 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
     public void init(IViewSite site, IMemento memento) throws PartInitException {
         super.init(site, memento);
         if (memento != null) {
-            IMemento layout = memento.getChild(LAYOUT_MEMENTO);
+            IMemento layout = memento.getChild(MEMENTO);
             if (layout != null) {
-                isFlatLayout = layout.getInteger(LAYOUT_STYLE_KEY).intValue() == FLAT_LAYOUT;
+                Integer layoutValue = layout.getInteger(LAYOUT_STYLE_KEY);
+                Integer filterValue = layout.getInteger(FILTER_KEY);
+                isFlatLayout = layoutValue==null?false:layoutValue.intValue() == FLAT_LAYOUT;
+                excludeNoIpsProjects = filterValue==null?false:filterValue.intValue() == 1;
             }
         }
     }
@@ -309,8 +333,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
      */
     public void saveState(IMemento memento) {
         super.saveState(memento);
-        IMemento layout = memento.createChild(LAYOUT_MEMENTO);
+        IMemento layout = memento.createChild(MEMENTO);
         layout.putInteger(LAYOUT_STYLE_KEY, isFlatLayout() ? FLAT_LAYOUT : HIERARCHICAL_LAYOUT);
+        layout.putInteger(FILTER_KEY,  excludeNoIpsProjects ? 1 : 0);
     }
 
     /**
@@ -781,4 +806,20 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
     protected boolean isModelExplorer() {
         return true;
     }
+    
+    private Action createShowNoIpsProjectsAction() {
+        return new Action(Messages.ModelExplorer_menuShowNoIpsProjectsTitl, Action.AS_CHECK_BOX) {
+            public ImageDescriptor getImageDescriptor() {
+                return null;
+            }
+            public void run() {
+                excludeNoIpsProjects = ! excludeNoIpsProjects;
+                contentProvider.setExcludeNoIpsProjects(excludeNoIpsProjects);
+                treeViewer.refresh();
+            }
+            public String getToolTipText() {
+                return Messages.ModelExplorer_menuShowNoIpsProjectsTooltip;
+            }
+        };
+    }    
 }
