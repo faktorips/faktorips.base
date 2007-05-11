@@ -48,7 +48,6 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.pctype.RelationType;
-import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
@@ -504,23 +503,24 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append("this.");
         methodsBuilder.append(getFieldNameForAttribute(a));
         methodsBuilder.appendln(" = " + interfaceBuilder.getParamNameForSetPropertyValue(a) + ";");
-        String eventClassName = QNameUtil.getUnqualifiedName(IModelObjectChangedEvent.class.getName());
-        generateChangeListenerSupport( methodsBuilder, eventClassName + ".MUTABLE_PROPERTY_CHANGED", getFieldNameForAttribute(a) );
+        generateChangeListenerSupport( methodsBuilder, IModelObjectChangedEvent.class.getName(), "MUTABLE_PROPERTY_CHANGED", getFieldNameForAttribute(a) );
         
         methodsBuilder.closeBracket();
     }
 
-    protected void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder, String event, String fieldName) {
-    	generateChangeListenerSupport(methodsBuilder, event, fieldName, null);
+    protected void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder, String eventClassName, String eventConstant, String fieldName) {
+    	generateChangeListenerSupport(methodsBuilder, eventClassName, eventConstant, fieldName, null);
 	}
     
-    protected void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder, String event, String fieldName, String paramName) {
+    protected void generateChangeListenerSupport(JavaCodeFragmentBuilder methodsBuilder, String eventClassName, String eventConstant, String fieldName, String paramName) {
     	if (isChangeListenerSupportActive()) {
             methodsBuilder.appendln("if (" + MethodNames.EXISTS_CHANGE_LISTENER_TO_BE_INFORMED + "()) {");
             methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
             methodsBuilder.appendClassName(ModelObjectChangedEvent.class);
             methodsBuilder.append("(this, ");
-            methodsBuilder.append(event);
+            methodsBuilder.appendClassName(eventClassName);
+            methodsBuilder.append('.');
+            methodsBuilder.append(eventConstant);
             methodsBuilder.append(", ");
             methodsBuilder.appendQuoted(fieldName);
             if(paramName != null) {
@@ -901,8 +901,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));
             }
         }
-        String eventClassName = QNameUtil.getUnqualifiedName(IModelObjectChangedEvent.class.getName());
-        generateChangeListenerSupport(methodsBuilder, eventClassName + ".RELATION_OBJECT_ADDED" , fieldname, paramName);
+        generateChangeListenerSupport(methodsBuilder, IModelObjectChangedEvent.class.getName(), "RELATION_OBJECT_ADDED" , fieldname, paramName);
         methodsBuilder.closeBracket();
     }
     
@@ -988,8 +987,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         } else {
             methodsBuilder.append(';');
         }
-        String eventClassName = QNameUtil.getUnqualifiedName(IModelObjectChangedEvent.class.getName());
-        generateChangeListenerSupport(methodsBuilder, eventClassName + ".RELATION_OBJECT_REMOVED", fieldname, paramName);
+        generateChangeListenerSupport(methodsBuilder, IModelObjectChangedEvent.class.getName(), "RELATION_OBJECT_REMOVED", fieldname, paramName);
         methodsBuilder.closeBracket();
     }
     
@@ -1040,8 +1038,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodsBuilder.appendln("}");
         }
         
-        String eventClassName = QNameUtil.getUnqualifiedName(IModelObjectChangedEvent.class.getName());
-        generateChangeListenerSupport(methodsBuilder, eventClassName + ".RELATION_OBJECT_CHANGED", fieldname, paramName);
+        generateChangeListenerSupport(methodsBuilder, IModelObjectChangedEvent.class.getName(), "RELATION_OBJECT_CHANGED", fieldname, paramName);
         methodsBuilder.closeBracket();
     }
     
@@ -1097,8 +1094,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodsBuilder.append(generateCodeToSynchronizeReverseAssoziation(fieldname, 
                     getQualifiedClassName(target), relation, reverseRelation));
         }
-        String eventClassName = QNameUtil.getUnqualifiedName(IModelObjectChangedEvent.class.getName());
-        generateChangeListenerSupport(methodsBuilder, eventClassName + ".RELATION_OBJECT_CHANGED", fieldname, paramName);
+        generateChangeListenerSupport(methodsBuilder, IModelObjectChangedEvent.class.getName(), "RELATION_OBJECT_CHANGED", fieldname, paramName);
         methodsBuilder.closeBracket();
     }
     

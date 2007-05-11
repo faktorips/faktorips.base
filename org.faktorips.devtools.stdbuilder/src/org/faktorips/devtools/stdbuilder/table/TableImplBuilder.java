@@ -63,7 +63,6 @@ import org.w3c.dom.Text;
  */
 public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
-    private final static String CLASS_JAVADOC = "TABLE_IMPL_BUILDER_CLASS_JAVADOC";
     private final static String GET_ALL_ROWS_JAVADOC = "TABLE_IMPL_BUILDER_GET_ALL_ROWS_JAVADOC";
     private final static String GET_INSTANCE_JAVADOC = "TABLE_IMPL_BUILDER_GET_INSTANCE_JAVADOC";
     private final static String KEY_CLASS_EQUALS_JAVADOC = "TABLE_IMPL_BUILDER_KEY_CLASS_EQUALS_JAVADOC";
@@ -88,6 +87,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
     public TableImplBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(TableImplBuilder.class));
+        setMergeEnabled(true);
     }
 
     public void setTableRowBuilder(TableRowBuilder tableRowBuilder) {
@@ -295,7 +295,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setSuperClass(Table.class.getName());
         mainSection.setClass(true);
         
-        mainSection.getJavaDocForTypeSectionBuilder().javaDoc(getLocalizedText(getIpsObject(), CLASS_JAVADOC));
+        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), getIpsObject().getDescription(), mainSection.getJavaDocForTypeSectionBuilder());
         createFields(mainSection.getAttributesSectionBuilder());
         createAddRowMethod(mainSection.getMethodSectionBuilder());
         createInitKeyMapsMethod(mainSection.getMethodSectionBuilder());
@@ -325,7 +325,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append("return rowsArray;");
         codeBuilder.method(Modifier.PUBLIC, qualifiedTableRowName + "[]",
                 "getAllRows", new String[0], new String[0], methodBody,
-                getLocalizedText(getIpsObject(), GET_ALL_ROWS_JAVADOC));
+                getLocalizedText(getIpsObject(), GET_ALL_ROWS_JAVADOC), ANNOTATION_GENERATED);
     }
 
     private void createGetInstanceMethodForSingleContent(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
@@ -342,7 +342,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         codeBuilder.method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
                 qualifiedClassName, "getInstance", new String[] { "repository" },
                 new String[] { IRuntimeRepository.class.getName() }, methodBody,
-                getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC));
+                getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC), ANNOTATION_GENERATED);
     }
 
     private void createGetInstanceMethodForMultipleContents(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
@@ -358,7 +358,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 new String[] { "repository", "qualifiedTableName" },
                 new String[] { IRuntimeRepository.class.getName(), String.class.getName() }, 
                 methodBody,
-                getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC));
+                getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC), ANNOTATION_GENERATED);
     }
 
     private boolean checkColumnsValidity(IColumn[] columns) throws CoreException{
@@ -433,7 +433,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
         codeBuilder.method(Modifier.PROTECTED, Void.TYPE, "addRow",
                 new String[] { "valueElements" }, new Class[] { NodeList.class }, methodBody,
-                getLocalizedText(getIpsObject(), ADD_ROW_JAVADOC));
+                getLocalizedText(getIpsObject(), ADD_ROW_JAVADOC), ANNOTATION_GENERATED);
     }
     
     private String createAddRowMethodTextVariableName(IColumn[] columns) {
@@ -525,7 +525,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
         codeBuilder.method(Modifier.PROTECTED, Void.TYPE, "initKeyMaps",
                 new String[0], new Class[0], methodBody,
-                getLocalizedText(getIpsObject(), INIT_KEY_MAPS_JAVADOC));
+                getLocalizedText(getIpsObject(), INIT_KEY_MAPS_JAVADOC), ANNOTATION_GENERATED);
     }
 
     private JavaCodeFragment createInitKeyMapsMethodBody(IUniqueKey[] keys) throws CoreException{
@@ -816,7 +816,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
         codeBuilder.method(Modifier.PUBLIC, Boolean.TYPE, "equals",
                 new String[] { "o" }, new Class[] { Object.class }, methodBody,
-                getLocalizedText(getIpsObject(), KEY_CLASS_EQUALS_JAVADOC));
+                getLocalizedText(getIpsObject(), KEY_CLASS_EQUALS_JAVADOC), ANNOTATION_GENERATED);
     }
 
     private void createKeyClassHashCodeMethod(String[] combineKeyNames, JavaCodeFragmentBuilder codeBuilder) throws CoreException {
@@ -826,7 +826,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
         codeBuilder.method(Modifier.PUBLIC, Integer.TYPE, "hashCode",
                 new String[0], new Class[0], methodBody,
-                getLocalizedText(getIpsObject(), KEY_CLASS_HASHCODE_JAVADOC));
+                getLocalizedText(getIpsObject(), KEY_CLASS_HASHCODE_JAVADOC), ANNOTATION_GENERATED);
     }
 
     private void createFindMethod(String methodName,
@@ -882,7 +882,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
         methodBody.appendln(';');
         codeBuilder.method(Modifier.PUBLIC, returnTypeName, methodName,
-                parameterNames, parameterTypes, methodBody, getLocalizedText(getIpsObject(), FIND_JAVADOC));
+                parameterNames, parameterTypes, methodBody, getLocalizedText(getIpsObject(), FIND_JAVADOC), ANNOTATION_GENERATED);
     }
 
     private void generateReturnFindMethodReturnStmt(JavaCodeFragment methodBody, String returnTypeName, 

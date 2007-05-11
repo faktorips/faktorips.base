@@ -96,7 +96,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragmentBuilder memberBuilder = getMainTypeSection().getAttributesSectionBuilder();
         JavaCodeFragmentBuilder methodBuilder = getMainTypeSection().getMethodSectionBuilder();
         
-        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getTableContents().getName(), 
+        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getTableContents().getName(), getIpsObject().getDescription(), 
                 getTableContents(), getMainTypeSection().getJavaDocForTypeSectionBuilder());
 
         generateCodeForColumns(memberBuilder, methodBuilder, tableStructure);

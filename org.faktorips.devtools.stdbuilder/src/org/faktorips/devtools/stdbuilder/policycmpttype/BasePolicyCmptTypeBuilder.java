@@ -79,9 +79,6 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             generateCodeForConstantAttribute(attribute, datatypeHelper, constantBuilder, memberVarsBuilder,
                     methodsBuilder);
         } else if (type == AttributeType.DERIVED_ON_THE_FLY) {
-            if (attribute.getOverwrites()) {
-                return;
-            }
             generateCodeForDerivedAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
         } else if (type == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL) {
             if (attribute.getOverwrites()) {

@@ -138,7 +138,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setClassModifier(Modifier.PUBLIC);
         mainSection.setUnqualifiedName(getUnqualifiedClassName());
         mainSection.setSuperClass(getSuperClassName());
-
+        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), getIpsObject().getDescription(), mainSection.getJavaDocForTypeSectionBuilder());
+        
         buildMemberVariables(mainSection.getAttributesSectionBuilder(), testCaseType);
         buildConstructor(mainSection.getConstructorSectionBuilder());
         buildHelperMethods(mainSection.getMethodSectionBuilder());

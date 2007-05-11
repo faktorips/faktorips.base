@@ -60,7 +60,7 @@ public class EnumTypeInterfaceBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setClassModifier(Modifier.PUBLIC);
         mainSection.setUnqualifiedName(structure.getName());
         mainSection.setClass(false);
-        appendLocalizedJavaDoc("INTERFACE_DESCRIPTION", structure.getQualifiedName(), 
+        appendLocalizedJavaDoc("INTERFACE_DESCRIPTION", structure.getQualifiedName(), getIpsObject().getDescription(), 
                 structure, getMainTypeSection().getJavaDocForTypeSectionBuilder());
         
         generateMethodGetField(mainSection.getMethodSectionBuilder());

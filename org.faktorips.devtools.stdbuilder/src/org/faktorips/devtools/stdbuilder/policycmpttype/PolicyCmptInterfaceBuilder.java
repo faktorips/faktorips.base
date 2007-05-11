@@ -147,7 +147,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) {
-        appendLocalizedJavaDoc("INTERFACE", getIpsObject().getName(), getIpsObject(), builder);
+        appendLocalizedJavaDoc("INTERFACE", getIpsObject().getName(), getIpsObject().getDescription(), getIpsObject(), builder);
     }
 
     /**
@@ -392,6 +392,9 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
+        if(attribute.getOverwrites()){
+            return;
+        }
         generateMethodGetPropertyValue(attribute, datatypeHelper, methodsBuilder);
     }
     
@@ -402,7 +405,10 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
+
+        if(attribute.getOverwrites()){
+            return;
+        }
         generateMethodGetPropertyValue(attribute, datatypeHelper, methodsBuilder);
     }
     
