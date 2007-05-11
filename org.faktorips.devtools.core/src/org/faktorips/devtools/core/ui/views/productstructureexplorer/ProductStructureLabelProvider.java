@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ViewerLabel;
@@ -99,8 +100,8 @@ public class ProductStructureLabelProvider implements ILabelProvider {
         }
         else if (element instanceof IProductCmptStructureTblUsageReference) {
             ITableContentUsage tcu = ((IProductCmptStructureTblUsageReference)element).getTableContentUsage();
-            String tableUsageLabelText = showTableStructureUsageName?tcu.getStructureUsage() + " : ":""; //$NON-NLS-1$ //$NON-NLS-2$
-            return  tableUsageLabelText + StringUtil.unqualifiedName(tcu.getTableContentName()); //$NON-NLS-1$
+            String tableUsageLabelText = showTableStructureUsageName?tcu.getStructureUsage() + ": ":""; //$NON-NLS-1$ //$NON-NLS-2$
+            return  StringUtils.capitalise(tableUsageLabelText) + StringUtil.unqualifiedName(tcu.getTableContentName()); //$NON-NLS-1$
         }
         else if (element instanceof ViewerLabel){
             return ((ViewerLabel)element).getText();

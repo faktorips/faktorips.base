@@ -50,8 +50,6 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 	
     private GenerationRootNode generationRootNode;
 
-    // filter
-    private boolean showProductCmpts = true;
     private boolean showTableContents = true;
     
 	/**
@@ -69,24 +67,24 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
     public Object[] getChildren(Object parentElement) {
         List children = new ArrayList();
 
-        if (showProductCmpts){
-            Object[] childsForRelationProductCmpts = new Object[0];
-        	// add product cmpt relation and product cmpts
-            if (!fShowRelationType && parentElement instanceof IProductCmptReference) {
-                childsForRelationProductCmpts = structure.getChildProductCmptReferences((IProductCmptReference)parentElement);
-        	} 
-        	else if (parentElement instanceof IProductCmptReference) {
-                childsForRelationProductCmpts = structure.getChildProductCmptTypeRelationReferences((IProductCmptReference)parentElement);
-        	}
-        	else if (parentElement instanceof IProductCmptStructureReference) {
-                childsForRelationProductCmpts = structure.getChildProductCmptReferences((IProductCmptStructureReference)parentElement);
-        	}
-            children.addAll(Arrays.asList(childsForRelationProductCmpts));
+        Object[] childsForRelationProductCmpts = new Object[0];
+        // add product cmpt relation and product cmpts
+        if (!fShowRelationType && parentElement instanceof IProductCmptReference) {
+            childsForRelationProductCmpts = structure
+                    .getChildProductCmptReferences((IProductCmptReference)parentElement);
+        } else if (parentElement instanceof IProductCmptReference) {
+            childsForRelationProductCmpts = structure
+                    .getChildProductCmptTypeRelationReferences((IProductCmptReference)parentElement);
+        } else if (parentElement instanceof IProductCmptStructureReference) {
+            childsForRelationProductCmpts = structure
+                    .getChildProductCmptReferences((IProductCmptStructureReference)parentElement);
         }
-        
+        children.addAll(Arrays.asList(childsForRelationProductCmpts));
+
         // add table content usages
-        if (showTableContents && parentElement instanceof IProductCmptReference){
-            children.addAll(Arrays.asList(structure.getChildProductCmptStructureTblUsageReference((IProductCmptReference)parentElement)));
+        if (showTableContents && parentElement instanceof IProductCmptReference) {
+            children.addAll(Arrays.asList(structure
+                    .getChildProductCmptStructureTblUsageReference((IProductCmptReference)parentElement)));
         }
         
         // add root node
@@ -179,24 +177,10 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
     }
 
     /**
-     * Returns <code>true</code> if the related product cmpts will be shown or hidden.
-     */
-    public boolean isShowProductCmpts() {
-        return showProductCmpts;
-    }
-
-    /**
      * Returns <code>true</code> if the related table contents cmpts will be shown or hidden.
      */
     public boolean isShowTableContents() {
         return showTableContents;
-    }
-
-    /**
-     * Set <code>true</code> to show related product cmpts.
-     */
-    public void setShowProductCmpts(boolean showProductCmpts) {
-        this.showProductCmpts = showProductCmpts;
     }
 
     /**

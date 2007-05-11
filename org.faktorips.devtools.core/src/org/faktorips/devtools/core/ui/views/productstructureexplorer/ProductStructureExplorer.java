@@ -51,6 +51,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
@@ -92,6 +93,10 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private static String MENU_INFO_GROUP = "goup.info"; //$NON-NLS-1$
     private static String MENU_FILTER_GROUP = "goup.filter"; //$NON-NLS-1$
     
+    // Used for saving the current layout style in a eclipse memento.
+    private static final String LAYOUT_AND_FILTER_MEMENTO = "layoutandfilter"; //$NON-NLS-1$
+    private static final String CHECK_MENU_STATE = "checkedmenus"; //$NON-NLS-1$
+    
     private TreeViewer tree; 
     private IIpsSrcFile file;
     private ProductStructureContentProvider contentProvider;
@@ -99,6 +104,10 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private GenerationRootNode rootNode;
     private Label errormsg;
 
+    private boolean showRelationNode = false;
+    private boolean showTableStructureRoleName = false;
+    private boolean showReferencedTable = true;
+    
     /*
      * Class to represent the root tree node to inform about the current working date.
      */
@@ -187,25 +196,20 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      */
     public void init(IViewSite site) throws PartInitException {
     	super.init(site);
-        
-        IActionBars actionBars = getViewSite().getActionBars();
-        initMenu(actionBars.getMenuManager());
-        initToolBar(actionBars.getToolBarManager());
-        
     }
-
+    
     private void initMenu(IMenuManager menuManager) {
         menuManager.add(new Separator(MENU_INFO_GROUP));
         Action showRelationNodeAction = createShowRelationNodeAction();
-        showRelationNodeAction.setChecked(false);
+        showRelationNodeAction.setChecked(showRelationNode);
         menuManager.appendToGroup(MENU_INFO_GROUP, showRelationNodeAction);
         Action showRoleNameAction = createShowTableRoleNameAction();        
-        showRelationNodeAction.setChecked(false);
+        showRoleNameAction.setChecked(showTableStructureRoleName);
         menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);        
         
         menuManager.add(new Separator(MENU_FILTER_GROUP));
         Action showReferencedTableAction = createShowReferencedTables();
-        showReferencedTableAction.setChecked(true);
+        showReferencedTableAction.setChecked(showReferencedTable);
         menuManager.appendToGroup(MENU_FILTER_GROUP, showReferencedTableAction);        
     }
 
@@ -216,6 +220,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             }
             public void run() {
                 contentProvider.setShowTableContents(!contentProvider.isShowTableContents());
+                showReferencedTable = contentProvider.isShowTableContents();
                 refresh();
             }
             public String getToolTipText() {
@@ -231,6 +236,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             }
             public void run() {
                 labelProvider.setShowTableStructureUsageName(!labelProvider.isShowTableStructureUsageName());
+                showTableStructureRoleName = labelProvider.isShowTableStructureUsageName();
                 refresh();
             }
             public String getToolTipText() {
@@ -246,6 +252,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             }
             public void run() {
                 contentProvider.setRelationTypeShowing(!contentProvider.isRelationTypeShowing());
+                showRelationNode = contentProvider.isRelationTypeShowing();
                 refresh();
             }
             public String getToolTipText() {
@@ -328,13 +335,17 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         tree.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         rootNode = new GenerationRootNode();
         contentProvider = new ProductStructureContentProvider(false);
+        contentProvider.setRelationTypeShowing(showRelationNode);
+        contentProvider.setShowTableContents(showReferencedTable);
+        
         contentProvider.setGenerationRootNode(rootNode);
         tree.setContentProvider(contentProvider);
 
         labelProvider = new ProductStructureLabelProvider();
         labelProvider.setGenerationRootNode(rootNode);
         tree.setLabelProvider(new DecoratingLabelProvider(labelProvider, new IpsProblemsLabelDecorator()));
-
+        labelProvider.setShowTableStructureUsageName(showTableStructureRoleName);
+        
         tree.addDoubleClickListener(new TreeViewerDoubleclickListener(tree));
         tree.expandAll();
         tree.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() }, new IpsElementDragListener(
@@ -352,6 +363,10 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         getSite().setSelectionProvider(tree);
         
         showEmptyMessage();
+
+        IActionBars actionBars = getViewSite().getActionBars();
+        initMenu(actionBars.getMenuManager());
+        initToolBar(actionBars.getToolBarManager());        
     }
 
     /**
@@ -555,5 +570,41 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private void showEmptyMessage() {
         showErrorMsg(Messages.ProductStructureExplorer_infoMessageEmptyView_1 +
                 Messages.ProductStructureExplorer_infoMessageEmptyView_2);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void init(IViewSite site, IMemento memento) throws PartInitException {
+        super.init(site, memento);
+        if (memento != null) {
+            IMemento layout = memento.getChild(LAYOUT_AND_FILTER_MEMENTO);
+            if (layout != null) {
+                Integer checkedMenuState = layout.getInteger(CHECK_MENU_STATE);
+                if (checkedMenuState != null){
+                    intitMenuStateFields(checkedMenuState.intValue());
+                }
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void saveState(IMemento memento) {
+        super.saveState(memento);
+        int checkedMenuState = evalMenuStates();
+        IMemento layout = memento.createChild(LAYOUT_AND_FILTER_MEMENTO);
+        layout.putInteger(CHECK_MENU_STATE, checkedMenuState);
+    }
+    
+    private void intitMenuStateFields(int checkedMenuState){
+        showReferencedTable = (checkedMenuState & 1) > 0;
+        showTableStructureRoleName = (checkedMenuState & 2) > 0;
+        showRelationNode = (checkedMenuState & 4) > 0;
+    }
+    
+    private int evalMenuStates(){
+        return ((showReferencedTable?1:0) | (showTableStructureRoleName?2:0) | (showRelationNode?4:0));
     }
 }
