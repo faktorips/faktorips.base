@@ -146,14 +146,14 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         
         // other types: returned String equals getName()
         String name= hierarchyProvider.getText(proj);
-        assertEquals(proj.getName()+" ("+Messages.ModelLabelProvider_LabelNoProductDefinitionProject+")", name);
+        assertEquals(proj.getName(), name);
         name= hierarchyProvider.getText(root);
         assertEquals(root.getName(), name);
         name= hierarchyProvider.getText(polCmptType);
         assertEquals(polCmptType.getName(), name);
         
         name= flatProvider.getText(proj);
-        assertEquals(proj.getName()+" ("+Messages.ModelLabelProvider_LabelNoProductDefinitionProject+")", name);
+        assertEquals(proj.getName(), name);
         name= flatProvider.getText(root);
         assertEquals(root.getName(), name);
         name= flatProvider.getText(polCmptType);

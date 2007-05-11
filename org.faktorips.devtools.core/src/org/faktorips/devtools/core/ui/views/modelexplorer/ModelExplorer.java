@@ -146,7 +146,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
     /**
      * Label provider for the tree viewer.
      */
-    private ModelLabelProvider labelProvider = new ModelLabelProvider();;
+    protected ModelLabelProvider labelProvider = new ModelLabelProvider();
 
     private IpsResourceChangeListener resourceListener;
 

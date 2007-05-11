@@ -27,6 +27,8 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 public class ModelLabelProvider implements ILabelProvider {
 	private boolean isFlatLayout = false;
 	
+    private boolean productDefinitionLabelProvider = false;
+    
 	public ModelLabelProvider(){
 		super();
 	}
@@ -91,7 +93,8 @@ public class ModelLabelProvider implements ILabelProvider {
                 sb.append(", "); //$NON-NLS-1$
                 sb.append(attrib.getAttributeType().getId());
                 return sb.toString();
-            } else if (element instanceof IIpsProject && !((IIpsProject)element).isProductDefinitionProject()) {
+            } else if (productDefinitionLabelProvider && element instanceof IIpsProject && !((IIpsProject)element).isProductDefinitionProject()) {
+                // if this label provider shows product definition aspects then show additional text for no product definition project
                 return ((IIpsProject)element).getName()
                         + NLS.bind(" ({0})", Messages.ModelLabelProvider_LabelNoProductDefinitionProject); //$NON-NLS-1$
             }
@@ -125,5 +128,10 @@ public class ModelLabelProvider implements ILabelProvider {
 	/* package */ void setIsFlatLayout(boolean b) {
 		isFlatLayout = b;
 	}
-
+    /**
+     * @param productDefinitionLabelProvider The productDefinitionLabelProvider to set.
+     */
+    public void setProductDefinitionLabelProvider(boolean productDefinitionLabelProvider) {
+        this.productDefinitionLabelProvider = productDefinitionLabelProvider;
+    }
 }

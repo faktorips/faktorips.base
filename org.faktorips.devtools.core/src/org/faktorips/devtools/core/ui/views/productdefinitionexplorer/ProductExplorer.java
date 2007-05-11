@@ -61,6 +61,7 @@ public class ProductExplorer extends ModelExplorer {
     
 	public ProductExplorer() {
 		super();
+        labelProvider.setProductDefinitionLabelProvider(true);
 	}
 
 	protected ModelExplorerConfiguration createConfig() {
