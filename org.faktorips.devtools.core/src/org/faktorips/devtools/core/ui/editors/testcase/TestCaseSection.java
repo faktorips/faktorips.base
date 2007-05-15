@@ -1924,7 +1924,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         failureDetailsObj.getAttributeName()));
                 if (editField != null){
                     ArrayList list = new ArrayList(1);
-                    list.add(failureDetails);
+                    list.add(new FailureDetails(failureDetails));
                     
                     TestCaseSection.this.addExpectedResultContextMenu(editField.getControl(), list, false);
                 }
