@@ -61,10 +61,10 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
 	public EditField createEditField(UIToolkit toolkit, Composite parent,
 			ValueDatatype datatype, IValueSet valueSet) {
 		
-		if (valueSet instanceof IEnumValueSet) {
-			Combo combo = toolkit.createCombo(parent);
+		if (datatype != null && valueSet instanceof IEnumValueSet) {
+            Combo combo = toolkit.createCombo(parent);
 			return new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype);
-		}		
+		}
 		return new TextField(toolkit.createText(parent));
 	}
 
