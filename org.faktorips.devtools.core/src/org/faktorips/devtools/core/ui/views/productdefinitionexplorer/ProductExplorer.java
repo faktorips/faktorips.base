@@ -240,12 +240,12 @@ public class ProductExplorer extends ModelExplorer {
     protected void createAdditionalMenuEntries(IMenuManager menuManager) {
         menuManager.add(new Separator(MENU_FILTER_GROUP));
         Action showNoIpsProdDefProjectsAction = createShowNoIpsProductDefinitionAction();
-        showNoIpsProdDefProjectsAction.setChecked(!excludeNoIpsProductDefinitionProjects);
+        showNoIpsProdDefProjectsAction.setChecked(excludeNoIpsProductDefinitionProjects);
         menuManager.appendToGroup(MENU_FILTER_GROUP, showNoIpsProdDefProjectsAction);     
     }
 
     private Action createShowNoIpsProductDefinitionAction() {
-        return new Action(Messages.ProductExplorer_MenuShowNoProdDefProjects_Title, Action.AS_CHECK_BOX) {
+        return new Action(Messages.ProductExplorer_MenuShowProdDefProjectsOnly_Title, Action.AS_CHECK_BOX) {
             public ImageDescriptor getImageDescriptor() {
                 return null;
             }
@@ -255,7 +255,7 @@ public class ProductExplorer extends ModelExplorer {
                 treeViewer.refresh();
             }
             public String getToolTipText() {
-                return Messages.ProductExplorer_MenuShowNoProdDefProjects_Tooltip;
+                return Messages.ProductExplorer_MenuShowProdDefProjectsOnly_Tooltip;
             }
         };
 

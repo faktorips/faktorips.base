@@ -406,8 +406,8 @@ public class ModelContentProvider implements ITreeContentProvider {
             try {
                 IIpsModel model = (IIpsModel)inputElement;
                 if (excludeNoIpsProjects){
-                    // return only ips projects
-                    return model.getIpsProjects();
+                    // return only ips projects and closed projects
+                    return concatenate(model.getIpsProjects(), getClosedProjects(model));
                 } else {
                     // return alll kind of projects (ips- and no ips projects)
                     return concatenate(model.getIpsProjects(), model.getNonIpsProjects());
@@ -419,6 +419,20 @@ public class ModelContentProvider implements ITreeContentProvider {
         } else {
             return EMPTY_ARRAY;
         }
+    }
+
+    /*
+     * Returns all closed projects or an empty array if no project is closed.
+     */
+    private IProject[] getClosedProjects(IIpsModel model) throws CoreException {
+        IResource[] nonIpsProjects = model.getNonIpsProjects();
+        List closedProjects = new ArrayList();
+        for (int i = 0; i < nonIpsProjects.length; i++) {
+            if (nonIpsProjects[i] instanceof IProject && ! ((IProject)nonIpsProjects[i]).isOpen()){
+                closedProjects.add(nonIpsProjects[i]);
+            }
+        }
+        return (IProject[]) closedProjects.toArray(new IProject[closedProjects.size()]);
     }
 
     public void dispose() {

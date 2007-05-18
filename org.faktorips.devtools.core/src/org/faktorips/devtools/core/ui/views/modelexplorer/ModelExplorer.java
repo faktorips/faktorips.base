@@ -260,7 +260,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
     protected void createAdditionalMenuEntries(IMenuManager menuManager){
         menuManager.add(new Separator(MENU_FILTER_GROUP));
         Action showNoIpsProjectsAction = createShowNoIpsProjectsAction();
-        showNoIpsProjectsAction.setChecked(!excludeNoIpsProjects);
+        showNoIpsProjectsAction.setChecked(excludeNoIpsProjects);
         menuManager.appendToGroup(MENU_FILTER_GROUP, showNoIpsProjectsAction);   
     }
 
@@ -808,7 +808,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
     }
     
     private Action createShowNoIpsProjectsAction() {
-        return new Action(Messages.ModelExplorer_menuShowNoIpsProjectsTitl, Action.AS_CHECK_BOX) {
+        return new Action(Messages.ModelExplorer_menuShowIpsProjectsOnly_Title, Action.AS_CHECK_BOX) {
             public ImageDescriptor getImageDescriptor() {
                 return null;
             }
@@ -818,7 +818,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
                 treeViewer.refresh();
             }
             public String getToolTipText() {
-                return Messages.ModelExplorer_menuShowNoIpsProjectsTooltip;
+                return Messages.ModelExplorer_menuShowIpsProjectsOnly_Tooltip;
             }
         };
     }    
