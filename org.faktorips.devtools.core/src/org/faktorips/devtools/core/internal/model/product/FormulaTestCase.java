@@ -34,7 +34,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
-import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -237,7 +236,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     }
     
     private ExprEvaluator getExprEvaluatorInternal() throws CoreException {
-        return getExprEvaluatorInternal(((IpsProject)getIpsProject()).getClassLoaderProviderForJavaProject().getClassLoader());
+        return getExprEvaluatorInternal(getIpsProject().getClassLoaderForJavaProject());
     }
     
     private ExprEvaluator getExprEvaluatorInternal(ClassLoader classLoader) throws CoreException {
