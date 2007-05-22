@@ -6,54 +6,6 @@
    <feature url="features/org.faktorips.feature.nls1_0.9.30.jar" id="org.faktorips.feature.nls1" version="0.9.30">
       <category name="FaktorIPS 0.9.30"/>
    </feature>
-   <feature url="features/org.faktorips.feature_0.9.40.jar" id="org.faktorips.feature" version="0.9.40">
-      <category name="FaktorIPS 0.9.40"/>
-   </feature>
-   <feature url="features/org.faktorips.feature.nls1_0.9.40.jar" id="org.faktorips.feature.nls1" version="0.9.40">
-      <category name="FaktorIPS 0.9.40"/>
-   </feature>
-   <feature url="features/org.faktorips.feature_0.9.41.jar" id="org.faktorips.feature" version="0.9.41">
-      <category name="FaktorIPS 0.9.41"/>
-   </feature>
-   <feature url="features/org.faktorips.feature.nls1_0.9.41.jar" id="org.faktorips.feature.nls1" version="0.9.41">
-      <category name="FaktorIPS 0.9.41"/>
-   </feature>
-   <feature url="features/org.faktorips.feature_1.0.0.rc1.jar" id="org.faktorips.feature" version="1.0.0.rc1">
-      <category name="FaktorIPS 1.0.0.rc1"/>
-   </feature>
-   <feature url="features/org.faktorips.feature.nls1_1.0.0.rc1.jar" id="org.faktorips.feature.nls1" version="1.0.0.rc1">
-      <category name="FaktorIPS 1.0.0.rc1"/>
-   </feature>
-   <feature url="features/org.faktorips.feature_1.0.0.rc2.jar" id="org.faktorips.feature" version="1.0.0.rc2">
-      <category name="FaktorIPS 1.0.0.rc2"/>
-   </feature>
-   <feature url="features/org.faktorips.feature.nls1_1.0.0.rc2.jar" id="org.faktorips.feature.nls1" version="1.0.0.rc2">
-      <category name="FaktorIPS 1.0.0.rc2"/>
-   </feature>
-   <feature url="features/org.faktorips.feature_1.0.0.rc2-b.jar" id="org.faktorips.feature" version="1.0.0.rc2-b">
-      <category name="FaktorIPS 1.0.0.rc2-b"/>
-   </feature>
-   <feature url="features/org.faktorips.feature.nls1_1.0.0.rc2-b.jar" id="org.faktorips.feature.nls1" version="1.0.0.rc2-b">
-      <category name="FaktorIPS 1.0.0.rc2-b"/>
-   </feature>
-   <feature url="features/org.faktorips.feature_1.0.0.rc2-c.jar" id="org.faktorips.feature" version="1.0.0.rc2-c">
-      <category name="FaktorIPS 1.0.0.rc2-c"/>
-   </feature>
-   <feature url="features/org.faktorips.feature.nls1_1.0.0.rc2-c.jar" id="org.faktorips.feature.nls1" version="1.0.0.rc2-c">
-      <category name="FaktorIPS 1.0.0.rc2-c"/>
-   </feature>
-   <feature url="features/org.faktorips.feature_1.0.0.rc3.jar" id="org.faktorips.feature" version="1.0.0.rc3">
-      <category name="FaktorIPS 1.0.0.rc3"/>
-   </feature>
-   <feature url="features/org.faktorips.feature.nls1_1.0.0.rc3.jar" id="org.faktorips.feature.nls1" version="1.0.0.rc3">
-      <category name="FaktorIPS 1.0.0.rc3"/>
-   </feature>
-   <feature url="features/org.faktorips.feature_1.0.0.rc4.jar" id="org.faktorips.feature" version="1.0.0.rc4">
-      <category name="FaktorIPS 1.0.0.rc4"/>
-   </feature>
-   <feature url="features/org.faktorips.feature.nls1_1.0.0.rc4.jar" id="org.faktorips.feature.nls1" version="1.0.0.rc4">
-      <category name="FaktorIPS 1.0.0.rc4"/>
-   </feature>
    <feature url="features/org.faktorips.feature_1.0.0.rfinal.jar" id="org.faktorips.feature" version="1.0.0.rfinal">
       <category name="Faktor-IPS 1.0.0"/>
    </feature>
@@ -66,22 +18,10 @@
    <feature url="features/org.faktorips.feature.nls1_1.0.1.jar" id="org.faktorips.feature.nls1" version="1.0.1">
       <category name="Faktor-IPS 1.0.1"/>
    </feature>
-   <category-def name="FaktorIPS 0.9.40" label="FaktorIPS 0.9.40">
-      <description>
-         A product modeling and definition system, mainly targeted for the insurance industry. Version 0.9.40
-      </description>
-   </category-def>
-   <category-def name="FaktorIPS 0.9.41" label="FaktorIPS 0.9.41">
-      <description>
-         A product modeling and definition system, mainly targeted for the insurance industry. Version 0.9.41
-      </description>
-   </category-def>
-   <category-def name="FaktorIPS 1.0.0.rc1" label="New Category 1"/>
-   <category-def name="FaktorIPS 1.0.0.rc2" label="FaktorIPS 1.0.0.rc2"/>
-   <category-def name="FaktorIPS 1.0.0.rc2-b" label="FaktorIPS 1.0.0.rc2-b"/>
-   <category-def name="FaktorIPS 1.0.0.rc2-c" label="FaktorIPS 1.0.0.rc2-c"/>
-   <category-def name="FaktorIPS 1.0.0.rc3" label="FaktorIPS 1.0.0.rc3"/>
-   <category-def name="FaktorIPS 1.0.0.rc4" label="FaktorIPS 1.0.0.rc4"/>
+   <feature url="features/org.faktorips.feature_1.0.2.jar" id="org.faktorips.feature" version="1.0.2">
+      <category name="Faktor-IPS 1.0.2"/>
+   </feature>
    <category-def name="Faktor-IPS 1.0.0" label="Faktor-IPS 1.0.0"/>
    <category-def name="Faktor-IPS 1.0.1" label="Faktor-IPS 1.0.1"/>
+   <category-def name="Faktor-IPS 1.0.2" label="Faktor-IPS 1.0.2"/>
 </site>
