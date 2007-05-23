@@ -24,7 +24,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -46,6 +48,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -1259,7 +1262,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     /*
 	 * Add a new relation based an the given test case type relation.
 	 */
-	private void addRelation(TestCaseTypeRelation relationType) throws CoreException{
+	private void addRelation(final TestCaseTypeRelation relationType) throws CoreException{
 		String productCmptQualifiedName = ""; //$NON-NLS-1$
 		if (relationType.isRequiresProductCmpt()) {
             productCmptQualifiedName = selectProductCmptDialog(relationType.getPolicyCmptTypeTarget(), relationType
@@ -1269,50 +1272,67 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 return;
         }
 		
-		IRelation relation = relationType.findRelation();
+		final IRelation relation = relationType.findRelation();
 		if (relation == null){
 			// relation not found, no add allowed
 			return;
 		}
-		
-		// add a new child based on the selected relation
-		if (relation.isAssoziation()){
-			// assoziation relation will be added			
-			String targetName = ""; //$NON-NLS-1$
-			ITestPolicyCmpt selectedTarget = selectAssoziationByTreeDialog(relation.getTarget());
-			if (selectedTarget == null)
-				// chancel
-				return;
-			
-			TestCaseHierarchyPath path = new TestCaseHierarchyPath(selectedTarget);
-			
-			targetName = path.getHierarchyPath();
-			
-			
-			// add a new child based on the selected relation and selected target
-			ITestPolicyCmptRelation newRelation = relationType.getParentTestPolicyCmpt().
-				addTestPcTypeRelation(relationType.getTestPolicyCmptTypeParam(), productCmptQualifiedName, targetName);
-			ITestPolicyCmpt newTestPolicyCmpt = newRelation.findTarget();
-			if (newTestPolicyCmpt == null){
-				throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
-			}
-			
-			refreshTreeAndDetailArea();
-			selectInTreeByObject(newRelation, true);
-		}else{
-			// composition relatation will be added	
-			ITestPolicyCmptRelation newRelation = relationType.getParentTestPolicyCmpt().
-				addTestPcTypeRelation(relationType.getTestPolicyCmptTypeParam(), productCmptQualifiedName, ""); //$NON-NLS-1$
-			if (newRelation == null)
-				throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
-				
-			ITestPolicyCmpt newTestPolicyCmpt = newRelation.findTarget();	
-			if (newTestPolicyCmpt == null)
-				throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));				
-			
-			refreshTreeAndDetailArea();
-			selectInTreeByObject(newTestPolicyCmpt, true);
-		}		
+
+        // perform the following operation by using queued changed events to 
+        // reduce the processing time
+        final String finalProductCmptQualifiedName = productCmptQualifiedName;
+        final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+            public void run(IProgressMonitor monitor) throws CoreException {
+                        // add a new child based on the selected relation
+                        if (relation.isAssoziation()) {
+                            // assoziation relation will be added
+                            String targetName = ""; //$NON-NLS-1$
+                            ITestPolicyCmpt selectedTarget = selectAssoziationByTreeDialog(relation.getTarget());
+                            if (selectedTarget == null)
+                                // chancel
+                                return;
+
+                            TestCaseHierarchyPath path = new TestCaseHierarchyPath(selectedTarget);
+
+                            targetName = path.getHierarchyPath();
+
+                            // add a new child based on the selected relation and selected target
+                            ITestPolicyCmptRelation newRelation = relationType.getParentTestPolicyCmpt().addTestPcTypeRelation(
+                                    relationType.getTestPolicyCmptTypeParam(), finalProductCmptQualifiedName, targetName);
+                            ITestPolicyCmpt newTestPolicyCmpt = newRelation.findTarget();
+                            if (newTestPolicyCmpt == null) {
+                                throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
+                            }
+
+                            refreshTreeAndDetailArea();
+                            selectInTreeByObject(newRelation, true);
+                        } else {
+                            // composition relatation will be added
+                            ITestPolicyCmptRelation newRelation = relationType.getParentTestPolicyCmpt().addTestPcTypeRelation(
+                                    relationType.getTestPolicyCmptTypeParam(), finalProductCmptQualifiedName, ""); //$NON-NLS-1$
+                            if (newRelation == null)
+                                throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
+
+                            ITestPolicyCmpt newTestPolicyCmpt = newRelation.findTarget();
+                            if (newTestPolicyCmpt == null)
+                                throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
+
+                            refreshTreeAndDetailArea();
+                            selectInTreeByObject(newTestPolicyCmpt, true);
+                        }
+                    }
+            };
+        
+        Runnable runnableWithBusyIndicator = new Runnable() {
+            public void run() {
+                try {
+                    IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+            }
+        };
+        BusyIndicator.showWhile(getDisplay(), runnableWithBusyIndicator);
 	}
 	
     /*
