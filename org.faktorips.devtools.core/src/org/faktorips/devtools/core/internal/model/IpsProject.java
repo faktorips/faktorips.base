@@ -1048,7 +1048,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         List result = new ArrayList();
         IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
         for (int i = 0; i < roots.length; i++) {
-            ((IpsPackageFragmentRoot)roots[i]).findProductCmpts(qualifiedTypeName,
+            ((AbstractIpsPackageFragmentRoot)roots[i]).findProductCmpts(qualifiedTypeName,
                 includeSubytpes, result);
         }
         IProductCmpt[] array = new IProductCmpt[result.size()];

@@ -633,6 +633,21 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(pct, ipsObj);
     }
     
+    /**
+     * Test if the findProductCmpts method works with all kind of package fragments root
+     */
+    public void testFindProductCmptsWithIpsArchive() throws Exception{
+        IFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
+        createArchive(ipsProject, archiveFile);
+        new IpsArchive(archiveFile);
+        
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        path.newArchiveEntry(archiveFile);
+        ipsProject.setIpsObjectPath(path);
+        
+        ipsProject.findProductCmpts("none", true);
+    }
+    
     public void testFindProductCmpts() throws CoreException {
         // create the following types: Type0, Type1 and Type2
         IIpsPackageFragment pack = root.createPackageFragment("pack", true, null);
