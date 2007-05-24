@@ -134,6 +134,9 @@ public class ClassLoaderProvider {
 	private void accumulateClasspath(IJavaProject project, List urlsList)
 			throws IOException, CoreException {
 		
+        if(project==null || !project.exists()) {
+            return;
+        }
 		IPath projectPath = project.getProject().getLocation();
 		IPath root = projectPath.removeLastSegments(project.getProject()
 				.getFullPath().segmentCount());
