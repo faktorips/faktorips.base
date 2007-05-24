@@ -62,5 +62,5 @@ public abstract class PolicyCmptTypeHierarchyVisitor {
      * @return <code>true</code> if the visitor should continue to navgiate up the hierarchy.
      * <code>false</code> if not.
      */
-    protected abstract boolean visit(IPolicyCmptType currentType);
+    protected abstract boolean visit(IPolicyCmptType currentType) throws CoreException;
 }
