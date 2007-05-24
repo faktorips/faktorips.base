@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
@@ -29,14 +28,17 @@ import org.eclipse.core.runtime.NullProgressMonitor;
  * 
  * @author Marcel Senf <marcel.senf@faktorzehn.de>
  */
-public class ProjectImportTask extends org.apache.tools.ant.Task {
+public class ProjectImportTask extends AbstractIpsTask {
+
 
     /**
      * path to project dir file
-     * 
-     * @deprecated Please access via Set/Get Methods
      */
     private String projectDir = "";
+
+    public ProjectImportTask() {
+        super("ProjectImportTask");
+    }
 
     /**
      * Sets the ANT-Attribute which describes the location of the Eclipseproject to import.
@@ -69,11 +71,10 @@ public class ProjectImportTask extends org.apache.tools.ant.Task {
     /**
      * Excecutes the Ant-Task {@inheritDoc}
      */
-    public void execute() throws BuildException {
+    public void executeInternal() throws Exception {
 
-        System.out.println("ProjectImportTask execution started");
         // Check Dir-Attribute
-        this.checkDir();
+        checkDir();
 
         // Fetch Workspace
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -81,45 +82,36 @@ public class ProjectImportTask extends org.apache.tools.ant.Task {
         // Create
         IProgressMonitor monitor = new NullProgressMonitor();
 
+        // get description provieded in .project File
+        InputStream inputStream = new FileInputStream(this.getProjectFile());
+        IProjectDescription description = null;
+
         try {
-            // get description provieded in .project File
-            InputStream inputStream = new FileInputStream(this.getProjectFile());
-            IProjectDescription description = null;
-
-            try {
-                description = workspace.loadProjectDescription(inputStream);
-            } finally {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
+            description = workspace.loadProjectDescription(inputStream);
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
             }
-
-            // create new project with name provided in description
-            IProject project = workspace.getRoot().getProject(description.getName());
-
-            // check if project already exists in current workspace
-            if (project.exists()) {
-                throw new BuildException("Project " + project.getName() + " does already exist.");
-            }
-            project.create(description, monitor);
-
-            // copy files
-
-            RecursiveCopy copyUtil = new RecursiveCopy();
-            copyUtil.copyDir(this.getDir(), project.getLocation().toString());
-
-            project.open(monitor);
-            project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
-            // build is done via FullBuild-Target seperately
-        }catch(CoreException e){
-            throw new BuildException(e.getStatus().toString());
-        } catch (Exception e) {
-            throw new BuildException(e);
-        }
-        finally{
-            System.out.println("ProjectImportTask execution finished");
         }
 
+        // create new project with name provided in description
+        IProject project = workspace.getRoot().getProject(description.getName());
+
+        // check if project already exists in current workspace
+        if (project.exists()) {
+            throw new BuildException("Project " + project.getName() + " does already exist.");
+        }
+        System.out.println("importing: " + project.getName());
+        project.create(description, monitor);
+
+        // copy files
+
+        RecursiveCopy copyUtil = new RecursiveCopy();
+        copyUtil.copyDir(this.getDir(), project.getLocation().toString());
+
+        project.open(monitor);
+        project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+        // build is done via FullBuild-Target seperately
     }
 
     /**

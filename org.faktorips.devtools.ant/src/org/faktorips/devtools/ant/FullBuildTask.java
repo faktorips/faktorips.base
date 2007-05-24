@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -38,10 +37,15 @@ import org.eclipse.core.runtime.NullProgressMonitor;
  * @author Marcel Senf <marcel.senf@faktorzehn.de>
  * @author Peter Erzberger <peter.erzberger@faktorzehn.de>
  */
-public class FullBuildTask extends Task {
+public class FullBuildTask extends AbstractIpsTask {
+
 
     private List eclipseProjects = new ArrayList();
 
+    public FullBuildTask() {
+        super("FullBuildTask");
+    }
+    
     public void addEclipseProject(EclipseProject eclipsProject) {
         eclipseProjects.add(eclipsProject);
     }
@@ -49,36 +53,25 @@ public class FullBuildTask extends Task {
     /**
      * Excecutes the Ant-Task {@inheritDoc}
      */
-    public void execute() throws BuildException {
+    public void executeInternal() throws Exception {
 
-        System.out.println("FullBuildTask: execution started");
         // Fetch Workspace
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
         // Create ProgressMonitor
         IProgressMonitor monitor = new NullProgressMonitor();
 
-        try {
-            IProject projects[] = null;
-            if (eclipseProjects.isEmpty()) {
-                workspace.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+        IProject projects[] = null;
+        if (eclipseProjects.isEmpty()) {
+            workspace.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
 
-                // Iterate over Projects in Workspace to find Warning and Errormarkers
-                projects = workspace.getRoot().getProjects();
-            } else {
-                projects = buildEclipseProjects(workspace);
-            }
-
-            handleMarkers(projects);
-        } catch (BuildException e) {
-            throw e;
-        } catch (CoreException e) {
-            throw new BuildException(e.getStatus().toString());
-        } catch (Exception e) {
-            throw new BuildException(e);
-        } finally {
-            System.out.println("FullBuildTask: execution finished");
+            // Iterate over Projects in Workspace to find Warning and Errormarkers
+            projects = workspace.getRoot().getProjects();
+        } else {
+            projects = buildEclipseProjects(workspace);
         }
+
+        handleMarkers(projects);
     }
 
     private IProject[] buildEclipseProjects(IWorkspace workspace) throws CoreException {

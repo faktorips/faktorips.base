@@ -32,7 +32,6 @@ public class RecursiveCopyTest extends TestCase {
     private File tmpDir2 = new File(tmpDir.getAbsolutePath() + "/2/");
 
     public void setUp() throws IOException {
-
         tmpDir.mkdir();
         tmpFile = File.createTempFile(this.getName() + "file", "");
         tmpFile2 = new File(tmpDir2.getAbsolutePath() + "/temp");
