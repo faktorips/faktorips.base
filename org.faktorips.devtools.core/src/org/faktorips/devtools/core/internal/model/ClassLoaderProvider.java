@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
@@ -150,8 +151,18 @@ public class ClassLoaderProvider {
 		IClasspathEntry[] entry = project.getRawClasspath();
 		for (int i = 0; i < entry.length; i++) {
 			if (entry[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
-				IPath jarPath = root.append(entry[i].getPath());
-				
+                IPath jarPath;
+                // evaluate the correct path of the classpath entry;
+                // if the entry path contains no device 
+                // then the root path will be added in front of the path,
+                // otherwise the path is already an absolute path (e.g. external libraries)
+                // Remark: IPath#isAbsolute didn't work in this case
+                if (StringUtils.isEmpty(entry[i].getPath().getDevice())){
+                    jarPath = root.append(entry[i].getPath());
+                } else {
+                    jarPath = entry[i].getPath();
+                }
+                
 				IPath copyPath = copyJar(jarPath);
 				if (copyPath!=null) {
 					urlsList.add(copyPath.toFile().toURL());
