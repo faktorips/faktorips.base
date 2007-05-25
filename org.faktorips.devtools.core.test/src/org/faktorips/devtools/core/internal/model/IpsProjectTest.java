@@ -929,6 +929,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
             outDerived.create(true, true, null);
         }
         path.setOutputFolderForDerivedSources(outDerived);
+        path.setOutputDefinedPerSrcFolder(false);
         ipsProject.setIpsObjectPath(path);
 
         msgList = ipsProject.validate();
@@ -940,10 +941,10 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     
     public void testValidateDuplicateBasePackageGenerated() throws Exception {
         IIpsProject ipsProject2 = (IpsProject)this.newIpsProject("TestProject2");
-
+    
         MessageList ml = ipsProject.validate();
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS));
-
+    
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IIpsSrcFolderEntry srcFolder = path.newSourceFolderEntry((IFolder)root.getEnclosingResource());
         srcFolder.setSpecificBasePackageNameForDerivedJavaClasses("srctest");
