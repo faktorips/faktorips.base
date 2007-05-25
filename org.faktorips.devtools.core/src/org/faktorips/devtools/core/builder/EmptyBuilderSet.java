@@ -171,7 +171,10 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype) {
-        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String getVersion() {
         return null;
     }
 }

@@ -656,6 +656,10 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         String formattedContent = format(content);
 
         boolean newFileCreated = createFileIfNotThere(javaFile);
+        if(buildsDerivedArtefacts()){
+            javaFile.setDerived(true);
+        }
+
         if (!newFileCreated) {
             String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
             String javaFileContentsStr = getJavaFileContents(javaFile, charset);
@@ -870,13 +874,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         versionSecionBuf.append(SystemUtils.LINE_SEPARATOR);
         versionSecionBuf.append(" * "); //$NON-NLS-1$
         versionSecionBuf.append(SystemUtils.LINE_SEPARATOR);
-        IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();
-        for (int i = 0; i < managers.length; i++) {
-            versionSecionBuf.append(" * Feature: "); //$NON-NLS-1$
-            versionSecionBuf.append(managers[i].getFeatureId());
-            versionSecionBuf.append(", Version: "); //$NON-NLS-1$
-            versionSecionBuf.append(managers[i].getCurrentVersion());
-        }
+
+        versionSecionBuf.append(" * builder set: "); //$NON-NLS-1$
+        versionSecionBuf.append(getBuilderSet().getId());
+        versionSecionBuf.append(", Version: "); //$NON-NLS-1$
+        versionSecionBuf.append(getBuilderSet().getVersion());
+        
         versionSecionBuf.append(SystemUtils.LINE_SEPARATOR);
         versionSecionBuf.append(" * "); //$NON-NLS-1$
         versionSecionBuf.append(SystemUtils.LINE_SEPARATOR);

@@ -290,20 +290,21 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
             Message msg = new Message(MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROHECT, text, Message.ERROR, this);
             result.add(msg);
         }
-
-        if(outputFolderMergable == null && getIpsObjectPath().getOutputFolderForGeneratedJavaFiles() == null){
+        if(getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderMergable == null){
             result.add(new Message(MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING, Messages.IpsSrcFolderEntry_outputfoldermergablesrcmissing, Message.ERROR)); //$NON-NLS-1$
         }
-        if(outputFolderDerived == null && getIpsObjectPath().getOutputFolderForDerivedSources() == null){
+        if(getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderDerived == null){
             result.add(new Message(MSGCODE_OUTPUT_FOLDER_DERIVED_MISSING, Messages.IpsSrcFolderEntry_outputfoldersrcderivedmissing, Message.ERROR)); //$NON-NLS-1$
         }
+        if(getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderMergable != null && !outputFolderMergable.exists()){
+            String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist, outputFolderMergable.getFullPath());
+            result.add(new Message(MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST, text, Message.ERROR)); //$NON-NLS-1$
+        }
+        if(getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderDerived != null && !outputFolderDerived.exists()){
+            String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist, outputFolderMergable.getFullPath());
+            result.add(new Message(MSGCODE_OUTPUT_FOLDER_DERIVED_DOESNT_EXIST, text, Message.ERROR)); //$NON-NLS-1$
+        }
         
-        if (outputFolderMergable != null) {
-            result.add(validateIfFolderExists(outputFolderMergable));
-        }
-        if (outputFolderDerived != null) {
-            result.add(validateIfFolderExists(outputFolderDerived));
-        }
         return result;
     }
     

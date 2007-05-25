@@ -58,6 +58,8 @@ public class Messages extends NLS {
 
     public static String IpsProjectRefEntry_noReferencedProjectSpecified;
 
+    public static String IpsSrcFolderEntry_outputfolderdoesntexist;
+
     public static String IpsSrcFolderEntry_outputfoldermergablesrcmissing;
 
     public static String IpsSrcFolderEntry_outputfoldersrcderivedmissing;

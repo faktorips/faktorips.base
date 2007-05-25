@@ -132,4 +132,11 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
     public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype) {
         return null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getVersion() {
+        return null;
+    }
 }

@@ -323,4 +323,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype) {
         return new TableContentsEnumDatatypeHelper(datatype, enumClassesBuilder);
     }
+
+    /**
+     * Returns the standard builder plugins version.
+     */
+    public String getVersion() {
+        return (String)StdBuilderPlugin.getDefault().getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION);
+    }
 }

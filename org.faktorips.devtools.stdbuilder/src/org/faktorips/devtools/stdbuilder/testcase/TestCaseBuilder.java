@@ -150,10 +150,12 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             IFile copy = getXmlContentFile(ipsSrcFile);
             String charSet = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
             String currentContent = getContentAsString(copy.getContents(), charSet);
-            if(content.equals(currentContent)){
-                return;
+            if(!content.equals(currentContent)){
+                file.setContents(is, true, true, null);
             }
-            file.setContents(is, true, true, null);
+        }
+        if(buildsDerivedArtefacts()){
+            file.setDerived(true);
         }
     }
 

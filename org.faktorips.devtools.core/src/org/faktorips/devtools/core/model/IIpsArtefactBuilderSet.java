@@ -156,6 +156,11 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 	public String getLabel();
 
     /**
+     * Returns the version of this builder set.
+     */
+    public String getVersion();
+    
+    /**
      * The framework sets the <code>IIpsLoggingFrameworkConnector</code> that is registered with the IIpsProject to
      * this <code>IIpsArtefactBuilderSet</code> at initialization time. This method is not supposed to be called by
      * clients of this class.

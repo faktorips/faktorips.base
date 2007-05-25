@@ -155,15 +155,21 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         IIpsSrcFolderEntry[] srcEntries = path.getSourceFolderEntries();
         assertEquals(1, srcEntries.length);
 
+        srcEntries[0].setSpecificOutputFolderForMergableJavaFiles(null);
+        ipsProject.setProperties(props);
+        ml = ipsProject.validate();
+        assertEquals(1, ml.getNoOfMessages());
+        assertNotNull(ml.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING));
+        
         // validate missing outputFolderGenerated
         IFolder folder1 = ipsProject.getProject().getFolder("none");
         srcEntries[0].setSpecificOutputFolderForMergableJavaFiles(folder1);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
         assertEquals(1, ml.getNoOfMessages());
-        assertNotNull(ml.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_MISSING_FOLDER));
+        assertNotNull(ml.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST));
 
-        // validate missing outputFolderExtension
+        // validate missing outputFolderDerived
         srcEntries[0].setSpecificOutputFolderForDerivedJavaFiles(folder1);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();

@@ -33,8 +33,6 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -44,12 +42,10 @@ import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -94,7 +90,6 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             // undetected as the validation result cache gets cleared in a resource change listener. 
             // it is not guaranteed that the listener is notified before the build starts!
             getIpsProject().getIpsModel().clearValidationCache();
-            createDerivedOutputFoldersIfNecessary(new SubProgressMonitor(monitor, 5));
             getProject().deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, 0);
             MessageList list = getIpsProject().validate();
             createMarkersFromMessageList(getProject(), list, IpsPlugin.PROBLEM_MARKER);
@@ -168,32 +163,6 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             }
         }
         return false;
-    }
-
-    private void createDerivedOutputFoldersIfNecessary(IProgressMonitor monitor) throws CoreException {
-        IIpsObjectPath ipsObjectPath = getIpsProject().getIpsObjectPath();
-        IFolder derivedFolder = ipsObjectPath.getOutputFolderForDerivedSources();
-        createDerivedFolderAndRefreshClasspathEntries(derivedFolder, monitor);
-
-        IIpsSrcFolderEntry[] entries = ipsObjectPath.getSourceFolderEntries();
-        for (int i = 0; i < entries.length; i++) {
-            IFolder folder = entries[i].getOutputFolderForDerivedJavaFiles();
-            createDerivedFolderAndRefreshClasspathEntries(folder, monitor);
-        }
-    }
-    
-    /*
-     * Because of a bug in eclipse it is necessary to set the raw classpath again after the derived folder has been created. 
-     */
-    private void createDerivedFolderAndRefreshClasspathEntries(IFolder folder, IProgressMonitor monitor) throws CoreException{
-        if (folder != null && !folder.exists()) {
-            monitor.subTask(Messages.IpsBuilder_subTaskMissingDerivedFolders);
-            folder.create(true, true, monitor);
-            folder.setDerived(true);
-            IJavaProject jProject = getIpsProject().getJavaProject();
-            IClasspathEntry[] classpathEntries = jProject.getRawClasspath();
-            jProject.setRawClasspath(classpathEntries, monitor);
-        }
     }
     
     private void applyBuildCommand(IIpsArtefactBuilderSet currentBuilderSet, MultiStatus buildStatus, BuildCommand command, IProgressMonitor monitor) throws CoreException {

@@ -101,6 +101,10 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableContentsEnumDatatypeAdapter datatype) {
             return null;
         }
+
+        public String getVersion() {
+            return null;
+        }
         
 	}
 }

@@ -72,6 +72,7 @@ import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
 import org.faktorips.devtools.extsystems.IValueConverter;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Version;
 
 /**
  * The main plugin class. 
@@ -206,9 +207,9 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * Returns the plugin's version identifier.
      */
-    public PluginVersionIdentifier getVersionIdentifier() {
+    public Version getVersionIdentifier() {
         String version = (String)getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION);
-        return new PluginVersionIdentifier(version);
+        return Version.parseVersion(version);
     }
 
     /**

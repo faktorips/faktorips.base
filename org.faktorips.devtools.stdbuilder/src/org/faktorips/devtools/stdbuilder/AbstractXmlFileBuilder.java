@@ -81,12 +81,14 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
             }
             if (copy.exists()) {
                 String currentContent = getContentAsString(copy.getContents(), charSet);
-                if(newContent.equals(currentContent)){
-                    return;
+                if(!newContent.equals(currentContent)){
+                    copy.setContents(convertContentAsStream(newContent, charSet), true, true, null);
                 }
-                copy.setContents(convertContentAsStream(newContent, charSet), true, true, null);
             } else {
                 copy.create(convertContentAsStream(newContent, charSet), true, null);
+            }
+            if(buildsDerivedArtefacts()){
+                copy.setDerived(true);
             }
         } catch (CoreException e) {
             throw new CoreException(new IpsStatus("Unable to create a content file for the file: " //$NON-NLS-1$
