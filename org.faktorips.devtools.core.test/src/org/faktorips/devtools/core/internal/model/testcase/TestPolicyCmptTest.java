@@ -21,6 +21,7 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -53,14 +54,17 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     private ITestPolicyCmpt testPolicyCmptObjectExpected;
     private ITestPolicyCmpt testPolicyCmptObjectInput;
     private ITestCaseType testCaseType;
+    private ITestPolicyCmptTypeParameter childTestPolicyCmptTypeParameter;
     
     /**
      * @see AbstractIpsPluginTest#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
+        
         project = newIpsProject("TestProject");
-        newPolicyCmptType(project, "testValueParameter1");
+        PolicyCmptType type = newPolicyCmptType(project, "testValueParameter1");
+        type.newRelation().setTargetRoleSingular("relation1");
         newPolicyCmptType(project, "testValueParameter2");
         newPolicyCmptType(project, "testValueParameter3");
         
@@ -68,6 +72,10 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         ITestPolicyCmptTypeParameter parameter = testCaseType.newInputTestPolicyCmptTypeParameter();
         parameter.setName("testValueParameter1");
         parameter.setPolicyCmptType("testValueParameter1");
+        childTestPolicyCmptTypeParameter = parameter.newTestPolicyCmptTypeParamChild();
+        childTestPolicyCmptTypeParameter.setName("testValueParameter1Child");
+        childTestPolicyCmptTypeParameter.setPolicyCmptType("testValueParameter1");
+        childTestPolicyCmptTypeParameter.setRelation("relation1");
         ITestPolicyCmptTypeParameter parameter2 = testCaseType.newExpectedResultPolicyCmptTypeParameter();
         parameter2.setName("testValueParameter2");
         parameter2.setPolicyCmptType("testValueParameter2");
@@ -292,6 +300,43 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         testPolicyCmptObjectInput.setProductCmpt("x");
         ml = testPolicyCmptObjectInput.validate();
         assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED));
+    }
+    
+    public void testGetIndexOfChildTestPolicyCmpt() throws CoreException{
+        ITestPolicyCmptRelation relationPos0 = testPolicyCmptObjectInput.addTestPcTypeRelation(childTestPolicyCmptTypeParameter, "testValueParameter1Child", "A");
+        ITestPolicyCmptRelation relationPos1 = testPolicyCmptObjectInput.addTestPcTypeRelation(childTestPolicyCmptTypeParameter, "testValueParameter1Child", "B");
+        ITestPolicyCmptRelation relationPos2 = testPolicyCmptObjectInput.addTestPcTypeRelation(childTestPolicyCmptTypeParameter, "testValueParameter1Child", "C");
+        
+        ITestPolicyCmpt testPolicyCmptChild0 = relationPos0.newTargetTestPolicyCmptChild();
+        ITestPolicyCmpt testPolicyCmptChild1 = relationPos1.newTargetTestPolicyCmptChild();
+        ITestPolicyCmpt testPolicyCmptChild2 = relationPos2.newTargetTestPolicyCmptChild();
+        
+        assertEquals(0, testPolicyCmptObjectInput.getIndexOfChildTestPolicyCmpt(testPolicyCmptChild0));
+        assertEquals(1, testPolicyCmptObjectInput.getIndexOfChildTestPolicyCmpt(testPolicyCmptChild1));
+        assertEquals(2, testPolicyCmptObjectInput.getIndexOfChildTestPolicyCmpt(testPolicyCmptChild2));
+    }
+    
+    public void testMoveTestPolicyCmptRelations() throws CoreException{
+        ITestPolicyCmptRelation relationPos0 = testPolicyCmptObjectInput.addTestPcTypeRelation(childTestPolicyCmptTypeParameter, "testValueParameter1Child", "A");
+        ITestPolicyCmptRelation relationPos1 = testPolicyCmptObjectInput.addTestPcTypeRelation(childTestPolicyCmptTypeParameter, "testValueParameter1Child", "B");
+        ITestPolicyCmptRelation relationPos2 = testPolicyCmptObjectInput.addTestPcTypeRelation(childTestPolicyCmptTypeParameter, "testValueParameter1Child", "C");
+        
+        assertEquals(relationPos0, testPolicyCmptObjectInput.getTestPolicyCmptRelations()[0]);
+        assertEquals(relationPos1, testPolicyCmptObjectInput.getTestPolicyCmptRelations()[1]);
+        assertEquals(relationPos2, testPolicyCmptObjectInput.getTestPolicyCmptRelations()[2]);
+        
+        testPolicyCmptObjectInput.moveTestPolicyCmptRelations(new int[]{1,2}, true);
+        assertTrue(testPolicyCmptObjectInput.getIpsSrcFile().isDirty());
+        
+        assertEquals(relationPos1, testPolicyCmptObjectInput.getTestPolicyCmptRelations()[0]);
+        assertEquals(relationPos2, testPolicyCmptObjectInput.getTestPolicyCmptRelations()[1]);
+        assertEquals(relationPos0, testPolicyCmptObjectInput.getTestPolicyCmptRelations()[2]);
+
+        testPolicyCmptObjectInput.moveTestPolicyCmptRelations(new int[]{0}, false);
+
+        assertEquals(relationPos2, testPolicyCmptObjectInput.getTestPolicyCmptRelations()[0]);
+        assertEquals(relationPos1, testPolicyCmptObjectInput.getTestPolicyCmptRelations()[1]);
+        assertEquals(relationPos0, testPolicyCmptObjectInput.getTestPolicyCmptRelations()[2]);
     }
     
     public void testUpdateDefaultTestAttributeValues() throws CoreException{

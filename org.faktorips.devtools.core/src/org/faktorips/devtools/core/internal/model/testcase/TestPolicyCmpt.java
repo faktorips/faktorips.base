@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
@@ -43,6 +44,7 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
@@ -493,6 +495,32 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public int getIndexOfChildTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+        Assert.isNotNull(testPolicyCmpt);
+        int idx = 0;
+        for (Iterator iter = testPolicyCmptRelations.iterator(); iter.hasNext();) {
+            ITestPolicyCmptRelation testPolicyCmptRelation = (ITestPolicyCmptRelation)iter.next();
+            if (testPolicyCmpt.equals(testPolicyCmptRelation.findTarget())){
+                return idx;
+            }
+            idx ++;
+        }
+        throw new CoreException(new IpsStatus(Messages.TestPolicyCmpt_Error_MoveNotPossibleBelongsToNoRelation));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int[] moveTestPolicyCmptRelations(int[] indexes, boolean up) {
+        ListElementMover mover = new ListElementMover(testPolicyCmptRelations);
+        int[] newIdxs = mover.move(indexes, up);
+        valueChanged(indexes, newIdxs);
+        return newIdxs;
+    }
+
+    /**
      * Returns the product components generation depending on the current working date (current working generation).
      */
     IProductCmptGeneration findProductCmpsCurrentGeneration() throws CoreException {
@@ -570,6 +598,14 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         valueChanged(false, true);
     }
 
+    /**
+     * Returns all test policy cmpt relations.<br>
+     * Packageprivate to enable testing only.
+     */
+    protected ITestPolicyCmptRelation[] getPolicyCmptRelation(){
+        return (ITestPolicyCmptRelation[]) testPolicyCmptRelations.toArray(new ITestPolicyCmptRelation[testPolicyCmptRelations.size()]);
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */

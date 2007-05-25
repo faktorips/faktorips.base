@@ -217,4 +217,26 @@ public interface ITestPolicyCmpt extends ITestObject {
      * @throws CoreException in case of an error.
      */
     public void updateDefaultTestAttributeValues() throws CoreException;
+    
+    /**
+     * Moves the test policy cmpt relation identified by the indexes up or down by one position. If one of the
+     * indexes is 0 (the first relation), nothing is moved up. If one of the indexes is the
+     * number of parameters - 1 (the last relation) nothing moved down
+     * 
+     * @param indexes The indexes identifying the test policy cmpt relation.
+     * @param up <code>true</code>, to move up, <false> to move them down.
+     * 
+     * @return The new indexes of the test policy cmpt relation.
+     * 
+     * @throws NullPointerException if indexes is null.
+     * @throws IndexOutOfBoundsException if one of the indexes does not identify a test policy cmpt relation.
+     */
+    public int[] moveTestPolicyCmptRelations(int[] indexes, boolean up);
+
+    /**
+     * Returns the index of the given child test policy cmpt. The index starts with 0 (the first element).
+     * 
+     * @throws CoreException if the given test policy cmpt is no child of the current test policy cmpt.
+     */
+    public int getIndexOfChildTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException;
 }

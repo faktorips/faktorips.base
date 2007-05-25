@@ -47,6 +47,7 @@ public class Messages extends NLS {
 	public static String TestCase_Error_NoRelationOrPolicyCmptGiven;
 	public static String TestCase_Error_TestPolicyCmptNotFound;
 	public static String TestCase_ValidateError_TestCaseTypeNotFound;
+    public static String TestPolicyCmpt_Error_MoveNotPossibleBelongsToNoRelation;
 	public static String TestPolicyCmpt_Error_RelationNotFound;
 	public static String TestPolicyCmpt_ValidationError_TestCaseTypeNotFound;
 	public static String TestPolicyCmpt_ValidationError_ProductCmptRequired;

@@ -49,6 +49,14 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -198,6 +206,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     private IEditorSite site;
     
+    // Stores the test policy cmpt that should be moved using drag and drop
+    private ITestPolicyCmpt toMove;
+    
     /*
      * State class contains the enable state of all actions (for buttons and context menu)
      */
@@ -205,6 +216,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         boolean productCmptEnable = false;
         boolean removeEnable = false;
         boolean addEnable = false;
+        boolean moveEnable = false;
     }
     
 	/*
@@ -420,6 +432,173 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     }   
     
+    /*
+     * Listener for Drop-Actions to move test policy cmpts.
+     */
+    private class DropListener implements DropTargetListener {
+        private int oldDetail = DND.DROP_NONE;
+
+        /**
+         * {@inheritDoc}
+         */
+        public void dragEnter(DropTargetEvent event) {
+            if (event.detail == 0) {
+                event.detail = DND.DROP_LINK;
+            }
+            oldDetail = event.detail;
+            event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SELECT | DND.FEEDBACK_INSERT_AFTER
+                    | DND.FEEDBACK_SCROLL;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void dragLeave(DropTargetEvent event) {
+            // nothing to do
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void dragOperationChanged(DropTargetEvent event) {
+            // nothing to do
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void dragOver(DropTargetEvent event) {
+            if (toMove == null || ! isValidTarget(getInsertAt(event))) {
+                event.detail = DND.DROP_NONE;
+            } else {
+                event.detail = oldDetail;
+            }
+        }
+
+        private boolean isValidTarget(Object insertAt){
+            ITestPolicyCmpt parentTestPolicyCmpt = toMove.getParentPolicyCmpt();
+            if (parentTestPolicyCmpt == null){
+                return false;
+            }
+            ITestPolicyCmpt parentTestPolicyCmptOfTarget = null;
+            if (insertAt instanceof ITestPolicyCmpt){
+                parentTestPolicyCmptOfTarget = ((ITestPolicyCmpt)insertAt).getParentPolicyCmpt();
+            }
+            if (parentTestPolicyCmpt.equals(parentTestPolicyCmptOfTarget)){
+                return true;
+            }
+            return false;
+        }
+        
+        private Object getInsertAt(DropTargetEvent event) {
+            if (event.item != null && event.item.getData() != null) {
+                return event.item.getData();
+            } else {
+                // event happened on the treeview, but not targeted at an entry
+                TreeItem[] items = treeViewer.getTree().getItems();
+                if (items.length > 0) {
+                    return items[items.length - 1].getData();
+                }
+            }
+            return null;
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        public void drop(DropTargetEvent event) {
+            Object insertAt = getInsertAt(event);
+            if (!isValidTarget(insertAt)) {
+                return;
+            }
+            
+            if (event.operations == DND.DROP_MOVE) {
+                try {
+                    move((ITestPolicyCmpt)insertAt);
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+            }
+            
+            ISelection selection = treeViewer.getSelection();
+            refreshTreeAndDetailArea();
+            treeViewer.setSelection(selection);
+        }
+
+        /*
+         * Moves the test policy cmpt stored in toMove on the position of the given cmpt.
+         */
+        private void move(ITestPolicyCmpt cmpt) throws CoreException {
+            final ITestPolicyCmpt parentTestPolicyCmpt = toMove.getParentPolicyCmpt();
+            
+            int posTarget = parentTestPolicyCmpt.getIndexOfChildTestPolicyCmpt(cmpt);
+            final int posSource = parentTestPolicyCmpt.getIndexOfChildTestPolicyCmpt(toMove);
+            
+            int steps = posSource - posTarget;
+            final boolean up = (steps >= 0);
+            final int stepsToMove = Math.abs(steps);
+            IWorkspaceRunnable moveRunnable = new IWorkspaceRunnable(){
+                public void run(IProgressMonitor monitor) throws CoreException {
+                    int currPos = posSource;
+                    for (int i = 0; i < stepsToMove; i++) {
+                        parentTestPolicyCmpt.moveTestPolicyCmptRelations(new int[]{currPos}, up);
+                        currPos += (up?-1:1);
+                    }
+                }
+            };
+            IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(moveRunnable, null);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void dropAccept(DropTargetEvent event) {
+            if (!isDataChangeable()) {
+                event.detail = DND.DROP_NONE;
+            }            
+        }
+    }
+    
+    /*
+     * Listener to handle the move of test policy cmpts.
+     */
+    private class DragListener implements DragSourceListener {
+        ISelectionProvider selectionProvider;
+
+        public DragListener(ISelectionProvider selectionProvider) {
+            this.selectionProvider = selectionProvider;
+        }
+
+        public void dragStart(DragSourceEvent event) {
+            Object selected = ((IStructuredSelection) selectionProvider
+                    .getSelection()).getFirstElement();
+            event.doit = (selected instanceof ITestPolicyCmpt) && isDataChangeable();
+            
+            if (selected instanceof ITestPolicyCmpt) {
+                toMove = (ITestPolicyCmpt) selected;
+                ITestPolicyCmpt parentTestPolicyCmpt = toMove.getParentPolicyCmpt();
+                if (parentTestPolicyCmpt == null){
+                    event.doit = false;
+                    return;
+                }
+                event.data = "local"; //$NON-NLS-1$
+            }
+        }
+
+        public void dragSetData(DragSourceEvent event) {
+            Object selected = ((IStructuredSelection) selectionProvider
+                    .getSelection()).getFirstElement();
+            if (selected instanceof ITestPolicyCmpt) {
+                toMove = (ITestPolicyCmpt) selected;
+                event.data = "local"; //$NON-NLS-1$
+            }
+        }
+
+        public void dragFinished(DragSourceEvent event) {
+            toMove = null;
+        }
+    }
+    
     private void storeActualAsExpectedValue(FailureDetails failureDetails) {
         testCaseDetailArea.storeActualValueInExpResult(findUniqueEditFieldKey(failureDetails), failureDetails
                 .getActualValue(), failureDetails.getMessage());
@@ -559,7 +738,51 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         }
     }
-    
+
+    /*
+     * Action to move relations up or down
+     */
+    private class MoveAction extends IpsAction {
+        private boolean up;
+        public MoveAction(boolean up) {
+            super(treeViewer);
+            this.up = up;
+            setText(up?Messages.TestCaseSection_Menu_Up:Messages.TestCaseSection_Menu_Down);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean computeEnabledProperty(IStructuredSelection selection) {
+            TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
+            return actionEnableState.moveEnable;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void run(IStructuredSelection selection) {
+            try {
+                Object firstElement = selection.getFirstElement();
+                if (firstElement instanceof ITestPolicyCmpt){
+                    ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)firstElement;
+                    ITestPolicyCmpt parentPolicyCmpt = testPolicyCmpt.getParentPolicyCmpt();
+                    int index = parentPolicyCmpt.getIndexOfChildTestPolicyCmpt(testPolicyCmpt);
+                    int newIndex = parentPolicyCmpt.moveTestPolicyCmptRelations(new int[]{index}, up)[0];
+                    if (newIndex != index){
+                        refreshTreeAndDetailArea();
+                        treeViewer.setSelection(selection);
+                    }
+                } else {
+                    throw new RuntimeException("Move action not supported for: " + firstElement.getClass().getName()); //$NON-NLS-1$
+                }
+            }
+            catch (Exception e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
+    }
+
     public TestCaseSection(Composite parent, TestCaseEditor editor, UIToolkit toolkit,
             TestCaseContentProvider contentProvider, final String title, String detailTitle, ScrolledForm form,
             IEditorSite site) {
@@ -661,6 +884,14 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         treeViewer.setLabelProvider(new MessageCueLabelProvider(labelProvider));
         treeViewer.setUseHashlookup(true);
         treeViewer.setInput(testCase);
+        
+        treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE,
+                new Transfer[] { FileTransfer.getInstance(), TextTransfer.getInstance() },
+                new DropListener());
+        treeViewer.addDragSupport(DND.DROP_MOVE,
+                new Transfer[] { TextTransfer.getInstance() },
+                new DragListener(treeViewer));
+        
         buildContextMenu();
         
 		// Buttons belongs to the tree structure
@@ -940,8 +1171,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) selection;
             try {
                 ITestPolicyCmptTypeParameter param = testPolicyCmpt.findTestPolicyCmptTypeParameter();
-                // root elements could not be deleted
+                // root elements couldn't be deleted
                 actionEnableState.removeEnable = !((ITestPolicyCmpt)selection).isRoot();
+                // root elements couldn't be deleted
+                actionEnableState.moveEnable = !((ITestPolicyCmpt)selection).isRoot();
                 if (param != null){
                     // type parameter exists,
                     //   enable add button only if relations are defined
@@ -1056,6 +1289,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         manager.add(new AddAction());
         manager.add(new RemoveAction());
         manager.add(new ProductCmptAction());
+        manager.add(new Separator());
+        manager.add(new MoveAction(true));
+        manager.add(new MoveAction(false));
         Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
     }
@@ -1371,23 +1607,30 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 * Remove button was clicked.
 	 */
 	private void removeClicked() throws CoreException {
-		ISelection selection = treeViewer.getSelection();
-		if (selection instanceof IStructuredSelection){
-			TreeItem nextItemToSelect = null;
-			for (Iterator iterator = ((IStructuredSelection)selection).iterator(); iterator.hasNext();) {			
-                Object domainObject = iterator.next();
-                nextItemToSelect = getNextSelectionInTreeAfterDelete(domainObject);
-				if (domainObject instanceof ITestPolicyCmptRelation){
-					((ITestPolicyCmptRelation) domainObject).delete();
-				} else if (domainObject instanceof ITestObject) {
-					((ITestObject) domainObject).delete();
-                } else {
-                    throw new RuntimeException("Remove object with type " + domainObject.getClass().getName() + " is not supported!" ); //$NON-NLS-1$ //$NON-NLS-2$
-                }
-				refreshTreeAndDetailArea();
-			}
-			treeViewer.getTree().setSelection(new TreeItem[]{nextItemToSelect});
-		}
+        form.setRedraw(false);
+        try {
+            ISelection selection = treeViewer.getSelection();
+            if (selection instanceof IStructuredSelection){
+            	TreeItem nextItemToSelect = null;
+            	for (Iterator iterator = ((IStructuredSelection)selection).iterator(); iterator.hasNext();) {			
+                    Object domainObject = iterator.next();
+                    nextItemToSelect = getNextSelectionInTreeAfterDelete(domainObject);
+            		if (domainObject instanceof ITestPolicyCmptRelation){
+            			((ITestPolicyCmptRelation) domainObject).delete();
+            		} else if (domainObject instanceof ITestObject) {
+            			((ITestObject) domainObject).delete();
+                    } else {
+                        throw new RuntimeException("Remove object with type " + domainObject.getClass().getName() + " is not supported!" ); //$NON-NLS-1$ //$NON-NLS-2$
+                    }
+            	}
+            	treeViewer.getTree().setSelection(new TreeItem[]{nextItemToSelect});
+                treeViewer.getControl().setFocus();
+                refreshTreeAndDetailArea();
+                selectionInTreeChanged(new StructuredSelection(nextItemToSelect.getData()));
+            }
+        } finally {
+            form.setRedraw(true);
+        }
 	}
 	
 	private void productCmptClicked() throws CoreException {
@@ -1424,6 +1667,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
                 
                 refreshTreeAndDetailArea();
+                treeViewer.setSelection(selection);
 			}
 		}
 	}
@@ -1599,6 +1843,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 testCaseDetailArea.createTestObjectSections(prevTestObjects);
             }
             refreshTree();
+
             redrawForm();
         } finally {
             form.setRedraw(true);
@@ -1679,9 +1924,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         	TreeItem found = searchChildsByObject(testPolicyCmpt, relation, tree.getItems());
         	if (found != null) {
         		// select the tree entry
-    			TreeItem[] select = new TreeItem[1];
-    			select[0] = found;
-    			tree.setSelection(select);
+                treeViewer.setSelection(new StructuredSelection(found.getData()));
     			if (focusChange){
     				treeViewer.getTree().setFocus();
     				updateButtonEnableState(found.getData()); 
