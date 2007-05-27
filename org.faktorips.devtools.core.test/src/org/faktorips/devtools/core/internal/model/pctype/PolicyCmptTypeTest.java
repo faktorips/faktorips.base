@@ -356,7 +356,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertTrue(dependsOnList.contains(b.getQualifiedNameType()));
     }
     
-    public void testDependsOnTableBasedEnums() throws CoreException{
+    public void testDependsOnTableBasedEnums() throws Exception{
         
         TableStructure structure = (TableStructure)newIpsObject(root, IpsObjectType.TABLE_STRUCTURE, "TestEnumType");
         structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);

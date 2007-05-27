@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -76,7 +77,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IPolicyCmptType type = (IPolicyCmptType)ipsSrcFile.getIpsObject();
         if (type.findProductCmptType() != null) {
-            MessageList msgList = type.validate();
+            MessageList msgList = ((Validatable)type).validate();
             //this validation is necessary because otherwise a java class file is created with a wrong java class name
             //this causes jmerge to throw an exception
             Message msg = msgList.getMessageByCode(IPolicyCmptType.MSGCODE_INVALID_PRODUCT_CMPT_TYPE_NAME);

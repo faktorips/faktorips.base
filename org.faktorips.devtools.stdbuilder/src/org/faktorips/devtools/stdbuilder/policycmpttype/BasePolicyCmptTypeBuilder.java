@@ -14,6 +14,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -53,7 +54,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
      * this causes jmerge to throw an exception
      */
     protected boolean hasValidProductCmptTypeName() throws CoreException{
-        MessageList msgList = getPcType().validate();
+        MessageList msgList = ((Validatable)getPcType()).validate();
         return msgList.getMessageByCode(IPolicyCmptType.MSGCODE_INVALID_PRODUCT_CMPT_TYPE_NAME) == null;
     }
 
