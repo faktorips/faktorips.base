@@ -339,94 +339,94 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertEquals(relationPos0, testPolicyCmptObjectInput.getTestPolicyCmptRelations()[2]);
     }
     
-    public void testUpdateDefaultTestAttributeValues() throws CoreException{
-        // create model objects
-        IPolicyCmptType policy = newPolicyCmptType(project, "Policy");
-        IRelation relation = policy.newRelation();
-        relation.setTargetRoleSingular("childPolicyCmptType");
-        relation.setTarget("Coverage");
-        IPolicyCmptType coverage = newPolicyCmptType(project, "Coverage");
-        IProductCmpt product = newProductCmpt(project, "Product");
-        product.setPolicyCmptType(coverage.getQualifiedName());
-        // add attributes with their defaults
-        IAttribute attr = policy.newAttribute();
-        attr.setName("attrPolicy");
-        attr.setDatatype("String");
-        attr.setDefaultValue("attrPolicy_Default");
-        attr = coverage.newAttribute();
-        attr.setName("attrCoverage");
-        attr.setDatatype("String");
-        attr.setDefaultValue("attrCoverage_Default");
-        attr.setProductRelevant(true);
-
-        IProductCmptGeneration generation = (IProductCmptGeneration) product.newGeneration(new GregorianCalendar(1742, 12, 1));
-        IConfigElement ce = generation.newConfigElement();
-        ce.setPcTypeAttribute(attr.getName());
-        ce.setValue("attrCoverage_Default_Product");
-        
-        // create test case type side
-        ITestPolicyCmptTypeParameter tp = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter();
-        tp.setPolicyCmptType(policy.getQualifiedName());
-        ITestPolicyCmptTypeParameter tpChild = tp.newTestPolicyCmptTypeParamChild();
-        tpChild.setTestParameterType(TestParameterType.INPUT);
-        tpChild.setName("childPolicyCmptType");
-        tpChild.setRelation("childPolicyCmptType");
-        tpChild.setPolicyCmptType("childPolicyCmptType");
-        tpChild.setPolicyCmptType(coverage.getQualifiedName());
-        ITestAttribute testAttr = tp.newInputTestAttribute();
-        testAttr.setName("attrPolicy");
-        testAttr.setAttribute("attrPolicy");
-        testAttr = tpChild.newInputTestAttribute();
-        testAttr.setName("attrCoverage");
-        testAttr.setAttribute("attrCoverage");
-        
-        // create test case side
-        ITestPolicyCmptRelation tr = testPolicyCmptObjectInput.newTestPolicyCmptRelation();
-        tr.setTestPolicyCmptTypeParameter(tpChild.getName());
-        ITestPolicyCmpt tcChild = tr.newTargetTestPolicyCmptChild();
-        tcChild.setTestPolicyCmptTypeParameter(tpChild.getName());
-        tcChild.setName(tpChild.getName());
-        
-        // use delta fix to add all missing test attributes
-        
-        testCase.fixDifferences(testCase.computeDeltaToTestCaseType());
-        String path = testPolicyCmptObjectInput.getTestParameterName() + TestCaseHierarchyPath.SEPARATOR + tpChild.getRelation() +  TestCaseHierarchyPath.SEPARATOR + tpChild.getName();
-        tcChild = testCase.findTestPolicyCmpt(path);
-        
-        // get the to be tested test attributes
-        ITestAttributeValue testAttrValuePolicy = testPolicyCmptObjectInput.getTestAttributeValue("attrPolicy");
-        ITestAttributeValue testAttrValueCoverage = tcChild.getTestAttributeValue("attrCoverage");
-        
-        // assert that the delta fix has set the defaults
-        assertEquals("attrPolicy_Default", testAttrValuePolicy.getValue());
-        assertEquals("attrCoverage_Default", testAttrValueCoverage.getValue());
-
-        testAttrValuePolicy.setValue("x");
-        testAttrValueCoverage.setValue("y");
-        assertFalse("attrPolicy_Default".equals(testAttrValuePolicy.getValue()));
-        assertFalse("attrCoverage_Default".equals(testAttrValueCoverage.getValue()));
-
-        testPolicyCmptObjectInput.updateDefaultTestAttributeValues();
-        tcChild.updateDefaultTestAttributeValues();
-        assertEquals("attrPolicy_Default", testAttrValuePolicy.getValue());
-        assertEquals("attrCoverage_Default", testAttrValueCoverage.getValue());
-        
-        tcChild.setProductCmpt(product.getQualifiedName());
-        tcChild.updateDefaultTestAttributeValues();
-        assertEquals(testAttrValueCoverage.getValue(), "attrCoverage_Default_Product");
-        
-        //
-        // tests for the attribute value update default function, will be performed here because the 
-        // test context is already set and we could reuse it
-        //
-        
-        testAttrValueCoverage.setValue("x");
-        assertFalse("attrCoverage_Default_Product".equals(testAttrValuePolicy.getValue()));
-        testAttrValueCoverage.updateDefaultTestAttributeValue();
-        assertEquals(testAttrValueCoverage.getValue(), "attrCoverage_Default_Product");
-        
-        tcChild.setProductCmpt("");
-        testAttrValueCoverage.updateDefaultTestAttributeValue();
-        assertEquals(testAttrValueCoverage.getValue(), "attrCoverage_Default");
-    }
+//    public void testUpdateDefaultTestAttributeValues() throws CoreException{
+//        // create model objects
+//        IPolicyCmptType policy = newPolicyCmptType(project, "Policy");
+//        IRelation relation = policy.newRelation();
+//        relation.setTargetRoleSingular("childPolicyCmptType");
+//        relation.setTarget("Coverage");
+//        IPolicyCmptType coverage = newPolicyCmptType(project, "Coverage");
+//        IProductCmpt product = newProductCmpt(project, "Product");
+//        product.setPolicyCmptType(coverage.getQualifiedName());
+//        // add attributes with their defaults
+//        IAttribute attr = policy.newAttribute();
+//        attr.setName("attrPolicy");
+//        attr.setDatatype("String");
+//        attr.setDefaultValue("attrPolicy_Default");
+//        attr = coverage.newAttribute();
+//        attr.setName("attrCoverage");
+//        attr.setDatatype("String");
+//        attr.setDefaultValue("attrCoverage_Default");
+//        attr.setProductRelevant(true);
+//
+//        IProductCmptGeneration generation = (IProductCmptGeneration) product.newGeneration(new GregorianCalendar(1742, 12, 1));
+//        IConfigElement ce = generation.newConfigElement();
+//        ce.setPcTypeAttribute(attr.getName());
+//        ce.setValue("attrCoverage_Default_Product");
+//        
+//        // create test case type side
+//        ITestPolicyCmptTypeParameter tp = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter();
+//        tp.setPolicyCmptType(policy.getQualifiedName());
+//        ITestPolicyCmptTypeParameter tpChild = tp.newTestPolicyCmptTypeParamChild();
+//        tpChild.setTestParameterType(TestParameterType.INPUT);
+//        tpChild.setName("childPolicyCmptType");
+//        tpChild.setRelation("childPolicyCmptType");
+//        tpChild.setPolicyCmptType("childPolicyCmptType");
+//        tpChild.setPolicyCmptType(coverage.getQualifiedName());
+//        ITestAttribute testAttr = tp.newInputTestAttribute();
+//        testAttr.setName("attrPolicy");
+//        testAttr.setAttribute("attrPolicy");
+//        testAttr = tpChild.newInputTestAttribute();
+//        testAttr.setName("attrCoverage");
+//        testAttr.setAttribute("attrCoverage");
+//        
+//        // create test case side
+//        ITestPolicyCmptRelation tr = testPolicyCmptObjectInput.newTestPolicyCmptRelation();
+//        tr.setTestPolicyCmptTypeParameter(tpChild.getName());
+//        ITestPolicyCmpt tcChild = tr.newTargetTestPolicyCmptChild();
+//        tcChild.setTestPolicyCmptTypeParameter(tpChild.getName());
+//        tcChild.setName(tpChild.getName());
+//        
+//        // use delta fix to add all missing test attributes
+//        
+//        testCase.fixDifferences(testCase.computeDeltaToTestCaseType());
+//        String path = testPolicyCmptObjectInput.getTestParameterName() + TestCaseHierarchyPath.SEPARATOR + tpChild.getRelation() +  TestCaseHierarchyPath.SEPARATOR + tpChild.getName();
+//        tcChild = testCase.findTestPolicyCmpt(path);
+//        
+//        // get the to be tested test attributes
+//        ITestAttributeValue testAttrValuePolicy = testPolicyCmptObjectInput.getTestAttributeValue("attrPolicy");
+//        ITestAttributeValue testAttrValueCoverage = tcChild.getTestAttributeValue("attrCoverage");
+//        
+//        // assert that the delta fix has set the defaults
+//        assertEquals("attrPolicy_Default", testAttrValuePolicy.getValue());
+//        assertEquals("attrCoverage_Default", testAttrValueCoverage.getValue());
+//
+//        testAttrValuePolicy.setValue("x");
+//        testAttrValueCoverage.setValue("y");
+//        assertFalse("attrPolicy_Default".equals(testAttrValuePolicy.getValue()));
+//        assertFalse("attrCoverage_Default".equals(testAttrValueCoverage.getValue()));
+//
+//        testPolicyCmptObjectInput.updateDefaultTestAttributeValues();
+//        tcChild.updateDefaultTestAttributeValues();
+//        assertEquals("attrPolicy_Default", testAttrValuePolicy.getValue());
+//        assertEquals("attrCoverage_Default", testAttrValueCoverage.getValue());
+//        
+//        tcChild.setProductCmpt(product.getQualifiedName());
+//        tcChild.updateDefaultTestAttributeValues();
+//        assertEquals(testAttrValueCoverage.getValue(), "attrCoverage_Default_Product");
+//        
+//        //
+//        // tests for the attribute value update default function, will be performed here because the 
+//        // test context is already set and we could reuse it
+//        //
+//        
+//        testAttrValueCoverage.setValue("x");
+//        assertFalse("attrCoverage_Default_Product".equals(testAttrValuePolicy.getValue()));
+//        testAttrValueCoverage.updateDefaultTestAttributeValue();
+//        assertEquals(testAttrValueCoverage.getValue(), "attrCoverage_Default_Product");
+//        
+//        tcChild.setProductCmpt("");
+//        testAttrValueCoverage.updateDefaultTestAttributeValue();
+//        assertEquals(testAttrValueCoverage.getValue(), "attrCoverage_Default");
+//    }
 }
