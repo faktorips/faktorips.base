@@ -77,7 +77,7 @@ import org.osgi.framework.Version;
 /**
  * The main plugin class. 
  * 
- * @author Jan Ortmann
+ * @author Jan Ortmann   
  */
 public class IpsPlugin extends AbstractUIPlugin {
 
