@@ -250,13 +250,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return null;
         }
         // implementation note: if the java project has buildpath problems it also hasn't got a build state
-        // so we first have to check for markers (=> project has been build at least once) and then condiser the
-        // build state
-        IMarker[] markers = project.findMarkers(IJavaModelMarker.BUILDPATH_PROBLEM_MARKER, false, IResource.DEPTH_ZERO);
-        if (containsErrorMarker(markers)) {
+        // so we first have to check for problems with the build path. We can't do this via markers as the build path markers
+        // are created on a resource change event, and we don't now if it has been executed so far. 
+        MessageList list = new MessageList();
+        validateJavaProjectBuildPath(list);
+        if (!list.isEmpty()) {
             return Boolean.FALSE;
         }
-        markers = project.findMarkers(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, false, IResource.DEPTH_INFINITE);
+        IMarker[] markers = project.findMarkers(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, false, IResource.DEPTH_INFINITE);
         if (containsErrorMarker(markers)) {
             return Boolean.FALSE;
         }
@@ -1313,7 +1314,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         for (int i = 0; i < entries.length; i++) {
             if (!JavaConventions.validateClasspathEntry(javaProject, entries[i], false).isOK()) {
                 String text = Messages.IpsProject_javaProjectHasInvalidBuildPath;
-                Message msg = new Message(IIpsProject.MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS, text, Message.ERROR, this);
+                Message msg = new Message(IIpsProject.MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS, text, Message.WARNING, this);
                 result.add(msg); 
                 return;
             }
