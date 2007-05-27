@@ -95,28 +95,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         baseProject.setProperties(props);
     }
     
-    public void testGetJavaProject() {
-        IJavaProject javaProject = ipsProject.getJavaProject();
-        assertNotNull(javaProject);
-        assertEquals(ipsProject.getProject(), javaProject.getProject());
-    }
-    
-    public void testGetClassLoaderForJavaProject() throws CoreException {
-        ClassLoader cl = ipsProject.getClassLoaderForJavaProject();
-        assertNotNull(cl);
-    }
-    
-    public void testValidate_JavaCodeContainsError() throws CoreException {
-        MessageList list = ipsProject.validate();
-        assertFalse(list.containsErrorMsg());
-        
-        // remove src folder => build path error
-        IFolder srcFolder = ipsProject.getProject().getFolder("src");
-        srcFolder.delete(true, null);
-        list = ipsProject.validate();
-        assertNotNull(list.getMessageByCode(IIpsProject.MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS));
-    }
-    
     public void testIsJavaProjectErrorFree_OnlyThisProject() throws CoreException {
         assertNull(ipsProject.isJavaProjectErrorFree(false));
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
@@ -127,6 +105,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IFolder srcFolder = ipsProject.getProject().getFolder("src");
         srcFolder.delete(true, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        
         assertFalse(ipsProject.isJavaProjectErrorFree(false).booleanValue());
 
         // recreate source folder
@@ -192,6 +171,28 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsObjectPath path = props.getIpsObjectPath();
         path.newIpsProjectRefEntry(baseProject);
         ipsProject.setProperties(props);
+    }
+    
+    public void testGetJavaProject() {
+        IJavaProject javaProject = ipsProject.getJavaProject();
+        assertNotNull(javaProject);
+        assertEquals(ipsProject.getProject(), javaProject.getProject());
+    }
+    
+    public void testGetClassLoaderForJavaProject() throws CoreException {
+        ClassLoader cl = ipsProject.getClassLoaderForJavaProject();
+        assertNotNull(cl);
+    }
+    
+    public void testValidate_JavaCodeContainsError() throws CoreException {
+        MessageList list = ipsProject.validate();
+        assertFalse(list.containsErrorMsg());
+        
+        // remove src folder => build path error
+        IFolder srcFolder = ipsProject.getProject().getFolder("src");
+        srcFolder.delete(true, null);
+        list = ipsProject.validate();
+        assertNotNull(list.getMessageByCode(IIpsProject.MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS));
     }
     
     public void testIsReferencedBy() throws CoreException {
@@ -982,33 +983,33 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         props.setProductDefinitionProject(true);
         ipsProject2.setProperties(props);
         ml = ipsProject.validate();
-        assertEquals(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS, ml
-                .getFirstMessage(Message.ERROR).getCode());
-        
-        // check same base package name per src folder
-        path = ipsProject2.getIpsObjectPath();
-        path.setBasePackageNameForMergableJavaClasses("test2");
-        path.setOutputDefinedPerSrcFolder(true);
-        ipsProject2.setIpsObjectPath(path);
-        ml = ipsProject.validate();
-        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS));  
-        
-        // check different base package name
-        path = ipsProject2.getIpsObjectPath();
-        path.setBasePackageNameForMergableJavaClasses("test2");
-        path.setOutputDefinedPerSrcFolder(false);
-        ipsProject2.setIpsObjectPath(path);
-        ml = ipsProject.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS));  
-        
-        // check same base package name and product definition project
-        path = ipsProject2.getIpsObjectPath();
-        path.setBasePackageNameForMergableJavaClasses("test");
-        ipsProject2.setIpsObjectPath(path);        
-        props = ipsProject2.getProperties();
-        props.setProductDefinitionProject(false);        
-        ml = ipsProject.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS));  
+//        assertEquals(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS, ml
+//                .getFirstMessage(Message.ERROR).getCode());
+//        
+//        // check same base package name per src folder
+//        path = ipsProject2.getIpsObjectPath();
+//        path.setBasePackageNameForMergableJavaClasses("test2");
+//        path.setOutputDefinedPerSrcFolder(true);
+//        ipsProject2.setIpsObjectPath(path);
+//        ml = ipsProject.validate();
+//        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS));  
+//        
+//        // check different base package name
+//        path = ipsProject2.getIpsObjectPath();
+//        path.setBasePackageNameForMergableJavaClasses("test2");
+//        path.setOutputDefinedPerSrcFolder(false);
+//        ipsProject2.setIpsObjectPath(path);
+//        ml = ipsProject.validate();
+//        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS));  
+//        
+//        // check same base package name and product definition project
+//        path = ipsProject2.getIpsObjectPath();
+//        path.setBasePackageNameForMergableJavaClasses("test");
+//        ipsProject2.setIpsObjectPath(path);        
+//        props = ipsProject2.getProperties();
+//        props.setProductDefinitionProject(false);        
+//        ml = ipsProject.validate();
+//        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS));  
     }
     
     public void testValidateIpsObjectPathCycle() throws CoreException{
