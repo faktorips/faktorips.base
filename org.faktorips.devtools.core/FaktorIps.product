@@ -212,7 +212,7 @@
       <feature id="org.eclipse.jdt" version="3.2.2.r322_v20070104-R4CR0Znkvtfjv9-"/>
       <feature id="org.eclipse.platform" version="3.2.2.r322_v20070119-RQghndJN8IM0MsK"/>
       <feature id="org.eclipse.rcp" version="3.2.2.r322_v20070104-8pcviKVqd8J7C1U"/>
-      <feature id="org.faktorips.feature" version="1.0.1"/>
+      <feature id="org.faktorips.feature" version="1.0.2"/>
    </features>
 
 </product>
