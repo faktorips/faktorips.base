@@ -24,17 +24,19 @@ import java.util.Iterator;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.product.TableUsageFunctionsResolver;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
+import org.faktorips.devtools.core.model.product.ConfigElementType;
+import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
@@ -42,7 +44,6 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
-import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.StringUtil;
 
 public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
@@ -50,21 +51,31 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
 	private FormulaCompletionProcessor processor;
 	private IpsProject ipsProject;
 	private PolicyCmptType cmptType;
-	private ExprCompiler compiler;
-    
+    private IAttribute attr;
+    private IProductCmptGeneration productCmptGen;
+    private IConfigElement configElement;
+    private EnumDatatype enumDatatype;
     
 	public void setUp() throws Exception{
 		super.setUp();
 		ipsProject = (IpsProject)newIpsProject("TestProject");
 		cmptType = newPolicyCmptType(ipsProject.getIpsPackageFragmentRoots()[0], "TestPolicy");
 		newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
-		IAttribute attr = cmptType.newAttribute();
+        enumDatatype = ipsProject.findEnumDatatype("TestEnumType");
+        
+		attr = cmptType.newAttribute();
 		attr.setAttributeType(AttributeType.CHANGEABLE);
 		attr.setDatatype("String");
 		attr.setModifier(Modifier.PUBLISHED);
 		attr.setName("a");
-		compiler = new ExprCompiler();
-		processor = new FormulaCompletionProcessor(attr, ipsProject, compiler);
+		
+        IProductCmpt productCmpt = newProductCmpt(ipsProject, "TestProduct");
+        productCmpt.setPolicyCmptType(cmptType.getQualifiedName());
+        productCmptGen = (IProductCmptGeneration)productCmpt.newGeneration();
+        configElement = productCmptGen.newConfigElement();
+        configElement.setType(ConfigElementType.FORMULA);
+        configElement.setPcTypeAttribute(attr.getName());
+		processor = new FormulaCompletionProcessor(configElement);
 	}
 	
 	/*
@@ -73,7 +84,10 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
 	public void testDoComputeCompletionProposals() throws Exception {
 		ArrayList results = new ArrayList();
 		processor.doComputeCompletionProposals("Test", 0, results);
-		assertEquals(1, results.size());
+		assertEquals(0, results.size());
+        
+        attr.setDatatype(enumDatatype.getQualifiedName());
+        processor.doComputeCompletionProposals("Test", 0, results);
 		CompletionProposal proposal = (CompletionProposal)results.get(0);
 		assertEquals(StringUtil.unqualifiedName(TestEnumType.class.getName()), proposal.getDisplayString());
 		results = new ArrayList();
@@ -107,15 +121,10 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         tableContents.newGeneration((GregorianCalendar)GregorianCalendar.getInstance());
         
         // create the table usage which will be used to resolve the available formula table access functions
-        IProductCmpt product = newProductCmpt(ipsProject, "Product");
-        product.setPolicyCmptType(cmptType.getQualifiedName());
-        IProductCmptGeneration gen = (IProductCmptGeneration)product.newGeneration();
-        ITableContentUsage tableContentUsage = gen.newTableContentUsage();
+        ITableContentUsage tableContentUsage = productCmptGen.newTableContentUsage();
         tableContentUsage.setTableContentName(tableContents.getQualifiedName());
         tableContentUsage.setStructureUsage("ratePlan");
         
-        compiler.add(new TableUsageFunctionsResolver(ipsProject, new ITableContentUsage[]{tableContentUsage}));
-
         ArrayList results = new ArrayList();
         processor.doComputeCompletionProposals("TestTable_", 0, results);
         assertEquals(0, results.size());
@@ -142,14 +151,9 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         tableContents.newGeneration((GregorianCalendar)GregorianCalendar.getInstance());
         
         // create the table usage which will be used to resolve the available formula table access functions
-        IProductCmpt product = newProductCmpt(ipsProject, "Product");
-        product.setPolicyCmptType(cmptType.getQualifiedName());
-        IProductCmptGeneration gen = (IProductCmptGeneration)product.newGeneration();
-        ITableContentUsage tableContentUsage = gen.newTableContentUsage();
+        ITableContentUsage tableContentUsage = productCmptGen.newTableContentUsage();
         tableContentUsage.setTableContentName(tableContents.getQualifiedName());
         tableContentUsage.setStructureUsage("ratePlan");
-        
-        compiler.add(new TableUsageFunctionsResolver(ipsProject, new ITableContentUsage[]{tableContentUsage}));
         
         //there needs to be a table content available for the structure otherwise no completion is proposed
         ArrayList results = new ArrayList();
@@ -162,19 +166,19 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
     }
     
     public void testDoComputeCompletionProposalsForParam() throws Exception {
-        Parameter param = new Parameter(0, "abcparam", Datatype.DECIMAL.getQualifiedName());
         
-        Document document = new Document("a");
-        ArrayList results = new ArrayList();
-        
-        PolicyCmptType type = newPolicyCmptType(ipsProject, "type");
-        IAttribute attr = type.newAttribute();
+        IAttribute attr = cmptType.newAttribute();
+        attr.setName("newAttribute");
         attr.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
+        Parameter param = new Parameter(0, "abcparam", Datatype.DECIMAL.getQualifiedName());
         attr.setFormulaParameters(new Parameter[] {param});
-        processor = new FormulaCompletionProcessor(attr, ipsProject, compiler);
+        configElement.setPcTypeAttribute(attr.getName());
         
+        ArrayList results = new ArrayList();
+        processor = new FormulaCompletionProcessor(configElement);
         processor.doComputeCompletionProposals("a", 1, results);
         CompletionProposal proposal = (CompletionProposal)results.get(0);
+        Document document = new Document("a");
         proposal.apply(document);
         assertEquals("abcparam", document.get());
     }

@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.model;
 
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.fl.IdentifierResolver;
 
@@ -25,6 +26,12 @@ import org.faktorips.fl.IdentifierResolver;
  * Parameters can be set to and evaluated in the compile method. An
  * <code>IIpsArtefactBuilderSet</code> provides an implementation of this
  * interface if it supports the formula language compiler.
+ * <p>
+ * Note: This identifier resolver not only resolves parameter identifiers but also enum values.
+ * E.g. given an enum type gender and a parameter insuredPerson the following is a valid expression:
+ * WENN(insuredPerson.gender=Gender.MALE; 1; 2). Here we have to identifiers. One for the parameter 
+ * and one for the enum value.
+ * <p>
  * 
  * @author Peter Erzberger
  */
@@ -35,9 +42,25 @@ public interface IParameterIdentifierResolver extends IdentifierResolver {
 	 */
 	public void setParameters(Parameter[] parameters);
 
+    /**
+     * Sets enum datatypes that can be resolved by this identifier.
+     */
+    public void setEnumDatatypes(EnumDatatype[] enumtypes);
+    
+    /**
+     * Returns enum datatypes that can be resolved by this identifier.
+     */
+    public EnumDatatype[] getEnumDatatypes();
+    
 	/**
 	 * Implementations might need a reference to the current IpsProject which is provided by this method.
 	 * @param ipsProject
 	 */
 	public void setIpsProject(IIpsProject ipsProject);
+    
+    /**
+     * Removes from the provided identifiers the ones which this IdentifierResolver recognizes as enum values.
+     * It leaves the provided string array untouched and returns a new string array. 
+     */
+    public String[] removeIdentifieresOfEnumDatatypes(String[] allIdentifiersUsedInFormula);    
 }

@@ -227,9 +227,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         
         Text formulaText = uiToolkit.createMultilineText(c);
         try {
-            FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(
-					attribute, configElement.getIpsProject(), configElement
-							.getExprCompiler());
+            FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(configElement);
             ContentAssistHandler.createHandlerForText(formulaText, CompletionUtil.createContentAssistant(completionProcessor));
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -254,7 +252,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
      */
     private void updateUiPreviewFormulaResult(){
         try {
-            String[] parameterIdentifiers = configElement.getIdentifierUsedInFormula();
+            String[] parameterIdentifiers = configElement.getParameterIdentifiersUsedInFormula();
             IFormulaTestCase formulaTestCase = getTransientFormulaTestCases();
             if (formulaTestCase == null){
                 formulaTestCase = configElement.newFormulaTestCase();

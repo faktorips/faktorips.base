@@ -18,12 +18,11 @@
 package org.faktorips.devtools.core.builder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -33,7 +32,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.pctype.TypeHierarchy;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -56,6 +54,7 @@ public abstract class AbstractParameterIdentifierResolver implements
 	private IIpsProject project;
 
 	private Parameter[] params = new Parameter[0];
+    private HashMap enumDatatypes = new HashMap(0); 
 
 	/**
 	 * Provides the name of the getter method for the provided attribute.
@@ -68,12 +67,36 @@ public abstract class AbstractParameterIdentifierResolver implements
 		this.project = ipsProject;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public void setParameters(Parameter[] parameters) {
 		ArgumentCheck.notNull(parameters);
 		this.params = parameters;
 	}
-
+    
+    /**
+     * {@inheritDoc}
+     */
+	public void setEnumDatatypes(EnumDatatype[] enumtypes) {
+	    if (enumtypes==null) {
+	        enumDatatypes.clear();
+            return;
+        }
+        enumDatatypes = new HashMap(enumtypes.length);
+        for (int i = 0; i < enumtypes.length; i++) {
+            enumDatatypes.put(enumtypes[i].getName(), enumtypes[i]);
+        }
+    }
+    
 	/**
+     * {@inheritDoc}
+	 */
+	public EnumDatatype[] getEnumDatatypes() {
+        return (EnumDatatype[])enumDatatypes.values().toArray(new EnumDatatype[enumDatatypes.size()]);
+    }
+
+    /**
      * {@inheritDoc}
 	 */
 	public CompilationResult compile(String identifier, Locale locale) {
@@ -138,20 +161,20 @@ public abstract class AbstractParameterIdentifierResolver implements
 			String enumTypeName, String valueName, Locale locale) {
 		
 		try {
-            Map unqualifiedNameToEnumDatatypeMap = new HashMap();
-            collectEnumDatatypesForParameters(unqualifiedNameToEnumDatatypeMap);
-            EnumDatatype enumType = (EnumDatatype)unqualifiedNameToEnumDatatypeMap.get(enumTypeName);
+            EnumDatatype enumType = (EnumDatatype)enumDatatypes.get(enumTypeName);
             if(enumType == null){
                 return null;
             }
-			List valueIds = Arrays.asList(enumType.getAllValueIds(true));
-			if (valueIds.contains(valueName)) {
-				JavaCodeFragment frag = new JavaCodeFragment();
-				frag.getImportDeclaration().add(enumType.getJavaClassName());
-				DatatypeHelper helper = project.getDatatypeHelper(enumType);
-				frag.append(helper.newInstance(valueName));
-				return new CompilationResultImpl(frag, enumType);
-			}
+			String[] valueIds = enumType.getAllValueIds(true);
+			for (int i = 0; i < valueIds.length; i++) {
+                if (ObjectUtils.equals(valueIds[i], valueName)) {
+                    JavaCodeFragment frag = new JavaCodeFragment();
+                    frag.getImportDeclaration().add(enumType.getJavaClassName());
+                    DatatypeHelper helper = project.getDatatypeHelper(enumType);
+                    frag.append(helper.newInstance(valueName));
+                    return new CompilationResultImpl(frag, enumType);
+                }
+            }
 		} catch (Exception e) {
 			IpsPlugin.log(e);
 			String text = Messages.AbstractParameterIdentifierResolver_msgErrorDuringEnumDatatypeResolving
@@ -207,48 +230,22 @@ public abstract class AbstractParameterIdentifierResolver implements
      * Removes from the provided identifiers the ones which this IdentifierResolver recognizes as EnumDatatypes.
      * It leaves the provided string array untouched and returns a new string array. 
      */
-    public String[] removeIdentifieresOfEnumDatatypes(String[] identifiers){
-        ArgumentCheck.notNull(identifiers);
-        HashMap unqualifiedNameToEnumDatatypeMap = new HashMap();
-        collectEnumDatatypesForParameters(unqualifiedNameToEnumDatatypeMap);
-        List filteredIdentifiers = new ArrayList(identifiers.length);
-        for (int i = 0; i < identifiers.length; i++) {
-            if(identifiers[i] != null){
-                if(identifiers[i].indexOf('.') != -1){
-                    String identifierRoot = identifiers[i].substring(0, identifiers[i].indexOf('.'));
-                    if(!unqualifiedNameToEnumDatatypeMap.containsKey(identifierRoot)){
-                        filteredIdentifiers.add(identifiers[i]);
+    public String[] removeIdentifieresOfEnumDatatypes(String[] allIdentifiersUsedInFormula){
+        ArgumentCheck.notNull(allIdentifiersUsedInFormula);
+        List filteredIdentifiers = new ArrayList(allIdentifiersUsedInFormula.length);
+        for (int i = 0; i < allIdentifiersUsedInFormula.length; i++) {
+            if(allIdentifiersUsedInFormula[i] != null){
+                if(allIdentifiersUsedInFormula[i].indexOf('.') != -1){
+                    String identifierRoot = allIdentifiersUsedInFormula[i].substring(0, allIdentifiersUsedInFormula[i].indexOf('.'));
+                    if(!enumDatatypes.containsKey(identifierRoot)){
+                        filteredIdentifiers.add(allIdentifiersUsedInFormula[i]);
                     }
                     continue;
                 }
-                filteredIdentifiers.add(identifiers[i]);
+                filteredIdentifiers.add(allIdentifiersUsedInFormula[i]);
             }
         }
         return (String[])filteredIdentifiers.toArray(new String[filteredIdentifiers.size()]);
     }
     
-    private void collectEnumDatatypesForParameters(Map unqualifiedNameToEnumDatatypeMap) {
-        for (int i = 0; i < params.length; i++) {
-            try {
-                Datatype datatype = project.findDatatype(params[i].getDatatype());
-                if (datatype instanceof EnumDatatype) {
-                    unqualifiedNameToEnumDatatypeMap.put(datatype.getName(), datatype);
-                    continue;
-                }
-                if (datatype instanceof IPolicyCmptType) {
-                    IPolicyCmptType policyCmptType = (IPolicyCmptType)datatype;
-                    TypeHierarchy superTypeHierarchy = TypeHierarchy.getSupertypeHierarchy(policyCmptType);
-                    IAttribute[] attributes = superTypeHierarchy.getAllAttributesRespectingOverride(policyCmptType);
-                    for (int j = 0; j < attributes.length; j++) {
-                        Datatype attributeDatatype = attributes[j].findDatatype();
-                        if (attributeDatatype instanceof EnumDatatype) {
-                            unqualifiedNameToEnumDatatypeMap.put(attributeDatatype.getName(), attributeDatatype);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                IpsPlugin.log(e);
-            }
-        }
-    }
 }

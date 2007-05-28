@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.TestEnumType;
@@ -41,12 +42,15 @@ import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -82,6 +86,85 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         pcTypeInput = newPolicyCmptType(project, "policyCmptTypeInput");
         
         newDefinedEnumDatatype((IpsProject)project, new Class[]{TestEnumType.class});
+    }
+    
+    public void testGetEnumDatatypesAllowedInFormula() throws CoreException {
+        EnumDatatype testType = project.findEnumDatatype("TestEnumType");
+        assertNotNull(testType);
+        
+        // config element is not a formula
+        configElement.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
+        EnumDatatype[] enumtypes = configElement.getEnumDatatypesAllowedInFormula();
+        assertEquals(0, enumtypes.length);
+
+        // missing policy component type attribute
+        configElement.setType(ConfigElementType.FORMULA);
+        enumtypes = configElement.getEnumDatatypesAllowedInFormula();
+        assertEquals(0, enumtypes.length);
+        
+        // enum type is the return value of the formula 
+        IAttribute attr = policyCmptType.newAttribute();
+        attr.setName("attr");
+        attr.setDatatype(testType.getQualifiedName());
+        attr.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
+        configElement.setPcTypeAttribute("attr");
+        enumtypes = configElement.getEnumDatatypesAllowedInFormula();
+        assertEquals(1, enumtypes.length);
+        assertEquals(testType, enumtypes[0]);
+        
+        // enum type defined as "direct" parameter 
+        attr.setDatatype("Integer");
+        enumtypes = configElement.getEnumDatatypesAllowedInFormula();
+        assertEquals(0, enumtypes.length);
+        
+        Parameter[] params = new Parameter[1];
+        params[0] = new Parameter(0, "param1", testType.getQualifiedName());
+        attr.setFormulaParameters(params);
+        
+        enumtypes = configElement.getEnumDatatypesAllowedInFormula();
+        assertEquals(1, enumtypes.length);
+        assertEquals(testType, enumtypes[0]);
+
+        // enum type used as datatype of policy component type attribute
+        IPolicyCmptType policyType = newPolicyCmptType(project, "Coverage");
+        params[0] = new Parameter(0, "coverage", policyType.getQualifiedName());
+        attr.setFormulaParameters(params);
+        enumtypes = configElement.getEnumDatatypesAllowedInFormula();
+        assertEquals(0, enumtypes.length); // 0 because policeType hasn't got an attribute so far
+
+        IAttribute policyAttr = policyType.newAttribute();
+        policyAttr.setDatatype("Integer");
+        enumtypes = configElement.getEnumDatatypesAllowedInFormula();
+        assertEquals(0, enumtypes.length); // 0 because policeType hasn't got an attribute with an enum type so far
+        
+        IAttribute policyAttr2 = policyType.newAttribute();
+        policyAttr2.setDatatype(testType.getQualifiedName());
+
+        enumtypes = configElement.getEnumDatatypesAllowedInFormula();
+        assertEquals(1, enumtypes.length);
+        assertEquals(testType, enumtypes[0]);
+        
+        // enums accesible via tables (because they are used as column datatypes)
+        policyAttr2.setDatatype("String");
+        enumtypes = configElement.getEnumDatatypesAllowedInFormula();
+        assertEquals(0, enumtypes.length);
+        
+        ITableStructure tableStructure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Table");
+        IColumn col0 = tableStructure.newColumn();
+        col0.setDatatype("Integer");
+        
+        ITableStructureUsage structureUsage = policyCmptType.newTableStructureUsage();
+        structureUsage.addTableStructure(tableStructure.getQualifiedName());
+        productCmpt.fixAllDifferencesToModel();
+        
+        enumtypes = configElement.getEnumDatatypesAllowedInFormula();
+        assertEquals(0, enumtypes.length); // 0 because table structure hasn't got a column with an enum type so far
+        
+        IColumn col1 = tableStructure.newColumn();
+        col1.setDatatype(testType.getQualifiedName());
+        enumtypes = configElement.getEnumDatatypesAllowedInFormula();
+        assertEquals(1, enumtypes.length);
+        assertEquals(testType, enumtypes[0]);
     }
     
     public void testValidate_UnknownAttribute() throws CoreException {
@@ -459,7 +542,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertFalse(configElement.getProductCmpt().containsFormulaTest());
     }
     
-    public void testGetIdentifierUsedInFormula() throws CoreException {
+    public void testGetParameterIdentifiersUsedInFormula() throws CoreException {
         IAttribute attributeInput = pcTypeInput.newAttribute();
         attributeInput.setName("attributeInput1");
         attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -484,54 +567,54 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         configElement.setPcTypeAttribute(attribute.getName());
         configElement.setValue("param1 + param2 + policyInputX.attributeInput1");
         
-        List identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
+        List identifierInFormula = Arrays.asList(configElement.getParameterIdentifiersUsedInFormula());
         assertEquals(3, identifierInFormula.size());
         assertTrue(identifierInFormula.contains("param1"));
         assertTrue(identifierInFormula.contains("param2"));
         assertTrue(identifierInFormula.contains("policyInputX.attributeInput1"));
         
         configElement.setValue("param1+param2*2+policyInputX.attributeInput1");
-        identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
+        identifierInFormula = Arrays.asList(configElement.getParameterIdentifiersUsedInFormula());
         assertEquals(3, identifierInFormula.size());
         assertTrue(identifierInFormula.contains("param1"));
         assertTrue(identifierInFormula.contains("param2"));
         assertTrue(identifierInFormula.contains("policyInputX.attributeInput1"));        
         
         configElement.setValue("param1x+Xparam2*2+policyInputX.attributeInput1");
-        identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
+        identifierInFormula = Arrays.asList(configElement.getParameterIdentifiersUsedInFormula());
         // check wrong number of identifiers
         assertFalse(identifierInFormula.size()==3);
         
         // check with empty formula
         configElement.setValue(null);
-        identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
+        identifierInFormula = Arrays.asList(configElement.getParameterIdentifiersUsedInFormula());
         assertEquals(0, identifierInFormula.size());
         
         // check with WENN formula (implicit cast e.g. Integer)
         configElement.setValue("WENN(policyInputX.attributeInput2 = \"1\"; 1; 10)");
-        identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
+        identifierInFormula = Arrays.asList(configElement.getParameterIdentifiersUsedInFormula());
         assertEquals(1, identifierInFormula.size());   
         assertTrue(identifierInFormula.contains("policyInputX.attributeInput2"));
         
         // check with WENN formula (binary operation exact match?)
         configElement.setValue("WENN(policyInputX.attributeInput1 = 1;1;10)");
-        identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
+        identifierInFormula = Arrays.asList(configElement.getParameterIdentifiersUsedInFormula());
         assertEquals(1, identifierInFormula.size());   
         assertTrue(identifierInFormula.contains("policyInputX.attributeInput1")); 
         
         params = new Parameter[1];
-        params[0] = new Parameter(0, "testEnum", "TestEnumType");
+        params[0] = new Parameter(0, "testParam", "TestEnumType");
         attribute.setFormulaParameters(params);
         
         // check with WENN formula and operation with implicit casting 
         // (e.g. the first argument of a formula is an enum type)
-        configElement.setValue("WENN(testEnum = TestEnumType.1;1;10)");
-        identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
+        configElement.setValue("WENN(testParam = TestEnumType.1;1;10)");
+        identifierInFormula = Arrays.asList(configElement.getParameterIdentifiersUsedInFormula());
         assertEquals(1, identifierInFormula.size());   
-        assertTrue(identifierInFormula.contains("testEnum"));
+        assertTrue(identifierInFormula.contains("testParam"));
     }
     
-    public void testGetIdentifierUsedInFormulaWithEnum() throws CoreException{
+    public void testGetParameterIdentifiersUsedInFormulaWithEnum() throws CoreException{
         IAttribute attributeInput = pcTypeInput.newAttribute();
         attributeInput.setName("attributeInput1");
         attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -560,12 +643,12 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 
         // check with non enum datatype (unknow identifier)
         configElement.setValue("TestEnumType.test");
-        List identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
+        List identifierInFormula = Arrays.asList(configElement.getParameterIdentifiersUsedInFormula());
         assertEquals(0, identifierInFormula.size());
         
         // check with enum datatype
         configElement.setValue("TestEnumType.1");
-        identifierInFormula = Arrays.asList(configElement.getIdentifierUsedInFormula());
+        identifierInFormula = Arrays.asList(configElement.getParameterIdentifiersUsedInFormula());
         assertEquals(0, identifierInFormula.size());
     }
     

@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.Parameter;
+import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.fl.ExprCompiler;
@@ -44,17 +45,15 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
 
-    private ExprCompiler compiler;
     private IAttribute attribute;
+    private IConfigElement configElement;
     
-    public FormulaCompletionProcessor(IAttribute attribute, IIpsProject project, ExprCompiler compiler) {
+    public FormulaCompletionProcessor(IConfigElement configElement) throws CoreException {
         super();
-        ArgumentCheck.notNull(attribute);
-        ArgumentCheck.notNull(project);
-        setIpsProject(project);
-        ArgumentCheck.notNull(compiler);
-        this.compiler = compiler;
-        this.attribute = attribute;
+        ArgumentCheck.notNull(configElement);
+        this.configElement = configElement;
+        setIpsProject(configElement.getIpsProject());
+        this.attribute = configElement.findPcTypeAttribute();
         setComputeProposalForEmptyPrefix(true);
     }
 
@@ -90,7 +89,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     }
     
     private void addMatchingEnumTypes(List result, String enumTypePrefix, int replacementOffset) throws CoreException{
-    	EnumDatatype[] enumTypes = ipsProject.findEnumDatatypes();
+    	EnumDatatype[] enumTypes = configElement.getEnumDatatypesAllowedInFormula();
     	for (int i = 0; i < enumTypes.length; i++) {
 			if(enumTypes[i].getName().startsWith(enumTypePrefix)){
 		        CompletionProposal proposal = new CompletionProposal(
@@ -102,7 +101,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     }
     
     private void addMatchingEnumValues(List result, String enumTypeName, String enumValuePrefix, int replacementOffset) throws CoreException{
-		EnumDatatype[] enumTypes = ipsProject.findEnumDatatypes();
+		EnumDatatype[] enumTypes = configElement.getEnumDatatypesAllowedInFormula();
 		for (int i = 0; i < enumTypes.length; i++) {
 			if(enumTypes[i].getName().equals(enumTypeName)){
 				String[] valueIds = enumTypes[i].getAllValueIds(false);
@@ -142,7 +141,8 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         result.add(proposal);
     }
     
-    private void addMatchingFunctions(List result, String prefix, int replacementOffset) {
+    private void addMatchingFunctions(List result, String prefix, int replacementOffset) throws CoreException {
+        ExprCompiler compiler = configElement.getExprCompiler();
         FlFunction[] functions = compiler.getFunctions();
         Arrays.sort(functions, new Comparator() {
 

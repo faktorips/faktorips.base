@@ -491,7 +491,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         String name = newFormulaTestCase.generateUniqueNameForFormulaTestCase(Messages.FormulaTestInputValuesControl_DefaultFormulaTestCaseName);
         newFormulaTestCase.setName(name);
         try {
-            String[] identifiers = configElement.getIdentifierUsedInFormula();
+            String[] identifiers = configElement.getParameterIdentifiersUsedInFormula();
             for (int i = 0; i < identifiers.length; i++) {
                 IFormulaTestInputValue newInputValue = newFormulaTestCase.newFormulaTestInputValue();
                 newInputValue.setIdentifier(identifiers[i]);
@@ -534,7 +534,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         try {
             IConfigElement configElem = (IConfigElement) selElement.getParent();
             String messageForChangeInfoDialog = buildMessageForUpdateInformation(selElement);
-            if (selElement.addOrDeleteFormulaTestInputValues(configElem.getIdentifierUsedInFormula())) {
+            if (selElement.addOrDeleteFormulaTestInputValues(configElem.getParameterIdentifiersUsedInFormula())) {
                 // there were changes, thus trigger that the input value table will be refreshed
                 selectionFormulaTestCaseChanged(selElement);
                 MessageDialog.openInformation(getShell(),
@@ -555,7 +555,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
      */
     private String buildMessageForUpdateInformation(ExtDataForFormulaTestCase selElement) throws CoreException {
         IConfigElement configElement = (IConfigElement) selElement.getParent();
-        String[] identifiersInFormula = configElement.getIdentifierUsedInFormula();
+        String[] identifiersInFormula = configElement.getParameterIdentifiersUsedInFormula();
         List idsInFormula = new ArrayList(identifiersInFormula.length);
         idsInFormula.addAll(Arrays.asList(identifiersInFormula));
         List idsInTestCase = new ArrayList();

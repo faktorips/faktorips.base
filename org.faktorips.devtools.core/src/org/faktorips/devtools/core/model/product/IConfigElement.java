@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model.product;
 import javax.naming.OperationNotSupportedException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IValueDatatypeProvider;
@@ -177,6 +178,18 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider  
     public ExprCompiler getExprCompiler() throws CoreException;
     
     /**
+     * Returns the enum dataypes that can be use in this formula.
+     * Allowed enum types are those that are used as datatype in one of the parameters
+     * or in a table used by the product component generation this config element belongs to.
+     * If the datatype of the formula is itself an enum datatype, this one is also returned.
+     * <p>
+     * Returns an empty array if this config element does not represent a formula. 
+     * 
+     * @throws CoreException if an error occurs while searching the enum datatypes.
+     */
+    public EnumDatatype[] getEnumDatatypesAllowedInFormula() throws CoreException;
+    
+    /**
      * Finds the corresponding attribute in the product component type this
      * product component is an instance of.
      * 
@@ -233,13 +246,15 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider  
     public void removeFormulaTestCase(IFormulaTestCase formulaTest);    
     
     /**
-     * Returns all identifier which are used in the formula. Returns an empty string array if no
-     * identifier was found in formula or the config element is no formula type or the attribute - which
-     * specifies the formula interface - wasn't found.
+     * Returns all parameter identifiers which are used in the formula. 
+     * Identifiers used in a formula an be either identify a parameter or an enum value.
+     * This methods returns all identifiers identifying parameters.
+     * Returns an empty string array if no identifier was found in formula or the config element is no formula type 
+     * or the policy component type attribute - which specifies the formula interface - wasn't found.
      * 
      * @throws CoreException If an error occurs while searching the corresponding attribute.
      */
-    public String[] getIdentifierUsedInFormula() throws CoreException;
+    public String[] getParameterIdentifiersUsedInFormula() throws CoreException;
 
     /**
      * Moves the formula test case identified by the indexes up or down by one position. If

@@ -426,7 +426,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         
         // check that the formula test input values matches the identifier in the formula
         boolean isIdentifierMismatch = false;
-        String[] identifierInFormula = parent.getIdentifierUsedInFormula();
+        String[] identifierInFormula = parent.getParameterIdentifiersUsedInFormula();
         if (identifierInFormula.length != formulaTestInputValues.size()){
             isIdentifierMismatch = true;
         }
