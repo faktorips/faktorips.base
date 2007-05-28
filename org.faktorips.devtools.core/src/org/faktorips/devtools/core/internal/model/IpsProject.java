@@ -1313,7 +1313,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         IClasspathEntry[] entries = javaProject.getRawClasspath();
         for (int i = 0; i < entries.length; i++) {
             if (!JavaConventions.validateClasspathEntry(javaProject, entries[i], false).isOK()) {
-                String text = Messages.IpsProject_javaProjectHasInvalidBuildPath;
+                String text = Messages.bind(Messages.IpsProject_javaProjectHasInvalidBuildPath, entries[i].getPath());
                 Message msg = new Message(IIpsProject.MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS, text, Message.WARNING, this);
                 result.add(msg); 
                 return;
