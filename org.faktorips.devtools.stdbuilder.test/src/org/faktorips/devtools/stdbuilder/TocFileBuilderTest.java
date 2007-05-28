@@ -154,6 +154,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
         IFile tocFile = project.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
         assertTrue(tocFile.exists());
+        assertTrue(tocFile.isDerived());
         assertEquals(project.getXmlFileCharset(), tocFile.getCharset());
         
         Document doc = getDocumentBuilder().parse(tocFile.getContents());

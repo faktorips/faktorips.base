@@ -222,6 +222,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 createFolder((IFolder)tocFile.getParent());
             }
             tocFile.create(is, true, null);
+            tocFile.setDerived(true);
         }
 	}
     
@@ -297,6 +298,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             createFolder((IFolder)folder.getParent());
         }
         folder.create(true, true, null);
+        folder.setDerived(true);
     }
 
     /**
