@@ -104,14 +104,13 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
         try {
 			IValueSet valueSet = getValueSet();
 			ValueDatatype datatype = attribute.findDatatype();
-			Combo combo = uiToolkit.createCombo(workArea);
-			if (valueSet.getValueSetType() == ValueSetType.ENUM) {
+			if (valueSet.getValueSetType() == ValueSetType.ENUM && datatype != null) {
+			    Combo combo = uiToolkit.createCombo(workArea);
 				defaultValueField = new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype);
-			}
-			else if (datatype instanceof EnumDatatype) {
+			} else if (datatype instanceof EnumDatatype) {
+			    Combo combo = uiToolkit.createCombo(workArea);
 				defaultValueField = new EnumDatatypeField(combo, (EnumDatatype)datatype);
-			}
-			else {
+			} else {
 				Text defaultValueText = uiToolkit.createText(workArea);
 				defaultValueText.setEnabled(!viewOnly);
 				defaultValueField = new TextField(defaultValueText);
@@ -125,8 +124,8 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
             GridData valueSetGridData = new GridData(GridData.FILL_BOTH);
             valueSetGridData.horizontalSpan = 2;
             valueSetControl.setLayoutData(valueSetGridData);
+            valueSetControl.setEnabled(!viewOnly);
         }
-        valueSetControl.setEnabled(!viewOnly);
         return c;
     }
 
