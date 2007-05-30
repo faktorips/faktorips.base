@@ -243,6 +243,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         rows.add(newRowIndex, newRow);
         newRow.setRowNumber(newRowIndex);
         refreshRowNumbers();
+        objectHasChanged();
         return newRow;
     }
     

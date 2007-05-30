@@ -42,6 +42,8 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         table.newColumn(null);
         table.newColumn(null);
         table.newColumn(null);
+        
+        generation.getIpsSrcFile().save(true, null);
     }
     
     public void testGetChildren() {
@@ -167,14 +169,18 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
     }
 
     public void testInsertRowAfter(){
+        IRow row0 = generation.insertRowAfter(999);
+        assertEquals(0, row0.getRowNumber());
+        assertEquals(true, generation.getIpsSrcFile().isDirty());
+        
         IRow row1 = generation.newRow();
-        assertEquals(0, row1.getRowNumber());
+        assertEquals(1, row1.getRowNumber());
         IRow row2 = generation.insertRowAfter(0);
         assertEquals(1, row2.getRowNumber());
         IRow row3 = generation.insertRowAfter(0);
         assertEquals(1, row3.getRowNumber());
         assertEquals(2, row2.getRowNumber());
         IRow row4 = generation.insertRowAfter(999);
-        assertEquals(3, row4.getRowNumber());
+        assertEquals(4, row4.getRowNumber());
     }
 }
