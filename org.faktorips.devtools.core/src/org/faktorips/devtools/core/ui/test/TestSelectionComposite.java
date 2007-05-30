@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dï¿½rfen nur unter den Bedingungen der 
+ * Faktor-Zehn-Community Lizenzvereinbarung ï¿½ Version 0.1 (vor Grï¿½ndung Community) 
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -369,15 +369,18 @@ public class TestSelectionComposite extends Composite  {
                 content.add(productCmpt);
                 continue;
             }
+            boolean found = false;
             IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
             for (int j = 0; j < roots.length; j++) {
                 IIpsPackageFragment[] frgmts = roots[j].getIpsPackageFragments();
                 for (int k = 0; k < frgmts.length; k++) {
                     if (frgmts[k].getName().equals(qualifiedName)){
                         content.add(frgmts[k]);
-                        continue;
+                        found = true;
+                        break;
                     }
                 }
+                if (found) break;
             }
         }
         updateButtonEnabledStates();
