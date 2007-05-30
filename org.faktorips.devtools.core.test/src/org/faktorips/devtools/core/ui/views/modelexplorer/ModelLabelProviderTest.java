@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -96,19 +95,20 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         assertEquals(flatProvider.getImage(subPackage), img);
         assertTrue(img==hierarchyProvider.getImage(subPackage));
         
-        // tests for IResources
-        IWorkbenchAdapter adapter= (IWorkbenchAdapter) folder.getAdapter(IWorkbenchAdapter.class);
-        assertNotNull(adapter);
-        img= adapter.getImageDescriptor(folder).createImage();
-        // TODO test equality of images
-//        assertEquals(hierarchyProvider.getImage(folder), img);
-//        assertEquals(flatProvider.getImage(folder), img);
+        // tests for none faktor-ips classes, e.g. IFile
+        assertNotNull(flatProvider.getImage(file));
+        assertNotNull(hierarchyProvider.getImage(file));
+    }
+    
+    public void testIfImagesAreReusedAndDisposedCorrectly() {
+        Image image = flatProvider.getImage(file);
+        assertEquals(1, flatProvider.getNumOfCreatedButNotDisposedImages());
+        assertSame(image, flatProvider.getImage(file));
         
-        adapter= (IWorkbenchAdapter) file.getAdapter(IWorkbenchAdapter.class);
-        assertNotNull(adapter);
-        img= adapter.getImageDescriptor(file).createImage();
-//        assertEquals(hierarchyProvider.getImage(file), img);
-//        assertEquals(flatProvider.getImage(file), img);
+        flatProvider.dispose();
+        assertEquals(0, flatProvider.getNumOfCreatedButNotDisposedImages());
+        Image newImage = flatProvider.getImage(file);
+        assertTrue(image!=newImage);
     }
 
     /*
