@@ -105,6 +105,10 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         assertEquals(1, flatProvider.getNumOfCreatedButNotDisposedImages());
         assertSame(image, flatProvider.getImage(file));
         
+        Image image2 = flatProvider.getImage(folder);
+        assertEquals(2, flatProvider.getNumOfCreatedButNotDisposedImages());
+        assertSame(image2, flatProvider.getImage(folder));
+
         flatProvider.dispose();
         assertEquals(0, flatProvider.getNumOfCreatedButNotDisposedImages());
         Image newImage = flatProvider.getImage(file);
