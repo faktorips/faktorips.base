@@ -37,6 +37,16 @@ public interface IUniqueKey extends IKey {
      * Identifies a validation rule. 
      */
     public final static String MSGCODE_ENUM_TABLE_NAME_KEY_DATATYPE = "EnumTableNameKeyMustBeString"; //$NON-NLS-1$
+
+    /**
+     * Identifies a validation rule. 
+     */
+    public final static String MSGCODE_TOO_LESS_ITEMS = "TooLessItems"; //$NON-NLS-1$
+
+    /**
+     * Identifies a validation rule.
+     */
+    public final static String MSGCODE_KEY_ITEM_MISMATCH = "KeyItemMismatch"; //$NON-NLS-1$
     
     /**
      * The name of the unique key is the concatenation of it's items separated

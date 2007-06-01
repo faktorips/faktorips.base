@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.List;
 
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -29,8 +30,11 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.core.util.CollectionUtil;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 public class TableContentsTest extends AbstractIpsPluginTest {
@@ -163,5 +167,40 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         } catch (IllegalArgumentException e) {
             //nothing to do :-)
         }
+    }
+    
+    public void testValidate() throws Exception{
+        ITableStructure structure = (ITableStructure)newIpsObject(project,  IpsObjectType.TABLE_STRUCTURE, "Ts");
+        IColumn column1 = structure.newColumn();
+        column1.setDatatype(Datatype.STRING.getQualifiedName());
+        column1.setName("first");
+        IColumn column2 = structure.newColumn();
+        column2.setDatatype(Datatype.STRING.getQualifiedName());
+        column2.setName("second");
+        IColumn column3 = structure.newColumn();
+        column3.setDatatype(Datatype.STRING.getQualifiedName());
+        column3.setName("third");
+
+        IUniqueKey key = structure.newUniqueKey();
+        key.addKeyItem("first");
+        key.addKeyItem("third");
+        
+        table.setTableStructure(structure.getQualifiedName());
+        ITableContentsGeneration tableGen = (ITableContentsGeneration)table.newGeneration();
+        table.newColumn("1");
+        table.newColumn("2");
+        table.newColumn("3");
+        
+        tableGen.newRow();
+        MessageList msgList = table.validate();
+        System.out.println(msgList.toString());
+        assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_UNDEFINED_UNIQUEKEY_VALUE));
+        
+        table.deleteColumn(0);
+        //there was an error in the code of the Row validate method that caused an IndexOutOfBoundsException if a column was removed from the tablecontents
+        //but not from the table structure and a UniqueKey was defined which contained an item which index number was equal
+        //or greater than the number of table contents columns.
+        msgList = table.validate();
+        assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_COLUMNCOUNT_MISMATCH));
     }
 }

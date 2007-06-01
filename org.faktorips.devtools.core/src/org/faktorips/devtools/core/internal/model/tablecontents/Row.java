@@ -179,7 +179,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         }
         IUniqueKey[] uniqueKeys = structure.getUniqueKeys();
         
-        validateWithDatatypes(list, datatypes, structure, uniqueKeys);
+        validateMissingUniqueKeyValue(list, datatypes, structure, uniqueKeys);
+        validateRowValue(list, structure, datatypes);
         if(list.isEmpty()){
             validateNameColumnIfTableBasedEnum(list, structure, uniqueKeys);
         }
@@ -206,8 +207,14 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     /*
      * Validates this row using the given list of datatypes.
      */
-    private MessageList validateWithDatatypes(MessageList list, ValueDatatype[] datatypes, 
+    private void validateMissingUniqueKeyValue(MessageList list, ValueDatatype[] datatypes, 
             ITableStructure structure, IUniqueKey[] uniqueKeys) throws CoreException {
+
+        //this validation can only be applied if the colum sizes of the structure and content are consistent.
+        //there must be a different rule that validates this consistency
+        if(structure.getNumOfColumns() != getTableContents().getNumOfColumns()){
+            return;
+        }
         for (int i = 0; i < uniqueKeys.length; i++) {
             IUniqueKey uniqueKey= uniqueKeys[i];
             IKeyItem[] keyItems= uniqueKey.getKeyItems();
@@ -225,12 +232,14 @@ public class Row extends AtomicIpsObjectPart implements IRow {
                 }
             }
         }
-        
+    }
+
+    private void validateRowValue(MessageList list, ITableStructure structure, ValueDatatype[] datatypes){
         int numOfColumnsInStructure = structure.getNumOfColumns();
         for (int i=0; i< getNumOfColumns(); i++) {
             if (i >= numOfColumnsInStructure){
                 // datatypes couldn't be checked because structure contains no more columns
-                return list;
+                return;
             }
             IColumn column= structure.getColumn(i);
             
@@ -241,9 +250,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
                 list.add(message);
             }
         }
-        return list;
     }
-
+    
 	/**
 	 * {@inheritDoc}
 	 */

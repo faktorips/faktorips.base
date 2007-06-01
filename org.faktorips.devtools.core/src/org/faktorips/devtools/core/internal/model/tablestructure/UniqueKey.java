@@ -91,7 +91,7 @@ public class UniqueKey extends Key implements IUniqueKey {
         super.validateThis(list);
         if (getNumOfKeyItems()==0) {
             String text = Messages.UniqueKey_msgTooLessItems;
-            list.add(new Message("", text, Message.ERROR, this)); //$NON-NLS-1$
+            list.add(new Message(IUniqueKey.MSGCODE_TOO_LESS_ITEMS, text, Message.ERROR, this)); //$NON-NLS-1$
         }
         String[] items = getKeyItemNames();
         for (int i=0; i<items.length; i++) {
@@ -111,7 +111,7 @@ public class UniqueKey extends Key implements IUniqueKey {
             return;
         }
         String text = NLS.bind(Messages.UniqueKey_msgKeyItemMismatch, item);
-        list.add(new Message("", text, Message.ERROR, new ObjectProperty(this, IKey.PROPERTY_KEY_ITEMS, itemmIndex))); //$NON-NLS-1$
+        list.add(new Message(IUniqueKey.MSGCODE_KEY_ITEM_MISMATCH, text, Message.ERROR, new ObjectProperty(this, IKey.PROPERTY_KEY_ITEMS, itemmIndex))); //$NON-NLS-1$
         return;
     }
 
