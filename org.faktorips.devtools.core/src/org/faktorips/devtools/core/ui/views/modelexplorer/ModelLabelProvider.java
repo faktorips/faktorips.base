@@ -1,5 +1,13 @@
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
@@ -28,6 +36,8 @@ public class ModelLabelProvider implements ILabelProvider {
 	private boolean isFlatLayout = false;
 	
     private boolean productDefinitionLabelProvider = false;
+    
+    private HashMap imagesByDescriptor = new HashMap();
     
 	public ModelLabelProvider(){
 		super();
@@ -62,7 +72,12 @@ public class ModelLabelProvider implements ILabelProvider {
 	        if (descriptor == null) {
 	            return null;
 	        }
-	        return descriptor.createImage();
+            Image image = (Image)imagesByDescriptor.get(descriptor);
+            if (image==null) {
+                image = descriptor.createImage();
+                imagesByDescriptor.put(descriptor, image);
+            }
+	        return image;
 		}
 		return null;
 	}
@@ -113,7 +128,18 @@ public class ModelLabelProvider implements ILabelProvider {
 	}
 
 	public void dispose() {
+        Set entries = (Set)imagesByDescriptor.entrySet();
+        List entryList = new ArrayList(entries);
+        for (Iterator it = entryList.iterator(); it.hasNext();) {
+            Map.Entry entry = (Entry)it.next();
+            imagesByDescriptor.remove(entry.getKey());
+            ((Image)entry.getValue()).dispose();
+        }
 	}
+    
+    public int getNumOfCreatedButNotDisposedImages() {
+        return imagesByDescriptor.size();
+    }
 
 	public boolean isLabelProperty(Object element, String property) {
 		return true;
