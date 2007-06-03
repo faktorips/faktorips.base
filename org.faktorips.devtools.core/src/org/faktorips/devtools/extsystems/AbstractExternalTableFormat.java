@@ -27,6 +27,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -73,7 +74,7 @@ public abstract class AbstractExternalTableFormat {
         }
         return externalDataValue.toString();
     }
-
+    
 	/**
 	 * @return The human readable name of this external table format.
 	 */
@@ -146,7 +147,13 @@ public abstract class AbstractExternalTableFormat {
 	 *         parsed by the given datatype.
 	 */
 	public String getIpsValue(Object externalValue, Datatype datatype, MessageList messageList) {
-		return getConverter(datatype).getIpsValue(externalValue, messageList);
+        MessageList msgList = new MessageList();
+        String ipsValue = getConverter(datatype).getIpsValue(externalValue, msgList);
+        if (msgList.containsErrorMsg()){
+            ipsValue = Messages.AbstractExternalTableFormat_Error + msgList.getFirstMessage(Message.ERROR).getText();
+        }
+        messageList.add(msgList);
+        return ipsValue;
 	}
 
 	/**
@@ -272,6 +279,5 @@ public abstract class AbstractExternalTableFormat {
 		public Object getExternalDataValue(String ipsValue, MessageList messageList) {
 			return ipsValue;
 		}
-
 	}
 }

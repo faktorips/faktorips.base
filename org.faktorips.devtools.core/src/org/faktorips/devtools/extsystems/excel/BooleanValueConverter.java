@@ -17,10 +17,9 @@
 
 package org.faktorips.devtools.extsystems.excel;
 
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.extsystems.ExtSystemsMessageUtil;
 import org.faktorips.devtools.extsystems.IValueConverter;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -36,19 +35,19 @@ public class BooleanValueConverter implements IValueConverter {
 	 * {@inheritDoc}
 	 */
 	public String getIpsValue(Object externalDataValue, MessageList messageList) {
-		if (externalDataValue instanceof String) {
-			return Boolean.valueOf((String) externalDataValue).toString();
-		} else if (externalDataValue instanceof Boolean) {
-			return ((Boolean) externalDataValue).toString();
-		}
-		String msg = NLS.bind(Messages.BooleanValueConverter_msgConverisonErrorExternal, externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
-		messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
-		return externalDataValue.toString();
-	}
+        if (externalDataValue instanceof String) {
+            return Boolean.valueOf((String)externalDataValue).toString();
+        } else if (externalDataValue instanceof Boolean) {
+            return ((Boolean)externalDataValue).toString();
+        }
+        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage("" + externalDataValue, externalDataValue.getClass() //$NON-NLS-1$
+                .getName(), getSupportedDatatype().getQualifiedName()));
+        return externalDataValue.toString();
+    }
 
 	/**
-	 * {@inheritDoc}
-	 */
+     * {@inheritDoc}
+     */
 	public Object getExternalDataValue(String ipsValue, MessageList messageList) {
 		if (ipsValue == null) {
 			return null;

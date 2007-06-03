@@ -17,10 +17,10 @@
 
 package org.faktorips.devtools.extsystems.excel;
 
-import org.eclipse.osgi.util.NLS;
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.extsystems.ExtSystemsMessageUtil;
 import org.faktorips.devtools.extsystems.IValueConverter;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 
@@ -37,47 +37,47 @@ public class LongValueConverter implements IValueConverter {
 	 * {@inheritDoc}
 	 */
 	public String getIpsValue(Object externalDataValue, MessageList messageList) {
-		if (externalDataValue instanceof Long) {
-		return ((Long)externalDataValue).toString();
-		}
-		else if (externalDataValue instanceof Double) {
-			long value = ((Double)externalDataValue).longValue();
-			Double restored = new Double(value); 
-			if (!restored.equals((Double)externalDataValue)) {
-				String msg = NLS.bind(Messages.LongValueConverter_msgLoosingData, externalDataValue, restored);
-				messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
-				return externalDataValue.toString();
-			}
-			return new Long(value).toString();
-		}
-		String msg = NLS.bind(Messages.LongValueConverter_msgConversionErrorExternal, externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
-		messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
-		return externalDataValue.toString();
-	}
+        if (externalDataValue instanceof Long) {
+            return ((Long)externalDataValue).toString();
+        } else if (externalDataValue instanceof Double) {
+            long value = ((Double)externalDataValue).longValue();
+            Double restored = new Double(value);
+            if (!restored.equals((Double)externalDataValue)) {
+                messageList.add(ExtSystemsMessageUtil.createConvertExtToIntLostValueErrorMessage(
+                        "" + externalDataValue, restored.toString())); //$NON-NLS-1$
+                return externalDataValue.toString();
+            }
+            return new Long(value).toString();
+        }
+        if (StringUtils.isNumeric("" + externalDataValue)) { //$NON-NLS-1$
+            // if the excel datatype isn't Long or Double but the value is numeric then convert
+            // the external value to Long and add an message to inform the user about this conversation
+            messageList.add(ExtSystemsMessageUtil.createConvertExtToIntInformation(externalDataValue.toString(),
+                    externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName()));
+        } else {        
+            messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+                                "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
+        }
+        return externalDataValue.toString();
+    }
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object getExternalDataValue(String ipsValue, MessageList messageList) {
 		if (ipsValue == null) {
-			return null;
-		}
-		if (ipsValue.length() == 0) {
-			return new Long(0);
-		}
+            return null;
+        }
+        if (ipsValue.length() == 0) {
+            return new Long(0);
+        }
 		try {
 			return Long.valueOf(ipsValue);
 		} catch (NumberFormatException e) {
-			Object[] objects = new Object[3];
-			objects[0] = ipsValue;
-			objects[1] = getSupportedDatatype().getQualifiedName();
-			objects[2] = Long.class.getName(); 
-			String msg = NLS.bind(Messages.LongValueConverter_msgConversionErrorInternal, objects);
-			messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
+			messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, getSupportedDatatype().getQualifiedName(), Long.class.getName()));
 		}
 		return ipsValue;
 	}
-
 
 	/**
 	 * {@inheritDoc}

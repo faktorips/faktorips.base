@@ -50,4 +50,5 @@ public class Messages extends NLS {
     public static String TableExportPage_labelFileFormat;
     public static String TableExportPage_msgMissingFileFormat;
     public static String TableExportPage_labelNullRepresentation;
+    public static String TableExportWizard_operationName;
 }

@@ -17,11 +17,10 @@
 
 package org.faktorips.devtools.extsystems.excel;
 
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
+import org.faktorips.devtools.extsystems.ExtSystemsMessageUtil;
 import org.faktorips.devtools.extsystems.IValueConverter;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -37,16 +36,17 @@ public class DoubleValueConverter implements IValueConverter {
 	 * {@inheritDoc}
 	 */
 	public String getIpsValue(Object externalDataValue, MessageList messageList) {
-		if (externalDataValue instanceof Double) {
+        if (externalDataValue instanceof Double) {
             // format double values without decimal places to int string representation
-            // maybe an import from excel returns a string formated cells (with numeric value inside)
+            // maybe an import from excel returns a string formated cells (with numeric value
+            // inside)
             // as double (e.g. 1 will be 1.0)
-			return AbstractExternalTableFormat.doubleToStringWithoutDecimalPlaces((Double)externalDataValue);
-		}
-		String msg = NLS.bind(Messages.DoubleValueConverter_msgConversionErrorExtern, externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
-		messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
-		return externalDataValue.toString();
-	}
+            return AbstractExternalTableFormat.doubleToStringWithoutDecimalPlaces((Double)externalDataValue);
+        }
+        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+                        "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
+        return externalDataValue.toString();
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -61,12 +61,8 @@ public class DoubleValueConverter implements IValueConverter {
 		try {
 			return Double.valueOf(ipsValue);
 		} catch (NumberFormatException e) {
-			Object[] objects = new Object[3];
-			objects[0] = ipsValue;
-			objects[1] = getSupportedDatatype().getQualifiedName();
-			objects[2] = Double.class.getName(); 
-			String msg = NLS.bind(Messages.DoubleValueConverter_msgConversionErrorIntern, objects);
-			messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
+			messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(
+                    ipsValue, getSupportedDatatype().getQualifiedName(), Double.class.getName()));
 		}
 		return ipsValue;
 	}

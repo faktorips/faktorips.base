@@ -66,4 +66,5 @@ public class Messages extends NLS {
     public static String SelectFileAndImportMethodPage_msgInvalidFile;
     public static String SelectFileAndImportMethodPage_labelNullRepresentation;
     public static String SelectContentsPage_msgNonExistingProject;
+    public static String TableImportWizard_operationName;
 }

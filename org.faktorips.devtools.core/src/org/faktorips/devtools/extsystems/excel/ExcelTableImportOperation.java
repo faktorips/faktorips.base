@@ -148,8 +148,7 @@ public class ExcelTableImportOperation implements IWorkspaceRunnable {
             if (!monitor.isCanceled()) {
                 targetGeneration.getIpsObject().getIpsSrcFile().save(true, monitor);
                 monitor.worked(1);
-            }
-            else {
+            } else {
                 targetGeneration.getIpsObject().getIpsSrcFile().discardChanges();
             }
         }

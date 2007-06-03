@@ -40,8 +40,13 @@ public class Messages extends NLS {
     public static String IpsObjectPage_msgPackageMissing;
     public static String IpsObjectPage_msgObjectAllreadyExists;
     public static String IpsObjectPage_msgRootRequired;
-    public static String ResultDisplayer_msgExportAborted;
+    public static String ResultDisplayer_Errors;
+    public static String ResultDisplayer_Informations;
+    public static String ResultDisplayer_msgErrors;
+    public static String ResultDisplayer_msgInformations;
     public static String ResultDisplayer_msgWarnings;
+    public static String ResultDisplayer_reasonText;
     public static String ResultDisplayer_titleResults;
     public static String ResultDisplayer_buttonOK;
+    public static String ResultDisplayer_Warnings;
 }

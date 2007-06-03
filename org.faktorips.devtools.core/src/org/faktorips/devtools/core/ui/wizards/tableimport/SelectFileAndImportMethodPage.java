@@ -52,6 +52,7 @@ public class SelectFileAndImportMethodPage extends WizardDataTransferPage implem
     public static final String PAGE_NAME= "SelectFileAndImportMethodPage"; //$NON-NLS-1$
 
     // Stored widget contents
+    private static final String REPLACE_CONTENT = PAGE_NAME + ".REPLACE_CONTENT"; //$NON-NLS-1$
     private static final String FIRST_ROW_HAS_COLUMN_NAMES = PAGE_NAME + ".SELECTED_TREE_ELEMENTS"; //$NON-NLS-1$
     private static final String NULL_REPRESENTATION = PAGE_NAME + ".NULL_REPRESENTATION"; //$NON-NLS-1$
     
@@ -143,15 +144,11 @@ public class SelectFileAndImportMethodPage extends WizardDataTransferPage implem
     }
     
     protected void importExistingAppendChanged() {
-        if (importExistingAppendField.getCheckbox().isChecked()) {
-            importExistingReplaceField.getCheckbox().setChecked(false);
-        }
+        importExistingReplaceField.getCheckbox().setChecked(!importExistingAppendField.getCheckbox().isChecked());
     }
     
     protected void importExistingReplaceChanged() {
-        if (importExistingReplaceField.getCheckbox().isChecked()) {
-            importExistingAppendField.getCheckbox().setChecked(false);
-        }
+        importExistingAppendField.getCheckbox().setChecked(!importExistingReplaceField.getCheckbox().isChecked());
     }
 
     /**
@@ -283,11 +280,11 @@ public class SelectFileAndImportMethodPage extends WizardDataTransferPage implem
 
         validateInput = true;
         
-        restoreWidgetValues();
-
         // init controls
         importIntoExistingField.getCheckbox().setChecked(importIntoExisting);
         importIntoExistingChanged();
+
+        restoreWidgetValues();
 	}
 
     /**
@@ -372,9 +369,11 @@ public class SelectFileAndImportMethodPage extends WizardDataTransferPage implem
         if (settings == null){
             return;
         }
-        ((Checkbox)importIgnoreColumnHeaderRowField.getControl()).setChecked(settings.getBoolean(FIRST_ROW_HAS_COLUMN_NAMES));
+        importExistingReplaceField.getCheckbox().setChecked(settings.getBoolean(REPLACE_CONTENT));
+        importIgnoreColumnHeaderRowField.getCheckbox().setChecked(settings.getBoolean(FIRST_ROW_HAS_COLUMN_NAMES));
         nullRepresentation.setText(settings.get(NULL_REPRESENTATION));
         
+        importExistingReplaceChanged();
     }
 
     /**
@@ -385,7 +384,8 @@ public class SelectFileAndImportMethodPage extends WizardDataTransferPage implem
         if (settings == null){
             return;
         }
-        settings.put(FIRST_ROW_HAS_COLUMN_NAMES, ((Checkbox)importIgnoreColumnHeaderRowField.getControl()).isChecked());
+        settings.put(REPLACE_CONTENT, importExistingReplaceField.getCheckbox().isChecked());
+        settings.put(FIRST_ROW_HAS_COLUMN_NAMES, importIgnoreColumnHeaderRowField.getCheckbox().isChecked());
         settings.put(NULL_REPRESENTATION, nullRepresentation.getText());
     }
     

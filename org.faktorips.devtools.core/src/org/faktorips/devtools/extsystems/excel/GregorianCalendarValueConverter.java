@@ -17,9 +17,9 @@ package org.faktorips.devtools.extsystems.excel;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
+import org.faktorips.devtools.extsystems.ExtSystemsMessageUtil;
 import org.faktorips.devtools.extsystems.IValueConverter;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -41,15 +41,12 @@ public class GregorianCalendarValueConverter implements IValueConverter {
         GregorianCalendar cal = new GregorianCalendar();
         if (externalDataValue instanceof Date) {
             cal.setTime((Date)externalDataValue);
-        }
-        else if (externalDataValue instanceof Number) {
+        } else if (externalDataValue instanceof Number) {
             Date date = new Date(((Number)externalDataValue).longValue());
             cal.setTime(date);
-        }
-        else {
-            String msg = NLS.bind(Messages.GregorianCalendarValueConverter_msgConversionErrorExternal,
-                    externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
-            messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
+        } else {
+            messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+                                    "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
             return externalDataValue.toString();
         }
         return datatype.valueToString(cal);
@@ -70,14 +67,9 @@ public class GregorianCalendarValueConverter implements IValueConverter {
         try {
             GregorianCalendar cal = (GregorianCalendar)datatype.getValue(ipsValue);
             return cal.getTime();
-        }
-        catch (RuntimeException e) {
-            Object[] objects = new Object[3];
-            objects[0] = ipsValue;
-            objects[1] = getSupportedDatatype().getQualifiedName();
-            objects[2] = GregorianCalendar.class.getName();
-            String msg = NLS.bind(Messages.GregorianCalendarValueConverter_msgConversionErrorInternal, objects);
-            messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
+        } catch (RuntimeException e) {
+            messageList.add(new Message(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(
+                    ipsValue, getSupportedDatatype().getQualifiedName(), GregorianCalendar.class.getName()))); //$NON-NLS-1$
             return ipsValue;
         }
     }

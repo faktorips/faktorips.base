@@ -14,11 +14,15 @@
 
 package org.faktorips.devtools.core.ui.wizards.tableimport;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
@@ -30,6 +34,7 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
 import org.faktorips.util.message.MessageList;
@@ -105,9 +110,18 @@ public class TableImportWizard extends Wizard implements IImportWizard {
                 generation.clear();
             }
 
-            MessageList messageList = new MessageList();
-            IWorkspaceRunnable runnable = format.getImportTableOperation(structure, new Path(filename),
-                    generation, nullRepresentation, filePage.isImportIgnoreColumnHeaderRow(), messageList);
+            final MessageList messageList = new MessageList();
+            final boolean ignoreColumnHeader = filePage.isImportIgnoreColumnHeaderRow();
+            
+            IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+                public void run(IProgressMonitor monitor) throws CoreException {
+                    IWorkspaceRunnable runnableOperation = format.getImportTableOperation(structure,
+                            new Path(filename), generation, nullRepresentation, ignoreColumnHeader , messageList);
+                    IIpsModel model = IpsPlugin.getDefault().getIpsModel();
+                    model.runAndQueueChangeEvents(runnableOperation, monitor);
+                }
+            };
+            WorkbenchRunnableAdapter runnableAdapter = new WorkbenchRunnableAdapter(runnable);
 
             /*
              * use a ProgressMonitorDialog to display the progress and allow the user to cancel the
@@ -116,11 +130,11 @@ public class TableImportWizard extends Wizard implements IImportWizard {
             ProgressMonitorDialog pmd = new ProgressMonitorDialog(getShell());
             pmd.setCancelable(true);
             pmd.open();
-            IIpsModel model = IpsPlugin.getDefault().getIpsModel(); 
-            model.runAndQueueChangeEvents(runnable, pmd.getProgressMonitor());
+            ModalContext.run(runnableAdapter, true, pmd.getProgressMonitor(), getShell().getDisplay());
             pmd.close();
             if (!messageList.isEmpty()) {
-                getShell().getDisplay().syncExec(new ResultDisplayer(getShell(), messageList));
+                getShell().getDisplay().syncExec(
+                        new ResultDisplayer(getShell(), Messages.TableImportWizard_operationName, messageList));
             }
 
             // save the dialog settings
@@ -130,11 +144,17 @@ public class TableImportWizard extends Wizard implements IImportWizard {
                 section = workbenchSettings.addNewSection(DIALOG_SETTINGS_KEY);
                 setDialogSettings(section);
             }
+        } catch (InterruptedException ignoredException) {
+        } catch (Exception e) {
+            Throwable throwable = e;
+            if (e instanceof InvocationTargetException) {
+                throwable = ((InvocationTargetException)e).getCause();
+            }
+            IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occured during the import process.", throwable)); //$NON-NLS-1$
+        } finally {
             selectContentsPage.saveWidgetValues();
             newContentsPage.saveWidgetValues();
             filePage.saveWidgetValues();
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occured during the import process.", e)); //$NON-NLS-1$
         }
 
         // this implementation of this method should always return true since this causes the wizard

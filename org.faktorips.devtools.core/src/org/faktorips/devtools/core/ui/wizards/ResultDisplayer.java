@@ -17,8 +17,16 @@
 
 package org.faktorips.devtools.core.ui.wizards;
 
-import org.eclipse.jface.dialogs.MessageDialog;
+import java.util.Iterator;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -32,24 +40,25 @@ import org.faktorips.util.message.MessageList;
  * @author Thorsten Guenther
  */
 public class ResultDisplayer implements Runnable {
-	/**
-	 * The list of messages to display
-	 */
+	/** The list of messages to display */
 	private MessageList messageList;
 	
-	/**
-	 * The shell to open the result dialog within
-	 */
+	/** The shell to open the result dialog within */
 	private Shell shell;
+
+    /** Name of the operation (String representation) */
+    private String operationName;
 	
 	/**
 	 * Creates a new ResultDisplayer.
 	 * 
 	 * @param shell The shell to open the result dialog within.
+     * @param operationName The name of the operation, will be displayed in the dialog.
 	 * @param messageList The list of messages to display.
 	 */
-	public ResultDisplayer(Shell shell, MessageList messageList) {
+	public ResultDisplayer(Shell shell, String operationName, MessageList messageList) {
 		this.messageList = messageList;
+        this.operationName = operationName;
 		this.shell = shell;
 	}
 	
@@ -69,19 +78,48 @@ public class ResultDisplayer implements Runnable {
 	 * {@inheritDoc}
 	 */
 	public void run() {
-		int image;
-		String header;
-		if (messageList.containsErrorMsg()) {
-			image = MessageDialog.ERROR;
-			header = Messages.ResultDisplayer_msgExportAborted;
-		}
-		else {
-			image = MessageDialog.WARNING;
-			header = Messages.ResultDisplayer_msgWarnings;
-		}
+        MultiStatus multiStatus = new MultiStatus(IpsPlugin.PLUGIN_ID, 0, Messages.ResultDisplayer_reasonText, null);
 
-		// TODO use ErrorDialog here and display messageList as MultiStatus
-		MessageDialog dialog = new MessageDialog(shell, Messages.ResultDisplayer_titleResults, null, header + messageList.toString(), image, new String[] {Messages.ResultDisplayer_buttonOK}, 0);
-		dialog.open();
+        boolean containsWarningsOrInfos = messageList.getFirstMessage(Message.INFO) != null
+                || messageList.getFirstMessage(Message.WARNING) != null;
+        boolean containsErrors = messageList.containsErrorMsg();
+        
+        // create a multistatus based on the given message list,
+        // oder errors ascendng
+        if (containsErrors){
+            for (Iterator iter = messageList.iterator(); iter.hasNext();) {
+                Message msg = (Message)iter.next();
+                switch (msg.getSeverity()) {
+                    case Message.ERROR:
+                        multiStatus.add(new IpsStatus(IStatus.ERROR, 0, (containsWarningsOrInfos?Messages.ResultDisplayer_Errors:"") + msg.getText(), null)); //$NON-NLS-1$
+                        break;
+                }
+            }
+        }
+        
+        if (containsWarningsOrInfos) {
+            for (Iterator iter = messageList.iterator(); iter.hasNext();) {
+                Message msg = (Message)iter.next();
+                switch (msg.getSeverity()) {
+                    case Message.WARNING:
+                        multiStatus.add(new IpsStatus(IStatus.WARNING, 0, (containsErrors?Messages.ResultDisplayer_Warnings:"") + msg.getText(), null)); //$NON-NLS-1$
+                        break;
+                    case Message.INFO:
+                        multiStatus.add(new IpsStatus(IStatus.INFO, 0, (containsErrors?Messages.ResultDisplayer_Informations:"") + msg.getText(), null)); //$NON-NLS-1$
+                        break;
+                }
+            }
+        }
+        
+        String messageText;
+        if (multiStatus.getSeverity() == IStatus.WARNING){
+            messageText = NLS.bind(Messages.ResultDisplayer_msgWarnings, operationName);
+        } else if (multiStatus.getSeverity() == IStatus.INFO) {
+            messageText = NLS.bind(Messages.ResultDisplayer_msgInformations, operationName);
+        } else {
+            messageText = NLS.bind(Messages.ResultDisplayer_msgErrors, operationName);
+        }
+        
+        ErrorDialog.openError(shell, NLS.bind(Messages.ResultDisplayer_titleResults, operationName), messageText, (IStatus) multiStatus);
 	}
 }

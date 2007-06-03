@@ -18,11 +18,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.DateDatatype;
+import org.faktorips.devtools.extsystems.ExtSystemsMessageUtil;
 import org.faktorips.devtools.extsystems.IValueConverter;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -43,15 +42,12 @@ public class DateValueConverter implements IValueConverter {
         Date date;
         if (externalDataValue instanceof Date) {
             date = (Date)externalDataValue;
-        }
-        else if (externalDataValue instanceof Number) {
+        } else if (externalDataValue instanceof Number) {
             date = HSSFDateUtil.getJavaDate(((Number)externalDataValue).doubleValue());
             date = new Date();
-        }
-        else {
-            String msg = NLS.bind(Messages.DateValueConverter_msgConversionErrorExtern,
-                    externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
-            messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
+        } else {
+            messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage("" + externalDataValue, externalDataValue //$NON-NLS-1$
+                    .getClass().getName(), getSupportedDatatype().getQualifiedName())); 
             return externalDataValue.toString();
         }
         return datatype.valueToString(date);
@@ -67,18 +63,12 @@ public class DateValueConverter implements IValueConverter {
         if (ipsValue == null) {
             return null;
         }
-        
+
         try {
-            Date date = (Date)datatype.getValue(ipsValue);
-            return date;
-        }
-        catch (RuntimeException e) {
-            Object[] objects = new Object[3];
-            objects[0] = ipsValue;
-            objects[1] = getSupportedDatatype().getQualifiedName();
-            objects[2] = GregorianCalendar.class.getName();
-            String msg = NLS.bind(Messages.DateValueConverter_msgConversionErrorIntern, objects);
-            messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
+            return (Date)datatype.getValue(ipsValue);
+        } catch (RuntimeException e) {
+            messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, getSupportedDatatype()
+                    .getQualifiedName(), GregorianCalendar.class.getName())); //$NON-NLS-1$
             return ipsValue;
         }
     }

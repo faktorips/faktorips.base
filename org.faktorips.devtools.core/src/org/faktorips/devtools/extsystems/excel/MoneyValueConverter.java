@@ -17,10 +17,9 @@
 
 package org.faktorips.devtools.extsystems.excel;
 
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.extsystems.ExtSystemsMessageUtil;
 import org.faktorips.devtools.extsystems.IValueConverter;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.Money;
 
@@ -41,18 +40,13 @@ public class MoneyValueConverter implements IValueConverter {
 			try {
                 return Money.valueOf((String) externalDataValue).toString();
             } catch (RuntimeException e) {
-                Object[] objects = new Object[3];
-                objects[0] = externalDataValue;
-                objects[1] = externalDataValue.getClass().getName();
-                objects[2] = getSupportedDatatype().getQualifiedName();
-                String msg = NLS.bind(Messages.MoneyValueConverter_msgConversionErrorExtern, objects);
-                messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
+                messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+                        "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
                 return externalDataValue.toString();
             }
 		} 
-        
-		String msg = NLS.bind(Messages.MoneyValueConverter_msgAnotherConversionErrorExtern, externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
-		messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
+		messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+                "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
 		return externalDataValue.toString();
 	}
 
@@ -61,8 +55,7 @@ public class MoneyValueConverter implements IValueConverter {
 	 */
 	public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         if (!Datatype.MONEY.isParsable(ipsValue)) {
-            String msg = NLS.bind(Messages.MoneyValueConverter_msgConversionErrorIntern, ipsValue, getSupportedDatatype().getQualifiedName());
-            messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
+            messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, getSupportedDatatype().getQualifiedName(), Money.class.getName())); //$NON-NLS-1$
         }
 		return ipsValue;
 	}

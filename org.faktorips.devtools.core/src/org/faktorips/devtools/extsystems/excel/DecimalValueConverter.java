@@ -19,10 +19,9 @@ package org.faktorips.devtools.extsystems.excel;
 
 import java.math.BigDecimal;
 
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.extsystems.ExtSystemsMessageUtil;
 import org.faktorips.devtools.extsystems.IValueConverter;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.Decimal;
 
@@ -39,27 +38,21 @@ public class DecimalValueConverter implements IValueConverter {
 	 * {@inheritDoc}
 	 */
 	public String getIpsValue(Object externalDataValue, MessageList messageList) {
-		if (externalDataValue instanceof String) {
-			try {
-                return Decimal.valueOf((String) externalDataValue).toString();
+        if (externalDataValue instanceof String) {
+            try {
+                return Decimal.valueOf((String)externalDataValue).toString();
             } catch (RuntimeException e) {
-                Object[] objects = new Object[3];
-                objects[0] = externalDataValue;
-                objects[1] = externalDataValue.getClass().getName();
-                objects[2] = getSupportedDatatype().getQualifiedName();
-                String msg = NLS.bind(Messages.DecimalValueConverter_msgConversionErrorExtern, objects);
-                messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
+                messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage("" + externalDataValue, externalDataValue //$NON-NLS-1$
+                        .getClass().getName(), getSupportedDatatype().getQualifiedName()));
                 return externalDataValue.toString();
             }
-		} 
-        else if (externalDataValue instanceof Number) {
+        } else if (externalDataValue instanceof Number) {
             return Decimal.valueOf(new BigDecimal(((Number)externalDataValue).toString())).toString();
         }
-        
-		String msg = NLS.bind(Messages.DecimalValueConverter_msgAnotherConversionErrorExtern, externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
-		messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
-		return externalDataValue.toString();
-	}
+        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage("" + externalDataValue, externalDataValue.getClass() //$NON-NLS-1$
+                .getName(), getSupportedDatatype().getQualifiedName()));
+        return externalDataValue.toString();
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -67,10 +60,9 @@ public class DecimalValueConverter implements IValueConverter {
 	public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         try {
             return Decimal.valueOf(ipsValue);
-        }
-        catch (RuntimeException e) {
-            String msg = NLS.bind(Messages.DecimalValueConverter_msgConversionErrorIntern, ipsValue, getSupportedDatatype().getQualifiedName());
-            messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
+        } catch (RuntimeException e) {
+            messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, Decimal.class.getName(),
+                    getSupportedDatatype().getQualifiedName()));
         }
         return ipsValue;
 	}

@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.graphics.Image;
@@ -112,7 +113,7 @@ public class TableExportWizard extends Wizard implements IExportWizard {
 					runnable.run(monitor);
 
 					if (!messageList.isEmpty()) {
-						getShell().getDisplay().syncExec(new ResultDisplayer(getShell(), messageList));
+						getShell().getDisplay().syncExec(new ResultDisplayer(getShell(), Messages.TableExportWizard_operationName, messageList));
 					}
 				}
 			};
@@ -123,16 +124,19 @@ public class TableExportWizard extends Wizard implements IExportWizard {
 			 * getContainer().run() is called.
 			 */
 			ProgressMonitorDialog pmd = new ProgressMonitorDialog(getShell());
-			pmd.run(true, true, operation);
-
-		} catch (Exception e) {
+            pmd.setCancelable(true);
+            pmd.open();
+            ModalContext.run(operation, true, pmd.getProgressMonitor(), getShell().getDisplay());
+            pmd.close();
+		} catch (InterruptedException ignoredException){
+        } catch (Exception e) {
 			Throwable throwable = e;
 			if (e instanceof InvocationTargetException) {
 				throwable = ((InvocationTargetException) e).getCause();
 			}
 			IpsPlugin.logAndShowErrorDialog(new IpsStatus(
 					"An error occured during the export process.", throwable)); //$NON-NLS-1$
-		}
+		} 
 
 		// this implementation of this method should always return true since
 		// this causes the wizard dialog to close.
