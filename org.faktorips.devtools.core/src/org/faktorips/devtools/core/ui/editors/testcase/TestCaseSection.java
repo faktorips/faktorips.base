@@ -1609,25 +1609,31 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	private void removeClicked() throws CoreException {
         form.setRedraw(false);
         try {
-            ISelection selection = treeViewer.getSelection();
-            if (selection instanceof IStructuredSelection){
-            	TreeItem nextItemToSelect = null;
-            	for (Iterator iterator = ((IStructuredSelection)selection).iterator(); iterator.hasNext();) {			
-                    Object domainObject = iterator.next();
-                    nextItemToSelect = getNextSelectionInTreeAfterDelete(domainObject);
-            		if (domainObject instanceof ITestPolicyCmptRelation){
-            			((ITestPolicyCmptRelation) domainObject).delete();
-            		} else if (domainObject instanceof ITestObject) {
-            			((ITestObject) domainObject).delete();
-                    } else {
-                        throw new RuntimeException("Remove object with type " + domainObject.getClass().getName() + " is not supported!" ); //$NON-NLS-1$ //$NON-NLS-2$
+            final ISelection selection = treeViewer.getSelection();
+            IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+                public void run(IProgressMonitor monitor) throws CoreException {
+                    if (selection instanceof IStructuredSelection) {
+                        TreeItem nextItemToSelect = null;
+                        for (Iterator iterator = ((IStructuredSelection)selection).iterator(); iterator.hasNext();) {
+                            Object domainObject = iterator.next();
+                            nextItemToSelect = getNextSelectionInTreeAfterDelete(domainObject);
+                            if (domainObject instanceof ITestPolicyCmptRelation) {
+                                ((ITestPolicyCmptRelation)domainObject).delete();
+                            } else if (domainObject instanceof ITestObject) {
+                                ((ITestObject)domainObject).delete();
+                            } else {
+                                throw new RuntimeException(
+                                        "Remove object with type " + domainObject.getClass().getName() + " is not supported!"); //$NON-NLS-1$ //$NON-NLS-2$
+                            }
+                        }
+                        treeViewer.getTree().setSelection(new TreeItem[] { nextItemToSelect });
+                        treeViewer.getControl().setFocus();
+                        refreshTreeAndDetailArea();
+                        selectionInTreeChanged(new StructuredSelection(nextItemToSelect.getData()));
                     }
-            	}
-            	treeViewer.getTree().setSelection(new TreeItem[]{nextItemToSelect});
-                treeViewer.getControl().setFocus();
-                refreshTreeAndDetailArea();
-                selectionInTreeChanged(new StructuredSelection(nextItemToSelect.getData()));
-            }
+                }
+            };
+            IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
         } finally {
             form.setRedraw(true);
         }
@@ -1835,16 +1841,20 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	private void refreshTreeAndDetailArea(){
 		form.setRedraw(false);
         try {
-            testCaseDetailArea.clearDetailArea();
-
-            if (showAll) {
-                createDetailsSectionsForAll();
-            } else {
-                testCaseDetailArea.createTestObjectSections(prevTestObjects);
-            }
             refreshTree();
-
-            redrawForm();
+            // redraw the detail area in async way to reduce the time of refreshing
+            Runnable runnable = new Runnable(){
+                public void run() {
+                    testCaseDetailArea.clearDetailArea();
+                    if (showAll) {
+                        createDetailsSectionsForAll();
+                    } else {
+                        testCaseDetailArea.createTestObjectSections(prevTestObjects);
+                    }
+                    redrawForm();
+                }
+            };
+            getDisplay().asyncExec(runnable);
         } finally {
             form.setRedraw(true);
         }
