@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dï¿½rfen nur unter den Bedingungen der 
+ * Faktor-Zehn-Community Lizenzvereinbarung ï¿½ Version 0.1 (vor Grï¿½ndung Community) 
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -246,7 +246,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
      */
     protected void handleDestinationBrowseButtonPressed() {
         FileDialog dialog= new FileDialog(getContainer().getShell(), SWT.SAVE);
-        dialog.setFilterExtensions(new String[] {"*." + IIpsArchiveEntry.FILE_EXTENSION}); //$NON-NLS-1$
+        dialog.setFilterExtensions(new String[] {"*." + IIpsArchiveEntry.FILE_EXTENSION, "*.zip", "*.jar"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         String currentSourceString= getDestinationValue();
         int lastSeparatorIndex= currentSourceString.lastIndexOf(File.separator);
