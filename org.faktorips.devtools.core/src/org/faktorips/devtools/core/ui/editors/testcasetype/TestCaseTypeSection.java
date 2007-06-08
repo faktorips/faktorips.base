@@ -71,7 +71,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
 import org.eclipse.ui.forms.widgets.FormText;
@@ -85,7 +84,6 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
@@ -120,7 +118,7 @@ import org.faktorips.values.EnumValue;
  * 
  * @author Joerg Ortmann
  */
-public class TestCaseTypeSection extends IpsSection  {
+public class TestCaseTypeSection extends IpsSection {
     private Image empytImage;
     
     private HashMap cachedProblemImageDescriptors = new HashMap();
@@ -176,6 +174,8 @@ public class TestCaseTypeSection extends IpsSection  {
 
     // Object cache for the detail area
     private SectionDetailObjectCache objectCache;
+
+    private boolean showSubtypeAttributes;
     
     /*
      * Object cache to store several object to render the ui
@@ -304,17 +304,44 @@ public class TestCaseTypeSection extends IpsSection  {
     /*
      * Class used to store button objects for each section
      */
-    private class SectionButtons{
-        private Section section;
+    private class SectionButtons {
+        private Composite buttons;
         private Button addAtributeButton;
         private Button removeAttributeButton;
         private Button moveAttributeUp;
         private Button moveAttributeDown;
-        
-        public void createButtons(Composite structureComposite, Section section) {
-            this.section = section;
+        private TableViewer attributeTableViewer;
+        private ITestPolicyCmptTypeParameter testParameter;
+
+        /*
+         * Helper class to handle common button functionality
+         */
+        private class ButtonSelectionListener implements SelectionListener {
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+            public void widgetSelected(SelectionEvent e) {
+                try {
+                    ISelection selection = attributeTableViewer.getSelection();
+                    if (selection instanceof IStructuredSelection){
+                        IIpsObjectPart selectedDetailObject = (IIpsObjectPart) ((IStructuredSelection)selection).getFirstElement();
+                        if (selectedDetailObject != null){
+                            currSelectedDetailObject = selectedDetailObject;
+                        }
+                        clickedEvent(e);
+                    }
+                } catch (Exception ex) {
+                    IpsPlugin.logAndShowErrorDialog(ex);
+                }
+            }
+            protected void clickedEvent(SelectionEvent e){
+            }
+        }
+
+        public void createButtons(Composite structureComposite, ITestPolicyCmptTypeParameter testParameter, TableViewer attributeTableViewer) {
+            this.testParameter = testParameter;
+            this.attributeTableViewer = attributeTableViewer;
             
-            Composite buttons = toolkit.getFormToolkit().createComposite(structureComposite);
+            buttons = toolkit.getFormToolkit().createComposite(structureComposite);
             buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
             GridLayout buttonLayout = new GridLayout(1, true);
             buttons.setLayout(buttonLayout);
@@ -329,7 +356,6 @@ public class TestCaseTypeSection extends IpsSection  {
             moveAttributeUp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             moveAttributeDown.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             
-            addAtributeButton.setEnabled(false);
             removeAttributeButton.setEnabled(false);
             moveAttributeUp.setEnabled(false);
             moveAttributeDown.setEnabled(false);
@@ -345,8 +371,8 @@ public class TestCaseTypeSection extends IpsSection  {
                 toolkit.setDataChangeable(moveAttributeDown, false);
                 return;
             }
-            if (section != objectCache.getSection(mainSectionObject)){
-                addAtributeButton.setEnabled(false);
+            
+            if (testParameter != mainSectionObject){
                 removeAttributeButton.setEnabled(false);
                 moveAttributeUp.setEnabled(false);
                 moveAttributeDown.setEnabled(false);
@@ -366,53 +392,28 @@ public class TestCaseTypeSection extends IpsSection  {
             }
         }
         
-        
         /**
          * Adds the button listener for the details area.
          */
         private void hookButtonListenersDetail() {
-            addAtributeButton.addSelectionListener(new SelectionListener() {
-                public void widgetSelected(SelectionEvent e) {
-                    try {
-                        addAttributeClicked(currSelectedDetailObject);
-                    } catch (Exception ex) {
-                        IpsPlugin.logAndShowErrorDialog(ex);
-                    }
-                }
-                public void widgetDefaultSelected(SelectionEvent e) {
+            addAtributeButton.addSelectionListener(new ButtonSelectionListener() {
+                protected void clickedEvent(SelectionEvent e) {
+                    addAttributeClicked(testParameter);
                 }
             });
-            removeAttributeButton.addSelectionListener(new SelectionListener() {
-                public void widgetSelected(SelectionEvent e) {
-                    try {
-                        removeAttributeClicked(currSelectedDetailObject);
-                    } catch (Exception ex) {
-                        IpsPlugin.logAndShowErrorDialog(ex);
-                    }
-                }
-                public void widgetDefaultSelected(SelectionEvent e) {
+            removeAttributeButton.addSelectionListener(new ButtonSelectionListener() {
+                protected void clickedEvent(SelectionEvent e) {
+                    removeAttributeClicked(currSelectedDetailObject);
+                }                
+            });
+            moveAttributeUp.addSelectionListener(new ButtonSelectionListener() {
+                protected void clickedEvent(SelectionEvent e) {
+                    moveUpAttributeClicked(currSelectedDetailObject);
                 }
             });
-            moveAttributeUp.addSelectionListener(new SelectionListener() {
-                public void widgetSelected(SelectionEvent e) {
-                    try {
-                        moveUpAttributeClicked(currSelectedDetailObject);
-                    } catch (Exception ex) {
-                        IpsPlugin.logAndShowErrorDialog(ex);
-                    }
-                }
-                public void widgetDefaultSelected(SelectionEvent e) {
-                }
-            });
-            moveAttributeDown.addSelectionListener(new SelectionListener() {
-                public void widgetSelected(SelectionEvent e) {
-                    try {
-                        moveDownAttributeClicked(currSelectedDetailObject);
-                    } catch (Exception ex) {
-                        IpsPlugin.logAndShowErrorDialog(ex);
-                    }
-                }
-                public void widgetDefaultSelected(SelectionEvent e) {
+            moveAttributeDown.addSelectionListener(new ButtonSelectionListener() {
+                protected void clickedEvent(SelectionEvent e) {
+                    moveDownAttributeClicked(currSelectedDetailObject);
                 }
             }); 
         }        
@@ -1038,7 +1039,7 @@ public class TestCaseTypeSection extends IpsSection  {
                 repackAttributeTable(attributeTableViewer);
 
                 SectionButtons currSectionButtons = new SectionButtons();
-                currSectionButtons.createButtons(composite, section);
+                currSectionButtons.createButtons(composite,(ITestPolicyCmptTypeParameter) testParam, attributeTableViewer);
                 objectCache.putSectionButtons(testParam, currSectionButtons);
             } else {
                 composite.setLayout(new GridLayout(1, true));
@@ -1059,9 +1060,15 @@ public class TestCaseTypeSection extends IpsSection  {
         
         uiController.updateUI();
         
-        toolkit.setDataChangeable(detailComposite, isDataChangeable());
-        
         return section;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDataChangeable(boolean changeable) {
+        super.setDataChangeable(changeable);
+        updateDetailButtonStatus(null);
     }
 
     /*
@@ -1192,6 +1199,9 @@ public class TestCaseTypeSection extends IpsSection  {
      * Add attribute to test policy cmpt type param
      */
     private void removeAttributeClicked(IIpsObjectPart object) {
+        if (object == null){
+            return;
+        }
         ArgumentCheck.isInstanceOf(object, ITestAttribute.class);
         
         ITestParameter param = (ITestParameter) object.getParent();
@@ -1207,6 +1217,9 @@ public class TestCaseTypeSection extends IpsSection  {
      * Move attribute up
      */
     private void moveUpAttributeClicked(IIpsObjectPart object) {
+        if (object == null){
+            return;
+        }
         ArgumentCheck.isInstanceOf(object, ITestAttribute.class);
         moveTestAttribute((ITestAttribute) object, true);
     }
@@ -1215,6 +1228,9 @@ public class TestCaseTypeSection extends IpsSection  {
      * Move attribute down
      */
     private void moveDownAttributeClicked(IIpsObjectPart object) {
+        if (object == null){
+            return;
+        }
         ArgumentCheck.isInstanceOf(object, ITestAttribute.class);
         moveTestAttribute((ITestAttribute) object, false);
     } 
@@ -1295,7 +1311,6 @@ public class TestCaseTypeSection extends IpsSection  {
             return;
         }
         section.setBackground(getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
-        updateDetailButtonStatus(currSelectedDetailObject);
         
         if (withFocusChange){
             // select the corresponding object in the tree
@@ -1784,10 +1799,9 @@ public class TestCaseTypeSection extends IpsSection  {
                 if (movedAttribute != null)
                     newAttributeIdx.add(movedAttribute);
             }
-            attrTable.setSelection(new StructuredSelection(newAttributeIdx));
         }
     }
-    
+
     /*
      * Moves the give test attribute up or down
      */
@@ -1998,17 +2012,19 @@ public class TestCaseTypeSection extends IpsSection  {
             currSelectedDetailObject = selectedObject;
             selectSection(objectCache.getSection(selectedObject));
 
-            if (selectedObject instanceof ITestAttribute){
-                TableViewer attrTable = objectCache.getAttributeTable(testPolicyCmptTypeParam);
-                if (attrTable != null)
-                    attrTable.setSelection(new StructuredSelection(selectedObject));
-            }
             // restore the expanded section states
             for (Iterator iter = expandedSectionKeys.iterator(); iter.hasNext();) {
                 Section section = objectCache.getSectionByKey((Integer)iter.next());
                 if (section == null)
                     return;
                 section.setExpanded(true);
+            }
+
+            if (selectedObject instanceof ITestAttribute){
+                TableViewer attrTable = objectCache.getAttributeTable(testPolicyCmptTypeParam);
+                if (attrTable != null){
+                    attrTable.setSelection(new StructuredSelection(selectedObject));
+                }
             }
         } finally {
             setFormRedraw(true);
@@ -2103,11 +2119,12 @@ public class TestCaseTypeSection extends IpsSection  {
     private IAttribute[] selectAttributeByDialog(ITestPolicyCmptTypeParameter testPolicyCmptTypeParam,
             String message,
             boolean multi) throws CoreException {
-        ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(), new DefaultLabelProvider());
+        AttributeElementListSelectionDialog selectDialog = new AttributeElementListSelectionDialog(getShell(), toolkit);
         selectDialog.setMultipleSelection(multi);
         selectDialog.setTitle(Messages.TestCaseTypeSection_Dialog_SelectAttribute_Title);
         selectDialog.setMessage(message);
-
+        selectDialog.setShowSubtypes(showSubtypeAttributes);
+        
         IPolicyCmptType policyCmptType = testPolicyCmptTypeParam.findPolicyCmptType();
         if (policyCmptType == null) {
             String msg = NLS.bind(
@@ -2117,19 +2134,9 @@ public class TestCaseTypeSection extends IpsSection  {
             return null;
         }
 
-        // find all attributes of the policy cmpt type
-        ITypeHierarchy typeHierarchy = policyCmptType.getSupertypeHierarchy();
-        IAttribute[] attributes = typeHierarchy.getAllAttributesRespectingOverride(policyCmptType);
-        List attributesInDialog = new ArrayList();
-        for (int i = 0; i < attributes.length; i++) {
-            // add only changeable or derived or computed attributes
-            if (attributes[i].isChangeable() || attributes[i].isDerived()) {
-                attributesInDialog.add(attributes[i]);
-            }
-        }
-
-        selectDialog.setElements(attributesInDialog.toArray(new IAttribute[0]));
+        selectDialog.init(policyCmptType);
         if (selectDialog.open() == Window.OK) {
+            showSubtypeAttributes = selectDialog.isShowSubtypes();
             if (selectDialog.getResult().length > 0) {
                 Object[] result = (Object[])selectDialog.getResult();
                 IAttribute[] attributeResult = new IAttribute[result.length];

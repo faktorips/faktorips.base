@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui;
 
+import java.util.Arrays;
+
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
@@ -58,4 +60,20 @@ public class PdObjectSelectionDialog extends TwoPaneElementSelector {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * Set the selected elements of the upper pane as result if more than one element is select.<br>
+     * Remark: The default implementation of TwoPaneElementSelector uses alays the lower pane as result.
+     * If there is only one selected element in the upper pane then the lower pane selection will be used, 
+     * because maybe the same object (same name) could be exists in different packages. But if more than one
+     * elements are selected (@see this{@link #setMultipleSelection(boolean)}) then the upper pane is relevant.
+     */
+    protected void computeResult() {
+        Object[] selectedElements = getSelectedElements();
+        if (selectedElements != null && selectedElements.length > 1){
+            setResult(Arrays.asList(selectedElements));
+        } else {
+            super.computeResult();
+        }
+    }
 }

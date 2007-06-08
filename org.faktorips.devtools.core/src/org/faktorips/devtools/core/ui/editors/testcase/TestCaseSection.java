@@ -1499,12 +1499,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 * Add a new relation based an the given test case type relation.
 	 */
 	private void addRelation(final TestCaseTypeRelation relationType) throws CoreException{
-		String productCmptQualifiedName = ""; //$NON-NLS-1$
+		String[] productCmptQualifiedNames = null;
 		if (relationType.isRequiresProductCmpt()) {
-            productCmptQualifiedName = selectProductCmptDialog(relationType.getPolicyCmptTypeTarget(), relationType
-                    .getParentTestPolicyCmpt().findProductCmpt());
-            if (productCmptQualifiedName == null)
-                // chancel
+            productCmptQualifiedNames = selectProductCmptsDialog(relationType.getPolicyCmptTypeTarget(), relationType
+                    .getParentTestPolicyCmpt().findProductCmpt(), true);
+            if (productCmptQualifiedNames == null)
+                // chancel dialog
                 return;
         }
 		
@@ -1516,47 +1516,55 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         // perform the following operation by using queued changed events to 
         // reduce the processing time
-        final String finalProductCmptQualifiedName = productCmptQualifiedName;
+        final String[] finalProductCmptQualifiedNames = productCmptQualifiedNames;
         final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
             public void run(IProgressMonitor monitor) throws CoreException {
-                        // add a new child based on the selected relation
-                        if (relation.isAssoziation()) {
-                            // assoziation relation will be added
-                            String targetName = ""; //$NON-NLS-1$
-                            ITestPolicyCmpt selectedTarget = selectAssoziationByTreeDialog(relation.getTarget());
-                            if (selectedTarget == null)
-                                // chancel
-                                return;
+                // add a new child based on the selected relation
 
-                            TestCaseHierarchyPath path = new TestCaseHierarchyPath(selectedTarget);
+                if (relation.isAssoziation()) {
+                    // assoziation relation will be added
+                    String targetName = ""; //$NON-NLS-1$
+                    ITestPolicyCmpt selectedTarget = selectAssoziationByTreeDialog(relation.getTarget());
+                    if (selectedTarget == null)
+                        // chancel
+                        return;
 
-                            targetName = path.getHierarchyPath();
+                    TestCaseHierarchyPath path = new TestCaseHierarchyPath(selectedTarget);
 
-                            // add a new child based on the selected relation and selected target
-                            ITestPolicyCmptRelation newRelation = relationType.getParentTestPolicyCmpt().addTestPcTypeRelation(
-                                    relationType.getTestPolicyCmptTypeParam(), finalProductCmptQualifiedName, targetName);
-                            ITestPolicyCmpt newTestPolicyCmpt = newRelation.findTarget();
-                            if (newTestPolicyCmpt == null) {
-                                throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
-                            }
+                    targetName = path.getHierarchyPath();
 
-                            refreshTreeAndDetailArea();
-                            selectInTreeByObject(newRelation, true);
-                        } else {
-                            // composition relatation will be added
-                            ITestPolicyCmptRelation newRelation = relationType.getParentTestPolicyCmpt().addTestPcTypeRelation(
-                                    relationType.getTestPolicyCmptTypeParam(), finalProductCmptQualifiedName, ""); //$NON-NLS-1$
-                            if (newRelation == null)
-                                throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
-
-                            ITestPolicyCmpt newTestPolicyCmpt = newRelation.findTarget();
-                            if (newTestPolicyCmpt == null)
-                                throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
-
-                            refreshTreeAndDetailArea();
-                            selectInTreeByObject(newTestPolicyCmpt, true);
+                    ITestPolicyCmptRelation newRelation = null;
+                    // add a new child based on the selected relation and selected target
+                    for (int i = 0; i < finalProductCmptQualifiedNames.length; i++) {
+                        newRelation = relationType.getParentTestPolicyCmpt().addTestPcTypeRelation(
+                                relationType.getTestPolicyCmptTypeParam(), finalProductCmptQualifiedNames[i],
+                                targetName);
+                        ITestPolicyCmpt newTestPolicyCmpt = newRelation.findTarget();
+                        if (newTestPolicyCmpt == null) {
+                            throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
                         }
                     }
+
+                    refreshTreeAndDetailArea();
+                    selectInTreeByObject(newRelation, true);
+                } else {
+                    ITestPolicyCmpt newTestPolicyCmpt = null;
+                    // composition relatation will be added
+                    for (int i = 0; i < finalProductCmptQualifiedNames.length; i++) {
+                        ITestPolicyCmptRelation newRelation = relationType.getParentTestPolicyCmpt()
+                                .addTestPcTypeRelation(relationType.getTestPolicyCmptTypeParam(),
+                                        finalProductCmptQualifiedNames[i], ""); //$NON-NLS-1$
+                        if (newRelation == null)
+                            throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
+
+                        newTestPolicyCmpt = newRelation.findTarget();
+                        if (newTestPolicyCmpt == null)
+                            throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
+                    }
+                    refreshTreeAndDetailArea();
+                    selectInTreeByObject(newTestPolicyCmpt, true);
+                }
+            }
             };
         
         Runnable runnableWithBusyIndicator = new Runnable() {
@@ -1652,16 +1660,16 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 					// ignored, the validation shows the unknown type failure message
 					return;
 				}
-				String productCmptQualifiedName = ""; //$NON-NLS-1$
+				String productCmptQualifiedNames[] = null;
 				if (testTypeParam.isRequiresProductCmpt()){
-					productCmptQualifiedName = selectProductCmptDialog(testTypeParam.getPolicyCmptType(), testPolicyCmpt.findProductCmpt());
-					if (productCmptQualifiedName == null)
+					productCmptQualifiedNames = selectProductCmptsDialog(testTypeParam.getPolicyCmptType(), testPolicyCmpt.findProductCmpt(), false);
+					if (productCmptQualifiedNames == null || productCmptQualifiedNames.length == 0)
 						// chancel
 						return;
 				}
-				testPolicyCmpt.setProductCmpt(productCmptQualifiedName);
+				testPolicyCmpt.setProductCmpt(productCmptQualifiedNames[0]);
 				testPolicyCmpt.setName(
-						testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, StringUtil.unqualifiedName(productCmptQualifiedName)));
+						testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, StringUtil.unqualifiedName(productCmptQualifiedNames[0])));
                 
                 boolean updateTestAttrValuesWithDefault = MessageDialog
                         .openQuestion(
@@ -1775,14 +1783,19 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * 
      * @throws CoreException If an error occurs
      */
-	private String selectProductCmptDialog(String qualifiedTypeName, IProductCmpt productCmptParent) throws CoreException {
+	private String[] selectProductCmptsDialog(String qualifiedTypeName, IProductCmpt productCmptParent, boolean multiSelectiion) throws CoreException {
 	    PdObjectSelectionDialog dialog = new PdObjectSelectionDialog(getShell(), Messages.TestCaseSection_DialogSelectProductCmpt_Title, 
         		Messages.TestCaseSection_DialogSelectProductCmpt_Description);
         dialog.setElements(getProductCmptObjects(qualifiedTypeName));
+        dialog.setMultipleSelection(multiSelectiion);
         if (dialog.open()==Window.OK) {
             if (dialog.getResult().length>0) {
-            	IProductCmpt productCmpt = (IProductCmpt) dialog.getResult()[0];
-        		return productCmpt.getQualifiedName();
+            	Object[] productCmpts = dialog.getResult();
+        		String[] qualifedNames = new String[productCmpts.length];
+                for (int i = 0; i < productCmpts.length; i++) {
+                    qualifedNames[i] = ((IProductCmpt)productCmpts[i]).getQualifiedName();
+                }
+                return qualifedNames;
             }
         }
 	    return null;

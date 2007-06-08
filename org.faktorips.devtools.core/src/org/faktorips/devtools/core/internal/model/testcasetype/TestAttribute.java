@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.core.internal.model.testcasetype;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -28,6 +31,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
@@ -100,19 +104,49 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
             return null;
         }
         IPolicyCmptType pcType = ((TestPolicyCmptTypeParameter)getParent()).findPolicyCmptType();
+        if (pcType == null){
+            return null;
+        }
+        ITypeHierarchy supertypeHierarchy = pcType.getSupertypeHierarchy();
+        IAttribute[] attributes = supertypeHierarchy.getAllAttributes(pcType);
+        for (int i = 0; i < attributes.length; i++) {
+            if (attributes[i].getName().equals(attribute)) {
+                return attributes[i];
+            }
+        }
         
-        while (pcType != null){
-            IAttribute[] attributes = pcType.getAttributes();
+        // not found search in subtype hierarchy
+        return findAttributeInSubtypehierarchy();
+    }
+
+    private IAttribute findAttributeInSubtypehierarchy() throws CoreException {
+        if (StringUtils.isEmpty(attribute)) {
+            return null;
+        }
+        IPolicyCmptType pcType = ((TestPolicyCmptTypeParameter)getParent()).findPolicyCmptType();
+
+        if (pcType != null) {
+            IAttribute[] attributes;
+            List allAttributes = new ArrayList();
+            ITypeHierarchy subtypeHierarchy = pcType.getSubtypeHierarchy();
+            IPolicyCmptType[] allSubtypes = subtypeHierarchy.getAllSubtypes(pcType);
+            for (int i = 0; i < allSubtypes.length; i++) {
+                attributes = allSubtypes[i].getAttributes();
+                for (int j = 0; j < attributes.length; j++) {
+                    allAttributes.add(attributes[j]);
+                }
+            }
+            attributes = (IAttribute[])allAttributes.toArray(new IAttribute[allAttributes.size()]);
+
             for (int i = 0; i < attributes.length; i++) {
                 if (attributes[i].getName().equals(attribute)) {
                     return attributes[i];
                 }
             }
-            pcType = pcType.findSupertype();
         }
         return null;
-	}
-
+    }
+    
     /**
      * {@inheritDoc}
      */

@@ -132,6 +132,28 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertEquals(attr1, testAttribute.findAttribute());
     }
 
+    public void testFindAttributeInSubtype() throws Exception{
+        IPolicyCmptType policyCmptTypeSuper = newPolicyCmptType(project, "policyCmptSuper");
+        IAttribute attr1 = policyCmptTypeSuper.newAttribute();
+        attr1.setName("attribute1");
+        IAttribute attr2 = policyCmptTypeSuper.newAttribute();
+        attr2.setName("attribute2");
+        IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
+        IAttribute attr3 = policyCmptType.newAttribute();
+        attr3.setName("attribute3");
+        IAttribute attr4 = policyCmptType.newAttribute();
+        attr4.setName("attribute4");
+        policyCmptType.setSupertype(policyCmptTypeSuper.getQualifiedName());
+        
+        ((ITestPolicyCmptTypeParameter)testAttribute.getParent()).setPolicyCmptType("policyCmpt");
+        
+        ITestPolicyCmptTypeParameter cmptTypeParameter = (ITestPolicyCmptTypeParameter)testAttribute.getParent();
+        cmptTypeParameter.setPolicyCmptType(policyCmptTypeSuper.getQualifiedName());
+        
+        testAttribute.setAttribute("attribute4");
+        assertEquals(attr4, testAttribute.findAttribute());
+    }
+    
     public void testValidateAttributeNotFound() throws Exception{
         IPolicyCmptType pct = newPolicyCmptType(project, "policyCmptType");
         IAttribute attr = pct.newAttribute();
