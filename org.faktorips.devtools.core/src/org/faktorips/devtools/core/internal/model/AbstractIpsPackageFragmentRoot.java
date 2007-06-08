@@ -170,5 +170,49 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
         }
     }
 
-    
+    /**
+     * Searches all product components that are based on the given product component type (either
+     * directly or because they are based on a subtype of the given type) and adds them to the
+     * result. If productCmptType is <code>null</code>, returns all product components found in
+     * the fragment root.
+     * 
+     * @param pcTypeName The product component type product components are searched for.
+     * @param includeSubtypes If <code>true</code> is passed also product component that are based
+     *            on subtypes of the given policy component are returned, otherwise only product
+     *            components that are directly based on the given type are returned.
+     * @param result List in which the product components being found are stored in.
+     */
+    public void findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubytpes, List result)
+            throws CoreException {
+        List allCmpts = new ArrayList(100);
+        findIpsObjects(IpsObjectType.PRODUCT_CMPT, allCmpts);
+        for (Iterator iter = allCmpts.iterator(); iter.hasNext();) {
+            IProductCmpt productCmpt = (IProductCmpt)iter.next();
+            if (productCmptType == null) {
+                result.add(productCmpt);
+                continue;
+            }
+            IProductCmptType productCmptTypeFound = productCmpt.findProductCmptType();
+            if (productCmptTypeFound == null) {
+                continue;
+            }
+            IPolicyCmptType policyCmptyTypeOfFoundProduct = productCmptTypeFound.findPolicyCmptyType();
+            IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptyType();
+            if (policyCmptType == null || policyCmptyTypeOfFoundProduct == null) {
+                continue;
+            }
+
+            if (includeSubytpes){
+                if (policyCmptyTypeOfFoundProduct.isSubtypeOrSameType(policyCmptType)) {
+                    result.add(productCmpt);
+                    continue;
+                }
+            } else {
+                if (policyCmptyTypeOfFoundProduct.equals(policyCmptType)){
+                    result.add(productCmpt);
+                    continue;
+                }
+            }
+        }
+    }
 }

@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 
@@ -34,9 +35,9 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  */
 public class ProductCmptRefControl extends IpsObjectRefControl {
 
-    private String qualifiedTypeName;
     private boolean includeCmptsForSubtypes = true;
     private IProductCmpt[] toExclude = new IProductCmpt[0];
+    private IProductCmptType productCmptType;
     
     
     public ProductCmptRefControl(
@@ -47,14 +48,14 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
     }
     
     /**
-     * @param qPcTypeNmae The policy component type for which product components should be selectable.
+     * @param qPcTypeNmae The product component type for which product components should be selectable.
      * @param includeCmptsForSubtypes <code>true</code> if also product components for subtypes should be selectable.
      */
-    public void setPolicyCmptType(String qTypeName, boolean includeCmptsForSubtypes) {
-        this.qualifiedTypeName = qTypeName;
+    public void setProductCmptType(IProductCmptType productCmptType, boolean includeCmptsForSubtypes) {
+        this.productCmptType = productCmptType;
         this.includeCmptsForSubtypes = includeCmptsForSubtypes;
     }
-
+    
     /** 
      * {@inheritDoc}
      */
@@ -62,7 +63,8 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
         if (getIpsProject()==null) {
             return new IIpsObject[0];
         }
-    	IProductCmpt[] cmpts = getIpsProject().findProductCmpts(qualifiedTypeName, includeCmptsForSubtypes);
+
+        IProductCmpt[] cmpts = getIpsProject().findAllProductCmpts(productCmptType, includeCmptsForSubtypes);
 
     	List cmptList = new ArrayList();
     	cmptList.addAll(Arrays.asList(cmpts));

@@ -1041,6 +1041,31 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
 	/**
+     * {@inheritDoc}
+     */
+    public IProductCmpt[] findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubtypes) throws CoreException {
+        List result = new ArrayList();
+        // find product components in this project
+        findAllProductCmpts(this, productCmptType, includeSubtypes, result);
+        // find product components in all referenced projects
+        IIpsProject[] referencedIpsProjects = getReferencedIpsProjects();
+        for (int i = 0; i < referencedIpsProjects.length; i++) {
+            findAllProductCmpts(referencedIpsProjects[i], productCmptType, includeSubtypes, result);
+        }
+        return (IProductCmpt[]) result.toArray(new IProductCmpt[result.size()]);
+    }
+
+    /*
+     * @see this{@link #findAllProductCmpts(IProductCmptType, boolean)}
+     */
+    private void findAllProductCmpts(IIpsProject ipsProject, IProductCmptType productCmptType, boolean includeSubytpes, List result) throws CoreException {
+        IIpsPackageFragmentRoot[] roots = ipsProject.getIpsPackageFragmentRoots();
+        for (int i = 0; i < roots.length; i++) {
+            ((AbstractIpsPackageFragmentRoot)roots[i]).findAllProductCmpts(productCmptType, includeSubytpes, result);
+        }
+    }
+    
+    /**
 	 * {@inheritDoc}
 	 */
     public IProductCmpt[] findProductCmpts(String qualifiedTypeName, boolean includeSubytpes)
@@ -1052,6 +1077,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             ((AbstractIpsPackageFragmentRoot)roots[i]).findProductCmpts(qualifiedTypeName,
                 includeSubytpes, result);
         }
+        
         IProductCmpt[] array = new IProductCmpt[result.size()];
         result.toArray(array);
         return array;

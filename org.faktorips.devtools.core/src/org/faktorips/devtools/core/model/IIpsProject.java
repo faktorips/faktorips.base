@@ -385,6 +385,19 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IIpsObject[] findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase) throws CoreException;
     
     /**
+     * Returns all product components that are based on the given product component type (either
+     * directly or because they are based on a subtype of the given type) in this and all referenced
+     * projects. If productCmptType is null, the method returns all product components found on the
+     * classpath.
+     * 
+     * @param pcTypeName The product components type product component will be searched for.
+     * @param includeSubtypes If <code>true</code> is passed also product component that are based
+     *            on subtypes of the given product components type are returned, otherwise only
+     *            product components that are directly based on the given type are returned.
+     */
+    public IProductCmpt[] findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubtypes) throws CoreException;
+    
+    /**
      * Returns all product components that are based on the given policy component type
      * (either directly or because they are based on a subtype of the given
      * type). If qualifiedTypeName is null, the method returns all product
@@ -394,6 +407,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @param includeSubtypes If <code>true</code> is passed also product component that are based on subtypes
      * of the given policy component are returned, otherwise only product components that are directly based
      * on the given type are returned.
+     * 
+     * @deprecated use IIpsProject#findAllProductCmpts(IProductCmptType, boolean)
      */
     public IProductCmpt[] findProductCmpts(String qualifiedPcTypeName, boolean includeSubtypes) throws CoreException;
     

@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
@@ -88,11 +87,8 @@ public class RelationEditDialog extends IpsPartEditDialog {
             IProductCmptTypeRelation typeRelation = relation.findProductCmptTypeRelation();
             if (typeRelation != null) {
                 IProductCmptType productCmptType = typeRelation.findTarget();
-                if (productCmptType!=null) {
-                    IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptyType();
-                    if (policyCmptType!=null) {
-                        targetControl.setPolicyCmptType(policyCmptType.getQualifiedName(), true);
-                    }
+                if (productCmptType != null) {
+                    targetControl.setProductCmptType(productCmptType, true);
                 }
             }
         } catch (CoreException e) {
