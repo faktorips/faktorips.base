@@ -61,7 +61,7 @@ public class AttributeElementListSelectionDialog extends ElementListSelectionDia
     protected Control createDialogArea(Composite parent) {
         Composite contents = (Composite) super.createDialogArea(parent);
 
-        checkbox = toolkit.createCheckbox(contents, "Attribute der Unterklassen anzeigen");
+        checkbox = toolkit.createCheckbox(contents, Messages.AttributeElementListSelectionDialog_ShowAttributesOfSubclasses);
         checkbox.setBackground(contents.getBackground());
         checkbox.getButton().setBackground(contents.getBackground());
         checkbox.setChecked(showSubtypes);

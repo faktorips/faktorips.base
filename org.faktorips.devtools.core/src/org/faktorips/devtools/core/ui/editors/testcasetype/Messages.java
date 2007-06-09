@@ -33,6 +33,7 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
+    public static String AttributeElementListSelectionDialog_ShowAttributesOfSubclasses;
     public static String TestCaseTypeEditor_PageName;
     public static String TestCaseTypeEditor_SectionTitle_Structure;
     public static String TestCaseTypeEditor_SectionTitle_Details;

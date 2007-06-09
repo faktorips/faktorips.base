@@ -39,7 +39,7 @@ public class AttributeLabelProvider extends DefaultLabelProvider {
             return super.getText(element);
         }
         IIpsElement policyCmptType = attribute.getParent();
-        return super.getText(element) + " - " + policyCmptType.getName();
+        return super.getText(element) + " - " + policyCmptType.getName(); //$NON-NLS-1$
     }
 
     /**
