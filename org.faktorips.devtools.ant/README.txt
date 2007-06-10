@@ -14,3 +14,4 @@ Für den AntBuilder ist die ant-tasks.jar.launch Konfiguration unter /.externalT
 deaktiviert. Er kann unter Project Properties, Builder aktiviert werden.
 
 In der Datei buildExtraJar.xml muss die Ant Property eclipsehome auf die lokale Umgebung angepass werden.
+..
