@@ -120,7 +120,7 @@ public class AttributeElementListSelectionDialog extends ElementListSelectionDia
                 }
             }
         }
-        return (IAttribute[]) attributesInDialog.toArray(new IAttribute[attributes.length]);
+        return (IAttribute[]) attributesInDialog.toArray(new IAttribute[attributesInDialog.size()]);
     }
     
     /*
