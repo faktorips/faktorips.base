@@ -75,20 +75,14 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
         IFile file = (IFile)ipsSrcFile.getEnclosingResource();
         try {
             IFile copy = getXmlContentFile(ipsSrcFile);
-            IFolder folder = (IFolder)copy.getParent();
-            if (!folder.exists()) {
-                createFolder(folder);
-            }
-            if (copy.exists()) {
+            boolean newlyCreated = createFileIfNotThere(copy);
+            if (!newlyCreated) {
                 String currentContent = getContentAsString(copy.getContents(), charSet);
                 if(!newContent.equals(currentContent)){
                     copy.setContents(convertContentAsStream(newContent, charSet), true, true, null);
                 }
             } else {
-                copy.create(convertContentAsStream(newContent, charSet), true, null);
-            }
-            if(buildsDerivedArtefacts()){
-                copy.setDerived(true);
+                copy.setContents(convertContentAsStream(newContent, charSet), true, false, null);
             }
         } catch (CoreException e) {
             throw new CoreException(new IpsStatus("Unable to create a content file for the file: " //$NON-NLS-1$
@@ -119,13 +113,6 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
         if (file.exists()) {
             file.delete(true, null);
         }
-    }
-
-    private void createFolder(IFolder folder) throws CoreException {
-        while (!folder.getParent().exists()) {
-            createFolder((IFolder)folder.getParent());
-        }
-        folder.create(true, true, null);
     }
 
     /**

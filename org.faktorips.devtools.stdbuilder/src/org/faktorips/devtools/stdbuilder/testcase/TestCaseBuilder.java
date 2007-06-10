@@ -118,6 +118,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     
     /**
      * {@inheritDoc}
+     * @throws IOException 
      */
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         ArgumentCheck.isTrue(ipsSrcFile.getIpsObjectType() == IpsObjectType.TEST_CASE);
@@ -133,29 +134,31 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             String encoding = ipsSrcFile.getIpsProject()==null?"UTF-8":testCase.getIpsProject().getXmlFileCharset(); //$NON-NLS-1$
             content = XmlUtil.nodeToString(element, encoding);
             is = convertContentAsStream(content, ipsSrcFile.getIpsProject().getProject().getDefaultCharset());
+
+            IFile file = getXmlContentFile(ipsSrcFile);
+            boolean newlyCreated = createFileIfNotThere(file);
+            
+            if(newlyCreated){
+                file.setContents(is, true, false, null);
+            }else{
+                String charSet = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
+                String currentContent = getContentAsString(file.getContents(), charSet);
+                if(!content.equals(currentContent)){
+                    file.setContents(is, true, true, null);
+                }
+            }
         } catch (TransformerException e) {
             throw new RuntimeException(e); 
             // This is a programing error, rethrow as runtime exception
         }
-
-        IFile file = getXmlContentFile(ipsSrcFile);
-        IFolder folder = (IFolder)file.getParent();
-        if (!folder.exists()) {
-            createFolder(folder);
-        }
-        
-        if (!file.exists()) {
-            file.create(is, true, null);
-        }else{
-            IFile copy = getXmlContentFile(ipsSrcFile);
-            String charSet = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
-            String currentContent = getContentAsString(copy.getContents(), charSet);
-            if(!content.equals(currentContent)){
-                file.setContents(is, true, true, null);
+        finally{
+            if(is != null){
+                try {
+                    is.close();
+                } catch (Exception e) {
+                    //nothing to do
+                }
             }
-        }
-        if(buildsDerivedArtefacts()){
-            file.setDerived(true);
         }
     }
 
@@ -186,16 +189,6 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             throw new CoreException(new IpsStatus(e));
         }
     }
-    
-    /*
-     * Creates a folder if not existes.
-     */
-    private void createFolder(IFolder folder) throws CoreException {
-        while (!folder.getParent().exists()) {
-            createFolder((IFolder)folder.getParent());
-        }
-        folder.create(true, true, null);
-    }   
     
     /*
      * Returns the package folder for the given ips sourcefile.

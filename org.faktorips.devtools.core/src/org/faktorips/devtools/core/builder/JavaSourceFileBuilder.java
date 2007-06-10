@@ -47,7 +47,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
@@ -656,9 +655,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         String formattedContent = format(content);
 
         boolean newFileCreated = createFileIfNotThere(javaFile);
-        if(buildsDerivedArtefacts()){
-            javaFile.setDerived(true);
-        }
 
         if (!newFileCreated) {
             String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
@@ -922,32 +918,4 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    private boolean createFileIfNotThere(IFile file) throws CoreException {
-
-        if (!file.exists()) {
-            IContainer parent = file.getParent();
-
-            if (parent instanceof IFolder) {
-                createFolder((IFolder)parent);
-            }
-            file.create(new ByteArrayInputStream("".getBytes()), true, null); //$NON-NLS-1$
-            return true;
-        }
-
-        return false;
-    }
-
-    private void createFolder(IFolder folder) throws CoreException {
-
-        if (folder == null) {
-            return;
-        }
-        if (!folder.exists()) {
-            IContainer parent = folder.getParent();
-            if (parent instanceof IFolder) {
-                createFolder((IFolder)parent);
-            }
-            folder.create(true, true, null);
-        }
-    }
 }

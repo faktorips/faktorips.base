@@ -162,10 +162,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             if (tocFile==null) {
                 continue;
             }
-            IFolder tocFolder = (IFolder)tocFile.getParent();
-            if (!tocFolder.exists()) {
-                createFolder(tocFolder);
-            }
+            createFolderIfNotThere((IFolder)tocFile.getParent());
         }
     }
 
@@ -209,20 +206,16 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         } catch (TransformerException e) {
             throw new CoreException(new IpsStatus("Error transforming product component registry's table of contents to xml.", e)); //$NON-NLS-1$
         }
-        InputStream is;
-        try {
-            is = new ByteArrayInputStream(xml.getBytes(encoding));
-        } catch (UnsupportedEncodingException e1) {
-            throw new CoreException(new IpsStatus(e1));
-        }
-        if (tocFile.exists()) {
+        
+        boolean newlyCreated = createFileIfNotThere(tocFile);
+        if (!newlyCreated) {
             replaceTocFileIfContentHasChanged(root.getIpsProject(), tocFile, xml);
         } else {
-            if (!tocFile.getParent().exists()) {
-                createFolder((IFolder)tocFile.getParent());
+            try {
+                tocFile.setContents(new ByteArrayInputStream(xml.getBytes(encoding)), true, true, null);
+            } catch (UnsupportedEncodingException e1) {
+                throw new CoreException(new IpsStatus(e1));
             }
-            tocFile.create(is, true, null);
-            tocFile.setDerived(true);
         }
 	}
     
@@ -292,14 +285,6 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 		}
 		return toc;
 	}
-
-    private void createFolder(IFolder folder) throws CoreException {
-        while (!folder.getParent().exists()) {
-            createFolder((IFolder)folder.getParent());
-        }
-        folder.create(true, true, null);
-        folder.setDerived(true);
-    }
 
     /**
      * {@inheritDoc}
