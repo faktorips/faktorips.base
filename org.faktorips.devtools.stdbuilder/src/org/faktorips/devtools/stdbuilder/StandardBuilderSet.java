@@ -56,6 +56,7 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.runtime.TableFunctionExecution;
 import org.faktorips.runtime.internal.MethodNames;
+import org.osgi.framework.Version;
 
 /**
  * A IpsArtefactBuilderSet implementation that assembles the standard FaktorIPS artefact builders.
@@ -328,6 +329,13 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * Returns the standard builder plugins version.
      */
     public String getVersion() {
-        return (String)StdBuilderPlugin.getDefault().getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION);
+        Version version = Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION));
+        StringBuffer buf = new StringBuffer();
+        buf.append(version.getMajor());
+        buf.append('.');
+        buf.append(version.getMinor());
+        buf.append('.');
+        buf.append(version.getMicro());
+        return buf.toString();
     }
 }
