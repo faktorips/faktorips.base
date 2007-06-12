@@ -326,7 +326,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     /**
-     * Returns the standard builder plugins version.
+     * Returns the standard builder plugin version in the format [major.minor.mico]. The version qualifier is not included
+     * in the version string.
      */
     public String getVersion() {
         Version version = Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION));

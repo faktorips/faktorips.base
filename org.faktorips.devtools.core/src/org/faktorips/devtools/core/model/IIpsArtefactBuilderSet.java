@@ -156,7 +156,8 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 	public String getLabel();
 
     /**
-     * Returns the version of this builder set.
+     * This version indicates the version of the generated code. That means changes to the generator that do not
+     * change the generated code a not reflected in this version identifier.
      */
     public String getVersion();
     
