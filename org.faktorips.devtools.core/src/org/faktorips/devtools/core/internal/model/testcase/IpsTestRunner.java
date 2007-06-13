@@ -858,8 +858,6 @@ public class IpsTestRunner implements IIpsTestRunner {
 	} 
 	
 	private void notifyTestRunEnded(String elapsedTime) {
-        testRunnerMonitor.done();
-        job.done(new IpsStatus(IStatus.OK, "", null)); //$NON-NLS-1$
         List copy = new ArrayList(fIpsTestRunListeners); 
         for (Iterator iter = copy.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
