@@ -73,4 +73,9 @@ public class NewProductCmptWizard extends NewIpsObjectWizard {
         generation.fixDifferences(generation.computeDeltaToPolicyCmptType());
     }
 
+    public void setProductCmpt(IProductCmpt productCmpt) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

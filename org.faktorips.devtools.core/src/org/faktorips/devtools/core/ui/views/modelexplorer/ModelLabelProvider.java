@@ -1,12 +1,9 @@
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -129,9 +126,8 @@ public class ModelLabelProvider implements ILabelProvider {
 
 	public void dispose() {
         Set entries = (Set)imagesByDescriptor.entrySet();
-        List entryList = new ArrayList(entries);
-        for (Iterator it = entryList.iterator(); it.hasNext();) {
-            Map.Entry entry = (Entry)it.next();
+        for (Iterator it=entries.iterator(); it.hasNext(); ) {
+            Map.Entry entry = (Map.Entry)it.next();
             imagesByDescriptor.remove(entry.getKey());
             ((Image)entry.getValue()).dispose();
         }
