@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -36,6 +37,7 @@ import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -160,8 +162,14 @@ public class DefaultsAndRangesSection extends IpsSection {
         }
     }
 
-    private void createEditControlForDefaultValue(IConfigElement element, ValueDatatype dataType, IpsPartUIController controller) {
-        toolkit.createFormLabel(rootPane, StringUtils.capitalise(element.getName()));
+    private void createEditControlForDefaultValue(IConfigElement element, ValueDatatype dataType, IpsPartUIController controller) throws CoreException {
+        Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalise(element.getName()));
+        // use the description of the attribute as tooltip 
+        IAttribute attribute = element.findPcTypeAttribute();
+        if (attribute != null) {
+            label.setToolTipText(attribute.getDescription());
+        }
+        
         toolkit.createFormLabel(rootPane, Messages.PolicyAttributeEditDialog_defaultValue);
 
         ValueDatatypeControlFactory ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(dataType);

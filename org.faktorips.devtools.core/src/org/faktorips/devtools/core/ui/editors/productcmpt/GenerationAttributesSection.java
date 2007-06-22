@@ -30,6 +30,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -198,22 +199,23 @@ public class GenerationAttributesSection extends IpsSection {
 			return;
 		}
 		
-		toolkit.createLabel(rootPane, StringUtils.capitalise(toDisplay.getPcTypeAttribute()));	
-		
+		Label label = toolkit.createLabel(rootPane, StringUtils.capitalise(toDisplay.getPcTypeAttribute()));	
+        
 		IpsPartUIController controller = new IpsPartUIController(toDisplay);
 		uiMasterController.add(controller);
 	
 		try {
 			IAttribute attr = toDisplay.findPcTypeAttribute();
 			Datatype datatype = null;
+            //  use description of attribute as tooltip
 			if (attr != null) {
+				label.setToolTipText(attr.getDescription());
 				datatype = attr.findDatatype();
 			}
 			ValueDatatypeControlFactory ctrlFactory;
 			if (datatype != null && datatype.isValueDatatype()) {
 				ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory((ValueDatatype)datatype);
-			}
-			else {
+			} else {
 				ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(null);
 			}
 			

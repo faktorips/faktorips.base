@@ -34,6 +34,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.product.ConfigElement;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -138,12 +139,17 @@ public class FormulasSection extends IpsSection {
             noFormulasLabel = null;
         }
 	
+        // create table content usages fields
         for (int i = 0; i < usages.length; i++) {
             try {
                 ITableStructureUsage tsu = findTableStructureUsage(usages[i].getStructureUsage());
                 
                 // create label here to avoid lost label in case of exception
-                toolkit.createFormLabel(rootPane, StringUtils.capitalise(usages[i].getStructureUsage()));
+                Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalise(usages[i].getStructureUsage()));
+                // use description of table structure usage as tooltip
+                if (tsu != null){
+                    label.setToolTipText(tsu.getDescription());
+                }
                 
                 TableContentsUsageRefControl tcuControl = new TableContentsUsageRefControl(generation.getIpsProject(), rootPane, toolkit, tsu);
                 ctrl.add(new TextButtonField(tcuControl), usages[i], ITableContentUsage.PROPERTY_TABLE_CONTENT);
@@ -155,8 +161,12 @@ public class FormulasSection extends IpsSection {
             }
         }
 
+        // create formula edit fields
         for (int i = 0; i < elements.length; i++) {
-			toolkit.createFormLabel(rootPane, StringUtils.capitalise(elements[i].getName()));
+			Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalise(elements[i].getName()));
+             // use description of formula attribute as tooltip
+            label.setToolTipText(elements[i].getDescription());
+            
             FormulaEditControl evc = new FormulaEditControl(rootPane, toolkit, elements[i], this.getShell(), this);
             ctrl.add(new TextField(evc.getTextControl()), elements[i], ConfigElement.PROPERTY_VALUE);
             addFocusControl(evc.getTextControl());
@@ -166,6 +176,10 @@ public class FormulasSection extends IpsSection {
                 FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(elements[i]);
                 ContentAssistHandler.createHandlerForText(evc.getTextControl(), CompletionUtil
                         .createContentAssistant(completionProcessor));
+                IAttribute attribute = elements[i].findPcTypeAttribute();
+                if (attribute != null){
+                    label.setToolTipText(attribute.getDescription());
+                }
 			} catch (CoreException e) {
 				IpsPlugin.logAndShowErrorDialog(e);
 			}
