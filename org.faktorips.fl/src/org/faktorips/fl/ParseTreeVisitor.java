@@ -479,6 +479,9 @@ class ParseTreeVisitor implements FlParserVisitor {
                         argResults[i].getDatatype(), functionDatatype, argResults[i].getCodeFragment());
                 convertedArgs[i] = new CompilationResultImpl(fragment, functionDatatype);
                 convertedArgs[i].addMessages(argResults[i].getMessages());
+                if (argResults[i] instanceof CompilationResultImpl){
+                    convertedArgs[i].addIdentifiersUsed(((CompilationResultImpl)argResults[i]).getIdentifiersUsedAsSet());
+                }
             }
         }
         return convertedArgs;

@@ -49,8 +49,11 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -609,6 +612,45 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         // check with WENN formula and operation with implicit casting 
         // (e.g. the first argument of a formula is an enum type)
         configElement.setValue("WENN(testParam = TestEnumType.1;1;10)");
+        identifierInFormula = Arrays.asList(configElement.getParameterIdentifiersUsedInFormula());
+        assertEquals(1, identifierInFormula.size());   
+        assertTrue(identifierInFormula.contains("testParam"));
+        
+        // check table access formula that matches implicit conversions 
+        // e.g. TableUsage.value1(key1, 1), key1 is Integer
+        
+        ITableStructure tableStructure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Table");
+        IColumn col = tableStructure.newColumn();
+        col.setDatatype("Integer");
+        col.setName("column1");
+        col = tableStructure.newColumn();
+        col.setDatatype("Integer");
+        col.setName("column2");
+        col = tableStructure.newColumn();
+        col.setDatatype("Integer");
+        col.setName("column3");        
+        IUniqueKey key = tableStructure.newUniqueKey();
+        key.addKeyItem("column1");
+        key.addKeyItem("column2");
+        
+        ITableContents tableContents = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "TableContents");
+        tableContents.setTableStructure(tableStructure.getQualifiedName());
+        
+        ITableStructureUsage structureUsage = policyCmptType.newTableStructureUsage();
+        structureUsage.setRoleName("Table");
+        structureUsage.addTableStructure(tableStructure.getQualifiedName());
+        productCmpt.fixAllDifferencesToModel();
+        
+        ITableContentUsage tableContentUsage = ((IProductCmptGeneration)configElement.getParent()).newTableContentUsage();
+        tableContentUsage.setStructureUsage("Table");
+        tableContentUsage.setTableContentName("TableContents");
+        
+        params = new Parameter[1];
+        params[0] = new Parameter(0, "testParam", Datatype.INTEGER.getQualifiedName());
+        attribute.setFormulaParameters(params);
+
+        configElement.setValue("Table.column3(testParam;1)");
+
         identifierInFormula = Arrays.asList(configElement.getParameterIdentifiersUsedInFormula());
         assertEquals(1, identifierInFormula.size());   
         assertTrue(identifierInFormula.contains("testParam"));
