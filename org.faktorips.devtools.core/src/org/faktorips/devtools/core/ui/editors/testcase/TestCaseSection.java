@@ -1535,31 +1535,28 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
                     ITestPolicyCmptRelation newRelation = null;
                     // add a new child based on the selected relation and selected target
-                    for (int i = 0; i < finalProductCmptQualifiedNames.length; i++) {
-                        newRelation = relationType.getParentTestPolicyCmpt().addTestPcTypeRelation(
-                                relationType.getTestPolicyCmptTypeParam(), finalProductCmptQualifiedNames[i],
-                                targetName);
-                        ITestPolicyCmpt newTestPolicyCmpt = newRelation.findTarget();
-                        if (newTestPolicyCmpt == null) {
-                            throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
+                    if (finalProductCmptQualifiedNames != null){
+                        for (int i = 0; i < finalProductCmptQualifiedNames.length; i++) {
+                            newRelation = addNewRelation(relationType, finalProductCmptQualifiedNames[i], targetName);
                         }
+                    } else {
+                        newRelation = addNewRelation(relationType, null, targetName);
                     }
-
                     refreshTreeAndDetailArea();
                     selectInTreeByObject(newRelation, true);
                 } else {
-                    ITestPolicyCmpt newTestPolicyCmpt = null;
+                    ITestPolicyCmptRelation newRelation = null;
                     // composition relatation will be added
-                    for (int i = 0; i < finalProductCmptQualifiedNames.length; i++) {
-                        ITestPolicyCmptRelation newRelation = relationType.getParentTestPolicyCmpt()
-                                .addTestPcTypeRelation(relationType.getTestPolicyCmptTypeParam(),
-                                        finalProductCmptQualifiedNames[i], ""); //$NON-NLS-1$
-                        if (newRelation == null)
-                            throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
-
-                        newTestPolicyCmpt = newRelation.findTarget();
-                        if (newTestPolicyCmpt == null)
-                            throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
+                    if (finalProductCmptQualifiedNames != null){
+                        for (int i = 0; i < finalProductCmptQualifiedNames.length; i++) {
+                            newRelation = addNewRelation(relationType, finalProductCmptQualifiedNames[i], ""); //$NON-NLS-1$
+                        }
+                    } else {
+                        newRelation = addNewRelation(relationType, null, ""); //$NON-NLS-1$
+                    }
+                    ITestPolicyCmpt newTestPolicyCmpt = newRelation.findTarget();
+                    if (newTestPolicyCmpt == null){
+                        throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
                     }
                     refreshTreeAndDetailArea();
                     selectInTreeByObject(newTestPolicyCmpt, true);
@@ -1579,6 +1576,21 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         BusyIndicator.showWhile(getDisplay(), runnableWithBusyIndicator);
 	}
 	
+    /*
+     * Adds a new relation target to the given relation type
+     */
+    private ITestPolicyCmptRelation addNewRelation(TestCaseTypeRelation relationType,
+            String productCmptQualifiedName,
+            String targetName) throws CoreException {
+        ITestPolicyCmptRelation newRelation = relationType.getParentTestPolicyCmpt().addTestPcTypeRelation(
+                relationType.getTestPolicyCmptTypeParam(), productCmptQualifiedName, targetName);
+        ITestPolicyCmpt newTestPolicyCmpt = newRelation.findTarget();
+        if (newTestPolicyCmpt == null) {
+            throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
+        }
+        return newRelation;
+    }
+
     /*
      * Returns the next possible tree item after deleting of the given object
      */
