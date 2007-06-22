@@ -18,19 +18,21 @@
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.devtools.core.internal.model.tablestructure.Column;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
-
 
 /**
  *
@@ -42,8 +44,7 @@ public class ColumnsSection extends SimpleIpsPartsSection {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection#createIpsPartsComposite(org.eclipse.swt.widgets.Composite, org.faktorips.devtools.core.ui.UIToolkit)
+     * {@inheritDoc}
      */
     protected IpsPartsComposite createIpsPartsComposite(Composite parent,
             UIToolkit toolkit) {
@@ -60,33 +61,36 @@ public class ColumnsSection extends SimpleIpsPartsSection {
             return (ITableStructure)getIpsObject();
         }
 
-        /** 
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createContentProvider()
+        /**
+         * {@inheritDoc}
          */
         protected IStructuredContentProvider createContentProvider() {
             return new ContentProvider();
         }
 
-        /** 
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#newIpsPart()
+        /**
+         * {@inheritDoc}
+         */
+        protected ILabelProvider createLabelProvider() {
+            return new ColumnLabelProvider();
+        }
+        
+        /**
+         * {@inheritDoc}
          */
         protected IIpsObjectPart newIpsPart() {
             return getTable().newColumn();
         }
 
-        /** 
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createEditDialog(org.faktorips.devtools.core.model.IIpsObjectPart, org.eclipse.swt.widgets.Shell)
+        /**
+         * {@inheritDoc}
          */
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
             return new ColumnEditDialog((IColumn)part, shell);
         }
         
         /**
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#moveParts(int[], boolean)
+         * {@inheritDoc}
          */
         protected int[] moveParts(int[] indexes, boolean up) {
             return getTable().moveColumns(indexes, up);
@@ -105,5 +109,11 @@ public class ColumnsSection extends SimpleIpsPartsSection {
     	}
     }
 
-
+    private class ColumnLabelProvider extends DefaultLabelProvider {
+        public String getText(Object element) {
+            String text = super.getText(element);
+            IColumn column = (Column)element;
+            return text + " : " + column.getDatatype(); //$NON-NLS-1$
+        }
+    }
 }

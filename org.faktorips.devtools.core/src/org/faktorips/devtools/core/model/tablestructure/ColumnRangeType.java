@@ -38,9 +38,9 @@ public class ColumnRangeType extends DefaultEnumValue{
     
     static{
         enumType = new DefaultEnumType("ColumnRangeType", ColumnRangeType.class); //$NON-NLS-1$
-        TWO_COLUMN_RANGE = new ColumnRangeType(enumType, "twoColumn", "Two columns"); //$NON-NLS-1$ //$NON-NLS-2$
-        ONE_COLUMN_RANGE_FROM = new ColumnRangeType(enumType, "oneColumnFrom", "From column only"); //$NON-NLS-1$ //$NON-NLS-2$
-        ONE_COLUMN_RANGE_TO = new ColumnRangeType(enumType, "oneColumnTo", "To column only"); //$NON-NLS-1$ //$NON-NLS-2$
+        TWO_COLUMN_RANGE = new ColumnRangeType(enumType, "twoColumn", Messages.ColumnRangeType_twoColumns); //$NON-NLS-1$
+        ONE_COLUMN_RANGE_FROM = new ColumnRangeType(enumType, "oneColumnFrom", Messages.ColumnRangeType_fromColumnOnly); //$NON-NLS-1$
+        ONE_COLUMN_RANGE_TO = new ColumnRangeType(enumType, "oneColumnTo", Messages.ColumnRangeType_toColumnOnly); //$NON-NLS-1$
     }
 
     public static final DefaultEnumType getEnumType(){

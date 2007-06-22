@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
+import org.faktorips.values.EnumValue;
 
 
 /**
@@ -95,58 +96,67 @@ public class RangeEditDialog extends IpsPartEditDialog {
     }
     
     private Control createGeneralPage(TabFolder folder) {
-				
-				Composite c = createTabItemComposite(folder, 1, false);
-				Composite rangeTypeArea = uiToolkit.createGridComposite(c, 2, false, true);
-				uiToolkit.createFormLabel(rangeTypeArea, Messages.RangeEditDialog_labelType);
-				rangeTypeField = new EnumValueField(uiToolkit.createCombo(
-				    rangeTypeArea, ColumnRangeType.getEnumType()), ColumnRangeType.getEnumType());
-				rangeTypeField.addChangeListener(new ValueChangeListener(){
-				    public void valueChanged(FieldValueChangedEvent e) {
-				        adjustEnableStateToRangeType((ColumnRangeType)e.field.getValue());
-				    }
-				});
-				uiToolkit.createFormLabel(rangeTypeArea, Messages.RangeEditDialog_RangeEditDialog_parameterName);
-				Text parameterNameText = uiToolkit.createText(rangeTypeArea);
-				parameterNameField = new TextField(parameterNameText);
-				
-				Composite container = uiToolkit.createGridComposite(c, 3, false, false);
-				
-				Composite left = uiToolkit.createGridComposite(container, 1, false, true);
-				Composite leftGroup = uiToolkit.createGroup(left, SWT.NONE, Messages.RangeEditDialog_groupTitle);
-				
-				Composite editArea = uiToolkit.createLabelEditColumnComposite(leftGroup);
-				GridData data = (GridData)editArea.getLayoutData();
-				data.widthHint = 180;
-				data.heightHint = 200;
-				fromLabel = uiToolkit.createFormLabel(editArea, Messages.RangeEditDialog_labelFrom);
-				Text fromText = uiToolkit.createText(editArea);
-				fromField = new TextField(fromText);
-				
-				// add space so that the text control for the to column is aligned
-				// with it's buttons
-				uiToolkit.createLabel(editArea, ""); //$NON-NLS-1$
-				uiToolkit.createLabel(editArea, ""); //$NON-NLS-1$
-				uiToolkit.createLabel(editArea, ""); //$NON-NLS-1$
-				uiToolkit.createLabel(editArea, ""); //$NON-NLS-1$
-				uiToolkit.createVerticalSpacer(editArea, 10);
-				uiToolkit.createVerticalSpacer(editArea, 10);
-				
-				toLabel = uiToolkit.createFormLabel(editArea, Messages.RangeEditDialog_labelTo);
-				Text toText = uiToolkit.createText(editArea);
-				toField = new TextField(toText);
-				
-				Composite middle = uiToolkit.createGridComposite(container, 1, true, true);
-				middle.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.HORIZONTAL_ALIGN_CENTER));
-				createButtons(middle);
-				
-				Composite right = uiToolkit.createGridComposite(container, 1, false, true);
-				Composite rightGroup = uiToolkit.createGroup(right, SWT.NONE, Messages.RangeEditDialog_groupAvailableColsTitle);
-				createColumnSelectionComposite(rightGroup);
-				
-				return c;
+        Composite c = createTabItemComposite(folder, 1, false);
+        Composite rangeTypeArea = uiToolkit.createGridComposite(c, 2, false, true);
+        uiToolkit.createFormLabel(rangeTypeArea, Messages.RangeEditDialog_labelType);
+        rangeTypeField = new EnumValueField(uiToolkit.createCombo(rangeTypeArea, ColumnRangeType.getEnumType()),
+                ColumnRangeType.getEnumType());
+        rangeTypeField.addChangeListener(new ValueChangeListener() {
+            public void valueChanged(FieldValueChangedEvent e) {
+                adjustEnableStateToRangeType((ColumnRangeType)e.field.getValue());
+            }
+        });
+        uiToolkit.createFormLabel(rangeTypeArea, Messages.RangeEditDialog_RangeEditDialog_parameterName);
+        Text parameterNameText = uiToolkit.createText(rangeTypeArea);
+        parameterNameField = new TextField(parameterNameText);
+
+        Composite container = uiToolkit.createGridComposite(c, 3, false, false);
+
+        Composite left = uiToolkit.createGridComposite(container, 1, false, true);
+        Composite leftGroup = uiToolkit.createGroup(left, SWT.NONE, Messages.RangeEditDialog_groupTitle);
+
+        Composite editArea = uiToolkit.createLabelEditColumnComposite(leftGroup);
+        GridData data = (GridData)editArea.getLayoutData();
+        data.widthHint = 180;
+        data.heightHint = 200;
+        fromLabel = uiToolkit.createFormLabel(editArea, Messages.RangeEditDialog_labelFrom);
+        Text fromText = uiToolkit.createText(editArea);
+        fromField = new TextField(fromText);
+
+        // add space so that the text control for the to column is aligned
+        // with it's buttons
+        uiToolkit.createLabel(editArea, ""); //$NON-NLS-1$
+        uiToolkit.createLabel(editArea, ""); //$NON-NLS-1$
+        uiToolkit.createLabel(editArea, ""); //$NON-NLS-1$
+        uiToolkit.createLabel(editArea, ""); //$NON-NLS-1$
+        uiToolkit.createVerticalSpacer(editArea, 10);
+        uiToolkit.createVerticalSpacer(editArea, 10);
+
+        toLabel = uiToolkit.createFormLabel(editArea, Messages.RangeEditDialog_labelTo);
+        Text toText = uiToolkit.createText(editArea);
+        toField = new TextField(toText);
+
+        Composite middle = uiToolkit.createGridComposite(container, 1, true, true);
+        middle.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.HORIZONTAL_ALIGN_CENTER));
+        createButtons(middle);
+
+        Composite right = uiToolkit.createGridComposite(container, 1, false, true);
+        Composite rightGroup = uiToolkit.createGroup(right, SWT.NONE, Messages.RangeEditDialog_groupAvailableColsTitle);
+        createColumnSelectionComposite(rightGroup);
+
+        return c;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    protected Control createContents(Composite parent) {
+        Control control = super.createContents(parent);
+        // set the inital state depending on the range type
+        adjustEnableStateToRangeType(range.getColumnRangeType());
+        return control;
+    }
+
     private void adjustEnableStateToRangeType(ColumnRangeType type){
         if(type.equals(ColumnRangeType.TWO_COLUMN_RANGE)){
             setEnabledForFromFieldControls(true);
@@ -300,5 +310,4 @@ public class RangeEditDialog extends IpsPartEditDialog {
         field.setValue(""); //$NON-NLS-1$
         uiController.updateModel();
     }
-    
 }
