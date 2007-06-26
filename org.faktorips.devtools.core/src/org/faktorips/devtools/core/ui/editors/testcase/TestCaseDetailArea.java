@@ -43,8 +43,6 @@ import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -323,17 +321,12 @@ public class TestCaseDetailArea {
                     // ignore not existing attributes, will be checked in the vaidate method
                     failure = true;
                 } else {
-                    
-                    // check if the attribute exists in the supertype hierarchy,
-                    // if the attribute isn't in the supertype hierarchy then hide this attribute,
-                    // because the attribute is only relevant for product cmpts which are based on suptypes which defines
-                    // this attribute
-                    IProductCmpt productCmpt = testPolicyCmpt.findProductCmpt();
-                    if (productCmpt != null){
-                        IPolicyCmptType policyCmptType = productCmpt.findPolicyCmptType();
-                        if (policyCmptType.findAttributeInSupertypeHierarchy(testAttr.getName()) == null){
-                            return null;
-                        }
+                    // check if the attribute exists in the supertype hierarchy of the policy cmpt type of the product cmpt
+                    //   if the attribute doesn't exists in the supertype hierarchy then hide the edit field.
+                    //   Because the attribute is only relevant for product cmpts which are based on suptypes which defines
+                    //   this attribute
+                    if (!testAttr.isAttributeInSupertypeHierarchy(testPolicyCmpt.findProductCmpt())) {
+                        return null;
                     }
                     
                     datatype = attribute.findDatatype();

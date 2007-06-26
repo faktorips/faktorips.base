@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model.testcasetype;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 
 /**
  * Specification of a test attribute.
@@ -128,5 +129,13 @@ public interface ITestAttribute extends IIpsObjectPart {
      * <li>EXPECTED_RESULT: the test attribute specifies test attribute expected result objects
      * </ul>
      */
-    public void setTestAttributeType(TestParameterType type);    
+    public void setTestAttributeType(TestParameterType type);
+    
+    /**
+     * Check if the attribute exists in the supertype hierarchy of the policy cmpt type of the given product cmpt.
+     * If the attribute exists in the supertype hierarchy then return <code>true</code>, otherwise <code>false</code>.
+     * 
+     * @throws CoreException
+     */
+    public boolean isAttributeInSupertypeHierarchy(IProductCmpt productCmpt) throws CoreException;
 }

@@ -17,12 +17,14 @@
 
 package org.faktorips.devtools.core.internal.model.testcasetype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -292,4 +294,33 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         ml = testAttribute.validate();
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NAME_IS_EMPTY));        
     }    
+    
+    public void testIsAttributeInSupertypeHierarchy() throws CoreException{
+        IPolicyCmptType base = newPolicyCmptType(project, "base");
+        IPolicyCmptType sub1 = newPolicyCmptType(project, "sub1");
+        IPolicyCmptType sub2 = newPolicyCmptType(project, "sub2");
+        sub1.setSupertype(base.getQualifiedName());
+        sub2.setSupertype(base.getQualifiedName());
+        
+        IProductCmpt productCmptSub1 = newProductCmpt(project, "productSub1");
+        productCmptSub1.setPolicyCmptType(sub1.getQualifiedName());
+
+        IProductCmpt productCmptSub2 = newProductCmpt(project, "productSub2");
+        productCmptSub2.setPolicyCmptType(sub2.getQualifiedName());
+        
+        IAttribute attributeSub1 = sub1.newAttribute();
+        attributeSub1.setName("attrSub1");
+        attributeSub1.setProductRelevant(true);
+        attributeSub1.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
+        
+        IAttribute attributeSub2 = sub2.newAttribute();
+        attributeSub2.setName("attrSub2");
+        attributeSub2.setProductRelevant(true);
+        attributeSub2.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
+                
+        testAttribute.setName("test");
+        testAttribute.setAttribute("attrSub1");
+        assertTrue(testAttribute.isAttributeInSupertypeHierarchy(productCmptSub1));
+        assertFalse(testAttribute.isAttributeInSupertypeHierarchy(productCmptSub2));
+    }
 }

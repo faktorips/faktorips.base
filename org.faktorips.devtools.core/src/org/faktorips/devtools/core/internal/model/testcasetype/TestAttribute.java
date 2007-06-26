@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
@@ -222,6 +223,14 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         valueChanged(oldType, type);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isAttributeInSupertypeHierarchy(IProductCmpt productCmpt) throws CoreException {
+        IPolicyCmptType policyCmptType = productCmpt.findPolicyCmptType();
+        return ! (policyCmptType.findAttributeInSupertypeHierarchy(getAttribute()) == null);
+    }
+
     /**
      * {@inheritDoc}
      */
