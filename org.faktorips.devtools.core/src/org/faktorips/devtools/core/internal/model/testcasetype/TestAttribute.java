@@ -227,6 +227,9 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
      * {@inheritDoc}
      */
     public boolean isAttributeInSupertypeHierarchy(IProductCmpt productCmpt) throws CoreException {
+        if (productCmpt == null){
+            return false;
+        }
         IPolicyCmptType policyCmptType = productCmpt.findPolicyCmptType();
         return ! (policyCmptType.findAttributeInSupertypeHierarchy(getAttribute()) == null);
     }

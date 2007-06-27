@@ -322,5 +322,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         testAttribute.setAttribute("attrSub1");
         assertTrue(testAttribute.isAttributeInSupertypeHierarchy(productCmptSub1));
         assertFalse(testAttribute.isAttributeInSupertypeHierarchy(productCmptSub2));
+        
+        assertFalse(testAttribute.isAttributeInSupertypeHierarchy(null));
     }
 }
