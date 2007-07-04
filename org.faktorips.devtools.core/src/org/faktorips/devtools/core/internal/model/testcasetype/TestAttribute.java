@@ -226,10 +226,14 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
     /**
      * {@inheritDoc}
      */
-    public boolean isAttributeInSupertypeHierarchy(IProductCmpt productCmpt) throws CoreException {
+    public boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt) throws CoreException {
+        boolean reqProductCmpt = ((ITestPolicyCmptTypeParameter)getParent()).isRequiresProductCmpt();
+        if (! reqProductCmpt){
+            return true;
+        }
         if (productCmpt == null){
             return false;
-        }
+        } 
         IPolicyCmptType policyCmptType = productCmpt.findPolicyCmptType();
         return ! (policyCmptType.findAttributeInSupertypeHierarchy(getAttribute()) == null);
     }

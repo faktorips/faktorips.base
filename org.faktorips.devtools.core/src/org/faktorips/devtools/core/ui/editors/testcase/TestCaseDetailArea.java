@@ -325,7 +325,7 @@ public class TestCaseDetailArea {
                     //   if the attribute doesn't exists in the supertype hierarchy then hide the edit field.
                     //   Because the attribute is only relevant for product cmpts which are based on suptypes which defines
                     //   this attribute
-                    if (!testAttr.isAttributeInSupertypeHierarchy(testPolicyCmpt.findProductCmpt())) {
+                    if (!testAttr.isAttributeRelevantByProductCmpt(testPolicyCmpt.findProductCmpt())) {
                         return null;
                     }
                     

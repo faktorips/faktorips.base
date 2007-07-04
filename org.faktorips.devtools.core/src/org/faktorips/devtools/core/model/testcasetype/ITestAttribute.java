@@ -132,10 +132,12 @@ public interface ITestAttribute extends IIpsObjectPart {
     public void setTestAttributeType(TestParameterType type);
     
     /**
+     * Returns <code>true</code> if the attribute is relevant for the given product cmpt.
      * Check if the attribute exists in the supertype hierarchy of the policy cmpt type of the given product cmpt.
      * If the attribute exists in the supertype hierarchy then return <code>true</code>, otherwise <code>false</code>.
+     * Returns <code>true</code> if the attributes type is not product relevant, in this case the attribute is always relevant.
      * 
-     * @throws CoreException
+     * @throws CoreException if an error occurs 
      */
-    public boolean isAttributeInSupertypeHierarchy(IProductCmpt productCmpt) throws CoreException;
+    public boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt) throws CoreException;
 }

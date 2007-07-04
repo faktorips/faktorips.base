@@ -295,7 +295,10 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NAME_IS_EMPTY));        
     }    
     
-    public void testIsAttributeInSupertypeHierarchy() throws CoreException{
+    public void testIsAttributeRelevantByProductCmpt() throws CoreException{
+        ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter)testAttribute.getParent();
+        param.setRequiresProductCmpt(true);
+        
         IPolicyCmptType base = newPolicyCmptType(project, "base");
         IPolicyCmptType sub1 = newPolicyCmptType(project, "sub1");
         IPolicyCmptType sub2 = newPolicyCmptType(project, "sub2");
@@ -317,12 +320,15 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         attributeSub2.setName("attrSub2");
         attributeSub2.setProductRelevant(true);
         attributeSub2.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
-                
+
         testAttribute.setName("test");
         testAttribute.setAttribute("attrSub1");
-        assertTrue(testAttribute.isAttributeInSupertypeHierarchy(productCmptSub1));
-        assertFalse(testAttribute.isAttributeInSupertypeHierarchy(productCmptSub2));
+        assertTrue(testAttribute.isAttributeRelevantByProductCmpt(productCmptSub1));
+        assertFalse(testAttribute.isAttributeRelevantByProductCmpt(productCmptSub2));
         
-        assertFalse(testAttribute.isAttributeInSupertypeHierarchy(null));
+        param.setRequiresProductCmpt(false);
+        // the parameter is not product relevant, threrefore there is no product cmpt
+        // in this case the attribute is always relevant
+        assertTrue(testAttribute.isAttributeRelevantByProductCmpt(null));
     }
 }
