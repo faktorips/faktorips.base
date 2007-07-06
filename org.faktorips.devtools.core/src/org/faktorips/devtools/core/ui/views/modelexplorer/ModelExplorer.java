@@ -32,7 +32,6 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionFactory;
@@ -42,11 +41,6 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.views.framelist.FrameList;
-import org.eclipse.ui.views.navigator.IResourceNavigator;
-import org.eclipse.ui.views.navigator.OpenActionGroup;
-import org.eclipse.ui.views.navigator.ResourcePatternFilter;
-import org.eclipse.ui.views.navigator.ResourceSorter;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -107,7 +101,7 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
  * @author Stefan Widmaier
  */
 
-public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceNavigator {
+public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     /**
      * Extension id of this views extension.
@@ -711,83 +705,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IResourceN
                 modelExplorer.setFlatLayout(isFlatLayout);
             }
         }
-    }
-
-    //
-    // Methods for IResourceNavigator
-    //
-    
-    private ResourceSorter resourceSorter;
-    private IWorkingSet workingSet;
-    
-    /**
-     * {@inheritDoc}
-     */
-    public TreeViewer getViewer() {
-        return treeViewer;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setSorter(ResourceSorter sorter) {
-        resourceSorter = sorter;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public ResourceSorter getSorter() {
-        return resourceSorter;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setWorkingSet(IWorkingSet workingSet) {
-        this.workingSet = workingSet;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public IWorkingSet getWorkingSet() {
-        return workingSet;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setLinkingEnabled(boolean enabled) {
-        // nothing to do
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isLinkingEnabled() {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setFiltersPreference(String[] patterns) {
-        /// nothing to do
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public FrameList getFrameList() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ResourcePatternFilter getPatternFilter() {
-        throw new UnsupportedOperationException();
     }
     
     /**
