@@ -17,12 +17,10 @@
 
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
@@ -41,7 +39,7 @@ import org.faktorips.util.memento.Memento;
  * 
  * @author Joerg Ortmann
  */
-public class NewRootParameterWizard extends Wizard implements IBlockedValidationWizard{
+public class NewRootParameterWizard extends Wizard implements IBlockedValidationWizard {
     private UIToolkit uiToolkit = new UIToolkit(null);
 
     //  Wizard pages
@@ -89,7 +87,7 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
         rootParamSelectWizardPage = new NewRootParamWizardPage(this);
         addPage(rootParamSelectWizardPage);
         
-        rootParamDetailWizardPage = new NewTestParamDetailWizardPage(this, uiToolkit, 3);
+        rootParamDetailWizardPage = new NewTestParamDetailWizardPage(this, uiToolkit, NewRootParamWizardPage.PAGE_NUMBER + 1);
         addPage(rootParamDetailWizardPage);
     }
 
@@ -231,16 +229,8 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
         if (newTestParameter == null){
             return false;
         }
-        
 
-        
-        try {
-            // if the test parameter is valid then the page is valid
-            return newTestParameter.isValid();
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
-        return false;
+        return true;
     }
 
     /**

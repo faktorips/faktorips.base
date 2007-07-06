@@ -47,7 +47,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
  */
 public class NewChildParamWizardPage extends WizardPage implements ValueChangeListener  {
     private static final String PAGE_ID = "RootParameterSelection"; //$NON-NLS-1$
-    private static final int PAGE_NUMBER = 1;
+    protected static final int PAGE_NUMBER = 1;
     
     private NewChildParameterWizard wizard;
     

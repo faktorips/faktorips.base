@@ -76,7 +76,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
         childParamSelectWizardPage = new NewChildParamWizardPage(this);
         addPage(childParamSelectWizardPage);
 
-        detailWizardPage = new NewTestParamDetailWizardPage(this, uiToolkit, 2);
+        detailWizardPage = new NewTestParamDetailWizardPage(this, uiToolkit, NewChildParamWizardPage.PAGE_NUMBER + 1);
         addPage(detailWizardPage);
     }
 

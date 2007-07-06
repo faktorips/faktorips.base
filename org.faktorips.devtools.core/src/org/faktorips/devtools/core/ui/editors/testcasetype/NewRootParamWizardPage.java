@@ -39,6 +39,8 @@ import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
+import org.faktorips.runtime.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Wizard page to create a new root test policy cmpt type parameter.<br>
@@ -49,7 +51,7 @@ import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
  */
 public class NewRootParamWizardPage extends WizardPage implements ValueChangeListener  {
     private static final String PAGE_ID = "RootParameterSelection"; //$NON-NLS-1$
-    private static final int PAGE_NUMBER = 2;
+    protected static final int PAGE_NUMBER = 2;
     
     private NewRootParameterWizard wizard;
     
@@ -161,6 +163,8 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
     private boolean validatePage() throws CoreException {
         setErrorMessage(null);
         
+        ITestParameter newTestParameter = wizard.getNewCreatedTestParameter();
+        
         String datatypeOrRule = ""; //$NON-NLS-1$
         if (editFieldDatatypeOrRule != null && !editFieldDatatypeOrRule.getControl().isDisposed()) {
             datatypeOrRule = editFieldDatatypeOrRule.getText();
@@ -184,6 +188,30 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         if (!status.isOK()){
             setErrorMessage(NLS.bind(Messages.NewRootParamWizardPage_ValidationError_InvalidTestParameterName, editFieldName.getText()));
             return false;
+        }
+        
+        try {
+            // special case for test policy cmpty type params
+            // check errors only for displayed attributes,
+            // otherwise the next button is disabled if there is an error on the next page
+            // (e.g. if the policycmpt is abstract and prod rel is not checked.)
+            // In all other cases there is no validation relation between the pages,
+            // and if the next page was displayed once then the next button on the prev page is
+            // always enable (see above)
+            MessageList messageList = newTestParameter.validate();
+            MessageList relevantMessages = messageList.getMessagesFor(newTestParameter,
+                    ITestParameter.PROPERTY_DATATYPE);
+            relevantMessages.add(messageList.getMessagesFor(newTestParameter, ITestParameter.PROPERTY_NAME));
+            relevantMessages.add(messageList.getMessagesFor(newTestParameter,
+                    ITestParameter.PROPERTY_TEST_PARAMETER_TYPE));
+            if (relevantMessages.containsErrorMsg()) {
+                setErrorMessage(relevantMessages.getFirstMessage(Message.ERROR).getText());
+                return false;
+            } else {
+                return true;
+            }
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
         }
         
         return wizard.isPageValid(PAGE_NUMBER);

@@ -1629,6 +1629,7 @@ public class TestCaseTypeSection extends IpsSection {
                 if (!dirty) {
                     testCaseType.getIpsSrcFile().markAsClean();
                 }
+                refresh();
                 return;
             }
             refreshTreeAndDetails(wizard.getNewCreatedTestParameter()); 
