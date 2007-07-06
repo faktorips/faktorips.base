@@ -23,6 +23,7 @@ import javax.xml.transform.TransformerException;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.test.XmlAbstractTestCase;
 import org.faktorips.runtime.internal.AbstractReadonlyTableOfContents;
+import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.TocEntryObject;
 import org.w3c.dom.Element;
@@ -45,8 +46,8 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
     public void testGetTocEntry() {
         assertNull(toc.getProductCmptTocEntry("Unkown"));
         
-        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk");
-        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk");
+        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk", new DateTime(2010, 1, 1));
+        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk", new DateTime(2010, 1, 1));
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
 
@@ -57,11 +58,11 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
 
     public void testGetProductCmptTocEntries() {
         assertEquals(0, toc.getProductCmptTocEntries().length);
-        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk");
+        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk", new DateTime(2010, 1, 1));
         toc.addOrReplaceTocEntry(entry0);
         assertEquals(entry0, toc.getProductCmptTocEntries()[0]);
 
-        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk");
+        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk", new DateTime(2010, 1, 1));
         toc.addOrReplaceTocEntry(entry1);
         assertEquals(entry0, toc.getProductCmptTocEntries()[0]);
         assertEquals(entry1, toc.getProductCmptTocEntries()[1]);
@@ -79,7 +80,7 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
 
     public void testAddOrReplaceTocEntry() {
         long modStamp = toc.getModificationStamp(); 
-        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk");
+        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk", new DateTime(2010, 1, 1));
         boolean changed = toc.addOrReplaceTocEntry(entry0);
         assertTrue(changed);
         assertTrue(modStamp!=toc.getModificationStamp());
@@ -87,7 +88,7 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         assertEquals(entry0, toc.getProductCmptTocEntries()[0]);
 
         modStamp = toc.getModificationStamp(); 
-        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk");
+        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk", new DateTime(2010, 1, 1));
         assertTrue(changed);
         changed = toc.addOrReplaceTocEntry(entry1);
         assertTrue(modStamp!=toc.getModificationStamp());
@@ -97,7 +98,7 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         
         // replace Motor with product component class name changed
         modStamp = toc.getModificationStamp(); 
-        entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk");
+        entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk", new DateTime(2010, 1, 1));
         changed = toc.addOrReplaceTocEntry(entry0);
         assertTrue(changed);
         assertTrue(modStamp!=toc.getModificationStamp());
@@ -107,7 +108,7 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         
         // replace Motor with policy component class name changed
         modStamp = toc.getModificationStamp(); 
-        entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk");
+        entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk", new DateTime(2010, 1, 1));
         changed = toc.addOrReplaceTocEntry(entry0);
         assertTrue(changed);
         assertTrue(modStamp!=toc.getModificationStamp());
@@ -117,7 +118,7 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         
         // replace Motor with xml resource name changed
         modStamp = toc.getModificationStamp(); 
-        entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "org/sample/MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk");
+        entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "org/sample/MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk", new DateTime(2010, 1, 1));
         changed = toc.addOrReplaceTocEntry(entry0);
         assertTrue(changed);
         assertTrue(modStamp!=toc.getModificationStamp());
@@ -127,7 +128,7 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         
         // replace but without changing
         modStamp = toc.getModificationStamp(); 
-        TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "org/sample/MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk");
+        TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "org/sample/MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk", new DateTime(2010, 1, 1));
         changed = toc.addOrReplaceTocEntry(entry0);
         assertFalse(changed);
         assertEquals(modStamp, toc.getModificationStamp());
@@ -142,8 +143,8 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         assertEquals(modStamp, toc.getModificationStamp());
 
         
-        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk");
-        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk");
+        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk", new DateTime(2010, 1, 1));
+        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk", new DateTime(2010, 1, 1));
         TocEntryObject entry2 = TocEntryObject.createTableTocEntry("RateTable", "RateTable", "RateTable.ipstablecontents", "RateTable");
         TocEntryObject entry3 = TocEntryObject.createTableTocEntry("TestTable", "TestTable", "TestTable.ipstablecontents", "TestTable");
 
@@ -182,8 +183,8 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
     }
     
     public void testToXml() throws TransformerException {
-        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk");
-        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk");
+        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk", new DateTime(2010, 1, 1));
+        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk", new DateTime(2010, 1, 1));
         TocEntryObject entry2 = TocEntryObject.createTestCaseTocEntry("TestCaseId", "TestCase", "TestCase.xml", "TestCase");
         TocEntryObject entry3 = TocEntryObject.createTableTocEntry("TableId", "Table", "Table.xml", "Table");
         toc.addOrReplaceTocEntry(entry0);
@@ -211,8 +212,8 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         String s2 = "" + (char)0 + (char)31;
         assertEquals(s1.hashCode(), s2.hashCode()); // so they must habe the same hashcode
         toc = new MutableClRuntimeRepositoryToc();
-        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry(s1, "Entry0", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk");
-        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry(s2, "Entry1", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk");
+        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry(s1, "Entry0", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk", new DateTime(2010, 1, 1));
+        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry(s2, "Entry1", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk", new DateTime(2010, 1, 1));
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
         String tocString = XmlUtil.nodeToString(toc.toXml(newDocument()), "UTF-8");

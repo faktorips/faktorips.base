@@ -344,13 +344,15 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         }
         String packageString = getBuilderSet().getPackage(DefaultBuilderSet.KIND_PRODUCT_CMPT_TOCENTRY, productCmpt.getIpsSrcFile()).replace('.', '/');
         String xmlResourceName = packageString + '/' + productCmpt.getName() + ".xml"; //$NON-NLS-1$
+        DateTime validTo = DateTime.createDateOnly(productCmpt.getValidTo());
         TocEntryObject entry = TocEntryObject.createProductCmptTocEntry(
             productCmpt.getRuntimeId(), 
             productCmpt.getQualifiedName(),
             productCmpt.findProductCmptKind().getRuntimeId(),
             productCmpt.getVersionId(),
             xmlResourceName, 
-            productCmptTypeImplClassBuilder.getQualifiedClassName(pcType.getIpsSrcFile()));
+            productCmptTypeImplClassBuilder.getQualifiedClassName(pcType.getIpsSrcFile()),
+            validTo);
         IIpsObjectGeneration[] generations = productCmpt.getGenerations();
         TocEntryGeneration[] genEntries = new TocEntryGeneration[generations.length];
         for (int i = 0; i < generations.length; i++) {

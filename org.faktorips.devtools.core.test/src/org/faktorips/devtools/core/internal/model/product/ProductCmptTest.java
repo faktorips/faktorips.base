@@ -17,19 +17,14 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -359,6 +354,11 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(false, product2.containsDifferenceToModel());
         product2.fixAllDifferencesToModel();
         assertEquals(false, product2.containsDifferenceToModel());
+    }
+    
+    public void testSetValidTo(){
+        productCmpt.setValidTo(new GregorianCalendar(2000,1,1));
+        assertEquals(new GregorianCalendar(2000,1,1), productCmpt.getValidTo());
     }
     
     /**
