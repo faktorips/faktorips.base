@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.ui;
 
-import org.eclipse.jdt.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.jdt.ui.PreferenceConstants;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jdt.ui.text.JavaTextTools;
@@ -35,6 +34,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.devtools.core.ui.internal.text.HTMLTextPresenter;
 
 /**
  *
