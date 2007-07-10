@@ -81,6 +81,7 @@ import org.osgi.framework.Version;
  */
 public class IpsPlugin extends AbstractUIPlugin {
 
+    
     public final static String PLUGIN_ID = "org.faktorips.devtools.core"; //$NON-NLS-1$
 
     public final static String PROBLEM_MARKER = PLUGIN_ID + ".problemmarker"; //$NON-NLS-1$
