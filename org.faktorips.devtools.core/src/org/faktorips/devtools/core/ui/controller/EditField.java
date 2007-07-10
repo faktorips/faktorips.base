@@ -23,7 +23,11 @@ import org.faktorips.util.message.MessageList;
 
 
 /**
- *
+ * Interface that gives generic access to controls via the methods getValue() and setValue(Object newValue)
+ * and allows to listen for changes of the value shown in the control.
+ * <p>
+ * This interface is neccessary to build a generic data binding framework as the method to get and set
+ * a value in a SWT control differ slightly from control to control.
  */
 public interface EditField {
     

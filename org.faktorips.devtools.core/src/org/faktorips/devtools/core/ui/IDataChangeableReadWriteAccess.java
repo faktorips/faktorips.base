@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.ui;
 
 /**
- * An interface that is implement by user interface components that allow to switch 
+ * An interface that is implemented by user interface components that allow to switch 
  * whether the data shown is changeable or not.
  * 
  * @author Jan Ortmann
@@ -26,7 +26,7 @@ package org.faktorips.devtools.core.ui;
 public interface IDataChangeableReadWriteAccess extends IDataChangeableReadAccess {
 
     /**
-     * Sets if the data shown in this user interface component can be changes ot not.
+     * Sets if the data shown in this user interface component can be changed ot not.
      */
     public void setDataChangeable(boolean changeable);
     

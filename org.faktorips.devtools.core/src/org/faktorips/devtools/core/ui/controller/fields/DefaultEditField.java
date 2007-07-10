@@ -27,6 +27,8 @@ import org.faktorips.util.message.MessageList;
 
 
 /**
+ * Abstract base class to easy implementation of new edit fields..
+ * 
  * @author Jan Ortmann
  */
 public abstract class DefaultEditField implements EditField {
