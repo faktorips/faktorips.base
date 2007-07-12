@@ -177,6 +177,15 @@ public class IpsPreferences {
     /**
      * Returns a default locale date format for valid-from and effective dates.
      */
+    public DateFormat getDateFormat() {
+        return DateFormat.getDateInstance(SimpleDateFormat.MEDIUM);
+    }
+    
+    /**
+     * Returns a default locale date format for valid-from and effective dates.
+     * 
+     * @deprecated use {@link #getDateFormat()}
+     */
     public DateFormat getValidFromFormat() {
     	return DateFormat.getDateInstance(SimpleDateFormat.MEDIUM);
     }

@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -26,6 +25,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -54,26 +54,17 @@ public class GregorianCalendarField extends DefaultEditField {
     /**
      * {@inheritDoc}
      */ 
-    public Object parseContent() {
+    public Object parseContent() throws Exception {
     	String text = getText();
     	
         text = (String)super.prepareObjectForGet(text);
         if (text == null) {
         	return null;
         }
-        
-        try {
-			Date date = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM).parse(text);
-			GregorianCalendar gc = new GregorianCalendar();
-			gc.setTime(date);
-			return gc;
-		} catch (ParseException e) {
-            // the text is not parseable, return null as value,
-            // because only valid GregorianCalendar values could be stored in the object,
-            // note: the value which is visible in the ui control differs from the value which will
-            // be set in the object
-            return null;
-		}
+		Date date = IpsPlugin.getDefault().getIpsPreferences().getDateFormat().parse(text);
+		GregorianCalendar gc = new GregorianCalendar();
+		gc.setTime(date);
+		return gc;
     }
 
     /**
