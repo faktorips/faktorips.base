@@ -156,7 +156,7 @@ public class ComponentPropertiesSection extends IpsSection {
                     return;
                 }
                 
-                DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
+                DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
                 try {
                     String parsed = format.format(format.parse(value));
                     if (!parsed.equals(value)) {

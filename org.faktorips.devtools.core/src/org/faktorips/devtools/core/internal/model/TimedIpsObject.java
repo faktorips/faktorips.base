@@ -306,10 +306,10 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
             if (generations[i].getValidFrom().after(validTo)) {
                 IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
                 String params[] = new String[4];
-                params[0] = prefs.getValidFromFormat().format(validTo.getTime());
+                params[0] = prefs.getDateFormat().format(validTo.getTime());
                 params[1] = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
                 params[2] = "" + generations[i].getGenerationNo(); //$NON-NLS-1$
-                params[3] = prefs.getValidFromFormat().format(generations[i].getValidFrom().getTime());
+                params[3] = prefs.getDateFormat().format(generations[i].getValidFrom().getTime());
                 String msg = NLS.bind(org.faktorips.devtools.core.internal.model.Messages.TimedIpsObject_msgIvalidValidToDate, params);
                 list.add(new Message(MSGCODE_INVALID_VALID_TO, msg, Message.ERROR, this, PROPERTY_VALID_TO));
             }

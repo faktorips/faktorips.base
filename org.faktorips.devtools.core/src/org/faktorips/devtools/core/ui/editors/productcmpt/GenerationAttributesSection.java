@@ -125,7 +125,7 @@ public class GenerationAttributesSection extends IpsSection {
 	}
 
     protected void updateGenerationText() {
-        DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
+        DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
         String validRange = format.format(this.generation.getValidFrom().getTime());
 
         GregorianCalendar date = generation.getValidTo();
@@ -134,7 +134,7 @@ public class GenerationAttributesSection extends IpsSection {
             validToString = Messages.ProductAttributesSection_valueGenerationValidToUnlimited;
         }
         else {
-            validToString = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat().format(date.getTime());
+            validToString = IpsPlugin.getDefault().getIpsPreferences().getDateFormat().format(date.getTime());
         }
 
         validRange += " - " + validToString; //$NON-NLS-1$

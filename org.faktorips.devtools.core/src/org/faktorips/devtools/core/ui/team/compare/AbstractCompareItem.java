@@ -107,7 +107,7 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
     /**
      * Dateformat used to convert the validFrom date of generations into a String.
      */
-    protected DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
+    protected DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
     
     /**
      * If this compareitem is the root of its structure, this document contains the string representation

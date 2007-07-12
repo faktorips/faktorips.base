@@ -179,7 +179,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     }
 
     private void updateTabname() {
-        DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
+        DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
         String validRange = format.format(getActiveGeneration().getValidFrom().getTime());
 
         GregorianCalendar date = getActiveGeneration().getValidTo();
@@ -188,7 +188,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             validToString = Messages.ProductAttributesSection_valueGenerationValidToUnlimited;
         }
         else {
-            validToString = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat().format(date.getTime());
+            validToString = IpsPlugin.getDefault().getIpsPreferences().getDateFormat().format(date.getTime());
         }
 
         validRange += " - " + validToString; //$NON-NLS-1$

@@ -127,7 +127,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
             generationText = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(); 
             
-            DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
+            DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
             String formatedWorkingDate = format.format(workingDate.getTime());
             String label = NLS.bind(Messages.ProductStructureContentProvider_treeNodeText_GenerationCurrentWorkingDate,
                     formatedWorkingDate);

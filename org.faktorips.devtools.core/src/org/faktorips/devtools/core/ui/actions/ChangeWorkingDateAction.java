@@ -67,7 +67,7 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
 
 		if (dialog.open() == InputDialog.OK) {
 			try {
-				DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
+				DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
 				Date newDate = format.parse(dialog.getValue());
 				GregorianCalendar calendar = new GregorianCalendar(); 
 				calendar.setTime(newDate);
@@ -95,7 +95,7 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
 		DateFormat format;
 		
 		public Validator() {
-			format = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
+			format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
 		}
 		/**
 		 * {@inheritDoc}

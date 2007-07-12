@@ -239,8 +239,9 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
             IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences(); 
             String[] params = new String[3];
             params[0] = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
-            params[1] = prefs.getValidFromFormat().format(getValidFrom().getTime());
-            params[2] = prefs.getValidFromFormat().format(parentValidTo.getTime());
+            DateFormat format = prefs.getDateFormat();
+            params[1] = format.format(getValidFrom().getTime());
+            params[2] = format.format(parentValidTo.getTime());
             String msg = NLS.bind(Messages.IpsObjectGeneration_msgInvalidFromDate, params);
             
             list.add(new Message(MSGCODE_INVALID_VALID_FROM, msg, Message.ERROR, this, PROPERTY_VALID_FROM));

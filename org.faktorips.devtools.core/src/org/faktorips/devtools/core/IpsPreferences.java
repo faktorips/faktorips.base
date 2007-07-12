@@ -182,20 +182,11 @@ public class IpsPreferences {
     }
     
     /**
-     * Returns a default locale date format for valid-from and effective dates.
-     * 
-     * @deprecated use {@link #getDateFormat()}
-     */
-    public DateFormat getValidFromFormat() {
-    	return DateFormat.getDateInstance(SimpleDateFormat.MEDIUM);
-    }
-    
-    /**
      * Convenience method to get the formatted working date using the format
      * returned by <code>getValidFromFormat</code>
      */
     public String getFormattedWorkingDate() {
-    	return getValidFromFormat().format(getWorkingDate().getTime());
+    	return getDateFormat().format(getWorkingDate().getTime());
     }
     
     /**
