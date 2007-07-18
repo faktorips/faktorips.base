@@ -64,7 +64,8 @@
 	
 	<!--Compile -->
         <target name="compile" depends="init">
-			<javac encoding="UTF-8" srcdir="${src}" destdir="${classes}" classpathref="classpath"/> 
+        	<!-- compile with debug=on to keep source line numbers -->
+			<javac encoding="UTF-8" srcdir="${src}" destdir="${classes}" classpathref="classpath" debug="on" />
         	
         	<copy todir="${test_classes}">
         	    <fileset dir="${test_src}">
@@ -81,7 +82,7 @@
         	      <include name="**/*.ipsproduct" />
         	    </fileset>
         	</copy>
-        	<javac encoding="UTF-8" srcdir="${test_src}:${src}" destdir="${test_classes}" classpathref="classpath" />
+        	<javac encoding="UTF-8" srcdir="${test_src}:${src}" destdir="${test_classes}" classpathref="classpath" debug="on" />
         </target>
 
 	
