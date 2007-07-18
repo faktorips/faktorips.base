@@ -24,6 +24,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
@@ -37,6 +38,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
@@ -103,8 +105,15 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         assertEquals("motor.RateTable", entry.getIpsObjectId());
         assertEquals(tableImplBuilder.getQualifiedClassName(structure), entry.getImplementationClassName());
         assertTrue(entry.isTableTocEntry());
-    }
 
+        // test that enum type tables are not generated as toc entry
+        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
+        structure.getIpsSrcFile().save(true, null);
+
+        entry = tocFileBuilder.createTocEntry(table);
+        assertNull(entry);
+    }
+    
     public void test() throws Exception {
         
         // create a product component
@@ -225,6 +234,38 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         
         formulaTestEntry = toc2.getTestCaseTocEntryByQName(pcFromula.getQualifiedName());
         assertNull(formulaTestEntry);
+
+        // check removing of table toc entries depending on the table structure type
+        // create table content
+        ITableContents tableEnum = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "motor.RateTableEnum");
+        tableGen = (ITableContentsGeneration)tableEnum.newGeneration();
+        tableGen.setValidFrom(validFrom);
+        tableEnum.setTableStructure(structure.getQualifiedName());
+        tableEnum.newColumn("");
+        tableEnum.newColumn("");
+        tableEnum.getIpsSrcFile().save(true, null);
+        
+        // build
+        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        toc = tocFileBuilder.getToc(root);
+        assertNotNull(toc.getTableTocEntryByQualifiedTableName("motor.RateTableEnum"));
+        
+        // change table type
+        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
+        structure.newColumn().setName("col1");
+        structure.newColumn().setName("col2");
+        IUniqueKey key = structure.newUniqueKey();
+        IUniqueKey key2 = structure.newUniqueKey();
+        key.addKeyItem("col1");
+        key2.addKeyItem("col2");
+        structure.getIpsSrcFile().save(true, null);
+        
+        // build
+        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        toc = tocFileBuilder.getToc(root);
+        
+        // table content based on enum type and therefore no toc entry should be exists
+        assertNull(toc.getTableTocEntryByQualifiedTableName("motor.RateTableEnum"));
     }
     
     public void testIfIdenticalTocFileIsNotWrittenAfterFullBuild() throws CoreException {

@@ -319,7 +319,12 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             else {
                 throw new RuntimeException("Unknown ips object type " + object.getIpsObjectType()); //$NON-NLS-1$
             }
-            getToc(ipsSrcFile).addOrReplaceTocEntry(entry);
+            if (entry != null){
+                getToc(ipsSrcFile).addOrReplaceTocEntry(entry);
+            } else {
+                // no toc entry has been newly created, remove the previous toc entry 
+                getToc(ipsSrcFile).removeEntry(object.getQualifiedName());
+            }
         } catch (Exception e) {
             throw new CoreException(new IpsStatus(
                     "Unable to update the runtime repository toc file with the entry for: " //$NON-NLS-1$
@@ -407,6 +412,10 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     public TocEntryObject createTocEntry(ITableContents tableContents) throws CoreException {
         ITableStructure tableStructure = tableContents.findTableStructure();
         if (tableStructure == null) {
+            return null;
+        }
+        if (tableStructure.isModelEnumType()){
+            // table defines an enum are not created in the toc
             return null;
         }
         String packageInternal = getBuilderSet().getPackage(DefaultBuilderSet.KIND_TABLE_TOCENTRY,
