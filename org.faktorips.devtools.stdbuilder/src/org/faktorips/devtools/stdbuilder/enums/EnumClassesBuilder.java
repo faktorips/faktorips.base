@@ -170,6 +170,9 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         IColumn[] columns = structure.getColumns();
         for (int i = 0; i < columns.length; i++) {
             Datatype datatype = columns[i].findValueDatatype();
+            if (datatype == null){
+                continue;
+            }
             generateField(memberBuilder, columns[i], datatype);
             generateMethodGetField(methodBuilder, columns[i], datatype);
         }
