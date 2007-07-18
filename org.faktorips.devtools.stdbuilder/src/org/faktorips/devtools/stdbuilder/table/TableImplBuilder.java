@@ -33,7 +33,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -46,12 +45,8 @@ import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree;
 import org.faktorips.runtime.internal.Table;
-import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.TwoColumnKey;
 import org.faktorips.util.LocalizedStringsSet;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
 /**
  * Important: This builder expects from the <code>IJavaPackageStructure</code> the qualified class
@@ -369,86 +364,57 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
         return true;
     }
-    
+
     private void createAddRowMethod(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         IColumn[] columns = getTableStructure().getColumns();
-        if(!checkColumnsValidity(columns)){
+        if (!checkColumnsValidity(columns)) {
             return;
         }
-        String textVariableName = createAddRowMethodTextVariableName(columns);
+
         for (int i = 0; i < columns.length; i++) {
-            IColumn column = columns[i];
-            Datatype columnDatatype = findDatatype(column.getDatatype());
-            DatatypeHelper helper = getTableStructure().getIpsProject().getDatatypeHelper(
-                    columnDatatype);
-            if (i == 0) {
-                methodBody.appendClassName(Element.class);
-                methodBody.append(' ');
+            String valueName = "value";
+            if (i==0){
+                methodBody.appendClassName(String.class.getName());
+                methodBody.append(" ");
             }
-            methodBody.append("valueElement = (");
-            methodBody.appendClassName(Element.class);
-            methodBody.append(") valueElements.item(");
+            methodBody.append(valueName);
+            methodBody.append(" = (String)");
+            methodBody.append("values.get(");
             methodBody.append(i);
             methodBody.append(");");
-            methodBody.appendln();
-
-            if (i == 0) {
-                methodBody.appendClassName(Text.class);
-                methodBody.append(' ');
-            }
-            methodBody.append(textVariableName);
-            methodBody.append(" = ");
-            methodBody.appendClassName(XmlUtil.class);
-            methodBody.append(".getTextNode(valueElement);");
+            IColumn column = columns[i];
+            Datatype columnDatatype = findDatatype(column.getDatatype());
+            DatatypeHelper helper = getTableStructure().getIpsProject().getDatatypeHelper(columnDatatype);
 
             methodBody.appendClassName(columnDatatype.getJavaClassName());
-            methodBody.append(" ");
+            methodBody.append(' ');
             methodBody.append(StringUtils.uncapitalise(column.getName()));
-            methodBody.append(" = isNull(valueElement) ? ");
+            methodBody.append(" = ");
+            methodBody.append(valueName);
+            methodBody.append(" == null ? ");
             methodBody.append(helper.nullExpression());
             methodBody.append(" : ");
-            if (columnDatatype instanceof StringDatatype) {
-                methodBody.append(textVariableName);
-                methodBody.append(" == null ? \"\" : ");
-                methodBody.append(textVariableName);
-                methodBody.append(".getData()");
-            } else {
-                methodBody.append(helper.newInstanceFromExpression(textVariableName + ".getData()"));
-            }
+            methodBody.append(helper.newInstanceFromExpression(valueName));
             methodBody.append(';');
+            methodBody.appendln();
         }
+
         methodBody.append("rows.add(new ");
         methodBody.appendClassName(qualifiedTableRowName);
         methodBody.append("(");
         for (int i = 0; i < columns.length; i++) {
-
             if (i > 0) {
                 methodBody.append(", ");
             }
             methodBody.append(StringUtils.uncapitalise(columns[i].getName()));
         }
-
         methodBody.append("));");
-
-        codeBuilder.method(Modifier.PROTECTED, Void.TYPE, "addRow",
-                new String[] { "valueElements" }, new Class[] { NodeList.class }, methodBody,
+        
+        methodBody.addImport(List.class.getName());
+        codeBuilder.method(Modifier.PROTECTED, "void", "addRow",
+                new String[] { "values" }, new String[] { List.class.getName()}, methodBody,
                 getLocalizedText(getIpsObject(), ADD_ROW_JAVADOC), ANNOTATION_GENERATED);
-    }
-    
-    private String createAddRowMethodTextVariableName(IColumn[] columns) {
-        String baseText = "text";
-        String text = baseText;
-        i: for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            for (int j = 0; j < columns.length; j++) {
-                if (text.equalsIgnoreCase(columns[j].getName())) {
-                    text = baseText + i;
-                    continue i;
-                }
-            }
-            break;
-        }
-        return text;
     }
 
     private void createFindMethods(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
