@@ -150,4 +150,17 @@ public interface IProductCmptRelation extends IIpsObjectPart {
      */
     public IProductCmptTypeRelation findProductCmptTypeRelation() throws CoreException;
 
+    /**
+     * Returns weather or not this Relation is mandatory. A Relation is mandatory if both minimum
+     * and maximum-cardinality are equal to 1.
+     * @return <code>true</code> if this Relation is mandatory, else <code>false</code>.
+     */
+    public boolean isMandatory();
+
+    /**
+     * Returns weather or not this Relation is optional. A Relation is optional if the minimum
+     * cardinality equals 0 and the maximum cardinality equals 1.
+     * @return <code>true</code> if this Relation is optinal, else <code>false</code>.
+     */
+    public boolean isOptional();
 }

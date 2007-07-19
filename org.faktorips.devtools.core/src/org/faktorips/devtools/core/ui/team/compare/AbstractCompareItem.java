@@ -59,6 +59,7 @@ import org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompar
 public abstract class AbstractCompareItem implements IStreamContentAccessor, IStructureComparator, ITypedElement,
         IDocumentRange {
     protected static final String COLON_BLANK = ": "; //$NON-NLS-1$
+    protected static final String COLON = ":"; //$NON-NLS-1$
     protected static final String BLANK = " "; //$NON-NLS-1$
     protected static final String QUOTE = "\""; //$NON-NLS-1$
     protected static final String NEWLINE = "\n"; //$NON-NLS-1$

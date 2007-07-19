@@ -279,7 +279,19 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
             String validFromSimple = simpleDateFormat.format(rel.getProductCmptGeneration().getValidFrom()
                     .getTime());
             sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB).append(rel.getTarget());
-            sb.append(BLANK).append("(").append(rel.getId()).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
+            sb.append(BLANK).append(BLANK).append("["); //$NON-NLS-1$
+            if(rel.isMandatory()){
+                sb.append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.CardinalityPanel_labelMandatory);
+            }else if(rel.isOptional()){
+                sb.append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.CardinalityPanel_labelOptional);
+            } else {
+                sb.append(Messages.ProductCmptCompareItem_RelationCardinalityOther_minimum).append(COLON)
+                    .append(rel.getMinCardinality()).append(COMMA).append(BLANK);
+                sb.append(Messages.ProductCmptCompareItem_RelationCardinalityOther_maximum).append(COLON)
+                    .append(rel.getMaxCardinality());
+            }
+            sb.append("]"); //$NON-NLS-1$
+            sb.append(BLANK).append(BLANK).append("(").append(rel.getId()).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
         } else if (getIpsElement() instanceof IConfigElement) {
             IConfigElement configElement = (IConfigElement)getIpsElement();
             String validFromSimple = simpleDateFormat

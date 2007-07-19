@@ -197,4 +197,39 @@ public class ProductCmptRelationTest extends AbstractIpsPluginTest {
         ml = relation.validate();
         assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_INVALID_TARGET));
     }
+
+    public void testIsMandatory(){
+        relation.setMinCardinality(0);
+        relation.setMaxCardinality(1);
+        assertFalse(relation.isMandatory());
+        
+        relation.setMinCardinality(1);
+        relation.setMaxCardinality(1);
+        assertTrue(relation.isMandatory());
+
+        relation.setMinCardinality(2);
+        relation.setMaxCardinality(3);
+        assertFalse(relation.isMandatory());
+
+        relation.setMinCardinality(3);
+        relation.setMaxCardinality(2);
+        assertFalse(relation.isMandatory());
+    }
+    public void testIsOptional(){
+        relation.setMinCardinality(0);
+        relation.setMaxCardinality(1);
+        assertTrue(relation.isOptional());
+        
+        relation.setMinCardinality(1);
+        relation.setMaxCardinality(1);
+        assertFalse(relation.isOptional());
+
+        relation.setMinCardinality(2);
+        relation.setMaxCardinality(3);
+        assertFalse(relation.isOptional());
+
+        relation.setMinCardinality(3);
+        relation.setMaxCardinality(2);
+        assertFalse(relation.isOptional());
+    }
 }
