@@ -373,7 +373,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         for (int i = 0; i < columns.length; i++) {
-            String valueName = "value";
+            String valueName = "columnValue";
             if (i==0){
                 methodBody.appendClassName(String.class.getName());
                 methodBody.append(" ");
