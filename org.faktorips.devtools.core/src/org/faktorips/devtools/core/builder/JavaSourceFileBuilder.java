@@ -28,8 +28,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.emf.codegen.jmerge.JControlModel;
-import org.eclipse.emf.codegen.jmerge.JMerger;
+import org.eclipse.emf.codegen.merge.java.facade.FacadeHelper;
+import org.eclipse.emf.codegen.merge.java.facade.jdom.JDOMFacadeHelper;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
@@ -47,7 +47,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -118,7 +117,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     private MultiStatus buildStatus;
 
-    private JControlModel model;
+    private org.eclipse.emf.codegen.merge.java.JControlModel model;
 
     private Integer javaOptionsSplitLength;
 
@@ -793,34 +792,29 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     private void initJControlModel(IIpsProject project) throws CoreException {
         IFile mergeFile = project.getJavaProject().getProject().getFile("merge.xml"); //$NON-NLS-1$
+        model = new org.eclipse.emf.codegen.merge.java.JControlModel();
+        //using the ASTFacadeHelper leads to a OutOfMemoryError 
+        FacadeHelper facadeHelper = new JDOMFacadeHelper();
         if (mergeFile.exists()) {
             try {
-                model = new JControlModel(XmlUtil.getDocument(mergeFile.getContents()).getDocumentElement());
+                model.initialize(facadeHelper, mergeFile.getLocation().toPortableString());
+                
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus(e));
             }
             return;
         }
-        model = new JControlModel(getJMergeDefaultConfigDocument().getDocumentElement());
+        model.initialize(facadeHelper, getJMergeDefaultConfigLocation());
     }
 
-    private org.w3c.dom.Document getJMergeDefaultConfigDocument() throws CoreException {
-        InputStream is = null;
-        try {
-            StringBuffer mergeFile = new StringBuffer();
-            mergeFile.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/')).append(
-                    "/merge.xml"); //$NON-NLS-1$
-            is = (InputStream)Platform.getBundle(IpsPlugin.PLUGIN_ID).getResource(mergeFile.toString()).getContent();
-            return XmlUtil.getDocument(is);
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus(e));
-        } finally {
-            closeStream(is);
-        }
-
+    private String getJMergeDefaultConfigLocation(){
+        StringBuffer mergeFile = new StringBuffer();
+        mergeFile.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/')).append(
+                "/merge.xml"); //$NON-NLS-1$
+        return Platform.getBundle(IpsPlugin.PLUGIN_ID).getResource(mergeFile.toString()).toExternalForm();
     }
 
-    private JControlModel getJControlModel() {
+    private org.eclipse.emf.codegen.merge.java.JControlModel getJControlModel() {
 
         if (model == null) {
             throw new IllegalStateException("The jmerge control model has not been set, " + //$NON-NLS-1$
@@ -835,8 +829,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     private void merge(IFile javaFile, String oldContent, String newContent, String charset) throws CoreException {
 
         try {
-            JMerger merger = new JMerger();
-            merger.setControlModel(getJControlModel());
+            org.eclipse.emf.codegen.merge.java.JMerger merger = new org.eclipse.emf.codegen.merge.java.JMerger(getJControlModel());
             merger.setSourceCompilationUnit(merger.createCompilationUnitForContents(newContent));
             merger.setTargetCompilationUnit(merger.createCompilationUnitForContents(oldContent));
             String targetContentsBeforeMerge = merger.getTargetCompilationUnitContents();

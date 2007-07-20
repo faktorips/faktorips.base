@@ -34,7 +34,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.emf.codegen,
  org.eclipse.jdt.debug.ui,
  com.ibm.icu
-Eclipse-AutoStart: true
+Eclipse-LazyStart: true
 Export-Package: org.apache.poi.ddf,
  org.apache.poi.dev,
  org.apache.poi.hpsf,
