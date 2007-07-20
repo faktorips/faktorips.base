@@ -199,7 +199,8 @@ public class JavaCodeFragment {
 	public void appendClassName(Class clazz) {
         if(clazz.isArray()){
             appendClassName(clazz.getComponentType());
-            append(" []");
+            append("[]");
+            return;
         }
 	    appendClassName(clazz.getName());
 	}
