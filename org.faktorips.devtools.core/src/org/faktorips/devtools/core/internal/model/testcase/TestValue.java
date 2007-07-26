@@ -238,5 +238,11 @@ public class TestValue extends TestObject implements ITestValue {
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
         return null;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getName() {
+        return getTestValueParameter();
+    }
 }

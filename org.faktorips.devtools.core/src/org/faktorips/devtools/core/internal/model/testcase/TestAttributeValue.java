@@ -280,4 +280,11 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
             }        
         }
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getName() {
+        return getTestAttribute();
+    }
 }

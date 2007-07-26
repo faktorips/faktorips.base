@@ -256,4 +256,11 @@ public class TestRule extends TestObject implements ITestRule {
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
         return null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getName() {
+        return getTestRuleParameter() + "/" + getValidationRule();
+    }
 }

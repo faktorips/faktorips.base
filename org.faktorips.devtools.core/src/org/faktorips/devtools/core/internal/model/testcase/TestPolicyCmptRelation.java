@@ -356,6 +356,6 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
      * {@inheritDoc}
      */
     public String getName() {
-        return getTestPolicyCmptTypeParameter();
+        return getTestPolicyCmptTypeParameter() + "(" + getId() + ")";
     }
 }
