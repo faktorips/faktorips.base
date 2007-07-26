@@ -71,7 +71,7 @@ public class TestRunPane {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				if (fTable.getSelectionCount() > 0)
 					if (getSelectedTestFullPath() != null)
-						new OpenTestInEditorAction(testRunnerViewPart, getSelectedTestFullPath()).run();
+						new OpenTestInEditorAction(testRunnerViewPart, getSelectedTestFullPath(), getSelectedTestQualifiedName(), null).run();
 			}
 		});
 	}
@@ -273,7 +273,16 @@ public class TestRunPane {
 		TestTableEntry entry= (TestTableEntry) item.getData();
 		return entry.getFullPath();
 	}
-	
+
+    String getSelectedTestQualifiedName() {
+        TableItem item= getSelectedItem();
+        if (item == null)
+            return ""; //$NON-NLS-1$
+        
+        TestTableEntry entry= (TestTableEntry) item.getData();
+        return entry.getQualifiedTestName();
+    }
+    
     /*
      * Returns the selected item in the table or <code>null</code> if no item is selected
      */

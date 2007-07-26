@@ -788,9 +788,22 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 * {@inheritDoc}
 	 */
 	public void testFinished(String qualifiedTestName) {
+	    if (fExecutedTests > fCounterPanel.getTotal()){
+            // set correct total size 
+            // if there are more test case executed as previously expected
+            // e.g. if an ips test case starts itself several ips tests
+	        postSyncRunnable(new Runnable() {
+	            public void run() {
+	                if (isDisposed()) 
+	                    return;
+	                fCounterPanel.setTotal(fCounterPanel.getTotal() + 1);
+	            }
+	        });            
+	    }
 		fExecutedTests++;
-		if (isFailure)
+		if (isFailure){
 			fFailureCount++;
+        }
 		postEndTest(getTestId(qualifiedTestName), qualifiedTestName);
 	}
     
@@ -947,6 +960,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 
     public String getSelectedTestFullPath() {
         return fTestRunPane.getSelectedTestFullPath();
+    }
+    
+    public String getSelectedTestQualifiedName() {
+        return fTestRunPane.getSelectedTestQualifiedName();
     }
     
     /**

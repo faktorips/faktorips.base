@@ -187,7 +187,7 @@ public class FailurePane {
                     if (!navigate) {
                         // navigate to corresponding test case, if no source navigation is allowed
                         // or the source navigation failed (e.g. no stacktrace line, but failure line indicator)
-                        new OpenTestInEditorAction(viewPart, viewPart.getSelectedTestFullPath(), getSelectedTableRowText()).run();
+                        new OpenTestInEditorAction(viewPart, viewPart.getSelectedTestFullPath(), viewPart.getSelectedTestQualifiedName(), getSelectedTableRowText()).run();
                     }
                 }
             }
