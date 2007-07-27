@@ -28,8 +28,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.emf.codegen.merge.java.facade.FacadeHelper;
-import org.eclipse.emf.codegen.merge.java.facade.jdom.JDOMFacadeHelper;
+import org.eclipse.emf.codegen.jmerge.JControlModel;
+import org.eclipse.emf.codegen.jmerge.JMerger;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -117,8 +118,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     private MultiStatus buildStatus;
 
-    private org.eclipse.emf.codegen.merge.java.JControlModel model;
-
+    private JControlModel model;
+    
     private Integer javaOptionsSplitLength;
 
     private Integer javaOptionsTabSize;
@@ -792,29 +793,34 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     private void initJControlModel(IIpsProject project) throws CoreException {
         IFile mergeFile = project.getJavaProject().getProject().getFile("merge.xml"); //$NON-NLS-1$
-        model = new org.eclipse.emf.codegen.merge.java.JControlModel();
-        //using the ASTFacadeHelper leads to a OutOfMemoryError 
-        FacadeHelper facadeHelper = new JDOMFacadeHelper();
         if (mergeFile.exists()) {
             try {
-                model.initialize(facadeHelper, mergeFile.getLocation().toPortableString());
-                
+                model = new JControlModel(XmlUtil.getDocument(mergeFile.getContents()).getDocumentElement());
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus(e));
             }
             return;
         }
-        model.initialize(facadeHelper, getJMergeDefaultConfigLocation());
+        model = new JControlModel(getJMergeDefaultConfigDocument().getDocumentElement());
     }
 
-    private String getJMergeDefaultConfigLocation(){
-        StringBuffer mergeFile = new StringBuffer();
-        mergeFile.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/')).append(
-                "/merge.xml"); //$NON-NLS-1$
-        return Platform.getBundle(IpsPlugin.PLUGIN_ID).getResource(mergeFile.toString()).toExternalForm();
+    private org.w3c.dom.Document getJMergeDefaultConfigDocument() throws CoreException {
+        InputStream is = null;
+        try {
+            StringBuffer mergeFile = new StringBuffer();
+            mergeFile.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/')).append(
+                    "/merge.xml"); //$NON-NLS-1$
+            is = (InputStream)Platform.getBundle(IpsPlugin.PLUGIN_ID).getResource(mergeFile.toString()).getContent();
+            return XmlUtil.getDocument(is);
+        } catch (Exception e) {
+            throw new CoreException(new IpsStatus(e));
+        } finally {
+            closeStream(is);
+        }
+
     }
 
-    private org.eclipse.emf.codegen.merge.java.JControlModel getJControlModel() {
+    private JControlModel getJControlModel() {
 
         if (model == null) {
             throw new IllegalStateException("The jmerge control model has not been set, " + //$NON-NLS-1$
@@ -826,6 +832,28 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         return model;
     }
 
+    private void merge(IFile javaFile, String oldContent, String newContent, String charset) throws CoreException {
+
+        try {
+            JMerger merger = new JMerger();
+            merger.setControlModel(getJControlModel());
+            merger.setSourceCompilationUnit(merger.createCompilationUnitForContents(newContent));
+            merger.setTargetCompilationUnit(merger.createCompilationUnitForContents(oldContent));
+            String targetContentsBeforeMerge = merger.getTargetCompilationUnitContents();
+            merger.merge();
+            String targetContents = merger.getTargetCompilationUnitContents();
+            targetContents = writeFeatureVersions(targetContents);
+            if (targetContents == null || targetContents.equals(targetContentsBeforeMerge)) {
+                return;
+            }
+            javaFile.setContents(new ByteArrayInputStream(targetContents.getBytes(charset)), true, false, null);
+        } catch (Exception e) {
+            throw new CoreException(new IpsStatus("An error occurred while trying to merge " + //$NON-NLS-1$
+                    "the generated content with the old content of the file: " + javaFile, e)); //$NON-NLS-1$
+        }
+    }
+
+/* This code fragment needs to be activated when moving to EMF 2.2.x or later    
     private void merge(IFile javaFile, String oldContent, String newContent, String charset) throws CoreException {
 
         try {
@@ -845,7 +873,31 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
                     "the generated content with the old content of the file: " + javaFile, e)); //$NON-NLS-1$
         }
     }
-
+    
+    private void initJControlModel(IIpsProject project) throws CoreException {
+        IFile mergeFile = project.getJavaProject().getProject().getFile("merge.xml"); //$NON-NLS-1$
+        model = new org.eclipse.emf.codegen.merge.java.JControlModel();
+        //using the ASTFacadeHelper leads to a OutOfMemoryError 
+        FacadeHelper facadeHelper = new JDOMFacadeHelper();
+        if (mergeFile.exists()) {
+            try {
+                model.initialize(facadeHelper, mergeFile.getLocation().toPortableString());
+                
+            } catch (Exception e) {
+                throw new CoreException(new IpsStatus(e));
+            }
+            return;
+        }
+        model.initialize(facadeHelper, getJMergeDefaultConfigLocation());
+    }
+    
+    private String getJMergeDefaultConfigLocation(){
+        StringBuffer mergeFile = new StringBuffer();
+        mergeFile.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/')).append(
+                "/merge.xml"); //$NON-NLS-1$
+        return Platform.getBundle(IpsPlugin.PLUGIN_ID).getResource(mergeFile.toString()).toExternalForm();
+    }
+*/
     private final static Pattern createFeatureSectionPattern() {
         StringBuffer buf = new StringBuffer();
         buf.append("/\\*.*"); //$NON-NLS-1$
