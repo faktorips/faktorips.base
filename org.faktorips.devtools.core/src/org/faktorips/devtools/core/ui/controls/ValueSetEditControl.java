@@ -56,7 +56,7 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
     private ValueDatatype datatype; // The datatype the values in the set are values of.
 
     private Composite valueSetArea; // is used to change the layout
-    private IValueSetOwner attribute;
+    private IValueSetOwner valueSetOwner;
     private UIToolkit toolkit;
     private DefaultUIController uiController;
     private TableElementValidator tableElementValidator;
@@ -77,7 +77,7 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
     public ValueSetEditControl(Composite parent, UIToolkit toolkit, DefaultUIController uiController, IValueSetOwner owner                                                       ,
             TableElementValidator tableElementValidator) {
         super(parent, SWT.NONE);
-        this.attribute = owner;
+        this.valueSetOwner = owner;
         this.toolkit = toolkit;
         this.uiController = uiController;
         this.tableElementValidator = tableElementValidator;
@@ -97,7 +97,7 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
         
         createValidTypesCombo(toolkit, parentArea);
         valueSetArea = createValueControlArea(toolkit, parentArea);
-        IValueSet valueSet = attribute.getValueSet();
+        IValueSet valueSet = valueSetOwner.getValueSet();
         getControlForValueSet(valueSet);
         validTypesCombo.setText(valueSet.getValueSetType().getName());
         if (toolkit.getFormToolkit() != null) {
@@ -110,7 +110,7 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
     	if (valueSet.getValueSetType() == ValueSetType.ENUM) {
     		EnumDatatype enumType = null;
     		try {
-				Datatype type = attribute.getValueDatatype();
+				Datatype type = valueSetOwner.getValueDatatype();
 				if (type instanceof EnumDatatype) {
 					enumType = (EnumDatatype)type;
 				}
@@ -128,7 +128,7 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
                     // update ui with the current value set in the model object,
                     // because we reuse the old control and maybe the value set of the attribute has changed in the meanwhile
                     // (e.g. if we select all values then Attribute#setValueSetType is called and the internal enum values are deleted!)
-                    ((EnumValueSetChooser)enumControl).setEnumTypeAndValueSet(enumType, (IEnumValueSet)this.attribute.getValueSet());
+                    ((EnumValueSetChooser)enumControl).setEnumTypeAndValueSet(enumType, (IEnumValueSet)this.valueSetOwner.getValueSet());
                 }
             }
             else {
@@ -140,7 +140,7 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
                     // update ui with the current value set in the model object,
                     // because we reuse the old control and maybe the value set of the attribute has changed in the meanwhile
                     // (e.g. if we select all values then Attribute#setValueSetType is called and the internal enum values are deleted!)
-                    ((EnumValueSetEditControl)enumControl).setEnumValueSet((IEnumValueSet)this.attribute.getValueSet());
+                    ((EnumValueSetEditControl)enumControl).setEnumValueSet((IEnumValueSet)this.valueSetOwner.getValueSet());
                 }
             }
             
@@ -245,8 +245,8 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
         
         // needed to reset the value set (and value set type) to the 
         // value it was before the attribute was marked overwriting.
-        if (attribute != null && attribute.getValueSet() != null) {
-        	oldType = attribute.getValueSet().getValueSetType();
+        if (valueSetOwner != null && valueSetOwner.getValueSet() != null) {
+        	oldType = valueSetOwner.getValueSet().getValueSetType();
         }
         
         validTypesCombo.removeAll();
@@ -282,22 +282,22 @@ public class ValueSetEditControl extends ControlComposite implements IDataChange
 		 */
 		public void valueChanged(FieldValueChangedEvent e) {
               String selectedText = e.field.getText();
-                IValueSet oldValueSet = attribute.getValueSet();
+                IValueSet oldValueSet = valueSetOwner.getValueSet();
                 if (selectedText.equals(ValueSetType.RANGE.getName())) {
-                    attribute.setValueSetType(ValueSetType.RANGE);
+                    valueSetOwner.setValueSetType(ValueSetType.RANGE);
                     if (oldValueSet.getValueSetType() == ValueSetType.RANGE) {
-                        attribute.getValueSet().setValuesOf(oldValueSet);
+                        valueSetOwner.getValueSet().setValuesOf(oldValueSet);
                     }
                 } else if (selectedText.equals(ValueSetType.ENUM.getName())) {
-                    attribute.setValueSetType(ValueSetType.ENUM);
-                    IEnumValueSet valueSet = (IEnumValueSet)attribute.getValueSet();
+                    valueSetOwner.setValueSetType(ValueSetType.ENUM);
+                    IEnumValueSet valueSet = (IEnumValueSet)valueSetOwner.getValueSet();
                     if (oldValueSet.getValueSetType() == ValueSetType.ENUM) {
                         valueSet.setValuesOf(oldValueSet);
                     }
                 } else if (selectedText.equals(ValueSetType.ALL_VALUES.getName())) {
-                    attribute.setValueSetType(ValueSetType.ALL_VALUES);
+                    valueSetOwner.setValueSetType(ValueSetType.ALL_VALUES);
                 }
-                ((StackLayout)valueSetArea.getLayout()).topControl = getControlForValueSet(attribute.getValueSet());
+                ((StackLayout)valueSetArea.getLayout()).topControl = getControlForValueSet(valueSetOwner.getValueSet());
 
                 valueSetArea.layout(); // show the new top control
                 valueSetArea.getParent().layout(); // parent has to resize
