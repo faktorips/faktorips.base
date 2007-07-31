@@ -134,6 +134,10 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertEquals(attr1, testAttribute.findAttribute());
     }
 
+    /**
+     * Attributes of suptypes will never been found, because this feature is only available on the 
+     * test case side, see TestAttributeValue.validateSelf()
+     */
     public void testFindAttributeInSubtype() throws Exception{
         IPolicyCmptType policyCmptTypeSuper = newPolicyCmptType(project, "policyCmptSuper");
         IAttribute attr1 = policyCmptTypeSuper.newAttribute();
@@ -153,7 +157,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         cmptTypeParameter.setPolicyCmptType(policyCmptTypeSuper.getQualifiedName());
         
         testAttribute.setAttribute("attribute4");
-        assertEquals(attr4, testAttribute.findAttribute());
+        assertNull(testAttribute.findAttribute());
     }
     
     public void testValidateAttributeNotFound() throws Exception{

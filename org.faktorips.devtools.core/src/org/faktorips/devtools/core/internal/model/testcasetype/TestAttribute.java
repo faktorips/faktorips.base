@@ -108,44 +108,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         if (pcType == null){
             return null;
         }
-        ITypeHierarchy supertypeHierarchy = pcType.getSupertypeHierarchy();
-        IAttribute[] attributes = supertypeHierarchy.getAllAttributes(pcType);
-        for (int i = 0; i < attributes.length; i++) {
-            if (attributes[i].getName().equals(attribute)) {
-                return attributes[i];
-            }
-        }
-        
-        // not found search in subtype hierarchy
-        return findAttributeInSubtypehierarchy();
-    }
-
-    private IAttribute findAttributeInSubtypehierarchy() throws CoreException {
-        if (StringUtils.isEmpty(attribute)) {
-            return null;
-        }
-        IPolicyCmptType pcType = ((TestPolicyCmptTypeParameter)getParent()).findPolicyCmptType();
-
-        if (pcType != null) {
-            IAttribute[] attributes;
-            List allAttributes = new ArrayList();
-            ITypeHierarchy subtypeHierarchy = pcType.getSubtypeHierarchy();
-            IPolicyCmptType[] allSubtypes = subtypeHierarchy.getAllSubtypes(pcType);
-            for (int i = 0; i < allSubtypes.length; i++) {
-                attributes = allSubtypes[i].getAttributes();
-                for (int j = 0; j < attributes.length; j++) {
-                    allAttributes.add(attributes[j]);
-                }
-            }
-            attributes = (IAttribute[])allAttributes.toArray(new IAttribute[allAttributes.size()]);
-
-            for (int i = 0; i < attributes.length; i++) {
-                if (attributes[i].getName().equals(attribute)) {
-                    return attributes[i];
-                }
-            }
-        }
-        return null;
+        return pcType.findAttributeInSupertypeHierarchy(attribute);
     }
     
     /**
@@ -238,6 +201,34 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         return ! (policyCmptType.findAttributeInSupertypeHierarchy(getAttribute()) == null);
     }
 
+    private IAttribute findAttributeInSubtypehierarchy() throws CoreException {
+        if (StringUtils.isEmpty(attribute)) {
+            return null;
+        }
+        IPolicyCmptType pcType = ((TestPolicyCmptTypeParameter)getParent()).findPolicyCmptType();
+
+        if (pcType != null) {
+            IAttribute[] attributes;
+            List allAttributes = new ArrayList();
+            ITypeHierarchy subtypeHierarchy = pcType.getSubtypeHierarchy();
+            IPolicyCmptType[] allSubtypes = subtypeHierarchy.getAllSubtypes(pcType);
+            for (int i = 0; i < allSubtypes.length; i++) {
+                attributes = allSubtypes[i].getAttributes();
+                for (int j = 0; j < attributes.length; j++) {
+                    allAttributes.add(attributes[j]);
+                }
+            }
+            attributes = (IAttribute[])allAttributes.toArray(new IAttribute[allAttributes.size()]);
+
+            for (int i = 0; i < attributes.length; i++) {
+                if (attributes[i].getName().equals(attribute)) {
+                    return attributes[i];
+                }
+            }
+        }
+        return null;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -254,10 +245,17 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         // check if the attribute exists
         IAttribute modelAttribute = findAttribute();
         if (modelAttribute == null){
+            // special case if the attribute wasn't found in the supertype then
+            // search in the subtype hierarchy, the test case type attributes supports attributes of subclasses
+            // therefore this special validation must be performed for such types of attributes only
+            // Note: that this find method has a bad performance, therefore this should not the normal case
+            modelAttribute = findAttributeInSubtypehierarchy();
+        }
+        if (modelAttribute == null){
             String text = NLS.bind(Messages.TestAttribute_Error_AttributeNotFound, getAttribute());
             Message msg = new Message(MSGCODE_ATTRIBUTE_NOT_FOUND, text, Message.ERROR, this, ITestAttribute.PROPERTY_ATTRIBUTE);
             messageList.add(msg);
-        }
+        } 
         
         // check the correct type
         if (! isInputAttribute() && ! isExpextedResultAttribute()){

@@ -34,6 +34,8 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -677,4 +679,21 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             }
         }
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public IAttribute findProductCmptAttribute(String attribute) throws CoreException {
+        if (StringUtils.isEmpty(getProductCmpt())) {
+            // no product cmpt is set, therefore no attribute could be searched, 
+            // currently an attributes (from sublcasses) could only be searched if an product cmpt was set
+            return null;
+        } 
+        IProductCmpt productCmptObj = findProductCmpt();
+        if (productCmptObj == null){
+            return null;
+        }
+        IPolicyCmptType pct = productCmptObj.findPolicyCmptType();
+        return pct.findAttributeInSupertypeHierarchy(attribute);
+    }
 }

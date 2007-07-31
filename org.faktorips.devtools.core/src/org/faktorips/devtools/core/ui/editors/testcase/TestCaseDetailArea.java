@@ -318,17 +318,19 @@ public class TestCaseDetailArea {
             } else {
                 IAttribute attribute = testAttr.findAttribute();
                 if (attribute == null) {
-                    // ignore not existing attributes, will be checked in the vaidate method
-                    failure = true;
-                } else {
-                    // check if the attribute exists in the supertype hierarchy of the policy cmpt type of the product cmpt
-                    //   if the attribute doesn't exists in the supertype hierarchy then hide the edit field.
-                    //   Because the attribute is only relevant for product cmpts which are based on suptypes which defines
-                    //   this attribute
-                    if (!testAttr.isAttributeRelevantByProductCmpt(testPolicyCmpt.findProductCmpt())) {
+                    // find attribute by using the product cmpt
+                    attribute = testPolicyCmpt.findProductCmptAttribute(testAttr.getAttribute());
+                    if (attribute == null && StringUtils.isEmpty(attributeValue.getValue())){
+                        // attribute not exists in subtypes, hide the edit field
+                        //   because the attribute is only relevant for product cmpts which are based on suptypes 
+                        //   which defines this attribute                        
                         return null;
                     }
-                    
+                    // ignore not existing attributes, will be checked in the vaidate method
+                    // the default edit field will be used to render the attribute
+                    failure = true;
+                } 
+                if (attribute != null){
                     datatype = attribute.findDatatype();
                     ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(datatype);
                 }
@@ -339,9 +341,10 @@ public class TestCaseDetailArea {
         }
 
         // if an error occured get the value datatype ctrl factory for a string
-        if (failure)
+        if (failure){
             ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(ValueDatatype.STRING);
-
+        }
+        
         Label label = toolkit.createFormLabel(attributeComposite, StringUtils.capitalise(attributeValue
                 .getTestAttribute()));
         addSectionSelectionListeners(null, label, testPolicyCmptForSelection);

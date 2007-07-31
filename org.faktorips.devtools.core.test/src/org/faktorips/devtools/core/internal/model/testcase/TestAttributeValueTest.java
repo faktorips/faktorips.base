@@ -17,7 +17,9 @@
 
 package org.faktorips.devtools.core.internal.model.testcase;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -84,7 +86,7 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
         MessageList ml = testAttributeValue.validate();
         assertNull(ml.getMessageByCode(ITestAttributeValue.MSGCODE_TESTATTRIBUTE_NOT_FOUND));
 
-        testAttributeValue.setTestAttribute("x");
+        testAttributeValue.setTestAttribute("x"); // the value must be set, otherwise the attribute will be ignored
         ml = testAttributeValue.validate();
         assertNotNull(ml.getMessageByCode(ITestAttributeValue.MSGCODE_TESTATTRIBUTE_NOT_FOUND));
     }
@@ -102,6 +104,7 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
 
         attr.setName("x");
+        testAttributeValue.setValue("x");
         ml = testAttributeValue.validate();
         assertEquals(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND, ml.getFirstMessage(Message.WARNING).getCode());
     }
@@ -113,5 +116,58 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
         // remark the test if the message will be set couldn't be tested here because setting
         // a wrong type of the parameter is not possible without getting an argument exception
         // see TestValueParameter#setTestParameterType
-    }    
+    }
+    
+    /**
+     * Define a base policy cmpt in the test case type and put a product cmpt based on a subclass of the base policy cmpt
+     * in the test case. Assert that the find method on the test case type side doesn't find an attribute of the subclass.
+     * This feature is implemented on test test case side see TestPolicyCmpt.findProductCmptAttribute()
+     */
+    public void testValidateAttributeInSuperType() throws CoreException{
+        IPolicyCmptType pctSuper = newPolicyCmptType(project, "policyCmptTypeSuper");
+        IPolicyCmptType pct = newPolicyCmptType(project, "policyCmptType");
+        pct.setSupertype(pctSuper.getQualifiedName());
+        IAttribute attr = pct.newAttribute();
+        attr.setName("attribute1");
+        
+        ProductCmpt pc = newProductCmpt(project, "productA");
+        pc.setPolicyCmptType(pct.getQualifiedName());
+        
+        ITestAttribute testAttribute = testAttributeValue.findTestAttribute();
+        ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter) testAttribute.getParent();
+        param.setPolicyCmptType(pctSuper.getQualifiedName());
+        
+        testAttribute.setAttribute(attr.getName());
+        ((TestPolicyCmpt)testAttributeValue.getParent()).setProductCmpt(pc.getQualifiedName());
+        
+        // assert that the attribute will not be found by searching via the test attribute
+        // because the test attribute has no information about the usage of the subclass in the 
+        // test case
+        assertNull(testAttribute.findAttribute());
+        
+        // check that the attribute will be found by searching via the test attribute value,
+        // because the testattributes parent defines the product cmpt, wich uses a sublass, which
+        // defines the attribute
+        MessageList ml = testAttributeValue.validate();
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
+        
+
+        assertNotNull(((ITestPolicyCmpt)testAttributeValue.getParent()).findProductCmptAttribute(testAttribute.getAttribute()));
+        
+        
+        // negative test 
+        
+        attr.setName("attribute2");
+        testAttributeValue.setValue("x"); // the value must be set, otherwise the attribute will be ignored
+        ml = testAttributeValue.validate();
+        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
+        
+        testAttributeValue.setValue(null); // the value is null, thus the attribute will be ignored
+        ml = testAttributeValue.validate();
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
+        
+        pctSuper.newAttribute().setName("attributeSuper");
+        testAttribute.setAttribute("attributeSuper");
+        assertNotNull(testAttribute.findAttribute());
+    }
 }

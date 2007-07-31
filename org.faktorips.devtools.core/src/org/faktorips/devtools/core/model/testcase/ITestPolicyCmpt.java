@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model.testcase;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 
@@ -239,4 +240,11 @@ public interface ITestPolicyCmpt extends ITestObject {
      * @throws CoreException if the given test policy cmpt is no child of the current test policy cmpt.
      */
     public int getIndexOfChildTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException;
+    
+    /**
+     * Searches the given attribute in the supertype of the product cmpt which is stored in this test object.
+     * Returns <code>null</code> if the attribute doesn't exitsts on the policy cmpt types supertype hierarchy
+     * the product cmpt is based on or no product cmpt is set.
+     */    
+    public IAttribute findProductCmptAttribute(String attribute) throws CoreException;   
 }

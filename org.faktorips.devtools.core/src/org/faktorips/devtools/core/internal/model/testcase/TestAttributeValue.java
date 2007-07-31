@@ -263,15 +263,28 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
             messageList.add(msg);
         } else {
             IAttribute attribute = testAttr.findAttribute();
-            if (attribute == null) {
+            if (attribute == null){
+                // attribute not found in test case type definition, maybe this is a concrete subclass with additional attributes,
+                // therefore try to find the attribute by using the product cmpt (product cmpt type the product cmpt is based on)
+                attribute = ((ITestPolicyCmpt)getParent()).findProductCmptAttribute(testAttr.getAttribute());
+            }
+            // create a warning only if the attribute wasn't found and the value is set,
+            // otherwise the attribute value object is disabled (not relevant for the test policy cmpt),
+            // because the policy cmpt could be a subclass of the policy cmpt which is defined in the test case type,
+            // and the attribute should be only relevant for other policy cmpts which defines this subclass attribute
+            if (attribute == null && !StringUtils.isEmpty(value)) {
                 String text = NLS.bind(Messages.TestAttributeValue_ValidateError_AttributeNotFound, testAttr
                         .getAttribute());
                 Message msg = new Message(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND, text, Message.WARNING, this,
                         PROPERTY_VALUE);
                 messageList.add(msg);
-            } else {
+            }
+            
+            if (attribute != null ){
+                // ignore validation if the attribute wasn't found (see above)
                 ValidationUtils.checkValue(attribute.getDatatype(), value, this, PROPERTY_VALUE, messageList);
             }
+            
             // check the correct type
             if (! testAttr.isInputAttribute() && ! testAttr.isExpextedResultAttribute()){
                 String text = NLS.bind(Messages.TestAttributeValue_Error_WrongType, testAttr.getName());
