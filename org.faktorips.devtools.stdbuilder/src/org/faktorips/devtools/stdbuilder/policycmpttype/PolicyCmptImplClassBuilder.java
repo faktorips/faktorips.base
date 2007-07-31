@@ -882,7 +882,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         interfaceBuilder.generateSignatureAddObject(relation, methodsBuilder);
         String fieldname = getFieldNameForRelation(relation);
         String paramName = interfaceBuilder.getParamNameForAddObject(relation);
-        IRelation reverseRelation = relation.findReverseRelation();
+        IRelation reverseRelation = relation.findInverseRelation();
         methodsBuilder.openBracket();
         methodsBuilder.append("if (" + paramName + " == null) {");
         methodsBuilder.append("throw new ");
@@ -963,7 +963,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         String fieldname = getFieldNameForRelation(relation);
         String paramName = interfaceBuilder.getParamNameForRemoveObject(relation);
-        IRelation reverseRelation = relation.findReverseRelation();
+        IRelation reverseRelation = relation.findInverseRelation();
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureRemoveObject(relation, methodsBuilder);
@@ -1021,7 +1021,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         interfaceBuilder.generateSignatureSetObject(relation, methodsBuilder);
         
         methodsBuilder.openBracket();
-        if (relation.hasReverseRelation()) {
+        if (relation.hasInverseRelation()) {
             methodsBuilder.appendln("if(" + fieldname + " != null) {");
             methodsBuilder.append(generateCodeToSynchronizeReverseComposition(fieldname, "null"));;
             methodsBuilder.appendln("}");
@@ -1032,7 +1032,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.appendClassName(getQualifiedClassName(target));
         methodsBuilder.append(")" + paramName +";");
 
-        if (relation.hasReverseRelation()) {
+        if (relation.hasInverseRelation()) {
             methodsBuilder.appendln("if(" + fieldname + " != null) {");
             methodsBuilder.append(generateCodeToSynchronizeReverseComposition(fieldname, "this"));;
             methodsBuilder.appendln("}");
@@ -1068,7 +1068,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         String fieldname = getFieldNameForRelation(relation);
         String paramName = interfaceBuilder.getParamNameForSetObject(relation);
         IPolicyCmptType target = relation.findTarget();
-        IRelation reverseRelation = relation.findReverseRelation();
+        IRelation reverseRelation = relation.findInverseRelation();
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureSetObject(relation, methodsBuilder);

@@ -152,7 +152,7 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 					return;
 				}
 				if (containerRelation != null){
-					reverseRelation.setContainerRelation(containerRelation.getReverseRelation());
+					reverseRelation.setContainerRelation(containerRelation.getInverseRelation());
 				}else{
 					reverseRelation.setContainerRelation(""); //$NON-NLS-1$
 				}
@@ -454,12 +454,12 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	void storeReverseRelation(IRelation reverseRelation){
 	    this.reverseRelation = reverseRelation;
 		if (reverseRelation != null){
-			relation.setReverseRelation(reverseRelation.getTargetRoleSingular());
+			relation.setInverseRelation(reverseRelation.getTargetRoleSingular());
             if (!reverseRelation.isCompositionDetailToMaster()) {
-                reverseRelation.setReverseRelation(relation.getTargetRoleSingular());
+                reverseRelation.setInverseRelation(relation.getTargetRoleSingular());
             }
 		}else{
-			relation.setReverseRelation(""); //$NON-NLS-1$
+			relation.setInverseRelation(""); //$NON-NLS-1$
 		}
 	}
 	

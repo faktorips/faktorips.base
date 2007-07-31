@@ -343,7 +343,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 		newReverseRelation.setRelationType(NewPcTypeRelationWizard.getCorrespondingRelationType(wizard.getRelation().getRelationType()));
 		IRelation containerRelation = wizard.getRelation().findContainerRelation();
 		if (containerRelation != null){
-			newReverseRelation.setContainerRelation(containerRelation.getReverseRelation());
+			newReverseRelation.setContainerRelation(containerRelation.getInverseRelation());
 		}
 		if (wizard.getRelation().isReadOnlyContainer()){
 			newReverseRelation.setReadOnlyContainer(true);

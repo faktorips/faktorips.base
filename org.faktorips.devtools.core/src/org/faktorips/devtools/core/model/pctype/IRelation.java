@@ -24,11 +24,11 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 /**
  * Represents a directed(!) relation between two types. Bidirectional relations are represented in faktorips 
  * as two corresponding directed relations. Given a relation the other corresponding relation is called
- * the reverse relation.
+ * the inverse relation.
  * <p>
- * In conceptual models bidirectional relation can be either assoziations or compositions. A bidirectional assoziation
+ * In conceptual models bidirectional relations can be either assoziations or compositions. A bidirectional assoziation
  * is represented in FaktorIPS by two relations of type assoziation. A bidirectional composition is represented in 
- * FaktorIPS by one master to detail composition and on detail to master composition.
+ * FaktorIPS by one master to detail composition and one detail to master composition.
  *  
  * 
  *
@@ -46,7 +46,7 @@ public interface IRelation extends IIpsObjectPart {
     public final static String PROPERTY_MAX_CARDINALITY = "maxCardinality"; //$NON-NLS-1$
     public final static String PROPERTY_PRODUCT_RELEVANT = "productRelevant"; //$NON-NLS-1$
     public final static String PROPERTY_CONTAINER_RELATION = "containerRelation"; //$NON-NLS-1$
-    public final static String PROPERTY_REVERSE_RELATION = "reverseRelation"; //$NON-NLS-1$
+    public final static String PROPERTY_INVERSE_RELATION = "inverseRelation"; //$NON-NLS-1$
     public final static String PROPERTY_READONLY_CONTAINER = "readOnlyContainer"; //$NON-NLS-1$
 
     public final static String PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE = "targetRoleSingularProductSide"; //$NON-NLS-1$
@@ -396,26 +396,26 @@ public interface IRelation extends IIpsObjectPart {
     /**
      * Returns the name of the reverse relation.
      */
-    public String getReverseRelation();
+    public String getInverseRelation();
     
     /**
      * Returns <code>true</code> if this relation has a reverse relation otherwise <code>false</code>.
      */
-    public boolean hasReverseRelation();
+    public boolean hasInverseRelation();
     
     /**
      * Sets the name of the reverse relation.
      */
-    public void setReverseRelation(String relation);
+    public void setInverseRelation(String relation);
     
     /**
-     * Searches the reverse relation and returns it, if it exists. Returns <code>null</code> if the reverse
-     * relation does not exists. For detail-to-master relations the method always(!) return <code>null</code>
+     * Searches the inverse relation and returns it, if it exists. Returns <code>null</code> if the inverse
+     * relation exists. For detail-to-master relations the method always(!) returns <code>null</code>
      * as severall master-to-detail relations can have the same detail-to-master relation.
      * 
      * @throws CoreException if an error occurs while searching.
      */
-    public IRelation findReverseRelation() throws CoreException;
+    public IRelation findInverseRelation() throws CoreException;
     
     /**
      * Returns <code>true</code> if this relation implements a container relation, otherwise <code>false</code>.

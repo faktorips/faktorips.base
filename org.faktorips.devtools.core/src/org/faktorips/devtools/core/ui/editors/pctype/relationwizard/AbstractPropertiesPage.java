@@ -178,7 +178,7 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
 			public void handleEvent (Event ev) {
 				// store the new name in the reverse relation field of the relation or reverse
 				if (getReverseOfCurrentRelation() != null){
-					getReverseOfCurrentRelation().setReverseRelation(targetRoleSingularField.getText());
+					getReverseOfCurrentRelation().setInverseRelation(targetRoleSingularField.getText());
 				}
 			}
         });

@@ -335,7 +335,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
         uiController.add(minCardinalityField, IRelation.PROPERTY_MIN_CARDINALITY);
         uiController.add(maxCardinalityField, IRelation.PROPERTY_MAX_CARDINALITY);
         uiController.add(containerRelationField, IRelation.PROPERTY_CONTAINER_RELATION);
-        uiController.add(reverseRelationField, IRelation.PROPERTY_REVERSE_RELATION);
+        uiController.add(reverseRelationField, IRelation.PROPERTY_INVERSE_RELATION);
         uiController.add(productRelevantField, IRelation.PROPERTY_PRODUCT_RELEVANT);
         
         extFactory.connectToModel(uiController);

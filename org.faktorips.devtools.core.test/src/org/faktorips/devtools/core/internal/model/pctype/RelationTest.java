@@ -66,7 +66,7 @@ public class RelationTest extends AbstractIpsPluginTest {
         policyToCoverage.setTarget(coverageType.getQualifiedName());
         policyToCoverage.setTargetRoleSingular("Coverage");
         policyToCoverage.setTargetRolePlural("Coverages");
-        policyToCoverage.setReverseRelation("Policy");
+        policyToCoverage.setInverseRelation("Policy");
         
         IRelation coverageToPolicy = coverageType.newRelation();
         coverageToPolicy.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
@@ -77,7 +77,7 @@ public class RelationTest extends AbstractIpsPluginTest {
         coverageToPolicy.setTarget(policyType.getQualifiedName());
         coverageToPolicy.setTargetRoleSingular("Policy");
         coverageToPolicy.setTargetRolePlural("Policies");
-        coverageToPolicy.setReverseRelation("Coverage");
+        coverageToPolicy.setInverseRelation("Coverage");
         
         IPolicyCmptType homePolicyType = newPolicyCmptType(project, "HomePolicy");
         homePolicyType.setSupertype(policyType.getQualifiedName());
@@ -94,7 +94,7 @@ public class RelationTest extends AbstractIpsPluginTest {
         homePolicyToCoverage.setTargetRoleSingular("HomeCoverage");
         homePolicyToCoverage.setTargetRolePlural("HomeCoverages");
         homePolicyToCoverage.setContainerRelation(policyToCoverage.getName());
-        homePolicyToCoverage.setReverseRelation("HomePolicy");
+        homePolicyToCoverage.setInverseRelation("HomePolicy");
         
         IRelation homeCoverageToPolicy = homeCoverageType.newRelation();
         homeCoverageToPolicy.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
@@ -106,7 +106,7 @@ public class RelationTest extends AbstractIpsPluginTest {
         homeCoverageToPolicy.setTarget(homePolicyType.getQualifiedName());
         homeCoverageToPolicy.setTargetRoleSingular("HomePolicy");
         homeCoverageToPolicy.setTargetRolePlural("HomePolicies");
-        homeCoverageToPolicy.setReverseRelation("HomeCoverage");
+        homeCoverageToPolicy.setInverseRelation("HomeCoverage");
         
         MessageList ml = homePolicyToCoverage.validate();
         assertNull(ml.getMessageByCode(IRelation.MSGCODE_CONTAINERRELATION_REVERSERELATION_MISMATCH));
@@ -128,7 +128,7 @@ public class RelationTest extends AbstractIpsPluginTest {
     public void testValidateReverseRelationMismatch() throws Exception {
         IRelation rel2 = content.getCoverage().newRelation();
         rel2.setTargetRoleSingular("test");
-        relation.setReverseRelation("test");
+        relation.setInverseRelation("test");
         MessageList ml = relation.validate();
         assertNull(ml.getMessageByCode(IRelation.MSGCODE_REVERSE_RELATION_MISMATCH)); // applies only to associations
 
@@ -136,7 +136,7 @@ public class RelationTest extends AbstractIpsPluginTest {
         ml = relation.validate();
         assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_REVERSE_RELATION_MISMATCH));
         
-        rel2.setReverseRelation(relation.getTargetRoleSingular());
+        rel2.setInverseRelation(relation.getTargetRoleSingular());
         ml = relation.validate();
         assertNull(ml.getMessageByCode(IRelation.MSGCODE_REVERSE_RELATION_MISMATCH));
     }
@@ -169,7 +169,7 @@ public class RelationTest extends AbstractIpsPluginTest {
         assertEquals(Integer.MAX_VALUE, relation.getMaxCardinality());
         assertFalse(relation.isProductRelevant());
         assertEquals("Policy.Parts", relation.getContainerRelation());
-        assertEquals("Part.Policy", relation.getReverseRelation());
+        assertEquals("Part.Policy", relation.getInverseRelation());
         assertEquals("PolicyPartType", relation.getTargetRoleSingularProductSide());
         assertEquals("PolicyPartTypes", relation.getTargetRolePluralProductSide());
         assertEquals(2, relation.getMinCardinalityProductSide());
@@ -188,7 +188,7 @@ public class RelationTest extends AbstractIpsPluginTest {
         relation.setTargetRolePlural("targetRolePlural");
         relation.setProductRelevant(false);
         relation.setContainerRelation("super");
-        relation.setReverseRelation("reverse");
+        relation.setInverseRelation("reverse");
         relation.setMinCardinality(2);
         relation.setMaxCardinality(3);
         relation.setDescription("blabla");
@@ -208,7 +208,7 @@ public class RelationTest extends AbstractIpsPluginTest {
         assertEquals("targetRoleSingular", copy.getTargetRoleSingular());
         assertEquals("targetRolePlural", copy.getTargetRolePlural());
         assertEquals("super", copy.getContainerRelation());
-        assertEquals("reverse", copy.getReverseRelation());
+        assertEquals("reverse", copy.getInverseRelation());
         assertEquals(2, copy.getMinCardinality());
         assertEquals(3, copy.getMaxCardinality());
         assertFalse(copy.isProductRelevant());
@@ -505,11 +505,11 @@ public class RelationTest extends AbstractIpsPluginTest {
 	public void testValidateReverseRelationNotInTarget() throws Exception {
 		IRelation rel2 = content.getCoverage().newRelation();
 		rel2.setTargetRoleSingular("test");
-		relation.setReverseRelation("abc");
+		relation.setInverseRelation("abc");
 		MessageList ml = relation.validate();
 		assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_REVERSERELATION_NOT_IN_TARGET));
 		
-		relation.setReverseRelation("test");
+		relation.setInverseRelation("test");
 		ml = relation.validate();
 		assertNull(ml.getMessageByCode(IRelation.MSGCODE_REVERSERELATION_NOT_IN_TARGET));
 	}
@@ -517,8 +517,8 @@ public class RelationTest extends AbstractIpsPluginTest {
 	public void testValidateReverseRelationOfContainerRelationHasToBeContainerRelationToo() throws Exception {
 		IRelation rel2 = content.getCoverage().newRelation();
 		rel2.setTargetRoleSingular("test");
-		rel2.setReverseRelation(relation.getTargetRoleSingular());
-		relation.setReverseRelation("test");
+		rel2.setInverseRelation(relation.getTargetRoleSingular());
+		relation.setInverseRelation("test");
 		relation.setReadOnlyContainer(true);
 		MessageList ml = relation.validate();
 		assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_FORWARD_AND_REVERSE_RELATION_MUST_BOTH_BE_MARKED_AS_CONTAINER));
@@ -530,9 +530,9 @@ public class RelationTest extends AbstractIpsPluginTest {
 	public void testValidateReverseCompositionMissmatch() throws Exception {
 		IRelation rel2 = content.getCoverage().newRelation();
 		rel2.setTargetRoleSingular("test");
-		rel2.setReverseRelation(relation.getTargetRoleSingular());
+		rel2.setInverseRelation(relation.getTargetRoleSingular());
 		rel2.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
-		relation.setReverseRelation("test");
+		relation.setInverseRelation("test");
 		relation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
 		MessageList ml = relation.validate();
 		assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_REVERSE_COMPOSITION_MISSMATCH));
@@ -544,9 +544,9 @@ public class RelationTest extends AbstractIpsPluginTest {
 	public void testValidateReverseAssociationMissmatch() throws Exception {
 		IRelation rel2 = content.getCoverage().newRelation();
 		rel2.setTargetRoleSingular("test");
-		rel2.setReverseRelation(relation.getTargetRoleSingular());
+		rel2.setInverseRelation(relation.getTargetRoleSingular());
 		rel2.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
-		relation.setReverseRelation("test");
+		relation.setInverseRelation("test");
 		relation.setRelationType(RelationType.ASSOCIATION);
 		MessageList ml = relation.validate();
 		assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_REVERSE_ASSOCIATION_MISSMATCH));
@@ -672,22 +672,22 @@ public class RelationTest extends AbstractIpsPluginTest {
     }
     
     public void testFindReverseRelation() throws CoreException {
-        relation.setReverseRelation("");
-        assertNull(relation.findReverseRelation());
+        relation.setInverseRelation("");
+        assertNull(relation.findInverseRelation());
 
-        relation.setReverseRelation("reverseRelation");
-        assertNull(relation.findReverseRelation());
+        relation.setInverseRelation("reverseRelation");
+        assertNull(relation.findInverseRelation());
         
         IPolicyCmptType targetType = (IPolicyCmptType)newIpsObject(this.pcType.getIpsProject(), IpsObjectType.POLICY_CMPT_TYPE, "pack2.MotorPolicy");
         relation.setTarget(targetType.getQualifiedName());
-        assertNull(relation.findReverseRelation());
+        assertNull(relation.findInverseRelation());
         
         IRelation relation2 = targetType.newRelation();
         relation2.setTargetRoleSingular("reverseRelation");
-        assertEquals(relation2, relation.findReverseRelation());
+        assertEquals(relation2, relation.findInverseRelation());
         
         relation.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
-        assertNull(relation.findReverseRelation());
+        assertNull(relation.findInverseRelation());
         
     }
     
