@@ -43,8 +43,29 @@
 		    		<include name="build/results/*.jar" />
 				</patternset>
 			</fileset>
-			
-			 <pathelement location="${temp.folder}/ant_tasks/ant-tasks.jar.bin/"/>
+
+			<!-- eclipse libraries, dependency by org.faktorips.devtools.core  -->
+			<fileset dir="${eclipsehome}">
+				<patternset>
+					<include name="plugins/org.eclipse.jface*.jar" />
+					<include name="plugins/org.eclipse.text*.jar" />
+					<include name="plugins/org.eclipse.jdt*.jar" />
+					<include name="plugins/org.eclipse.emf*codegen*.jar" />
+					<include name="plugins/org.eclipse.core*.jar" />
+					<include name="plugins/org.eclipse.osgi*.jar" />
+					<include name="plugins/org.eclipse.swt*.jar" />
+					<include name="plugins/org.eclipse.ui*.jar" />
+					<include name="plugins/org.eclipse.search*.jar" />
+					<include name="plugins/org.eclipse.team.*.jar"/>
+					<include name="plugins/org.eclipse.compare*.jar"/>
+					<include name="plugins/org.eclipse.debug.core*.jar" />
+					<include name="plugins/org.eclipse.debug.ui*.jar" />
+					<include name="plugins/org.eclipse.equinox*.jar" />
+					<include name="plugins/com.ibm.icu*.jar" />
+				</patternset>
+			</fileset>
+
+			<pathelement location="${temp.folder}/ant_tasks/ant-tasks.jar.bin/"/>
 		</path>
 			
 			
