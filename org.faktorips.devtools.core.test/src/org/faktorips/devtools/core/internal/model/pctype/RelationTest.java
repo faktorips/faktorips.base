@@ -671,7 +671,7 @@ public class RelationTest extends AbstractIpsPluginTest {
         assertFalse(relation.isContainerRelationImplementation(otherRelation));
     }
     
-    public void testFindReverseRelation() throws CoreException {
+    public void testFindInverseRelation() throws CoreException {
         relation.setInverseRelation("");
         assertNull(relation.findInverseRelation());
 
