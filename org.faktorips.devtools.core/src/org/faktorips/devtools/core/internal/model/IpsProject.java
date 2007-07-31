@@ -1102,19 +1102,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
-	public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException{
-		if(qualifiedName == null){
-			return null;
-		}
-		IIpsObject[] all = findIpsObjects(IpsObjectType.PRODUCT_CMPT);
-		for (int i = 0; i < all.length; i++) {
-			if (((IProductCmpt)all[i]).getQualifiedName().equals(qualifiedName)) {
-				return (IProductCmpt)all[i];
-			}
-		}
-		return null;
-	}
-
+    public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException{
+        return (IProductCmpt)findIpsObject(IpsObjectType.PRODUCT_CMPT, qualifiedName);
+    }
+    
     /**
      * {@inheritDoc}
      */
