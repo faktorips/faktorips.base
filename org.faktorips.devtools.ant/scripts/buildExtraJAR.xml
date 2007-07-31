@@ -36,6 +36,14 @@
 				<include name="plugins/org.junit_3.8.1/*.jar"/>
 			</fileset>
 			
+			<!-- dependency to org.faktorips.devtools.core -->
+			<fileset dir="../../org.faktorips.devtools.core/" >
+				<patternset>
+		    		<include name="lib/*.jar" /> 
+		    		<include name="build/results/*.jar" />
+				</patternset>
+			</fileset>
+			
 			 <pathelement location="${temp.folder}/ant_tasks/ant-tasks.jar.bin/"/>
 		</path>
 			
