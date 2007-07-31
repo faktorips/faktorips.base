@@ -21,6 +21,8 @@
 			<!-- logdir -->
 			<property name="log" location="logs" />
 
+			<!-- javac source/target VM version -->
+			<property name="vmversion" value="1.4" />
 
 	    <!-- wipes out -->
 		<target name="clean">
@@ -65,7 +67,9 @@
 	<!--Compile -->
         <target name="compile" depends="init">
         	<!-- compile with debug=on to keep source line numbers -->
-			<javac encoding="UTF-8" srcdir="${src}" destdir="${classes}" classpathref="classpath" debug="on" />
+        	<echo message="Compile with source/target VM-Version: ${vmversion}" />
+			<javac encoding="UTF-8" srcdir="${src}" destdir="${classes}" classpathref="classpath" 
+				debug="on" target="${vmversion}" source="${vmversion}"/>
         	
         	<copy todir="${test_classes}">
         	    <fileset dir="${test_src}">
@@ -82,7 +86,8 @@
         	      <include name="**/*.ipsproduct" />
         	    </fileset>
         	</copy>
-        	<javac encoding="UTF-8" srcdir="${test_src}:${src}" destdir="${test_classes}" classpathref="classpath" debug="on" />
+        	<javac encoding="UTF-8" srcdir="${test_src}:${src}" destdir="${test_classes}" classpathref="classpath" 
+        		debug="on" target="${vmversion}" source="${vmversion}" />
         </target>
 
 	
