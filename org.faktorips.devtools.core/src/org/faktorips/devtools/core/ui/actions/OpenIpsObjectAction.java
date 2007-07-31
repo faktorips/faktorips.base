@@ -33,6 +33,7 @@ import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -95,7 +96,7 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
         } catch (CoreException e) {
             // if we fail to get the objects, we won't be able to open them either.
         }
-        if (perspective.equals("org.faktorips.devtools.core.productDefinitionPerspective")) { //$NON-NLS-1$
+        if (perspective.equals(IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID)) { //$NON-NLS-1$
             List list = new ArrayList();
             for (int i = 0; i < objects.length; i++) {
                 IIpsObject object = objects[i];

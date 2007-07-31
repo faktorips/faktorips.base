@@ -39,6 +39,7 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.ide.IDE;
+import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
 import org.osgi.framework.Bundle;
 
 /**
@@ -99,7 +100,7 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
 	 * {@inheritDoc}
 	 */
 	public String getInitialWindowPerspectiveId() {
-		return "org.faktorips.devtools.core.productDefinitionPerspective"; //$NON-NLS-1$
+		return IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID; //$NON-NLS-1$
 	}
 
 	/**

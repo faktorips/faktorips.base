@@ -48,6 +48,7 @@ import org.eclipse.ui.ide.IDEActionFactory;
 import org.eclipse.ui.ide.IIDEActionConstants;
 import org.eclipse.ui.internal.provisional.application.IActionBarConfigurer2;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
 
 /**
  * Provides the actions available for FaktorIps as Eclipse-Product
@@ -810,7 +811,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         register(cleanProjectsAction);
 
 		PerspectiveMenu m = new PerspecitveHandler(getWindow(), "unknown"); //$NON-NLS-1$
-		openProductDefinitionPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId("org.faktorips.devtools.core.productDefinitionPerspective"), m);  //$NON-NLS-1$
+		openProductDefinitionPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId(IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID), m);  //$NON-NLS-1$
 		openSynchronizePerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.team.ui.TeamSynchronizingPerspective"), m); //$NON-NLS-1$
         openCVSPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.team.cvs.ui.cvsPerspective"), m); //$NON-NLS-1$
 		

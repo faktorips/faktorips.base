@@ -27,6 +27,8 @@ import org.eclipse.ui.IPerspectiveFactory;
  */
 public class IpsProductDefinitionPerspectiveFactory implements IPerspectiveFactory {
 
+    public final static String PRODUCTDEFINITIONPERSPECTIVE_ID = "org.faktorips.devtools.core.productDefinitionPerspective";
+    
 	public void createInitialLayout(IPageLayout layout) {
 		// nothing to do
 	}
