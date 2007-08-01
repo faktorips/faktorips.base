@@ -33,6 +33,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -89,9 +90,11 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.Validatable;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
@@ -124,6 +127,12 @@ import org.faktorips.util.message.MessageList;
 public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     public static final String VALUESECTION = "VALUESECTION"; //$NON-NLS-1$
 	
+    // Used for saving the current layout style and filter in a eclipse memento.
+    private static final String DIALOG_SETTINGS_KEY = "TestCaseSection"; //$NON-NLS-1$
+    private static final String CONTENT_TYPE_KEY = "contenttype"; //$NON-NLS-1$
+    private static final String SHOW_RELATION_KEY = "relations"; //$NON-NLS-1$
+    private static final String SHOW_ALL_KEY = "all"; //$NON-NLS-1$
+    
     //Ui refresh intervall
     static final int REFRESH_INTERVAL = 400;
 
@@ -168,14 +177,16 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	
 	// Indicates if all objects of the test case are displayed or 
 	// the child objects of selected root are visible
-	boolean showAll = false;
-	
+	private boolean showAll = false;
+    
 	// Indicates if the tree selection was doubleclicked
 	private boolean isDoubleClicked = false;
 
 	// Actions
+	private Action actionRelation;
 	private Action actionAll;
-	
+	private ToggleContentTypeAction[] toggleContentTypeActions;
+    
 	// Stores the last test run status
 	private boolean isTestRunError;
 	private boolean isTestRunFailure;
@@ -204,11 +215,13 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     // Contains the menu in the title if available
     private Menu sectionTitleContextMenu;
 
-    private IEditorSite site;
-    
     // Stores the test policy cmpt that should be moved using drag and drop
     private ITestPolicyCmpt toMove;
     
+    private boolean hasNewDialogSettings;
+
+    private IEditorSite site;
+
     /*
      * State class contains the enable state of all actions (for buttons and context menu)
      */
@@ -217,6 +230,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         boolean removeEnable = false;
         boolean addEnable = false;
         boolean moveEnable = false;
+        boolean openInNewEditorEnable = false;
     }
     
 	/*
@@ -783,6 +797,49 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
     }
 
+    private class OpenInNewEditorAction extends IpsAction {
+        public OpenInNewEditorAction() {
+            super(treeViewer);
+            setText(Messages.TestCaseSection_Menu_OpenInNewEditor);
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean computeEnabledProperty(IStructuredSelection selection) {
+            TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
+            return actionEnableState.openInNewEditorEnable;
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        public void run(IStructuredSelection selection) {
+            Object firstElement = selection.getFirstElement();
+            if (firstElement instanceof ITestPolicyCmpt){
+                try {
+                    ITestPolicyCmpt tpct = (ITestPolicyCmpt) firstElement;
+                    if (StringUtils.isNotEmpty(tpct.getProductCmpt())){
+                        IProductCmpt cmpt = tpct.findProductCmpt();
+                        IpsPlugin.getDefault().openEditor(cmpt);
+                        return;
+                    } else {
+                        ITestPolicyCmptTypeParameter parameter = tpct.findTestPolicyCmptTypeParameter();
+                        if (parameter != null){
+                            IPolicyCmptType type = parameter.findPolicyCmptType();
+                            IpsPlugin.getDefault().openEditor(type);
+                            return;
+                        }
+                    }
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+            } else {
+                throw new RuntimeException("Open action not supported for: " + firstElement.getClass().getName()); //$NON-NLS-1$
+            }
+        }
+    }
+    
     public TestCaseSection(Composite parent, TestCaseEditor editor, UIToolkit toolkit,
             TestCaseContentProvider contentProvider, final String title, String detailTitle, ScrolledForm form,
             IEditorSite site) {
@@ -925,7 +982,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 */
 	private void configureToolBar() {
 		// Toolbar item show without relation
-		Action actionRelation = new Action("withoutRelation", Action.AS_CHECK_BOX) { //$NON-NLS-1$
+		actionRelation = new Action("withoutRelation", Action.AS_CHECK_BOX) { //$NON-NLS-1$
 			public void run() {
 				showRelationsClicked();
 			}
@@ -996,14 +1053,14 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      *
      */
     private void addContentTypeAction() {
-        ToggleContentTypeAction[] fToggleContentTypeActions =
+        toggleContentTypeActions =
             new ToggleContentTypeAction[] {
                 new ToggleContentTypeAction(TestCaseContentProvider.COMBINED),
                 new ToggleContentTypeAction(TestCaseContentProvider.INPUT),
                 new ToggleContentTypeAction(TestCaseContentProvider.EXPECTED_RESULT)};
         
-        for (int i = 0; i < fToggleContentTypeActions.length; ++i)
-            form.getToolBarManager().add(fToggleContentTypeActions[i]);
+        for (int i = 0; i < toggleContentTypeActions.length; ++i)
+            form.getToolBarManager().add(toggleContentTypeActions[i]);
     }
     
     /*
@@ -1181,6 +1238,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     actionEnableState.addEnable = param.getTestPolicyCmptTypeParamChilds().length>0;
                     // product component select button is only enabled if the type parameter specified this
                     actionEnableState.productCmptEnable = param.isRequiresProductCmpt();
+                    // open in new editor is always enabled for ITestPolicyCmpt
+                    actionEnableState.openInNewEditorEnable = true;
                 }
             } catch (CoreException e) {
                 // disable add and remove button and ignore exception
@@ -1292,6 +1351,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         manager.add(new Separator());
         manager.add(new MoveAction(true));
         manager.add(new MoveAction(false));
+        manager.add(new Separator());
+        manager.add(new OpenInNewEditorAction());
         Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
     }
@@ -1501,7 +1562,22 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	private void addRelation(final TestCaseTypeRelation relationType) throws CoreException{
 		String[] productCmptQualifiedNames = null;
 		if (relationType.isRequiresProductCmpt()) {
-            productCmptQualifiedNames = selectProductCmptsDialog(relationType.getPolicyCmptTypeTarget(), relationType
+            IRelation relation = relationType.findRelation();
+            if (relation == null){
+                // validation error
+                return;
+            }
+            IPolicyCmptType policyCmptType = relation.findTarget();
+            if (policyCmptType == null){
+                // validation error
+                return;
+            }
+            IProductCmptType productCmptType = policyCmptType.findProductCmptType();
+            if (productCmptType == null){
+                // validation error
+                return;
+            }
+            productCmptQualifiedNames = selectProductCmptsDialog(productCmptType, relationType
                     .getParentTestPolicyCmpt().findProductCmpt(), true);
             if (productCmptQualifiedNames == null)
                 // chancel dialog
@@ -1674,10 +1750,21 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				}
 				String productCmptQualifiedNames[] = null;
 				if (testTypeParam.isRequiresProductCmpt()){
-					productCmptQualifiedNames = selectProductCmptsDialog(testTypeParam.getPolicyCmptType(), testPolicyCmpt.findProductCmpt(), false);
-					if (productCmptQualifiedNames == null || productCmptQualifiedNames.length == 0)
+                    IPolicyCmptType policyCmptType = testTypeParam.findPolicyCmptType();
+                    if (policyCmptType == null){
+                        // policy cmpt type not found, this is a validation error
+                        return;
+                    }
+                    IProductCmptType productCmptType = policyCmptType.findProductCmptType();
+                    if (productCmptType == null){
+                        // policy cmpt type not found, this is a validation error
+                        return;
+                    }
+					productCmptQualifiedNames = selectProductCmptsDialog(productCmptType, testPolicyCmpt.findProductCmpt(), false);
+					if (productCmptQualifiedNames == null || productCmptQualifiedNames.length == 0){
 						// chancel
 						return;
+                    }
 				}
 				testPolicyCmpt.setProductCmpt(productCmptQualifiedNames[0]);
 				testPolicyCmpt.setName(
@@ -1769,6 +1856,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
 	private void runTestClicked(){
         resetTestRunStatus();
+        clearTestFailures();
         registerTestRunListener();
 	    startTestRunner();
 	}
@@ -1795,10 +1883,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * 
      * @throws CoreException If an error occurs
      */
-	private String[] selectProductCmptsDialog(String qualifiedTypeName, IProductCmpt productCmptParent, boolean multiSelectiion) throws CoreException {
+	private String[] selectProductCmptsDialog(IProductCmptType productCmptType, IProductCmpt productCmptParent, boolean multiSelectiion) throws CoreException {
 	    PdObjectSelectionDialog dialog = new PdObjectSelectionDialog(getShell(), Messages.TestCaseSection_DialogSelectProductCmpt_Title, 
         		Messages.TestCaseSection_DialogSelectProductCmpt_Description);
-        dialog.setElements(getProductCmptObjects(qualifiedTypeName));
+        dialog.setElements(getProductCmptObjects(productCmptType));
         dialog.setMultipleSelection(multiSelectiion);
         if (dialog.open()==Window.OK) {
             if (dialog.getResult().length>0) {
@@ -1818,10 +1906,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 * 
 	 * @throws CoreException If an error occurs
 	 */
-    public IIpsObject[] getProductCmptObjects(String qualifiedTypeName) throws CoreException {
+    public IIpsObject[] getProductCmptObjects(IProductCmptType productCmptType) throws CoreException {
         List allProductCmpts = new ArrayList();
         
-        getProductCmptObjects(testCase.getIpsProject(), qualifiedTypeName, allProductCmpts);
+        getProductCmptObjects(testCase.getIpsProject(), productCmptType, allProductCmpts);
         
         IProductCmpt[] cmpts = (IProductCmpt[]) allProductCmpts.toArray(new IProductCmpt[0]);
     	List cmptList = new ArrayList();
@@ -1833,14 +1921,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * Adds all product components in the given project and referenced projects
      * with the given qualified name to the given result list.
      */
-    private void getProductCmptObjects(IIpsProject ipsProject, String qualifiedTypeName, List result) throws CoreException {
-        IProductCmpt[] cmpts = ipsProject.findProductCmpts(qualifiedTypeName, true);
+    private void getProductCmptObjects(IIpsProject ipsProject, IProductCmptType productCmptType, List result) throws CoreException {
+        IProductCmpt[] cmpts = ipsProject.findAllProductCmpts(productCmptType, true);
         for (int i = 0; i < cmpts.length; i++) {
             result.add(cmpts[i]);
-        }
-        IIpsProject[] ipsProjects = ipsProject.getReferencedIpsProjects();
-        for (int i = 0; i < ipsProjects.length; i++) {
-            getProductCmptObjects(ipsProjects[i], qualifiedTypeName, result);
         }
     }
 
@@ -2321,7 +2405,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         // resets the status, thus if a test runner for this test case is started in the background
         // - e.g. by using the modelexplorer - the status will be removed correctly
         postResetTestRunStatus();
-		
+        clearTestFailures();
+        
         // remove the contextmenu in the section title
         postAsyncRunnable(new Runnable() {
             public void run() {
@@ -2491,6 +2576,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         form.getContent().setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
         form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_BLACK));
         setFormToolTipText(""); //$NON-NLS-1$
+    }
+    
+    private void clearTestFailures(){
         testCaseDetailArea.resetTestRun();
         allFailureDetails.clear();
     }
@@ -2671,5 +2759,56 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         }
         return content;
+    }
+    
+    /**
+     * Loads the layout style from the dialog settings
+     */
+    void init() {
+        IDialogSettings workbenchSettings= IpsPlugin.getDefault().getDialogSettings();
+        IDialogSettings section= workbenchSettings.getSection(DIALOG_SETTINGS_KEY); //$NON-NLS-1$
+        
+        if (section != null) {
+            // load settings
+            hasNewDialogSettings = false;
+            contentProvider.setContentType(section.getInt(CONTENT_TYPE_KEY));
+            contentProvider.setWithoutRelations(section.getBoolean(SHOW_RELATION_KEY));
+            showAll = section.getBoolean(SHOW_ALL_KEY);
+            
+            // init menu state
+            actionAll.setChecked(showAll);
+            actionRelation.setChecked(contentProvider.isWithoutRelations());
+            for (int i = 0; i < toggleContentTypeActions.length; i++) {
+                if (i == contentProvider.getContentType()) {
+                    toggleContentTypeActions[i].setChecked(true);
+                } else {
+                    toggleContentTypeActions[i].setChecked(false);
+                }
+            }
+            
+            // refresh content
+            refreshTreeAndDetailArea();
+            if (showAll){
+                treeViewer.expandAll();
+            }            
+        } else {
+            hasNewDialogSettings = true;
+        }
+    }
+
+    /**
+     * Stores the layout style in the dialog settings
+     */
+    void saveState() {
+        IDialogSettings workbenchSettings = IpsPlugin.getDefault().getDialogSettings();
+        IDialogSettings section;
+        if (hasNewDialogSettings) {
+            section = workbenchSettings.addNewSection(DIALOG_SETTINGS_KEY);
+        } else {
+            section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY);
+        }
+        section.put(CONTENT_TYPE_KEY, contentProvider.getContentType());
+        section.put(SHOW_RELATION_KEY, contentProvider.isWithoutRelations());
+        section.put(SHOW_ALL_KEY, showAll);
     }
 }

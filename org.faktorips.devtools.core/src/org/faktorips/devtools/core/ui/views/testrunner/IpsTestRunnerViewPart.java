@@ -709,7 +709,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 				if(isDisposed()) 
 					return;
 				fTestRunPane.failureTest(testId, failureDetailsToString(failureDetails), failureDetails);
-                fTestRunPane.selectFirstFailureOrError();
 			}
 		});
 	}

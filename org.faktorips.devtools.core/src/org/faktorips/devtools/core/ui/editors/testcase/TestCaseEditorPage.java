@@ -59,6 +59,7 @@ public class TestCaseEditorPage extends IpsObjectEditorPage {
         formBody.setLayout(createPageLayout(1, false));
         section = new TestCaseSection(formBody, (TestCaseEditor)getEditor(), toolkit, contentProvider, sectionTitle,
                 sectionDetailTitle, getManagedForm().getForm(), getEditorSite());
+        section.init();
     }
 	
 	/**
@@ -66,5 +67,9 @@ public class TestCaseEditorPage extends IpsObjectEditorPage {
 	 */
     public TestCaseContentProvider getTestCaseContentProvider(){
     	return contentProvider;
+    }
+
+    void saveState() {
+        section.saveState();
     }
 }

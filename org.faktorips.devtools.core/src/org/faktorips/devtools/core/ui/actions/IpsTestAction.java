@@ -266,7 +266,7 @@ public class IpsTestAction extends IpsAction {
 	/*
 	 * Gets the package name from the given ips package fragment root.
 	 */
-	private String getRepPckNameFromPckFrgmtRoot(IIpsPackageFragmentRoot root) throws CoreException {
+	public static String getRepPckNameFromPckFrgmtRoot(IIpsPackageFragmentRoot root) throws CoreException {
 		IIpsArtefactBuilderSet builderSet = root.getIpsProject().getIpsArtefactBuilderSet();
 		return builderSet.getRuntimeRepositoryTocResourceName(root);
 	}

@@ -23,13 +23,29 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.IPerspectiveDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
+import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.ui.actions.IpsTestAction;
 
 /**
  * 
@@ -74,9 +90,95 @@ public class TestRunPane {
 						new OpenTestInEditorAction(testRunnerViewPart, getSelectedTestFullPath(), getSelectedTestQualifiedName(), null).run();
 			}
 		});
+        
+        buildContextMenu();
 	}
 
-	/*
+	private void buildContextMenu() {
+        TableMenu menuMgr = new TableMenu(); //$NON-NLS-1$
+        menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.addMenuListener(menuMgr);
+        
+        Menu menu = menuMgr.createContextMenu(fTable);
+        fTable.setMenu(menu);
+    }
+
+    private class TableMenu extends MenuManager implements IMenuListener {
+        public void menuAboutToShow(IMenuManager manager) {
+            if (!(fTable.getItemCount() > 0) && getSelectedItem() != null){
+                return;
+            }
+            
+            Action open = new Action("actionOpen", Action.AS_PUSH_BUTTON) { //$NON-NLS-1$
+                public void run() {
+                    new OpenTestInEditorAction(testRunnerViewPart, testRunnerViewPart.getSelectedTestFullPath(), testRunnerViewPart.getSelectedTestQualifiedName(), null).run();
+                }
+            };
+            open.setText(Messages.TestRunPane_Menu_GoToFile);
+            manager.add(open);
+            
+            manager.add(new Separator());
+            
+            Action runAction = new Action("actionRun", Action.AS_PUSH_BUTTON) { //$NON-NLS-1$
+                public void run() {
+                    startSelectedTest(ILaunchManager.RUN_MODE);
+                }
+            };
+            runAction.setText(Messages.TestRunPane_Menu_Run);
+            manager.add(runAction);  
+            
+            // show debug entry only if the current perspective is not the produduct definition perspective
+            IPerspectiveDescriptor pd =  IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective();
+            if (pd != null){
+                String perspective = pd.getId();
+                if (! IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID.equals(perspective)){
+                    Action debugAction = new Action("actionDebug", Action.AS_PUSH_BUTTON) { //$NON-NLS-1$
+                        public void run() {
+                            startSelectedTest(ILaunchManager.DEBUG_MODE);
+                        } 
+                    };
+                    debugAction.setText(Messages.TestRunPane_MenuDebug);
+                    manager.add(debugAction);  
+                }
+            }
+        }
+    }
+    
+    private void startSelectedTest(String mode) {
+        String selectedTestQualifiedName = getSelectedTestQualifiedName();
+        if (StringUtils.isEmpty(selectedTestQualifiedName)){
+            return;
+        } 
+        
+        IIpsObject ipsObject = null;
+        try {
+            IIpsProject ipsProject = IpsPlugin.getDefault().getIpsTestRunner().getIpsProject();
+            IIpsPackageFragmentRoot[] ipsPackageFragmentRoots = ipsProject.getIpsPackageFragmentRoots();
+            for (int i = 0; i < ipsPackageFragmentRoots.length; i++) {
+                // currently two types of ips objects supports test:
+                //  1. product cmpts
+                //  2. isp test cases
+                ipsObject = ipsPackageFragmentRoots[i].findIpsObject(IpsObjectType.TEST_CASE, selectedTestQualifiedName);
+                if (ipsObject != null){
+                    break;
+                }
+                ipsObject = ipsPackageFragmentRoots[i].findIpsObject(IpsObjectType.PRODUCT_CMPT, selectedTestQualifiedName);
+                if (ipsObject != null){
+                    break;
+                }
+            }
+            if (ipsObject != null){
+                String repositoryPackage = null;
+                repositoryPackage = IpsTestAction.getRepPckNameFromPckFrgmtRoot(ipsObject.getIpsPackageFragment().getRoot());
+                IpsPlugin.getDefault().getIpsTestRunner().startTestRunnerJob(repositoryPackage, selectedTestQualifiedName, mode, null);
+            }
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            return;
+        }
+    }     
+    
+    /*
 	 * Display the error or failure details in the failure pane.
 	 */
 	private void showDetailsInFailurePane(TableItem tableItem) {

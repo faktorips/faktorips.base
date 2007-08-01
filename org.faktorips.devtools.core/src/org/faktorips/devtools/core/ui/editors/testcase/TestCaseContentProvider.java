@@ -50,9 +50,9 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	
 	/** Defines the type of the content which will be currently provided: 
 	 *    the input objects, the expected result objects, or both could be provided */
-	public static final int INPUT = 0;
-	public static final int EXPECTED_RESULT = 1;
-    public static final int COMBINED = 2;
+	public static final int COMBINED = 0;
+	public static final int INPUT = 1;
+	public static final int EXPECTED_RESULT = 2;
 	public static final int UNKNOWN = -1;
 	private int contentType = UNKNOWN;
 	

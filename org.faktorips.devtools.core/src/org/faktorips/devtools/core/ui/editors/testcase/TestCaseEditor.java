@@ -36,6 +36,14 @@ public class TestCaseEditor extends IpsObjectEditor {
     public void doSave(IProgressMonitor monitor) {
         super.doSave(monitor);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void disposeInternal() {
+        editorPage.saveState();
+        super.disposeInternal();
+    }
 
     /**
      * (@inheritDoc)

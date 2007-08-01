@@ -67,4 +67,7 @@ public class Messages extends NLS {
     public static String FailurePane_DialogClassNotFound_Description;
     public static String FailurePane_DialogClassNotFoundInSrcFolder_Title;
     public static String FailurePane_DialogClassNotFoundInSrcFolder_Description;
+    public static String TestRunPane_Menu_GoToFile;
+    public static String TestRunPane_Menu_Run;
+    public static String TestRunPane_MenuDebug;
 }
