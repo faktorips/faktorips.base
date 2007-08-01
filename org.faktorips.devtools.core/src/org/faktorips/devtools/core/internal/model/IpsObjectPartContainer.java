@@ -71,6 +71,9 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     // map containing extension property ids as keys and their values.
     private HashMap extPropertyValues = null;
 
+    // validation start time used for tracing in debug mode
+    private long validationStartTime;
+
     public IpsObjectPartContainer(IIpsElement parent, String name) {
         super(parent, name);
     }
@@ -452,31 +455,59 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         if(isHistoricPartContainer()){
             return new MessageList();
         }
+        MessageList result = beforeValidateThis();
+        if (result != null){
+            return result;
+        }
         
-        IpsModel model = (IpsModel)getIpsModel();
-        ValidationResultCache cache = model.getValidationResultCache();
-        MessageList result = cache.getResult(this);
+        result = new MessageList();
+        validateThis(result);
+
+        afterValidateThis(result);
+        return result;
+    }
+    
+    /**
+     * Before validation method. Perform operations which will be executed before this object part
+     * container will be validated. Returns the cached validation result for the given container or
+     * <code>null</code> if the cache does not contain a result for the container.
+     */
+    protected MessageList beforeValidateThis() {
+        MessageList result = getValidationCache().getResult(this);
         if (result!=null) {
             if (IpsModel.TRACE_VALIDATION) {
                 System.out.println("Validation of " + this + ": Got result from cache."); //$NON-NLS-1$ //$NON-NLS-2$
             }
             return result;
         }
-        long start = System.currentTimeMillis();
+        
         if (IpsModel.TRACE_VALIDATION) {
+            validationStartTime = System.currentTimeMillis();
             System.out.println("Validation of " + this + ": Started."); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        result = new MessageList();
-        validateThis(result);
+        return result;
+    }
+
+    /**
+     * After validation method. Perform operations which will be executed after validation of this
+     * object part container.
+     */
+    protected void afterValidateThis(MessageList result) throws CoreException {
         validateExtensionProperties(result);
         validateChildren(result);
         if (IpsModel.TRACE_VALIDATION) {
-            System.out.println("Validation of " + this + ": Finsihed, took " + (System.currentTimeMillis() - start) + "ms."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            System.out.println("Validation of " + this + ": Finsihed, took " + (System.currentTimeMillis() - validationStartTime) + "ms."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            validationStartTime = -1;
         }
-        cache.putResult(this, result);
-        return result;
+        getValidationCache().putResult(this, result);        
     }
     
+    private ValidationResultCache getValidationCache() {
+        IpsModel model = (IpsModel)getIpsModel();
+        ValidationResultCache cache = model.getValidationResultCache();
+        return cache;
+    }
+
     /**
      * Validates part container's children.
      */

@@ -49,11 +49,6 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     private String structure = ""; //$NON-NLS-1$
     private int numOfColumns = 0;
     
-    // cached table structure this table contents is based on
-    private ITableStructure cachedTableStructure;
-    // cached array containing the valuedatatypes for all columns of this table.
-    private ValueDatatype[] cachedValueDatatypes;
-    
     /**
      * @param file
      */
@@ -89,9 +84,6 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         String oldStructure = structure;
         structure = qName;
         valueChanged(oldStructure, structure);
-        
-        // clear cache
-        clearCachedObjects();
     }
     
     /**
@@ -191,9 +183,6 @@ public class TableContents extends TimedIpsObject implements ITableContents {
             return;
         }
         
-        // init cached objects
-        initCachedObjects(tableStructure);
-        
         if (tableStructure .getNumOfColumns() != getNumOfColumns()) {
         	Integer structCols = new Integer(tableStructure .getNumOfColumns());
         	Integer contentCols = new Integer(getNumOfColumns());
@@ -201,25 +190,8 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         	list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
         }
     }
-
-    /*
-     * Load cached objects
-     */
-    private void initCachedObjects(ITableStructure tableStructure) throws CoreException {
-        if (tableStructure != null){
-            cachedValueDatatypes = findColumnDatatypes(tableStructure);
-            cachedTableStructure = tableStructure;
-        } else {
-            clearCachedObjects();
-        }
-    }
     
-    private void clearCachedObjects() {
-        cachedValueDatatypes = new ValueDatatype[0];
-        cachedTableStructure = null;        
-    }
-    
-    private ValueDatatype[] findColumnDatatypes(ITableStructure structure) throws CoreException {
+    ValueDatatype[] findColumnDatatypes(ITableStructure structure) throws CoreException {
         if (structure == null){
             return new ValueDatatype[0];
         }
@@ -229,25 +201,5 @@ public class TableContents extends TimedIpsObject implements ITableContents {
             datatypes[i]= columns[i].findValueDatatype();
         }
         return datatypes;
-    }
-
-    /**
-     * @return Returns the cached value datatypes
-     */
-    public ValueDatatype[] getCachedColumnDatatypes() throws CoreException {
-        if (cachedValueDatatypes == null || cachedValueDatatypes.length == 0){
-            cachedValueDatatypes = findColumnDatatypes(getCachedTableStructure());
-        }
-        return cachedValueDatatypes;
-    }
-
-    /**
-     * @return Returns the cachedTableStructure.
-     */
-    public ITableStructure getCachedTableStructure() throws CoreException {
-        if (cachedTableStructure == null){
-            cachedTableStructure = findTableStructure();
-        }
-        return cachedTableStructure;
     }
 }

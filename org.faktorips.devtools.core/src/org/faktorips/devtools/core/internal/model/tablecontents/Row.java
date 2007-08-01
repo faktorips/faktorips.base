@@ -171,18 +171,34 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 	 */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
-        ValueDatatype[] datatypes= ((TableContents)getTableContents()).getCachedColumnDatatypes();
-
-        ITableStructure structure = ((TableContents)getParent().getParent()).getCachedTableStructure();
-        if(structure == null){
+        ITableStructure tableStructure = ((TableContents)getTableContents()).findTableStructure();
+        if(tableStructure == null){
             return;
         }
-        IUniqueKey[] uniqueKeys = structure.getUniqueKeys();
+        ValueDatatype[] datatypes= ((TableContents)getTableContents()).findColumnDatatypes(tableStructure);
+        validateThis(list, tableStructure, datatypes);
+    }
+    
+    MessageList validateThis(ITableStructure tableStructure, ValueDatatype[] datatypes) throws CoreException {
+        MessageList result = beforeValidateThis();
+        if (result != null){
+            return result;
+        }
         
-        validateMissingUniqueKeyValue(list, datatypes, structure, uniqueKeys);
-        validateRowValue(list, structure, datatypes);
-        if(list.isEmpty()){
-            validateNameColumnIfTableBasedEnum(list, structure, uniqueKeys);
+        result = new MessageList();
+        validateThis(result, tableStructure, datatypes);
+        
+        afterValidateThis(result);
+        
+        return result;
+    }
+
+    private void validateThis(MessageList result, ITableStructure tableStructure, ValueDatatype[] datatypes) throws CoreException {
+        IUniqueKey[] uniqueKeys = tableStructure.getUniqueKeys();
+        validateMissingUniqueKeyValue(result, datatypes, tableStructure, uniqueKeys);
+        validateRowValue(result, tableStructure, datatypes);
+        if(result.isEmpty()){
+            validateNameColumnIfTableBasedEnum(result, tableStructure, uniqueKeys);
         }
     }
     

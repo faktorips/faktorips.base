@@ -19,9 +19,7 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -204,52 +202,5 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         //or greater than the number of table contents columns.
         msgList = table.validate();
         assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_COLUMNCOUNT_MISMATCH));
-    }
-    
-    public void testCachedObjects() throws CoreException {
-        ITableStructure tableStructure1 = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "tableStructure1");
-        ITableStructure tableStructure2 = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "tableStructure2");
-        TableContents tableContents = (TableContents)table;
-        tableContents.setTableStructure(tableStructure1.getQualifiedName());
-        
-        IColumn column = tableStructure1.newColumn();
-        column.setName("column1");
-        column.setDatatype("String");
-        column = tableStructure2.newColumn();
-        column.setName("column2");
-        column.setDatatype("Integer");
-        
-        MessageList msgList = tableContents.validate();
-        assertNull(msgList.getMessageByCode(ITableContents.MSGCODE_UNKNWON_STRUCTURE));
-        
-        ITableStructure cachedTableStructure1 = tableContents.getCachedTableStructure();
-        ITableStructure cachedTableStructure2 = tableContents.getCachedTableStructure();
-        ValueDatatype[] cachedColumnDatatypes1 = tableContents.getCachedColumnDatatypes();
-        ValueDatatype[] cachedColumnDatatypes2 = tableContents.getCachedColumnDatatypes();
-        assertEquals(cachedTableStructure1.getQualifiedName(), cachedTableStructure2.getQualifiedName());
-        assertEquals(cachedColumnDatatypes1[0].getName(), cachedColumnDatatypes2[0].getName());
-        
-        // change table structure and assert that the cached will be refreshed
-        tableContents.setTableStructure(tableStructure2.getQualifiedName());
-        
-        cachedTableStructure2 = tableContents.getCachedTableStructure();
-        cachedColumnDatatypes2 = tableContents.getCachedColumnDatatypes();
-        assertFalse(cachedTableStructure1.getQualifiedName().equals(cachedTableStructure2.getQualifiedName()));
-        assertFalse(cachedColumnDatatypes1[0].getName().equals(cachedColumnDatatypes2[0].getName()));
-        
-        // change one of the datatypes and validate to clear the cache
-        cachedTableStructure1 = tableContents.getCachedTableStructure();
-        cachedTableStructure2 = tableContents.getCachedTableStructure();
-        cachedColumnDatatypes1 = tableContents.getCachedColumnDatatypes();
-        cachedColumnDatatypes2 = tableContents.getCachedColumnDatatypes();
-        assertEquals(cachedTableStructure1.getQualifiedName(), cachedTableStructure2.getQualifiedName());
-        assertEquals(cachedColumnDatatypes1[0].getName(), cachedColumnDatatypes2[0].getName());
-        
-        column.setDatatype("String");
-        tableContents.validate();
-        
-        cachedTableStructure2 = tableContents.getCachedTableStructure();
-        cachedColumnDatatypes2 = tableContents.getCachedColumnDatatypes();
-        assertFalse(cachedColumnDatatypes1[0].getName().equals(cachedColumnDatatypes2[0].getName()));        
     }
 }

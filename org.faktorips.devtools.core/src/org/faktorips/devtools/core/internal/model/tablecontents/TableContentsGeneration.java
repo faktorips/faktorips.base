@@ -257,5 +257,19 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
             row.setRowNumber(index++);
         }
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void validateChildren(MessageList result) throws CoreException {
+        ITableStructure tableStructure = getTableContents().findTableStructure();
+        ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypes(tableStructure);
+
+        IIpsElement[] children = getChildren();
+        for (int i=0; i<children.length; i++) {
+            Row row = (Row) children[i];
+            MessageList list = row.validateThis(tableStructure, datatypes);
+            result.add(list);
+        }
+    }
 }
