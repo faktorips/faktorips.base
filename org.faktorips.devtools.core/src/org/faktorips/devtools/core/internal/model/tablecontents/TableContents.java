@@ -49,10 +49,10 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     private String structure = ""; //$NON-NLS-1$
     private int numOfColumns = 0;
     
-    /**
-     * Array containing the valuedatatypes for all columns of this table.
-     */
-    private ValueDatatype[] valueDatatypes;
+    // cached table structure this table contents is based on
+    private ITableStructure cachedTableStructure;
+    // cached array containing the valuedatatypes for all columns of this table.
+    private ValueDatatype[] cachedValueDatatypes;
     
     /**
      * @param file
@@ -89,6 +89,9 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         String oldStructure = structure;
         structure = qName;
         valueChanged(oldStructure, structure);
+        
+        // clear cache
+        clearCachedObjects();
     }
     
     /**
@@ -151,41 +154,12 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     }
     
     /**
-     * Before the validation of this TableContents the datatype-objects of all columns are
-     * retrieved. Children of the ipsObject can access this information via 
-     * {@link #findValueDatatypeForColumn(int)}.
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
-
-        ITableStructure structure = findTableStructure();
-        if (structure == null) {
-            String text = NLS.bind(Messages.TableContents_msgMissingTablestructure, this.structure);
-            list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE)); 
-            return;
-        }
-        
-        initValueDatatypes();
-        
-        if (structure.getNumOfColumns() != getNumOfColumns()) {
-        	Integer structCols = new Integer(structure.getNumOfColumns());
-        	Integer contentCols = new Integer(getNumOfColumns());
-        	String text = NLS.bind(Messages.TableContents_msgColumncountMismatch, structCols, contentCols);
-        	list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
-        }
+    public IIpsObjectPart newPart(Class partType) {
+        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
     
-    private void initValueDatatypes() throws CoreException {
-        ITableStructure structure= findTableStructure();
-        IColumn[] columns= structure.getColumns();
-        valueDatatypes= new ValueDatatype[columns.length];
-        for (int i = 0; i < columns.length; i++) {
-            IColumn column= columns[i];
-            valueDatatypes[i]= column.findValueDatatype();
-        }
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -205,14 +179,47 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     }
 
     /**
-	 * {@inheritDoc}
-	 */
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-	}
+     * {@inheritDoc}
+     */
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
 
-    ValueDatatype[] findColumnDatatypes() throws CoreException {
-        ITableStructure structure = findTableStructure();
+        ITableStructure tableStructure = findTableStructure();
+        if (tableStructure  == null) {
+            String text = NLS.bind(Messages.TableContents_msgMissingTablestructure, this.structure);
+            list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE)); 
+            return;
+        }
+        
+        // init cached objects
+        initCachedObjects(tableStructure);
+        
+        if (tableStructure .getNumOfColumns() != getNumOfColumns()) {
+        	Integer structCols = new Integer(tableStructure .getNumOfColumns());
+        	Integer contentCols = new Integer(getNumOfColumns());
+        	String text = NLS.bind(Messages.TableContents_msgColumncountMismatch, structCols, contentCols);
+        	list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
+        }
+    }
+
+    /*
+     * Load cached objects
+     */
+    private void initCachedObjects(ITableStructure tableStructure) throws CoreException {
+        if (tableStructure != null){
+            cachedValueDatatypes = findColumnDatatypes(tableStructure);
+            cachedTableStructure = tableStructure;
+        } else {
+            clearCachedObjects();
+        }
+    }
+    
+    private void clearCachedObjects() {
+        cachedValueDatatypes = new ValueDatatype[0];
+        cachedTableStructure = null;        
+    }
+    
+    private ValueDatatype[] findColumnDatatypes(ITableStructure structure) throws CoreException {
         if (structure == null){
             return new ValueDatatype[0];
         }
@@ -222,5 +229,25 @@ public class TableContents extends TimedIpsObject implements ITableContents {
             datatypes[i]= columns[i].findValueDatatype();
         }
         return datatypes;
+    }
+
+    /**
+     * @return Returns the cached value datatypes
+     */
+    public ValueDatatype[] getCachedColumnDatatypes() throws CoreException {
+        if (cachedValueDatatypes == null || cachedValueDatatypes.length == 0){
+            cachedValueDatatypes = findColumnDatatypes(getCachedTableStructure());
+        }
+        return cachedValueDatatypes;
+    }
+
+    /**
+     * @return Returns the cachedTableStructure.
+     */
+    public ITableStructure getCachedTableStructure() throws CoreException {
+        if (cachedTableStructure == null){
+            cachedTableStructure = findTableStructure();
+        }
+        return cachedTableStructure;
     }
 }

@@ -155,7 +155,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         }
         return null;
     }
-
+    
 	/**
      * Validates the values in this row against unique-keys and datatypes defined by the TableStructure
      * of this row's TableContents.
@@ -171,9 +171,9 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 	 */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
-        ValueDatatype[] datatypes= ((TableContents)getTableContents()).findColumnDatatypes();
+        ValueDatatype[] datatypes= ((TableContents)getTableContents()).getCachedColumnDatatypes();
 
-        ITableStructure structure = ((ITableContents)getParent().getParent()).findTableStructure();
+        ITableStructure structure = ((TableContents)getParent().getParent()).getCachedTableStructure();
         if(structure == null){
             return;
         }
