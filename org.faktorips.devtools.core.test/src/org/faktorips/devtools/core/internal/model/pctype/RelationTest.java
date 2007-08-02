@@ -453,11 +453,11 @@ public class RelationTest extends AbstractIpsPluginTest {
 		cRel.setContainerRelation("Coverage");
 
 		ml = cRel.validate();
-		assertNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_NOT_SUBCLASS));
+		assertNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_CLASS_NOT_A_SUBCLASS));
 		
 		relation.setTarget("motor.Vehicle");
 		ml = cRel.validate();
-		assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_NOT_SUBCLASS));
+		assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_CLASS_NOT_A_SUBCLASS));
 	}
 
 	public void testValidateSamePluralRolename() throws Exception {

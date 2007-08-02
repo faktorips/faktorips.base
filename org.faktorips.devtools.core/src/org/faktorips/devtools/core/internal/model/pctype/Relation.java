@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
+import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -72,21 +73,21 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IPolicyCmptType getPolicyCmptType() {
         return (PolicyCmptType)getIpsObject();
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getName() {
         return targetRoleSingular;
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public RelationType getRelationType() {
         return type;
@@ -99,7 +100,14 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
 		return type.isAssoziation();
 	}
 
-	/**
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isComposition() {
+        return type.isCompositionDetailToMaster() | type.isCompositionMasterToDetail();
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public boolean isCompositionMasterToDetail() {
@@ -114,7 +122,7 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
 	}
 
 	/** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setRelationType(RelationType newType) {
         RelationType oldType = type;
@@ -123,14 +131,14 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean isReadOnlyContainer() {
         return readOnlyContainer;
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setReadOnlyContainer(boolean flag) {
         boolean oldValue = readOnlyContainer;
@@ -139,14 +147,14 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getTarget() {
         return target;
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IPolicyCmptType findTarget() throws CoreException {
         if (StringUtils.isEmpty(target)) {
@@ -156,7 +164,7 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setTarget(String newTarget) {
         String oldTarget = target;
@@ -165,14 +173,14 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getTargetRoleSingular() {
         return targetRoleSingular;
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setTargetRoleSingular(String newRole) {
         String oldRole = targetRoleSingular;
@@ -182,14 +190,14 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getTargetRolePlural() {
         return targetRolePlural;
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setTargetRolePlural(String newRole) {
         String oldRole = targetRolePlural;
@@ -198,14 +206,14 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public int getMinCardinality() {
         return minCardinality;
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setMinCardinality(int newValue) {
         int oldValue = minCardinality;
@@ -215,7 +223,7 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public int getMaxCardinality() {
         return maxCardinality;
@@ -236,7 +244,7 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
 	}
 
 	/**
-     * Overridden.
+     * {@inheritDoc}
      */ 
     public void setMaxCardinality(int newValue) {
         int oldValue = maxCardinality;
@@ -245,14 +253,14 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean isProductRelevant() {
         return productRelevant;
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setProductRelevant(boolean newValue) {
         boolean oldValue = productRelevant;
@@ -261,14 +269,14 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     }
     
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public String getTargetRoleSingularProductSide() {
 		return targetRoleSingularProductSide;
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void setTargetRoleSingularProductSide(String newRole) {
         String oldRole = targetRoleSingularProductSide;
@@ -277,7 +285,7 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void setTargetRolePluralProductSide(String newRole) {
         String oldRole = targetRolePluralProductSide;
@@ -286,7 +294,7 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
 	}
 
     /**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public String getTargetRolePluralProductSide() {
 		return targetRolePluralProductSide;
@@ -294,14 +302,14 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
 
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public int getMinCardinalityProductSide() {
 		return minCardinalityProductSide;
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void setMinCardinalityProductSide(int newMin) {
 		int oldMin = minCardinalityProductSide;
@@ -310,14 +318,14 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public int getMaxCardinalityProductSide() {
 		return maxCardinalityProductSide;
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void setMaxCardinalityProductSide(int newMax) {
 		int oldMax = maxCardinalityProductSide;
@@ -326,14 +334,14 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
 	}
 
 	/** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getContainerRelation() {
         return containerRelation;
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean hasContainerRelation() {
         return !StringUtils.isEmpty(containerRelation);
@@ -516,39 +524,10 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
 							PROPERTY_PRODUCT_RELEVANT));
 		}
         
+        new CheckForDuplicateRoleNameVisitor(list).start(getPolicyCmptType());
         validateProductSide(list);
-        
-        IPolicyCmptType type = getPolicyCmptType();
-        IPolicyCmptType[] supertypes = type.getSupertypeHierarchy().getAllSupertypesInclSelf(type);
-        for (int i = 0; i < supertypes.length; i++) {
-			IRelation[] relations = supertypes[i].getRelations();
-			for (int j = 0; j < relations.length; j++) {
-				if (relations[j] != this && !StringUtils.isEmpty(targetRoleSingular) && relations[j].getTargetRoleSingular().equals(targetRoleSingular)) {
-		            String text = Messages.Relation_msgSameSingularRoleName;
-		            list.add(new Message(MSGCODE_SAME_SINGULAR_ROLENAME, text, Message.ERROR, this, PROPERTY_TARGET_ROLE_SINGULAR));
-				}
-		        if (relations[j] != this && !StringUtils.isEmpty(targetRolePlural) && relations[j].getTargetRolePlural().equals(targetRolePlural))  {
-		            String text = Messages.Relation_msgSamePluralRolename;
-		            list.add(new Message(MSGCODE_SAME_PLURAL_ROLENAME, text, Message.ERROR, this, PROPERTY_TARGET_ROLE_PLURAL)); //$NON-NLS-1$
-		        }
-		        
-		        if (!this.isProductRelevant()) {
-		        	continue;
-		        }
-		        
-				if (relations[j] != this && !StringUtils.isEmpty(targetRoleSingularProductSide) && relations[j].getTargetRoleSingularProductSide().equals(targetRoleSingularProductSide)) {
-		            String text = Messages.Relation_msgSameSingularRoleName;
-		            list.add(new Message(MSGCODE_SAME_SINGULAR_ROLENAME_PRODUCTSIDE, text, Message.ERROR, this, PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
-				}
-				if (relations[j] != this && !StringUtils.isEmpty(targetRolePluralProductSide) && relations[j].getTargetRolePluralProductSide().equals(targetRolePluralProductSide)) {
-		            String text = Messages.Relation_msgSameSingularRoleName;
-		            list.add(new Message(MSGCODE_SAME_PLURAL_ROLENAME_PRODUCTSIDE, text, Message.ERROR, this, PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE));
-				}
-			}
-		}
-        
         validateContainerRelation(list);
-        validateReverseRelation(list);
+        validateInverseRelation(list);
     }
     
     private void validateProductSide(MessageList list) {
@@ -629,7 +608,7 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
             ITypeHierarchy hierachy = pcType.getSupertypeHierarchy();
             if (!superRelationTarget.equals(pcType) && !hierachy.isSupertypeOf(superRelationTarget, pcType)) {
                 String text = Messages.Relation_msgTargetNotSubclass;
-                list.add(new Message(MSGCODE_TARGET_NOT_SUBCLASS, text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION));     //$NON-NLS-1$
+                list.add(new Message(MSGCODE_TARGET_CLASS_NOT_A_SUBCLASS, text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION));     //$NON-NLS-1$
             }
         }
         checkForContainerRelationReverseRelationMismatch(containerRel, list);
@@ -640,28 +619,28 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
      * @see IRelation#MSGCODE_CONTAINERRELATION_REVERSERELATION_MISMATCH
      */
     private void checkForContainerRelationReverseRelationMismatch(IRelation containerRel, MessageList list) throws CoreException {
-        IRelation reverseRel = findInverseRelation();
-        if (reverseRel==null) {
-            return; // not found => error will be reported in validateReverseRelation
+        IRelation inverseRel = findInverseRelation();
+        if (inverseRel==null) {
+            return; // not found => error will be reported in validateInverseRelation
         }
         IRelation reverseRelationOfContainerRel = containerRel.findInverseRelation();
         if (reverseRelationOfContainerRel==null) {
             return; // not found => error will be reported in validateReverseRelation
         }
-        IRelation containerRelationofReverseRel = reverseRel.findContainerRelation();
+        IRelation containerRelationofReverseRel = inverseRel.findContainerRelation();
         if (containerRelationofReverseRel==null || containerRelationofReverseRel!=reverseRelationOfContainerRel) {
             String text = Messages.Relation_msgContainerRelNotReverseRel;
             list.add(new Message(MSGCODE_CONTAINERRELATION_REVERSERELATION_MISMATCH, text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION)); //$NON-NLS-1$
         }
     }
     
-    private void validateReverseRelation(MessageList list) throws CoreException {
+    private void validateInverseRelation(MessageList list) throws CoreException {
         if (StringUtils.isEmpty(inverseRelation)) {
             return;
         }
         if (isCompositionDetailToMaster()) {
             String text = Messages.Relation_noReverseRelationNeededForDetailToMasterRelations;
-            list.add(new Message("SomeNewCode", text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
+            list.add(new Message("SomeNewCode", text, Message.WARNING, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
             return;
         }
         IRelation reverseRelationObj = findInverseRelation();
@@ -670,10 +649,13 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
             list.add(new Message(MSGCODE_REVERSERELATION_NOT_IN_TARGET, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
             return;
         }
+        // TODO: isAssoziation can be removed
         if (isAssoziation() && (!reverseRelationObj.getInverseRelation().equals(getName()))) {
             String text = Messages.Relation_msgReverseRelationNotSpecified;
             list.add(new Message(MSGCODE_REVERSE_RELATION_MISMATCH, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
         }
+
+        // TODO: can be removed, muss auf associations eingescchränkt werden
         if (isReadOnlyContainer()!=reverseRelationObj.isReadOnlyContainer()) {
             String text = Messages.Relation_msgReverseRelOfContainerRelMustBeContainerRelToo;
             list.add(new Message(MSGCODE_FORWARD_AND_REVERSE_RELATION_MUST_BOTH_BE_MARKED_AS_CONTAINER, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
@@ -838,4 +820,50 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
         }
     }
     
+    private class CheckForDuplicateRoleNameVisitor extends PolicyCmptTypeHierarchyVisitor {
+
+        private MessageList list;
+
+        public CheckForDuplicateRoleNameVisitor(MessageList list) {
+            super();
+            this.list = list;
+        }
+        
+        /**
+         * {@inheritDoc}
+         * @throws CoreException 
+         */
+        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+            int numOfMsgs = list.getNoOfMessages();
+            IRelation[] relations = currentType.getRelations();
+            for (int j = 0; j < relations.length; j++) {
+                if (relations[j]==Relation.this) {
+                    continue;
+                }
+                if (!StringUtils.isEmpty(Relation.this.targetRoleSingular) && relations[j].getTargetRoleSingular().equals(targetRoleSingular)) {
+                    String text = Messages.Relation_msgSameSingularRoleName;
+                    list.add(new Message(MSGCODE_SAME_SINGULAR_ROLENAME, text, Message.ERROR, Relation.this, PROPERTY_TARGET_ROLE_SINGULAR));
+                }
+                if (!StringUtils.isEmpty(Relation.this.targetRolePlural) && relations[j].getTargetRolePlural().equals(targetRolePlural))  {
+                    String text = Messages.Relation_msgSamePluralRolename;
+                    list.add(new Message(MSGCODE_SAME_PLURAL_ROLENAME, text, Message.ERROR, Relation.this, PROPERTY_TARGET_ROLE_PLURAL)); //$NON-NLS-1$
+                }
+                
+                if (!Relation.this.isProductRelevant()) {
+                    continue;
+                }
+                
+                if (!StringUtils.isEmpty(Relation.this.targetRoleSingularProductSide) && relations[j].getTargetRoleSingularProductSide().equals(targetRoleSingularProductSide)) {
+                    String text = Messages.Relation_msgSameSingularRoleName;
+                    list.add(new Message(MSGCODE_SAME_SINGULAR_ROLENAME_PRODUCTSIDE, text, Message.ERROR, Relation.this, PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
+                }
+                if (!StringUtils.isEmpty(Relation.this.targetRolePluralProductSide) && relations[j].getTargetRolePluralProductSide().equals(targetRolePluralProductSide)) {
+                    String text = Messages.Relation_msgSameSingularRoleName;
+                    list.add(new Message(MSGCODE_SAME_PLURAL_ROLENAME_PRODUCTSIDE, text, Message.ERROR, Relation.this, PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE));
+                }
+            }
+            return list.getNoOfMessages()==numOfMsgs; // no new message added, continue visting/validating
+        }
+
+    }
 }

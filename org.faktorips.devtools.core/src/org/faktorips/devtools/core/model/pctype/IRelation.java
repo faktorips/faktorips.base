@@ -59,6 +59,7 @@ public interface IRelation extends IIpsObjectPart {
 	public static final int CARDINALITY_MANY = Integer.MAX_VALUE;
 
     public final static RelationType DEFAULT_RELATION_TYPE = RelationType.ASSOCIATION; 
+    
     /**
      * Prefix for all message codes of this class.
      */
@@ -170,9 +171,10 @@ public interface IRelation extends IIpsObjectPart {
     public final static String MSGCODE_CONTAINERRELATION_TARGET_DOES_NOT_EXIST = MSGCODE_PREFIX + "ContainerRelationTargetDoesNotExist"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the target class of this relation is not a subclass (or the same class) of the container relations target
+     * Validation message code to indicate that an implementation relation's the target class is not a a subclass 
+     * (or the same class) as the container relations target.
      */
-    public final static String MSGCODE_TARGET_NOT_SUBCLASS = MSGCODE_PREFIX + "TargetNotSubclass"; //$NON-NLS-1$
+    public final static String MSGCODE_TARGET_CLASS_NOT_A_SUBCLASS = MSGCODE_PREFIX + "TargetClassNotASubclass"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the container relation is not the reverse relation 
@@ -206,23 +208,25 @@ public interface IRelation extends IIpsObjectPart {
     public final static String MSGCODE_REVERSERELATION_NOT_IN_TARGET = MSGCODE_PREFIX + "ReverseRelationNotInTarget"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that given a relation with a reverse relation,
-     * this reverse relation can be found but it does not specify the first relation as it's
-     * reverse relation. 
+     * Validation message code to indicate that given a relation with an inreverse relation,
+     * this inverse relation can be found but it does not specify the first relation as it's
+     * inverse relation. 
      * This applies to associations only, as detail-to-master composition don't specify a 
      * reverse relation.
      */
     public final static String MSGCODE_REVERSE_RELATION_MISMATCH = MSGCODE_PREFIX + "ReverseRelationNotSpecified"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that forward and reverse relation must be marked as container relation 
-     * (or not).
+     * Validation message code to indicate that a relation and it's inverse relation must be marked as container relations 
+     * (or not). Applies to associations only.
      */
+    // TODO
     public final static String MSGCODE_FORWARD_AND_REVERSE_RELATION_MUST_BOTH_BE_MARKED_AS_CONTAINER = MSGCODE_PREFIX + "ReverseRelationOfContainerRelationMustBeContainerRelationToo"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the reverse relation of a composition must be a reverse composition.
      */
+    // TODO can be removed
     public final static String MSGCODE_REVERSE_COMPOSITION_MISSMATCH = MSGCODE_PREFIX + "ReverseCompositionMissmatch"; //$NON-NLS-1$
 
     /**
@@ -239,6 +243,12 @@ public interface IRelation extends IIpsObjectPart {
      * Returns <code>true</code> if this is an assoziation otherwise <code>false</code>.
      */
     public boolean isAssoziation();
+    
+    /**
+     * Returns <code>true</code> if this relation is either a master-to-detail or detail-to-master
+     * composition, otherwise <code>false</code>.
+     */
+    public boolean isComposition();
     
     /**
      * Returns <code>true</code> if this is a composition from the master type to the detail type,
