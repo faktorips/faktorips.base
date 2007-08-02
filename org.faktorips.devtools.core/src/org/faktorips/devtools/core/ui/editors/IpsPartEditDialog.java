@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.util.memento.Memento;
@@ -41,7 +41,7 @@ import org.faktorips.util.memento.Memento;
  */
 public abstract class IpsPartEditDialog extends EditDialog {
     
-    protected IpsPartUIController uiController;
+    protected IpsObjectUIController uiController;
     private TextField descriptionField;
     private Memento oldState;
     private boolean dirty = false;
@@ -85,9 +85,9 @@ public abstract class IpsPartEditDialog extends EditDialog {
     }
     
     private void handleAbortion() {
-		uiController.getIpsObjectPart().getIpsObject().setState(oldState);
+		uiController.getIpsObject().setState(oldState);
 		if (!dirty) {
-			uiController.getIpsObjectPart().getIpsObject().getIpsSrcFile().markAsClean();
+			uiController.getIpsObject().getIpsSrcFile().markAsClean();
 		}
     }
     
@@ -109,8 +109,8 @@ public abstract class IpsPartEditDialog extends EditDialog {
 	    return item;
 	}
     
-    protected IpsPartUIController createUIController(IIpsObjectPart part) {
-        IpsPartUIController controller = new IpsPartUIController(part) {
+    protected IpsObjectUIController createUIController(IIpsObjectPart part) {
+        IpsObjectUIController controller = new IpsObjectUIController(part) {
             public void valueChanged(FieldValueChangedEvent e) {
                 try {
                     super.valueChanged(e);
@@ -128,7 +128,7 @@ public abstract class IpsPartEditDialog extends EditDialog {
      * Returns the part being edited.
      */
     public IIpsObjectPart getIpsPart() {
-        return uiController.getIpsObjectPart();
+        return (IIpsObjectPart)uiController.getIpsObjectPartContainer();
     }
     
     protected String buildTitle() {

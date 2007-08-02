@@ -55,7 +55,8 @@ import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.controller.UIController;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 
@@ -302,7 +303,7 @@ public class TestCaseDetailArea {
             final ITestPolicyCmpt testPolicyCmptForSelection,
             Composite attributeComposite,
             final ITestAttributeValue attributeValue) throws CoreException {
-        IpsPartUIController uiController = createUIController(attributeValue);
+        IpsObjectUIController uiController = createUIController(attributeValue);
         EditField editField = null;
 
         // get the ctrlFactory to create the edit field
@@ -497,7 +498,7 @@ public class TestCaseDetailArea {
             return;
         }
 
-        IpsPartUIController uiController = createUIController(testValue);
+        IpsObjectUIController uiController = createUIController(testValue);
 
         Section section = toolkit.getFormToolkit().createSection(details, 0);
         section.setText(testCaseSection.getLabelProvider().getTextForSection(testValue));
@@ -564,7 +565,7 @@ public class TestCaseDetailArea {
             return;
         }
 
-        IpsPartUIController uiController = createUIController(rule);
+        IpsObjectUIController uiController = createUIController(rule);
 
         Section section = toolkit.getFormToolkit().createSection(borderedComosite, 0);
         section.setText(testCaseSection.getLabelProvider().getTextForSection(rule));
@@ -649,8 +650,8 @@ public class TestCaseDetailArea {
     /**
      * Creates a new ui controller for the given object.
      */
-    private IpsPartUIController createUIController(IIpsObjectPart part) {
-        IpsPartUIController controller = new IpsPartUIController(part) {
+    private IpsObjectUIController createUIController(IIpsObjectPart part) {
+        IpsObjectUIController controller = new IpsObjectUIController(part) {
             public void valueChanged(FieldValueChangedEvent e) {
                 try {
                     super.valueChanged(e);
@@ -802,7 +803,7 @@ public class TestCaseDetailArea {
      */
     void updateUi() {
         for (Iterator iter = uiControllers.iterator(); iter.hasNext();) {
-            IpsPartUIController controller = (IpsPartUIController)iter.next();
+            UIController controller = (UIController)iter.next();
             controller.updateUI();
         }
     }

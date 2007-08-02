@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.util.memento.Memento;
 
@@ -42,7 +42,7 @@ public class EnumValueSetControl extends TextButtonControl implements IDataChang
 	private Shell shell;
 	
 	// The controller to notify if detail modifiation has finished.
-	private IpsPartUIController controller; 
+	private IpsObjectUIController controller; 
 	
 	// The state of the config element before opening the detail edit dialog. Used to handle the
 	// cancel button properly
@@ -64,7 +64,7 @@ public class EnumValueSetControl extends TextButtonControl implements IDataChang
 	 * @param shell The shell to open the details edit dialog within.
 	 * @param controller The controller to notify uppon changes to update the ui.
 	 */
-	public EnumValueSetControl(Composite parent, UIToolkit toolkit, IConfigElement configElement, Shell shell, IpsPartUIController controller) {
+	public EnumValueSetControl(Composite parent, UIToolkit toolkit, IConfigElement configElement, Shell shell, IpsObjectUIController controller) {
 		super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
 		this.configElement = configElement;
 		this.shell = shell;

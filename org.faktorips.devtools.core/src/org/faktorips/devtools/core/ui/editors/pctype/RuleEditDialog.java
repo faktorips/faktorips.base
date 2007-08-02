@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -182,10 +182,9 @@ public class RuleEditDialog extends IpsPartEditDialog {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.IpsPartEditDialog#createUIController(org.faktorips.devtools.core.model.IIpsObjectPart)
+     * {@inheritDoc}
      */
-    protected IpsPartUIController createUIController(IIpsObjectPart part) {
+    protected IpsObjectUIController createUIController(IIpsObjectPart part) {
         return new UIController(part);
     }
     
@@ -207,7 +206,7 @@ public class RuleEditDialog extends IpsPartEditDialog {
 	    return new Point(500, 420);
 	}
 	
-    class UIController extends IpsPartUIController {
+    class UIController extends IpsObjectUIController {
 
         public UIController(IIpsObjectPart pdPart) {
             super(pdPart);

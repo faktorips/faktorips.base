@@ -17,22 +17,106 @@
 
 package org.faktorips.devtools.core.ui.controller;
 
-import org.faktorips.devtools.core.model.IIpsObject;
+import java.util.Iterator;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.widgets.Control;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
- *
+ * UIController for ips objects and their parts.
+ * 
+ * @author eidenschink
+ * @author Jan Ortmann
  */
-public class IpsObjectUIController extends IpsObjectPartContainerUIController {
+public class IpsObjectUIController extends DefaultUIController {
 
-    public IpsObjectUIController(IIpsObject object) {
-        super(object);
-    }
+    private IIpsObjectPartContainer partContainer;
+
+	public IpsObjectUIController(IIpsObjectPartContainer partContainer) {
+		super();
+        this.partContainer = partContainer;
+	}
     
     public IIpsObject getIpsObject() {
-        return (IIpsObject)getIpsObjectPartContainer();
+        return partContainer.getIpsObject();
     }
     
+    /**
+     * Returns the ips object part container this is a controller for.
+     */
+    public IIpsObjectPartContainer getIpsObjectPartContainer() {
+        return partContainer;
+    }
+
+    /**
+     * @see DefaultUIController#add(EditField, Object, String)
+     */
+	public void add(EditField editField, String propertyName) {
+        IExtensionPropertyDefinition extProperty = IpsPlugin.getDefault().getIpsModel().getExtensionPropertyDefinition(partContainer.getClass(), propertyName, true);
+        if (extProperty!=null) {
+            addMapping(new FieldExtensionPropertyMapping(editField, partContainer, propertyName));
+        } else {
+            super.add(editField, partContainer, propertyName);
+        }
+    }
     
+    /**
+     * {@inheritDoc}
+     */
+    public void updateUI() {
+        super.updateUI();
+        validatePartContainerAndUpdateUI();
+    }
+    
+    /** 
+     * {@inheritDoc}
+     */
+    public void valueChanged(FieldValueChangedEvent e) {
+        super.valueChanged(e);
+        validatePartContainerAndUpdateUI();
+    }
+    
+    /**
+     * Validates the part container and updates the fields that are associated with attributes of the IpsPartContainer.
+     * It returns the MessageList which is the result of the validation. This return value 
+     * can be evaluated when overriding this method.
+     * 
+     * @return the validation message list. Never returns <code>null</code>.
+     */
+    protected MessageList validatePartContainerAndUpdateUI() {
+        if (mappings.size()==0) {
+            return new MessageList();
+        }
+        try {
+            MessageList list = partContainer.validate();
+            for (Iterator it=mappings.iterator(); it.hasNext();) {
+                FieldPropertyMapping mapping = (FieldPropertyMapping)it.next();
+                Control c = mapping.getField().getControl();
+                if (c==null || c.isDisposed()) {
+                    continue;
+                }
+                MessageList fieldMessages;
+                if (mapping.getField().isTextContentParsable()) {
+                    fieldMessages = list.getMessagesFor(mapping.getObject(), mapping.getPropertyName());
+                } else {
+                    fieldMessages = new MessageList();
+                    fieldMessages.add(Message.newError(EditField.INVALID_VALUE,
+                            Messages.IpsObjectPartContainerUIController_invalidValue));
+                }
+                mapping.getField().setMessages(fieldMessages);
+            }
+            return list;
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return new MessageList();
+        }
+    }
     
 }

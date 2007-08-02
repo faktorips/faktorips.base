@@ -42,7 +42,7 @@ public class CompositeUIController implements UIController {
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public void updateModel() {
         for (Iterator it=controllers.iterator(); it.hasNext(); ) {
@@ -52,7 +52,7 @@ public class CompositeUIController implements UIController {
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public void updateUI() {
         for (Iterator it=controllers.iterator(); it.hasNext(); ) {

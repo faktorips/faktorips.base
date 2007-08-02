@@ -97,7 +97,7 @@ import org.faktorips.devtools.core.ui.ProblemImageDescriptor;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.UIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
@@ -999,7 +999,7 @@ public class TestCaseTypeSection extends IpsSection {
         toolkit.getFormToolkit().createCompositeSeparator(section);
         storeSection(section, testParam);
         
-        IpsPartUIController uiController = createUIController(testParam);
+        IpsObjectUIController uiController = createUIController(testParam);
  
         // create common edit fields
         Composite editFieldsComposite = toolkit.createLabelEditColumnComposite(section);
@@ -1240,7 +1240,7 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void createTestParamDetails(Composite editFieldsComposite,
             ITestParameter testParam,
-            IpsPartUIController uiController) {
+            IpsObjectUIController uiController) {
         
         Label label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Name);
         EditField editFieldName = new TextField(toolkit.createText(editFieldsComposite));
@@ -1390,7 +1390,7 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void createTestValueParamDetails(Composite editFieldsComposite,
             ITestValueParameter parameter,
-            IpsPartUIController uiController) {
+            IpsObjectUIController uiController) {
         Label label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Datatype);
         EditField editFieldDatatype = new TextField(toolkit.createText(editFieldsComposite));
         addSectionSelectionListeners(editFieldDatatype, label, parameter);
@@ -1406,7 +1406,7 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void createTestPolicyCmptTypeParamDetails(Composite editFieldsComposite,
             ITestPolicyCmptTypeParameter parameter,
-            IpsPartUIController uiController) {
+            IpsObjectUIController uiController) {
         Label label = null;
         if (!(parameter instanceof ITestPolicyCmptTypeParameter && isAssociation((ITestPolicyCmptTypeParameter)parameter))) {
             label = toolkit.createFormLabel(editFieldsComposite,
@@ -2101,8 +2101,8 @@ public class TestCaseTypeSection extends IpsSection {
     /*
      * Creates a new ui controller for the given object.
      */
-    private IpsPartUIController createUIController(IIpsObjectPart part) {
-        IpsPartUIController controller = new IpsPartUIController(part) {
+    private IpsObjectUIController createUIController(IIpsObjectPart part) {
+        IpsObjectUIController controller = new IpsObjectUIController(part) {
             public void valueChanged(FieldValueChangedEvent e) {
                 try {
                     super.valueChanged(e);

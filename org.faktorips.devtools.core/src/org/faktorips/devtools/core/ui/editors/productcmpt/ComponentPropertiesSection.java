@@ -41,7 +41,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
-import org.faktorips.devtools.core.ui.controller.IpsObjectPartContainerUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
 import org.faktorips.devtools.core.ui.controls.ProductCmptTypeRefControl;
@@ -140,7 +140,7 @@ public class ComponentPropertiesSection extends IpsSection {
         validToText.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
         editControls.add(validToText);
 
-		IpsObjectPartContainerUIController controller = new IpsObjectPartContainerUIController(product);
+		IpsObjectUIController controller = new IpsObjectUIController(product);
 		controller.add(field, product, IProductCmpt.PROPERTY_POLICY_CMPT_TYPE);
 		controller.add(runtimeIdText, product, IProductCmpt.PROPERTY_RUNTIME_ID);
         validToField = new GregorianCalendarField(validToText);

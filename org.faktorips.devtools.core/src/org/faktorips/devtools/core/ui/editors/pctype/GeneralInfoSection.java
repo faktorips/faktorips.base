@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.IpsObjectPartContainerUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -47,7 +47,7 @@ import org.faktorips.util.ArgumentCheck;
 public class GeneralInfoSection extends IpsSection  {
     
     private IPolicyCmptType pcType;
-    private IpsObjectPartContainerUIController uiController;
+    private IpsObjectUIController uiController;
     
     // edit fields
     private IpsObjectField supertypeField;
@@ -122,7 +122,7 @@ public class GeneralInfoSection extends IpsSection  {
 	    configuratedField = new CheckboxField(configuratedCheckbox);
         
 	    // connect fields to model properties
-	    uiController = new IpsObjectPartContainerUIController(pcType);
+	    uiController = new IpsObjectUIController(pcType);
 	    uiController.add(supertypeField, IPolicyCmptType.PROPERTY_SUPERTYPE);
 	    uiController.add(abstractField, IPolicyCmptType.PROPERTY_ABSTRACT);
 	    uiController.add(productCmptTypeNameField, IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE);

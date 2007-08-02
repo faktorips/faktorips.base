@@ -41,7 +41,7 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
 import org.faktorips.devtools.core.ui.CompletionUtil;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.ChangeParametersControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
@@ -94,8 +94,8 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     /**
      * {@inheritDoc}
      */
-    protected IpsPartUIController createUIController(IIpsObjectPart part) {
-        IpsPartUIController controller = new IpsPartUIController(part) {
+    protected IpsObjectUIController createUIController(IIpsObjectPart part) {
+        IpsObjectUIController controller = new IpsObjectUIController(part) {
 
 			protected MessageList validatePartContainerAndUpdateUI() {
 			    MessageList messages = super.validatePartContainerAndUpdateUI();

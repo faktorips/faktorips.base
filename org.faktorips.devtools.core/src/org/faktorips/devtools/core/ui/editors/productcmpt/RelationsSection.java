@@ -73,7 +73,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityPaneEditField;
 import org.faktorips.devtools.core.ui.editors.ISelectionProviderActivation;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
@@ -358,7 +358,7 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 	 * another relation.
 	 */
 	private class SelectionChangedListener implements ISelectionChangedListener {
-		IpsPartUIController uiController;
+        IpsObjectUIController uiController;
 
 		public void selectionChanged(SelectionChangedEvent event) {
 			Object selected = ((IStructuredSelection) event.getSelection())
@@ -379,8 +379,8 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 				}
 
 				if (uiController == null
-						|| !uiController.getIpsObjectPart().equals(rel)) {
-					uiController = new IpsPartUIController(rel);
+						|| !uiController.getIpsObjectPartContainer().equals(rel)) {
+					uiController = new IpsObjectUIController(rel);
 				}
 
 				cardMinField = new CardinalityPaneEditField(cardinalityPanel,

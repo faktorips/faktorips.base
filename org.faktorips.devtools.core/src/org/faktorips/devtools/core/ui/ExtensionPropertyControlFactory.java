@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsObjectPartContainerUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 
 /**
  * @author eidenschink
@@ -84,7 +84,7 @@ public class ExtensionPropertyControlFactory {
 	/**
 	 * Connects all created EditFields with the model
 	 */
-	public void connectToModel(IpsObjectPartContainerUIController uiController) {
+	public void connectToModel(IpsObjectUIController uiController) {
 		for (int i = 0; i < extensionEditFields.length; i++) {
 			if (extensionEditFields[i] != null) {
 				uiController.add(extensionEditFields[i], extensionProperties[i]

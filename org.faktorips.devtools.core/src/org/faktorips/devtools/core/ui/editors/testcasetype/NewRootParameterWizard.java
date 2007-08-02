@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.memento.Memento;
 
@@ -58,7 +58,7 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
     private int pageDisplayedMax = 0;
 
     // Controller to connect the model with the ui
-    private IpsPartUIController controller;
+    private IpsObjectUIController controller;
     
     // Indicates if a test policy cmpt type parameter is created by the wizard (true) or a test
     // value parameter (false)
@@ -101,7 +101,7 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
     /**
      * {@inheritDoc}
      */
-    public IpsPartUIController getController() {
+    public IpsObjectUIController getController() {
         return controller;
     }
     
@@ -172,7 +172,7 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
      * Connects the new test parameter to the model controller
      */
     private void connectNewParameterToModel() {
-        controller = new IpsPartUIController((IIpsObjectPart)newTestParameter);
+        controller = new IpsObjectUIController((IIpsObjectPart)newTestParameter);
         rootParamSelectWizardPage.connectToModel(controller, newTestParameter);
         if (isTestPolicyCmptTypeParam){
             rootParamDetailWizardPage.connectToModel(controller, newTestParameter);

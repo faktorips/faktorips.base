@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 
@@ -135,7 +135,7 @@ public class NewRootParamFirstWizardPage extends WizardPage implements ValueChan
     /**
      * Connects the edit fields with the given controller to the given test parameter
      */    
-    void connectToModel(IpsPartUIController controller, ITestParameter testParameter){
+    void connectToModel(IpsObjectUIController controller, ITestParameter testParameter){
     }
     
     /**

@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
 import org.eclipse.jface.wizard.IWizard;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 
 /**
  * Interface for a wizard wich disables the next button if the editing object is not valid.
@@ -48,5 +48,5 @@ public interface IBlockedValidationWizard extends IWizard{
     /**
      * Returns the ui controller.
      */
-    public IpsPartUIController getController();
+    public IpsObjectUIController getController();
 }

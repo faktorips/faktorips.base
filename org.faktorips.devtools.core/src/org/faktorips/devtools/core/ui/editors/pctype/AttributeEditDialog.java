@@ -52,7 +52,7 @@ import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -151,7 +151,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
      * Controller to link the part-related input fields to the rule. The default ui-controller can not
      * be used because the default ui-controller is for the attribute and not for the rule. 
      */
-    private IpsPartUIController ruleUIController;
+    private IpsObjectUIController ruleUIController;
     
     /**
      * Listener to handle changes to the overwrites-Checkbox
@@ -537,7 +537,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     }
     
     private void createRuleUIController() {
-		ruleUIController = new IpsPartUIController(rule);
+		ruleUIController = new IpsObjectUIController(rule);
         ruleUIController.add(ruleNameField, IValidationRule.PROPERTY_NAME);
         ruleUIController.add(msgCodeField, IValidationRule.PROPERTY_MESSAGE_CODE);
         ruleUIController.add(msgTextField, IValidationRule.PROPERTY_MESSAGE_TEXT);

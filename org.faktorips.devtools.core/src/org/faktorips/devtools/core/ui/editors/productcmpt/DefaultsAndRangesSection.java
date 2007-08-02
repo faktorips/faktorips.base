@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.PreviewTextButtonField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
@@ -148,7 +148,7 @@ public class DefaultsAndRangesSection extends IpsSection {
                 // no datatype found - use string as default
                 datatype = Datatype.STRING;
             }
-            IpsPartUIController controller = new IpsPartUIController(element);
+            IpsObjectUIController controller = new IpsObjectUIController(element);
             uiMasterController.add(controller);
             createEditControlForDefaultValue(element, datatype, controller);      
             IValueSet valueSet = element.getValueSet();
@@ -162,7 +162,7 @@ public class DefaultsAndRangesSection extends IpsSection {
         }
     }
 
-    private void createEditControlForDefaultValue(IConfigElement element, ValueDatatype dataType, IpsPartUIController controller) throws CoreException {
+    private void createEditControlForDefaultValue(IConfigElement element, ValueDatatype dataType, IpsObjectUIController controller) throws CoreException {
         Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalise(element.getName()));
         // use the description of the attribute as tooltip 
         IAttribute attribute = element.findPcTypeAttribute();
@@ -179,7 +179,7 @@ public class DefaultsAndRangesSection extends IpsSection {
         controller.add(field, element, IConfigElement.PROPERTY_VALUE);
     }
 
-    private void createEditControlsForEnumeration(IConfigElement element, IValueSet valueSet, IpsPartUIController controller) {
+    private void createEditControlsForEnumeration(IConfigElement element, IValueSet valueSet, IpsObjectUIController controller) {
         // only if the value set defined in the model is not an all values value set
         // we can modify the content of the value set.
         toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
@@ -195,7 +195,7 @@ public class DefaultsAndRangesSection extends IpsSection {
         this.editControls.add(evc);
     }
 
-    private void createEditControlsForRange(IValueSet valueSet, IpsPartUIController controller) {
+    private void createEditControlsForRange(IValueSet valueSet, IpsObjectUIController controller) {
         // only if the value set defined in the model is not an all values value set
         // and the datatype is not a string we can modify the ranges of the value set.
         toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$

@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.DefaultUIController;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 
@@ -51,7 +51,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     private TextField lowerfield;
     private TextField upperfield;
     private TextField stepfield;
-    private IpsPartUIController uiController;
+    private IpsObjectUIController uiController;
     private Checkbox containsNullCB;
 	private CheckboxField containsNullField;
     
@@ -70,12 +70,11 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         Composite workArea = createWorkArea(uiToolkit, group);
         createTextControls(uiToolkit, workArea);
 
-        if (uiController instanceof IpsPartUIController) {
-            this.uiController = (IpsPartUIController)uiController;
+        if (uiController instanceof IpsObjectUIController) {
+            this.uiController = (IpsObjectUIController)uiController;
         } else {
-            this.uiController = new IpsPartUIController((IIpsObjectPart)range.getParent());
+            this.uiController = new IpsObjectUIController((IIpsObjectPart)range.getParent());
         }
-        
         connectToModel();        
     }
     

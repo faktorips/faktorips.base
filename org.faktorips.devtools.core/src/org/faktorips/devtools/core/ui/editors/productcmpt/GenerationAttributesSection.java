@@ -46,7 +46,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -201,7 +201,7 @@ public class GenerationAttributesSection extends IpsSection {
 		
 		Label label = toolkit.createLabel(rootPane, StringUtils.capitalise(toDisplay.getPcTypeAttribute()));	
         
-		IpsPartUIController controller = new IpsPartUIController(toDisplay);
+        IpsObjectUIController controller = new IpsObjectUIController(toDisplay);
 		uiMasterController.add(controller);
 	
 		try {

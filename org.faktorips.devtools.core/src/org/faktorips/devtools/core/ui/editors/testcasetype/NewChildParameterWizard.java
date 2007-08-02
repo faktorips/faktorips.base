@@ -20,14 +20,13 @@ package org.faktorips.devtools.core.ui.editors.testcasetype;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.Wizard;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.util.memento.Memento;
 
 /**
@@ -57,7 +56,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
     private int pageDisplayedMax = 0;
 
     // Controller to connect the model with the ui
-    private IpsPartUIController controller;
+    private IpsObjectUIController controller;
 
     public NewChildParameterWizard(ITestCaseType testCaseType,
             ITestPolicyCmptTypeParameter parentTestPolicyCmptTypeParameter) {
@@ -90,7 +89,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
     /**
      * {@inheritDoc}
      */
-    public IpsPartUIController getController() {
+    public IpsObjectUIController getController() {
         return controller;
     }
     
@@ -159,7 +158,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
         if (parent != null)
             newTestParameter.setTestParameterType(parent.getTestParameterType());
         
-        controller = new IpsPartUIController((IIpsObjectPart)newTestParameter);
+        controller = new IpsObjectUIController(newTestParameter);
         childParamSelectWizardPage.connectToModel(controller, newTestParameter);
         detailWizardPage.connectToModel(controller, newTestParameter);
         controller.updateUI();

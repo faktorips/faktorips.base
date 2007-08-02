@@ -60,7 +60,7 @@ import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.ProblemImageDescriptor;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.table.BeanTableCellModifier;
 import org.faktorips.devtools.core.ui.table.ColumnChangeListener;
@@ -94,7 +94,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     private HashMap cachedProblemImageDescriptors = new HashMap();
     
     /* Controller of the dependent ips object part */
-    private IpsPartUIController uiController;
+    private IpsObjectUIController uiController;
     
     /*
      * Composite controler contains the dependent object part ui controller and the dummy contoler
@@ -299,7 +299,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     }
     
     public FormulaTestCaseControl(Composite parent, UIToolkit uiToolkit,
-            IpsPartUIController uiController, IConfigElement configElement) {
+            IpsObjectUIController uiController, IConfigElement configElement) {
         super(parent, SWT.NONE);
         ArgumentCheck.notNull(new Object[]{ parent, uiToolkit, uiController, configElement});
         

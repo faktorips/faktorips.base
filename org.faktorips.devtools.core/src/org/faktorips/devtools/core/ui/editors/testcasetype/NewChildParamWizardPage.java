@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -102,7 +102,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
     /**
      * Connects the edit fields with the given controller to the given test parameter
      */
-    void connectToModel(IpsPartUIController controller, ITestParameter testParameter) {
+    void connectToModel(IpsObjectUIController controller, ITestParameter testParameter) {
         controller.add(editFieldRelation, ITestPolicyCmptTypeParameter.PROPERTY_RELATION);
         controller.add(editFieldTarget, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
         controller.add(editFieldName, ITestParameter.PROPERTY_NAME);

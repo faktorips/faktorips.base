@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -104,7 +104,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
     /**
      * Connects the edit fields with the given controller to the given test parameter
      */    
-    protected void connectToModel(IpsPartUIController controller, ITestParameter testParameter){
+    protected void connectToModel(IpsObjectUIController controller, ITestParameter testParameter){
         controller.add(editFieldName, ITestParameter.PROPERTY_NAME);
         controller.add(editFieldParamType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
     }

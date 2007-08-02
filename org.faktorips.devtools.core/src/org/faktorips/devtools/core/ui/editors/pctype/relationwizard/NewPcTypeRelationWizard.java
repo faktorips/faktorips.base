@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
@@ -53,8 +53,8 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	private final static int NONE_REVERSE_RELATION = 2;
 	
 	/* UI controllers */
-	private IpsPartUIController uiControllerRelation;
-	private IpsPartUIController uiControllerReverseRelation;
+	private IpsObjectUIController uiControllerRelation;
+	private IpsObjectUIController uiControllerReverseRelation;
 
 	private UIToolkit uiToolkit = new UIToolkit(null);
 
@@ -421,7 +421,7 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	 * Returns the relation object ui controller.
 	 * Or null if the controller not exists.
 	 */
-    IpsPartUIController getUiControllerRelation() {
+    IpsObjectUIController getUiControllerRelation() {
 		return uiControllerRelation;
 	}
 	
@@ -429,7 +429,7 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	 * Returns the relation object ui controller.
 	 * Or null if the controller not exists.
 	 */
-    IpsPartUIController getUiControllerReverseRelation() {
+    IpsObjectUIController getUiControllerReverseRelation() {
 		return uiControllerReverseRelation;
 	}
 	
@@ -534,8 +534,8 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	/** 
 	 * Creates a new ui controller for the given object.
 	 */
-	private IpsPartUIController createUIController(IIpsObjectPart part) {
-		IpsPartUIController controller = new IpsPartUIController(part) {
+	private IpsObjectUIController createUIController(IIpsObjectPart part) {
+        IpsObjectUIController controller = new IpsObjectUIController(part) {
 			public void valueChanged(FieldValueChangedEvent e) {
 				try {
 					super.valueChanged(e);
