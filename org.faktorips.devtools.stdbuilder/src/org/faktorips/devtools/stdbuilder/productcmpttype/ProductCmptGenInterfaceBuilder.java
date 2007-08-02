@@ -64,7 +64,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         String name = getProductCmptType(ipsSrcFile).getName() + getAbbreviationForGenerationConcept(ipsSrcFile);

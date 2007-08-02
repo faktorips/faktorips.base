@@ -624,22 +624,30 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * Code sample:
      * <pre>
      * [Javadoc]
-     * public int getNumOfCoverages() {
+     * public int getNumOfCoveragesInternal() {
      *     int num = 0; 
+     *     num += super.getNumOfCollisionCoverages(); // generated only if class has none abstract superclass
      *     num += getNumOfCollisionsCoverages(); 
      *     num += tplCoverage==null ? 0 : 1;
      *     return num;
      * }
      * </pre>
      */
-    protected void generateMethodGetNumOfForContainerRelationImplementation(
+    protected void generateMethodGetNumOfInternalForContainerRelationImplementation(
             IRelation containerRelation, 
             List implRelations,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetNumOfRefObjects(containerRelation, methodsBuilder);
+    
+        methodsBuilder.javaDoc(null, ANNOTATION_GENERATED);
+        String methodName = getMethodNameGetNumOfRefObjectsInternal(containerRelation);
+        methodsBuilder.signature(java.lang.reflect.Modifier.PRIVATE, "int", methodName, new String[]{}, new String[]{});
         methodsBuilder.openBracket();
         methodsBuilder.append("int num = 0;");
+        IPolicyCmptType supertype = getPcType().findSupertype();
+        if (supertype!=null && !supertype.isAbstract()) {
+            String methodName2 = interfaceBuilder.getMethodNameGetNumOfRefObjects(containerRelation);
+            methodsBuilder.appendln("num += super." + methodName2 + "();");
+        }
         for (int i = 0; i < implRelations.size(); i++) {
             methodsBuilder.appendln();
             IRelation relation = (IRelation)implRelations.get(i);
@@ -652,6 +660,37 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
         }
         methodsBuilder.append("return num;");
+        methodsBuilder.closeBracket();
+    }
+    
+    /*
+     * Returns the name of the internal method returning the number of referenced objects,
+     * e.g. getNumOfCoveragesInternal()
+     */
+    private String getMethodNameGetNumOfRefObjectsInternal(IRelation relation) {
+        return getLocalizedText(relation, "METHOD_GET_NUM_OF_INTERNAL_NAME", StringUtils.capitalise(relation.getTargetRolePlural()));
+    }
+    
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public int getNumOfCoverages() {
+     *     return getNumOfCoveragesInternal();
+     * }
+     * </pre>
+     */
+    protected void generateMethodGetNumOfForContainerRelationImplementation(
+            IRelation containerRelation, 
+            List implRelations,
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureGetNumOfRefObjects(containerRelation, methodsBuilder);
+        methodsBuilder.openBracket();
+        String methodName = getMethodNameGetNumOfRefObjectsInternal(containerRelation);
+        methodsBuilder.append("return " + methodName + "();");
         methodsBuilder.closeBracket();
     }
     
@@ -747,7 +786,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * <pre>
      * [Javadoc]
      * public ICoverage[] getCoverages() {
-     *     ICoverage[] result = new ICoverage[getNumOfCoverages()];
+     *     ICoverage[] result = new ICoverage[getNumOfCoveragesInternal()];
      *     ICoverage[] elements;
      *     counter = 0;
      *     elements = getTplCoverages();
@@ -763,6 +802,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             IRelation relation,
             List subRelations,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureGetAllRefObjects(relation, methodsBuilder);
         String classname = interfaceBuilder.getQualifiedClassName(relation.findTarget());
@@ -771,10 +811,24 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.appendClassName(classname);
         methodsBuilder.append("[] result = new ");       
         methodsBuilder.appendClassName(classname);
-        methodsBuilder.append("[" + interfaceBuilder.getMethodNameGetNumOfRefObjects(relation) + "()];");       
+        methodsBuilder.append("[" + getMethodNameGetNumOfRefObjectsInternal(relation) + "()];");       
 
+        IPolicyCmptType supertype = getPcType().findSupertype();
+        if (supertype!=null && !supertype.isAbstract()) {
+            // ICoverage[] superResult = super.getCoverages();
+            // System.arraycopy(superResult, 0, result, 0, superResult.length);
+            // int counter = superResult.length;
+            methodsBuilder.appendClassName(classname);
+            methodsBuilder.append("[] superResult = super.");       
+            methodsBuilder.appendln(interfaceBuilder.getMethodNameGetAllRefObjects(relation) + "();");
+            
+            methodsBuilder.appendln("System.arraycopy(superResult, 0, result, 0, superResult.length);");
+            methodsBuilder.appendln("int counter = superResult.length;");
+        } else {
+            methodsBuilder.append("int counter = 0;");
+        }
+        
         boolean elementsVarDefined = false;
-        methodsBuilder.append("int counter = 0;");
         for (int i = 0; i < subRelations.size(); i++) {
             IRelation subrel = (IRelation)subRelations.get(i);
             if (subrel.is1ToMany()) {
@@ -811,6 +865,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateMethodGetRefObjectForNoneContainerRelation(
             IRelation relation, 
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureGetRefObject(relation, methodsBuilder);
         methodsBuilder.openBracket();
@@ -1203,6 +1258,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         if (containerRelation.is1ToMany()) {
             generateMethodGetNumOfForContainerRelationImplementation(containerRelation, relations, methodsBuilder);
             generateMethodGetAllRefObjectsForContainerRelationImplementation(containerRelation, relations, methodsBuilder);
+            generateMethodGetNumOfInternalForContainerRelationImplementation(containerRelation, relations, methodsBuilder);
         } else {
             generateMethodGetRefObjectForContainerRelationImplementation(containerRelation, relations, methodsBuilder);
         }

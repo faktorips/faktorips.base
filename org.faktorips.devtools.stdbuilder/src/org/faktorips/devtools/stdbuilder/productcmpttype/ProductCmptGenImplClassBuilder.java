@@ -896,6 +896,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     protected void generateCodeForContainerRelationImplementation(IProductCmptTypeRelation containerRelation, List implRelations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         generateMethodGetRelatedCmptsInContainer(containerRelation, implRelations, methodsBuilder);
         generateMethodGetNumOfRelatedProductCmpts(containerRelation, implRelations, methodsBuilder);
+        generateMethodGetNumOfRelatedProductCmptsInternal(containerRelation, implRelations, methodsBuilder);
     }
     
     /**
@@ -930,9 +931,22 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.append("[] result = new ");
         methodsBuilder.appendClassName(targetClass);
         methodsBuilder.append("[");
-        methodsBuilder.append(interfaceBuilder.getMethodNameGetNumOfRelatedCmpts(relation));
+        methodsBuilder.append(getMethodNameGetNumOfRelatedCmptsInternal(relation));
         methodsBuilder.appendln("()];");
-        methodsBuilder.appendln("int index = 0;");
+
+        IProductCmptType supertype = getProductCmptType().findSupertype();
+        if (supertype!=null && !supertype.isAbstract()) {
+            // ICoverage[] superResult = super.getCoverages();
+            // System.arraycopy(superResult, 0, result, 0, superResult.length);
+            // int counter = superResult.length;
+            methodsBuilder.appendClassName(targetClass);
+            methodsBuilder.append("[] superResult = super.");       
+            methodsBuilder.appendln(interfaceBuilder.getMethodNameGetManyRelatedCmpts(relation) + "();");
+            methodsBuilder.appendln("System.arraycopy(superResult, 0, result, 0, superResult.length);");
+            methodsBuilder.appendln("int index = superResult.length;");
+        } else {
+            methodsBuilder.append("int index = 0;");
+        }
         for (Iterator it = implRelations.iterator(); it.hasNext();) {
             IProductCmptTypeRelation implRelation = (IProductCmptTypeRelation)it.next();
             if (implRelation.is1ToMany()) {
@@ -1005,10 +1019,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * <pre>
      * [javadoc]
      * public CoverageType getNumOfCoverageTypes() {
-     *     int numOf = 0;
-     *     numOf += getNumOfCollisionCoverages();
-     *     numOf += getNumOfTplCoverages();
-     *     return numOf;
+     *     return getNumOfCoverageTypesInternal();
      * }
      * </pre>
      */
@@ -1019,15 +1030,55 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureGetNumOfRelatedCmpts(containerRelation, builder);
         builder.openBracket();
-        builder.appendln("int numOf = 0;");
+        String internalMethodName = getMethodNameGetNumOfRelatedCmptsInternal(containerRelation);
+        builder.appendln("return " + internalMethodName + "();");
+        builder.closeBracket();
+    }
+    
+    /**
+     * Generates the getNumOfXXXInternal() method for a container relation. 
+     * <p>
+     * Code sample:
+     * <pre>
+     * [javadoc]
+     * public CoverageType getNumOfCoverageTypesInternal() {
+     *     int numOf = 0;
+     *     numOf += getNumOfCollisionCoverages();
+     *     numOf += getNumOfTplCoverages();
+     *     return numOf;
+     * }
+     * </pre>
+     */
+    private void generateMethodGetNumOfRelatedProductCmptsInternal(IProductCmptTypeRelation containerRelation, List implRelations, JavaCodeFragmentBuilder builder) throws CoreException {
+        if (!containerRelation.isAbstractContainer()) {
+            throw new IllegalArgumentException("Relation must be a container relation.");
+        }
+        builder.javaDoc("", ANNOTATION_GENERATED);
+        String methodName = getMethodNameGetNumOfRelatedCmptsInternal(containerRelation);
+        builder.signature(java.lang.reflect.Modifier.PRIVATE, "int", methodName, new String[]{}, new String[]{});
+        builder.openBracket();
+        builder.appendln("int num = 0;");
+        IProductCmptType supertype = getProductCmptType().findSupertype();
+        if (supertype!=null && !supertype.isAbstract()) {
+            String methodName2 = interfaceBuilder.getMethodNameGetNumOfRelatedCmpts(containerRelation);
+            builder.appendln("num += super." + methodName2 + "();");
+        }
         for (Iterator it = implRelations.iterator(); it.hasNext();) {
             IProductCmptTypeRelation relation = (IProductCmptTypeRelation)it.next();
-            builder.append("numOf += ");
+            builder.append("num += ");
             builder.append(interfaceBuilder.getMethodNameGetNumOfRelatedCmpts(relation));
             builder.append("();");
         }
-        builder.appendln("return numOf;");
+        builder.appendln("return num;");
         builder.closeBracket();
+    }
+    
+    /*
+     * Returns the name of the internal method returning the number of referenced objects,
+     * e.g. getNumOfCoveragesInternal()
+     */
+    private String getMethodNameGetNumOfRelatedCmptsInternal(IProductCmptTypeRelation relation) {
+        return getLocalizedText(relation, "METHOD_GET_NUM_OF_INTERNAL_NAME", StringUtils.capitalise(relation.getTargetRolePlural()));
     }
     
     private void generateMethodGetCardinalityFor1ToManyRelation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
