@@ -218,15 +218,14 @@ public interface IRelation extends IIpsObjectPart {
 
     /**
      * Validation message code to indicate that a relation and it's inverse relation must be marked as container relations 
-     * (or not). Applies to associations only.
+     * (or not).
      */
-    // TODO
     public final static String MSGCODE_FORWARD_AND_REVERSE_RELATION_MUST_BOTH_BE_MARKED_AS_CONTAINER = MSGCODE_PREFIX + "ReverseRelationOfContainerRelationMustBeContainerRelationToo"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the reverse relation of a composition must be a reverse composition.
+     * Validation message code to indicate that the inverse relation of a master-to-detail composition must be a 
+     * detail-to-master composition.
      */
-    // TODO can be removed
     public final static String MSGCODE_REVERSE_COMPOSITION_MISSMATCH = MSGCODE_PREFIX + "ReverseCompositionMissmatch"; //$NON-NLS-1$
 
     /**

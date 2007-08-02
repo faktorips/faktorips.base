@@ -649,13 +649,11 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
             list.add(new Message(MSGCODE_REVERSERELATION_NOT_IN_TARGET, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
             return;
         }
-        // TODO: isAssoziation can be removed
         if (isAssoziation() && (!reverseRelationObj.getInverseRelation().equals(getName()))) {
             String text = Messages.Relation_msgReverseRelationNotSpecified;
             list.add(new Message(MSGCODE_REVERSE_RELATION_MISMATCH, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
         }
 
-        // TODO: can be removed, muss auf associations eingescchränkt werden
         if (isReadOnlyContainer()!=reverseRelationObj.isReadOnlyContainer()) {
             String text = Messages.Relation_msgReverseRelOfContainerRelMustBeContainerRelToo;
             list.add(new Message(MSGCODE_FORWARD_AND_REVERSE_RELATION_MUST_BOTH_BE_MARKED_AS_CONTAINER, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
