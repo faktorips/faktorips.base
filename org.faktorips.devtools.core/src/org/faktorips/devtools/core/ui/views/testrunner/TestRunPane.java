@@ -86,8 +86,9 @@ public class TestRunPane {
 			}
 			public void widgetDefaultSelected(SelectionEvent e) {
 				if (fTable.getSelectionCount() > 0)
-					if (getSelectedTestFullPath() != null)
+					if (getSelectedTestFullPath() != null){
 						new OpenTestInEditorAction(testRunnerViewPart, getSelectedTestFullPath(), getSelectedTestQualifiedName(), null).run();
+                    }
 			}
 		});
         
@@ -250,6 +251,15 @@ public class TestRunPane {
         }
         TestTableEntry entry= (TestTableEntry) ti.getData();
         return entry.getDetailsOfSingleFailure(failureIndex);
+    }
+    
+    public List getAllFailureDetailsOfSelectedTestCase(){
+        TableItem ti = getSelectedItem();
+        if (ti == null){
+            return new ArrayList(0);
+        }
+        TestTableEntry entry= (TestTableEntry) ti.getData();
+        return entry.getFailureOrErrorDetailList();
     }
     
 	//
@@ -464,6 +474,15 @@ public class TestRunPane {
                 return EMPTY_STRING_ARRAY;
             } else {
                 return (String[]) failureDetailList.get(idx);
+            }
+        }
+        public List getFailureOrErrorDetailList() {
+            if (errorDetails.length>0){
+                ArrayList result = new ArrayList(1);
+                result.add(errorDetails);
+                return result;
+            } else {
+                return failureDetailList;
             }
         }
 	}

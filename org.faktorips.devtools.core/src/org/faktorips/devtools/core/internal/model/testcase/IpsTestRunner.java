@@ -885,7 +885,6 @@ public class IpsTestRunner implements IIpsTestRunner {
      */
     public synchronized void startTestRunnerJob(String classpathRepository, String testsuite, String mode, ILaunch launch) throws CoreException{
         trace("Start test runner Job"); //$NON-NLS-1$
-
         
         if (isRunningTestRunner()){
             MessageDialog.openWarning(null, Messages.IpsTestRunner_InfoDialogTestCouldNotStarted_Title, Messages.IpsTestRunner_InfoDialogTestAlreadyRunning_Text);
@@ -928,12 +927,15 @@ public class IpsTestRunner implements IIpsTestRunner {
         
         job = new TestRunnerJob(this, classpathRepository, testsuite, mode, launch);
         
+        job.setSystem(false);
         // we don't need to specify a rule here, because the ips test runner
         // didn't depend on a rule, there will be no blocking events (e.g. builder could be depend
         // on job finishing or somthing else)
-        job.setSystem(false);
+        //   IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        //   job.setRule(workspace.getRoot());
         job.setRule(null);
-        job.schedule();
+        // wait 500ms because maybe the test case builder must run first if the test case was saved before
+        job.schedule(500);
     }
 
     private void terminateLaunch(ILaunch launch) throws DebugException {

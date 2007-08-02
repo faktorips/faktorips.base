@@ -723,6 +723,18 @@ public class TestCaseDetailArea {
         return false;
     }
 
+    void setFocusOnEditField(String editFieldUniqueKey){
+        EditField editField = (EditField)allEditFields.get(editFieldUniqueKey);
+        if (editField == null) {
+            // edit field not found, try to get the special edit value field
+            editField = (EditField)allEditFields.get(TestCaseSection.VALUESECTION + editFieldUniqueKey);
+        }
+        if (editField != null) {
+            editField.getControl().setFocus();
+        }
+    }
+    
+    
     /**
      * Stores the given actual value as expected result.
      */

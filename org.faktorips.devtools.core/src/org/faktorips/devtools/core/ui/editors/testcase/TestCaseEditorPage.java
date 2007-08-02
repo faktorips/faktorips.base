@@ -72,4 +72,8 @@ public class TestCaseEditorPage extends IpsObjectEditorPage {
     void saveState() {
         section.saveState();
     }
+
+    public void setReadOnly(boolean readOnly) {
+        section.setReadOnly(readOnly);
+    }
 }

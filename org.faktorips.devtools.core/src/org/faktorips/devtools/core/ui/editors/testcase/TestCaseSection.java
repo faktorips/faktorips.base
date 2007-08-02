@@ -186,6 +186,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	private Action actionRelation;
 	private Action actionAll;
 	private ToggleContentTypeAction[] toggleContentTypeActions;
+    private Action actionRunAndStoreExpectedResult;
     
 	// Stores the last test run status
 	private boolean isTestRunError;
@@ -613,7 +614,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
     }
     
+    private List fixedFailuesFieldKey = new ArrayList();
+    
     private void storeActualAsExpectedValue(FailureDetails failureDetails) {
+        fixedFailuesFieldKey.add(findUniqueEditFieldKey(failureDetails));
         testCaseDetailArea.storeActualValueInExpResult(findUniqueEditFieldKey(failureDetails), failureDetails
                 .getActualValue(), failureDetails.getMessage());
     }
@@ -1002,7 +1006,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		actionAll.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCase_flatView.gif")); //$NON-NLS-1$
         
         // Toolbar item run and store expected result
-		Action actionRunAndStoreExpectedResult = new Action("runAndStoreExpectedResult", Action.AS_PUSH_BUTTON) { //$NON-NLS-1$
+		actionRunAndStoreExpectedResult = new Action("runAndStoreExpectedResult", Action.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				runAndStoreExpectedResultClicked();
 			}
@@ -2256,9 +2260,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		isTestRunError = true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+    /**
+     * {@inheritDoc}
+     */
 	public void testFailureOccured(final String qualifiedTestName, final String[] failureDetails) {
 		if (! canListenToTestRun(qualifiedTestName)){
 			return;
@@ -2363,7 +2367,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     }
 
     private void addExpectedResultContextMenu(final Control control, final List failureDetails, final boolean isSectionTitleMenu) {
-        if (failureDetails.size() == 0){
+        if (control == null || failureDetails.size() == 0 || control.isDisposed()){
             return;
         }
         
@@ -2392,8 +2396,28 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         List allFailuresCopy = new ArrayList();
         allFailuresCopy.addAll(allFailureDetails);
         postAddExpectedResultContextMenu(form.getContent(), allFailuresCopy, true);
+        
+        // set focus to the first error
+        if (allFailureDetails.size()>0){
+            FailureDetails failureDetails = (FailureDetails)allFailureDetails.get(0);
+            setFocusOnFailureField(qualifiedTestName, failureDetails.getFailureDetails());
+        }
 	}
 
+    public void setFocusOnFailureField(final String qualifiedTestName, final String[] failureDetails) {
+        if (!canListenToTestRun(qualifiedTestName)) {
+            return;
+        }
+        postAsyncRunnable(new Runnable() {
+            public void run() {
+                if (isDisposed()) {
+                    return;
+                }
+                testCaseDetailArea.setFocusOnEditField(findUniqueEditFieldKey(new FailureDetails(failureDetails)));
+            }
+        });
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2419,7 +2443,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         });
         
         // redraw all fields and reset the color of all fields
-        postShowAll();
+        postShowAllStructureAndAllTypes();
         
 		isTestRunError = false;
 		isTestRunFailure = false;
@@ -2464,13 +2488,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	
     /*
 	 * Returns <code>true</code> if the test run listener is relevant for this test case.<br>
-     * Returns <code>false<code> if the file is changed and not saved (source file is dirty).<br>
      * Returns <code>false<code> if the given test case name doesn't match the current editing test case.
 	 */
 	private boolean canListenToTestRun(String testCaseQualifiedName) {
-        if (testCase.getIpsSrcFile().isDirty()){
-            return false;
-        }
         return testCaseQualifiedName.equals(testCase.getQualifiedName());
 	}
 
@@ -2529,7 +2549,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				editField.getControl().setBackground(fFailureColor);
 				editField.getControl().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
 				editField.getControl().setToolTipText(expectedResult);
-                editField.getControl().setFocus();
 			}
 		});
 	}
@@ -2547,13 +2566,19 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         });
     }
     
-	void postShowAll() {
+	void postShowAllStructureAndAllTypes() {
         postAsyncRunnable(new Runnable() {
 			public void run() {
-				if(isDisposed()) 
+				if(isDisposed()){ 
 					return;
-				showAll(true);
-				actionAll.setChecked(true);
+                }
+                // if the content type is input then set the content type to combined
+				if (contentProvider.getContentType() == TestCaseContentProvider.INPUT){
+                    contentProvider.setContentType(TestCaseContentProvider.COMBINED);
+				}
+                // show all objects
+                showAll(true);
+                actionAll.setChecked(true);
 			}
 		});
 	}
@@ -2810,5 +2835,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         section.put(CONTENT_TYPE_KEY, contentProvider.getContentType());
         section.put(SHOW_RELATION_KEY, contentProvider.isWithoutRelations());
         section.put(SHOW_ALL_KEY, showAll);
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        actionRunAndStoreExpectedResult.setEnabled(!readOnly);
     }
 }

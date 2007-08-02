@@ -52,7 +52,7 @@ public class TestCaseEditor extends IpsObjectEditor {
         IIpsObjectEditorSettings settings = getSettings();
         // open the select template dialog if the templ. is missing and the data is changeable
         if (getTestCase().findTestCaseType() == null 
-                && couldDateBeChangedIfTestCaseTypeWasntMissing()
+                && couldDataBeChangedIfTestCaseTypeWasntMissing()
                 && !IpsPlugin.getDefault().isTestMode()
                 && !settings.getBoolean(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE)) {            
             String msg = NLS.bind(Messages.TestCaseEditor_Information_TemplateNotFound, getTestCase().getTestCaseType());
@@ -103,18 +103,25 @@ public class TestCaseEditor extends IpsObjectEditor {
      * {@inheritDoc}
      */
     protected boolean computeDataChangeableState() {
-        if (!couldDateBeChangedIfTestCaseTypeWasntMissing()) {
-            return false;
+        boolean datachangeable = true;
+        if (!couldDataBeChangedIfTestCaseTypeWasntMissing()) {
+            datachangeable = false;
+        } else {
+            try {
+                datachangeable = getTestCase().findTestCaseType() != null;
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+                datachangeable = false;
+            }
         }
-        try {
-            return getTestCase().findTestCaseType() != null;
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return false;
+        if (editorPage != null){
+            editorPage.setReadOnly(!datachangeable);
         }
+
+        return datachangeable;
     }  
     
-    private boolean couldDateBeChangedIfTestCaseTypeWasntMissing() {
+    private boolean couldDataBeChangedIfTestCaseTypeWasntMissing() {
         return super.computeDataChangeableState();
     }
     
