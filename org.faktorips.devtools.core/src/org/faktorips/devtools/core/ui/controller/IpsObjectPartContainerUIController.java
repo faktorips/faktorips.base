@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.util.message.Message;
@@ -35,7 +36,7 @@ import org.faktorips.util.message.MessageList;
  * @author eidenschink
  * @author Jan Ortmann
  */
-public abstract class IpsObjectPartContainerUIController extends DefaultUIController {
+public class IpsObjectPartContainerUIController extends DefaultUIController {
 
     private IIpsObjectPartContainer partContainer;
 
@@ -43,6 +44,10 @@ public abstract class IpsObjectPartContainerUIController extends DefaultUIContro
 		super();
         this.partContainer = partContainer;
 	}
+    
+    public IIpsObject getIpsObject() {
+        return partContainer.getIpsObject();
+    }
     
     /**
      * Returns the ips object part container this is a controller for.
