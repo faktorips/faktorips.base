@@ -542,10 +542,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeFor1To1Relation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        if (relation.isCompositionDetailToMaster()) {
+            generateMethodGetTypesafeParentObject(relation, methodsBuilder);
+            return; 
+        }
         if (!relation.isReadOnlyContainer()) {
             IPolicyCmptType target = relation.findTarget();
             generateFieldForRelation(relation, target, fieldsBuilder);
-            generateMethodGetRefObjectForNoneContainerRelation(relation, methodsBuilder);
+            generateMethodGetRefObjectBasedOnMemberVariable(relation, methodsBuilder);
             if (relation.isAssoziation()) {
                 generateMethodSetRefObjectForAssociation(relation, methodsBuilder);
             } else if (relation.isCompositionMasterToDetail()) { 
@@ -579,9 +583,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             IPolicyCmptType target,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        if (relation.isCompositionDetailToMaster()) {
-            return; // variable for parent is defined in base class
-        }
         String javaClassname = relation.is1ToMany() ? List.class.getName()
                 : getQualifiedClassName(target);
         JavaCodeFragment initialValueExpression = new JavaCodeFragment();
@@ -862,7 +863,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
-    protected void generateMethodGetRefObjectForNoneContainerRelation(
+    protected void generateMethodGetRefObjectBasedOnMemberVariable(
             IRelation relation, 
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         
@@ -878,6 +879,29 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodsBuilder.appendClassName(interfaceBuilder.getQualifiedClassName(target));
             methodsBuilder.append(")" + MethodNames.GET_PARENT + "();");
         }
+        methodsBuilder.closeBracket();
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public ICoverage getCoverage() {
+     *     return (ICoverage)getParentModelObject();
+     * }
+     * </pre>
+     */
+    protected void generateMethodGetTypesafeParentObject(
+            IRelation relation, 
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureGetRefObject(relation, methodsBuilder);
+        methodsBuilder.openBracket();
+        IPolicyCmptType target = relation.findTarget();
+        methodsBuilder.append("return (");
+        methodsBuilder.appendClassName(interfaceBuilder.getQualifiedClassName(target));
+        methodsBuilder.append(")" + MethodNames.GET_PARENT + "();");
         methodsBuilder.closeBracket();
     }
     
