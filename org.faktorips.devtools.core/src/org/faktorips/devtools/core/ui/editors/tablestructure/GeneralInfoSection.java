@@ -25,6 +25,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controller.IpsObjectPartContainerUIController;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -39,7 +40,7 @@ public class GeneralInfoSection extends IpsSection {
 
 	private ITableStructure tableStructure;
 	
-    private IpsObjectUIController uiController;
+    private IpsObjectPartContainerUIController uiController;
 
     private EnumValueField typeField; 
     
@@ -67,7 +68,7 @@ public class GeneralInfoSection extends IpsSection {
         Combo combo = toolkit.createCombo(composite, TableStructureType.getEnumType());
         typeField = new EnumValueField(combo, TableStructureType.getEnumType());
         
-        uiController = new IpsObjectUIController(tableStructure);
+        uiController = new IpsObjectPartContainerUIController(tableStructure);
         uiController.add(typeField, ITableStructure.PROPERTY_TYPE);
 	}
 

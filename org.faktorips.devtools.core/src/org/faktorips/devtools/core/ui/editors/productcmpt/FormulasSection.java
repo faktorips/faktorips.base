@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
+import org.faktorips.devtools.core.ui.controller.IpsObjectPartContainerUIController;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -121,7 +122,7 @@ public class FormulasSection extends IpsSection {
 	 */
 	private void createEditControls() {
 		uiMasterController = new CompositeUIController();
-		IpsObjectUIController ctrl = new IpsObjectUIController(generation
+        IpsObjectPartContainerUIController ctrl = new IpsObjectPartContainerUIController(generation
 				.getIpsObject());
 		uiMasterController.add(ctrl);
 	
