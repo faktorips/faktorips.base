@@ -41,7 +41,9 @@ public class TestCaseEditor extends IpsObjectEditor {
      * {@inheritDoc}
      */
     protected void disposeInternal() {
-        editorPage.saveState();
+        if (editorPage != null){
+            editorPage.saveState();
+        }
         super.disposeInternal();
     }
 
