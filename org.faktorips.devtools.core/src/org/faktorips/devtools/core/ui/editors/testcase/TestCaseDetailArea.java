@@ -84,7 +84,9 @@ public class TestCaseDetailArea {
     // Contains the failures of the last test run
     private HashMap failureMessageCache = new HashMap();
     private HashMap failureDetailCache = new HashMap();
-
+    // Contains all fixed fields (actual value stored as expected value)
+    private List fixedFieldsCache = new ArrayList();
+    
     // Contains the mapping between the edit field and model objects
     private HashMap editField2ModelObject = new HashMap();
 
@@ -371,12 +373,16 @@ public class TestCaseDetailArea {
         String failureLastTestRun = (String)failureMessageCache.get(testPolicyCmptTypeParamPath
                 + attributeValue.getTestAttribute());
         if (failureLastTestRun != null) {
-            testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureLastTestRun);
-            // create context menu
-            String[] failureDetails = (String[])failureDetailCache.get(testPolicyCmptTypeParamPath
-                    + attributeValue.getTestAttribute());
-            if (failureDetails != null) {
-                testCaseSection.postAddExpectedResultContextMenu(editField.getControl(), failureDetails);
+            if (!fixedFieldsCache.contains(testPolicyCmptTypeParamPath + attributeValue.getTestAttribute())) {
+                testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureLastTestRun);
+                // create context menu
+                String[] failureDetails = (String[])failureDetailCache.get(testPolicyCmptTypeParamPath
+                        + attributeValue.getTestAttribute());
+                if (failureDetails != null) {
+                    testCaseSection.postAddExpectedResultContextMenu(editField.getControl(), failureDetails);
+                }
+            } else {
+                testCaseSection.postSetOverriddenValueBackgroundAndToolTip(editField, failureLastTestRun, false);
             }
         }
         uiController.updateUI();
@@ -718,7 +724,11 @@ public class TestCaseDetailArea {
             editField = (EditField)allEditFields.get(TestCaseSection.VALUESECTION + editFieldUniqueKey);
         }
         if (editField != null) {
-            testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureMessage);
+            if (fixedFieldsCache.contains(editFieldUniqueKey)){
+                testCaseSection.postSetOverriddenValueBackgroundAndToolTip(editField, failureMessage, false);
+            } else {
+                testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureMessage);
+            }
             return true;
         }
         return false;
@@ -749,8 +759,9 @@ public class TestCaseDetailArea {
             editField = (EditField)allEditFields.get(TestCaseSection.VALUESECTION + editFieldUniqueKey);
         }
         if (editField != null) {
+            fixedFieldsCache.add(editFieldUniqueKey);
             updateValue(editField, actualValue);
-            testCaseSection.postSetOverriddenValueBackgroundAndToolTip(editField, message);
+            testCaseSection.postSetOverriddenValueBackgroundAndToolTip(editField, message, true);
             return true;
         }
         return false;
@@ -773,9 +784,12 @@ public class TestCaseDetailArea {
     /**
      * Resets the test run, clear failure cache.
      */
-    public void resetTestRun() {
+    public void resetTestRun(boolean clearFixedValueState) {
         failureMessageCache.clear();
         failureDetailCache.clear();
+        if (clearFixedValueState){
+            fixedFieldsCache.clear();
+        }
     }
 
     /*

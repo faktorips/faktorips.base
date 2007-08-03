@@ -427,7 +427,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         }                        
                     }
                     for (Iterator iter = failureDetailsList.iterator(); iter.hasNext();) {
-                        storeActualAsExpectedValue((FailureDetails)iter.next());
+                        FailureDetails failureDetails = (FailureDetails)iter.next();
+                        storeActualAsExpectedValue(failureDetails, failureDetailsToStoreInExpResultToString(failureDetails.getFailureDetails()));
                     }
                     testCaseDetailArea.updateUi();
                 }
@@ -614,12 +615,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
     }
     
-    private List fixedFailuesFieldKey = new ArrayList();
-    
-    private void storeActualAsExpectedValue(FailureDetails failureDetails) {
-        fixedFailuesFieldKey.add(findUniqueEditFieldKey(failureDetails));
+    private void storeActualAsExpectedValue(FailureDetails failureDetails, String tooltip) {
         testCaseDetailArea.storeActualValueInExpResult(findUniqueEditFieldKey(failureDetails), failureDetails
-                .getActualValue(), failureDetails.getMessage());
+                .getActualValue(), tooltip);
     }
     
     private String findUniqueEditFieldKey(FailureDetails failureDetails) {
@@ -1860,7 +1858,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
 	private void runTestClicked(){
         resetTestRunStatus();
-        clearTestFailures();
+        clearTestFailures(true);
         registerTestRunListener();
 	    startTestRunner();
 	}
@@ -2295,11 +2293,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
                 // indicate edit fiels as failure and set message in status line if the field couldn't be found
                 String message = ""; //$NON-NLS-1$
-                if (!testCaseDetailArea.markEditFieldAsFailure(findUniqueEditFieldKey(failureDetailsObj), formatedFailure,
-                        failureDetails)) {
-                    // field wasn't found, set message in the status bar to inform user about missing failure indicator
+                if (!testCaseDetailArea.markEditFieldAsFailure(findUniqueEditFieldKey(failureDetailsObj), formatedFailure, failureDetails)) {
+                    // field wasn't found, set message in the status bar to inform user about
+                    // missing failure indicator
                     message = NLS.bind(Messages.TestCaseSection_StatusMessage_FieldNotFound, formatedFailure);
-                } 
+                }
                 IStatusLineManager statusLineManager = site.getActionBars().getStatusLineManager();
                 if (statusLineManager != null) {
                     statusLineManager.setMessage(message);
@@ -2310,7 +2308,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         failureDetailsObj.getAttributeName()));
                 if (editField != null){
                     ArrayList list = new ArrayList(1);
-                    list.add(new FailureDetails(failureDetails));
+                    list.add(failureDetailsObj);
                     
                     TestCaseSection.this.addExpectedResultContextMenu(editField.getControl(), list, false);
                 }
@@ -2390,7 +2388,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 			return;
         }
         
-		postSetTestRunStatus(isTestRunError, isTestRunFailure, failureCount);
+        if (testCase.getIpsSrcFile() == null || ! testCase.getIpsSrcFile().isDirty()){
+            postSetTestRunStatus(isTestRunError, isTestRunFailure, failureCount);
+        }
         
         // create context menu to store actual value as expected value
         List allFailuresCopy = new ArrayList();
@@ -2418,10 +2418,15 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         });
     }
     
+    
 	/**
-	 * {@inheritDoc}
-	 */
-	public void testStarted(String qualifiedTestName) {
+     * {@inheritDoc}
+     */
+    public void testStarted(String qualifiedTestName) {
+        testStarted(qualifiedTestName, true);
+    }
+
+	public void testStarted(String qualifiedTestName, boolean clearFixedValueState) {
 		if (! canListenToTestRun(qualifiedTestName)){
 			return;
         }
@@ -2429,7 +2434,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         // resets the status, thus if a test runner for this test case is started in the background
         // - e.g. by using the modelexplorer - the status will be removed correctly
         postResetTestRunStatus();
-        clearTestFailures();
+
+        clearTestFailures(clearFixedValueState);
         
         // remove the contextmenu in the section title
         postAsyncRunnable(new Runnable() {
@@ -2553,15 +2559,18 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		});
 	}
 
-    public void postSetOverriddenValueBackgroundAndToolTip(final EditField editField, final String message) {
+    public void postSetOverriddenValueBackgroundAndToolTip(final EditField editField, final String message, final boolean setFocus) {
         postAsyncRunnable(new Runnable() {
             public void run() {
                 if(isDisposed()) 
                     return;
+                
                 editField.getControl().setBackground(fOkColor);
                 editField.getControl().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
                 editField.getControl().setToolTipText(message);
-                editField.getControl().setFocus();
+                if (setFocus){
+                    editField.getControl().setFocus();
+                }
             }
         });
     }
@@ -2603,8 +2612,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         setFormToolTipText(""); //$NON-NLS-1$
     }
     
-    private void clearTestFailures(){
-        testCaseDetailArea.resetTestRun();
+    private void clearTestFailures(boolean clearFixedValueState){
+        testCaseDetailArea.resetTestRun(clearFixedValueState);
         allFailureDetails.clear();
     }
 	
@@ -2704,11 +2713,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     form.getContent().setBackground(fFailureColor);
                     form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
                     
-                    if (failureDetails.length > 4){
-                        failureDetails[5] = formatedMessage;
-                    }
-                    
-                    storeActualAsExpectedValue(new FailureDetails(failureDetails));
+                    storeActualAsExpectedValue(new FailureDetails(failureDetails), formatedMessage);
                 }
                 if (failureDetailsList.size()>0){
                     // set the status in the title
