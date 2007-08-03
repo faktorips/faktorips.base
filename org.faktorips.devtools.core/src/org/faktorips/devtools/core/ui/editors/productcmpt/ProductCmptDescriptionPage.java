@@ -14,8 +14,12 @@
  *   Faktor Zehn GmbH - initial API and implementation 
  *
  *******************************************************************************/
-package org.faktorips.devtools.core.ui.views.modeldescription;
+package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
@@ -30,14 +34,14 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.part.Page;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 
 /**
- * A Page for presenting the attributes of a {@link IProductCmptType}. This page is
- * connect to a {@link ProductCmptEditor} similiar to the outline view.
+ * A page for presenting the attributes of a {@link IProductCmptType}. This page is
+ * connected to a {@link ProductCmptEditor} similiar to the outline view.
  * 
  * The attributes and their description are presented within a ExpandableComposite.
  * 
@@ -45,7 +49,7 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
  *
  */
 
-public class ModelDescriptionPage extends Page implements IPage {
+public class ProductCmptDescriptionPage extends Page implements IPage {
 
     // SWT basics
     private FormToolkit toolkit;
@@ -53,11 +57,11 @@ public class ModelDescriptionPage extends Page implements IPage {
     // basic view elements
     private ScrolledForm form;    
     private Composite expandableContainer; // Container for ExpandableComposite widgets
-    private IProductCmptType productCmptType;
+    private IProductCmptGeneration productCmptGen;
     
-    public ModelDescriptionPage(IProductCmptType productCmptType) {
+    public ProductCmptDescriptionPage(IProductCmptGeneration productCmptGen) {
     	super();
-    	this.productCmptType = productCmptType;
+    	this.productCmptGen = productCmptGen;
     }
 
 
@@ -79,8 +83,8 @@ public class ModelDescriptionPage extends Page implements IPage {
 
         form.getBody().setLayout(layoutForm);
         
-        if (productCmptType != null) {
-        	setInput(productCmptType);
+        if (productCmptGen != null) {
+        	setInput(productCmptGen);
         }
 
 	}	
@@ -125,7 +129,7 @@ public class ModelDescriptionPage extends Page implements IPage {
                 ExpandableComposite.EXPANDED );
         
         // Set faktorips.attribute name
-        excomposite.setText(attribute.getName());
+        excomposite.setText(StringUtils.capitalise(attribute.getName()));
         
         if ((index % 2) == 0) {
             Color grey = parent.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND);
@@ -167,17 +171,19 @@ public class ModelDescriptionPage extends Page implements IPage {
      * 
      * @param input IProductCmptType of the {@link ProductCmptEditor}
      */
-    public void setInput(IProductCmptType input) {
-    	this.productCmptType = input; 
+    public void setInput(IProductCmptGeneration input) {
+    	this.productCmptGen = input; 
     	
         // Set headline title    	
-    	form.setText(productCmptType.getQualifiedName());
+    	form.setText(productCmptGen.getProductCmpt().getName());
     	
         // Get names and descriptions
-        IAttribute[] attributes = productCmptType.getAttributes();
-                    
-        if (attributes.length > 0)
+    	IConfigElement[] elements = productCmptGen.getConfigElements();
+    	
+        if (elements.length > 0)
         {
+    		Arrays.sort(elements, new ConfigElementComparator());
+
             // collect all attributes in one container
             expandableContainer = toolkit.createComposite(form.getBody());
             
@@ -193,17 +199,21 @@ public class ModelDescriptionPage extends Page implements IPage {
             int index = 2; // simple mechanism for color coding for lines 
                            // in alternating colors: odd/even
             
-            for (int i=0;i < attributes.length;i++) {
-                // Show attributes only that:
-                // - are productrelevant and
-                // - constant or
-                // - derived
-                            	
-                if (attributes[i].isProductRelevant()) {
-                	// && (attributes[i].isDerived() || attributes[i].getAttributeType()==AttributeType.CONSTANT))
-                    createExpandableControl(expandableContainer, attributes[i], index++);
-                }
+            for (int i=0;i < elements.length;i++) {
+            	try {
+            		IAttribute attribute = elements[i].findPcTypeAttribute();
+            		
+            		if (attribute != null)
+            		{
+                        createExpandableControl(expandableContainer, attribute, index++);
+            		}
+            	} catch (CoreException e) {
+            		e.printStackTrace();
+            	}
             }
         }
     }
+    
+    
 }
+

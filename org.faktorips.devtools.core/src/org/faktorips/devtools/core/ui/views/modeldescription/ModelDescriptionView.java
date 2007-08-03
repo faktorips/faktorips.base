@@ -33,8 +33,8 @@ import org.eclipse.ui.views.contentoutline.ContentOutline;
  *  - Show the qualified name as title
  *  - and list specified attributes with their description.  
  * 
- * The view is supposed to look like the cheatscheet view (ExpandableItems) and
- * behave like the outline view. For this reason it derives PageBookView.
+ * The view is supposed to look like the cheatscheet view (ExpandableComposites) and
+ * behave like the outline view. For this reason it derives {@link PageBookView}.
  * 
  * @see PageBookView
  * @see ContentOutline
@@ -43,7 +43,7 @@ import org.eclipse.ui.views.contentoutline.ContentOutline;
  */
 public class ModelDescriptionView extends PageBookView {
     
-    // default message
+    // default message: view not supported by caller.
     final String notSupportedMessage = Messages.ModelDescriptionView_notSupported; 
         
     /**
