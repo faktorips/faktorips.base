@@ -115,7 +115,6 @@ public abstract class IpsPartEditDialog extends EditDialog {
                 try {
                     super.valueChanged(e);
                     setTitle(buildTitle());
-                    // showValidationResult(getPdPart().validate());
                 } catch (Exception ex) {
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
