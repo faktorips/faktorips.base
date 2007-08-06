@@ -34,36 +34,28 @@ class FieldExtensionPropertyMapping implements FieldPropertyMapping {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.ui.controller.FieldPropertyMapping#getField()
+     * {@inheritDoc}
      */
     public EditField getField() {
         return field;
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.ui.controller.FieldPropertyMapping#getObject()
+     * {@inheritDoc}
      */
     public Object getObject() {
         return object;
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.ui.controller.FieldPropertyMapping#getPropertyName()
+     * {@inheritDoc}
      */
     public String getPropertyName() {
         return propertyId;
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.ui.controller.FieldPropertyMapping#setPropertyValue()
+     * {@inheritDoc}
      */
     public void setPropertyValue() {
         if (!field.isTextContentParsable()) {
@@ -76,9 +68,7 @@ class FieldExtensionPropertyMapping implements FieldPropertyMapping {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.ui.controller.FieldPropertyMapping#setControlValue()
+     * {@inheritDoc}
      */
     public void setControlValue() {
         Object propertyValue = getPropertyValue();
