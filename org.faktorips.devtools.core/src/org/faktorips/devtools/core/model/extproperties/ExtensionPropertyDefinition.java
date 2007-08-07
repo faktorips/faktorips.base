@@ -97,10 +97,6 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     
     /**
      * Returns <code>true</code>.
-     * 
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IExtensionPropertyDefinition#isEditedInStandardExtensionArea()
      */
     public boolean isEditedInStandardExtensionArea() {
         return !editedInStandardExtensionArea.equals("false"); //$NON-NLS-1$
@@ -152,8 +148,6 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     
     /**
      * Default implementation returns <code>null</code>.
-     * 
-     * Overridden Method.
      */
     public MessageList validate(IIpsObjectPartContainer ipsObjectPart, Object value) throws CoreException {
 		return null;
@@ -161,16 +155,12 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
 
     /**
      * Default implementation doesn nothing.
-     * 
-     * Overridden Method.
      */
 	public void afterSetValue(IIpsObjectPartContainer ipsObjectPart, Object value) {
     }
 
     /**
      * Default implementation does nothing.
-     * 
-     * Overridden Method.
      */
     public boolean beforeSetValue(IIpsObjectPartContainer ipsObjectPart, Object value) {
         return true;
@@ -179,8 +169,6 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     /**
      * Adds a <code>Text</code> control to the extension area and returns a <code>TextField</code> based
      * on it.
-     * 
-     * Overridden IMethod.
      */
     public EditField newEditField(IIpsObjectPartContainer ipsObjectPart, Composite extensionArea, UIToolkit toolkit) {
         Text text = toolkit.createText(extensionArea);

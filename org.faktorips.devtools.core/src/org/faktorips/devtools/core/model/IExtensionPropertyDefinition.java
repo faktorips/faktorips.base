@@ -154,7 +154,14 @@ public interface IExtensionPropertyDefinition extends Comparable {
      */
     public boolean isEditedInStandardExtensionArea();
 
-    // TODO document and change name
+    /**
+     * Returns the position where the extension property should be displayed and edited.
+     * 
+     * @return one the position constants defined in this interface.
+     * 
+     * @see #POSITION_BOTTOM
+     * @see #POSITION_TOP
+     */
 	public String getEditedInStandardTextArea();
     
     /**

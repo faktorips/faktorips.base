@@ -36,9 +36,7 @@ public class StringExtensionPropertyDefinition extends ExtensionPropertyDefiniti
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IExtensionPropertyDefinition#getValueFromXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     public Object getValueFromXml(Element valueElement) {
     	CDATASection cdata = XmlUtil.getFirstCDataSection(valueElement);
@@ -49,9 +47,7 @@ public class StringExtensionPropertyDefinition extends ExtensionPropertyDefiniti
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition#setDefaultValue(java.lang.String)
+     * {@inheritDoc}
      */
     public void setDefaultValue(String s) {
         defaultValue = s;
