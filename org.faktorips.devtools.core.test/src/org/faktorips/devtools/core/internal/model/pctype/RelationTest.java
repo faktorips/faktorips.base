@@ -23,6 +23,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.DefaultTestContent;
+import org.faktorips.devtools.core.builder.AbstractBuilderSet;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -50,6 +51,24 @@ public class RelationTest extends AbstractIpsPluginTest {
         pcType = content.getContract();
         relation = content.getContract().getRelation("Coverage");
         cRel = content.getMotorContract().getRelation("CollisionCoverage");
+    }
+    
+    public void testIsInverseRelationApplicable() {
+        relation = pcType.newRelation();
+
+        relation.setRelationType(RelationType.ASSOCIATION);
+        assertTrue(relation.isInverseRelationApplicable());
+        
+        relation.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
+        assertFalse(relation.isInverseRelationApplicable());
+
+        relation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        AbstractBuilderSet builderset = (AbstractBuilderSet)relation.getIpsProject().getIpsArtefactBuilderSet();
+        builderset.setInverseRelationLinkRequiredFor2WayCompositions(false);
+        assertFalse(relation.isInverseRelationApplicable()); 
+
+        builderset.setInverseRelationLinkRequiredFor2WayCompositions(true);
+        assertTrue(relation.isInverseRelationApplicable()); 
     }
     
     public void testValidateContainerRelation_ReverseRelation_Mismtach() throws CoreException {
@@ -373,8 +392,8 @@ public class RelationTest extends AbstractIpsPluginTest {
     public void testValidateMaxCardinalityForReverseComposition() throws Exception {
     	MessageList ml = new MessageList();
     	
-    	relation.setMaxCardinality(2);
     	relation.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
+        relation.setMaxCardinality(2);
     	
     	ml = relation.validate();
     	assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION));
@@ -388,6 +407,7 @@ public class RelationTest extends AbstractIpsPluginTest {
     	MessageList ml = new MessageList();
     	
     	relation.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
+        relation.setProductRelevant(true);
     	ml = relation.validate();
     	
     	assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_REVERSE_COMPOSITION_CANT_BE_MARKED_AS_PRODUCT_RELEVANT));
@@ -688,7 +708,6 @@ public class RelationTest extends AbstractIpsPluginTest {
         
         relation.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
         assertNull(relation.findInverseRelation());
-        
     }
     
 
