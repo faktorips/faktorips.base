@@ -27,9 +27,10 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 /**
- * A composite that is used to build complex controls. Provides the <code>listenToControl()</code>
- * method that complex controls use to register their primitive controls so that events clients
- * of the complex control have registered for are broadcastet. 
+ * A composite that is used to build complex controls. 
+ * >p>
+ * Provides the <code>listenToControl()</code> method that complex controls use to register their primitive controls.
+ * This allows events triggered by the primitive controls to be broadcasted to listeners of the complex control.
  * 
  * @author Jan Ortmann
  */
