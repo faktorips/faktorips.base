@@ -61,23 +61,23 @@ import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
  * provider is the active one within the workbench when this editor is active. Implementations of
  * ISelectionProvider that are used on the pages of this editor have to be registered at the
  * SelectionProviderDispatcher the ISelectionProvider of this editor. The dispatcher finds the
- * currently active of all registered selection providers and forwards request to it. There are to
+ * currently active of all registered selection providers and forwards requests to it. There are two
  * ways of registering with the SelectionProviderDispatcher.
  * <ol>
  * <li>The <code>Composite</code> where the control of the ISelectionProvider implementation e.g. a
  * TreeViewer is added to has to implement the {@link ISelectionProviderActivation} interface. The
- * editor will track all the implementations of this interface at initialization time an register
+ * editor will track all the implementations of this interface at initialization time and register
  * them with the dispatcher. 
  * </li> 
  * <li>The dispatcher can be retrieved by the
  * getSelectionProviderDispatcher() method of this editor and an
- * {@link ISelectionProviderActivation} can be registered manually 
+ * {@link ISelectionProviderActivation} can be registered manually.
  * </li>
  * </ol>
  */
 public abstract class IpsObjectEditor extends FormEditor 
     implements ContentsChangeListener, IModificationStatusChangeListener,
-        IResourceChangeListener, IPropertyChangeListener{
+        IResourceChangeListener, IPropertyChangeListener {
 
     public final static boolean TRACE = IpsPlugin.TRACE_UI;
 
@@ -884,4 +884,5 @@ public abstract class IpsObjectEditor extends FormEditor
     public void updatedTitleImage(Image newImage) {
         setTitleImage(newImage);
     }
+
 }
