@@ -25,13 +25,13 @@ import org.faktorips.devtools.core.ui.controller.fields.AbstractEnumDatatypeBase
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 
 
-class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMapping {
+public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMapping {
     
     protected EditField field;
     protected Object object;
     protected PropertyDescriptor property;
     
-    FieldPropertyMappingByPropertyDescriptor(EditField edit, Object object, PropertyDescriptor property) {
+    public FieldPropertyMappingByPropertyDescriptor(EditField edit, Object object, PropertyDescriptor property) {
         this.field = edit;
         this.object = object;
         this.property = property;

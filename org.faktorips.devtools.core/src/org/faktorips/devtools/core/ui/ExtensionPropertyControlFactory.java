@@ -21,44 +21,41 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 
 /**
+ * Factory to create controls for the extension properties of a type.
+
  * @author eidenschink
- *
- * Factory to create the specific Controls for the extensions of a type
- * 
  */
 public class ExtensionPropertyControlFactory {
 
 	private IExtensionPropertyDefinition[] extensionProperties;
 
 	private EditField[] extensionEditFields;
-
+	private IIpsObjectPartContainer[] partContainers;
+    
 	public ExtensionPropertyControlFactory(Class extensionClass) {
 		extensionProperties = IpsPlugin.getDefault().getIpsModel()
 				.getExtensionPropertyDefinitions(extensionClass, true);
 		extensionEditFields = new EditField[extensionProperties.length];
+        partContainers = new IIpsObjectPartContainer[extensionProperties.length];
 	}
 
 	/**
-	 * creates the <code>EditFields</code> of extension at <code>where</code> position
+	 * Creates the <code>EditFields</code> of extension at <code>where</code> position
 	 */
 	public void createControls(Composite workArea, UIToolkit uiToolkit,
             IIpsObjectPartContainer ipsObjectPart, String where) {
 		for (int i = 0; i < extensionProperties.length; i++) {
-			if (extensionProperties[i].getEditedInStandardTextArea().equals(
-					where)
+			if (extensionProperties[i].getEditedInStandardTextArea().equals(where)
 					&& (extensionEditFields[i] == null)) {
-				uiToolkit.createFormLabel(workArea, extensionProperties[i]
-						.getDisplayName()
-						+ ":"); //$NON-NLS-1$
-				extensionEditFields[i] = extensionProperties[i].newEditField(
-						ipsObjectPart, workArea, uiToolkit);
+
+                createLabelAndEditField(workArea, uiToolkit, ipsObjectPart, i);
 			}
 		}
-
 	}
 
 	/**
@@ -68,21 +65,27 @@ public class ExtensionPropertyControlFactory {
 	public void createControls(Composite workArea, UIToolkit uiToolkit,
             IIpsObjectPartContainer ipsObjectPart) {
 		for (int i = 0; i < extensionProperties.length; i++) {
-			if ((!extensionProperties[i].getEditedInStandardTextArea().equals(
-					"false")) //$NON-NLS-1$
+			if ((!extensionProperties[i].getEditedInStandardTextArea().equals("false")) //$NON-NLS-1$
 					&& (extensionEditFields[i] == null)) {
-				uiToolkit.createFormLabel(workArea, extensionProperties[i]
-						.getDisplayName()
-						+ ":"); //$NON-NLS-1$
-				extensionEditFields[i] = extensionProperties[i].newEditField(
-						ipsObjectPart, workArea, uiToolkit);
+            
+                createLabelAndEditField(workArea, uiToolkit, ipsObjectPart, i);
 			}
 		}
-
 	}
+    
+    private void createLabelAndEditField(
+            Composite workArea, 
+            UIToolkit uiToolkit, 
+            IIpsObjectPartContainer ipsObjectPart,
+            int i) {
+
+        uiToolkit.createFormLabel(workArea, extensionProperties[i].getDisplayName() + ":"); //$NON-NLS-1$
+        extensionEditFields[i] = extensionProperties[i].newEditField(ipsObjectPart, workArea, uiToolkit);
+        partContainers[i] = ipsObjectPart;
+    }
 
 	/**
-	 * Connects all created EditFields with the model
+	 * Connects all EditFields created by this factory with the model.
 	 */
 	public void connectToModel(IpsObjectUIController uiController) {
 		for (int i = 0; i < extensionEditFields.length; i++) {
@@ -91,7 +94,19 @@ public class ExtensionPropertyControlFactory {
 						.getPropertyId());
 			}
 		}
-
 	}
-
+    
+    /**
+     * Binds all edit fields created by this factory into the given context.
+     * 
+     * @throws NullPointerException if context is <code>null</code>.
+     */
+    public void bind(BindingContext context) {
+        for (int i = 0; i < extensionEditFields.length; i++) {
+            if (extensionEditFields[i] != null) {
+                context.bindContent(extensionEditFields[i], partContainers[i], extensionProperties[i].getPropertyId());
+            }
+        }
+    }
+    
 }

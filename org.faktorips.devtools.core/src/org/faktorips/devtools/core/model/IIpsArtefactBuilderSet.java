@@ -62,21 +62,20 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 	 */
 	public boolean isSupportFlIdentifierResolver();
 
-//    /**
-//     * Returns <code>true</code> if this artefact builder set requires role names in plural form
-//     * even for relations with a max cardinality of 1.
-//     * @return
-//     */
-//    public boolean isRoleNamePluralRequiredForTo1Relations();
-//    
-//    /**
-//     * Returns <code>true</code> if this artefact builder set requires that master-to-detail compositions 
-//     * contain a reference to an inverse detail-to-master relation. 
-//     * <p>
-//     * The standard Faktor-IPS generator doesn't need this link. See the artikel on modeling relations for 
-//     * further details.
-//     */
-//    public boolean isInverseRelationLinkRequiredFor2WayCompositions();
+    /**
+     * Returns <code>true</code> if this artefact builder set requires role names in plural form
+     * even for relations with a max cardinality of 1.
+     */
+    public boolean isRoleNamePluralRequiredForTo1Relations();
+    
+    /**
+     * Returns <code>true</code> if this artefact builder set requires that master-to-detail compositions 
+     * contain a reference to an inverse detail-to-master relation. 
+     * <p>
+     * The standard Faktor-IPS generator doesn't need this link. See the artikel on modeling relations for 
+     * further details.
+     */
+    public boolean isInverseRelationLinkRequiredFor2WayCompositions();
 
     /**
 	 * Returns a compilation result that gives access to a table via the

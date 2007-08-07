@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 
 
@@ -29,8 +30,6 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
  * In conceptual models bidirectional relations can be either assoziations or compositions. A bidirectional assoziation
  * is represented in FaktorIPS by two relations of type assoziation. A bidirectional composition is represented in 
  * FaktorIPS by one master to detail composition and one detail to master composition.
- *  
- * 
  *
  * @author Jan Ortmann
  */
@@ -48,12 +47,13 @@ public interface IRelation extends IIpsObjectPart {
     public final static String PROPERTY_CONTAINER_RELATION = "containerRelation"; //$NON-NLS-1$
     public final static String PROPERTY_INVERSE_RELATION = "inverseRelation"; //$NON-NLS-1$
     public final static String PROPERTY_READONLY_CONTAINER = "readOnlyContainer"; //$NON-NLS-1$
-
+    public final static String PROPERTY_INVERSE_RELATION_APPLICABLE = "inverseRelationApplicable"; //$NON-NLS-1$
+    public final static String PROPERTY_CONTAINER_RELATION_APPLICABLE = "containerRelationApplicable"; //$NON-NLS-1$
+    
     public final static String PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE = "targetRoleSingularProductSide"; //$NON-NLS-1$
     public final static String PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE = "targetRolePluralProductSide"; //$NON-NLS-1$
     public final static String PROPERTY_MIN_CARDINALITY_PRODUCTSIDE = "minCardinalityProductSide"; //$NON-NLS-1$
     public final static String PROPERTY_MAX_CARDINALITY_PRODUCTSIDE = "maxCardinalityProductSide"; //$NON-NLS-1$
-    
 
 	public static final int CARDINALITY_ONE = 1;
 	public static final int CARDINALITY_MANY = Integer.MAX_VALUE;
@@ -262,6 +262,25 @@ public interface IRelation extends IIpsObjectPart {
     public boolean isCompositionDetailToMaster();
     
     /**
+     * Returns <code>true</code> if the definition of an inverse relation makes sense for the
+     * this relation. This is the case for
+     * <ul>
+     * <li>biderectional associations and</li>
+     * <li>master-to-detail compositions if the artefact builder set needs this information</li>
+     * </ul>
+     * Returns <code>false</code> if the definition of an inverse relation is superfluous. 
+     * 
+     * @see IIpsArtefactBuilderSet#isInverseRelationLinkRequiredFor2WayCompositions()
+     */
+    public boolean isInverseRelationApplicable();
+    
+    /**
+     * Returns <code>true</code> if this relation can be marked as container relation or can implement a
+     * container relation. This is the case for associations and master-to-detail composites.
+     */
+    public boolean isContainerRelationApplicable();
+    
+    /**
      * Returns the relation's type indication if it's an association or
      * aggregation. 
      */
@@ -303,6 +322,11 @@ public interface IRelation extends IIpsObjectPart {
     public void setTargetRoleSingular(String newRole);
     
     /**
+     * Derives a default role name (singular form) for the target based on the target.
+     */
+    public void setDefaultTargetRoleSingular();
+    
+    /**
      * Returns the role of the target in this relation. The role is specified in plural form.
      */
     public String getTargetRolePlural();
@@ -311,6 +335,11 @@ public interface IRelation extends IIpsObjectPart {
      * Sets the new role in plural form of the target in this relation.
      */
     public void setTargetRolePlural(String newRole);
+    
+    /**
+     * Derives a default role name (plural form) for the target based on the target.
+     */
+    public void setDefaultTargetRolePlural();
     
     /**
      * Returns <code>true</code> if this is an abstract, read-only container relation. 

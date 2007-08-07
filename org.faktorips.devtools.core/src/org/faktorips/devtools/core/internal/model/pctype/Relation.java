@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -120,13 +121,43 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
 	public boolean isCompositionDetailToMaster() {
 		return type.isCompositionDetailToMaster();
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isInverseRelationApplicable() {
+        if (isAssoziation()) {
+            return true;
+        }
+        if (isCompositionDetailToMaster()) {
+            return false;
+        }
+        return getIpsProject().getIpsArtefactBuilderSet().isInverseRelationLinkRequiredFor2WayCompositions();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+	public boolean isContainerRelationApplicable() {
+        return isAssoziation() || isCompositionMasterToDetail();
+    }
 
-	/** 
+    /** 
      * {@inheritDoc}
      */
     public void setRelationType(RelationType newType) {
         RelationType oldType = type;
         type = newType;
+        if (newType!= null && newType.isCompositionDetailToMaster()) {
+            containerRelation = "";
+            inverseRelation = "";
+            readOnlyContainer = false;
+            minCardinality = 0;
+            maxCardinality = 1;
+            productRelevant = false;
+            targetRoleSingularProductSide = "";
+            targetRolePluralProductSide = "";
+        }
         valueChanged(oldType, newType);
     }
     
@@ -188,6 +219,20 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
         valueChanged(oldRole, newRole);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public void setDefaultTargetRoleSingular() {
+        String defaultRole = target;
+        if (defaultRole==null) {
+            defaultRole = "";
+        }
+        int pos = target.lastIndexOf('.');
+        if (pos!=-1) {
+            defaultRole = target.substring(pos+1);
+        } 
+        setTargetRoleSingular(defaultRole);
+    }
 
     /**
      * {@inheritDoc}
@@ -205,6 +250,13 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
         valueChanged(oldRole, newRole);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public void setDefaultTargetRolePlural() {
+        setTargetRolePlural(targetRoleSingular);
+    }
+
     /** 
      * {@inheritDoc}
      */
@@ -864,4 +916,5 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
         }
 
     }
+
 }

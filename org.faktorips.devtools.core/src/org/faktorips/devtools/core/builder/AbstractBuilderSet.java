@@ -31,6 +31,8 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
 	private String label;
     private IIpsLoggingFrameworkConnector logStatementBuilder;
 
+    private boolean inverseRelationLinkRequiredFor2WayCompositions = false;
+    private boolean roleNamePluralRequiredForTo1Relations = true;
 
     public AbstractBuilderSet() {
 		super();
@@ -83,4 +85,33 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     public boolean containsAggregateRootBuilder() {
         return false;
     }
+
+    /**
+     * Default implementation returns <code>false</code>.
+     * 
+     * {@inheritDoc}
+     */
+    public boolean isInverseRelationLinkRequiredFor2WayCompositions() {
+        return inverseRelationLinkRequiredFor2WayCompositions;
+    }
+
+    /**
+     * Default implementation returns <code>true</code>.
+     * 
+     * {@inheritDoc}
+     */
+    public boolean isRoleNamePluralRequiredForTo1Relations() {
+        return roleNamePluralRequiredForTo1Relations;
+    }
+
+    public void setInverseRelationLinkRequiredFor2WayCompositions(boolean inverseRelationLinkRequiredFor2WayCompositions) {
+        this.inverseRelationLinkRequiredFor2WayCompositions = inverseRelationLinkRequiredFor2WayCompositions;
+    }
+
+    public void setRoleNamePluralRequiredForTo1Relations(boolean roleNamePluralRequiredForTo1Relations) {
+        this.roleNamePluralRequiredForTo1Relations = roleNamePluralRequiredForTo1Relations;
+    }
+    
+    
+    
 }

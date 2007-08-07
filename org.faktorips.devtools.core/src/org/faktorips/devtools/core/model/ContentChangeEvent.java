@@ -114,18 +114,21 @@ public class ContentChangeEvent  {
         return movedParts;
     }
     
-    public boolean isAffected(IIpsObjectPart part) {
-        if (part==null) {
+    public boolean isAffected(IIpsObjectPartContainer partContainer) {
+        if (partContainer==null) {
             return false;
         }
-        if (part==this.part) {
+        if (partContainer==this.part) {
+            return true;
+        }
+        if (partContainer.getIpsSrcFile()!=null && partContainer.getIpsSrcFile().equals(ipsSrcFile)) {
             return true;
         }
         if (movedParts==null) {
             return false;
         }
         for (int i = 0; i < movedParts.length; i++) {
-            if (movedParts[i] == part) {
+            if (movedParts[i] == partContainer) {
                 return true;
             }
         }
