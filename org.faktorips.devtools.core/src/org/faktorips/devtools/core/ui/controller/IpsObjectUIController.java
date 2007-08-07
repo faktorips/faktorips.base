@@ -96,9 +96,6 @@ public class IpsObjectUIController extends DefaultUIController {
         }
         try {
             MessageList list = partContainer.validate();
-            if (list.isEmpty()) {
-                return list;
-            }
             for (Iterator it=mappings.iterator(); it.hasNext();) {
                 FieldPropertyMapping mapping = (FieldPropertyMapping)it.next();
                 Control c = mapping.getField().getControl();
