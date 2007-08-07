@@ -90,7 +90,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     // set of model change listeners that are notified about model changes
-    private Set changeListeners;
+    private Set changeListeners = new HashSet(100);
 
     // set of modifcation status change listeners
     private Set modificationStatusChangeListeners;
@@ -180,7 +180,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             int flags,
             IProgressMonitor monitor) throws CoreException {
 
-        if (changeListeners == null) {
+        if (changeListeners.size()==0) {
             getWorkspace().run(action, rule, flags, monitor);
             return;
         }
@@ -193,7 +193,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
 
         };
-        changeListeners = null;
+        changeListeners.clear();
         this.addChangeListener(batchListener);
 
         try {
@@ -497,10 +497,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (TRACE_MODEL_CHANGE_LISTENERS) {
             System.out.println("IpsModel.addChangeListeners(): " + listener); //$NON-NLS-1$
         }
-        if (changeListeners == null) {
-            changeListeners = new HashSet(1);
-        }
-
         changeListeners.add(listener);
     }
 
@@ -508,16 +504,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * {@inheritDoc}
      */
     public void removeChangeListener(ContentsChangeListener listener) {
-        if (changeListeners != null) {
-            boolean wasRemoved = changeListeners.remove(listener);
-            if (TRACE_MODEL_CHANGE_LISTENERS) {
-                System.out.println("IpsModel.removeChangeListeners(): " + listener + ", was removed=" + wasRemoved); //$NON-NLS-1$ //$NON-NLS-2$
-            }
+        boolean wasRemoved = changeListeners.remove(listener);
+        if (TRACE_MODEL_CHANGE_LISTENERS) {
+            System.out.println("IpsModel.removeChangeListeners(): " + listener + ", was removed=" + wasRemoved); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
     public void notifyChangeListeners(final ContentChangeEvent event) {
-        if (changeListeners == null || !isBroadcastingChangesForCurrentThread()) {
+        if (!isBroadcastingChangesForCurrentThread()) {
             return;
         }
         if (TRACE_MODEL_CHANGE_LISTENERS) {
