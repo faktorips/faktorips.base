@@ -38,7 +38,9 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
     public final static String ID = "testbuilderset";
     
     private IIpsArtefactBuilder[] artefactBuilders;
-    
+    private boolean inverseRelationLinkRequiredFor2WayCompositions = false;
+    private boolean roleNamePluralRequiredForTo1Relations = true;
+
     public TestIpsArtefactBuilderSet(){
         artefactBuilders = new IIpsArtefactBuilder[0];
     }
@@ -49,6 +51,22 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
     
     public IIpsArtefactBuilder[] getArtefactBuilders() {
         return artefactBuilders;
+    }
+    
+    public boolean isInverseRelationLinkRequiredFor2WayCompositions() {
+        return inverseRelationLinkRequiredFor2WayCompositions;
+    }
+
+    public void setInverseRelationLinkRequiredFor2WayCompositions(boolean inverseRelationLinkRequiredFor2WayCompositions) {
+        this.inverseRelationLinkRequiredFor2WayCompositions = inverseRelationLinkRequiredFor2WayCompositions;
+    }
+
+    public boolean isRoleNamePluralRequiredForTo1Relations() {
+        return roleNamePluralRequiredForTo1Relations;
+    }
+
+    public void setRoleNamePluralRequiredForTo1Relations(boolean roleNamePluralRequiredForTo1Relations) {
+        this.roleNamePluralRequiredForTo1Relations = roleNamePluralRequiredForTo1Relations;
     }
 
     public void setLogger(ILog logger) {

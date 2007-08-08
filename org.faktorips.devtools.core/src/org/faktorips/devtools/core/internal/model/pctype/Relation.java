@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -537,15 +536,14 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
         	list.add(new Message(MSGCODE_MAX_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[]{PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
         }
         
-        if (maxCardinality > 1) {
+        if (maxCardinality > 1 || getIpsProject().getIpsArtefactBuilderSet().isRoleNamePluralRequiredForTo1Relations()) {
 			ValidationUtils.checkStringPropertyNotEmpty(targetRolePlural,
 					Messages.Relation_msgTargetRolePlural, this, PROPERTY_TARGET_ROLE_PLURAL,
 					MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET, list);
 		}
         
 		if (StringUtils.isNotEmpty(this.getTargetRolePlural())
-				&& this.getTargetRolePlural().equals(
-						this.getTargetRoleSingular())) {
+				&& this.getTargetRolePlural().equals(this.getTargetRoleSingular())) {
 			String text = Messages.Relation_msgTargetRoleSingularIlleaglySameAsTargetRolePlural;
 			list.add(new Message(
 					MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR,
@@ -603,25 +601,25 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
 					PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
 		}
 
-		if (StringUtils.isEmpty(this.getTargetRolePluralProductSide())) {
-			String text = Messages.Relation_msgNoTargetRolePlural;
-			list.add(new Message(MSGCODE_NO_TARGET_ROLE_PLURAL_PRODUCTSIDE,
-					text, Message.ERROR, this,
-					PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE));
-		} else {
-			if (this.getTargetRolePluralProductSide().equals(
-					this.getTargetRoleSingularProductSide())) {
-				String text = Messages.Relation_msgTargetRoleSingularIlleaglySameAsTargetRolePluralProdSide;
-				list
-						.add(new Message(
-								MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQUALS_TARGET_ROLE_SINGULAR_PRODUCTSIDE,
-								text,
-								Message.ERROR,
-								this,
-								new String[] {
-										PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE,
-										PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE }));
-			}
+        if (maxCardinalityProductSide > 1 || getIpsProject().getIpsArtefactBuilderSet().isRoleNamePluralRequiredForTo1Relations()) {
+            if (StringUtils.isEmpty(this.getTargetRolePluralProductSide())) {
+                String text = Messages.Relation_msgNoTargetRolePlural;
+                list.add(new Message(MSGCODE_NO_TARGET_ROLE_PLURAL_PRODUCTSIDE,
+                        text, Message.ERROR, this,
+                        PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE));
+    		} 
+        }
+		if (StringUtils.isNotEmpty(targetRoleSingularProductSide) && targetRoleSingularProductSide.equals(targetRolePluralProductSide)) {
+			String text = Messages.Relation_msgTargetRoleSingularIlleaglySameAsTargetRolePluralProdSide;
+			list
+					.add(new Message(
+							MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQUALS_TARGET_ROLE_SINGULAR_PRODUCTSIDE,
+							text,
+							Message.ERROR,
+							this,
+							new String[] {
+									PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE,
+									PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE }));
 		}
 	}
     
@@ -695,29 +693,29 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
             list.add(new Message("SomeNewCode", text, Message.WARNING, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
             return;
         }
-        IRelation reverseRelationObj = findInverseRelation();
-        if (reverseRelationObj==null) {
+        IRelation inverseRelationObj = findInverseRelation();
+        if (inverseRelationObj==null) {
             String text = NLS.bind(Messages.Relation_msgRelationNotInTarget, inverseRelation, target);
             list.add(new Message(MSGCODE_REVERSERELATION_NOT_IN_TARGET, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
             return;
         }
-        if (isAssoziation() && (!reverseRelationObj.getInverseRelation().equals(getName()))) {
+        if (isAssoziation() && (!inverseRelationObj.getInverseRelation().equals(getName()))) {
             String text = Messages.Relation_msgReverseRelationNotSpecified;
             list.add(new Message(MSGCODE_REVERSE_RELATION_MISMATCH, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
         }
 
-        if (isReadOnlyContainer()!=reverseRelationObj.isReadOnlyContainer()) {
+        if (isReadOnlyContainer()!=inverseRelationObj.isReadOnlyContainer()) {
             String text = Messages.Relation_msgReverseRelOfContainerRelMustBeContainerRelToo;
             list.add(new Message(MSGCODE_FORWARD_AND_REVERSE_RELATION_MUST_BOTH_BE_MARKED_AS_CONTAINER, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
         }
         
-        if((type.isCompositionMasterToDetail() && !reverseRelationObj.getRelationType().isCompositionDetailToMaster())
-                || (reverseRelationObj.getRelationType().isCompositionMasterToDetail() && !type.isCompositionDetailToMaster())) {
+        if((type.isCompositionMasterToDetail() && !inverseRelationObj.getRelationType().isCompositionDetailToMaster())
+                || (inverseRelationObj.getRelationType().isCompositionMasterToDetail() && !type.isCompositionDetailToMaster())) {
 	            String text = Messages.Relation_msgReverseCompositionMissmatch;
 	            list.add(new Message(MSGCODE_REVERSE_COMPOSITION_MISSMATCH, text, Message.ERROR, this, new String[]{PROPERTY_INVERSE_RELATION, PROPERTY_READONLY_CONTAINER})); //$NON-NLS-1$
 	    }
-	    if  ((type.isAssoziation() && !reverseRelationObj.getRelationType().isAssoziation())
-	            || (reverseRelationObj.getRelationType().isAssoziation() && !type.isAssoziation())) {
+	    if  ((type.isAssoziation() && !inverseRelationObj.getRelationType().isAssoziation())
+	            || (inverseRelationObj.getRelationType().isAssoziation() && !type.isAssoziation())) {
 	            String text = Messages.Relation_msgReverseAssociationMissmatch;
 	            list.add(new Message(MSGCODE_REVERSE_ASSOCIATION_MISSMATCH, text, Message.ERROR, this, new String[]{PROPERTY_INVERSE_RELATION})); //$NON-NLS-1$
         }

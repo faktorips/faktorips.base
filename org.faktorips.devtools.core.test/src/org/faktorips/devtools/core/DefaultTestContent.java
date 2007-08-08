@@ -35,6 +35,9 @@ import org.xml.sax.SAXException;
  * Creates a new project with a default test content.
  * 
  * @author Thorsten Guenther
+ * 
+ * @deprecated I dont like a test content that is maintained in it's own project, because you have to remember to 
+ * copy the files in this project.
  */
 public class DefaultTestContent {
 

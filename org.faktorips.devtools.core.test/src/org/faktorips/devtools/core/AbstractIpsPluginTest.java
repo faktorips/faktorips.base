@@ -55,6 +55,7 @@ import org.faktorips.devtools.core.internal.model.IpsProjectProperties;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -507,6 +508,19 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 					.getResourceAsStream(ipsProjectFileName), true, null);
 		}
 	}
+    
+    /**
+     * Sets the builderset as the one to be used by the indicated project. 
+     * This method modifies the project's properties and also registers the builderset in the model.
+     */
+    protected void setArtefactBuildset(IIpsProject project, IIpsArtefactBuilderSet builderset) throws CoreException {
+        IIpsProjectProperties props = project.getProperties();
+        props.setBuilderSetId(builderset.getId());
+        project.setProperties(props);
+        IpsModel model = ((IpsModel)project.getIpsModel());
+        model.setIpsArtefactBuilderSet(project, builderset);
+        model.clearValidationCache();
+    }
     
 	/**
      * Subclasses can use this method to print out the MultiStatus of a CoreException. This is expecially interesting for 

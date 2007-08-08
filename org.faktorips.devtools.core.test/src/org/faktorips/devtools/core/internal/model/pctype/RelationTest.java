@@ -23,7 +23,9 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.DefaultTestContent;
-import org.faktorips.devtools.core.builder.AbstractBuilderSet;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.builder.TestIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -53,7 +55,69 @@ public class RelationTest extends AbstractIpsPluginTest {
         cRel = content.getMotorContract().getRelation("CollisionCoverage");
     }
     
-    public void testIsInverseRelationApplicable() {
+    public void testValidateSameSingularAndPluralTargetRoleProductSide() throws Exception {
+        relation.setProductRelevant(true);
+        relation.setTargetRolePluralProductSide("a");
+        relation.setTargetRoleSingularProductSide("b");
+        relation.setMaxCardinalityProductSide(10);
+        MessageList ml = relation.validate();
+        assertNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQUALS_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
+        
+        relation.setTargetRoleSingularProductSide("a");
+        ml = relation.validate();
+        assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQUALS_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
+
+        // even if the plural form is not needed, the rolenames shouldn't be equal.
+        relation.setMaxCardinalityProductSide(1);
+        ml = relation.validate();
+        assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQUALS_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
+
+        // empty role names shouldn't be compared.
+        relation.setTargetRolePluralProductSide("");
+        relation.setTargetRoleSingularProductSide("");
+        ml = relation.validate();
+        assertNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQUALS_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
+        
+    }
+
+    public void testValidateEmptyTargetRolePluralProductSide() throws Exception {
+        TestIpsArtefactBuilderSet builderset = new TestIpsArtefactBuilderSet();
+        builderset.setRoleNamePluralRequiredForTo1Relations(false);
+        setArtefactBuildset(relation.getIpsProject(), builderset);
+
+        // role not set for max cardinality > 1
+        relation.setProductRelevant(true);
+        relation.setTargetRolePluralProductSide("");
+        relation.setMaxCardinalityProductSide(10);
+        MessageList ml = relation.validate();
+        assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_NO_TARGET_ROLE_PLURAL_PRODUCTSIDE));
+
+        // role set
+        relation.setTargetRolePluralProductSide("someRole");
+        ml = relation.validate();
+        assertNull(ml.getMessageByCode(IRelation.MSGCODE_NO_TARGET_ROLE_PLURAL_PRODUCTSIDE));
+        
+        // role not set, but not product relevant
+        relation.setTargetRolePluralProductSide("");
+        relation.setProductRelevant(false);
+        ml = relation.validate();
+        assertNull(ml.getMessageByCode(IRelation.MSGCODE_NO_TARGET_ROLE_PLURAL_PRODUCTSIDE));
+
+        // role not set, but max cardinality = 1 and builder does not require plural for to 1 relation
+        relation.setProductRelevant(true);
+        relation.setMaxCardinalityProductSide(1);
+        ml = relation.validate();
+        assertNull(ml.getMessageByCode(IRelation.MSGCODE_NO_TARGET_ROLE_PLURAL_PRODUCTSIDE));
+
+        // role not set and max cardinality = 1 and builder DOES require plural for to 1 relation
+        builderset.setRoleNamePluralRequiredForTo1Relations(true); // this does not clear the validation cache (as this can't happen during normal runtime)
+        ((IpsModel)IpsPlugin.getDefault().getIpsModel()).clearValidationCache(); 
+        ml = relation.validate();
+        assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_NO_TARGET_ROLE_PLURAL_PRODUCTSIDE));
+    }
+
+    
+    public void testIsInverseRelationApplicable() throws CoreException {
         relation = pcType.newRelation();
 
         relation.setRelationType(RelationType.ASSOCIATION);
@@ -62,8 +126,10 @@ public class RelationTest extends AbstractIpsPluginTest {
         relation.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
         assertFalse(relation.isInverseRelationApplicable());
 
+        TestIpsArtefactBuilderSet builderset = new TestIpsArtefactBuilderSet();
+        setArtefactBuildset(pcType.getIpsProject(), builderset);
+        
         relation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
-        AbstractBuilderSet builderset = (AbstractBuilderSet)relation.getIpsProject().getIpsArtefactBuilderSet();
         builderset.setInverseRelationLinkRequiredFor2WayCompositions(false);
         assertFalse(relation.isInverseRelationApplicable()); 
 
@@ -144,7 +210,7 @@ public class RelationTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_CONTAINERRELATION_REVERSERELATION_MISMATCH));
     }
     
-    public void testValidateReverseRelationMismatch() throws Exception {
+    public void testValidateInverseRelationMismatch() throws Exception {
         IRelation rel2 = content.getCoverage().newRelation();
         rel2.setTargetRoleSingular("test");
         relation.setInverseRelation("test");
@@ -195,9 +261,6 @@ public class RelationTest extends AbstractIpsPluginTest {
         assertEquals(3, relation.getMaxCardinalityProductSide());
     }
 
-    /*
-     * Class under test for Element toXml(Document)
-     */
     public void testToXml() {
         relation = pcType.newRelation(); 
         relation.setRelationType(RelationType.ASSOCIATION);
@@ -600,33 +663,6 @@ public class RelationTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IRelation.MSGCODE_NO_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
     }
 
-    public void testValidateEmptyTargetRolePluralProductSide() throws Exception {
-        relation.setProductRelevant(false);
-        relation.setTargetRolePluralProductSide("");
-        MessageList ml = relation.validate();
-        assertNull(ml.getMessageByCode(IRelation.MSGCODE_NO_TARGET_ROLE_PLURAL_PRODUCTSIDE));
-        
-        relation.setProductRelevant(true);
-        ml = relation.validate();
-        assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_NO_TARGET_ROLE_PLURAL_PRODUCTSIDE));
-        
-        relation.setTargetRolePluralProductSide("notEmpty");
-        ml = relation.validate();
-        assertNull(ml.getMessageByCode(IRelation.MSGCODE_NO_TARGET_ROLE_PLURAL_PRODUCTSIDE));
-    }
-
-    public void testValidateSameSingularAndPluralTargetRoleProductSide() throws Exception {
-        relation.setProductRelevant(true);
-        relation.setTargetRolePluralProductSide("a");
-        relation.setTargetRoleSingularProductSide("b");
-        MessageList ml = relation.validate();
-        assertNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQUALS_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
-        
-        relation.setTargetRoleSingularProductSide("a");
-        ml = relation.validate();
-        assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQUALS_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
-    }
-
     public void testValidationRelationCanOnlyBeProductRelevantIfTheTargetTypeIs() throws Exception {
     	// per default both the relation and the target type are product relevant, therefore the msg is not expected
         MessageList ml = relation.validate();
@@ -639,7 +675,8 @@ public class RelationTest extends AbstractIpsPluginTest {
     }
     
     public void testValidationTargetRolePlural_EqualsTargetRoleSingular() throws Exception {
-    	relation.setTargetRoleSingular("role1");
+    	relation.setMaxCardinality(10);
+        relation.setTargetRoleSingular("role1");
     	relation.setTargetRolePlural("role2");
     	MessageList ml = relation.validate();
     	assertNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR));
@@ -647,10 +684,24 @@ public class RelationTest extends AbstractIpsPluginTest {
     	relation.setTargetRolePlural("role1");
     	ml = relation.validate();
     	assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR));
+
+        // even if the plural form is not needed, the rolenames shouldn't be equal.
+        relation.setMaxCardinality(1);
+        ml = relation.validate();
+        assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR));
+        
+        relation.setTargetRolePlural("");
+        relation.setTargetRoleSingular("");
+        ml = relation.validate();
+        assertNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR));
     }
 
     public void testValidationTargetRolePluralMustBeSet() throws Exception {
-    	relation.setMinCardinality(1);
+        TestIpsArtefactBuilderSet builderset = new TestIpsArtefactBuilderSet();
+        builderset.setRoleNamePluralRequiredForTo1Relations(false);
+        setArtefactBuildset(relation.getIpsProject(), builderset);
+
+        relation.setMinCardinality(1);
     	relation.setMaxCardinality(1);
     	relation.setTargetRolePlural("");
     	MessageList ml = relation.validate();
@@ -663,6 +714,13 @@ public class RelationTest extends AbstractIpsPluginTest {
     	relation.setTargetRolePlural("role1");
     	ml = relation.validate();
     	assertNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET));
+        
+        builderset.setRoleNamePluralRequiredForTo1Relations(true);
+        IpsPlugin.getDefault().getIpsModel().clearValidationCache();
+        relation.setMaxCardinality(1);
+        relation.setTargetRolePlural("");
+        ml = relation.validate();
+        assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET));
     }
     
     public void testIsContainerRelationImplementation() throws CoreException {
