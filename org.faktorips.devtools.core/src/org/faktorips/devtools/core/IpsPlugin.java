@@ -246,7 +246,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * Returns the image with the indicated name from the <code>icons</code> folder. If no image
      * is found and <code>returnNull</code> is true, null is returned. Otherwise (no image found,
-     * but <code>returnNull</code> is true), the missing image is returned.
+     * but <code>returnNull</code> is false), the missing image is returned.
      * 
      * @param name The name of the image.
      * @param returnNull <code>true</code> to get null as return value if the image is not found,
