@@ -42,21 +42,25 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
     private ITableStructureUsage structUsage;
     private ITableContentUsage contentUsage;
     private ITableContents content;
+    private ITableStructure structure;
+    private IPolicyCmptType type;
+    private IProductCmpt cmpt;
     
+    final private String STRUCTURE_ROLENAME = "StructUsageRole";
 	/**
 	 * {@inheritDoc}
 	 */
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
-        IPolicyCmptType type = newPolicyCmptType(project, "Type");
-        IProductCmpt cmpt = newProductCmpt(project, "Cmpt");
+        type = newPolicyCmptType(project, "Type");
+        cmpt = newProductCmpt(project, "Cmpt");
         cmpt.setPolicyCmptType(type.getQualifiedName());
-        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Structure");
+        structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Structure");
         content = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "Contents");
         structUsage = cmpt.findProductCmptType().newTableStructureUsage();
         structUsage.addTableStructure(structure.getQualifiedName());
-        structUsage.setRoleName("StructUsageRole");
+        structUsage.setRoleName(STRUCTURE_ROLENAME);
         
         cmpt.newGeneration(new GregorianCalendar());
         contentUsage = ((IProductCmptGeneration)cmpt.getFirstGeneration()).newTableContentUsage();
@@ -118,5 +122,18 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         
         contentUsage.setTableContentName(content.getQualifiedName());
         assertSame(content, contentUsage.findTableContents());
+    }
+    
+    public void testFindTableStructureUsage() throws Exception {
+        contentUsage.setStructureUsage("none");
+        assertNull(contentUsage.findTableStructureUsage());
+        
+        
+        contentUsage.setStructureUsage(STRUCTURE_ROLENAME);
+        ITableStructureUsage structureUsage = contentUsage.findTableStructureUsage();
+        assertNotNull(structureUsage);
+        // TODO
+        // assertEquals(structureUsage, contentUsage.findTableStructureUsage());
+   	
     }
 }
