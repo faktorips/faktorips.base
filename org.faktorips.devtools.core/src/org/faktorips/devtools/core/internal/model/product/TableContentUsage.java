@@ -179,6 +179,9 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         ValueToXmlHelper.addValueToElement(this.tableContentName, element, "TableContentName"); //$NON-NLS-1$
     }
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage findTableStructureUsage() throws CoreException {
 		IProductCmptType type = getProductCmptType();
 		
