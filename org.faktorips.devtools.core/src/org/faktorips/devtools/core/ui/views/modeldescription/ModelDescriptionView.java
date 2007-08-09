@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.ui.views.modeldescription;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -27,6 +28,7 @@ import org.eclipse.ui.part.MessagePage;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
+import org.faktorips.devtools.core.IpsPlugin;
 
 /**
  * This plugin contributes a simple viewer for @see IProductCmptType attributes:
@@ -70,9 +72,17 @@ public class ModelDescriptionView extends PageBookView {
      */	
 	protected PageRec doCreatePage(IWorkbenchPart part) {
 		
-		if (part instanceof IModelDescriptionSupport) {				
-			IPage page = ((IModelDescriptionSupport) part).createModelDescriptionPage();
-			initPage((IPageBookViewPage) page);
+		if (part instanceof IModelDescriptionSupport) {
+            
+			IPage page;
+            try {
+                page = ((IModelDescriptionSupport) part).createModelDescriptionPage();
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+                return null;
+            }
+			
+            initPage((IPageBookViewPage) page);
 			page.createControl(getPageBook());
 			return new PageRec(part, page);				
 		}

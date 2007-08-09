@@ -24,6 +24,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
@@ -37,6 +38,7 @@ import org.faktorips.devtools.core.ui.editors.DescriptionPage;
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.ProductCmptDeltaDialog;
+import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.values.DateUtil;
 
 /**
@@ -45,7 +47,7 @@ import org.faktorips.values.DateUtil;
  * @author Jan Ortmann
  * @author Thorsten Guenther
  */
-public class ProductCmptEditor extends TimedIpsObjectEditor {
+public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDescriptionSupport{
 
     /*
      * Setting key for user's decision not to choose a new product component type, because the old
@@ -68,6 +70,9 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
     private GenerationPropertiesPage generationPropertiesPage;
 
     private boolean isHandlingWorkingDateMismatch = false;
+    
+	/* The outline page */
+	protected ProductCmptModelDescriptionPage fModelDescriptionPage;
     
     /**
 	 * Creates a new editor for product components.
@@ -424,5 +429,13 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
     private String getLogPrefix() {
         return "ProductCmptEditor"; //$NON-NLS-1$
     }
-    
+
+	public IPage createModelDescriptionPage() throws CoreException {
+		IProductCmptGeneration gen = (IProductCmptGeneration) this.getGenerationEffectiveOnCurrentEffectiveDate();
+        
+        fModelDescriptionPage = new ProductCmptModelDescriptionPage(gen);
+		
+		return fModelDescriptionPage;
+	}
+
 }

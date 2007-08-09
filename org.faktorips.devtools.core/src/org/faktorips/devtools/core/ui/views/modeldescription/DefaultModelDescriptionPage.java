@@ -1,7 +1,34 @@
+/*******************************************************************************
+ * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+ *
+ * Alle Rechte vorbehalten.
+ *
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ *   http://www.faktorips.org/legal/cl-v01.html
+ * eingesehen werden kann.
+ *
+ * Mitwirkende:
+ *   Faktor Zehn GmbH - initial API and implementation 
+ *
+ *******************************************************************************/
+
 package org.faktorips.devtools.core.ui.views.modeldescription;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -14,26 +41,34 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.Page;
-import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
+import org.faktorips.devtools.core.IpsPlugin;
 
-public class DefaultModelDescriptionPage extends Page {
+abstract public class DefaultModelDescriptionPage extends Page {
 
     // SWT basics
     private FormToolkit toolkit;
 
     // basic view elements
     private ScrolledForm form;
+    private Composite expandableContainer;
     
-    private DescriptionItem[] list;
-    private String title;
-
-    public void ModelDescriptionView() {
+    // Data
+    private List defaultList;
+    private List activeList;
+    private String title; 
+    
+    public DefaultModelDescriptionPage () {
+        defaultList = new ArrayList();
+        activeList= new ArrayList();        
     }
     
-	public void createControl(Composite parent) {
+    /**
+     * {@inheritDoc}
+     */
+    public void createControl(Composite parent) {
         // Use form-styled widgets in this view
         toolkit = new FormToolkit(parent.getDisplay());
-
+                
         form = toolkit.createScrolledForm(parent);
         
         // Using TableWrapLayout
@@ -42,64 +77,44 @@ public class DefaultModelDescriptionPage extends Page {
         layoutForm.horizontalSpacing = 1;
         layoutForm.numColumns = 1;
 
-        form.getBody().setLayout(layoutForm);		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.Page#getControl()
-	 */
-	public Control getControl() {
-		if (form == null) {
-			return null;
-		}
-		
-		return form;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.Page#setFocus()
-	 */
-	public void setFocus() {
-        if (form == null) {
-        	return;
-        }
+        form.getBody().setLayout(layoutForm);
         
-        form.setFocus();		
+        registerToolbarActions();
 	}
+    
+    private void registerToolbarActions() {
+        // register global actions
+        IToolBarManager toolBarManager= getSite().getActionBars().getToolBarManager();
+        
+        toolBarManager.add(new LexicalSortingAction(this));
+    }
+    
+    private void createForm() {
+        
+        // Set headline title
+        form.setText(title);
 
-    /**
-     * Set new model data. 
-     * @param title TODO
-     * @param input IProductCmptType of the {@link ProductCmptEditor}
-     */
-    public void setInput(String title, DescriptionItem[] list) {
-    	this.title = title;
-    	this.list = list;
-
-    	// Set headline title
-    	form.setText(title);
-    				        	
-	    // collect all attributes in one container
-		Composite expandableContainer = toolkit.createComposite(form.getBody());
-	    
-	    // use TableWrapLayout for automated line wrap
-	    TableWrapLayout layout = new TableWrapLayout();
-	    layout.verticalSpacing = 0;
-	    layout.horizontalSpacing = 0;
-	    layout.numColumns = 1;
-	    
-	    expandableContainer.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
-	    expandableContainer.setLayout(layout);
-	    
-	    int index = 2; // simple mechanism for color coding for lines 
-	                   // in alternating colors: odd/even
-	    
-	    for (int i=0;i < this.list.length;i++) {
-	        createExpandableControl(expandableContainer, this.list[i], index++);
-	    }    	
+        // collect all attributes in one container
+        expandableContainer = toolkit.createComposite(form.getBody());
+        
+        // use TableWrapLayout for automated line wrap
+        TableWrapLayout layout = new TableWrapLayout();
+        layout.verticalSpacing = 0;
+        layout.horizontalSpacing = 0;
+        layout.numColumns = 1;
+        
+        expandableContainer.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+        expandableContainer.setLayout(layout);
+        
+        int index = 2; // simple mechanism for color coding for lines 
+                       // in alternating colors: odd/even
+        
+        for (int i=0;i < activeList.size();i++) {
+            createExpandableControl(expandableContainer, (DescriptionItem) activeList.get(i), index++);
+        }       
     }
 
-    /**
+	/**
      * Create a single ExpandableComposite object with name=faktorips.attributename
      * and child(text)=faktorips.description.
      * 
@@ -137,23 +152,10 @@ public class DefaultModelDescriptionPage extends Page {
         
         excomposite.setClient(client);
     }
-
-	public DescriptionItem[] getList() {
-		return list;
-	}
-
-	public void setList(DescriptionItem[] list) {
-		this.list = list;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	
+    
+	/**
+	 * {@inheritDoc}
+	 */
 	public void dispose() {
 		
 		if (toolkit != null) {
@@ -166,5 +168,145 @@ public class DefaultModelDescriptionPage extends Page {
 		
 		super.dispose();
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Control getControl() {
+		if (form == null) {
+			return null;
+		}
+		
+		return form;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setFocus() {
+        if (form == null) {
+        	return;
+        }
+        
+        form.setFocus();		
+	}
+
+    /**
+     * @param productName
+     * @param itemList
+     */
+    public void setInput(String productName, DescriptionItem[] itemList) {
+        defaultList.addAll(Arrays.asList(itemList));
+        activeList.addAll(Arrays.asList(itemList));
+        title = productName;
+    }
+    
+    /**
+     * 
+     */
+    public void refresh() {
+        if (expandableContainer != null) { 
+           expandableContainer.dispose();
+        }
+        
+        createForm();
+        
+        form.layout(false, true);
+    }
+
+    class LexicalSortingAction extends Action {
+        
+        private DefaultModelDescriptionSorter defaultSorter;
+        private LexicalModelDescriptionSorter lexicalSorter;
+        private DefaultModelDescriptionPage page;
+
+        public LexicalSortingAction(DefaultModelDescriptionPage page) {
+            super();
+            
+            this.page = page;
+            defaultSorter = new DefaultModelDescriptionSorter();
+            lexicalSorter = new LexicalModelDescriptionSorter();
+            
+            setText(Messages.DefaultModelDescriptionPage_SortText);
+            setToolTipText(Messages.DefaultModelDescriptionPage_SortTooltipText);
+            setDescription(Messages.DefaultModelDescriptionPage_SortDescription);
+            
+            // enabled image
+            ImageDescriptor descriptor = IpsPlugin.getDefault().getImageDescriptor("elcl16/alphab_sort_co.gif"); //$NON-NLS-1$
+            this.setHoverImageDescriptor(descriptor);
+            this.setImageDescriptor(descriptor); 
+            
+            boolean checked = IpsPlugin.getDefault().getPreferenceStore().getBoolean("DefaultModelDescriptionPage.LexicalSortingAction.isChecked");
+            valueChanged(checked, false);        
+        }
+
+        public void run() {
+            valueChanged(isChecked(), true);
+        }
+
+        private void valueChanged(final boolean on, boolean store) {
+            setChecked(on);
+            
+            BusyIndicator.showWhile(page.getControl().getDisplay(), new Runnable() {
+                public void run() {
+                    if (on) {
+                        lexicalSorter.sort(page);
+                    } else {
+                        defaultSorter.sort(page);
+                    }
+                }
+            });         
+            
+            if (store) {
+                IpsPlugin.getDefault().getPreferenceStore().setValue("DefaultModelDescriptionPage.LexicalSortingAction.isChecked", store); 
+            }
+        }
+    }
+
+    class LexicalModelDescriptionSorter {
+        
+         /**
+         * {@inheritDoc}
+         */
+        public void sort(DefaultModelDescriptionPage page) {
+                    
+            Collections.sort(activeList, new DescriptionItemComparator());
+            refresh();
+        }    
+    }
+
+    class DefaultModelDescriptionSorter {
+
+        /**
+         * {@inheritDoc}
+         */
+        public void sort(DefaultModelDescriptionPage page) {
+            
+            Collections.copy(activeList, defaultList);
+            refresh();
+            
+        }
+    }
+
+    class DescriptionItemComparator implements Comparator {
+
+        /**
+         * {@inheritDoc}
+         */
+        public int compare(Object o1, Object o2) {
+            
+            if (o1 instanceof DescriptionItem) {
+                DescriptionItem item1 = (DescriptionItem)o1;
+             
+                if (o2 instanceof DescriptionItem) {
+                    DescriptionItem item2 = (DescriptionItem)o2;
+                    
+                    return item1.getName().compareTo(item2.getName());
+                }
+            }
+            
+            return 0;
+        }
+    }    
+    
 }

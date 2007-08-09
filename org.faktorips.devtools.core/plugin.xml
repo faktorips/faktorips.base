@@ -212,6 +212,15 @@
                standalone="false"
                visible="true"/>
          <actionSet id="org.faktorips.devtools.actions.NavigationActionSet"/>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.modelDescription"
+               moveable="true"
+               relationship="stack"
+               relative="org.eclipse.jdt.ui.PackageExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="true"/>
       </perspectiveExtension>
    </extension>
    <extension point="org.eclipse.ui.popupMenus">  
@@ -518,7 +527,7 @@
   -->
    <extension point="org.eclipse.ui.propertyPages"> 
         <page
-              class="org.faktorips.plugin.ui.IpsProjectPropertyPage"
+              class="org.faktorips.devtools.core.ui.IpsProjectPropertyPage"
               icon="icons/IpsSrcFile.gif"
               id="org.faktorips.projectpropertypage"
               name="%org.faktorips.projectpropertypage"
@@ -529,7 +538,7 @@
          </filter>
         </page> 
         <page
-              class="org.faktorips.plugin.ui.IpsProjectPropertyPage"
+              class="org.faktorips.devtools.core.ui.IpsProjectPropertyPage"
               icon="icons/IpsSrcFile.gif"
               id="org.faktorips.projectpropertypage"
               name="%org.faktorips.projectpropertypage"
@@ -647,6 +656,13 @@
             icon="icons/TestCaseRun.gif"
             id="org.faktorips.devtools.core.ui.views.testRunner"
             name="%org.faktorips.devtools.core.ui.views.testRunner"/>
+      <view
+            allowMultiple="false"
+            category="org.faktorips.devtools.productDefinitionCategory"
+            class="org.faktorips.devtools.core.ui.views.modeldescription.ModelDescriptionView"
+            icon="icons/ModelDescription.gif"
+            id="org.faktorips.devtools.core.ui.views.modelDescription"
+            name="%org.faktorips.devtools.core.ui.views.modelDescription"/>
    </extension>
    <extension
          point="org.eclipse.search.searchResultViewPages">

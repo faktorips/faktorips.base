@@ -16,6 +16,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.views.modeldescription;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.part.IPage;
 
 /**
@@ -32,6 +33,7 @@ public interface IModelDescriptionSupport {
 	 * Create a Page for {@link ModelDescriptionView}.
 	 * 
 	 * @return IPage new Page.
+	 * @throws CoreException 
 	 */
-	public IPage createModelDescriptionPage();
+	public IPage createModelDescriptionPage() throws CoreException;
 }
