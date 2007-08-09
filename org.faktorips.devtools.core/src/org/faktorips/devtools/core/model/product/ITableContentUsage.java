@@ -83,11 +83,19 @@ public interface ITableContentUsage extends IIpsObjectPart {
     public String getTableContentName();
     
     /**
-     * Returns the table contents which is releated or <code>null</code> if the table contents
+     * Returns the table contents which is related or <code>null</code> if the table contents
      * can't be found.
      * 
-     * @throws CoreException if an erros occurs while searching for the table contents.
+     * @throws CoreException if an error occurs while searching for the table contents.
      */
     public ITableContents findTableContents() throws CoreException;
-    
+
+    /**
+     * Returns the table contents which is related or <code>null</code> if the table contents
+     * can't be found.
+     * 
+     * @throws CoreException if an error occurs while searching for the table contents.
+     */
+    public org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage findTableStructureUsage() throws CoreException;
+
 }
