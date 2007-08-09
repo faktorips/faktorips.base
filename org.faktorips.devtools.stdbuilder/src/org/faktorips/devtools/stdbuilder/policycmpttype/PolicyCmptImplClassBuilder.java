@@ -957,6 +957,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateMethodAddObject (
             IRelation relation, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureAddObject(relation, methodsBuilder);
         String fieldname = getFieldNameForRelation(relation);
@@ -972,13 +973,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append(".contains(" + paramName + ")) { return; }");
         methodsBuilder.append(fieldname);
         methodsBuilder.append(".add(" + paramName + ");");
-        if (reverseRelation != null) {
-            if (relation.isAssoziation()) {
-                String targetClass = interfaceBuilder.getQualifiedClassName(relation.findTarget());
-                methodsBuilder.append(generateCodeToSynchronizeReverseAssoziation(paramName, targetClass, relation, reverseRelation));
-            } else {
+        if (relation.isCompositionMasterToDetail()) {
+            IPolicyCmptType target = relation.findTarget();
+            if (target!=null && target.isDependantType()) {
                 methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));
             }
+        } else if (relation.isAssoziation() && reverseRelation!=null) {
+            String targetClass = interfaceBuilder.getQualifiedClassName(relation.findTarget());
+            methodsBuilder.append(generateCodeToSynchronizeReverseAssoziation(paramName, targetClass, relation, reverseRelation));
         }
         generateChangeListenerSupport(methodsBuilder, IModelObjectChangedEvent.class.getName(), "RELATION_OBJECT_ADDED" , fieldname, paramName);
         methodsBuilder.closeBracket();
@@ -1043,19 +1045,20 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         String fieldname = getFieldNameForRelation(relation);
         String paramName = interfaceBuilder.getParamNameForRemoveObject(relation);
         IRelation reverseRelation = relation.findInverseRelation();
-
+        IPolicyCmptType target = relation.findTarget();
+        
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureRemoveObject(relation, methodsBuilder);
 
         methodsBuilder.openBracket();
         methodsBuilder.append("if(" + paramName + "== null) {return;}");
         
-        if (reverseRelation != null) {
+        if (reverseRelation != null || (relation.isComposition() && target!=null && target.isDependantType())) {
             methodsBuilder.append("if(");
         }
         methodsBuilder.append(fieldname);
         methodsBuilder.append(".remove(" + paramName + ")");
-        if (reverseRelation != null) {
+        if (reverseRelation != null || (relation.isComposition() && target!=null && target.isDependantType())) {
             methodsBuilder.append(") {");
             if (relation.isAssoziation()) {
                 methodsBuilder.append(generateCodeToCleanupOldReference(relation, reverseRelation, paramName));
@@ -1100,7 +1103,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         interfaceBuilder.generateSignatureSetObject(relation, methodsBuilder);
         
         methodsBuilder.openBracket();
-        if (relation.hasInverseRelation()) {
+        if (target.isDependantType()) {
             methodsBuilder.appendln("if(" + fieldname + " != null) {");
             methodsBuilder.append(generateCodeToSynchronizeReverseComposition(fieldname, "null"));;
             methodsBuilder.appendln("}");
@@ -1111,7 +1114,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.appendClassName(getQualifiedClassName(target));
         methodsBuilder.append(")" + paramName +";");
 
-        if (relation.hasInverseRelation()) {
+        if (target.isDependantType()) {
             methodsBuilder.appendln("if(" + fieldname + " != null) {");
             methodsBuilder.append(generateCodeToSynchronizeReverseComposition(fieldname, "this"));;
             methodsBuilder.appendln("}");
