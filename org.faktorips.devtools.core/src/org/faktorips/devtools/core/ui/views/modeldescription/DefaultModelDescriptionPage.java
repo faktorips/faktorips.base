@@ -32,6 +32,7 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -146,11 +147,24 @@ abstract public class DefaultModelDescriptionPage extends Page {
         
         // Set faktorips.attribute description
         FormText client = toolkit.createFormText(excomposite, true);
-        client.setText(item.getDescription(), false, true);        
+        String text;
+        
+        // TODO check for whitespaces
+        if (item.getDescription().length() > 0) {
+            text = item.getDescription();
+        } else {
+            text = new String(Messages.DefaultModelDescriptionPage_NoDescriptionAvailable);
+        }
+        
+        client.setText(text, false, true);        
         client.setBackground(excomposite.getBackground());
         client.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
         
         excomposite.setClient(client);
+        
+        // paint "whitespace"
+        Label label = toolkit.createLabel(parent, " "); //$NON-NLS-1$
+        label.setSize(1,1);
     }
     
 	/**
@@ -231,12 +245,12 @@ abstract public class DefaultModelDescriptionPage extends Page {
             setToolTipText(Messages.DefaultModelDescriptionPage_SortTooltipText);
             setDescription(Messages.DefaultModelDescriptionPage_SortDescription);
             
-            // enabled image
+            // get image: "alphabetical sort enabled"
             ImageDescriptor descriptor = IpsPlugin.getDefault().getImageDescriptor("elcl16/alphab_sort_co.gif"); //$NON-NLS-1$
             this.setHoverImageDescriptor(descriptor);
             this.setImageDescriptor(descriptor); 
             
-            boolean checked = IpsPlugin.getDefault().getPreferenceStore().getBoolean("DefaultModelDescriptionPage.LexicalSortingAction.isChecked");
+            boolean checked = IpsPlugin.getDefault().getPreferenceStore().getBoolean("DefaultModelDescriptionPage.LexicalSortingAction.isChecked"); //$NON-NLS-1$
             valueChanged(checked, false);        
         }
 
@@ -258,7 +272,7 @@ abstract public class DefaultModelDescriptionPage extends Page {
             });         
             
             if (store) {
-                IpsPlugin.getDefault().getPreferenceStore().setValue("DefaultModelDescriptionPage.LexicalSortingAction.isChecked", store); 
+                IpsPlugin.getDefault().getPreferenceStore().setValue("DefaultModelDescriptionPage.LexicalSortingAction.isChecked", store);  //$NON-NLS-1$
             }
         }
     }

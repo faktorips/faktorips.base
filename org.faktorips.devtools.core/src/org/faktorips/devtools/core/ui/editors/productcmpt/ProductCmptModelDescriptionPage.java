@@ -50,6 +50,7 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
         String productName = productCmptGen.getProductCmpt().getName();
         List attributeList = new ArrayList();
         
+        // TODO Comment
     	createAttributeDescription(attributeList, productCmptGen, ConfigElementType.PRODUCT_ATTRIBUTE);
         createTableDescription(attributeList, productCmptGen);
     	createAttributeDescription(attributeList, productCmptGen, ConfigElementType.FORMULA);
@@ -61,9 +62,15 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
         setInput(productName, itemList);
     }
     
+    /**
+     * @param attributeList
+     * @param productCmptGen
+     * @param type
+     * @throws CoreException
+     */
     private void createAttributeDescription(List attributeList, IProductCmptGeneration productCmptGen, ConfigElementType type) throws CoreException {
 		
-        // Get names and descriptions of attributetypes 
+        // Get names and descriptions of attributetypes by ConfigElementType
     	IConfigElement[] elements = productCmptGen.getConfigElements(type);
     	
         if (elements.length > 0)
@@ -81,6 +88,11 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
         }
 	}
     
+    /**
+     * @param attributeList
+     * @param productCmptGen
+     * @throws CoreException
+     */
     private void createTableDescription(List attributeList, IProductCmptGeneration productCmptGen) throws CoreException {
 		
         // create table descriptions
@@ -97,14 +109,17 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
         }
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.Page#createControl(org.eclipse.swt.widgets.Composite)
+	/**
+	 * {@inheritDoc}
 	 */
 	public void createControl(Composite parent) {
 		super.createControl(parent);
 	}
     
     
+    /**
+     * {@inheritDoc}
+     */
     public void dispose() {
     	super.dispose();
     }

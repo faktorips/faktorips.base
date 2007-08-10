@@ -70,10 +70,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     private GenerationPropertiesPage generationPropertiesPage;
 
     private boolean isHandlingWorkingDateMismatch = false;
-    
-	/* The outline page */
-	protected ProductCmptModelDescriptionPage fModelDescriptionPage;
-    
+        
     /**
 	 * Creates a new editor for product components.
 	 */
@@ -430,10 +427,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         return "ProductCmptEditor"; //$NON-NLS-1$
     }
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public IPage createModelDescriptionPage() throws CoreException {
 		IProductCmptGeneration gen = (IProductCmptGeneration) this.getGenerationEffectiveOnCurrentEffectiveDate();
-        
-        fModelDescriptionPage = new ProductCmptModelDescriptionPage(gen);
+        ProductCmptModelDescriptionPage fModelDescriptionPage = new ProductCmptModelDescriptionPage(gen);
 		
 		return fModelDescriptionPage;
 	}

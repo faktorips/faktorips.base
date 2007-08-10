@@ -29,10 +29,7 @@ import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSu
  * Editor for a table content.
  */
 public class TableContentsEditor extends TimedIpsObjectEditor implements IModelDescriptionSupport {
-	
-	/* The outline page */
-	protected TableModelDescriptionPage fModelDescriptionPage;
-	
+		
     /**
      * 
      */
@@ -76,7 +73,7 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
 	public IPage createModelDescriptionPage() throws CoreException {
 		
 		ITableContents tableContents = getTableContents();
-		fModelDescriptionPage = new TableModelDescriptionPage(tableContents);
+        TableModelDescriptionPage fModelDescriptionPage = new TableModelDescriptionPage(tableContents);
 				
 		return fModelDescriptionPage;
 	}

@@ -29,9 +29,10 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
 /**
- * This plugin contributes a simple viewer for @see IProductCmptType attributes:
+ * This plugin contributes a simple viewer for @see IProductCmptType attributes and {@link ITableStructure}:
  *  - Show the qualified name as title
  *  - and list specified attributes with their description.  
  * 
@@ -45,7 +46,7 @@ import org.faktorips.devtools.core.IpsPlugin;
  */
 public class ModelDescriptionView extends PageBookView {
     
-    // default message: view not supported by caller.
+    // default message: view not supported.
     final String notSupportedMessage = Messages.ModelDescriptionView_notSupported; 
         
     /**
@@ -56,9 +57,9 @@ public class ModelDescriptionView extends PageBookView {
         super.createPartControl(parent);
     }
     
-    /* (non-Javadoc)
-     * Method declared on PageBookView.
-     */   
+	/**
+	 * {@inheritDoc}
+	 */
 	protected IPage createDefaultPage(PageBook book) {
         MessagePage page = new MessagePage();
         initPage(page);
@@ -67,9 +68,9 @@ public class ModelDescriptionView extends PageBookView {
         return page;
 	}
 
-    /* (non-Javadoc)
-     * Method declared on PageBookView.
-     */	
+	/**
+	 * {@inheritDoc}
+	 */
 	protected PageRec doCreatePage(IWorkbenchPart part) {
 		
 		if (part instanceof IModelDescriptionSupport) {
@@ -78,7 +79,10 @@ public class ModelDescriptionView extends PageBookView {
             try {
                 page = ((IModelDescriptionSupport) part).createModelDescriptionPage();
             } catch (CoreException e) {
+                // TODO Show errors on an errorPage
                 IpsPlugin.log(e);
+                
+                /* return null in order to show the defaultPage */
                 return null;
             }
 			
@@ -90,17 +94,17 @@ public class ModelDescriptionView extends PageBookView {
         return null;
 	}
 
-    /* (non-Javadoc)
-     * Method declared on PageBookView.
-     */	
+	/**
+	 * {@inheritDoc}
+	 */
 	protected void doDestroyPage(IWorkbenchPart part, PageRec rec) {
         IPage page = rec.page;
         page.dispose();
         rec.dispose();
 	}
 
-    /* (non-Javadoc)
-     * Method declared on PageBookView.
+    /**
+     * {@inheritDoc}
      */
     protected IWorkbenchPart getBootstrapPart() {
         IWorkbenchPage page = getSite().getPage();
@@ -111,18 +115,19 @@ public class ModelDescriptionView extends PageBookView {
         return null;
     }
 
-    /* (non-Javadoc)
-     * Method declared on PageBookView.
-     * We only want to track editors.
+    /**
+     * {@inheritDoc}
      */
     protected boolean isImportant(IWorkbenchPart part) {
-        //We only care about IpsObjectEditors
+        /* care for all editors. If an editor does not support IModelDescriptionSupport
+         * we'll show a 'description not supported' message.
+         */
+        
         return (part instanceof IEditorPart);
     }
 
-    /* (non-Javadoc)
-     * Method declared on IViewPart.
-     * Treat this the same as part activation.
+    /**
+     * {@inheritDoc}
      */
     public void partBroughtToTop(IWorkbenchPart part) {
 			partActivated(part);
