@@ -971,14 +971,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append("if(");
         methodsBuilder.append(fieldname);
         methodsBuilder.append(".contains(" + paramName + ")) { return; }");
-        methodsBuilder.append(fieldname);
-        methodsBuilder.append(".add(" + paramName + ");");
         if (relation.isCompositionMasterToDetail()) {
             IPolicyCmptType target = relation.findTarget();
             if (target!=null && target.isDependantType()) {
                 methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));
             }
-        } else if (relation.isAssoziation() && reverseRelation!=null) {
+        }
+        methodsBuilder.append(fieldname);
+        methodsBuilder.append(".add(" + paramName + ");");
+        if (relation.isAssoziation() && reverseRelation!=null) {
             String targetClass = interfaceBuilder.getQualifiedClassName(relation.findTarget());
             methodsBuilder.append(generateCodeToSynchronizeReverseAssoziation(paramName, targetClass, relation, reverseRelation));
         }
@@ -1108,18 +1109,18 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodsBuilder.append(generateCodeToSynchronizeReverseComposition(fieldname, "null"));;
             methodsBuilder.appendln("}");
         }
+
+        if (target.isDependantType()) {
+            methodsBuilder.appendln("if(" + paramName + " != null) {");
+            methodsBuilder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));;
+            methodsBuilder.appendln("}");
+        }
         
         methodsBuilder.append(fieldname);
         methodsBuilder.append(" = (");
         methodsBuilder.appendClassName(getQualifiedClassName(target));
         methodsBuilder.append(")" + paramName +";");
 
-        if (target.isDependantType()) {
-            methodsBuilder.appendln("if(" + fieldname + " != null) {");
-            methodsBuilder.append(generateCodeToSynchronizeReverseComposition(fieldname, "this"));;
-            methodsBuilder.appendln("}");
-        }
-        
         generateChangeListenerSupport(methodsBuilder, IModelObjectChangedEvent.class.getName(), "RELATION_OBJECT_CHANGED", fieldname, paramName);
         methodsBuilder.closeBracket();
     }
@@ -2081,7 +2082,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         methodBuilder.methodBegin(Modifier.PUBLIC, Void.TYPE, MethodNames.SET_PARENT, 
                 new String[]{"newParent"}, new Class[]{AbstractModelObject.class});
-        methodBuilder.appendln("if (" + FIELD_PARENT_MODEL_OBJECT + "!=null && " + FIELD_PARENT_MODEL_OBJECT + "!=newParent) {");
+        methodBuilder.appendln("if (" + FIELD_PARENT_MODEL_OBJECT + "!=null) {");
         methodBuilder.appendln(FIELD_PARENT_MODEL_OBJECT + "." + MethodNames.REMOVE_CHILD_MODEL_OBJECT_INTERNAL + "(this);");
         methodBuilder.appendln("}");
         methodBuilder.appendln(FIELD_PARENT_MODEL_OBJECT + "=newParent;");
