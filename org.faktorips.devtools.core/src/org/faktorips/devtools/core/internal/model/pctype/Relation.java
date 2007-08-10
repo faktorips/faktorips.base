@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -221,16 +222,11 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     /**
      * {@inheritDoc}
      */
-    public void setDefaultTargetRoleSingular() {
-        String defaultRole = target;
-        if (defaultRole==null) {
-            defaultRole = "";
+    public String getDefaultTargetRoleSingular() {
+        if (target==null) {
+            return "";
         }
-        int pos = target.lastIndexOf('.');
-        if (pos!=-1) {
-            defaultRole = target.substring(pos+1);
-        } 
-        setTargetRoleSingular(defaultRole);
+        return StringUtil.unqualifiedName(target);
     }
 
     /**
@@ -252,8 +248,15 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     /**
      * {@inheritDoc}
      */
-    public void setDefaultTargetRolePlural() {
-        setTargetRolePlural(targetRoleSingular);
+    public boolean isTargetRolePluralRequired() {
+        return is1ToMany() || getIpsProject().getIpsArtefactBuilderSet().isRoleNamePluralRequiredForTo1Relations();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDefaultTargetRolePlural() {
+        return targetRoleSingular;
     }
 
     /** 
@@ -351,8 +354,21 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
 		return targetRolePluralProductSide;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+	public String getDefaultTargetRolePluralProductSide() {
+        return targetRoleSingularProductSide;
+    }
 
-	/**
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isTargetRolePluralRequiredProductSide() {
+        return maxCardinalityProductSide>1 || getIpsProject().getIpsArtefactBuilderSet().isRoleNamePluralRequiredForTo1Relations();
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public int getMinCardinalityProductSide() {
@@ -477,10 +493,10 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
 	 * {@inheritDoc}
 	 */
     public IRelation findInverseRelation() throws CoreException {
-        if (type.isCompositionDetailToMaster()) {
+        if (StringUtils.isEmpty(inverseRelation)) {
             return null;
         }
-    	if (StringUtils.isEmpty(inverseRelation)) {
+        if (type.isCompositionDetailToMaster()) {
             return null;
         }
         IPolicyCmptType target = findTarget();
@@ -666,21 +682,24 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     
     /**
      * Performs the check for the rule with message code
-     * @see IRelation#MSGCODE_CONTAINERRELATION_REVERSERELATION_MISMATCH
+     * @see IRelation#MSGCODE_INVERSE_RELATION_INCONSTENT_WITH_DEFINITION_CONTAINER_RELATION
      */
     private void checkForContainerRelationReverseRelationMismatch(IRelation containerRel, MessageList list) throws CoreException {
         IRelation inverseRel = findInverseRelation();
         if (inverseRel==null) {
             return; // not found => error will be reported in validateInverseRelation
         }
-        IRelation reverseRelationOfContainerRel = containerRel.findInverseRelation();
-        if (reverseRelationOfContainerRel==null) {
+        if (isComposition() || inverseRel.isComposition()) {
+            return;
+        }
+        IRelation inverseRelationOfContainerRel = containerRel.findInverseRelation();
+        if (inverseRelationOfContainerRel==null) {
             return; // not found => error will be reported in validateReverseRelation
         }
-        IRelation containerRelationofReverseRel = inverseRel.findContainerRelation();
-        if (containerRelationofReverseRel==null || containerRelationofReverseRel!=reverseRelationOfContainerRel) {
+        IRelation containerRelationofInverseRel = inverseRel.findContainerRelation();
+        if (containerRelationofInverseRel==null || containerRelationofInverseRel!=inverseRelationOfContainerRel) {
             String text = Messages.Relation_msgContainerRelNotReverseRel;
-            list.add(new Message(MSGCODE_CONTAINERRELATION_REVERSERELATION_MISMATCH, text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION)); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_INVERSE_RELATION_INCONSTENT_WITH_DEFINITION_CONTAINER_RELATION, text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION)); //$NON-NLS-1$
         }
     }
     
@@ -688,36 +707,31 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
         if (StringUtils.isEmpty(inverseRelation)) {
             return;
         }
-        if (isCompositionDetailToMaster()) {
+        if (isComposition()) {
             String text = Messages.Relation_noReverseRelationNeededForDetailToMasterRelations;
-            list.add(new Message("SomeNewCode", text, Message.WARNING, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
+            list.add(new Message(IRelation.MSGCODE_INVERSE_RELATION_INFO_NOT_NEEDED, text, Message.WARNING, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
             return;
         }
         IRelation inverseRelationObj = findInverseRelation();
         if (inverseRelationObj==null) {
             String text = NLS.bind(Messages.Relation_msgRelationNotInTarget, inverseRelation, target);
-            list.add(new Message(MSGCODE_REVERSERELATION_NOT_IN_TARGET, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
             return;
         }
-        if (isAssoziation() && (!inverseRelationObj.getInverseRelation().equals(getName()))) {
+        if (!inverseRelationObj.getInverseRelation().equals(targetRoleSingular)) {
             String text = Messages.Relation_msgReverseRelationNotSpecified;
-            list.add(new Message(MSGCODE_REVERSE_RELATION_MISMATCH, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_INVERSE_RELATION_MISMATCH, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
         }
-
-        if (isReadOnlyContainer()!=inverseRelationObj.isReadOnlyContainer()) {
-            String text = Messages.Relation_msgReverseRelOfContainerRelMustBeContainerRelToo;
-            list.add(new Message(MSGCODE_FORWARD_AND_REVERSE_RELATION_MUST_BOTH_BE_MARKED_AS_CONTAINER, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
-        }
-        
-        if((type.isCompositionMasterToDetail() && !inverseRelationObj.getRelationType().isCompositionDetailToMaster())
-                || (inverseRelationObj.getRelationType().isCompositionMasterToDetail() && !type.isCompositionDetailToMaster())) {
-	            String text = Messages.Relation_msgReverseCompositionMissmatch;
-	            list.add(new Message(MSGCODE_REVERSE_COMPOSITION_MISSMATCH, text, Message.ERROR, this, new String[]{PROPERTY_INVERSE_RELATION, PROPERTY_READONLY_CONTAINER})); //$NON-NLS-1$
-	    }
-	    if  ((type.isAssoziation() && !inverseRelationObj.getRelationType().isAssoziation())
-	            || (inverseRelationObj.getRelationType().isAssoziation() && !type.isAssoziation())) {
-	            String text = Messages.Relation_msgReverseAssociationMissmatch;
-	            list.add(new Message(MSGCODE_REVERSE_ASSOCIATION_MISSMATCH, text, Message.ERROR, this, new String[]{PROPERTY_INVERSE_RELATION})); //$NON-NLS-1$
+        if  ((!inverseRelationObj.getRelationType().isAssoziation())
+                || (inverseRelationObj.getRelationType().isAssoziation() && !type.isAssoziation())) {
+                String text = Messages.Relation_msgReverseAssociationMissmatch;
+                list.add(new Message(MSGCODE_INVERSE_ASSOCIATION_TYPE_MISSMATCH, text, Message.ERROR, this, new String[]{PROPERTY_INVERSE_RELATION})); //$NON-NLS-1$
+                return;
+        } else {
+            if (isReadOnlyContainer()!=inverseRelationObj.isReadOnlyContainer()) {
+                String text = Messages.Relation_msgReverseRelOfContainerRelMustBeContainerRelToo;
+                list.add(new Message(MSGCODE_INVERSE_ASSOCIATIONS_MUST_BOTH_BE_MARKED_AS_CONTAINER, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
+            }
         }
     }
     

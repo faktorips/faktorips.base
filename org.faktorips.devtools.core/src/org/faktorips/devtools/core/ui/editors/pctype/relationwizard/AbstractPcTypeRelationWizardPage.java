@@ -96,7 +96,7 @@ abstract class AbstractPcTypeRelationWizardPage extends WizardPage {
     public boolean isPageComplete() {
         // if a new reverse relation should be created or an existing should be used but no reverse
         // relation was created or choosen then the page isn't complete
-        if ((wizard.isNewReverseRelation() || wizard.isExistingReverseRelation()) && wizard.getReverseRelation() == null) {
+        if ((wizard.isNewReverseRelation() || wizard.isExistingReverseRelation()) && wizard.getInverseRelation() == null) {
             return false;
         }
         if (wizard.isValidationError()) {

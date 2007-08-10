@@ -126,8 +126,8 @@ public class PropertiesPage extends AbstractPropertiesPage {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IRelation getReverseOfCurrentRelation(){
-	    return wizard.getReverseRelation();
+	protected IRelation getInverseOfCurrentRelation(){
+	    return wizard.getInverseRelation();
 	}
 
     /**

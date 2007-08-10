@@ -172,7 +172,7 @@ public class RelationEditDialog2 extends IpsPartEditDialog2 {
         targetRoleSingularText.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 if (StringUtils.isEmpty(relation.getTargetRoleSingular())) {
-                    relation.setDefaultTargetRoleSingular();
+                    relation.setTargetRoleSingular(relation.getDefaultTargetRoleSingular());
                 }
             }
         });
@@ -184,8 +184,8 @@ public class RelationEditDialog2 extends IpsPartEditDialog2 {
         targetRolePluralText.addFocusListener(new FocusAdapter() {
             
             public void focusGained(FocusEvent e) {
-                if (StringUtils.isEmpty(targetRolePluralText.getText())) {
-                    relation.setDefaultTargetRolePlural();
+                if (StringUtils.isEmpty(targetRolePluralText.getText()) && relation.isTargetRolePluralRequired()) {
+                    relation.setTargetRolePlural(relation.getDefaultTargetRolePlural());
                 }
             }
         });

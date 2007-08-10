@@ -161,12 +161,12 @@ public interface IRelation extends IIpsObjectPart {
     public final static String MSGCODE_CONTAINERRELATION_NOT_IN_SUPERTYPE = MSGCODE_PREFIX + "ContainerRelationNotInSupertype"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the container relation this relation implements is not marked as container relation.
+     * Validation message code to indicate that the container relation this relation implements is not marked as such.
      */
     public final static String MSGCODE_NOT_MARKED_AS_CONTAINERRELATION = MSGCODE_PREFIX + "NotMarkedAsContainerRelation"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the target does not exist.
+     * Validation message code to indicate that the specified container relation does not exist.
      */
     public final static String MSGCODE_CONTAINERRELATION_TARGET_DOES_NOT_EXIST = MSGCODE_PREFIX + "ContainerRelationTargetDoesNotExist"; //$NON-NLS-1$
 
@@ -177,10 +177,10 @@ public interface IRelation extends IIpsObjectPart {
     public final static String MSGCODE_TARGET_CLASS_NOT_A_SUBCLASS = MSGCODE_PREFIX + "TargetClassNotASubclass"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the container relation is not the reverse relation 
-     * of the container relation of the reverse relation.
+     * Validation message code to indicate the inverse relation definition is inkonsistent with the container
+     * relation.
      */
-    public final static String MSGCODE_CONTAINERRELATION_REVERSERELATION_MISMATCH = MSGCODE_PREFIX + "ContainerRelationNotReverseRelation"; //$NON-NLS-1$
+    public final static String MSGCODE_INVERSE_RELATION_INCONSTENT_WITH_DEFINITION_CONTAINER_RELATION = MSGCODE_PREFIX + "InverseRelationConsistentWithDefinitionContainerRelation"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the relation has same plural rolename like another relation in supertype hirarchy.
@@ -203,10 +203,16 @@ public interface IRelation extends IIpsObjectPart {
     public final static String MSGCODE_SAME_SINGULAR_ROLENAME_PRODUCTSIDE = MSGCODE_PREFIX + "RelationHasSameSingularRolenameProductSide"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the reverse relation does not specify this relation as its reverse one.
+     * Validation message code to indicate that an association and it's inverse assoication must be marked as 
+     * container relations (or not).
      */
-    public final static String MSGCODE_REVERSERELATION_NOT_IN_TARGET = MSGCODE_PREFIX + "ReverseRelationNotInTarget"; //$NON-NLS-1$
+    public final static String MSGCODE_INVERSE_ASSOCIATIONS_MUST_BOTH_BE_MARKED_AS_CONTAINER = MSGCODE_PREFIX + "ReverseRelationOfContainerRelationMustBeContainerRelationToo"; //$NON-NLS-1$
 
+    /**
+     * A reference to an inverse relation isn't needed for composition. 
+     */
+    public final static String MSGCODE_INVERSE_RELATION_INFO_NOT_NEEDED = MSGCODE_PREFIX + "InverseRelationNotNeeded";
+    
     /**
      * Validation message code to indicate that given a relation with an inreverse relation,
      * this inverse relation can be found but it does not specify the first relation as it's
@@ -214,24 +220,17 @@ public interface IRelation extends IIpsObjectPart {
      * This applies to associations only, as detail-to-master composition don't specify a 
      * reverse relation.
      */
-    public final static String MSGCODE_REVERSE_RELATION_MISMATCH = MSGCODE_PREFIX + "ReverseRelationNotSpecified"; //$NON-NLS-1$
+    public final static String MSGCODE_INVERSE_RELATION_MISMATCH = MSGCODE_PREFIX + "InverseRelationMismatch"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that a relation and it's inverse relation must be marked as container relations 
-     * (or not).
+     * Validation message code to indicate that the reverse relation does not specify this relation as its reverse one.
      */
-    public final static String MSGCODE_FORWARD_AND_REVERSE_RELATION_MUST_BOTH_BE_MARKED_AS_CONTAINER = MSGCODE_PREFIX + "ReverseRelationOfContainerRelationMustBeContainerRelationToo"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the inverse relation of a master-to-detail composition must be a 
-     * detail-to-master composition.
-     */
-    public final static String MSGCODE_REVERSE_COMPOSITION_MISSMATCH = MSGCODE_PREFIX + "ReverseCompositionMissmatch"; //$NON-NLS-1$
+    public final static String MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET = MSGCODE_PREFIX + "ReverseRelationNotInTarget"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the reverse relation of an association must be an assoziation.
      */
-    public final static String MSGCODE_REVERSE_ASSOCIATION_MISSMATCH = MSGCODE_PREFIX + "ReverseAssociationMissmatch"; //$NON-NLS-1$
+    public final static String MSGCODE_INVERSE_ASSOCIATION_TYPE_MISSMATCH = MSGCODE_PREFIX + "InverseAssociationTypeMissmatch"; //$NON-NLS-1$
 
     /**
      * Returns the policy component type this relation belongs to.
@@ -322,9 +321,9 @@ public interface IRelation extends IIpsObjectPart {
     public void setTargetRoleSingular(String newRole);
     
     /**
-     * Derives a default role name (singular form) for the target based on the target.
+     * Returns a default role name (singular form) for the target based on the target's name.
      */
-    public void setDefaultTargetRoleSingular();
+    public String getDefaultTargetRoleSingular();
     
     /**
      * Returns the role of the target in this relation. The role is specified in plural form.
@@ -337,9 +336,15 @@ public interface IRelation extends IIpsObjectPart {
     public void setTargetRolePlural(String newRole);
     
     /**
-     * Derives a default role name (plural form) for the target based on the target.
+     * Returns if the target role plural is required (or not) based on the relation's max cardinality
+     * and the aretfact builderset's information if it needs the plural form for to 1 relations.
      */
-    public void setDefaultTargetRolePlural();
+    public boolean isTargetRolePluralRequired();
+    
+    /**
+     * Returns a default role name (plural form) for the target based on the target's name.
+     */
+    public String getDefaultTargetRolePlural();
     
     /**
      * Returns <code>true</code> if this is an abstract, read-only container relation. 
@@ -442,7 +447,7 @@ public interface IRelation extends IIpsObjectPart {
     public boolean hasInverseRelation();
     
     /**
-     * Sets the name of the reverse relation.
+     * Sets the name of the inverse relation.
      */
     public void setInverseRelation(String relation);
     
@@ -484,6 +489,17 @@ public interface IRelation extends IIpsObjectPart {
      */
     public String getTargetRolePluralProductSide();
     
+    /**
+     * Returns if the target role plural for the productsie is required (or not) based on the relation's max cardinality
+     * and the aretfact builderset's information if it needs the plural form for to 1 relations.
+     */
+    public boolean isTargetRolePluralRequiredProductSide();
+    
+    /**
+     * Returns a default role name plural form for the productside.
+     */
+    public String getDefaultTargetRolePluralProductSide();
+
     /**
      * Sets the new role in plural form of the target in this relation on the product sided.
      */

@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -176,9 +177,10 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
         });
         targetRoleSingularText.addListener (SWT.Modify, new Listener () {
 			public void handleEvent (Event ev) {
-				// store the new name in the reverse relation field of the relation or reverse
-				if (getReverseOfCurrentRelation() != null){
-					getReverseOfCurrentRelation().setInverseRelation(targetRoleSingularField.getText());
+				// store the new name in the relation's inverse relation  
+				IRelation inverseRelation = getInverseOfCurrentRelation();
+                if (inverseRelation != null && inverseRelation.isAssoziation()){
+					inverseRelation.setInverseRelation(targetRoleSingularField.getText());
 				}
 			}
         });
@@ -187,10 +189,8 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
         Text targetRolePluralText = uiToolkit.createText(workArea);
         targetRolePluralText.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
-                if (StringUtils.isEmpty(targetRolePluralField.getText())) {
-                	String targetName = getCurrentRelation().getTarget();
-                	targetName = StringUtil.unqualifiedName(targetName);
-                	targetRolePluralField.setText(targetName);
+                if (StringUtils.isEmpty(targetRolePluralField.getText()) && getCurrentRelation().isTargetRolePluralRequired()) {
+                    targetRolePluralField.setText(getCurrentRelation().getDefaultTargetRolePlural());
                 }
             }
         });
@@ -251,6 +251,7 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
         targetRoleSingularTextProdRelevant.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 if (StringUtils.isEmpty(targetRoleSingularProdRelevantField.getText())) {
+                    // why do we need this can can't just use getCurrentRelation().getTarget()?
                     if (getCurrentTarget() != null){
                         String targetName = getCurrentTarget().getProductCmptType();
                         targetName = StringUtil.unqualifiedName(targetName);
@@ -264,7 +265,8 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
         Text targetRolePluralTextProdRelevant = uiToolkit.createText(workArea);
         targetRolePluralTextProdRelevant.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
-                if (StringUtils.isEmpty(targetRolePluralProdRelevantField.getText())) {
+                if (StringUtils.isEmpty(targetRolePluralProdRelevantField.getText())  && getCurrentRelation().isTargetRolePluralRequiredProductSide()) {
+                    // why do we need this can can't just use getCurrentRelation().getTarget()?
                     if (getCurrentTarget() != null){
                         String targetName = getCurrentTarget().getProductCmptType();
                         targetName = StringUtil.unqualifiedName(targetName);
@@ -303,7 +305,7 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
 	/**
 	 * Returns the reverse relation of the relation which will changed by this wizard page.
 	 */
-	abstract protected IRelation getReverseOfCurrentRelation();
+	abstract protected IRelation getInverseOfCurrentRelation();
 
     /**
      * Returns the target of the current relation.

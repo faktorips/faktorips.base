@@ -101,7 +101,7 @@ public class ReverseRelationPage extends AbstractPcTypeRelationWizardPage {
 			// other wise enable next wizard page
 			if (prevSelection != e.getSource()){
 				prevSelection = (Button) e.getSource();
-				wizard.storeReverseRelation(null);
+				wizard.storeInverseRelation(null);
 				if (e.getSource() == useExistingRelation) {
 					wizard.restoreMementoTargetBeforeChange();
 					wizard.setExistingReverseRelation();

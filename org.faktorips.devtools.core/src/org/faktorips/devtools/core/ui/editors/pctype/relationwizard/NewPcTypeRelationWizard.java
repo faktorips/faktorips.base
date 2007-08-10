@@ -136,12 +136,11 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 				reverseRelation.setTarget(relation.getPolicyCmptType().getQualifiedName());
 				reverseRelation.setTargetRoleSingular(relation.getPolicyCmptType().getName());
 				reverseRelation.setRelationType(getCorrespondingRelationType(relation.getRelationType()));
-				
-				if (relation.isReadOnlyContainer()){
-					reverseRelation.setReadOnlyContainer(true);
-				}else{
-					reverseRelation.setReadOnlyContainer(false);
-				}
+				if (reverseRelation.isAssoziation()) {
+                    reverseRelation.setReadOnlyContainer(relation.isReadOnlyContainer());
+                } else {
+                    reverseRelation.setReadOnlyContainer(false);
+                }
 				
 				IRelation containerRelation;
 				try {
@@ -443,7 +442,7 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	/**
 	 * Returns the reverse relation.
 	 */
-	IRelation getReverseRelation() {
+	IRelation getInverseRelation() {
 		return reverseRelation;
 	}
 	
@@ -451,13 +450,11 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	 * Stores a reverse relation.
 	 * Additional the correct reverse relation names will be set in both relation.
 	 */
-	void storeReverseRelation(IRelation reverseRelation){
+	void storeInverseRelation(IRelation reverseRelation){
 	    this.reverseRelation = reverseRelation;
-		if (reverseRelation != null){
+		if (reverseRelation != null && reverseRelation.isAssoziation()){
 			relation.setInverseRelation(reverseRelation.getTargetRoleSingular());
-            if (!reverseRelation.isCompositionDetailToMaster()) {
-                reverseRelation.setInverseRelation(relation.getTargetRoleSingular());
-            }
+            reverseRelation.setInverseRelation(relation.getTargetRoleSingular());
 		}else{
 			relation.setInverseRelation(""); //$NON-NLS-1$
 		}

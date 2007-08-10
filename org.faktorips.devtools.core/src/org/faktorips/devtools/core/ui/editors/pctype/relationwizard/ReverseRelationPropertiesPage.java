@@ -287,7 +287,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 	 * Set the status of the property fields.
 	 */
 	private void setStatusPropertyFields() {
-		if (wizard.getReverseRelation() == null) {
+		if (wizard.getInverseRelation() == null) {
 			removePcTypeControlsFromModel();
 			removeProdRelevantControlsFromModel();
 		} else {
@@ -316,14 +316,14 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 			if (!selExistingRelation.equals(prevSelExistingRelation)){
 				prevSelExistingRelation = selExistingRelation;
 
-				wizard.storeReverseRelation((IRelation) existingRelations.get(selIdx));
+				wizard.storeInverseRelation((IRelation) existingRelations.get(selIdx));
                 
                 createPropertyFields();
                 setStatusPropertyFields();
                 
                 // connect to ui
 				// add a new ui controler for the existing relation object
-				wizard.createUIControllerReverseRelation(wizard.getReverseRelation());
+				wizard.createUIControllerReverseRelation(wizard.getInverseRelation());
 				wizard.getUiControllerReverseRelation().updateUI();
 			}
 		}
@@ -350,7 +350,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
         }
         
 		wizard.setDefaultsByRelationTypeAndTarget(newReverseRelation);
-		wizard.storeReverseRelation(newReverseRelation);
+		wizard.storeInverseRelation(newReverseRelation);
 	}
 	
     /*
@@ -358,7 +358,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
      */
     private void connectRelationToUi(){
         // add a new ui controler for the new relation object
-        wizard.createUIControllerReverseRelation(wizard.getReverseRelation());
+        wizard.createUIControllerReverseRelation(wizard.getInverseRelation());
         wizard.getUiControllerReverseRelation().updateUI();
 
         wizard.updateDescriptionReverseRelationPropertiesPage(Messages.NewPcTypeRelationWizard_reverseRelationProp_description_new);
@@ -423,13 +423,13 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 	 * {@inheritDoc}
 	 */
 	protected IRelation getCurrentRelation(){
-		return wizard.getReverseRelation();
+		return wizard.getInverseRelation();
 	}
 
     /**
 	 * {@inheritDoc}
 	 */
-	protected IRelation getReverseOfCurrentRelation(){
+	protected IRelation getInverseOfCurrentRelation(){
 	    return wizard.getRelation();
 	}
 
