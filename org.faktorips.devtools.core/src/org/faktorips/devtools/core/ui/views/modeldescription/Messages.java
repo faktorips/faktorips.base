@@ -13,7 +13,6 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String DefaultModelDescriptionPage_0;
     public static String DefaultModelDescriptionPage_NoDescriptionAvailable;
     public static String DefaultModelDescriptionPage_SortDescription;
     public static String DefaultModelDescriptionPage_SortText;

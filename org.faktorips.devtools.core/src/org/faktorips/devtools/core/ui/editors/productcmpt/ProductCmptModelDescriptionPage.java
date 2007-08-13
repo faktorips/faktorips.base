@@ -35,9 +35,7 @@ import org.faktorips.devtools.core.ui.views.modeldescription.DescriptionItem;
 /**
  * A page for presenting the attributes of a {@link IProductCmptType}. This page is
  * connected to a {@link ProductCmptEditor} similiar to the outline view.
- * 
- * The attributes and their description are presented within a ExpandableComposite.
- * 
+ *  
  * @author Markus Blum
  *
  */
@@ -50,7 +48,13 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
         String productName = productCmptGen.getProductCmpt().getName();
         List attributeList = new ArrayList();
         
-        // TODO Comment
+        /* Create DescriptionItems by attribute type (use same order like ProductEditor). This is the default order in the 
+         * ModelDescriptionView:
+         * - const. attributes
+         * - tables and derived attributes
+         * - attributes with range values
+         */
+        
     	createAttributeDescription(attributeList, productCmptGen, ConfigElementType.PRODUCT_ATTRIBUTE);
         createTableDescription(attributeList, productCmptGen);
     	createAttributeDescription(attributeList, productCmptGen, ConfigElementType.FORMULA);
@@ -59,7 +63,8 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
         DescriptionItem[] itemList = new DescriptionItem[attributeList.size()];
         itemList = (DescriptionItem[]) attributeList.toArray(itemList);
         
-        setInput(productName, itemList);
+        super.setTitle(productName);
+        super.setDescriptionItems(itemList);
     }
     
     /**

@@ -44,18 +44,24 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.Page;
 import org.faktorips.devtools.core.IpsPlugin;
 
+/**
+ * A page for presenting {@link DescriptionItem}s similiar to the outline view.
+ * 
+ * The attributes and their description are presented within a ExpandableComposite.
+ * 
+ * @author Markus Blum
+ *
+ */
+
 abstract public class DefaultModelDescriptionPage extends Page {
 
-    // SWT basics
     private FormToolkit toolkit;
 
-    // basic view elements
     private ScrolledForm form;
     private Composite expandableContainer;
     
-    // Data
-    private List defaultList;
-    private List activeList;
+    private List defaultList; // List of DescriptionItems sorted by parent. 
+    private List activeList; // defaultList sorted lexical or not.
     private String title; 
     
     public DefaultModelDescriptionPage () {
@@ -67,12 +73,11 @@ abstract public class DefaultModelDescriptionPage extends Page {
      * {@inheritDoc}
      */
     public void createControl(Composite parent) {
-        // Use form-styled widgets in this view
         toolkit = new FormToolkit(parent.getDisplay());
-                
+                 
         form = toolkit.createScrolledForm(parent);
+        //form.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
         
-        // Using TableWrapLayout
         TableWrapLayout layoutForm = new TableWrapLayout();
         layoutForm.verticalSpacing = 1;
         layoutForm.horizontalSpacing = 1;
@@ -84,21 +89,19 @@ abstract public class DefaultModelDescriptionPage extends Page {
 	}
     
     private void registerToolbarActions() {
-        // register global actions
+        // register sorting action
         IToolBarManager toolBarManager= getSite().getActionBars().getToolBarManager();
-        
         toolBarManager.add(new LexicalSortingAction(this));
     }
     
     private void createForm() {
         
-        // Set headline title
-        form.setText(title);
+         form.setText(title);
 
         // collect all attributes in one container
         expandableContainer = toolkit.createComposite(form.getBody());
+        //expandableContainer.setBackground(form.getBody().getDisplay().getSystemColor(SWT.COLOR_GREEN));
         
-        // use TableWrapLayout for automated line wrap
         TableWrapLayout layout = new TableWrapLayout();
         layout.verticalSpacing = 0;
         layout.horizontalSpacing = 0;
@@ -119,9 +122,9 @@ abstract public class DefaultModelDescriptionPage extends Page {
      * Create a single ExpandableComposite object with name=faktorips.attributename
      * and child(text)=faktorips.description.
      * 
-     * @param parent rootContainer object.
+     * @param parent rootContainer object
      * @param column faktorips data
-     * @param index
+     * @param index flag for switching the background colour
      */
     private void createExpandableControl(Composite parent, DescriptionItem item, int index) {
         
@@ -147,34 +150,37 @@ abstract public class DefaultModelDescriptionPage extends Page {
         
         // Set faktorips.attribute description
         FormText client = toolkit.createFormText(excomposite, true);
-        String text;
         
-        // TODO check for whitespaces
-        if (item.getDescription().length() > 0) {
-            text = item.getDescription();
+        String tmp = item.getDescription().trim();
+        
+        if ( StringUtils.isEmpty( tmp ) ) {
+            client.setText(Messages.DefaultModelDescriptionPage_NoDescriptionAvailable, false, true);
         } else {
-            text = new String(Messages.DefaultModelDescriptionPage_NoDescriptionAvailable);
+            client.setText(tmp, false, true);
         }
-        
-        client.setText(text, false, true);        
+              
         client.setBackground(excomposite.getBackground());
         client.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+        //client.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_RED));
         
         excomposite.setClient(client);
         
-        // paint "whitespace"
-        Label label = toolkit.createLabel(parent, " "); //$NON-NLS-1$
-        label.setSize(1,1);
+        Label spacer = toolkit.createSeparator(parent, SWT.NONE);
+        TableWrapData layoutData = new TableWrapData(TableWrapData.FILL_GRAB);
+        layoutData.heightHint = 10;
+        spacer.setLayoutData(layoutData);
+        //spacer.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
     }
-    
-	/**
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public void dispose() {
 		
-		if (toolkit != null) {
-			toolkit.dispose();
-		}
+        
+        if (toolkit != null) {
+            toolkit.dispose();
+        }
 		
 		if (form != null) {
 			form.dispose();
@@ -204,19 +210,10 @@ abstract public class DefaultModelDescriptionPage extends Page {
         
         form.setFocus();		
 	}
-
-    /**
-     * @param productName
-     * @param itemList
-     */
-    public void setInput(String productName, DescriptionItem[] itemList) {
-        defaultList.addAll(Arrays.asList(itemList));
-        activeList.addAll(Arrays.asList(itemList));
-        title = productName;
-    }
     
     /**
-     * 
+     * Free the root container with its ExapndableComponents and recreate the 
+     * controls with the  content of the activeList.
      */
     public void refresh() {
         if (expandableContainer != null) { 
@@ -228,19 +225,16 @@ abstract public class DefaultModelDescriptionPage extends Page {
         form.layout(false, true);
     }
 
+    /**
+     * Add "sort" action to the toolbar.
+     * 
+     * @author Markus Blum
+     */
     class LexicalSortingAction extends Action {
-        
-        private DefaultModelDescriptionSorter defaultSorter;
-        private LexicalModelDescriptionSorter lexicalSorter;
-        private DefaultModelDescriptionPage page;
 
         public LexicalSortingAction(DefaultModelDescriptionPage page) {
             super();
-            
-            this.page = page;
-            defaultSorter = new DefaultModelDescriptionSorter();
-            lexicalSorter = new LexicalModelDescriptionSorter();
-            
+                        
             setText(Messages.DefaultModelDescriptionPage_SortText);
             setToolTipText(Messages.DefaultModelDescriptionPage_SortTooltipText);
             setDescription(Messages.DefaultModelDescriptionPage_SortDescription);
@@ -251,57 +245,39 @@ abstract public class DefaultModelDescriptionPage extends Page {
             this.setImageDescriptor(descriptor); 
             
             boolean checked = IpsPlugin.getDefault().getPreferenceStore().getBoolean("DefaultModelDescriptionPage.LexicalSortingAction.isChecked"); //$NON-NLS-1$
-            valueChanged(checked, false);        
+            sortItems(checked);        
         }
-
-        public void run() {
-            valueChanged(isChecked(), true);
-        }
-
-        private void valueChanged(final boolean on, boolean store) {
-            setChecked(on);
-            
-            BusyIndicator.showWhile(page.getControl().getDisplay(), new Runnable() {
-                public void run() {
-                    if (on) {
-                        lexicalSorter.sort(page);
-                    } else {
-                        defaultSorter.sort(page);
-                    }
-                }
-            });         
-            
-            if (store) {
-                IpsPlugin.getDefault().getPreferenceStore().setValue("DefaultModelDescriptionPage.LexicalSortingAction.isChecked", store);  //$NON-NLS-1$
-            }
-        }
-    }
-
-    class LexicalModelDescriptionSorter {
-        
-         /**
-         * {@inheritDoc}
-         */
-        public void sort(DefaultModelDescriptionPage page) {
-                    
-            Collections.sort(activeList, new DescriptionItemComparator());
-            refresh();
-        }    
-    }
-
-    class DefaultModelDescriptionSorter {
 
         /**
          * {@inheritDoc}
          */
-        public void sort(DefaultModelDescriptionPage page) {
+        public void run() {
+            sortItems(isChecked());
+            IpsPlugin.getDefault().getPreferenceStore().setValue("DefaultModelDescriptionPage.LexicalSortingAction.isChecked", isChecked());  //$NON-NLS-1$            
+        }
+
+        private void sortItems(final boolean on) {
+            setChecked(on);
             
-            Collections.copy(activeList, defaultList);
-            refresh();
-            
+            BusyIndicator.showWhile(form.getDisplay(), new Runnable() {
+                public void run() {
+                    if (on) {
+                        sortLexical();
+                    } else {
+                        sortDefault();
+                    }
+                    
+                    refresh();
+                }
+            });         
         }
     }
 
+    /**
+     * Comparator for DescriptionItems by Unicode: z < ä,ö,ü,ß.
+     * 
+     * @author Markus Blum
+     */
     class DescriptionItemComparator implements Comparator {
 
         /**
@@ -321,6 +297,42 @@ abstract public class DefaultModelDescriptionPage extends Page {
             
             return 0;
         }
+    }
+    
+    /**
+     * Restore default order given by the parent class.
+     */
+    private void sortDefault() {
+        Collections.copy(activeList, defaultList);        
+    }
+    
+    /**
+     * Sort the active list lexical.
+     */
+    private void sortLexical() {
+        Collections.sort(activeList, new DescriptionItemComparator());        
+    }
+    
+    /**
+     * Set headline. Use the title to identify the content of the ModelDescriptionPage
+     * e.g. tablename, product name ...
+     * 
+     * @param title 
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * Set the DescriptionItems. The item list is used for creating the controls. 
+     * 
+     * The caller defines the default sort order.
+     * 
+     * @param itemList List with DescriptionItems.
+     */
+    public void setDescriptionItems(DescriptionItem[] itemList) {
+        defaultList.addAll(Arrays.asList(itemList));
+        activeList.addAll(Arrays.asList(itemList));        
     }    
     
 }
