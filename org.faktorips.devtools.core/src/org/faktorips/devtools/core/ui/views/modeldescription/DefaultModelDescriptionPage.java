@@ -29,7 +29,6 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -76,7 +75,7 @@ abstract public class DefaultModelDescriptionPage extends Page {
         toolkit = new FormToolkit(parent.getDisplay());
                  
         form = toolkit.createScrolledForm(parent);
-        //form.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
+//      form.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
         
         TableWrapLayout layoutForm = new TableWrapLayout();
         layoutForm.verticalSpacing = 1;
@@ -100,7 +99,7 @@ abstract public class DefaultModelDescriptionPage extends Page {
 
         // collect all attributes in one container
         expandableContainer = toolkit.createComposite(form.getBody());
-        //expandableContainer.setBackground(form.getBody().getDisplay().getSystemColor(SWT.COLOR_GREEN));
+//      expandableContainer.setBackground(form.getBody().getDisplay().getSystemColor(SWT.COLOR_GREEN));
         
         TableWrapLayout layout = new TableWrapLayout();
         layout.verticalSpacing = 0;
@@ -137,10 +136,9 @@ abstract public class DefaultModelDescriptionPage extends Page {
         excomposite.setText(StringUtils.capitalise(item.getName()));
         
         if ((index % 2) == 0) {
-            Color grey = parent.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND);
-            excomposite.setBackground(grey);
+            excomposite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
         }
-        
+                
         excomposite.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
         excomposite.addExpansionListener(new ExpansionAdapter() {
             public void expansionStateChanged(ExpansionEvent e) {
@@ -152,7 +150,6 @@ abstract public class DefaultModelDescriptionPage extends Page {
         FormText client = toolkit.createFormText(excomposite, true);
         
         String tmp = item.getDescription().trim();
-        
         if ( StringUtils.isEmpty( tmp ) ) {
             client.setText(Messages.DefaultModelDescriptionPage_NoDescriptionAvailable, false, true);
         } else {
@@ -161,15 +158,15 @@ abstract public class DefaultModelDescriptionPage extends Page {
               
         client.setBackground(excomposite.getBackground());
         client.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
-        //client.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_RED));
+//        client.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_RED));
         
         excomposite.setClient(client);
         
-        Label spacer = toolkit.createSeparator(parent, SWT.NONE);
-        TableWrapData layoutData = new TableWrapData(TableWrapData.FILL_GRAB);
+        Label spacer = toolkit.createLabel(parent, "");
+        TableWrapData layoutData = new TableWrapData();
         layoutData.heightHint = 10;
         spacer.setLayoutData(layoutData);
-        //spacer.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+//      client.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
     }
 
     /**
