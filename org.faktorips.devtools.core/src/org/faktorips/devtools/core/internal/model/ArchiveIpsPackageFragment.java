@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsArchive;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentSortDefinition;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -188,6 +189,27 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
                 result.add(getIpsSrcFile(qnt.getFileName()).getIpsObject());
             }
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsPackageFragmentSortDefinition getSortDefinition() throws CoreException {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
+        return getChildIpsPackageFragments();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSortDefinition(IIpsPackageFragmentSortDefinition newDefinition) throws CoreException {
+        throw new CoreException(new IpsStatus("Can't set the sort definition in archives!"));
     }
     
 }

@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentSortDefinition;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
@@ -92,6 +93,29 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         IIpsPackageFragment[] shrink = new IIpsPackageFragment[count];
         System.arraycopy(result, 0, shrink, 0, count);
         return shrink;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsPackageFragmentSortDefinition getSortDefinition() throws CoreException {
+        // TODO Markus
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
+        // TODO Markus
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSortDefinition(IIpsPackageFragmentSortDefinition newDefinition) throws CoreException {
+        // TODO Markus
     }
 
     /**

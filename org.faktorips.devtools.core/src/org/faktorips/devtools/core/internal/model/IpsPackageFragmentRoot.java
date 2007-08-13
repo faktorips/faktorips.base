@@ -135,6 +135,15 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         list.toArray(pdFolders);
         return pdFolders;
     }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException {
+        // TODO Markus
+        return null;
+    }
 
     /**
      * {@inheritDoc}

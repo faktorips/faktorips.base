@@ -63,6 +63,30 @@ public interface IIpsPackageFragment extends IIpsElement {
     public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException;
 
     /**
+     * Returns the child packages sorted by the sort definition.
+     * 
+     * @throws CoreException
+
+     * @see #getSortDefinition()
+     */
+    public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException;
+    
+    /**
+     * Reads the sort definition from disk and returns it. Returns <code>null</code> if no
+     * sort definition file does exist. 
+     * 
+     * @throws CoreException if an error occurs while reading the file.
+     */
+    public IIpsPackageFragmentSortDefinition getSortDefinition() throws CoreException;
+
+    /**
+     * Writes the new sort definition to disk. Deletes the sort file if <code>null</code> is passed.
+     * 
+     * @throws CoreException if an error occurs writing the file.
+     */
+    public void setSortDefinition(IIpsPackageFragmentSortDefinition newDefinition) throws CoreException;
+
+    /**
      * Returns all <code>IResource</code>s that do not correspond to
      * <code>IIpsPackageFragment</code>s contained in this PackageFragment. Returns an empty
      * array if no such resources are found.

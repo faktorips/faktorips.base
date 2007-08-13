@@ -121,6 +121,13 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     /**
      * {@inheritDoc}
      */
+    public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException {
+        return getIpsPackageFragments();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     protected IIpsPackageFragment newIpsPackageFragment(String name) {
         return new ArchiveIpsPackageFragment(this, name);
     }
@@ -182,4 +189,5 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("IpsAr.gif"); //$NON-NLS-1$
     }
+
 }
