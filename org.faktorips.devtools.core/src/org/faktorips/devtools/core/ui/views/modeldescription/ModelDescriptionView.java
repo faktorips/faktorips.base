@@ -68,6 +68,17 @@ public class ModelDescriptionView extends PageBookView {
         return page;
 	}
 
+    /**
+     * Create a page for showing the localized message of an excpetion.
+     * 
+     * @param e Exception
+     * @return new page with exception message.
+     */
+    private IPage createExceptionPage(CoreException e) {
+        MessagePage page = new MessagePage();
+        page.setMessage(e.getLocalizedMessage());
+        return page;
+    }
 	/**
 	 * {@inheritDoc}
 	 */
@@ -79,11 +90,9 @@ public class ModelDescriptionView extends PageBookView {
             try {
                 page = ((IModelDescriptionSupport) part).createModelDescriptionPage();
             } catch (CoreException e) {
-                // TODO Show errors on an errorPage
-                IpsPlugin.log(e);
+                 IpsPlugin.log(e);
                 
-                /* return null in order to show the defaultPage */
-                return null;
+                page = createExceptionPage(e);
             }
 			
             initPage((IPageBookViewPage) page);
