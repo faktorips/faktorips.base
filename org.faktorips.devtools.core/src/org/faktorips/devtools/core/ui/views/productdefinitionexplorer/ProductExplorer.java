@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -50,6 +51,8 @@ public class ProductExplorer extends ModelExplorer {
     public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productDefinitionExplorer"; //$NON-NLS-1$
     
     private static final String EXCLUDE_NON_IPSPRODDEF_PROJECTS_KEY = "exclude_non_ipsproddef_projects"; //$NON-NLS-1$
+    
+    private static final String PREFIX = "org.faktorips.devtools.core.productExplorer."; //$NON-NLS-1$
 
     /**
      * Used for saving the current layout style and filter in a eclipse memento.
@@ -59,6 +62,8 @@ public class ProductExplorer extends ModelExplorer {
     private boolean excludeNoIpsProductDefinitionProjects = false;
 
     private ProductExplorerFilter filter;
+
+    private static final String PROPERTY_TOGGLE_LINKING = PREFIX + "linktoeditor"; //$NON-NLS-1$
     
 	public ProductExplorer() {
 		super();
@@ -87,6 +92,21 @@ public class ProductExplorer extends ModelExplorer {
         filter.setExcludeNoIpsProductDefinitionProjects(excludeNoIpsProductDefinitionProjects);
 	}
 
+    public boolean isLinkingEnabled() {
+        boolean linkingEnabled = IpsPlugin.getDefault().getPreferenceStore().getBoolean(PROPERTY_TOGGLE_LINKING );
+
+        return linkingEnabled;
+    }
+
+    public void setLinkingEnabled(boolean linkingEnabled) {
+        IpsPlugin.getDefault().getPreferenceStore().setValue(PROPERTY_TOGGLE_LINKING, linkingEnabled); 
+        
+        // if turning linking on, update the selection to correspond to the active editor
+        if (linkingEnabled) {
+            super.linkToEditor();
+        }
+    }
+        
     protected void createContextMenu() {
         MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);

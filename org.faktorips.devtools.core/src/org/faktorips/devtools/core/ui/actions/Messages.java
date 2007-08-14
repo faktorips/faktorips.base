@@ -111,6 +111,9 @@ public class Messages extends NLS {
     public static String IpsTestAction_msgCantRunTest;
     public static String ExpandCollapseAllAction_Expand_Description;
     public static String ExpandCollapseAllAction_Collapse_Description;
+    public static String ToggleLinkingAction_Description;
+    public static String ToggleLinkingAction_Text;
+    public static String ToggleLinkingAction_ToolTipText;
     public static String TreeViewerRefreshAction_TooltipText;
     public static String IpsTestAction_RunMessageDialogNoTestsFound_Title;
     public static String IpsTestAction_RunMessageDialogNoTestsFound_Text;

@@ -28,10 +28,13 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IDecoratorManager;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionFactory;
@@ -84,7 +87,10 @@ import org.faktorips.devtools.core.ui.actions.NewTestCaseTypeAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.RenameAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
+import org.faktorips.devtools.core.ui.actions.ToggleLinkingAction;
 import org.faktorips.devtools.core.ui.actions.TreeViewerRefreshAction;
+import org.faktorips.devtools.core.ui.editors.IToggleLinking;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 import org.faktorips.devtools.core.ui.views.IpsResourceChangeListener;
@@ -101,7 +107,7 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
  * @author Stefan Widmaier
  */
 
-public class ModelExplorer extends ViewPart implements IShowInTarget {
+public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLinking,IPartListener {
 
     /**
      * Extension id of this views extension.
@@ -113,6 +119,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     protected static String MENU_FILTER_GROUP = "goup.filter"; //$NON-NLS-1$
     
+    private static final String PREFIX = "org.faktorips.devtools.core.modelExplorer."; //$NON-NLS-1$
+    
     /**
      * Used for saving the current layout style and filter in a eclipse memento.
      */
@@ -123,6 +131,11 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
      */
     private static final String LAYOUT_STYLE_KEY = "style"; //$NON-NLS-1$
     protected static final String FILTER_KEY = "filter"; //$NON-NLS-1$
+    
+    /**
+     * Save status of 'Link with Editor' toggle.
+     */
+    private static final String PROPERTY_TOGGLE_LINKING = PREFIX + "linktoeditor"; //$NON-NLS-1$
 
     /**
      * The TreeViewer displaying the object model.
@@ -155,7 +168,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     /** Flag that indicates if non ips projects will be excluded or not */
     private boolean excludeNoIpsProjects = false;
-
+    
     public ModelExplorer() {
         super();
         config = createConfig();
@@ -208,6 +221,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             }
         };
         ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_BUILD);
+        
+        getSite().getPage().addPartListener(this);
+        
         /*
          * Use the current value of isFlatLayout, which is set by loading the memento/viewState
          * before this method is called
@@ -219,6 +235,94 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         createAdditionalMenuEntries(menuManager);
         createContextMenu();
         createToolBar();
+        
+        if (isLinkingEnabled()) {
+            linkToEditor();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void partActivated(IWorkbenchPart part) {
+        if (part instanceof IEditorPart)
+            editorActivated((IEditorPart) part);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void partBroughtToTop(IWorkbenchPart part) {
+        // Nothing to implement.    
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void partClosed(IWorkbenchPart part) {
+        // Nothing to implement.    
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void partDeactivated(IWorkbenchPart part) {
+        // Nothing to implement.    
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void partOpened(IWorkbenchPart part) {
+
+    }
+    
+    /**
+     * Show an IPS File or normal File in the navigator view corresponding to 
+     * the active editor if "link with editor" is enabled.
+     * 
+     * @param part editor
+     */
+    private void editorActivated(IEditorPart editorPart) {
+         
+        if (!isLinkingEnabled()) {
+            return;
+        }
+
+        if (editorPart instanceof IpsObjectEditor) {
+            IpsObjectEditor ipsEditor = (IpsObjectEditor)editorPart;
+            select (ipsEditor.getIpsSrcFile());
+            return;
+        }
+        
+        if (editorPart.getEditorInput() instanceof IFileEditorInput) {
+            IFile file = ((IFileEditorInput)editorPart.getEditorInput()).getFile();
+            select(file);
+            return;
+        }
+    }
+    
+    /**
+     * Select IpsFile in the navigator.
+     * 
+     * @param srcFile the IpsFile to show.
+     */
+    private void select(IIpsSrcFile srcFile) {
+        try {
+            treeViewer.setSelection(new StructuredSelection(srcFile.getIpsObject()), true);
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return;
+        }
+    }
+
+    /**
+     * Select non-IpsFile in the navigator.
+     * 
+     * @param anyNoneIpsFile the NonIpsFile to show.
+     */
+    private void select(IFile anyNoneIpsFile) {
+        treeViewer.setSelection(new StructuredSelection(anyNoneIpsFile), true);
     }
 
     protected void createFilters(TreeViewer tree) {
@@ -268,6 +372,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         getSite().registerContextMenu(manager, treeViewer);
     }
 
+    
     private void createToolBar() {
         Action refreshAction = new TreeViewerRefreshAction(getSite());
         getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
@@ -276,6 +381,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         retargetAction.setToolTipText(refreshAction.getToolTipText());
         getViewSite().getActionBars().getToolBarManager().add(retargetAction);
         getViewSite().getActionBars().getToolBarManager().add(new ExpandCollapseAllAction(treeViewer));
+        
+        getViewSite().getActionBars().getToolBarManager().add(new ToggleLinkingAction(this));
     }
 
     public void setFocus() {
@@ -323,6 +430,36 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public boolean isLinkingEnabled() {
+        boolean linkingEnabled = IpsPlugin.getDefault().getPreferenceStore().getBoolean(PROPERTY_TOGGLE_LINKING);
+
+        return linkingEnabled;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setLinkingEnabled(boolean linkingEnabled) {
+        IpsPlugin.getDefault().getPreferenceStore().setValue(PROPERTY_TOGGLE_LINKING, linkingEnabled); 
+        
+        if (linkingEnabled) {
+            linkToEditor();
+        }
+    }
+    
+    /**
+     * 
+     */
+    public void linkToEditor() {
+        IEditorPart editorPart = getSite().getPage().getActiveEditor();
+        if (editorPart != null) {
+            editorActivated(editorPart);
+        }
+    }
+    
+    /**
      * Saves the current layout style into the given memento object. {@inheritDoc}
      */
     public void saveState(IMemento memento) {
@@ -337,6 +474,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
      */
     public void dispose() {
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceListener);
+        getSite().getPage().removePartListener(this);
+        
         super.dispose();
     }
 
@@ -738,5 +877,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 return Messages.ModelExplorer_menuShowIpsProjectsOnly_Tooltip;
             }
         };
-    }    
+    }
+
+    
 }
