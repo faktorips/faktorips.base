@@ -103,7 +103,7 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
  * along with their Attributes. The view uses a TreeViewer to represent the hierarchical
  * datastructure. It can be configured to show the tree of PackageFragments in a hierarchical
  * (default) or a flat layout style.
- * 
+ *
  * @author Stefan Widmaier
  */
 
@@ -118,9 +118,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
     private static final int FLAT_LAYOUT = 1;
 
     protected static String MENU_FILTER_GROUP = "goup.filter"; //$NON-NLS-1$
-    
+
     private static final String PREFIX = "org.faktorips.devtools.core.modelExplorer."; //$NON-NLS-1$
-    
+
     /**
      * Used for saving the current layout style and filter in a eclipse memento.
      */
@@ -131,7 +131,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
      */
     private static final String LAYOUT_STYLE_KEY = "style"; //$NON-NLS-1$
     protected static final String FILTER_KEY = "filter"; //$NON-NLS-1$
-    
+
     /**
      * Save status of 'Link with Editor' toggle.
      */
@@ -168,7 +168,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
 
     /** Flag that indicates if non ips projects will be excluded or not */
     private boolean excludeNoIpsProjects = false;
-    
+
+    private ToggleLinkingAction toggleLinking;
+
     public ModelExplorer() {
         super();
         config = createConfig();
@@ -188,7 +190,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
     public void createPartControl(Composite parent) {
         // init saved state
         contentProvider.setExcludeNoIpsProjects(excludeNoIpsProjects);
-        
+
         treeViewer = new TreeViewer(parent);
         treeViewer.setContentProvider(contentProvider);
         treeViewer.setLabelProvider(labelProvider);
@@ -221,21 +223,24 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
             }
         };
         ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_BUILD);
-        
+
         getSite().getPage().addPartListener(this);
-        
+
         /*
          * Use the current value of isFlatLayout, which is set by loading the memento/viewState
          * before this method is called
          */
         setFlatLayout(isFlatLayout);
 
+        // create 'link with editor' ection
+        toggleLinking = new ToggleLinkingAction(this);
+
         IMenuManager menuManager = getViewSite().getActionBars().getMenuManager();
         createMenu(menuManager);
         createAdditionalMenuEntries(menuManager);
         createContextMenu();
         createToolBar();
-        
+
         if (isLinkingEnabled()) {
             linkToEditor();
         }
@@ -248,43 +253,43 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
         if (part instanceof IEditorPart)
             editorActivated((IEditorPart) part);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void partBroughtToTop(IWorkbenchPart part) {
-        // Nothing to implement.    
+        // Nothing to implement.
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void partClosed(IWorkbenchPart part) {
-        // Nothing to implement.    
+        // Nothing to implement.
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void partDeactivated(IWorkbenchPart part) {
-        // Nothing to implement.    
+        // Nothing to implement.
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void partOpened(IWorkbenchPart part) {
 
     }
-    
+
     /**
-     * Show an IPS File or normal File in the navigator view corresponding to 
+     * Show an IPS File or normal File in the navigator view corresponding to
      * the active editor if "link with editor" is enabled.
-     * 
+     *
      * @param part editor
      */
     private void editorActivated(IEditorPart editorPart) {
-         
+
         if (!isLinkingEnabled()) {
             return;
         }
@@ -294,17 +299,17 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
             select (ipsEditor.getIpsSrcFile());
             return;
         }
-        
+
         if (editorPart.getEditorInput() instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput)editorPart.getEditorInput()).getFile();
             select(file);
             return;
         }
     }
-    
+
     /**
      * Select IpsFile in the navigator.
-     * 
+     *
      * @param srcFile the IpsFile to show.
      */
     private void select(IIpsSrcFile srcFile) {
@@ -318,7 +323,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
 
     /**
      * Select non-IpsFile in the navigator.
-     * 
+     *
      * @param anyNoneIpsFile the NonIpsFile to show.
      */
     private void select(IFile anyNoneIpsFile) {
@@ -351,7 +356,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
         layoutMenu.add(hierarchicalLayoutAction);
         menuManager.add(layoutMenu);
     }
-    
+
     /**
      * Create additional menu entries e.g. filters
      */
@@ -359,7 +364,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
         menuManager.add(new Separator(MENU_FILTER_GROUP));
         Action showNoIpsProjectsAction = createShowNoIpsProjectsAction();
         showNoIpsProjectsAction.setChecked(excludeNoIpsProjects);
-        menuManager.appendToGroup(MENU_FILTER_GROUP, showNoIpsProjectsAction);   
+        menuManager.appendToGroup(MENU_FILTER_GROUP, showNoIpsProjectsAction);
+        menuManager.add(toggleLinking);
+
     }
 
     protected void createContextMenu() {
@@ -372,7 +379,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
         getSite().registerContextMenu(manager, treeViewer);
     }
 
-    
+
     private void createToolBar() {
         Action refreshAction = new TreeViewerRefreshAction(getSite());
         getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
@@ -381,8 +388,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
         retargetAction.setToolTipText(refreshAction.getToolTipText());
         getViewSite().getActionBars().getToolBarManager().add(retargetAction);
         getViewSite().getActionBars().getToolBarManager().add(new ExpandCollapseAllAction(treeViewer));
-        
-        getViewSite().getActionBars().getToolBarManager().add(new ToggleLinkingAction(this));
+        getViewSite().getActionBars().getToolBarManager().add(toggleLinking);
+
     }
 
     public void setFocus() {
@@ -398,7 +405,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
     /**
      * Sets the layout style to flat respectively hierarchical. Informs label and contentprovider,
      * activates emptyPackageFilter for flat layout to hide empty PackageFragments.
-     * 
+     *
      * @param b
      */
     private void setFlatLayout(boolean b) {
@@ -442,15 +449,15 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
      * {@inheritDoc}
      */
     public void setLinkingEnabled(boolean linkingEnabled) {
-        IpsPlugin.getDefault().getPreferenceStore().setValue(PROPERTY_TOGGLE_LINKING, linkingEnabled); 
-        
+        IpsPlugin.getDefault().getPreferenceStore().setValue(PROPERTY_TOGGLE_LINKING, linkingEnabled);
+
         if (linkingEnabled) {
             linkToEditor();
         }
     }
-    
+
     /**
-     * 
+     *
      */
     public void linkToEditor() {
         IEditorPart editorPart = getSite().getPage().getActiveEditor();
@@ -458,7 +465,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
             editorActivated(editorPart);
         }
     }
-    
+
     /**
      * Saves the current layout style into the given memento object. {@inheritDoc}
      */
@@ -475,7 +482,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
     public void dispose() {
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceListener);
         getSite().getPage().removePartListener(this);
-        
+
         super.dispose();
     }
 
@@ -535,7 +542,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
 
     protected class MenuBuilder implements IMenuListener {
         // hold references to enabled RetargetActions
-        private ActionGroup openActionGroup =  new OpenActionGroup(ModelExplorer.this);    
+        private ActionGroup openActionGroup =  new OpenActionGroup(ModelExplorer.this);
         private ModelExplorerDeleteAction deleteAction = new ModelExplorerDeleteAction(treeViewer, getSite().getShell());
         private IWorkbenchAction copy = ActionFactory.COPY.create(getSite().getWorkbenchWindow());
         private IWorkbenchAction paste = ActionFactory.PASTE.create(getSite().getWorkbenchWindow());
@@ -617,7 +624,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
                 if (config.isAllowedIpsElementType(ITestCaseType.class)) {
                     newMenu.add(new NewTestCaseTypeAction(getSite().getWorkbenchWindow()));
                 }
-                
+
                 if (selected instanceof IProductCmpt) {
                     newMenu.add(new Separator());
                     newMenu
@@ -638,7 +645,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
                 openActionGroup.fillContextMenu(manager);
             }
         }
-        
+
         protected void createReorgActions(IMenuManager manager, Object selected) {
             manager.add(copy);
             manager.add(paste);
@@ -654,7 +661,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
                 delete.setEnabled(false);
                 return;
             }
-            
+
             if (isRootArchive(selected)) {
                 paste.setEnabled(false);
                 delete.setEnabled(false);
@@ -759,7 +766,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
                     if (project.isProductDefinitionProject()) {
                         manager.add(new FixDifferencesAction(getSite().getWorkbenchWindow(), selection));
                     }
-                } 
+                }
                 else if (selected instanceof IIpsPackageFragmentRoot) {
                     manager.add(new FixDifferencesAction(getSite().getWorkbenchWindow(), selection));
                 }
@@ -776,7 +783,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
             // show ips archive menu only for the model explorer
             if (! ModelExplorer.this.isModelExplorer()){
                 return;
-            }            
+            }
             if (config.isAllowedIpsElementType(IIpsProject.class)
                     || config.isAllowedIpsElementType(IIpsPackageFragmentRoot.class)) {
                 if (selected instanceof IIpsProject || selected instanceof IIpsPackageFragmentRoot) {
@@ -845,7 +852,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
             }
         }
     }
-    
+
     /**
      * @return Returns the contentProvider.
      */
@@ -855,14 +862,14 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
 
     /**
      * Returns <code>true</code> if this class is a kind of model explorer,
-     * the model explorer is an explorer with enhanced functionality. 
+     * the model explorer is an explorer with enhanced functionality.
      * Other derived explorer classes should return <code>false</code> if
      * a restriced menu operations should be provided.
      */
     protected boolean isModelExplorer() {
         return true;
     }
-    
+
     private Action createShowNoIpsProjectsAction() {
         return new Action(Messages.ModelExplorer_menuShowIpsProjectsOnly_Title, Action.AS_CHECK_BOX) {
             public ImageDescriptor getImageDescriptor() {
@@ -879,5 +886,5 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
         };
     }
 
-    
+
 }
