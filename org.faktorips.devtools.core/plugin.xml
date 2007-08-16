@@ -216,8 +216,75 @@
                closeable="true"
                id="org.faktorips.devtools.core.ui.views.modelDescription"
                moveable="true"
+               ratio="0.8"
+               relationship="right"
+               relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               standalone="false"
+               visible="true"/>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension targetID="org.faktorips.devtools.core.productDefinitionPerspective">
+         <view
+               closeable="false"
+               id="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
+               moveable="true"
+               ratio="0.25"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               standalone="false"
+               visible="true"/>
+         <view
+               closeable="false"
+               id="org.faktorips.devtools.core.ui.views.productStructureExplorer"
+               moveable="true"
+               ratio="0.5"
+               relationship="bottom"
+               relative="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="true"/>
+         <view
+               closeable="false"
+               id="org.eclipse.ui.views.ProblemView"
+               moveable="true"
+               ratio="0.75"
+               relationship="bottom"
+               relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               standalone="false"
+               visible="true"/>
+         <actionSet id="org.faktorips.devtools.actions.StandardActionSet"/>
+         <actionSet id="org.faktorips.devtools.actions.ProductDefinitionActionSet"/>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.modelExplorer"
+               moveable="true"
                relationship="stack"
-               relative="org.eclipse.jdt.ui.PackageExplorer"
+               relative="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="false"/>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.testRunner"
+               moveable="true"
+               relationship="stack"
+               relative="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="false"/>
+         <actionSet id="org.faktorips.devtools.actions.NavigationActionSet"/>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.modelDescription"
+               moveable="true"
+               ratio="0.8"
+               relationship="right"
+               relative="org.eclipse.ui.editorss"
                showTitle="true"
                standalone="false"
                visible="true"/>
@@ -731,62 +798,6 @@
       <application>
          <run class="org.faktorips.devtools.core.internal.application.IpsApplication"/>
       </application>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension targetID="org.faktorips.devtools.core.productDefinitionPerspective">
-         <view
-               closeable="false"
-               id="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
-               moveable="true"
-               ratio="0.25"
-               relationship="left"
-               relative="org.eclipse.ui.editorss"
-               showTitle="true"
-               standalone="false"
-               visible="true"/>
-         <view
-               closeable="false"
-               id="org.faktorips.devtools.core.ui.views.productStructureExplorer"
-               moveable="true"
-               ratio="0.5"
-               relationship="bottom"
-               relative="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
-               showTitle="true"
-               standalone="false"
-               visible="true"/>
-         <view
-               closeable="false"
-               id="org.eclipse.ui.views.ProblemView"
-               moveable="true"
-               ratio="0.75"
-               relationship="bottom"
-               relative="org.eclipse.ui.editorss"
-               showTitle="true"
-               standalone="false"
-               visible="true"/>
-         <actionSet id="org.faktorips.devtools.actions.StandardActionSet"/>
-         <actionSet id="org.faktorips.devtools.actions.ProductDefinitionActionSet"/>
-         <view
-               closeable="true"
-               id="org.faktorips.devtools.core.ui.views.modelExplorer"
-               moveable="true"
-               relationship="stack"
-               relative="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
-               showTitle="true"
-               standalone="false"
-               visible="false"/>
-         <view
-               closeable="true"
-               id="org.faktorips.devtools.core.ui.views.testRunner"
-               moveable="true"
-               relationship="stack"
-               relative="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
-               showTitle="true"
-               standalone="false"
-               visible="false"/>
-         <actionSet id="org.faktorips.devtools.actions.NavigationActionSet"/>
-      </perspectiveExtension>
    </extension>
    <extension
          point="org.faktorips.devtools.core.externalTableFormat">
