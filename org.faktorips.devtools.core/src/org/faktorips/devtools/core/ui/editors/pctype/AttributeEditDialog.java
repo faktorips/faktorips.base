@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
@@ -273,9 +274,8 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 
         Composite c = createTabItemComposite(folder, 1, false);
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
-        extFactory.createControls(workArea, uiToolkit, (IIpsObjectPartContainer)attribute);
+        extFactory.createControls(workArea, uiToolkit, attribute, IExtensionPropertyDefinition.POSITION_TOP);
 
-        
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelName);
         Text nameText = uiToolkit.createText(workArea);
 
@@ -298,6 +298,8 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelProdRelevant);
         Checkbox checkbox = uiToolkit.createCheckbox(workArea);
 
+        extFactory.createControls(workArea, uiToolkit, attribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
+        
         // create fields
         nameField = new TextField(nameText);
         datatypeField = new TextButtonField(datatypeControl);

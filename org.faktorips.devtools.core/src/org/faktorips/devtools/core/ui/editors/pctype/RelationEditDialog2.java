@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
-import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.ui.CompletionUtil;
@@ -163,7 +163,7 @@ public class RelationEditDialog2 extends IpsPartEditDialog2 {
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
         // top extensions
-        extFactory.createControls(workArea, uiToolkit, (IIpsObjectPartContainer)relation, "top"); //$NON-NLS-1$
+        extFactory.createControls(workArea, uiToolkit, relation, IExtensionPropertyDefinition.POSITION_TOP); //$NON-NLS-1$
                 
         // role singular
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelTargetRoleSingular);
@@ -205,7 +205,7 @@ public class RelationEditDialog2 extends IpsPartEditDialog2 {
         bindingContext.bindContent(cardinalityField, relation, IRelation.PROPERTY_MAX_CARDINALITY);
         
         // bottom extensions
-        extFactory.createControls(workArea, uiToolkit, (IIpsObjectPartContainer)relation);
+        extFactory.createControls(workArea, uiToolkit, relation, IExtensionPropertyDefinition.POSITION_BOTTOM); //$NON-NLS-1$
         extFactory.bind(bindingContext);
     }
     
