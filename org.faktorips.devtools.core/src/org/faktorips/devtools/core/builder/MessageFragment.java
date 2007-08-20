@@ -100,7 +100,7 @@ public class MessageFragment{
 	public String[] getParameterClasses(){
 		String[] parameterClasses = new String[parameterNames.length];
 		for (int i = 0; i < parameterNames.length; i++) {
-			parameterClasses[i] = String.class.getName();
+			parameterClasses[i] = Object.class.getName();
 		}
 		return parameterClasses;
 	}
@@ -159,6 +159,9 @@ public class MessageFragment{
      *          available expressed by the two avaiable constants.
      * @throws IllegalArgumentException if the value of the parameter parameterNameType is different
      *          from one of the constant values.  
+     *          
+     * @see #DEFAULT_PARAMETER_NAMES
+     * @see #VALUES_AS_PARAMETER_NAMES
      */
 	public final static MessageFragment createMessageFragment(String messageText, int parameterNameType){
         

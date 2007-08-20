@@ -422,6 +422,41 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
         return getLocalizedStringSet().getString(key, getLanguageUsedInGeneratedSourceCode(element));
     }
+    
+    /**
+     * Returns a single line comment containing a TO DO, e.g.
+     * <pre>// TODO Implement this rule.</pre>
+     * 
+     * @param element Any ips element used to access the ips project and determine the langauge for the generated code.
+     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
+     */
+    public String getLocalizedToDo(IIpsElement element, String keyPrefix, JavaCodeFragmentBuilder builder) {
+        return getLocalizedToDo(element, keyPrefix, new Object[0]);
+    }
+
+    /**
+     * Returns a single line comment containing a TO DO, e.g.
+     * <pre>// TODO Implement the rule xyz.</pre>
+     * 
+     * @param element Any ips element used to access the ips project and determine the langauge for the generated code.
+     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
+     * @param replacement An object to replace the wildcard in the message text.
+     */
+    public String getLocalizedToDo(IIpsElement element, String keyPrefix, Object replacement) {
+        return getLocalizedToDo(element, keyPrefix, new Object[]{replacement});
+    }
+
+    /**
+     * Returns a single line comment containing a TO DO, e.g.
+     * <pre>// TODO Implement the rule xyz.</pre>
+     * 
+     * @param element Any ips element used to access the ips project and determine the langauge for the generated code.
+     * @param keyPrefix A key prefix for the resource bundle, this method adds a "_TODO" to the prefix
+     * @param replacements Any objects to replace wildcards in the message text.
+     */
+    public String getLocalizedToDo(IIpsElement element, String keyPrefix, Object[] replacements) {
+        return "// TODO " + getLocalizedText(element, keyPrefix + "_TODO", replacements);
+    }
 
     /**
      * Inserts the localized Javadoc inclusing the annotations into the given
