@@ -124,7 +124,7 @@
                class="org.faktorips.devtools.core.ui.wizards.ipspackage.OpenNewIpsPackageWizardAction"
                icon="icons/NewIpsPackageFragment.gif"
                id="org.faktorips.devtools.actions.OpenNewIpsPackageWizardAction"
-               label="%org.faktorips.devtools.actions.OpenNewIpsPackageWizardAction"
+               label="%org.faktorips.devtools.actions.OpenNewIpsPackageWizardAction.label"
                toolbarPath="org.faktorips.devtools"
                tooltip="%org.faktorips.devtools.actions.OpenNewIpsPackageWizardAction.tooltip"/>
       </actionSet>
