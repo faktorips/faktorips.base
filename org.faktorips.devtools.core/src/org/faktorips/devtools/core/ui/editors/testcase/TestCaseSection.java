@@ -231,7 +231,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         boolean removeEnable = false;
         boolean addEnable = false;
         boolean moveEnable = false;
-        boolean openInNewEditorEnable = false;
+        boolean openInNewEditorEnable = true;
     }
     
 	/*
