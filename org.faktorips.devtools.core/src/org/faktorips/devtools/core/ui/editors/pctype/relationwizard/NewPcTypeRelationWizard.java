@@ -333,6 +333,7 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 				newRelation.setTargetRolePluralProductSide(""); //$NON-NLS-1$
 				newRelation.setTargetRoleSingularProductSide(""); //$NON-NLS-1$
 				newRelation.setProductRelevant(false);
+                newRelation.setReadOnlyContainer(false);
 			} else if (type.isAssoziation()) {
 				newRelation.setContainerRelation(""); //$NON-NLS-1$
 				newRelation.setReadOnlyContainer(false);

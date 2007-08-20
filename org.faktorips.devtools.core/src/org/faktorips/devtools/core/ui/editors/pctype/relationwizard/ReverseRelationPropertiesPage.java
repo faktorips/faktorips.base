@@ -342,10 +342,10 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 		newReverseRelation.setTargetRoleSingular(wizard.getRelation().getPolicyCmptType().getName());
 		newReverseRelation.setRelationType(NewPcTypeRelationWizard.getCorrespondingRelationType(wizard.getRelation().getRelationType()));
 		IRelation containerRelation = wizard.getRelation().findContainerRelation();
-		if (containerRelation != null){
+		if (newReverseRelation.isAssoziation() && containerRelation != null){
 			newReverseRelation.setContainerRelation(containerRelation.getInverseRelation());
 		}
-		if (wizard.getRelation().isReadOnlyContainer()){
+		if (wizard.getRelation().isAssoziation() && wizard.getRelation().isReadOnlyContainer()){
 			newReverseRelation.setReadOnlyContainer(true);
         }
         
