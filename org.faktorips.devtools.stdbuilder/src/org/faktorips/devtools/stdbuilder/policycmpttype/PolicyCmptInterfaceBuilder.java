@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ValueSetType;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -991,7 +992,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     }
     
     public void generateFieldConstantForProperty(IAttribute a, Datatype datatype, JavaCodeFragmentBuilder membersBuilder){
-        if(a.getOverwrites()){
+        if(a.getOverwrites() || (a.isProductRelevant() && a.getAttributeType()==AttributeType.CONSTANT)) {
             return;
         }
         appendLocalizedJavaDoc("FIELD_PROPERTY_NAME", a.getName(), a, membersBuilder);
@@ -999,9 +1000,9 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         membersBuilder.appendClassName(String.class);
         membersBuilder.append(' ');
         membersBuilder.append(getPropertyName(a, datatype));
-        membersBuilder.append(" = \"");
-        membersBuilder.append(a.getName());
-        membersBuilder.appendln("\";");
+        membersBuilder.append(" = ");
+        membersBuilder.appendQuoted(a.getName());
+        membersBuilder.appendln(";");
     }
     
     public String getFieldNameForMsgCode(IValidationRule rule){
