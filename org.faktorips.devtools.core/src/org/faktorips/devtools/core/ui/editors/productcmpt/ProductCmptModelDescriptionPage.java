@@ -156,6 +156,7 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
      * {@inheritDoc}
      */
     public void dispose() {
+        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
         editor.removeListener(this);
         super.dispose();
     }
