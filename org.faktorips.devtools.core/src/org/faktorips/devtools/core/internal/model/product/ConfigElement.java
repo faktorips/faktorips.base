@@ -429,7 +429,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
                 invalidProperties = new String[]{PROPERTY_VALUE};
             }
             list.add(new Message(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET, text, Message.ERROR, obj, invalidProperties));
-            return;
         }
 
 		if (StringUtils.isNotEmpty(value)) {

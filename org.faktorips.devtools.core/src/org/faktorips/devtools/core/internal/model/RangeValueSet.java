@@ -260,7 +260,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             }
         }
         
-        if (lower==null && subRange.getLowerBound()!=null) {
+        if (lower!=null && subRange.getLowerBound()==null) {
             String[] bindings = {subRange.toShortString(), toShortString(), getLowerBound()};
             String msg = NLS.bind(Messages.RangeValueSet_msgLowerboundViolation, bindings);
             addMsg(list, MSGCODE_LOWER_BOUND_VIOLATION, msg, invalidObject, getProperty(invalidProperty, PROPERTY_LOWERBOUND));

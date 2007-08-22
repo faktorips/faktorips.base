@@ -368,8 +368,12 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	attr.setName("valueTest");
     	
     	attr.setAttributeType(AttributeType.CONSTANT);
-    	attr.setDatatype("Decimal");
-
+        attr.setValueSetType(ValueSetType.RANGE);
+        attr.setDatatype("Decimal");
+        IRangeValueSet valueSetAttr = (IRangeValueSet)attr.getValueSet();
+        valueSetAttr.setLowerBound(null);
+        valueSetAttr.setUpperBound(null);
+        
     	policyCmptType.getIpsSrcFile().save(true, null);
     	productCmpt.getIpsSrcFile().save(true, null);
     	
@@ -413,6 +417,43 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 
     	ml = ce.validate();
     	assertEquals(0, ml.getNoOfMessages());
+        
+        // check lower unbound values
+        valueSet.setLowerBound(null);
+        valueSet.setUpperBound(null);
+        valueSet2.setLowerBound(null);
+        valueSet2.setUpperBound(null);
+        ml = ce.validate();
+        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
+        
+        valueSet.setLowerBound("10");
+        valueSet.setUpperBound(null);
+        valueSet2.setLowerBound(null);
+        valueSet2.setUpperBound(null);
+        ml = ce.validate();
+        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
+
+        valueSet.setLowerBound(null);
+        valueSet.setUpperBound(null);
+        valueSet2.setLowerBound("10");
+        valueSet2.setUpperBound(null);
+        ml = ce.validate();
+        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
+        
+        // check upper unbound values
+        valueSet.setLowerBound(null);
+        valueSet.setUpperBound("10");
+        valueSet2.setLowerBound(null);
+        valueSet2.setUpperBound(null);
+        ml = ce.validate();
+        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
+
+        valueSet.setLowerBound(null);
+        valueSet.setUpperBound(null);
+        valueSet2.setLowerBound(null);
+        valueSet2.setUpperBound("10");
+        ml = ce.validate();
+        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
     }
 
     public void testValidate_WrongTypeForFormulaTests() throws Exception{
