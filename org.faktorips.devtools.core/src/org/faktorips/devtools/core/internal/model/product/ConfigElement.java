@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
+import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -402,9 +403,32 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             return;
         }
 
-        if (this.type == ConfigElementType.POLICY_ATTRIBUTE && !modelValueSet.containsValueSet(valueSet)) {
-            String text = NLS.bind(Messages.ConfigElement_valueSetIsNotASubset, valueSet.toShortString(), modelValueSet.toShortString());
-            list.add(new Message(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET, text, Message.ERROR, valueSet, IEnumValueSet.PROPERTY_VALUES));
+        if (this.type == ConfigElementType.POLICY_ATTRIBUTE && 
+                ( ! modelValueSet.containsValueSet(valueSet) || 
+                  ! modelValueSet.getValueSetType().equals(valueSet.getValueSetType()))) {
+            // model value set contains not the value set defined in the config element
+            // or different value set types 
+            String text; 
+            if (!modelValueSet.getValueSetType().equals(valueSet.getValueSetType())) {
+                text = NLS.bind(Messages.ConfigElement_msgTypeMismatch,
+                        new String[] { valueSet.toShortString(), modelValueSet.toShortString() });
+            } else {
+                text = NLS.bind(Messages.ConfigElement_valueSetIsNotASubset, valueSet.toShortString(), modelValueSet
+                        .toShortString());
+            }
+            // determine invalid property (usage e.g. to display problem marker on correct ui control)
+            String[] invalidProperties = null; 
+            Object obj = valueSet;
+            if (valueSet instanceof IEnumValueSet){
+                invalidProperties = new String[]{IEnumValueSet.PROPERTY_VALUES};
+            } else if (valueSet instanceof IRangeValueSet) {
+                invalidProperties = new String[]{IRangeValueSet.PROPERTY_LOWERBOUND, IRangeValueSet.PROPERTY_UPPERBOUND};
+            } else {
+                // AllValueSet or unkown
+                obj = this;
+                invalidProperties = new String[]{PROPERTY_VALUE};
+            }
+            list.add(new Message(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET, text, Message.ERROR, obj, invalidProperties));
             return;
         }
 

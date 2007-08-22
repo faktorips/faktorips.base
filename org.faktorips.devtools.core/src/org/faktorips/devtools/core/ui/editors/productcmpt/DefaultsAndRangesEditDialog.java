@@ -136,7 +136,7 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
             IAttribute attribute = configElement.findPcTypeAttribute();
             if (attribute != null) {
                 attrValueSet = attribute.getValueSet();
-                if (valueSet.getValueSetType() == ValueSetType.ALL_VALUES) {
+                if (attrValueSet.getValueSetType() == ValueSetType.ALL_VALUES) {
                     valueSet = attrValueSet;
                 }
             }

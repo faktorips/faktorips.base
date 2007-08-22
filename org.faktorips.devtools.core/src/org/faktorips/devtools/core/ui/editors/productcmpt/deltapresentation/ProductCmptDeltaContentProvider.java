@@ -121,17 +121,18 @@ final class ProductCmptDeltaContentProvider implements ITreeContentProvider {
 		
 		if (parentElement == ProductCmptDeltaType.CFGELEMENT_TYPE_MISMATCH) {
 			IConfigElement[] elems = in.getTypeMismatchElements();
-			String message = Messages.ProductCmptDeltaContentProvider_msgTypeMismatch;
 			for (int i = 0; i < elems.length; i++) {
-				try {
-					IAttribute attr = elems[i].findPcTypeAttribute(); 
-					String[] params = {elems[i].getType().getName(), attr.getConfigElementType().getName(), elems[i].getName()};
-					
-					result.add(new ProductCmptDeltaDetail(ProductCmptDeltaType.CFGELEMENT_TYPE_MISMATCH, NLS.bind(message, params)));
-				} catch (CoreException e) {
-					IpsPlugin.log(e);
-				}
-			}
+                try {
+                    IAttribute attr = elems[i].findPcTypeAttribute();
+                    String[] params = { elems[i].getType().getName(), attr.getConfigElementType().getName(),
+                            elems[i].getName() };
+
+                    result.add(new ProductCmptDeltaDetail(ProductCmptDeltaType.CFGELEMENT_TYPE_MISMATCH, NLS.bind(
+                            Messages.ProductCmptDeltaContentProvider_msgTypeMismatch, params)));
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
+            }
 		}
 		else if (parentElement == ProductCmptDeltaType.MISSING_ATTRIBUTE) {
 			IConfigElement[] elems = in.getConfigElementsWithMissingAttributes();
@@ -156,27 +157,20 @@ final class ProductCmptDeltaContentProvider implements ITreeContentProvider {
 		}
 		else if (parentElement == ProductCmptDeltaType.VALUESET_MISMATCH) {
 			IConfigElement[] elems = in.getElementsWithValueSetMismatch();
-			String valueMismatch = Messages.ProductCmptDeltaContentProvider_msgValuesetNotSubset; 
 			String typeMismatch = Messages.ProductCmptDeltaContentProvider_msgValuesetMismatch; 
 			for (int i = 0; i < elems.length; i++) {
 				try {
-					IValueSet cfgValueSet = elems[i].getValueSet();
-					IValueSet attrValueSet = elems[i].findPcTypeAttribute().getValueSet();
-					
-					ValueSetType cfgType = cfgValueSet.getValueSetType();
-					ValueSetType attrType = attrValueSet.getValueSetType();
-					
-					if (attrType != ValueSetType.ALL_VALUES && attrType != cfgType) {
-						String[] params = {attrType.getName(), cfgType.getName(), elems[i].getName()};
-						result.add(new ProductCmptDeltaDetail(ProductCmptDeltaType.VALUESET_MISMATCH, NLS.bind(typeMismatch, params)));
-					}
-					else {
-						result.add(new ProductCmptDeltaDetail(ProductCmptDeltaType.VALUESET_MISMATCH, NLS.bind(valueMismatch, elems[i].getName())));
-					}
-					
-				} catch (CoreException e) {
-					IpsPlugin.log(e);
-				}
+                    IValueSet cfgValueSet = elems[i].getValueSet();
+                    IValueSet attrValueSet = elems[i].findPcTypeAttribute().getValueSet();
+
+                    ValueSetType cfgType = cfgValueSet.getValueSetType();
+                    ValueSetType attrType = attrValueSet.getValueSetType();
+
+                    String[] params = { attrType.getName(), cfgType.getName(), elems[i].getName() };
+                    result.add(new ProductCmptDeltaDetail(ProductCmptDeltaType.VALUESET_MISMATCH, NLS.bind(typeMismatch, params)));
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
 			}
 		}
         else if (parentElement == ProductCmptDeltaType.MISSING_CONTENTUSAGE) {

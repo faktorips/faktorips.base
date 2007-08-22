@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
@@ -125,27 +124,15 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
         IConfigElement[] elements = generation.getConfigElements();
         for (int i=0; i<elements.length; i++) {
             IAttribute attribute =hierarchy.findAttribute(pcType, elements[i].getPcTypeAttribute()); 
-            if (attribute!=null && attribute.isProductRelevant()) {
-                if (attribute.getConfigElementType()!=elements[i].getType()) {
+            if (attribute != null && attribute.isProductRelevant()) {
+                if (attribute.getConfigElementType() != elements[i].getType()) {
                     typeMismatchs.add(elements[i]);
                 }
 
-                /*
-                 * if the config element has an all values valueset and the valueset of the
-                 * underlying attribute is not an all values valuese, the valueset has to be changed
-                 * to a copy of the underlying attribute valueset. This is because all value
-                 * valuesets only apply on datatypes, not on other valuesets.
-                 */
-                if (!(attribute.getValueSet().getValueSetType() == ValueSetType.ALL_VALUES) && (elements[i].getValueSet().getValueSetType() == ValueSetType.ALL_VALUES)) {
-                	valueSetMismatchs.add(elements[i]);
+                if (!attribute.getValueSet().getValueSetType().equals(elements[i].getValueSet().getValueSetType())) {
+                    valueSetMismatchs.add(elements[i]);
                 }
-                
-                if (!(attribute.getValueSet().getValueSetType() == ValueSetType.ALL_VALUES) && !(elements[i].getValueSet().getValueSetType() == ValueSetType.ALL_VALUES)) {
-                    if (!attribute.getValueSet().getValueSetType().equals(elements[i].getValueSet().getValueSetType())) {
-                        valueSetMismatchs.add(elements[i]);
-                    }
-                    // No check on contains here - only structural differences are reported by this delta.
-                }
+                // No check on contains here - only structural differences are reported by this delta.
             }
         }
         elementsWithTypeMismatch = (IConfigElement[])typeMismatchs.toArray(new IConfigElement[typeMismatchs.size()]);
