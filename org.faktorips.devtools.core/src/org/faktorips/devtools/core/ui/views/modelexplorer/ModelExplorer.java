@@ -1,3 +1,4 @@
+
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import org.eclipse.core.resources.IFile;
@@ -119,8 +120,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
 
     protected static String MENU_FILTER_GROUP = "goup.filter"; //$NON-NLS-1$
 
-    private static final String PREFIX = "org.faktorips.devtools.core.modelExplorer."; //$NON-NLS-1$
-
     /**
      * Used for saving the current layout style and filter in a eclipse memento.
      */
@@ -131,11 +130,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
      */
     private static final String LAYOUT_STYLE_KEY = "style"; //$NON-NLS-1$
     protected static final String FILTER_KEY = "filter"; //$NON-NLS-1$
-
-    /**
-     * Save status of 'Link with Editor' toggle.
-     */
-    private static final String PROPERTY_TOGGLE_LINKING = PREFIX + "linktoeditor"; //$NON-NLS-1$
+    protected static final String LINK_TO_EDITOR_KEY = "linktoeditor"; //$NON-NLS-1$
 
     /**
      * The TreeViewer displaying the object model.
@@ -171,6 +166,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
 
     private ToggleLinkingAction toggleLinking;
 
+    protected boolean linkingEnabled;
+
     public ModelExplorer() {
         super();
         config = createConfig();
@@ -196,6 +193,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
         treeViewer.setLabelProvider(labelProvider);
         treeViewer.setSorter(new ModelExplorerSorter());
         treeViewer.setInput(IpsPlugin.getDefault().getIpsModel());
+
         treeViewer.addDoubleClickListener(new TreeViewerDoubleclickListener(treeViewer));
         treeViewer.addDragSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance() },
                 new IpsElementDragListener(treeViewer));
@@ -224,8 +222,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
         };
         ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_BUILD);
 
-        getSite().getPage().addPartListener(this);
-
         /*
          * Use the current value of isFlatLayout, which is set by loading the memento/viewState
          * before this method is called
@@ -242,14 +238,20 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
         createToolBar();
 
         if (isLinkingEnabled()) {
-            linkToEditor();
+            IEditorPart editorPart = getSite().getPage().getActiveEditor();
+            if (editorPart != null) {
+                editorActivated(editorPart);
+            }
         }
+
+        getSite().getPage().addPartListener(this);
     }
 
     /**
      * {@inheritDoc}
      */
     public void partActivated(IWorkbenchPart part) {
+
         if (part instanceof IEditorPart)
             editorActivated((IEditorPart) part);
     }
@@ -279,7 +281,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
      * {@inheritDoc}
      */
     public void partOpened(IWorkbenchPart part) {
-
+        // Nothing to implement.
     }
 
     /**
@@ -296,38 +298,32 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
 
         if (editorPart instanceof IpsObjectEditor) {
             IpsObjectEditor ipsEditor = (IpsObjectEditor)editorPart;
-            select (ipsEditor.getIpsSrcFile());
+
+            try {
+                IStructuredSelection newSelection = new StructuredSelection(ipsEditor.getIpsSrcFile().getIpsObject());
+                if (treeViewer.getSelection().equals(newSelection)) {
+                    treeViewer.getTree().showSelection();
+                } else {
+                    treeViewer.setSelection(newSelection, true);
+                }
+            } catch (CoreException e) {
+                e.printStackTrace();
+            }
+
             return;
         }
 
         if (editorPart.getEditorInput() instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput)editorPart.getEditorInput()).getFile();
-            select(file);
-            return;
-        }
-    }
 
-    /**
-     * Select IpsFile in the navigator.
-     *
-     * @param srcFile the IpsFile to show.
-     */
-    private void select(IIpsSrcFile srcFile) {
-        try {
-            treeViewer.setSelection(new StructuredSelection(srcFile.getIpsObject()), true);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return;
-        }
-    }
+            IStructuredSelection newSelection = new StructuredSelection(file);
 
-    /**
-     * Select non-IpsFile in the navigator.
-     *
-     * @param anyNoneIpsFile the NonIpsFile to show.
-     */
-    private void select(IFile anyNoneIpsFile) {
-        treeViewer.setSelection(new StructuredSelection(anyNoneIpsFile), true);
+            if (treeViewer.getSelection().equals(newSelection)) {
+                treeViewer.getTree().showSelection();
+            } else {
+                treeViewer.setSelection(newSelection, true);
+            }
+        }
     }
 
     protected void createFilters(TreeViewer tree) {
@@ -430,8 +426,10 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
             if (layout != null) {
                 Integer layoutValue = layout.getInteger(LAYOUT_STYLE_KEY);
                 Integer filterValue = layout.getInteger(FILTER_KEY);
+                Integer linkingValue = layout.getInteger(LINK_TO_EDITOR_KEY);
                 isFlatLayout = layoutValue==null?false:layoutValue.intValue() == FLAT_LAYOUT;
                 excludeNoIpsProjects = filterValue==null?false:filterValue.intValue() == 1;
+                linkingEnabled = linkingValue==null?false:linkingValue.intValue() == 1;
             }
         }
     }
@@ -440,8 +438,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
      * {@inheritDoc}
      */
     public boolean isLinkingEnabled() {
-        boolean linkingEnabled = IpsPlugin.getDefault().getPreferenceStore().getBoolean(PROPERTY_TOGGLE_LINKING);
-
         return linkingEnabled;
     }
 
@@ -449,20 +445,13 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
      * {@inheritDoc}
      */
     public void setLinkingEnabled(boolean linkingEnabled) {
-        IpsPlugin.getDefault().getPreferenceStore().setValue(PROPERTY_TOGGLE_LINKING, linkingEnabled);
+        this.linkingEnabled = linkingEnabled;
 
         if (linkingEnabled) {
-            linkToEditor();
-        }
-    }
-
-    /**
-     *
-     */
-    public void linkToEditor() {
-        IEditorPart editorPart = getSite().getPage().getActiveEditor();
-        if (editorPart != null) {
-            editorActivated(editorPart);
+            IEditorPart editorPart = getSite().getPage().getActiveEditor();
+            if (editorPart != null) {
+                editorActivated(editorPart);
+            }
         }
     }
 
@@ -474,6 +463,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
         IMemento layout = memento.createChild(MEMENTO);
         layout.putInteger(LAYOUT_STYLE_KEY, isFlatLayout() ? FLAT_LAYOUT : HIERARCHICAL_LAYOUT);
         layout.putInteger(FILTER_KEY,  excludeNoIpsProjects ? 1 : 0);
+        layout.putInteger(LINK_TO_EDITOR_KEY,  linkingEnabled ? 1 : 0);
     }
 
     /**
@@ -481,6 +471,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
      */
     public void dispose() {
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceListener);
+
         getSite().getPage().removePartListener(this);
 
         super.dispose();
@@ -885,6 +876,4 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
             }
         };
     }
-
-
 }

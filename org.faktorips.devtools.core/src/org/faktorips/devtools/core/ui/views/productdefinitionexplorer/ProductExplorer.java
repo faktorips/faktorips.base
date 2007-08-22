@@ -4,8 +4,8 @@
   * Alle Rechte vorbehalten.
   *
   * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
-  * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
-  * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+  * Konfigurationen, etc.) duerfen nur unter den Bedingungen der
+  * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community)
   * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
   *   http://www.faktorips.org/legal/cl-v01.html
   * eingesehen werden kann.
@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -43,48 +42,48 @@ import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfigura
 /**
  * A <code>ModelExplorer</code> that displays productdefinition projects along with all
  * contained <code>ProductCmpt</code>s, <code>TableContents</code>, <code>TestCases</code>
- * and <code>TestCaseTypes</code>. 
- * 
+ * and <code>TestCaseTypes</code>.
+ *
  * @author Stefan Widmaier
  */
 public class ProductExplorer extends ModelExplorer {
     public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productDefinitionExplorer"; //$NON-NLS-1$
-    
+
     private static final String EXCLUDE_NON_IPSPRODDEF_PROJECTS_KEY = "exclude_non_ipsproddef_projects"; //$NON-NLS-1$
-    
-    private static final String PREFIX = "org.faktorips.devtools.core.productExplorer."; //$NON-NLS-1$
 
     /**
      * Used for saving the current layout style and filter in a eclipse memento.
      */
     private static final String MEMENTO = "productExplorer.memento"; //$NON-NLS-1$
-    
+
     private boolean excludeNoIpsProductDefinitionProjects = false;
 
     private ProductExplorerFilter filter;
 
-    private static final String PROPERTY_TOGGLE_LINKING = PREFIX + "linktoeditor"; //$NON-NLS-1$
-    
 	public ProductExplorer() {
 		super();
         labelProvider.setProductDefinitionLabelProvider(true);
 	}
 
-	protected ModelExplorerConfiguration createConfig() {
+    /**
+     * {@inheritDoc}
+     */
+    protected ModelExplorerConfiguration createConfig() {
 		return new ModelExplorerConfiguration(new Class[] { IProductCmpt.class,
 				ITableContents.class, ITestCase.class}
 				, new Class[]{IFile.class, IFolder.class, IProject.class});
 	}
+
     /**
-     * User the a separate contentprovider for ProductDefinitionExplorer.
-     * This contentprovider dous not display a default package, only its contents as children
+     * User a separate contentprovider for ProductDefinitionExplorer.
+     * This contentprovider does not display a default package, only its contents as children
      * of the packageFragmentRoot.
      * {@inheritDoc}
      */
     protected ModelContentProvider createContentProvider() {
         return new ProductContentProvider(config, isFlatLayout);
     }
-    
+
 	protected void createFilters(TreeViewer tree) {
 		super.createFilters(tree);
         filter = new ProductExplorerFilter();
@@ -92,21 +91,6 @@ public class ProductExplorer extends ModelExplorer {
         filter.setExcludeNoIpsProductDefinitionProjects(excludeNoIpsProductDefinitionProjects);
 	}
 
-    public boolean isLinkingEnabled() {
-        boolean linkingEnabled = IpsPlugin.getDefault().getPreferenceStore().getBoolean(PROPERTY_TOGGLE_LINKING );
-
-        return linkingEnabled;
-    }
-
-    public void setLinkingEnabled(boolean linkingEnabled) {
-        IpsPlugin.getDefault().getPreferenceStore().setValue(PROPERTY_TOGGLE_LINKING, linkingEnabled); 
-        
-        // if turning linking on, update the selection to correspond to the active editor
-        if (linkingEnabled) {
-            super.linkToEditor();
-        }
-    }
-        
     protected void createContextMenu() {
         MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
@@ -116,7 +100,7 @@ public class ProductExplorer extends ModelExplorer {
         treeViewer.getControl().setMenu(contextMenu);
 //         do not register contextmenue to prevent insertion of MB-Additions
     }
-    
+
     private class ProductMenuBuilder extends MenuBuilder{
         private WrapperAction team_sync= new WrapperAction(treeViewer, Messages.ProductExplorer_actionSync_label
                 , Messages.ProductExplorer_actionSync_tooltip
@@ -140,11 +124,11 @@ public class ProductExplorer extends ModelExplorer {
         private WrapperAction team_showResourceHistory= new WrapperAction(treeViewer, Messages.ProductExplorer_actionShowResourceHistory_label
                 , Messages.ProductExplorer_actionShowResourceHistory_tooltip, "HistoryAction.gif" //$NON-NLS-1$
                 , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.showHistory"); //$NON-NLS-1$ //$NON-NLS-2$
-        
+
         private WrapperAction team_restoreFromRepository= new WrapperAction(treeViewer, Messages.ProductExplorer_actionRestoreFromRepositoryAction_label
                 , Messages.ProductExplorer_actionRestoreFromRepositoryAction_tooltip
                 , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.ccvs.ui.restoreFromRepository"); //$NON-NLS-1$ //$NON-NLS-2$
-        
+
 
         private WrapperAction compareWith_latest= new WrapperAction(treeViewer, Messages.ProductExplorer_actionCompareWithLatest_label
                 , Messages.ProductExplorer_actionCompareWithLatest_tooltip
@@ -154,14 +138,14 @@ public class ProductExplorer extends ModelExplorer {
                 , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.compareWithTag"); //$NON-NLS-1$ //$NON-NLS-2$
         private WrapperAction compareWith_eachOther= new WrapperAction(treeViewer, Messages.ProductExplorer_actionCompareWithEachOther_label
                 , Messages.ProductExplorer_actionCompareWithEachOther_tooltip
-                , null, "compareWithEachOther"); //$NON-NLS-1$ 
+                , null, "compareWithEachOther"); //$NON-NLS-1$
         private WrapperAction compareWith_revision= new WrapperAction(treeViewer, Messages.ProductExplorer_actionCompareWithRevision_label
                 , Messages.ProductExplorer_actionCompareWithRevision_tooltip
                 , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.compareWithRevision"); //$NON-NLS-1$ //$NON-NLS-2$
         private WrapperAction compareWith_localHistory= new WrapperAction(treeViewer, Messages.ProductExplorer_actionCompareWithLocalHistory_label
                 , Messages.ProductExplorer_actionCompareWithLocalHistory_tooltip
                 , null, "compareWithHistory"); //$NON-NLS-1$
-        
+
 
         private WrapperAction replaceWith_latest= new WrapperAction(treeViewer, Messages.ProductExplorer_actionReplaceWithLatest_label
                 , Messages.ProductExplorer_actionReplaceWithLatest_tooltip
@@ -178,7 +162,7 @@ public class ProductExplorer extends ModelExplorer {
         private WrapperAction replaceWith_localHistory= new WrapperAction(treeViewer, Messages.ProductExplorer_actionReplaceWithLocalHistory_label
                 , Messages.ProductExplorer_actionReplaceWithLocalHistory_tooltip
                 , "org.eclipse.team.cvs.ui.CVSActionSet", "replaceFromHistory"); //$NON-NLS-1$ //$NON-NLS-2$
-        
+
         protected void createAdditionalActions(IMenuManager manager, IStructuredSelection structuredSelection) {
             Object selected= structuredSelection.getFirstElement();
             MenuManager teamMenu = new MenuManager(Messages.ProductExplorer_subMenuTeam);
@@ -197,7 +181,7 @@ public class ProductExplorer extends ModelExplorer {
             teamMenu.add(new Separator());
             teamMenu.add(team_restoreFromRepository);
             manager.add(teamMenu);
-            
+
             MenuManager compareMenu = new MenuManager(Messages.ProductExplorer_subMenuCompareWith);
             compareMenu.add(compareWith_latest);
             compareMenu.add(compareWith_branch);
@@ -209,7 +193,7 @@ public class ProductExplorer extends ModelExplorer {
                 compareMenu.add(compareWith_localHistory);
             }
             manager.add(compareMenu);
-            
+
             MenuManager replaceMenu = new MenuManager(Messages.ProductExplorer_subMenuReplaceWith);
             replaceMenu.add(replaceWith_latest);
             replaceMenu.add(replaceWith_branch);
@@ -261,9 +245,12 @@ public class ProductExplorer extends ModelExplorer {
         menuManager.add(new Separator(MENU_FILTER_GROUP));
         Action showNoIpsProdDefProjectsAction = createShowNoIpsProductDefinitionAction();
         showNoIpsProdDefProjectsAction.setChecked(excludeNoIpsProductDefinitionProjects);
-        menuManager.appendToGroup(MENU_FILTER_GROUP, showNoIpsProdDefProjectsAction);     
+        menuManager.appendToGroup(MENU_FILTER_GROUP, showNoIpsProdDefProjectsAction);
     }
 
+    /**
+     * @return
+     */
     private Action createShowNoIpsProductDefinitionAction() {
         return new Action(Messages.ProductExplorer_MenuShowProdDefProjectsOnly_Title, Action.AS_CHECK_BOX) {
             public ImageDescriptor getImageDescriptor() {
