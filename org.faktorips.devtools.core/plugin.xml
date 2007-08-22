@@ -216,9 +216,9 @@
                closeable="true"
                id="org.faktorips.devtools.core.ui.views.modelDescription"
                moveable="true"
-               ratio="0.8"
-               relationship="right"
-               relative="org.eclipse.ui.editorss"
+               ratio="0.75"
+               relationship="stack"
+               relative="org.eclipse.ui.views.ContentOutline"
                showTitle="true"
                standalone="false"
                visible="true"/>
