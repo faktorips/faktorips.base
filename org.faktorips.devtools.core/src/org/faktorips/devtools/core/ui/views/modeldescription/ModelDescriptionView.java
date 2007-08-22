@@ -4,14 +4,14 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
  *
  * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
+ *   Faktor Zehn GmbH - initial API and implementation
  *
  *******************************************************************************/
 
@@ -34,21 +34,23 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 /**
  * This plugin contributes a simple viewer for @see IProductCmptType attributes and {@link ITableStructure}:
  *  - Show the qualified name as title
- *  - and list specified attributes with their description.  
- * 
+ *  - and list specified attributes with their description.
+ *
  * The view is supposed to look like the cheatscheet view (ExpandableComposites) and
  * behave like the outline view. For this reason it derives {@link PageBookView}.
- * 
+ *
  * @see PageBookView
  * @see ContentOutline
- * 
+ *
  * @author Markus Blum
  */
 public class ModelDescriptionView extends PageBookView {
-    
+
+    public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modelDescription"; //$NON-NLS-1$
+
     // default message: view not supported.
-    final String notSupportedMessage = Messages.ModelDescriptionView_notSupported; 
-        
+    final String notSupportedMessage = Messages.ModelDescriptionView_notSupported;
+
     /**
      * The <code>PageBookView</code> implementation of this <code>IWorkbenchPart</code>
      * method creates a <code>PageBook</code> control with its default page showing.
@@ -56,7 +58,7 @@ public class ModelDescriptionView extends PageBookView {
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
     }
-    
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -70,7 +72,7 @@ public class ModelDescriptionView extends PageBookView {
 
     /**
      * Create a page for showing the localized message of an excpetion.
-     * 
+     *
      * @param e Exception
      * @return new page with exception message.
      */
@@ -83,23 +85,28 @@ public class ModelDescriptionView extends PageBookView {
 	 * {@inheritDoc}
 	 */
 	protected PageRec doCreatePage(IWorkbenchPart part) {
-		
+
 		if (part instanceof IModelDescriptionSupport) {
-            
+
 			IPage page;
             try {
                 page = ((IModelDescriptionSupport) part).createModelDescriptionPage();
+
+                if (page == null) {
+                    return null;
+                }
+
             } catch (CoreException e) {
                  IpsPlugin.log(e);
-                
+
                 page = createExceptionPage(e);
             }
-			
+
             initPage((IPageBookViewPage) page);
 			page.createControl(getPageBook());
-			return new PageRec(part, page);				
+			return new PageRec(part, page);
 		}
-           
+
         return null;
 	}
 
@@ -131,7 +138,7 @@ public class ModelDescriptionView extends PageBookView {
         /* care for all editors. If an editor does not support IModelDescriptionSupport
          * we'll show a 'description not supported' message.
          */
-        
+
         return (part instanceof IEditorPart);
     }
 
