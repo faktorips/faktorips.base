@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+ * Konfigurationen, etc.) duerfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -29,26 +29,26 @@ import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSu
  * Editor for a table content.
  */
 public class TableContentsEditor extends TimedIpsObjectEditor implements IModelDescriptionSupport {
-		
+
     /**
-     * 
+     *
      */
     public TableContentsEditor() {
         super();
     }
-    
+
     protected ITableContents getTableContents() {
         return (ITableContents)getIpsObject();
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     protected void addPagesForParsableSrcFile() throws PartInitException {
         addPage(new ContentPage(this));
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      */
     protected String getUniformPageTitle() {
@@ -71,10 +71,15 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
     }
 
 	public IPage createModelDescriptionPage() throws CoreException {
-		
+
 		ITableContents tableContents = getTableContents();
+
+        if (tableContents == null) {
+            return null;
+        }
+
         TableModelDescriptionPage fModelDescriptionPage = new TableModelDescriptionPage(tableContents);
-				
+
 		return fModelDescriptionPage;
 	}
 

@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+ * Konfigurationen, etc.) duerfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -17,7 +17,10 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -30,22 +33,40 @@ import org.faktorips.devtools.core.model.ITimedIpsObject;
 /**
  * An abstract editor for timed objects.
  */
-public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
+public abstract class TimedIpsObjectEditor extends IpsObjectEditor implements IGenerationChangedProvider {
 
-	private IIpsObjectGeneration generation;
+    private List generationChangedListeners = new ArrayList(1);
+
+    private IIpsObjectGeneration generation;
 	private Image uneditableGenerationImage;
-    
+
     public TimedIpsObjectEditor() {
         super();
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addListener(IActiveGenerationChangedListener listener) {
+        if (!generationChangedListeners.contains(listener)) {
+            generationChangedListeners.add(listener);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeListener(IActiveGenerationChangedListener listener) {
+       generationChangedListeners.remove(listener);
+    }
+
     /**
      * Returns the generation currently selected to display and edit.
      */
     public IIpsObjectGeneration getActiveGeneration() {
     	return generation;
     }
-    
+
     /**
      * Sets the generation active on this editor.
      */
@@ -54,8 +75,21 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
             System.out.println("TimedIpsObjectEditor.setActiveGeneration(): New generation " + generation); //$NON-NLS-1$
         }
     	this.generation = generation;
+
+        notifyGenerationChanged();
     }
-    
+
+    /**
+     *
+     */
+    private void notifyGenerationChanged() {
+        List copy = new ArrayList(generationChangedListeners);
+        for (Iterator it=copy.iterator(); it.hasNext(); ) {
+            IActiveGenerationChangedListener listener = (IActiveGenerationChangedListener)it.next();
+            listener.activeGenerationChanged(generation);
+        }
+    }
+
     /**
      * Returns <code>true</code> if the given generation is effective on the
      * effective date currently set in the preferences.
@@ -66,7 +100,7 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
         }
         return gen.equals(getGenerationEffectiveOnCurrentEffectiveDate());
     }
-    
+
     /**
      * Returns the generation that is effective on the effective date currently set
      * in the preferences.
@@ -79,7 +113,7 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
         }
         return object.getGenerationByEffectiveDate(workingDate);
     }
-    
+
     /**
      * Returns the image for uneditable generations.
      */
@@ -89,7 +123,7 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
         }
         return uneditableGenerationImage;
     }
-    
+
     /**
      * {@inheritDoc}
      */
