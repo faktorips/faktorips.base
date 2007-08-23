@@ -549,7 +549,7 @@
 	       id = "ipsArchiveExportWizard"
            name = "%IpsArchiveExportWizard.name"
     	   class="org.faktorips.devtools.core.ui.wizards.ipsarchiveexport.IpsArchiveExportWizard"
-    	   icon="icons/ExportTableContents.gif">
+    	   icon="icons/ExportIpsArchive.gif">
     	   <description>%IpsArchiveExportWizard.description</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
