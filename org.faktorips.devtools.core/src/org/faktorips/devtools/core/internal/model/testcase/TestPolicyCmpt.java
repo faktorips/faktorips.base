@@ -524,8 +524,12 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     /**
      * Returns the product components generation depending on the current working date (current working generation).
+     * Returns <code>null</code> if the test policy cmpt is not product relevant, or the product cmpt wasn't found.
      */
-    IProductCmptGeneration findProductCmpsCurrentGeneration() throws CoreException {
+    public IProductCmptGeneration findProductCmpsCurrentGeneration() throws CoreException {
+        if (StringUtils.isEmpty(productCmpt)){
+            return null;
+        }
         GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
         IProductCmpt productCmptObj = getIpsProject().findProductCmpt(productCmpt);
         IProductCmptGeneration generation = null;
