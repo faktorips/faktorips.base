@@ -82,6 +82,10 @@ public class Messages extends NLS {
 
     public static String TableStructureUsage_msgSameRoleName;
 
+    public static String ValidationRule_0;
+
+    public static String ValidationRule_ConstantAttributesCantBeValidated;
+
 	public static String ValidationRule_msgFunctionNotExists;
 
 	public static String ValidationRule_msgIgnored;

@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -45,10 +46,7 @@ public class ValidatedAttributesCompletionProcessor extends
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.ui.AbstractCompletionProcessor#doComputeCompletionProposals(java.lang.String,
-	 *      java.util.List)
+     * {@inheritDoc}
 	 */
 	public void doComputeCompletionProposals(String prefix,
 			int documentOffset, List result) throws Exception {
@@ -56,10 +54,12 @@ public class ValidatedAttributesCompletionProcessor extends
 		IAttribute[] attributes = pcType.getSupertypeHierarchy().getAllAttributes(pcType);
 		List validatedAttributes = Arrays.asList(rule.getValidatedAttributes());
 		for (int i = 0; i < attributes.length; i++) {
-			if (!validatedAttributes.contains(attributes[i].getName())
-					&& attributes[i].getName().toLowerCase().startsWith(prefix)) {
-				addToResult(result, attributes[i], documentOffset);
-			}
+            if (attributes[i].getAttributeType()!=AttributeType.CONSTANT) {
+                if (!validatedAttributes.contains(attributes[i].getName())
+                        && attributes[i].getName().toLowerCase().startsWith(prefix)) {
+                    addToResult(result, attributes[i], documentOffset);
+                }
+            }
 		}
 	}
 

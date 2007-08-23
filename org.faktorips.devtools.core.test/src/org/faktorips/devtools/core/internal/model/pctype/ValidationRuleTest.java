@@ -266,4 +266,15 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         ml = rule.validate();
         assertNull(ml.getMessageByCode(IValidationRule.MSGCODE_NO_NEWLINE));
     }
+    
+    public void testConstantAttributesCantBeValidated() throws CoreException {
+        IAttribute a = pcType.newAttribute();
+        a.setName("a1");
+        a.setAttributeType(AttributeType.CONSTANT);
+        rule.addValidatedAttribute("a1");
+        assertNotNull(rule.validate().getMessageByCode(IValidationRule.MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED));
+        
+        a.setAttributeType(AttributeType.CHANGEABLE);
+        assertNull(rule.validate().getMessageByCode(IValidationRule.MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED));
+    }
 }

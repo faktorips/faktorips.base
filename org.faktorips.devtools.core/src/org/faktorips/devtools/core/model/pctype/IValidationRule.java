@@ -59,6 +59,11 @@ public interface IValidationRule extends IIpsObjectPart {
     public final static String MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY = MSGCODE_PREFIX + "MsgCodeShouldntBeEmpty"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that constant attributes can't be validated.
+     */
+    public final static String MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED = MSGCODE_PREFIX + "ConstantAttributesCantBeValidated"; //$NON-NLS-1$
+
+    /**
 	 * Sets the rules name.
 	 */
 	public void setName(String newName);

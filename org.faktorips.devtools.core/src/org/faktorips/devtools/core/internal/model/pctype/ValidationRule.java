@@ -18,8 +18,10 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -32,6 +34,7 @@ import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ValueSetType;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -252,17 +255,23 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
 
 		IAttribute[] attributes = getPolicyCmptType().getSupertypeHierarchy()
 				.getAllAttributes(getPolicyCmptType());
-		List attributeNames = new ArrayList(attributes.length);
+		Set attributeNames = new HashSet(attributes.length);
 		for (int i = 0; i < attributes.length; i++) {
 			attributeNames.add(attributes[i].getName());
 		}
 		for (int i = 0; i < validatedAttributes.size(); i++) {
-			String validatedAttribute = (String) validatedAttributes.get(i);
+            String validatedAttribute = (String) validatedAttributes.get(i);
 			if (!attributeNames.contains(validatedAttribute)) {
 				String text = Messages.ValidationRule_msgUndefinedAttribute;
-				list.add(new Message("", text, Message.ERROR, //$NON-NLS-1$
+				list.add(new Message(MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED, text, Message.ERROR, //$NON-NLS-1$
 						new ObjectProperty(this, "validatedAttributes", i))); //$NON-NLS-1$
-			}
+			} else {
+                IAttribute attribute = getPolicyCmptType().findAttributeInSupertypeHierarchy(validatedAttribute);
+                if (attribute.getAttributeType()==AttributeType.CONSTANT) {
+                    list.add(new Message(IValidationRule.MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED, Messages.ValidationRule_ConstantAttributesCantBeValidated, Message.ERROR, 
+                            new ObjectProperty(this, "validatedAttributes", i))); //$NON-NLS-1$
+                }
+            }
 		}
 
 		for (int i = 0; i < validatedAttributes.size() - 1; i++) {
