@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.ui.editors;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 
 /**
- * Notify Listeners that a change was made.
+ * Listeners that is notified if the active generation changes in a timed ips object editor.
  *
  * @author Markus Blum
  */

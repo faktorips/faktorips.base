@@ -15,13 +15,13 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.actions;
+package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.ui.editors.IToggleLinking;
+import org.faktorips.devtools.core.ui.actions.Messages;
 
 /**
  * Enable an navigator with a 'link to editor' widget.
@@ -30,12 +30,12 @@ import org.faktorips.devtools.core.ui.editors.IToggleLinking;
  */
 public class ToggleLinkingAction extends Action {
     
-    private IToggleLinking editor;
+    private ModelExplorer explorer;
     
     /**
      * Constructs a new action.
      */
-    public ToggleLinkingAction(IToggleLinking editor) {    
+    public ToggleLinkingAction(ModelExplorer explorer) {    
 
             super(Messages.ToggleLinkingAction_Text); 
             setDescription(Messages.ToggleLinkingAction_Description); 
@@ -45,8 +45,8 @@ public class ToggleLinkingAction extends Action {
             this.setHoverImageDescriptor(descriptor);
             this.setImageDescriptor(descriptor);         
     
-            this.editor = editor;
-            setChecked(editor.isLinkingEnabled());
+            this.explorer = explorer;
+            setChecked(explorer.isLinkingEnabled());
         }
 
     
@@ -54,7 +54,7 @@ public class ToggleLinkingAction extends Action {
          * Runs the action.
          */
         public void run() {
-            editor.setLinkingEnabled(isChecked());
+            explorer.setLinkingEnabled(isChecked());
         }
 }
 

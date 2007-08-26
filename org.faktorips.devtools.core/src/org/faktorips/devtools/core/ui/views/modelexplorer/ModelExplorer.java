@@ -88,9 +88,7 @@ import org.faktorips.devtools.core.ui.actions.NewTestCaseTypeAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.RenameAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
-import org.faktorips.devtools.core.ui.actions.ToggleLinkingAction;
 import org.faktorips.devtools.core.ui.actions.TreeViewerRefreshAction;
-import org.faktorips.devtools.core.ui.editors.IToggleLinking;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
@@ -108,7 +106,7 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
  * @author Stefan Widmaier
  */
 
-public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLinking,IPartListener {
+public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListener {
 
     /**
      * Extension id of this views extension.
@@ -435,14 +433,18 @@ public class ModelExplorer extends ViewPart implements IShowInTarget,IToggleLink
     }
 
     /**
-     * {@inheritDoc}
+     * Is the editor linked to the navigator.
+     * 
+     * @return <code>true</code> if linking is enabled.
      */
     public boolean isLinkingEnabled() {
         return linkingEnabled;
     }
 
     /**
-     * {@inheritDoc}
+     * Save the state and link editor with navigator if linkingEnabled is <code>true</code>.
+     * 
+     * @param linkingEnabled Should linking be enabled.
      */
     public void setLinkingEnabled(boolean linkingEnabled) {
         this.linkingEnabled = linkingEnabled;

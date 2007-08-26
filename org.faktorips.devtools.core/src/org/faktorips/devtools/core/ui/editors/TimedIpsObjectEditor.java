@@ -33,9 +33,9 @@ import org.faktorips.devtools.core.model.ITimedIpsObject;
 /**
  * An abstract editor for timed objects.
  */
-public abstract class TimedIpsObjectEditor extends IpsObjectEditor implements IGenerationChangedProvider {
+public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
 
-    private List generationChangedListeners = new ArrayList(1);
+    private List activeGenerationChangedListeners = new ArrayList(1);
 
     private IIpsObjectGeneration generation;
 	private Image uneditableGenerationImage;
@@ -45,19 +45,20 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor implements IG
     }
 
     /**
-     * {@inheritDoc}
+     * Adds a new listener that is notified if the active generated has changed.
      */
     public void addListener(IActiveGenerationChangedListener listener) {
-        if (!generationChangedListeners.contains(listener)) {
-            generationChangedListeners.add(listener);
+        if (!activeGenerationChangedListeners.contains(listener)) {
+            activeGenerationChangedListeners.add(listener);
         }
     }
 
     /**
-     * {@inheritDoc}
+     * Removes the listener from the list of listeners that are informed about changes of
+     * the active generation.
      */
     public void removeListener(IActiveGenerationChangedListener listener) {
-       generationChangedListeners.remove(listener);
+       activeGenerationChangedListeners.remove(listener);
     }
 
     /**
@@ -83,7 +84,7 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor implements IG
      *
      */
     private void notifyGenerationChanged() {
-        List copy = new ArrayList(generationChangedListeners);
+        List copy = new ArrayList(activeGenerationChangedListeners);
         for (Iterator it=copy.iterator(); it.hasNext(); ) {
             IActiveGenerationChangedListener listener = (IActiveGenerationChangedListener)it.next();
             listener.activeGenerationChanged(generation);
