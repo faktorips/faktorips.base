@@ -228,10 +228,10 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
         assertTrue(delta.isEmpty());
         
-        // a1=allvalue, ce1=enum => mismatch
+        // a1=allvalue, ce1=enum => no mismatch
         a1.setValueSetType(ValueSetType.ALL_VALUES);
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
-        assertFalse(delta.isEmpty());
+        assertTrue(delta.isEmpty());
         
         // a1=range, ce1=range=> no mismatch
         a1.setValueSetType(ValueSetType.RANGE);

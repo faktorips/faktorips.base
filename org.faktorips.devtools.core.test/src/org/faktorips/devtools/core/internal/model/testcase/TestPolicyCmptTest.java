@@ -351,7 +351,6 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         IPolicyCmptType coverage = newPolicyCmptType(project, "Coverage");
         IProductCmpt product = newProductCmpt(project, "Product");
         product.setPolicyCmptType(coverage.getQualifiedName());
-        
         // add attributes with their defaults
         IAttribute attr = policy.newAttribute();
         attr.setName("attrPolicy");
@@ -438,17 +437,5 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         tcChild.setProductCmpt("");
         testAttrValueCoverage.updateDefaultTestAttributeValue();
         assertEquals(testAttrValueCoverage.getValue(), "attrCoverage_Default");
-    }
-    
-    public void testFindProductCmpsCurrentGeneration_notProdRelevant() throws CoreException{
-        // test find method if no product is specified, e.g. test object is not product relvant
-        // in this case the find method should return null
-        IProductCmptGeneration generation = null;
-        testPolicyCmptObjectInput.setProductCmpt(null);
-        generation = ((TestPolicyCmpt)testPolicyCmptObjectInput).findProductCmpsCurrentGeneration();
-        assertNull(generation);
-        testPolicyCmptObjectInput.setProductCmpt("");
-        generation = ((TestPolicyCmpt)testPolicyCmptObjectInput).findProductCmpsCurrentGeneration();
-        assertNull(generation);
     }
 }

@@ -43,6 +43,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.GenericValueDatatypeHelper;
 import org.faktorips.datatype.Datatype;
@@ -511,14 +512,16 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     public void notifyChangeListeners(final ContentChangeEvent event) {
+        if (changeListeners.isEmpty()) {
+            return; // can happen in a headless eclipse installation (used for headless buils)
+        }
         if (!isBroadcastingChangesForCurrentThread()) {
             return;
         }
         if (TRACE_MODEL_CHANGE_LISTENERS) {
             System.out.println("IpsModel.notfiyChangeListeners(): " + changeListeners.size() + " listeners"); //$NON-NLS-1$  //$NON-NLS-2$
         }
-        Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
-        display.syncExec(new Runnable() {
+        final Runnable notifier = new Runnable() {
             public void run() {
                 List copy = new ArrayList(changeListeners); // copy do avoid concurrent modifications while iterating
                 for (Iterator it = copy.iterator(); it.hasNext();) {
@@ -540,7 +543,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     }
                 }
             }
-        });
+        }; 
+        if (PlatformUI.isWorkbenchRunning()) {
+            PlatformUI.getWorkbench().getDisplay().syncExec(notifier);
+        } else {
+            notifier.run();
+        }
     }
 
     /**
