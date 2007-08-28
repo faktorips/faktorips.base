@@ -86,7 +86,9 @@ public class CheckStateListener implements ICheckStateListener {
 		
 		if (page != null) {
             if (modified instanceof IProductCmptReference) {
-                page.setPageComplete((IProductCmptReference)modified, checked);
+                // set page complete, implicit validate all components in tree,
+                // because maybe the validate state of the parent objects has changed
+                page.setPageComplete(null, checked);
             }
 		}
 	}
