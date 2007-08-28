@@ -4,14 +4,14 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
  *
  * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
+ *   Faktor Zehn GmbH - initial API and implementation
  *
  *******************************************************************************/
 
@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.Path;
 
 /**
  * A collection of methods for qualified names and packages.
- * 
+ *
  * @author Jan Ortmann
  */
 public class QNameUtil {
@@ -31,7 +31,7 @@ public class QNameUtil {
     /**
      * Returns the package name for a given class name. Returns an empty String
      * if the class name does not contain a package name.
-     * 
+     *
      * @throws NullPointerException if the qName is null.
      */
     public final static String getPackageName(String qName) {
@@ -45,7 +45,7 @@ public class QNameUtil {
         }
         return qName.substring(0, index);
     }
-    
+
     /**
      * Returns the unqualified name part of the given qualified name.
      * Returns <code>null</code> if qName is <code>null</code>.
@@ -65,7 +65,7 @@ public class QNameUtil {
     }
 
     /**
-     * Concatenates package prefix and the packOrUnqualifiedName. If the package prefix 
+     * Concatenates package prefix and the packOrUnqualifiedName. If the package prefix
      * is <code>null</code> or the empty string the packOrUnqualifiedName is returned.
      */
     public final static String concat(String packagePrefix, String packOrUnqualifiedName) {
@@ -77,9 +77,43 @@ public class QNameUtil {
         }
         return packagePrefix + "." + packOrUnqualifiedName; //$NON-NLS-1$
     }
-    
+
     /**
-     * Transforms the given qualified name to a path. Returns <code>null</code> if qName 
+     * Transform the qualified name to a String array. Each segment of the name
+     * is placed in hierarchy order, e.g. "de.faktorips.devtools
+     *
+     * segments[0] = de
+     * segments[1] = faktorips
+     * segments[2] = devtools
+     *
+     * @param qName Full qualified package name.
+     * @return Segments of the package name as an array.
+     */
+    public final static String[] getSegments(String qName) {
+
+        String [] segments;
+
+        if ((qName == null) || (qName.length()==0)) {
+            return new String[0];
+        }
+
+        segments = StringUtils.split(qName, ".");
+
+        return segments;
+    }
+
+    /**
+     * Get the number of segments (folders) of a <code>IpsPackageFragment</code> or <code>IpsPackageFragmentRoot</code>.
+     *
+     * @param qName Full qualified package name.
+     * @return Number of segments.
+     */
+    public final static int getSegmentCount(String qName) {
+        return getSegments(qName).length;
+    }
+
+    /**
+     * Transforms the given qualified name to a path. Returns <code>null</code> if qName
      * is <code>null</code>.
      */
     public final static Path toPath(String qName) {
@@ -88,7 +122,7 @@ public class QNameUtil {
         }
         return new Path(qName.replace('.', IPath.SEPARATOR));
     }
-    
+
     private QNameUtil() {
     }
 

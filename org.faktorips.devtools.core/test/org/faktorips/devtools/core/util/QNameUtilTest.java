@@ -4,7 +4,7 @@ package org.faktorips.devtools.core.util;
 import junit.framework.TestCase;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class QNameUtilTest extends TestCase {
@@ -41,6 +41,43 @@ public class QNameUtilTest extends TestCase {
         assertEquals("a", QNameUtil.concat("a", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         assertNull(QNameUtil.concat(null, null));
         assertEquals("", QNameUtil.concat("", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
+    public void testGetSegments() {
+       assertEquals(0, QNameUtil.getSegments(null).length);
+       assertEquals(0, QNameUtil.getSegments("").length); //$NON-NLS-1$
+
+       String[] segments = QNameUtil.getSegments(" "); //$NON-NLS-1$
+       assertEquals(1, segments.length);
+       assertEquals(" ", segments[0]); //$NON-NLS-1$
+
+       segments = QNameUtil.getSegments("a"); //$NON-NLS-1$
+       assertEquals(1, segments.length);
+       assertEquals("a", segments[0]); //$NON-NLS-1$
+
+       segments = QNameUtil.getSegments("a."); //$NON-NLS-1$
+       assertEquals(1, segments.length);
+       assertEquals("a", segments[0]); //$NON-NLS-1$
+
+       segments = QNameUtil.getSegments("a.b.c.d"); //$NON-NLS-1$
+       assertEquals(4, segments.length);
+       assertEquals("a", segments[0]); //$NON-NLS-1$
+       assertEquals("b", segments[1]); //$NON-NLS-1$
+       assertEquals("c", segments[2]); //$NON-NLS-1$
+       assertEquals("d", segments[3]); //$NON-NLS-1$
+
+    }
+
+    public void testGetSegmentCount() {
+
+        assertEquals(0, QNameUtil.getSegmentCount(null));
+
+        assertEquals(0, QNameUtil.getSegmentCount("")); //$NON-NLS-1$
+        assertEquals(1, QNameUtil.getSegmentCount("  ")); //$NON-NLS-1$
+        assertEquals(1, QNameUtil.getSegmentCount("a")); //$NON-NLS-1$
+        assertEquals(4, QNameUtil.getSegmentCount("a.b.c. d")); //$NON-NLS-1$
+        assertEquals(4, QNameUtil.getSegmentCount("a.b.c.d.")); //$NON-NLS-1$
+        assertEquals(5, QNameUtil.getSegmentCount("a.b.c.d. ")); //$NON-NLS-1$
     }
 
 }
