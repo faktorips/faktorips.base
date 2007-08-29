@@ -2376,6 +2376,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         Menu menu = menuMgr.createContextMenu(control);
         control.setMenu(menu);
         if (isSectionTitleMenu) {
+            // special handling for title context menu (see getFormTitleLabel())
+            getFormTitleLabel().setMenu(menu);
             sectionTitleContextMenu = menu;
         }
     }
