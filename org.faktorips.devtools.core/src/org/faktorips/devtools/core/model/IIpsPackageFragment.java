@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+ * Konfigurationen, etc.) duerfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -37,51 +37,51 @@ public interface IIpsPackageFragment extends IIpsElement {
      * Constant that represents the name of the default package to make it
      * explicit that the default package name is an empty string.
      */
-    public final static String NAME_OF_THE_DEFAULT_PACKAGE = ""; //$NON-NLS-1$
-    
+    public final static String DEFAULT_PACKAGE_NAME = ""; //$NON-NLS-1$
+
     /**
      * The char used as separator for subpackages.
      */
     public final static char SEPARATOR = '.';
-    
+
     /**
      * Returns all ips source files in the package. Returns an empty array if the package is empty.
-     * 
+     *
      * @throws CoreException if an error occurs while searching for the files.
      */
     public IIpsSrcFile[] getIpsSrcFiles() throws CoreException;
-    
+
     /**
      * Returns the packagefragment which contains this one or null if this one is the default-package.
      */
     public IIpsPackageFragment getParentIpsPackageFragment();
-    
+
     /**
      * Returns all packagfragments which are contained in this one.
-     * @throws CoreException 
+     * @throws CoreException
      */
     public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException;
 
     /**
      * Returns the child packages sorted by the sort definition.
-     * 
+     *
      * @throws CoreException
 
      * @see #getSortDefinition()
      */
     public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException;
-    
+
     /**
      * Reads the sort definition from disk and returns it. Returns <code>null</code> if no
-     * sort definition file does exist. 
-     * 
-     * @throws CoreException if an error occurs while reading the file.
+     * sort definition file exists.
+     *
+     * @throws CoreException if an errors occurs reading the definition
      */
     public IIpsPackageFragmentSortDefinition getSortDefinition() throws CoreException;
 
     /**
      * Writes the new sort definition to disk. Deletes the sort file if <code>null</code> is passed.
-     * 
+     *
      * @throws CoreException if an error occurs writing the file.
      */
     public void setSortDefinition(IIpsPackageFragmentSortDefinition newDefinition) throws CoreException;
@@ -93,33 +93,33 @@ public interface IIpsPackageFragment extends IIpsElement {
      * @throws CoreException if the members of the corresponding resource cannot be accessed.
      */
     public IResource[] getNonIpsResources() throws CoreException;
-    
+
     /**
      * Returns the package fragment root this package fragment belongs to.
      */
     public IIpsPackageFragmentRoot getRoot();
-    
+
     /**
      * Returns an <code>org.eclipse.core.runtime.IPath</code> object representing for the package fragment name.
      */
     public IPath getRelativePath();
-    
+
     /**
-     * Returns a handle to the IPS source file with the given name. If the provided 
-     * name doesn't have a file extension that fits to an IpsSrcFile <code>null</code> will 
-     * be returned.  
+     * Returns a handle to the IPS source file with the given name. If the provided
+     * name doesn't have a file extension that fits to an IpsSrcFile <code>null</code> will
+     * be returned.
      */
     public IIpsSrcFile getIpsSrcFile(String name);
-    
+
     /**
-     * Creates the IpsSrcFile with the indicated name. 
-     * 
+     * Creates the IpsSrcFile with the indicated name.
+     *
 	 * @param name the file name
 	 * @param source input stream providing the file's content
 	 * @param force a flag controlling how to deal with resources that
 	 *    are not in sync with the local file system
 	 * @param monitor the given progress monitor
-     * 
+     *
 	 * @throws CoreException if the element could not be created. Reasons include:
 	 * <ul>
 	 * <li> This folder does not exist</li>
@@ -129,16 +129,16 @@ public interface IIpsPackageFragment extends IIpsElement {
 	 * </ul>
      */
     public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor) throws CoreException;
-    
+
     /**
-     * Creates the IpsSrcFile with the indicated name. 
-     * 
+     * Creates the IpsSrcFile with the indicated name.
+     *
 	 * @param name the file name
 	 * @param content the file's content
 	 * @param force a flag controlling how to deal with resources that
 	 *    are not in sync with the local file system
 	 * @param monitor the given progress monitor
-     * 
+     *
 	 * @throws CoreException if the element could not be created. Reasons include:
 	 * <ul>
 	 * <li> This folder does not exist</li>
@@ -148,18 +148,18 @@ public interface IIpsPackageFragment extends IIpsElement {
 	 * </ul>
      */
     public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor) throws CoreException;
-    
+
     /**
      * Creates a IpsSrcFile that contains an IpsObject of the indicated type and
      * with the indicated name. The filename is constructed by appending the type
      * specific file extension to the object name (separated by a dot).
-     * 
+     *
      * @param type the object's type
 	 * @param name the file name
 	 * @param force a flag controlling how to deal with resources that
 	 *    are not in sync with the local file system
 	 * @param monitor the given progress monitor
-     * 
+     *
 	 * @throws CoreException if the element could not be created. Reasons include:
 	 * <ul>
 	 * <li> This folder does not exist</li>
@@ -171,22 +171,22 @@ public interface IIpsPackageFragment extends IIpsElement {
     public IIpsSrcFile createIpsFile(IpsObjectType type, String ipsObjectName, boolean force, IProgressMonitor monitor) throws CoreException;
 
     /**
-     * Creates a new IpsSrcFile based on a given template. The filename is constructed by 
-     * appending the type specific file extension to the given object name (separated by a dot). 
-     * The content of the IpsSrcFile is copied from the given template. If the template is a 
+     * Creates a new IpsSrcFile based on a given template. The filename is constructed by
+     * appending the type specific file extension to the given object name (separated by a dot).
+     * The content of the IpsSrcFile is copied from the given template. If the template is a
      * ITimedIpsObject, only the generation that is valid at the given date is copied. If no
      * generation is valid at the given date because the date lies before any valid generation
-     * of the given template, the first generation of the given template is used.  
-     * 
+     * of the given template, the first generation of the given template is used.
+     *
 	 * @param name the file name
 	 * @param template the source for the contents to copy from
-	 * @param date the date to find the generation effective on if 
-	 *             template is instance of ITimedIpsObject). Otherwise this parameter 
+	 * @param date the date to find the generation effective on if
+	 *             template is instance of ITimedIpsObject). Otherwise this parameter
 	 *             is ignored.
 	 * @param force a flag controlling how to deal with resources that
 	 *    are not in sync with the local file system
 	 * @param monitor the given progress monitor
-     * 
+     *
 	 * @throws CoreException if the element could not be created. Reasons include:
 	 * <ul>
 	 * <li> This folder does not exist</li>
@@ -201,12 +201,12 @@ public interface IIpsPackageFragment extends IIpsElement {
     /**
      * Creates a IpsPackageFragment below this one
      * with the indicated name.
-     * 
+     *
      * @param name the sub-package name
      * @param force a flag controlling how to deal with resources that
      *    are not in sync with the local file system
      * @param monitor the given progress monitor
-     * 
+     *
      * @throws CoreException if the element could not be created. Reasons include:
      * <ul>
      * <li> This folder does not exist</li>
@@ -216,17 +216,17 @@ public interface IIpsPackageFragment extends IIpsElement {
      * </ul>
      */
     public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor) throws CoreException;
-    
+
     /**
      * @return The the last segment of the package name.
      */
 	public String getLastSegmentName();
-	
+
 	/**
-	 * Returns <code>true</code> if this IIpsPackageFragement is the default-package. 
+	 * Returns <code>true</code> if this IIpsPackageFragement is the default-package.
 	 * The default-package is the one with an empty String as name ("").
 	 */
 	public boolean isDefaultPackage();
-    
-    
+
+
 }

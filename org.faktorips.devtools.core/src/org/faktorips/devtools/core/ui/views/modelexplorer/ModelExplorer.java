@@ -189,7 +189,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
         treeViewer = new TreeViewer(parent);
         treeViewer.setContentProvider(contentProvider);
         treeViewer.setLabelProvider(labelProvider);
-        treeViewer.setSorter(new ModelExplorerSorter());
         treeViewer.setInput(IpsPlugin.getDefault().getIpsModel());
 
         treeViewer.addDoubleClickListener(new TreeViewerDoubleclickListener(treeViewer));

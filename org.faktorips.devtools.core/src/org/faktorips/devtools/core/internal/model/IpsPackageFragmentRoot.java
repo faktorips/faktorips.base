@@ -1,13 +1,13 @@
 /***************************************************************************************************
  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- * 
+ *
  * Alle Rechte vorbehalten.
- * 
+ *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
- * 
+ *
  * Mitwirkende:
  *  Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  
  **************************************************************************************************/
@@ -15,6 +15,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -37,9 +38,10 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Implementation of IpsPackageFragmentRoot.
  */
 public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot implements IIpsPackageFragmentRoot {
+
+    public static final String DEFAULT_FRAGMENT_NAME = ""; // /$NON-NLS-1$
 
     /**
      * Creates a new ips package fragment root with the indicated parent and name.
@@ -98,7 +100,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
      * object path.
      * <p>
      * Overridden method.
-     * 
+     *
      * @see org.faktorips.devtools.core.model.IIpsElement#exists()
      */
     public boolean exists() {
@@ -124,25 +126,36 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
      * the javaproject corresponding to this roots IpsProject or not.
      */
     public IIpsPackageFragment[] getIpsPackageFragments() throws CoreException {
-        IFolder folder = (IFolder)getCorrespondingResource();
-        if (!isValidIpsPackageFragmentName(name)) {
-            return new IIpsPackageFragment[0];
-        }
-        List list = new ArrayList();
-        list.add(new IpsPackageFragment(this, "")); // add the default package //$NON-NLS-1$
-        getIpsPackageFragments(folder, "", list); //$NON-NLS-1$
-        IIpsPackageFragment[] pdFolders = new IIpsPackageFragment[list.size()];
-        list.toArray(pdFolders);
-        return pdFolders;
+        List list = getIpsPackageFragmentsAsList();
+        return (IIpsPackageFragment[])list.toArray(new IIpsPackageFragment[list.size()]);
     }
-    
+
     /**
-     * 
      * {@inheritDoc}
      */
     public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException {
-        // TODO Markus
-        return null;
+        IpsPackageNameComparator comparator = new IpsPackageNameComparator();
+        List sortedPacks = getIpsPackageFragmentsAsList();
+        Collections.sort(sortedPacks, comparator);
+
+        return (IIpsPackageFragment[])sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
+    }
+
+    /**
+     * Get all IIpsPackageFragments of a IpsRootPackageFragment as List.
+     *
+     * @return List List of IIpsPackageFragments
+     * @throws CoreException
+     */
+    private List getIpsPackageFragmentsAsList() throws CoreException {
+        IFolder folder = (IFolder)getCorrespondingResource();
+        if (!isValidIpsPackageFragmentName(name)) {
+            return new ArrayList(0);
+        }
+        List list = new ArrayList();
+        list.add(new IpsPackageFragment(this, DEFAULT_FRAGMENT_NAME)); // add the default package
+        getIpsPackageFragments(folder, DEFAULT_FRAGMENT_NAME, list);
+        return list;
     }
 
     /**
@@ -174,7 +187,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         }
         return false;
     }
-    
+
     protected IIpsPackageFragment newIpsPackageFragment(String name) {
         return new IpsPackageFragment(this, name);
     }
@@ -239,7 +252,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("IpsPackageFragmentRoot.gif"); //$NON-NLS-1$
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -256,7 +269,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
     /**
      * Searches all objects of the given type starting with the given prefix in this root folder and
      * adds them to the result.
-     * 
+     *
      * @throws NullPointerException if either type, prefix or result is null.
      * @throws CoreException if an error occurs while searching.
      */

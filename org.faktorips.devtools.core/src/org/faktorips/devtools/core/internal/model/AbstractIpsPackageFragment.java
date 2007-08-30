@@ -4,14 +4,14 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
  *
  * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
+ *   Faktor Zehn GmbH - initial API and implementation
  *
  *******************************************************************************/
 
@@ -32,10 +32,12 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.StringUtil;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class AbstractIpsPackageFragment extends IpsElement implements IIpsPackageFragment {
+
+    public static final String SORT_ORDER_FILE = ".packageOrder"; //$NON-NLS-1$
 
     public AbstractIpsPackageFragment(IIpsElement parent, String name) {
         super(parent, name);
@@ -77,7 +79,7 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
             return new IpsPackageFragment(this.getParent(), parentPath);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -134,7 +136,7 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
 
     /**
      * Searches all objects of the given type and adds them to the result.
-     * 
+     *
      * @throws CoreException if an error occurs while searching
      */
     public abstract void findIpsObjects(IpsObjectType type, List result) throws CoreException;

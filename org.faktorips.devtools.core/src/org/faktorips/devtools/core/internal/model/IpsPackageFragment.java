@@ -1,22 +1,24 @@
 /***************************************************************************************************
  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- * 
+ *
  * Alle Rechte vorbehalten.
- * 
+ *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
- * 
+ *
  * Mitwirkende: Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  
  **************************************************************************************************/
 
 package org.faktorips.devtools.core.internal.model;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -49,6 +51,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -75,47 +78,95 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      * the javaproject corresponding to this packagefragments IpsProject or not.
      */
     public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException {
-        IFolder folder = (IFolder)getCorrespondingResource();
-        IResource[] content = folder.members();
-        IIpsPackageFragment[] result = new IIpsPackageFragment[content.length];
-        int count = 0;
-        for (int i = 0; i < content.length; i++) {
-            if (content[i].getType() == IFolder.FOLDER) {
-                if (!getIpsProject().getNamingConventions().validateIpsPackageName(content[i].getName())
-                        .containsErrorMsg()) {
-                    String packageName = this.getName().equals("") ? content[i].getName() : this.getName() + "." + content[i].getName(); //$NON-NLS-1$ //$NON-NLS-2$
-                    result[count] = new IpsPackageFragment(this.getParent(), packageName);
-                    count++;
-                }
-            }
-        }
 
-        IIpsPackageFragment[] shrink = new IIpsPackageFragment[count];
-        System.arraycopy(result, 0, shrink, 0, count);
-        return shrink;
+        List list = getChildIpsPackageFragmentsAsList();
+
+        return (IIpsPackageFragment[])list.toArray(new IIpsPackageFragment[list.size()]);
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public IIpsPackageFragmentSortDefinition getSortDefinition() throws CoreException {
-        // TODO Markus
-        return null;
+    public IIpsPackageFragmentSortDefinition getSortDefinition() {
+
+        // TODO Markus check cache
+
+        IIpsPackageFragmentSortDefinition sortDef =  new IpsPackageFragmentArbitrarySortDefinition();
+
+        try {
+            String content = getSortDefinitionContent();
+            sortDef.initPersistenceContent(content, this.getIpsProject().getPlainTextFileCharset());
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return null;
+        }
+
+        return sortDef;
     }
 
     /**
      * {@inheritDoc}
      */
     public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
-        // TODO Markus
-        return null;
+
+        IpsPackageNameComparator comparator = new IpsPackageNameComparator();
+
+        List sortedPacks = getChildIpsPackageFragmentsAsList();
+        Collections.sort(sortedPacks, comparator);
+
+        return (IIpsPackageFragment[])sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
+    }
+
+    /**
+     * Get all child IIpsPackageFragments as List.
+     *
+     * @return
+     * @throws CoreException
+     */
+    private List getChildIpsPackageFragmentsAsList() throws CoreException {
+        List list = new ArrayList();
+
+        IFolder folder = (IFolder)getCorrespondingResource();
+        IResource[] content = folder.members();
+
+        for (int i = 0; i < content.length; i++) {
+            if (content[i].getType() == IFolder.FOLDER) {
+                if (!getIpsProject().getNamingConventions().validateIpsPackageName(content[i].getName())
+                        .containsErrorMsg()) {
+                    String packageName = this.getName().equals(IpsPackageFragment.DEFAULT_PACKAGE_NAME) ? content[i].getName() : this.getName() + "." + content[i].getName(); //$NON-NLS-1$ //$NON-NLS-2$
+                    list.add(new IpsPackageFragment(this.getParent(), packageName));
+                }
+            }
+        }
+
+        return list;
     }
 
     /**
      * {@inheritDoc}
      */
     public void setSortDefinition(IIpsPackageFragmentSortDefinition newDefinition) throws CoreException {
-        // TODO Markus
+
+        IFolder folder;
+
+        if (this.isDefaultPackage()) {
+            folder = (IFolder) this.getRoot().getCorrespondingResource();
+        } else {
+            folder = (IFolder) this.getParentIpsPackageFragment().getCorrespondingResource();
+        }
+
+        IFile file = folder.getFile(new Path(SORT_ORDER_FILE));
+
+        if (newDefinition == null) {
+            file.delete(true, null);
+            return;
+        }
+
+        String content = newDefinition.toPersistenceContent();
+        byte[] bytes = content.getBytes();
+
+        ByteArrayInputStream is= new ByteArrayInputStream(bytes);
+        file.create(is, true, null);
     }
 
     /**
@@ -196,9 +247,9 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             System.out.println("IpsPackageFragment.createIpsFile - finished: pack=" + this + ", newFile=" + name //$NON-NLS-1$ //$NON-NLS-2$
                     + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
         }
-        
+
         IIpsSrcFile ipsSrcFile = getIpsSrcFile(name);
-        
+
         // set the new evaluated runtime id for product components
         if (ipsSrcFile .getIpsObjectType() == IpsObjectType.PRODUCT_CMPT){
             IpsModel model = (IpsModel)getIpsModel();
@@ -213,7 +264,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
                 model.resumeBroadcastingChangesMadeByCurrentThread();
             }
         }
-        
+
         return ipsSrcFile;
     }
 
@@ -260,7 +311,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             GregorianCalendar date,
             boolean force,
             IProgressMonitor monitor) throws CoreException {
-        
+
         IpsObjectType type = template.getIpsObjectType();
         String filename = type.getFileName(name);
         Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
@@ -281,7 +332,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -306,7 +357,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             model.stopBroadcastingChangesMadeByCurrentThread();
             TimedIpsObject newObject = (TimedIpsObject)file.getIpsObject();
             newObject.newGeneration(source, IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
-            
+
             if (template instanceof IProductCmpt) {
                 ((IProductCmpt)newObject).setPolicyCmptType(((IProductCmpt)template).getPolicyCmptType());
             }
@@ -316,11 +367,11 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
         return file;
     }
-    
+
     /**
      * Returns the first generation of the given timed ips object, if this generation is valid from
      * before the given date or <code>null</code> otherwise.
-     * 
+     *
      * @param timed The timed ips object to get the first generation from.
      * @param date The date the first generation of the timed ips objects valid date has to be
      *            before.
@@ -370,7 +421,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
     /**
      * Searches all objects of the given type starting with the given prefix and adds them to the
      * result.
-     * 
+     *
      * @throws NullPointerException if either type, prefix or result is null.
      * @throws CoreException if an error occurs while searching.
      */
@@ -408,6 +459,32 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
                     "{0} is not a valid package name.", name), null)); //$NON-NLS-1$
         }
         return getRoot().createPackageFragment(isDefaultPackage() ? name : (getName() + "." + name), true, null); //$NON-NLS-1$
+    }
+
+    /**
+     * @return sort definition as String.
+     * @throws CoreException
+     */
+    private String getSortDefinitionContent() throws CoreException {
+        IFolder folder;
+
+        if (this.isDefaultPackage()) {
+            folder = (IFolder) this.getRoot().getCorrespondingResource();
+        } else {
+            folder = (IFolder) this.getParentIpsPackageFragment().getCorrespondingResource();
+        }
+
+        IFile file = folder.getFile(new Path(SORT_ORDER_FILE));
+        String content;
+
+        try {
+             content = StringUtil.readFromInputStream(file.getContents(), this.getIpsProject().getPlainTextFileCharset());
+        } catch (IOException e) {
+            IpsPlugin.log(e);
+            return null;
+        }
+
+        return content;
     }
 
 }

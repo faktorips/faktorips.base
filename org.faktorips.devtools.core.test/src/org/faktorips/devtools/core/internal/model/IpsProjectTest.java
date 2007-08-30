@@ -770,7 +770,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     	IIpsPackageFragmentRoot[] roots = this.ipsProject.getIpsPackageFragmentRoots();
     	assertEquals(roots.length, 1);
     	
-    	IIpsPackageFragment pack = roots[0].getIpsPackageFragment(IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE);
+    	IIpsPackageFragment pack = roots[0].getIpsPackageFragment(IIpsPackageFragment.DEFAULT_PACKAGE_NAME);
     	IProductCmpt tobereferenced = (IProductCmpt)this.newIpsObject(pack, IpsObjectType.PRODUCT_CMPT, "tobereferenced");
     	IProductCmpt noref = (IProductCmpt)this.newIpsObject(pack, IpsObjectType.PRODUCT_CMPT, "noref");
     	IProductCmpt ref1 = (IProductCmpt)this.newIpsObject(pack, IpsObjectType.PRODUCT_CMPT, "ref1");

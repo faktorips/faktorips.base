@@ -4,14 +4,14 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
  *
  * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
+ *   Faktor Zehn GmbH - initial API and implementation
  *
  *******************************************************************************/
 
@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
 /**
- * Sorter for the ModelExplorer-TreeViwer. Sorts folders displayed in the ModelExplorer by the sorting number 
+ * Sorter for the ModelExplorer-TreeViewer. Sorts folders displayed in the ModelExplorer by the sorting number
  * set in the folder properties. PackageFragments are placed above Files, PolicyCmptTypes are placed above Tablestructures.
  * @author Stefan Widmaier
  */
@@ -96,7 +96,7 @@ public class ModelExplorerSorter extends ViewerSorter{
         if(o1 instanceof IAttribute && o2 instanceof IRelation){
             return -1;
         }
-		
+
 		// ------- IResource sorting -------
 		// sort IpsProjects and IProjects lexicographically (ignoring case)
 		if((o1 instanceof IIpsProject||o1 instanceof IProject) && (o2 instanceof IIpsProject||o2 instanceof IProject)){
@@ -116,10 +116,10 @@ public class ModelExplorerSorter extends ViewerSorter{
 		if(o1 instanceof IFile && o2 instanceof IFolder){
 			return 1;
 		}
-		
+
 		// otherwise let the superclass decide
 		return super.compare(viewer, o1, o2);
-		
+
 	}
 
     private String getProjectName(Object o) {
@@ -131,5 +131,5 @@ public class ModelExplorerSorter extends ViewerSorter{
             return ""; //$NON-NLS-1$
         }
     }
-	
+
 }

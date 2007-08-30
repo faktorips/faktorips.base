@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+ * Konfigurationen, etc.) duerfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,10 +44,10 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
  *
  */
 public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
-    
+
     private IIpsProject ipsProject;
     private IpsPackageFragmentRoot ipsRoot;
-    
+
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
@@ -56,12 +57,12 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     protected void tearDown() throws Exception {
         super.tearDown();
     }
-    
+
     public void testGetIpsObjectPathEntry() throws CoreException {
         IIpsObjectPathEntry entry = ipsRoot.getIpsObjectPathEntry();
         assertNotNull(entry);
     }
-    
+
     public void testGetArtefactDestination() throws CoreException{
         IFolder destination = ipsRoot.getArtefactDestination(false);
         assertNotNull(destination);
@@ -72,7 +73,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         IPath outputPathDerived = srcEntry.getOutputFolderForDerivedJavaFiles().getProjectRelativePath();
         assertEquals(outputPathDerived, destination.getProjectRelativePath());
     }
-    
+
     public void testGetPdProject() {
         assertEquals(ipsProject, ipsRoot.getIpsProject());
     }
@@ -81,12 +82,12 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         IIpsPackageFragment defaultFolder = ipsRoot.getIpsPackageFragment("");
         assertEquals(1, ipsRoot.getIpsPackageFragments().length);
         assertEquals(defaultFolder, ipsRoot.getIpsPackageFragments()[0]);
-        
+
         IIpsPackageFragment folderA = ipsRoot.createPackageFragment("a", true, null);
         IIpsPackageFragment folderB = ipsRoot.createPackageFragment("a.b", true, null);
         IIpsPackageFragment folderC = ipsRoot.createPackageFragment("c", true, null);
         IIpsPackageFragment folderD = ipsRoot.createPackageFragment("c.d", true, null);
-        
+
         IIpsElement[] children = ipsRoot.getIpsPackageFragments();
 
         assertEquals(5, ipsRoot.getIpsPackageFragments().length);
@@ -121,10 +122,10 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
 
     public void testGetChildren() {
     }
-    
+
     public void testHasChildren() {
     }
-    
+
     public void testExists() throws CoreException {
         assertTrue(ipsRoot.exists());
         IIpsPackageFragmentRoot root2 = ipsProject.getIpsPackageFragmentRoot("unknown");
@@ -132,49 +133,49 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         ((IFolder)root2.getCorrespondingResource()).create(true, true, null);
         assertFalse(root2.exists());
     }
-    
+
     public void testGetPdObject() throws CoreException {
         IIpsPackageFragment pack = ipsRoot.createPackageFragment("a.b", true, null);
         IIpsSrcFile file = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Test", true, null);
         IIpsObject pdObject = ipsRoot.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "a.b.Test");
         assertNotNull(pdObject);
         assertEquals(file.getIpsObject(), pdObject);
-        
+
         assertNull(ipsRoot.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "c.Unknown"));
     }
-    
+
     public void testFindProductCmpts() throws CoreException {
         IIpsPackageFragment pack = ipsRoot.createPackageFragment("pack", true, null);
         pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Policy", true, null);
         IIpsSrcFile motorPolicyFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy", true, null);
         IPolicyCmptType motorPolicy = (IPolicyCmptType)motorPolicyFile.getIpsObject();
         motorPolicy.setSupertype("pack.Policy");
-        
+
         IIpsSrcFile product1File = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Product1", true, null);
         IProductCmpt product1 = (IProductCmpt)product1File.getIpsObject();
         product1.setPolicyCmptType("pack.Policy");
-        
+
         IIpsSrcFile product2File = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Product2", true, null);
         IProductCmpt product2 = (IProductCmpt)product2File.getIpsObject();
         product2.setPolicyCmptType("pack.Policy");
-        
+
         IIpsSrcFile motorProductFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "MotorProduct", true, null);
         IProductCmpt motorProduct = (IProductCmpt)motorProductFile.getIpsObject();
         motorProduct.setPolicyCmptType("pack.MotorPolicy");
-        
+
         List result = new ArrayList();
         ipsRoot.findProductCmpts("pack.Policy", false, result);
         assertEquals(2, result.size());
         assertTrue(result.contains(product1));
         assertTrue(result.contains(product2));
-        
+
         result.clear();
         ipsRoot.findProductCmpts("pack.Policy", true, result);
         assertEquals(3, result.size());
         assertTrue(result.contains(product1));
         assertTrue(result.contains(product2));
         assertTrue(result.contains(motorProduct));
-        
+
         result.clear();
         ipsRoot.findProductCmpts("pack.Unknown", true, result);
         assertEquals(0, result.size());
@@ -182,36 +183,36 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
 
     public void testFindAllProductCmpts() throws CoreException {
         IIpsPackageFragment pack = ipsRoot.createPackageFragment("pack", true, null);
-        
+
         IPolicyCmptType policyCmptType = (IPolicyCmptType)pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Policy", true, null).getIpsObject();
         policyCmptType.setConfigurableByProductCmptType(true);
         policyCmptType.setUnqualifiedProductCmptType("PolicyType");
-        
+
         IIpsSrcFile motorPolicyFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy", true, null);
         IPolicyCmptType motorPolicy = (IPolicyCmptType)motorPolicyFile.getIpsObject();
         motorPolicy.setConfigurableByProductCmptType(true);
         motorPolicy.setUnqualifiedProductCmptType("MotorPolicyType");
         motorPolicy.setSupertype("pack.Policy");
-        
+
         IIpsSrcFile product1File = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Product1", true, null);
         IProductCmpt product1 = (IProductCmpt)product1File.getIpsObject();
         product1.setPolicyCmptType("pack.Policy");
-        
+
         IIpsSrcFile product2File = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Product2", true, null);
         IProductCmpt product2 = (IProductCmpt)product2File.getIpsObject();
         product2.setPolicyCmptType("pack.Policy");
-        
+
         IIpsSrcFile motorProductFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "MotorProduct", true, null);
         IProductCmpt motorProduct = (IProductCmpt)motorProductFile.getIpsObject();
         motorProduct.setPolicyCmptType("pack.MotorPolicy");
-        
+
         List result = new ArrayList();
         assertNotNull(product2.findProductCmptType());
         ipsRoot.findAllProductCmpts(product2.findProductCmptType(), false, result);
         assertEquals(2, result.size());
         assertTrue(result.contains(product1));
         assertTrue(result.contains(product2));
-        
+
         result.clear();
         ipsRoot.findAllProductCmpts(product2.findProductCmptType(), true, result);
         assertEquals(3, result.size());
@@ -219,16 +220,16 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertTrue(result.contains(product2));
         assertTrue(result.contains(motorProduct));
     }
-    
+
     public void testFindIpsObjectsStartingWith() throws CoreException {
         IIpsObject obj1 = newIpsObject(ipsRoot, IpsObjectType.POLICY_CMPT_TYPE, "pack1.MotorPolicy");
         IIpsObject obj2 = newIpsObject(ipsRoot, IpsObjectType.POLICY_CMPT_TYPE, "pack2.MotorCoverage");
-        
+
         ArrayList result = new ArrayList();
         ipsRoot.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "MotorP", false, result);
         assertEquals(1, result.size());
         assertTrue(result.contains(obj1));
-        
+
         result.clear();
         ipsRoot.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result);
         assertEquals(2, result.size());
@@ -240,21 +241,21 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         result.clear();
         root2.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result);
         assertEquals(0, result.size());
-        
+
         // ipsobjecttype null
         try {
             ipsRoot.findIpsObjectsStartingWith(null, "M", true, result);
             fail();
         } catch (NullPointerException e) {
         }
-        
+
         // prefix null
         try {
             ipsRoot.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, null, true, result);
             fail();
         } catch (NullPointerException e) {
         }
-        
+
         // result null
         try {
             ipsRoot.findIpsObjectsStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "M", true, null);
@@ -262,7 +263,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         } catch (NullPointerException e) {
         }
     }
-    
+
     public void testGetIpsDefaultPackageFragment() {
     	IIpsPackageFragment def = this.ipsRoot.getDefaultIpsPackageFragment();
     	assertEquals(def.getName(), "");
@@ -271,7 +272,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     public void testGetNonIpsResources() throws CoreException{
         IIpsPackageFragment fragment= ipsRoot.createPackageFragment("fragment", true, null);
         IIpsPackageFragment subFragment= ipsRoot.createPackageFragment("fragment.sub", true, null);
-        
+
         IFolder rootHandle= (IFolder) ipsRoot.getCorrespondingResource();
         IFile nonIpsFile= rootHandle.getFile("nonIpsFile");
         nonIpsFile.create(null, true, null);
@@ -286,7 +287,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertFalse(list.contains(fragment));
         assertFalse(list.contains(subFragment));
     }
-    
+
     public void testFindProductCmptsByPolicyCmptWithExistingProductCmptMissingPolicyCmpt() throws CoreException{
         // find product cmpt by given policy cmpt name,
         // the package fragment we search in, contains an invalid product cmpt (product cmpt without
@@ -297,11 +298,59 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         List result = new ArrayList(1);
         ipsRoot.findProductCmpts("PolicyCmpt", true, result);
         assertEquals(1, result.size());
-        
+
         result.clear();
         newProductCmpt(ipsRoot, "ProductCmpt2");
         ipsRoot.findProductCmpts("PolicyCmpt", true, result);
         assertEquals(1, result.size());
+    }
+
+    public void testGetSortedIpsPackageFragments() throws CoreException, IOException {
+
+        IIpsPackageFragment defaultFolder = ipsRoot.getIpsPackageFragment("");
+
+        IIpsPackageFragment[] children = ipsRoot.getSortedIpsPackageFragments();
+        assertEquals(children.length, 1);
+        assertEquals(defaultFolder, children[0]);
+
+        ipsRoot.createPackageFragment("hausrat", true, null);
+        IIpsPackageFragment kranken = ipsRoot.createPackageFragment("kranken", true, null);
+        ipsRoot.createPackageFragment("kranken.leistungsarten", true, null);
+        ipsRoot.createPackageFragment("kranken.vertragsarten", true, null);
+        ipsRoot.createPackageFragment("kranken.gruppenarten", true, null);
+        ipsRoot.createPackageFragment("unfall", true, null);
+        ipsRoot.createPackageFragment("haftpflicht", true, null);
+        ipsRoot.createPackageFragment("süß", true, null);
+
+        ArrayList strings = new ArrayList();
+        strings.add("süß");
+        strings.add("kranken");
+        strings.add("unfall");
+        strings.add("hausrat");
+        strings.add("haftpflicht");
+
+        createPackageOrderFile((IFolder) ipsRoot.getCorrespondingResource(), strings);
+
+        strings.clear();
+        strings.add("vertragsarten");
+        strings.add("gruppenarten");
+        strings.add("leistungsarten");
+
+        createPackageOrderFile((IFolder) kranken.getCorrespondingResource(), strings);
+
+        // sorted: valid files and entries
+        children = ipsRoot.getSortedIpsPackageFragments();
+        assertEquals(children.length, 9);
+        assertEquals(children[0].getName(), "");
+        assertEquals(children[1].getName(), "süß");
+        assertEquals(children[2].getName(), "kranken");
+        assertEquals(children[3].getName(), "kranken.vertragsarten");
+        assertEquals(children[4].getName(), "kranken.gruppenarten");
+        assertEquals(children[5].getName(), "kranken.leistungsarten");
+        assertEquals(children[6].getName(), "unfall");
+        assertEquals(children[7].getName(), "hausrat");
+        assertEquals(children[8].getName(), "haftpflicht");
+
     }
 
 }

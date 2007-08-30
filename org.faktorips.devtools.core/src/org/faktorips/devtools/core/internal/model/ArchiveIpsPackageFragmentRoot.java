@@ -4,19 +4,21 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
  *
  * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
+ *   Faktor Zehn GmbH - initial API and implementation
  *
  *******************************************************************************/
 
 package org.faktorips.devtools.core.internal.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -39,13 +41,13 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot implements IIpsPackageFragmentRoot {
 
     private IFile archiveFile;
-    
+
     /**
      * @param parent
      * @param name
@@ -54,14 +56,14 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         super(IpsPlugin.getDefault().getIpsModel().getIpsProject(archiveFile.getProject()), archiveFile.getName());
         this.archiveFile = archiveFile;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public boolean isBasedOnSourceFolder() {
         return false;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -94,7 +96,7 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     public IIpsArchive getIpsArchive() throws CoreException {
         return ((IpsArchiveEntry)getIpsObjectPathEntry()).getIpsArchive();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -106,25 +108,46 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
      * {@inheritDoc}
      */
     public IIpsPackageFragment[] getIpsPackageFragments() throws CoreException {
-        IIpsArchive archive = getIpsArchive();
-        if (archive==null) {
-            return new IIpsPackageFragment[0];
-        }
-        String[] packNames = archive.getNoneEmptyPackages();
-        IIpsPackageFragment[] packs = new IIpsPackageFragment[packNames.length];
-        for (int i = 0; i < packs.length; i++) {
-            packs[i] = new ArchiveIpsPackageFragment(this, packNames[i]);
-        }
-        return packs;
+
+        List list = getIpsPackageFragmentsAsList();
+
+        return (IIpsPackageFragment[])list.toArray(new IIpsPackageFragment[list.size()]);
     }
 
     /**
      * {@inheritDoc}
      */
     public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException {
-        return getIpsPackageFragments();
+        IpsPackageNameComparator comparator = new IpsPackageNameComparator();
+
+        List sortedPacks = getIpsPackageFragmentsAsList();
+        Collections.sort(sortedPacks, comparator);
+
+        return (IIpsPackageFragment[])sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
     }
-    
+
+    /**
+     * @return
+     * @throws CoreException
+     */
+    private List getIpsPackageFragmentsAsList() throws CoreException {
+
+        IIpsArchive archive = getIpsArchive();
+        if (archive==null) {
+            return new ArrayList(0);
+        }
+
+        String[] packNames = archive.getNoneEmptyPackages();
+
+        List list = new ArrayList(packNames.length);
+
+        for (int i = 0; i < packNames.length; i++) {
+            list.add(new ArchiveIpsPackageFragment(this, packNames[i]));
+        }
+
+        return list;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -144,10 +167,10 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
      */
     public IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor)
             throws CoreException {
-        
+
         throw newExceptionMethodNotAvailableForArchvies();
     }
-    
+
     /**
      * {@inheritDoc}
      */

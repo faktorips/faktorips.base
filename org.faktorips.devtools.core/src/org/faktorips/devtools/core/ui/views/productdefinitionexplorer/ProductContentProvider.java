@@ -4,14 +4,14 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
  *
  * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
+ *   Faktor Zehn GmbH - initial API and implementation
  *
  *******************************************************************************/
 
@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration;
 
 public class ProductContentProvider extends ModelContentProvider {
-    
+
     public ProductContentProvider(ModelExplorerConfiguration config, boolean flatLayout) {
         super(config, flatLayout);
     }
@@ -41,7 +41,7 @@ public class ProductContentProvider extends ModelContentProvider {
      */
     protected Object[] getPackageFragmentRootContent(IIpsPackageFragmentRoot root) throws CoreException {
         if (isFlatLayout) {
-            IIpsPackageFragment[] fragments = root.getIpsPackageFragments();
+            IIpsPackageFragment[] fragments = root.getSortedIpsPackageFragments();
             // filter out empty packagefragments if their IFolders do not contain files and at the
             // same time contain subfolders (subpackages) (this prevents empty or newly created
             // packagefragments from being hidden in the view)
@@ -58,7 +58,7 @@ public class ProductContentProvider extends ModelContentProvider {
             return filteredElements.toArray();
         } else {
             IIpsPackageFragment defaultPackage= root.getDefaultIpsPackageFragment();
-            Object[] childPackages = defaultPackage.getChildIpsPackageFragments();
+            Object[] childPackages = defaultPackage.getSortedChildIpsPackageFragments();
             if (hasChildren(root.getDefaultIpsPackageFragment())) {
                 return concatenate(childPackages, getFileContent(defaultPackage));
             } else {

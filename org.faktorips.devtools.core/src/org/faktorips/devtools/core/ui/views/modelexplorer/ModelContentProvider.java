@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
  * Class for calculation the content of the ModelExplorer tree. The returned Lists of
  * PackageFragments are dependant on the current layout style indicated by the
  * <code>isFlatLayout</code> flag.
- * 
+ *
  * @author Stefan Widmaier
  */
 public class ModelContentProvider implements ITreeContentProvider {
@@ -59,7 +59,7 @@ public class ModelContentProvider implements ITreeContentProvider {
     public Object[] getChildren(Object parentElement) {
         return filter(getUnfilteredChildren(parentElement));
     }
-    
+
     /**
      * Returns the array of children of the given parentElement without filtering out children of a specific type
      * or with a specific name.
@@ -195,7 +195,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * entry of the javaproject. Returns true if the given resource corresponds to a folder that is
      * either the javaprojects default output location or the output location of one of the projects
      * classpathentries. False otherwise.
-     * 
+     *
      * @param resource
      * @return
      */
@@ -227,12 +227,12 @@ public class ModelContentProvider implements ITreeContentProvider {
      * child-packagefragments of the defaultpackage are returned. The defaultpackage of the given
      * <code>IpsPackageFragmentRoot</code> is contained in the returned array if it contains files
      * (has children).
-     * 
+     *
      * @throws CoreException
      */
     protected Object[] getPackageFragmentRootContent(IIpsPackageFragmentRoot root) throws CoreException {
         if (isFlatLayout) {
-            IIpsPackageFragment[] fragments = root.getIpsPackageFragments();
+            IIpsPackageFragment[] fragments = root.getSortedIpsPackageFragments();
             if (fragments.length == 1) {
                 if (!hasChildren(fragments[0])) {
                     // Hide defaultpackagefragment if it is empty and there are
@@ -251,9 +251,9 @@ public class ModelContentProvider implements ITreeContentProvider {
             }
             return filteredFragments.toArray();
         } else {
-            // display the default package only if it contains files 
+            // display the default package only if it contains files
             // display productcmptss in defaultpackage, files in root
-            Object[] children = root.getDefaultIpsPackageFragment().getChildIpsPackageFragments();
+            Object[] children = root.getDefaultIpsPackageFragment().getSortedChildIpsPackageFragments();
             if (hasChildren(root.getDefaultIpsPackageFragment())) {
                 return concatenate(new Object[] { root.getDefaultIpsPackageFragment() }, children);
             } else {
@@ -267,7 +267,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * <code>IpsPackageFragment</code>. If the given <code>IpsPackageFragment</code> is the
      * defaultPackageFragment of its <code>IpsPackageFragmentRoot</code>, only the contained
      * files are returned.
-     * 
+     *
      * @throws CoreException
      */
     private Object[] getPackageFragmentContent(IIpsPackageFragment fragment) throws CoreException {
@@ -282,13 +282,13 @@ public class ModelContentProvider implements ITreeContentProvider {
      * Returns an empty array in flat layout style. In hierarchical layout returns all
      * <code>IpsPacakgeFragment</code>s that correspond to a subfolder of the given
      * packagefragments underlying folder.
-     * 
+     *
      * @throws CoreException
      */
     private Object[] getFolderContent(IIpsPackageFragment fragment) throws CoreException {
         // in hierarchical layout display childpackagefragments as children
         if (!isFlatLayout) {
-            return fragment.getChildIpsPackageFragments();
+            return fragment.getSortedChildIpsPackageFragments();
         } else {
             return EMPTY_ARRAY;
         }
@@ -297,7 +297,7 @@ public class ModelContentProvider implements ITreeContentProvider {
     /**
      * Returns all files contained in the given <code>IpsPackageFragment</code>. This includes
      * IpsElements as well as general files.
-     * 
+     *
      * @throws CoreException
      */
     protected Object[] getFileContent(IIpsPackageFragment fragment) throws CoreException {
@@ -330,17 +330,23 @@ public class ModelContentProvider implements ITreeContentProvider {
      */
     private Object[] filter(Object[] elements) {
         List filtered = new ArrayList();
+
         for (int i = 0; i < elements.length; i++) {
             if (elements[i] instanceof IIpsElement) {
                 if (configuration.isAllowedIpsElement(elements[i])) {
                     filtered.add(elements[i]);
                 }
             } else if (elements[i] instanceof IResource) {
-                // filter out hidden files and folders, except the ".ipsproject"-file
+
+                // filter out hidden files and folders, except the ".ipsproject"-file and ".packageOrder"-file
                 if (elements[i] instanceof IFile | elements[i] instanceof IFolder) {
                     if (((IResource)elements[i]).getName().indexOf(".") == 0) { //$NON-NLS-1$
                         IIpsProject project= IpsPlugin.getDefault().getIpsModel().getIpsProject(((IResource)elements[i]).getProject());
-                        if(!elements[i].equals(project.getIpsProjectPropertiesFile())){ //$NON-NLS-1$
+
+
+
+                        if((!elements[i].equals(project.getIpsProjectPropertiesFile()))
+                            && ((IResource)elements[i]).getName().compareTo(".packageOrder") != 0 ){ //$NON-NLS-1$
                             continue;
                         }
                     }
@@ -444,7 +450,7 @@ public class ModelContentProvider implements ITreeContentProvider {
 
     /**
      * Sets the flag for flat respectivly hierarchical PackageFragments
-     * 
+     *
      * @param b
      */
     /* package */void setIsFlatLayout(boolean b) {

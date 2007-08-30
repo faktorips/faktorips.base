@@ -4,14 +4,14 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
  *
  * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
+ *   Faktor Zehn GmbH - initial API and implementation
  *
  *******************************************************************************/
 
@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
@@ -42,7 +42,7 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     private IFile archiveFile;
     private ArchiveIpsPackageFragmentRoot root;
     private IPolicyCmptType type;
-    
+
     /*
      * @see AbstractIpsPluginTest#setUp()
      */
@@ -53,18 +53,18 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         type.getIpsSrcFile().save(true, null);
         newPolicyCmptType(archiveProject, "motor.collision.CollisionCoverage").getIpsSrcFile().save(true, null);
         newProductCmpt(archiveProject, "motor.MotorProduct").getIpsSrcFile().save(true, null);
-        
+
         project = newIpsProject();
         archiveFile = project.getProject().getFile("test.ipsar");
-        
+
         createArchive(archiveProject, archiveFile);
-        
+
         IIpsObjectPath path = project.getIpsObjectPath();
         entry = (IpsArchiveEntry)path.newArchiveEntry(archiveFile);
         project.setIpsObjectPath(path);
         root = (ArchiveIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
     }
-    
+
     public void testGetIpsObjectPathEntry() throws CoreException {
         assertEquals(entry.getArchiveFile(), root.getIpsArchive().getArchiveFile());
     }
@@ -99,7 +99,7 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
 
         IIpsObject type2 = root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.Policy");
         assertEquals(type, type2);
-        
+
         assertNull(root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "Unkown"));
         assertNull(root.findIpsObject(IpsObjectType.PRODUCT_CMPT, "motor.Policy"));
     }
@@ -114,5 +114,13 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertEquals(2, result.size());
         assertTrue(result.contains(root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.Policy")));
         assertTrue(result.contains(root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.collision.CollisionCoverage")));
+    }
+
+    public void testGetSortedIpsPackageFragments() throws CoreException {
+        IIpsPackageFragment[] packs = root.getSortedIpsPackageFragments();
+        assertEquals(2, packs.length);
+        assertEquals("motor", packs[0].getName());
+        assertEquals("motor.collision", packs[1].getName());
+
     }
 }
