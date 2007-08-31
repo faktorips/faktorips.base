@@ -320,10 +320,8 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         ipsRoot.createPackageFragment("kranken.gruppenarten", true, null);
         ipsRoot.createPackageFragment("unfall", true, null);
         ipsRoot.createPackageFragment("haftpflicht", true, null);
-        ipsRoot.createPackageFragment("süß", true, null);
 
         ArrayList strings = new ArrayList();
-        strings.add("süß");
         strings.add("kranken");
         strings.add("unfall");
         strings.add("hausrat");
@@ -340,16 +338,15 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
 
         // sorted: valid files and entries
         children = ipsRoot.getSortedIpsPackageFragments();
-        assertEquals(children.length, 9);
+        assertEquals(children.length, 8);
         assertEquals(children[0].getName(), "");
-        assertEquals(children[1].getName(), "süß");
-        assertEquals(children[2].getName(), "kranken");
-        assertEquals(children[3].getName(), "kranken.vertragsarten");
-        assertEquals(children[4].getName(), "kranken.gruppenarten");
-        assertEquals(children[5].getName(), "kranken.leistungsarten");
-        assertEquals(children[6].getName(), "unfall");
-        assertEquals(children[7].getName(), "hausrat");
-        assertEquals(children[8].getName(), "haftpflicht");
+        assertEquals(children[1].getName(), "kranken");
+        assertEquals(children[2].getName(), "kranken.vertragsarten");
+        assertEquals(children[3].getName(), "kranken.gruppenarten");
+        assertEquals(children[4].getName(), "kranken.leistungsarten");
+        assertEquals(children[5].getName(), "unfall");
+        assertEquals(children[6].getName(), "hausrat");
+        assertEquals(children[7].getName(), "haftpflicht");
 
     }
 

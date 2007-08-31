@@ -332,19 +332,17 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         rootPackage.createPackageFragment("products.kranken.gruppenarten", true, null);
         rootPackage.createPackageFragment("products.unfall", true, null);
         rootPackage.createPackageFragment("products.haftpflicht", true, null);
-        rootPackage.createPackageFragment("products.süß", true, null);
 
         IIpsPackageFragment products = rootPackage.getIpsPackageFragment("products");
 
         // unsorted
         children = products.getSortedChildIpsPackageFragments();
-        assertEquals(6, children.length);
+        assertEquals(5, children.length);
         assertEquals("products.folder", children[0].getName());
         assertEquals("products.haftpflicht", children[1].getName());
         assertEquals("products.hausrat", children[2].getName());
         assertEquals("products.kranken", children[3].getName());
-        assertEquals("products.süß", children[4].getName());
-        assertEquals("products.unfall", children[5].getName());
+        assertEquals("products.unfall", children[4].getName());
 
         // sorted: valid files and entries
         List list = new ArrayList();
@@ -353,7 +351,6 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         createPackageOrderFile((IFolder) rootPackage.getCorrespondingResource(), list);
         list.clear();
 
-        list.add("süß");
         list.add("unfall");
         list.add("kranken");
         list.add("folder");
@@ -370,13 +367,12 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         list.clear();
 
         children = products.getSortedChildIpsPackageFragments();
-        assertEquals(6, children.length);
-        assertEquals("products.süß", children[0].getName());
-        assertEquals("products.unfall", children[1].getName());
-        assertEquals("products.kranken", children[2].getName());
-        assertEquals("products.folder", children[3].getName());
-        assertEquals("products.haftpflicht", children[4].getName());
-        assertEquals("products.hausrat", children[5].getName());
+        assertEquals(5, children.length);
+        assertEquals("products.unfall", children[0].getName());
+        assertEquals("products.kranken", children[1].getName());
+        assertEquals("products.folder", children[2].getName());
+        assertEquals("products.haftpflicht", children[3].getName());
+        assertEquals("products.hausrat", children[4].getName());
 
         children = service.getSortedChildIpsPackageFragments();
         assertEquals(2, children.length);
