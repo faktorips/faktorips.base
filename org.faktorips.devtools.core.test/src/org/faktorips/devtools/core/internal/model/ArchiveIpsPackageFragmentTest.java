@@ -23,7 +23,6 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.internal.compiler.ast.FalseLiteral;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -123,21 +122,19 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
 
         IIpsProject project = createTestArchive();
 
-        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot) project.getIpsPackageFragmentRoots()[1];
-        ArchiveIpsPackageFragment pack = (ArchiveIpsPackageFragment)root.getIpsPackageFragment("products");
-
-        IIpsPackageFragment[] children = pack.getSortedChildIpsPackageFragments();
-
-//        assertEquals(6, children.length);
-//        assertEquals("products.süß", children[0].getName());
+//        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot) project.getIpsPackageFragmentRoots()[1];
+//        ArchiveIpsPackageFragment pack = (ArchiveIpsPackageFragment)root.getIpsPackageFragment("products");
+//
+//        IIpsPackageFragment[] children = pack.getSortedChildIpsPackageFragments();
+//
+//        assertEquals(4, children.length);
 //        assertEquals("products.unfall", children[1].getName());
 //        assertEquals("products.kranken", children[2].getName());
-//        assertEquals("products.folder", children[3].getName());
-//        assertEquals("products.haftpflicht", children[4].getName());
-//        assertEquals("products.hausrat", children[5].getName());
-
-        pack = (ArchiveIpsPackageFragment)root.getIpsPackageFragment("products.kranken.leistungsarten");
-        children = pack.getSortedChildIpsPackageFragments();
+//        assertEquals("products.haftpflicht", children[3].getName());
+//        assertEquals("products.hausrat", children[4].getName());
+//
+//        pack = (ArchiveIpsPackageFragment)root.getIpsPackageFragment("products.kranken.leistungsarten");
+//        children = pack.getSortedChildIpsPackageFragments();
 //        assertEquals(2, children.length);
 //        assertEquals("products.kranken.leistungsarten.optional", children[0].getName());
 //        assertEquals("products.kranken.leistungsarten.fix", children[1].getName());
@@ -174,7 +171,6 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         newPolicyCmptType(archiveProject, "products.kranken.gruppenarten.file1");
         newPolicyCmptType(archiveProject, "products.unfall.file1");
         newPolicyCmptType(archiveProject, "products.haftpflicht.file1");
-        newPolicyCmptType(archiveProject, "products.süß.file1");
 
         IIpsPackageFragmentRoot rootPackage = archiveProject.findIpsPackageFragmentRoot("productdef");
         IIpsPackageFragment products = rootPackage.getIpsPackageFragment("products");
@@ -186,7 +182,6 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         createPackageOrderFile((IFolder) rootPackage.getCorrespondingResource(), list);
         list.clear();
 
-        list.add("süß");
         list.add("unfall");
         list.add("kranken");
         list.add("folder");
