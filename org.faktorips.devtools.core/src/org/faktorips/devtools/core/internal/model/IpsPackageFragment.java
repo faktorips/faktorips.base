@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
@@ -89,26 +88,17 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      * {@inheritDoc}
      */
     public IIpsPackageFragmentSortDefinition getSortDefinition() {
-        Map map = ((IpsModel)this.getIpsModel()).getSortOrderCache();
+        IIpsPackageFragmentSortDefinition sortDef =  new IpsPackageFragmentArbitrarySortDefinition();
 
-
-        if (map.containsKey(this)) {
-            return new IpsPackageFragmentArbitrarySortDefinition();
-        } else {
-            IIpsPackageFragmentSortDefinition sortDef =  new IpsPackageFragmentArbitrarySortDefinition();
-
-            try {
-                String content = getSortDefinitionContent();
-                sortDef.initPersistenceContent(content, this.getIpsProject().getPlainTextFileCharset());
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-                return null;
-            }
-
-            map.put(this, sortDef);
-
-            return sortDef;
+        try {
+            String content = getSortDefinitionContent();
+            sortDef.initPersistenceContent(content, this.getIpsProject().getPlainTextFileCharset());
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return null;
         }
+
+        return sortDef;
     }
 
     /**
@@ -163,8 +153,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
 
         IFile file = folder.getFile(new Path(SORT_ORDER_FILE));
-        Map map = ((IpsModel)this.getIpsModel()).getSortOrderCache();
-        map.remove(this);
 
         if (newDefinition == null) {
             file.delete(true, null);
@@ -177,7 +165,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         ByteArrayInputStream is= new ByteArrayInputStream(bytes);
         file.create(is, true, null);
 
-        map.put(this, newDefinition);
     }
 
     /**
