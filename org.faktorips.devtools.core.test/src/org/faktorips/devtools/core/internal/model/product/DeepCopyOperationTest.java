@@ -17,23 +17,17 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 
 /**
