@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
@@ -46,6 +47,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
     
     private IProductCmpt productCmpt;
     private IProductCmpt productCmptTarget;
+    private IRelation relation;
     private IIpsPackageFragmentRoot root;
     private IIpsProject pdProject;
     private IProductCmptStructure structure;
@@ -71,7 +73,8 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         tsu2.setRoleName("usage2");
         tsu2.addTableStructure("tableStructure2");
         
-        IRelation relation = policyCmptType.newRelation();
+        relation = policyCmptType.newRelation();
+        relation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
         relation.setTargetRoleSingularProductSide("TestRelation");
         relation.setTargetRoleSingular("TestRelation");
         relation.setTarget(policyCmptTypeTarget.getQualifiedName());
@@ -119,22 +122,20 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
     }
     
     public void testCircleDetection() throws Exception {
-        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2006, 10, 1));
-    	DefaultTestContent content = new DefaultTestContent();
-    	
     	// this has to work without any exception
-    	content.getComfortMotorProduct().getStructure();
+    	productCmpt.getStructure();
+        productCmptTarget.getStructure();
     	
     	// create a circle
-    	IProductCmpt basic = content.getBasicMotorProduct();
-    	IProductCmpt comfort = content.getComfortMotorProduct(); 
-    	IProductCmptRelation rel = ((IProductCmptGeneration)basic.getGenerations()[0]).newRelation("VehicleType");
-    	rel.setTarget(comfort.getQualifiedName());
-    	rel = ((IProductCmptGeneration)comfort.getGenerations()[0]).newRelation("VehicleType");
-    	rel.setTarget(basic.getQualifiedName());
+        IPolicyCmptType type = productCmpt.findPolicyCmptType();
+        relation.setTarget(type.getQualifiedName());
+        productCmptTarget.setPolicyCmptType(type.getQualifiedName());
+        IProductCmptGeneration targetGen= (IProductCmptGeneration)productCmptTarget.getGeneration(0);
+        IProductCmptRelation rel = targetGen.newRelation(relation.getName());
+    	rel.setTarget(productCmpt.getQualifiedName());
     	
     	try {
-			content.getComfortMotorProduct().getStructure();
+			productCmpt.getStructure();
 			fail();
 		} catch (CycleException e) {
 			// success
