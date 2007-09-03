@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
@@ -88,20 +89,26 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      * {@inheritDoc}
      */
     public IIpsPackageFragmentSortDefinition getSortDefinition() {
+        Map map = ((IpsModel)this.getIpsModel()).getSortOrderCache();
 
-        // TODO Markus check cache
 
-        IIpsPackageFragmentSortDefinition sortDef =  new IpsPackageFragmentArbitrarySortDefinition();
+        if (map.containsKey(this)) {
+            return new IpsPackageFragmentArbitrarySortDefinition();
+        } else {
+            IIpsPackageFragmentSortDefinition sortDef =  new IpsPackageFragmentArbitrarySortDefinition();
 
-        try {
-            String content = getSortDefinitionContent();
-            sortDef.initPersistenceContent(content, this.getIpsProject().getPlainTextFileCharset());
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return null;
+            try {
+                String content = getSortDefinitionContent();
+                sortDef.initPersistenceContent(content, this.getIpsProject().getPlainTextFileCharset());
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+                return null;
+            }
+
+            map.put(this, sortDef);
+
+            return sortDef;
         }
-
-        return sortDef;
     }
 
     /**
@@ -133,7 +140,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             if (content[i].getType() == IFolder.FOLDER) {
                 if (!getIpsProject().getNamingConventions().validateIpsPackageName(content[i].getName())
                         .containsErrorMsg()) {
-                    String packageName = this.getName().equals(IpsPackageFragment.DEFAULT_PACKAGE_NAME) ? content[i].getName() : this.getName() + "." + content[i].getName(); //$NON-NLS-1$ //$NON-NLS-2$
+                    String packageName = this.getName().equals(IpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE) ? content[i].getName() : this.getName() + "." + content[i].getName(); //$NON-NLS-1$ //$NON-NLS-2$
                     list.add(new IpsPackageFragment(this.getParent(), packageName));
                 }
             }
@@ -156,6 +163,8 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
 
         IFile file = folder.getFile(new Path(SORT_ORDER_FILE));
+        Map map = ((IpsModel)this.getIpsModel()).getSortOrderCache();
+        map.remove(this);
 
         if (newDefinition == null) {
             file.delete(true, null);
@@ -167,6 +176,8 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
 
         ByteArrayInputStream is= new ByteArrayInputStream(bytes);
         file.create(is, true, null);
+
+        map.put(this, newDefinition);
     }
 
     /**

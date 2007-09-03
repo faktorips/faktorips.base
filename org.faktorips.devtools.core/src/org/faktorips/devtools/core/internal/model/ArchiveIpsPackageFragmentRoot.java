@@ -18,7 +18,6 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -118,10 +117,9 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
      * {@inheritDoc}
      */
     public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException {
-        IpsPackageNameComparator comparator = new IpsPackageNameComparator();
+        // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE
 
         List sortedPacks = getIpsPackageFragmentsAsList();
-        Collections.sort(sortedPacks, comparator);
 
         return (IIpsPackageFragment[])sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
     }
@@ -159,6 +157,7 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
      * {@inheritDoc}
      */
     public IResource[] getNonIpsResources() throws CoreException {
+
         return new IResource[0];
     }
 
