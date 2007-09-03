@@ -17,10 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
-import java.util.GregorianCalendar;
-
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
