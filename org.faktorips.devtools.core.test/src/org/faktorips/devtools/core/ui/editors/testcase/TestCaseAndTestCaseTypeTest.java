@@ -19,11 +19,11 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
@@ -43,41 +43,28 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
     private ITestCase testCase;
     private ITestCaseType testCaseType;
     
-    private DefaultTestContent content;
-    
     private String pathToTestPolicyCmptInput;
     
     public void setUp() throws Exception{
         super.setUp();
-        content = new DefaultTestContent();
-        project = content.getProject();
+        project = super.newIpsProject("TestProject");
         testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "TestCase1");  
         testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "TestCaseType1");  
         testCase.setTestCaseType(testCaseType.getQualifiedName());
         
-        // search for the first relation in the default content
-        // will be used in the test case type
-        IPolicyCmptType pct = content.getContract();
-        IRelation[] relations = pct.getRelations();
-        if (relations == null || ! (relations.length > 0)){
-            fail("Wrong test project content. No relation exists in default content.");
-        }
-        IRelation relation = null;
-        for (int i = 0; i < relations.length; i++) {
-            if (! relations[i].isAssoziation()){
-                relation = relations[0];
-                break;
-            }
-        }
-        if (relation == null){
-            fail("Wrong test project content. No composite relation exisits in default content.");
-        }
+        IPolicyCmptType pctContract = newPolicyCmptType(project, "Contract");
+        IPolicyCmptType pctCoverage = newPolicyCmptType(project, "Coverage");
+        
+        IRelation relation = pctContract.newRelation();
+        relation.setTargetRoleSingular("Coverage");
+        relation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        relation.setTarget(pctCoverage.getQualifiedName());
         
         // create test case type side
         ITestPolicyCmptTypeParameter tp = testCaseType.newInputTestPolicyCmptTypeParameter();
         tp.setName("inputTestPolicyCmptTypeParam1");
-        tp.setPolicyCmptType(pct.getQualifiedName());
-        tp.setName(StringUtil.unqualifiedName(pct.getName()));
+        tp.setPolicyCmptType(pctContract.getQualifiedName());
+        tp.setName(StringUtil.unqualifiedName(pctContract.getName()));
         ITestPolicyCmptTypeParameter tpChild = tp.newTestPolicyCmptTypeParamChild();
         tpChild.setRelation(relation.getName());
         tpChild.setName(relation.getName());
