@@ -33,7 +33,7 @@ public class DynamicEnumDatatypeTest extends AbstractIpsPluginTest {
 	
 	public void setUp() throws Exception{
 		super.setUp();
-		IpsProject project = (IpsProject)newIpsProject("Testproject");
+		IpsProject project = (IpsProject)newIpsProject();
 		dataType = newDefinedEnumDatatype(project, new Class[]{TestEnumType.class})[0];
 	}
 	/*
