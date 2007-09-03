@@ -37,7 +37,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      * Constant that represents the name of the default package to make it
      * explicit that the default package name is an empty string.
      */
-    public final static String NAME_OF_THE_DEFAULT_PACKAGE = ""; //$NON-NLS-1$
+    public final static String DEFAULT_PACKAGE_NAME = ""; //$NON-NLS-1$
 
     /**
      * The char used as separator for subpackages.
@@ -110,14 +110,6 @@ public interface IIpsPackageFragment extends IIpsElement {
      * be returned.
      */
     public IIpsSrcFile getIpsSrcFile(String name);
-    
-    /**
-     * Returns a handle to the IPS source file for the given filenameWithoutExtension. 
-     * The file extension is derived from the ips object type.
-     * 
-     * @throws NullPointerException if type is <code>null</code>.
-     */
-    public IIpsSrcFile getIpsSrcFile(String filenameWithoutExtension, IpsObjectType type);
 
     /**
      * Creates the IpsSrcFile with the indicated name.

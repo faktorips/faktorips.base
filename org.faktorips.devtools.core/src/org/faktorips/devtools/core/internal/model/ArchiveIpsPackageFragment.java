@@ -17,16 +17,21 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsArchive;
@@ -192,18 +197,19 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
      * {@inheritDoc}
      */
     public IIpsPackageFragmentSortDefinition getSortDefinition() {
-        // TODO Cache sort definition
+        // TODO Markus caching?
+        return null;
 
-        IIpsPackageFragmentSortDefinition sortDef =  new IpsPackageFragmentArbitrarySortDefinition();
-
-        try {
-            String content = getSortDefinitionContent();
-            sortDef.initPersistenceContent(content, this.getIpsProject().getPlainTextFileCharset());
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return null;
-        }
-        return sortDef;
+//        IIpsPackageFragmentSortDefinition sortDef =  new IpsPackageFragmentArbitrarySortDefinition();
+//
+//        try {
+//            String content = getSortDefinitionContent();
+//            sortDef.initPersistenceContent(content, this.getIpsProject().getPlainTextFileCharset());
+//        } catch (CoreException e) {
+//            IpsPlugin.log(e);
+//            return null;
+//        }
+//        return sortDef;
     }
 
     /**
@@ -211,9 +217,10 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
      */
     public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
 
-        // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE
+        IpsPackageNameComparator comparator = new IpsPackageNameComparator();
 
         List sortedPacks = getChildIpsPackageFragmentsAsList();
+        //Collections.sort(sortedPacks, comparator);
 
         return (IIpsPackageFragment[])sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
     }
@@ -249,12 +256,26 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
      * @throws CoreException
      */
     private String getSortDefinitionContent() throws CoreException {
-        String content = new String();
-        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
-        IIpsArchive archive = root.getIpsArchive();
+        IFolder folder;
 
-        content = archive.getContent(QualifiedNameType.newQualifedNameType(this.getName().concat( StringUtil.getSystemLineSeparator()  + IpsPackageFragment.SORT_ORDER_FILE) ), this.getRoot().getIpsProject().getPlainTextFileCharset() );
+        // TODO Markus access .packageOrder in archive
 
-        return content;
+        if (this.isDefaultPackage()) {
+            folder = (IFolder) this.getRoot().getCorrespondingResource();
+        } else {
+            folder = (IFolder) this.getParentIpsPackageFragment().getCorrespondingResource();
+        }
+
+        IFile file = folder.getFile(new Path(SORT_ORDER_FILE));
+        String content;
+
+        try {
+             content = StringUtil.readFromInputStream(file.getContents(), this.getIpsProject().getPlainTextFileCharset());
+        } catch (IOException e) {
+            IpsPlugin.log(e);
+            return null;
+        }
+
+        return new String("");
     }
 }

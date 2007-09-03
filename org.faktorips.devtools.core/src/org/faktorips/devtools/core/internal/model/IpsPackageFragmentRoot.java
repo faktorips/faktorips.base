@@ -41,6 +41,8 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot implements IIpsPackageFragmentRoot {
 
+    public static final String DEFAULT_FRAGMENT_NAME = ""; // /$NON-NLS-1$
+
     /**
      * Creates a new ips package fragment root with the indicated parent and name.
      */
@@ -151,8 +153,8 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
             return new ArrayList(0);
         }
         List list = new ArrayList();
-        list.add(new IpsPackageFragment(this, IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE)); // add the default package
-        getIpsPackageFragments(folder, IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE, list);
+        list.add(new IpsPackageFragment(this, DEFAULT_FRAGMENT_NAME)); // add the default package
+        getIpsPackageFragments(folder, DEFAULT_FRAGMENT_NAME, list);
         return list;
     }
 
