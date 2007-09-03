@@ -23,10 +23,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.ITestAnswerProvider;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.ui.editors.productcmpt.GenerationSelectionDialog;
 
 /**
@@ -36,38 +38,46 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.GenerationSelectionDia
  */
 public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListener, ITestAnswerProvider {
 
-	private DefaultTestContent content;
 	private IpsPlugin plugin;
 	private int answer = GenerationSelectionDialog.CHOICE_BROWSE;
 	
 	public void setUp() throws Exception {
         super.setUp();
-		content = new DefaultTestContent();
 		plugin = IpsPlugin.getDefault();
 		plugin.getLog().addLogListener(this);
 		plugin.setTestMode(true);
 		plugin.setTestAnswerProvider(this);
 	}
-	
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        plugin.getLog().removeLogListener(this);
+    }
+
 	public void testOpenProductCmptEditor() throws Exception {
-		openEditor(content.getBasicMotorProduct());
-		openEditor(content.getComfortCollisionCoverageA());
-		openEditor(content.getStandardBike());
-		openEditor(content.getBasicCollisionCoverage());
+        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2003, 7, 1));
+
+        IIpsProject ipsProject = newIpsProject();
+        IPolicyCmptType type = newPolicyCmptType(ipsProject, "Type");
+        
+        IProductCmpt product1 = newProductCmpt(ipsProject, "Product1");
+        product1.setPolicyCmptType(type.getQualifiedName());
+        product1.newGeneration();
+        product1.getIpsSrcFile().save(true, null);
+        openEditor(product1);
+        
+        IProductCmpt product2 = newProductCmpt(ipsProject, "Product2");
+        product2.setPolicyCmptType(type.getQualifiedName());
+        product2.newGeneration();
+        product2.getIpsSrcFile().save(true, null);
+		openEditor(product2);
 	}
 
 	private void openEditor(IIpsObject file) throws Exception {
-		IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2003, 7, 1));
-
     	IpsPlugin.getDefault().openEditor((IFile) file.getCorrespondingResource());
-		plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
-		
-		answer = GenerationSelectionDialog.CHOICE_BROWSE;
-        IpsPlugin.getDefault().openEditor((IFile) content.getComfortCollisionCoverageA().getCorrespondingResource());
-        plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
-
-		answer = GenerationSelectionDialog.CHOICE_CREATE;
-        IpsPlugin.getDefault().openEditor((IFile) content.getComfortCollisionCoverageA().getCorrespondingResource());
 		plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 	}
 	
@@ -102,14 +112,6 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
 
     public int getIntAnswer() {
         return answer;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        plugin.getLog().removeLogListener(this);
     }
 
     
