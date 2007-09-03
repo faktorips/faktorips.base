@@ -291,15 +291,13 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     
     public void testValidateDuplicateRelationTarget() throws Exception {
         MessageList ml = generation.validate();
-        assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
+        assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
         
         generation.newRelation(typeRelation.getName()).setTarget(target.getQualifiedName());
         ml = generation.validate();
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
         
-        IProductCmpt target2 = newProductCmpt(ipsProject, "Target2");
-        target2.setPolicyCmptType(policyCmptType.getQualifiedName());
-        generation.newRelation(typeRelation.getName()).setTarget(target2.getQualifiedName());
+        generation.newRelation(typeRelation.getName()).setTarget(target.getQualifiedName());
         
         ml = generation.validate();
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
