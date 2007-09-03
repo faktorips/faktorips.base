@@ -108,6 +108,13 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
     /**
      * {@inheritDoc}
      */
+    public IIpsSrcFile getIpsSrcFile(String filenameWithoutExtension, IpsObjectType type) {
+        return new IpsSrcFile(this, filenameWithoutExtension + '.' + type.getFileExtension());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public Image getImage() {
         try {
             IIpsElement[] children = getChildren();

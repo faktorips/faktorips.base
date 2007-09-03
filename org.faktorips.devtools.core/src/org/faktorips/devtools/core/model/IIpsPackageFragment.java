@@ -110,6 +110,14 @@ public interface IIpsPackageFragment extends IIpsElement {
      * be returned.
      */
     public IIpsSrcFile getIpsSrcFile(String name);
+    
+    /**
+     * Returns a handle to the IPS source file for the given filenameWithoutExtension. 
+     * The file extension is derived from the ips object type.
+     * 
+     * @throws NullPointerException if type is <code>null</code>.
+     */
+    public IIpsSrcFile getIpsSrcFile(String filenameWithoutExtension, IpsObjectType type);
 
     /**
      * Creates the IpsSrcFile with the indicated name.
