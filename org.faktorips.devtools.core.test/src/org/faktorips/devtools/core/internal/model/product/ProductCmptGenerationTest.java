@@ -21,7 +21,7 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.DefaultTestContent;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.Parameter;
+import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -52,6 +53,11 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     private IIpsPackageFragmentRoot root;
     private IIpsProject ipsProject;
     
+    private IPolicyCmptType targetType;
+    private IRelation typeRelation;
+    private IProductCmpt target;
+    private IProductCmptGeneration targetGen;
+    
     public void setUp() throws Exception {
         super.setUp();
         ipsProject =  newIpsProject("TestProject");
@@ -60,6 +66,17 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         productCmpt = (IProductCmpt)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "testProduct");
         productCmpt.setPolicyCmptType(policyCmptType.getQualifiedName());
         generation = (IProductCmptGeneration)productCmpt.newGeneration();
+        
+        targetType = newPolicyCmptType(ipsProject, "TargetType");
+        target = newProductCmpt(ipsProject, "TargetProduct");
+        target.setPolicyCmptType(targetType.getQualifiedName());
+        targetGen = (IProductCmptGeneration)target.newGeneration();
+        targetGen.setValidFrom(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+        
+        typeRelation = policyCmptType.newRelation();
+        typeRelation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        typeRelation.setProductRelevant(true);
+        typeRelation.setTarget(targetType.getQualifiedName());
     }
     
     public void testCanCreateValidRelation() throws Exception {
@@ -273,91 +290,60 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
     
     public void testValidateDuplicateRelationTarget() throws Exception {
-    	DefaultTestContent content = new DefaultTestContent();
-    	
-        IProductCmpt product = content.getComfortMotorProduct();
-        IPolicyCmptType type = product.findPolicyCmptType();
-        IRelation relationType = type.getRelation("Vehicle");
-        IProductCmptGeneration generation = (IProductCmptGeneration)product.getGenerations()[0];
-
         MessageList ml = generation.validate();
+        assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
+        
+        generation.newRelation(typeRelation.getName()).setTarget(target.getQualifiedName());
+        ml = generation.validate();
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
         
-        IProductCmptRelation rel = generation.newRelation(relationType.getTargetRoleSingularProductSide());
-        rel.setTarget(content.getStandardVehicle().getQualifiedName());
-        
-        product.getIpsSrcFile().save(true, null);
+        IProductCmpt target2 = newProductCmpt(ipsProject, "Target2");
+        target2.setPolicyCmptType(policyCmptType.getQualifiedName());
+        generation.newRelation(typeRelation.getName()).setTarget(target2.getQualifiedName());
         
         ml = generation.validate();
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
-    
-        
     }
     
     public void testValidateNotEnougthRelations() throws Exception {
-        // test too less relations
-        DefaultTestContent content = new DefaultTestContent();
-        
-        IProductCmpt product = content.getComfortMotorProduct();
-        IPolicyCmptType type = product.findPolicyCmptType();
-        
-        IProductCmptGeneration generation = (IProductCmptGeneration)product.getGenerations()[0];
-        IRelation relation = type.getRelation("Vehicle");
-        
-        assertEquals(0, relation.getMinCardinalityProductSide());
-        assertEquals(1, relation.getMaxCardinalityProductSide());
-        
-        MessageList ml = generation.validate();
-        
-        assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
-        
-        relation.setMaxCardinalityProductSide(2);
-        relation.setMinCardinalityProductSide(2);
-        
-        type.getIpsSrcFile().save(true, null);
-        
-        ml = generation.validate();
-        assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
+        typeRelation.setMinCardinalityProductSide(1);
+        typeRelation.setMaxCardinalityProductSide(2);
 
+        MessageList ml = generation.validate();
+        assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
         
-        generation.newRelation(relation.getTargetRoleSingularProductSide());
+        generation.newRelation(typeRelation.getName());
         ml = generation.validate();
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
         
+        IProductCmpt target2 = newProductCmpt(ipsProject, "Target2");
+        target2.setPolicyCmptType(policyCmptType.getQualifiedName());
+        generation.newRelation(typeRelation.getName());
+        
+        ml = generation.validate();
+        assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
     }
     
     public void testValidateTooManyRelations() throws Exception {
-        // test too many relations
-        DefaultTestContent content = new DefaultTestContent();
-        
-        IProductCmpt product = content.getComfortMotorProduct();
-        IPolicyCmptType type = product.findPolicyCmptType();
-        
-        IProductCmptGeneration generation = (IProductCmptGeneration)product.getGenerations()[0];
-        IRelation relation = type.getRelation("Vehicle");
-        
-        IProductCmptRelation newRel = generation.newRelation(relation.getTargetRoleSingularProductSide());
-
-        assertEquals(0, relation.getMinCardinalityProductSide());
-        assertEquals(1, relation.getMaxCardinalityProductSide());
-        type.getIpsSrcFile().save(true, null);
-
+        typeRelation.setMinCardinalityProductSide(0);
+        typeRelation.setMaxCardinalityProductSide(1);
 
         MessageList ml = generation.validate();
-        assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
+        assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
         
-        newRel.delete();
-        product.getIpsSrcFile().save(true, null);
-        
+        generation.newRelation(typeRelation.getName());
         ml = generation.validate();
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
+        
+        IProductCmpt target2 = newProductCmpt(ipsProject, "Target2");
+        target2.setPolicyCmptType(policyCmptType.getQualifiedName());
+        generation.newRelation(typeRelation.getName());
+        
+        ml = generation.validate();
+        assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
     }
     
     public void testValidateNoTemplate() throws Exception {
-        DefaultTestContent content = new DefaultTestContent();        
-        IProductCmpt product = content.getComfortMotorProduct();
-        IProductCmptGeneration generation = (IProductCmptGeneration)product.getGenerations()[0];
-    	
         generation.getProductCmpt().setPolicyCmptType("");
         MessageList ml = generation.validate();
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NO_TEMPLATE));
