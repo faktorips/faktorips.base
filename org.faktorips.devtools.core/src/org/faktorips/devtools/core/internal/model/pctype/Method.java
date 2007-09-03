@@ -56,7 +56,6 @@ public class Method extends IpsObjectPart implements IMethod {
     private Modifier modifier = Modifier.PUBLISHED;
     private boolean abstractFlag = false;
     private List parameters = new ArrayList();
-
     
     /**
      * Creates a new method.
@@ -94,8 +93,9 @@ public class Method extends IpsObjectPart implements IMethod {
      * {@inheritDoc}
      */
     public void setDatatype(String newDatatype) {
+        String oldDatatype = newDatatype;
         this.datatype = newDatatype;
-        objectHasChanged();
+        valueChanged(oldDatatype, newDatatype);
     }
 
     /** 
