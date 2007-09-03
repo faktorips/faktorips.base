@@ -20,8 +20,8 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.GregorianCalendar;
 
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -34,24 +34,23 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
     
     private ITimedIpsObject timedObj;
     private IIpsObjectGeneration generation;
-    private DefaultTestContent content;
     
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        content = new DefaultTestContent();
         // we use the ProductCmptImpl to test the TimedIpsObject class
         // because TimedIpsObject is abstract.
-        timedObj = content.getBasicCollisionCoverage();
-        generation = timedObj.getGenerations()[0];
+        IIpsProject ipsProject = newIpsProject();
+        timedObj = newProductCmpt(ipsProject, "MyProduct");
+        generation = timedObj.newGeneration();
     }
     
     public void testGetGenerationNo() {
         assertEquals(1, generation.getGenerationNo());
         
-        // create a new generation that begins before the generation => generation no changes!
+        // create a new generation that begins before the generation => generation number does not changes!
         generation.setValidFrom(new GregorianCalendar(2005, 1, 1));
         IIpsObjectGeneration gen2 = timedObj.newGeneration();
         gen2.setValidFrom(new GregorianCalendar(2004, 1, 1));
