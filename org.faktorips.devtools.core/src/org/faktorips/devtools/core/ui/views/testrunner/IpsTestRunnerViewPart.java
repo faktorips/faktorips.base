@@ -94,11 +94,15 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	private int fOrientation= VIEW_ORIENTATION_AUTOMATIC;
 	private int fCurrentOrientation;
 	
+    /* Indicates if the scroll is locked or not locked */
+    private boolean scrollLocked;
+    
 	/* Actions */
     private Action fStopTestRunAction;
 	private Action fRerunLastTestAction;
 	private Action fNextAction;
 	private Action fPreviousAction;
+	private Action fLockScrollAction;
 	private ToggleOrientationAction[] fToggleOrientationActions;
     
 	/* Sash form orientations */
@@ -107,9 +111,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	static final int VIEW_ORIENTATION_AUTOMATIC = 2;
 	
     // Persistence tags.
-    static final String TAG_PAGE= "page"; //$NON-NLS-1$
+    static final String LAYOUT_MEMENTO= "layout"; //$NON-NLS-1$
     static final String TAG_RATIO= "ratio"; //$NON-NLS-1$
-    static final String TAG_TRACEFILTER= "tracefilter"; //$NON-NLS-1$ 
     static final String TAG_ORIENTATION= "orientation"; //$NON-NLS-1$
     static final String TAG_SCROLL= "scroll"; //$NON-NLS-1$
     
@@ -169,7 +172,24 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     private HashMap testId2TestQualifiedNameMap = new HashMap();
     
     /*
-     * Action class to stop the currently running test.
+     * Action to lock the scroll
+     */
+    private class LockScrollAction extends Action {
+        public LockScrollAction() {
+            super(Messages.IpsTestRunnerViewPart_Menu_ScrollLock, Action.AS_CHECK_BOX);
+            setToolTipText(Messages.IpsTestRunnerViewPart_Menu_ScrollLockTooltip); 
+            setDisabledImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("dlcl16/lock.gif")); //$NON-NLS-1$
+            setHoverImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/lock.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/lock.gif")); //$NON-NLS-1$
+        }
+        
+        public void run(){
+            IpsTestRunnerViewPart.this.scrollLocked = !IpsTestRunnerViewPart.this.scrollLocked;
+        }
+    }
+    
+    /*
+     * Action to stop the currently running test.
      */
     private class StopTestRunAction extends Action {
         public StopTestRunAction() {
@@ -191,7 +211,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     }
     
 	/*
-	 * Action class to rerun a test.
+	 * Action to rerun a test.
 	 */
 	private class RerunLastAction extends Action {
 		public RerunLastAction() {
@@ -213,7 +233,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	}
     
     /*
-     * Action class to select the next error or failure
+     * Action to select the next error or failure
      */
     private class ShowNextErrorAction extends Action {
         public ShowNextErrorAction() {
@@ -230,7 +250,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     }    
 	
     /*
-     * Action class to select the previous error or failure
+     * Action to select the previous error or failure
      */
     private class ShowPreviousErrorAction extends Action {
         public ShowPreviousErrorAction() {
@@ -344,18 +364,35 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		registerAsIpsTestRunListener();
         
         if (fMemento != null) {
-            restoreLayoutState(fMemento);
+            restoreLayoutState(fMemento.getChild(LAYOUT_MEMENTO));
         }
         fMemento= null;      
 	}
 
     private void restoreLayoutState(IMemento memento) {
+        restoreOrientationAndRatio(memento);
+        restoreLockScroll(memento);
+    }
+
+    private void restoreLockScroll(IMemento memento) {
+        Integer scroll= memento.getInteger(TAG_SCROLL);
+        if (scroll != null){
+            scrollLocked = (scroll.intValue() == 1) ? true : false;
+        }
+        if (fLockScrollAction != null){
+            fLockScrollAction.setChecked(scrollLocked);
+        }
+    }
+
+    private void restoreOrientationAndRatio(IMemento memento) {
         Integer ratio= memento.getInteger(TAG_RATIO);
-        if (ratio != null) 
+        if (ratio != null) {
             fSashForm.setWeights(new int[] { ratio.intValue(), 1000 - ratio.intValue()} );
+        }
         Integer orientation= memento.getInteger(TAG_ORIENTATION);
-        if (orientation != null)
+        if (orientation != null){
             fOrientation= orientation.intValue();
+        }
         computeOrientation();
     }
     
@@ -384,6 +421,17 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         if (progressService != null)
             progressService.showBusyForFamily(FAMILY_IPT_TEST_RUN);        
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void saveState(IMemento memento) {
+        super.saveState(memento);
+        IMemento layout = memento.createChild(LAYOUT_MEMENTO);
+        layout.putInteger(TAG_ORIENTATION, fCurrentOrientation);
+        layout.putInteger(TAG_RATIO, fSashForm.getWeights()[0]);
+        layout.putInteger(TAG_SCROLL, scrollLocked?1:0);
+    }
     
     private IWorkbenchSiteProgressService getProgressService() {
         Object siteService= getSite().getAdapter(IWorkbenchSiteProgressService.class);
@@ -441,7 +489,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		fRerunLastTestAction= new RerunLastAction();
 		fNextAction= new ShowNextErrorAction();
 		fPreviousAction= new ShowPreviousErrorAction();
-
+        fLockScrollAction = new LockScrollAction();
+        
         fToggleOrientationActions =
 			new ToggleOrientationAction[] {
 				new ToggleOrientationAction(this, VIEW_ORIENTATION_VERTICAL),
@@ -452,6 +501,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         
         toolBar.add(fNextAction);
         toolBar.add(fPreviousAction);
+        toolBar.add(fLockScrollAction);
         toolBar.add(new Separator());
         toolBar.add(fStopTestRunAction);
 		toolBar.add(fRerunLastTestAction);
@@ -493,12 +543,14 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	}
 	
 	private void setOrientation(int orientation) {
-		if ((fSashForm == null) || fSashForm.isDisposed())
+		if ((fSashForm == null) || fSashForm.isDisposed()){
 			return;
+        }
 		boolean horizontal = orientation == VIEW_ORIENTATION_HORIZONTAL;
 		fSashForm.setOrientation(horizontal ? SWT.HORIZONTAL : SWT.VERTICAL);
-		for (int i = 0; i < fToggleOrientationActions.length; ++i)
+		for (int i = 0; i < fToggleOrientationActions.length; ++i){
 			fToggleOrientationActions[i].setChecked(fOrientation == fToggleOrientationActions[i].getOrientation());
+        }
 		fCurrentOrientation = orientation;
 		GridLayout layout= (GridLayout) fCounterComposite.getLayout();
 		setCounterColumns(layout); 
@@ -686,7 +738,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 			public void run() {
 				if(isDisposed()) 
 					return;
-				fTestRunPane.startTest(testId, qualifiedTestName);
+				fTestRunPane.startTest(testId, qualifiedTestName, scrollLocked);
 			}
 		});
 	}
@@ -789,7 +841,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	public void testFailureOccured(String qualifiedTestName, String[] failureDetails) {
 	    isFailure = true;
 	    postFailureTest(getTestId(qualifiedTestName), failureDetails);
-        setNextPrevToolBarButtonsStatus(true);
+	    setNextPrevToolBarButtonsStatus(true);
 	}
 
 	/**

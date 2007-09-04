@@ -36,6 +36,8 @@ public class Messages extends NLS {
 	public static String IpsTestCounterPanel_Failures_Label;
 	public static String IpsTestRunnerViewPart_Action_RerunLastTest_Text;
 	public static String IpsTestRunnerViewPart_Action_RerunLastTest_ToolTip;
+    public static String IpsTestRunnerViewPart_Menu_ScrollLock;
+    public static String IpsTestRunnerViewPart_Menu_ScrollLockTooltip;
 	public static String IpsTestRunnerViewPart_TestRunPane_Text;
 	public static String IpsTestRunnerViewPart_TestFailurePane_Text;
 	public static String IpsTestRunnerViewPart_Menu_HorizontalOrientation;

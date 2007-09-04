@@ -326,8 +326,9 @@ public class TestRunPane {
 
 	/**
 	 * The given test has started.
+	 * @param scrollLocked 
 	 */
-	public void startTest(String testId, String qualifiedTestName) {
+	public void startTest(String testId, String qualifiedTestName, boolean scrollLocked) {
 		TestTableEntry testTableEntry = (TestTableEntry) fTableItemMap.get(testId);
 		if (testTableEntry == null)
 			return;
@@ -336,7 +337,9 @@ public class TestRunPane {
 		tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/testrun.gif")); //$NON-NLS-1$
         
         // select current item and scroll
-        fTable.setSelection(new TableItem[]{tableItem});
+        if (!scrollLocked){
+            fTable.setSelection(new TableItem[]{tableItem});
+        }
 	}
 	
 	/**
