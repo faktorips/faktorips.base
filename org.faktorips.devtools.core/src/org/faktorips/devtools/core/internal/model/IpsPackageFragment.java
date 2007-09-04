@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
@@ -88,14 +89,38 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      * {@inheritDoc}
      */
     public IIpsPackageFragmentSortDefinition getSortDefinition() {
-        IIpsPackageFragmentSortDefinition sortDef =  new IpsPackageFragmentArbitrarySortDefinition();
+        IIpsPackageFragmentSortDefinition sortDef = null;
 
-        try {
-            String content = getSortDefinitionContent();
-            sortDef.initPersistenceContent(content, this.getIpsProject().getPlainTextFileCharset());
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return null;
+        /*
+         * SortDefinitions are cached in IpsModel.
+         */
+        Map map = ((IpsModel)this.getIpsModel()).getSortOrderCache();
+
+        String content = null;
+
+        if (map.containsKey(this)) {
+            IIpsPackageFragmentSortDefinition cachedSortDef =  (IIpsPackageFragmentSortDefinition)map.get(this);
+
+            if (cachedSortDef != null) {
+               try {
+                   sortDef = new IpsPackageFragmentArbitrarySortDefinition();
+                   content =((IIpsPackageFragmentSortDefinition) cachedSortDef).toPersistenceContent();
+                   sortDef.initPersistenceContent(content, this.getIpsProject().getPlainTextFileCharset());
+               } catch (Exception e) {
+                return null;
+               }
+            }
+        } else {
+
+            try {
+                 sortDef = new IpsPackageFragmentArbitrarySortDefinition();
+                 content = getSortDefinitionContent();
+                 sortDef.initPersistenceContent(content, this.getIpsProject().getPlainTextFileCharset());
+            } catch (CoreException e) {
+                return null;
+            }
+
+            map.put(this, sortDef);
         }
 
         return sortDef;
@@ -153,6 +178,8 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
 
         IFile file = folder.getFile(new Path(SORT_ORDER_FILE));
+        Map map = ((IpsModel)this.getIpsModel()).getSortOrderCache();
+        map.remove(this);
 
         if (newDefinition == null) {
             file.delete(true, null);
@@ -165,6 +192,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         ByteArrayInputStream is= new ByteArrayInputStream(bytes);
         file.create(is, true, null);
 
+        map.put(this, newDefinition);
     }
 
     /**

@@ -33,9 +33,6 @@ public class IpsPackageNameComparator implements Comparator {
 
     /**
      *
-     * @param level Compare until segment level is reached:
-     * <code>0</code> compare all segments.
-     * <code>>0</code> compare until segment <code>level</code>.
      */
     public IpsPackageNameComparator () {
     }

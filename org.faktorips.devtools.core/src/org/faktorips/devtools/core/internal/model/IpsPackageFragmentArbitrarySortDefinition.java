@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -39,7 +40,9 @@ import org.faktorips.util.StringUtil;
  */
 public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFragmentArbitrarySortDefinition {
 
-    private Map sortOrder = new HashMap(20);
+    private Map sortOrderLookup = new HashMap(20);
+
+    private List sortOrder = new ArrayList(20);
 
     /**
      * @param file
@@ -53,12 +56,7 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
      * {@inheritDoc}
      */
     public String[] getSegmentNames() {
-        String[] segmentNames = new String[sortOrder.size()];
-
-        ArrayList list = (ArrayList)sortOrder.values();
-        segmentNames = (String[])list.toArray(segmentNames);
-
-        return segmentNames;
+        return (String[])sortOrder.toArray(new String[sortOrder.size()]);
     }
 
     /**
@@ -66,6 +64,7 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
      */
     public void setSegmentNames(String[] segments) {
 
+        sortOrderLookup.clear();
         sortOrder.clear();
 
         int pos = 0;
@@ -73,7 +72,8 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
         for (int i = 0; i < segments.length; i++) {
 
             if (checkLine(segments[i])) {
-                sortOrder.put(segments[i], new Integer(pos++));
+                sortOrderLookup.put(segments[i], new Integer(pos++));
+                sortOrder.add(segments[i]);
             }
         }
     }
@@ -83,17 +83,17 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
      */
     public int compare(String segment1, String segment2) {
 
-        if (sortOrder.containsKey(segment1) && sortOrder.containsKey(segment2)) {
-            Integer pos1 = (Integer) sortOrder.get(segment1);
-            Integer pos2 = (Integer) sortOrder.get(segment2);
+        if (sortOrderLookup.containsKey(segment1) && sortOrderLookup.containsKey(segment2)) {
+            Integer pos1 = (Integer) sortOrderLookup.get(segment1);
+            Integer pos2 = (Integer) sortOrderLookup.get(segment2);
 
             return pos1.compareTo(pos2);
         } else {
-            if (!sortOrder.containsKey(segment1)) {
+            if (!sortOrderLookup.containsKey(segment1)) {
                 return 1;
             }
 
-            if (!sortOrder.containsKey(segment2)) {
+            if (!sortOrderLookup.containsKey(segment2)) {
                 return -1;
             }
 
@@ -105,12 +105,12 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
      * {@inheritDoc}
      */
     public String toPersistenceContent() {
-        String content = new String();
+        String content = null;
 
-        ArrayList list = (ArrayList)sortOrder.values();
-        list.add(0, Messages.IpsPackageFragmentArbitrarySortDefinition_CommentLine);
+        List out = new ArrayList(sortOrder);
+        out.add(0, Messages.IpsPackageFragmentArbitrarySortDefinition_CommentLine);
 
-        content = StringUtils.join(list.iterator(), StringUtil.getSystemLineSeparator());
+        content = StringUtils.join(out.iterator(), StringUtil.getSystemLineSeparator());
 
         return content;
     }
@@ -132,7 +132,7 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
         }
 
         int pos = 0;
-        sortOrder.clear();
+        sortOrderLookup.clear();
 
         while (true) {
 
@@ -149,7 +149,8 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
 
             // skip empty lines (incl. whitespaces) and comments
             if (checkLine(line)) {
-                sortOrder.put(line, new Integer(pos++));
+                sortOrderLookup.put(line, new Integer(pos++));
+                sortOrder.add(line);
             }
 
         }

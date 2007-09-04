@@ -380,4 +380,69 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         assertEquals("products.kranken.leistungsarten.fix", children[1].getName());
     }
 
+    public void testGetSortedChildIpsPackageFragmentsExtend() throws CoreException, IOException  {
+
+        IIpsPackageFragment[] children = this.rootPackage.getDefaultIpsPackageFragment().getSortedChildIpsPackageFragments();
+        assertEquals(children.length, 1);
+
+        rootPackage.createPackageFragment("products.hausrat", true, null);
+        rootPackage.createPackageFragment("products.kranken", true, null);
+        IIpsPackageFragment service = rootPackage.createPackageFragment("products.kranken.leistungsarten", true, null);
+        rootPackage.createPackageFragment("products.kranken.leistungsarten.fix", true, null);
+        rootPackage.createPackageFragment("products.kranken.leistungsarten.optional", true, null);
+        rootPackage.createPackageFragment("products.kranken.vertragsarten", true, null);
+        rootPackage.createPackageFragment("products.kranken.gruppenarten", true, null);
+        rootPackage.createPackageFragment("products.unfall", true, null);
+        rootPackage.createPackageFragment("products.haftpflicht", true, null);
+
+        IIpsPackageFragment products = rootPackage.getIpsPackageFragment("products");
+
+        // sorted: valid files and entries
+        List list = new ArrayList();
+        list.add("products");
+
+        createPackageOrderFile((IFolder) rootPackage.getCorrespondingResource(), list);
+        list.clear();
+
+        list.add("unfall");
+        list.add("kranken");
+        list.add("folder");
+        list.add("haftpflicht");
+        list.add("hausrat");
+
+        createPackageOrderFile((IFolder) products.getCorrespondingResource(), list);
+        list.clear();
+
+        list.add("optional");
+        list.add("fix");
+
+        createPackageOrderFile((IFolder) service.getCorrespondingResource(), list);
+        list.clear();
+
+        children = products.getSortedChildIpsPackageFragments();
+        assertEquals(5, children.length);
+        assertEquals("products.unfall", children[0].getName());
+        assertEquals("products.kranken", children[1].getName());
+        assertEquals("products.folder", children[2].getName());
+        assertEquals("products.haftpflicht", children[3].getName());
+        assertEquals("products.hausrat", children[4].getName());
+
+        children = service.getSortedChildIpsPackageFragments();
+        assertEquals(2, children.length);
+        assertEquals("products.kranken.leistungsarten.optional", children[0].getName());
+        assertEquals("products.kranken.leistungsarten.fix", children[1].getName());
+
+        // test caching
+        children = products.getSortedChildIpsPackageFragments();
+        assertEquals(5, children.length);
+        assertEquals("products.unfall", children[0].getName());
+        assertEquals("products.kranken", children[1].getName());
+        assertEquals("products.folder", children[2].getName());
+        assertEquals("products.haftpflicht", children[3].getName());
+        assertEquals("products.hausrat", children[4].getName());
+
+        assertEquals(5, ((IpsModel) children[0].getIpsModel()).getSortOrderCache().size());
+
+    }
+
 }
