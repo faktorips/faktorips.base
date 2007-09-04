@@ -55,6 +55,7 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsContentMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
@@ -178,6 +179,7 @@ public class IpsPlugin extends AbstractUIPlugin {
         ipsEditorSettings = new IpsObjectEditorSettings();
         ResourcesPlugin.getWorkspace().addSaveParticipant(this, ipsEditorSettings);
         ipsEditorSettings.load(getStateLocation());
+        IpsObjectType.POLICY_CMPT_TYPE.getName(); // force loading of class before model is created!
         model = new IpsModel();
         model.startListeningToResourceChanges();
     }
@@ -790,4 +792,5 @@ public class IpsPlugin extends AbstractUIPlugin {
         }
         return ipsProblemMarkerManager;
     }
+    
 }

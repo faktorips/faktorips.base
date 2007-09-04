@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
@@ -74,7 +75,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        ipsProject = this.newIpsProject("TestProject");
+        ipsProject = this.newIpsProject();
         root = ipsProject.getIpsPackageFragmentRoots()[0];
         pack = root.createPackageFragment("products.folder", true, null);
         srcFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "TestProduct", true, null);
@@ -371,8 +372,9 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     /**
      * Test if a runtime id change will be correctly updated in the product component which 
      * referenced the product cmpt on which the runtime id was changed.
+     * @throws IOException 
      */
-    public void testRuntimeIdDependency() throws CoreException{
+    public void testRuntimeIdDependency() throws CoreException, IOException{
         IPolicyCmptType c = newPolicyCmptType(root, "C");
         IPolicyCmptType d = newPolicyCmptType(root, "D");
         IRelation relation = c.newRelation();
@@ -407,8 +409,9 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCXmlFile = productCXmlFile.replaceAll("\\.", "/");
         productCXmlFile += ".xml";
         IFile file = ipsProject.getProject().getFile("bin//" + productCXmlFile);
+        InputStream is = null;
         try {
-            InputStream is = file.getContents();
+            is = file.getContents();
             if (is==null) {
                 throw new RuntimeException("Can't find resource " + productCXmlFile);
             }
@@ -426,6 +429,10 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
             assertEquals("newRuntimeId", matcher.group(matcher.groupCount()));
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            if (is!=null) {
+                is.close();
+            }
         }
     }    
 }

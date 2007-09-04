@@ -17,9 +17,6 @@
 
 package org.faktorips.devtools.core.ui.binding;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -243,21 +240,31 @@ public class BindingContext {
     /**
      * Binds the control's enabled property to the given part container's property.
      * 
-     * @throws IllegalArgumentException if the object's property is not of type boolean.
-     * @throws NullPointerException if any argument is <code>null</code>.
-     */
-    public void bindEnabled(Control control, IIpsObjectPartContainer object, String property) {
-        add(new EnableBinding(control, object, property));
-    }
-    
-    /**
-     * Binds the control's enabled property to the given model object's property.
+     * @param control The control which enabled property is bound 
+     * @param object The object the control is bound to 
+     * @param property The name of the object's property the control is bound to.
      * 
      * @throws IllegalArgumentException if the object's property is not of type boolean.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public void bindEnabled(Control control, IPropertyChangeListenerSupport modelObject, String property) {
-        add(new EnableBinding(control, modelObject, property));
+    public void bindEnabled(Control control, IIpsObjectPartContainer object, String property) {
+        add(new EnableBinding(control, object, property, true));
+    }
+    
+    /**
+     * Binds the control's enabled property to the given part container's property.
+     * 
+     * @param control The control which enabled property is bound 
+     * @param object The object the control is bound to 
+     * @param property The name of the object's property the control is bound to.
+     * @param enabledIfTrue <code>true</code> if the control should be enabled if the object's property is <code>true</code>,
+     * <code>false</code> if it should be enabled if the object's property is <code>false</code>. 
+     * 
+     * @throws IllegalArgumentException if the object's property is not of type boolean.
+     * @throws NullPointerException if any argument is <code>null</code>.
+     */
+    public void bindEnabled(Control control, IIpsObjectPartContainer object, String property, boolean enabledIfTrue) {
+        add(new EnableBinding(control, object, property, enabledIfTrue));
     }
     
     /**

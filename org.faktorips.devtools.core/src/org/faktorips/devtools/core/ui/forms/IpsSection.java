@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.GridData;
@@ -32,13 +34,14 @@ import org.faktorips.devtools.core.ui.IDataChangeableReadAccessWithListenerSuppo
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.util.ArgumentCheck;
 
 
 /**
  * A section is an area of the user interface.
  */
-public abstract class IpsSection extends Composite implements IDataChangeableReadWriteAccess, IDataChangeableReadAccessWithListenerSupport  {
+public abstract class IpsSection extends Composite implements IDataChangeableReadWriteAccess, IDataChangeableReadAccessWithListenerSupport, DisposeListener  {
     
     private Section section;
     private boolean isRefreshing = false;
@@ -48,6 +51,8 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     private UIToolkit toolkit;
     
     private boolean changeable = true;
+    
+    protected BindingContext bindingContext = new BindingContext();
     
     private ArrayList dataChangeableStateChangeListeners;
 
@@ -100,6 +105,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         this.style = style;
         this.layoutData = layoutData;
         this.toolkit = toolkit;
+        addDisposeListener(this);
     }
     
     /**
@@ -260,5 +266,15 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
 	private void setFocusPredecessor(IpsSection predecessor) {
 		focusPredecessor = predecessor;
 	}
+
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public void widgetDisposed(DisposeEvent e) {
+       if (e.widget==this) {
+           bindingContext.dispose();
+       }
+    }
 
 }

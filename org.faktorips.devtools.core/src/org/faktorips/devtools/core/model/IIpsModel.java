@@ -201,5 +201,15 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Clears the validation results for all elements in the workspace.
      */
-    public void clearValidationCache();    
+    public void clearValidationCache();
+    
+    /**
+     * Returns the type of ips objects supported.
+     */
+    public IpsObjectType[] getIpsObjectTypes();
+    
+    /**
+     * Returns the type identified by the name or <code>null</code> if no such type exists.
+     */
+    public IpsObjectType getIpsObjectType(String name);  
 }

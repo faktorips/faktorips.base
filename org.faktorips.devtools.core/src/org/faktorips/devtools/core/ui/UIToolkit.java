@@ -307,7 +307,6 @@ public class UIToolkit {
 		Hyperlink newLink;
 		if (formToolkit != null) {
 			newLink = formToolkit.createHyperlink(parent, text, SWT.NONE);
-			;
 		} else {
 			throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 		}

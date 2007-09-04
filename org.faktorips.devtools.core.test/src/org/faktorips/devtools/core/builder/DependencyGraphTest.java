@@ -41,7 +41,7 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception{
         System.out.println("Start setUp()");
         super.setUp();
-        ipsProject = newIpsProject("TestProject");
+        ipsProject = newIpsProject();
         root = ipsProject.getIpsPackageFragmentRoots()[0];
         a = newPolicyCmptType(root, "A");
         b = newPolicyCmptType(root, "B");

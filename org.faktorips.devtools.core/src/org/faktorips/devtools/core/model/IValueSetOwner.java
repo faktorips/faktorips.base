@@ -35,5 +35,10 @@ public interface IValueSetOwner extends IValueDatatypeProvider {
      * remains unchanged. 
      */
     public void setValueSetType(ValueSetType type);
+
+    /**
+     * Returns <code>true</code> if the value set owned by this owner is updateabled.
+     */
+    public boolean isValueSetUpdateable();
     
 }

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: FaktorIPS-Devtools
 Bundle-SymbolicName: org.faktorips.devtools.core; singleton:=true
-Bundle-Version: 1.0.4
+Bundle-Version: 2.0.0
 Bundle-Activator: org.faktorips.devtools.core.IpsPlugin
 Bundle-Vendor: FaktorZehn
 Bundle-Localization: plugin
@@ -62,10 +62,12 @@ Export-Package: org.apache.poi.ddf,
  org.faktorips.devtools.core.internal.model.pctype,
  org.faktorips.devtools.core.internal.model.product,
  org.faktorips.devtools.core.internal.model.productcmpttype,
+ org.faktorips.devtools.core.internal.model.productcmpttype2,
  org.faktorips.devtools.core.internal.model.tablecontents,
  org.faktorips.devtools.core.internal.model.tablestructure,
  org.faktorips.devtools.core.internal.model.testcase,
  org.faktorips.devtools.core.internal.model.testcasetype,
+ org.faktorips.devtools.core.internal.model.type,
  org.faktorips.devtools.core.internal.model.versionmanager,
  org.faktorips.devtools.core.internal.refactor,
  org.faktorips.devtools.core.model,
@@ -74,13 +76,16 @@ Export-Package: org.apache.poi.ddf,
  org.faktorips.devtools.core.model.pctype,
  org.faktorips.devtools.core.model.product,
  org.faktorips.devtools.core.model.productcmpttype,
+ org.faktorips.devtools.core.model.productcmpttype2,
  org.faktorips.devtools.core.model.tablecontents,
  org.faktorips.devtools.core.model.tablestructure,
  org.faktorips.devtools.core.model.testcase,
  org.faktorips.devtools.core.model.testcasetype,
+ org.faktorips.devtools.core.model.type,
  org.faktorips.devtools.core.model.versionmanager,
  org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.actions,
+ org.faktorips.devtools.core.ui.binding,
  org.faktorips.devtools.core.ui.controlfactories,
  org.faktorips.devtools.core.ui.controller,
  org.faktorips.devtools.core.ui.controller.fields,

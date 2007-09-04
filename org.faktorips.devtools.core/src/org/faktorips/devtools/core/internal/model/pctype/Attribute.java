@@ -234,7 +234,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
     public boolean isDerived() {
         return getAttributeType().isDerived();
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -323,6 +323,13 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         }
         valueSet = type.newValueSet(this, getNextPartId());
         objectHasChanged();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isValueSetUpdateable() {
+        return true;
     }
 
     /**

@@ -49,7 +49,7 @@ public class ProductCmptRelationTest extends AbstractIpsPluginTest {
      */
     protected void setUp() throws Exception {
     	super.setUp();
-    	ipsProject = newIpsProject("TestProject");
+    	ipsProject = newIpsProject();
     	policyCmptType = (IPolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy");
     	productCmpt = (ProductCmpt)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "TestProduct");
     	productCmpt.setPolicyCmptType(policyCmptType.getQualifiedName());

@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.businessfct.BusinessFunctionImpl;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
+import org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.internal.model.testcase.TestCase;
@@ -32,11 +33,9 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * Class that represents the type of IPS objects. 
  * 
- * This class is not intended to be subclassed.
- * 
  * @author Jan Ortmann
  */
-public final class IpsObjectType {
+public class IpsObjectType {
     
     /**
      * Type for business function.
@@ -49,6 +48,12 @@ public final class IpsObjectType {
      */
     public final static IpsObjectType POLICY_CMPT_TYPE = 
         new IpsObjectType("PolicyCmptType", Messages.IpsObjectType_namePolicyClass, "ipspct", true, false, "PolicyCmptType.gif", "PolicyCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+
+    /**
+     * Type for product component type.
+     */
+    public final static IpsObjectType PRODUCT_CMPT_TYPE2 = 
+        new IpsObjectType("ProductCmptType2", Messages.IpsObjectType_nameProductClass, "ipsproductcmpttype", true, false, "PolicyCmptType.gif", "PolicyCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     /**
      * Type for product component type.
@@ -86,8 +91,8 @@ public final class IpsObjectType {
     public final static IpsObjectType TEST_CASE =  
         new IpsObjectType("TestCase", Messages.IpsObjectType_nameTestCase, "ipstestcase", false, true, "TestCase.gif", "TestCaseDisabled.gif");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-    public final static IpsObjectType[] ALL_TYPES = new IpsObjectType[]
-    	{BUSINESS_FUNCTION, POLICY_CMPT_TYPE, TABLE_STRUCTURE, PRODUCT_CMPT, TABLE_CONTENTS, TEST_CASE_TYPE, TEST_CASE};
+    //  TODO refactor: use IpsModel.getIpsObjectTypes!!!
+    public static IpsObjectType[] ALL_TYPES = null;  
     
     /**
      * Ips source file type for ips objects in none ips source folder.
@@ -99,7 +104,6 @@ public final class IpsObjectType {
      * Returns the IpsObjectType that has the given file extension. 
 	 * Returns null, if no type with the given file extension exists or the given
 	 * fileExtension is null.
-     * 
      */
     public final static IpsObjectType getTypeForExtension(String fileExtension) {
         for (int i=0; i<ALL_TYPES.length; i++) {
@@ -116,7 +120,7 @@ public final class IpsObjectType {
 	 * name is <code>null</code>.
 	 */
 	public final static IpsObjectType getTypeForName(String name) {
-		for (int i=0; i<ALL_TYPES.length; i++) {
+        for (int i=0; i<ALL_TYPES.length; i++) {
 			if (ALL_TYPES[i].name.equals(name)) {
 				return ALL_TYPES[i];
 			}
@@ -146,13 +150,13 @@ public final class IpsObjectType {
 	/**
 	 * Creates the ips object for the given file.
 	 */
-	public final IIpsObject newObject(IIpsSrcFile file) {
-	    if (this==BUSINESS_FUNCTION) {
-	        return new BusinessFunctionImpl(file);
-	    }
+	public IIpsObject newObject(IIpsSrcFile file) {
 	    if (this==POLICY_CMPT_TYPE) {
 	        return new PolicyCmptType(file);
 	    }
+        if (this==PRODUCT_CMPT_TYPE2) {
+            return new ProductCmptType(file);
+        }
 	    if (this==TABLE_STRUCTURE) {
 	        return new TableStructure(file);
 	    }
@@ -168,6 +172,9 @@ public final class IpsObjectType {
 	    if (this==TEST_CASE) {
 	        return new TestCase(file);
 	    }	    
+        if (this==BUSINESS_FUNCTION) {
+            return new BusinessFunctionImpl(file);
+        }
 	    throw new RuntimeException("Can't create object for type " + this); //$NON-NLS-1$
 	}
 
@@ -260,7 +267,7 @@ public final class IpsObjectType {
 		return xmlElementName;
 	}
     
-    private IpsObjectType(
+    public IpsObjectType(
             String xmlElementName, 
             String name, 
             String fileExtension,

@@ -73,7 +73,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     protected void setUp() throws Exception {
         super.setUp();
-        ipsProject = this.newIpsProject("TestProject");
+        ipsProject = this.newIpsProject();
         root = ipsProject.getIpsPackageFragmentRoots()[0];
     }
 

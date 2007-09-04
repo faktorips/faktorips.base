@@ -21,7 +21,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * A visitor that makes it easy to implement a function based on all types in a supertype hierarchy.

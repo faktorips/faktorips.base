@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Test data for TableStructureUsageTest.java
+-->
+<testcases>
+    <TableStructureUsage roleName="role1" mandatoryTableContent="true">
+    	<TableStructure tableStructure="tableStructure1" />
+    	<TableStructure tableStructure="tableStructure2" />
+    	<TableStructure tableStructure="tableStructure3" />
+    </TableStructureUsage>
+    <TableStructureUsage roleName="role2" mandatoryTableContent="false">
+    </TableStructureUsage>    
+</testcases>

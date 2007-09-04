@@ -115,7 +115,6 @@ public class MethodTest extends AbstractIpsPluginTest {
         assertEquals("Decimal", copyParams[0].getDatatype());
         assertEquals("p1", copyParams[1].getName());
         assertEquals("Money", copyParams[1].getDatatype());
-
     }
     
     public void testIsSame() {
@@ -154,12 +153,10 @@ public class MethodTest extends AbstractIpsPluginTest {
         // different number of parameters 
         other.newParameter();
         assertFalse(method.isSame(other));
-        
     }
 
     public void testNewPart() {
         assertNotNull(method.newPart(IParameter.class));
-        
     	try {
 			method.newPart(IAttribute.class);
 			fail();

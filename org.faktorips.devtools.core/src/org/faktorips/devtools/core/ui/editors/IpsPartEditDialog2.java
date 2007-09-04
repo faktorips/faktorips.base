@@ -28,21 +28,28 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.util.memento.Memento;
 
 
 /**
- *
+ * Base class for dialogs that allows to edit an ips object part.
+ * In contrast to the original IpsPartEditDialog this version uses the new databinding. 
+ * 
+ * @since 2.0
+ *  
+ * @see BindingContext
+ * 
+ * @author Jan Ortmann
  */
-public abstract class IpsPartEditDialog2 extends EditDialog {
+public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsChangeListener {
     
-    protected BindingContext bindingContext;
+    protected BindingContext bindingContext = new BindingContext();;
     private IIpsObjectPart part;
     private TextField descriptionField;
     private Memento oldState;
@@ -62,9 +69,9 @@ public abstract class IpsPartEditDialog2 extends EditDialog {
             boolean useTabFolder) {
         super(parentShell, windowTitle, useTabFolder);
         this.part = part;
-        bindingContext = new BindingContext();
         oldState = part.getIpsObject().newMemento();
         dirty = part.getIpsObject().getIpsSrcFile().isDirty();
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
     }
     
     // overwritten to be sure to get the cancel-button as soon as possible...
@@ -91,6 +98,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog {
         if (bindingContext!=null) {
             bindingContext.dispose();
         }
+        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
         return super.close();
     }
     
@@ -111,7 +119,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog {
 	protected TabItem createDescriptionTabItem(TabFolder folder) {
 	    Composite c = createTabItemComposite(folder, 1, false);
 	    Text text = uiToolkit.createMultilineText(c);
-	    descriptionField = new TextField(text);
+        bindingContext.bindContent(text, getIpsPart(), IIpsObjectPart.PROPERTY_DESCRIPTION);
 	    TabItem item = new TabItem(folder, SWT.NONE);
 	    item.setText(Messages.IpsPartEditDialog_description);
 	    item.setControl(c);
@@ -125,6 +133,10 @@ public abstract class IpsPartEditDialog2 extends EditDialog {
         return part;
     }
     
+    protected void updateTitleInTitleArea() {
+        setTitle(buildTitle());
+    }
+    
     protected String buildTitle() {
         IIpsObjectPart part = getIpsPart();
         if (part.getParent() instanceof IIpsObjectGeneration) {
@@ -134,16 +146,17 @@ public abstract class IpsPartEditDialog2 extends EditDialog {
         return part.getIpsObject().getName() + "." + part.getName(); //$NON-NLS-1$
     }
     
-    protected void connectToModel() {
-        if (descriptionField!=null) {
-            bindingContext.bindContent(descriptionField, getIpsPart(), IIpsObjectPart.PROPERTY_DESCRIPTION);
-        }
-    }
-
     protected void setEnabledDescription(boolean enabled) {
     	if (descriptionField != null) {
     		descriptionField.getControl().setEnabled(enabled);
     	}
     }
+
+    public void contentsChanged(ContentChangeEvent event) {
+        if (event.getIpsSrcFile().equals(getIpsPart().getIpsSrcFile())) {
+            updateTitleInTitleArea();
+        }
+    }
+
     
 }

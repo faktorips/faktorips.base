@@ -41,7 +41,7 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
 
 	protected void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject("TestProject");
+        project = newIpsProject();
         IIpsObjectPath path = project.getIpsObjectPath();
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)path.getEntries()[0];
         entry.setSpecificBasePackageNameForMergableJavaClasses("org.faktorips.sample");

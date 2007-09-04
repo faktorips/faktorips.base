@@ -120,9 +120,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IExtensionPropertyAccess#getExtPropertyValue(java.lang.String)
+     * {@inheritDoc}
      */
     public Object getExtPropertyValue(String propertyId) {
         checkExtProperty(propertyId);
@@ -130,9 +128,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IExtensionPropertyAccess#setExtPropertyValue(java.lang.String, java.lang.Object)
+     * {@inheritDoc}
      */
     public void setExtPropertyValue(String propertyId, Object value) {
         checkExtProperty(propertyId);

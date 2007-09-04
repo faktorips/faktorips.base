@@ -38,7 +38,7 @@ public class JetJavaContentGeneratorTest extends AbstractIpsPluginTest {
     
     public void setUp() throws Exception{
         super.setUp();
-        project = newIpsProject("TestProject");
+        project = newIpsProject();
         ipsObject = newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy");
         builder = new DumyJavaSourceFileBuilder(new TestIpsArtefactBuilderSet(), "dumy",
             new LocalizedStringsSet(JavaSourceFileBuilderTest.class));

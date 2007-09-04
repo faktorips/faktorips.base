@@ -427,6 +427,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     public void testFindValueDatatype() throws CoreException {
+        assertNull(ipsProject.findValueDatatype(null));
+        
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName(), Datatype.PRIMITIVE_INT.getQualifiedName()});
         ipsProject.setProperties(props);

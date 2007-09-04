@@ -54,6 +54,22 @@ import org.xml.sax.SAXParseException;
  */
 public class XmlUtil {
 
+    public final static void setAttributeConvertNullToEmptyString(Element el, String attribute, String value) {        
+        if (value==null) {
+            el.setAttribute(attribute, "");
+        } else {
+            el.setAttribute(attribute, value);
+        }
+    }
+    
+    public final static String getAttributeConvertEmptyStringToNull(Element el, String attribute) {        
+        String value = el.getAttribute(attribute);
+        if ("".equals(value)) {
+            return null;
+        }
+        return value;
+    }
+
     public final static String dateToXmlDateString(Date date) {
         if (date == null) {
             return ""; //$NON-NLS-1$

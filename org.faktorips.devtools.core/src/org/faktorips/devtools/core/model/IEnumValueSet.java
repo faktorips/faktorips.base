@@ -39,7 +39,7 @@ public interface IEnumValueSet extends IValueSet {
 	public final static String MSGCODE_DUPLICATE_VALUE = MSGCODE_PREFIX
 			+ "DuplicateValue"; //$NON-NLS-1$
 
-	/**
+    /**
 	 * Returns an array of all Elements in the EnunValueSet
 	 */
 	public String[] getValues();

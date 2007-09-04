@@ -48,6 +48,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.GenericValueDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.Util;
@@ -67,6 +68,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.util.ArgumentCheck;
@@ -95,10 +97,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     // set of modifcation status change listeners
     private Set modificationStatusChangeListeners;
-
+    
     // a map that contains per thread if changes should be broadcasted to the registered listeners
     // or squeezed.
-    private Map listenerNoticicationLevelMap = new HashMap();
+    private HashMap listenerNoticicationLevelMap = new HashMap();
 
     /*
      * A map containing the dataypes (value) by id (key).
@@ -149,7 +151,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private ValidationResultCache validationResultCache = new ValidationResultCache();
 
     private Map lastIpsPropertyFileModifications = new HashMap();
-
+    
+    private IpsObjectType[] ipsObjectTypes;
+    
     // cache sort order
     private Map sortOrderCache = new HashMap();
 
@@ -158,6 +162,55 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (TRACE_MODEL_MANAGEMENT) {
             System.out.println("IpsModel.Constructor(): IpsModel created."); //$NON-NLS-1$
         }
+        initIpsObjectTypes();
+    }
+    
+    private void initIpsObjectTypes() {
+        if (TRACE_MODEL_MANAGEMENT) {
+            System.out.println("IpsModel.initIpsObjectType: start."); //$NON-NLS-1$
+        }
+        List types = new ArrayList();
+        types.add(IpsObjectType.PRODUCT_CMPT);
+        types.add(IpsObjectType.TEST_CASE);
+        types.add(IpsObjectType.POLICY_CMPT_TYPE);
+        types.add(IpsObjectType.PRODUCT_CMPT_TYPE2);
+        types.add(IpsObjectType.TABLE_STRUCTURE);
+        types.add(IpsObjectType.TABLE_CONTENTS);
+        types.add(IpsObjectType.TEST_CASE_TYPE);
+        types.add(IpsObjectType.BUSINESS_FUNCTION);
+        IExtension[] extensions = ExtensionPoints.getExtension(ExtensionPoints.IPS_OBJECT_TYPE);
+        for (int i = 0; i < extensions.length; i++) {
+            IpsObjectType type = createIpsObjectType(extensions[i]);
+            if (type!=null) {
+                types.add(type);
+            }
+        }
+        ipsObjectTypes = (IpsObjectType[])types.toArray(new IpsObjectType[types.size()]);
+        IpsObjectType.ALL_TYPES = ipsObjectTypes;
+        if (TRACE_MODEL_MANAGEMENT) {
+            System.out.println("IpsModel.initIpsObjectType: finished."); //$NON-NLS-1$
+        }
+    }
+    
+    private IpsObjectType createIpsObjectType(IExtension extension) {
+        IpsObjectType type = null;
+        IConfigurationElement[] configElements = extension.getConfigurationElements();
+        for (int i = 0; i < configElements.length; i++) {
+            if (!configElements[i].getName().equalsIgnoreCase("ipsobjecttype")) { 
+                String text = "Illegal ips object type definition" //$NON-NLS-1$
+                        + extension.getUniqueIdentifier() + ". Expected Config Element <ipsobjectytpe> was " //$NON-NLS-1$
+                        + configElements[i].getName();
+                IpsPlugin.log(new IpsStatus(text));
+                continue;
+            }
+            type = (IpsObjectType)ExtensionPoints.createExecutableExtension(extension, configElements[i],
+                    "class", IpsObjectType.class); //$NON-NLS-1$
+        }
+        if (type==null) {
+            String text = "Illegal ips object type definition" + extension.getUniqueIdentifier(); //$NON-NLS-1$
+            IpsPlugin.log(new IpsStatus(text));
+        }
+        return type;
     }
 
     public void startListeningToResourceChanges() {
@@ -230,14 +283,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         IIpsProject ipsProject = getIpsProject(javaProject.getProject());
         Util.addNature(javaProject.getProject(), IIpsProject.NATURE_ID);
-
+        
         IpsArtefactBuilderSetInfo[] infos = getIpsArtefactBuilderSetInfos();
         if (infos.length > 0) {
             IIpsProjectProperties props = ipsProject.getProperties();
             props.setBuilderSetId(infos[0].getBuilderSetId());
             ipsProject.setProperties(props);
         }
-
+        
         return ipsProject;
     }
 
@@ -343,7 +396,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (root == null){
             return null;
         }
-
+        
         if (segments.length == 1) {
             return root;
         }
@@ -365,10 +418,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (ipsFolder == null){
             return null;
         }
-
+        
         return ipsFolder.getIpsSrcFile(resource.getName());
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -382,13 +435,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         return null;
     }
-
+    
     /**
      * Tells the model to stop broadcasting any changes made to ips objects by the current
      * thread. By default changes are broadcasted until this method is called.
-     * To restart brodcasting changes the method resumeBroadcastingChangesMadeByCurrentThread() has to
-     * be called.
-     *
+     * To restart brodcasting changes the method resumeBroadcastingChangesMadeByCurrentThread() has to 
+     * be called. 
+     * 
      * <strong>Note<strong> that these to method have a "nested transaction behaviour". That means broadcasting
      * resumes only if the resume method has been called as many times as the stop method. This
      * allows to implement method that stop/resume broadcasting to call other method that use these methods
@@ -406,11 +459,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             System.out.println("IpsModel.stopBroadcastingChangesMadeByCurrentThread(): Thread=" + Thread.currentThread() + ", new level=" + level); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
-
+    
     /**
      * Tells the model to resume broadcasting any changes made to ips objects by the current
      * thread.
-     *
+     * 
      * <strong>Note<strong> that these to method have a "nested transaction behaviour". That means broadcasting
      * resumes only if the resume method has been called as many times as the stop method. This
      * allows to implement method that stop/resume broadcasting to call other method that use these methods
@@ -426,7 +479,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             System.out.println("IpsModel.restartBroadcastingChangesMadeByCurrentThread(): Thread=" + Thread.currentThread() + ", new level=" + level); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
-
+    
     /**
      * Returns <code>true</code> if the model is currently broadcasting changes made to
      * an ips object by the current thread.
@@ -515,9 +568,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     public void notifyChangeListeners(final ContentChangeEvent event) {
-        if (changeListeners.isEmpty()) {
-            return; // can happen in a headless eclipse installation (used for headless buils)
-        }
         if (!isBroadcastingChangesForCurrentThread()) {
             return;
         }
@@ -546,7 +596,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     }
                 }
             }
-        };
+        }; 
         if (PlatformUI.isWorkbenchRunning()) {
             PlatformUI.getWorkbench().getDisplay().syncExec(notifier);
         } else {
@@ -633,7 +683,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (!builderSet.getId().equals(data.getBuilderSetId())) {
             return registerBuilderSet(project);
         }
-
+        
         if(reinit){
             initBuilderSet(builderSet, data);
         }
@@ -664,13 +714,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             return false;
         }
     }
-
+    
     /**
      * Returns the <code>DependencyGraph</code> of the provided <code>IpsProject</code>. If the
      * provided IpsProject doesn't exist or if it isn't a valid
      * <code>IpsProject</code> <code>null</code> will be returned by this method. This method is
      * not part of the published interface.
-     *
+     * 
      * @throws CoreException will be thrown if an error occures while trying to validated the
      *             provided IpsProject.
      * @throws NullPointerException if the argument is null
@@ -721,25 +771,25 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             clearIpsProjectPropertiesCache(ipsProject);
         }
         IpsProjectProperties data = (IpsProjectProperties)projectPropertiesMap.get(ipsProject.getName());
-
+        
         if (data == null) {
             data = readProjectData(ipsProject);
             projectPropertiesMap.put(ipsProject.getName(), data);
         }
         return data;
     }
-
+    
     private void reinitIpsProjectPropertiesIfNecessary(IpsProject ipsProject){
         getIpsProjectProperties(ipsProject);
     }
-
+    
     private void clearIpsProjectPropertiesCache(IpsProject ipsProject){
         projectDatatypesMap.remove(ipsProject.getName());
         projectDatatypeHelpersMap.remove(ipsProject.getName());
         projectPropertiesMap.remove(ipsProject.getName());
         projectToBuilderSetMap.remove(ipsProject);
     }
-
+    
     /**
      * Reads the project's data from the .ipsproject file.
      */
@@ -855,7 +905,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                         " doesn't implement the " + IIpsArtefactBuilderSet.class + " interface.", e)); //$NON-NLS-1$ //$NON-NLS-2$
             } catch (InstantiationException e) {
                 IpsPlugin.log(new IpsStatus("Unable to instantiate the builder set " + infos[i].getBuilderSetClass(), e)); //$NON-NLS-1$
-
+                
             } catch (IllegalAccessException e) {
                 IpsPlugin.log(new IpsStatus("Unable to instantiate the builder set " + infos[i].getBuilderSetClass(), e)); //$NON-NLS-1$
             }
@@ -1022,14 +1072,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         // first, get all datatypes defined by the ips-plugin itself
         // to get them at top of the list...
         for (int i = 0; i < extensions.length; i++) {
-            if (extensions[i].getNamespaceIdentifier().equals(IpsPlugin.PLUGIN_ID)) {
+            if (extensions[i].getNamespace().equals(IpsPlugin.PLUGIN_ID)) {
                 createDatatypeDefinition(extensions[i]);
             }
         }
 
         // and second, get the rest.
         for (int i = 0; i < extensions.length; i++) {
-            if (!extensions[i].getNamespaceIdentifier().equals(IpsPlugin.PLUGIN_ID)) {
+            if (!extensions[i].getNamespace().equals(IpsPlugin.PLUGIN_ID)) {
                 createDatatypeDefinition(extensions[i]);
             }
         }
@@ -1045,14 +1095,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 IpsPlugin.log(new IpsStatus(text));
                 continue;
             }
-            Object datatypeObj = createExecutableExtension(extension, configElements[i],
+            Object datatypeObj = ExtensionPoints.createExecutableExtension(extension, configElements[i],
                     "datatypeClass", Datatype.class); //$NON-NLS-1$
             if (datatypeObj == null) {
                 continue;
             }
             Datatype datatype = (Datatype)datatypeObj;
             datatypes.put(datatype.getQualifiedName(), datatype);
-            Object dtHelperObj = createExecutableExtension(extension, configElements[i],
+            Object dtHelperObj = ExtensionPoints.createExecutableExtension(extension, configElements[i],
                     "helperClass", DatatypeHelper.class); //$NON-NLS-1$
             if (dtHelperObj == null) {
                 continue;
@@ -1092,34 +1142,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             this.initDatatypeDefintionsFromConfiguration();
         }
         return datatypes.containsKey(valueDatatypeId);
-    }
-
-    /*
-     * Wrapper around IConfigurationElement.createExecutableExtension(propertyName) with detaied
-     * logging. If the exectuable extension couldn't be created, the reason is logged, no exception
-     * is thrown. The returned object is of the expected type.
-     */
-    private Object createExecutableExtension(IExtension extension,
-            IConfigurationElement element,
-            String propertyName,
-            Class expectedType) {
-        Object object = null;
-        try {
-            object = element.createExecutableExtension(propertyName);
-        } catch (CoreException e) {
-            IpsPlugin.log(new IpsStatus("Unable to create extension " //$NON-NLS-1$
-                    + extension.getUniqueIdentifier() + ". Reason: Can't instantiate " //$NON-NLS-1$
-                    + element.getAttribute(propertyName), e));
-            return null;
-        }
-        if (!(expectedType.isAssignableFrom(object.getClass()))) {
-            IpsPlugin.log(new IpsStatus("Unable to create extension " //$NON-NLS-1$
-                    + extension.getUniqueIdentifier() + "Reason: " //$NON-NLS-1$
-                    + element.getAttribute(propertyName) + " is not of type " //$NON-NLS-1$
-                    + expectedType));
-            return null;
-        }
-        return object;
     }
 
     /**
@@ -1181,7 +1203,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     /**
      * Returns the ClassLoaderProvider for the given ips project.
-     *
+     * 
      * @throws NullPointerException if ipsProject is <code>null</code>.
      */
     public ClassLoaderProvider getClassLoaderProvider(IIpsProject ipsProject) {
@@ -1200,7 +1222,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public ValidationResultCache getValidationResultCache() {
         return validationResultCache;
     }
-
+    
     /**
      * Returns the content for the given ips src file. If the ips source file's corresponding
      * resource does not exist, the method returns <code>null</code>.
@@ -1215,7 +1237,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         IpsSrcFileContent content = (IpsSrcFileContent)ipsObjectsMap.get(file);
         long resourceModStamp = enclResource.getModificationStamp();
-
+        
         // new content
         if (content == null) {
             content = new IpsSrcFileContent((IpsObject)file.getIpsObjectType().newObject(file));
@@ -1226,9 +1248,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
             content.initContentFromFile();
             return content;
-        }
-
-        // existing, synchronized content
+        } 
+        
+        // existing, synchronized content 
         if (content.getModificationStamp() == resourceModStamp) {
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                 System.out.println("IpsModel.getIpsSrcFileContent(): Content returned from cache, file=" + file //$NON-NLS-1$
@@ -1242,8 +1264,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Returns <code>true</code> if the ips source file' content is in sync with the
-     * enclosing resource storing it's contents.
+     * Returns <code>true</code> if the ips source file' content is in sync with the 
+     * enclosing resource storing it's contents. 
      */
     public synchronized boolean isInSyncWithEnclosingResource(IIpsSrcFile file) {
         IResource enclResource = file.getEnclosingResource();
@@ -1254,7 +1276,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (content==null) {
             return true;
         }
-        return content.getModificationStamp() == enclResource.getModificationStamp();
+        return content.getModificationStamp() == enclResource.getModificationStamp(); 
     }
 
     public void ipsSrcFileContentHasChanged(ContentChangeEvent event) {
@@ -1274,7 +1296,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public void ipsSrcFileModificationStatusHasChanged(ContentChangeEvent event) {
         notifyChangeListeners(event);
     }
-
+    
     /**
      * ResourceDeltaVisitor to update any model objects on resource changes.
      */
@@ -1300,7 +1322,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out
                             .println("IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change/delete on disk with modStamp " //$NON-NLS-1$
-                                    + resource.getModificationStamp() + ", Sync status=" + isInSync //$NON-NLS-1$
+                                    + resource.getModificationStamp() + ", Sync status=" + isInSync //$NON-NLS-1$ 
                                     + ", " //$NON-NLS-1$
                                     + srcFile
                                     + " Thread: " //$NON-NLS-1$
@@ -1350,13 +1372,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     }
                     String builderSetClassName = element.getAttribute("class"); //$NON-NLS-1$
                     if(StringUtils.isEmpty(builderSetClassName)){
-                        IpsPlugin.log(new IpsStatus("The class attribute of the IpsArtefactBuilderSet extension with the extension id " + //$NON-NLS-1$
+                        IpsPlugin.log(new IpsStatus("The class attribute of the IpsArtefactBuilderSet extension with the extension id " + //$NON-NLS-1$ 
                                 extension.getUniqueIdentifier() + " is not specified."));//$NON-NLS-1$
                         continue;
                     }
                     Class builderSetClass = null;
                     try {
-                        builderSetClass = Platform.getBundle(extension.getNamespaceIdentifier()).loadClass(builderSetClassName);
+                        builderSetClass = Platform.getBundle(extension.getNamespace()).loadClass(builderSetClassName);
                     } catch (ClassNotFoundException e) {
                         IpsPlugin.log(new IpsStatus("Unable to load the IpsArtefactBuilderSet class " + builderSetClassName +  //$NON-NLS-1$
                                 " specified with the extension id " + extension.getUniqueIdentifier())); //$NON-NLS-1$
@@ -1367,13 +1389,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
         }
     }
-
+    
     /**
-     * Returns an array of IpsArtefactBuilderSetInfo objects. Each IpsArtefactBuilderSetInfo object represents an
-     * IpsArtefactBuilderSet that is a registered at the corresponding extension point.
+     * Returns an array of IpsArtefactBuilderSetInfo objects. Each IpsArtefactBuilderSetInfo object represents an 
+     * IpsArtefactBuilderSet that is a registered at the corresponding extension point.  
      */
     public IpsArtefactBuilderSetInfo[] getIpsArtefactBuilderSetInfos() {
-
+        
         if(builderSetInfoList == null){
             registerBuilderSetInfos();
         }
@@ -1381,6 +1403,25 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 new IpsArtefactBuilderSetInfo[builderSetInfoList.size()]);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public IpsObjectType[] getIpsObjectTypes() {
+        return ipsObjectTypes;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IpsObjectType getIpsObjectType(String name) {
+        for (int i=0; i<ipsObjectTypes.length; i++) {
+            if (ipsObjectTypes[i].getName().equals(name)) {
+                return ipsObjectTypes[i];
+            }
+        }
+        return null;
+    }
+    
     public Map getSortOrderCache() {
         return sortOrderCache;
     }

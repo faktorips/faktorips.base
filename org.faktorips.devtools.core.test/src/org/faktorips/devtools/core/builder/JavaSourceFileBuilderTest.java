@@ -33,7 +33,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
 
     public void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject("TestProject");
+        project = newIpsProject();
         ipsSrcFile = newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy").getIpsSrcFile();
         builder = new DumyJavaSourceFileBuilder(new TestIpsArtefactBuilderSet(), "dumy",
                   new LocalizedStringsSet(JavaSourceFileBuilderTest.class));

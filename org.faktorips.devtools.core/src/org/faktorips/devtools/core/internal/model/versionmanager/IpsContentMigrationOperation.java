@@ -151,7 +151,6 @@ public class IpsContentMigrationOperation extends AbstractIpsContentMigrationOpe
                 file.markAsClean();
             }
         }
-        
     }
     
     private void updateIpsProject() throws CoreException {

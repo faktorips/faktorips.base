@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Test data for RelationTest.java
+-->
+<testcases>
+
+	<Relation id="42"
+          relationType="ass" 
+          target="pack1.CoverageType" 
+          targetRoleSingular="CoverageType" 
+          targetRolePlural="CoverageTypes" 
+          minCardinality="1" 
+          maxCardinality="*" 
+          readOnlyContainer="true"
+          implementedContainerRelation="BaseCoverageType">
+		<Description>blabla</Description>
+	</Relation>
+		
+</testcases>

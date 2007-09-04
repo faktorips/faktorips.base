@@ -116,6 +116,14 @@ public abstract class TextButtonControl extends ControlComposite{
     
     protected abstract void buttonClicked();
     
+    /**
+     * {@inheritDoc}
+     */
+    public void setEnabled(boolean value) {
+        text.setEnabled(value);
+        button.setEnabled(value);
+    }
+    
     public void setButtonEnabled(boolean value) {
         button.setEnabled(value);
     }

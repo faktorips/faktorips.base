@@ -12,6 +12,7 @@
    <extension-point id="externalValueConverter" name="ExternalValueConverter" schema="schema/externalValueConverter.exsd"/>
    <extension-point id="faktorIpsFeatureVersionManager" name="FaktorIpsFeatureVersionManager" schema="schema/faktorIpsFeatureVersionManager.exsd"/>
    <extension-point id="loggingFrameworkConnector" name="Logging Framework Connector" schema="schema/loggingFrameworkConnector.exsd"/>
+   <extension-point id="ipsobjecttype" name="ipsObjectType" schema="schema/ipsobjecttype.exsd"/>
    
 <!-- 
     Product Definition Perspective
@@ -419,6 +420,14 @@
             icon="icons/PolicyCmptType.gif"
             id="policyCmptTypeEditor"
             name="%policyCmptTypeEditor">
+      </editor>
+      <editor
+            class="org.faktorips.devtools.core.ui.editors.productcmpttype.ProductCmptTypeEditor"
+            default="true"
+            extensions="ipsproductcmpttype"
+            icon="icons/ProductCmptType.gif"
+            id="productCmptTypeEditor"
+            name="%productCmptTypeEditor">
       </editor>
       <editor
             class="org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor"
@@ -898,6 +907,8 @@
                value="icons/FaktorIpsIcon16.gif,icons/FaktorIpsIcon32.gif"/>
       </product>
    </extension>
+
+	<!--
    <extension
          point="org.faktorips.devtools.core.faktorIpsFeatureVersionManager">
       <faktorIpsFeatureVersionManager
@@ -906,6 +917,8 @@
             id="org.faktorips.feature.manager"
             basedOnFeatureManager=""/>
    </extension>
+	-->
+
 <!-- Extensions for running and debugging ips tests -->
    <extension
          point="org.eclipse.debug.ui.launchShortcuts">

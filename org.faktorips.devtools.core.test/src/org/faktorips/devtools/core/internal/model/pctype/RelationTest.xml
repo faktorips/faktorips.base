@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
- Test data for RelationImplTest.java
+ Test data for RelationTest.java
 -->
 <Relation id="42"
           abstract="true" 

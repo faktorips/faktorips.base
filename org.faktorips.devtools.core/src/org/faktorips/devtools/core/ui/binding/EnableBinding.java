@@ -9,18 +9,22 @@ import org.eclipse.swt.widgets.Control;
  *  
  * 
  * @author     $Author: ortmann $
- * @version    $Revision: 1.1 $
+ * @version    $Revision: 1.2 $
  */
 public class EnableBinding extends ControlPropertyBinding {
 
-    public EnableBinding(Control control, Object object, String propertyName) {
+    private boolean enabledIfObjectPropertyIsTrue;
+    
+    public EnableBinding(Control control, Object object, String propertyName, boolean enabledIfTrue) {
         super(control, object, propertyName, Boolean.TYPE);
+        this.enabledIfObjectPropertyIsTrue = enabledIfTrue;
     }
     
     public void updateUI() {
         try {
             Boolean value = (Boolean)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
-            getControl().setEnabled(value.booleanValue());
+            boolean enabled = value.booleanValue() == enabledIfObjectPropertyIsTrue;
+            getControl().setEnabled(enabled);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

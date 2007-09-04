@@ -34,7 +34,7 @@ public class JetJavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder = new JetJavaSourceFileBuilder(new TestIpsArtefactBuilderSet(), "test",
                 JetJavaSourceFileBuilderTest.TestGenerator.class, IpsObjectType.POLICY_CMPT_TYPE,
                 false, "Prefix", "Suffix");
-        ipsProject = newIpsProject("TestProject");
+        ipsProject = newIpsProject();
     }
 
     public void testGenerate() throws Exception {
