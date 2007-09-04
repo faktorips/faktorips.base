@@ -154,6 +154,8 @@ abstract public class DefaultModelDescriptionPage extends Page {
 
         // Set faktorips.attribute description
         FormText client = toolkit.createFormText(excomposite, true);
+        //don't ignore whitespaces and newlines
+        client.setWhitespaceNormalized(false);
 
         String tmp = item.getDescription().trim();
         if ( StringUtils.isEmpty( tmp ) ) {
