@@ -375,6 +375,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     }
 
     private void restoreLockScroll(IMemento memento) {
+        if (memento == null){
+            return;
+        }
+        
         Integer scroll= memento.getInteger(TAG_SCROLL);
         if (scroll != null){
             scrollLocked = (scroll.intValue() == 1) ? true : false;
@@ -385,6 +389,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     }
 
     private void restoreOrientationAndRatio(IMemento memento) {
+        if (memento == null){
+            return;
+        }
+        
         Integer ratio= memento.getInteger(TAG_RATIO);
         if (ratio != null) {
             fSashForm.setWeights(new int[] { ratio.intValue(), 1000 - ratio.intValue()} );
