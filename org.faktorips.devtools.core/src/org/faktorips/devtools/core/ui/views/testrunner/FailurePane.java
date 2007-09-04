@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.core.ui.views.testrunner;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -25,21 +28,30 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.actions.SelectionListenerAction;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -50,24 +62,26 @@ import org.faktorips.devtools.core.IpsPlugin;
  * 
  * @author Joerg Ortmann
  */
-public class FailurePane {
+public class FailurePane implements IMenuListener {
     private static final String TEST_ERROR_MESSAGE_INDICATOR = ">>>"; //$NON-NLS-1$
     private static final String TEST_ERROR_STACK_INDICATOR = "---"; //$NON-NLS-1$
     
-	private Table fTable;
+    private final Clipboard clipboard;
+    
+	private Table table;
 	
     // Action
-    private Action fShowStackTraceAction;
+    private Action showStackTraceAction;
 
     // Indicates if the stacktrace elemets will be shown or not
-    private boolean fShowStackTrace = false;
+    private boolean showStackTrace = false;
     
     // Contains the last reported failures in this pane
-    private String[] fLastFailures = new String[0];
+    private String[] lastFailures = new String[0];
     private IpsTestRunnerViewPart viewPart;
     
     /*
-     * Action class to filter the stack trace elements
+     * Action to filter the stack trace elements
      */
     private class ShowStackTraceAction extends Action {
         public ShowStackTraceAction() {
@@ -77,19 +91,39 @@ public class FailurePane {
             setDisabledImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("dlcl16/cfilter.gif")); //$NON-NLS-1$
             setHoverImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/cfilter.gif")); //$NON-NLS-1$
             setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/cfilter.gif")); //$NON-NLS-1$
-            setEnabled(fShowStackTrace);
+            setEnabled(showStackTrace);
         }
         public void run(){
-            fShowStackTrace = ! fShowStackTrace;
-            fShowStackTraceAction.setChecked(fShowStackTrace);
-            showFailureDetails(fLastFailures);
+            showStackTrace = ! showStackTrace;
+            showStackTraceAction.setChecked(showStackTrace);
+            showFailureDetails(lastFailures);
+        }
+    }
+    
+    /*
+     * Action to copy the currently displayed failure details into the clipboard
+     */
+    private class IpsTestCopyAction extends SelectionListenerAction {
+        private String failureDetails;
+
+        protected IpsTestCopyAction(String failureDetails, Clipboard clipboard) {
+            super(Messages.FailurePane_MenuLabel_CopyInClipboard);
+            this.failureDetails = failureDetails;
+        }
+
+        public void run() {
+            TextTransfer plainTextTransfer = TextTransfer.getInstance();
+            try {
+                clipboard.setContents(new String[]{failureDetails}, new Transfer[] { plainTextTransfer });
+            } catch (SWTError ignored) {
+            }
         }
     }
     
     /*
      * Class to represent the corresponding object in the trace line of the stacktrace.
      */
-    private class TraceLineElement{
+    private class TraceLineElement {
         private String testName = ""; //$NON-NLS-1$
         private String fileName = ""; //$NON-NLS-1$
         private int line = 0;
@@ -110,7 +144,7 @@ public class FailurePane {
                 lineNumber= lineNumber.substring(lineNumber.indexOf(':') + 1, lineNumber.lastIndexOf(')'));
                 line = Integer.valueOf(lineNumber).intValue();
                 fileName= traceLine.substring(traceLine.lastIndexOf('(') + 1, traceLine.lastIndexOf(':'));
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException ignored) {
                 // ignore number exception,
                 // the results is an invalid element, see #isValidElement()
             }
@@ -164,21 +198,23 @@ public class FailurePane {
         }
     }
     
-	public FailurePane(Composite parent, ToolBar toolBar, final IpsTestRunnerViewPart viewPart) {
+	public FailurePane(Composite parent, ToolBar toolBar, final IpsTestRunnerViewPart viewPart, Clipboard clipboard) {
 		this.viewPart = viewPart;
-        fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
+        this.clipboard = clipboard;
         
-        fTable.addSelectionListener(new SelectionAdapter() {
+        table = new Table(parent, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
+        
+        table.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 viewPart.setStatusBarMessage(getSelectedTableRowText());
             }
         });
         
-        fTable.addSelectionListener(new SelectionListener() {
+        table.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
             }
             public void widgetDefaultSelected(SelectionEvent e) {
-                if (fTable.getSelectionCount() > 0) {
+                if (table.getSelectionCount() > 0) {
                     boolean navigate = false;
                     if (IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
                         // the user can modify to the model or sources, open the java class
@@ -195,13 +231,15 @@ public class FailurePane {
         
         // fill the failure trace viewer toolbar
         ToolBarManager failureToolBarmanager= new ToolBarManager(toolBar);
-        fShowStackTraceAction = new ShowStackTraceAction();
-        failureToolBarmanager.add(fShowStackTraceAction);    
+        showStackTraceAction = new ShowStackTraceAction();
+        failureToolBarmanager.add(showStackTraceAction);    
         failureToolBarmanager.update(true);
+        
+        initMenu();
 	}
     
     private String getSelectedTableRowText(){
-        TableItem[] items = fTable.getSelection();
+        TableItem[] items = table.getSelection();
         if(items.length>0){
             return items[0].getText();
         }
@@ -288,7 +326,7 @@ public class FailurePane {
 	 * Returns the composite used to present the failures.
 	 */
 	public Composite getComposite(){
-		return fTable;
+		return table;
 	}
     
 	/**
@@ -297,23 +335,23 @@ public class FailurePane {
      * these elements will be hidden.
 	 */
 	public void showFailureDetails(String[] testCaseFailures) {
-        fShowStackTraceAction.setEnabled(false);
-        fLastFailures = testCaseFailures;
-        fTable.removeAll();
+        showStackTraceAction.setEnabled(false);
+        lastFailures = testCaseFailures;
+        table.removeAll();
 		for (int i = 0; i < testCaseFailures.length; i++) {
             if (testCaseFailures[i].startsWith(TEST_ERROR_MESSAGE_INDICATOR)){
                 String text = testCaseFailures[i].substring(TEST_ERROR_MESSAGE_INDICATOR.length());
                 if (text.trim().length()>0){
-                    TableItem tableItem = new TableItem(fTable, SWT.NONE);
+                    TableItem tableItem = new TableItem(table, SWT.NONE);
                     tableItem.setText(text);
                     tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/stkfrm_msg.gif")); //$NON-NLS-1$
                 }
             } else if (testCaseFailures[i].startsWith(TEST_ERROR_STACK_INDICATOR)) {
-                fShowStackTraceAction.setEnabled(true);
-                if (fShowStackTrace){
+                showStackTraceAction.setEnabled(true);
+                if (showStackTrace){
                     String traceLine = testCaseFailures[i].substring(TEST_ERROR_STACK_INDICATOR.length());
                     if (containsTraceLineRelevantSourceFile(traceLine) || i == 0){
-                        TableItem tableItem = new TableItem(fTable, SWT.NONE);
+                        TableItem tableItem = new TableItem(table, SWT.NONE);
                         // show the stacktrace line only if the element is inside the projects
                         // sources or this is the last stacktrace line,
                         // thus if the last stacktrace line is not inside the souce the error could
@@ -324,7 +362,7 @@ public class FailurePane {
                 }
             } else {
                 if (testCaseFailures[i].trim().length()>0){
-                    TableItem tableItem = new TableItem(fTable, SWT.NONE);
+                    TableItem tableItem = new TableItem(table, SWT.NONE);
                     tableItem.setText(testCaseFailures[i]);
                     tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/testfail.gif")); //$NON-NLS-1$
                 }
@@ -336,13 +374,37 @@ public class FailurePane {
 	 * A new test run will be started.
 	 */
 	public void aboutToStart() {
-		fTable.removeAll();
+		table.removeAll();
 	}
 
     /**
      * Returns the index of the selected element.
      */
     int getSelectedTableIndex() {
-        return fTable.getSelectionIndex();
-    }    
+        return table.getSelectionIndex();
+    }   
+    
+    public void menuAboutToShow(IMenuManager manager) {
+        if (table.getSelectionCount() > 0) {
+            manager.add(new IpsTestCopyAction(getFailureDetailsAsString(), clipboard));
+        }
+    }
+
+    private String getFailureDetailsAsString() {
+        StringWriter stringWriter= new StringWriter();
+        PrintWriter printWriter= new PrintWriter(stringWriter);
+        TableItem[] tableItems = table.getItems();
+        for (int i = 0; i < tableItems.length; i++) {
+            printWriter.println(tableItems[i].getText());
+        }
+        return stringWriter.toString();
+    }
+    
+    private void initMenu() {
+        MenuManager menuMgr= new MenuManager();
+        menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.addMenuListener(this);
+        Menu menu= menuMgr.createContextMenu(table);
+        table.setMenu(menu);       
+    }  
 }

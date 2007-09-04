@@ -41,6 +41,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ViewForm;
+import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Point;
@@ -141,6 +142,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	
 	private UpdateUIJob fUpdateJob;
 	
+    private Clipboard clipboard;
+    
     /*
      * A Job that runs as long as a test run is
      * running. It is used to get the progress feedback
@@ -323,6 +326,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		fParent = parent;
         addResizeListener(parent);
         
+        clipboard= new Clipboard(parent.getDisplay());
+
 		GridLayout gridLayout= new GridLayout(); 
 		gridLayout.marginWidth= 0;
 		gridLayout.marginHeight= 0;
@@ -402,7 +407,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	}
 	
 	private SashForm createSashForm(Composite parent) {
-		fSashForm= new SashForm(parent, SWT.VERTICAL);
+        fSashForm= new SashForm(parent, SWT.VERTICAL);
 		
 		ViewForm top= new ViewForm(fSashForm, SWT.NONE);		
 		CLabel label= new CLabel(top, SWT.NONE);
@@ -420,7 +425,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 
         ToolBar failureToolBar= new ToolBar(bottom, SWT.FLAT | SWT.WRAP);
         bottom.setTopCenter(failureToolBar);
-		fFailurePane = new FailurePane(bottom, failureToolBar, this);
+		fFailurePane = new FailurePane(bottom, failureToolBar, this, clipboard);
 		bottom.setContent(fFailurePane.getComposite()); 
 		
 		fSashForm.setWeights(new int[]{50, 50});
@@ -511,6 +516,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		fIsDisposed = true;
 		IIpsTestRunner testRunner = IpsPlugin.getDefault().getIpsTestRunner();
 		testRunner.removeIpsTestRunListener(this);
+        
+        if (clipboard != null){
+            clipboard.dispose();
+        }
 	}
 	
 	private boolean isDisposed() {

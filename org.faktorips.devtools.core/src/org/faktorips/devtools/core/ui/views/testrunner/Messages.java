@@ -30,7 +30,8 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 	
-	public static String IpsTestCounterPanel_Runs_Label;
+	public static String FailurePane_MenuLabel_CopyInClipboard;
+    public static String IpsTestCounterPanel_Runs_Label;
 	public static String IpsTestCounterPanel_Errors_Label;
 	public static String IpsTestCounterPanel_Failures_Label;
 	public static String IpsTestRunnerViewPart_Action_RerunLastTest_Text;
