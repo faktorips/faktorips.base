@@ -230,22 +230,17 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
 								PROPERTY_MIN_CARDINALITY,
 								PROPERTY_MAX_CARDINALITY }));
 			}
-			if (relType != null
-					&& !(relType.getMaxCardinality() == IRelation.CARDINALITY_MANY)) { //$NON-NLS-1$
-				try {
-					int maxType = relType.getMaxCardinality();
-					if (maxCardinality > maxType) {
-						String text = NLS
-								.bind(
-										Messages.ProductCmptRelation_msgMaxCardinalityExceedsModelMax,
-										"" + maxCardinality, "" + relType.getMaxCardinality()); //$NON-NLS-1$ //$NON-NLS-2$
-						list.add(new Message(
-								MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX,
-								text, Message.ERROR, this,
-								PROPERTY_MAX_CARDINALITY));
-					}
-				} catch (NumberFormatException e) {
-					// ignore this problem in the model
+			if (relType != null && !(relType.getMaxCardinality() == IRelation.CARDINALITY_MANY)) { //$NON-NLS-1$
+				int maxType = relType.getMaxCardinality();
+				if (maxCardinality > maxType) {
+					String text = NLS
+							.bind(
+									Messages.ProductCmptRelation_msgMaxCardinalityExceedsModelMax,
+									"" + maxCardinality, "" + relType.getMaxCardinality()); //$NON-NLS-1$ //$NON-NLS-2$
+					list.add(new Message(
+							MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX,
+							text, Message.ERROR, this,
+							PROPERTY_MAX_CARDINALITY));
 				}
 			}
 		}
