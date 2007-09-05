@@ -29,6 +29,7 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -120,7 +121,14 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
      * {@inheritDoc}
      */
     public ICompletionProposal[] computeCompletionProposals(IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
-		if (documentOffset == 0 && !computeProposalForEmptyPrefix) {
+        if (contentAssistSubjectControl.getControl() instanceof Text){
+            // special check for text controls
+            if (!((Text)contentAssistSubjectControl.getControl()).getEditable()){
+                return null;
+            }
+        }
+        
+        if (documentOffset == 0 && !computeProposalForEmptyPrefix) {
 			return null;
 		}
         if (ipsProject==null) {

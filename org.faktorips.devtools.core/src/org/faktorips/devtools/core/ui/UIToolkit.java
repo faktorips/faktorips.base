@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -56,8 +57,9 @@ import org.faktorips.values.EnumValue;
  * A toolkit to create controls with a common look and feel.
  */
 public class UIToolkit {
+	private static final String READONLY_FOREGROUND_COLOR = "READONLY_FOREGROUND_COLOR";
 
-	private FormToolkit formToolkit;
+    private FormToolkit formToolkit;
 	
 	public static final int DEFAULT_WIDTH = 100;
 
@@ -75,7 +77,8 @@ public class UIToolkit {
             return;
         }
         if (c instanceof Text) {
-            ((Text)c).setEnabled(changeable);
+            ((Text)c).setEditable(changeable);
+            setForegroundColor((Text)c, changeable);
             return;
         }
         if (c instanceof Checkbox) {
@@ -99,7 +102,27 @@ public class UIToolkit {
         } 
     }
     
-	/**
+	private void setForegroundColor(Text text, boolean changeable) {
+        if (formToolkit == null){
+            // color will be implicit changed by OS
+            return;
+        }
+        text.setForeground(getForegroundColorFromFormToolkit(changeable));
+    }
+
+    private Color getForegroundColorFromFormToolkit(boolean changeable) {
+        if (changeable){
+            return formToolkit.getColors().getForeground();
+        }
+        Color color = formToolkit.getColors().getColor(READONLY_FOREGROUND_COLOR);
+        if (color == null ){
+            formToolkit.getColors().createColor(READONLY_FOREGROUND_COLOR, formToolkit.getColors().getSystemColor(SWT.COLOR_DARK_GRAY));
+            // color will be disposed by the FormColors#colorRegistry
+        }
+        return formToolkit.getColors().getColor(READONLY_FOREGROUND_COLOR);
+    }
+
+    /**
 	 * Creates a new toolkit.
 	 */
 	public UIToolkit(FormToolkit formToolkit) {
