@@ -31,7 +31,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Joerg Ortmann
  */
-public class TableStructureUsageTest extends AbstractIpsPluginTest {
+public class V1TableStructureUsageTest extends AbstractIpsPluginTest {
     private IIpsProject project;
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
