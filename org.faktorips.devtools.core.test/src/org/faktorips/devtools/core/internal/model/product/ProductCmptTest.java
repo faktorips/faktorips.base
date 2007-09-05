@@ -413,7 +413,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         try {
             is = file.getContents();
             if (is==null) {
-                throw new RuntimeException("Can't find resource " + productCXmlFile);
+                fail("Can't find resource " + productCXmlFile);
             }
             StringBuffer generatedXml = new StringBuffer();
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -421,14 +421,11 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
             while ((line = br.readLine())!=null){
                 generatedXml.append(line);
             }
-            
             String patternStr = ".*targetRuntimeId=\"(.*)\".*";
             Pattern pattern = Pattern.compile(patternStr);
             Matcher matcher = pattern.matcher(generatedXml);
             assertTrue(matcher.find());
             assertEquals("newRuntimeId", matcher.group(matcher.groupCount()));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         } finally {
             if (is!=null) {
                 is.close();
