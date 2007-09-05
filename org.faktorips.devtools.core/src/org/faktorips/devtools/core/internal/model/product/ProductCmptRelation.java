@@ -104,7 +104,7 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public Image getImage() {
 		return IpsPlugin.getDefault().getImage("ProductCmptRelation.gif"); //$NON-NLS-1$
@@ -139,7 +139,7 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public String getTarget() {
 		return target;
@@ -158,7 +158,7 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void setTarget(String newTarget) {
 		String oldTarget = target;
@@ -167,14 +167,14 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public int getMinCardinality() {
 		return minCardinality;
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void setMinCardinality(int newValue) {
 		int oldValue = minCardinality;
@@ -184,14 +184,14 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public int getMaxCardinality() {
 		return maxCardinality;
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void setMaxCardinality(int newValue) {
 		int oldValue = maxCardinality;
@@ -254,14 +254,14 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	protected Element createElement(Document doc) {
 		return doc.createElement(TAG_NAME);
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
