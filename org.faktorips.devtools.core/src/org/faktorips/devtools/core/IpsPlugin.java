@@ -81,7 +81,6 @@ import org.osgi.framework.Version;
  */
 public class IpsPlugin extends AbstractUIPlugin {
 
-    
     public final static String PLUGIN_ID = "org.faktorips.devtools.core"; //$NON-NLS-1$
 
     public final static String PROBLEM_MARKER = PLUGIN_ID + ".problemmarker"; //$NON-NLS-1$
@@ -723,8 +722,10 @@ public class IpsPlugin extends AbstractUIPlugin {
             }
             featureVersionManagers = (IIpsFeatureVersionManager[])result.toArray(new IIpsFeatureVersionManager[result
                     .size()]);
+            if (featureVersionManagers.length == 0) {
+                featureVersionManagers = new IIpsFeatureVersionManager[] {EmptyIpsFeatureVersionManager.INSTANCE};
+            }
         }
-
         return featureVersionManagers;
     }
 
