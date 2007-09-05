@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 
-public class ProductCmptTypeTest extends AbstractIpsPluginTest {
+public class V1ProductCmptTypeTest extends AbstractIpsPluginTest {
 
 	private IIpsProject ipsProject;
 	private IPolicyCmptType policyCmptType;
