@@ -74,6 +74,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.test.XmlAbstractTestCase;
 import org.faktorips.devtools.core.ui.binding.BeanUtil;
 import org.faktorips.util.StringUtil;
@@ -102,6 +103,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
 	protected void setUp() throws Exception {
 	    ((IpsModel)IpsPlugin.getDefault().getIpsModel()).stopListeningToResourceChanges();
+        IpsPlugin.getDefault().setFeatureVersionManagers(new IIpsFeatureVersionManager[]{new TestIpsFeatureVersionManager()});
         setAutoBuild(false);
         
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {

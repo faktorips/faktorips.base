@@ -744,6 +744,18 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
     
     /**
+     * THIS METHOD SHOULD ONLY BE CALLED FROM TEST CASES.
+     * 
+     * Sets the feature version managers. This method overwrites all feature managers registered via
+     * extension points. 
+     * 
+     * @param managers
+     */
+    public void setFeatureVersionManagers(IIpsFeatureVersionManager[] managers) {
+        featureVersionManagers = managers;
+    }
+    
+    /**
      * @param projectToMigrate The project the migration operation should be returned for.
      * @return A migration operation migrating the content of the given IpsProject to match the
      *         needs of the current version of FaktorIps.

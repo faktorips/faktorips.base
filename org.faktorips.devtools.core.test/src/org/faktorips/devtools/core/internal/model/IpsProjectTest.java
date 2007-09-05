@@ -47,6 +47,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.TestEnumType;
+import org.faktorips.devtools.core.TestIpsFeatureVersionManager;
 import org.faktorips.devtools.core.builder.JavaUtilLoggingFrameworkConnector;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -68,6 +69,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.versionmanager.AbstractMigrationOperation;
+import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -93,6 +96,45 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsProjectProperties props = baseProject.getProperties();
         props.setPredefinedDatatypesUsed(new String[]{"Integer"});
         baseProject.setProperties(props);
+    }
+    
+    public void testValidateRequiredFeatures() throws CoreException {
+        MessageList ml = ipsProject.validate();
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
+        IIpsProjectProperties props = ipsProject.getProperties();
+        IpsProjectProperties propsOrig = new IpsProjectProperties(ipsProject, (IpsProjectProperties)props);
+        props.setMinRequiredVersionNumber("unknown-feature", "1.0.0");
+        ipsProject.setProperties(props);
+        
+        ml = ipsProject.validate();
+        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
+
+        ipsProject.setProperties(propsOrig);
+        setMinRequiredVersion("0.0.0");
+        TestIpsFeatureVersionManager manager = new TestIpsFeatureVersionManager();
+        manager.setCurrentVersionCompatibleWith(false);
+        manager.setCompareToCurrentVersion(-1);
+        IpsPlugin.getDefault().setFeatureVersionManagers(new IIpsFeatureVersionManager[]{manager});
+        ml = ipsProject.validate();
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_VERSION_TOO_LOW));
+        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_INCOMPATIBLE_VERSIONS));
+        
+        setMinRequiredVersion("999999.0.0");
+        manager.setCompareToCurrentVersion(1);
+        ml = ipsProject.validate();
+        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_VERSION_TOO_LOW));      
+    }
+    
+    public void testValidate_JavaCodeContainsError() throws CoreException {
+        MessageList list = ipsProject.validate();
+        assertFalse(list.containsErrorMsg());
+        
+        // remove src folder => build path error
+        IFolder srcFolder = ipsProject.getProject().getFolder("src");
+        srcFolder.delete(true, null);
+        list = ipsProject.validate();
+        assertNotNull(list.getMessageByCode(IIpsProject.MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS));
     }
     
     public void testIsJavaProjectErrorFree_OnlyThisProject() throws CoreException {
@@ -182,17 +224,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testGetClassLoaderForJavaProject() throws CoreException {
         ClassLoader cl = ipsProject.getClassLoaderForJavaProject();
         assertNotNull(cl);
-    }
-    
-    public void testValidate_JavaCodeContainsError() throws CoreException {
-        MessageList list = ipsProject.validate();
-        assertFalse(list.containsErrorMsg());
-        
-        // remove src folder => build path error
-        IFolder srcFolder = ipsProject.getProject().getFolder("src");
-        srcFolder.delete(true, null);
-        list = ipsProject.validate();
-        assertNotNull(list.getMessageByCode(IIpsProject.MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS));
     }
     
     public void testIsReferencedBy() throws CoreException {
@@ -947,34 +978,12 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertTrue(project3.dependsOn(baseProject));
     }
     
-    public void testValidateRequiredFeatures() throws CoreException {
-        MessageList ml = ipsProject.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
-        IIpsProjectProperties props = ipsProject.getProperties();
-        IpsProjectProperties propsOrig = new IpsProjectProperties(ipsProject, (IpsProjectProperties)props);
-        props.setMinRequiredVersionNumber("unknown-feature", "1.0.0");
-        ipsProject.setProperties(props);
-        
-        ml = ipsProject.validate();
-        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
-
-        ipsProject.setProperties(propsOrig);
-        setVersion("0.0.0");
-        ml = ipsProject.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_VERSION_TOO_LOW));
-        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_INCOMPATIBLE_VERSIONS));
-        
-        setVersion("999999.0.0");
-        ml = ipsProject.validate();
-        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_VERSION_TOO_LOW));      
-    }
-    
     public void testValidateMissingMigration() throws Exception {
         MessageList ml = ipsProject.validate();
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_INVALID_MIGRATION_INFORMATION));
         
-        setVersion("0.0.3");
+        setMinRequiredVersion("0.0.3");
+        IpsPlugin.getDefault().setFeatureVersionManagers(new IIpsFeatureVersionManager[]{new InvalidMigrationMockManager()});
         ml = ipsProject.validate();
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_INVALID_MIGRATION_INFORMATION));
     }
@@ -1166,7 +1175,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
     }
     
-    private void setVersion(String version) throws CoreException {
+    private void setMinRequiredVersion(String version) throws CoreException {
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setMinRequiredVersionNumber("org.faktorips.feature", version);
         ipsProject.setProperties(props);
@@ -1284,5 +1293,12 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertTrue(ipsProject.isResourceExcludedFromProductDefinition(folder2));
         assertTrue(ipsProject.isResourceExcludedFromProductDefinition(file));
         assertFalse(ipsProject.isResourceExcludedFromProductDefinition(folder1));
+    }
+    
+    class InvalidMigrationMockManager extends TestIpsFeatureVersionManager {
+
+        public AbstractMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) throws CoreException {
+            throw new UnsupportedOperationException();
+        }
     }
 }

@@ -1364,7 +1364,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             try {
                 managers[i].getMigrationOperations(this);
             }
-            catch (CoreException e) {
+            catch (Exception e) {
                IpsPlugin.log(e);
                String msg = NLS.bind(Messages.IpsProject_msgInvalidMigrationInformation, managers[i].getFeatureId());
                result.add(new Message(MSGCODE_INVALID_MIGRATION_INFORMATION, msg, Message.ERROR, this));
