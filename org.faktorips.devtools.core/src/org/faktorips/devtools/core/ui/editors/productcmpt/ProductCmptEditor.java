@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -47,8 +49,7 @@ import org.faktorips.values.DateUtil;
  * @author Jan Ortmann
  * @author Thorsten Guenther
  */
-public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDescriptionSupport{
-
+public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDescriptionSupport {
     /*
      * Setting key for user's decision not to choose a new product component type, because the old
      * can't be found.
@@ -69,6 +70,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 
     private GenerationPropertiesPage generationPropertiesPage;
 
+    private boolean ignoreHandlingOfWorkingDateMissmatch = false;
     private boolean isHandlingWorkingDateMismatch = false;
 
     /**
@@ -78,6 +80,16 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 		super();
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+        super.init(site, input);
+        if (input instanceof ProductCmptEditorInput){
+            ignoreHandlingOfWorkingDateMissmatch = ((ProductCmptEditorInput)input).isIgnoreWorkingDateMissmatch();
+        }
+    }
+    
     /**
 	 * {@inheritDoc}
 	 */
@@ -307,7 +319,10 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 		return true;
 	}
 
-	private void showGenerationEffectiveOn(GregorianCalendar date) {
+    /**
+     * Shows the generation wich is effective on the given date
+     */
+	public void showGenerationEffectiveOn(GregorianCalendar date) {
 		IIpsObjectGeneration generation = getProductCmpt().findGenerationEffectiveOn(date);
 		if (generation == null) {
 			generation = getProductCmpt().getFirstGeneration();
@@ -318,7 +333,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 	private void handleWorkingDateMissmatch() {
         // following if statement is there as closing the dialog triggers a window activated event
         // and handling the evant calls this method.
-        if (isHandlingWorkingDateMismatch) {
+        if (isHandlingWorkingDateMismatch || ignoreHandlingOfWorkingDateMissmatch) {
             return;
         }
         isHandlingWorkingDateMismatch = true;
