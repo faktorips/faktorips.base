@@ -564,40 +564,41 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
     
     /**
-     * Opens an editor for the IpsObject contained in the given IpsSrcFile.
+     * Opens the given IpsObject in its editor.<br>
+     * Returns the editor part of the opened editor. Returns <code>null</code> if no editor was opened.
+     * 
+     * @param ipsObject
+     */
+    public IEditorPart openEditor(IIpsObject ipsObject) {
+        if (ipsObject == null) {
+            return null;
+        }
+        return openEditor(ipsObject.getIpsSrcFile());
+    }
+    
+    /**
+     * Opens an editor for the IpsObject contained in the given IpsSrcFile.<br>
+     * Returns the editor part of the opened editor. Returns <code>null</code> if no editor was opened.
      * 
      * @param srcFile
      */
-    public void openEditor(IIpsSrcFile srcFile) {
+    public IEditorPart openEditor(IIpsSrcFile srcFile) {
         if (srcFile == null) {
-            return;
+            return null;
         }
         if (srcFile instanceof ArchiveIpsSrcFile) {
             IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
             IEditorDescriptor editor = workbench.getEditorRegistry().getDefaultEditor(srcFile.getName());
             IpsArchiveEditorInput input = new IpsArchiveEditorInput(srcFile);
             try {
-                IDE.openEditor(workbench.getActiveWorkbenchWindow().getActivePage(), input, editor.getId());
-            }
-            catch (PartInitException e) {
+                return IDE.openEditor(workbench.getActiveWorkbenchWindow().getActivePage(), input, editor.getId());
+            } catch (PartInitException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
+        } else {
+            return openEditor(srcFile.getCorrespondingFile());
         }
-        else {
-            openEditor(srcFile.getCorrespondingFile());
-        }
-    }
-
-    /**
-     * Opens the given IpsObject in its editor.
-     * 
-     * @param srcFile
-     */
-    public void openEditor(IIpsObject ipsObject) {
-        if (ipsObject == null) {
-            return;
-        }
-        openEditor(ipsObject.getIpsSrcFile());
+        return null;
     }
 
     /**
@@ -609,13 +610,15 @@ public class IpsPlugin extends AbstractUIPlugin {
      * <p>
      * <code>IFile</code>s containing <code>IpsSrcFiles</code>s and thus
      * <code>IpsObject</code>s are always opened in the corresponding IpsObjectEditor.
+     * <p>
+     * Returns the editor part of the opened editor. Returns <code>null</code> if no editor was opened.
      * 
      * @see IDE#openEditor(org.eclipse.ui.IWorkbenchPage, org.eclipse.core.resources.IFile)
      * @param fileToEdit
      */
-    public void openEditor(IFile fileToEdit) {
+    public IEditorPart openEditor(IFile fileToEdit) {
         if (fileToEdit == null) {
-            return;
+            return null;
         }
         // check if the file can be edit with a corresponding ips object editor,
         // if the file is outside an ips package then the ips object editor couldn't be used
@@ -626,45 +629,56 @@ public class IpsPlugin extends AbstractUIPlugin {
         if (ipsElement instanceof IIpsSrcFile && !((IIpsSrcFile)ipsElement).exists()) {
             try {
                 openWithDefaultIpsSrcTextEditor(fileToEdit);
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
+        } else {
+            return openEditor(new FileEditorInput(fileToEdit));
         }
-        else {
-            try {
-                IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
-                IFileEditorInput editorInput = new FileEditorInput(fileToEdit);
-                /*
-                 * For known filetypes always use the registered editor, NOT the editor specified by
-                 * the preferences/file-associations. This ensures that, when calling this method,
-                 * IpsObjects are always opened in their IpsObjectEditor and never in an xml-editor
-                 * (which might be the default editor for the given file).
-                 */
-                IEditorDescriptor editor = workbench.getEditorRegistry().getDefaultEditor(fileToEdit.getName());
-                if (editor != null & editorInput != null) {
-                    workbench.getActiveWorkbenchWindow().getActivePage().openEditor(editorInput, editor.getId());
-                }
-                else {
-                    /*
-                     * For unknown files let IDE open the corresponding editor. This method searches
-                     * the preferences/file-associations for an editor (default editor) and if none
-                     * is found guesses the filetype by looking at the contents of the given file.
-                     */
-                    IDE.openEditor(workbench.getActiveWorkbenchWindow().getActivePage(), fileToEdit, true, true);
-                }
-            }
-            catch (PartInitException e) {
-                IpsPlugin.logAndShowErrorDialog(e);
-            }
-        }
+        
+        return null;
     }
-
+    
+    /**
+     * Opens an editor for the given file editor input.<br>
+     * Returns the editor part of the opened editor. Returns <code>null</code> if no editor was opened.
+     * 
+     * @see IpsPlugin#openEditor(IFile)
+     * 
+     * @param fileEditorInput
+     */
+    public IEditorPart openEditor(IFileEditorInput editorInput){
+        try {
+            IFile file = editorInput.getFile();
+            IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
+            /*
+             * For known filetypes always use the registered editor, NOT the editor specified by
+             * the preferences/file-associations. This ensures that, when calling this method,
+             * IpsObjects are always opened in their IpsObjectEditor and never in an xml-editor
+             * (which might be the default editor for the given file).
+             */
+            IEditorDescriptor editor = workbench.getEditorRegistry().getDefaultEditor(file.getName());
+            if (editor != null & editorInput != null) {
+                return workbench.getActiveWorkbenchWindow().getActivePage().openEditor(editorInput, editor.getId());
+            } else {
+                /*
+                 * For unknown files let IDE open the corresponding editor. This method searches
+                 * the preferences/file-associations for an editor (default editor) and if none
+                 * is found guesses the filetype by looking at the contents of the given file.
+                 */
+                return IDE.openEditor(workbench.getActiveWorkbenchWindow().getActivePage(), file, true, true);
+            }
+        } catch (PartInitException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+        return null;
+    }
+    
     /*
      * Open the given file with the default text editor. And show an information message in the editors
      * status bar to inform the user about using the text editor instead of the ips object editor.
      */
-    private void openWithDefaultIpsSrcTextEditor(IFile fileToEdit) throws CoreException {
+    private IEditorPart openWithDefaultIpsSrcTextEditor(IFile fileToEdit) throws CoreException {
         String defaultContentTypeOfIpsSrcFilesId = "org.faktorips.devtools.core.ipsSrcFile"; //$NON-NLS-1$
         IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
         IFileEditorInput editorInput = new FileEditorInput(fileToEdit);
@@ -680,11 +694,10 @@ public class IpsPlugin extends AbstractUIPlugin {
         }
         try {
             IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-            if (page == null){
-                return;
+            if (page == null) {
+                return null;
             }
-            IEditorPart editorPart = page.openEditor(editorInput,
-                    editors[0].getId());
+            IEditorPart editorPart = page.openEditor(editorInput, editors[0].getId());
             if (editorPart == null) {
                 throw new CoreException(new IpsStatus("Error opening the default text editor!!")); //$NON-NLS-1$
             }
@@ -693,10 +706,12 @@ public class IpsPlugin extends AbstractUIPlugin {
             ((IEditorSite)editorPart.getSite()).getActionBars().getStatusLineManager().setMessage(
                     IpsPlugin.getDefault().getImage("size8/InfoMessage.gif"), //$NON-NLS-1$
                     Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
-        }
-        catch (PartInitException e) {
+            return editorPart;
+        } catch (PartInitException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+        
+        return null;
     }
 
     /**
