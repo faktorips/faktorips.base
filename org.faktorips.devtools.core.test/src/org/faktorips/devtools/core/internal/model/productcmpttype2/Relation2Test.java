@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class RelationTest extends AbstractIpsPluginTest implements ContentsChangeListener {
+public class Relation2Test extends AbstractIpsPluginTest implements ContentsChangeListener {
 
     private ContentChangeEvent lastEvent = null;
     private IIpsProject ipsProject;
