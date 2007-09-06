@@ -90,12 +90,13 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
 
             return pos1.compareTo(pos2);
         } else {
-            if (!sortOrderLookup.containsKey(segment1)) {
-                return 1;
+            // packages not included in the sortdefinition will be put at the end of the list.
+            if (sortOrderLookup.containsKey(segment1)) {
+                return -1;
             }
 
-            if (!sortOrderLookup.containsKey(segment2)) {
-                return -1;
+            if (sortOrderLookup.containsKey(segment2)) {
+                return 1;
             }
 
         }

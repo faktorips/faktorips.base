@@ -56,9 +56,11 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
          packLeistung = rootPackage.createPackageFragment("products.kranken.leistungsarten", true, null);
          packLeistungFix = rootPackage.createPackageFragment("products.kranken.leistungsarten.fix", true, null);
          rootPackage.createPackageFragment("products.kranken.leistungsarten.optional", true, null);
+         rootPackage.createPackageFragment("products.hausrat.deckungen.grundeckung", true, null);
+         rootPackage.createPackageFragment("products.hausrat.deckungen.zusatzdeckungen", true, null);
 
-         rootPackage.createPackageFragment("products.hausrat.deckungen.grunddeckung", true, null);
-         rootPackage.createPackageFragment("products.hausrat.deckungen.zusatzgrunddeckungen", true, null);
+         IIpsPackageFragment packHausrat = rootPackage.getIpsPackageFragment("products.hausrat");
+         IIpsPackageFragment packHausratDeckungen = rootPackage.getIpsPackageFragment("products.hausrat.deckungen");
 
          IIpsPackageFragment products = rootPackage.getIpsPackageFragment("products");
 
@@ -86,14 +88,11 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
 
          list.add("deckungen");
 
-         IIpsPackageFragment packHausrat = rootPackage.getIpsPackageFragment("products");
-         IIpsPackageFragment packHausratDeckungen = rootPackage.getIpsPackageFragment("products");
-
          createPackageOrderFile((IFolder) packHausrat.getCorrespondingResource(), list);
          list.clear();
 
          list.add("grunddeckung");
-         list.add("zusatzgrunddeckungen");
+         list.add("zusatzdeckungen");
 
          createPackageOrderFile((IFolder) packHausratDeckungen.getCorrespondingResource(), list);
          list.clear();
@@ -111,20 +110,20 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
         String packageNames = getSortDefinitionContent(packLeistungFix);
         sorter.initPersistenceContent(packageNames, this.ipsProject.getPlainTextFileCharset());
 
-        assertTrue((sorter.compare("fix", "optional") < 0));
-        assertTrue((sorter.compare("optional", "fix") > 0));
+        assertTrue((sorter.compare("fix", "optional") > 0));
+        assertTrue((sorter.compare("optional", "fix") < 0));
 
         // dummy package is not in sort order file
         assertTrue((sorter.compare("dummy", "fix") > 0));
         assertTrue((sorter.compare("fix", "dummy") < 0));
 
         // identical folder
-        IIpsPackageFragment packHausrat = rootPackage.getIpsPackageFragment("products");
+        IIpsPackageFragment packHausrat = rootPackage.getIpsPackageFragment("products.hausrat.deckungen.grunddeckung");
         packageNames = getSortDefinitionContent(packHausrat);
         sorter.initPersistenceContent(packageNames, this.ipsProject.getPlainTextFileCharset());
 
-        assertTrue((sorter.compare("deckungen", "deckungen") == 0));
-        assertFalse((sorter.compare("deckungen", "dummy") == 0));
+        assertTrue((sorter.compare("grunddeckung", "grunddeckung") == 0));
+        assertFalse((sorter.compare("grunddeckung", "dummy") == 0));
 
     }
 
