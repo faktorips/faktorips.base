@@ -252,7 +252,4 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         }
     }
     
-    public void invalidate() {
-        
-    }
 }

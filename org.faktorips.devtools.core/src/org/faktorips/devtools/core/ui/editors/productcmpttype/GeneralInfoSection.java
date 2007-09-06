@@ -91,7 +91,7 @@ public class GeneralInfoSection extends IpsSection {
     
             public void linkActivated(HyperlinkEvent event) {
                 try {
-                    IPolicyCmptType policyCmptType = type.findPolicyCmptType(type.getIpsProject());
+                    IPolicyCmptType policyCmptType = type.findPolicyCmptType(false, type.getIpsProject());
                     if (policyCmptType!=null) {
                         IpsPlugin.getDefault().openEditor(policyCmptType);
                     }

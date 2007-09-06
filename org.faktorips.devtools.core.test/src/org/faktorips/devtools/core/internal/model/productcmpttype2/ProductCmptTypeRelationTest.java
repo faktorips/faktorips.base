@@ -22,6 +22,8 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IRelation;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -31,12 +33,12 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class Relation2Test extends AbstractIpsPluginTest implements ContentsChangeListener {
+public class ProductCmptTypeRelationTest extends AbstractIpsPluginTest implements ContentsChangeListener {
 
     private ContentChangeEvent lastEvent = null;
     private IIpsProject ipsProject;
     private IProductCmptType productType;
-    private IProductCmptType coverageType;
+    private IProductCmptType coverageTypeType;
     private IRelation relation; 
 
     /**
@@ -46,7 +48,7 @@ public class Relation2Test extends AbstractIpsPluginTest implements ContentsChan
         super.setUp();
         ipsProject = newIpsProject();
         productType = newProductCmptType(ipsProject, "Product");
-        coverageType = newProductCmptType(ipsProject, "CoverageType");
+        coverageTypeType = newProductCmptType(ipsProject, "CoverageType");
         relation = productType.newRelation();
         
         ipsProject.getIpsModel().addChangeListener(this);
@@ -57,6 +59,26 @@ public class Relation2Test extends AbstractIpsPluginTest implements ContentsChan
         ipsProject.getIpsModel().removeChangeListener(this);
     }
 
+    public void testFindPolicyCmptTypeRelation() throws CoreException {
+        assertNull(relation.findPolicyCmptTypeRelation(ipsProject));
+        
+        relation.setTarget(coverageTypeType.getQualifiedName());
+        assertNull(relation.findPolicyCmptTypeRelation(ipsProject));
+        
+        IPolicyCmptType policyType = newPolicyCmptType(ipsProject, "Policy");
+        productType.setPolicyCmptType(policyType.getQualifiedName());
+        
+        org.faktorips.devtools.core.model.pctype.IRelation policyTypeRelation = policyType.newRelation();
+        policyTypeRelation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        assertNull(relation.findPolicyCmptTypeRelation(ipsProject));
+
+        IPolicyCmptType coverageType = newPolicyCmptType(ipsProject, "Coverage");
+        policyTypeRelation.setTarget(coverageType.getQualifiedName());
+        assertNull(relation.findPolicyCmptTypeRelation(ipsProject));
+
+        coverageTypeType.setPolicyCmptType(coverageType.getQualifiedName());
+        assertEquals(policyTypeRelation, relation.findPolicyCmptTypeRelation(ipsProject));
+    }
     
     /**
      * Test method for {@link org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#toXml(org.w3c.dom.Document)}.
@@ -111,7 +133,7 @@ public class Relation2Test extends AbstractIpsPluginTest implements ContentsChan
     }
         
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.Relation#findTarget()}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeRelation#findTarget()}.
      * @throws CoreException 
      */
     public void testFindTarget() throws CoreException {
@@ -121,12 +143,12 @@ public class Relation2Test extends AbstractIpsPluginTest implements ContentsChan
         relation.setTarget("unknown");
         assertNull(relation.findTarget(ipsProject));
         
-        relation.setTarget(coverageType.getQualifiedName());
-        assertEquals(coverageType, relation.findTarget(ipsProject));
+        relation.setTarget(coverageTypeType.getQualifiedName());
+        assertEquals(coverageTypeType, relation.findTarget(ipsProject));
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.Relation#setTarget(java.lang.String)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeRelation#setTarget(java.lang.String)}.
      */
     public void testSetTarget() {
         relation.setTarget("Target");
@@ -135,7 +157,7 @@ public class Relation2Test extends AbstractIpsPluginTest implements ContentsChan
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.Relation#setTargetRoleSingular(java.lang.String)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeRelation#setTargetRoleSingular(java.lang.String)}.
      */
     public void testSetTargetRoleSingular() {
         relation.setTargetRoleSingular("TargetRole");
@@ -144,7 +166,7 @@ public class Relation2Test extends AbstractIpsPluginTest implements ContentsChan
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.Relation#setTargetRolePlural(java.lang.String)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeRelation#setTargetRolePlural(java.lang.String)}.
      */
     public void testSetTargetRolePlural() {
         relation.setTargetRolePlural("TargetRole");
@@ -153,7 +175,7 @@ public class Relation2Test extends AbstractIpsPluginTest implements ContentsChan
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.Relation#setMinCardinality(int)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeRelation#setMinCardinality(int)}.
      */
     public void testSetMinCardinality() {
         relation.setMinCardinality(2);
@@ -162,7 +184,7 @@ public class Relation2Test extends AbstractIpsPluginTest implements ContentsChan
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.Relation#setMaxCardinality(int)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeRelation#setMaxCardinality(int)}.
      */
     public void testSetMaxCardinality() {
         relation.setMinCardinality(42);
@@ -171,7 +193,7 @@ public class Relation2Test extends AbstractIpsPluginTest implements ContentsChan
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.Relation#isContainerRelationImplementation()}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeRelation#isContainerRelationImplementation()}.
      */
     public void testIsContainerRelationImplementation() {
         relation.setImplementedContainerRelation("");
@@ -181,7 +203,7 @@ public class Relation2Test extends AbstractIpsPluginTest implements ContentsChan
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.Relation#setImplementedContainerRelation(java.lang.String)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeRelation#setImplementedContainerRelation(java.lang.String)}.
      */
     public void testSetImplementedContainerRelation() {
         relation.setImplementedContainerRelation("someRelation");

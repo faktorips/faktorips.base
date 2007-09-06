@@ -449,7 +449,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         relations.toArray(r);
         return r;
     }
-
+    
     /*
      * Returns the list holding the relations as a reference. Package private for use in
      * TypeHierarchy.

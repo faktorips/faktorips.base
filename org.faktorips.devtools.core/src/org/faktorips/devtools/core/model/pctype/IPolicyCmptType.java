@@ -447,7 +447,7 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      * @throws IllegalArgumentException if name is <code>null</code>.
      */
     public IRelation getRelation(String name);
-
+    
     /**
      * Creates a new relation and returns it.
      */

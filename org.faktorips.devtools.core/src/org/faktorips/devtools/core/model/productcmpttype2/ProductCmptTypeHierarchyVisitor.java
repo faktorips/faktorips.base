@@ -35,7 +35,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public abstract class ProductCmptTypeHierarchyVisitor {
 
-    private IIpsProject ipsProject;
+    protected IIpsProject ipsProject;
     
     public ProductCmptTypeHierarchyVisitor(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);

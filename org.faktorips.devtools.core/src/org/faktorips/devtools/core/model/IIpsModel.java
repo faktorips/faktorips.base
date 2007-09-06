@@ -39,8 +39,8 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Runs the given runnable/action as an atomic workspace operation like the <code>run</code>
      * method in IWorkspace. All ips source file change events are queued until the action is
-     * finished and then broadcasted. If an ips source file is changed more than once, only one change
-     * event is sent.
+     * finished and then broadcasted. If an ips source file is changed more than once, only one
+     * change event is sent.
      * 
      * @throws CoreException
      * 
@@ -125,12 +125,12 @@ public interface IIpsModel extends IIpsElement {
     public void removeChangeListener(ContentsChangeListener listener);
 
     /**
-     * Adds the modification status change listener. 
+     * Adds the modification status change listener.
      */
     public void addModifcationStatusChangeListener(IModificationStatusChangeListener listener);
 
     /**
-     * Removes the modification status change listener. 
+     * Removes the modification status change listener.
      */
     public void removeModificationStatusChangeListener(IModificationStatusChangeListener listener);
 
@@ -202,14 +202,21 @@ public interface IIpsModel extends IIpsElement {
      * Clears the validation results for all elements in the workspace.
      */
     public void clearValidationCache();
-    
+
     /**
      * Returns the type of ips objects supported.
      */
     public IpsObjectType[] getIpsObjectTypes();
-    
+
     /**
      * Returns the type identified by the name or <code>null</code> if no such type exists.
      */
-    public IpsObjectType getIpsObjectType(String name);  
+    public IpsObjectType getIpsObjectType(String name);
+
+    /**
+     * Returns the type identified by the given file extension or <code>null</code> if no such
+     * type exists.
+     */
+    public IpsObjectType getIpsObjectTypeByFileExtension(String fileExtension);
+
 }

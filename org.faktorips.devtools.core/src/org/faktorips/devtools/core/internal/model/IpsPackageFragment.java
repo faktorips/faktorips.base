@@ -261,6 +261,11 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      */
     public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor)
             throws CoreException {
+
+        IIpsSrcFile ipsSrcFile = getIpsSrcFile(name);
+        IpsModel model = (IpsModel)getIpsModel();
+        model.removeIpsSrcFileContent(ipsSrcFile);
+
         IFolder folder = (IFolder)getCorrespondingResource();
         IFile file = folder.getFile(name);
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
@@ -274,11 +279,8 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
                     + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
         }
 
-        IIpsSrcFile ipsSrcFile = getIpsSrcFile(name);
-
         // set the new evaluated runtime id for product components
         if (ipsSrcFile .getIpsObjectType() == IpsObjectType.PRODUCT_CMPT){
-            IpsModel model = (IpsModel)getIpsModel();
             try {
                 model.stopBroadcastingChangesMadeByCurrentThread();
                 IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();

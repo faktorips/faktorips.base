@@ -95,17 +95,6 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         assertTrue(parsableFile.isContentParsable());
     }
 
-    public void testConstructor(){
-    	
-    	try{
-    		new IpsSrcFile(ipsFolder, "readme.txt");
-    		fail();
-    	}
-    	catch(Exception e){
-    		//expected to fail
-    	}
-    }
-    
     public void testDiscardChanges_ParsableContents() throws Exception {
         IPolicyCmptType type = newPolicyCmptType(this.ipsProject, "Policy");
         IIpsSrcFile file = type.getIpsSrcFile();

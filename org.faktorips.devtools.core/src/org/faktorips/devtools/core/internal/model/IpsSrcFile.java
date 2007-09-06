@@ -44,12 +44,7 @@ import org.w3c.dom.Document;
 public class IpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile {
     
     public IpsSrcFile(IIpsElement parent, String name) {
-
     	super(parent, name);
-    	if(IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name)) == null){
-    		throw new IllegalArgumentException("The provided file name is not a valid file name for an " //$NON-NLS-1$
-    				+  StringUtil.unqualifiedName(IpsSrcFile.class.getName()));
-    	}
     }
 
     /** 

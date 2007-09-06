@@ -70,12 +70,14 @@ public interface IProductCmptType extends IIpsObject, IType {
      * Returns <code>null</code> if either this product component type does not refer to a policy
      * component type or the policy component type can't be found.
      * 
+     * @param <code>true</code> if the supertype hierarchy is searched if no policy component type is specified
+     * in the type.
      * @param project The project which ips object path is used for the searched.
      * This is not neccessarily the project this type is part of. 
      * 
      * @throws CoreException if an error occurs while searching for the type.
      */
-    public IPolicyCmptType findPolicyCmptType(IIpsProject project) throws CoreException;
+    public IPolicyCmptType findPolicyCmptType(boolean searchSupertypeHierarchy, IIpsProject project) throws CoreException;
     
     /**
      * Returns the type's supertype if the type is based on a supertype and the supertype can be found

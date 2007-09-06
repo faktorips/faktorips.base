@@ -47,7 +47,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     private String policyCmptType = "";
     
     private IpsObjectPartCollection attributes = new IpsObjectPartCollection(this, Attribute.class, "Attribute");
-    private IpsObjectPartCollection relations = new IpsObjectPartCollection(this, Relation.class, "Relation");
+    private IpsObjectPartCollection relations = new IpsObjectPartCollection(this, ProductCmptTypeRelation.class, "Relation");
     private IpsObjectPartCollection tableStructureUsages = new IpsObjectPartCollection(this, TableStructureUsage.class, "TableStructureUsage");
     
     public ProductCmptType(IIpsSrcFile file) {
@@ -109,8 +109,22 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
-    public IPolicyCmptType findPolicyCmptType(IIpsProject project) throws CoreException {
-        return project.findPolicyCmptType(policyCmptType);
+    public IPolicyCmptType findPolicyCmptType(boolean searchSupertypeHierarchy, IIpsProject project) throws CoreException {
+        IPolicyCmptType typeObj = project.findPolicyCmptType(policyCmptType);
+        if (typeObj!=null) {
+            return typeObj;
+        }
+        if (isConfigurationForPolicyCmptType()) {
+            return null; // a policy component type is specified, but it is not found. no need to search the hierarchy.
+        }
+        if (!searchSupertypeHierarchy) {
+            return null;
+        }
+        IProductCmptType supertypeObj = findSuperProductCmptType(project);
+        if (supertypeObj==null) {
+            return null;
+        }
+        return supertypeObj.findPolicyCmptType(searchSupertypeHierarchy, project);
     }
     
     /**
@@ -284,7 +298,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
     
     private void validatePolicyCmptTypeReference(IIpsProject ipsProject, MessageList list) throws CoreException {
-        IPolicyCmptType typeObj = findPolicyCmptType(ipsProject);
+        IPolicyCmptType typeObj = findPolicyCmptType(false, ipsProject);
         if (typeObj==null) {
             String text = "The policy component type " + policyCmptType + " does not exist.";
             list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST, text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE));

@@ -198,5 +198,12 @@ public interface IRelation extends IIpsObjectPart {
      */
     public IRelation findImplementedContainerRelation(IIpsProject project) throws CoreException;
     
+    /**
+     * Returns the corresponding policy component type relation or <code>null</code> if no
+     * such relation is found.
+     * 
+     * @throws CoreException if an error occurs while searching for the relation.
+     */
+    public org.faktorips.devtools.core.model.pctype.IRelation findPolicyCmptTypeRelation(IIpsProject ipsProject) throws CoreException;
 
 }

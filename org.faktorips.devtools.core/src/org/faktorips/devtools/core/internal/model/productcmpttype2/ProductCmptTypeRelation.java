@@ -17,14 +17,19 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IRelation;
 import org.faktorips.devtools.core.util.QNameUtil;
@@ -36,7 +41,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class Relation extends AtomicIpsObjectPart implements IRelation {
+public class ProductCmptTypeRelation extends AtomicIpsObjectPart implements IRelation {
 
     final static String TAG_NAME = "Relation"; //$NON-NLS-1$
 
@@ -48,7 +53,7 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     private String implementedContainerRelation = ""; //$NON-NLS-1$
     private boolean readOnlyContainer = false;
     
-    public Relation(IIpsObject parent, int id) {
+    public ProductCmptTypeRelation(IIpsObject parent, int id) {
         super(parent, id);
     }
     
@@ -247,6 +252,45 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
             return false;
         }
         return containerRelation.equals(findImplementedContainerRelation(project));
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+
+    public org.faktorips.devtools.core.model.pctype.IRelation findPolicyCmptTypeRelation(IIpsProject ipsProject) throws CoreException {
+        IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(true, ipsProject);
+        if (policyCmptType==null) {
+            return null;
+        }
+        IProductCmptType targetType = findTarget(ipsProject);
+        if (targetType==null) {
+            return null;
+        }
+        IPolicyCmptType targetPolicyCmptType = targetType.findPolicyCmptType(true, ipsProject);
+        if (targetPolicyCmptType==null) {
+            return null;
+        }
+        org.faktorips.devtools.core.model.pctype.IRelation[] policyRelations = getCompositionsFor(policyCmptType, targetPolicyCmptType); 
+        if (policyRelations.length==0) {
+            return null;
+        }
+        if (policyRelations.length>1) {
+            throw new CoreException(new IpsStatus("More than 1 relation is not supported at the moment!"));
+        }
+        return policyRelations[0];
+    }
+    
+    private org.faktorips.devtools.core.model.pctype.IRelation[] getCompositionsFor(IPolicyCmptType from, IPolicyCmptType target) {
+        List result = new ArrayList();
+        String targetQName = target.getQualifiedName();
+        org.faktorips.devtools.core.model.pctype.IRelation[] policyRelations = from.getRelations();
+        for (int i=0; i<policyRelations.length; i++) {
+            if (policyRelations[i].isCompositionMasterToDetail() && targetQName.equals(policyRelations[i].getTarget())) {
+                result.add(policyRelations[i]);
+            }
+        }
+        return (org.faktorips.devtools.core.model.pctype.IRelation[])result.toArray(new org.faktorips.devtools.core.model.pctype.IRelation[result.size()]);
     }
 
     /**

@@ -1227,6 +1227,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Returns the content for the given ips src file. If the ips source file's corresponding
      * resource does not exist, the method returns <code>null</code>.
      */
+    synchronized public void removeIpsSrcFileContent(IIpsSrcFile file) {
+        ipsObjectsMap.remove(file);
+    }
+    
+    /**
+     * Returns the content for the given ips src file. If the ips source file's corresponding
+     * resource does not exist, the method returns <code>null</code>.
+     */
     synchronized public IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file) {
         if (file == null) {
             return null;
@@ -1416,6 +1424,18 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public IpsObjectType getIpsObjectType(String name) {
         for (int i=0; i<ipsObjectTypes.length; i++) {
             if (ipsObjectTypes[i].getName().equals(name)) {
+                return ipsObjectTypes[i];
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IpsObjectType getIpsObjectTypeByFileExtension(String fileExtension) {
+        for (int i=0; i<ipsObjectTypes.length; i++) {
+            if (ipsObjectTypes[i].getFileExtension().equals(fileExtension)) {
                 return ipsObjectTypes[i];
             }
         }

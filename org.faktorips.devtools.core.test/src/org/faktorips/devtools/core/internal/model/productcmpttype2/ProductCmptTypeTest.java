@@ -169,14 +169,26 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     }
 
     public void testFindPolicyCmptType() throws CoreException {
-        productCmptType.setPolicyCmptType(null);
-        assertNull(productCmptType.findPolicyCmptType(ipsProject));
+        productCmptType.setPolicyCmptType("");
+        assertNull(productCmptType.findPolicyCmptType(true, ipsProject));
+        assertNull(productCmptType.findPolicyCmptType(false, ipsProject));
         
         productCmptType.setPolicyCmptType("UnknownType");
-        assertNull(productCmptType.findPolicyCmptType(ipsProject));
+        assertNull(productCmptType.findPolicyCmptType(false, ipsProject));
+        assertNull(productCmptType.findPolicyCmptType(true, ipsProject));
 
         productCmptType.setPolicyCmptType("Policy");
-        assertEquals(policyCmptType, productCmptType.findPolicyCmptType(ipsProject));
+        assertEquals(policyCmptType, productCmptType.findPolicyCmptType(false, ipsProject));
+        assertEquals(policyCmptType, productCmptType.findPolicyCmptType(true, ipsProject));
+        
+        productCmptType.setPolicyCmptType("");
+        superProductCmptType.setPolicyCmptType("Policy");
+        assertNull(productCmptType.findPolicyCmptType(false, ipsProject));
+        assertEquals(policyCmptType, productCmptType.findPolicyCmptType(true, ipsProject));
+        
+        productCmptType.setPolicyCmptType("Unkown");
+        assertNull(productCmptType.findPolicyCmptType(false, ipsProject));
+        assertNull(productCmptType.findPolicyCmptType(true, ipsProject));
     }
 
     public void testNewAttribute() {

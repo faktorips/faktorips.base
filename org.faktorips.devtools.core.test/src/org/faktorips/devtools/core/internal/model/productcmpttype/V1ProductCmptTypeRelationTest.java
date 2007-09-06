@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelatio
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptTypeRelationTest extends AbstractIpsPluginTest {
+public class V1ProductCmptTypeRelationTest extends AbstractIpsPluginTest {
 
 	private IIpsProject ipsProject;
 	private IPolicyCmptType policyCmptType;
