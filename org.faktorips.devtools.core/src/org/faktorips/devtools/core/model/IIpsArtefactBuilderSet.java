@@ -121,7 +121,7 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 	public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException;
 
     /**
-     * Returns the name of the rersource containing the root's table of contents at runtime.
+     * Returns the name of the resource containing the root's table of contents at runtime.
      * E.g. "org.faktorips.sample.internal.sample-toc.xml". This returned path can be used
      * to create a ClassloaderRuntimeRepository. Returns <code>null</code> if this builder does
      * not generate tocs or this root is not a root based on a source folder. Returns <code>null</code>
