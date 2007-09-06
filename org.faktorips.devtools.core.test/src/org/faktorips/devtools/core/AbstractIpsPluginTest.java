@@ -613,7 +613,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             print = print.concat(element + lineSeparator );
         }
 
-        byte[] bytes = print.getBytes();
+        byte[] bytes = print.getBytes(StringUtil.CHARSET_UTF8);
 
         ByteArrayInputStream is= new ByteArrayInputStream(bytes);
         file.create(is, true, null);

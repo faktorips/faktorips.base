@@ -419,20 +419,11 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         createPackageOrderFile((IFolder) service.getCorrespondingResource(), list);
         list.clear();
 
-        children = products.getSortedChildIpsPackageFragments();
-        assertEquals(5, children.length);
-        assertEquals("products.unfall", children[0].getName());
-        assertEquals("products.kranken", children[1].getName());
-        assertEquals("products.folder", children[2].getName());
-        assertEquals("products.haftpflicht", children[3].getName());
-        assertEquals("products.hausrat", children[4].getName());
-
         children = service.getSortedChildIpsPackageFragments();
         assertEquals(2, children.length);
         assertEquals("products.kranken.leistungsarten.optional", children[0].getName());
         assertEquals("products.kranken.leistungsarten.fix", children[1].getName());
 
-        // test caching
         children = products.getSortedChildIpsPackageFragments();
         assertEquals(5, children.length);
         assertEquals("products.unfall", children[0].getName());
@@ -441,8 +432,14 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         assertEquals("products.haftpflicht", children[3].getName());
         assertEquals("products.hausrat", children[4].getName());
 
-        assertEquals(5, ((IpsModel) children[0].getIpsModel()).getSortOrderCache().size());
-
+        // test caching
+        IIpsPackageFragment[] children2 = products.getSortedChildIpsPackageFragments();
+        assertEquals(5, children2.length);
+        assertEquals(children2[0].getName(), children[0].getName());
+        assertEquals(children2[1].getName(), children[1].getName());
+        assertEquals(children2[2].getName(), children[2].getName());
+        assertEquals(children2[3].getName(), children[3].getName());
+        assertEquals(children2[4].getName(), children[4].getName());
     }
 
 }

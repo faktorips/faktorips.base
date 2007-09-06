@@ -78,10 +78,20 @@ public class IpsPackageNameComparatorTest extends AbstractIpsPluginTest {
         orderList.add("f"); //$NON-NLS-1$
         orderList.add("e"); //$NON-NLS-1$
 
+        createPackageOrderFile((IFolder) packB.getCorrespondingResource() , orderList);
+        orderList.clear();
+
         IIpsPackageFragment packE = ipsRoot.createPackageFragment("a.b.e", true, null); //$NON-NLS-1$
         IIpsPackageFragment packF = ipsRoot.createPackageFragment("a.b.f", true, null); //$NON-NLS-1$
 
+        orderList.add("h"); //$NON-NLS-1$
+        orderList.add("g"); //$NON-NLS-1$
+
+        createPackageOrderFile((IFolder) packC.getCorrespondingResource() , orderList);
         orderList.clear();
+
+        IIpsPackageFragment packG = ipsRoot.createPackageFragment("a.c.g", true, null); //$NON-NLS-1$
+        IIpsPackageFragment packH = ipsRoot.createPackageFragment("a.c.h", true, null); //$NON-NLS-1$
 
         assertTrue( comparator.compare(packA, packD) > 0);
         assertTrue( comparator.compare(packD, packA) < 0);
@@ -100,6 +110,13 @@ public class IpsPackageNameComparatorTest extends AbstractIpsPluginTest {
         assertTrue( comparator.compare(packM, packF) > 0);
         assertTrue( comparator.compare(packF, packC) > 0);
         assertTrue( comparator.compare(packF, packM) < 0);
+
+        assertTrue( comparator.compare(packE, packH) > 0);
+        assertTrue( comparator.compare(packH, packE) < 0);
+
+        assertTrue( comparator.compare(packG, packH) > 0);
+        assertTrue( comparator.compare(packH, packG) < 0);
+
 
         // test not listed package
         IIpsPackageFragment packEnd1 = ipsRoot.createPackageFragment("a.x", true, null); //$NON-NLS-1$
