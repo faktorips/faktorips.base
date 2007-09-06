@@ -74,7 +74,7 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
      * {@inheritDoc}
      */
     public String getPredecessorId() {
-        return null;
+        return "";
     }
 
     /**
