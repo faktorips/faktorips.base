@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+ * Konfigurationen, etc.) duerfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -82,13 +82,13 @@ import org.faktorips.util.StringUtil;
 /**
  * Base class for all plugin test cases. Has a factory method to create an ips
  * project including the underlying platform project.
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
 	/**
-	 * 
+	 *
 	 */
 	public AbstractIpsPluginTest() {
 		super();
@@ -105,7 +105,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	    ((IpsModel)IpsPlugin.getDefault().getIpsModel()).stopListeningToResourceChanges();
         IpsPlugin.getDefault().setFeatureVersionManagers(new IIpsFeatureVersionManager[]{new TestIpsFeatureVersionManager()});
         setAutoBuild(false);
-        
+
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
@@ -127,25 +127,25 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE,
 				null);
-        
+
 	}
-    
+
     protected void createArchive(IIpsProject projectToArchive, IFile archiveFile) throws Exception {
         File file = createFileIfNecessary(archiveFile);
-        
+
         CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(projectToArchive, file);
         ResourcesPlugin.getWorkspace().run(op, null);
-        
+
         createLinkIfNecessary(archiveFile, file);
     }
-    
+
     protected void createArchive(IIpsPackageFragmentRoot rootToArchive, IFile archiveFile) throws Exception {
         File file = createFileIfNecessary(archiveFile);
-        
+
         CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(rootToArchive, file);
         ResourcesPlugin.getWorkspace().run(op, null);
-        
-        createLinkIfNecessary(archiveFile, file);        
+
+        createLinkIfNecessary(archiveFile, file);
     }
 
     /*
@@ -166,7 +166,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         }
         return file;
     }
-    
+
     /**
      * Creates a new IpsProject.
      */
@@ -194,7 +194,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
 	/**
 	 * Creates a new platfrom project with the given name and opens it.
-	 * 
+	 *
 	 * @throws CoreException
 	 */
 	protected IProject newPlatformProject(final String name)
@@ -212,7 +212,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
 	/**
 	 * Creates a new platfrom project with the given name and opens it.
-	 * 
+	 *
 	 * @throws CoreException
 	 */
 	private IProject internalNewPlatformProject(final String name)
@@ -256,7 +256,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 		addSystemLibraries(javaProject);
 		return javaProject;
 	}
-    
+
     protected void addClasspathEntry(IJavaProject project, IClasspathEntry entry) throws JavaModelException {
         IClasspathEntry[] entries = project.getRawClasspath();
         IClasspathEntry[] newEntries = new IClasspathEntry[entries.length+1];
@@ -289,10 +289,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 		IIpsProjectProperties props = ipsProject.getProperties();
 		props.setBuilderSetId("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
         props.setLoggingFrameworkConnectorId("org.faktorips.devtools.core.javaUtilLoggingConnector");
-		props.setPredefinedDatatypesUsed(new String[] { "Decimal", "Money", "Integer", 
+		props.setPredefinedDatatypesUsed(new String[] { "Decimal", "Money", "Integer",
 				"String", "Boolean" });
 		props.setJavaSrcLanguage(Locale.GERMAN);
-        
+
         props.setMinRequiredVersionNumber("org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         ipsProject.setProperties(props);
 
@@ -312,12 +312,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	private void waitForIndexer() throws JavaModelException {
 	    SearchEngine engine = new SearchEngine();
 	    engine.searchAllTypeNames(
-	            new char[] {}, 
-	            new char[] {}, 
+	            new char[] {},
+	            new char[] {},
 	            SearchPattern.R_EXACT_MATCH,
 	            IJavaSearchConstants.CLASS,
 	            SearchEngine.createJavaSearchScope(new IJavaElement[0]),
-				new TypeNameRequestor() {}, 
+				new TypeNameRequestor() {},
 	    		IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
 	}
 
@@ -334,7 +334,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	 * Creates a new ipsobject in the indicated project's first source folder.
 	 * If the qualifiedName includes a package name, the package is created if
 	 * it does not already exists.
-	 * 
+	 *
 	 * @throws CoreException
 	 */
 	protected IIpsObject newIpsObject(IIpsProject project, IpsObjectType type,
@@ -348,14 +348,14 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	 * Creates a new ipsobject in the indicated package fragment root. If the
 	 * qualifiedName includes a package name, the package is created if it does
 	 * not already exists.
-	 * 
+	 *
 	 * @throws CoreException
 	 */
 	protected IIpsObject newIpsObject(
             final IIpsPackageFragmentRoot root,
-			final IpsObjectType type, 
+			final IpsObjectType type,
             final String qualifiedName) throws CoreException {
-        
+
         final String packName = StringUtil.getPackageName(qualifiedName);
         final String unqualifiedName = StringUtil.unqualifiedName(qualifiedName);
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
@@ -383,70 +383,70 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	}
 
 	/**
-	 * Creates a new policy component type in the indicated package fragment root. If the qualifiedName includes a 
+	 * Creates a new policy component type in the indicated package fragment root. If the qualifiedName includes a
 	 * package name, the package is created if it does not already exists.
-	 * 
+	 *
 	 * @throws CoreException
 	 */
 	protected PolicyCmptType newPolicyCmptType(final IIpsPackageFragmentRoot root, final String qualifiedName) throws CoreException {
 	    return (PolicyCmptType)newIpsObject(root, IpsObjectType.POLICY_CMPT_TYPE, qualifiedName);
 	}
-	
+
 	/**
-	 * Creates a new policy component type in the project's first package fragment root. 
+	 * Creates a new policy component type in the project's first package fragment root.
 	 * If the qualifiedName includes a package name, the package is created if it does not already exists.
-	 * 
+	 *
 	 * @throws CoreException
 	 */
 	protected PolicyCmptType newPolicyCmptType(IIpsProject project, String qualifiedName) throws CoreException {
 		return (PolicyCmptType)newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, qualifiedName);
 	}
-	
+
     /**
-     * Creates a new product component type in the project's first package fragment root. 
+     * Creates a new product component type in the project's first package fragment root.
      * If the qualifiedName includes a package name, the package is created if it does not already exists.
-     * 
+     *
      * @throws CoreException
      */
     protected ProductCmptType newProductCmptType(IIpsProject project, String qualifiedName) throws CoreException {
         return (ProductCmptType)newIpsObject(project, IpsObjectType.PRODUCT_CMPT_TYPE2, qualifiedName);
     }
-    
+
     /**
-     * Creates a new product component type in the indicated package fragment root. If the qualifiedName includes a 
+     * Creates a new product component type in the indicated package fragment root. If the qualifiedName includes a
      * package name, the package is created if it does not already exists.
-     * 
+     *
      * @throws CoreException
      */
     protected ProductCmptType newProductCmptType(final IIpsPackageFragmentRoot root, final String qualifiedName) throws CoreException {
         return (ProductCmptType)newIpsObject(root, IpsObjectType.PRODUCT_CMPT_TYPE2, qualifiedName);
     }
-    
+
 	/**
-	 * Creates a new product component in the indicated package fragment root. If the qualifiedName includes a 
+	 * Creates a new product component in the indicated package fragment root. If the qualifiedName includes a
 	 * package name, the package is created if it does not already exists.
-	 * 
+	 *
 	 * @throws CoreException
 	 */
 	protected ProductCmpt newProductCmpt(IIpsPackageFragmentRoot root, String qualifiedName) throws CoreException {
 	    return (ProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT, qualifiedName);
 	}
-	
+
 	/**
-	 * Creates a new product component in the project's first package fragment root. 
+	 * Creates a new product component in the project's first package fragment root.
 	 * If the qualifiedName includes a package name, the package is created if it does not already exists.
-	 * 
+	 *
 	 * @throws CoreException
 	 */
 	protected ProductCmpt newProductCmpt(IIpsProject project, String qualifiedName) throws CoreException {
 		return (ProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_CMPT, qualifiedName);
 	}
-	
+
 	/**
 	 * Creates a new ipsobject in the indicated package fragment root. If the
 	 * qualifiedName includes a package name, the package is created if it does
 	 * not already exists.
-	 * 
+	 *
 	 * @throws CoreException
 	 */
 	protected IIpsObject newIpsObject(IIpsPackageFragment pack,
@@ -461,7 +461,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected void fullBuild() throws CoreException {
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
-    
+
     /**
      * Triggers an incremental build of the workspace.
      */
@@ -516,9 +516,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	/**
 	 * Copies the given project properties file and the given classes to the
 	 * given project. The classes are added to the classpath of the project.
-	 * 
+	 *
 	 * @throws CoreException
-	 * 
+	 *
 	 */
 	protected void configureProject(IIpsProject project,
 			String ipsProjectFileName, Class[] dependencies)
@@ -539,9 +539,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 					.getResourceAsStream(ipsProjectFileName), true, null);
 		}
 	}
-    
+
     /**
-     * Sets the builderset as the one to be used by the indicated project. 
+     * Sets the builderset as the one to be used by the indicated project.
      * This method modifies the project's properties and also registers the builderset in the model.
      */
     protected void setArtefactBuildset(IIpsProject project, IIpsArtefactBuilderSet builderset) throws CoreException {
@@ -552,11 +552,11 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         model.setIpsArtefactBuilderSet(project, builderset);
         model.clearValidationCache();
     }
-    
+
 	/**
-     * Subclasses can use this method to print out the MultiStatus of a CoreException. This is expecially interesting for 
+     * Subclasses can use this method to print out the MultiStatus of a CoreException. This is expecially interesting for
      * testcases that start a build because normally all you get is a ResourceException with no detailed information.
-     *  
+     *
      * @param status the status of a CoreException
 	 */
     protected void printOriginalStatus(IStatus status){
@@ -574,7 +574,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         testPropertyAccessReadOnly(clazz, propertyName);
         testPropertyAccessWriteOnly(clazz, propertyName);
     }
-    
+
     protected void testPropertyAccessWriteOnly(Class clazz, String propertyName) {
         PropertyDescriptor prop = BeanUtil.getPropertyDescriptor(clazz, propertyName);
         Method writeMethod = prop.getWriteMethod();
@@ -588,7 +588,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         assertNotNull("Class " + clazz.getName() + " hasn't got a read method for property " + propertyName, readMethod);
         assertEquals(0, readMethod.getParameterTypes().length);
     }
-    
+
     /**
      * Create the sort order file for {@link IpsPackageFragment}s from a List of Strings.
      *
@@ -601,6 +601,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected void createPackageOrderFile(IFolder folder, List strings) throws IOException, CoreException {
 
         IFile file = folder.getFile(IpsPackageFragment.SORT_ORDER_FILE);
+
+        if (file.exists()) {
+            file.delete(true, null);
+        }
 
         String print = new String();
         String lineSeparator = StringUtil.getSystemLineSeparator();
