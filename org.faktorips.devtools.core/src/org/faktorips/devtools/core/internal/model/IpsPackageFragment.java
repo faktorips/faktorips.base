@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
@@ -89,41 +88,78 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      * {@inheritDoc}
      */
     public IIpsPackageFragmentSortDefinition getSortDefinition() {
-        IIpsPackageFragmentSortDefinition sortDef = null;
+        IIpsPackageFragmentSortDefinition sortDef = getSortDefinitionInternal();
 
-        /*
-         * SortDefinitions are cached in IpsModel.
-         */
-        Map map = ((IpsModel)this.getIpsModel()).getSortOrderCache();
+        return sortDef.copy();
+    }
 
-        String content = null;
+    /**
+     * {@inheritDoc}
+     * @throws CoreException
+     */
+    IIpsPackageFragmentSortDefinition getSortDefinitionInternal() {
 
-        if (map.containsKey(this)) {
-            IIpsPackageFragmentSortDefinition cachedSortDef =  (IIpsPackageFragmentSortDefinition)map.get(this);
+         // SortDefinitions are cached in IpsModel
+        IIpsPackageFragmentSortDefinition sortDef = ((IpsModel)this.getIpsModel()).getSortDefinition(this);
 
-            if (cachedSortDef != null) {
-               try {
-                   sortDef = new IpsPackageFragmentArbitrarySortDefinition();
-                   content =((IIpsPackageFragmentSortDefinition) cachedSortDef).toPersistenceContent();
-                   sortDef.initPersistenceContent(content, this.getIpsProject().getPlainTextFileCharset());
-               } catch (Exception e) {
-                return null;
-               }
-            }
-        } else {
-
+        if (sortDef == null) {
             try {
-                 sortDef = new IpsPackageFragmentArbitrarySortDefinition();
-                 content = getSortDefinitionContent();
-                 sortDef.initPersistenceContent(content, this.getIpsProject().getPlainTextFileCharset());
+                sortDef = getSortDefinitionFromContent();
             } catch (CoreException e) {
-                return null;
-            }
+                IpsPlugin.log(e);
 
-            map.put(this, sortDef);
+                sortDef = new IpsPackageFragmentDefaultSortDefinition();
+            }
         }
 
         return sortDef;
+    }
+
+    /**
+     * Read the sort definition from the <code>SORT_ORDER_FILE</code>.
+     * Returns a {@link IpsPackageFragmentDefaultSortDefinition} if no <code>SORT_ORDER_FILE</code> is found.
+     *
+     * @return Sort definition.
+     * @throws CoreException
+     */
+    private IIpsPackageFragmentSortDefinition getSortDefinitionFromContent() throws CoreException {
+        IIpsPackageFragmentSortDefinition sortDef = null;
+
+        IFile file = getCorrespondingSortOrderFile();
+
+        if (file.exists()) {
+
+           try {
+               String content = StringUtil.readFromInputStream(file.getContents(), this.getIpsProject().getPlainTextFileCharset());
+               sortDef = new IpsPackageFragmentArbitrarySortDefinition();
+               sortDef.initPersistenceContent(content, this.getIpsProject().getPlainTextFileCharset());
+
+           } catch (IOException e) {
+               throw new CoreException(new IpsStatus(e));
+           }
+        }
+
+        // sort order file does not exist
+        if (sortDef == null) {
+            sortDef = new IpsPackageFragmentDefaultSortDefinition();
+        }
+
+        return sortDef;
+    }
+
+    /**
+     * @return Handle to a sort order file. The file doesn't need to exist!
+     */
+    private IFile getCorrespondingSortOrderFile() {
+        IFolder folder = null;
+
+        if (this.isDefaultPackage()) {
+            folder = (IFolder) this.getRoot().getCorrespondingResource();
+        } else {
+            folder = (IFolder) this.getParentIpsPackageFragment().getCorrespondingResource();
+        }
+
+        return folder.getFile(new Path(SORT_ORDER_FILE));
     }
 
     /**
@@ -166,20 +202,11 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
 
     /**
      * {@inheritDoc}
+     * @throws UnsupportedEncodingException
      */
     public void setSortDefinition(IIpsPackageFragmentSortDefinition newDefinition) throws CoreException {
 
-        IFolder folder;
-
-        if (this.isDefaultPackage()) {
-            folder = (IFolder) this.getRoot().getCorrespondingResource();
-        } else {
-            folder = (IFolder) this.getParentIpsPackageFragment().getCorrespondingResource();
-        }
-
-        IFile file = folder.getFile(new Path(SORT_ORDER_FILE));
-        Map map = ((IpsModel)this.getIpsModel()).getSortOrderCache();
-        map.remove(this);
+        IFile file = getCorrespondingSortOrderFile();
 
         if (newDefinition == null) {
             file.delete(true, null);
@@ -187,12 +214,17 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
 
         String content = newDefinition.toPersistenceContent();
-        byte[] bytes = content.getBytes();
+        byte[] bytes;
+
+        try {
+            bytes = content.getBytes(this.getIpsProject().getPlainTextFileCharset());
+        } catch (UnsupportedEncodingException e) {
+            throw new CoreException(new IpsStatus(e));
+        }
 
         ByteArrayInputStream is= new ByteArrayInputStream(bytes);
+        // overwrite existing files
         file.create(is, true, null);
-
-        map.put(this, newDefinition);
     }
 
     /**
@@ -487,32 +519,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
                     "{0} is not a valid package name.", name), null)); //$NON-NLS-1$
         }
         return getRoot().createPackageFragment(isDefaultPackage() ? name : (getName() + "." + name), true, null); //$NON-NLS-1$
-    }
-
-    /**
-     * @return sort definition as String.
-     * @throws CoreException
-     */
-    private String getSortDefinitionContent() throws CoreException {
-        IFolder folder;
-
-        if (this.isDefaultPackage()) {
-            folder = (IFolder) this.getRoot().getCorrespondingResource();
-        } else {
-            folder = (IFolder) this.getParentIpsPackageFragment().getCorrespondingResource();
-        }
-
-        IFile file = folder.getFile(new Path(SORT_ORDER_FILE));
-        String content;
-
-        try {
-             content = StringUtil.readFromInputStream(file.getContents(), this.getIpsProject().getPlainTextFileCharset());
-        } catch (IOException e) {
-            IpsPlugin.log(e);
-            return null;
-        }
-
-        return content;
     }
 
 }

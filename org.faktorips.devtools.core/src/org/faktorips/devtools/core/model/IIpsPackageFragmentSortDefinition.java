@@ -72,4 +72,11 @@ public interface IIpsPackageFragmentSortDefinition {
      * @throws CoreException
      */
     public void initPersistenceContent(String content, String charset) throws CoreException;
+
+    /**
+     * Create a deep copy of the current sort order.
+     *
+     * @return Create a copy of the current instance.
+     */
+    public IIpsPackageFragmentSortDefinition copy();
 }

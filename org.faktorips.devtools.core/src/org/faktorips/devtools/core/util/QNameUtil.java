@@ -81,16 +81,17 @@ public class QNameUtil {
     /**
      * Transform the qualified name to a String array. Each segment of the name
      * is placed in hierarchy order, e.g. "de.faktorips.devtools
-     *
+     * <p>
+     * <blockquote><pre>
      * segments[0] = de
      * segments[1] = faktorips
      * segments[2] = devtools
-     *
+     * </pre></blockquote>
+     * <p>
      * @param qName Full qualified package name.
      * @return Segments of the package name as an array.
      */
     public final static String[] getSegments(String qName) {
-
         String [] segments;
 
         if ((qName == null) || (qName.length()==0)) {
@@ -110,6 +111,49 @@ public class QNameUtil {
      */
     public final static int getSegmentCount(String qName) {
         return getSegments(qName).length;
+    }
+
+    /**
+     * Extract subpackage name from a qualified name. The new string starts at the first
+     * position of <code>qName</code> and ends at segment <code>max</code>.
+     *
+     * Returns <code>qName</code> if <code>max</code> is 0 or negative.
+     * Returns an empty String if <code>qName</code> is empty.
+     *
+     * <p>
+     * <blockquote><pre>
+     * QNameUtil.getSubSegments("org.faktorips.devtools.model", 2);
+     * </pre></blockquote>
+     * <p>
+     * returns "org.faktorips"
+     *
+     * @param qName Qualified name of the package.
+     * @param max Amount of segments from the beginning.
+     * @return Subpackage name.
+     */
+    public final static String getSubSegments(String qName, int max) {
+        int segmentCount = getSegmentCount(qName);
+
+        if (segmentCount == 0) {
+           return new String("");
+        }
+
+        if ((max > 0) && (max < segmentCount)) {
+            segmentCount = max;
+        }
+
+        String[] segments = getSegments(qName);
+        String subString = new String("");
+
+        for (int i = 0; i < segmentCount; i++) {
+            if ((i+1) == segmentCount) {
+                subString = subString.concat(segments[i]);
+            } else {
+                subString = subString.concat(segments[i] + ".");
+            }
+        }
+
+        return subString;
     }
 
     /**

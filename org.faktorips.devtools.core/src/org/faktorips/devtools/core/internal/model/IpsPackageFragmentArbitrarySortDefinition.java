@@ -31,6 +31,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentArbitrarySortDefinition;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentSortDefinition;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -123,7 +124,7 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
 
         try {
 
-            ByteArrayInputStream is = new ByteArrayInputStream(content.getBytes());
+            ByteArrayInputStream is = new ByteArrayInputStream(content.getBytes(charset));
             in = new BufferedReader(new InputStreamReader(is, charset));
 
         } catch (UnsupportedEncodingException e) {
@@ -152,14 +153,12 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
                 sortOrderLookup.put(line, new Integer(pos++));
                 sortOrder.add(line);
             }
-
         }
-
     }
 
     /**
      * @param line
-     * @return
+     * @return <code>true</code> if it is a valid entry; <code>false</code> if line is empty or a comment
      */
     private boolean checkLine(String line) {
         if ((line.length() > 0 ) && (line.trim().length() > 0)) {
@@ -168,5 +167,18 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
         }
 
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsPackageFragmentSortDefinition copy() {
+
+        IpsPackageFragmentArbitrarySortDefinition sortDef = new IpsPackageFragmentArbitrarySortDefinition();
+
+        sortDef.sortOrder = (List)((ArrayList)this.sortOrder).clone();
+        sortDef.sortOrderLookup = (Map)((HashMap) sortOrderLookup).clone();
+
+        return sortDef;
     }
 }

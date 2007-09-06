@@ -19,8 +19,6 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.util.Comparator;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentSortDefinition;
 import org.faktorips.devtools.core.util.QNameUtil;
@@ -47,19 +45,19 @@ public class IpsPackageNameComparator implements Comparator {
         String[] segments1 = QNameUtil.getSegments(pack1.getName());
         String[] segments2 = QNameUtil.getSegments(pack2.getName());
 
-        IIpsPackageFragmentSortDefinition sortDef = null;
-        int length = 0;
+         int length = 0;
 
         // Compare two IIpsPackageFragments by qualified name and level
         if (segments1.length <= segments2.length) {
             length = segments1.length;
-            sortDef = getSortDefinition(pack1);
         } else {
             length = segments2.length;
-            sortDef = getSortDefinition(pack2);
         }
 
         for (int i = 0; i < length; i++) {
+
+            IIpsPackageFragmentSortDefinition sortDef = getSortDefinition(pack1, QNameUtil.getSubSegments(pack1.getName(), i+1));
+
             int c = comparePackages(sortDef, segments1[i], segments2[i]);
 
             if (c!=0) {
@@ -76,13 +74,12 @@ public class IpsPackageNameComparator implements Comparator {
      * @param pack <code>IIpsPackageFragment</code> current.
      * @return SortDefinition
      */
-    private IIpsPackageFragmentSortDefinition getSortDefinition(IIpsPackageFragment pack) {
-         try {
-                return pack.getSortDefinition();
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return null;
-        }
+    private IIpsPackageFragmentSortDefinition getSortDefinition(IIpsPackageFragment pack, String subSegmentName) {
+        IpsPackageFragment subPack = new IpsPackageFragment(pack.getRoot(), subSegmentName);
+
+        IIpsPackageFragmentSortDefinition sortDef = ((IpsPackageFragment) subPack).getSortDefinitionInternal();
+
+        return sortDef;
     }
 
     /**
@@ -98,6 +95,7 @@ public class IpsPackageNameComparator implements Comparator {
      *         second
      */
     private int comparePackages(IIpsPackageFragmentSortDefinition sortDef, String segmentName1, String segmentName2) {
+
         if (sortDef==null) {
             return segmentName1.compareTo(segmentName2);
         }
