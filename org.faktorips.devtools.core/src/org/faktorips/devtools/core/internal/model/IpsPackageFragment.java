@@ -95,21 +95,24 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
 
     /**
      * {@inheritDoc}
-     * @throws CoreException
      */
     IIpsPackageFragmentSortDefinition getSortDefinitionInternal() {
 
          // SortDefinitions are cached in IpsModel
-        IIpsPackageFragmentSortDefinition sortDef = ((IpsModel)this.getIpsModel()).getSortDefinition(this);
+        IpsModel ipsModel = (IpsModel)getIpsModel();
+        IIpsPackageFragmentSortDefinition sortDef = ipsModel.getSortDefinition(this);
 
         if (sortDef == null) {
             try {
-                sortDef = getSortDefinitionFromContent();
+                sortDef = loadSortDefinition();
+                if(sortDef == null){
+                    sortDef = new IpsPackageFragmentDefaultSortDefinition();
+                }
             } catch (CoreException e) {
-                IpsPlugin.log(e);
-
                 sortDef = new IpsPackageFragmentDefaultSortDefinition();
+                IpsPlugin.log(e);
             }
+            ipsModel.addSortDefinition(this, sortDef);
         }
 
         return sortDef;
@@ -122,29 +125,23 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      * @return Sort definition.
      * @throws CoreException
      */
-    private IIpsPackageFragmentSortDefinition getSortDefinitionFromContent() throws CoreException {
-        IIpsPackageFragmentSortDefinition sortDef = null;
+    private IIpsPackageFragmentSortDefinition loadSortDefinition() throws CoreException {
 
         IFile file = getCorrespondingSortOrderFile();
 
         if (file.exists()) {
 
-           try {
-               String content = StringUtil.readFromInputStream(file.getContents(), this.getIpsProject().getPlainTextFileCharset());
-               sortDef = new IpsPackageFragmentArbitrarySortDefinition();
-               sortDef.initPersistenceContent(content, this.getIpsProject().getPlainTextFileCharset());
-
-           } catch (IOException e) {
-               throw new CoreException(new IpsStatus(e));
-           }
+            try {
+                String content = StringUtil.readFromInputStream(file.getContents(), getIpsProject()
+                        .getPlainTextFileCharset());
+                IIpsPackageFragmentSortDefinition sortDef = new IpsPackageFragmentArbitrarySortDefinition();
+                sortDef.initPersistenceContent(content, getIpsProject().getPlainTextFileCharset());
+                return sortDef;
+            } catch (IOException e) {
+                throw new CoreException(new IpsStatus(e));
+            }
         }
-
-        // sort order file does not exist
-        if (sortDef == null) {
-            sortDef = new IpsPackageFragmentDefaultSortDefinition();
-        }
-
-        return sortDef;
+        return null;
     }
 
     /**
@@ -202,7 +199,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
 
     /**
      * {@inheritDoc}
-     * @throws UnsupportedEncodingException
      */
     public void setSortDefinition(IIpsPackageFragmentSortDefinition newDefinition) throws CoreException {
 
@@ -222,9 +218,13 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             throw new CoreException(new IpsStatus(e));
         }
 
-        ByteArrayInputStream is= new ByteArrayInputStream(bytes);
+        ByteArrayInputStream is = new ByteArrayInputStream(bytes);
         // overwrite existing files
-        file.create(is, true, null);
+        if(!file.exists()){
+            file.create(is, true, null);
+            return;
+        }
+        file.setContents(is, IResource.FORCE, null);
     }
 
     /**

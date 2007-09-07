@@ -115,9 +115,10 @@ public class QNameUtil {
 
     /**
      * Extract subpackage name from a qualified name. The new string starts at the first
-     * position of <code>qName</code> and ends at segment <code>max</code>.
+     * position of <code>qName</code> and ends at segment <code>numberOfSegments</code>.
      *
-     * Returns <code>qName</code> if <code>max</code> is 0 or negative.
+     * Returns <code>qName</code> if <code>numberOfSegments</code> is less equals 0 or 
+     * exceeds the number of segments of the qName.
      * Returns an empty String if <code>qName</code> is empty.
      *
      * <p>
@@ -128,32 +129,34 @@ public class QNameUtil {
      * returns "org.faktorips"
      *
      * @param qName Qualified name of the package.
-     * @param max Amount of segments from the beginning.
+     * @param numberOfSegments Amount of segments from the beginning.
      * @return Subpackage name.
      */
-    public final static String getSubSegments(String qName, int max) {
+    public final static String getSubSegments(String qName, int numberOfSegments) {
+        if(qName == null){
+            return null;
+        }
         int segmentCount = getSegmentCount(qName);
 
         if (segmentCount == 0) {
-           return new String("");
+           return qName;
         }
 
-        if ((max > 0) && (max < segmentCount)) {
-            segmentCount = max;
+        if (numberOfSegments > 0 && numberOfSegments < segmentCount) {
+            segmentCount = numberOfSegments;
         }
 
         String[] segments = getSegments(qName);
-        String subString = new String("");
-
+        StringBuffer buf = new StringBuffer();
+        
         for (int i = 0; i < segmentCount; i++) {
-            if ((i+1) == segmentCount) {
-                subString = subString.concat(segments[i]);
-            } else {
-                subString = subString.concat(segments[i] + ".");
+            buf.append(segments[i]);
+            if (i + 1 < segmentCount) {
+                buf.append('.');
             }
         }
 
-        return subString;
+        return buf.toString();
     }
 
     /**

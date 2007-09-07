@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.util.Comparator;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentSortDefinition;
 import org.faktorips.devtools.core.util.QNameUtil;
@@ -28,12 +29,6 @@ import org.faktorips.devtools.core.util.QNameUtil;
  * @author Markus Blum
  */
 public class IpsPackageNameComparator implements Comparator {
-
-    /**
-     *
-     */
-    public IpsPackageNameComparator () {
-    }
 
     /**
      * {@inheritDoc}
@@ -73,12 +68,11 @@ public class IpsPackageNameComparator implements Comparator {
      *
      * @param pack <code>IIpsPackageFragment</code> current.
      * @return SortDefinition
+     * @throws CoreException 
      */
     private IIpsPackageFragmentSortDefinition getSortDefinition(IIpsPackageFragment pack, String subSegmentName) {
-        IpsPackageFragment subPack = new IpsPackageFragment(pack.getRoot(), subSegmentName);
-
-        IIpsPackageFragmentSortDefinition sortDef = ((IpsPackageFragment) subPack).getSortDefinitionInternal();
-
+        IpsPackageFragment subPack = (IpsPackageFragment)pack.getRoot().getIpsPackageFragment(subSegmentName);
+        IIpsPackageFragmentSortDefinition sortDef = subPack.getSortDefinitionInternal();
         return sortDef;
     }
 

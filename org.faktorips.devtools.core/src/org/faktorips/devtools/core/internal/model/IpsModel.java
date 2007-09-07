@@ -1449,12 +1449,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * @return
      */
     IIpsPackageFragmentSortDefinition getSortDefinition(IIpsPackageFragment fragment) {
-
-        if (sortOrderCache.containsKey(this)) {
-            return (IIpsPackageFragmentSortDefinition)sortOrderCache.get(this);
-        }
-
-        return null;
+        return (IIpsPackageFragmentSortDefinition)sortOrderCache.get(this);
     }
 
     /**
@@ -1462,11 +1457,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * @param sortDefinition
      */
     void addSortDefinition(IIpsPackageFragment fragment, IIpsPackageFragmentSortDefinition sortDefinition) {
-
-        if (sortOrderCache.containsKey(fragment)) {
-            sortOrderCache.remove(fragment);
-        }
-
         sortOrderCache.put(fragment, sortDefinition);
     }
 }
