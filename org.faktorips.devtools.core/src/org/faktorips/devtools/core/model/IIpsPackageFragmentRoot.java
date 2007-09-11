@@ -69,14 +69,6 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     public IIpsPackageFragment[] getIpsPackageFragments() throws CoreException;
 
     /**
-     * Returns the package fragments contained in this root folder in the order defined by the sort defintions.
-     * Returns an empty array if this root folder does not contain any fragments
-     *
-     * @see IIpsPackageFragmentSortDefinition
-     */
-    public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException;
-
-    /**
      * Returns the package fragment with the indicated name.
      */
     public IIpsPackageFragment getIpsPackageFragment(String name);

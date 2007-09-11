@@ -4,22 +4,27 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
  *
  * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
+ *   Faktor Zehn GmbH - initial API and implementation
  *
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
@@ -35,11 +40,13 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
 
     private ModelExplorerSorter sorter;
 
-    private IIpsProject proj; 
-    private IIpsProject proj2; 
+    private IIpsProject proj;
+    private IIpsProject proj2;
     private IIpsPackageFragmentRoot root;
     private IIpsPackageFragment packageFragment;
     private IIpsPackageFragment packageFragment2;
+    private IIpsPackageFragment packageFragment3;
+    private IIpsPackageFragment packageFragment4;
     private IIpsPackageFragment defaultPackage;
 
     private IPolicyCmptType policyCT;
@@ -58,7 +65,7 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
     private IRelation rel;
 
     private IAttribute attr2;
-    
+
     protected void setUp() throws Exception {
         super.setUp();
         sorter= new ModelExplorerSorter();
@@ -74,10 +81,15 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
         policyCT2 = newPolicyCmptType(proj.getIpsPackageFragmentRoots()[0], "TestPolicy2");
         table= new TableStructure();
 
+        IIpsPackageFragmentRoot root2= proj2.getIpsPackageFragmentRoots()[0];
+        packageFragment3= root2.createPackageFragment("TestPackageFragment", false, null);
+        packageFragment4= root2.createPackageFragment("ZTestPackageFragment", false, null);
+
+
         attr1 = policyCT.newAttribute();
         rel = policyCT.newRelation();
         attr2 = policyCT.newAttribute();
-        
+
         projectResource1 = (IProject) proj3.getCorrespondingResource();
         projectResource2 = (IProject) proj4.getCorrespondingResource();
         folder = ((IProject)proj.getCorrespondingResource()).getFolder("folder");
@@ -86,8 +98,16 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
         subFolder.create(true, false, null);
         file = folder.getFile("test.txt");
         file.create(null, true, null);
+
+        // create sort order file
+        List list = new ArrayList();
+
+        list.add("ZTestPackageFragment");
+        list.add("TestPackageFragment");
+
+        createPackageOrderFile((IFolder)root.getCorrespondingResource(), list);
     }
-    
+
 	/*
 	 * Test method for 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelSorter.compare(Viewer, Object, Object)'
 	 */
@@ -99,20 +119,23 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
         assertTrue(sorter.compare(null, projectResource2, projectResource1) < 0);
         assertTrue(sorter.compare(null, projectResource1, proj2) < 0);
         assertTrue(sorter.compare(null, proj, proj2) < 0);
-        
+
         // in policyCmptTypes sort attributes above relations
         assertTrue(sorter.compare(null, attr1, rel) < 0);
         assertTrue(sorter.compare(null, attr2, rel) < 0);
-        
+
         // sort PackageFragments lexicographically
-        assertTrue(sorter.compare(null, packageFragment, packageFragment2) < 0);
-        assertTrue(sorter.compare(null, packageFragment2, packageFragment) > 0);
+        assertTrue(sorter.compare(null, packageFragment3, packageFragment4) < 0);
+        assertTrue(sorter.compare(null, packageFragment4, packageFragment3) > 0);
+        // sort PackageFragments arbitrary
+        assertTrue(sorter.compare(null, packageFragment, packageFragment2) > 0);
+        assertTrue(sorter.compare(null, packageFragment2, packageFragment) < 0);
         // sort DefaultPackage above other PackageFragments
         assertTrue(sorter.compare(null, defaultPackage, packageFragment) < 0);
         assertTrue(sorter.compare(null, defaultPackage, packageFragment2) < 0);
         assertTrue(sorter.compare(null, packageFragment, defaultPackage) > 0);
         assertTrue(sorter.compare(null, packageFragment2, defaultPackage) > 0);
-		// TableStructures should be sorted after/below PolicyCmptTypes (et vice versa) 
+		// TableStructures should be sorted after/below PolicyCmptTypes (et vice versa)
 		assertTrue(sorter.compare(null, policyCT, table) < 0);
 		assertTrue(sorter.compare(null, table, policyCT) > 0);
         // Tables or PolCmpTypes should sorted below PackageFragments
@@ -123,12 +146,11 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
         // equal Elements should be sorted lexicographicaly
         assertTrue(sorter.compare(null, policyCT, policyCT2) < 0);
         assertTrue(sorter.compare(null, policyCT2, policyCT) > 0);
-        
+
         // IResource tests
         assertTrue(sorter.compare(null, folder, file) < 0);
         assertTrue(sorter.compare(null, file, folder) > 0);
         assertTrue(sorter.compare(null, folder, subFolder) < 0);
         assertTrue(sorter.compare(null, subFolder, folder) > 0);
 	}
-	
 }

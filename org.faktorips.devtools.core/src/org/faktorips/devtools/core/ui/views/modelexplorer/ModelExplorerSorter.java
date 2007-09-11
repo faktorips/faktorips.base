@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.IpsPackageNameComparator;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -42,6 +43,13 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
  * @author Stefan Widmaier
  */
 public class ModelExplorerSorter extends ViewerSorter{
+
+    private IpsPackageNameComparator packageComparator;
+
+    public ModelExplorerSorter() {
+        packageComparator = new IpsPackageNameComparator();
+    }
+
 	public int compare(Viewer viewer, Object o1, Object o2) {
 		if(o1==null || o2==null){
 			return 0;
@@ -87,8 +95,8 @@ public class ModelExplorerSorter extends ViewerSorter{
 			if(fragment2.isDefaultPackage()){
 				return 1;
 			}
-			// sort IpsProjects lexicographically
-			return fragment.getName().compareTo(fragment2.getName());
+			// sort IpsPackages by SortDefinition
+			return packageComparator.compare(o1, o2);
 		}
         if(o1 instanceof IRelation && o2 instanceof IAttribute){
             return 1;

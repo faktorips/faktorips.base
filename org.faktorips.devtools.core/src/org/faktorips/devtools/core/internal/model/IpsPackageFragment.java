@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -88,34 +87,10 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      * {@inheritDoc}
      */
     public IIpsPackageFragmentSortDefinition getSortDefinition() {
-        IIpsPackageFragmentSortDefinition sortDef = getSortDefinitionInternal();
+        IpsModel model = (IpsModel)getIpsModel();
+        IIpsPackageFragmentSortDefinition sortDef = model.getSortDefinition(this);
 
         return sortDef.copy();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    IIpsPackageFragmentSortDefinition getSortDefinitionInternal() {
-
-         // SortDefinitions are cached in IpsModel
-        IpsModel ipsModel = (IpsModel)getIpsModel();
-        IIpsPackageFragmentSortDefinition sortDef = ipsModel.getSortDefinition(this);
-
-        if (sortDef == null) {
-            try {
-                sortDef = loadSortDefinition();
-                if(sortDef == null){
-                    sortDef = new IpsPackageFragmentDefaultSortDefinition();
-                }
-            } catch (CoreException e) {
-                sortDef = new IpsPackageFragmentDefaultSortDefinition();
-                IpsPlugin.log(e);
-            }
-            ipsModel.addSortDefinition(this, sortDef);
-        }
-
-        return sortDef;
     }
 
     /**
@@ -125,7 +100,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      * @return Sort definition.
      * @throws CoreException
      */
-    private IIpsPackageFragmentSortDefinition loadSortDefinition() throws CoreException {
+    IIpsPackageFragmentSortDefinition loadSortDefinition() throws CoreException {
 
         IFile file = getCorrespondingSortOrderFile();
 
@@ -157,19 +132,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
 
         return folder.getFile(new Path(SORT_ORDER_FILE));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
-
-        IpsPackageNameComparator comparator = new IpsPackageNameComparator();
-
-        List sortedPacks = getChildIpsPackageFragmentsAsList();
-        Collections.sort(sortedPacks, comparator);
-
-        return (IIpsPackageFragment[])sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
     }
 
     /**

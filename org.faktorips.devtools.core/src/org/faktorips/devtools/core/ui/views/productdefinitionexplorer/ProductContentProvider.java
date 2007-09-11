@@ -41,7 +41,7 @@ public class ProductContentProvider extends ModelContentProvider {
      */
     protected Object[] getPackageFragmentRootContent(IIpsPackageFragmentRoot root) throws CoreException {
         if (isFlatLayout) {
-            IIpsPackageFragment[] fragments = root.getSortedIpsPackageFragments();
+            IIpsPackageFragment[] fragments = root.getIpsPackageFragments();
             // filter out empty packagefragments if their IFolders do not contain files and at the
             // same time contain subfolders (subpackages) (this prevents empty or newly created
             // packagefragments from being hidden in the view)
@@ -58,7 +58,7 @@ public class ProductContentProvider extends ModelContentProvider {
             return filteredElements.toArray();
         } else {
             IIpsPackageFragment defaultPackage= root.getDefaultIpsPackageFragment();
-            Object[] childPackages = defaultPackage.getSortedChildIpsPackageFragments();
+            Object[] childPackages = defaultPackage.getChildIpsPackageFragments();
             if (hasChildren(root.getDefaultIpsPackageFragment())) {
                 return concatenate(childPackages, getFileContent(defaultPackage));
             } else {

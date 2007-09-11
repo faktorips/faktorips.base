@@ -1444,19 +1444,41 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * @param fragment
-     * @param sortDefinition
-     * @return
-     */
-    IIpsPackageFragmentSortDefinition getSortDefinition(IIpsPackageFragment fragment) {
-        return (IIpsPackageFragmentSortDefinition)sortOrderCache.get(this);
-    }
-
-    /**
-     * @param fragment
-     * @param sortDefinition
+     * Add the key/value pair to the cache:
+     * key = IIpsPackageFragment; value = IIpsPackageFragmentSortDefinition
+     *
+     * @param fragment Key of the hashtable entry.
+     * @param sortDefinition Value of the hashtable entry.
      */
     void addSortDefinition(IIpsPackageFragment fragment, IIpsPackageFragmentSortDefinition sortDefinition) {
         sortOrderCache.put(fragment, sortDefinition);
+    }
+
+
+    /**
+     * Get a IIpsPackageFragmentSortDefinition for a given IIpsPackageFragment.
+     *
+     * @param fragment
+     * @return
+     */
+    IIpsPackageFragmentSortDefinition getSortDefinition(IIpsPackageFragment fragment) {
+
+         // SortDefinitions are cached in IpsModel
+        IIpsPackageFragmentSortDefinition sortDef = (IIpsPackageFragmentSortDefinition)sortOrderCache.get(fragment);
+
+        if (sortDef == null) {
+            try {
+                sortDef = ((IpsPackageFragment)fragment).loadSortDefinition();
+                if(sortDef == null){
+                    sortDef = new IpsPackageFragmentDefaultSortDefinition();
+                }
+            } catch (CoreException e) {
+                sortDef = new IpsPackageFragmentDefaultSortDefinition();
+                IpsPlugin.log(e);
+            }
+            this.addSortDefinition(fragment, sortDef);
+        }
+
+        return sortDef;
     }
 }

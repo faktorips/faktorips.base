@@ -232,7 +232,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      */
     protected Object[] getPackageFragmentRootContent(IIpsPackageFragmentRoot root) throws CoreException {
         if (isFlatLayout) {
-            IIpsPackageFragment[] fragments = root.getSortedIpsPackageFragments();
+            IIpsPackageFragment[] fragments = root.getIpsPackageFragments();
             if (fragments.length == 1) {
                 if (!hasChildren(fragments[0])) {
                     // Hide defaultpackagefragment if it is empty and there are
@@ -253,7 +253,7 @@ public class ModelContentProvider implements ITreeContentProvider {
         } else {
             // display the default package only if it contains files
             // display productcmptss in defaultpackage, files in root
-            Object[] children = root.getDefaultIpsPackageFragment().getSortedChildIpsPackageFragments();
+            Object[] children = root.getDefaultIpsPackageFragment().getChildIpsPackageFragments();
             if (hasChildren(root.getDefaultIpsPackageFragment())) {
                 return concatenate(new Object[] { root.getDefaultIpsPackageFragment() }, children);
             } else {
@@ -288,7 +288,7 @@ public class ModelContentProvider implements ITreeContentProvider {
     private Object[] getFolderContent(IIpsPackageFragment fragment) throws CoreException {
         // in hierarchical layout display childpackagefragments as children
         if (!isFlatLayout) {
-            return fragment.getSortedChildIpsPackageFragments();
+            return fragment.getChildIpsPackageFragments();
         } else {
             return EMPTY_ARRAY;
         }

@@ -15,7 +15,6 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -126,17 +125,6 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
     public IIpsPackageFragment[] getIpsPackageFragments() throws CoreException {
         List list = getIpsPackageFragmentsAsList();
         return (IIpsPackageFragment[])list.toArray(new IIpsPackageFragment[list.size()]);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException {
-        IpsPackageNameComparator comparator = new IpsPackageNameComparator();
-        List sortedPacks = getIpsPackageFragmentsAsList();
-        Collections.sort(sortedPacks, comparator);
-
-        return (IIpsPackageFragment[])sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
     }
 
     /**
