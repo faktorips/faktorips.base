@@ -74,12 +74,9 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.test.XmlAbstractTestCase;
 import org.faktorips.devtools.core.ui.binding.BeanUtil;
-import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -412,7 +409,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * @throws CoreException
      */
     protected ProductCmptType newProductCmptType(IIpsProject project, String qualifiedName) throws CoreException {
-        return (ProductCmptType)newIpsObject(project, IpsObjectType.PRODUCT_CMPT_TYPE_V2, qualifiedName);
+        return (ProductCmptType)newIpsObject(project, IpsObjectType.PRODUCT_CMPT_TYPE2, qualifiedName);
     }
 
     /**
@@ -422,39 +419,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * @throws CoreException
      */
     protected ProductCmptType newProductCmptType(final IIpsPackageFragmentRoot root, final String qualifiedName) throws CoreException {
-        return (ProductCmptType)newIpsObject(root, IpsObjectType.PRODUCT_CMPT_TYPE_V2, qualifiedName);
-    }
-
-    /**
-     * Creates a new product component type in the indicated package fragment root. If the qualifiedName includes a
-     * package name, the package is created if it does not already exists.
-     *
-     * @throws CoreException
-     */
-    protected ProductCmptType newProductCmptType(IPolicyCmptType type, final String qualifiedName) throws CoreException {
-        ProductCmptType newType = (ProductCmptType)newIpsObject(type.getIpsPackageFragment().getRoot(), IpsObjectType.PRODUCT_CMPT_TYPE_V2, qualifiedName);
-        newType.setPolicyCmptType(type.getQualifiedName());
-        type.setConfigurableByProductCmptType(true);
-        type.setUnqualifiedProductCmptType(QNameUtil.getUnqualifiedName(newType.getQualifiedName()));
-        type.getIpsSrcFile().save(true, null);
-        newType.getIpsSrcFile().save(true, null);
-        return newType;
-    }
-
-    /**
-     * Creates a new product component that is based on the given product component type and has one generation
-     * with it's valid from date set to the current working date.
-     * The product component is stored in the same package fragment root as the type. 
-     * If the qualifiedName includes a package name, the package is created if it does not already exists.
-     *
-     * @throws CoreException
-     */
-    protected ProductCmpt newProductCmpt(IProductCmptType type, String qualifiedName) throws CoreException {
-        IProductCmpt productCmpt = (IProductCmpt)newIpsObject(type.getIpsPackageFragment().getRoot(), IpsObjectType.PRODUCT_CMPT, qualifiedName);
-        productCmpt.setProductCmptType(type.getQualifiedName());
-        productCmpt.newGeneration(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
-        productCmpt.getIpsSrcFile().save(true, null);
-        return (ProductCmpt)productCmpt;
+        return (ProductCmptType)newIpsObject(root, IpsObjectType.PRODUCT_CMPT_TYPE2, qualifiedName);
     }
 
 	/**
