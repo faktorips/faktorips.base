@@ -66,12 +66,10 @@ public interface IIpsPackageFragmentSortDefinition {
      * Load the sort order <code>content</code>.
      *
      * @param content Sort order file as <code>String</code>.
-     * @param charset The name of a supported
-     *         {@link java.nio.charset.Charset </code>charset<code>}
      *
      * @throws CoreException
      */
-    public void initPersistenceContent(String content, String charset) throws CoreException;
+    public void initPersistenceContent(String content) throws CoreException;
 
     /**
      * Create a deep copy of the current sort order.

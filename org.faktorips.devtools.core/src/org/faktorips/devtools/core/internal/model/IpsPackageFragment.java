@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentArbitrarySortDefinition;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentSortDefinition;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -109,8 +110,9 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             try {
                 String content = StringUtil.readFromInputStream(file.getContents(), getIpsProject()
                         .getPlainTextFileCharset());
-                IIpsPackageFragmentSortDefinition sortDef = new IpsPackageFragmentArbitrarySortDefinition();
-                sortDef.initPersistenceContent(content, getIpsProject().getPlainTextFileCharset());
+                IpsPackageFragmentArbitrarySortDefinition sortDef = new IpsPackageFragmentArbitrarySortDefinition();
+                sortDef.setLastFileModification(file.getModificationStamp());
+                sortDef.initPersistenceContent(content);
                 return sortDef;
             } catch (IOException e) {
                 throw new CoreException(new IpsStatus(e));
@@ -122,7 +124,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
     /**
      * @return Handle to a sort order file. The file doesn't need to exist!
      */
-    private IFile getCorrespondingSortOrderFile() {
+    IFile getCorrespondingSortOrderFile() {
         IFolder folder = null;
 
         if (this.isDefaultPackage()) {
@@ -164,29 +166,37 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      */
     public void setSortDefinition(IIpsPackageFragmentSortDefinition newDefinition) throws CoreException {
 
-        IFile file = getCorrespondingSortOrderFile();
-
-        if (newDefinition == null) {
-            file.delete(true, null);
-            return;
+        if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+            System.out.println("IpsPackageFragment.setSortDefinition: pack=" + this); //$NON-NLS-1$
         }
 
-        String content = newDefinition.toPersistenceContent();
-        byte[] bytes;
+        if (newDefinition instanceof IIpsPackageFragmentArbitrarySortDefinition) {
+            IIpsPackageFragmentArbitrarySortDefinition newSortDef = (IIpsPackageFragmentArbitrarySortDefinition)newDefinition;
 
-        try {
-            bytes = content.getBytes(this.getIpsProject().getPlainTextFileCharset());
-        } catch (UnsupportedEncodingException e) {
-            throw new CoreException(new IpsStatus(e));
-        }
+            IFile file = getCorrespondingSortOrderFile();
 
-        ByteArrayInputStream is = new ByteArrayInputStream(bytes);
-        // overwrite existing files
-        if(!file.exists()){
-            file.create(is, true, null);
-            return;
+            if (newSortDef == null) {
+                file.delete(true, null);
+                return;
+            }
+
+            String content = newSortDef.toPersistenceContent();
+            byte[] bytes;
+
+            try {
+                bytes = content.getBytes(this.getIpsProject().getPlainTextFileCharset());
+            } catch (UnsupportedEncodingException e) {
+                throw new CoreException(new IpsStatus(e));
+            }
+
+            ByteArrayInputStream is = new ByteArrayInputStream(bytes);
+            // overwrite existing files
+            if(!file.exists()){
+                file.create(is, true, null);
+                return;
+            }
+            file.setContents(is, IResource.FORCE, null);
         }
-        file.setContents(is, IResource.FORCE, null);
     }
 
     /**

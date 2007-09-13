@@ -80,4 +80,14 @@ public class QNameUtilTest extends TestCase {
         assertEquals(5, QNameUtil.getSegmentCount("a.b.c.d. ")); //$NON-NLS-1$
     }
 
+    public void testGetSubSegment() {
+
+        assertEquals("", QNameUtil.getSubSegments("", 2)); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("a", QNameUtil.getSubSegments("a.b.c.d", 1)); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("a.b", QNameUtil.getSubSegments("a.b.c.d", 2)); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("a.b.c", QNameUtil.getSubSegments("a.b.c.d", 3)); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("a.b.c.d", QNameUtil.getSubSegments("a.b.c.d", 5)); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("a.b.c", QNameUtil.getSubSegments("a.b.c.", 4)); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
 }

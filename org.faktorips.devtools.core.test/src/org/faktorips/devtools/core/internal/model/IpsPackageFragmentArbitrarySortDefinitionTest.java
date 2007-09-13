@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -108,7 +109,7 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
         assertTrue((sorter.compare("fix", "optional") == 0));
 
         String packageNames = getSortDefinitionContent(packLeistungFix);
-        sorter.initPersistenceContent(packageNames, this.ipsProject.getPlainTextFileCharset());
+        sorter.initPersistenceContent(packageNames);
 
         assertTrue((sorter.compare("fix", "optional") > 0));
         assertTrue((sorter.compare("optional", "fix") < 0));
@@ -120,7 +121,7 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
         // identical folder
         IIpsPackageFragment packHausrat = rootPackage.getIpsPackageFragment("products.hausrat.deckungen.grunddeckung");
         packageNames = getSortDefinitionContent(packHausrat);
-        sorter.initPersistenceContent(packageNames, this.ipsProject.getPlainTextFileCharset());
+        sorter.initPersistenceContent(packageNames);
 
         assertTrue((sorter.compare("grunddeckung", "grunddeckung") == 0));
         assertFalse((sorter.compare("grunddeckung", "dummy") == 0));
@@ -135,7 +136,7 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
         assertEquals(sorter.toPersistenceContent(), sortDefCopy.toPersistenceContent());
 
         String packageNames = getSortDefinitionContent(packLeistungFix);
-        sorter.initPersistenceContent(packageNames, this.ipsProject.getPlainTextFileCharset());
+        sorter.initPersistenceContent(packageNames);
 
         sortDefCopy = sorter.copy();
 
@@ -149,7 +150,7 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
         assertEquals(0, sorter.getSegmentNames().length);
 
         String packageNames = getSortDefinitionContent(packLeistungFix);
-        sorter.initPersistenceContent(packageNames, this.ipsProject.getPlainTextFileCharset());
+        sorter.initPersistenceContent(packageNames);
 
         String[] segments = sorter.getSegmentNames();
         assertEquals(2, segments.length);
@@ -162,7 +163,7 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
         assertEquals(0, sorter.getSegmentNames().length);
 
         String packageNames = getSortDefinitionContent(packLeistungFix);
-        sorter.initPersistenceContent(packageNames, this.ipsProject.getPlainTextFileCharset());
+        sorter.initPersistenceContent(packageNames);
 
         String[] segments = sorter.getSegmentNames();
         assertEquals(2, segments.length);
@@ -173,7 +174,7 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
     public void testSetSegmentNames() throws CoreException {
 
         String packageNames = getSortDefinitionContent(packLeistungFix);
-        sorter.initPersistenceContent(packageNames, this.ipsProject.getPlainTextFileCharset());
+        sorter.initPersistenceContent(packageNames);
 
         // empty content
         String[] contentEmpty = new String[0];
@@ -206,12 +207,18 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
         assertEquals(Messages.IpsPackageFragmentArbitrarySortDefinition_CommentLine, content);
 
         String packageNames = getSortDefinitionContent(packLeistungFix);
-        sorter.initPersistenceContent(packageNames, this.ipsProject.getPlainTextFileCharset());
+        sorter.initPersistenceContent(packageNames);
 
         content = sorter.toPersistenceContent();
 
         assertNotNull(content);
         assertTrue((content.length() > 0));
+
+        String[] test = StringUtils.split(content, StringUtil.getSystemLineSeparator());
+        assertEquals(3, test.length);
+        assertEquals(Messages.IpsPackageFragmentArbitrarySortDefinition_CommentLine, test[0]);
+        assertEquals("optional", test[1]);
+        assertEquals("fix", test[2]);
     }
 
     /**

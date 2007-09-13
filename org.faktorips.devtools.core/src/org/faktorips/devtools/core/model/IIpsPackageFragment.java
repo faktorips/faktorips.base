@@ -63,7 +63,7 @@ public interface IIpsPackageFragment extends IIpsElement {
     public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException;
 
     /**
-     * Reads the sort definition from disk and returns it. Returns <code>null</code> if no
+     * Reads the sort definition of the {@link IIpsPackageFragment} object from disk and returns it. Returns <code>null</code> if no
      * sort definition file exists.
      *
      * @throws CoreException if an errors occurs reading the definition

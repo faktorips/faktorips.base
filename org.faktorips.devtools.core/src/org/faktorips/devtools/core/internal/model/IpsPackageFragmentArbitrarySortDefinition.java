@@ -17,11 +17,6 @@
 
 package org.faktorips.devtools.core.internal.model;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +24,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentArbitrarySortDefinition;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentSortDefinition;
 import org.faktorips.util.StringUtil;
@@ -45,13 +39,7 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
 
     private List sortOrder = new ArrayList(20);
 
-    /**
-     * @param file
-     * @throws CoreException
-     * @throws IOException
-     */
-    public IpsPackageFragmentArbitrarySortDefinition() {
-    }
+    private long lastFileModification;
 
     /**
      * {@inheritDoc}
@@ -120,34 +108,15 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
     /**
      * {@inheritDoc}
      */
-    public void initPersistenceContent(String content, String charset) throws CoreException {
-        BufferedReader in;
+    public void initPersistenceContent(String content) throws CoreException {
 
-        try {
-
-            ByteArrayInputStream is = new ByteArrayInputStream(content.getBytes(charset));
-            in = new BufferedReader(new InputStreamReader(is, charset));
-
-        } catch (UnsupportedEncodingException e) {
-            IpsPlugin.log(e);
-            return;
-        }
+        String[] segments = StringUtils.split(content, StringUtil.getSystemLineSeparator());
 
         int pos = 0;
         sortOrderLookup.clear();
 
-        while (true) {
-
-            // Get next line
-            String line;
-            try {
-                line = in.readLine();
-            } catch (IOException e) {
-                continue;
-            }
-
-            if (line == null)
-                return;
+        for (int i = 0; i < segments.length; i++) {
+            String line = segments[i];
 
             // skip empty lines (incl. whitespaces) and comments
             if (checkLine(line)) {
@@ -181,5 +150,19 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
         sortDef.sortOrderLookup = (Map)((HashMap) sortOrderLookup).clone();
 
         return sortDef;
+    }
+
+    /**
+     * @return Returns the lastFileModification.
+     */
+    public long getLastFileModification() {
+        return lastFileModification;
+    }
+
+    /**
+     * @param lastFileModification The lastFileModification to set.
+     */
+    public void setLastFileModification(long lastFileModification) {
+        this.lastFileModification = lastFileModification;
     }
 }

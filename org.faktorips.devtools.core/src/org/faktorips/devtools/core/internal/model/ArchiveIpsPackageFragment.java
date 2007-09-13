@@ -198,7 +198,7 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
 
         try {
             String content = getSortDefinitionContent();
-            sortDef.initPersistenceContent(content, this.getIpsProject().getPlainTextFileCharset());
+            sortDef.initPersistenceContent(content);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return null;

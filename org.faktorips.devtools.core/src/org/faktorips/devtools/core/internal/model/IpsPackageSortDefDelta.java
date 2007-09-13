@@ -17,43 +17,43 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentSortDefinition;
 
 /**
- * Use lexical sort order as IpsPackageFragmentDefaultSortDefinition.
- * This sort definition is not intended to be saved to the file system.
  *
  * @author Markus Blum
  */
-public class IpsPackageFragmentDefaultSortDefinition implements IIpsPackageFragmentSortDefinition {
+public class IpsPackageSortDefDelta {
+
+    private List fragments = new ArrayList();
+    private List sortdDefs = new ArrayList();
 
     /**
-     * {@inheritDoc}
+     * @throws CoreException
+     *
      */
-    public int compare(String segment1, String segment2) {
-        return segment1.compareTo(segment2);
+    public void fix() throws CoreException {
+
+        Iterator iterSortdDefs = sortdDefs.iterator();
+        for (Iterator iterFragment = fragments.iterator(); iterFragment.hasNext(); ) {
+            IIpsPackageFragment element = (IIpsPackageFragment)iterFragment.next();
+            element.setSortDefinition((IIpsPackageFragmentSortDefinition)iterSortdDefs.next());
+        }
     }
 
     /**
-     * {@inheritDoc}
+     * @param pack
+     * @param newSortDef
      */
-    public IIpsPackageFragmentSortDefinition copy() {
-        return new IpsPackageFragmentDefaultSortDefinition();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void initPersistenceContent(String content) throws CoreException {
-        // nothing to do
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String toPersistenceContent() {
-        return new String("");
+    public void add(IIpsPackageFragment pack, IIpsPackageFragmentSortDefinition newSortDef) {
+        fragments.add(pack);
+        sortdDefs.add(newSortDef);
     }
 
 }

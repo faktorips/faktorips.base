@@ -63,6 +63,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentArbitrarySortDefinition;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentSortDefinition;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -1465,6 +1466,18 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
          // SortDefinitions are cached in IpsModel
         IIpsPackageFragmentSortDefinition sortDef = (IIpsPackageFragmentSortDefinition)sortOrderCache.get(fragment);
+
+        // check modification
+        if ((sortDef != null) && (sortDef instanceof IIpsPackageFragmentArbitrarySortDefinition)) {
+            IFile file = ((IpsPackageFragment) fragment).getCorrespondingSortOrderFile();
+            IpsPackageFragmentArbitrarySortDefinition persistenceSortDef = (IpsPackageFragmentArbitrarySortDefinition)sortDef;
+
+            if (file.getModificationStamp() != persistenceSortDef.getLastFileModification()) {
+                // update current fragment
+                sortOrderCache.remove(fragment);
+                sortDef = null;
+            }
+        }
 
         if (sortDef == null) {
             try {
