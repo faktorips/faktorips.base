@@ -227,7 +227,7 @@ abstract public class DefaultModelDescriptionPage extends Page {
 
         createForm();
 
-        form.layout(false, true);
+        form.reflow(true);
     }
 
     /**
