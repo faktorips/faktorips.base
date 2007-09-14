@@ -387,7 +387,11 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
 
     private void generateMethodDoInitTableUsagesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
-        ITableStructureUsage[] tsus = getProductCmptTypeV2().getTableStructureUsages();
+        org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType type = getProductCmptTypeV2();
+        if (type==null) {
+            return;
+        }
+        ITableStructureUsage[] tsus = type.getTableStructureUsages();
         if (tsus.length == 0){
             return;
         }

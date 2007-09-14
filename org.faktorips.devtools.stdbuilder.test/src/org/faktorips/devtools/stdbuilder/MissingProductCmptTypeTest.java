@@ -31,19 +31,19 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
  * 
  * @author Jan Ortmann
  */
-public class EmptyProductCmptTypeNameTest extends AbstractIpsPluginTest {
+public class MissingProductCmptTypeTest extends AbstractIpsPluginTest {
 
     /**
      * 
      */
-    public EmptyProductCmptTypeNameTest() {
+    public MissingProductCmptTypeTest() {
         super();
     }
 
     /**
      * @param name
      */
-    public EmptyProductCmptTypeNameTest(String name) {
+    public MissingProductCmptTypeTest(String name) {
         super(name);
     }
     
@@ -55,9 +55,9 @@ public class EmptyProductCmptTypeNameTest extends AbstractIpsPluginTest {
      */
     public void test() throws Exception {
         IIpsProject project = newIpsProject();
-        IPolicyCmptType type = newPolicyCmptType(project, "Policy");
+        IPolicyCmptType type = newPolicyCmptTypeWithoutProductCmptType(project, "Policy");
         type.setConfigurableByProductCmptType(true);
-        type.setUnqualifiedProductCmptType(""); // missing product component type name!
+        type.setUnqualifiedProductCmptType("Product"); // missing product component type!
         
         IAttribute a = type.newAttribute();
         a.setName("a");
@@ -71,7 +71,7 @@ public class EmptyProductCmptTypeNameTest extends AbstractIpsPluginTest {
         assertTrue(a.isValid());
         
         IRelation r = type.newRelation();
-        IPolicyCmptType target = newPolicyCmptType(project, "Target");
+        IPolicyCmptType target = newPolicyAndProductCmptType(project, "Target", "TargetType");
         target.setConfigurableByProductCmptType(true);
         target.setUnqualifiedProductCmptType("TargetType");
         target.getIpsSrcFile().save(true, null);
