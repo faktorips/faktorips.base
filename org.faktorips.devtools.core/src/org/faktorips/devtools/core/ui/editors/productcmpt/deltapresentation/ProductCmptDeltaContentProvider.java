@@ -27,11 +27,11 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 
 /**
  * Content provider to represent differnces between product components and policy component types.

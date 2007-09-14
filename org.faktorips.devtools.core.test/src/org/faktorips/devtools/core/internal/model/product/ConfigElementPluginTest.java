@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -44,35 +45,35 @@ public class ConfigElementPluginTest extends AbstractIpsPluginTest {
 
     private ProductCmpt productCmpt;
     private IProductCmptGeneration generation;
-    private IPolicyCmptType pcType;
-    private IPolicyCmptType supertype;
+    private IPolicyCmptType policyCmptType;
+    private IPolicyCmptType policyCmptSupertype;
+    private IProductCmptType productCmptType;
+    private IProductCmptType productCmptSupertype;
     
     /*
      * @see PluginTest#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject pdProject = this.newIpsProject("TestProject");
-        IIpsPackageFragmentRoot root = pdProject.getIpsPackageFragmentRoots()[0];
+        IIpsProject ipsProject = this.newIpsProject("TestProject");
+        IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
         IIpsPackageFragment fragment = root.createPackageFragment("products.folder", true, null);
 
-        IIpsSrcFile supertypeFile = fragment.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestSuperPolicy", true, null);
-        supertype = (IPolicyCmptType)supertypeFile.getIpsObject();
+        policyCmptSupertype = newPolicyAndProductCmptType(ipsProject, "TestSuperPolicy", "TestSuperProduct");
+        policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
+        policyCmptType.setSupertype(policyCmptSupertype.getQualifiedName());
+        productCmptType = policyCmptType.findProductCmptType(ipsProject);
+        productCmptSupertype = policyCmptSupertype.findProductCmptType(ipsProject);
+        productCmptType.setSupertype(productCmptSupertype.getQualifiedName());
         
-        IIpsSrcFile pcTypeFile = fragment.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
-        pcType = (IPolicyCmptType)pcTypeFile.getIpsObject();
-        pcType.setSupertype(supertype.getQualifiedName());
-        
-        IIpsSrcFile productFile = fragment.createIpsFile(IpsObjectType.PRODUCT_CMPT, "TestProduct", true, null);
-        productCmpt = (ProductCmpt)productFile.getIpsObject();
-        productCmpt.setPolicyCmptType(pcType.getQualifiedName());
-        generation = (IProductCmptGeneration)productCmpt.newGeneration();
+        productCmpt = newProductCmpt(productCmptType, "TestProduct");
+        generation = productCmpt.getProductCmptGeneration(0);
     }
     
     public void testFindPcTypeAttribute() throws CoreException {
-        IAttribute a1 = pcType.newAttribute();
+        IAttribute a1 = policyCmptType.newAttribute();
         a1.setName("a1");
-        IAttribute a2 = supertype.newAttribute();
+        IAttribute a2 = policyCmptSupertype.newAttribute();
         a2.setName("a2");
         
         generation = (IProductCmptGeneration)productCmpt.newGeneration();
@@ -87,7 +88,7 @@ public class ConfigElementPluginTest extends AbstractIpsPluginTest {
     
     public void testValidate_Formula() throws CoreException {
         // config element based on computed attribute with no parameters
-        IAttribute a = pcType.newAttribute();
+        IAttribute a = policyCmptType.newAttribute();
         a.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
         a.setName("premium");
         a.setDatatype("unknown datatype");

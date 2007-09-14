@@ -156,7 +156,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateOther(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
-        if (getPcType().findProductCmptType()!=null) {
+        if (getPcType().findOldProductCmptType()!=null) {
             if (hasValidProductCmptTypeName()) {
                 generateMethodGetProductCmpt(methodsBuilder);
                 generateMethodSetProductCmpt(methodsBuilder);
@@ -748,7 +748,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         String targetTypeName = target.getName();
         String role = relation.getTargetRoleSingular();
         if (inclProductCmptArg) { 
-            String replacements[] = new String[]{targetTypeName, role, getParamNameForProductCmptInNewChildMethod(target.findProductCmptType())};
+            String replacements[] = new String[]{targetTypeName, role, getParamNameForProductCmptInNewChildMethod(target.findOldProductCmptType())};
             appendLocalizedJavaDoc("METHOD_NEW_CHILD_WITH_PRODUCTCMPT_ARG", replacements, relation, builder);
         } else {
             appendLocalizedJavaDoc("METHOD_NEW_CHILD", new String[]{targetTypeName, role}, relation, builder);
@@ -778,7 +778,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         String returnType = getQualifiedClassName(relation.findTarget());
         String[] argNames, argTypes;
         if (inclProductCmptArg) {
-            IProductCmptType productCmptType = target.findProductCmptType();
+            IProductCmptType productCmptType = target.findOldProductCmptType();
             argNames = new String[]{getParamNameForProductCmptInNewChildMethod(productCmptType)};
             argTypes = new String[]{productCmptInterfaceBuilder.getQualifiedClassName(productCmptType)};
         } else {

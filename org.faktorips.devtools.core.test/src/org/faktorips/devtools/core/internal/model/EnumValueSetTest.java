@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.DefaultEnumType;
@@ -47,7 +48,8 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     
     private DefaultEnumType gender;
     
-    private IPolicyCmptType type;
+    private IPolicyCmptType policyCmptType;
+    private IProductCmptType productCmptType;
     
     private IAttribute attr;
     private IConfigElement ce;
@@ -63,14 +65,17 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         new DefaultEnumValue(gender, "female");
         
         ipsProject = super.newIpsProject("TestProject");
-        type = newPolicyCmptType(ipsProject, "test.Base");
-        attr = type.newAttribute();
+        policyCmptType = newPolicyCmptType(ipsProject, "test.Base");
+        attr = policyCmptType.newAttribute();
         attr.setName("attr");
         attr.setDatatype(Datatype.MONEY.getQualifiedName());
-        type.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(true, null);
+    
+        productCmptType = newProductCmptType(ipsProject, "test.Product");
+        productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
         
         IProductCmpt cmpt = newProductCmpt(ipsProject, "test.Product");
-        cmpt.setPolicyCmptType(type.getQualifiedName());
+        cmpt.setProductCmptType(productCmptType.getQualifiedName());
         generation = (IProductCmptGeneration)cmpt.newGeneration(new GregorianCalendar(20006, 4, 26));
         
         ce = generation.newConfigElement();
@@ -147,10 +152,10 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     	superset.addValue(null);
     	assertTrue(superset.containsValueSet(subset));
     	
-        IAttribute attr2 = type.newAttribute();
+        IAttribute attr2 = policyCmptType.newAttribute();
         attr2.setName("attr2");
         attr2.setDatatype(Datatype.STRING.getQualifiedName());
-        type.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(true, null);
         
     	IConfigElement ce2 = generation.newConfigElement();
         ce2.setPcTypeAttribute("attr2");

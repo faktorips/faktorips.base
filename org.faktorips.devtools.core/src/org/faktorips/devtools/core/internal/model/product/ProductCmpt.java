@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -61,6 +62,7 @@ import org.w3c.dom.Element;
  */
 public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     
+    private String productCmptType = ""; //$NON-NLS-1$
     private String policyCmptType = ""; //$NON-NLS-1$
     private String runtimeId = ""; //$NON-NLS-1$
 
@@ -120,31 +122,57 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /** 
      * {@inheritDoc}
      */
-    public void setPolicyCmptType(String newPcType) {
-        String oldType = policyCmptType;
-        policyCmptType = newPcType;
-        valueChanged(oldType, policyCmptType);
-    }
-
-    /** 
-     * {@inheritDoc}
-     */
     public IPolicyCmptType findPolicyCmptType() throws CoreException {
-        return getIpsProject().findPolicyCmptType(policyCmptType);
+        org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType productCmptType = findProductCmptType(getIpsProject());
+        if (productCmptType==null) {
+            return null;
+        }
+        return productCmptType.findPolicyCmptType(true, getIpsProject());
     }
 
     /**
      * {@inheritDoc}
      */
-	public IProductCmptType findProductCmptType() throws CoreException {
+    public String getProductCmptType() {
+        return productCmptType;
+    }
+
+    public void setProductCmptType(String newType) {
+        String oldType = productCmptType;
+        productCmptType = newType;
+        // TODO: V2-temp code entfernen
+        try {
+            org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType typeObj = findProductCmptType(getIpsProject());
+            if (typeObj!=null) {
+                policyCmptType = typeObj.getPolicyCmptType();
+            } else {
+                policyCmptType = "";
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        valueChanged(oldType, newType);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+	public IProductCmptType findOldProductCmptType() throws CoreException {
 		IPolicyCmptType policyCmptType = findPolicyCmptType();
 		if (policyCmptType==null) {
 			return null;
 		}
-		return policyCmptType.findProductCmptType();
+		return policyCmptType.findOldProductCmptType();
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+	public org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+        return (org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType)ipsProject.findProductCmptType(productCmptType);
+    }
 
-	/** 
+    /** 
      * {@inheritDoc}
      */
     protected IpsObjectGeneration createNewGeneration(int id) {
@@ -158,10 +186,10 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         super.validateThis(list);
         IPolicyCmptType type = findPolicyCmptType();
         if (type == null) {
-            String text = NLS.bind(Messages.ProductCmpt_msgUnknownTemplate, this.policyCmptType);
-            list.add(new Message("", text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE)); //$NON-NLS-1$
+            String text = NLS.bind(Messages.ProductCmpt_msgUnknownTemplate, this.productCmptType);
+            list.add(new Message("", text, Message.ERROR, this, PROPERTY_PRODUCT_CMPT_TYPE)); //$NON-NLS-1$
         } else {
-        	IProductCmptType pType = findProductCmptType();
+        	IProductCmptType pType = findOldProductCmptType();
         	try {
 				MessageList list3 = type.validate();
 				if (list3.getMessageByCode(IPolicyCmptType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY) != null || 
@@ -238,16 +266,24 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      */
     public QualifiedNameType[] dependsOn() throws CoreException {
         
-        if(StringUtils.isEmpty(policyCmptType)){
+        // TODO is this correct? we still have dependencies to other product components!
+        if(StringUtils.isEmpty(productCmptType)){
             return new QualifiedNameType[0];
         }
         Set qaTypes = new HashSet();
         qaTypes.add(new QualifiedNameType(policyCmptType, IpsObjectType.POLICY_CMPT_TYPE));
+        qaTypes.add(new QualifiedNameType(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE_V2));
         
     	IPolicyCmptType pcType = findPolicyCmptType();
     	if (pcType!=null) {
             qaTypes.addAll(Arrays.asList(((PolicyCmptType)pcType).dependsOn(true)));
     	}
+        // TODO v2 - ist das wirklich richtig?
+        org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType type = findProductCmptType(getIpsProject());
+        if (type!=null) {
+            qaTypes.addAll(Arrays.asList(type.dependsOn()));
+        }
+        
         
     	// add dependency to related product cmpt's and
     	// add dependency to table contents
@@ -286,7 +322,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_POLICY_CMPT_TYPE, policyCmptType);
+        element.setAttribute(PROPERTY_PRODUCT_CMPT_TYPE, productCmptType);
         element.setAttribute(PROPERTY_RUNTIME_ID, runtimeId);
     }
 
@@ -295,7 +331,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        policyCmptType = element.getAttribute(PROPERTY_POLICY_CMPT_TYPE);
+        productCmptType = element.getAttribute(PROPERTY_PRODUCT_CMPT_TYPE);
         runtimeId = element.getAttribute(PROPERTY_RUNTIME_ID);
     }
 

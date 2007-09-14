@@ -22,7 +22,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.osgi.util.NLS;
@@ -36,16 +35,13 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
-import org.faktorips.devtools.core.ui.controls.ProductCmptTypeRefControl;
-import org.faktorips.devtools.core.ui.controls.TextButtonControl;
+import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -77,7 +73,7 @@ public class ComponentPropertiesSection extends IpsSection {
 	 */
 	private CompositeUIController uiMasterController = null;
 	
-	private ProductCmptTypeRefControl policyCmptTypeControl;
+	private ProductCmptType2RefControl productCmptTypeControl;
     private MyModifyListener policyCmptTypeListener;
 	
 	private Text runtimeIdText;
@@ -125,9 +121,9 @@ public class ComponentPropertiesSection extends IpsSection {
 		// this product component is based on.
 		toolkit.createLabel(rootPane, Messages.ProductAttributesSection_template);
 
-		policyCmptTypeControl = new ProductCmptTypeRefControl(product.getIpsProject(), rootPane, toolkit);
-		policyCmptTypeControl.getTextControl().setEnabled(false);
-		ProductCmptTypeField field = new ProductCmptTypeField(policyCmptTypeControl);
+		productCmptTypeControl = new ProductCmptType2RefControl(product.getIpsProject(), rootPane, toolkit, true);
+		productCmptTypeControl.getTextControl().setEnabled(false);
+        IpsObjectField field = new IpsObjectField(productCmptTypeControl);
 		
 		// create label and text control for the runtime id representing the displayed product component
 		toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelRuntimeId);
@@ -141,7 +137,7 @@ public class ComponentPropertiesSection extends IpsSection {
         editControls.add(validToText);
 
 		IpsObjectUIController controller = new IpsObjectUIController(product);
-		controller.add(field, product, IProductCmpt.PROPERTY_POLICY_CMPT_TYPE);
+		controller.add(field, product, IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
 		controller.add(runtimeIdText, product, IProductCmpt.PROPERTY_RUNTIME_ID);
         validToField = new GregorianCalendarField(validToText);
         controller.add(validToField, product, IProductCmpt.PROPERTY_VALID_TO);
@@ -176,7 +172,7 @@ public class ComponentPropertiesSection extends IpsSection {
 		uiMasterController.updateUI();
 		
         policyCmptTypeListener = new MyModifyListener();
-        policyCmptTypeControl.getTextControl().addModifyListener(policyCmptTypeListener);
+        productCmptTypeControl.getTextControl().addModifyListener(policyCmptTypeListener);
         
 		// update enablement state of runtime-id-input if preference changed
 		IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(new IPropertyChangeListener() {
@@ -210,9 +206,9 @@ public class ComponentPropertiesSection extends IpsSection {
         super.setDataChangeable(changeable);
         updateRuntimeIdEnableState();
         if (changeable) {
-            policyCmptTypeControl.setButtonEnabled(true);
+            productCmptTypeControl.setButtonEnabled(true);
         } else {
-            policyCmptTypeControl.setButtonEnabled(editor.couldDateBeChangedIfProductCmptTypeWasntMissing());
+            productCmptTypeControl.setButtonEnabled(editor.couldDateBeChangedIfProductCmptTypeWasntMissing());
         }
     }
 
@@ -220,62 +216,14 @@ public class ComponentPropertiesSection extends IpsSection {
         runtimeIdText.setEnabled(isDataChangeable() & IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
     }
 
-    private class ProductCmptTypeField extends IpsObjectField {
-
-		/**
-		 * @param control
-		 */
-		public ProductCmptTypeField(TextButtonControl control) {
-			super(control);
-		}
-
-		public String getText() {
-			try {
-				IProductCmptType type = product.getIpsProject().findProductCmptType(super.getText());
-				if (type != null) {
-					return type.getPolicyCmptyType();
-				}
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
-			return super.getText();
-		}
-
-		public Object parseContent() {
-			return getText();
-		}
-
-		public void insertText(String text) {
-			super.insertText(text);
-		}
-
-		public void setText(String newText) {
-			try {
-				IPolicyCmptType type = product.getIpsProject().findPolicyCmptType(newText);
-				if (type != null) {
-					super.setText(type.getProductCmptType());
-				}
-				return;
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
-			super.setText(newText);
-		}
-
-		public void setValue(Object newValue) {
-			setText((String)newValue);
-		}
-		
-	}
-
 	private class MyModifyListener implements ModifyListener {
 		
 		public void modifyText(ModifyEvent e) {
-            policyCmptTypeControl.getTextControl().removeModifyListener(this);
+            productCmptTypeControl.getTextControl().removeModifyListener(this);
 			uiMasterController.updateUI();
 			uiMasterController.updateModel();
 			editor.checkForInconsistenciesToModel();
-            policyCmptTypeControl.getTextControl().addModifyListener(this);
+            productCmptTypeControl.getTextControl().addModifyListener(this);
 		}
 	}
 

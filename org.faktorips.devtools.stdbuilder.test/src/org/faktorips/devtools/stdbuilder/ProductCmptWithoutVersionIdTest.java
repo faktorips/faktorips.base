@@ -17,8 +17,6 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import java.util.GregorianCalendar;
-
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -49,10 +47,8 @@ public class ProductCmptWithoutVersionIdTest extends AbstractIpsPluginTest {
         props.setProductCmptNamingStrategy(new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", false));
         project.setProperties(props);
         
-        IPolicyCmptType type = newPolicyCmptType(project, "Policy");
-        IProductCmpt cmpt = newProductCmpt(project, "Product-A");
-        cmpt.setPolicyCmptType(type.getQualifiedName());
-        cmpt.newGeneration(new GregorianCalendar(2010, 0, 1));
+        IPolicyCmptType type = newPolicyAndProductCmptType(project, "Policy", "Product");
+        IProductCmpt cmpt = newProductCmpt(type.findProductCmptType(project), "Product-A");
         cmpt.getIpsSrcFile().save(true, null);
         
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);

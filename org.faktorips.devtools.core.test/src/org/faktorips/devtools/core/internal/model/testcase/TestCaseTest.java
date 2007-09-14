@@ -340,22 +340,19 @@ public class TestCaseTest extends AbstractIpsPluginTest {
     
     public void testGetTestRuleCandidates() throws CoreException{
         // create policy cmpts with validation rules 
-        IPolicyCmptType policyCmptTypeA = newPolicyCmptType(root, "PolicyCmptA");
+        IPolicyCmptType policyCmptTypeA = newPolicyAndProductCmptType(ipsProject, "PolicyCmptA", "ProductCmptA");
         policyCmptTypeA.setAbstract(true);
-        IPolicyCmptType policyCmptTypeB = newPolicyCmptType(root, "PolicyCmptB");
+        IPolicyCmptType policyCmptTypeB = newPolicyAndProductCmptType(ipsProject, "PolicyCmptB", "ProductCmptB");
         policyCmptTypeB.setSupertype(policyCmptTypeA.getQualifiedName());
-        IPolicyCmptType policyCmptTypeC = newPolicyCmptType(root, "PolicyCmptC");
+        IPolicyCmptType policyCmptTypeC = newPolicyAndProductCmptType(ipsProject, "PolicyCmptC", "ProductCmptC");
         policyCmptTypeC.setSupertype(policyCmptTypeB.getQualifiedName());
-        IPolicyCmptType policyCmptTypeD = newPolicyCmptType(root, "PolicyCmptD");
+        IPolicyCmptType policyCmptTypeD = newPolicyAndProductCmptType(ipsProject, "PolicyCmptD", "ProductCmptD");
         policyCmptTypeD.setSupertype(policyCmptTypeC.getQualifiedName());
         
         // create product cmpts will be added in the test case
-        IProductCmpt productCmptB = newProductCmpt(root, "ProductCmptB");
-        productCmptB.setPolicyCmptType(policyCmptTypeB.getQualifiedName());
-        IProductCmpt productCmptC = newProductCmpt(root, "ProductCmptC");
-        productCmptC.setPolicyCmptType(policyCmptTypeC.getQualifiedName());
-        IProductCmpt productCmptD = newProductCmpt(root, "ProductCmptD");
-        productCmptD.setPolicyCmptType(policyCmptTypeD.getQualifiedName());
+        IProductCmpt productCmptB = newProductCmpt(policyCmptTypeB.findProductCmptType(ipsProject), "ProductCmptB");
+        IProductCmpt productCmptC = newProductCmpt(policyCmptTypeC.findProductCmptType(ipsProject), "ProductCmptC");
+        IProductCmpt productCmptD = newProductCmpt(policyCmptTypeD.findProductCmptType(ipsProject), "ProductCmptD");
         
         IValidationRule ruleA = policyCmptTypeA.newRule();
         ruleA.setName("RuleA");

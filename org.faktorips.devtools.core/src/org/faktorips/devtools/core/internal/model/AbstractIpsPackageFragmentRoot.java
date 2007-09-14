@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -33,7 +32,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 
 /**
  * 
@@ -100,8 +99,8 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
      * {@inheritDoc}
      */
     public final IIpsObject findIpsObject(QualifiedNameType qnt) throws CoreException {
-        if (qnt.getIpsObjectType()==IpsObjectType.PRODUCT_CMPT_TYPE) {
-            return findProductCmptType(qnt);
+        if (qnt.getIpsObjectType()==IpsObjectType.OLD_PRODUCT_CMPT_TYPE) {
+            return findOldProductCmptType(qnt);
         }
         IIpsPackageFragment pack = getIpsPackageFragment(qnt.getPackageName());
         if (pack==null) {
@@ -114,7 +113,7 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
         return file.getIpsObject();
     }
     
-    private IProductCmptType findProductCmptType(QualifiedNameType qnt) throws CoreException {
+    private org.faktorips.devtools.core.model.productcmpttype.IProductCmptType findOldProductCmptType(QualifiedNameType qnt) throws CoreException {
         List result = new ArrayList();
         String unqualifiedName = qnt.getUnqualifiedName();
         AbstractIpsPackageFragment pack = (AbstractIpsPackageFragment)getIpsPackageFragment(qnt.getPackageName());
@@ -122,7 +121,7 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
         for (Iterator it = result.iterator(); it.hasNext();) {
             PolicyCmptType policyCmptType = (PolicyCmptType) it.next();
             if (policyCmptType.getUnqualifiedProductCmptType().equals(unqualifiedName)) {
-                return new ProductCmptType(policyCmptType);
+                return new org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType(policyCmptType);
             }
         }
         return null;
@@ -184,6 +183,8 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
      */
     public void findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubytpes, List result)
             throws CoreException {
+
+        IIpsProject ipsProject = getIpsProject();
         List allCmpts = new ArrayList(100);
         findIpsObjects(IpsObjectType.PRODUCT_CMPT, allCmpts);
         for (Iterator iter = allCmpts.iterator(); iter.hasNext();) {
@@ -192,27 +193,16 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
                 result.add(productCmpt);
                 continue;
             }
-            IProductCmptType productCmptTypeFound = productCmpt.findProductCmptType();
+            IProductCmptType productCmptTypeFound = productCmpt.findProductCmptType(ipsProject);
             if (productCmptTypeFound == null) {
                 continue;
             }
-            IPolicyCmptType policyCmptyTypeOfFoundProduct = productCmptTypeFound.findPolicyCmptyType();
-            IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptyType();
-            if (policyCmptType == null || policyCmptyTypeOfFoundProduct == null) {
-                continue;
-            }
-
-            if (includeSubytpes){
-                if (policyCmptyTypeOfFoundProduct.isSubtypeOrSameType(policyCmptType)) {
-                    result.add(productCmpt);
-                    continue;
-                }
-            } else {
-                if (policyCmptyTypeOfFoundProduct.equals(policyCmptType)){
-                    result.add(productCmpt);
-                    continue;
-                }
+            if (productCmptType.equals(productCmptTypeFound)
+                    || (includeSubytpes && productCmptTypeFound.isSubtypeOf(productCmptType, ipsProject)) ) { 
+                result.add(productCmpt);
             }
         }
     }
+    
+    
 }

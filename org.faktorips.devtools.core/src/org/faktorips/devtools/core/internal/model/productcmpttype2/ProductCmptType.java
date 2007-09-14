@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype2;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartCollection;
@@ -24,6 +27,7 @@ import org.faktorips.devtools.core.internal.model.type.Type;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
@@ -32,7 +36,6 @@ import org.faktorips.devtools.core.model.productcmpttype2.IRelation;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -80,7 +83,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * {@inheritDoc}
      */
     public IpsObjectType getIpsObjectType() {
-        return IpsObjectType.PRODUCT_CMPT_TYPE2;
+        return IpsObjectType.PRODUCT_CMPT_TYPE_V2;
     }
 
     /**
@@ -131,7 +134,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * {@inheritDoc}
      */
     public IProductCmptType findSuperProductCmptType(IIpsProject project) throws CoreException {
-        return (IProductCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE2, getSupertype());
+        return (IProductCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE_V2, getSupertype());
     }
 
     /**
@@ -174,7 +177,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        policyCmptType = XmlUtil.getAttributeConvertEmptyStringToNull(element, PROPERTY_POLICY_CMPT_TYPE);
+        policyCmptType = element.getAttribute(PROPERTY_POLICY_CMPT_TYPE);
     }
 
     /**
@@ -182,7 +185,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        XmlUtil.setAttributeConvertNullToEmptyString(element, PROPERTY_POLICY_CMPT_TYPE, policyCmptType);
+        element.setAttribute(PROPERTY_POLICY_CMPT_TYPE, policyCmptType);
     }
 
     /**
@@ -302,6 +305,26 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if (typeObj==null) {
             String text = "The policy component type " + policyCmptType + " does not exist.";
             list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST, text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE));
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public QualifiedNameType[] dependsOn() throws CoreException {
+        Set qualifiedNameTypes = new HashSet();
+        if (hasSupertype()) {
+            qualifiedNameTypes.add(new QualifiedNameType(getSupertype(), IpsObjectType.PRODUCT_CMPT_TYPE_V2));
+        }
+        addQualifiedNameTypesForRelationTargets(qualifiedNameTypes);
+        return (QualifiedNameType[])qualifiedNameTypes.toArray(new QualifiedNameType[qualifiedNameTypes.size()]);
+    }
+
+    private void addQualifiedNameTypesForRelationTargets(Set qualifiedNameTypes) throws CoreException {
+        IRelation[] relations = getRelations();
+        for (int i = 0; i < relations.length; i++) {
+            String qualifiedName = relations[i].getTarget();
+            qualifiedNameTypes.add(new QualifiedNameType(qualifiedName, IpsObjectType.PRODUCT_CMPT_TYPE_V2));
         }
     }
 

@@ -303,17 +303,14 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter)testAttribute.getParent();
         param.setRequiresProductCmpt(true);
         
-        IPolicyCmptType base = newPolicyCmptType(project, "base");
-        IPolicyCmptType sub1 = newPolicyCmptType(project, "sub1");
-        IPolicyCmptType sub2 = newPolicyCmptType(project, "sub2");
+        IPolicyCmptType base = newPolicyAndProductCmptType(project, "Policy", "Product");
+        IPolicyCmptType sub1 = newPolicyAndProductCmptType(project, "SubPolicy1", "SubProduct1");
+        IPolicyCmptType sub2 = newPolicyAndProductCmptType(project, "SubPolicy2", "SubProduct2");
         sub1.setSupertype(base.getQualifiedName());
         sub2.setSupertype(base.getQualifiedName());
         
-        IProductCmpt productCmptSub1 = newProductCmpt(project, "productSub1");
-        productCmptSub1.setPolicyCmptType(sub1.getQualifiedName());
-
-        IProductCmpt productCmptSub2 = newProductCmpt(project, "productSub2");
-        productCmptSub2.setPolicyCmptType(sub2.getQualifiedName());
+        IProductCmpt productCmptSub1 = newProductCmpt(sub1.findProductCmptType(project), "productSub1");
+        IProductCmpt productCmptSub2 = newProductCmpt(sub2.findProductCmptType(project), "productSub2");
         
         IAttribute attributeSub1 = sub1.newAttribute();
         attributeSub1.setName("attrSub1");

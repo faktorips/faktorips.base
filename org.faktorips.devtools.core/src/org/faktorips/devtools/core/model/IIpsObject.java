@@ -71,6 +71,7 @@ public interface IIpsObject extends IIpsObjectPartContainer {
      * object can depend on another object that does not exist, e.g. because the other
      * object has been deleted. However, if the deleted object is created again, 
      * we must rebuild this dependant object so that the problem marker is removed.
+     * 
      * @throws CoreException 
      */
     public QualifiedNameType[] dependsOn() throws CoreException;

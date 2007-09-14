@@ -51,7 +51,7 @@ public class ProductCmptType2RefControl extends IpsObjectRefControl {
     	if (getIpsProject()==null) {
     		return new IIpsObject[0];
     	}
-    	IIpsObject[] allProductCmptTypes = getIpsProject().findIpsObjects(IpsObjectType.PRODUCT_CMPT_TYPE2);
+    	IIpsObject[] allProductCmptTypes = getIpsProject().findIpsObjects(IpsObjectType.PRODUCT_CMPT_TYPE_V2);
     	ArrayList result = new ArrayList();
     	for (int i = 0; i < allProductCmptTypes.length; i++) {
             IProductCmptType type = (IProductCmptType)allProductCmptTypes[i];
@@ -72,7 +72,7 @@ public class ProductCmptType2RefControl extends IpsObjectRefControl {
     public IProductCmptType findProductCmptType() throws CoreException {
     	IIpsProject project = getIpsProject();
     	if (project != null) {
-            return (IProductCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, getText());
+            return (IProductCmptType)project.findIpsObject(IpsObjectType.OLD_PRODUCT_CMPT_TYPE, getText());
     	}
     	return null;
     }

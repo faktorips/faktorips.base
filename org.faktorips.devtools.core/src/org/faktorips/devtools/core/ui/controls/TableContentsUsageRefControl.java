@@ -24,12 +24,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
+ * Control enter a reference to a table contents. Candidates for the reference are defined by
+ * a given table structure usage.
  * 
+ * @see ITableStructureUsage
  * 
  * @author Thorsten Guenther
  */

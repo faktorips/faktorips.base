@@ -229,6 +229,22 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         objectHasChanged();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isUsed(String tableStructure) {
+        if (tableStructure==null) {
+            return false;
+        }
+        for (Iterator it = tableStructures.iterator(); it.hasNext();) {
+            TableStructureReference tsr = (TableStructureReference )it.next();
+            if (tableStructure.equals(tsr.tableStructure)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private TableStructureReference newTableStructureReference() {
         TableStructureReference tsr = newTableStructureReferenceInternal(getNextPartId());
         objectHasChanged();

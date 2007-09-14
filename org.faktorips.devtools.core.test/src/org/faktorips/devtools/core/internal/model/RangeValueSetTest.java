@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -50,24 +51,24 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private IProductCmptGeneration generation;
     
-    private IPolicyCmptType type;
+    private IPolicyCmptType policyCmptType;
 	
 	public void setUp() throws Exception {
 		super.setUp();
         ipsProject = super.newIpsProject("TestProject");
-        type = newPolicyCmptType(ipsProject, "test.Base");
-        attr = type.newAttribute();
+        policyCmptType = newPolicyAndProductCmptType(ipsProject, "test.Base", "test.Product");
+        IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
+        attr = policyCmptType.newAttribute();
         attr.setName("attr");
         attr.setDatatype(Datatype.MONEY.getQualifiedName());
-        
-        IProductCmpt cmpt = newProductCmpt(ipsProject, "test.Product");
-        cmpt.setPolicyCmptType(type.getQualifiedName());
+
+        IProductCmpt cmpt = newProductCmpt(productCmptType, "test.Product");
         generation = (IProductCmptGeneration)cmpt.newGeneration(new GregorianCalendar(20006, 4, 26));
         
         ce = generation.newConfigElement();
         ce.setPcTypeAttribute("attr");
         
-        IAttribute attr2 = type.newAttribute();
+        IAttribute attr2 = policyCmptType.newAttribute();
         attr2.setName("test");
         attr2.setDatatype(Datatype.INTEGER.getQualifiedName());
         attr2.setProductRelevant(true);
@@ -202,7 +203,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 	}
 	
     public void testContainsValueSetEmptyWithDecimal() throws Exception {
-        IAttribute attr = type.newAttribute();
+        IAttribute attr = policyCmptType.newAttribute();
         attr.setName("attrX");
         attr.setDatatype(Datatype.DECIMAL.getQualifiedName());
         attr.setProductRelevant(true);

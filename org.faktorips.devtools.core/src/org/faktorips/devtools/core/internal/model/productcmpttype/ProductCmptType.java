@@ -142,7 +142,7 @@ public class ProductCmptType implements IProductCmptType {
 	 * {@inheritDoc}
 	 */
 	public IpsObjectType getIpsObjectType() {
-		return IpsObjectType.PRODUCT_CMPT_TYPE;
+		return IpsObjectType.OLD_PRODUCT_CMPT_TYPE;
 	}
 
 	/**

@@ -18,7 +18,6 @@
 package org.faktorips.devtools.core.internal.model.testcase;
 
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -42,7 +41,6 @@ import org.w3c.dom.Element;
 public class TestRuleTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
-    private IIpsPackageFragmentRoot root;
     private ITestCase testCase;
     private ITestRule testRule;
     
@@ -52,7 +50,6 @@ public class TestRuleTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
-        root = project.getIpsPackageFragmentRoots()[0];
         
         ITestCaseType testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         testCaseType.newExpectedResultRuleParameter().setName("testValueParameter1");
@@ -112,18 +109,16 @@ public class TestRuleTest extends AbstractIpsPluginTest {
     
     public void testValidateRuleNotExists() throws Exception{
         // create policy cmpts with validation rules 
-        IPolicyCmptType policyCmptTypeA = newPolicyCmptType(root, "PolicyCmptA");
+        IPolicyCmptType policyCmptTypeA = newPolicyAndProductCmptType(project, "PolicyCmptA", "ProductCmptA");
         policyCmptTypeA.setAbstract(true);
-        IPolicyCmptType policyCmptTypeB = newPolicyCmptType(root, "PolicyCmptB");
+        IPolicyCmptType policyCmptTypeB = newPolicyAndProductCmptType(project, "PolicyCmptB", "ProductCmptB");
         policyCmptTypeB.setSupertype(policyCmptTypeA.getQualifiedName());
-        IPolicyCmptType policyCmptTypeC = newPolicyCmptType(root, "PolicyCmptC");
+        IPolicyCmptType policyCmptTypeC = newPolicyAndProductCmptType(project, "PolicyCmptC", "ProductCmptC");
         policyCmptTypeC.setSupertype(policyCmptTypeA.getQualifiedName());
         
         // create product cmpts for B and C (will be added in the test case)
-        IProductCmpt productCmptB = newProductCmpt(root, "ProductCmptB");
-        productCmptB.setPolicyCmptType(policyCmptTypeB.getQualifiedName());
-        IProductCmpt productCmptC = newProductCmpt(root, "ProductCmptC");
-        productCmptC.setPolicyCmptType(policyCmptTypeC.getQualifiedName());
+        IProductCmpt productCmptB = newProductCmpt(policyCmptTypeB.findProductCmptType(project), "ProductCmptB");
+        IProductCmpt productCmptC = newProductCmpt(policyCmptTypeC.findProductCmptType(project), "ProductCmptC");
         
         IValidationRule ruleA = policyCmptTypeA.newRule();
         ruleA.setName("RuleA");

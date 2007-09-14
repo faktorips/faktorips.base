@@ -102,7 +102,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     }
     
     public IProductCmptType getProductCmptType() throws CoreException {
-        return generation.getProductCmpt().findProductCmptType();
+        return generation.getProductCmpt().findOldProductCmptType();
     }
     
     /**
@@ -150,7 +150,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         String javaDoc = getLocalizedText(getIpsSrcFile(), CONSTRUCTOR_JAVADOC, genName);
         String className = getUnqualifiedClassName();
         String[] argNames = new String[] { "productCmpt" }; //$NON-NLS-1$
-        String[] argClassNames = new String[] { productCmptImplBuilder.getQualifiedClassName(generation.getProductCmpt().findProductCmptType()) };
+        String[] argClassNames = new String[] { productCmptImplBuilder.getQualifiedClassName(generation.getProductCmpt().findOldProductCmptType()) };
         JavaCodeFragment body = new JavaCodeFragment(
                 "super(productCmpt);"); //$NON-NLS-1$
         codeBuilder.method(Modifier.PUBLIC, null, className, argNames,

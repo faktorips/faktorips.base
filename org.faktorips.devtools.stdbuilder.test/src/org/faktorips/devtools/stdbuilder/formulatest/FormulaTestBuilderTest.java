@@ -28,11 +28,13 @@ import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 
 public class FormulaTestBuilderTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private IProductCmpt productCmpt;
+    private IProductCmptType productCmptType;
     private IConfigElement configElement;
     
     /**
@@ -41,11 +43,10 @@ public class FormulaTestBuilderTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = super.newIpsProject("TestProject");
-        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "policyCmpt");
-        productCmpt = newProductCmpt(ipsProject, "productCmpt");
-        productCmpt.setPolicyCmptType(policyCmptType.getQualifiedName());
-        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
-        generation.setValidFrom(new GregorianCalendar());
+        IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
+        productCmptType = policyCmptType.findProductCmptType(ipsProject);
+        productCmpt = newProductCmpt(productCmptType, "ProductCmpt");
+        IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(0);
         configElement = generation.newConfigElement();
         configElement.setType(ConfigElementType.FORMULA);
         configElement.newFormulaTestCase();
@@ -61,7 +62,7 @@ public class FormulaTestBuilderTest extends AbstractIpsPluginTest {
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         assertFalse(productCmpt.getIpsSrcFile().exists());
         
-        IProductCmpt productCmpt2 = newProductCmpt(ipsProject, "productCmptWithoutFormula");
+        IProductCmpt productCmpt2 = newProductCmpt(productCmptType, "productCmptWithoutFormula");
         productCmpt2.getIpsSrcFile().save(true, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         productCmpt2.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);

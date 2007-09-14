@@ -124,14 +124,13 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
      * This feature is implemented on test test case side see TestPolicyCmpt.findProductCmptAttribute()
      */
     public void testValidateAttributeInSuperType() throws CoreException{
-        IPolicyCmptType pctSuper = newPolicyCmptType(project, "policyCmptTypeSuper");
-        IPolicyCmptType pct = newPolicyCmptType(project, "policyCmptType");
+        IPolicyCmptType pctSuper = newPolicyAndProductCmptType(project, "Policy", "Product");
+        IPolicyCmptType pct = newPolicyAndProductCmptType(project, "MotorPolicy", "MotorProduct");
         pct.setSupertype(pctSuper.getQualifiedName());
         IAttribute attr = pct.newAttribute();
         attr.setName("attribute1");
         
-        ProductCmpt pc = newProductCmpt(project, "productA");
-        pc.setPolicyCmptType(pct.getQualifiedName());
+        ProductCmpt pc = newProductCmpt(pct.findProductCmptType(project), "productA");
         
         ITestAttribute testAttribute = testAttributeValue.findTestAttribute();
         ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter) testAttribute.getParent();

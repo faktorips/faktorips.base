@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 
@@ -103,6 +104,14 @@ public interface IProductCmptTypeRelation extends IIpsObjectPart {
      */
     public IProductCmptType findTarget() throws CoreException;
     
+    /**
+     * Returns the target product component type or <code>null</code> if either this relation hasn't got a target
+     * or the target does not exists.
+     * 
+     * @throws CoreException if an error occurs while searching for the target.
+     */
+    public org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType findTarget(IIpsProject ipsProject) throws CoreException;
+
     /**
      * Sets the qualified name of the target prodict component type.
      */

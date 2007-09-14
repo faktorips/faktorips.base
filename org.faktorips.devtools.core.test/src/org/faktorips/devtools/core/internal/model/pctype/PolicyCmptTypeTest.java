@@ -669,13 +669,13 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     public void testFindProductCmptType() throws CoreException {
     	pcType.setUnqualifiedProductCmptType("MotorProduct");
     	pcType.setConfigurableByProductCmptType(false);
-    	assertNull(pcType.findProductCmptType());
+    	assertNull(pcType.findOldProductCmptType());
     	
     	pcType.setConfigurableByProductCmptType(true);
-    	assertNotNull(pcType.findProductCmptType());
+    	assertNotNull(pcType.findOldProductCmptType());
     	
     	pcType.setUnqualifiedProductCmptType("");
-    	assertNull(pcType.findProductCmptType());
+    	assertNull(pcType.findOldProductCmptType());
     }
     
     /** 

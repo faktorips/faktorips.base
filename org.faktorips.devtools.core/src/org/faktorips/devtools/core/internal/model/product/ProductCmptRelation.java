@@ -123,7 +123,7 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
 	public IProductCmptTypeRelation findProductCmptTypeRelation()
 			throws CoreException {
 		IProductCmptType productCmptType = getProductCmpt()
-				.findProductCmptType();
+				.findOldProductCmptType();
 		IProductCmptTypeRelation relation = null;
 
 		while (productCmptType != null && relation == null) {

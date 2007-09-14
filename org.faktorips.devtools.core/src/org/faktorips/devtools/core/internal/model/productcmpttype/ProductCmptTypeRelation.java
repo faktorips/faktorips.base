@@ -101,8 +101,19 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 		}
 		return new ProductCmptType((PolicyCmptType)type);
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+	public org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType findTarget(IIpsProject ipsProject) throws CoreException {
+        IPolicyCmptType type = relation.findTarget();
+        if (type==null) {
+            return null;
+        }
+        return type.findProductCmptType(ipsProject);
+    }
 
-	/**
+    /**
 	 * {@inheritDoc}
 	 */
 	public void setTarget(String newTarget) {

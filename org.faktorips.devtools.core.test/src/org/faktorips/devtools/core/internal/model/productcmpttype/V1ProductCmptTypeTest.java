@@ -72,7 +72,7 @@ public class V1ProductCmptTypeTest extends AbstractIpsPluginTest {
         assertNull(productCmptType.findSupertype());
         
         superPolicyCmptType.setUnqualifiedProductCmptType("Product");
-		assertEquals(superPolicyCmptType.findProductCmptType(), productCmptType.findSupertype());
+		assertEquals(superPolicyCmptType.findOldProductCmptType(), productCmptType.findSupertype());
         
         superPolicyCmptType.setConfigurableByProductCmptType(false);
         assertNull(productCmptType.findSupertype());
@@ -137,46 +137,6 @@ public class V1ProductCmptTypeTest extends AbstractIpsPluginTest {
         assertNull(subProductCmptType.findRelationInHierarchy("UnknownRelation"));
     }
     
-	public void testGetAttributes() {
-		IAttribute[] attributes = productCmptType.getAttributes();
-		assertEquals(0, attributes.length);
-		
-		IAttribute a0 = policyCmptType.newAttribute();
-		a0.setProductRelevant(false);
-		attributes = productCmptType.getAttributes();
-		assertEquals(0, attributes.length);
-
-		a0.setProductRelevant(true);
-		a0.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-		attributes = productCmptType.getAttributes();
-		assertEquals(0, attributes.length);
-		
-		a0.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
-		attributes = productCmptType.getAttributes();
-		assertEquals(0, attributes.length);
-		
-		a0.setAttributeType(AttributeType.CHANGEABLE);
-		attributes = productCmptType.getAttributes();
-		assertEquals(1, attributes.length);
-		assertEquals(a0, attributes[0]);
-
-		a0.setAttributeType(AttributeType.CONSTANT);
-		attributes = productCmptType.getAttributes();
-		assertEquals(1, attributes.length);
-		assertEquals(a0, attributes[0]);
-
-		IAttribute a1 = policyCmptType.newAttribute();
-		a1.setProductRelevant(false);
-		attributes = productCmptType.getAttributes();
-		assertEquals(1, attributes.length);
-		
-		a1.setProductRelevant(true);
-		attributes = productCmptType.getAttributes();
-		assertEquals(2, attributes.length);
-		assertEquals(a0, attributes[0]);
-		assertEquals(a1, attributes[1]);
-	}
-
 	/*
 	 * Test method for 'org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType.getPolicyCmptyType()'
 	 */
@@ -188,7 +148,7 @@ public class V1ProductCmptTypeTest extends AbstractIpsPluginTest {
 	 * Test method for 'org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType.getIpsObjectType()'
 	 */
 	public void testGetIpsObjectType() {
-		assertEquals(IpsObjectType.PRODUCT_CMPT_TYPE, productCmptType.getIpsObjectType());
+		assertEquals(IpsObjectType.OLD_PRODUCT_CMPT_TYPE, productCmptType.getIpsObjectType());
 	}
 
 	/*
@@ -208,7 +168,7 @@ public class V1ProductCmptTypeTest extends AbstractIpsPluginTest {
 		pct.setUnqualifiedProductCmptType("TestProductType");
 		pct.setConfigurableByProductCmptType(true);
 		
-		IProductCmptType type = pct.findProductCmptType();
+		IProductCmptType type = pct.findOldProductCmptType();
 		
 		assertEquals("TestProductType", type.getQualifiedName());
 		
@@ -218,7 +178,7 @@ public class V1ProductCmptTypeTest extends AbstractIpsPluginTest {
 	 * Test method for 'org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType.getQualifiedNameType()'
 	 */
 	public void testGetQualifiedNameType() {
-		assertEquals(new QualifiedNameType("motor.MotorProduct", IpsObjectType.PRODUCT_CMPT_TYPE), productCmptType.getQualifiedNameType());
+		assertEquals(new QualifiedNameType("motor.MotorProduct", IpsObjectType.OLD_PRODUCT_CMPT_TYPE), productCmptType.getQualifiedNameType());
 
 	}
 

@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.IValueSetOwner;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 
 
 /**
@@ -257,6 +258,13 @@ public interface IAttribute extends IMember, IValueSetOwner {
      * Sets if this attribute is product relevant or not.
      */
     public void setProductRelevant(boolean newValue);
+
+    /**
+     * Returns the name of the method computing the value for this attribute. The attribute
+     * must be a derived one, that is computed on the fly. The method returns an empty
+     * String if this is not the case. 
+     */
+    public String getComputationMethodName();
     
     /**
      * Returns the attribute's formnula parameters. Returns an empty array if the method

@@ -35,14 +35,12 @@ import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -50,6 +48,8 @@ import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -65,29 +65,21 @@ import org.w3c.dom.Element;
 public class ConfigElementTest extends AbstractIpsPluginTest {
 
 	private IPolicyCmptType policyCmptType;
+    private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
-    private IIpsSrcFile pdSrcFile;
     private IProductCmptGeneration generation;
     private IConfigElement configElement;
     private IIpsProject project;
 
-    private IPolicyCmptType pcTypeInput;
-    
     protected void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject("TestProject");
-        policyCmptType = (IPolicyCmptType)newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy");
-        productCmpt = (IProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_CMPT, "TestProduct");
-        pdSrcFile = productCmpt.getIpsSrcFile();
-        productCmpt.setPolicyCmptType(policyCmptType.getQualifiedName());
-        generation = (IProductCmptGeneration)productCmpt.newGeneration();
+        project = newIpsProject();
+        policyCmptType = newPolicyAndProductCmptType(project, "TestPolicy", "TestProduct");
+        productCmptType = policyCmptType.findProductCmptType(project);
+        productCmpt = newProductCmpt(productCmptType, "TestProduct");
+        generation = productCmpt.getProductCmptGeneration(0);
         configElement = generation.newConfigElement();
-        
-        policyCmptType.getIpsSrcFile().save(true, null);
         productCmpt.getIpsSrcFile().save(true, null);
-        
-        pcTypeInput = newPolicyCmptType(project, "policyCmptTypeInput");
-        
         newDefinedEnumDatatype((IpsProject)project, new Class[]{TestEnumType.class});
     }
     
@@ -156,7 +148,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         IColumn col0 = tableStructure.newColumn();
         col0.setDatatype("Integer");
         
-        ITableStructureUsage structureUsage = policyCmptType.newTableStructureUsage();
+        ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
         structureUsage.addTableStructure(tableStructure.getQualifiedName());
         productCmpt.fixAllDifferencesToModel();
         
@@ -474,7 +466,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     public void testSetValue() {
         configElement.setValue("newValue");
         assertEquals("newValue", configElement.getValue());
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(configElement.getIpsSrcFile().isDirty());
     }
 
     public void testInitFromXml() {
@@ -587,6 +579,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     }
     
     public void testGetParameterIdentifiersUsedInFormula() throws CoreException {
+        IPolicyCmptType pcTypeInput = newPolicyAndProductCmptType(project, "InputPolicy", "InputProduct");
         IAttribute attributeInput = pcTypeInput.newAttribute();
         attributeInput.setName("attributeInput1");
         attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -594,8 +587,8 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         attributeInput.setName("attributeInput2");
         attributeInput.setAttributeType(AttributeType.CHANGEABLE);
         attributeInput.setDatatype(Datatype.STRING.getQualifiedName());
-        IPolicyCmptType pcType = newPolicyCmptType(project, "policyCmptType1");
-        IAttribute attribute = pcType.newAttribute();
+        
+        IAttribute attribute = policyCmptType.newAttribute();
         attribute.setName("attribute1");
         attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -606,7 +599,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 
         attribute.setFormulaParameters(params);
         
-        ((IProductCmptGeneration)configElement.getParent()).getProductCmpt().setPolicyCmptType(pcType.getQualifiedName());
         configElement.setType(ConfigElementType.FORMULA);
         configElement.setPcTypeAttribute(attribute.getName());
         configElement.setValue("param1 + param2 + policyInputX.attributeInput1");
@@ -677,7 +669,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         ITableContents tableContents = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "TableContents");
         tableContents.setTableStructure(tableStructure.getQualifiedName());
         
-        ITableStructureUsage structureUsage = policyCmptType.newTableStructureUsage();
+        ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
         structureUsage.setRoleName("Table");
         structureUsage.addTableStructure(tableStructure.getQualifiedName());
         productCmpt.fixAllDifferencesToModel();
@@ -698,6 +690,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     }
     
     public void testGetParameterIdentifiersUsedInFormulaWithEnum() throws CoreException{
+        IPolicyCmptType pcTypeInput = newPolicyAndProductCmptType(project, "InputPolicy", "InputProduct");
         IAttribute attributeInput = pcTypeInput.newAttribute();
         attributeInput.setName("attributeInput1");
         attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -705,8 +698,8 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         attributeInput.setName("attributeInput2");
         attributeInput.setAttributeType(AttributeType.CHANGEABLE);
         attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
-        IPolicyCmptType pcType = newPolicyCmptType(project, "policyCmptType1");
-        IAttribute attribute = pcType.newAttribute();
+        
+        IAttribute attribute = policyCmptType.newAttribute();
         attribute.setName("attribute1");
         attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -716,8 +709,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         params[2] = new Parameter(2, "policyInputX", pcTypeInput.getQualifiedName());
         
         attribute.setFormulaParameters(params);
-        
-        ((IProductCmptGeneration)configElement.getParent()).getProductCmpt().setPolicyCmptType(pcType.getQualifiedName());
         configElement.setType(ConfigElementType.FORMULA);
         configElement.setPcTypeAttribute(attribute.getName());
         

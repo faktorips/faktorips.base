@@ -32,10 +32,11 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IRelation;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -64,28 +65,23 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = newIpsProject();
         ipsRoot = ipsProject.getIpsPackageFragmentRoots()[0];
-        IPolicyCmptType policyCmptType1 = newPolicyCmptType(ipsProject, "model.Policy");
-        IPolicyCmptType policyCmptType2 = newPolicyCmptType(ipsProject, "model.Coverage");
-        IRelation relation = policyCmptType1.newRelation();
-        relation.setTarget(policyCmptType2.getQualifiedName());
-        relation.setTargetRoleSingular("Coverage");
-        policyCmptType1.getIpsSrcFile().save(true, null);
+        IProductCmptType productCmptType1 = newProductCmptType(ipsProject, "model.Product");
+        IProductCmptType productCmptType2 = newProductCmptType(ipsProject, "model.CoverageType");
+        IRelation relation = productCmptType1.newRelation();
+        relation.setTarget(productCmptType2.getQualifiedName());
+        relation.setTargetRoleSingular("CoverageType");
+        productCmptType1.getIpsSrcFile().save(true, null);
         
-        coverage = newProductCmpt(ipsProject, "data.coverages.Coverage");
-        coverage.setPolicyCmptType(policyCmptType2.getQualifiedName());
-        coverage.newGeneration();
-        coverage.getIpsSrcFile().save(true, null);
+        coverage = newProductCmpt(productCmptType2, "data.coverages.Coverage");
         
-        productA = newProductCmpt(ipsProject, "data.products.ProductA");
-        productA.setPolicyCmptType(policyCmptType1.getQualifiedName());
-        productAGen = (IProductCmptGeneration)productA.newGeneration();
-        productAGen.newRelation("Coverage").setTarget(coverage.getQualifiedName());
+        productA = newProductCmpt(productCmptType1, "data.products.ProductA");
+        productAGen = productA.getProductCmptGeneration(0);
+        productAGen.newRelation("CoverageType").setTarget(coverage.getQualifiedName());
         productA.getIpsSrcFile().save(true, null);
         
-        productB = newProductCmpt(ipsProject, "data.products.ProductB");
-        productB.setPolicyCmptType(policyCmptType1.getQualifiedName());
-        productBGen = (IProductCmptGeneration)productB.newGeneration();
-        productBGen.newRelation("Coverage").setTarget(coverage.getQualifiedName());
+        productB = newProductCmpt(productCmptType1, "data.products.ProductB");
+        productBGen = productB.getProductCmptGeneration(0);
+        productBGen.newRelation("CoverageType").setTarget(coverage.getQualifiedName());
         productB.getIpsSrcFile().save(true, null);
         
         IProductCmptGeneration[] refs = ipsProject.findReferencingProductCmptGenerations(coverage.getQualifiedNameType());

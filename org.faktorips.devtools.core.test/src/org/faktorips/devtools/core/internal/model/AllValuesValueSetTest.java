@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -65,8 +66,11 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
         attr2.setName("attr2");
         attr2.setDatatype(Datatype.STRING.getQualifiedName());
         
+        IProductCmptType productType = newProductCmptType(ipsProject, "test.Product");
+        productType.setPolicyCmptType(policy.getQualifiedName());
+        
         IProductCmpt cmpt = newProductCmpt(ipsProject, "test.Product");
-        cmpt.setPolicyCmptType(policy.getQualifiedName());
+        cmpt.setProductCmptType(productType.getQualifiedName());
         generation = (IProductCmptGeneration)cmpt.newGeneration(new GregorianCalendar(20006, 4, 26));
 		
 		ce = generation.newConfigElement();

@@ -17,8 +17,6 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype2;
 
-import javax.xml.transform.TransformerException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -285,13 +283,6 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(1, productCmptType.getNumOfMethods());
     }
     
-    public void testToXml_NullHandling() throws TransformerException {
-        productCmptType.setPolicyCmptType(null);
-        productCmptType.setDescription(null);
-        Element el = productCmptType.toXml(newDocument());
-        XmlUtil.nodeToString(el, "UTF-8");
-    }
-
     /**
      * {@inheritDoc}
      */

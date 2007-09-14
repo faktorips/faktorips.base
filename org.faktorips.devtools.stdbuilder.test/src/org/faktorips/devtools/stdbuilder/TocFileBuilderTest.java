@@ -24,6 +24,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -35,6 +36,7 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -57,6 +59,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
     private StandardBuilderSet builderSet;
     private TableImplBuilder tableImplBuilder;
     private TocFileBuilder tocFileBuilder;
+    private GregorianCalendar validFrom;
     
     /*
      * @see IpsPluginTest#setUp()
@@ -70,16 +73,14 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         builderSet = (StandardBuilderSet)project.getIpsArtefactBuilderSet();
         tableImplBuilder = (TableImplBuilder)builderSet.getBuilder(TableImplBuilder.class);
         tocFileBuilder = (TocFileBuilder)builderSet.getBuilder(TocFileBuilder.class);
+        validFrom = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
     }
 
     public void testGetToc() throws CoreException {
         
-        IPolicyCmptType type = (IPolicyCmptType)newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "motor.MotorPolicy");
-        IProductCmpt motorProduct = (IProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_CMPT, "motor.MotorProduct");
-        motorProduct.setPolicyCmptType(type.getQualifiedName());
-        GregorianCalendar validFrom = new GregorianCalendar(2006, 0, 1);
-        motorProduct.newGeneration().setValidFrom(validFrom);
-        type.getIpsSrcFile().save(true, null);
+        IPolicyCmptType type = newPolicyAndProductCmptType(project, "motor.MotorPolicy", "motor.MotorProduct");
+        IProductCmptType productCmptType = type.findProductCmptType(project);
+        newProductCmpt(productCmptType, "motor.MotorProduct");
         
         // toc should be empty as long as the project hasn't been builder
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
@@ -92,7 +93,6 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
     }
     
     public void testCreateTocEntryTable() throws CoreException {
-        GregorianCalendar validFrom = new GregorianCalendar(2006, 0, 1);
         ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "motor.RateTableStructure");
         ITableContents table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "motor.RateTable");
         ITableContentsGeneration tableGen = (ITableContentsGeneration)table.newGeneration();
@@ -117,13 +117,9 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
     public void test() throws Exception {
         
         // create a product component
-        IPolicyCmptType type = (IPolicyCmptType)newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "motor.MotorPolicy");
-        IProductCmpt motorProduct = (IProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_CMPT, "motor.MotorProduct");
-        motorProduct.setPolicyCmptType(type.getQualifiedName());
-        GregorianCalendar validFrom = new GregorianCalendar(2006, 0, 1);
-        motorProduct.newGeneration().setValidFrom(validFrom);
-        type.getIpsSrcFile().save(true, null);
-        motorProduct.getIpsSrcFile().save(true, null);
+        IPolicyCmptType type = newPolicyAndProductCmptType(project, "motor.MotorPolicy", "motor.MotorProduct");
+        IProductCmptType productCmptType = type.findProductCmptType(project);
+        IProductCmpt motorProduct = newProductCmpt(productCmptType, "motor.MotorProduct");
         
         // create a table content
         ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "motor.RateTableStructure");
@@ -148,10 +144,9 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         testCase.getIpsSrcFile().save(true, null);
         
         // create a formula test case
-        IProductCmpt pcFromula = (IProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_CMPT, "formulatests.PremiumCalcFormulaTest");
-        pcFromula.setPolicyCmptType(type.getQualifiedName());
-        IProductCmptGeneration pcdgFormula = (IProductCmptGeneration) pcFromula.newGeneration();
-        pcdgFormula.setValidFrom(new GregorianCalendar(2006, 0, 1));
+        IProductCmpt pcFromula = newProductCmpt(productCmptType, "formulatests.PremiumCalcFormulaTest");
+        IProductCmptGeneration pcdgFormula = pcFromula.getProductCmptGeneration(0);
+        pcdgFormula.setValidFrom(validFrom);
         IConfigElement ceFormula = pcdgFormula.newConfigElement();
         ceFormula.setType(ConfigElementType.FORMULA);
         // only if the formula contains tests then the toc entry will be created
@@ -270,13 +265,9 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
     
     public void testIfIdenticalTocFileIsNotWrittenAfterFullBuild() throws CoreException {
         // create a product component
-        IPolicyCmptType type = (IPolicyCmptType)newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "motor.MotorPolicy");
-        IProductCmpt motorProduct = (IProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_CMPT, "motor.MotorProduct");
-        motorProduct.setPolicyCmptType(type.getQualifiedName());
-        GregorianCalendar validFrom = new GregorianCalendar(2006, 0, 1);
-        motorProduct.newGeneration().setValidFrom(validFrom);
-        type.getIpsSrcFile().save(true, null);
-        motorProduct.getIpsSrcFile().save(true, null);
+        IPolicyCmptType type = newPolicyAndProductCmptType(project, "motor.MotorPolicy", "motor.MotorProduct");
+        IProductCmptType productCmptType = type.findProductCmptType(project);
+        newProductCmpt(productCmptType, "motor.MotorProduct");
         
         // now make a full build
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
@@ -292,14 +283,10 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
     
     public void testCreateDeleteTocEntryFormulaTest() throws Exception {
         // create a product component
-        IPolicyCmptType type = (IPolicyCmptType)newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "motor.MotorPolicy");
-        IProductCmpt motorProduct = (IProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_CMPT, "motor.MotorProduct");
-        motorProduct.setPolicyCmptType(type.getQualifiedName());
-        GregorianCalendar validFrom = new GregorianCalendar(2006, 0, 1);
-        IProductCmptGeneration generation = (IProductCmptGeneration) motorProduct.newGeneration();
-        generation.setValidFrom(validFrom);
-        type.getIpsSrcFile().save(true, null);
-        motorProduct.getIpsSrcFile().save(true, null);
+        IPolicyCmptType type = newPolicyAndProductCmptType(project, "motor.MotorPolicy", "motor.MotorProduct");
+        IProductCmptType productCmptType = type.findProductCmptType(project);
+        IProductCmpt motorProduct = newProductCmpt(productCmptType, "motor.MotorProduct");
+        IProductCmptGeneration generation = motorProduct.getProductCmptGeneration(0);
         
         // now make a full build
         project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);

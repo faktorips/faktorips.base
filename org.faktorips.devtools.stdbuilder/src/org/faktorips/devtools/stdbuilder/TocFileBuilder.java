@@ -344,7 +344,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         if (kind==null) {
             return null;
         }
-        if (pcType.findProductCmptType()==null) {
+        if (pcType.findOldProductCmptType()==null) {
             return null;
         }
         String packageString = getBuilderSet().getPackage(DefaultBuilderSet.KIND_PRODUCT_CMPT_TOCENTRY, productCmpt.getIpsSrcFile()).replace('.', '/');
@@ -367,7 +367,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             if (gen.getProductCmpt().containsFormula()) {
                 generationClassName = productCmptBuilder.getQualifiedClassName((IProductCmptGeneration)generations[i]);
             } else {
-                generationClassName = productCmptGenImplClassBuilder.getQualifiedClassName(gen.getProductCmpt().findProductCmptType());
+                generationClassName = productCmptGenImplClassBuilder.getQualifiedClassName(gen.getProductCmpt().findOldProductCmptType());
             }
             genEntries[i] = new TocEntryGeneration(entry, validFrom, generationClassName, xmlResourceName); 
         }

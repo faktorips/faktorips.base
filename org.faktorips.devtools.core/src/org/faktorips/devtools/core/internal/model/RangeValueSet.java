@@ -530,7 +530,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         retValue.lowerBound = lowerBound;
         retValue.upperBound = upperBound;
         retValue.step = step;
-
+        retValue.containsNull = containsNull;
+        
         return retValue;
     }
 

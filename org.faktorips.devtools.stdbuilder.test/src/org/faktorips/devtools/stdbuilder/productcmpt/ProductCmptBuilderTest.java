@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 
 /**
  * 
@@ -44,6 +45,7 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
     private IPolicyCmptType type;
+    private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
     private IProductCmptGeneration productCmptGen;
     
@@ -58,17 +60,16 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
         IIpsProjectProperties props = project.getProperties();
         props.setJavaSrcLanguage(Locale.GERMAN);
         project.setProperties(props);
-        type = newPolicyCmptType(project, "Policy");
+        type = newPolicyAndProductCmptType(project, "Policy", "Product");
         IAttribute a = type.newAttribute();
         a.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         a.setDatatype(Datatype.INTEGER.getQualifiedName());
         a.setName("age");
-        a.setProductRelevant(true);
         assertFalse(type.validate().containsErrorMsg());
         type.getIpsSrcFile().save(true, null);
         
-        productCmpt = newProductCmpt(project, "Product");
-        productCmpt.setPolicyCmptType(type.getQualifiedName());
+        productCmptType = type.findProductCmptType(project);
+        productCmpt = newProductCmpt(productCmptType, "Product");
         productCmptGen = (IProductCmptGeneration)productCmpt.newGeneration();
         productCmptGen.setValidFrom(new GregorianCalendar(2006, 0, 1));
         IConfigElement ce = productCmptGen.newConfigElement();
@@ -95,8 +96,7 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
     }
 
     public void testBuildMissingType() throws CoreException {
-        // build should not throw an exception even if the reference to the type is missing
-        productCmpt.setPolicyCmptType("");
+        productCmpt.setProductCmptType("");
         productCmpt.getIpsSrcFile().save(true, null);
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         assertNull(builder.getGeneratedJavaFile(productCmptGen));

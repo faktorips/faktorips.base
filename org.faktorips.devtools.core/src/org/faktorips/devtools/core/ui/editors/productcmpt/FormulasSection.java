@@ -34,13 +34,13 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.product.ConfigElement;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
@@ -190,11 +190,12 @@ public class FormulasSection extends IpsSection {
 	}
     
     private ITableStructureUsage findTableStructureUsage(String rolename) throws CoreException {
-        IProductCmptType type = generation.getProductCmpt().findProductCmptType();
+        IIpsProject ipsProject = generation.getIpsProject();
+        org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType type = generation.findProductCmptType(ipsProject);
         if (type==null) {
             return null;
         }
-        return type.findTableStructureUsageInSupertypeHierarchy(rolename);
+        return type.findTableStructureUsageInSupertypeHierarchy(rolename, true, ipsProject);
     }
 
 	/**

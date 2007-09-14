@@ -63,8 +63,8 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         method.setName("getAge");
         method.setModifier(Modifier.PUBLIC);
         method.setDatatype("Decimal");
-        method.setAbstract(true);
         method.setFormulaSignatureDefinition(true);
+        method.setAbstract(true);
         method.setFormulaName("Premium");
         IParameter param0 = method.newParameter();
         param0.setName("p0");
@@ -76,7 +76,6 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         Element element = method.toXml(this.newDocument());
         
         IProductCmptTypeMethod copy = pcType.newProductCmptTypeMethod();
-        method.setFormulaSignatureDefinition(false);
         copy.initFromXml(element);
         assertTrue(copy.isFormulaSignatureDefinition());
         assertEquals("Premium", copy.getFormulaName());
@@ -91,7 +90,6 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertEquals("Decimal", copyParams[0].getDatatype());
         assertEquals("p1", copyParams[1].getName());
         assertEquals("Money", copyParams[1].getDatatype());
-
     }
     
 }

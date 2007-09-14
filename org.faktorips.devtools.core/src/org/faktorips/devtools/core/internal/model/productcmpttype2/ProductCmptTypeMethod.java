@@ -85,8 +85,9 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         formulaSignatureDefinition = newValue;
         if (!formulaSignatureDefinition) {
             formulaName = "";
+        } else {
+            setAbstract(false);
         }
-        setAbstract(formulaSignatureDefinition);
         valueChanged(oldValue, newValue);
     }
     

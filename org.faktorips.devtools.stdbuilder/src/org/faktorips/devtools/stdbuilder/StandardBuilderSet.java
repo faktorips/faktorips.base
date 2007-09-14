@@ -330,13 +330,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * in the version string.
      */
     public String getVersion() {
-        Version version = Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION));
-        StringBuffer buf = new StringBuffer();
-        buf.append(version.getMajor());
-        buf.append('.');
-        buf.append(version.getMinor());
-        buf.append('.');
-        buf.append(version.getMicro());
-        return buf.toString();
+        return "1.0.4"; // TODO v2 - bleiben erst einmal auf 1.0.4 damit man aenderungen am sourcecode erkennen kann
+//        Version version = Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION));
+//        StringBuffer buf = new StringBuffer();
+//        buf.append(version.getMajor());
+//        buf.append('.');
+//        buf.append(version.getMinor());
+//        buf.append('.');
+//        buf.append(version.getMicro());
+//        return buf.toString();
     }
 }

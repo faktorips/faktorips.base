@@ -84,6 +84,13 @@ public interface ITableStructureUsage extends IIpsObjectPart {
     public String[] getTableStructures();
     
     /**
+     * Returns <code>true</code> if this usage specified the given table structure as one the
+     * structures that are allowed to use, otherwise <code>false</code>. 
+     * Returns <code>false</code> if tabelStructure is <code>null</code>. 
+     */
+    public boolean isUsed(String tableStructure);
+    
+    /**
      * Adds the given table structure to the list of table structure this usage object specifies.<br>
      * If the table structure is already assigned then do nothing.
      */

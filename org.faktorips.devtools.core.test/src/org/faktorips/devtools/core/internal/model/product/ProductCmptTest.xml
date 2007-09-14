@@ -3,7 +3,7 @@
 <!--
  Test data for ProductCmptImplTest.java
 -->
-<ProductCmpt policyCmptType="MotorPolicy">
+<ProductCmpt productCmptType="MotorProduct" runtimeId="MotorProductId">
 	<Generation validFrom="2004-01-01">
 		<ConfigElement type="productAttribute" pcTypeAttribute="rate" value="1.5">
 		    <Value><![CDATA[1.5]]></Value>

@@ -52,7 +52,7 @@ public class RelationsContentProvider implements ITreeContentProvider {
 		IProductCmptGeneration generation = (IProductCmptGeneration)inputElement;
 		try {
 			IProductCmpt pc = generation.getProductCmpt();
-			IProductCmptType pcType = pc.findProductCmptType();
+			IProductCmptType pcType = pc.findOldProductCmptType();
 			if (pcType == null) {
                 // type can't be found, so extract the relation types from the generation
 				return getRelationTypes(generation);

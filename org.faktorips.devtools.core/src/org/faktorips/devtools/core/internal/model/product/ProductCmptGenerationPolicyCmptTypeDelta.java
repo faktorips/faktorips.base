@@ -18,18 +18,22 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.util.ArgumentCheck;
 
 
@@ -41,39 +45,47 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
     
     private IProductCmptGeneration generation;
     private IPolicyCmptType pcType;
-    private IAttribute[] attributesWithMissingConfigElements;
-    private IConfigElement[] elementsWithMissingAttributes;
-    private IConfigElement[] elementsWithTypeMismatch;
-    private IConfigElement[] elementsWithValueSetMismatch; 
-    private IProductCmptRelation[] relationsWithMissingPcTypeRelations;
-    private ITableStructureUsage[] tableStructureUsagesWithMissingTableContentUsages;
-    private ITableContentUsage[] tableContentUsagesWithMissingTableStructureUsages;
+    private IAttribute[] attributesWithMissingConfigElements = new IAttribute[0];
+    private IConfigElement[] elementsWithMissingAttributes = new IConfigElement[0];
+    private IConfigElement[] elementsWithTypeMismatch = new IConfigElement[0];
+    private IConfigElement[] elementsWithValueSetMismatch = new IConfigElement[0]; 
+    private IProductCmptRelation[] relationsWithMissingPcTypeRelations = new IProductCmptRelation[0];
+    private ITableStructureUsage[] tableStructureUsagesWithMissingTableContentUsages = new ITableStructureUsage[0];
+    private ITableContentUsage[] tableContentUsagesWithMissingTableStructureUsages = new ITableContentUsage[0];
     
-    public ProductCmptGenerationPolicyCmptTypeDelta(
-            IProductCmptGeneration generation, 
-            IPolicyCmptType type) throws CoreException {
+    public ProductCmptGenerationPolicyCmptTypeDelta(IProductCmptGeneration generation) throws CoreException {
+
         ArgumentCheck.notNull(generation);
-        ArgumentCheck.notNull(type);
+        
         this.generation = generation;
-        this.pcType = type;
+        IIpsProject ipsProject = generation.getIpsProject();
+        IProductCmptType productCmptType = generation.findProductCmptType(ipsProject);
+        if (productCmptType==null) {
+            return;
+        }
+        HierarchyVisitor hierarchyVisitor = new HierarchyVisitor(ipsProject);
+        hierarchyVisitor.start(productCmptType);
+        computeStructureUsagesWithMissingContentUsages(hierarchyVisitor);
+        computeContentUsagesWithMissingStructureUsages(hierarchyVisitor);
+        pcType = productCmptType.findPolicyCmptType(true, productCmptType.getIpsProject());
+        if (pcType==null) {
+            return;
+        }
         ITypeHierarchy hierarchy = pcType.getSupertypeHierarchy();
         computeAttributesWithMissingConfigElements(hierarchy);
         computeElementsWithMissingAttributes(hierarchy);
         computeElementsWithTypeOrValueSetMismatch(hierarchy);
         computeRelationsWithMissingPcTypeRelations(hierarchy);
-        computeStructureUsagesWithMissingContentUsages(hierarchy);
-        computeContentUsagesWithMissingStructureUsages(hierarchy);
     }
     
     /**
      * @param hierarchy
      */
-    private void computeContentUsagesWithMissingStructureUsages(ITypeHierarchy hierarchy) {
+    private void computeContentUsagesWithMissingStructureUsages(HierarchyVisitor visitor) {
         List missing = new ArrayList();
-        
         ITableContentUsage[] usages = generation.getTableContentUsages();
         for (int i = 0; i < usages.length; i++) {
-            if (hierarchy.findTableStructureUsage(pcType, usages[i].getStructureUsage()) == null) {
+            if (!visitor.containsTableStructureUsage(usages[i].getStructureUsage())) {
                 missing.add(usages[i]);
             }
         }
@@ -81,12 +93,12 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
                 .toArray(new ITableContentUsage[missing.size()]);
     }
 
-    private void computeStructureUsagesWithMissingContentUsages(ITypeHierarchy hierarchy) {
+    private void computeStructureUsagesWithMissingContentUsages(HierarchyVisitor visitor) {
         List missing = new ArrayList();
-        ITableStructureUsage[] usages = hierarchy.getAllTableStructureUsages(pcType);
-        for (int i = 0; i < usages.length; i++) {
-            if (generation.getTableContentUsage(usages[i].getRoleName()) == null) {
-                missing.add(usages[i]);
+        for (Iterator it=visitor.tableStructureUsages.iterator(); it.hasNext(); ) {
+            ITableStructureUsage tsu = (ITableStructureUsage)it.next();
+            if (generation.getTableContentUsage(tsu.getRoleName()) == null) {
+                missing.add(tsu);
             }
         }
         tableStructureUsagesWithMissingTableContentUsages = (ITableStructureUsage[])missing
@@ -151,24 +163,21 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta#getProductCmpt()
+     * {@inheritDoc}
      */
     public IProductCmptGeneration getProductCmptGeneration() {
         return generation;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta#getPolicyCmptType()
+     * {@inheritDoc}
      */
     public IPolicyCmptType getPolicyCmptType() {
         return pcType;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta#isEmpty()
+     * {@inheritDoc}
      */
     public boolean isEmpty() {
         return attributesWithMissingConfigElements.length==0
@@ -182,41 +191,35 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta#getAttributesWithMissingConfigElements()
+     * {@inheritDoc}
      */
     public IAttribute[] getAttributesWithMissingConfigElements() {
         return attributesWithMissingConfigElements;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta#getTypeMismatchElements()
+     * {@inheritDoc}
      */
     public IConfigElement[] getTypeMismatchElements() {
         return elementsWithTypeMismatch;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta#getConfigElementsWithMissingAttributes()
+     * {@inheritDoc}
      */
     public IConfigElement[] getConfigElementsWithMissingAttributes() {
         return elementsWithMissingAttributes;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta#getRelationsWithMissingPcTypeRelations()
+     * {@inheritDoc}
      */
     public IProductCmptRelation[] getRelationsWithMissingPcTypeRelations() {
         return relationsWithMissingPcTypeRelations;
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta#getElementsWithValueSetMismatch()
+     * {@inheritDoc}
      */
     public IConfigElement[] getElementsWithValueSetMismatch() {
         return elementsWithValueSetMismatch;
@@ -234,5 +237,32 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
      */
     public ITableContentUsage[] getTableContentUsagesWithMissingStructureUsages() {
         return tableContentUsagesWithMissingTableStructureUsages;
+    }
+    
+    class HierarchyVisitor extends ProductCmptTypeHierarchyVisitor {
+
+        List tableStructureUsages = new ArrayList();
+        
+        public HierarchyVisitor(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+            ITableStructureUsage[] tsu = currentType.getTableStructureUsages();
+            for (int i = 0; i < tsu.length; i++) {
+                tableStructureUsages.add(tsu[i]);
+            }
+            return true;
+        }
+
+        boolean containsTableStructureUsage(String rolename) {
+            for (Iterator it = tableStructureUsages.iterator(); it.hasNext();) {
+                ITableStructureUsage tsu = (ITableStructureUsage)it.next();
+                if (tsu.getRoleName().equals(rolename)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

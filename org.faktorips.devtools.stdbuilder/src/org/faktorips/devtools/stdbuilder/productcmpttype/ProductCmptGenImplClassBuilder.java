@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
-import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
@@ -386,8 +386,8 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         builder.methodEnd();
     }
 
-    private void generateMethodDoInitTableUsagesFromXml(JavaCodeFragmentBuilder builder) {
-        ITableStructureUsage[] tsus = getProductCmptType().getTableStructureUsages();
+    private void generateMethodDoInitTableUsagesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
+        ITableStructureUsage[] tsus = getProductCmptTypeV2().getTableStructureUsages();
         if (tsus.length == 0){
             return;
         }

@@ -47,18 +47,18 @@ public class IpsObjectType {
      * Type for Policy component type.
      */
     public final static IpsObjectType POLICY_CMPT_TYPE = 
-        new IpsObjectType("PolicyCmptType", Messages.IpsObjectType_namePolicyClass, "ipspct", true, false, "PolicyCmptType.gif", "PolicyCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        new IpsObjectType("PolicyCmptType", Messages.IpsObjectType_namePolicyClass, "ipspolicycmpttype", true, false, "PolicyCmptType.gif", "PolicyCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     /**
      * Type for product component type.
      */
-    public final static IpsObjectType PRODUCT_CMPT_TYPE2 = 
+    public final static IpsObjectType PRODUCT_CMPT_TYPE_V2 = 
         new IpsObjectType("ProductCmptType2", Messages.IpsObjectType_nameProductClass, "ipsproductcmpttype", true, false, "PolicyCmptType.gif", "PolicyCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     /**
      * Type for product component type.
      */
-    public final static IpsObjectType PRODUCT_CMPT_TYPE = 
+    public final static IpsObjectType OLD_PRODUCT_CMPT_TYPE = 
         new IpsObjectType("ProductCmptType", Messages.IpsObjectType_nameProductClass, "ipsproductcmpttype", false, false, "PolicyCmptType.gif", "PolicyCmptTypeDisabled.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     /**
@@ -154,7 +154,7 @@ public class IpsObjectType {
 	    if (this==POLICY_CMPT_TYPE) {
 	        return new PolicyCmptType(file);
 	    }
-        if (this==PRODUCT_CMPT_TYPE2) {
+        if (this==PRODUCT_CMPT_TYPE_V2) {
             return new ProductCmptType(file);
         }
 	    if (this==TABLE_STRUCTURE) {

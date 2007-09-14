@@ -48,6 +48,17 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "test.TableStructure1");
     }
     
+    public void testIsUsed() {
+        assertFalse(tableStructureUsage.isUsed(null));
+        assertFalse(tableStructureUsage.isUsed("MyTable"));
+
+        tableStructureUsage.addTableStructure("RateTable");
+        tableStructureUsage.addTableStructure("MyTable");
+        
+        assertTrue(tableStructureUsage.isUsed("MyTable"));
+        assertFalse(tableStructureUsage.isUsed("SomeOtherTable"));
+    }
+    
     public void testRemove() {
         tableStructureUsage.delete();
         assertEquals(0, pcType.getTableStructureUsages().length);

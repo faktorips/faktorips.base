@@ -46,9 +46,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
-        IPolicyCmptType pctype = newPolicyCmptType(ipsProject, "Policy");
-        product = newProductCmpt(ipsProject, "Product");
-        product.setPolicyCmptType(pctype.getQualifiedName());
+        IPolicyCmptType pctype = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
+        product = newProductCmpt(pctype.findProductCmptType(ipsProject), "Product");
     }
    
     // Auskommentiert bis zur Umstellung auf neues Metamodell. Siehe Flyspray-Eintrag 939

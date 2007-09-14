@@ -70,12 +70,10 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         root = project.getIpsPackageFragmentRoots()[0];
         pack = root.createPackageFragment("products.folder", true, null);
 
-        IIpsSrcFile pdSrcFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
-        pcType = (PolicyCmptType)pdSrcFile.getIpsObject();
+        pcType = newPolicyCmptTypeWithoutProductCmptType(project, "products.folder.TestPolicy");
         attribute = pcType.newAttribute();
 
-        pdSrcFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy2", true, null);
-        pcType2 = (PolicyCmptType)pdSrcFile.getIpsObject();
+        pcType2 = newPolicyCmptTypeWithoutProductCmptType(project, "products.folder.TestPolicy2");
 
         IFile archiveFile = createIpsArchiveFile(root);
         IIpsObjectPath objectPath = project.getIpsObjectPath();
@@ -88,8 +86,8 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
     
     private IFile createIpsArchiveFile(IIpsPackageFragmentRoot targetRoot) throws Exception{
         IIpsProject tempProject = this.newIpsProject("TempProject");
-        newPolicyCmptType(tempProject, "test.PolicyInArchive1");
-        newPolicyCmptType(tempProject, "test.PolicyInArchive2");
+        newPolicyCmptTypeWithoutProductCmptType(tempProject, "test.PolicyInArchive1");
+        newPolicyCmptTypeWithoutProductCmptType(tempProject, "test.PolicyInArchive2");
         
         IIpsPackageFragmentRoot tempRoot = tempProject.getSourceIpsPackageFragmentRoots()[0];
         IFile archiveFile = targetRoot.getIpsProject().getProject().getFile("test.ipsar");

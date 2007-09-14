@@ -125,7 +125,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
-    public IProductCmptType findProductCmptType() throws CoreException {
+    public IProductCmptType findOldProductCmptType() throws CoreException {
         if (!configurableByProductCmptType) {
             return null;
         }
@@ -135,7 +135,14 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         return new ProductCmptType(this);
     }
 
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    public org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+        return (org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType)ipsProject.findProductCmptType(getProductCmptType());
+    }
+
     public IProductCmptType getProductCmptTypeInternal() throws CoreException {
         return new ProductCmptType(this);
     }

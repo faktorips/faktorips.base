@@ -17,8 +17,6 @@
 
 package org.faktorips.devtools.core.internal.model.testcase;
 
-import java.util.GregorianCalendar;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
@@ -344,13 +342,12 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     
     public void testUpdateDefaultTestAttributeValues() throws CoreException{
         // create model objects
-        IPolicyCmptType policy = newPolicyCmptType(project, "Policy");
+        IPolicyCmptType policy = newPolicyAndProductCmptType(project, "Policy", "Product");
         IRelation relation = policy.newRelation();
         relation.setTargetRoleSingular("childPolicyCmptType");
         relation.setTarget("Coverage");
-        IPolicyCmptType coverage = newPolicyCmptType(project, "Coverage");
-        IProductCmpt product = newProductCmpt(project, "Product");
-        product.setPolicyCmptType(coverage.getQualifiedName());
+        IPolicyCmptType coverage = newPolicyAndProductCmptType(project, "Coverage", "CoverageType");
+        IProductCmpt product = newProductCmpt(coverage.findProductCmptType(project), "Product");
         
         // add attributes with their defaults
         IAttribute attr = policy.newAttribute();
@@ -363,7 +360,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         attr.setDefaultValue("attrCoverage_Default");
         attr.setProductRelevant(true);
 
-        IProductCmptGeneration generation = (IProductCmptGeneration) product.newGeneration(new GregorianCalendar(1742, 12, 1));
+        IProductCmptGeneration generation = product.getProductCmptGeneration(0);
         IConfigElement ce = generation.newConfigElement();
         ce.setPcTypeAttribute(attr.getName());
         ce.setValue("attrCoverage_Default_Product");

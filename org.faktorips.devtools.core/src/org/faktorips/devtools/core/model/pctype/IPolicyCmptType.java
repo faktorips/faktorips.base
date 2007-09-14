@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model.pctype;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 /**
@@ -153,7 +154,16 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      *
      * @throws CoreException if an error occurs while searching for the type.
      */
-    public IProductCmptType findProductCmptType() throws CoreException;
+    public IProductCmptType findOldProductCmptType() throws CoreException;
+
+    /**
+     * Returns the product component type this type refers to.  
+     * Returns <code>null</code> if either this type does not refer to a product component type
+     * or the product component type can't be found on the project's ips object path.
+     *
+     * @throws CoreException if an error occurs while searching for the type.
+     */
+    public org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the unqualified name of the product component type. Returns an empty

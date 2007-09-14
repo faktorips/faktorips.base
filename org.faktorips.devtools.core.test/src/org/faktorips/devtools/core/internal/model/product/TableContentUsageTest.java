@@ -17,16 +17,14 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
-import java.util.GregorianCalendar;
-
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.MessageList;
@@ -43,27 +41,28 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
     private ITableContentUsage contentUsage;
     private ITableContents content;
     private ITableStructure structure;
-    private IPolicyCmptType type;
+    private IPolicyCmptType policyCmptType;
+    private IProductCmptType productCmptType;
     private IProductCmpt cmpt;
     
     final private String STRUCTURE_ROLENAME = "StructUsageRole";
+    
 	/**
 	 * {@inheritDoc}
 	 */
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
-        type = newPolicyCmptType(project, "Type");
-        cmpt = newProductCmpt(project, "Cmpt");
-        cmpt.setPolicyCmptType(type.getQualifiedName());
+        policyCmptType = newPolicyAndProductCmptType(project, "Policy", "Product");
+        productCmptType = policyCmptType.findProductCmptType(project);
+        cmpt = newProductCmpt(productCmptType, "Cmpt");
         structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Structure");
         content = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "Contents");
-        structUsage = cmpt.findProductCmptType().newTableStructureUsage();
+        structUsage = productCmptType.newTableStructureUsage();
         structUsage.addTableStructure(structure.getQualifiedName());
         structUsage.setRoleName(STRUCTURE_ROLENAME);
         
-        cmpt.newGeneration(new GregorianCalendar());
-        contentUsage = ((IProductCmptGeneration)cmpt.getFirstGeneration()).newTableContentUsage();
+        contentUsage = cmpt.getProductCmptGeneration(0).newTableContentUsage();
     }
     
     public void testValidateUnknownStructure() throws Exception {
@@ -126,14 +125,8 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
     
     public void testFindTableStructureUsage() throws Exception {
         contentUsage.setStructureUsage("none");
-        assertNull(contentUsage.findTableStructureUsage());
-        
-        
+        assertNull(contentUsage.findTableStructureUsage(project));
         contentUsage.setStructureUsage(STRUCTURE_ROLENAME);
-        ITableStructureUsage structureUsage = contentUsage.findTableStructureUsage();
-        assertNotNull(structureUsage);
-        // TODO
-        // assertEquals(structureUsage, contentUsage.findTableStructureUsage());
-   	
+        assertEquals(structUsage, contentUsage.findTableStructureUsage(project));
     }
 }

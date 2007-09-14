@@ -19,6 +19,8 @@ package org.faktorips.devtools.core.model.product;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 
 
 /**
@@ -77,6 +79,17 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * Returns the product component this generation belongs to.
      */
     public IProductCmpt getProductCmpt();
+    
+    /**
+     * Searches the product component type this product component generation is based on.
+     *  
+     * @return The product component type this product component generation is based on 
+     * or <code>null</code> if the product component type can't be found.
+     *  
+     * @throws CoreException if an exception occurs while searching for the type.
+     * @throws NullPointerException if ipsProject is <code>null</code>. 
+     */
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns the delta between this product component and it's policy

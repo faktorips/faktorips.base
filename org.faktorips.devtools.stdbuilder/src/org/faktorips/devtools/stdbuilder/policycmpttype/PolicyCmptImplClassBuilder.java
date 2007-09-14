@@ -167,7 +167,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
         generateConstructorDefault(builder);
-        if (getPcType().findProductCmptType()!=null) {
+        if (getPcType().findOldProductCmptType()!=null) {
             generateConstructorWithProductCmptArg(builder);
         }
     }
@@ -180,7 +180,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         
         IPolicyCmptType type = getPcType();
         generateMethodInitialize(methodsBuilder);
-        if (type.findProductCmptType()!=null) {
+        if (type.findOldProductCmptType()!=null) {
             if(hasValidProductCmptTypeName()){
                 generateMethodGetProductCmpt(methodsBuilder);
                 generateMethodGetProductCmptGeneration(methodsBuilder);
@@ -1016,7 +1016,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append(" " + varName + " = new ");
         methodsBuilder.appendClassName(getQualifiedClassName(target));
         if (inclProductCmptArg) {
-            methodsBuilder.appendln("(" + interfaceBuilder.getParamNameForProductCmptInNewChildMethod(target.findProductCmptType()) + ");");  
+            methodsBuilder.appendln("(" + interfaceBuilder.getParamNameForProductCmptInNewChildMethod(target.findOldProductCmptType()) + ");");  
         } else {
             methodsBuilder.appendln("();");
         }
@@ -1634,7 +1634,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             builder.methodEnd();
             return;
         }
-        if (getPcType().findProductCmptType()==null) {
+        if (getPcType().findOldProductCmptType()==null) {
             builder.methodEnd();
             return;
         }
@@ -1704,7 +1704,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.append(")");
         builder.append(interfaceBuilder.getMethodNameGetProductCmpt(getProductCmptType()));
         builder.append("().");
-        builder.append(productCmptInterfaceBuilder.getMethodNameGetGeneration(getPolicyCmptType().findProductCmptType()));
+        builder.append(productCmptInterfaceBuilder.getMethodNameGetGeneration(getPolicyCmptType().findOldProductCmptType()));
         builder.append('(');
         builder.append(MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR);
         builder.appendln("());");
@@ -2067,7 +2067,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         body.append("return ");
         if(a.isProductRelevant()){
             
-            body.append(interfaceBuilder.getMethodNameGetProductCmptGeneration(getPcType().findProductCmptType()));
+            body.append(interfaceBuilder.getMethodNameGetProductCmptGeneration(getPcType().findOldProductCmptType()));
             body.append("().");
             body.append(productCmptGenInterfaceBuilder.getMethodNameGetRangeFor(a, helper.getDatatype()));
             body.appendln("(businessFunction);");
@@ -2089,7 +2089,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         body.append("return ");
         if(a.isProductRelevant()){
             
-            body.append(interfaceBuilder.getMethodNameGetProductCmptGeneration(getPcType().findProductCmptType()));
+            body.append(interfaceBuilder.getMethodNameGetProductCmptGeneration(getPcType().findOldProductCmptType()));
             body.append("().");
             body.append(productCmptGenInterfaceBuilder.getMethodNameGetAllowedValuesFor(a, helper.getDatatype()));
             body.appendln("(businessFunction);");

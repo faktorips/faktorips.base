@@ -17,8 +17,6 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
-import java.util.GregorianCalendar;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
@@ -33,15 +31,15 @@ import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class FormulaTestCaseTest extends AbstractIpsPluginTest {
+    
     private IIpsProject ipsProject;
+    private IPolicyCmptType policyCmptType;
     private IProductCmpt productCmpt;
     private IConfigElement configElement;
     private IFormulaTestCase formulaTestCase;
@@ -49,16 +47,15 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = super.newIpsProject("TestProject");
-        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "policyCmpt");
+        policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
+        IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
         IAttribute attributeInput = policyCmptType.newAttribute();
         attributeInput.setName("attributeInput");
         attributeInput.setAttributeType(AttributeType.CHANGEABLE);
         attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
         
-        productCmpt = newProductCmpt(ipsProject, "productCmpt");
-        productCmpt.setPolicyCmptType(policyCmptType.getQualifiedName());
-        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
-        generation.setValidFrom(new GregorianCalendar(2007, 1, 1));
+        productCmpt = newProductCmpt(productCmptType, "productCmpt");
+        IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(0);
         configElement = generation.newConfigElement();
         configElement.setType(ConfigElementType.FORMULA);
         formulaTestCase = configElement.newFormulaTestCase();
@@ -106,8 +103,24 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
     }
     
     public void testExecuteFormulaOnlyParam() throws Exception{
-        createDefaultPolicyCmptsAndTblUsage();
+        IPolicyCmptType pcTypeInput = newPolicyCmptType(ipsProject, "policyCmptTypeInput");
+        IAttribute attributeInput = pcTypeInput.newAttribute();
+        attributeInput.setName("attributeInput");
+        attributeInput.setAttributeType(AttributeType.CHANGEABLE);
+        attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
+
+        IAttribute attribute = policyCmptType.newAttribute();
+        attribute.setProductRelevant(true);
+        attribute.setName("attribute1");
+        attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        Parameter[] params = new Parameter[3];
+        params[0] = new Parameter(0, "param1", Datatype.INTEGER.getQualifiedName());
+        params[1] = new Parameter(1, "param2", Datatype.INTEGER.getQualifiedName());
+        params[2] = new Parameter(2, "policyInputX", pcTypeInput.getQualifiedName());
+        attribute.setFormulaParameters(params);
         
+        configElement.setPcTypeAttribute(attribute.getName());   
         configElement.setValue("param1 * param2 * 2 * policyInputX.attributeInput");
         
         // sets the input for the formula test
@@ -213,38 +226,4 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IFormulaTestCase.MSGCODE_DUPLICATE_NAME));
     }
     
-    private void createDefaultPolicyCmptsAndTblUsage() throws CoreException{
-        IPolicyCmptType pcTypeInput = newPolicyCmptType(ipsProject, "policyCmptTypeInput");
-        IAttribute attributeInput = pcTypeInput.newAttribute();
-        attributeInput.setName("attributeInput");
-        attributeInput.setAttributeType(AttributeType.CHANGEABLE);
-        attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
-        
-        IPolicyCmptType pcType = newPolicyCmptType(ipsProject, "policyCmptType1");
-        IAttribute attribute = pcType.newAttribute();
-        attribute.setProductRelevant(true);
-        attribute.setName("attribute1");
-        attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
-        Parameter[] params = new Parameter[3];
-        params[0] = new Parameter(0, "param1", Datatype.INTEGER.getQualifiedName());
-        params[1] = new Parameter(1, "param2", Datatype.INTEGER.getQualifiedName());
-        params[2] = new Parameter(2, "policyInputX", pcTypeInput.getQualifiedName());
-        
-        attribute.setFormulaParameters(params);
-        
-        ((IProductCmptGeneration)configElement.getParent()).getProductCmpt().setPolicyCmptType(pcType.getQualifiedName());
-        configElement.setType(ConfigElementType.FORMULA);
-        configElement.setPcTypeAttribute(attribute.getName());   
-        
-        // create the usage for the used table content
-        IProductCmptType pct = configElement.getProductCmpt().findProductCmptType();
-        ITableStructureUsage tsu = pct.newTableStructureUsage();
-        tsu.setRoleName("ratePlan");
-        tsu.addTableStructure("Testtable");
-        IProductCmptGeneration pgen = configElement.getProductCmptGeneration();
-        ITableContentUsage tcu = pgen.newTableContentUsage();
-        tcu.setStructureUsage(tsu.getRoleName());
-        tcu.setTableContentName("Testtable");
-    }    
 }

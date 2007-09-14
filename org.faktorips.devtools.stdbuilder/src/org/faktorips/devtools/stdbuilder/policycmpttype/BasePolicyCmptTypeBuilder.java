@@ -67,7 +67,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        if (attribute.isProductRelevant() && getPcType().findProductCmptType() == null) {
+        if (attribute.isProductRelevant() && getPcType().findOldProductCmptType() == null) {
             return;
         }
         AttributeType type = attribute.getAttributeType();
@@ -118,7 +118,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
 
-        if (relation.isProductRelevant() && getPcType().findProductCmptType()==null) {
+        if (relation.isProductRelevant() && getPcType().findOldProductCmptType()==null) {
             return;
         }
         generateCodeForRelationInCommon(relation, fieldsBuilder, methodsBuilder);

@@ -146,7 +146,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
             return false;
         }
         IPolicyCmptType pcType = productCmpt.findPolicyCmptType();
-        productCmptType = pcType == null ? null : pcType.findProductCmptType();
+        productCmptType = pcType == null ? null : pcType.findOldProductCmptType();
         if (pcType == null) {
             return false;
         }

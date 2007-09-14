@@ -55,8 +55,7 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.util.ListElementMover;
@@ -262,7 +261,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
     
     private void collectEnumTypesFromUsedTableStructures(HashMap enumtypes) throws CoreException {
-        IProductCmptType type = getProductCmpt().findProductCmptType();
+        org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType type = getProductCmpt().findProductCmptType(getIpsProject());
         if (type==null) {
             return;
         }

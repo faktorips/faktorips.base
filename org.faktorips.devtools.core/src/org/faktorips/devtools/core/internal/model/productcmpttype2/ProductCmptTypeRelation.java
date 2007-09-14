@@ -101,7 +101,7 @@ public class ProductCmptTypeRelation extends AtomicIpsObjectPart implements IRel
         if (StringUtils.isEmpty(target)) {
             return null;
         }
-        return (IProductCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE2, target);
+        return (IProductCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE_V2, target);
     }
     
     /** 

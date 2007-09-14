@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.util.message.MessageList;
@@ -372,8 +372,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IPolicyCmptType findPolicyCmptType(String qualifiedName) throws CoreException;
     
     /**
-     * Returns the first policy component type the qualified name found
-     * on the path. 
+     * Returns the first product component type with given the qualified name found on the path. 
      */
     public IProductCmptType findProductCmptType(String qualifiedName) throws CoreException;
 
@@ -404,21 +403,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      *            product components that are directly based on the given type are returned.
      */
     public IProductCmpt[] findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubtypes) throws CoreException;
-    
-    /**
-     * Returns all product components that are based on the given policy component type
-     * (either directly or because they are based on a subtype of the given
-     * type). If qualifiedTypeName is null, the method returns all product
-     * components found on the classpath.
-     * 
-     * @param pcTypeName The qualified name of the policy component type, product components are searched for.
-     * @param includeSubtypes If <code>true</code> is passed also product component that are based on subtypes
-     * of the given policy component are returned, otherwise only product components that are directly based
-     * on the given type are returned.
-     * 
-     * @deprecated use IIpsProject#findAllProductCmpts(IProductCmptType, boolean)
-     */
-    public IProductCmpt[] findProductCmpts(String qualifiedPcTypeName, boolean includeSubtypes) throws CoreException;
     
     /**
      * Returns the product component with the given runtime id or <code>null</code> if no such

@@ -56,7 +56,7 @@ public class StructurePage extends PctEditorPage {
         IPolicyCmptType policyCmptType = getPolicyCmptType();
         IProductCmptType productCmptType;
         try {
-            productCmptType = policyCmptType.findProductCmptType();
+            productCmptType = policyCmptType.findOldProductCmptType();
             IpsSection tblStructure = new TblStructureUsageSection(policyCmptType, productCmptType, rightComp, toolkit);
             
             general.setFocusSuccessor(attributes);

@@ -74,9 +74,12 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.test.XmlAbstractTestCase;
 import org.faktorips.devtools.core.ui.binding.BeanUtil;
+import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -356,6 +359,21 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 			final IpsObjectType type,
             final String qualifiedName) throws CoreException {
 
+	    return newIpsObject(root, type, qualifiedName, true);
+    }
+
+    /**
+     * Creates a new ipsobject in the indicated package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does
+     * not already exists.
+     *
+     * @throws CoreException
+     */
+    private IIpsObject newIpsObject(
+            final IIpsPackageFragmentRoot root,
+            final IpsObjectType type,
+            final String qualifiedName, final boolean createAutoProductCmptType) throws CoreException {
+
         final String packName = StringUtil.getPackageName(qualifiedName);
         final String unqualifiedName = StringUtil.unqualifiedName(qualifiedName);
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
@@ -368,19 +386,20 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 IIpsSrcFile file = pack
                         .createIpsFile(type, unqualifiedName, true, null);
                 IIpsObject ipsObject = file.getIpsObject();
-                if (ipsObject instanceof IPolicyCmptType) {
+                if (createAutoProductCmptType && ipsObject instanceof IPolicyCmptType) {
                     ((IPolicyCmptType) ipsObject)
                             .setConfigurableByProductCmptType(true);
                     ((IPolicyCmptType) ipsObject)
                             .setUnqualifiedProductCmptType(unqualifiedName
                                     + "ProductCmpt");
+                    newProductCmptType(root, qualifiedName + "ProductCmpt");
                 }
             }
         };
         ResourcesPlugin.getWorkspace().run(runnable, null);
         IIpsPackageFragment pack = root.getIpsPackageFragment(packName);
         return pack.getIpsSrcFile(type.getFileName(unqualifiedName)).getIpsObject();
-	}
+    }
 
 	/**
 	 * Creates a new policy component type in the indicated package fragment root. If the qualifiedName includes a
@@ -403,13 +422,24 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	}
 
     /**
+     * Creates a new policy component type in the project's first package fragment root. Does not
+     * create a product component type.
+     * If the qualifiedName includes a package name, the package is created if it does not already exists.
+     *
+     * @throws CoreException
+     */
+    protected PolicyCmptType newPolicyCmptTypeWithoutProductCmptType(IIpsProject project, String qualifiedName) throws CoreException {
+        return (PolicyCmptType)newIpsObject(project.getIpsPackageFragmentRoots()[0], IpsObjectType.POLICY_CMPT_TYPE, qualifiedName, false);
+    }
+
+    /**
      * Creates a new product component type in the project's first package fragment root.
      * If the qualifiedName includes a package name, the package is created if it does not already exists.
      *
      * @throws CoreException
      */
     protected ProductCmptType newProductCmptType(IIpsProject project, String qualifiedName) throws CoreException {
-        return (ProductCmptType)newIpsObject(project, IpsObjectType.PRODUCT_CMPT_TYPE2, qualifiedName);
+        return (ProductCmptType)newIpsObject(project, IpsObjectType.PRODUCT_CMPT_TYPE_V2, qualifiedName);
     }
 
     /**
@@ -419,7 +449,40 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * @throws CoreException
      */
     protected ProductCmptType newProductCmptType(final IIpsPackageFragmentRoot root, final String qualifiedName) throws CoreException {
-        return (ProductCmptType)newIpsObject(root, IpsObjectType.PRODUCT_CMPT_TYPE2, qualifiedName);
+        return (ProductCmptType)newIpsObject(root, IpsObjectType.PRODUCT_CMPT_TYPE_V2, qualifiedName);
+    }
+
+    /**
+     * Creates a new product component type in the indicated package fragment root. If the qualifiedName includes a
+     * package name, the package is created if it does not already exists.
+     *
+     * @throws CoreException
+     */
+    protected PolicyCmptType newPolicyAndProductCmptType(IIpsProject project, String policyCmptTypeName, String productCmptTypeName) throws CoreException {
+        IPolicyCmptType policyCmptType = (IPolicyCmptType)newIpsObject(project.getIpsPackageFragmentRoots()[0], IpsObjectType.POLICY_CMPT_TYPE, policyCmptTypeName, false);
+        ProductCmptType productCmptType = newProductCmptType(project, productCmptTypeName);
+        productCmptType.setPolicyCmptType(policyCmptTypeName);
+        policyCmptType.setConfigurableByProductCmptType(true);
+        policyCmptType.setUnqualifiedProductCmptType(QNameUtil.getUnqualifiedName(productCmptTypeName));
+        policyCmptType.getIpsSrcFile().save(true, null);
+        productCmptType.getIpsSrcFile().save(true, null);
+        return (PolicyCmptType)policyCmptType;
+    }
+
+    /**
+     * Creates a new product component that is based on the given product component type and has one generation
+     * with it's valid from date set to the current working date.
+     * The product component is stored in the same package fragment root as the type. 
+     * If the qualifiedName includes a package name, the package is created if it does not already exists.
+     *
+     * @throws CoreException
+     */
+    protected ProductCmpt newProductCmpt(IProductCmptType type, String qualifiedName) throws CoreException {
+        IProductCmpt productCmpt = (IProductCmpt)newIpsObject(type.getIpsPackageFragment().getRoot(), IpsObjectType.PRODUCT_CMPT, qualifiedName);
+        productCmpt.setProductCmptType(type.getQualifiedName());
+        productCmpt.newGeneration(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+        productCmpt.getIpsSrcFile().save(true, null);
+        return (ProductCmpt)productCmpt;
     }
 
 	/**

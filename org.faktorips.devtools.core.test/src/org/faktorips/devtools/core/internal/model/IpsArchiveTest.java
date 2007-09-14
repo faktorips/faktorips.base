@@ -52,10 +52,10 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("ArchiveProject");
-        motorPolicyType = newPolicyCmptType(project, "motor.MotorPolicy");
-        newPolicyCmptType(project, "motor.collision.SimpleCollisionCoverage");
-        newPolicyCmptType(project, "motor.collision.ExtendedCollisionCoverage");
-        newPolicyCmptType(project, "home.base.HomePolicy");
+        motorPolicyType = newPolicyCmptTypeWithoutProductCmptType(project, "motor.MotorPolicy");
+        newPolicyCmptTypeWithoutProductCmptType(project, "motor.collision.SimpleCollisionCoverage");
+        newPolicyCmptTypeWithoutProductCmptType(project, "motor.collision.ExtendedCollisionCoverage");
+        newPolicyCmptTypeWithoutProductCmptType(project, "home.base.HomePolicy");
         
         archiveFile = project.getProject().getFile("test.ipsar");
         createArchive(project, archiveFile);

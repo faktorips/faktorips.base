@@ -74,10 +74,12 @@ public class QualifiedNameTypeTest extends TestCase {
     
     public void testToPath() {
         QualifiedNameType qnt = new QualifiedNameType("Policy", IpsObjectType.POLICY_CMPT_TYPE);
-        assertEquals(new Path("Policy.ipspct"), qnt.toPath());
+        Path expectedPath = new Path("Policy." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
+        assertEquals(expectedPath, qnt.toPath());
         
         qnt = new QualifiedNameType("mycompany.motor.Policy", IpsObjectType.POLICY_CMPT_TYPE);
-        assertEquals(new Path("mycompany/motor/Policy.ipspct"), qnt.toPath());
+        expectedPath = new Path("mycompany/motor/Policy." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
+        assertEquals(expectedPath, qnt.toPath());
     }
 
     /*
@@ -111,7 +113,7 @@ public class QualifiedNameTypeTest extends TestCase {
     
     public void testGetFilename() {
         QualifiedNameType qnt = new QualifiedNameType("test.Motorpolicy", IpsObjectType.POLICY_CMPT_TYPE);
-        assertEquals("Motorpolicy.ipspct", qnt.getFileName());
+        assertEquals("Motorpolicy." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension(), qnt.getFileName());
     }
 
     /*

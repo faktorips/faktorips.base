@@ -52,9 +52,9 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject archiveProject = newIpsProject("ArchiveProject");
-        type = newPolicyCmptType(archiveProject, "mycompany.motor.Policy");
-        newPolicyCmptType(archiveProject, "mycompany.motor.Coverage");
-        newPolicyCmptType(archiveProject, "mycompany.motor.collision.CollisionCoverage");
+        type = newPolicyCmptTypeWithoutProductCmptType(archiveProject, "mycompany.motor.Policy");
+        newPolicyCmptTypeWithoutProductCmptType(archiveProject, "mycompany.motor.Coverage");
+        newPolicyCmptTypeWithoutProductCmptType(archiveProject, "mycompany.motor.collision.CollisionCoverage");
 
         project = newIpsProject();
         archiveFile = project.getProject().getFile("test.ipsar");

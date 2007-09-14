@@ -58,9 +58,9 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject archiveProject = newIpsProject("ArchiveProject");
-        qntMotorPolicy = newPolicyCmptType(archiveProject, "pack1.MotorPolicy").getQualifiedNameType();
-        qntMotorCollision = newPolicyCmptType(archiveProject, "pack2.MotorCollision").getQualifiedNameType();
-        newPolicyCmptType(archiveProject, "pack3.HomePolicy").getQualifiedNameType();
+        qntMotorPolicy = newPolicyCmptTypeWithoutProductCmptType(archiveProject, "pack1.MotorPolicy").getQualifiedNameType();
+        qntMotorCollision = newPolicyCmptTypeWithoutProductCmptType(archiveProject, "pack2.MotorCollision").getQualifiedNameType();
+        newPolicyCmptTypeWithoutProductCmptType(archiveProject, "pack3.HomePolicy").getQualifiedNameType();
         
         project = newIpsProject();
         archiveFile = project.getProject().getFile("test.ipsar");

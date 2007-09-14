@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -53,18 +53,13 @@ public class RelationEditDialog extends IpsPartEditDialog {
     private ProductCmptRefControl targetControl;
     private IProductCmpt[] toExclude = new IProductCmpt[0];
     
-    /**
-     * @param parentShell
-     * @param title
-     */
     public RelationEditDialog(IProductCmptRelation relation, Shell parentShell) {
         super(relation, parentShell, Messages.RelationEditDialog_editRelation, true);
         this.relation = relation;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.EditDialog#createWorkArea(org.eclipse.swt.widgets.Composite)
+     * {@inheritDoc}
      */
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
@@ -86,7 +81,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
         try {
             IProductCmptTypeRelation typeRelation = relation.findProductCmptTypeRelation();
             if (typeRelation != null) {
-                IProductCmptType productCmptType = typeRelation.findTarget();
+                IProductCmptType productCmptType = typeRelation.findTarget(relation.getIpsProject());
                 if (productCmptType != null) {
                     targetControl.setProductCmptType(productCmptType, true);
                 }
@@ -112,7 +107,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void connectToModel() {
         super.connectToModel();

@@ -175,7 +175,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         types.add(IpsObjectType.PRODUCT_CMPT);
         types.add(IpsObjectType.TEST_CASE);
         types.add(IpsObjectType.POLICY_CMPT_TYPE);
-        types.add(IpsObjectType.PRODUCT_CMPT_TYPE2);
+        types.add(IpsObjectType.PRODUCT_CMPT_TYPE_V2);
         types.add(IpsObjectType.TABLE_STRUCTURE);
         types.add(IpsObjectType.TABLE_CONTENTS);
         types.add(IpsObjectType.TEST_CASE_TYPE);

@@ -1,0 +1,9 @@
+
+PolicyCmptTypeAttribute
+ - um computationMethod erweitern (setter, xml konvertierung, validierung)
+ - (Brauchen wir das wirklich?)
+ - Dialog umbauen
+ - ComputationParameters entfernen.
+ 
+ 
+ 

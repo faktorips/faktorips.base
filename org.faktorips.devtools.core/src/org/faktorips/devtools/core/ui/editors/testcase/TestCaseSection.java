@@ -94,7 +94,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
@@ -1574,7 +1574,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 // validation error
                 return;
             }
-            IProductCmptType productCmptType = policyCmptType.findProductCmptType();
+            IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
             if (productCmptType == null){
                 // validation error
                 return;
@@ -1757,7 +1757,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         // policy cmpt type not found, this is a validation error
                         return;
                     }
-                    IProductCmptType productCmptType = policyCmptType.findProductCmptType();
+                    IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
                     if (productCmptType == null){
                         // policy cmpt type not found, this is a validation error
                         return;
@@ -1909,6 +1909,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 * @throws CoreException If an error occurs
 	 */
     public IIpsObject[] getProductCmptObjects(IProductCmptType productCmptType) throws CoreException {
+        // TODO v2 - was macht die methode, braucht man das umkopieren wirklich?
         List allProductCmpts = new ArrayList();
         
         getProductCmptObjects(testCase.getIpsProject(), productCmptType, allProductCmpts);

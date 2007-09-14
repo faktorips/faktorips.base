@@ -35,8 +35,8 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 
 
 /**
@@ -53,8 +53,28 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         ipsRoot = (IpsPackageFragmentRoot)ipsProject.getIpsPackageFragmentRoots()[0];
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    public void testFindAllProductCmpts() throws CoreException {
+
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "pack1.Product"); 
+        IProductCmptType motorProductCmptType = newProductCmptType(ipsProject, "pack2.MotorProduct"); 
+        motorProductCmptType.setSupertype(productCmptType.getQualifiedName());
+
+        IProductCmpt product1 = newProductCmpt(productCmptType, "pack3.Product1");
+        IProductCmpt product2 = newProductCmpt(productCmptType, "pack4.Product2");
+        IProductCmpt motorProduct = newProductCmpt(motorProductCmptType, "pack5.MotorProduct");
+        
+        List result = new ArrayList();
+        ipsRoot.findAllProductCmpts(productCmptType, false, result);
+        assertEquals(2, result.size());
+        assertTrue(result.contains(product1));
+        assertTrue(result.contains(product2));
+
+        result.clear();
+        ipsRoot.findAllProductCmpts(productCmptType, true, result);
+        assertEquals(3, result.size());
+        assertTrue(result.contains(product1));
+        assertTrue(result.contains(product2));
+        assertTrue(result.contains(motorProduct));
     }
 
     public void testGetIpsObjectPathEntry() throws CoreException {
@@ -133,91 +153,14 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertFalse(root2.exists());
     }
 
-    public void testGetPdObject() throws CoreException {
+    public void testGetIpsObject() throws CoreException {
         IIpsPackageFragment pack = ipsRoot.createPackageFragment("a.b", true, null);
         IIpsSrcFile file = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Test", true, null);
-        IIpsObject pdObject = ipsRoot.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "a.b.Test");
-        assertNotNull(pdObject);
-        assertEquals(file.getIpsObject(), pdObject);
+        IIpsObject ipsObject = ipsRoot.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "a.b.Test");
+        assertNotNull(ipsObject);
+        assertEquals(file.getIpsObject(), ipsObject);
 
         assertNull(ipsRoot.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "c.Unknown"));
-    }
-
-    public void testFindProductCmpts() throws CoreException {
-        IIpsPackageFragment pack = ipsRoot.createPackageFragment("pack", true, null);
-        pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Policy", true, null);
-        IIpsSrcFile motorPolicyFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy", true, null);
-        IPolicyCmptType motorPolicy = (IPolicyCmptType)motorPolicyFile.getIpsObject();
-        motorPolicy.setSupertype("pack.Policy");
-
-        IIpsSrcFile product1File = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Product1", true, null);
-        IProductCmpt product1 = (IProductCmpt)product1File.getIpsObject();
-        product1.setPolicyCmptType("pack.Policy");
-
-        IIpsSrcFile product2File = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Product2", true, null);
-        IProductCmpt product2 = (IProductCmpt)product2File.getIpsObject();
-        product2.setPolicyCmptType("pack.Policy");
-
-        IIpsSrcFile motorProductFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "MotorProduct", true, null);
-        IProductCmpt motorProduct = (IProductCmpt)motorProductFile.getIpsObject();
-        motorProduct.setPolicyCmptType("pack.MotorPolicy");
-
-        List result = new ArrayList();
-        ipsRoot.findProductCmpts("pack.Policy", false, result);
-        assertEquals(2, result.size());
-        assertTrue(result.contains(product1));
-        assertTrue(result.contains(product2));
-
-        result.clear();
-        ipsRoot.findProductCmpts("pack.Policy", true, result);
-        assertEquals(3, result.size());
-        assertTrue(result.contains(product1));
-        assertTrue(result.contains(product2));
-        assertTrue(result.contains(motorProduct));
-
-        result.clear();
-        ipsRoot.findProductCmpts("pack.Unknown", true, result);
-        assertEquals(0, result.size());
-    }
-
-    public void testFindAllProductCmpts() throws CoreException {
-        IIpsPackageFragment pack = ipsRoot.createPackageFragment("pack", true, null);
-
-        IPolicyCmptType policyCmptType = (IPolicyCmptType)pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Policy", true, null).getIpsObject();
-        policyCmptType.setConfigurableByProductCmptType(true);
-        policyCmptType.setUnqualifiedProductCmptType("PolicyType");
-
-        IIpsSrcFile motorPolicyFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy", true, null);
-        IPolicyCmptType motorPolicy = (IPolicyCmptType)motorPolicyFile.getIpsObject();
-        motorPolicy.setConfigurableByProductCmptType(true);
-        motorPolicy.setUnqualifiedProductCmptType("MotorPolicyType");
-        motorPolicy.setSupertype("pack.Policy");
-
-        IIpsSrcFile product1File = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Product1", true, null);
-        IProductCmpt product1 = (IProductCmpt)product1File.getIpsObject();
-        product1.setPolicyCmptType("pack.Policy");
-
-        IIpsSrcFile product2File = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Product2", true, null);
-        IProductCmpt product2 = (IProductCmpt)product2File.getIpsObject();
-        product2.setPolicyCmptType("pack.Policy");
-
-        IIpsSrcFile motorProductFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "MotorProduct", true, null);
-        IProductCmpt motorProduct = (IProductCmpt)motorProductFile.getIpsObject();
-        motorProduct.setPolicyCmptType("pack.MotorPolicy");
-
-        List result = new ArrayList();
-        assertNotNull(product2.findProductCmptType());
-        ipsRoot.findAllProductCmpts(product2.findProductCmptType(), false, result);
-        assertEquals(2, result.size());
-        assertTrue(result.contains(product1));
-        assertTrue(result.contains(product2));
-
-        result.clear();
-        ipsRoot.findAllProductCmpts(product2.findProductCmptType(), true, result);
-        assertEquals(3, result.size());
-        assertTrue(result.contains(product1));
-        assertTrue(result.contains(product2));
-        assertTrue(result.contains(motorProduct));
     }
 
     public void testFindIpsObjectsStartingWith() throws CoreException {
@@ -288,19 +231,17 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     public void testFindProductCmptsByPolicyCmptWithExistingProductCmptMissingPolicyCmpt() throws CoreException{
-        // find product cmpt by given policy cmpt name,
-        // the package fragment we search in, contains an invalid product cmpt (product cmpt without
-        // policy cmpt)
-        newPolicyCmptType(ipsRoot, "PolicyCmpt");
-        IProductCmpt pc = newProductCmpt(ipsRoot, "ProductCmpt1");
-        pc.setPolicyCmptType("PolicyCmpt");
+        // find product cmpt by given product component type,
+        // the package fragment we search in, contains a product cmpt without assigned product component type.
+        IProductCmptType type = newProductCmptType(ipsProject, "MotorProduct");
+        newProductCmpt(type, "ProductCmpt1");
         List result = new ArrayList(1);
-        ipsRoot.findProductCmpts("PolicyCmpt", true, result);
+        ipsRoot.findAllProductCmpts(type, true, result);
         assertEquals(1, result.size());
 
         result.clear();
         newProductCmpt(ipsRoot, "ProductCmpt2");
-        ipsRoot.findProductCmpts("PolicyCmpt", true, result);
+        ipsRoot.findAllProductCmpts(type, true, result);
         assertEquals(1, result.size());
     }
 

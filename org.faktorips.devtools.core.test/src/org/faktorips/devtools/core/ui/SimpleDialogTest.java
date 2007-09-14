@@ -27,8 +27,8 @@ import org.faktorips.devtools.core.ITestAnswerProvider;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.ui.editors.productcmpt.GenerationSelectionDialog;
 
 /**
@@ -61,18 +61,12 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
         IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2003, 7, 1));
 
         IIpsProject ipsProject = newIpsProject();
-        IPolicyCmptType type = newPolicyCmptType(ipsProject, "Type");
-        
-        IProductCmpt product1 = newProductCmpt(ipsProject, "Product1");
-        product1.setPolicyCmptType(type.getQualifiedName());
-        product1.newGeneration();
-        product1.getIpsSrcFile().save(true, null);
+        IProductCmptType type = newProductCmptType(ipsProject, "Type");
+        IProductCmpt product1 = newProductCmpt(type, "Product1");
         openEditor(product1);
         
-        IProductCmpt product2 = newProductCmpt(ipsProject, "Product2");
-        product2.setPolicyCmptType(type.getQualifiedName());
-        product2.newGeneration();
-        product2.getIpsSrcFile().save(true, null);
+        IProductCmpt product2 = newProductCmpt(type, "Product2");
+        openEditor(product1);
 		openEditor(product2);
 	}
 

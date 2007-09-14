@@ -22,6 +22,7 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IFixDifferencesToModelSupport;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -34,10 +35,10 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSupport {
     
     /**
-     * The name of the policy component type property
+     * The name of the product component type property
      */
-    public final static String PROPERTY_POLICY_CMPT_TYPE = "policyCmptType"; //$NON-NLS-1$
-    
+    public final static String PROPERTY_PRODUCT_CMPT_TYPE = "productCmptType"; //$NON-NLS-1$
+
     public final static String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
     
     public final static String MSGCODE_PREFIX = "PRODUCT_CMPT-"; //$NON-NLS-1$
@@ -81,12 +82,6 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
     public String getPolicyCmptType();
     
     /**
-     * Sets the qualified name of the policy component type this product component
-     * is based on.
-     */
-    public void setPolicyCmptType(String newPcType);
-    
-    /**
      * Searches the policy component type this product component is based on.
      *  
      * @return The policy component type this product component is based on 
@@ -97,6 +92,20 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
     public IPolicyCmptType findPolicyCmptType() throws CoreException;
     
     /**
+     * Returns the qualified name of the product component type this product component
+     * is based on.
+     */
+    public String getProductCmptType();
+    
+    /**
+     * Sets the qualified name of the product component type this product component
+     * is based on.
+     * 
+     * @throws NullPointerException if newType is <code>null</code>.
+     */
+    public void setProductCmptType(String newType);
+    
+    /**
      * Searches the product component type this product component is based on.
      *  
      * @return The product component type this product component is based on 
@@ -104,8 +113,18 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
      *  
      * @throws CoreException if an exception occurs while searching for the type.
      */
-    public IProductCmptType findProductCmptType() throws CoreException;
+    public IProductCmptType findOldProductCmptType() throws CoreException;
     
+    /**
+     * Searches the product component type this product component is based on.
+     *  
+     * @return The product component type this product component is based on 
+     * or <code>null</code> if the product component type can't be found.
+     *  
+     * @throws CoreException if an exception occurs while searching for the type.
+     */
+    public org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
+
     /**
      * Searches the relation with the given name in the policy component type 
      * this product component is based on.

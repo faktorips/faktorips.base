@@ -42,7 +42,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
-import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -76,7 +76,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
      */
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IPolicyCmptType type = (IPolicyCmptType)ipsSrcFile.getIpsObject();
-        if (type.findProductCmptType() != null) {
+        if (type.findOldProductCmptType() != null) {
             MessageList msgList = ((Validatable)type).validate();
             //this validation is necessary because otherwise a java class file is created with a wrong java class name
             //this causes jmerge to throw an exception
@@ -108,10 +108,20 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
      */
     public IProductCmptType getProductCmptType() {
         try {
-            return ((IPolicyCmptType)getIpsObject()).findProductCmptType();
+            return ((IPolicyCmptType)getIpsObject()).findOldProductCmptType();
         } catch (CoreException e) {
             throw new RuntimeException(e); // this can never happen
         }
+    }
+
+    /**
+     * Returns the product component type this builder builds an artefact for.
+     * 
+     * @throws CoreException 
+     */
+    public org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType getProductCmptTypeV2() throws CoreException {
+        IPolicyCmptType type = (IPolicyCmptType)getIpsObject();
+        return type.findProductCmptType(type.getIpsProject());
     }
 
     /**
@@ -122,7 +132,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
         if (!type.isConfigurableByProductCmptType()) {
             return null;
         }
-        return type.findProductCmptType();
+        return type.findOldProductCmptType();
     }
 
     /**
@@ -237,7 +247,11 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
      */
     private void generateCodeForTableUsages(JavaCodeFragmentBuilder fieldCodeBuilder,
             JavaCodeFragmentBuilder methodCodeBuilder) throws CoreException {
-        ITableStructureUsage[] tsus = getProductCmptType().getTableStructureUsages();
+        org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType type = getProductCmptTypeV2();
+        if (type==null) {
+            return;
+        }
+        ITableStructureUsage[] tsus = type.getTableStructureUsages();
         for (int i = 0; i < tsus.length; i++) {
             generateCodeForTableUsage(tsus[i], fieldCodeBuilder, methodCodeBuilder);
         }

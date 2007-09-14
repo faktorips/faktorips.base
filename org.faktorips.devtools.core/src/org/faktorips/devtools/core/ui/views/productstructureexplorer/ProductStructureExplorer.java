@@ -74,7 +74,6 @@ import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
-import org.faktorips.devtools.core.ui.actions.ShowAttributesAction;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
@@ -356,7 +355,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         menumanager.setRemoveAllWhenShown(false);
         menumanager.add(new OpenEditorAction(tree));
         menumanager.add(new FindProductReferencesAction(tree));
-        menumanager.add(new ShowAttributesAction(tree));
 
         Menu menu = menumanager.createContextMenu(tree.getControl());
         tree.getControl().setMenu(menu);

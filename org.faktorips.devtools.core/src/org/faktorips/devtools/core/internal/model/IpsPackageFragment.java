@@ -391,7 +391,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             newObject.newGeneration(source, IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
 
             if (template instanceof IProductCmpt) {
-                ((IProductCmpt)newObject).setPolicyCmptType(((IProductCmpt)template).getPolicyCmptType());
+                ((IProductCmpt)newObject).setProductCmptType(((IProductCmpt)template).getProductCmptType());
             }
             file.save(true, null);
         } finally {
@@ -429,12 +429,12 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         for (int i = 0; i < members.length; i++) {
             if (members[i].getType() == IResource.FILE) {
                 IFile file = (IFile)members[i];
-                if (type == IpsObjectType.PRODUCT_CMPT_TYPE
+                if (type == IpsObjectType.OLD_PRODUCT_CMPT_TYPE
                         && IpsObjectType.POLICY_CMPT_TYPE.getFileExtension().equals(file.getFileExtension())) {
                     IIpsSrcFile srcFile = new IpsSrcFile(this, file.getName());
                     if (srcFile.getIpsObject() != null) {
                         IPolicyCmptType policyCmptType = (IPolicyCmptType)srcFile.getIpsObject();
-                        IProductCmptType productCmptType = policyCmptType.findProductCmptType();
+                        IProductCmptType productCmptType = policyCmptType.findOldProductCmptType();
                         if (productCmptType != null) {
                             result.add(productCmptType);
                         }

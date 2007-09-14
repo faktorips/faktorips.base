@@ -39,7 +39,6 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
     
     
     public void setUp() throws Exception{
-        System.out.println("Start setUp()");
         super.setUp();
         ipsProject = newIpsProject();
         root = ipsProject.getIpsPackageFragmentRoots()[0];
@@ -47,6 +46,12 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         b = newPolicyCmptType(root, "B");
         c = newPolicyCmptType(root, "C");
         d = newPolicyCmptType(root, "D");
+        a.setUnqualifiedProductCmptType("");
+        b.setUnqualifiedProductCmptType("");
+        c.setUnqualifiedProductCmptType("");
+        d.setUnqualifiedProductCmptType("");
+        
+        // dependencies c->b, c->a, a->d, 
         a.newRelation().setTarget(d.getQualifiedName());
         c.setSupertype(a.getQualifiedName());
         c.newRelation().setTarget(b.getQualifiedName());
@@ -54,15 +59,12 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         a.getIpsSrcFile().save(true, null);
         c.getIpsSrcFile().save(true, null);
         graph = new DependencyGraph(ipsProject);
-        System.out.println("Finished setUp()");
     }
     
     /*
      * Test method for 'org.faktorips.plugin.builder.DependencyGraph.getDependants(String)'
      */
     public void testGetDependants() throws CoreException {
-        System.out.println("Start testGetDependants()");
-
         QualifiedNameType[] dependants = graph.getDependants(a.getQualifiedNameType());
         List dependsOnList = CollectionUtil.toArrayList(dependants);
         assertTrue(dependsOnList.contains(c.getQualifiedNameType()));
@@ -81,16 +83,12 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         dependsOnList = CollectionUtil.toArrayList(dependants);
         assertTrue(dependsOnList.contains(a.getQualifiedNameType()));
         assertEquals(1, dependants.length);
-
-        System.out.println("Finished testGetDependants()");
     }
 
     /*
      * Test method for 'org.faktorips.plugin.builder.DependencyGraph.update(String)'
      */
     public void testUpdate() throws Exception {
-        System.out.println("Start testUpdate()");
-        
         a.getRelations()[0].delete();
         a.getIpsSrcFile().save(true, null);
         

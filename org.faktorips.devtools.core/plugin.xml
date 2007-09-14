@@ -416,7 +416,7 @@
       <editor
             class="org.faktorips.devtools.core.ui.editors.pctype.PctEditor"
             default="true"
-            extensions="ipspct"
+            extensions="ipspolicycmpttype"
             icon="icons/PolicyCmptType.gif"
             id="policyCmptTypeEditor"
             name="%policyCmptTypeEditor">
@@ -712,12 +712,6 @@
       <category
             id="org.faktorips.devtools.productDefinitionCategory"
             name="%org.faktorips.devtools.productDefinitionCategory"/>
-      <view
-            allowMultiple="false"
-            category="org.faktorips.devtools.productDefinitionCategory"
-            class="org.faktorips.devtools.core.ui.views.attrtable.AttributesTable"
-            id="org.faktorips.devtools.core.ui.views.attributesTable"
-            name="%org.faktorips.devtools.core.ui.views.attributesTable"/>
       <view
             allowMultiple="false"
             category="org.faktorips.devtools.productDefinitionCategory"

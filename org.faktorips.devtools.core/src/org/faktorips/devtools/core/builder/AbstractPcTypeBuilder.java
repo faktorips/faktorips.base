@@ -65,7 +65,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
      * type is not configurable by a product component type.
      */
     public IProductCmptType getProductCmptType() throws CoreException {
-    	return getPcType().findProductCmptType();
+    	return getPcType().findOldProductCmptType();
     }
     
     /**

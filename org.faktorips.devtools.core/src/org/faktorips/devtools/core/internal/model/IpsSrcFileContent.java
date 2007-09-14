@@ -209,6 +209,7 @@ public class IpsSrcFileContent {
             }
         } catch (SAXException e) {
             parsable = false;
+            IpsPlugin.log(new IpsStatus("Error reading file " + file, e));
             ipsObject.markAsFromUnparsableFile();
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                 System.out.println("IpsSrcFileContent.initContentFromFile: Error parsing xml , file=" +  file //$NON-NLS-1$
@@ -217,8 +218,8 @@ public class IpsSrcFileContent {
             return;
         } catch (Exception e) {
             parsable = false;
+            IpsPlugin.log(new IpsStatus("Error reading file " + file, e));
             ipsObject.markAsFromUnparsableFile();
-            IpsPlugin.log(e);
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                 System.out.println("IpsSrcFileContent.initContentFromFile: Error reading content from disk, file=" +  file //$NON-NLS-1$
                         + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$

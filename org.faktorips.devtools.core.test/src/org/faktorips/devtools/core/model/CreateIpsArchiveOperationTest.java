@@ -38,9 +38,9 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
      */
     public void testRun() throws CoreException {
         IIpsProject project = newIpsProject();
-        newPolicyCmptType(project, "mycompany.motor.MotorPolicy");
-        newPolicyCmptType(project, "mycompany.motor.MotorCoverage");
-        newPolicyCmptType(project, "mycompany.home.HomePolicy");
+        newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
+        newPolicyAndProductCmptType(project, "mycompany.motor.MotorCoverage", "mycompany.motor.MotorCoverageType");
+        newPolicyAndProductCmptType(project, "mycompany.home.HomePolicy", "mycompany.home.HomeProduct");
         IFile archiveFile = project.getProject().getFile("test.ipsar");
         archiveFile.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
         
@@ -60,7 +60,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         assertEquals("mycompany.home", packs[1]);
         
         Set qnt = archive.getQNameTypes();
-        assertEquals(3, qnt.size());
+        assertEquals(6, qnt.size());
         assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE)));
         assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorCoverage", IpsObjectType.POLICY_CMPT_TYPE)));
         assertTrue(qnt.contains(new QualifiedNameType("mycompany.home.HomePolicy", IpsObjectType.POLICY_CMPT_TYPE)));

@@ -21,11 +21,10 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
@@ -36,6 +35,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -65,6 +65,13 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     public IProductCmpt getProductCmpt() {
         return (IProductCmpt)getParent();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+        return getProductCmpt().findProductCmptType(ipsProject);
+    }
 
     /**
      * {@inheritDoc}
@@ -84,11 +91,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * {@inheritDoc}
      */
     public IProductCmptGenerationPolicyCmptTypeDelta computeDeltaToPolicyCmptType() throws CoreException {
-        IPolicyCmptType pcType = getProductCmpt().findPolicyCmptType();
-        if (pcType != null) {
-            return new ProductCmptGenerationPolicyCmptTypeDelta(this, pcType);
-        }
-        return null;
+        return new ProductCmptGenerationPolicyCmptTypeDelta(this);
     }
 
     /**
@@ -266,7 +269,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (relation == null || target == null) {
             return false;
         }
-        IProductCmptType type = getProductCmpt().findProductCmptType();
+        IProductCmptType type = getProductCmpt().findOldProductCmptType();
         if (type == null) {
             return false;
         }
@@ -430,7 +433,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
-        IProductCmptType type = getProductCmpt().findProductCmptType();
+        IProductCmptType type = getProductCmpt().findOldProductCmptType();
         // no type information available, so no further validation possible
         if (type == null) {
             list.add(new Message(MSGCODE_NO_TEMPLATE, Messages.ProductCmptGeneration_msgTemplateNotFound,

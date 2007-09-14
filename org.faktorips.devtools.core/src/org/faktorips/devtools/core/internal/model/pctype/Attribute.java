@@ -362,6 +362,13 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         	return IpsPlugin.getDefault().getImage(baseImageName);
         }
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getComputationMethodName() {
+        return "compute" + StringUtils.capitalise(getName());
+    }
 
     /**
      * {@inheritDoc}

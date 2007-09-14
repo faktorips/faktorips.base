@@ -59,7 +59,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
 	public void setUp() throws Exception{
 		super.setUp();
 		ipsProject = (IpsProject)newIpsProject("TestProject");
-		cmptType = newPolicyCmptType(ipsProject.getIpsPackageFragmentRoots()[0], "TestPolicy");
+		cmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
 		newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
         enumDatatype = ipsProject.findEnumDatatype("TestEnumType");
         
@@ -69,9 +69,8 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
 		attr.setModifier(Modifier.PUBLISHED);
 		attr.setName("a");
 		
-        IProductCmpt productCmpt = newProductCmpt(ipsProject, "TestProduct");
-        productCmpt.setPolicyCmptType(cmptType.getQualifiedName());
-        productCmptGen = (IProductCmptGeneration)productCmpt.newGeneration();
+        IProductCmpt productCmpt = newProductCmpt(cmptType.findProductCmptType(ipsProject), "TestProduct");
+        productCmptGen = productCmpt.getProductCmptGeneration(0);
         configElement = productCmptGen.newConfigElement();
         configElement.setType(ConfigElementType.FORMULA);
         configElement.setPcTypeAttribute(attr.getName());

@@ -41,10 +41,10 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
-import org.faktorips.devtools.core.ui.controls.ProductCmptTypeRefControl;
+import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -55,7 +55,7 @@ import org.faktorips.util.message.MessageList;
  */
 public class ProductCmptPage extends IpsObjectPage {
     
-    private ProductCmptTypeRefControl typeRefControl;
+    private ProductCmptType2RefControl typeRefControl;
     private Text versionId;
     private Text constName;
     private Text runtimeId;
@@ -78,7 +78,7 @@ public class ProductCmptPage extends IpsObjectPage {
 
         toolkit.createFormLabel(nameComposite, Messages.ProductCmptPage_labelTemplate);
         
-        typeRefControl = new ProductCmptTypeRefControl(null, nameComposite, toolkit);
+        typeRefControl = new ProductCmptType2RefControl(null, nameComposite, toolkit, true);
         TextButtonField pcTypeField = new TextButtonField(typeRefControl);
         pcTypeField.addChangeListener(this);
 
@@ -160,9 +160,14 @@ public class ProductCmptPage extends IpsObjectPage {
 				versionId.setText(namingStrategy.getNextVersionId(null));
 				typeRefControl.setFocus();
 			}
+            if (obj instanceof IProductCmptType) {
+                // set default product cmpt type only if the selected obj is configurable by product cmpt type
+                IProductCmptType type = (IProductCmptType)obj;
+                typeRefControl.setText(type.getQualifiedName());
+                constName.setFocus();
+            }
             if (obj instanceof IPolicyCmptType) {
-                // set default product cmpt type only if the selected obj is configurable by 
-                // product cmpt type
+                // set default product cmpt type only if the selected policy type is configurable 
                 IPolicyCmptType pcType = (IPolicyCmptType)obj;
                 if (pcType.isConfigurableByProductCmptType()) {
                     typeRefControl.setText(pcType.getProductCmptType());
@@ -180,7 +185,7 @@ public class ProductCmptPage extends IpsObjectPage {
     		} else {
     			setIpsObjectName(productCmpt.getName());
     		}
-    		typeRefControl.setText(productCmpt.findProductCmptType().getQualifiedName());
+    		typeRefControl.setText(productCmpt.findOldProductCmptType().getQualifiedName());
         }
         
         // update defaults with defaults from the copied product cmpt, if available
@@ -192,16 +197,8 @@ public class ProductCmptPage extends IpsObjectPage {
         }         
 	}
 
-	String getPolicyCmptType() {
-    	String policyCmptTypeName = ""; //$NON-NLS-1$
-    	try {
-        	String productCmptTypeName = typeRefControl.getText();
-			IProductCmptType type = typeRefControl.getIpsProject().findProductCmptType(productCmptTypeName);
-			policyCmptTypeName = type.getPolicyCmptyType();
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
-		}
-    	return policyCmptTypeName;
+	String getProductCmptType() {
+        return typeRefControl.getText();
     }
     
     String getRuntimeId() {

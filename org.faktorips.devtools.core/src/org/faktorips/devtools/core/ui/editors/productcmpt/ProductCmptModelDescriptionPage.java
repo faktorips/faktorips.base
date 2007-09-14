@@ -32,8 +32,8 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.ui.editors.IActiveGenerationChangedListener;
 import org.faktorips.devtools.core.ui.views.modeldescription.DefaultModelDescriptionPage;
 import org.faktorips.devtools.core.ui.views.modeldescription.DescriptionItem;
@@ -43,7 +43,6 @@ import org.faktorips.devtools.core.ui.views.modeldescription.DescriptionItem;
  * connected to a {@link ProductCmptEditor} similiar to the outline view.
  *
  * @author Markus Blum
- *
  */
 
 public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage implements IActiveGenerationChangedListener, ContentsChangeListener {
@@ -137,15 +136,10 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
      * @throws CoreException
      */
     private void createTableDescription(List attributeList, IProductCmptGeneration productCmptGen) throws CoreException {
-
-        // create table descriptions
         ITableContentUsage[] contentUsage  = productCmptGen.getTableContentUsages();
-
         for (int i = 0; i < contentUsage.length; i++) {
-			ITableStructureUsage structure = contentUsage[i].findTableStructureUsage();
-
-			if (structure != null )
-			{
+			ITableStructureUsage structure = contentUsage[i].findTableStructureUsage(productCmptGen.getIpsProject());
+			if (structure != null ) {
 				DescriptionItem item = new DescriptionItem(contentUsage[i].getStructureUsage() , structure.getDescription());
 				attributeList.add(item);
 			}

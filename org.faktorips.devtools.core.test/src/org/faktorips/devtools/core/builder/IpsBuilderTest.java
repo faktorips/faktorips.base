@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -75,6 +76,62 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = this.newIpsProject();
         root = ipsProject.getIpsPackageFragmentRoots()[0];
+    }
+
+    public void testDependencyGraph() throws CoreException {
+
+        IProductCmptType a = newProductCmptType(root, "A");
+        IProductCmptType b = newProductCmptType(root, "B");
+        b.setSupertype(a.getQualifiedName());
+        IProductCmptType c = newProductCmptType(root, "C");
+        c.newRelation().setTarget(a.getQualifiedName());
+        IProductCmpt aProduct = newProductCmpt(a, "AProduct");
+        IProductCmptType d = newProductCmptType(root, "D");
+        a.newRelation().setTarget(d.getQualifiedName());
+
+        // dependencies: b->a, c->a, aProduct->a, a->d
+        
+        TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject);
+
+        // after this incremental build the TestDependencyIpsArtefactBuilder is expected to contain
+        // all new IpsObjects in its build list.
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        List builtIpsObjects = builder.getBuiltIpsObjects();
+        assertTrue(builtIpsObjects.contains(a));
+        assertTrue(builtIpsObjects.contains(b));
+        assertTrue(builtIpsObjects.contains(c));
+        assertTrue(builtIpsObjects.contains(d));
+        assertTrue(builtIpsObjects.contains(aProduct));
+
+        builder.clear();
+        // after this second build no IpsObjects are expected in the build list since nothing has
+        // changed since the last build
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        assertTrue(builder.getBuiltIpsObjects().isEmpty());
+
+        // since the ProductCmptType d has been deleted after this build the
+        // TestDependencyIpsArtefactBuilder is expected to contain all dependent IpsObjects
+        d.getIpsSrcFile().getCorrespondingResource().delete(true, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        builtIpsObjects = builder.getBuiltIpsObjects();
+        assertTrue(builtIpsObjects.contains(a));
+        assertTrue(builtIpsObjects.contains(aProduct));
+
+        // recreate d. All dependants are expected to be rebuilt
+        d = newProductCmptType(root, "D");
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        builtIpsObjects = builder.getBuiltIpsObjects();
+        assertTrue(builtIpsObjects.contains(a));
+        assertTrue(builtIpsObjects.contains(aProduct));
+
+        // delete d and dependants. The IpsBuilder has to make sure to only build the existing
+        // IpsObjects though the graph still contains the dependency chain of the deleted IpsOjects
+        // during the build cycle
+        d.getIpsSrcFile().getCorrespondingResource().delete(true, null);
+        a.getIpsSrcFile().getCorrespondingResource().delete(true, null);
+        b.getIpsSrcFile().getCorrespondingResource().delete(true, null);
+        c.getIpsSrcFile().getCorrespondingResource().delete(true, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
     }
 
     public void testIsFullBuildTriggeredAfterChangesToIpsArchiveOnObjectPath() throws CoreException {
@@ -253,65 +310,6 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         return builder;
     }
 
-    public void testDependencyGraph() throws CoreException {
-
-        IIpsPackageFragment frag = root.createPackageFragment("dependency", true, null);
-
-        IPolicyCmptType a = (IPolicyCmptType)newIpsObject(frag, IpsObjectType.POLICY_CMPT_TYPE, "A");
-        IPolicyCmptType b = (IPolicyCmptType)newIpsObject(frag, IpsObjectType.POLICY_CMPT_TYPE, "B");
-        b.setSupertype(a.getQualifiedName());
-        IPolicyCmptType c = (IPolicyCmptType)newIpsObject(frag, IpsObjectType.POLICY_CMPT_TYPE, "C");
-        c.newRelation().setTarget(a.getQualifiedName());
-        IProductCmpt aProduct = (IProductCmpt)newIpsObject(frag, IpsObjectType.PRODUCT_CMPT, "AProduct");
-        aProduct.setPolicyCmptType(a.getQualifiedName());
-        IPolicyCmptType d = (IPolicyCmptType)newIpsObject(frag, IpsObjectType.POLICY_CMPT_TYPE, "D");
-        a.newRelation().setTarget(d.getQualifiedName());
-
-        TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject);
-
-        // after this incremental build the TestDependencyIpsArtefactBuilder is expected to contain
-        // all new IpsObjects in
-        // its build list.
-        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
-        List builtIpsObjects = builder.getBuiltIpsObjects();
-        assertTrue(builtIpsObjects.contains(a));
-        assertTrue(builtIpsObjects.contains(b));
-        assertTrue(builtIpsObjects.contains(c));
-        assertTrue(builtIpsObjects.contains(d));
-        assertTrue(builtIpsObjects.contains(aProduct));
-
-        builder.clear();
-        // after this second build no IpsObjects are expected in the build list since nothing has
-        // changed since the last build
-        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
-        assertTrue(builder.getBuiltIpsObjects().isEmpty());
-
-        // since the PolicyCmpt b has been deleted after this build the
-        // TestDependencyIpsArtefactBuilder is expected to contain
-        // all dependent IpsObjects
-        d.getIpsSrcFile().getCorrespondingResource().delete(true, null);
-        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
-        builtIpsObjects = builder.getBuiltIpsObjects();
-        assertTrue(builtIpsObjects.contains(a));
-        assertTrue(builtIpsObjects.contains(aProduct));
-
-        // recreate d. All dependants are expected to be rebuilt
-        d = (IPolicyCmptType)newIpsObject(frag, IpsObjectType.POLICY_CMPT_TYPE, "D");
-        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
-        builtIpsObjects = builder.getBuiltIpsObjects();
-        assertTrue(builtIpsObjects.contains(a));
-        assertTrue(builtIpsObjects.contains(aProduct));
-
-        // delete d and dependants. The IpsBuilder has to make sure to only build the existing
-        // IpsObjects though the graph still contains the dependency chain of the deleted IpsOjects
-        // during the build cycle
-        d.getIpsSrcFile().getCorrespondingResource().delete(true, null);
-        a.getIpsSrcFile().getCorrespondingResource().delete(true, null);
-        b.getIpsSrcFile().getCorrespondingResource().delete(true, null);
-        c.getIpsSrcFile().getCorrespondingResource().delete(true, null);
-        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
-    }
-
     public void testCleanBuild() throws CoreException{
         newPolicyCmptType(ipsProject, "mycompany.motor.MotorPolicy");
         IFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
@@ -341,9 +339,8 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
     
     public void testCleanBuildNonDerivedFiles() throws CoreException{
-        IProductCmpt productCmpt = newProductCmpt(root, "Product");
-        IPolicyCmptType policyCmpt = newPolicyCmptType(root, "Contract");
-        productCmpt.setPolicyCmptType(policyCmpt.getQualifiedName());
+        IProductCmptType type = newProductCmptType(ipsProject, "Product");
+        IProductCmpt productCmpt = newProductCmpt(type, "Product");
         
         IFolder folder = productCmpt.getIpsPackageFragment().getRoot().getArtefactDestination(true);
         //the artefact destination is expected to be there right from the beginning
@@ -491,8 +488,9 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         }
 
         public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-            return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)
-                    || ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT);
+            return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE_V2)
+                || ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)
+                || ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT);
         }
 
         public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {

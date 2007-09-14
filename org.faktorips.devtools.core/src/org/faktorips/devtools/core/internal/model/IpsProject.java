@@ -82,7 +82,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -753,9 +753,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
-	public IProductCmptType findProductCmptType(String qualifiedName) throws CoreException {
-		return (IProductCmptType)findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, qualifiedName);
-	}
+    public IProductCmptType findProductCmptType(String qualifiedName) throws CoreException {
+        return (IProductCmptType)findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE_V2, qualifiedName);
+    }
 
 	/**
      * {@inheritDoc}
@@ -770,8 +770,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * @throws CoreException
      */
     public void findAllIpsObjects(List result) throws CoreException{
+        // TODO v2 - reimplement: die bereitstellung einer findAllIpsOObjects Methode im ipsobjectpath.
+        // kein harted codieren der einzelnen types!
         Set visitedEntries = new HashSet();
         getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.POLICY_CMPT_TYPE, result, visitedEntries);
+        visitedEntries.clear();
+        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.OLD_PRODUCT_CMPT_TYPE, result, visitedEntries);
         visitedEntries.clear();
         getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.PRODUCT_CMPT, result, visitedEntries);
         visitedEntries.clear();
@@ -1078,24 +1082,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
     
-    /**
-	 * {@inheritDoc}
-	 */
-    public IProductCmpt[] findProductCmpts(String qualifiedTypeName, boolean includeSubytpes)
-            throws CoreException {
-    	
-        List result = new ArrayList();
-        IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
-        for (int i = 0; i < roots.length; i++) {
-            ((AbstractIpsPackageFragmentRoot)roots[i]).findProductCmpts(qualifiedTypeName,
-                includeSubytpes, result);
-        }
-        
-        IProductCmpt[] array = new IProductCmpt[result.size()];
-        result.toArray(array);
-        return array;
-    }
-
     /**
      * {@inheritDoc}
      */

@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 
 /**
  * 
@@ -44,6 +45,7 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
     private IPolicyCmptType type;
+    private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
     
     /*
@@ -55,7 +57,7 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
         IIpsProjectProperties props = project.getProperties();
         props.setJavaSrcLanguage(Locale.GERMAN);
         project.setProperties(props);
-        type = newPolicyCmptType(project, "Policy");
+        type = newPolicyAndProductCmptType(project, "Policy", "Product");
         IAttribute a = type.newAttribute();
         a.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         a.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -71,8 +73,8 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
         
         type.getIpsSrcFile().save(true, null);
         
-        productCmpt = newProductCmpt(project, "Product");
-        productCmpt.setPolicyCmptType(type.getQualifiedName());
+        productCmptType = type.findProductCmptType(project);
+        productCmpt = newProductCmpt(productCmptType, "Product");
         IProductCmptGeneration gen = (IProductCmptGeneration)productCmpt.newGeneration();
         gen.setValidFrom(new GregorianCalendar(2006, 0, 1));
         IConfigElement ce = gen.newConfigElement();
@@ -80,8 +82,7 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
         ce.setType(ConfigElementType.FORMULA);
         ce.setValue("42");
         
-        IProductCmpt refTarget = newProductCmpt(project, "RefProduct");
-        refTarget.setPolicyCmptType(type.getQualifiedName());
+        IProductCmpt refTarget = newProductCmpt(productCmptType, "RefProduct");
         refTarget.setRuntimeId("RefProductRuntimeId");
         
         IProductCmptRelation relation = gen.newRelation("relation");

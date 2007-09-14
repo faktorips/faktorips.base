@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;

@@ -98,7 +98,7 @@ public class CopyProductCmptWizard extends Wizard implements INewIpsObjectWizard
     }
 
     private void finishIpsObject(IProductCmpt productCmpt) throws CoreException {
-        productCmpt.setPolicyCmptType(productCmptPage.getPolicyCmptType());
+        productCmpt.setProductCmptType(productCmptPage.getProductCmptType());
         productCmpt.setRuntimeId(productCmptPage.getRuntimeId());
     }
     

@@ -27,9 +27,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.controls.ProductCmptTypeRefControl;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 
@@ -69,7 +67,7 @@ public class SetTemplateDialog extends EditDialog {
         template.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         template.getTextControl().addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				if (StringUtils.isEmpty(getPolicyCmptType())) {
+				if (StringUtils.isEmpty(template.getText())) {
 					getButton(OK).setEnabled(false);
 					String msg = NLS.bind(Messages.SetTemplateDialog_msgTemplateDoesNotExist, template.getText());
 					setMessage(msg, IMessageProvider.ERROR);
@@ -97,24 +95,9 @@ public class SetTemplateDialog extends EditDialog {
 	 */
 	protected void buttonPressed(int buttonId) {
 		if (buttonId == OK) {
-			productCmpt.setPolicyCmptType(getPolicyCmptType());
+			productCmpt.setProductCmptType(template.getText());
 		}
 		super.buttonPressed(buttonId);
 	}
     
-	private String getPolicyCmptType() {
-    	String policyCmptTypeName = ""; //$NON-NLS-1$
-    	try {
-        	String productCmptTypeName = template.getText();
-			IProductCmptType type = template.getIpsProject().findProductCmptType(productCmptTypeName);
-			if (type == null) {
-				return "";  //$NON-NLS-1$
-			}
-			policyCmptTypeName = type.getPolicyCmptyType();
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
-		}
-    	return policyCmptTypeName;
-    }
-
 }

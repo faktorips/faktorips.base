@@ -17,18 +17,17 @@
 
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
-import java.util.GregorianCalendar;
-
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
-import org.faktorips.devtools.core.model.IIpsObjectGeneration;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 
 /**
  * Tests for product component structure.
@@ -37,10 +36,8 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
  */
 public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
 	
-    ProductCmpt inside;
-    ProductCmpt middle;
-    ProductCmpt outside;
-    GregorianCalendar validFrom = new GregorianCalendar(2000, 1, 1);
+    private IProductCmpt inside;
+    private IProductCmpt middle;
     
 	/**
 	 * {@inheritDoc}
@@ -48,38 +45,27 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         
-        IIpsProject prj = super.newIpsProject("TestProject");
-        PolicyCmptType type = super.newPolicyCmptType(prj, "Base");
-        type.setConfigurableByProductCmptType(true);
-        type.setUnqualifiedProductCmptType("BaseType");
+        IIpsProject prj = super.newIpsProject();
+        IPolicyCmptType type = newPolicyAndProductCmptType(prj, "Base", "BaseType");
+        IProductCmptType productCmptType = type.findProductCmptType(prj);
         IRelation rel = type.newRelation();
         rel.setTarget(type.getQualifiedName());
         rel.setTargetRoleSingular("rel");
         rel.setTargetRoleSingularProductSide("relType");
         rel.setProductRelevant(true);
         
-        
-        outside = super.newProductCmpt(prj, "Outside");
-        outside.setPolicyCmptType(type.getQualifiedName());
-        IIpsObjectGeneration gen = outside.newGeneration(validFrom);
-        
-        middle = super.newProductCmpt(prj, "one.Middle");
-        middle.setPolicyCmptType(type.getQualifiedName());
-        gen = middle.newGeneration(validFrom);
-        
-        inside = super.newProductCmpt(prj, "one.two.Inside");
-        inside.setPolicyCmptType(type.getQualifiedName());
-        gen = inside.newGeneration(validFrom);
+        newProductCmpt(productCmptType, "Outside");
+        middle = newProductCmpt(productCmptType, "one.Middle");
+        inside = newProductCmpt(productCmptType, "one.two.Inside");
     }
    
     public void testGetPackage() throws Exception {
         SourcePage page = getSourcePageFor(inside);
         assertEquals(inside.getIpsPackageFragment(), page.getTargetPackage());
         
-        IProductCmptGeneration gen = (IProductCmptGeneration)inside.getGenerationByEffectiveDate(validFrom);
+        IProductCmptGeneration gen = (IProductCmptGeneration)inside.getGenerationByEffectiveDate(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
         IProductCmptRelation rel = gen.newRelation("relType");
         rel.setTarget(middle.getQualifiedName());
-
         
         inside.getIpsSrcFile().save(true, null);
         
@@ -88,7 +74,7 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
         
     }
     
-    private SourcePage getSourcePageFor(ProductCmpt cmpt) {
+    private SourcePage getSourcePageFor(IProductCmpt cmpt) {
         DeepCopyWizard wizard = new DeepCopyWizard(inside, DeepCopyWizard.TYPE_COPY_PRODUCT);
         WizardDialog d = new WizardDialog(new Shell(), wizard);
         d.setBlockOnOpen(false);

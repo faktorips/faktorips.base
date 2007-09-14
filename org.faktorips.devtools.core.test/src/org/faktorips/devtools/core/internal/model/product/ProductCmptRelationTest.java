@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
@@ -43,6 +43,7 @@ public class ProductCmptRelationTest extends AbstractIpsPluginTest {
     private IProductCmptGeneration generation;
     private IProductCmptRelation relation;
     private IPolicyCmptType policyCmptType;
+    private IProductCmptType productCmptType;
     private IIpsProject ipsProject;
     /*
      * @see TestCase#setUp()
@@ -50,10 +51,10 @@ public class ProductCmptRelationTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
     	super.setUp();
     	ipsProject = newIpsProject();
-    	policyCmptType = (IPolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy");
-    	productCmpt = (ProductCmpt)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "TestProduct");
-    	productCmpt.setPolicyCmptType(policyCmptType.getQualifiedName());
-    	generation = (IProductCmptGeneration)productCmpt.newGeneration();
+    	policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
+    	productCmptType = policyCmptType.findProductCmptType(ipsProject);
+        productCmpt = newProductCmpt(productCmptType, "TestProduct");
+    	generation = productCmpt.getProductCmptGeneration(0);
     	relation = generation.newRelation("CoverageType");
     	ipsSrcFile = productCmpt.getIpsSrcFile();
     }
@@ -67,7 +68,7 @@ public class ProductCmptRelationTest extends AbstractIpsPluginTest {
     	policyCmptTypeRelation.setTargetRoleSingular("Coverage");
     	policyCmptTypeRelation.setTargetRoleSingularProductSide("CoverageType");
     	
-    	IProductCmptTypeRelation productCmptTypeRelation = policyCmptType.findProductCmptType().getRelations()[0];
+    	IProductCmptTypeRelation productCmptTypeRelation = policyCmptType.findOldProductCmptType().getRelations()[0];
     	assertEquals(productCmptTypeRelation, relation.findProductCmptTypeRelation());
     	
     	policyCmptTypeRelation.setTargetRoleSingularProductSide("blabla");
@@ -178,15 +179,14 @@ public class ProductCmptRelationTest extends AbstractIpsPluginTest {
     }
     
     public void testValidateInvalidTarget() throws Exception{
-        IPolicyCmptType targetType = newPolicyCmptType(ipsProject, "target.TargetPolicy");
-        IProductCmpt target = newProductCmpt(ipsProject, "target.Target");
-        target.setPolicyCmptType(targetType.getQualifiedName());
+        IPolicyCmptType targetType = newPolicyAndProductCmptType(ipsProject, "Coverage", "CoverageType");
         IRelation rel = policyCmptType.newRelation();
         rel.setTarget(targetType.getQualifiedName());
         rel.setTargetRoleSingular("testRelation");
         rel.setTargetRoleSingularProductSide("testRelation");
         
         IProductCmptRelation relation = generation.newRelation(rel.getName());
+        IProductCmpt target = newProductCmpt(targetType.findProductCmptType(ipsProject), "target.Target");
         relation.setTarget(productCmpt.getQualifiedName());
         
         MessageList ml = relation.validate();

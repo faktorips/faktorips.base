@@ -19,6 +19,8 @@ package org.faktorips.devtools.core.model.product;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 
 /**
@@ -94,8 +96,12 @@ public interface ITableContentUsage extends IIpsObjectPart {
      * Returns the related table structure usage or <code>null</code> if the table contents
      * can't be found.
      * 
+     * @param project The project which ips object path is used for the searched.
+     * This is not neccessarily the project this type is part of. 
+     * 
      * @throws CoreException if an error occurs while searching for the table structure usage.
+     * @throws NullPointerException if ipsProject is <code>null</code>.
      */
-    public org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage findTableStructureUsage() throws CoreException;
+    public ITableStructureUsage findTableStructureUsage(IIpsProject ipsProject) throws CoreException;
 
 }

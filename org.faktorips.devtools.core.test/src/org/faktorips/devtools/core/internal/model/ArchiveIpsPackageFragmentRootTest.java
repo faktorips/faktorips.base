@@ -105,7 +105,7 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     public void testFindIpsObject_ProductCmptType() throws Throwable {
-        assertNotNull(root.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, type.getProductCmptType()));
+        assertNotNull(root.findIpsObject(IpsObjectType.OLD_PRODUCT_CMPT_TYPE, type.getProductCmptType()));
     }
 
     public void testFindIpsObjects() throws CoreException {
