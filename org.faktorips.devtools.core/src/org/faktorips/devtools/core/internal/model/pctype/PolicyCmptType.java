@@ -44,7 +44,6 @@ import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Parameter;
@@ -82,8 +81,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 
     private List rules = new ArrayList(0);
 
-    private List tableStuctureUsages = new ArrayList(0);
-    
     public PolicyCmptType(IIpsSrcFile file) {
         super(file);
     }
@@ -176,8 +173,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             return newRelation();
         } else if (partType.equals(IValidationRule.class)) {
             return newRule();
-        } else if (partType.equals(ITableStructureUsage.class)) {
-            return newTableStructureUsage();
         }
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
@@ -291,15 +286,13 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      * {@inheritDoc}
      */
     public IIpsElement[] getChildren() {
-        int numOfChildren = getNumOfAttributes() + getNumOfMethods() + getNumOfRelations() + getNumOfRules()
-                + getNumOfTableStructureUsage();
+        int numOfChildren = getNumOfAttributes() + getNumOfMethods() + getNumOfRelations() + getNumOfRules();
         IIpsElement[] childrenArray = new IIpsElement[numOfChildren];
         List childrenList = new ArrayList(numOfChildren);
         childrenList.addAll(attributes);
         childrenList.addAll(methods);
         childrenList.addAll(relations);
         childrenList.addAll(rules);
-        childrenList.addAll(tableStuctureUsages);
         childrenList.toArray(childrenArray);
         return childrenArray;
     }
@@ -649,7 +642,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         methods.clear();
         rules.clear();
         relations.clear();
-        tableStuctureUsages.clear();
     }
 
     /**
@@ -668,10 +660,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         } else if (part instanceof IValidationRule) {
             rules.add(part);
             return;
-        } else if (part instanceof ITableStructureUsage){
-            tableStuctureUsages.add(part);
-            return;
-        }
+        } 
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
     
@@ -691,9 +680,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         } else if (part instanceof IValidationRule) {
             rules.remove(part);
             return;
-        } else if (part instanceof ITableStructureUsage){
-            tableStuctureUsages.remove(part);
-            return;
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
@@ -711,8 +697,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             return newMethodInternal(id);
         } else if (xmlTagName.equals(ValidationRule.TAG_NAME)) {
             return newRuleInternal(id);
-        } else if (xmlTagName.equals(TableStructureUsage.TAG_NAME)){
-            return newTableStructureUsageInternal(id);
         }
         throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
     }
@@ -1217,89 +1201,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public ITableStructureUsage newTableStructureUsage() {
-        if (!configurableByProductCmptType){
-            return null;
-        }
-        TableStructureUsage tsu = newTableStructureUsageInternal(getNextPartId());
-        partWasAdded(tsu);
-        return tsu;
-    }
-
-    /*
-     * Creates a new table structure usage without updating the src file.
-     */
-    private TableStructureUsage newTableStructureUsageInternal(int id) {
-        TableStructureUsage tsu = new TableStructureUsage(this, id);
-        tableStuctureUsages.add(tsu);
-        return tsu;
-    }
-    
-    /**
-     * Removes the table structure from the type.
-     */
-    void removeTableStructureUsage(TableStructureUsage tableStructureUsage) {
-        tableStuctureUsages.remove(tableStructureUsage);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public ITableStructureUsage[] getTableStructureUsages() {
-        return (ITableStructureUsage[])tableStuctureUsages
-                .toArray(new ITableStructureUsage[tableStuctureUsages.size()]);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int[] moveTableStructureUsage(int[] indexes, boolean up) {
-        ListElementMover mover = new ListElementMover(tableStuctureUsages);
-        int[] newIndices = mover.move(indexes, up);
-        partsMoved(getTableStructureUsages());
-        return newIndices;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int getNumOfTableStructureUsage() {
-        return tableStuctureUsages.size();
-    }
-    
-    /*
-     * Returns the list holding the table structure usaged as a reference. Package private for use in
-     * TypeHierarchy.
-     */
-    List getTableStructureUsageList() {
-        return tableStuctureUsages;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public ITableStructureUsage findTableStructureUsageInSupertypeHierarchy(String tableStructureUsageRole) throws CoreException{
-        FindTableStructureUsageInTypeHierarchyVisitor visitor = new FindTableStructureUsageInTypeHierarchyVisitor(tableStructureUsageRole);
-        visitor.start(this);
-        return visitor.getTableStructureUsage();
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public ITableStructureUsage getTableStructureUsage(String roleName) {
-        for (Iterator it = tableStuctureUsages.iterator(); it.hasNext();) {
-            ITableStructureUsage tsu = (ITableStructureUsage)it.next();
-            if (tsu.getName().equals(roleName)) {
-                return tsu;
-            }
-        }
-        return null;
-    }
-    
     private static class IsAggregrateRootVisitor extends PolicyCmptTypeHierarchyVisitor {
 
         private boolean root = true;
@@ -1371,28 +1272,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             attribute = currentType.getAttribute(attributeName);
             return attribute==null;
         }
-    }
-    
-    static class FindTableStructureUsageInTypeHierarchyVisitor extends PolicyCmptTypeHierarchyVisitor {
+    }    
 
-        private String tableUsageRoleName;
-        private ITableStructureUsage tableStructureUsage = null;
-        
-        public FindTableStructureUsageInTypeHierarchyVisitor(String tableUsageRoleName) {
-            super();
-            this.tableUsageRoleName = tableUsageRoleName;
-        }
-        
-        public ITableStructureUsage getTableStructureUsage() {
-            return tableStructureUsage;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        protected boolean visit(IPolicyCmptType currentType) {
-            tableStructureUsage = currentType.getTableStructureUsage(tableUsageRoleName);
-            return tableStructureUsage==null;
-        }
-    }
 }

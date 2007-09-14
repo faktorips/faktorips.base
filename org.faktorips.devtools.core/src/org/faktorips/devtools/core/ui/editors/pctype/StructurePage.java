@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
@@ -26,8 +25,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
@@ -53,18 +50,8 @@ public class StructurePage extends PctEditorPage {
         
         Composite rightComp = createGridComposite(toolkit, members, 1, true, GridData.FILL_BOTH);
 		IpsSection relations = new RelationsSection(getPolicyCmptType(), rightComp, toolkit);
-        IPolicyCmptType policyCmptType = getPolicyCmptType();
-        IProductCmptType productCmptType;
-        try {
-            productCmptType = policyCmptType.findOldProductCmptType();
-            IpsSection tblStructure = new TblStructureUsageSection(policyCmptType, productCmptType, rightComp, toolkit);
-            
-            general.setFocusSuccessor(attributes);
-            attributes.setFocusSuccessor(relations);
-            relations.setFocusSuccessor(tblStructure);            
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+        general.setFocusSuccessor(attributes);
+        attributes.setFocusSuccessor(relations);
         registerContentsChangeListener();
 	}
     

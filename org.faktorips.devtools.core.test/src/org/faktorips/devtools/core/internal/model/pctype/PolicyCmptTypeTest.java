@@ -48,7 +48,6 @@ import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
@@ -176,15 +175,13 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         IRelation r1 = pcType.newRelation();
         IValidationRule rule1 = pcType.newRule();
         pcType.setConfigurableByProductCmptType(true);
-        ITableStructureUsage tsu = pcType.newTableStructureUsage();
         
         IIpsElement[] elements = pcType.getChildren();
-        assertEquals(5, elements.length);
+        assertEquals(4, elements.length);
         assertEquals(a1, elements[0]);
         assertEquals(m1, elements[1]);
         assertEquals(r1, elements[2]);
         assertEquals(rule1, elements[3]);
-        assertEquals(tsu, elements[4]);
     }
 
     public void testNewAttribute() {
@@ -472,9 +469,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertSame(r[0], pcType.getRelations()[0]);
         assertSame(m[0], pcType.getMethods()[0]);
         assertSame(rules[0], pcType.getRules()[0]);
-        
-        // test table structure
-        assertEquals(1, pcType.getTableStructureUsages().length);
     }
     
     public void testToXml() throws CoreException {
@@ -499,8 +493,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         r1.setTarget("t1");
         IRelation r2 = pcType.newRelation();
         r2.setTarget("t2");
-        ITableStructureUsage tsu = pcType.newTableStructureUsage();
-        tsu.setRoleName("role1");
         
         Element element = pcType.toXml(this.newDocument());
         
@@ -525,8 +517,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         IRelation[] relations = copy.getRelations();
         assertEquals("t1", relations[0].getTarget());
         assertEquals("t2", relations[1].getTarget());
-        assertEquals(1, copy.getTableStructureUsages().length);
-        assertEquals("role1", copy.getTableStructureUsages()[0].getRoleName());
     }
     
     public void testGetSupertypeHierarchy() throws CoreException {
@@ -1017,57 +1007,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertEquals(2, relations.length);
         assertEquals(relation0, relations[0]);
         assertEquals(relation2, relations[1]);
-    }
-    
-    public void testNewTableStructure(){
-        pcType.setConfigurableByProductCmptType(true);
-        sourceFile.getIpsModel().addChangeListener(this);
-        ITableStructureUsage tsu = pcType.newTableStructureUsage();
-        assertEquals(0, tsu.getId());
-        assertSame(pcType, tsu.getIpsObject());
-        assertEquals(1, pcType.getNumOfTableStructureUsage());
-        assertTrue(sourceFile.isDirty());
-        assertEquals(sourceFile, lastEvent.getIpsSrcFile());
-        
-        ITableStructureUsage tsu2 = pcType.newTableStructureUsage();
-        assertEquals(1, tsu2.getId());  
-        
-        // if the pcType is not configurated by a product cmpt
-        // check if the new method returns null
-        pcType.setConfigurableByProductCmptType(false);
-        assertNull(pcType.newTableStructureUsage());
-    }
-    
-    public void testGetTableStructureUsage(){
-        pcType.setConfigurableByProductCmptType(true);
-        assertEquals(0, pcType.getTableStructureUsages().length);
-        ITableStructureUsage tsu1 = pcType.newTableStructureUsage();
-        ITableStructureUsage tsu2 = pcType.newTableStructureUsage();
-        tsu1.setRoleName("role1");
-        tsu2.setRoleName("role2");
-        assertSame(tsu1, pcType.getTableStructureUsages()[0]);
-        assertSame(tsu2, pcType.getTableStructureUsages()[1]);
-        assertSame(tsu2, pcType.getTableStructureUsage("role2"));
-        assertSame(tsu1, pcType.getTableStructureUsage("role1"));
-        assertNull(pcType.getTableStructureUsage("role12"));
-        
-        // make sure a defensive copy is returned.
-        pcType.getTableStructureUsages()[0] = null;
-        assertNotNull(pcType.getTableStructureUsages()[0]);
-    }
-    
-    public void testFindTableStructureUsageInSupertypeHierarchy() throws CoreException{
-        IPolicyCmptType a = newPolicyCmptType(root, "a");
-        ITableStructureUsage aStructureUsage = a.newTableStructureUsage();
-        aStructureUsage.setRoleName("aRole");
-        ITableStructureUsage aStructureUsage2 = a.newTableStructureUsage();
-        aStructureUsage2.setRoleName("aRole2");
-        IPolicyCmptType b = newPolicyCmptType(root, "b");
-        ITableStructureUsage bStructureUsage = b.newTableStructureUsage();
-        bStructureUsage.setRoleName("bRole");
-        b.setSupertype(a.getQualifiedName());
-        ITableStructureUsage aStructureUsageCompare = b.findTableStructureUsageInSupertypeHierarchy("aRole");
-        assertEquals(aStructureUsage, aStructureUsageCompare);
     }
     
     private class AggregateRootBuilderSet extends EmptyBuilderSet {

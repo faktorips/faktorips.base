@@ -498,58 +498,6 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     public IRelation[] findRelationsImplementingContainerRelation(IRelation containerRelation, boolean searchSupertypeHierarchy) throws CoreException;
     
     /**
-     * Creates a new table usage and returns it.
-     * Returns <code>null</code> if the policy cmpt type is not configurable by product cmpt type.
-     */
-    public ITableStructureUsage newTableStructureUsage();
-    
-    /**
-     * Returns the type's table structure usages or an empty list if the type does not
-     * contain any.
-     */
-    public ITableStructureUsage[] getTableStructureUsages();
-    
-    /**
-     * Returns the number of table structure usages.
-     */
-    public int getNumOfTableStructureUsage();
-
-    /**
-     * Returns the table structure usage with the given role name. If more than one table structure
-     * usages with the role name exist, the first table structure usage with the role name is
-     * returned. Returns <code>null</code> if no table structure usage with the given role name
-     * exists.
-     */
-    public ITableStructureUsage getTableStructureUsage(String roleName);
-
-    /**
-     * Looks for the ITableStructureUsage with the specified roleName starting from this policy component type and visiting up the
-     * supertype hierarchy. If no ITableStructureUsage is found <code>null</code> will be returned.
-     * 
-     * @param roleName the role name of the ITableStructureUsage in question 
-     * @return the ITableStructureUsage for the provided name or <code>null</code> if non is found
-     */
-    public ITableStructureUsage findTableStructureUsageInSupertypeHierarchy(String roleName) throws CoreException;
-
-    /**
-     * Moves the table structure usages identified by the indexes up or down by one position.
-     * If one of the indexes is 0 (the first object), no object is moved up. 
-     * If one of the indexes is the number of objects - 1 (the last object)
-     * no object is moved down. 
-     * 
-     * @param indexes   The indexes identifying the table structure usages.
-     * @param up        <code>true</code>, to move the table structure usages up, 
-     * <false> to move them down.
-     * 
-     * @return The new indexes of the moved table structure usages.
-     * 
-     * @throws NullPointerException if indexes is null.
-     * @throws IndexOutOfBoundsException if one of the indexes does not identify
-     * a table structure usage.
-     */
-    public int[] moveTableStructureUsage(int[] indexes, boolean up);
-    
-    /**
      * Creates a new supertype hierarchy for the type and returns it.
      */
     public ITypeHierarchy getSupertypeHierarchy() throws CoreException;

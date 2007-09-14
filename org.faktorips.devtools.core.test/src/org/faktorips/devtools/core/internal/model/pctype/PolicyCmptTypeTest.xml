@@ -17,7 +17,4 @@
     </ValidationRuleDef>
     <Relation id="3" type="1" sourceRole="Policy" target="MotorPart" targetRole="PolicyPart" minCardinality="1" maxCardinality="1" exclusiveChoice="false">
     </Relation>
-    <TableStructureUsage roleName="role1">
-    	<TableStructure tableStructure="tableStructure1" />
-    </TableStructureUsage>
 </PolicyCmptType>

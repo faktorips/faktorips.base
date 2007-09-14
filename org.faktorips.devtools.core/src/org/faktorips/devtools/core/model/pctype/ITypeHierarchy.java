@@ -99,12 +99,6 @@ public interface ITypeHierarchy {
     public IValidationRule[] getAllRules(IPolicyCmptType type);
 
     /**
-     * Returns all table structure usages of the given type either defined in the type itself
-     * or any of it's supertyes found in the hierarchy.
-     */
-    public ITableStructureUsage[] getAllTableStructureUsages(IPolicyCmptType type);
-    
-    /**
      * Returns the attribute with the given name if either the type or one of
      * it's supertypes contains an attribute with that name. Returns <code>null</code>
      * if no attribute with the given name is found.  
@@ -125,13 +119,6 @@ public interface ITypeHierarchy {
      */
     public IProductCmptTypeRelation findRelationOnProductSide(IPolicyCmptType type, String relationName);
 
-    /**
-     * Returns the table structure usage with the role name if either the type or one of
-     * it's supertypes contains a table structure usage with that role name. Returns <code>null</code>
-     * if no table structure usage with the given role name is found.  
-     */
-    public ITableStructureUsage findTableStructureUsage(IPolicyCmptType type, String roleName);
-    
     /**
      * Returns the direct subtypes for the given policy component type.
      * Returns an empty array if either type is <code>null</code> or the hierarchy

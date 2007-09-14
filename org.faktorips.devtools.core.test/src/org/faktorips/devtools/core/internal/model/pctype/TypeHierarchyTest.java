@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 
 
@@ -364,39 +363,6 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         
     }
     
-    public void testGetTableStructureUsages() throws Exception {
-        // create the supertype 
-        pcType.setConfigurableByProductCmptType(true);
-        supertype.setConfigurableByProductCmptType(true);
-        supersupertype.setConfigurableByProductCmptType(true);
-        pcType.setSupertype(supertype.getQualifiedName());
-        supertype.setSupertype(supersupertype.getQualifiedName());
-
-        ITableStructureUsage tsu1 = pcType.newTableStructureUsage();
-        tsu1.setRoleName("role1");
-        ITableStructureUsage tsu2 = supertype.newTableStructureUsage();
-        tsu2.setRoleName("role2");
-        ITableStructureUsage tsu3 = supersupertype.newTableStructureUsage();
-        tsu3.setRoleName("role3");
-        
-        TypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        ITableStructureUsage[] tableStructureUsages = hierarchy.getAllTableStructureUsages(pcType);
-        assertEquals(3, tableStructureUsages.length);
-        assertEquals(tsu1, tableStructureUsages[0]);
-        assertEquals(tsu2, tableStructureUsages[1]);
-        assertEquals(tsu3, tableStructureUsages[2]);
-        
-        // now same with cycle in hierarchy 
-        supersupertype.setSupertype(pcType.getQualifiedName());
-        hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        tableStructureUsages = hierarchy.getAllTableStructureUsages(pcType);
-        assertEquals(3, tableStructureUsages.length);
-        assertEquals(tsu1, tableStructureUsages[0]);
-        assertEquals(tsu2, tableStructureUsages[1]);
-        assertEquals(tsu3, tableStructureUsages[2]);
-        
-    }
-
     public void testFindAttribute() throws Exception {
         // create the supetype relations
         pcType.setSupertype(supertype.getQualifiedName());
@@ -446,37 +412,6 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         assertEquals(r2, hierarchy.findRelation(pcType, "r2"));
         assertEquals(r2, hierarchy.findRelation(supertype, "r2"));
         assertNull(hierarchy.findRelation(pcType, "unkown"));
-        
-    }
-    
-    public void testFindTableStructureUsage() throws Exception {
-        // create the supertype
-        pcType.setConfigurableByProductCmptType(true);
-        supertype.setConfigurableByProductCmptType(true);
-        supersupertype.setConfigurableByProductCmptType(true);
-        pcType.setSupertype(supertype.getQualifiedName());
-        supertype.setSupertype(supersupertype.getQualifiedName());
-
-        ITableStructureUsage tsu1 = pcType.newTableStructureUsage();
-        tsu1.setRoleName("role1");
-        ITableStructureUsage tsu2 = supertype.newTableStructureUsage();
-        tsu2.setRoleName("role2");
-        ITableStructureUsage tsu3 = supersupertype.newTableStructureUsage();
-        tsu3.setRoleName("role3");
-        
-        TypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        assertEquals(tsu3, hierarchy.findTableStructureUsage(pcType, "role3"));
-        assertEquals(tsu2, hierarchy.findTableStructureUsage(pcType, "role2"));
-        assertEquals(tsu1, hierarchy.findTableStructureUsage(pcType, "role1"));
-        assertNull(hierarchy.findTableStructureUsage(supersupertype, "role1"));
-        
-        // now same with cycle in hierarchy 
-        supersupertype.setSupertype(pcType.getQualifiedName());
-        hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        assertEquals(tsu3, hierarchy.findTableStructureUsage(pcType, "role3"));
-        assertEquals(tsu2, hierarchy.findTableStructureUsage(pcType, "role2"));
-        assertEquals(tsu1, hierarchy.findTableStructureUsage(pcType, "role1"));
-        assertNull(hierarchy.findTableStructureUsage(supersupertype, "role1"));
         
     }
     

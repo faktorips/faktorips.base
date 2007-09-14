@@ -34,7 +34,6 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
@@ -381,29 +380,4 @@ public class TypeHierarchy implements ITypeHierarchy {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public ITableStructureUsage[] getAllTableStructureUsages(IPolicyCmptType type) {
-        List tableStructureUsages = new ArrayList();
-        IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
-        for (int i=0; i<types.length; i++) {
-            tableStructureUsages.addAll(((PolicyCmptType)types[i]).getTableStructureUsageList());
-        }
-        return (ITableStructureUsage[])tableStructureUsages.toArray(new ITableStructureUsage[tableStructureUsages.size()]);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public ITableStructureUsage findTableStructureUsage(IPolicyCmptType type, String roleName) {
-        IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
-        for (int i=0; i<types.length; i++) {
-            ITableStructureUsage tsu = types[i].getTableStructureUsage(roleName);
-            if (tsu!=null) {
-                return tsu;
-            }
-        }
-        return null;
-    }
 }
