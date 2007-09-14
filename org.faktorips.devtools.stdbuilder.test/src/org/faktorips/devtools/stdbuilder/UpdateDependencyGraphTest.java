@@ -42,8 +42,8 @@ public class UpdateDependencyGraphTest extends AbstractIpsPluginTest {
      */
     public void test() throws CoreException {
         IIpsProject project = newIpsProject();
-        IPolicyCmptType typeA = newPolicyCmptType(project, "A");
-        IPolicyCmptType typeB = newPolicyCmptType(project, "B");
+        IPolicyCmptType typeA = newPolicyCmptTypeWithoutProductCmptType(project, "A");
+        IPolicyCmptType typeB = newPolicyCmptTypeWithoutProductCmptType(project, "B");
         typeB.setSupertype(typeA.getQualifiedName());
         typeB.getIpsSrcFile().save(true, null);
         
