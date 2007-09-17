@@ -1494,16 +1494,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
 
         if (sortDef == null) {
-
             // add new or updated sort order
             IFile file = ((IpsPackageFragment) fragment).getCorrespondingSortOrderFile();
             Long lastModification;
-
-            if (file.exists()) {
-                lastModification = new Long(file.getModificationStamp());
-            } else {
-                lastModification = new Long(0);
-            }
 
             try {
                 sortDef = ((IpsPackageFragment)fragment).loadSortDefinition();
@@ -1511,9 +1504,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 // use default sort order if no sort definition is set.
                 if(sortDef == null){
                     sortDef = new IpsPackageFragmentDefaultSortDefinition();
+                    lastModification = new Long(0);
+                } else {
+                    lastModification = new Long(file.getModificationStamp());
                 }
             } catch (CoreException e) {
                 sortDef = new IpsPackageFragmentDefaultSortDefinition();
+                lastModification = new Long(0);
                 IpsPlugin.log(e);
             }
 
