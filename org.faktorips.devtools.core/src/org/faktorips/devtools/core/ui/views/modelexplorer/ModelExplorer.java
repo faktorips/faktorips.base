@@ -70,6 +70,7 @@ import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.FixDifferencesAction;
 import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
+import org.faktorips.devtools.core.ui.actions.IpsEditSortOrderAction;
 import org.faktorips.devtools.core.ui.actions.IpsPasteAction;
 import org.faktorips.devtools.core.ui.actions.IpsPropertiesAction;
 import org.faktorips.devtools.core.ui.actions.IpsTestAction;
@@ -585,6 +586,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
             createFixDifferencesAction(manager, selected, (IStructuredSelection)treeViewer.getSelection());
             createRefactorMenu(manager, selected);
             createIpsArchiveAction(manager, selected);
+            createIpsEditSortOrderAction(manager, selected);
             createAdditionalActions(manager, structuredSelection);
             manager.add(new Separator());
             createPropertiesActions(manager, selected);
@@ -620,8 +622,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
 
                 if (selected instanceof IProductCmpt) {
                     newMenu.add(new Separator());
-                    newMenu
-                            .add(new IpsDeepCopyAction(getSite().getShell(), treeViewer,
+                    newMenu.add(new IpsDeepCopyAction(getSite().getShell(), treeViewer,
                                     DeepCopyWizard.TYPE_NEW_VERSION));
                     newMenu.add(new IpsDeepCopyAction(getSite().getShell(), treeViewer,
                             DeepCopyWizard.TYPE_COPY_PRODUCT));
@@ -805,6 +806,12 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
                     subMm.add(move);
                     manager.add(subMm);
                 }
+            }
+        }
+
+        protected void createIpsEditSortOrderAction(IMenuManager manager, Object selected) {
+            if (selected instanceof IIpsProject) {
+                manager.add(new IpsEditSortOrderAction(treeViewer));
             }
         }
 

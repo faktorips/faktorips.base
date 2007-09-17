@@ -4,14 +4,14 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
  *
  * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
+ *   Faktor Zehn GmbH - initial API and implementation
  *
  *******************************************************************************/
 
@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.IpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -30,15 +31,15 @@ import org.faktorips.devtools.core.model.IIpsProject;
 /**
  * ViewerFilter for <code>ProductExplorer<code> viewpart. It is used to
  * filter out all projects that are not productdefinition projects.
- * 
+ *
  * @author Stefan Widmaier
  */
 public class ProductExplorerFilter extends ViewerFilter {
-	
+
 	private boolean excludeNoIpsProductDefinitionProjects;
 
     public ProductExplorerFilter(){}
-	
+
 	/**
      *  Returns <code>false</code> if the element is an <code>IFile</code> with name ".ipsproject".
      *  <p>
@@ -56,13 +57,17 @@ public class ProductExplorerFilter extends ViewerFilter {
                 return false;
             }
         }
-        
+
         if (!isAllowedReosource(element)){
             return false;
         }
-        
+
         if(element instanceof IFile){
             // filter out rest of hidden files (e.g. ".ipsproject")
+            if(((IFile)element).getName().equals(IpsPackageFragment.SORT_ORDER_FILE)){ //$NON-NLS-1$
+                return true;
+            }
+
             if(((IFile)element).getName().indexOf(".")==0){ //$NON-NLS-1$
                 return false;
             }
@@ -93,7 +98,7 @@ public class ProductExplorerFilter extends ViewerFilter {
         }
         return !ipsProject.isResourceExcludedFromProductDefinition(resource);
     }
-    
+
     /**
      * Set if no ips product definition projects should be excluded (<code>true</code>) or not (<code>false</code>).
      */

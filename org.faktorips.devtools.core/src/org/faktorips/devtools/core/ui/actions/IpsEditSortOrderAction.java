@@ -17,53 +17,47 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.actions.ActionDelegate;
+import org.eclipse.swt.widgets.Display;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.ui.dialogs.IpsPackageSortDefDialog;
+
 
 /**
  *
  * @author Markus Blum
  */
-public class EditSortOrderAction extends ActionDelegate implements IObjectActionDelegate {
+public class IpsEditSortOrderAction extends IpsAction {
 
-    private Shell shell;
-    private ISelection selection;
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-        shell = targetPart.getSite().getShell();
+    public IpsEditSortOrderAction(ISelectionProvider selectionProvider) {
+        super(selectionProvider);
+        super.setText("Edit Sort Order");
+        super.setDescription("Edit Sort Order");
+        super.setToolTipText("Edit Sort Order");
+        super.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/alphab_sort_co.gif")); //$NON-NLS-1$
+
     }
 
     /**
      * {@inheritDoc}
      */
-    public void run(IAction action) {
-
-        if (! (selection instanceof IStructuredSelection))
-            return;
-
-        Object element =  ((IStructuredSelection) selection).getFirstElement();
+    public void run(IStructuredSelection selection) {
+        Object element = ((IStructuredSelection) selection).getFirstElement();
 
         if (element instanceof IIpsProject) {
             IIpsProject project = (IIpsProject)element;
 
             if (project.isProductDefinitionProject()) {
-                IpsPackageSortDefDialog dialog = new IpsPackageSortDefDialog(shell, "Edit Sort Order", project);
+                IpsPackageSortDefDialog dialog = new IpsPackageSortDefDialog(Display.getCurrent().getActiveShell(), "Edit Sort Order", project);
                 dialog.open();
             } else {
-                MessageDialog dialog = new MessageDialog( shell
+                MessageDialog dialog = new MessageDialog( Display.getCurrent().getActiveShell()
                                                  , "Edit Sort Order"
                                                  , (Image) null
                                                  , "Sortierung wird nur für Produktdefinitions-Projekte unterstützt."
@@ -73,13 +67,6 @@ public class EditSortOrderAction extends ActionDelegate implements IObjectAction
                 dialog.open();
             }
         }
-    }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void selectionChanged(IAction action, ISelection selection) {
-        this.selection= selection;
     }
-
 }
