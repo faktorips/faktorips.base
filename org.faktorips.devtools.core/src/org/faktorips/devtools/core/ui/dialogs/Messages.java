@@ -21,6 +21,10 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.dialogs.messages"; //$NON-NLS-1$
+    public static String IpsPackageSortDefDialog_down;
+    public static String IpsPackageSortDefDialog_headlineText;
+    public static String IpsPackageSortDefDialog_restore;
+    public static String IpsPackageSortDefDialog_up;
     public static String OpenIpsObjectSelectionDialog_Filter;
     static {
         // initialize resource bundle

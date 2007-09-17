@@ -35,13 +35,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsPackageSortDefDelta;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.util.QNameUtil;
 
 /**
+ * Dialog for changing the sort order of IIpsPackageFragments.
  *
  * @author Markus Blum
  */
@@ -58,8 +58,11 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     private Button restore;
 
     /**
-     * @param parentShell
-     * @param project
+     * New instance.
+     *
+     * @param parentShell The active shell.
+     * @param title Title of the dialog.
+     * @param project The selected IIpsProject.
      */
     public IpsPackageSortDefDialog(Shell parentShell, String title, IIpsProject project) {
         super(parentShell);
@@ -72,6 +75,8 @@ public class IpsPackageSortDefDialog extends TrayDialog {
 
         int shellStyle = getShellStyle();
         setShellStyle(shellStyle | SWT.RESIZE | SWT.MAX );
+
+        // TODO Save and set dialog size from settings.
     }
 
     /**
@@ -98,7 +103,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     }
 
     /**
-     * @param contents
+     * Create a headline with the chosen IpsProject name.
      */
     private void createHeadline(Composite parent) {
 
@@ -110,7 +115,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         layout.numColumns = 2;
         headline.setLayout(layout);
 
-        toolkit.createLabel(headline, "FaktorIps-Projekt sortieren:");
+        toolkit.createLabel(headline, Messages.IpsPackageSortDefDialog_headlineText);
         toolkit.createLabel(headline, project.getName());
     }
 
@@ -119,7 +124,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      */
     private void createRestoreButton(Composite parent) {
 
-        restore = toolkit.createButton(parent, "Restore Defaults");
+        restore = toolkit.createButton(parent, Messages.IpsPackageSortDefDialog_restore);
         restore.addSelectionListener(new SelectionAdapter()
         {
             public void widgetSelected(SelectionEvent e) {
@@ -127,11 +132,11 @@ public class IpsPackageSortDefDialog extends TrayDialog {
                 treeViewer.refresh();
             }
         });
-        restore.setLayoutData(new GridData());
+        restore.setLayoutData(new GridData(SWT.END));
     }
 
     /**
-     * @param parent
+     * Create component for shifting IpsPackageFragments
      */
     private void createSortArea(Composite parent) {
 
@@ -148,7 +153,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     }
 
     /**
-     * @param sortComposite
+     * Create the treeviewer.
      */
     private void createTreeViewer(Composite sortComposite) {
         treeViewer = new TreeViewer(sortComposite);
@@ -158,10 +163,14 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         IpsPackageSortDefContentProvider contentProvider = new IpsPackageSortDefContentProvider(sortOrderPM);
         treeViewer.setContentProvider(contentProvider);
         treeViewer.setInput(sortOrderPM);
+        treeViewer.expandToLevel(2);
+
+        // TODO Set proper initial size.
+
     }
 
     /**
-     * @param upDown
+     * Create composite with up/buttons.
      */
     private void createUpDownButtons(Composite parent) {
         Composite upDownComposite = toolkit.createComposite(parent);
@@ -171,7 +180,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         GridLayout layout = new GridLayout();
         upDownComposite.setLayout(layout);
 
-        up = toolkit.createButton(upDownComposite, "Up");
+        up = toolkit.createButton(upDownComposite, Messages.IpsPackageSortDefDialog_up);
         up.addSelectionListener(new SelectionAdapter()
         {
             public void widgetSelected(SelectionEvent e) {
@@ -181,7 +190,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         });
         up.setLayoutData(new GridData(SWT.FILL,SWT.DEFAULT,true,false));
 
-        down = toolkit.createButton(upDownComposite, "Down");
+        down = toolkit.createButton(upDownComposite, Messages.IpsPackageSortDefDialog_down);
         down.addSelectionListener(new SelectionAdapter()
         {
             public void widgetSelected(SelectionEvent e) {
@@ -200,7 +209,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
-        treeViewer.refresh(false);
+        treeViewer.refresh(true);
     }
 
     /**
@@ -212,7 +221,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         if (element instanceof IIpsPackageFragment) {
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
             sortOrderPM.moveOneDown(fragment);
-            treeViewer.update(element, null);
+            treeViewer.refresh(false);
         }
     }
 
@@ -225,7 +234,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         if (element instanceof IIpsPackageFragment) {
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
             sortOrderPM.moveOneUp(fragment);
-            treeViewer.update(element, null);
+            treeViewer.refresh(false);
          }
     }
 
@@ -258,13 +267,22 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     }
 
     /**
-     *
+     * New LabelProvider for the treeViewer.
      * @author Markus Blum
      */
     private class IpsPackageSortDefLabelProvider extends LabelProvider {
 
         public Image getImage(Object element) {
-            return ((IIpsElement)element).getImage();
+            IIpsPackageFragment fragment = (IIpsPackageFragment)element;
+
+            Image image;
+            if (fragment.isDefaultPackage()) {
+                image = fragment.getRoot().getImage();
+            } else {
+                image = fragment.getImage();
+            }
+
+            return image;
         }
 
         public String getText(Object element) {

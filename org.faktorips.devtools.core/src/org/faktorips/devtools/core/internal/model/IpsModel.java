@@ -1449,25 +1449,26 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Add the key/value pair to the cache:
      * key = IIpsPackageFragment; value = IIpsPackageFragmentSortDefinition
      *
-     * @param fragment Key of the hashtable entry.
-     * @param sortDefinition Value of the hashtable entry.
+     * @param fragment Key of the hash table entry. The fragment is part of the sortDefinition.
+     * @param sortDefinition Value of the hash table entry.
      * @param lastModification
      */
-    void addSortDefinition(IIpsPackageFragment fragment, IIpsPackageFragmentSortDefinition sortDefinition, Long lastModification) {
+    private void addSortDefinition(IIpsPackageFragment fragment, IIpsPackageFragmentSortDefinition sortDefinition, Long lastModification) {
         sortOrderCache.put(fragment, sortDefinition);
         lastIpSortOrderModifications.put(sortDefinition, lastModification);
     }
 
 
     /**
-     * Get a IIpsPackageFragmentSortDefinition for a given IIpsPackageFragment.
+     * Get a IIpsPackageFragmentSortDefinition for a given IIpsPackageFragment. Returns the object from the cache if the file exists and didn't change, otherwise
+     * update sort order from the filesystem.
      *
-     * @param fragment
-     * @return
+     * @param fragment Key of the hash table entry. The fragment is part of the sortDefinition.
+     * @return A IIpsPackageFragmentSortDefinition implementation. THe return value should always be not <code>null</code>.
      */
-    IIpsPackageFragmentSortDefinition getSortDefinition(IIpsPackageFragment fragment) {
+    public IIpsPackageFragmentSortDefinition getSortDefinition(IIpsPackageFragment fragment) {
 
-         // SortDefinitions are cached in IpsModel
+        // SortDefinitions are cached in IpsModel
         IIpsPackageFragmentSortDefinition sortDef = (IIpsPackageFragmentSortDefinition)sortOrderCache.get(fragment);
 
          if (sortDef != null) {
@@ -1476,16 +1477,25 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
             if (file.exists()) {
                 Long lastModification = (Long) lastIpSortOrderModifications.get(sortDef);
+
                 if (! lastModification.equals( new Long(file.getModificationStamp()))) {
                     // update current fragment
                     sortOrderCache.remove(fragment);
                     lastIpSortOrderModifications.remove(sortDef);
                     sortDef = null;
                 }
+            } else {
+                // remove deleted sort orders
+                // TODO Distinguish between DefaultSortOrder and deleted files!.
+                sortOrderCache.remove(fragment);
+                lastIpSortOrderModifications.remove(sortDef);
+                sortDef = null;
             }
         }
 
         if (sortDef == null) {
+
+            // add new or updated sort order
             IFile file = ((IpsPackageFragment) fragment).getCorrespondingSortOrderFile();
             Long lastModification;
 
@@ -1497,6 +1507,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
             try {
                 sortDef = ((IpsPackageFragment)fragment).loadSortDefinition();
+
+                // use default sort order if no sort definition is set.
                 if(sortDef == null){
                     sortDef = new IpsPackageFragmentDefaultSortDefinition();
                 }
