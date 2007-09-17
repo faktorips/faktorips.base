@@ -57,6 +57,8 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     private Button down;
     private Button restore;
 
+    private boolean restoreDefault;
+
     /**
      * New instance.
      *
@@ -75,6 +77,8 @@ public class IpsPackageSortDefDialog extends TrayDialog {
 
         int shellStyle = getShellStyle();
         setShellStyle(shellStyle | SWT.RESIZE | SWT.MAX );
+
+        restoreDefault = false;
 
         // TODO Save and set dialog size from settings.
     }
@@ -204,11 +208,8 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      *
      */
     protected void restorePressed() {
-        try {
-            sortOrderPM.restore();
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
+
+        restoreDefault = true;
         treeViewer.refresh(true);
     }
 
@@ -219,6 +220,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         Object element = ((IStructuredSelection) treeViewer.getSelection()).getFirstElement();
 
         if (element instanceof IIpsPackageFragment) {
+            restoreDefault = false;
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
             sortOrderPM.moveOneDown(fragment);
             treeViewer.refresh(false);
@@ -232,6 +234,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         Object element = ((IStructuredSelection) treeViewer.getSelection()).getFirstElement();
 
         if (element instanceof IIpsPackageFragment) {
+            restoreDefault = false;
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
             sortOrderPM.moveOneUp(fragment);
             treeViewer.refresh(false);
@@ -244,11 +247,11 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     protected void okPressed() {
 
         try {
-            IpsPackageSortDefDelta delta = sortOrderPM.createSortDefDelta(false);
+            IpsPackageSortDefDelta delta = sortOrderPM.createSortDefDelta(restoreDefault);
             delta.fix();
 
         } catch (CoreException e) {
-
+            IpsPlugin.log(e);
         }
 
         super.okPressed();
