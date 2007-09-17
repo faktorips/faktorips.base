@@ -51,6 +51,11 @@ public class Messages extends NLS {
     public static String FindPolicyReferencesAction_description;
     public static String FindPolicyReferencesAction_name;
     public static String FixDifferencesAction_text;
+    public static String IpsEditSortOrderAction_description;
+    public static String IpsEditSortOrderAction_dialogInfoText;
+    public static String IpsEditSortOrderAction_dialogTitle;
+    public static String IpsEditSortOrderAction_text;
+    public static String IpsEditSortOrderAction_tooltip;
     public static String NewTableStructureAction_name;
     public static String NewTestCaseTypeAction_name;
     public static String OpenIpsObjectAction_description;

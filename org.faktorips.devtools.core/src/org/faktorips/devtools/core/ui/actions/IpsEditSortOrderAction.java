@@ -30,6 +30,8 @@ import org.faktorips.devtools.core.ui.dialogs.IpsPackageSortDefDialog;
 
 /**
  *
+ * Contribute the context menu for editing the package sort order.
+ *
  * @author Markus Blum
  */
 public class IpsEditSortOrderAction extends IpsAction {
@@ -37,9 +39,9 @@ public class IpsEditSortOrderAction extends IpsAction {
 
     public IpsEditSortOrderAction(ISelectionProvider selectionProvider) {
         super(selectionProvider);
-        super.setText("Edit Sort Order");
-        super.setDescription("Edit Sort Order");
-        super.setToolTipText("Edit Sort Order");
+        super.setText(Messages.IpsEditSortOrderAction_text);
+        super.setDescription(Messages.IpsEditSortOrderAction_description);
+        super.setToolTipText(Messages.IpsEditSortOrderAction_tooltip);
         super.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/alphab_sort_co.gif")); //$NON-NLS-1$
 
     }
@@ -54,13 +56,13 @@ public class IpsEditSortOrderAction extends IpsAction {
             IIpsProject project = (IIpsProject)element;
 
             if (project.isProductDefinitionProject()) {
-                IpsPackageSortDefDialog dialog = new IpsPackageSortDefDialog(Display.getCurrent().getActiveShell(), "Edit Sort Order", project);
+                IpsPackageSortDefDialog dialog = new IpsPackageSortDefDialog(Display.getCurrent().getActiveShell(), Messages.IpsEditSortOrderAction_dialogTitle, project);
                 dialog.open();
             } else {
                 MessageDialog dialog = new MessageDialog( Display.getCurrent().getActiveShell()
-                                                 , "Edit Sort Order"
+                                                 , Messages.IpsEditSortOrderAction_dialogTitle
                                                  , (Image) null
-                                                 , "Sortierung wird nur für Produktdefinitions-Projekte unterstützt."
+                                                 , Messages.IpsEditSortOrderAction_dialogInfoText
                                                  , MessageDialog.INFORMATION
                                                  , new String[] {IDialogConstants.OK_LABEL}
                                                  , 0);
