@@ -71,7 +71,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         toolkit = new UIToolkit(null);
 
         int shellStyle = getShellStyle();
-        setShellStyle(shellStyle | SWT.RESIZE | SWT.MAX);
+        setShellStyle(shellStyle | SWT.RESIZE | SWT.MAX );
     }
 
     /**
@@ -127,7 +127,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
                 treeViewer.refresh();
             }
         });
-        restore.setLayoutData(new GridData(SWT.END));
+        restore.setLayoutData(new GridData());
     }
 
     /**
@@ -179,22 +179,28 @@ public class IpsPackageSortDefDialog extends TrayDialog {
                 treeViewer.refresh();
             }
         });
+        up.setLayoutData(new GridData(SWT.FILL,SWT.DEFAULT,true,false));
 
         down = toolkit.createButton(upDownComposite, "Down");
         down.addSelectionListener(new SelectionAdapter()
         {
             public void widgetSelected(SelectionEvent e) {
                 downPressed();
-                treeViewer.refresh();
-            }
+             }
         });
+        down.setLayoutData(new GridData(SWT.FILL,SWT.DEFAULT,true,false));
     }
 
     /**
      *
      */
     protected void restorePressed() {
-        sortOrderPM.restore();
+        try {
+            sortOrderPM.restore();
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        treeViewer.refresh(false);
     }
 
     /**
@@ -206,6 +212,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         if (element instanceof IIpsPackageFragment) {
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
             sortOrderPM.moveOneDown(fragment);
+            treeViewer.update(element, null);
         }
     }
 
@@ -218,6 +225,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         if (element instanceof IIpsPackageFragment) {
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
             sortOrderPM.moveOneUp(fragment);
+            treeViewer.update(element, null);
          }
     }
 
@@ -227,11 +235,11 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     protected void okPressed() {
 
         try {
-            IpsPackageSortDefDelta delta = sortOrderPM.createSortDefDelta();
+            IpsPackageSortDefDelta delta = sortOrderPM.createSortDefDelta(false);
             delta.fix();
 
         } catch (CoreException e) {
-            IpsPlugin.log(e);
+
         }
 
         super.okPressed();
@@ -256,29 +264,20 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     private class IpsPackageSortDefLabelProvider extends LabelProvider {
 
         public Image getImage(Object element) {
-
-            if (element instanceof IIpsElement) {
-                return ((IIpsElement)element).getImage();
-            }
-
-            return null;
+            return ((IIpsElement)element).getImage();
         }
 
         public String getText(Object element) {
-            if (element instanceof IIpsPackageFragment) {
-                IIpsPackageFragment fragment = (IIpsPackageFragment)element;
-                String name;
+            IIpsPackageFragment fragment = (IIpsPackageFragment)element;
+            String name;
 
-                if (fragment.isDefaultPackage()) {
-                    name = fragment.getRoot().getName();
-                } else {
-                    name = fragment.getName();
-                }
-
-                return QNameUtil.getUnqualifiedName(name);
+            if (fragment.isDefaultPackage()) {
+                name = fragment.getRoot().getName();
+            } else {
+                name = fragment.getName();
             }
 
-            return "null";
+            return QNameUtil.getUnqualifiedName(name);
         }
     }
 }

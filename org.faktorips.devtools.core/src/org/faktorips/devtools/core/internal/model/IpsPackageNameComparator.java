@@ -68,6 +68,7 @@ public class IpsPackageNameComparator implements Comparator {
      * Get the <code>IIpsPackageFragmentSortDefinition</code> from parent.
      *
      * @param pack <code>IIpsPackageFragment</code> current.
+    * @param subSegmentName
      * @return SortDefinition
      * @throws CoreException
      */

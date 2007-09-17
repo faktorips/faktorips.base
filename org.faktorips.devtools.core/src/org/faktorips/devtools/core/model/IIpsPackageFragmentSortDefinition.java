@@ -77,4 +77,5 @@ public interface IIpsPackageFragmentSortDefinition {
      * @return Create a copy of the current instance.
      */
     public IIpsPackageFragmentSortDefinition copy();
+
 }

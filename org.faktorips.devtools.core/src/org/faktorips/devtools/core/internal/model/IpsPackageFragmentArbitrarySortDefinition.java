@@ -39,8 +39,6 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
 
     private List sortOrder = new ArrayList(20);
 
-    private long lastFileModification;
-
     /**
      * {@inheritDoc}
      */
@@ -150,19 +148,5 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
         sortDef.sortOrderLookup = (Map)((HashMap) sortOrderLookup).clone();
 
         return sortDef;
-    }
-
-    /**
-     * @return Returns the lastFileModification.
-     */
-    public long getLastFileModification() {
-        return lastFileModification;
-    }
-
-    /**
-     * @param lastFileModification The lastFileModification to set.
-     */
-    public void setLastFileModification(long lastFileModification) {
-        this.lastFileModification = lastFileModification;
     }
 }

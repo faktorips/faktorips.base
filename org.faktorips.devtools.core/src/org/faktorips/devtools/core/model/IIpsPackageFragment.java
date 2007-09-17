@@ -63,7 +63,16 @@ public interface IIpsPackageFragment extends IIpsElement {
     public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException;
 
     /**
-     * Reads the sort definition of the {@link IIpsPackageFragment} object from disk and returns it. Returns <code>null</code> if no
+     * Returns the child packages sorted by the sort definition.
+     *
+     * @throws CoreException
+
+     * @see #getSortDefinition()
+     */
+    public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException;
+
+    /**
+     * Reads the sort definition from disk and returns it. Returns <code>null</code> if no
      * sort definition file exists.
      *
      * @throws CoreException if an errors occurs reading the definition
@@ -101,11 +110,11 @@ public interface IIpsPackageFragment extends IIpsElement {
      * be returned.
      */
     public IIpsSrcFile getIpsSrcFile(String name);
-
+    
     /**
-     * Returns a handle to the IPS source file for the given filenameWithoutExtension.
+     * Returns a handle to the IPS source file for the given filenameWithoutExtension. 
      * The file extension is derived from the ips object type.
-     *
+     * 
      * @throws NullPointerException if type is <code>null</code>.
      */
     public IIpsSrcFile getIpsSrcFile(String filenameWithoutExtension, IpsObjectType type);

@@ -63,7 +63,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.IIpsPackageFragmentArbitrarySortDefinition;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentSortDefinition;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -158,6 +157,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     // cache sort order
     private Map sortOrderCache = new HashMap();
+    private Map lastIpSortOrderModifications = new HashMap();
+
 
     public IpsModel() {
         super(null, "IpsModel"); //$NON-NLS-1$
@@ -1450,9 +1451,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      *
      * @param fragment Key of the hashtable entry.
      * @param sortDefinition Value of the hashtable entry.
+     * @param lastModification
      */
-    void addSortDefinition(IIpsPackageFragment fragment, IIpsPackageFragmentSortDefinition sortDefinition) {
+    void addSortDefinition(IIpsPackageFragment fragment, IIpsPackageFragmentSortDefinition sortDefinition, Long lastModification) {
         sortOrderCache.put(fragment, sortDefinition);
+        lastIpSortOrderModifications.put(sortDefinition, lastModification);
     }
 
 
@@ -1467,19 +1470,31 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
          // SortDefinitions are cached in IpsModel
         IIpsPackageFragmentSortDefinition sortDef = (IIpsPackageFragmentSortDefinition)sortOrderCache.get(fragment);
 
-        // check modification
-        if ((sortDef != null) && (sortDef instanceof IIpsPackageFragmentArbitrarySortDefinition)) {
-            IFile file = ((IpsPackageFragment) fragment).getCorrespondingSortOrderFile();
-            IpsPackageFragmentArbitrarySortDefinition persistenceSortDef = (IpsPackageFragmentArbitrarySortDefinition)sortDef;
+         if (sortDef != null) {
+           // sortdefinition cached, check modification
+           IFile file = ((IpsPackageFragment) fragment).getCorrespondingSortOrderFile();
 
-            if (file.getModificationStamp() != persistenceSortDef.getLastFileModification()) {
-                // update current fragment
-                sortOrderCache.remove(fragment);
-                sortDef = null;
+            if (file.exists()) {
+                Long lastModification = (Long) lastIpSortOrderModifications.get(sortDef);
+                if (! lastModification.equals( new Long(file.getModificationStamp()))) {
+                    // update current fragment
+                    sortOrderCache.remove(fragment);
+                    lastIpSortOrderModifications.remove(sortDef);
+                    sortDef = null;
+                }
             }
         }
 
         if (sortDef == null) {
+            IFile file = ((IpsPackageFragment) fragment).getCorrespondingSortOrderFile();
+            Long lastModification;
+
+            if (file.exists()) {
+                lastModification = new Long(file.getModificationStamp());
+            } else {
+                lastModification = new Long(0);
+            }
+
             try {
                 sortDef = ((IpsPackageFragment)fragment).loadSortDefinition();
                 if(sortDef == null){
@@ -1489,7 +1504,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 sortDef = new IpsPackageFragmentDefaultSortDefinition();
                 IpsPlugin.log(e);
             }
-            this.addSortDefinition(fragment, sortDef);
+
+            this.addSortDefinition(fragment, sortDef, lastModification);
         }
 
         return sortDef;

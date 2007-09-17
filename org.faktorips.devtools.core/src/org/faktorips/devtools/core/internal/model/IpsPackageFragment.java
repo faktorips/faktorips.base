@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -111,7 +112,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
                 String content = StringUtil.readFromInputStream(file.getContents(), getIpsProject()
                         .getPlainTextFileCharset());
                 IpsPackageFragmentArbitrarySortDefinition sortDef = new IpsPackageFragmentArbitrarySortDefinition();
-                sortDef.setLastFileModification(file.getModificationStamp());
                 sortDef.initPersistenceContent(content);
                 return sortDef;
             } catch (IOException e) {
@@ -122,7 +122,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
     }
 
     /**
-     * @return Handle to a sort order file. The file doesn't need to exist!
+     * @return Handle to a sort order file. The folder/file doesn't need to exist!
      */
     IFile getCorrespondingSortOrderFile() {
         IFolder folder = null;
@@ -134,6 +134,19 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
 
         return folder.getFile(new Path(SORT_ORDER_FILE));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
+
+        IpsPackageNameComparator comparator = new IpsPackageNameComparator();
+
+        List sortedPacks = getChildIpsPackageFragmentsAsList();
+        Collections.sort(sortedPacks, comparator);
+
+        return (IIpsPackageFragment[])sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
     }
 
     /**
@@ -170,15 +183,17 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             System.out.println("IpsPackageFragment.setSortDefinition: pack=" + this); //$NON-NLS-1$
         }
 
+        IFile file = getCorrespondingSortOrderFile();
+
+        if (newDefinition == null) {
+            if (file.exists()) {
+                file.delete(true, null);
+            }
+            return;
+        }
+
         if (newDefinition instanceof IIpsPackageFragmentArbitrarySortDefinition) {
             IIpsPackageFragmentArbitrarySortDefinition newSortDef = (IIpsPackageFragmentArbitrarySortDefinition)newDefinition;
-
-            IFile file = getCorrespondingSortOrderFile();
-
-            if (newSortDef == null) {
-                file.delete(true, null);
-                return;
-            }
 
             String content = newSortDef.toPersistenceContent();
             byte[] bytes;

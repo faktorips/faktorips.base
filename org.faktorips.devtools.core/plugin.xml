@@ -346,6 +346,20 @@
             menubarPath="faktorIPSMenu/faktorIpsGroup"
             tooltip="%org.faktorips.devtools.core.Migrate.tooltip"/>
         </objectContribution>
+        <objectContribution
+              adaptable="true"
+              id="editPackageSortOrderAction"
+              objectClass="org.faktorips.devtools.core.model.IIpsProject">
+           <action
+                 class="org.faktorips.devtools.core.ui.actions.EditSortOrderAction"
+                 enablesFor="1"
+                 icon="icons/elcl16/alphab_sort_co.gif"
+                 id="editPackageSortOrder"
+                 label="Edit Sort Order"
+                 tooltip="Edit Sort Order">
+           </action>
+        </objectContribution>
+
   </extension>
   
    <extension point="org.eclipse.jdt.core.classpathVariableInitializer">            

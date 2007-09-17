@@ -18,9 +18,11 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentSortDefinition;
@@ -31,8 +33,24 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentSortDefinition;
  */
 public class IpsPackageSortDefDelta {
 
-    private List fragments = new ArrayList();
-    private List sortdDefs = new ArrayList();
+    private List fragments;
+    private List sortdDefs;
+
+    /**
+     * @param packages
+     * @param sortOrdersNew
+     */
+    public IpsPackageSortDefDelta(IIpsPackageFragment[] packages, IIpsPackageFragmentSortDefinition[] sortOrdersNew) {
+
+        Assert.isNotNull(packages);
+        Assert.isNotNull(sortOrdersNew);
+
+        this.fragments = new ArrayList(packages.length);
+        this.sortdDefs = new ArrayList(sortOrdersNew.length);
+
+        fragments.addAll(Arrays.asList(packages));
+        sortdDefs.addAll(Arrays.asList(sortOrdersNew));
+    }
 
     /**
      * @throws CoreException
@@ -45,15 +63,6 @@ public class IpsPackageSortDefDelta {
             IIpsPackageFragment element = (IIpsPackageFragment)iterFragment.next();
             element.setSortDefinition((IIpsPackageFragmentSortDefinition)iterSortdDefs.next());
         }
-    }
-
-    /**
-     * @param pack
-     * @param newSortDef
-     */
-    public void add(IIpsPackageFragment pack, IIpsPackageFragmentSortDefinition newSortDef) {
-        fragments.add(pack);
-        sortdDefs.add(newSortDef);
     }
 
 }

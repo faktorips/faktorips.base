@@ -207,6 +207,18 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
+
+        // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE
+
+        List sortedPacks = getChildIpsPackageFragmentsAsList();
+
+        return (IIpsPackageFragment[])sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
+    }
+
+    /**
      * @return
      * @throws CoreException
      */
