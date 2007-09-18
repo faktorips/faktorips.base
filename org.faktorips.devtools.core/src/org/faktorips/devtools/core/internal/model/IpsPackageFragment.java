@@ -118,6 +118,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
                 throw new CoreException(new IpsStatus(e));
             }
         }
+
         return null;
     }
 

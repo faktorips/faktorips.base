@@ -24,6 +24,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.core.internal.model.IpsPackageFragmentDefaultSortDefinition;
 
 /**
  * An IPS package fragment is a portion of the workspace corresponding to an entire package,
@@ -72,7 +73,7 @@ public interface IIpsPackageFragment extends IIpsElement {
     public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException;
 
     /**
-     * Reads the sort definition from disk and returns it. Returns <code>null</code> if no
+     * Reads the sort definition from disk and returns it. Returns the {@link IpsPackageFragmentDefaultSortDefinition} if no
      * sort definition file exists.
      *
      * @throws CoreException if an errors occurs reading the definition
@@ -110,11 +111,11 @@ public interface IIpsPackageFragment extends IIpsElement {
      * be returned.
      */
     public IIpsSrcFile getIpsSrcFile(String name);
-    
+
     /**
-     * Returns a handle to the IPS source file for the given filenameWithoutExtension. 
+     * Returns a handle to the IPS source file for the given filenameWithoutExtension.
      * The file extension is derived from the ips object type.
-     * 
+     *
      * @throws NullPointerException if type is <code>null</code>.
      */
     public IIpsSrcFile getIpsSrcFile(String filenameWithoutExtension, IpsObjectType type);
