@@ -556,6 +556,8 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
 
         assertEquals(1, fragments.length);
         assertEquals(fragments[0], "products");
+        IpsModel ipsModel = (IpsModel)IpsPlugin.getDefault().getIpsModel();
+        assertFalse(ipsModel.getSortDefinition(products).equals(sortDef));
 
     }
 }
