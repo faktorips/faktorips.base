@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -24,6 +25,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 
 /**
+ * ContentProvider for {@link IpsPackageSortDefDialog}. Use Presentationmodel
+ * {@link IpsProjectSortOrdersPM} for retrieving the data.
  *
  * @author Markus Blum
  */
@@ -33,9 +36,12 @@ public class IpsPackageSortDefContentProvider implements ITreeContentProvider{
     private IpsProjectSortOrdersPM sortOrderPM;
 
     /**
-     * @param sortOrder
+     * New Instance.
+     *
+     * @param sortOrderPM Presentationmodel of the chosen IpsProject.
      */
     public IpsPackageSortDefContentProvider(IpsProjectSortOrdersPM sortOrderPM) {
+        Assert.isNotNull(sortOrderPM);
         this.sortOrderPM = sortOrderPM;
     }
 
@@ -123,5 +129,12 @@ public class IpsPackageSortDefContentProvider implements ITreeContentProvider{
      */
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // nothing to implement
+    }
+
+    /**
+     * @return Returns the sortOrderPM.
+     */
+    public IpsProjectSortOrdersPM getSortOrderPM() {
+        return sortOrderPM;
     }
 }

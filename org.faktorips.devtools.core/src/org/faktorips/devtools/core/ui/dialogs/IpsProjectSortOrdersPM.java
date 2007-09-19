@@ -32,6 +32,13 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.util.QNameUtil;
 
 /**
+ * Presentationmodel for {@link IpsPackageSortDefDialog}.
+ *
+ * Save the {@link IIpsPackageFragment} hierarchy in a Map:
+ * key = parent; value = Array of children
+ *
+ * The methods getChildIpsPackageFragments and getDefautlPackageFragments are used for the {@link IpsPackageSortDefContentProvider}.
+ * The moveXXX methods are used for shifting a child element (IIpsPackageFragment).
  *
  * @author Markus Blum
  */
@@ -39,7 +46,7 @@ public class IpsProjectSortOrdersPM {
 
     private IIpsProject project;
 
-    // Lookuptable parent IIpsPackageFragment -> children sorted
+    // Lookup table parent IIpsPackageFragment -> children sorted
     private Map fragmentHierarchy = new HashMap();
 
     public IpsProjectSortOrdersPM(IIpsProject project) {
@@ -47,20 +54,35 @@ public class IpsProjectSortOrdersPM {
         this.project = project;
     }
 
+    /**
+     * Move a IIpsPackageFragment 1 position up in the child hierarchy.
+     *
+     * @param fragment The selected {@link IIpsPackageFragment}.
+     */
     public void moveOneUp(IIpsPackageFragment fragment) {
         moveUp(fragment, 1);
     }
 
+    /**
+     * Move a IIpsPackageFragment 1 position down in the child hierarchy.
+     *
+     * @param fragment The selected {@link IIpsPackageFragment}.
+     */
     public void moveOneDown(IIpsPackageFragment fragment) {
         moveDown(fragment, 1);
     }
 
+    /**
+     * Move a IIpsPackageFragment <code>shift</code> positions up in the child hierarchy. IpsDefaultPackageFragments are not allowed to be moved!
+     *
+     * @param fragment The selected {@link IIpsPackageFragment}.
+     * @param shift Move <code>shift</code> positions up. <code>shift</code> hast to be greater than <code>0</code>.
+     */
     public void moveUp(IIpsPackageFragment fragment, int shift) {
         // don't move DefaultPackageFragments
         if ((shift > 0) && (!fragment.isDefaultPackage())) {
 
             IIpsPackageFragment parent = fragment.getParentIpsPackageFragment();
-
             if (fragmentHierarchy.containsKey(parent)) {
                 ArrayList list = (ArrayList)fragmentHierarchy.get(parent);
 
@@ -72,6 +94,12 @@ public class IpsProjectSortOrdersPM {
         }
     }
 
+    /**
+     * Move a IIpsPackageFragment <code>shift</code> positions down in the child hierarchy. v are not allowed to be moved!
+     *
+     * @param fragment The selected {@link IIpsPackageFragment}.
+     * @param shift Move <code>shift</code> positions down. <code>shift</code> hast to be greater than <code>0</code>.
+     */
     public void moveDown(IIpsPackageFragment fragment, int shift) {
         // don't move DefaultPackageFragments
         if ((shift > 0) && (!fragment.isDefaultPackage())) {
@@ -92,7 +120,13 @@ public class IpsProjectSortOrdersPM {
     }
 
     /**
-     * @return
+     * Modelaction for ITreeContentProvider.getElements.
+     * Get all IpsDefaultPackageFragments (substitute for IpsPackageFragmentRoot) of the
+     * selected IpsProject.
+     *
+     * @note IpsArchives are ignored!
+     *
+     * @return IpsDefaultPackageFragments of the selected IpsProject.
      * @throws CoreException
      */
     public Object[] getDefaultPackageFragments() throws CoreException {
@@ -101,7 +135,7 @@ public class IpsProjectSortOrdersPM {
         IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
         List filtered = new ArrayList(roots.length);
 
-        // TODO Remove this line, if IpsArchive's are sorted.
+        // TODO Don't ignore ipsArchives.
         for (int i = 0; i < roots.length; i++) {
             if (roots[i].isBasedOnSourceFolder()) {
                 filtered.add(roots[i].getDefaultIpsPackageFragment());
@@ -111,8 +145,11 @@ public class IpsProjectSortOrdersPM {
     }
 
     /**
-     * @param fragment
-     * @return
+     * Modelaction for ITreeContentProvider.getChildren.
+     * Get all children of the IIpsPackageFragment <code>fragment</code>.
+     *
+     * @param fragment Parent IIpsPackageFragment.
+     * @return All children of IIpsPackageFragment <code>fragment</code>.
      * @throws CoreException
      */
     public Object[] getChildIpsPackageFragments(IIpsPackageFragment parent) throws CoreException {
@@ -133,19 +170,23 @@ public class IpsProjectSortOrdersPM {
     }
 
     /**
-     * @throws CoreException
+     * Modelaction for restorePressed. Sort the IIpsPackageFragments by default sort order.
      *
+     * @throws CoreException
      */
     public void restore() throws CoreException {
-
-        IpsPackageSortDefDelta delta = createSortDefDelta(true);
-        delta.fix();
-
-        fragmentHierarchy.clear();
-    }
+       // TODO Set default sort order
+       fragmentHierarchy.clear();
+     }
 
     /**
-     * @return
+     * Modelaction for okPressed.
+     *
+     * Check if sort order has changed. Create the delegate object IpsPackageSortDefDelta for saving the changes.
+     *
+     * Delete the current sort orders of the IpsProject if restore is <code>true</code> => default sort order.
+     *
+     * @return IpsPackageSortDefDelta with changed sort orders.
      * @throws CoreException
      */
     public IpsPackageSortDefDelta createSortDefDelta(boolean restore) throws CoreException {
@@ -170,9 +211,12 @@ public class IpsProjectSortOrdersPM {
     }
 
     /**
-     * @param pack
-     * @param currentSortDef
-     * @param delta
+     * Check the projects sort order for changes. The result is a delta between the cached sort definitions and the dialog model.
+     *
+     * @param pack Current IIpsPackageFragment.
+     * @param packagesList Add the IIpsPackageFragment <code>pack</code> to list if its sort order has changed.
+     * @param sortDefOrderList Add the new sort order IIPsPackageFragmentSortDefinition for <code>pack</code>.
+     * @param restore Create delta for restore default sort order.
      * @throws CoreException
      */
     private void checkSortOrder(IIpsPackageFragment parent, List packagesList, List sortDefOrderList, boolean restore) throws CoreException {
@@ -193,7 +237,7 @@ public class IpsProjectSortOrdersPM {
                 /* the IIpsPackgeFragment method setSortDefinition excpects the changed package as argument. We have to save a child here
                  * and not the parent node.
                  *
-                 * TODO Check Interface setSortDefinition in order to change argument package to parent package.
+                 * TODO Check Interface get/setSortDefinition in order to change argument to parent package.
                  */
                 packagesList.add(children[0]);
                 sortDefOrderList.add(toSortDefinition(sortDefNew));
@@ -214,12 +258,15 @@ public class IpsProjectSortOrdersPM {
     }
 
     /**
-     * @param fragment
-     * @return
+     * Create a new IIpsPackageFragmentSortDefinition object.
+     *
+     * @param fragment Sorted IIpsPackageFragments.
+     * @return new IIpsPackageFragmentSortDefinition
      */
     public IIpsPackageFragmentSortDefinition toSortDefinition(List newSortDef) {
 
         if (newSortDef == null) {
+            // TODO Throw Exception here.
             return null;
         }
 
@@ -237,9 +284,11 @@ public class IpsProjectSortOrdersPM {
     }
 
     /**
-     * @param pack
-     * @param currentSortDef
-     * @return
+     * Compare two sort orders.
+     *
+     * @param sortDefNew New sort order.
+     * @param sortDefOld sort order from the cache.
+     * @return <code>true</code> if sort order is equal.
      */
     private boolean isEqualSortOrder(List sortDefNew, List sortDefOld) {
 

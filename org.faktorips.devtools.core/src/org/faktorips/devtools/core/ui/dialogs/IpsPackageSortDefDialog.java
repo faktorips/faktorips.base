@@ -54,7 +54,6 @@ public class IpsPackageSortDefDialog extends TrayDialog {
 
     private String title;
     private IIpsProject project;
-    private IpsProjectSortOrdersPM sortOrderPM;
 
     private UIToolkit toolkit;
     private TreeViewer treeViewer;
@@ -86,7 +85,6 @@ public class IpsPackageSortDefDialog extends TrayDialog {
 
         this.title = title;
         this.project = project;
-        sortOrderPM = new IpsProjectSortOrdersPM(project);
 
         toolkit = new UIToolkit(null);
 
@@ -193,6 +191,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         treeViewer.setLabelProvider(new IpsPackageSortDefLabelProvider());
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL,SWT.FILL, true, true));
 
+        IpsProjectSortOrdersPM sortOrderPM = new IpsProjectSortOrdersPM(project);
         IpsPackageSortDefContentProvider contentProvider = new IpsPackageSortDefContentProvider(sortOrderPM);
         treeViewer.setContentProvider(contentProvider);
         treeViewer.setInput(sortOrderPM);
@@ -237,7 +236,13 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      */
     protected void restorePressed() {
         restoreDefault = true;
-        treeViewer.refresh(true);
+        try {
+            IpsProjectSortOrdersPM sortOrderPM = ((IpsPackageSortDefContentProvider)treeViewer.getContentProvider()).getSortOrderPM();
+            sortOrderPM.restore();
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        treeViewer.refresh();
     }
 
     /**
@@ -249,6 +254,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         if (element instanceof IIpsPackageFragment) {
             restoreDefault = false;
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
+            IpsProjectSortOrdersPM sortOrderPM = ((IpsPackageSortDefContentProvider)treeViewer.getContentProvider()).getSortOrderPM();
             sortOrderPM.moveOneDown(fragment);
             treeViewer.refresh(false);
         }
@@ -263,6 +269,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         if (element instanceof IIpsPackageFragment) {
             restoreDefault = false;
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
+            IpsProjectSortOrdersPM sortOrderPM = ((IpsPackageSortDefContentProvider)treeViewer.getContentProvider()).getSortOrderPM();
             sortOrderPM.moveOneUp(fragment);
             treeViewer.refresh(false);
          }
@@ -274,6 +281,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     protected void okPressed() {
         // write changes to filesystem.
         try {
+            IpsProjectSortOrdersPM sortOrderPM = ((IpsPackageSortDefContentProvider)treeViewer.getContentProvider()).getSortOrderPM();
             IpsPackageSortDefDelta delta = sortOrderPM.createSortDefDelta(restoreDefault);
             delta.fix();
 
@@ -309,7 +317,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     }
 
     /**
-     * save dialog size
+     * save dialog settings to file.
      */
     private void saveDialogSetings() {
 
@@ -323,6 +331,9 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         }
     }
 
+    /**
+     * load dialog settings from file.
+     */
     private void loadDialogSettings() {
         IPath path = IpsPlugin.getDefault().getStateLocation();
         settingsFilename = path.append("sortDefDialog.settings").toOSString(); //$NON-NLS-1$
@@ -339,7 +350,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     }
 
     /**
-     * New LabelProvider for the TreeViewer.
+     * New LabelProvider for the TreeViewer <code>treeViewer</code>.
      * @author Markus Blum
      */
     private class IpsPackageSortDefLabelProvider extends LabelProvider {
