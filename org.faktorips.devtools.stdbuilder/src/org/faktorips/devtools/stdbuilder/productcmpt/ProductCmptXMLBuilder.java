@@ -28,10 +28,11 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.AbstractXmlFileBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -66,17 +67,17 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
         }
     }
 
-    private void updateTargetRuntimeId(IProductCmptGeneration generation, Element generationElement) {
-        NodeList relationNodes = generationElement.getElementsByTagName(IProductCmptRelation.TAG_NAME);
-        IProductCmptRelation[] relations = generation.getRelations();
+    private void updateTargetRuntimeId(IProductCmptGeneration generation, Element generationElement) throws DOMException, CoreException {
+        NodeList relationNodes = generationElement.getElementsByTagName(IProductCmptLink.TAG_NAME);
+        IProductCmptLink[] relations = generation.getLinks();
         for (int i = 0; i < relations.length; i++) {
             Element relation = (Element)relationNodes.item(i);
             relation.setAttribute(ProductCmptGenImplClassBuilder.XML_ATTRIBUTE_TARGET_RUNTIME_ID, getTargetRuntimeId(relations[i]));
         }
     }
 
-    private String getTargetRuntimeId(IProductCmptRelation relation) {
-        IProductCmpt productCmpt = relation.findTarget();
+    private String getTargetRuntimeId(IProductCmptLink link) throws CoreException {
+        IProductCmpt productCmpt = link.findTarget(link.getIpsProject());
         if(productCmpt != null){
             return productCmpt.getRuntimeId();
         }

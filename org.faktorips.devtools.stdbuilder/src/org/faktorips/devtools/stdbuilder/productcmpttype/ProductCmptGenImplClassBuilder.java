@@ -35,17 +35,20 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.Parameter;
-import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
@@ -122,8 +125,8 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         if ((modifier & Modifier.ABSTRACT) > 0) {
             return modifier;
         }
-        GetClassModifierFunction fct = new GetClassModifierFunction(modifier);
-        fct.start(getProductCmptType().findPolicyCmptyType());
+        GetClassModifierFunction fct = new GetClassModifierFunction(getIpsProject(), modifier);
+        fct.start(getProductCmptType());
         return fct.getModifier();
     }
     
@@ -146,7 +149,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * {@inheritDoc}
      */
     protected String getSuperclass() throws CoreException {
-        IProductCmptType supertype = getProductCmptType().findSupertype();
+        IProductCmptType supertype = (IProductCmptType)getProductCmptType().findSupertype(getIpsProject());
         if (supertype != null) {
             String pack = getPackage(supertype.getIpsSrcFile());
             return StringUtil.qualifiedName(pack, getUnqualifiedClassName(supertype.getIpsSrcFile()));
@@ -202,7 +205,8 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                 new String[]{"configMap"}, new Class[]{Map.class});
         
         builder.appendln("super.doInitPropertiesFromXml(configMap);");
-        IAttribute[] attributes = getProductCmptType().getAttributes();
+        IPolicyCmptType policyCmptType = getPolicyCmptType();
+        IAttribute[] attributes = policyCmptType == null ? new IAttribute[0] : policyCmptType.getAttributes();
         boolean attributeFound = false;
         for (int i = 0; i < attributes.length; i++) {
             IAttribute a = attributes[i];
@@ -317,11 +321,11 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         //         }
         //     }
         // }
-        IProductCmptTypeRelation[] relations = getProductCmptType().getRelations();
+        IProductCmptTypeAssociation[] associations = getProductCmptType().getAssociations();
         boolean relationFound = false;
-        for (int i = 0; i < relations.length; i++) {
-            IProductCmptTypeRelation r = relations[i];
-            if (!r.isAbstract()) {
+        for (int i = 0; i < associations.length; i++) {
+            IProductCmptTypeAssociation ass = associations[i];
+            if (!ass.isDerived()) {
                 if (relationFound == false) {
                     builder.appendln();
                     builder.appendClassName(List.class);
@@ -331,20 +335,23 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                 builder.append("relationElements = (");
                 builder.appendClassName(List.class);
                 builder.append(") relationMap.get(");
-                builder.appendQuoted(r.getName());
+                builder.appendQuoted(ass.getName());
                 builder.appendln(");");
                 builder.append("if (relationElements != null) {");
-                if (r.is1ToMany()) {
-                    String fieldName = getFieldNameToManyRelation(r);
-                    String cardinalityFieldName = getFieldNameCardinalityForRelation(r);
+                IRelation policyCmptTypeRelation = ass.findPolicyCmptTypeRelation(getIpsProject());
+                String cardinalityFieldName = policyCmptTypeRelation == null ? "" : getFieldNameCardinalityForRelation(ass);
+                if (ass.is1ToMany()) {
+                    String fieldName = getFieldNameToManyRelation(ass);
                     builder.append(fieldName);
                     builder.appendln(" = new ");
                     builder.appendClassName(String.class);
                     builder.appendln("[relationElements.size()];");
-                    builder.append(cardinalityFieldName);
-                    builder.append(" = new ");
-                    builder.appendClassName(HashMap.class);
-                    builder.appendln("(relationElements.size());");
+                    if (policyCmptTypeRelation!=null) {
+                        builder.append(cardinalityFieldName);
+                        builder.append(" = new ");
+                        builder.appendClassName(HashMap.class);
+                        builder.appendln("(relationElements.size());");
+                    }
                     builder.appendln("for (int i=0; i<relationElements.size(); i++) {");
                     builder.appendClassName(Element.class);
                     builder.append(" element = (");
@@ -353,16 +360,17 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                     builder.append(fieldName);
                     builder.append("[i] = ");
                     builder.appendln("element.getAttribute(\"" + XML_ATTRIBUTE_TARGET_RUNTIME_ID + "\");");
-                    builder.append("addToCardinalityMap(");
-                    builder.append(cardinalityFieldName);
-                    builder.append(", ");
-                    builder.append(fieldName);
-                    builder.append("[i], ");
-                    builder.appendln("element);");
+                    if (policyCmptTypeRelation!=null) {
+                        builder.append("addToCardinalityMap(");
+                        builder.append(cardinalityFieldName);
+                        builder.append(", ");
+                        builder.append(fieldName);
+                        builder.append("[i], ");
+                        builder.appendln("element);");
+                    }
                     builder.appendln("}");
                 } else {
-                    String fieldName = getFieldNameTo1Relation(r);
-                    String cardFieldName = getFieldNameCardinalityForRelation(r);
+                    String fieldName = getFieldNameTo1Relation(ass);
                     builder.appendClassName(Element.class);
                     builder.append(" element = (");
                     builder.appendClassName(Element.class);
@@ -370,15 +378,17 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                     builder.append(fieldName);
                     builder.append(" = ");
                     builder.appendln("element.getAttribute(\"" + XML_ATTRIBUTE_TARGET_RUNTIME_ID + "\");");
-                    builder.append(cardFieldName);
-                    builder.append(" = new ");
-                    builder.appendClassName(HashMap.class);
-                    builder.appendln("(1);");
-                    builder.append("addToCardinalityMap(");
-                    builder.append(cardFieldName);
-                    builder.append(", ");
-                    builder.append(fieldName);
-                    builder.appendln(", element);");
+                    if (policyCmptTypeRelation!=null) {
+                        builder.append(cardinalityFieldName);
+                        builder.append(" = new ");
+                        builder.appendClassName(HashMap.class);
+                        builder.appendln("(1);");
+                        builder.append("addToCardinalityMap(");
+                        builder.append(cardinalityFieldName);
+                        builder.append(", ");
+                        builder.append(fieldName);
+                        builder.appendln(", element);");
+                    }
                 }
                 builder.appendln("}");
             }
@@ -387,7 +397,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
 
     private void generateMethodDoInitTableUsagesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
-        org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType type = getProductCmptTypeV2();
+        IProductCmptType type = getProductCmptType();
         if (type==null) {
             return;
         }
@@ -677,7 +687,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForNoneContainerRelation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateCodeForNoneContainerRelation(IProductCmptTypeAssociation relation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         if (relation.is1ToMany()) {
             generateFieldToManyRelation(relation, memberVarsBuilder);
             generateMethodGetManyRelatedCmpts(relation, methodsBuilder);
@@ -690,12 +700,14 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
 //            generateMethodGetCardinalityFor1To1Relation(relation, methodsBuilder);
 //            generateFieldCardinalityFor1To1Relation(relation, memberVarsBuilder);
         }
-        generateMethodGetCardinalityFor1ToManyRelation(relation, methodsBuilder);
-        generateFieldCardinalityForRelation(relation, memberVarsBuilder);
+        if (relation.findPolicyCmptTypeRelation(getIpsProject())!=null) {
+            generateMethodGetCardinalityFor1ToManyRelation(relation, methodsBuilder);
+            generateFieldCardinalityForRelation(relation, memberVarsBuilder);
+        }
         generateMethodGetNumOfRelatedProductCmpts(relation, methodsBuilder);  
     }
     
-    private String getFieldNameToManyRelation(IProductCmptTypeRelation relation) throws CoreException {
+    private String getFieldNameToManyRelation(IProductCmptTypeAssociation relation) throws CoreException {
         return getJavaNamingConvention().getMultiValueMemberVarName(interfaceBuilder.getPropertyNameToManyRelation(relation));
     }
     
@@ -706,7 +718,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * private CoverageType[] optionalCoverageTypes;
      * </pre>
      */
-    private void generateFieldToManyRelation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
+    private void generateFieldToManyRelation(IProductCmptTypeAssociation relation, JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
         String role = StringUtils.capitalise(relation.getTargetRolePlural());
         appendLocalizedJavaDoc("FIELD_TOMANY_RELATION", role, relation, memberVarsBuilder);
         String type = String.class.getName() + "[]";
@@ -727,14 +739,14 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     private void generateMethodGetManyRelatedCmpts(
-            IProductCmptTypeRelation relation, 
+            IProductCmptTypeAssociation relation, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureGetManyRelatedCmpts(relation, methodsBuilder);
 
         String fieldName = getFieldNameToManyRelation(relation);
-        String targetClass = productCmptTypeInterfaceBuilder.getQualifiedClassName(relation.findTarget());
+        String targetClass = productCmptTypeInterfaceBuilder.getQualifiedClassName(relation.findTarget(getIpsProject()));
         methodsBuilder.openBracket();
         methodsBuilder.appendClassName(targetClass);
         methodsBuilder.append("[] result = new ");
@@ -771,10 +783,10 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     private void generateMethodAddRelatedCmpt(
-            IProductCmptTypeRelation relation, 
+            IProductCmptTypeAssociation relation, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        IProductCmptType target = relation.findTarget();
+        IProductCmptType target = relation.findTarget(getIpsProject());
         appendLocalizedJavaDoc("METHOD_ADD_RELATED_CMPT", relation.getTargetRoleSingular(), relation, methodsBuilder);
         String methodName = "add" + StringUtils.capitalise(relation.getTargetRoleSingular());
         String[] argNames = new String[]{"target"};
@@ -801,13 +813,13 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     private void generateMethodGetRelatedCmptAtIndex(
-            IProductCmptTypeRelation relation, 
+            IProductCmptTypeAssociation relation, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureGetRelatedCmptsAtIndex(relation, methodsBuilder);
         String fieldName = getFieldNameToManyRelation(relation);
-        String targetClass = productCmptTypeInterfaceBuilder.getQualifiedClassName(relation.findTarget());
+        String targetClass = productCmptTypeInterfaceBuilder.getQualifiedClassName(relation.findTarget(getIpsProject()));
         methodsBuilder.openBracket();
         methodsBuilder.append("return (");
         methodsBuilder.appendClassName(targetClass);
@@ -817,7 +829,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.closeBracket();
     }
     
-    private String getFieldNameTo1Relation(IProductCmptTypeRelation relation) throws CoreException {
+    private String getFieldNameTo1Relation(IProductCmptTypeAssociation relation) throws CoreException {
         return getJavaNamingConvention().getMemberVarName(interfaceBuilder.getPropertyNameTo1Relation(relation));
     }
 
@@ -828,7 +840,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * private CoverageType mainCoverage;
      * </pre>
      */
-    private void generateFieldTo1Relation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
+    private void generateFieldTo1Relation(IProductCmptTypeAssociation relation, JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
         String role = StringUtils.capitalise(relation.getTargetRoleSingular());
         appendLocalizedJavaDoc("FIELD_TO1_RELATION", role, relation, memberVarsBuilder);
         memberVarsBuilder.varDeclaration(Modifier.PRIVATE, String.class, getFieldNameTo1Relation(relation), new JavaCodeFragment("null"));
@@ -844,13 +856,13 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     private void generateMethodGet1RelatedCmpt(
-            IProductCmptTypeRelation relation, 
+            IProductCmptTypeAssociation relation, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureGet1RelatedCmpt(relation, methodsBuilder);
         String fieldName = getFieldNameTo1Relation(relation);
-        String targetClass = productCmptTypeInterfaceBuilder.getQualifiedClassName(relation.findTarget());
+        String targetClass = productCmptTypeInterfaceBuilder.getQualifiedClassName(relation.findTarget(getIpsProject()));
         methodsBuilder.openBracket();
         methodsBuilder.append("return (");
         methodsBuilder.appendClassName(targetClass);
@@ -870,7 +882,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     private void generateMethodSet1RelatedCmpt(
-            IProductCmptTypeRelation relation, 
+            IProductCmptTypeAssociation relation, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         appendLocalizedJavaDoc("METHOD_SET_1_RELATED_CMPT", relation.getTargetRoleSingular(), relation, methodsBuilder);
@@ -878,7 +890,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         String propName = interfaceBuilder.getPropertyNameTo1Relation(relation);
         String methodName = getJavaNamingConvention().getSetterMethodName(propName, Datatype.INTEGER);
         String[] argNames = new String[]{"target"};
-        String[] argTypes = new String[]{productCmptTypeInterfaceBuilder.getQualifiedClassName(relation.findTarget())};
+        String[] argTypes = new String[]{productCmptTypeInterfaceBuilder.getQualifiedClassName(relation.findTarget(getIpsProject()))};
         methodsBuilder.signature(Modifier.PUBLIC, "void", methodName, argNames, argTypes);
         String fieldName = getFieldNameTo1Relation(relation);
         methodsBuilder.openBracket();
@@ -890,14 +902,14 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForContainerRelationDefinition(IProductCmptTypeRelation containerRelation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateCodeForContainerRelationDefinition(IProductCmptTypeAssociation containerRelation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         // nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForContainerRelationImplementation(IProductCmptTypeRelation containerRelation, List implRelations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateCodeForContainerRelationImplementation(IProductCmptTypeAssociation containerRelation, List implRelations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         generateMethodGetRelatedCmptsInContainer(containerRelation, implRelations, methodsBuilder);
         generateMethodGetNumOfRelatedProductCmpts(containerRelation, implRelations, methodsBuilder);
         generateMethodGetNumOfRelatedProductCmptsInternal(containerRelation, implRelations, methodsBuilder);
@@ -922,14 +934,14 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     private void generateMethodGetRelatedCmptsInContainer(
-            IProductCmptTypeRelation relation,
+            IProductCmptTypeAssociation relation,
             List implRelations,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureContainerRelation(relation, methodsBuilder);
 
-        String targetClass = productCmptTypeInterfaceBuilder.getQualifiedClassName(relation.findTarget());
+        String targetClass = productCmptTypeInterfaceBuilder.getQualifiedClassName(relation.findTarget(getIpsProject()));
         methodsBuilder.openBracket();
         methodsBuilder.appendClassName(targetClass);
         methodsBuilder.append("[] result = new ");
@@ -938,7 +950,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.append(getMethodNameGetNumOfRelatedCmptsInternal(relation));
         methodsBuilder.appendln("()];");
 
-        IProductCmptType supertype = getProductCmptType().findSupertype();
+        IProductCmptType supertype = (IProductCmptType)getProductCmptType().findSupertype(getIpsProject());
         if (supertype!=null && !supertype.isAbstract()) {
             // ICoverage[] superResult = super.getCoverages();
             // System.arraycopy(superResult, 0, result, 0, superResult.length);
@@ -952,18 +964,18 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             methodsBuilder.append("int index = 0;");
         }
         for (Iterator it = implRelations.iterator(); it.hasNext();) {
-            IProductCmptTypeRelation implRelation = (IProductCmptTypeRelation)it.next();
+            IProductCmptTypeAssociation implRelation = (IProductCmptTypeAssociation)it.next();
             if (implRelation.is1ToMany()) {
                 String objectArrayVar = getFieldNameToManyRelation(implRelation) + "Objects";
                 String getterMethod = interfaceBuilder.getMethodNameGetManyRelatedCmpts(implRelation) + "()";
-                methodsBuilder.appendClassName(productCmptTypeInterfaceBuilder.getQualifiedClassName(implRelation.findTarget()));
+                methodsBuilder.appendClassName(productCmptTypeInterfaceBuilder.getQualifiedClassName(implRelation.findTarget(getIpsProject())));
                 methodsBuilder.append("[] " + objectArrayVar + " = " + getterMethod + ";");
                 methodsBuilder.appendln("for (int i=0; i<" + objectArrayVar + ".length; i++) {");
                 methodsBuilder.appendln("result[index++] = " + objectArrayVar + "[i];");
                 methodsBuilder.appendln("}");
             } else {
                 String accessCode;
-                if (implRelation.isAbstractContainer()) {
+                if (implRelation.isReadOnlyContainer()) {
                     // if the implementation relation is itself a container relation, use the access method
                     accessCode = interfaceBuilder.getMethodNameGet1RelatedCmpt(implRelation) + "()";
                 } else {
@@ -998,8 +1010,8 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * }
      * </pre>
      */
-    private void generateMethodGetNumOfRelatedProductCmpts(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder builder) throws CoreException {
-        if (relation.isAbstractContainer()) {
+    private void generateMethodGetNumOfRelatedProductCmpts(IProductCmptTypeAssociation relation, JavaCodeFragmentBuilder builder) throws CoreException {
+        if (relation.isReadOnlyContainer()) {
             throw new IllegalArgumentException("Relation needn't be a container relation.");
         }
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
@@ -1027,8 +1039,8 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * }
      * </pre>
      */
-    private void generateMethodGetNumOfRelatedProductCmpts(IProductCmptTypeRelation containerRelation, List implRelations, JavaCodeFragmentBuilder builder) throws CoreException {
-        if (!containerRelation.isAbstractContainer()) {
+    private void generateMethodGetNumOfRelatedProductCmpts(IProductCmptTypeAssociation containerRelation, List implRelations, JavaCodeFragmentBuilder builder) throws CoreException {
+        if (!containerRelation.isReadOnlyContainer()) {
             throw new IllegalArgumentException("Relation must be a container relation.");
         }
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
@@ -1053,8 +1065,8 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * }
      * </pre>
      */
-    private void generateMethodGetNumOfRelatedProductCmptsInternal(IProductCmptTypeRelation containerRelation, List implRelations, JavaCodeFragmentBuilder builder) throws CoreException {
-        if (!containerRelation.isAbstractContainer()) {
+    private void generateMethodGetNumOfRelatedProductCmptsInternal(IProductCmptTypeAssociation containerRelation, List implRelations, JavaCodeFragmentBuilder builder) throws CoreException {
+        if (!containerRelation.isReadOnlyContainer()) {
             throw new IllegalArgumentException("Relation must be a container relation.");
         }
         builder.javaDoc("", ANNOTATION_GENERATED);
@@ -1062,13 +1074,13 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         builder.signature(java.lang.reflect.Modifier.PRIVATE, "int", methodName, new String[]{}, new String[]{});
         builder.openBracket();
         builder.appendln("int num = 0;");
-        IProductCmptType supertype = getProductCmptType().findSupertype();
+        IProductCmptType supertype = (IProductCmptType)getProductCmptType().findSupertype(getIpsProject());
         if (supertype!=null && !supertype.isAbstract()) {
             String methodName2 = interfaceBuilder.getMethodNameGetNumOfRelatedCmpts(containerRelation);
             builder.appendln("num += super." + methodName2 + "();");
         }
         for (Iterator it = implRelations.iterator(); it.hasNext();) {
-            IProductCmptTypeRelation relation = (IProductCmptTypeRelation)it.next();
+            IProductCmptTypeAssociation relation = (IProductCmptTypeAssociation)it.next();
             builder.append("num += ");
             builder.append(interfaceBuilder.getMethodNameGetNumOfRelatedCmpts(relation));
             builder.append("();");
@@ -1081,11 +1093,11 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * Returns the name of the internal method returning the number of referenced objects,
      * e.g. getNumOfCoveragesInternal()
      */
-    private String getMethodNameGetNumOfRelatedCmptsInternal(IProductCmptTypeRelation relation) {
+    private String getMethodNameGetNumOfRelatedCmptsInternal(IProductCmptTypeAssociation relation) {
         return getLocalizedText(relation, "METHOD_GET_NUM_OF_INTERNAL_NAME", StringUtils.capitalise(relation.getTargetRolePlural()));
     }
     
-    private void generateMethodGetCardinalityFor1ToManyRelation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+    private void generateMethodGetCardinalityFor1ToManyRelation(IProductCmptTypeAssociation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
         methodsBuilder.javaDoc("@inheritDoc", ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureGetCardinalityForRelation(relation, methodsBuilder);
         String[][] params = interfaceBuilder.getParamGetCardinalityForRelation(relation);
@@ -1109,18 +1121,18 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.append(frag);
     }
 
-    public String getFieldNameCardinalityForRelation(IProductCmptTypeRelation relation) throws CoreException{
-        return getLocalizedText(relation, "FIELD_CARDINALITIES_FOR_NAME", relation.findPolicyCmptTypeRelation().getTargetRoleSingular());
+    public String getFieldNameCardinalityForRelation(IProductCmptTypeAssociation relation) throws CoreException{
+        return getLocalizedText(relation, "FIELD_CARDINALITIES_FOR_NAME", relation.findPolicyCmptTypeRelation(getIpsProject()).getTargetRoleSingular());
     }
     
     private void generateFieldCardinalityForRelation(
-            IProductCmptTypeRelation relation, JavaCodeFragmentBuilder fieldsBuilder) throws CoreException{
-        appendLocalizedJavaDoc("FIELD_CARDINALITIES_FOR", relation.findPolicyCmptTypeRelation().getTargetRoleSingular(), relation, fieldsBuilder);
+            IProductCmptTypeAssociation association, JavaCodeFragmentBuilder fieldsBuilder) throws CoreException{
+        appendLocalizedJavaDoc("FIELD_CARDINALITIES_FOR", association.findPolicyCmptTypeRelation(getIpsProject()).getTargetRoleSingular(), association, fieldsBuilder);
         JavaCodeFragment expression = new JavaCodeFragment();
         expression.append(" new ");
         expression.appendClassName(HashMap.class);
         expression.append("(0);");
-        fieldsBuilder.varDeclaration(Modifier.PRIVATE, Map.class, getFieldNameCardinalityForRelation(relation), expression);
+        fieldsBuilder.varDeclaration(Modifier.PRIVATE, Map.class, getFieldNameCardinalityForRelation(association), expression);
     }
     
     private void generateMethodGetRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
@@ -1165,24 +1177,22 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         memberVarBuilder.varDeclaration(Modifier.PRIVATE, EnumValueSet.class, getFieldNameAllowedValuesFor(a)); 
     }
 
-    class GetClassModifierFunction extends PolicyCmptTypeHierarchyVisitor {
+    class GetClassModifierFunction extends ProductCmptTypeHierarchyVisitor {
 
-        public GetClassModifierFunction(int modifier) {
-            super();
+        private int modifier;
+        
+        public GetClassModifierFunction(IIpsProject ipsProject, int modifier) {
+            super(ipsProject);
             this.modifier = modifier;
         }
-        
-        private int modifier;
         
         /**
          * {@inheritDoc}
          */
-        protected boolean visit(IPolicyCmptType type) {
-            IAttribute[] attributes = type.getAttributes();
-            for (int i = 0; i < attributes.length; i++) {
-                if (attributes[i].isDerived() && attributes[i].isProductRelevant()) {
-                    // note: type can't be an instanceof ProductCmptType, as derived or computed policy cmpt type attributes
-                    // aren't  not product cmpt attributes!
+        protected boolean visit(IProductCmptType type) {
+            IProductCmptTypeMethod[] methods = type.getProductCmptTypeMethods();
+            for (int i = 0; i < methods.length; i++) {
+                if (methods[i].isFormulaSignatureDefinition()) {
                     modifier = modifier | Modifier.ABSTRACT;
                     return false;
                 }

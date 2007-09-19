@@ -41,7 +41,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
@@ -156,7 +156,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateOther(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
-        if (getPcType().findOldProductCmptType()!=null) {
+        if (getProductCmptType()!=null) {
             if (hasValidProductCmptTypeName()) {
                 generateMethodGetProductCmpt(methodsBuilder);
                 generateMethodSetProductCmpt(methodsBuilder);
@@ -257,7 +257,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     public void generateMethodGetProductCmptGeneration(IProductCmptType type, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String[] replacements = new String[]{getNameForGenerationConcept(type), type.getName(), type.findPolicyCmptyType().getName()};
+        String[] replacements = new String[]{getNameForGenerationConcept(type), type.getName(), getPcType().getName()};
         appendLocalizedJavaDoc("METHOD_GET_PRODUCTCMPT_GENERATION", replacements, type, methodsBuilder);
         generateSignatureGetProductCmptGeneration(type, methodsBuilder);
         methodsBuilder.appendln(";");
@@ -372,7 +372,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         generateMethodGetPropertyValue(attribute, datatypeHelper, methodsBuilder);
         generateMethodSetPropertyValue(attribute, datatypeHelper, methodsBuilder);
         DatatypeHelper nonPrimitiveDatatypeHelper = StdBuilderHelper.
-            getDatatypeHelperForValueSet(getIpsSrcFile().getIpsProject(), datatypeHelper);
+            getDatatypeHelperForValueSet(getIpsProject(), datatypeHelper);
         if(ValueSetType.RANGE.equals(attribute.getValueSet().getValueSetType())){
             generateFieldMaxRangeFor(attribute, nonPrimitiveDatatypeHelper, memberVarsBuilder);
             productCmptGenInterfaceBuilder.generateMethodGetRangeFor(attribute, nonPrimitiveDatatypeHelper, methodsBuilder);
@@ -748,7 +748,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         String targetTypeName = target.getName();
         String role = relation.getTargetRoleSingular();
         if (inclProductCmptArg) { 
-            String replacements[] = new String[]{targetTypeName, role, getParamNameForProductCmptInNewChildMethod(target.findOldProductCmptType())};
+            String replacements[] = new String[]{targetTypeName, role, getParamNameForProductCmptInNewChildMethod(target.findProductCmptType(getIpsProject()))};
             appendLocalizedJavaDoc("METHOD_NEW_CHILD_WITH_PRODUCTCMPT_ARG", replacements, relation, builder);
         } else {
             appendLocalizedJavaDoc("METHOD_NEW_CHILD", new String[]{targetTypeName, role}, relation, builder);
@@ -778,7 +778,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         String returnType = getQualifiedClassName(relation.findTarget());
         String[] argNames, argTypes;
         if (inclProductCmptArg) {
-            IProductCmptType productCmptType = target.findOldProductCmptType();
+            IProductCmptType productCmptType = target.findProductCmptType(getIpsProject());
             argNames = new String[]{getParamNameForProductCmptInNewChildMethod(productCmptType)};
             argTypes = new String[]{productCmptInterfaceBuilder.getQualifiedClassName(productCmptType)};
         } else {
@@ -1075,7 +1075,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         JavaCodeFragment frag = null;
         if(helper.getDatatype().isPrimitive()){
             Datatype wrapperType = ((ValueDatatype)helper.getDatatype()).getWrapperType();
-            helper = getIpsSrcFile().getIpsProject().getDatatypeHelper(wrapperType);
+            helper = getIpsProject().getDatatypeHelper(wrapperType);
             containsNull = false;
         }
         frag = helper.newEnumValueSetInstance(valueIds, containsNull);

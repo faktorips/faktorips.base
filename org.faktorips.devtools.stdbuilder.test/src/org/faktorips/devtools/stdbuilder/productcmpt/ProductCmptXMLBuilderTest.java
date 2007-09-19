@@ -29,13 +29,13 @@ import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 
 /**
  * 
@@ -44,7 +44,7 @@ import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
-    private IPolicyCmptType type;
+    private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
     
@@ -57,25 +57,23 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
         IIpsProjectProperties props = project.getProperties();
         props.setJavaSrcLanguage(Locale.GERMAN);
         project.setProperties(props);
-        type = newPolicyAndProductCmptType(project, "Policy", "Product");
-        IAttribute a = type.newAttribute();
+        policyCmptType = newPolicyAndProductCmptType(project, "Policy", "Product");
+        productCmptType = policyCmptType.findProductCmptType(project);
+        IAttribute a = policyCmptType.newAttribute();
         a.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         a.setDatatype(Datatype.INTEGER.getQualifiedName());
         a.setName("age");
         a.setProductRelevant(true);
-        assertFalse(type.validate().containsErrorMsg());
-        IRelation rel = type.newRelation();
-        rel.setTargetRoleSingular("relation");
-        rel.setTargetRolePlural("rells");
-        rel.setTarget(type.getQualifiedName());
-        rel.setTargetRolePluralProductSide("rels");
-        rel.setTargetRoleSingularProductSide("relation");
+        assertFalse(policyCmptType.validate().containsErrorMsg());
+        IProductCmptTypeAssociation rel = productCmptType.newAssociation();
+        rel.setTargetRoleSingular("role");
+        rel.setTargetRolePlural("roles");
+        rel.setTarget(productCmptType.getQualifiedName());
         
-        type.getIpsSrcFile().save(true, null);
+        productCmptType.getIpsSrcFile().save(true, null);
         
-        productCmptType = type.findProductCmptType(project);
         productCmpt = newProductCmpt(productCmptType, "Product");
-        IProductCmptGeneration gen = (IProductCmptGeneration)productCmpt.newGeneration();
+        IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
         gen.setValidFrom(new GregorianCalendar(2006, 0, 1));
         IConfigElement ce = gen.newConfigElement();
         ce.setPcTypeAttribute(a.getName());
@@ -85,8 +83,8 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
         IProductCmpt refTarget = newProductCmpt(productCmptType, "RefProduct");
         refTarget.setRuntimeId("RefProductRuntimeId");
         
-        IProductCmptRelation relation = gen.newRelation("relation");
-        relation.setTarget(refTarget.getQualifiedName());
+        IProductCmptLink link = gen.newLink("role");
+        link.setTarget(refTarget.getQualifiedName());
         
         productCmpt.getIpsSrcFile().save(true, null);
         refTarget.getIpsSrcFile().save(true, null);

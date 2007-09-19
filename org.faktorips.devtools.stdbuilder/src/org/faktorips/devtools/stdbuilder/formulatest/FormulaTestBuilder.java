@@ -44,7 +44,6 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -53,7 +52,7 @@ import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
@@ -145,14 +144,11 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         if (!productCmpt.containsFormulaTest()) {
             return false;
         }
-        IPolicyCmptType pcType = productCmpt.findPolicyCmptType();
-        productCmptType = pcType == null ? null : pcType.findOldProductCmptType();
-        if (pcType == null) {
+        project = productCmpt.getIpsProject();
+        productCmptType = productCmpt.findProductCmptType(project);
+        if (productCmptType == null) {
             return false;
         }
-
-        project = productCmpt.getIpsProject();
-        
         return true;
     }
     

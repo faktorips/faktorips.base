@@ -31,6 +31,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -38,7 +39,7 @@ import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
 import org.faktorips.fl.CompilationResult;
@@ -71,6 +72,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     private ProductCmptImplClassBuilder productCmptImplBuilder;
     private ProductCmptGenImplClassBuilder productCmptGenImplBuilder;
     
+    private IIpsProject ipsProject;
     /**
      * Constructs a new builder.
      */
@@ -80,7 +82,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         super(builderSet, kindId, new LocalizedStringsSet(
                 ProductCmptGenerationCuBuilder.class));
     }
-
+    
     public void setProductCmptGeneration(IProductCmptGeneration generation){
         ArgumentCheck.notNull(generation);
         this.generation = generation;
@@ -102,7 +104,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     }
     
     public IProductCmptType getProductCmptType() throws CoreException {
-        return generation.getProductCmpt().findOldProductCmptType();
+        return generation.getProductCmpt().findProductCmptType(getIpsProject());
     }
     
     /**
@@ -113,7 +115,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
             addToBuildStatus(new IpsStatus("The generation needs to be set for this " + ProductCmptGenerationCuBuilder.class)); //$NON-NLS-1$
             return;
         }
-        IPolicyCmptType pcType = generation.getProductCmpt().findPolicyCmptType();
+        IProductCmptType pcType = generation.getProductCmpt().findProductCmptType(getIpsProject());
         TypeSection mainSection = getMainTypeSection();
         mainSection.setClassModifier(Modifier.PUBLIC);
         mainSection.setUnqualifiedName(getUnqualifiedClassName());
@@ -150,7 +152,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         String javaDoc = getLocalizedText(getIpsSrcFile(), CONSTRUCTOR_JAVADOC, genName);
         String className = getUnqualifiedClassName();
         String[] argNames = new String[] { "productCmpt" }; //$NON-NLS-1$
-        String[] argClassNames = new String[] { productCmptImplBuilder.getQualifiedClassName(generation.getProductCmpt().findOldProductCmptType()) };
+        String[] argClassNames = new String[] { productCmptImplBuilder.getQualifiedClassName(generation.getProductCmpt().findProductCmptType(getIpsProject())) };
         JavaCodeFragment body = new JavaCodeFragment(
                 "super(productCmpt);"); //$NON-NLS-1$
         codeBuilder.method(Modifier.PUBLIC, null, className, argNames,

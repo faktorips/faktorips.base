@@ -20,12 +20,8 @@ package org.faktorips.devtools.stdbuilder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.RangeValueSet;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
 
 /**
  * 
@@ -59,33 +55,30 @@ public class MissingProductCmptTypeTest extends AbstractIpsPluginTest {
         type.setConfigurableByProductCmptType(true);
         type.setUnqualifiedProductCmptType("Product"); // missing product component type!
         
-        IAttribute a = type.newAttribute();
-        a.setName("a");
-        a.setDatatype("Integer");
-        a.setProductRelevant(true);
-        a.setValueSetType(ValueSetType.RANGE);
-        a.setDefaultValue("0");
-        RangeValueSet range = (RangeValueSet)a.getValueSet();
-        range.setLowerBound("0");
-        range.setUpperBound("10");
-        assertTrue(a.isValid());
+//        IAttribute a = type.newAttribute();
+//        a.setName("a");
+//        a.setDatatype("Integer");
+//        a.setProductRelevant(true);
+//        a.setValueSetType(ValueSetType.RANGE);
+//        a.setDefaultValue("0");
+//        RangeValueSet range = (RangeValueSet)a.getValueSet();
+//        range.setLowerBound("0");
+//        range.setUpperBound("10");
+//        assertTrue(a.isValid());
         
-        IRelation r = type.newRelation();
-        IPolicyCmptType target = newPolicyAndProductCmptType(project, "Target", "TargetType");
-        target.setConfigurableByProductCmptType(true);
-        target.setUnqualifiedProductCmptType("TargetType");
-        target.getIpsSrcFile().save(true, null);
-        r.setTarget(target.getQualifiedName());
-        r.setMinCardinality(1);
-        r.setMaxCardinality(1);
-        r.setTargetRoleSingular("Target");
-        r.setTargetRolePlural("Targets");
-        r.setProductRelevant(true);
-        r.setMinCardinalityProductSide(1);
-        r.setMaxCardinalityProductSide(1);
-        r.setTargetRoleSingularProductSide("TargetType");
-        r.setTargetRolePluralProductSide("TargetTypes");
-        assertTrue(r.isValid());
+//        IPolicyCmptType target = newPolicyAndProductCmptType(project, "Target", "TargetType");
+//        IRelation r = type.newRelation();
+//        r.setTarget(target.getQualifiedName());
+//        r.setMinCardinality(1);
+//        r.setMaxCardinality(1);
+//        r.setTargetRoleSingular("Target");
+//        r.setTargetRolePlural("Targets");
+//        r.setProductRelevant(true);
+//        r.setMinCardinalityProductSide(1);
+//        r.setMaxCardinalityProductSide(1);
+//        r.setTargetRoleSingularProductSide("TargetType");
+//        r.setTargetRolePluralProductSide("TargetTypes");
+//        assertTrue(r.isValid());
         
         type.getIpsSrcFile().save(true, null);
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);

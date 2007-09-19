@@ -67,7 +67,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        if (attribute.isProductRelevant() && getPcType().findOldProductCmptType() == null) {
+        if (attribute.isProductRelevant() && getProductCmptType() == null) {
             return;
         }
         AttributeType type = attribute.getAttributeType();
@@ -118,9 +118,6 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
 
-        if (relation.isProductRelevant() && getPcType().findOldProductCmptType()==null) {
-            return;
-        }
         generateCodeForRelationInCommon(relation, fieldsBuilder, methodsBuilder);
         if (relation.is1ToMany()) {
             generateCodeFor1ToManyRelation(relation, fieldsBuilder, methodsBuilder);
@@ -176,7 +173,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             return;
         }
         generateMethodNewChild(relation, target, false, methodsBuilder);
-        if (target.isConfigurableByProductCmptType()) {
+        if (target.isConfigurableByProductCmptType() && target.findProductCmptType(getIpsProject())!=null) {
             generateMethodNewChild(relation, target, true, methodsBuilder);
         }
     }

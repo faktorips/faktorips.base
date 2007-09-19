@@ -34,18 +34,16 @@ import org.faktorips.devtools.core.builder.ProductCmptTypeHierarchyCodeGenerator
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.util.LocalizedStringsSet;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 
 /**
  * 
@@ -65,53 +63,10 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
-        IPolicyCmptType type = (IPolicyCmptType)ipsSrcFile.getIpsObject();
-        if (type.findOldProductCmptType() != null) {
-            MessageList msgList = ((Validatable)type).validate();
-            //this validation is necessary because otherwise a java class file is created with a wrong java class name
-            //this causes jmerge to throw an exception
-            Message msg = msgList.getMessageByCode(IPolicyCmptType.MSGCODE_INVALID_PRODUCT_CMPT_TYPE_NAME);
-            if (msg != null) {
-                return;
-            }
-
-            // this condition can't be handled in isBuilderFor() as the isBuilderFor() method
-            // is also called in the case the file has been deleted. In this case, the
-            // file's ips object can't be accessed.
-            super.build(ipsSrcFile);
-        }
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
-        // TODO delete generate files for product cmpt type
-        // the problem here is that the name of the product component type can't
-        // be derived from the file name. It is stored in the ips srcfile that contains
-        // the policy component type. But this has been deleted, so we don't now the name
-        // of the product component type. perhaps we can use the toc.
-    }
-
-    /**
-     * Returns the product component type this builder builds an artefact for.
-     */
-    public IProductCmptType getProductCmptType() {
-        try {
-            return ((IPolicyCmptType)getIpsObject()).findOldProductCmptType();
-        } catch (CoreException e) {
-            throw new RuntimeException(e); // this can never happen
-        }
+        return IpsObjectType.PRODUCT_CMPT_TYPE_V2.equals(ipsSrcFile.getIpsObjectType());
     }
 
     /**
@@ -119,20 +74,18 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
      * 
      * @throws CoreException 
      */
-    public org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType getProductCmptTypeV2() throws CoreException {
-        IPolicyCmptType type = (IPolicyCmptType)getIpsObject();
-        return type.findProductCmptType(type.getIpsProject());
-    }
+    public IProductCmptType getProductCmptType() {
+        return (IProductCmptType)getIpsObject();    }
 
     /**
-     * Returns the product component type this builder builds an artefact for.
+     * Returns the product component type stored in given ips src file.
      */
     public IProductCmptType getProductCmptType(IIpsSrcFile ipsSrcFile) throws CoreException {
-        IPolicyCmptType type = (IPolicyCmptType)ipsSrcFile.getIpsObject();
-        if (!type.isConfigurableByProductCmptType()) {
-            return null;
-        }
-        return type.findOldProductCmptType();
+        return (IProductCmptType)ipsSrcFile.getIpsObject();
+    }
+
+    protected IPolicyCmptType getPolicyCmptType() throws CoreException {
+        return getProductCmptType().findPolicyCmptType(true, getIpsProject());
     }
 
     /**
@@ -219,7 +172,9 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
      */
     private void generateCodeForAttributes(JavaCodeFragmentBuilder constantBuilder,
             JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        IAttribute[] attributes = getProductCmptType().findPolicyCmptyType().getAttributes();
+        
+        IPolicyCmptType policyCmptType = getPolicyCmptType();
+        IAttribute[] attributes = policyCmptType == null ? new IAttribute[0] : policyCmptType.getAttributes();
         for (int i = 0; i < attributes.length; i++) {
             IAttribute a = attributes[i];
             if (!a.isProductRelevant()) {
@@ -247,7 +202,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
      */
     private void generateCodeForTableUsages(JavaCodeFragmentBuilder fieldCodeBuilder,
             JavaCodeFragmentBuilder methodCodeBuilder) throws CoreException {
-        org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType type = getProductCmptTypeV2();
+        IProductCmptType type = getProductCmptType();
         if (type==null) {
             return;
         }
@@ -314,19 +269,19 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         HashMap containerRelations = new HashMap();
-        IProductCmptTypeRelation[] relations = getProductCmptType().getRelations();
+        IProductCmptTypeAssociation[] relations = getProductCmptType().getAssociations();
         for (int i = 0; i < relations.length; i++) {
             try {
                 if (relations[i].validate().containsErrorMsg()) {
                     continue;
                 }
-                if (relations[i].isAbstractContainer()) {
+                if (relations[i].isReadOnlyContainer()) {
                     generateCodeForContainerRelationDefinition(relations[i], fieldsBuilder, methodsBuilder);
                 } else {
                     generateCodeForNoneContainerRelation(relations[i], fieldsBuilder, methodsBuilder);                
                 }
-                if (relations[i].implementsContainerRelation()) {
-                    IProductCmptTypeRelation containerRel = relations[i].findContainerRelation();
+                if (relations[i].isContainerRelationImplementation()) {
+                    IProductCmptTypeAssociation containerRel = relations[i].findImplementedContainerRelation(getIpsSrcFile().getIpsProject());
                     List implementationRelations = (List)containerRelations.get(containerRel);
                     if (implementationRelations==null) {
                         implementationRelations = new ArrayList();
@@ -340,57 +295,60 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
                         + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }
-        CodeGeneratorForContainerRelationImplementation generator = new CodeGeneratorForContainerRelationImplementation(containerRelations, fieldsBuilder, methodsBuilder);
+        CodeGeneratorForContainerAssociationImplementation generator = new CodeGeneratorForContainerAssociationImplementation(
+                getIpsProject(), containerRelations, fieldsBuilder, methodsBuilder);
         generator.start(getProductCmptType());
     }
     
     /**
-     * Generates the code for a none-container relation definition. The method is called for every 
-     * valid none-container relation defined in the product component type we currently build sourcecode for.
+     * Generates the code for a none-container association definition. The method is called for every 
+     * valid none-container association defined in the product component type we currently build sourcecode for.
      * 
-     * @param relation the relation source code should be generated for
+     * @param association the association source code should be generated for
      * @param fieldsBuilder the code fragment builder to build the memeber variabales section.
      * @param fieldsBuilder the code fragment builder to build the method section.
+     * 
      * @throws Exception implementations of this method don't have to take care about rising checked
      *             exceptions. An exception that had been thrown leads to an interruption of the
      *             current build cycle of this builder. Alternatively it is possible to catch an
      *             exception and log it by means of the addToBuildStatus() method of the super
      *             class.
+     *             
      * @see JavaSourceFileBuilder#addToBuildStatus(CoreException)
      * @see JavaSourceFileBuilder#addToBuildStatus(IStatus)
      */
-    protected abstract void generateCodeForNoneContainerRelation(IProductCmptTypeRelation relation,
+    protected abstract void generateCodeForNoneContainerRelation(IProductCmptTypeAssociation association,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
 
     /**
-     * Generates the code for a container relation definition. The method is called for every 
-     * valid container relation defined in the product component type we currently build sourcecode for.
+     * Generates the code for a container association definition. The method is called for every 
+     * valid container association defined in the product component type we currently build sourcecode for.
      * 
-     * @param containerRelation the container relation source code should be generated for.
+     * @param containerAssociation the container association source code should be generated for.
      * @param fieldsBuilder the code fragment builder to build the memeber variabales section.
      * @param fieldsBuilder the code fragment builder to build the method section.
      */
     protected abstract void generateCodeForContainerRelationDefinition(
-            IProductCmptTypeRelation containerRelation,
+            IProductCmptTypeAssociation containerAssociation,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
     /**
-     * Generates code for a container relation implementation. 
-     * The method is called for every valid container relation in the product 
+     * Generates code for a container association implementation. 
+     * The method is called for every valid container association in the product 
      * component type we currently build sourcecode for and for each valid container relation
      * in one of it's supertypes.
      * 
-     * @param containerRelation the container relation source code should be generated for.
-     * @param implementationRelations the relation implementing the container relation.
+     * @param containerAssociation the container association source code should be generated for.
+     * @param implementationAssociations the relation implementing the container relation.
      * @param fieldsBuilder the code fragment builder to build the memeber variabales section.
      * @param methodsBuilder the code fragment builder to build the method section.
      */
     protected abstract void generateCodeForContainerRelationImplementation(
-            IProductCmptTypeRelation containerRelation,
-            List implementationRelations, 
+            IProductCmptTypeAssociation containerAssociation,
+            List implementationAssociations, 
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
@@ -406,15 +364,16 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
         return StringUtils.uncapitalise(conceptName);
     }
     
-    class CodeGeneratorForContainerRelationImplementation extends ProductCmptTypeHierarchyCodeGenerator {
+    class CodeGeneratorForContainerAssociationImplementation extends ProductCmptTypeHierarchyCodeGenerator {
 
         private HashMap containerImplMap; 
 
-        public CodeGeneratorForContainerRelationImplementation(
+        public CodeGeneratorForContainerAssociationImplementation(
+                IIpsProject ipsProject,
                 HashMap containerImplMap,
                 JavaCodeFragmentBuilder fieldsBuilder, 
                 JavaCodeFragmentBuilder methodsBuilder) {
-            super(fieldsBuilder, methodsBuilder);
+            super(ipsProject, fieldsBuilder, methodsBuilder);
             this.containerImplMap = containerImplMap;
         }
 
@@ -422,17 +381,17 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
          * {@inheritDoc}
          */
         protected boolean visit(IProductCmptType type) {
-            IProductCmptTypeRelation[] relations = type.getRelations();
-            for (int i = 0; i < relations.length; i++) {
-                if (relations[i].isAbstractContainer()) {
+            IProductCmptTypeAssociation[] associations = type.getAssociations();
+            for (int i = 0; i < associations.length; i++) {
+                if (associations[i].isReadOnlyContainer()) {
                     try {
-                        List implRelations = (List)containerImplMap.get(relations[i]);
+                        List implRelations = (List)containerImplMap.get(associations[i]);
                         if (implRelations!=null) {
-                            generateCodeForContainerRelationImplementation(relations[i], implRelations, fieldsBuilder, methodsBuilder);
+                            generateCodeForContainerRelationImplementation(associations[i], implRelations, fieldsBuilder, methodsBuilder);
                         }
                     } catch (Exception e) {
                         addToBuildStatus(new IpsStatus("Error building container relation implementation. "
-                            + "ContainerRelation: " + relations[i]
+                            + "ContainerRelation: " + associations[i]
                             + "Implementing Type: " + getProductCmptType()));
                     }
                 }

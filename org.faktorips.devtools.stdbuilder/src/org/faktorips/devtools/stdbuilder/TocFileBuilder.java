@@ -42,10 +42,10 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptKind;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -336,15 +336,12 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         if (productCmpt.getNumOfGenerations() == 0) {
             return null;
         }
-        IPolicyCmptType pcType = productCmpt.findPolicyCmptType();
+        IProductCmptType pcType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
         if (pcType == null) {
             return null;
         }
         IProductCmptKind kind = productCmpt.findProductCmptKind();
         if (kind==null) {
-            return null;
-        }
-        if (pcType.findOldProductCmptType()==null) {
             return null;
         }
         String packageString = getBuilderSet().getPackage(DefaultBuilderSet.KIND_PRODUCT_CMPT_TOCENTRY, productCmpt.getIpsSrcFile()).replace('.', '/');
@@ -367,7 +364,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             if (gen.getProductCmpt().containsFormula()) {
                 generationClassName = productCmptBuilder.getQualifiedClassName((IProductCmptGeneration)generations[i]);
             } else {
-                generationClassName = productCmptGenImplClassBuilder.getQualifiedClassName(gen.getProductCmpt().findOldProductCmptType());
+                generationClassName = productCmptGenImplClassBuilder.getQualifiedClassName(pcType);
             }
             genEntries[i] = new TocEntryGeneration(entry, validFrom, generationClassName, xmlResourceName); 
         }

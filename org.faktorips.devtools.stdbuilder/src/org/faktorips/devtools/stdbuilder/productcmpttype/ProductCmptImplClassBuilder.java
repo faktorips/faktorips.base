@@ -31,8 +31,8 @@ import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.runtime.IConfigurableModelObject;
@@ -78,10 +78,6 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
         return getJavaNamingConvention().getImplementationClassName(getProductCmptType(ipsSrcFile).getName());
     }
 
-    protected IPolicyCmptType getPolicyCmptType() {
-        return (IPolicyCmptType)getIpsObject();
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -94,7 +90,7 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
      */
     protected String getSuperclass() throws CoreException {
         String javaSupertype = ProductComponent.class.getName();
-        IProductCmptType supertype = getProductCmptType().findSupertype();
+        IProductCmptType supertype = (IProductCmptType)getProductCmptType().findSupertype(getIpsProject());
         if (supertype!=null) {
             javaSupertype = getQualifiedClassName(supertype.getIpsSrcFile());
         }
@@ -144,7 +140,7 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
             throws CoreException {
         
         generateGetGenerationMethod(methodsBuilder);
-        if (!getProductCmptType().isAbstract()) {
+        if (getPolicyCmptType()!=null && !getPolicyCmptType().isAbstract()) {
             generateFactoryMethodsForPolicyCmptType(getPolicyCmptType(), methodsBuilder, new HashSet());
             generateMethodCreatePolicyCmptBase(methodsBuilder);
         }
@@ -154,7 +150,8 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
             IPolicyCmptType returnedTypeInSignature, 
             JavaCodeFragmentBuilder methodsBuilder,
             Set supertypesHandledSoFar) throws CoreException {
-        if (!returnedTypeInSignature.isAbstract()) {
+        
+        if (returnedTypeInSignature!=null && !returnedTypeInSignature.isAbstract()) {
             generateMethodCreatePolicyCmpt(returnedTypeInSignature, methodsBuilder);
         }
         IPolicyCmptType supertype = returnedTypeInSignature.findSupertype();
@@ -162,7 +159,6 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
             supertypesHandledSoFar.add(supertype);
             generateFactoryMethodsForPolicyCmptType(supertype, methodsBuilder, supertypesHandledSoFar);
         }
-            
     }
     
     /**
@@ -248,7 +244,7 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForNoneContainerRelation(IProductCmptTypeRelation relation,
+    protected void generateCodeForNoneContainerRelation(IProductCmptTypeAssociation association,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
 
@@ -258,14 +254,14 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForContainerRelationDefinition(IProductCmptTypeRelation containerRelation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateCodeForContainerRelationDefinition(IProductCmptTypeAssociation containerAssociation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         // nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForContainerRelationImplementation(IProductCmptTypeRelation containerRelation, List implementationRelations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateCodeForContainerRelationImplementation(IProductCmptTypeAssociation containerAssociation, List implementationRelations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         // nothing to do
     }
 

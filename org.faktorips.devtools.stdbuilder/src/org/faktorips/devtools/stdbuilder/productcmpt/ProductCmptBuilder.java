@@ -136,7 +136,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         if (!productCmpt.containsFormula()) {
             return false;
         }
-        if (productCmpt.findOldProductCmptType()==null) {
+        if (productCmpt.findProductCmptType(productCmpt.getIpsProject())==null) {
             // if the type can't be found, nothing an be generated.
             return false;
         }
