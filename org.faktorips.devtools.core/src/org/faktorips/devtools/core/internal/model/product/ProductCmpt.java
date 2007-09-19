@@ -46,10 +46,11 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptKind;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -142,7 +143,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         productCmptType = newType;
         // TODO: V2-temp code entfernen
         try {
-            org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType typeObj = findProductCmptType(getIpsProject());
+            IProductCmptType typeObj = findProductCmptType(getIpsProject());
             if (typeObj!=null) {
                 policyCmptType = typeObj.getPolicyCmptType();
             } else {
@@ -157,19 +158,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
-	public IProductCmptType findOldProductCmptType() throws CoreException {
-		IPolicyCmptType policyCmptType = findPolicyCmptType();
-		if (policyCmptType==null) {
-			return null;
-		}
-		return policyCmptType.findOldProductCmptType();
-	}
-    
-    /**
-     * {@inheritDoc}
-     */
-	public org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
-        return (org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType)ipsProject.findProductCmptType(productCmptType);
+	public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+        return ipsProject.findProductCmptType(productCmptType);
     }
 
     /** 
@@ -184,24 +174,25 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
-        IPolicyCmptType type = findPolicyCmptType();
+        IIpsProject ipsProject = getIpsProject();
+        IProductCmptType type = findProductCmptType(ipsProject);
         if (type == null) {
             String text = NLS.bind(Messages.ProductCmpt_msgUnknownTemplate, this.productCmptType);
             list.add(new Message("", text, Message.ERROR, this, PROPERTY_PRODUCT_CMPT_TYPE)); //$NON-NLS-1$
         } else {
-        	IProductCmptType pType = findOldProductCmptType();
         	try {
 				MessageList list3 = type.validate();
-				if (list3.getMessageByCode(IPolicyCmptType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY) != null || 
-				    list3.getMessageByCode(IPolicyCmptType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY) != null) {
-					String msg = NLS.bind(Messages.ProductCmpt_msgInvalidTypeHierarchy, this.getPolicyCmptType());
-					list.add(new Message(MSGCODE_INCONSISTENCY_IN_POLICY_CMPT_TYPE_HIERARCHY, msg, Message.ERROR, pType, IProductCmptType.PROPERTY_NAME));
+				if (list3.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY) != null || 
+                    list3.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND) != null ||
+				    list3.getMessageByCode(IType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY) != null) {
+					String msg = NLS.bind(Messages.ProductCmpt_msgInvalidTypeHierarchy, this.getProductCmptType());
+					list.add(new Message(MSGCODE_INCONSISTENT_TYPE_HIERARCHY, msg, Message.ERROR, type, IProductCmptType.PROPERTY_NAME));
 				}
 			} catch (Exception e) {
-				throw new CoreException(new IpsStatus("Error during validate of policy component type", e)); //$NON-NLS-1$
+				throw new CoreException(new IpsStatus("Error during validate of product component type", e)); //$NON-NLS-1$
 			}
         }
-        IProductCmptNamingStrategy strategy = getIpsProject().getProductCmptNamingStrategy();
+        IProductCmptNamingStrategy strategy = ipsProject.getProductCmptNamingStrategy();
         MessageList list2 = strategy.validate(getName());
         for (Iterator iter = list2.iterator(); iter.hasNext();) {
             Message msg = (Message)iter.next();
@@ -311,7 +302,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      * Add the qualified name types of all related product cmpt's inside the given generation to the given set
      */
     private void addRelatedProductCmptQualifiedNameTypes(Set qaTypes, IProductCmptGeneration generation) {
-        IProductCmptRelation[] relations = generation.getRelations();
+        IProductCmptLink[] relations = generation.getLinks();
         for (int j = 0; j < relations.length; j++) {
             qaTypes.add(new QualifiedNameType(relations[j].getTarget(), IpsObjectType.PRODUCT_CMPT));
         }
@@ -342,15 +333,15 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProductCmptStructure getStructure() throws CycleException {
-		return new ProductCmptStructure(this);
+	public IProductCmptStructure getStructure(IIpsProject ipsProject) throws CycleException {
+		return new ProductCmptStructure(this, ipsProject);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProductCmptStructure getStructure(GregorianCalendar date) throws CycleException {
-		return new ProductCmptStructure(this, date);
+	public IProductCmptStructure getStructure(GregorianCalendar date, IIpsProject ipsProject) throws CycleException {
+		return new ProductCmptStructure(this, date, ipsProject);
 	}
 
 	/**

@@ -10,7 +10,7 @@
 	-->
 	<ProductCmptType id="17" policyCmptType="Policy">
 		<Attribute id="43" name="productName" datatype="String" modifier="public"/>
-		<Relation id="42"
+		<Association id="42"
 	          relationType="ass" 
 	          target="pack1.CoverageType" 
 	          targetRoleSingular="CoverageType" 
@@ -20,7 +20,7 @@
 	          readOnlyContainer="true"
 	          implementedContainerRelation="BaseCoverageType">
 			<Description>blabla</Description>
-		</Relation>
+		</Association>
 	    <TableStructureUsage roleName="role1">
     		<TableStructure tableStructure="tableStructure1" />
     	</TableStructureUsage>

@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 
 public class ProductEditorDeleteAction extends IpsAction {
@@ -36,7 +36,7 @@ public class ProductEditorDeleteAction extends IpsAction {
      * <code>null</code> if the provided object cannot be processed.
      */
     protected IpsObjectPart canBeProcessed(Object selectedIpsObjectPart){
-        if(selectedIpsObjectPart instanceof IProductCmptRelation){
+        if(selectedIpsObjectPart instanceof IProductCmptLink){
             return (IpsObjectPart)selectedIpsObjectPart;
         }
         return null;

@@ -28,7 +28,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -49,7 +48,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -122,28 +121,10 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
-    public IProductCmptType findOldProductCmptType() throws CoreException {
-        if (!configurableByProductCmptType) {
-            return null;
-        }
-        if (StringUtils.isEmpty(unqalifiedProductCmptType)) {
-            return null;
-        }
-        return new ProductCmptType(this);
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+        return ipsProject.findProductCmptType(getProductCmptType());
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
-    public org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
-        return (org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType)ipsProject.findProductCmptType(getProductCmptType());
-    }
-
-    public IProductCmptType getProductCmptTypeInternal() throws CoreException {
-        return new ProductCmptType(this);
-    }
-    
     /**
      * {@inheritDoc}
      */

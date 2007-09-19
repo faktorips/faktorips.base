@@ -47,9 +47,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
@@ -442,21 +440,11 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
         IFolder folder = (IFolder)getCorrespondingResource();
         IResource[] members = folder.members();
+        String extension = type.getFileExtension();
         for (int i = 0; i < members.length; i++) {
             if (members[i].getType() == IResource.FILE) {
                 IFile file = (IFile)members[i];
-                if (type == IpsObjectType.OLD_PRODUCT_CMPT_TYPE
-                        && IpsObjectType.POLICY_CMPT_TYPE.getFileExtension().equals(file.getFileExtension())) {
-                    IIpsSrcFile srcFile = new IpsSrcFile(this, file.getName());
-                    if (srcFile.getIpsObject() != null) {
-                        IPolicyCmptType policyCmptType = (IPolicyCmptType)srcFile.getIpsObject();
-                        IProductCmptType productCmptType = policyCmptType.findOldProductCmptType();
-                        if (productCmptType != null) {
-                            result.add(productCmptType);
-                        }
-                    }
-                }
-                else if (type.getFileExtension().equals(file.getFileExtension())) {
+                if (extension.equals(file.getFileExtension())) {
                     IIpsSrcFile srcFile = new IpsSrcFile(this, file.getName());
                     if (srcFile.getIpsObject() != null) {
                         result.add(srcFile.getIpsObject());

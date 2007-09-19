@@ -80,7 +80,7 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -1193,7 +1193,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         int max = toBeSearched.getNumOfGenerations();
         for (int i = 0; i < max; i++) {
             IProductCmptGeneration generation = toBeSearched.getProductCmptGeneration(i);
-            IProductCmptRelation[] relations = generation.getRelations();
+            IProductCmptLink[] relations = generation.getLinks();
             for (int j = 0; j < relations.length; j++) {
                 if (relations[j].getTarget().equals(qualifiedProductCmptName)) {
                     result.add(generation);

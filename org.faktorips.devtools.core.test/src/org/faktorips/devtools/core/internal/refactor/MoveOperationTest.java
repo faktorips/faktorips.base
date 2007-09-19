@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -67,7 +67,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         ipsRoot = ipsProject.getIpsPackageFragmentRoots()[0];
         IProductCmptType productCmptType1 = newProductCmptType(ipsProject, "model.Product");
         IProductCmptType productCmptType2 = newProductCmptType(ipsProject, "model.CoverageType");
-        IRelation relation = productCmptType1.newRelation();
+        IProductCmptTypeAssociation relation = productCmptType1.newAssociation();
         relation.setTarget(productCmptType2.getQualifiedName());
         relation.setTargetRoleSingular("CoverageType");
         productCmptType1.getIpsSrcFile().save(true, null);
@@ -76,12 +76,12 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         
         productA = newProductCmpt(productCmptType1, "data.products.ProductA");
         productAGen = productA.getProductCmptGeneration(0);
-        productAGen.newRelation("CoverageType").setTarget(coverage.getQualifiedName());
+        productAGen.newLink("CoverageType").setTarget(coverage.getQualifiedName());
         productA.getIpsSrcFile().save(true, null);
         
         productB = newProductCmpt(productCmptType1, "data.products.ProductB");
         productBGen = productB.getProductCmptGeneration(0);
-        productBGen.newRelation("CoverageType").setTarget(coverage.getQualifiedName());
+        productBGen.newLink("CoverageType").setTarget(coverage.getQualifiedName());
         productB.getIpsSrcFile().save(true, null);
         
         IProductCmptGeneration[] refs = ipsProject.findReferencingProductCmptGenerations(coverage.getQualifiedNameType());

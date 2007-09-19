@@ -46,7 +46,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -538,7 +538,7 @@ public class MoveOperation implements IRunnableWithProgress {
 	 */
 	private void fixRelations(IProductCmptGeneration generation, String oldName, String newName, IProgressMonitor monitor) throws CoreException {
 		
-		IProductCmptRelation[] relations = generation.getRelations();
+		IProductCmptLink[] relations = generation.getLinks();
 		
 		for (int i = 0; i < relations.length; i++) {
 			String target = relations[i].getTarget();

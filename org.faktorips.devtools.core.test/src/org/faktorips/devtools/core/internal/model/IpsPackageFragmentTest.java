@@ -295,7 +295,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     	GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
     	IProductCmpt template = (IProductCmpt)newIpsObject(this.rootPackage, IpsObjectType.PRODUCT_CMPT, "products.Bla");
     	IProductCmptGeneration generation = (IProductCmptGeneration)template.newGeneration(date);
-    	generation.newRelation("testRelation");
+    	generation.newLink("testRelation");
     	template.getIpsSrcFile().save(true, null);
     	TestContentsChangeListener listener = new TestContentsChangeListener();
         template.getIpsModel().addChangeListener(listener);
@@ -312,7 +312,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     	IProductCmptGeneration copyGen = (IProductCmptGeneration)copy.getGenerationByEffectiveDate(date);
     	assertEquals(generation.getValidFrom(), copyGen.getValidFrom());
 
-    	assertEquals(generation.getRelations().length, copyGen.getRelations().length);
+    	assertEquals(generation.getLinks().length, copyGen.getLinks().length);
 
     	assertFalse(template.getRuntimeId().equals(copy.getRuntimeId()));
     	assertFalse(StringUtils.isEmpty(copy.getRuntimeId()));

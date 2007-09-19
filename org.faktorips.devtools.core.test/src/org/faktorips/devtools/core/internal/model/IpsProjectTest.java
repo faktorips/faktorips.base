@@ -69,7 +69,7 @@ import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.versionmanager.AbstractMigrationOperation;
+import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -386,15 +386,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     	assertEquals("myBuilder", ipsProject.getProperties().getBuilderSetId());
     }
 
-    public void testFindOldProductCmptType() throws CoreException {
-    	IPolicyCmptType policyCmptType = (IPolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "motor.MotorPolicy");
-    	policyCmptType.setUnqualifiedProductCmptType("MotorProduct");
-    	policyCmptType.getIpsSrcFile().save(true, null);
-    	IIpsObject obj = ipsProject.findIpsObject(IpsObjectType.OLD_PRODUCT_CMPT_TYPE, "motor.MotorProduct");
-    	assertNotNull(obj);
-    	assertEquals("motor.MotorProduct", obj.getQualifiedName());
-    }
-
     public void testGetValueDatatypes() throws CoreException {
     	IIpsProjectProperties props = ipsProject.getProperties();
     	props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName()});
@@ -682,15 +673,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         result = ipsProject.findIpsObjects(IpsObjectType.TABLE_STRUCTURE);
         assertEquals(1, result.length);
         
-        result = ipsProject.findIpsObjects(IpsObjectType.OLD_PRODUCT_CMPT_TYPE);
-        assertEquals(0, result.length);
-
-        pct.setConfigurableByProductCmptType(true);
-        pct.setUnqualifiedProductCmptType("productCmptTypeName");
-
-        result = ipsProject.findIpsObjects(IpsObjectType.OLD_PRODUCT_CMPT_TYPE);
-        assertEquals(1, result.length);
-        
         IIpsObject ipsObj = ipsProject.findIpsObject(pct.getQualifiedNameType());
         assertEquals(pct, ipsObj);
     }
@@ -745,7 +727,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     	gen1.setValidFrom(cal);
     	genNoref.setValidFrom(cal);
     	genTobereferenced.setValidFrom(cal);
-    	gen1.newRelation("xxx").setTarget(tobereferenced.getQualifiedName());
+    	gen1.newLink("xxx").setTarget(tobereferenced.getQualifiedName());
         IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(cal);
     	
     	result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedNameType());
@@ -754,7 +736,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     	
         IProductCmptGeneration gen2 = (IProductCmptGeneration)ref1.newGeneration();
         gen2.setValidFrom(cal);
-        gen2.newRelation("xxx").setTarget(tobereferenced.getQualifiedName());
+        gen2.newLink("xxx").setTarget(tobereferenced.getQualifiedName());
         IProductCmptGeneration[] generations = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedNameType());
         
         List resultList = Arrays.asList((IProductCmptGeneration[])generations);
@@ -1225,7 +1207,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     
     class InvalidMigrationMockManager extends TestIpsFeatureVersionManager {
 
-        public AbstractMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) throws CoreException {
+        public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) throws CoreException {
             throw new UnsupportedOperationException();
         }
     }

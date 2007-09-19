@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
@@ -218,8 +218,8 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
         List rels = new ArrayList();
         for (Iterator iter = elements.iterator(); iter.hasNext();) {
             ProductCmptCompareItem item = (ProductCmptCompareItem)iter.next();
-            if (item.getIpsElement() instanceof IProductCmptRelation) {
-                if(((IProductCmptRelation)item.getIpsElement()).getProductCmptTypeRelation().equals(relationType)){
+            if (item.getIpsElement() instanceof IProductCmptLink) {
+                if(((IProductCmptLink)item.getIpsElement()).getAssociation().equals(relationType)){
                     rels.add(item);
                 }
             }
@@ -234,7 +234,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
         List rels = new ArrayList();
         for (Iterator iter = elements.iterator(); iter.hasNext();) {
             ProductCmptCompareItem item = (ProductCmptCompareItem)iter.next();
-            if (item.getIpsElement() instanceof IProductCmptRelation) {
+            if (item.getIpsElement() instanceof IProductCmptLink) {
                 rels.add(item);
             }
         }
@@ -254,9 +254,9 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
     private String[] getRelationTypes(IProductCmptGeneration gen) {
         // use TreeSet to avoid duplicate IDs and at the same time maintain their order.
         Set relationTypes = new TreeSet();
-        IProductCmptRelation[] relations = gen.getRelations();
+        IProductCmptLink[] relations = gen.getLinks();
         for (int i = 0; i < relations.length; i++) {
-            relationTypes.add(relations[i].getProductCmptTypeRelation());
+            relationTypes.add(relations[i].getAssociation());
         }
         return (String[])relationTypes.toArray(new String[relationTypes.size()]);
     }
@@ -274,8 +274,8 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
         if (getIpsElement() == null) {
             return sb.toString();
         }
-        if (getIpsElement() instanceof IProductCmptRelation) {
-            IProductCmptRelation rel = (IProductCmptRelation)getIpsElement();
+        if (getIpsElement() instanceof IProductCmptLink) {
+            IProductCmptLink rel = (IProductCmptLink)getIpsElement();
             String validFromSimple = simpleDateFormat.format(rel.getProductCmptGeneration().getValidFrom()
                     .getTime());
             sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB).append(rel.getTarget());
@@ -396,8 +396,8 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
     protected String initName() {
         StringBuffer sb = new StringBuffer();
         if (getIpsElement() != null) {
-            if (getIpsElement() instanceof IProductCmptRelation) {
-                IProductCmptRelation rel = (IProductCmptRelation)getIpsElement();
+            if (getIpsElement() instanceof IProductCmptLink) {
+                IProductCmptLink rel = (IProductCmptLink)getIpsElement();
                 sb.append(Messages.ProductCmptCompareItem_Relation).append(COLON_BLANK).append(QUOTE).append(
                         rel.getName()).append(QUOTE);
             } else if (getIpsElement() instanceof IConfigElement) {

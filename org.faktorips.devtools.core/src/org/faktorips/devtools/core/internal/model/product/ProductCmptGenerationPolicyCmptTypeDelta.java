@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
@@ -43,13 +43,16 @@ import org.faktorips.util.ArgumentCheck;
 public class ProductCmptGenerationPolicyCmptTypeDelta implements
         IProductCmptGenerationPolicyCmptTypeDelta {
     
+    private IIpsProject ipsProject;
     private IProductCmptGeneration generation;
-    private IPolicyCmptType pcType;
+    private IPolicyCmptType policyCmptType;
+    private IProductCmptType productCmptType;
+    
     private IAttribute[] attributesWithMissingConfigElements = new IAttribute[0];
     private IConfigElement[] elementsWithMissingAttributes = new IConfigElement[0];
     private IConfigElement[] elementsWithTypeMismatch = new IConfigElement[0];
     private IConfigElement[] elementsWithValueSetMismatch = new IConfigElement[0]; 
-    private IProductCmptRelation[] relationsWithMissingPcTypeRelations = new IProductCmptRelation[0];
+    private IProductCmptLink[] linksWithMissingAssociations = new IProductCmptLink[0];
     private ITableStructureUsage[] tableStructureUsagesWithMissingTableContentUsages = new ITableStructureUsage[0];
     private ITableContentUsage[] tableContentUsagesWithMissingTableStructureUsages = new ITableContentUsage[0];
     
@@ -58,8 +61,8 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
         ArgumentCheck.notNull(generation);
         
         this.generation = generation;
-        IIpsProject ipsProject = generation.getIpsProject();
-        IProductCmptType productCmptType = generation.findProductCmptType(ipsProject);
+        ipsProject = generation.getIpsProject();
+        productCmptType = generation.findProductCmptType(ipsProject);
         if (productCmptType==null) {
             return;
         }
@@ -67,15 +70,15 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
         hierarchyVisitor.start(productCmptType);
         computeStructureUsagesWithMissingContentUsages(hierarchyVisitor);
         computeContentUsagesWithMissingStructureUsages(hierarchyVisitor);
-        pcType = productCmptType.findPolicyCmptType(true, productCmptType.getIpsProject());
-        if (pcType==null) {
+        computeLinksWithMissingAssociations();
+        policyCmptType = productCmptType.findPolicyCmptType(true, productCmptType.getIpsProject());
+        if (policyCmptType==null) {
             return;
         }
-        ITypeHierarchy hierarchy = pcType.getSupertypeHierarchy();
+        ITypeHierarchy hierarchy = policyCmptType.getSupertypeHierarchy();
         computeAttributesWithMissingConfigElements(hierarchy);
         computeElementsWithMissingAttributes(hierarchy);
         computeElementsWithTypeOrValueSetMismatch(hierarchy);
-        computeRelationsWithMissingPcTypeRelations(hierarchy);
     }
     
     /**
@@ -107,7 +110,7 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
 
     private void computeAttributesWithMissingConfigElements(ITypeHierarchy hierarchy) throws CoreException {
         List missing = new ArrayList();
-        IAttribute[] attributes = hierarchy.getAllAttributesRespectingOverride(pcType);
+        IAttribute[] attributes = hierarchy.getAllAttributesRespectingOverride(policyCmptType);
         for (int i=0; i<attributes.length; i++) {
             if (attributes[i].isProductRelevant()) {
                 if (generation.getConfigElement(attributes[i].getName())==null) {
@@ -122,7 +125,7 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
         List missing = new ArrayList();
         IConfigElement[] elements = generation.getConfigElements();
         for (int i=0; i<elements.length; i++) {
-            IAttribute attribute = hierarchy.findAttribute(pcType, elements[i].getPcTypeAttribute());
+            IAttribute attribute = hierarchy.findAttribute(policyCmptType, elements[i].getPcTypeAttribute());
             if (attribute==null || !attribute.isProductRelevant()) {
                 missing.add(elements[i]);
             }
@@ -135,7 +138,7 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
         List valueSetMismatchs = new ArrayList();
         IConfigElement[] elements = generation.getConfigElements();
         for (int i=0; i<elements.length; i++) {
-            IAttribute attribute =hierarchy.findAttribute(pcType, elements[i].getPcTypeAttribute()); 
+            IAttribute attribute =hierarchy.findAttribute(policyCmptType, elements[i].getPcTypeAttribute()); 
             if (attribute != null && attribute.isProductRelevant()) {
                 if (attribute.getConfigElementType() != elements[i].getType()) {
                     typeMismatchs.add(elements[i]);
@@ -151,15 +154,15 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
         elementsWithValueSetMismatch = (IConfigElement[])valueSetMismatchs.toArray(new IConfigElement[valueSetMismatchs.size()]);
     }
     
-    private void computeRelationsWithMissingPcTypeRelations(ITypeHierarchy hierarchy) throws CoreException {
+    private void computeLinksWithMissingAssociations() throws CoreException {
         List result = new ArrayList();
-        IProductCmptRelation[] relations = generation.getRelations();
-        for (int i=0; i<relations.length; i++) {
-            if (hierarchy.findRelationOnProductSide(pcType, relations[i].getProductCmptTypeRelation())==null) {
-                result.add(relations[i]);
+        IProductCmptLink[] links = generation.getLinks();
+        for (int i=0; i<links.length; i++) {
+            if (productCmptType.findAssociationInSupertypeHierarchy(links[i].getAssociation(), true, ipsProject)==null) {
+                result.add(links[i]);
             }
         }
-        relationsWithMissingPcTypeRelations = (IProductCmptRelation[])result.toArray(new IProductCmptRelation[result.size()]);
+        linksWithMissingAssociations = (IProductCmptLink[])result.toArray(new IProductCmptLink[result.size()]);
     }
     
     /** 
@@ -173,7 +176,7 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
      * {@inheritDoc}
      */
     public IPolicyCmptType getPolicyCmptType() {
-        return pcType;
+        return policyCmptType;
     }
 
     /** 
@@ -184,7 +187,7 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
         	&& elementsWithMissingAttributes.length == 0
         	&& elementsWithTypeMismatch.length == 0
         	&& elementsWithValueSetMismatch.length == 0
-        	&& relationsWithMissingPcTypeRelations.length == 0
+        	&& linksWithMissingAssociations.length == 0
             && tableContentUsagesWithMissingTableStructureUsages.length == 0
             && tableStructureUsagesWithMissingTableContentUsages.length == 0
             ;
@@ -214,8 +217,8 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
     /** 
      * {@inheritDoc}
      */
-    public IProductCmptRelation[] getRelationsWithMissingPcTypeRelations() {
-        return relationsWithMissingPcTypeRelations;
+    public IProductCmptLink[] getLinksWithMissingAssociations() {
+        return linksWithMissingAssociations;
     }
 
     /**

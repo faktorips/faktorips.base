@@ -22,18 +22,18 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpttype2.AggregationKind;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
@@ -51,9 +51,8 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     
     private IPolicyCmptType targetPolicyType;
     private IProductCmptType targetProductType;
-    private IRelation typeRelation;
+    private IProductCmptTypeAssociation association;
     private IProductCmpt target;
-    private IProductCmptGeneration targetGen;
     
     public void setUp() throws Exception {
         super.setUp();
@@ -66,61 +65,56 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         targetPolicyType = newPolicyAndProductCmptType(ipsProject, "TargetPolicyType", "TargetProductType");
         targetProductType = targetPolicyType.findProductCmptType(ipsProject);
         target = newProductCmpt(targetProductType, "TargetProduct");
-        targetGen = target.getProductCmptGeneration(0);
         
-        typeRelation = policyCmptType.newRelation();
-        typeRelation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
-        typeRelation.setProductRelevant(true);
-        typeRelation.setTarget(targetPolicyType.getQualifiedName());
-        typeRelation.setTargetRoleSingular("testRelation");
-        typeRelation.setTargetRoleSingularProductSide("testRelationProductSide");
-        typeRelation.setTargetRolePlural("testRelations");
-        typeRelation.setTargetRolePluralProductSide("testRelationsProductSide");
-        
+        association = productCmptType.newAssociation();
+        association.setAggregationKind(AggregationKind.SHARED);
+        association.setTarget(targetProductType.getQualifiedName());
+        association.setTargetRoleSingular("testRelationProductSide");
+        association.setTargetRolePlural("testRelationsProductSide");
     }
     
     public void testValidateDuplicateRelationTarget() throws Exception {
         MessageList ml = generation.validate();
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
         
-        generation.newRelation(typeRelation.getTargetRoleSingularProductSide()).setTarget(target.getQualifiedName());
+        generation.newLink(association.getName()).setTarget(target.getQualifiedName());
         ml = generation.validate();
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
         
-        generation.newRelation(typeRelation.getTargetRoleSingularProductSide()).setTarget(target.getQualifiedName());
+        generation.newLink(association).setTarget(target.getQualifiedName());
         
         ml = generation.validate();
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
     }
     
     public void testValidateNotEnougthRelations() throws Exception {
-        typeRelation.setMinCardinalityProductSide(1);
-        typeRelation.setMaxCardinalityProductSide(2);
+        association.setMinCardinality(1);
+        association.setMaxCardinality(2);
 
         MessageList ml = generation.validate();
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
         
-        generation.newRelation(typeRelation.getTargetRoleSingularProductSide());
+        generation.newLink(association.getTargetRoleSingular());
         ml = generation.validate();
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
         
-        generation.newRelation(typeRelation.getTargetRoleSingularProductSide());
+        generation.newLink(association.getTargetRoleSingular());
         ml = generation.validate();
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
     }
     
     public void testValidateTooManyRelations() throws Exception {
-        typeRelation.setMinCardinalityProductSide(0);
-        typeRelation.setMaxCardinalityProductSide(1);
+        association.setMinCardinality(0);
+        association.setMaxCardinality(1);
 
         MessageList ml = generation.validate();
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
         
-        generation.newRelation(typeRelation.getTargetRoleSingularProductSide());
+        generation.newLink(association.getTargetRoleSingular());
         ml = generation.validate();
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
         
-        generation.newRelation(typeRelation.getTargetRoleSingularProductSide());
+        generation.newLink(association.getTargetRoleSingular());
         ml = generation.validate();
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
     }
@@ -140,10 +134,10 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     public void testCanCreateValidRelation() throws Exception {
-        assertFalse(generation.canCreateValidRelation(null, null));
-        assertFalse(generation.canCreateValidRelation(productCmpt, null));
+        assertFalse(generation.canCreateValidLink(null, null, ipsProject));
+        assertFalse(generation.canCreateValidLink(productCmpt, null, ipsProject));
         
-        assertTrue(generation.canCreateValidRelation(target, "testRelationProductSide"));
+        assertTrue(generation.canCreateValidLink(target, "testRelationProductSide", ipsProject));
     }
     
     /**
@@ -160,13 +154,13 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IProductCmpt productCmpt2 = newProductCmpt(subProductCmptType, "TestProduct2");
         IProductCmptGeneration generation2 = productCmpt2.getProductCmptGeneration(0);
 
-        assertTrue(generation2.canCreateValidRelation(target, "testRelationProductSide"));
+        assertTrue(generation2.canCreateValidLink(target, "testRelationProductSide", ipsProject));
     }
     
     
     public void testGetChildren() throws CoreException  {
         IConfigElement cf0 = generation.newConfigElement();
-        IProductCmptRelation r0 = generation.newRelation("targetRole");
+        IProductCmptLink r0 = generation.newLink("targetRole");
         IIpsElement[] children = generation.getChildren();
         assertEquals(2, children.length);
         assertSame(cf0, children[0]);
@@ -229,46 +223,46 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
      * Class under test for ProductCmptRelation[] getRelations()
      */
     public void testGetRelations() {
-        IProductCmptRelation r1 = generation.newRelation("coverage");
-        assertEquals(r1, generation.getRelations()[0]);
+        IProductCmptLink r1 = generation.newLink("coverage");
+        assertEquals(r1, generation.getLinks()[0]);
 
-        IProductCmptRelation r2 = generation.newRelation("risk");
-        assertEquals(r1, generation.getRelations()[0]);
-        assertEquals(r2, generation.getRelations()[1]);
+        IProductCmptLink r2 = generation.newLink("risk");
+        assertEquals(r1, generation.getLinks()[0]);
+        assertEquals(r2, generation.getLinks()[1]);
     }
 
     /*
      * Class under test for ProductCmptRelation[] getRelations(String)
      */
     public void testGetRelations_String() {
-        IProductCmptRelation r1 = generation.newRelation("coverage");
-        generation.newRelation("risk");
-        IProductCmptRelation r3 = generation.newRelation("coverage");
+        IProductCmptLink r1 = generation.newLink("coverage");
+        generation.newLink("risk");
+        IProductCmptLink r3 = generation.newLink("coverage");
         
-        IProductCmptRelation[] relations = generation.getRelations("coverage");
+        IProductCmptLink[] relations = generation.getLinks("coverage");
         assertEquals(2, relations.length);
         assertEquals(r1, relations[0]);
         assertEquals(r3, relations[1]);
 
-        relations = generation.getRelations("unknown");
+        relations = generation.getLinks("unknown");
         assertEquals(0, relations.length);
     }
 
-    public void testGetNumOfRelations() {
-        assertEquals(0, generation.getNumOfRelations());
+    public void testGetNumOfLinks() {
+        assertEquals(0, generation.getNumOfLinks());
         
-        generation.newRelation("coverage");
-        assertEquals(1, generation.getNumOfRelations());
+        generation.newLink("coverage");
+        assertEquals(1, generation.getNumOfLinks());
 
-        generation.newRelation("risk");
-        assertEquals(2, generation.getNumOfRelations());
+        generation.newLink("risk");
+        assertEquals(2, generation.getNumOfLinks());
     }
 
-    public void testNewRelation() {
-        IProductCmptRelation relation = generation.newRelation("coverage");
-        assertEquals(generation, relation.getParent());
-        assertEquals(1, generation.getNumOfRelations());
-        assertEquals(relation, generation.getRelations()[0]);
+    public void testNewLink() {
+        IProductCmptLink link = generation.newLink("coverage");
+        assertEquals(generation, link.getParent());
+        assertEquals(1, generation.getNumOfLinks());
+        assertEquals(link, generation.getLinks()[0]);
     }
 
     /*
@@ -278,15 +272,15 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         generation.setValidFrom(new GregorianCalendar(2005, 0, 1));
         generation.newConfigElement();
         generation.newConfigElement();
-        generation.newRelation("coverage");
-        generation.newRelation("coverage");
-        generation.newRelation("coverage");
+        generation.newLink("coverage");
+        generation.newLink("coverage");
+        generation.newLink("coverage");
         Element element = generation.toXml(newDocument());
         
         IProductCmptGeneration copy = new ProductCmptGeneration();
         copy.initFromXml(element);
         assertEquals(2, copy.getNumOfConfigElements());
-        assertEquals(3, copy.getNumOfRelations());
+        assertEquals(3, copy.getNumOfLinks());
     }
 
     public void testInitFromXml() {
@@ -296,7 +290,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IConfigElement[] configElements = generation.getConfigElements();
         assertEquals(1, configElements.length);
         
-        IProductCmptRelation[] relations = generation.getRelations();
+        IProductCmptLink[] relations = generation.getLinks();
         assertEquals(1, relations.length);
     }
 

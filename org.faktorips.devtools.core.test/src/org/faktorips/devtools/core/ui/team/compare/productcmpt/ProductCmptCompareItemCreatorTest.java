@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 
 public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
 
@@ -47,8 +47,8 @@ public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
     private IIpsPackageFragmentRoot root;
     private IConfigElement configElement1;
     private IConfigElement configElement2;
-    private IProductCmptRelation relation1;
-    private IProductCmptRelation relation2;
+    private IProductCmptLink relation1;
+    private IProductCmptLink relation2;
     
     protected void setUp() throws Exception {
         super.setUp();
@@ -70,8 +70,8 @@ public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
         configElement1.setPcTypeAttribute("configElement1");    // set name to ensure sorting order
         configElement2 = generation1.newConfigElement();
         configElement2.setPcTypeAttribute("configElement2");
-        relation1 = generation1.newRelation(productReferenced.getQualifiedName());
-        relation2 = generation1.newRelation(productReferenced.getQualifiedName());
+        relation1 = generation1.newLink(productReferenced.getQualifiedName());
+        relation2 = generation1.newLink(productReferenced.getQualifiedName());
         
         srcFile = product.getIpsSrcFile();
         correspondingFile = srcFile.getCorrespondingFile();

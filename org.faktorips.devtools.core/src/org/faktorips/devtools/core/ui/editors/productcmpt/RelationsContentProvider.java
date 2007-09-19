@@ -25,11 +25,13 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype2.ProductCmptTypeHierarchyVisitor;
 
 /**
  * Provides the content for a generation-based relations-tree. The relations-types are
@@ -52,46 +54,31 @@ public class RelationsContentProvider implements ITreeContentProvider {
 		IProductCmptGeneration generation = (IProductCmptGeneration)inputElement;
 		try {
 			IProductCmpt pc = generation.getProductCmpt();
-			IProductCmptType pcType = pc.findOldProductCmptType();
+			IProductCmptType pcType = pc.findProductCmptType(generation.getIpsProject());
 			if (pcType == null) {
                 // type can't be found, so extract the relation types from the generation
-				return getRelationTypes(generation);
+				return getAssociationNames(generation);
 			} else {
-			    return getRelationTypes(pcType);
+			    return getAssociationNames(pcType);
             }
 		} catch (CoreException e) {
             throw new RuntimeException("Error getting element ", e); //$NON-NLS-1$
 		}
     }
     
-    private String[] getRelationTypes(IProductCmptGeneration gen) {
-        Set relationTypes = new HashSet();
-        IProductCmptRelation[] relations = gen.getRelations();
-        for (int i = 0; i < relations.length; i++) {
-            relationTypes.add(relations[i].getProductCmptTypeRelation());
+    private String[] getAssociationNames(IProductCmptGeneration gen) {
+        Set associations = new HashSet();
+        IProductCmptLink[] links = gen.getLinks();
+        for (int i = 0; i < links.length; i++) {
+            associations.add(links[i].getAssociation());
         }
-        return (String[])relationTypes.toArray(new String[relationTypes.size()]);
+        return (String[])associations.toArray(new String[associations.size()]);
     }
 
-    private String[] getRelationTypes(IProductCmptType pcType) throws CoreException {
-        Set typesHandled = new HashSet();
-        List result = new ArrayList();
-        while (pcType != null && !typesHandled.contains(pcType)) {
-            IProductCmptTypeRelation[] relations = pcType.getRelations();
-            int index = 0;
-            for (int i = 0; i < relations.length; i++) {
-                if (!relations[i].isAbstract() && !relations[i].isAbstractContainer()) {
-                    // to get the relations of the supermost product component type
-                    // put in the list as first, but with unchanged order for all relations
-                    // found in one type...
-                    result.add(index, relations[i].getName());
-                    index++;
-                }
-            }
-            typesHandled.add(pcType);
-            pcType = pcType.findSupertype();
-        }
-        return (String[])result.toArray(new String[result.size()]);
+    private String[] getAssociationNames(IProductCmptType type) throws CoreException {
+        NoneDerivedAssociationsCollector collector = new NoneDerivedAssociationsCollector(type.getIpsProject());
+        collector.start(type);
+        return (String[])collector.associations.toArray(new String[collector.associations.size()]);
     }
     
     /**
@@ -119,7 +106,7 @@ public class RelationsContentProvider implements ITreeContentProvider {
 		if (!(parentElement instanceof String) || generation == null) {
             return null;
 		}
-        return generation.getRelations((String)parentElement);
+        return generation.getLinks((String)parentElement);
 	}
 
     /**
@@ -129,9 +116,9 @@ public class RelationsContentProvider implements ITreeContentProvider {
 		if (element instanceof String) {
 			return generation;
 		}
-		if (element instanceof IProductCmptRelation) {
-            IProductCmptRelation relation = (IProductCmptRelation)element; 
-            return relation.getProductCmptTypeRelation();
+		if (element instanceof IProductCmptLink) {
+            IProductCmptLink link = (IProductCmptLink)element; 
+            return link.getAssociation();
 		}
         throw new RuntimeException("Unknown element type " + element);  //$NON-NLS-1$ 
 	}
@@ -146,4 +133,29 @@ public class RelationsContentProvider implements ITreeContentProvider {
 		}
 		return children.length > 0;
 	}
+    
+    class NoneDerivedAssociationsCollector extends ProductCmptTypeHierarchyVisitor {
+
+        private List associations = new ArrayList();
+        
+        public NoneDerivedAssociationsCollector(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+            IProductCmptTypeAssociation[] typeAssociations = currentType.getAssociations();
+            int index = 0;
+            for (int i = 0; i < typeAssociations.length; i++) {
+                // to get the assocations of the root type of the supertype hierarchy first,
+                // put in the list at first, but with unchanged order for all associations
+                // found in one type...
+                if (!typeAssociations[i].isDerived()) {
+                    associations.add(index, typeAssociations[i].getName());
+                    index++;
+                }
+            }
+            return false;
+        }
+        
+    }
 }

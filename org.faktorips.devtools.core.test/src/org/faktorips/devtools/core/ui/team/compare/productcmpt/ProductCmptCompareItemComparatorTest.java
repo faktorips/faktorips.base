@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 
 public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest {
@@ -46,9 +46,9 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
     private IConfigElement policyAttribute;
     private IConfigElement productAttribute;
     private ITableContentUsage tableUsage;
-    private IProductCmptRelation relation1;
-    private IProductCmptRelation relation2;
-    private IProductCmptRelation relation3;
+    private IProductCmptLink relation1;
+    private IProductCmptLink relation2;
+    private IProductCmptLink relation3;
     
     protected void setUp() throws Exception {
         super.setUp();
@@ -76,11 +76,11 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
         tableUsage= generation1.newTableContentUsage();
         tableUsage.setTableContentName("TestTableContents");
         
-        relation1 = generation1.newRelation("RelationType");
+        relation1 = generation1.newLink("RelationType");
         relation1.setTarget(productReferenced.getQualifiedName());
-        relation2 = generation1.newRelation("OtherRelationType");
+        relation2 = generation1.newLink("OtherRelationType");
         relation2.setTarget(productReferenced2.getQualifiedName());
-        relation3 = generation1.newRelation("RelationType", relation1);
+        relation3 = generation1.newLink("RelationType", relation1);
         relation3.setTarget(productReferenced2.getQualifiedName());
         
         IFile correspondingFile = product.getIpsSrcFile().getCorrespondingFile();

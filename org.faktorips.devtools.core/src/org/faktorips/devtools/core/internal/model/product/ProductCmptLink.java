@@ -23,14 +23,13 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -39,8 +38,8 @@ import org.w3c.dom.Element;
 /**
  * 
  */
-public class ProductCmptRelation extends AtomicIpsObjectPart implements
-		IProductCmptRelation {
+public class ProductCmptLink extends AtomicIpsObjectPart implements
+		IProductCmptLink {
 
     /**
      * @param target
@@ -48,28 +47,27 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
      *            relation.
      * @param relationType
      *            The type of the new relation.
+     * @param ipsProject
+     *            The ips project which ips object path is used.
      * @return <code>true</code> if it is possible to create a valid relation
      *         with the given parameters at this time, <code>false</code>
      *         otherwise.
      * @throws CoreException
      *             if an error occurs during supertype-evaluation
      */
-    public static boolean willBeValid(IProductCmpt target, IProductCmptTypeRelation relationType) throws CoreException {
-        if (target == null || relationType == null) {
+    public static boolean willBeValid(IProductCmpt target, IProductCmptTypeAssociation association, IIpsProject ipsProject) throws CoreException {
+        if (target == null || association == null) {
             return false;
         }
-        IRelation policyRelation = relationType.findPolicyCmptTypeRelation();
-        if (policyRelation==null) {
-            return false;
-        }
-        IPolicyCmptType actualTargetType = target.findPolicyCmptType();
+        IProductCmptType actualTargetType = target.findProductCmptType(ipsProject);
         if (actualTargetType==null) {
             return false;
         }
-        return actualTargetType.isSubtypeOrSameType(policyRelation.findTarget());
+        return actualTargetType.isSubtypeOrSameType(association.findTarget(ipsProject), ipsProject);
     }
     
-	private String productCmptTypeRelation = ""; //$NON-NLS-1$
+    // the name of the association this link is an instance of
+	private String association = ""; //$NON-NLS-1$
 
 	private String target = ""; //$NON-NLS-1$
 
@@ -77,11 +75,11 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
 
 	private int maxCardinality = 1;
 	
-	public ProductCmptRelation(IProductCmptGeneration generation, int id) {
+	public ProductCmptLink(IProductCmptGeneration generation, int id) {
 		super(generation, id);
 	}
 
-	public ProductCmptRelation() {
+	public ProductCmptLink() {
 		super();
 	}
 
@@ -107,35 +105,29 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
 	 * {@inheritDoc}
 	 */
 	public Image getImage() {
-		return IpsPlugin.getDefault().getImage("ProductCmptRelation.gif"); //$NON-NLS-1$
+		return IpsPlugin.getDefault().getImage("ProductCmptLink.gif"); //$NON-NLS-1$
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getProductCmptTypeRelation() {
-		return productCmptTypeRelation;
+	public String getAssociation() {
+		return association;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProductCmptTypeRelation findProductCmptTypeRelation()
-			throws CoreException {
-		IProductCmptType productCmptType = getProductCmpt()
-				.findOldProductCmptType();
-		IProductCmptTypeRelation relation = null;
-
-		while (productCmptType != null && relation == null) {
-			relation = productCmptType.getRelation(productCmptTypeRelation);
-			productCmptType = productCmptType.findSupertype();
-		}
-
-		return relation;
+	public IProductCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws CoreException {
+        IProductCmptType productCmptType = getProductCmpt().findProductCmptType(ipsProject);
+        if (productCmptType==null) {
+            return null;
+        }
+        return productCmptType.findAssociationInSupertypeHierarchy(association, true, ipsProject);
 	}
 
 	void setProductCmptTypeRelation(String newRelation) {
-		productCmptTypeRelation = newRelation;
+		association = newRelation;
 	}
 
 	/**
@@ -148,13 +140,8 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProductCmpt findTarget() {
-		try {
-			return (IProductCmpt)getIpsProject().findIpsObject(IpsObjectType.PRODUCT_CMPT, getTarget());
-		} catch (CoreException e) {
-			// no valid target defined...
-			return null;
-		}
+	public IProductCmpt findTarget(IIpsProject ipsProject) throws CoreException {
+	    return ipsProject.findProductCmpt(target);
 	}
 
 	/**
@@ -204,20 +191,18 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
 			return;
 		}
 		super.validateThis(list);
-		IProductCmptTypeRelation relation = findProductCmptTypeRelation();
-		IRelation relType = null;
-		if (relation == null) {
+        IIpsProject ipsProject = getIpsProject();
+        ValidationUtils.checkIpsObjectReference(target,
+                IpsObjectType.PRODUCT_CMPT, "target", this, PROPERTY_TARGET, MSGCODE_UNKNWON_TARGET, list); //$NON-NLS-1$
+		IProductCmptTypeAssociation associationObj = findAssociation(ipsProject);
+		if (associationObj == null) {
 			String text = NLS.bind(
 					Messages.ProductCmptRelation_msgNoRelationDefined,
-					productCmptTypeRelation, getProductCmpt()
-							.getPolicyCmptType());
+					association, getProductCmpt().getProductCmptType());
 			list.add(new Message(MSGCODE_UNKNWON_RELATIONTYPE, text,
-					Message.ERROR, this, PROPERTY_PCTYPE_RELATION));
-		} else {
-			relType = relation.findPolicyCmptTypeRelation();
-		}
-		ValidationUtils.checkIpsObjectReference(target,
-				IpsObjectType.PRODUCT_CMPT, "target", this, PROPERTY_TARGET, MSGCODE_UNKNWON_TARGET, list); //$NON-NLS-1$
+					Message.ERROR, this, PROPERTY_ASSOCIATION));
+            return;
+		} 
 		if (maxCardinality == 0) {
 			String text = Messages.ProductCmptRelation_msgMaxCardinalityIsLessThan1;
 			list.add(new Message(MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1, text,
@@ -230,13 +215,13 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
 								PROPERTY_MIN_CARDINALITY,
 								PROPERTY_MAX_CARDINALITY }));
 			}
-			if (relType != null && !(relType.getMaxCardinality() == IRelation.CARDINALITY_MANY)) { //$NON-NLS-1$
-				int maxType = relType.getMaxCardinality();
+			if (associationObj.getMaxCardinality() != IProductCmptTypeAssociation.CARDINALITY_MANY) { //$NON-NLS-1$
+				int maxType = associationObj.getMaxCardinality();
 				if (maxCardinality > maxType) {
 					String text = NLS
 							.bind(
 									Messages.ProductCmptRelation_msgMaxCardinalityExceedsModelMax,
-									"" + maxCardinality, "" + relType.getMaxCardinality()); //$NON-NLS-1$ //$NON-NLS-2$
+									"" + maxCardinality, "" + associationObj.getMaxCardinality()); //$NON-NLS-1$ //$NON-NLS-2$
 					list.add(new Message(
 							MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX,
 							text, Message.ERROR, this,
@@ -245,9 +230,9 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
 			}
 		}
 
-		IProductCmpt target = findTarget();
-		if (!willBeValid(target, relation) && target != null && relation != null) {
-			String msg = NLS.bind(Messages.ProductCmptRelation_msgInvalidTarget, target.getQualifiedName(), relation.getTargetRoleSingular());
+		IProductCmpt targetObj = findTarget(ipsProject);
+		if (!willBeValid(targetObj, associationObj, ipsProject)) {
+			String msg = NLS.bind(Messages.ProductCmptRelation_msgInvalidTarget, target, associationObj.getTargetRoleSingular());
 			list.add(new Message(MSGCODE_INVALID_TARGET, msg, Message.ERROR, PROPERTY_TARGET));
 		}
 		
@@ -265,12 +250,10 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
 	 */
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
-		productCmptTypeRelation = element
-				.getAttribute(PROPERTY_PCTYPE_RELATION);
+		association = element.getAttribute("pcTypeRelation");
 		target = element.getAttribute(PROPERTY_TARGET);
 		try {
-			minCardinality = Integer.parseInt(element
-					.getAttribute(PROPERTY_MIN_CARDINALITY));
+			minCardinality = Integer.parseInt(element.getAttribute(PROPERTY_MIN_CARDINALITY));
 		} catch (NumberFormatException e) {
 			minCardinality = 0;
 		}
@@ -291,7 +274,7 @@ public class ProductCmptRelation extends AtomicIpsObjectPart implements
 	 */
 	protected void propertiesToXml(Element element) {
 		super.propertiesToXml(element);
-		element.setAttribute(PROPERTY_PCTYPE_RELATION, productCmptTypeRelation);
+		element.setAttribute("pcTypeRelation", association);
 		element.setAttribute(PROPERTY_TARGET, target);
 		element.setAttribute(PROPERTY_MIN_CARDINALITY, "" + minCardinality); //$NON-NLS-1$
 

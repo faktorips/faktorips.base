@@ -101,10 +101,9 @@ public class DeepCopyWizard extends Wizard {
 				
 				MessageDialog.openInformation(getShell(), title, msg);
 				
-				structure = (ProductCmptStructure)product.getStructure(product.getFirstGeneration().getValidFrom());
-			}
-			else {
-				structure = (ProductCmptStructure)product.getStructure();
+				structure = (ProductCmptStructure)product.getStructure(product.getFirstGeneration().getValidFrom(), product.getIpsProject());
+			} else {
+				structure = (ProductCmptStructure)product.getStructure(product.getIpsProject());
 			}
 			
 		} catch (CycleException e) {

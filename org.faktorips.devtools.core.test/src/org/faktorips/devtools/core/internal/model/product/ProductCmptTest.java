@@ -44,8 +44,9 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptKind;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
@@ -73,6 +74,104 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCmpt = (ProductCmpt)srcFile.getIpsObject();
     }
     
+    public void testValidate_InconsitencyInTypeHierarch() throws Exception {
+        IProductCmptType type = newProductCmptType(ipsProject, "Product");
+        IProductCmptType supertype = newProductCmptType(ipsProject, "SuperProduct");
+        IProductCmptType supersupertype = newProductCmptType(ipsProject, "SuperSuperProduct");
+        
+        type.setSupertype(supertype.getQualifiedName());
+        supertype.setSupertype(supersupertype.getQualifiedName());
+        supersupertype.setSupertype("abc");
+
+        MessageList ml = type.validate();
+        assertNotNull(ml.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        
+        ProductCmpt product = super.newProductCmpt(type, "products.Testproduct");
+        
+        ml = product.validate();
+        assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        
+        supersupertype.setSupertype("");
+        ml = type.validate();
+        assertNull(ml.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        ml = product.validate();
+        assertNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+
+        supersupertype.setSupertype(type.getQualifiedName());
+        ml = type.validate();
+        assertNotNull(ml.getMessageByCode(IType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY));
+        ml = product.validate();
+        assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        
+        type.setSupertype("Unkown");
+        ml = type.validate();
+        assertNotNull(ml.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
+        ml = product.validate();
+        assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+    }
+
+    /**
+     * Test if a runtime id change will be correctly updated in the product component which 
+     * referenced the product cmpt on which the runtime id was changed.
+     * 
+     * @throws IOException 
+     */
+    public void testRuntimeIdDependency() throws CoreException, IOException{
+        IProductCmptType c = newProductCmptType(root, "C");
+        IProductCmptType d = newProductCmptType(root, "D");
+        
+        org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation association = c.newAssociation();
+        association.setTargetRoleSingular("relationD");
+        association.setTarget(d.getQualifiedName());
+        IProductCmpt productCmptC = newProductCmpt(c, "tests.productC");
+        
+        IProductCmpt productCmptD = newProductCmpt(d, "tests.productD");
+
+        IProductCmptGeneration generation1 = productCmptC.getProductCmptGeneration(0);
+        IProductCmptLink link = generation1.newLink("linkCtoD");
+        link.setTarget(productCmptD.getQualifiedName());
+        
+        incrementalBuild();
+        
+        // product cmpt C depends on product D
+        // change the runtime id of product D and assert that the target runtime id in product C 
+        // was updated after rebuild
+        productCmptD.setRuntimeId("newRuntimeId");
+        productCmptD.getIpsSrcFile().save(true, null);
+        
+        incrementalBuild();
+        
+        // check if the target runtime id was updated in product cmpt c runtime xml
+        String packageOfProductC = ipsProject.getIpsArtefactBuilderSet().getPackage(
+                DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION_IMPL, productCmptC.getIpsSrcFile());
+        String productCXmlFile = packageOfProductC + "." + "productC";
+        productCXmlFile = productCXmlFile.replaceAll("\\.", "/");
+        productCXmlFile += ".xml";
+        IFile file = ipsProject.getProject().getFile("bin//" + productCXmlFile);
+        InputStream is = null;
+        try {
+            is = file.getContents();
+            if (is==null) {
+                fail("Can't find resource " + productCXmlFile);
+            }
+            StringBuffer generatedXml = new StringBuffer();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line = null;
+            while ((line = br.readLine())!=null){
+                generatedXml.append(line);
+            }
+            String patternStr = ".*targetRuntimeId=\"(.*)\".*";
+            Pattern pattern = Pattern.compile(patternStr);
+            Matcher matcher = pattern.matcher(generatedXml);
+            assertTrue(matcher.find());
+            assertEquals("newRuntimeId", matcher.group(matcher.groupCount()));
+        } finally {
+            if (is!=null) {
+                is.close();
+            }
+        }
+    }    
+
     public void testFindProductCmptKind() throws CoreException {
     	IProductCmptKind kind = productCmpt.findProductCmptKind();
     	assertEquals("TestProduct", kind.getName());
@@ -253,40 +352,6 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 		}
     }
     
-    public void testValidate_InconsitencyInTypeHierarch() throws Exception {
-        IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "Policy", "Product"); 
-        IPolicyCmptType supertype = newPolicyAndProductCmptType(ipsProject, "SuperPolicy", "SuperProduct"); 
-        IPolicyCmptType supersupertype = newPolicyAndProductCmptType(ipsProject, "SuperSuperPolicy", "SuperSuperProduct"); 
-        IProductCmptType productType = type.findProductCmptType(ipsProject);
-        IProductCmptType productSupertype = supertype.findProductCmptType(ipsProject);
-        IProductCmptType productSuperSupertype = supersupertype.findProductCmptType(ipsProject);
-        
-        type.setSupertype(supertype.getQualifiedName());
-        supertype.setSupertype(supersupertype.getQualifiedName());
-    	supersupertype.setSupertype("abc");
-
-    	MessageList ml = type.validate();
-    	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
-    	
-    	ProductCmpt product = super.newProductCmpt(productType, "products.Testproduct");
-    	
-    	ml = product.validate();
-    	assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENCY_IN_POLICY_CMPT_TYPE_HIERARCHY));
-    	
-    	supersupertype.setSupertype("");
-    	ml = type.validate();
-    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
-    	ml = product.validate();
-    	assertNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENCY_IN_POLICY_CMPT_TYPE_HIERARCHY));
-
-    	supersupertype.setSupertype(type.getQualifiedName());
-    	ml = type.validate();
-    	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY));
-    	ml = product.validate();
-    	assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENCY_IN_POLICY_CMPT_TYPE_HIERARCHY));
-    	
-    }
-
     /**
      * Test method for {@link org.faktorips.devtools.core.model.IFixDifferencesToModelSupport#containsDifferenceToModel()}.
      * @throws CoreException 
@@ -368,65 +433,4 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(new GregorianCalendar(2000,1,1), productCmpt.getValidTo());
     }
     
-    /**
-     * Test if a runtime id change will be correctly updated in the product component which 
-     * referenced the product cmpt on which the runtime id was changed.
-     * 
-     * @throws IOException 
-     */
-    public void testRuntimeIdDependency() throws CoreException, IOException{
-        IProductCmptType c = newProductCmptType(root, "C");
-        IProductCmptType d = newProductCmptType(root, "D");
-        
-        org.faktorips.devtools.core.model.productcmpttype2.IRelation relation = c.newRelation();
-        relation.setTargetRoleSingular("relationD");
-        relation.setTarget(d.getQualifiedName());
-        IProductCmpt productCmptC = newProductCmpt(c, "tests.productC");
-        
-        IProductCmpt productCmptD = newProductCmpt(d, "tests.productD");
-
-        IProductCmptGeneration generation1 = productCmptC.getProductCmptGeneration(0);
-        IProductCmptRelation productCmptRelation = generation1.newRelation("relationD");
-        productCmptRelation.setTarget(productCmptD.getQualifiedName());
-        
-        incrementalBuild();
-        
-        // product cmpt C depends on product D
-        // change the runtime id of product D and assert that the target runtime id in product C 
-        // was updated after rebuild
-        productCmptD.setRuntimeId("newRuntimeId");
-        productCmptD.getIpsSrcFile().save(true, null);
-        
-        incrementalBuild();
-        
-        // check if the target runtime id was updated in product cmpt c runtime xml
-        String packageOfProductC = ipsProject.getIpsArtefactBuilderSet().getPackage(
-                DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION_IMPL, productCmptC.getIpsSrcFile());
-        String productCXmlFile = packageOfProductC + "." + "productC";
-        productCXmlFile = productCXmlFile.replaceAll("\\.", "/");
-        productCXmlFile += ".xml";
-        IFile file = ipsProject.getProject().getFile("bin//" + productCXmlFile);
-        InputStream is = null;
-        try {
-            is = file.getContents();
-            if (is==null) {
-                fail("Can't find resource " + productCXmlFile);
-            }
-            StringBuffer generatedXml = new StringBuffer();
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String line = null;
-            while ((line = br.readLine())!=null){
-                generatedXml.append(line);
-            }
-            String patternStr = ".*targetRuntimeId=\"(.*)\".*";
-            Pattern pattern = Pattern.compile(patternStr);
-            Matcher matcher = pattern.matcher(generatedXml);
-            assertTrue(matcher.find());
-            assertEquals("newRuntimeId", matcher.group(matcher.groupCount()));
-        } finally {
-            if (is!=null) {
-                is.close();
-            }
-        }
-    }    
 }

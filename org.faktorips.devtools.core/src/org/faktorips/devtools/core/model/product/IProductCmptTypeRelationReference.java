@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.model.product;
 
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 
 /**
  * A reference to a <code>IProductCmptTypeRelation</code> which is used in the 
@@ -28,8 +28,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelatio
 public interface IProductCmptTypeRelationReference extends IProductCmptStructureReference {
 
 	/**
-	 * @return The <code>IProductCmptTypeRelation</code> this reference refers to.
+	 * Returns the <code>IProductCmptTypeAssociation</code> this reference refers to.
 	 */
-	public IProductCmptTypeRelation getRelation();
+	public IProductCmptTypeAssociation getRelation();
 	
 }

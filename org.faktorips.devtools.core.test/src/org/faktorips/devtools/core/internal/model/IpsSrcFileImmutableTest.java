@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 
 public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
 
@@ -50,7 +50,7 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         product = newProductCmpt(root, "TestProductCmpt");
         IProductCmptGeneration generation= (IProductCmptGeneration) product.newGeneration();
         generation.newConfigElement();
-        generation.newRelation("");
+        generation.newLink("");
         
         // save contents
         product.getIpsSrcFile().save(true, null);
@@ -127,14 +127,14 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         }
 
         // compare relations in first generation
-        List relations1= Arrays.asList(generation1.getRelations());
-        List relations2= Arrays.asList(generation2.getRelations());
+        List relations1= Arrays.asList(generation1.getLinks());
+        List relations2= Arrays.asList(generation2.getLinks());
         assertEquals(relations1.size(), relations2.size());
         iterator1= relations1.iterator();
         iterator2= relations2.iterator();
         while(iterator1.hasNext()){
-            IProductCmptRelation relation1= (IProductCmptRelation) iterator1.next();
-            IProductCmptRelation relation2= (IProductCmptRelation) iterator2.next();
+            IProductCmptLink relation1= (IProductCmptLink) iterator1.next();
+            IProductCmptLink relation2= (IProductCmptLink) iterator2.next();
             assertEquals(relation1.getId(), relation2.getId());
             assertEquals(relation1.getTarget(), relation2.getTarget());
         }

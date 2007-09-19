@@ -19,17 +19,21 @@ package org.faktorips.devtools.core.model.product;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 
 
 /**
- *
+ * A link between two product components. A link is an instance of an association between 
+ * product component types.
+ * 
+ * @see IProductCmptTypeAssociation
  */
-public interface IProductCmptRelation extends IIpsObjectPart {
+public interface IProductCmptLink extends IIpsObjectPart {
     
     public final static String PROPERTY_TARGET = "target"; //$NON-NLS-1$
-    public final static String PROPERTY_PCTYPE_RELATION = "pcTypeRelation"; //$NON-NLS-1$
+    public final static String PROPERTY_ASSOCIATION = "association"; //$NON-NLS-1$
     public final static String PROPERTY_MIN_CARDINALITY = "minCardinality"; //$NON-NLS-1$
     public final static String PROPERTY_MAX_CARDINALITY = "maxCardinality"; //$NON-NLS-1$
     
@@ -94,11 +98,25 @@ public interface IProductCmptRelation extends IIpsObjectPart {
     public IProductCmptGeneration getProductCmptGeneration();
     
     /**
-     * Returns the name of the product component type relation this
-     * relation is based on.
+     * Returns the name of the product component type association this link is an instance of.
      */
-    public String getProductCmptTypeRelation();
+    public String getAssociation();
     
+    /**
+     * Finds the product component type association this link is an instance of. 
+     * Note that the method searches not only the direct product component type this product component is based on, 
+     * but also it's super type hierarchy.
+     * 
+     * @param ipsProject The project which ips object path is used for the searched.
+     *                   This is not neccessarily the project this type is part of. 
+     * 
+     * @return the association or <code>null</code> if no such association exists.
+     * 
+     * @throws CoreException if an exception occurs while searching the relation. 
+     * @throws NullPointerException if ipsProject is <code>null</code>.
+     */
+    public IProductCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws CoreException;
+
     /**
      * Returns the target product component.
      */
@@ -110,10 +128,16 @@ public interface IProductCmptRelation extends IIpsObjectPart {
     public void setTarget(String newTarget);
 
     /**
-     * Retursn the product component which is the target of this relation or <code>null</code>, 
+     * Retursn the product component which is the target of this association or <code>null</code>, 
      * if no (valid) target name is set.
+     * 
+     * @param ipsProject The project which ips object path is used for the searched.
+     *                   This is not neccessarily the project this component is part of. 
+     *      
+     * @throws CoreException if an exception occurs while searching for the type.
+     * @throws NullPointerException if ipsProject is <code>null</code>.
      */
-    public IProductCmpt findTarget();
+    public IProductCmpt findTarget(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the minmum number of target instances required in this relation.   
@@ -137,19 +161,6 @@ public interface IProductCmptRelation extends IIpsObjectPart {
      */
     public void setMaxCardinality(int newValue);
     
-    /**
-     * Finds the corresponding relation in the product component type this
-     * product component is based on. Note the method searches not only the direct
-     * product component type this product component is based on, but also it's 
-     * super type hierarchy hierarchy.
-     * 
-     * @return the corresponding relation or <code>null</code> if no such
-     * relation exists.
-     * 
-     * @throws CoreException if an exception occurs while searching the relation. 
-     */
-    public IProductCmptTypeRelation findProductCmptTypeRelation() throws CoreException;
-
     /**
      * Returns weather or not this Relation is mandatory. A Relation is mandatory if both minimum
      * and maximum-cardinality are equal to 1.

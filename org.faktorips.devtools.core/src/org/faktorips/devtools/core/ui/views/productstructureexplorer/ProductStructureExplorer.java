@@ -69,7 +69,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
@@ -402,7 +402,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     	this.file = product.getIpsSrcFile();
         try {
             rootNode.storeProductCmpt(product);
-            showTreeInput(product.getStructure());
+            showTreeInput(product.getStructure(product.getIpsProject()));
 		} catch (CycleException e) {
 			handleCircle(e);
 		}
@@ -494,7 +494,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         IIpsObjectPart part = event.getPart();
         
         // refresh only for relevant changes
-        if (part instanceof ITableContentUsage || part instanceof IProductCmptRelation
+        if (part instanceof ITableContentUsage || part instanceof IProductCmptLink
                 || type == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
             postRefresh();
         }

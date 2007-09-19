@@ -185,7 +185,7 @@ public class ProductCmptPage extends IpsObjectPage {
     		} else {
     			setIpsObjectName(productCmpt.getName());
     		}
-    		typeRefControl.setText(productCmpt.findOldProductCmptType().getQualifiedName());
+    		typeRefControl.setText(productCmpt.getProductCmptType());
         }
         
         // update defaults with defaults from the copied product cmpt, if available

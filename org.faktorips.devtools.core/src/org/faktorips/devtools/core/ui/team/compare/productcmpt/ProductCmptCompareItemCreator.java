@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItemCreator;
 
@@ -89,7 +89,7 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator{
                         new ProductCmptCompareItem(generation, usages[j]);
                     }
                     // relations for each generation
-                    IProductCmptRelation[] rels = ((IProductCmptGeneration)gens[i]).getRelations();
+                    IProductCmptLink[] rels = ((IProductCmptGeneration)gens[i]).getLinks();
                     for (int j = 0; j < rels.length; j++) {
                         new ProductCmptCompareItem(generation, rels[j]);
                     }

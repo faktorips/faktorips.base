@@ -21,7 +21,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
@@ -40,6 +43,7 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
     private ArrayList preSelected;
     
     public MigrationWizard(ArrayList preSelected) {
+        setNeedsProgressMonitor(true);
         setWindowTitle(Messages.MigrationWizard_title);
         setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/MigrationWizard.png")); //$NON-NLS-1$
         this.preSelected = preSelected;
@@ -57,26 +61,15 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
      */
     public boolean performFinish() {
         try {
-            IIpsProject[] projects = projectSelectionPage.getProjects();
-            for (int i = 0; i < projects.length; i++) {
-                getContainer().run(false, true, IpsPlugin.getDefault().getMigrationOperation(projects[i]));
-            }
+            getContainer().run(false, true, new MigrateProjects());
         }
-        catch (InvocationTargetException e) {
+        catch (InvocationTargetException e1) {
             MessageDialog.openError(getShell(), Messages.MigrationWizard_titleError, Messages.MigrationWizard_msgError);
-            IpsPlugin.log(e);
+            IpsPlugin.log(e1);
         }
-        catch (InterruptedException e) {
+        catch (InterruptedException e1) {
             // the user pressed "cancel", so ignore it.
             MessageDialog.openInformation(getShell(), Messages.MigrationWizard_titleAbortion, Messages.MigrationWizard_msgAbortion);
-        }
-        catch (CoreException e) {
-            MessageDialog.openError(getShell(), Messages.MigrationWizard_titleError, Messages.MigrationWizard_msgError);
-            IpsPlugin.log(e);
-        }
-        catch (Exception e) {
-            MessageDialog.openError(getShell(), Messages.MigrationWizard_titleError, Messages.MigrationWizard_msgError);
-            IpsPlugin.log(e);
         }
         return true;
     }
@@ -88,4 +81,25 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
     public void init(IWorkbench workbench, IStructuredSelection selection) {
     }
     
+    class MigrateProjects implements IRunnableWithProgress {
+
+        public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+            IIpsProject[] projects = projectSelectionPage.getProjects();
+            monitor.beginTask("Migrate Projects", projects.length * 10000);
+            try {
+                for (int i = 0; i < projects.length; i++) {
+                    IProgressMonitor subMonitor = new SubProgressMonitor(monitor, 10000);
+                    try {
+                        IpsPlugin.getDefault().getMigrationOperation(projects[i]).run(subMonitor);
+                    }
+                    catch (CoreException e) {
+                        IpsPlugin.log(e);
+                    }
+                }
+            } finally {
+                monitor.done();
+            }
+        }
+        
+    }
 }

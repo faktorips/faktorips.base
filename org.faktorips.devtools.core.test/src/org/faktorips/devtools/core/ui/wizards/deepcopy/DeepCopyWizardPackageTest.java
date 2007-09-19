@@ -20,14 +20,12 @@ package org.faktorips.devtools.core.ui.wizards.deepcopy;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 
 /**
  * Tests for product component structure.
@@ -46,13 +44,10 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
         super.setUp();
         
         IIpsProject prj = super.newIpsProject();
-        IPolicyCmptType type = newPolicyAndProductCmptType(prj, "Base", "BaseType");
-        IProductCmptType productCmptType = type.findProductCmptType(prj);
-        IRelation rel = type.newRelation();
-        rel.setTarget(type.getQualifiedName());
-        rel.setTargetRoleSingular("rel");
-        rel.setTargetRoleSingularProductSide("relType");
-        rel.setProductRelevant(true);
+        IProductCmptType productCmptType = newProductCmptType(prj, "BaseType");
+        IProductCmptTypeAssociation association = productCmptType.newAssociation();
+        association.setTarget("SomeOtherType");
+        association.setTargetRoleSingular("RoleName");
         
         newProductCmpt(productCmptType, "Outside");
         middle = newProductCmpt(productCmptType, "one.Middle");
@@ -63,10 +58,9 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
         SourcePage page = getSourcePageFor(inside);
         assertEquals(inside.getIpsPackageFragment(), page.getTargetPackage());
         
-        IProductCmptGeneration gen = (IProductCmptGeneration)inside.getGenerationByEffectiveDate(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
-        IProductCmptRelation rel = gen.newRelation("relType");
-        rel.setTarget(middle.getQualifiedName());
-        
+        IProductCmptGeneration gen = inside.getProductCmptGeneration(0);
+        IProductCmptLink link = gen.newLink("RoleName");
+        link.setTarget(middle.getQualifiedName());
         inside.getIpsSrcFile().save(true, null);
         
         page = getSourcePageFor(inside);
@@ -75,7 +69,7 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
     }
     
     private SourcePage getSourcePageFor(IProductCmpt cmpt) {
-        DeepCopyWizard wizard = new DeepCopyWizard(inside, DeepCopyWizard.TYPE_COPY_PRODUCT);
+        DeepCopyWizard wizard = new DeepCopyWizard(cmpt, DeepCopyWizard.TYPE_COPY_PRODUCT);
         WizardDialog d = new WizardDialog(new Shell(), wizard);
         d.setBlockOnOpen(false);
         d.open();

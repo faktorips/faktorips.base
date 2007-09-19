@@ -72,7 +72,7 @@ public interface IProductCmptGenerationPolicyCmptTypeDelta {
      * Returns the product component generation's relations where the corresponding
      * relation in the policy component type can't be found.
      */
-    public IProductCmptRelation[] getRelationsWithMissingPcTypeRelations();
+    public IProductCmptLink[] getLinksWithMissingAssociations();
     
     /**
      * @return All table structures of the policy component type where no corresponding

@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -36,7 +35,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.util.ArgumentCheck;
 
 
@@ -361,20 +359,6 @@ public class TypeHierarchy implements ITypeHierarchy {
             IRelation r = types[i].getRelation(targetRole);
             if (r!=null) {
                 return r;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IProductCmptTypeRelation findRelationOnProductSide(IPolicyCmptType type, String relationName) {
-        IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
-        for (int i=0; i<types.length; i++) {
-        	IProductCmptTypeRelation relation = (new ProductCmptType(types[i])).getRelation(relationName);
-            if (relation!=null) {
-                return relation;
             }
         }
         return null;

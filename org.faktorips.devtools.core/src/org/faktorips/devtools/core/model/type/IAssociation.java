@@ -15,26 +15,29 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.productcmpttype2;
+package org.faktorips.devtools.core.model.type;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpttype2.AggregationKind;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 
 /**
- * A directed relationship between to product component types.
+ * An association is a directed relationship from one type (the source) to another (the target).
+ * The association is stored as part of the source type.
  *  
- * @since 2.0
- * 
  * @author Jan Ortmann
  */
-public interface IRelation extends IIpsObjectPart {
+public interface IAssociation extends IIpsObjectPart {
 
     public static final int CARDINALITY_ONE = 1;
     public static final int CARDINALITY_MANY = Integer.MAX_VALUE;
     
     // String constants for the relation class' properties according
     // to the Java beans standard.
+    public final static String PROPERTY_AGGREGATION_KIND = "aggregationKind"; //$NON-NLS-1$
     public final static String PROPERTY_TARGET = "target"; //$NON-NLS-1$
     public final static String PROPERTY_TARGET_ROLE_SINGULAR = "targetRoleSingular"; //$NON-NLS-1$
     public final static String PROPERTY_TARGET_ROLE_PLURAL = "targetRolePlural"; //$NON-NLS-1$
@@ -47,6 +50,23 @@ public interface IRelation extends IIpsObjectPart {
      * Returns the product component type this relation belongs to. Never returns <code>null</code>.
      */
     public IProductCmptType getProductCmptType();
+    
+    /**
+     * Returns the kind of aggregation. The method never returns <code>null</code>.
+     */
+    public AggregationKind getAggregationKind();
+    
+    /**
+     * Sets the kind of aggregation.
+     * 
+     * @throws NullPointerException if newKind is <code>null</code>.
+     */
+    public void setAggregationKind(AggregationKind newKind);
+    
+    /**
+     * Returns <code>true</code> if this is a derived association, otherwise <code>false</code>.
+     */
+    public boolean isDerived();
     
     /**
      * Returns the qualified name of the target product component type.
@@ -188,7 +208,7 @@ public interface IRelation extends IIpsObjectPart {
      * 
      * @throws CoreException if an error occurs while searching for the container relation this ones implements.
      */
-    public boolean isContainerRelationImplementation(IRelation containerRelation, IIpsProject project) throws CoreException;
+    public boolean isContainerRelationImplementation(IProductCmptTypeAssociation containerRelation, IIpsProject project) throws CoreException;
     
     /**
      * Searches the container relation object and returns it, if it exists. Returns <code>null</code> if the container
@@ -196,14 +216,5 @@ public interface IRelation extends IIpsObjectPart {
      * 
      * @throws CoreException if an error occurs while searching.
      */
-    public IRelation findImplementedContainerRelation(IIpsProject project) throws CoreException;
-    
-    /**
-     * Returns the corresponding policy component type relation or <code>null</code> if no
-     * such relation is found.
-     * 
-     * @throws CoreException if an error occurs while searching for the relation.
-     */
-    public org.faktorips.devtools.core.model.pctype.IRelation findPolicyCmptTypeRelation(IIpsProject ipsProject) throws CoreException;
-
+    public IProductCmptTypeAssociation findImplementedContainerRelation(IIpsProject project) throws CoreException;
 }

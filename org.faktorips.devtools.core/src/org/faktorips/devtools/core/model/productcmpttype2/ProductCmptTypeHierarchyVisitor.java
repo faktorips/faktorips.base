@@ -17,12 +17,10 @@
 
 package org.faktorips.devtools.core.model.productcmpttype2;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
+import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 
 /**
  * A visitor that makes it easy to implement a function based on all types in a supertype hierarchy.
@@ -33,37 +31,26 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Jan Ortmann
  */
-public abstract class ProductCmptTypeHierarchyVisitor {
+public abstract class ProductCmptTypeHierarchyVisitor extends TypeHierarchyVisitor {
 
-    protected IIpsProject ipsProject;
-    
     public ProductCmptTypeHierarchyVisitor(IIpsProject ipsProject) {
-        ArgumentCheck.notNull(ipsProject);
-        this.ipsProject = ipsProject;
+        super(ipsProject);
     }
 
     /**
-     * Starts the visit on the given type. Does nothing if basetype is <code>null</code>.
+     * Returns the product component types visited by the visitor in the order they were visited.
      */
-    public final void start(IProductCmptType basetype) throws CoreException {
-        if (basetype==null) {
-            return;
-        }
-        visit(basetype, new HashSet());
-    }
-
-    private void visit(IProductCmptType currentType, Set typesHandled) throws CoreException {
-        boolean continueVisiting = visit(currentType);
-        if (!continueVisiting) {
-            return;
-        }
-        IProductCmptType supertype = currentType.findSuperProductCmptType(ipsProject);
-        if (supertype!=null && !typesHandled.contains(supertype)) {
-            typesHandled.add(supertype);
-            visit(supertype, typesHandled);
-        }
+    public IProductCmptType[] getVisitedProductCmptTypes() {
+        return (IProductCmptType[])visitedTypes.toArray(new IProductCmptType[visitedTypes.size()]);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    final protected boolean visit(IType currentType) throws CoreException {
+        return visit((IProductCmptType)currentType);
+    }
+
     /**
      * Template method in that subclasses realize the function for the given type.
      * 

@@ -29,9 +29,9 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.ProductCmptRefControl;
@@ -43,7 +43,7 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
  */
 public class RelationEditDialog extends IpsPartEditDialog {
     
-    private IProductCmptRelation relation;
+    private IProductCmptLink link;
     
     // edit fields
     private TextButtonField targetField;
@@ -53,9 +53,9 @@ public class RelationEditDialog extends IpsPartEditDialog {
     private ProductCmptRefControl targetControl;
     private IProductCmpt[] toExclude = new IProductCmpt[0];
     
-    public RelationEditDialog(IProductCmptRelation relation, Shell parentShell) {
-        super(relation, parentShell, Messages.RelationEditDialog_editRelation, true);
-        this.relation = relation;
+    public RelationEditDialog(IProductCmptLink link, Shell parentShell) {
+        super(link, parentShell, Messages.RelationEditDialog_editRelation, true);
+        this.link = link;
     }
 
     /** 
@@ -77,11 +77,11 @@ public class RelationEditDialog extends IpsPartEditDialog {
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_target);
-        targetControl = new ProductCmptRefControl(relation.getIpsProject(), workArea, uiToolkit);
+        targetControl = new ProductCmptRefControl(link.getIpsProject(), workArea, uiToolkit);
         try {
-            IProductCmptTypeRelation typeRelation = relation.findProductCmptTypeRelation();
+            IProductCmptTypeAssociation typeRelation = link.findAssociation(link.getIpsProject());
             if (typeRelation != null) {
-                IProductCmptType productCmptType = typeRelation.findTarget(relation.getIpsProject());
+                IProductCmptType productCmptType = typeRelation.findTarget(link.getIpsProject());
                 if (productCmptType != null) {
                     targetControl.setProductCmptType(productCmptType, true);
                 }

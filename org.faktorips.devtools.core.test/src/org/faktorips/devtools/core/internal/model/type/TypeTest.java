@@ -102,8 +102,6 @@ public class TypeTest extends AbstractIpsPluginTest {
         supersupertype.setSupertype("abc");
         ml = type.validate();
         assertNotNull(ml.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
-        
-        // TODO kann man noch aufführlicher test, s. PolicyCmptType test.
     }
 
     public void testFindOverrideMethodCandidates() throws CoreException {

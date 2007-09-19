@@ -19,7 +19,7 @@ package org.faktorips.devtools.core;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.versionmanager.AbstractMigrationOperation;
+import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 
 /**
@@ -70,8 +70,8 @@ public class TestIpsFeatureVersionManager implements IIpsFeatureVersionManager {
     /**
      * {@inheritDoc}
      */
-    public AbstractMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) throws CoreException {
-        return new AbstractMigrationOperation[0];
+    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) throws CoreException {
+        return new AbstractIpsProjectMigrationOperation[0];
     }
 
     /**

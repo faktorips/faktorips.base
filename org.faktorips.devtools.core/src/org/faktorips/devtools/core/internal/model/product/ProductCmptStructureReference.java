@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 
 /**
  * Abstract reference for <code>ProductCmptStructure</code>.
@@ -79,7 +79,7 @@ public abstract class ProductCmptStructureReference implements
 	}
 
 	private void detectCycle(ArrayList seenElements) throws CycleException {
-		if (!(getWrapped() instanceof IProductCmptTypeRelation)
+		if (!(getWrapped() instanceof IProductCmptTypeAssociation)
 				&& seenElements.contains(getWrapped())) {
 			seenElements.add(getWrapped());
 			throw new CycleException((IIpsElement[]) seenElements

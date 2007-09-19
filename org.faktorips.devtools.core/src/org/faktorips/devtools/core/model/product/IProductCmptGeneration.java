@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 
 
 /**
@@ -133,45 +134,60 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     /**
      * Returns the product component's relations to other product components.
      */
-    public IProductCmptRelation[] getRelations();
+    public IProductCmptLink[] getLinks();
     
     /**
-     * Returns the relations that belong to the given policy component type relation or
-     * an empty array if no such relations are found.
+     * Returns the links that are instances of the given product component type association or
+     * an empty array if no such link is found.
      * 
-     * @param typeRelation The target role of a policy component type relation.
+     * @param association The name (=target role singular) of an association.
      * @throws IllegalArgumentException if type relation is null. 
      */
-    public IProductCmptRelation[] getRelations(String typeRelation);
+    public IProductCmptLink[] getLinks(String association);
 
     /**
      * Returns the number of relations.
      */
-    public int getNumOfRelations();
+    public int getNumOfLinks();
     
     /**
-     * Creates a new relation.
-     */
-    public IProductCmptRelation newRelation(String relation);
-    
-    /**
-     * Creates a new relation. The relation is placed before the given one.
-     */
-    public IProductCmptRelation newRelation(String relation, IProductCmptRelation insertBefore);
-    
-    /**
-     * Checks whether a new relation with the given product component type relation and target  
-     * will be valid.
+     * Creates a new link that is an instance of the product component type association
+     * identified by the given association name.
      * 
+     * @throws NullPointerException if associationName is <code>null</code>.
+     */
+    public IProductCmptLink newLink(String associationName);
+    
+    /**
+     * Creates a new link  that is an instance of the product component type association.
+     * 
+     * @throws NullPointerException if association is <code>null</code>.
+     */
+    public IProductCmptLink newLink(IProductCmptTypeAssociation association);
+    
+    /**
+     * Creates a new link that is an instance of the given association. 
+     * The new link is placed before the given one.
+     */
+    public IProductCmptLink newLink(String association, IProductCmptLink insertBefore);
+    
+    /**
+     * Checks whether a new link as instance of the given product component type association and 
+     * the gven target will be valid.
+     * 
+     * @param ipsProject The project which ips object path is used for the searched.
+     *                   This is not neccessarily the project this component is part of. 
+     *                   
      * @return <code>true</code> if a new relation with the given values will be valid, <code>false</code> otherwise.
+     * 
      * @throws CoreException if a problem occur during the search of the type hierarchy.
      */
-	public boolean canCreateValidRelation(IProductCmpt target, String relationType) throws CoreException;
+	public boolean canCreateValidLink(IProductCmpt target, String association, IIpsProject ipsProject) throws CoreException;
 
 	/**
      * Moves the first given relation in front of the second one.
      */
-    public void moveRelation(IProductCmptRelation toMove, IProductCmptRelation moveBefore);
+    public void moveLink(IProductCmptLink toMove, IProductCmptLink moveBefore);
     
     /**
      * @return A new table content usage. 

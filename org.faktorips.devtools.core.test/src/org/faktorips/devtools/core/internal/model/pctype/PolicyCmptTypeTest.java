@@ -52,6 +52,7 @@ import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -78,6 +79,23 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         sourceFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
         pcType = (PolicyCmptType)sourceFile.getIpsObject();
         pcType.setConfigurableByProductCmptType(false);
+    }
+    
+    public void testFindProductCmptType() throws CoreException {
+        pcType.setUnqualifiedProductCmptType("");
+        assertNull(pcType.findProductCmptType(ipsProject));
+
+        pcType.setUnqualifiedProductCmptType("MotorProduct");
+        pcType.setConfigurableByProductCmptType(false);
+        assertNull(pcType.findProductCmptType(ipsProject));
+        
+        pcType.setConfigurableByProductCmptType(true);
+        pcType.setUnqualifiedProductCmptType("Unkown");
+        assertNull(pcType.findProductCmptType(ipsProject));
+        
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, pcType.getIpsPackageFragment().getName() + ".Product");
+        pcType.setUnqualifiedProductCmptType("Product");
+        assertSame(productCmptType, pcType.findProductCmptType(ipsProject));
     }
     
     public void testFindAttributeInSupertypeHierarchy() throws CoreException {
@@ -654,18 +672,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         pcType = newPolicyCmptType(ipsProject, "Type");
         pcType.setUnqualifiedProductCmptType("MotorProduct");
         assertEquals("MotorProduct", pcType.getProductCmptType());
-    }
-    
-    public void testFindProductCmptType() throws CoreException {
-    	pcType.setUnqualifiedProductCmptType("MotorProduct");
-    	pcType.setConfigurableByProductCmptType(false);
-    	assertNull(pcType.findOldProductCmptType());
-    	
-    	pcType.setConfigurableByProductCmptType(true);
-    	assertNotNull(pcType.findOldProductCmptType());
-    	
-    	pcType.setUnqualifiedProductCmptType("");
-    	assertNull(pcType.findOldProductCmptType());
     }
     
     /** 

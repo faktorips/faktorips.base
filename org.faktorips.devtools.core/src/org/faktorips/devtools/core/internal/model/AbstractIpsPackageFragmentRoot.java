@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -99,9 +98,6 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
      * {@inheritDoc}
      */
     public final IIpsObject findIpsObject(QualifiedNameType qnt) throws CoreException {
-        if (qnt.getIpsObjectType()==IpsObjectType.OLD_PRODUCT_CMPT_TYPE) {
-            return findOldProductCmptType(qnt);
-        }
         IIpsPackageFragment pack = getIpsPackageFragment(qnt.getPackageName());
         if (pack==null) {
             return null;
@@ -113,20 +109,6 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
         return file.getIpsObject();
     }
     
-    private org.faktorips.devtools.core.model.productcmpttype.IProductCmptType findOldProductCmptType(QualifiedNameType qnt) throws CoreException {
-        List result = new ArrayList();
-        String unqualifiedName = qnt.getUnqualifiedName();
-        AbstractIpsPackageFragment pack = (AbstractIpsPackageFragment)getIpsPackageFragment(qnt.getPackageName());
-        pack.findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE, result);
-        for (Iterator it = result.iterator(); it.hasNext();) {
-            PolicyCmptType policyCmptType = (PolicyCmptType) it.next();
-            if (policyCmptType.getUnqualifiedProductCmptType().equals(unqualifiedName)) {
-                return new org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType(policyCmptType);
-            }
-        }
-        return null;
-    }
-
     /**
      * Searches all objects of the given type in the root folder and adds them to the result.
      */

@@ -28,7 +28,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.ui.controls.ProductCmptTypeRefControl;
+import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 
 
@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.ui.editors.EditDialog;
 public class SetTemplateDialog extends EditDialog {
     
     private IProductCmpt productCmpt;
-    private ProductCmptTypeRefControl template;
+    private ProductCmptType2RefControl template;
     private String message;
     
     /**
@@ -63,7 +63,7 @@ public class SetTemplateDialog extends EditDialog {
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
         uiToolkit.createFormLabel(workArea, Messages.SetTemplateDialog_labelNewTemplate);
-        template = new ProductCmptTypeRefControl(productCmpt.getIpsProject(), workArea, uiToolkit);
+        template = new ProductCmptType2RefControl(productCmpt.getIpsProject(), workArea, uiToolkit, true);
         template.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         template.getTextControl().addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {

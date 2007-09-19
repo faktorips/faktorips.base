@@ -93,6 +93,6 @@ public interface IIpsFeatureVersionManager {
      * @throws CoreException If an error occurs during evaluation or instantiation of the migration
      *             operations
      */
-    public AbstractMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) throws CoreException;
+    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) throws CoreException;
 
 }

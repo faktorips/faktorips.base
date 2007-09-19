@@ -24,7 +24,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -40,8 +40,8 @@ public class RelationsLabelProvider implements ILabelProvider{
      * {@inheritDoc}
 	 */
 	public String getText(Object element) {
-		if (element instanceof IProductCmptRelation) {
-			IProductCmptRelation rel = ((IProductCmptRelation)element);
+		if (element instanceof IProductCmptLink) {
+			IProductCmptLink rel = ((IProductCmptLink)element);
 			return StringUtil.unqualifiedName(rel.getTarget());
 		}
         return element.toString();
@@ -51,7 +51,7 @@ public class RelationsLabelProvider implements ILabelProvider{
 	 * {@inheritDoc}
 	 */
 	public Image getImage(Object element) {
-        if (element instanceof IProductCmptRelation) {
+        if (element instanceof IProductCmptLink) {
             return IpsObjectType.PRODUCT_CMPT.getEnabledImage();
         }
 		if (element instanceof String) {

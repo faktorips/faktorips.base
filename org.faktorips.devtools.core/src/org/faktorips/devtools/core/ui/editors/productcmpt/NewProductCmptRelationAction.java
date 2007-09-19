@@ -22,7 +22,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.actions.Messages;
 import org.faktorips.util.memento.Memento;
@@ -66,7 +66,7 @@ public class NewProductCmptRelationAction extends IpsAction {
 		Object selected = selection.getFirstElement();
 		if (selected instanceof String) {
 			setSyncpoint();
-			IProductCmptRelation relation = parent.newRelation((String)selected);
+			IProductCmptLink relation = parent.newRelation((String)selected);
 			relation.setMaxCardinality(1);
 			relation.setMinCardinality(0); // todo get min from modell
 			RelationEditDialog dialog = new RelationEditDialog(relation, shell);

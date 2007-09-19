@@ -15,18 +15,25 @@
 package org.faktorips.devtools.core.model.versionmanager;
 
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.util.message.MessageList;
 
 /**
  * Abstract class for operations migrating the content of an IpsProject created with an older
  * version of FaktorIps to match the needs of the current installed version of FaktorIps.
  * 
+ * 
  * This class is a container for implementations of <code>AbstractMigrationOperation</code>s.
  * 
  * @author Thorsten Guenther
  */
-public abstract class AbstractIpsContentMigrationOperation extends WorkspaceModifyOperation {
+public abstract class AbstractIpsFeatureMigrationOperation extends WorkspaceModifyOperation {
 
+    /**
+     * Returns the ips project the operation migrates.
+     */
+    public abstract IIpsProject getIpsProject();
+    
     /**
      * @return The description of all the steps done by this operation - to be displayed to the
      *         user.

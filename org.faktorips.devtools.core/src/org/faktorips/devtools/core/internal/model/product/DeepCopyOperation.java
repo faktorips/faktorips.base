@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 
 public class DeepCopyOperation implements IWorkspaceRunnable{
 
@@ -120,7 +120,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 	
 	private void fixRelations(IProductCmpt product, IProductCmptReference source, Hashtable nameMap, Hashtable referMap) {
 		IProductCmptGeneration generation = (IProductCmptGeneration)product.getGenerations()[0];
-		IProductCmptRelation[] relations = generation.getRelations();
+		IProductCmptLink[] relations = generation.getLinks();
 		
 		for (int i = 0; i < relations.length; i++) {
 			String target = relations[i].getTarget();

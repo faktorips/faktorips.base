@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 
@@ -77,7 +77,7 @@ final class ProductCmptDeltaContentProvider implements ITreeContentProvider {
 		if (in.getElementsWithValueSetMismatch().length > 0) {
 			result.add(ProductCmptDeltaType.VALUESET_MISMATCH);
 		}
-		if (in.getRelationsWithMissingPcTypeRelations().length > 0) {
+		if (in.getLinksWithMissingAssociations().length > 0) {
 			result.add(ProductCmptDeltaType.RELATION_MISMATCH);
 		}
 		if (in.getTypeMismatchElements().length > 0) {
@@ -149,10 +149,10 @@ final class ProductCmptDeltaContentProvider implements ITreeContentProvider {
 			}
 		}
 		else if (parentElement == ProductCmptDeltaType.RELATION_MISMATCH) {
-			IProductCmptRelation[] rels = in.getRelationsWithMissingPcTypeRelations();
+			IProductCmptLink[] rels = in.getLinksWithMissingAssociations();
 			String message = Messages.ProductCmptDeltaContentProvider_msgNoRelation;
 			for (int i = 0; i < rels.length; i++) {
-				result.add(new ProductCmptDeltaDetail(ProductCmptDeltaType.RELATION_MISMATCH, NLS.bind(message, rels[i].getProductCmptTypeRelation())));
+				result.add(new ProductCmptDeltaDetail(ProductCmptDeltaType.RELATION_MISMATCH, NLS.bind(message, rels[i].getAssociation())));
 			}
 		}
 		else if (parentElement == ProductCmptDeltaType.VALUESET_MISMATCH) {

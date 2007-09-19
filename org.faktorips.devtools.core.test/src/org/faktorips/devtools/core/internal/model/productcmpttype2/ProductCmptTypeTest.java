@@ -260,7 +260,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         productCmptType.initFromXml(XmlUtil.getElement(rootEl, 0));
         assertEquals("Policy", productCmptType.getPolicyCmptType());
         assertEquals(1, productCmptType.getNumOfAttributes());
-        assertEquals(1, productCmptType.getNumOfRelations());
+        assertEquals(1, productCmptType.getNumOfAssociations());
         assertEquals(1, productCmptType.getNumOfTableStructureUsages());
         assertEquals(1, productCmptType.getNumOfMethods());
     }
@@ -268,7 +268,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     public void testToXml() throws CoreException {
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
         productCmptType.newAttribute().setName("attr");
-        productCmptType.newRelation().setTargetRoleSingular("role");
+        productCmptType.newAssociation().setTargetRoleSingular("role");
         productCmptType.newTableStructureUsage().setRoleName("roleTsu");
         productCmptType.newMethod().setName("method1");
         
@@ -278,7 +278,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         
         assertEquals(policyCmptType.getQualifiedName(), productCmptType.getPolicyCmptType());
         assertEquals(1, productCmptType.getNumOfAttributes());
-        assertEquals(1, productCmptType.getNumOfRelations());
+        assertEquals(1, productCmptType.getNumOfAssociations());
         assertEquals(1, productCmptType.getNumOfTableStructureUsages());
         assertEquals(1, productCmptType.getNumOfMethods());
     }

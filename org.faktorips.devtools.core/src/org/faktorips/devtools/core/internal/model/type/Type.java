@@ -23,10 +23,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartCollection;
-import org.faktorips.devtools.core.internal.model.pctype.Messages;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -243,13 +241,13 @@ public abstract class Type extends BaseIpsObject implements IType {
     private void validateSupertype(MessageList list, IIpsProject ipsProject) throws CoreException {
         IType supertypeObj = findSupertype(ipsProject);
         if (supertypeObj==null) {
-            String text = NLS.bind(Messages.PolicyCmptType_msgSupertypeNotFound, supertype);
+            String text = "The supertype " + supertype + " can't be found";
             list.add(new Message(MSGCODE_SUPERTYPE_NOT_FOUND, text, Message.ERROR, this, IType.PROPERTY_SUPERTYPE));
         } else {
             SupertypesCollector collector = new SupertypesCollector(ipsProject);
             collector.start(supertypeObj);
             if (collector.cycleDetected()) {
-                String msg = "Cycle detected in type hierarchy."; //$NON-NLS-1$
+                String msg = "Cycle detected in type hierarchy.";
                 list.add(new Message(MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg.toString(), Message.ERROR, this, IType.PROPERTY_SUPERTYPE));
             } else {
                 for (Iterator it=collector.supertypes.iterator(); it.hasNext(); ) {
@@ -257,7 +255,7 @@ public abstract class Type extends BaseIpsObject implements IType {
                     MessageList superResult = supertype.validate();
                     if (!superResult.isEmpty()) {
                         if (superResult.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND)!=null) {
-                            String text = Messages.PolicyCmptType_msgInconsistentTypeHierarchy;
+                            String text = "The type's hierarchy is inconsistent.";
                             list.add(new Message(MSGCODE_INCONSISTENT_TYPE_HIERARCHY, text, Message.ERROR, this, PROPERTY_SUPERTYPE));
                             return;
                         }

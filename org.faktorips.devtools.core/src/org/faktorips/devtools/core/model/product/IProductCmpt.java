@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 
 /**
@@ -44,10 +43,10 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
     public final static String MSGCODE_PREFIX = "PRODUCT_CMPT-"; //$NON-NLS-1$
     
     /**
-     * Validation message code that indicates if an error exists in the type hierarchy of the
-     * policy cmpt type that is referenced by this product component.  
+     * Validation message code that indicates if the type's hierarchy the product component
+     * is based on is inconsistent.  
      */
-    public final static String MSGCODE_INCONSISTENCY_IN_POLICY_CMPT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistencyInPolicyCmptTypeHierarchy"; //$NON-NLS-1$
+    public final static String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistTypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Returns the product component's generation at the specified index.
@@ -108,16 +107,9 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
     /**
      * Searches the product component type this product component is based on.
      *  
-     * @return The product component type this product component is based on 
-     * or <code>null</code> if the product component type can't be found.
-     *  
-     * @throws CoreException if an exception occurs while searching for the type.
-     */
-    public IProductCmptType findOldProductCmptType() throws CoreException;
-    
-    /**
-     * Searches the product component type this product component is based on.
-     *  
+     * @param ipsProject The project which ips object path is used for the searched.
+     *                   This is not neccessarily the project this component is part of. 
+     *      
      * @return The product component type this product component is based on 
      * or <code>null</code> if the product component type can't be found.
      *  
@@ -154,18 +146,24 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
      * The relations are evaluated for the date defined by the user-set working date. The 
      * structure is rootet at this product.
      * 
+     * @param ipsProject The project which ips object path is used for the searched.
+     *                   This is not neccessarily the project this component is part of. 
+     * 
      * @throws CycleException If a circle is detected.
      */
-    public IProductCmptStructure getStructure() throws CycleException;
+    public IProductCmptStructure getStructure(IIpsProject project) throws CycleException;
     
     /**
      * Returns the product component structure representing the structure defined by relations. 
      * The relations are evaluted for the given daten. The 
      * structure is rootet at this product.
      * 
+     * @param ipsProject The project which ips object path is used for the searched.
+     *                   This is not neccessarily the project this component is part of. 
+     *                   
      * @throws CycleException If a circle is detected.
      */
-    public IProductCmptStructure getStructure(GregorianCalendar date) throws CycleException;
+    public IProductCmptStructure getStructure(GregorianCalendar date, IIpsProject project) throws CycleException;
     
     /**
      * Returns the id this object is identified by at runtime. 

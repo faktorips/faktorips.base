@@ -415,7 +415,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             MessageList list = object.validate();
             createMarkersFromMessageList(resource, list, IpsPlugin.PROBLEM_MARKER);
         } catch (Exception e) {
-            buildStatus.add(new IpsStatus("An exception occured during marker updating", e)); //$NON-NLS-1$
+            buildStatus.add(new IpsStatus("An exception occured during marker updating for " + object, e)); //$NON-NLS-1$
         }
 
     }

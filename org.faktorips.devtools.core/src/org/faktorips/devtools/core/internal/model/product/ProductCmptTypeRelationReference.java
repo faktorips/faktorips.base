@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 
 /**
  * A reference to a <code>IProductCmptTypeRelation</code>. Used by <code>ProductCmptStructure</code>.
@@ -32,30 +32,30 @@ public class ProductCmptTypeRelationReference extends
 		ProductCmptStructureReference implements
 		IProductCmptTypeRelationReference {
 
-	private IProductCmptTypeRelation relation;
+	private IProductCmptTypeAssociation association;
 	
 	/**
 	 * @param structure
 	 * @param parent
 	 * @throws CycleException 
 	 */
-	public ProductCmptTypeRelationReference(IProductCmptStructure structure, ProductCmptStructureReference parent, IProductCmptTypeRelation relation) throws CycleException {
+	public ProductCmptTypeRelationReference(IProductCmptStructure structure, ProductCmptStructureReference parent, IProductCmptTypeAssociation association) throws CycleException {
 		super(structure, parent);
-		this.relation = relation;
+		this.association = association;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProductCmptTypeRelation getRelation() {
-		return relation;
+	public IProductCmptTypeAssociation getRelation() {
+		return association;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	IIpsElement getWrapped() {
-		return relation;
+		return association;
 	}
 
 }

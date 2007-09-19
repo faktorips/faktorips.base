@@ -163,7 +163,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
      * {@inheritDoc}
 	 */
     public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
-
+        // TODO v2 - das koenner wir effizienter implementieren
         if (IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType())) {
             if(KIND_TABLE_IMPL.equals(kind) || KIND_TABLE_ROW.equals(kind)){
                 return getInternalPackageName(ipsSrcFile);
@@ -171,16 +171,19 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
         }
 
         if (IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
-            if (KIND_PRODUCT_CMPT_INTERFACE.equals(kind)) {
-                return getPackageName(ipsSrcFile);
-            }
-
             if (KIND_POLICY_CMPT_INTERFACE.equals(kind)) {
                 return getPackageName(ipsSrcFile);
             }
 
             if (KIND_POLICY_CMPT_IMPL.equals(kind)) {
                 return getInternalPackageName(ipsSrcFile);
+            }
+
+        }
+
+        if (IpsObjectType.PRODUCT_CMPT_TYPE_V2.equals(ipsSrcFile.getIpsObjectType())) {
+            if (KIND_PRODUCT_CMPT_INTERFACE.equals(kind)) {
+                return getPackageName(ipsSrcFile);
             }
 
             if (KIND_PRODUCT_CMPT_IMPL.equals(kind)) {

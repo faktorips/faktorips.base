@@ -18,21 +18,23 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype2;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.AggregationKind;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -41,10 +43,11 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptTypeRelation extends AtomicIpsObjectPart implements IRelation {
+public class ProductCmptTypeAssociation extends AtomicIpsObjectPart implements IProductCmptTypeAssociation {
 
-    final static String TAG_NAME = "Relation"; //$NON-NLS-1$
+    final static String TAG_NAME = "Association"; //$NON-NLS-1$
 
+    private AggregationKind aggregationKind = AggregationKind.NONE;
     private String target = ""; //$NON-NLS-1$
     private String targetRoleSingular = ""; //$NON-NLS-1$
     private String targetRolePlural = ""; //$NON-NLS-1$
@@ -53,7 +56,7 @@ public class ProductCmptTypeRelation extends AtomicIpsObjectPart implements IRel
     private String implementedContainerRelation = ""; //$NON-NLS-1$
     private boolean readOnlyContainer = false;
     
-    public ProductCmptTypeRelation(IIpsObject parent, int id) {
+    public ProductCmptTypeAssociation(IIpsObject parent, int id) {
         super(parent, id);
     }
     
@@ -69,6 +72,30 @@ public class ProductCmptTypeRelation extends AtomicIpsObjectPart implements IRel
      */
     public String getName() {
         return targetRoleSingular;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDerived() {
+        return isReadOnlyContainer();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public AggregationKind getAggregationKind() {
+        return aggregationKind;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setAggregationKind(AggregationKind newKind) {
+        ArgumentCheck.notNull(newKind);
+        AggregationKind oldKind = aggregationKind;
+        aggregationKind = newKind;
+        valueChanged(oldKind, newKind);
     }
 
     /**
@@ -240,14 +267,14 @@ public class ProductCmptTypeRelation extends AtomicIpsObjectPart implements IRel
     /**
      * {@inheritDoc}
      */
-    public IRelation findImplementedContainerRelation(IIpsProject project) throws CoreException {
-        return getProductCmptType().findRelationInSupertypeHierarchy(implementedContainerRelation, true, project);
+    public IProductCmptTypeAssociation findImplementedContainerRelation(IIpsProject project) throws CoreException {
+        return getProductCmptType().findAssociationInSupertypeHierarchy(implementedContainerRelation, true, project);
     }
     
     /**
      * {@inheritDoc}
      */
-    public boolean isContainerRelationImplementation(IRelation containerRelation, IIpsProject project) throws CoreException {
+    public boolean isContainerRelationImplementation(IProductCmptTypeAssociation containerRelation, IIpsProject project) throws CoreException {
         if (containerRelation==null) {
             return false;
         }
@@ -271,26 +298,40 @@ public class ProductCmptTypeRelation extends AtomicIpsObjectPart implements IRel
         if (targetPolicyCmptType==null) {
             return null;
         }
-        org.faktorips.devtools.core.model.pctype.IRelation[] policyRelations = getCompositionsFor(policyCmptType, targetPolicyCmptType); 
+        org.faktorips.devtools.core.model.pctype.IRelation[] policyRelations = getRelationsFor(policyCmptType, targetPolicyCmptType); 
         if (policyRelations.length==0) {
             return null;
         }
-        if (policyRelations.length>1) {
-            throw new CoreException(new IpsStatus("More than 1 relation is not supported at the moment!"));
-        }
-        return policyRelations[0];
+        return policyRelations[getAssociationIndex()];
     }
     
-    private org.faktorips.devtools.core.model.pctype.IRelation[] getCompositionsFor(IPolicyCmptType from, IPolicyCmptType target) {
+    private org.faktorips.devtools.core.model.pctype.IRelation[] getRelationsFor(IPolicyCmptType from, IPolicyCmptType target) {
         List result = new ArrayList();
         String targetQName = target.getQualifiedName();
         org.faktorips.devtools.core.model.pctype.IRelation[] policyRelations = from.getRelations();
         for (int i=0; i<policyRelations.length; i++) {
-            if (policyRelations[i].isCompositionMasterToDetail() && targetQName.equals(policyRelations[i].getTarget())) {
+            if (targetQName.equals(policyRelations[i].getTarget())) {
                 result.add(policyRelations[i]);
             }
         }
         return (org.faktorips.devtools.core.model.pctype.IRelation[])result.toArray(new org.faktorips.devtools.core.model.pctype.IRelation[result.size()]);
+    }
+    
+    private int getAssociationIndex() {
+        List allAssociationsForTheTargetType = new ArrayList();
+        IProductCmptTypeAssociation[] ass = getProductCmptType().getAssociations();
+        for (int i = 0; i < ass.length; i++) {
+            if (target.equals(ass[i].getTarget())) {
+                allAssociationsForTheTargetType.add(ass[i]);
+            }
+        }
+        int index = 0;
+        for (Iterator it=allAssociationsForTheTargetType.iterator(); it.hasNext(); index++) {
+            if (it.next()==this) {
+                return index;
+            }
+        }
+        throw new RuntimeException("Can't get index of association " + this);
     }
 
     /**
@@ -312,6 +353,10 @@ public class ProductCmptTypeRelation extends AtomicIpsObjectPart implements IRel
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
+        aggregationKind = AggregationKind.getKind(element.getAttribute(PROPERTY_AGGREGATION_KIND));
+        if (aggregationKind==null) {
+            aggregationKind = AggregationKind.NONE;
+        }
         target = element.getAttribute(PROPERTY_TARGET);
         targetRoleSingular = element.getAttribute(PROPERTY_TARGET_ROLE_SINGULAR);
         targetRolePlural = element.getAttribute(PROPERTY_TARGET_ROLE_PLURAL);
@@ -339,6 +384,7 @@ public class ProductCmptTypeRelation extends AtomicIpsObjectPart implements IRel
      */
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
+        newElement.setAttribute(PROPERTY_AGGREGATION_KIND, aggregationKind.getId());
         newElement.setAttribute(PROPERTY_TARGET, target);
         newElement.setAttribute(PROPERTY_TARGET_ROLE_SINGULAR, targetRoleSingular);
         newElement.setAttribute(PROPERTY_TARGET_ROLE_PLURAL, targetRolePlural);

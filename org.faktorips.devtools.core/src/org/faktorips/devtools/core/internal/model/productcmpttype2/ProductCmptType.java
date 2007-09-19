@@ -31,8 +31,8 @@ import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.productcmpttype2.IRelation;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IType;
@@ -50,7 +50,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     private String policyCmptType = "";
     
     private IpsObjectPartCollection attributes = new IpsObjectPartCollection(this, Attribute.class, "Attribute");
-    private IpsObjectPartCollection relations = new IpsObjectPartCollection(this, ProductCmptTypeRelation.class, "Relation");
+    private IpsObjectPartCollection associations = new IpsObjectPartCollection(this, ProductCmptTypeAssociation.class, "Association");
     private IpsObjectPartCollection tableStructureUsages = new IpsObjectPartCollection(this, TableStructureUsage.class, "TableStructureUsage");
     
     public ProductCmptType(IIpsSrcFile file) {
@@ -113,21 +113,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * {@inheritDoc}
      */
     public IPolicyCmptType findPolicyCmptType(boolean searchSupertypeHierarchy, IIpsProject project) throws CoreException {
-        IPolicyCmptType typeObj = project.findPolicyCmptType(policyCmptType);
-        if (typeObj!=null) {
-            return typeObj;
-        }
-        if (isConfigurationForPolicyCmptType()) {
-            return null; // a policy component type is specified, but it is not found. no need to search the hierarchy.
-        }
         if (!searchSupertypeHierarchy) {
-            return null;
+            return project.findPolicyCmptType(policyCmptType);
         }
-        IProductCmptType supertypeObj = findSuperProductCmptType(project);
-        if (supertypeObj==null) {
-            return null;
-        }
-        return supertypeObj.findPolicyCmptType(searchSupertypeHierarchy, project);
+        PolicyCmptTypeFinder finder = new PolicyCmptTypeFinder(project);
+        finder.start(this);
+        return finder.policyCmptType;
     }
     
     /**
@@ -191,28 +182,28 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
-    public IRelation newRelation() {
-        return (IRelation)relations.newPart();
+    public IProductCmptTypeAssociation newAssociation() {
+        return (IProductCmptTypeAssociation)associations.newPart();
     }
 
     /**
      * {@inheritDoc}
      */
-    public int getNumOfRelations() {
-        return relations.size();
+    public int getNumOfAssociations() {
+        return associations.size();
     }
 
     /**
      * {@inheritDoc}
      */
-    public IRelation getRelation(String name) {
-        return (IRelation)attributes.getPartByName(name);
+    public IProductCmptTypeAssociation getAssociation(String name) {
+        return (IProductCmptTypeAssociation)associations.getPartByName(name);
     }
     
     /**
      * {@inheritDoc}
      */
-    public IRelation findRelationInSupertypeHierarchy(String name, boolean includeSelf, IIpsProject project) throws CoreException {
+    public IProductCmptTypeAssociation findAssociationInSupertypeHierarchy(String name, boolean includeSelf, IIpsProject project) throws CoreException {
         RelationFinder finder = new RelationFinder(project, name);
         finder.start( includeSelf ? this : findSuperProductCmptType(project));
         return finder.relation;
@@ -221,15 +212,15 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
-    public IRelation[] getRelations() {
-        return (IRelation[])relations.toArray(new IRelation[relations.size()]);
+    public IProductCmptTypeAssociation[] getAssociations() {
+        return (IProductCmptTypeAssociation[])associations.toArray(new IProductCmptTypeAssociation[associations.size()]);
     }
 
     /**
      * {@inheritDoc}
      */
-    public int[] moveRelations(int[] indexes, boolean up) {
-        return relations.moveParts(indexes, up);
+    public int[] moveAssociations(int[] indexes, boolean up) {
+        return associations.moveParts(indexes, up);
     }
     
     /**
@@ -321,7 +312,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void addQualifiedNameTypesForRelationTargets(Set qualifiedNameTypes) throws CoreException {
-        IRelation[] relations = getRelations();
+        IProductCmptTypeAssociation[] relations = getAssociations();
         for (int i = 0; i < relations.length; i++) {
             String qualifiedName = relations[i].getTarget();
             qualifiedNameTypes.add(new QualifiedNameType(qualifiedName, IpsObjectType.PRODUCT_CMPT_TYPE_V2));
@@ -331,7 +322,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     class RelationFinder extends ProductCmptTypeHierarchyVisitor {
 
         private String relationName;
-        private IRelation relation = null;
+        private IProductCmptTypeAssociation relation = null;
         
         public RelationFinder(IIpsProject project, String relationName) {
             super(project);
@@ -342,7 +333,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
          * {@inheritDoc}
          */
         protected boolean visit(IProductCmptType currentType) {
-            relation = currentType.getRelation(relationName);
+            relation = currentType.getAssociation(relationName);
             return relation==null;
         }
         
@@ -368,4 +359,21 @@ public class ProductCmptType extends Type implements IProductCmptType {
         
     }
 
+    class PolicyCmptTypeFinder extends ProductCmptTypeHierarchyVisitor {
+
+        private IPolicyCmptType policyCmptType = null;
+        
+        public PolicyCmptTypeFinder(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+            policyCmptType = ipsProject.findPolicyCmptType(currentType.getPolicyCmptType());
+            return !currentType.isConfigurationForPolicyCmptType();
+        }
+        
+    }
 }

@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
@@ -317,24 +317,24 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         assertEquals(1, delta.getAttributesWithMissingConfigElements().length);
     }
     
-    public void testGetRelationsWithMissingPcTypeRelations() throws CoreException {
+    public void testGetLinksWithMissingAssociations() throws CoreException {
         IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);  
-        assertEquals(0, delta.getRelationsWithMissingPcTypeRelations().length);
+        assertEquals(0, delta.getLinksWithMissingAssociations().length);
         
-        IProductCmptRelation r1 = generation.newRelation("typeRelation1");
-        IProductCmptRelation r2 = generation.newRelation("typeRelation2");
+        IProductCmptLink link1 = generation.newLink("typeRelation1");
+        IProductCmptLink link2 = generation.newLink("typeRelation2");
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
         assertFalse(delta.isEmpty());
-        IProductCmptRelation[] relations = delta.getRelationsWithMissingPcTypeRelations();
-        assertEquals(2, relations.length);
-        assertEquals(r1, relations[0]);
-        assertEquals(r2, relations[1]);
+        IProductCmptLink[] links = delta.getLinksWithMissingAssociations();
+        assertEquals(2, links.length);
+        assertEquals(link1, links[0]);
+        assertEquals(link2, links[1]);
         
-        policyCmptType.newRelation().setTargetRoleSingularProductSide("typeRelation1");
-        policyCmptSupertype.newRelation().setTargetRoleSingularProductSide("typeRelation2");
+        productCmptType.newAssociation().setTargetRoleSingular("typeRelation1");
+        productCmptSupertype.newAssociation().setTargetRoleSingular("typeRelation2");
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
-        relations = delta.getRelationsWithMissingPcTypeRelations();
-        assertEquals(0, relations.length);
+        links = delta.getLinksWithMissingAssociations();
+        assertEquals(0, links.length);
     }
     
     public void testGetTableStructureUsagesWithMissingContentUsages() throws Exception {

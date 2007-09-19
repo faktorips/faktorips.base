@@ -24,6 +24,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
@@ -35,8 +36,8 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.versionmanager.AbstractIpsContentMigrationOperation;
-import org.faktorips.devtools.core.model.versionmanager.AbstractMigrationOperation;
+import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
+import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.util.message.MessageList;
 import org.osgi.framework.Version;
 
@@ -46,17 +47,25 @@ import org.osgi.framework.Version;
  * 
  * @author Thorsten Guenther
  */
-public class IpsContentMigrationOperation extends AbstractIpsContentMigrationOperation {
+public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOperation {
 
     private MessageList result;
     private ArrayList operations = new ArrayList();
     private IIpsProject projectToMigrate;
 
-    public IpsContentMigrationOperation(IIpsProject projectToMigrate) {
+    public IpsFeatureMigrationOperation(IIpsProject projectToMigrate) {
         this.projectToMigrate = projectToMigrate;
     }
 
-    public void addMigrationPath(AbstractMigrationOperation[] path) {
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsProject getIpsProject() {
+        return projectToMigrate;
+    }
+
+
+    public void addMigrationPath(AbstractIpsProjectMigrationOperation[] path) {
         operations.addAll(Arrays.asList(path));
     }
 
@@ -65,10 +74,21 @@ public class IpsContentMigrationOperation extends AbstractIpsContentMigrationOpe
      */
     protected final void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
             InterruptedException {
+        
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
 
+        String msg = NLS.bind(Messages.IpsContentMigrationOperation_labelMigrateProject, projectToMigrate.getName());
+        monitor.beginTask(msg, 1010 + operations.size() * 1000);
+        try {
+            executeInternal(monitor);
+        } finally {
+            monitor.done();
+        }
+    }
+
+    private void executeInternal(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {
         try {
             // check for unsaved changes - is there a more elegant way???
             if (PlatformUI.isWorkbenchRunning()) {
@@ -85,19 +105,15 @@ public class IpsContentMigrationOperation extends AbstractIpsContentMigrationOpe
                     }
                 }
             }
-            
-            String msg = NLS.bind(Messages.IpsContentMigrationOperation_labelMigrateProject, projectToMigrate.getName());
-            monitor.beginTask(msg, operations.size());
+            monitor.worked(10);
             
             result = new MessageList();
             for (int i = 0; i < operations.size(); i++) {
                 if (monitor.isCanceled()) {
                     throw new InterruptedException();
                 }
-                AbstractMigrationOperation operation = (AbstractMigrationOperation)operations.get(i);
-                monitor.subTask(operation.getDescription());
-                result.add(operation.migrate(monitor));
-                monitor.worked(1);
+                AbstractIpsProjectMigrationOperation operation = (AbstractIpsProjectMigrationOperation)operations.get(i);
+                result.add(operation.migrate(new SubProgressMonitor(monitor, 1000)));
             }
         }
         catch (CoreException e) {
@@ -120,7 +136,8 @@ public class IpsContentMigrationOperation extends AbstractIpsContentMigrationOpe
         monitor.subTask(Messages.IpsContentMigrationOperation_labelSaveChanges);
         ArrayList result = new ArrayList();
         projectToMigrate.findAllIpsObjects(result);
-        monitor.beginTask(Messages.IpsContentMigrationOperation_labelSaveChanges, result.size());
+        IProgressMonitor saveMonitor = new SubProgressMonitor(monitor, 1000);
+        saveMonitor.beginTask(Messages.IpsContentMigrationOperation_labelSaveChanges, result.size());
 
         // at this point, we do not allow the user to cancel this operation any more because
         // we now start to save all the modifications - which has to be done atomically.
@@ -130,9 +147,9 @@ public class IpsContentMigrationOperation extends AbstractIpsContentMigrationOpe
             if (file.isDirty()) {
                 file.save(true, monitor);
             }
-            monitor.worked(1);
+            saveMonitor.worked(1);
         }
-        
+        saveMonitor.done();
         updateIpsProject();
     }
 
@@ -151,6 +168,7 @@ public class IpsContentMigrationOperation extends AbstractIpsContentMigrationOpe
                 file.markAsClean();
             }
         }
+        
     }
     
     private void updateIpsProject() throws CoreException {
@@ -162,7 +180,7 @@ public class IpsContentMigrationOperation extends AbstractIpsContentMigrationOpe
         // for every migrated feature find the maximum target version.
         Hashtable features = new Hashtable();
         for(int i = 0; i < operations.size(); i++) {
-            AbstractMigrationOperation operation = (AbstractMigrationOperation)operations.get(i);
+            AbstractIpsProjectMigrationOperation operation = (AbstractIpsProjectMigrationOperation)operations.get(i);
             String version = (String)features.get(operation.getFeatureId());
             if (version == null) {
                 features.put(operation.getFeatureId(), operation.getTargetVersion());
@@ -192,7 +210,7 @@ public class IpsContentMigrationOperation extends AbstractIpsContentMigrationOpe
     public String getDescription() {
         StringBuffer description = new StringBuffer();
         for (int i = 0; i < operations.size(); i++) {
-            AbstractMigrationOperation operation = (AbstractMigrationOperation)operations.get(i);
+            AbstractIpsProjectMigrationOperation operation = (AbstractIpsProjectMigrationOperation)operations.get(i);
             description.append("-> ").append(operation.getTargetVersion()).append(SystemUtils.LINE_SEPARATOR); //$NON-NLS-1$
             description.append(operation.getDescription()).append(SystemUtils.LINE_SEPARATOR);
         }
@@ -206,7 +224,7 @@ public class IpsContentMigrationOperation extends AbstractIpsContentMigrationOpe
         boolean empty = true;
 
         for (int i = 0; i < operations.size() && empty; i++) {
-            AbstractMigrationOperation operation = (AbstractMigrationOperation)operations.get(i);
+            AbstractIpsProjectMigrationOperation operation = (AbstractIpsProjectMigrationOperation)operations.get(i);
             empty = empty && operation.isEmpty();
         }
         return empty;

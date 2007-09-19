@@ -39,7 +39,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.versionmanager.AbstractIpsContentMigrationOperation;
+import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
 
 
 /**
@@ -117,7 +117,7 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
     private void addPreselection(IIpsProject project) {
         if (project.exists()) {
             try {
-                AbstractIpsContentMigrationOperation operation = IpsPlugin.getDefault().getMigrationOperation(project);
+                AbstractIpsFeatureMigrationOperation operation = IpsPlugin.getDefault().getMigrationOperation(project);
                 if (!operation.isEmpty()) {
                     preSelected.add(project);
                 }

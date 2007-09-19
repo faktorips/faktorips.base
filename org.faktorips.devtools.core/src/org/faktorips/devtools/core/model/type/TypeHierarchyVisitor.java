@@ -17,8 +17,8 @@
 
 package org.faktorips.devtools.core.model.type;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -35,8 +35,9 @@ import org.faktorips.util.ArgumentCheck;
  */
 public abstract class TypeHierarchyVisitor {
 
+    protected IIpsProject ipsProject;
+    protected List visitedTypes;
     private boolean cycleDetected;
-    private IIpsProject ipsProject;
     
     /**
      * Constructs a new visitor.
@@ -58,29 +59,37 @@ public abstract class TypeHierarchyVisitor {
     }
 
     /**
+     * Returns the types visited by the visitor in the order they were visited.
+     */
+    public IType[] getVisitedTypes() {
+        return (IType[])visitedTypes.toArray(new IType[visitedTypes.size()]);
+    }
+
+    /**
      * Starts the visit on the given type. Does nothing if basetype is <code>null</code>.
      */
     public final void start(IType basetype) throws CoreException {
-        this.cycleDetected = false;
+        cycleDetected = false;
+        visitedTypes = new ArrayList();
         if (basetype==null) {
             return;
         }
-        visit(basetype, new HashSet());
+        visitInternal(basetype);
     }
 
-    private void visit(IType currentType, Set typesHandled) throws CoreException {
+    private void visitInternal(IType currentType) throws CoreException {
+        if (visitedTypes.contains(currentType)) {
+            cycleDetected = true;
+            return;
+        }
+        visitedTypes.add(currentType);
         boolean continueVisiting = visit(currentType);
         if (!continueVisiting) {
             return;
         }
         IType supertype = currentType.findSupertype(ipsProject);
         if (supertype!=null) {
-            if (typesHandled.contains(supertype)) {
-                cycleDetected = true; 
-            } else {
-                typesHandled.add(supertype);
-                visit(supertype, typesHandled);
-            }
+            visitInternal(supertype);
         }
     }
     

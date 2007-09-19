@@ -31,10 +31,10 @@ import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -48,7 +48,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     private List configElements = new ArrayList(0);
 
-    private ArrayList relations = new ArrayList(0);
+    private ArrayList links = new ArrayList(0);
 
     private List tableContentUsages = new ArrayList(0);
 
@@ -77,11 +77,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * {@inheritDoc}
      */
     public IIpsElement[] getChildren() {
-        int numOfChildren = getNumOfConfigElements() + getNumOfRelations() + getTableContentUsages().length;
+        int numOfChildren = getNumOfConfigElements() + getNumOfLinks() + getTableContentUsages().length;
         IIpsElement[] childrenArray = new IIpsElement[numOfChildren];
         List childrenList = new ArrayList(numOfChildren);
         childrenList.addAll(configElements);
-        childrenList.addAll(relations);
+        childrenList.addAll(links);
         childrenList.addAll(tableContentUsages);
         childrenList.toArray(childrenArray);
         return childrenArray;
@@ -135,7 +135,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             elements[i].setValueSetCopy(a.getValueSet());
         }
 
-        IProductCmptRelation[] relations = delta.getRelationsWithMissingPcTypeRelations();
+        IProductCmptLink[] relations = delta.getLinksWithMissingAssociations();
         for (int i = 0; i < relations.length; i++) {
             relations[i].delete();
         }
@@ -214,120 +214,125 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     /**
      * {@inheritDoc}
      */
-    public IProductCmptRelation[] getRelations() {
-        return (IProductCmptRelation[])relations.toArray(new ProductCmptRelation[relations.size()]);
+    public IProductCmptLink[] getLinks() {
+        return (IProductCmptLink[])links.toArray(new ProductCmptLink[links.size()]);
     }
 
     /**
      * {@inheritDoc}
      */
-    public IProductCmptRelation[] getRelations(String typeRelation) {
+    public IProductCmptLink[] getLinks(String typeRelation) {
         List result = new ArrayList();
-        for (Iterator it = relations.iterator(); it.hasNext();) {
-            IProductCmptRelation relation = (IProductCmptRelation)it.next();
-            if (relation.getProductCmptTypeRelation().equals(typeRelation)) {
+        for (Iterator it = links.iterator(); it.hasNext();) {
+            IProductCmptLink relation = (IProductCmptLink)it.next();
+            if (relation.getAssociation().equals(typeRelation)) {
                 result.add(relation);
             }
         }
-        return (IProductCmptRelation[])result.toArray(new ProductCmptRelation[result.size()]);
+        return (IProductCmptLink[])result.toArray(new ProductCmptLink[result.size()]);
     }
 
     /**
      * {@inheritDoc}
      */
-    public int getNumOfRelations() {
-        return relations.size();
+    public int getNumOfLinks() {
+        return links.size();
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.product.IProductCmptGeneration#newRelation(java.lang.String)
+     * {@inheritDoc}
      */
-    public IProductCmptRelation newRelation(String pcTypeRelation) {
-        ProductCmptRelation newRelation = newRelationInternal(getNextPartId());
-        newRelation.setProductCmptTypeRelation(pcTypeRelation);
+    public IProductCmptLink newLink(IProductCmptTypeAssociation association) {
+        return newLink(association.getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IProductCmptLink newLink(String associationName) {
+        ProductCmptLink newRelation = newRelationInternal(getNextPartId());
+        newRelation.setProductCmptTypeRelation(associationName);
         objectHasChanged();
         return newRelation;
     }
 
-    public IProductCmptRelation newRelation(String pcTypeRelation, IProductCmptRelation insertBefore) {
-        ProductCmptRelation newRelation = newRelationInternal(getNextPartId(), insertBefore);
-        newRelation.setProductCmptTypeRelation(pcTypeRelation);
+    public IProductCmptLink newLink(String associationName, IProductCmptLink insertBefore) {
+        ProductCmptLink newRelation = newRelationInternal(getNextPartId(), insertBefore);
+        newRelation.setProductCmptTypeRelation(associationName);
         objectHasChanged();
         return newRelation;
     }
 
-    public IProductCmptRelation newRelation() {
+    public IProductCmptLink newRelation() {
         return newRelationInternal(getNextPartId());
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean canCreateValidRelation(IProductCmpt target, String relation) throws CoreException {
-        if (relation == null || target == null) {
+    public boolean canCreateValidLink(IProductCmpt target, String associationName, IIpsProject ipsProject) throws CoreException {
+        if (associationName == null || target == null) {
             return false;
         }
-        IProductCmptType type = getProductCmpt().findOldProductCmptType();
+        IProductCmptType type = findProductCmptType(ipsProject);
         if (type == null) {
             return false;
         }
-        IProductCmptTypeRelation relationType = type.findRelationInHierarchy(relation);
-        if (relationType == null) {
+        IProductCmptTypeAssociation association = type.findAssociationInSupertypeHierarchy(associationName, true, ipsProject);
+        if (association == null) {
             return false;
         }
         // it is not valid to create more than one relation with the same type and target.
-        if (!isFirstRelationOfThisType(relationType, target)) {
+        if (!isFirstRelationOfThisType(association, target, ipsProject)) {
             return false;
         }
-        return this.getRelations(relation).length < relationType.getMaxCardinality()
-                && ProductCmptRelation.willBeValid(target, relationType);
+        return this.getLinks(associationName).length < association.getMaxCardinality()
+                && ProductCmptLink.willBeValid(target, association, ipsProject);
     }
 
-    private boolean isFirstRelationOfThisType(IProductCmptTypeRelation relation, IProductCmpt target)
+    private boolean isFirstRelationOfThisType(IProductCmptTypeAssociation association, IProductCmpt target, IIpsProject ipsProject)
             throws CoreException {
-        for (Iterator iter = relations.iterator(); iter.hasNext();) {
-            IProductCmptRelation rel = (IProductCmptRelation)iter.next();
-            if (rel.findProductCmptTypeRelation().equals(relation) && rel.getTarget().equals(target.getQualifiedName())) {
+        for (Iterator iter = links.iterator(); iter.hasNext();) {
+            IProductCmptLink link = (IProductCmptLink)iter.next();
+            if (link.findAssociation(ipsProject).equals(association) && link.getTarget().equals(target.getQualifiedName())) {
                 return false;
             }
         }
         return true;
     }
 
-    private ProductCmptRelation newRelationInternal(int id, IProductCmptRelation insertBefore) {
-        ProductCmptRelation newRelation = new ProductCmptRelation(this, id);
+    private ProductCmptLink newRelationInternal(int id, IProductCmptLink insertBefore) {
+        ProductCmptLink newRelation = new ProductCmptLink(this, id);
         if (insertBefore == null) {
-            relations.add(newRelation);
+            links.add(newRelation);
         }
         else {
-            int index = relations.indexOf(insertBefore);
+            int index = links.indexOf(insertBefore);
             if (index == -1) {
-                relations.add(newRelation);
+                links.add(newRelation);
             }
             else {
-                relations.add(index, newRelation);
+                links.add(index, newRelation);
             }
         }
         return newRelation;
     }
 
-    private ProductCmptRelation newRelationInternal(int id) {
+    private ProductCmptLink newRelationInternal(int id) {
         return newRelationInternal(id, null);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void moveRelation(IProductCmptRelation toMove, IProductCmptRelation moveBefore) {
-        relations.remove(toMove);
-        int index = relations.indexOf(moveBefore);
+    public void moveLink(IProductCmptLink toMove, IProductCmptLink moveBefore) {
+        links.remove(toMove);
+        int index = links.indexOf(moveBefore);
         if (index == -1) {
-            relations.add(toMove);
+            links.add(toMove);
         }
         else {
-            relations.add(index, toMove);
+            links.add(index, toMove);
         }
         objectHasChanged();
     }
@@ -372,7 +377,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (xmlTagName.equals(ConfigElement.TAG_NAME)) {
             return newConfigElementInternal(id);
         }
-        else if (xmlTagName.equals(ProductCmptRelation.TAG_NAME)) {
+        else if (xmlTagName.equals(ProductCmptLink.TAG_NAME)) {
             return newRelationInternal(id);
         }
         else if (xmlTagName.equals(ITableContentUsage.TAG_NAME)) {
@@ -389,8 +394,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             configElements.add(part);
             return;
         }
-        else if (part instanceof IProductCmptRelation) {
-            relations.add(part);
+        else if (part instanceof IProductCmptLink) {
+            links.add(part);
             return;
         }
         else if (part instanceof ITableContentUsage) {
@@ -408,8 +413,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             configElements.remove(part);
             return;
         }
-        else if (part instanceof IProductCmptRelation) {
-            relations.remove(part);
+        else if (part instanceof IProductCmptLink) {
+            links.remove(part);
             return;
         }
         else if (part instanceof ITableContentUsage) {
@@ -424,7 +429,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      */
     protected void reinitPartCollections() {
         configElements.clear();
-        relations.clear();
+        links.clear();
         tableContentUsages.clear();
     }
 
@@ -433,7 +438,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
-        IProductCmptType type = getProductCmpt().findOldProductCmptType();
+        IIpsProject ipsProject = getIpsProject();
+        IProductCmptType type = getProductCmpt().findProductCmptType(ipsProject);
         // no type information available, so no further validation possible
         if (type == null) {
             list.add(new Message(MSGCODE_NO_TEMPLATE, Messages.ProductCmptGeneration_msgTemplateNotFound,
@@ -448,9 +454,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             list.add(new Message(MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT, text, Message.WARNING, this)); //$NON-NLS-1$
         }
 
-        IProductCmptTypeRelation[] relationTypes = type.getRelations();
+        IProductCmptTypeAssociation[] relationTypes = type.getAssociations();
         for (int i = 0; i < relationTypes.length; i++) {
-            IProductCmptRelation[] relations = getRelations(relationTypes[i].getTargetRoleSingular());
+            IProductCmptLink[] relations = getLinks(relationTypes[i].getTargetRoleSingular());
 
             // get all messages for the relation types and add them
             MessageList relMessages = relationTypes[i].validate();

@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 
 public class ReferencesToProductSearchQueryTest extends AbstractIpsPluginTest {
 
@@ -50,17 +50,17 @@ public class ReferencesToProductSearchQueryTest extends AbstractIpsPluginTest {
         prodCmptReferenced = newProductCmpt(root, "toBeReferenced");
         prodCmpt = newProductCmpt(root, "TestProductComponent");
         IProductCmptGeneration generation= (IProductCmptGeneration) prodCmpt.newGeneration(calendar);
-        IProductCmptRelation relation= generation.newRelation("");
+        IProductCmptLink relation= generation.newLink("");
         relation.setTarget(prodCmptReferenced.getQualifiedName());
 
         prodCmpt2 = newProductCmpt(root, "TestProductComponent2");
         IProductCmptGeneration generation2= (IProductCmptGeneration) prodCmpt2.newGeneration(calendar);
-        IProductCmptRelation relation2= generation2.newRelation("");
+        IProductCmptLink relation2= generation2.newLink("");
         relation2.setTarget(prodCmptReferenced.getQualifiedName());
 
         prodCmpt3 = newProductCmpt(root, "TestProductComponent3");
         IProductCmptGeneration generation3= (IProductCmptGeneration) prodCmpt3.newGeneration(calendar);
-        IProductCmptRelation relation3= generation3.newRelation("");
+        IProductCmptLink relation3= generation3.newLink("");
         relation3.setTarget(prodCmptReferenced.getQualifiedName());
 
         prodCmptNoRef = newProductCmpt(root, "TestProductComponentNoRef");

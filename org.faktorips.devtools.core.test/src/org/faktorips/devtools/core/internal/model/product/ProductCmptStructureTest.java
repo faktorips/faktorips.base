@@ -21,16 +21,16 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.AggregationKind;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 
 /**
@@ -42,7 +42,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
     
     private IProductCmpt productCmpt;
     private IProductCmpt productCmptTarget;
-    private IRelation relation;
+    private IProductCmptTypeAssociation association;
     private IIpsProject ipsProject;
     private IProductCmptStructure structure;
     
@@ -66,12 +66,10 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         tsu2.setRoleName("usage2");
         tsu2.addTableStructure("tableStructure2");
         
-        relation = policyCmptType.newRelation();
-        relation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
-        relation.setTargetRoleSingularProductSide("TestRelation");
-        relation.setTargetRoleSingular("TestRelation");
-        relation.setTarget(policyCmptTypeTarget.getQualifiedName());
-        relation.setProductRelevant(true);
+        association = productCmptType.newAssociation();
+        association.setAggregationKind(AggregationKind.SHARED);
+        association.setTargetRoleSingular("TestRelation");
+        association.setTarget(productCmptTypeTarget.getQualifiedName());
         
         // Build product component types
         productCmpt = newProductCmpt(productCmptType, "products.TestProduct");
@@ -86,10 +84,10 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         tcu.setStructureUsage(tsu2.getRoleName());
         tcu.setTableContentName("tableContent2");
         
-        IProductCmptRelation cmptRelation = generation.newRelation(relation.getName());
+        IProductCmptLink cmptRelation = generation.newLink(association.getName());
         cmptRelation.setTarget(productCmptTarget.getQualifiedName());
         
-        cmptRelation = generation.newRelation(relation.getName());
+        cmptRelation = generation.newLink(association.getName());
         cmptRelation.setTarget(productCmptTarget.getQualifiedName());
         
         policyCmptType.getIpsSrcFile().save(true, null);
@@ -97,7 +95,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         productCmpt.getIpsSrcFile().save(true, null);
         productCmptTarget.getIpsSrcFile().save(true, null);
         
-        structure = productCmpt.getStructure();
+        structure = productCmpt.getStructure(ipsProject);
     }
 
     public void testGetRoot() {
@@ -112,19 +110,19 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
     
     public void testCircleDetection() throws Exception {
     	// this has to work without any exception
-    	productCmpt.getStructure();
-        productCmptTarget.getStructure();
+    	productCmpt.getStructure(ipsProject);
+        productCmptTarget.getStructure(ipsProject);
     	
     	// create a circle
         IProductCmptType type = productCmpt.findProductCmptType(ipsProject);
-        relation.setTarget(type.getQualifiedName());
+        association.setTarget(type.getQualifiedName());
         productCmptTarget.setProductCmptType(type.getQualifiedName());
         IProductCmptGeneration targetGen= (IProductCmptGeneration)productCmptTarget.getGeneration(0);
-        IProductCmptRelation rel = targetGen.newRelation(relation.getName());
+        IProductCmptLink rel = targetGen.newLink(association.getName());
     	rel.setTarget(productCmpt.getQualifiedName());
     	
     	try {
-			productCmpt.getStructure();
+			productCmpt.getStructure(ipsProject);
 			fail();
 		} catch (CycleException e) {
 			// success
@@ -138,7 +136,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         ITableContentUsage tcu = ptsus[0].getTableContentUsage();
         assertEquals("tableContent1", tcu.getTableContentName());
         
-        IProductCmptStructure structureTarget = productCmptTarget.getStructure();
+        IProductCmptStructure structureTarget = productCmptTarget.getStructure(ipsProject);
         ptsus = structure.getChildProductCmptStructureTblUsageReference(structureTarget.getRoot());
         assertEquals(1, ptsus.length);
         tcu = ptsus[0].getTableContentUsage();

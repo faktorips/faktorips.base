@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -124,8 +125,18 @@ public abstract class IpsObjectEditor extends FormEditor
         errorTickupdater = new IpsObjectEditorErrorTickUpdater(this);
     }
 
+    /**
+     * Returns the file being edited.
+     */
     public IIpsSrcFile getIpsSrcFile() {
         return ipsSrcFile;
+    }
+    
+    /**
+     * Shortcut for getIpsSrcFile().getIpsProject().
+     */
+    public IIpsProject getIpsProject() {
+        return ipsSrcFile.getIpsProject();
     }
 
     /**

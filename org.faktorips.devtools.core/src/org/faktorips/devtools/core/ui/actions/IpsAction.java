@@ -46,7 +46,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccess;
@@ -210,9 +210,9 @@ public abstract class IpsAction extends Action {
 			return ((IProductCmptTypeRelationReference) selected).getRelation()
 					.getIpsObject();
 		}
-		if (selected instanceof IProductCmptRelation) {
+		if (selected instanceof IProductCmptLink) {
 			try {
-				IProductCmptRelation rel = (IProductCmptRelation) selected;
+				IProductCmptLink rel = (IProductCmptLink) selected;
 				return rel.getIpsProject().findIpsObject(
 						IpsObjectType.PRODUCT_CMPT, rel.getTarget());
 			} catch (CoreException e) {

@@ -97,7 +97,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 		IProductCmpt cmpt = (ProductCmpt)getIpsObject();
         IIpsObjectEditorSettings settings = getSettings();
         // open the select template dialog if the templ. is missing and the data is changeable
-		if (getProductCmpt().findOldProductCmptType() == null
+		if (getProductCmpt().findProductCmptType(getIpsProject()) == null
                 && couldDateBeChangedIfProductCmptTypeWasntMissing()
                 && !IpsPlugin.getDefault().isTestMode()
                 && !settings.getBoolean(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE)) {
@@ -280,7 +280,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             return false;
         }
         try {
-            return getProductCmpt().findOldProductCmptType()!=null;
+            return getProductCmpt().findProductCmptType(getIpsProject())!=null;
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return false;

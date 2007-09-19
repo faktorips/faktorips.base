@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
@@ -69,7 +69,7 @@ public class RelationsSection extends SimpleIpsPartsSection {
             return new IStructuredContentProvider() {
 
                 public Object[] getElements(Object inputElement) {
-                    return getProductCmptType().getRelations();
+                    return getProductCmptType().getAssociations();
                 }
 
                 public void dispose() {
@@ -83,11 +83,11 @@ public class RelationsSection extends SimpleIpsPartsSection {
         }
 
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
-            return new RelationEditDialog((IRelation)part, shell);
+            return new RelationEditDialog((IProductCmptTypeAssociation)part, shell);
         }
 
         protected IIpsObjectPart newIpsPart() {
-            return getProductCmptType().newRelation();
+            return getProductCmptType().newAssociation();
         }
         
     }

@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -46,7 +46,7 @@ import org.faktorips.util.LocalizedStringsSet;
  * @author Jan Ortmann
  */
 public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder {
-
+ 
     public AbstractPcTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
             LocalizedStringsSet stringsSet) {
         super(builderSet, kindId, stringsSet);
@@ -58,18 +58,13 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
     public IPolicyCmptType getPcType() {
         return (IPolicyCmptType)getIpsObject();
     }
+    
+    public IProductCmptType getProductCmptType() throws CoreException {
+        return getPcType().findProductCmptType(getIpsProject());
+    }
 
     /**
-     * Returns the product component type that belongs to the policy component type
-     * this builder is building. Returns <code>null</code> if the policy component
-     * type is not configurable by a product component type.
-     */
-    public IProductCmptType getProductCmptType() throws CoreException {
-    	return getPcType().findOldProductCmptType();
-    }
-    
-    /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE);

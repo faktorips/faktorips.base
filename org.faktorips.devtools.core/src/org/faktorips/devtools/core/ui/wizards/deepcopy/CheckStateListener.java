@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 
 /**
  * Listener to support special check-/uncheck-handling for CheckboxTreeViewer.
@@ -109,7 +109,7 @@ public class CheckStateListener implements ICheckStateListener {
 	 * direct children are unchecked.
 	 */
 	private void uncheckRelationParent(TreeItem parent) {
-		if (parent != null && getTreeItemContent(parent) instanceof IProductCmptTypeRelation) {
+		if (parent != null && getTreeItemContent(parent) instanceof IProductCmptTypeAssociation) {
 			TreeItem[] children = parent.getItems();
 			boolean checkedChild = false;
 			for (int i = 0; i < children.length && !checkedChild; i++) {
@@ -127,7 +127,7 @@ public class CheckStateListener implements ICheckStateListener {
 	 * are checked.
 	 */
 	private void checkRelationChildren(TreeItem node) {
-		if (!(getTreeItemContent(node) instanceof IProductCmptTypeRelation)) {
+		if (!(getTreeItemContent(node) instanceof IProductCmptTypeAssociation)) {
 			return;
 		}
 		

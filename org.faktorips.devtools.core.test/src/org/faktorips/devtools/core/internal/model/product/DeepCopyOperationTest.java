@@ -150,7 +150,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 //    
     public void testCopyWithNoGeneration() throws Exception {
         product = newProductCmpt(ipsProject, "EmptyProduct");
-        IProductCmptStructure structure = product.getStructure();
+        IProductCmptStructure structure = product.getStructure(ipsProject);
         IProductCmptReference[] toCopy = (IProductCmptReference[])structure.toArray(true);
         
         Hashtable handles = new Hashtable();

@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.productcmpttype2.IRelation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
@@ -45,14 +45,14 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
  */
 public class RelationEditDialog extends IpsPartEditDialog2 {
     
-    private IRelation relation;
+    private IProductCmptTypeAssociation relation;
     private ExtensionPropertyControlFactory extFactory;
     
     /**
      * @param parentShell
      * @param title
      */
-    public RelationEditDialog(IRelation relation, Shell parentShell) {
+    public RelationEditDialog(IProductCmptTypeAssociation relation, Shell parentShell) {
         super(relation, parentShell, "Edit Relation", true );
         this.relation = relation;
         extFactory = new ExtensionPropertyControlFactory(relation.getClass());
@@ -84,7 +84,7 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
         // target
         uiToolkit.createFormLabel(workArea, "Target");
         ProductCmptType2RefControl targetControl = new ProductCmptType2RefControl(relation.getIpsProject(), workArea, uiToolkit, true);
-        bindingContext.bindContent(targetControl, relation, IRelation.PROPERTY_TARGET);
+        bindingContext.bindContent(targetControl, relation, IProductCmptTypeAssociation.PROPERTY_TARGET);
         
         // type
 //        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelType);
@@ -95,12 +95,12 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
         // read only container
         uiToolkit.createFormLabel(workArea, "Is read-only container:");
         Checkbox containerCheckbox = uiToolkit.createCheckbox(workArea);
-        bindingContext.bindContent(containerCheckbox, relation, IRelation.PROPERTY_READ_ONLY_CONTAINER);
+        bindingContext.bindContent(containerCheckbox, relation, IProductCmptTypeAssociation.PROPERTY_READ_ONLY_CONTAINER);
         
         // container relation
         uiToolkit.createFormLabel(workArea, "Implemented container relation:");
         Text containerRelationText = uiToolkit.createText(workArea);
-        bindingContext.bindContent(containerRelationText, relation, IRelation.PROPERTY_IMPLEMENTED_CONTAINER_RELATION);
+        bindingContext.bindContent(containerRelationText, relation, IProductCmptTypeAssociation.PROPERTY_IMPLEMENTED_CONTAINER_RELATION);
         ContainerRelationCompletionProcessor completionProcessor = new ContainerRelationCompletionProcessor(relation);
         completionProcessor.setComputeProposalForEmptyPrefix(true);
         ContentAssistHandler.createHandlerForText(containerRelationText, CompletionUtil.createContentAssistant(completionProcessor));
@@ -108,7 +108,7 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
         // role singular
         uiToolkit.createFormLabel(workArea, "Target role singular:");
         final Text targetRoleSingularText = uiToolkit.createText(workArea);
-        bindingContext.bindContent(targetRoleSingularText, relation, IRelation.PROPERTY_TARGET_ROLE_SINGULAR);
+        bindingContext.bindContent(targetRoleSingularText, relation, IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
         targetRoleSingularText.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 if (StringUtils.isEmpty(relation.getTargetRoleSingular())) {
@@ -120,7 +120,7 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
         // role plural
         uiToolkit.createFormLabel(workArea, "Target role plural:");
         final Text targetRolePluralText = uiToolkit.createText(workArea);
-        bindingContext.bindContent(targetRolePluralText, relation, IRelation.PROPERTY_TARGET_ROLE_PLURAL);
+        bindingContext.bindContent(targetRolePluralText, relation, IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
         targetRolePluralText.addFocusListener(new FocusAdapter() {
             
             public void focusGained(FocusEvent e) {
@@ -135,14 +135,14 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
         Text minCardinalityText = uiToolkit.createText(workArea);
         CardinalityField cardinalityField = new CardinalityField(minCardinalityText);
         cardinalityField.setSupportsNull(false);
-        bindingContext.bindContent(cardinalityField, relation, IRelation.PROPERTY_MIN_CARDINALITY);
+        bindingContext.bindContent(cardinalityField, relation, IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
         
         // max cardinality
         uiToolkit.createFormLabel(workArea, "Max Cardinality");
         Text maxCardinalityText = uiToolkit.createText(workArea);
         cardinalityField = new CardinalityField(maxCardinalityText);
         cardinalityField.setSupportsNull(false);
-        bindingContext.bindContent(cardinalityField, relation, IRelation.PROPERTY_MAX_CARDINALITY);
+        bindingContext.bindContent(cardinalityField, relation, IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
         
         // bottom extensions
         extFactory.createControls(workArea, uiToolkit, relation, IExtensionPropertyDefinition.POSITION_BOTTOM); //$NON-NLS-1$

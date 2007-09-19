@@ -24,7 +24,8 @@ import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Base class for the migration from one feature-version to another.
+ * Base class for migrating a single ips project one version to another. Note that if the project
+ * needs severall faktor-ips features, than all features are migrated.
  * 
  * Note that it is essential <strong>NOT TO SAVE ANY CHANGES</strong> made by this migration
  * operation. This is because we need the ability to rollback all changes if any error occurs later
@@ -32,7 +33,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public abstract class AbstractMigrationOperation extends WorkspaceModifyOperation {
+public abstract class AbstractIpsProjectMigrationOperation extends WorkspaceModifyOperation {
 
     private IIpsProject project;
     private String featureId;
@@ -40,14 +41,14 @@ public abstract class AbstractMigrationOperation extends WorkspaceModifyOperatio
     /**
      * The default-constructor is forbidden for external calls...
      */
-    private AbstractMigrationOperation() {
+    private AbstractIpsProjectMigrationOperation() {
         throw new UnsupportedOperationException();
     }
 
     /**
      * Creates a new migration operation.
      */
-    public AbstractMigrationOperation(IIpsProject projectToMigrate, String featureId) {
+    public AbstractIpsProjectMigrationOperation(IIpsProject projectToMigrate, String featureId) {
         project = projectToMigrate;
         this.featureId = featureId;
     }

@@ -252,7 +252,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         IProductCmpt product = newProductCmpt(root, "TestProductCmpt");
         IProductCmptGeneration generation= (IProductCmptGeneration) product.newGeneration();
         generation.newConfigElement();
-        generation.newRelation("");
+        generation.newLink("");
         
         // validate
         MessageList messages= product.getIpsSrcFile().getIpsObject().validate();

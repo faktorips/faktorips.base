@@ -5,7 +5,8 @@
 -->
 <testcases>
 
-	<Relation id="42"
+	<Association id="42"
+		  aggregationKind="shared"
           relationType="ass" 
           target="pack1.CoverageType" 
           targetRoleSingular="CoverageType" 
@@ -15,6 +16,6 @@
           readOnlyContainer="true"
           implementedContainerRelation="BaseCoverageType">
 		<Description>blabla</Description>
-	</Relation>
+	</Association>
 		
 </testcases>

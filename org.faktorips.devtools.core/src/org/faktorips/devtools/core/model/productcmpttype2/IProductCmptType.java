@@ -133,58 +133,56 @@ public interface IProductCmptType extends IIpsObject, IType {
     public int[] moveAttributes(int[] indexes, boolean up);
 
     /**
-     * Returns the type's relations.
+     * Returns the type's associations.
      */
-    public IRelation[] getRelations();
+    public IProductCmptTypeAssociation[] getAssociations();
     
     /**
-     * Returns the relation with the given name defined in <strong>this</strong> type
+     * Returns the assocation with the given name defined in <strong>this</strong> type
      * (This method does not search the supertype hierarchy.)
-     * If more than one relation with the name exist, the first relation with the name is returned.
-     * Returns <code>null</code> if no relation with the given name exists or name is <code>null</code>.
+     * If more than one association with the name exist, the first one is returned.
+     * Returns <code>null</code> if no association with the given name exists or name is <code>null</code>.
      */
-    public IRelation getRelation(String name);
+    public IProductCmptTypeAssociation getAssociation(String name);
 
     /**
-     * Searchs a relation with the given name in the supertype hierarchy and returns it. Returns <code>null</code> if
-     * no such relation exists.
+     * Searches an association with the given name in the type and it's supertype hierarchy and returns it. 
+     * Returns <code>null</code> if no such assoiation exists.
      * 
-     * @param name          The relation' name.
+     * @param name          The association's name.
      * @param includeSelf   <code>true</code> if this type itseld should be searched, <code>false</code> if only supertypes should be searched.
-     * @param project The project which ips object path is used for the searched.
-     * This is not neccessarily the project this type is part of. 
+     * @param project       The project which ips object path is used for the searched.
+     *                      This is not neccessarily the project this type is part of. 
      * 
-     * @throws CoreException
+     * @throws CoreException if an error occurs while searching.
      */
-    public IRelation findRelationInSupertypeHierarchy(String name, boolean includeSelf, IIpsProject project) throws CoreException;
+    public IProductCmptTypeAssociation findAssociationInSupertypeHierarchy(String name, boolean includeSelf, IIpsProject project) throws CoreException;
 
     /**
-     * Creates a new relation and returns it.
+     * Creates a new association and returns it.
      */
-    public IRelation newRelation();
+    public IProductCmptTypeAssociation newAssociation();
 
     /**
-     * Returns the number of relations.
+     * Returns the number of associations.
      */
-    public int getNumOfRelations();
+    public int getNumOfAssociations();
     
     /**
-     * Moves the relations identified by the indexes up or down by one position.
-     * If one of the indexes is 0 (the first relation), no relation is moved up. 
-     * If one of the indexes is the number of reations - 1 (the last relation)
-     * no relation is moved down. 
+     * Moves the associations identified by the indexes up or down by one position.
+     * If one of the indexes is 0 (the first association), no association is moved up. 
+     * If one of the indexes is the number of associations - 1 (the last association)
+     * no association is moved down. 
      * 
-     * @param indexes   The indexes identifying the relations.
-     * @param up        <code>true</code>, to move the relations up, 
-     * <false> to move them down.
+     * @param indexes   The indexes identifying the associations.
+     * @param up        <code>true</code>, to move the associations up, <false> to move them down.
      * 
-     * @return The new indexes of the moved relations.
+     * @return The new indexes of the moved associations.
      * 
-     * @throws NullPointerException if indexes is null.
-     * @throws IndexOutOfBoundsException if one of the indexes does not identify
-     * an relation.
+     * @throws NullPointerException if indexes is <code>null</code>.
+     * @throws IndexOutOfBoundsException if one of the indexes does not identify an association.
      */
-    public int[] moveRelations(int[] indexes, boolean up);
+    public int[] moveAssociations(int[] indexes, boolean up);
     
     /**
      * Returns the number of table structure usages.
