@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+ * Konfigurationen, etc.) duerfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -44,23 +44,23 @@ import org.faktorips.devtools.core.model.product.IProductCmptReference;
 
 /**
  * A wizard to create a deep copy from a given product component.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class DeepCopyWizard extends Wizard {
-	
+
 	public static final int TYPE_COPY_PRODUCT = 10;
 	public static final int TYPE_NEW_VERSION = 100;
-	
+
 	private ProductCmptStructure structure;
 	private SourcePage sourcePage;
 	private ReferenceAndPreviewPage previewPage;
 	private IProductCmpt copiedRoot;
 	private ISchedulingRule schedulingRule;
 	private int type;
-	private DialogSettings settings; 
+	private DialogSettings settings;
 	private Composite pageContainer;
-	
+
 	private static String settingsFilename;
 	private static final String SETTINGS_SECTION_SIZE = "size"; //$NON-NLS-1$
 	private static final String SETTINGS_SIZE_X = "x"; //$NON-NLS-1$
@@ -68,13 +68,13 @@ public class DeepCopyWizard extends Wizard {
 
 	/**
 	 * Creates a new wizard which can make a deep copy of the given product.
-	 * 
-	 * @param type One of TYPE_COPY_PRODUCT or TYPE_NEW_VERSION. The first one 
+	 *
+	 * @param type One of TYPE_COPY_PRODUCT or TYPE_NEW_VERSION. The first one
 	 * allows to enter the version id (if supported by product component naming strategy)
 	 * free and enter a search- and a rename-pattern. The second one does neither support
-	 * to set the version id manually nor does it allow the user to enter a search- and a 
+	 * to set the version id manually nor does it allow the user to enter a search- and a
 	 * rename-pattern.
-	 * 
+	 *
 	 * @throws IllegalArgumentException if the given type is not valid.
 	 */
 	public DeepCopyWizard(IProductCmpt product, int type) throws IllegalArgumentException {
@@ -85,9 +85,9 @@ public class DeepCopyWizard extends Wizard {
 			throw new IllegalArgumentException("The given type is neither TYPE_COPY_PRODUCT nor TYPE_NEW_VERSION."); //$NON-NLS-1$
 		}
 		this.type = type;
-		
+
 		try {
-			// the working date lies before the valid from date of the first available generation 
+			// the working date lies before the valid from date of the first available generation
 			// of the given product component - so we have to take this valid-from date rather
 			// then the working date to build the product component structure.
 			if (IpsPlugin.getDefault().getIpsPreferences().getWorkingDate().before(product.getFirstGeneration().getValidFrom())) {
@@ -98,18 +98,18 @@ public class DeepCopyWizard extends Wizard {
 								IpsPlugin.getDefault().getIpsPreferences()
 										.getChangesOverTimeNamingConvention()
 										.getGenerationConceptNameSingular());
-				
+
 				MessageDialog.openInformation(getShell(), title, msg);
-				
+
 				structure = (ProductCmptStructure)product.getStructure(product.getFirstGeneration().getValidFrom(), product.getIpsProject());
 			} else {
 				structure = (ProductCmptStructure)product.getStructure(product.getIpsProject());
 			}
-			
+
 		} catch (CycleException e) {
 			IpsPlugin.log(e);
 		}
-		
+
 		if (type == TYPE_COPY_PRODUCT) {
 			super.setWindowTitle(Messages.DeepCopyWizard_title);
             super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/DeepCopyWizard.png")); //$NON-NLS-1$
@@ -118,7 +118,7 @@ public class DeepCopyWizard extends Wizard {
 			super.setWindowTitle(title);
             super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewVersionWizard.png")); //$NON-NLS-1$
 		}
-		
+
 		IPath path = IpsPlugin.getDefault().getStateLocation();
 		settingsFilename = path.append("deepCopyWizard.settings").toOSString(); //$NON-NLS-1$
 
@@ -130,8 +130,9 @@ public class DeepCopyWizard extends Wizard {
 			settings.load(settingsFilename);
 		} catch (IOException e) {
 			// cant read the settings, use defaults.
+            IpsPlugin.log(e);
 		}
-        
+
 	}
 
 	/**
@@ -177,16 +178,16 @@ public class DeepCopyWizard extends Wizard {
 					dco.run(monitor);
 					copiedRoot = dco.getCopiedRoot();
 				}
-				
+
 			};
 			getContainer().run(true, true, operation);
-			
+
 		} catch (Exception e) {
 			IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occured during the copying process.",e)); //$NON-NLS-1$
 		}
-		
+
 		storeSize();
-		
+
 		//this implementation of this method should always return true since this causes the wizard dialog to close.
 		//in either case if an exception arises or not it doesn't make sense to keep the dialog up
 		return true;
@@ -200,14 +201,15 @@ public class DeepCopyWizard extends Wizard {
 			settings.save(settingsFilename);
 		} catch (IOException e) {
 			// cant save - use defaults the next time
+            IpsPlugin.log(e);
 		}
 	}
-	
+
 	/**
 	 * Returns the root product component which was copied.
 	 */
 	public IProductCmpt getCopiedRoot() {
 		return copiedRoot;
 	}
-	
+
 }

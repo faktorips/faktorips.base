@@ -31,6 +31,15 @@ import org.faktorips.devtools.core.util.QNameUtil;
  */
 public class IpsPackageNameComparator implements Comparator {
 
+    private boolean defaultComparator = true;
+
+    /**
+     * @param defaultComparator <code>true</code>, if compare is lexical (default sort order).
+     */
+    public IpsPackageNameComparator(boolean defaultComparator) {
+        this.defaultComparator = defaultComparator;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -38,45 +47,39 @@ public class IpsPackageNameComparator implements Comparator {
         IIpsPackageFragment pack1 = (IIpsPackageFragment)o1;
         IIpsPackageFragment pack2 = (IIpsPackageFragment)o2;
 
-        String[] segments1 = QNameUtil.getSegments(pack1.getName());
-        String[] segments2 = QNameUtil.getSegments(pack2.getName());
-
-         int length = 0;
-
-        // Compare two IIpsPackageFragments by qualified name and level
-        if (segments1.length <= segments2.length) {
-            length = segments1.length;
+        if (defaultComparator == true) {
+            return compareByName(pack1, pack2);
         } else {
-            length = segments2.length;
+            return compareBySortDefinition(pack1, pack2);
         }
-
-        for (int i = 0; i < length; i++) {
-
-            IIpsPackageFragmentSortDefinition sortDef = getSortDefinition(pack1, QNameUtil.getSubSegments(pack1.getName(), i+1));
-
-            int c = comparePackages(sortDef, segments1[i], segments2[i]);
-
-            if (c!=0) {
-                return c;
-            }
-        }
-
-        return 0;
     }
 
     /**
      * Get the <code>IIpsPackageFragmentSortDefinition</code> from parent.
      *
-     * @param pack <code>IIpsPackageFragment</code> current.
-    * @param subSegmentName
-     * @return SortDefinition
+     * @param pack current <code>IIpsPackageFragment</code> .
+     * @param parentName Full qualified parent package name.
+     * @return SortDefinition An IIpsPackageFragmentSortDefinition implementation.
      * @throws CoreException
      */
-    private IIpsPackageFragmentSortDefinition getSortDefinition(IIpsPackageFragment pack, String subSegmentName) {
-        IpsPackageFragment subPack = (IpsPackageFragment)pack.getRoot().getIpsPackageFragment(subSegmentName);
+    private IIpsPackageFragmentSortDefinition getSortDefinition(IIpsPackageFragment pack, String parentName) {
+        IpsPackageFragment parentPackage = (IpsPackageFragment)pack.getRoot().getIpsPackageFragment(parentName);
         IpsModel model = getIpsModel();
-        IIpsPackageFragmentSortDefinition sortDef = model.getSortDefinition(subPack);
+        IIpsPackageFragmentSortDefinition sortDef = model.getSortDefinition(parentPackage);
         return sortDef;
+    }
+
+    /**
+     * Get the full qualified parent package name of <code>childPackageName</code> of the selected segment.
+     *
+     * @example
+     *
+     * @param childPackageName Name of the <code>IIpsPackageFragment</code>.
+     * @param segments The selected segment
+     * @return Full qualified parent package name.
+     */
+    private String getParentNameOfSegment(String childPackageName, int segments) {
+        return QNameUtil.getSubSegments(childPackageName, segments);
     }
 
     /**
@@ -91,7 +94,7 @@ public class IpsPackageNameComparator implements Comparator {
      *         first argument is less than, equal to, or greater than the
      *         second
      */
-    private int comparePackages(IIpsPackageFragmentSortDefinition sortDef, String segmentName1, String segmentName2) {
+    private int comparePackageFragments(IIpsPackageFragmentSortDefinition sortDef, String segmentName1, String segmentName2) {
 
         if (sortDef==null) {
             return segmentName1.compareTo(segmentName2);
@@ -106,6 +109,47 @@ public class IpsPackageNameComparator implements Comparator {
 
     private IpsModel getIpsModel() {
         return (IpsModel) IpsPlugin.getDefault().getIpsModel();
+    }
+
+    /**
+     * Compare two IpsPAckageFramgents by its given SortDefinition.
+     *
+     * @param pack1
+     * @param pack2
+     * @return
+     */
+    private int compareBySortDefinition(IIpsPackageFragment pack1, IIpsPackageFragment pack2) {
+        String[] segments1 = QNameUtil.getSegments(pack1.getName());
+        String[] segments2 = QNameUtil.getSegments(pack2.getName());
+
+         int length = 0;
+
+        // Compare two IIpsPackageFragments by qualified name and level
+        if (segments1.length <= segments2.length) {
+            length = segments1.length;
+        } else {
+            length = segments2.length;
+        }
+
+        for (int i = 0; i < length; i++) {
+            IIpsPackageFragmentSortDefinition sortDef = getSortDefinition(pack1, getParentNameOfSegment(pack1.getName(), i+1));
+
+            int c = comparePackageFragments(sortDef, segments1[i], segments2[i]);
+
+            if (c!=0) {
+                return c;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * @param pack1
+     * @param pack2
+     * @return
+     */
+    private int compareByName(IIpsPackageFragment pack1, IIpsPackageFragment pack2) {
+        return pack1.getName().compareTo(pack2.getName());
     }
 
 }

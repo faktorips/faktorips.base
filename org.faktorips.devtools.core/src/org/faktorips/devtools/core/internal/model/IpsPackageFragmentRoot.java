@@ -132,7 +132,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
      * {@inheritDoc}
      */
     public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException {
-        IpsPackageNameComparator comparator = new IpsPackageNameComparator();
+        IpsPackageNameComparator comparator = new IpsPackageNameComparator(false);
         List sortedPacks = getIpsPackageFragmentsAsList();
         Collections.sort(sortedPacks, comparator);
 

@@ -49,9 +49,30 @@ public class IpsPackageNameComparatorTest extends AbstractIpsPluginTest {
 
     }
 
-    public void testCompareBasic() throws CoreException, IOException {
+    public void testCompareBasic() throws CoreException {
 
-        comparator = new IpsPackageNameComparator();
+        comparator = new IpsPackageNameComparator(true);
+
+        IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null); //$NON-NLS-1$
+        IIpsPackageFragment packD = ipsRoot.createPackageFragment("d", true, null); //$NON-NLS-1$
+
+        IIpsPackageFragment packB = ipsRoot.createPackageFragment("a.b", true, null); //$NON-NLS-1$
+
+        assertTrue( comparator.compare(packA, packD) < 0);
+        assertTrue( comparator.compare(packD, packA) > 0);
+        assertTrue( comparator.compare(packA, packB) < 0);
+        assertTrue( comparator.compare(packB, packA) > 0);
+
+        assertTrue( comparator.compare(packB, packA) > 0);
+        assertTrue( comparator.compare(packA, packB) < 0);
+        assertTrue( comparator.compare(packB, packD) < 0);
+        assertTrue( comparator.compare(packD, packB) > 0);
+
+    }
+
+    public void testCompareExtended() throws CoreException, IOException {
+
+        comparator = new IpsPackageNameComparator(false);
 
         ArrayList orderList = new ArrayList(2);
 

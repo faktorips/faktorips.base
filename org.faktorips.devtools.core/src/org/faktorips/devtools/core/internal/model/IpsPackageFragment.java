@@ -140,7 +140,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      */
     public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
 
-        IpsPackageNameComparator comparator = new IpsPackageNameComparator();
+        IpsPackageNameComparator comparator = new IpsPackageNameComparator(false);
 
         List sortedPacks = getChildIpsPackageFragmentsAsList();
         Collections.sort(sortedPacks, comparator);

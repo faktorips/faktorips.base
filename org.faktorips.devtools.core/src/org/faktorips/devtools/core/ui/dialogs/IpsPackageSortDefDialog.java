@@ -39,7 +39,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsPackageSortDefDelta;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -52,8 +51,15 @@ import org.faktorips.devtools.core.util.QNameUtil;
  */
 public class IpsPackageSortDefDialog extends TrayDialog {
 
+    private static final String SETTINGS_SECTION_SIZE = "size"; //$NON-NLS-1$
+    private static final String SETTINGS_SIZE_X = "x"; //$NON-NLS-1$
+    private static final String SETTINGS_SIZE_Y = "y"; //$NON-NLS-1$
+    private static final int SETTINGS_DEFAULT_HEIGTH = 480;
+    private static final int SETTINGS_DEFAULT_WIDTH  = 640;
+
     private String title;
     private IIpsProject project;
+    private IpsProjectSortOrdersPM sortOrderPM;
 
     private UIToolkit toolkit;
     private TreeViewer treeViewer;
@@ -62,16 +68,8 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     private Button restore;
     private Composite container;
 
-    private boolean restoreDefault;
-
     private DialogSettings settings;
     private static String settingsFilename;
-    private static final String SETTINGS_SECTION_SIZE = "size"; //$NON-NLS-1$
-    private static final String SETTINGS_SIZE_X = "x"; //$NON-NLS-1$
-    private static final String SETTINGS_SIZE_Y = "y"; //$NON-NLS-1$
-    private static final int SETTINGS_DEFAULT_HEIGTH = 480;
-    private static final int SETTINGS_DEFAULT_WIDTH  = 640;
-
 
     /**
      * New instance.
@@ -85,13 +83,12 @@ public class IpsPackageSortDefDialog extends TrayDialog {
 
         this.title = title;
         this.project = project;
+        sortOrderPM = new IpsProjectSortOrdersPM(project);
 
         toolkit = new UIToolkit(null);
 
         int shellStyle = getShellStyle();
         setShellStyle(shellStyle | SWT.RESIZE | SWT.MAX );
-
-        restoreDefault = false;
 
         loadDialogSettings();
     }
@@ -191,9 +188,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         treeViewer.setLabelProvider(new IpsPackageSortDefLabelProvider());
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL,SWT.FILL, true, true));
 
-        IpsProjectSortOrdersPM sortOrderPM = new IpsProjectSortOrdersPM(project);
-        IpsPackageSortDefContentProvider contentProvider = new IpsPackageSortDefContentProvider(sortOrderPM);
-        treeViewer.setContentProvider(contentProvider);
+        treeViewer.setContentProvider(sortOrderPM);
         treeViewer.setInput(sortOrderPM);
         // expand roots
         treeViewer.expandToLevel(2);
@@ -235,9 +230,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      * Handle Button <code>restore</code>.
      */
     protected void restorePressed() {
-        restoreDefault = true;
         try {
-            IpsProjectSortOrdersPM sortOrderPM = ((IpsPackageSortDefContentProvider)treeViewer.getContentProvider()).getSortOrderPM();
             sortOrderPM.restore();
         } catch (CoreException e) {
             IpsPlugin.log(e);
@@ -252,9 +245,8 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         Object element = ((IStructuredSelection) treeViewer.getSelection()).getFirstElement();
 
         if (element instanceof IIpsPackageFragment) {
-            restoreDefault = false;
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
-            IpsProjectSortOrdersPM sortOrderPM = ((IpsPackageSortDefContentProvider)treeViewer.getContentProvider()).getSortOrderPM();
+            sortOrderPM.setRestoreDefault(false);
             sortOrderPM.moveOneDown(fragment);
             treeViewer.refresh(false);
         }
@@ -267,9 +259,8 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         Object element = ((IStructuredSelection) treeViewer.getSelection()).getFirstElement();
 
         if (element instanceof IIpsPackageFragment) {
-            restoreDefault = false;
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
-            IpsProjectSortOrdersPM sortOrderPM = ((IpsPackageSortDefContentProvider)treeViewer.getContentProvider()).getSortOrderPM();
+            sortOrderPM.setRestoreDefault(false);
             sortOrderPM.moveOneUp(fragment);
             treeViewer.refresh(false);
          }
@@ -281,15 +272,10 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     protected void okPressed() {
         // write changes to filesystem.
         try {
-            IpsProjectSortOrdersPM sortOrderPM = ((IpsPackageSortDefContentProvider)treeViewer.getContentProvider()).getSortOrderPM();
-            IpsPackageSortDefDelta delta = sortOrderPM.createSortDefDelta(restoreDefault);
-            delta.fix();
-
+            sortOrderPM.saveSortDefDelta();
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
-
-        saveDialogSetings();
 
         super.okPressed();
     }
@@ -297,17 +283,9 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     /**
      * {@inheritDoc}
      */
-    protected void cancelPressed() {
-
-        saveDialogSetings();
-
-        super.cancelPressed();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public boolean close() {
+
+        saveDialogSettings();
 
         if (toolkit != null) {
             toolkit.dispose();
@@ -319,15 +297,17 @@ public class IpsPackageSortDefDialog extends TrayDialog {
     /**
      * save dialog settings to file.
      */
-    private void saveDialogSetings() {
+    private void saveDialogSettings() {
 
         Point size = container.getSize();
         settings.put(SETTINGS_SIZE_X, size.x);
         settings.put(SETTINGS_SIZE_Y, size.y);
+
         try {
             settings.save(settingsFilename);
         } catch (IOException e) {
             // cant save - use defaults the next time
+            IpsPlugin.log(e);
         }
     }
 
@@ -342,10 +322,12 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         // set default size if no settings exists
         settings.put(SETTINGS_SIZE_X, SETTINGS_DEFAULT_WIDTH);
         settings.put(SETTINGS_SIZE_Y, SETTINGS_DEFAULT_HEIGTH);
+
         try {
             settings.load(settingsFilename);
         } catch (IOException e) {
             // cant read the settings, use defaults.
+            IpsPlugin.log(e);
         }
     }
 

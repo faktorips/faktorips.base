@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.dialogs;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -23,8 +24,11 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.Viewer;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsPackageFragmentArbitrarySortDefinition;
-import org.faktorips.devtools.core.internal.model.IpsPackageSortDefDelta;
+import org.faktorips.devtools.core.internal.model.IpsPackageNameComparator;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentSortDefinition;
@@ -42,16 +46,23 @@ import org.faktorips.devtools.core.util.QNameUtil;
  *
  * @author Markus Blum
  */
-public class IpsProjectSortOrdersPM {
+public class IpsProjectSortOrdersPM implements ITreeContentProvider {
+
+    protected static final Object[] EMPTY_ARRAY = new Object[0];
 
     private IIpsProject project;
 
     // Lookup table parent IIpsPackageFragment -> children sorted
     private Map fragmentHierarchy = new HashMap();
 
+    // Set default sort order or not
+    private boolean restoreDefault;
+
+
     public IpsProjectSortOrdersPM(IIpsProject project) {
         Assert.isNotNull(project);
         this.project = project;
+        restoreDefault = false;
     }
 
     /**
@@ -84,7 +95,7 @@ public class IpsProjectSortOrdersPM {
 
             IIpsPackageFragment parent = fragment.getParentIpsPackageFragment();
             if (fragmentHierarchy.containsKey(parent)) {
-                ArrayList list = (ArrayList)fragmentHierarchy.get(parent);
+                List list = (List)fragmentHierarchy.get(parent);
 
                 int pos = list.indexOf(fragment);
                 IIpsPackageFragment shiftObj = (IIpsPackageFragment)list.remove(pos);
@@ -107,7 +118,7 @@ public class IpsProjectSortOrdersPM {
             IIpsPackageFragment parent = fragment.getParentIpsPackageFragment();
 
             if (fragmentHierarchy.containsKey(parent)) {
-                ArrayList list = (ArrayList)fragmentHierarchy.get(parent);
+                List list = (List)fragmentHierarchy.get(parent);
 
                 Assert.isNotNull(list);
 
@@ -129,7 +140,7 @@ public class IpsProjectSortOrdersPM {
      * @return IpsDefaultPackageFragments of the selected IpsProject.
      * @throws CoreException
      */
-    public Object[] getDefaultPackageFragments() throws CoreException {
+    private Object[] getDefaultPackageFragments() throws CoreException {
 
         // roots are not sorted
         IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
@@ -152,14 +163,25 @@ public class IpsProjectSortOrdersPM {
      * @return All children of IIpsPackageFragment <code>fragment</code>.
      * @throws CoreException
      */
-    public Object[] getChildIpsPackageFragments(IIpsPackageFragment parent) throws CoreException {
+    private Object[] getChildIpsPackageFragments(IIpsPackageFragment parent) throws CoreException {
         IIpsPackageFragment[] fragments;
 
         if (fragmentHierarchy.containsKey(parent)) {
             List list = (List)fragmentHierarchy.get(parent);
             fragments = (IIpsPackageFragment[])list.toArray(new IIpsPackageFragment[list.size()]);
         } else {
-            fragments = parent.getSortedChildIpsPackageFragments();
+
+            if (restoreDefault == false) {
+                fragments = parent.getSortedChildIpsPackageFragments();
+            } else {
+                IIpsPackageFragment[] unsortedFragments = parent.getChildIpsPackageFragments();
+                List unsortedList = Arrays.asList(unsortedFragments);
+
+                IpsPackageNameComparator comparator = new IpsPackageNameComparator(true);
+                Collections.sort(unsortedList, comparator);
+
+                fragments = (IIpsPackageFragment[])unsortedList.toArray(new IIpsPackageFragment[unsortedList.size()]);
+            }
 
             List list = new ArrayList();
             list.addAll(Arrays.asList(fragments));
@@ -175,40 +197,11 @@ public class IpsProjectSortOrdersPM {
      * @throws CoreException
      */
     public void restore() throws CoreException {
-       // TODO Set default sort order
+       restoreDefault = true;
+
+       // force building the treeViewer with new sort order.
        fragmentHierarchy.clear();
      }
-
-    /**
-     * Modelaction for okPressed.
-     *
-     * Check if sort order has changed. Create the delegate object IpsPackageSortDefDelta for saving the changes.
-     *
-     * Delete the current sort orders of the IpsProject if restore is <code>true</code> => default sort order.
-     *
-     * @return IpsPackageSortDefDelta with changed sort orders.
-     * @throws CoreException
-     */
-    public IpsPackageSortDefDelta createSortDefDelta(boolean restore) throws CoreException {
-        List packagesList = new ArrayList();
-        List sortOrdersNewList = new ArrayList();
-
-        IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
-
-        for (int i = 0; i < roots.length; i++) {
-            // TODO Don't ignore ipsArchives.
-            if (roots[i].isBasedOnSourceFolder()) {
-                IIpsPackageFragment currentPack = roots[i].getDefaultIpsPackageFragment();
-
-                checkSortOrder(currentPack, packagesList, sortOrdersNewList, restore);
-            }
-        }
-
-        IIpsPackageFragment[] packages = (IIpsPackageFragment[])packagesList.toArray(new IIpsPackageFragment[packagesList.size()]);
-        IIpsPackageFragmentSortDefinition[] sortDefs = (IIpsPackageFragmentSortDefinition[])sortOrdersNewList.toArray(new IIpsPackageFragmentSortDefinition[sortOrdersNewList.size()]);
-
-        return new IpsPackageSortDefDelta(packages, sortDefs);
-    }
 
     /**
      * Check the projects sort order for changes. The result is a delta between the cached sort definitions and the dialog model.
@@ -236,8 +229,6 @@ public class IpsProjectSortOrdersPM {
             if ((sortDefNew != null) && (!isEqualSortOrder(sortDefNew, Arrays.asList(children)))) {
                 /* the IIpsPackgeFragment method setSortDefinition excpects the changed package as argument. We have to save a child here
                  * and not the parent node.
-                 *
-                 * TODO Check Interface get/setSortDefinition in order to change argument to parent package.
                  */
                 packagesList.add(children[0]);
                 sortDefOrderList.add(toSortDefinition(sortDefNew));
@@ -263,13 +254,7 @@ public class IpsProjectSortOrdersPM {
      * @param fragment Sorted IIpsPackageFragments.
      * @return new IIpsPackageFragmentSortDefinition
      */
-    public IIpsPackageFragmentSortDefinition toSortDefinition(List newSortDef) {
-
-        if (newSortDef == null) {
-            // TODO Throw Exception here.
-            return null;
-        }
-
+    private IIpsPackageFragmentSortDefinition toSortDefinition(List newSortDef) {
         String[] fragmentNames = new String[newSortDef.size()];
         int i = 0;
 
@@ -304,10 +289,125 @@ public class IpsProjectSortOrdersPM {
             if (!elementNew.equals(elementOld)) {
                 return false;
             }
-
         }
 
         return true;
+    }
+
+    /**
+     * @param restoreDefault The restoreDefault to set.
+     */
+    public void setRestoreDefault(boolean restoreDefault) {
+        this.restoreDefault = restoreDefault;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void dispose() {
+        fragmentHierarchy.clear();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        // nothing to implement
+    }
+
+    /**
+     * @throws CoreException
+     *
+     */
+    public void saveSortDefDelta() throws CoreException {
+        List packagesList = new ArrayList();
+        List sortOrdersNewList = new ArrayList();
+
+        IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
+
+        for (int i = 0; i < roots.length; i++) {
+            // TODO Don't ignore ipsArchives.
+            if (roots[i].isBasedOnSourceFolder()) {
+                IIpsPackageFragment currentPack = roots[i].getDefaultIpsPackageFragment();
+
+                checkSortOrder(currentPack, packagesList, sortOrdersNewList, restoreDefault);
+            }
+        }
+
+        Iterator iterSortdDefs = sortOrdersNewList.iterator();
+        for (Iterator iterFragment = packagesList.iterator(); iterFragment.hasNext(); ) {
+            IIpsPackageFragment element = (IIpsPackageFragment)iterFragment.next();
+            element.setSortDefinition((IIpsPackageFragmentSortDefinition)iterSortdDefs.next());
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object[] getChildren(Object parentElement) {
+        if (parentElement instanceof IIpsPackageFragment) {
+            IIpsPackageFragment fragment = (IIpsPackageFragment)parentElement;
+
+            try {
+                return getChildIpsPackageFragments(fragment);
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+                return EMPTY_ARRAY;
+            }
+        }
+
+        return EMPTY_ARRAY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object getParent(Object element) {
+
+        if (element instanceof IIpsPackageFragment) {
+            IIpsPackageFragment fragment = (IIpsPackageFragment)element;
+
+            return fragment.getParentIpsPackageFragment();
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasChildren(Object element) {
+        if (element instanceof IIpsPackageFragment) {
+            IIpsPackageFragment fragment = (IIpsPackageFragment)element;
+
+            // no wrapper-sortOrderPM function needed.
+            try {
+                IIpsPackageFragment[] children = fragment.getChildIpsPackageFragments();
+                return ((children.length > 0) ? true : false);
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object[] getElements(Object inputElement) {
+        if (inputElement instanceof IpsProjectSortOrdersPM) {
+            IpsProjectSortOrdersPM sortOrderPO = (IpsProjectSortOrdersPM) inputElement;
+
+            try {
+                return sortOrderPO.getDefaultPackageFragments();
+            } catch (CoreException e) {
+                return EMPTY_ARRAY;
+            }
+        }
+
+        return EMPTY_ARRAY;
     }
 
 }

@@ -47,7 +47,7 @@ public class ModelExplorerSorter extends ViewerSorter{
     private IpsPackageNameComparator packageComparator;
 
     public ModelExplorerSorter() {
-        packageComparator = new IpsPackageNameComparator();
+        packageComparator = new IpsPackageNameComparator(false);
     }
 
 	public int compare(Viewer viewer, Object o1, Object o2) {
