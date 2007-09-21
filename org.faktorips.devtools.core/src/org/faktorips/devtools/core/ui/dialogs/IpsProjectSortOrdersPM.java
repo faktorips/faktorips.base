@@ -90,6 +90,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
      * @param shift Move <code>shift</code> positions up. <code>shift</code> hast to be greater than <code>0</code>.
      */
     public void moveUp(IIpsPackageFragment fragment, int shift) {
+        restoreDefault = false;
         // don't move DefaultPackageFragments
         if ((shift > 0) && (!fragment.isDefaultPackage())) {
 
@@ -112,6 +113,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
      * @param shift Move <code>shift</code> positions down. <code>shift</code> hast to be greater than <code>0</code>.
      */
     public void moveDown(IIpsPackageFragment fragment, int shift) {
+        restoreDefault = false;
         // don't move DefaultPackageFragments
         if ((shift > 0) && (!fragment.isDefaultPackage())) {
 
@@ -198,7 +200,6 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
      */
     public void restore() throws CoreException {
        restoreDefault = true;
-
        // force building the treeViewer with new sort order.
        fragmentHierarchy.clear();
      }
@@ -292,13 +293,6 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
         }
 
         return true;
-    }
-
-    /**
-     * @param restoreDefault The restoreDefault to set.
-     */
-    public void setRestoreDefault(boolean restoreDefault) {
-        this.restoreDefault = restoreDefault;
     }
 
     /**

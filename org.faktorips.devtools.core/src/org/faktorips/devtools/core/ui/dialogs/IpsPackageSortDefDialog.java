@@ -246,7 +246,6 @@ public class IpsPackageSortDefDialog extends TrayDialog {
 
         if (element instanceof IIpsPackageFragment) {
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
-            sortOrderPM.setRestoreDefault(false);
             sortOrderPM.moveOneDown(fragment);
             treeViewer.refresh(false);
         }
@@ -260,7 +259,6 @@ public class IpsPackageSortDefDialog extends TrayDialog {
 
         if (element instanceof IIpsPackageFragment) {
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
-            sortOrderPM.setRestoreDefault(false);
             sortOrderPM.moveOneUp(fragment);
             treeViewer.refresh(false);
          }
