@@ -125,7 +125,9 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
     }
 
     /**
-     * @param line
+     * Skip empty lines and lines starting with a comment ('#').
+     *
+     * @param line Onje single line (String) of the sort order.
      * @return <code>true</code> if it is a valid entry; <code>false</code> if line is empty or a comment
      */
     private boolean checkLine(String line) {

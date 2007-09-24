@@ -212,14 +212,15 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
     public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
 
         // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE
-
         List sortedPacks = getChildIpsPackageFragmentsAsList();
 
         return (IIpsPackageFragment[])sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
     }
 
     /**
-     * @return
+     * Get all chidren of type IIpsPackageFragment.
+     *
+     * @return IpsPackageFragments as List.
      * @throws CoreException
      */
     private List getChildIpsPackageFragmentsAsList() throws CoreException {
@@ -249,12 +250,20 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
      * @throws CoreException
      */
     private String getSortDefinitionContent() throws CoreException {
-        String content = new String();
         ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
         IIpsArchive archive = root.getIpsArchive();
+        QualifiedNameType qnt = QualifiedNameType.newQualifedNameType(this.getName().concat( StringUtil.getSystemLineSeparator()  + IpsPackageFragment.SORT_ORDER_FILE) );
 
-        content = archive.getContent(QualifiedNameType.newQualifedNameType(this.getName().concat( StringUtil.getSystemLineSeparator()  + IpsPackageFragment.SORT_ORDER_FILE) ), this.getRoot().getIpsProject().getPlainTextFileCharset() );
+        return archive.getContent(qnt, this.getRoot().getIpsProject().getPlainTextFileCharset() );
+    }
 
-        return content;
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasChildIpsPackageFragments()  throws CoreException {
+        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
+        Set packNames = root.getIpsArchive().getNoneEmptySubpackages(getName());
+
+        return (packNames.size() > 0 ? true : false);
     }
 }

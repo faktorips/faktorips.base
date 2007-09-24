@@ -583,10 +583,11 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
             createProjectActions(manager, selected, (IStructuredSelection)treeViewer.getSelection());
             manager.add(new Separator());
             createTestCaseAction(manager, selected);
-            createFixDifferencesAction(manager, selected, (IStructuredSelection)treeViewer.getSelection());
-            createRefactorMenu(manager, selected);
-            createIpsArchiveAction(manager, selected);
             createIpsEditSortOrderAction(manager, selected);
+            createFixDifferencesAction(manager, selected, (IStructuredSelection)treeViewer.getSelection());
+            createIpsArchiveAction(manager, selected);
+            // menus with submenus
+            createRefactorMenu(manager, selected);
             createAdditionalActions(manager, structuredSelection);
             manager.add(new Separator());
             createPropertiesActions(manager, selected);
@@ -810,7 +811,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
         }
 
         protected void createIpsEditSortOrderAction(IMenuManager manager, Object selected) {
-            if (selected instanceof IIpsProject) {
+            if (selected instanceof IIpsElement) {
                 manager.add(new IpsEditSortOrderAction(treeViewer));
             }
         }

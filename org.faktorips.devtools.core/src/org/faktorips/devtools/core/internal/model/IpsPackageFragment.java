@@ -497,4 +497,25 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         return getRoot().createPackageFragment(isDefaultPackage() ? name : (getName() + "." + name), true, null); //$NON-NLS-1$
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws CoreException
+     */
+    public boolean hasChildIpsPackageFragments() throws CoreException {
+
+        IFolder folder = (IFolder)getCorrespondingResource();
+        IResource[] content = folder.members();
+
+        for (int i = 0; i < content.length; i++) {
+            if (content[i].getType() == IFolder.FOLDER) {
+                if (!getIpsProject().getNamingConventions().validateIpsPackageName(content[i].getName())
+                        .containsErrorMsg()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
 }

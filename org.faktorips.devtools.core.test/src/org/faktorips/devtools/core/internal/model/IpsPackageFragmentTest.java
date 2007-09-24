@@ -558,6 +558,15 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         assertEquals(fragments[0], "products");
         IpsModel ipsModel = (IpsModel)IpsPlugin.getDefault().getIpsModel();
         assertFalse(ipsModel.getSortDefinition(products).equals(sortDef));
+    }
 
+    public void testHasChildPackageFragments() throws CoreException {
+
+        assertFalse(pack.hasChildIpsPackageFragments());
+
+        IIpsPackageFragment products = rootPackage.getIpsPackageFragment("products");
+        assertTrue(products.hasChildIpsPackageFragments());
+
+        assertTrue(rootPackage.getDefaultIpsPackageFragment().hasChildIpsPackageFragments());
     }
 }

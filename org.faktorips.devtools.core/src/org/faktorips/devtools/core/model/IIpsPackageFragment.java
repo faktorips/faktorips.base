@@ -1,19 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community)
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+/***************************************************************************************************
+ *  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.  *  * Alle Rechte vorbehalten.  *  *
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,  * Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
+ * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
+ * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ **************************************************************************************************/
 
 package org.faktorips.devtools.core.model;
 
@@ -24,19 +16,17 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.core.internal.model.IpsPackageFragmentDefaultSortDefinition;
 
 /**
- * An IPS package fragment is a portion of the workspace corresponding to an entire package,
- * or to a portion thereof. The distinction between a package fragment and a package
- * is that a package with some name is the union of all package fragments in the ips object path
- * which have the same name.
+ * An IPS package fragment is a portion of the workspace corresponding to an entire package, or to a
+ * portion thereof. The distinction between a package fragment and a package is that a package with
+ * some name is the union of all package fragments in the ips object path which have the same name.
  */
 public interface IIpsPackageFragment extends IIpsElement {
 
     /**
-     * Constant that represents the name of the default package to make it
-     * explicit that the default package name is an empty string.
+     * Constant that represents the name of the default package to make it explicit that the default
+     * package name is an empty string.
      */
     public final static String NAME_OF_THE_DEFAULT_PACKAGE = ""; //$NON-NLS-1$
 
@@ -53,12 +43,14 @@ public interface IIpsPackageFragment extends IIpsElement {
     public IIpsSrcFile[] getIpsSrcFiles() throws CoreException;
 
     /**
-     * Returns the packagefragment which contains this one or null if this one is the default-package.
+     * Returns the packagefragment which contains this one or null if this one is the
+     * default-package.
      */
     public IIpsPackageFragment getParentIpsPackageFragment();
 
     /**
      * Returns all packagfragments which are contained in this one.
+     *
      * @throws CoreException
      */
     public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException;
@@ -67,23 +59,24 @@ public interface IIpsPackageFragment extends IIpsElement {
      * Returns the child packages sorted by the sort definition.
      *
      * @throws CoreException
-
+     *
      * @see #getSortDefinition()
      */
     public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException;
 
     /**
-     * Reads the sort definition from disk and returns it. Returns the {@link IpsPackageFragmentDefaultSortDefinition} if no
-     * sort definition file exists.
+     * Reads the sort definition of the IIpsPackageFragment and its siblings. Returns the default
+     * sort definition if no sort definition exists.
      *
-     * @throws CoreException if an errors occurs reading the definition
+     * @throws CoreException
      */
     public IIpsPackageFragmentSortDefinition getSortDefinition() throws CoreException;
 
     /**
-     * Writes the new sort definition to disk. Deletes the sort file if <code>null</code> is passed.
+     * Set a new sort definition for this IIpsPackageFragment and its siblings. Set the current sort
+     * definition to default if <code>null</code> is passed.
      *
-     * @throws CoreException if an error occurs writing the file.
+     * @throws CoreException
      */
     public void setSortDefinition(IIpsPackageFragmentSortDefinition newDefinition) throws CoreException;
 
@@ -91,6 +84,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      * Returns all <code>IResource</code>s that do not correspond to
      * <code>IIpsPackageFragment</code>s contained in this PackageFragment. Returns an empty
      * array if no such resources are found.
+     *
      * @throws CoreException if the members of the corresponding resource cannot be accessed.
      */
     public IResource[] getNonIpsResources() throws CoreException;
@@ -101,20 +95,20 @@ public interface IIpsPackageFragment extends IIpsElement {
     public IIpsPackageFragmentRoot getRoot();
 
     /**
-     * Returns an <code>org.eclipse.core.runtime.IPath</code> object representing for the package fragment name.
+     * Returns an <code>org.eclipse.core.runtime.IPath</code> object representing for the package
+     * fragment name.
      */
     public IPath getRelativePath();
 
     /**
-     * Returns a handle to the IPS source file with the given name. If the provided
-     * name doesn't have a file extension that fits to an IpsSrcFile <code>null</code> will
-     * be returned.
+     * Returns a handle to the IPS source file with the given name. If the provided name doesn't
+     * have a file extension that fits to an IpsSrcFile <code>null</code> will be returned.
      */
     public IIpsSrcFile getIpsSrcFile(String name);
 
     /**
-     * Returns a handle to the IPS source file for the given filenameWithoutExtension.
-     * The file extension is derived from the ips object type.
+     * Returns a handle to the IPS source file for the given filenameWithoutExtension. The file
+     * extension is derived from the ips object type.
      *
      * @throws NullPointerException if type is <code>null</code>.
      */
@@ -123,119 +117,135 @@ public interface IIpsPackageFragment extends IIpsElement {
     /**
      * Creates the IpsSrcFile with the indicated name.
      *
-	 * @param name the file name
-	 * @param source input stream providing the file's content
-	 * @param force a flag controlling how to deal with resources that
-	 *    are not in sync with the local file system
-	 * @param monitor the given progress monitor
+     * @param name the file name
+     * @param source input stream providing the file's content
+     * @param force a flag controlling how to deal with resources that are not in sync with the
+     *            local file system
+     * @param monitor the given progress monitor
      *
-	 * @throws CoreException if the element could not be created. Reasons include:
-	 * <ul>
-	 * <li> This folder does not exist</li>
-	 * <li> A <code>CoreException</code> occurred while creating an underlying resource
-	 * <li> This root folder is read only
-	 * <li> The name is not a valid src file name
-	 * </ul>
+     * @throws CoreException if the element could not be created. Reasons include:
+     *             <ul>
+     *             <li> This folder does not exist</li>
+     *             <li> A <code>CoreException</code> occurred while creating an underlying
+     *             resource
+     *             <li> This root folder is read only
+     *             <li> The name is not a valid src file name
+     *             </ul>
      */
-    public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor) throws CoreException;
+    public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor)
+            throws CoreException;
 
     /**
      * Creates the IpsSrcFile with the indicated name.
      *
-	 * @param name the file name
-	 * @param content the file's content
-	 * @param force a flag controlling how to deal with resources that
-	 *    are not in sync with the local file system
-	 * @param monitor the given progress monitor
-     *
-	 * @throws CoreException if the element could not be created. Reasons include:
-	 * <ul>
-	 * <li> This folder does not exist</li>
-	 * <li> A <code>CoreException</code> occurred while creating an underlying resource
-	 * <li> This root folder is read only
-	 * <li> The name is not a valid src file name
-	 * </ul>
-     */
-    public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor) throws CoreException;
-
-    /**
-     * Creates a IpsSrcFile that contains an IpsObject of the indicated type and
-     * with the indicated name. The filename is constructed by appending the type
-     * specific file extension to the object name (separated by a dot).
-     *
-     * @param type the object's type
-	 * @param name the file name
-	 * @param force a flag controlling how to deal with resources that
-	 *    are not in sync with the local file system
-	 * @param monitor the given progress monitor
-     *
-	 * @throws CoreException if the element could not be created. Reasons include:
-	 * <ul>
-	 * <li> This folder does not exist</li>
-	 * <li> A <code>CoreException</code> occurred while creating an underlying resource
-	 * <li> This root folder is read only
-	 * <li> The name is not a valid object name
-	 * </ul>
-     */
-    public IIpsSrcFile createIpsFile(IpsObjectType type, String ipsObjectName, boolean force, IProgressMonitor monitor) throws CoreException;
-
-    /**
-     * Creates a new IpsSrcFile based on a given template. The filename is constructed by
-     * appending the type specific file extension to the given object name (separated by a dot).
-     * The content of the IpsSrcFile is copied from the given template. If the template is a
-     * ITimedIpsObject, only the generation that is valid at the given date is copied. If no
-     * generation is valid at the given date because the date lies before any valid generation
-     * of the given template, the first generation of the given template is used.
-     *
-	 * @param name the file name
-	 * @param template the source for the contents to copy from
-	 * @param date the date to find the generation effective on if
-	 *             template is instance of ITimedIpsObject). Otherwise this parameter
-	 *             is ignored.
-	 * @param force a flag controlling how to deal with resources that
-	 *    are not in sync with the local file system
-	 * @param monitor the given progress monitor
-     *
-	 * @throws CoreException if the element could not be created. Reasons include:
-	 * <ul>
-	 * <li> This folder does not exist</li>
-	 * <li> A <code>CoreException</code> occurred while creating an underlying resource
-	 * <li> This root folder is read only
-	 * <li> The name is not a valid object name
-	 * <li> The template has no generation valid on the given date
-	 * </ul>
-     */
-    public IIpsSrcFile createIpsFileFromTemplate(String name, IIpsObject template, GregorianCalendar date, boolean force, IProgressMonitor monitor) throws CoreException;
-
-    /**
-     * Creates a IpsPackageFragment below this one
-     * with the indicated name.
-     *
-     * @param name the sub-package name
-     * @param force a flag controlling how to deal with resources that
-     *    are not in sync with the local file system
+     * @param name the file name
+     * @param content the file's content
+     * @param force a flag controlling how to deal with resources that are not in sync with the
+     *            local file system
      * @param monitor the given progress monitor
      *
      * @throws CoreException if the element could not be created. Reasons include:
-     * <ul>
-     * <li> This folder does not exist</li>
-     * <li> A <code>CoreException</code> occurred while creating an underlying resource
-     * <li> This root folder is read only
-     * <li> The name is not a valid package name
-     * </ul>
+     *             <ul>
+     *             <li> This folder does not exist</li>
+     *             <li> A <code>CoreException</code> occurred while creating an underlying
+     *             resource
+     *             <li> This root folder is read only
+     *             <li> The name is not a valid src file name
+     *             </ul>
      */
-    public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor) throws CoreException;
+    public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor)
+            throws CoreException;
+
+    /**
+     * Creates a IpsSrcFile that contains an IpsObject of the indicated type and with the indicated
+     * name. The filename is constructed by appending the type specific file extension to the object
+     * name (separated by a dot).
+     *
+     * @param type the object's type
+     * @param name the file name
+     * @param force a flag controlling how to deal with resources that are not in sync with the
+     *            local file system
+     * @param monitor the given progress monitor
+     *
+     * @throws CoreException if the element could not be created. Reasons include:
+     *             <ul>
+     *             <li> This folder does not exist</li>
+     *             <li> A <code>CoreException</code> occurred while creating an underlying
+     *             resource
+     *             <li> This root folder is read only
+     *             <li> The name is not a valid object name
+     *             </ul>
+     */
+    public IIpsSrcFile createIpsFile(IpsObjectType type, String ipsObjectName, boolean force, IProgressMonitor monitor)
+            throws CoreException;
+
+    /**
+     * Creates a new IpsSrcFile based on a given template. The filename is constructed by appending
+     * the type specific file extension to the given object name (separated by a dot). The content
+     * of the IpsSrcFile is copied from the given template. If the template is a ITimedIpsObject,
+     * only the generation that is valid at the given date is copied. If no generation is valid at
+     * the given date because the date lies before any valid generation of the given template, the
+     * first generation of the given template is used.
+     *
+     * @param name the file name
+     * @param template the source for the contents to copy from
+     * @param date the date to find the generation effective on if template is instance of
+     *            ITimedIpsObject). Otherwise this parameter is ignored.
+     * @param force a flag controlling how to deal with resources that are not in sync with the
+     *            local file system
+     * @param monitor the given progress monitor
+     *
+     * @throws CoreException if the element could not be created. Reasons include:
+     *             <ul>
+     *             <li> This folder does not exist</li>
+     *             <li> A <code>CoreException</code> occurred while creating an underlying
+     *             resource
+     *             <li> This root folder is read only
+     *             <li> The name is not a valid object name
+     *             <li> The template has no generation valid on the given date
+     *             </ul>
+     */
+    public IIpsSrcFile createIpsFileFromTemplate(String name,
+            IIpsObject template,
+            GregorianCalendar date,
+            boolean force,
+            IProgressMonitor monitor) throws CoreException;
+
+    /**
+     * Creates a IpsPackageFragment below this one with the indicated name.
+     *
+     * @param name the sub-package name
+     * @param force a flag controlling how to deal with resources that are not in sync with the
+     *            local file system
+     * @param monitor the given progress monitor
+     *
+     * @throws CoreException if the element could not be created. Reasons include:
+     *             <ul>
+     *             <li> This folder does not exist</li>
+     *             <li> A <code>CoreException</code> occurred while creating an underlying
+     *             resource
+     *             <li> This root folder is read only
+     *             <li> The name is not a valid package name
+     *             </ul>
+     */
+    public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor)
+            throws CoreException;
 
     /**
      * @return The the last segment of the package name.
      */
-	public String getLastSegmentName();
+    public String getLastSegmentName();
 
-	/**
-	 * Returns <code>true</code> if this IIpsPackageFragement is the default-package.
-	 * The default-package is the one with an empty String as name ("").
-	 */
-	public boolean isDefaultPackage();
+    /**
+     * Returns <code>true</code> if this IIpsPackageFragement is the default-package. The
+     * default-package is the one with an empty String as name ("").
+     */
+    public boolean isDefaultPackage();
 
+    /**
+     * Returns <code>true</code> if this IIpsPackageFragement has at least one IIpsPackageFragement as a child.
+     * @throws CoreException
+     */
+    public boolean hasChildIpsPackageFragments() throws CoreException;
 
 }

@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.ui.dialogs.IpsPackageSortDefDialog;
 
@@ -52,8 +53,9 @@ public class IpsEditSortOrderAction extends IpsAction {
     public void run(IStructuredSelection selection) {
         Object element = ((IStructuredSelection) selection).getFirstElement();
 
-        if (element instanceof IIpsProject) {
-            IIpsProject project = (IIpsProject)element;
+        if (element instanceof IIpsElement) {
+            IIpsElement ipsElement = (IIpsElement)element;
+            IIpsProject project = ipsElement.getIpsProject();
 
             if (project.isProductDefinitionProject()) {
                 IpsPackageSortDefDialog dialog = new IpsPackageSortDefDialog(Display.getCurrent().getActiveShell(), Messages.IpsEditSortOrderAction_dialogTitle, project);

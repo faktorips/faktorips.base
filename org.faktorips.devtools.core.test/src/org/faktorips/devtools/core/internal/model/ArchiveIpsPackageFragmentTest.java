@@ -209,4 +209,12 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
 
         return project;
     }
+
+    public void testHasChildIpsPackageFragments() throws CoreException {
+        IIpsPackageFragment empty = root.getIpsPackageFragment("mycompany.motor.Coverage");
+        assertFalse(empty.hasChildIpsPackageFragments());
+
+        assertTrue(pack.hasChildIpsPackageFragments());
+        assertTrue(root.getDefaultIpsPackageFragment().hasChildIpsPackageFragments());
+    }
 }

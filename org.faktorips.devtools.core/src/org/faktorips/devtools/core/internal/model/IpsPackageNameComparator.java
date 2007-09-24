@@ -26,6 +26,9 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentSortDefinition;
 import org.faktorips.devtools.core.util.QNameUtil;
 
 /**
+ * A Comparator implementation for IIpsPackageFragments.  IIpsPackageFragments are sorted by lexical
+ * comparison of the package name (<code>defaultComparator</code> = <code>true</code>) or by a sort order
+ * file (<code>defaultComparator</code> = <code>false</code>).
  *
  * @author Markus Blum
  */
@@ -34,6 +37,9 @@ public class IpsPackageNameComparator implements Comparator {
     private boolean defaultComparator = true;
 
     /**
+     * Set the sort mode with this constructor. A class that was instantiated with the default constructor uses
+     * lexical comparison of the package name.
+     *
      * @param defaultComparator <code>true</code>, if compare is lexical (default sort order).
      */
     public IpsPackageNameComparator(boolean defaultComparator) {
@@ -55,7 +61,8 @@ public class IpsPackageNameComparator implements Comparator {
     }
 
     /**
-     * Get the <code>IIpsPackageFragmentSortDefinition</code> from parent.
+     * Get the <code>IIpsPackageFragmentSortDefinition</code> from the parent fragment.
+     * Use {@link IpsPackageFragmentDefaultSortDefinition} if no file exists for this package.
      *
      * @param pack current <code>IIpsPackageFragment</code> .
      * @param parentName Full qualified parent package name.
@@ -72,10 +79,17 @@ public class IpsPackageNameComparator implements Comparator {
     /**
      * Get the full qualified parent package name of <code>childPackageName</code> of the selected segment.
      *
-     * @example
+     * <p><blockquote><pre>
+     * example:
+     * String package = "org.faktorips.devtools.core";
+     * getParentNameOfSegment(package, 1) => "org"
+     * getParentNameOfSegment(package, 2) => "org.faktorips"
+     * getParentNameOfSegment(package, 3) => "org.faktorips.devtools"
+     *
+     *</pre></blockquote>
      *
      * @param childPackageName Name of the <code>IIpsPackageFragment</code>.
-     * @param segments The selected segment
+     * @param segments The selected segment hierarchy.
      * @return Full qualified parent package name.
      */
     private String getParentNameOfSegment(String childPackageName, int segments) {
@@ -112,11 +126,13 @@ public class IpsPackageNameComparator implements Comparator {
     }
 
     /**
-     * Compare two IpsPAckageFramgents by its given SortDefinition.
+     * Compare two IpsPackageFramgents by its given IIpsPackageFragmentSortDefinition.
      *
-     * @param pack1
-     * @param pack2
-     * @return
+     * @param pack1 An IpsPackageFragment.
+     * @param pack2 An IpsPackageFragment.
+     * @return  a negative integer, zero, or a positive integer as the
+     *         first argument is less than, equal to, or greater than the
+     *         second
      */
     private int compareBySortDefinition(IIpsPackageFragment pack1, IIpsPackageFragment pack2) {
         String[] segments1 = QNameUtil.getSegments(pack1.getName());
@@ -144,9 +160,13 @@ public class IpsPackageNameComparator implements Comparator {
     }
 
     /**
-     * @param pack1
-     * @param pack2
-     * @return
+     * Compare two IpsPackageFramgents by name.
+     *
+     * @param pack1 An IpsPackageFragment.
+     * @param pack2 An IpsPackageFragment.
+     * @return  a negative integer, zero, or a positive integer as the
+     *         first argument is less than, equal to, or greater than the
+     *         second
      */
     private int compareByName(IIpsPackageFragment pack1, IIpsPackageFragment pack2) {
         return pack1.getName().compareTo(pack2.getName());
