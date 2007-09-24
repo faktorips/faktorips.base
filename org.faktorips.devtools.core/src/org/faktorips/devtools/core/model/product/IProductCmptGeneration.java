@@ -25,10 +25,9 @@ import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssoci
 
 
 /**
- *
+ * 
  */
 public interface IProductCmptGeneration extends IIpsObjectGeneration {
-
 	
     /**
      * Prefix for all message codes of this class.
@@ -204,4 +203,20 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * @return All table content usages defined by this generation.
      */
     public ITableContentUsage[] getTableContentUsages();
+    
+    /**
+     * Returns the numer of formulas defined in the generation. 
+     */
+    public int getNumOfFormulas();
+
+    /**
+     * Returns the formulas defined in the generation. Returns an empty array if the generation
+     * hasn't got a formula. 
+     */
+    public IFormula[] getFormulas();
+    
+    /**
+     * Creates a new formula.
+     */
+    public IFormula newFormula();
 }

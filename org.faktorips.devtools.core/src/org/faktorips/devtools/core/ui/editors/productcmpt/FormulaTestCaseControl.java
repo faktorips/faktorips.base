@@ -53,7 +53,8 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
@@ -107,7 +108,9 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     private List formulaTestCases = new ArrayList();
 
     /* The config element the displayed formula test cases belongs to */ 
-    private IConfigElement configElement;
+    private IFormula formula;
+    
+    private IIpsProject ipsProject;
     
     /* Contains the table viewer to display and edit the formula test cases */
     private TableViewer formulaTestCaseTableViewer;
@@ -170,6 +173,10 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
             return formulaTestCase.getParent();
         }
         
+        public IFormula getFormula(){
+            return formulaTestCase.getFormula();
+        }
+
         public String getName() {
             return formulaTestCase.getName();
         }
@@ -191,11 +198,11 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         }
         
         public Object execute() throws Exception{
-            return formulaTestCase.execute();
+            return formulaTestCase.execute(formulaTestCase.getIpsProject());
         }
         
         public boolean addOrDeleteFormulaTestInputValues(String[] newIdentifier){
-            return formulaTestCase.addOrDeleteFormulaTestInputValues(newIdentifier);
+            return formulaTestCase.addOrDeleteFormulaTestInputValues(newIdentifier, formulaTestCase.getIpsProject());
         }
         
         public IFormulaTestInputValue[] getFormulaTestInputValues(){
@@ -271,12 +278,12 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         public String getColumnText(Object element, int columnIndex) {
             if (element instanceof ExtDataForFormulaTestCase){
                 ExtDataForFormulaTestCase ftc = (ExtDataForFormulaTestCase) element;
-                IConfigElement ce = (IConfigElement)ftc.getFormulaTestCase().getParent();
+                IFormula formula = ftc.getFormula();
                 ValueDatatype vd = ValueDatatype.STRING;
                 try {
-                    vd = ce.findValueDatatype();
+                    vd = formula.findValueDatatype(ipsProject);
                 } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
+                    IpsPlugin.log(e);
                 }
                 
                 if (columnIndex == IDX_COLUMN_NAME) {
@@ -299,13 +306,14 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     }
     
     public FormulaTestCaseControl(Composite parent, UIToolkit uiToolkit,
-            IpsObjectUIController uiController, IConfigElement configElement) {
-        super(parent, SWT.NONE);
-        ArgumentCheck.notNull(new Object[]{ parent, uiToolkit, uiController, configElement});
+            IpsObjectUIController uiController, IFormula formula) {
         
+        super(parent, SWT.NONE);
+        ArgumentCheck.notNull(new Object[]{ parent, uiToolkit, uiController, formula});
+        this.formula = formula;
+        this.ipsProject = formula.getIpsProject();
         this.uiToolkit = uiToolkit;
         this.uiController = uiController;
-        
         this.empytImage = new Image(getShell().getDisplay(), 16, 16);
 
         // create images for ok and failure indicators
@@ -335,13 +343,6 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         super.dispose();
     }
 
-    /**
-     * Sets the config Element.
-     */
-    public void setConfigElem(IConfigElement configElement){
-        this.configElement = configElement;
-    }
-    
     /**
      * Sets and updates the to be displaying formula test cases.
      */    
@@ -409,7 +410,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         uiToolkit.createHorizonzalLine(btns);
         uiToolkit.createVerticalSpacer(btns, 5);
         
-        if (configElement != null){
+        if (formula != null){
             btnNewFormulaTestCase = uiToolkit.createButton(btns, Messages.FormulaTestCaseControl_Button_New);
             btnNewFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true ));
             btnNewFormulaTestCase.addSelectionListener(new SelectionListener() {
@@ -486,12 +487,12 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
      * Creates a new formula test case.
      */
     private void newClicked() {
-        ArgumentCheck.notNull(configElement);
-        IFormulaTestCase newFormulaTestCase = configElement.newFormulaTestCase();
+        ArgumentCheck.notNull(formula);
+        IFormulaTestCase newFormulaTestCase = formula.newFormulaTestCase();
         String name = newFormulaTestCase.generateUniqueNameForFormulaTestCase(Messages.FormulaTestInputValuesControl_DefaultFormulaTestCaseName);
         newFormulaTestCase.setName(name);
         try {
-            String[] identifiers = configElement.getParameterIdentifiersUsedInFormula();
+            String[] identifiers = formula.getParameterIdentifiersUsedInFormula(ipsProject);
             for (int i = 0; i < identifiers.length; i++) {
                 IFormulaTestInputValue newInputValue = newFormulaTestCase.newFormulaTestInputValue();
                 newInputValue.setIdentifier(identifiers[i]);
@@ -511,8 +512,8 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
      */
     private void moveFormulaTestInputValues(ExtDataForFormulaTestCase formulaTestCase, boolean up){
         int[] selectedIndexes = null;
-        IConfigElement configElement = (IConfigElement) formulaTestCase.getParent();
-        IFormulaTestCase[] ftcs = configElement.getFormulaTestCases();
+        IFormula formula = formulaTestCase.getFormula();
+        IFormulaTestCase[] ftcs = formula.getFormulaTestCases();
         for (int i = 0; i < ftcs.length; i++) {
             if (ftcs[i].equals(formulaTestCase)){
                 selectedIndexes = new int[]{i};
@@ -520,7 +521,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
             }
         }
         if (selectedIndexes != null){
-            configElement.moveFormulaTestCases(selectedIndexes, up);
+            formula.moveFormulaTestCases(selectedIndexes, up);
             uiController.updateUI();
         }
     }
@@ -532,9 +533,9 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     protected void updateClicked() {
         ExtDataForFormulaTestCase selElement = getSelectedFormulaTestCase();
         try {
-            IConfigElement configElem = (IConfigElement) selElement.getParent();
+            IFormula formula = selElement.getFormula();
             String messageForChangeInfoDialog = buildMessageForUpdateInformation(selElement);
-            if (selElement.addOrDeleteFormulaTestInputValues(configElem.getParameterIdentifiersUsedInFormula())) {
+            if (selElement.addOrDeleteFormulaTestInputValues(formula.getParameterIdentifiersUsedInFormula(ipsProject))) {
                 // there were changes, thus trigger that the input value table will be refreshed
                 selectionFormulaTestCaseChanged(selElement);
                 MessageDialog.openInformation(getShell(),
@@ -554,8 +555,8 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
      * Generates and returns the message which informs about the new and deleted parameters
      */
     private String buildMessageForUpdateInformation(ExtDataForFormulaTestCase selElement) throws CoreException {
-        IConfigElement configElement = (IConfigElement) selElement.getParent();
-        String[] identifiersInFormula = configElement.getParameterIdentifiersUsedInFormula();
+        IFormula formula = selElement.getFormula();
+        String[] identifiersInFormula = formula.getParameterIdentifiersUsedInFormula(ipsProject);
         List idsInFormula = new ArrayList(identifiersInFormula.length);
         idsInFormula.addAll(Arrays.asList(identifiersInFormula));
         List idsInTestCase = new ArrayList();
@@ -614,18 +615,19 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                     ExtDataForFormulaTestCase element = (ExtDataForFormulaTestCase)iter.next();
                     Object result = ""; //$NON-NLS-1$
                     try {
-                        IConfigElement configElement = (IConfigElement)element.getParent();
-                        MessageList mlConfigElement = configElement.validate();
-                        if (configElement.isValid()) {
+                        IFormula formula = element.getFormula();
+                        MessageList mlformula = formula.validate();
+                        if (formula.isValid()) {
                             MessageList ml = element.validate();
                             if (ml.getNoOfMessages() == 0) {
                                 result = element.execute();
                             }
                         } else {
-                            element.setMessage(mlConfigElement.getFirstMessage(Message.ERROR).getText());
+                            element.setMessage(mlformula.getFirstMessage(Message.ERROR).getText());
                         }
+                        ValueDatatype vd = formula.findValueDatatype(ipsProject);
                         element.setActualResult(IpsPlugin.getDefault().getIpsPreferences().formatValue(
-                                configElement.findValueDatatype(), (String)(result == null ? null : result.toString())));
+                                vd, (String)(result == null ? null : result.toString())));
                     } catch (Exception e) {
                         IpsPlugin.logAndShowErrorDialog(e);
                     }
@@ -727,7 +729,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     private void createTableCellModifier(UIToolkit uiToolkit) {
         ValueDatatype resultValueDatatype = ValueDatatype.STRING;
         try {
-            resultValueDatatype = configElement.findValueDatatype();
+            resultValueDatatype = formula.findValueDatatype(ipsProject);
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
@@ -800,8 +802,8 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         String expectedResult = null;
         try {
             expectedResult = ftc.getExpectedResult();
-            IConfigElement configElement = (IConfigElement)ftc.getParent();
-            expectedResult = IpsPlugin.getDefault().getIpsPreferences().formatValue(configElement.findValueDatatype(),
+            IFormula formula = ftc.getFormula();
+            expectedResult = IpsPlugin.getDefault().getIpsPreferences().formatValue(formula.findValueDatatype(ipsProject),
                     (String)(expectedResult == null ? null : expectedResult.toString()));
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);

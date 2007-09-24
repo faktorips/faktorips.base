@@ -137,7 +137,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
             return false;
         }
         if (productCmpt.findProductCmptType(productCmpt.getIpsProject())==null) {
-            // if the type can't be found, nothing an be generated.
+            // if the type can't be found, nothing can be generated.
             return false;
         }
         return true;

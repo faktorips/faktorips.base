@@ -26,16 +26,14 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.product.ConfigElementType;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 
 /**
  * 
@@ -59,12 +57,15 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
         project.setProperties(props);
         policyCmptType = newPolicyAndProductCmptType(project, "Policy", "Product");
         productCmptType = policyCmptType.findProductCmptType(project);
-        IAttribute a = policyCmptType.newAttribute();
-        a.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-        a.setDatatype(Datatype.INTEGER.getQualifiedName());
-        a.setName("age");
-        a.setProductRelevant(true);
-        assertFalse(policyCmptType.validate().containsErrorMsg());
+        
+        IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
+        method.setDatatype(Datatype.INTEGER.getQualifiedName());
+        method.setName("age");
+        method.setFormulaSignatureDefinition(true);
+        method.setFormulaName("AgeCalculation");
+        
+        assertTrue(productCmptType.isValid());
+        
         IProductCmptTypeAssociation rel = productCmptType.newAssociation();
         rel.setTargetRoleSingular("role");
         rel.setTargetRolePlural("roles");
@@ -75,10 +76,9 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
         productCmpt = newProductCmpt(productCmptType, "Product");
         IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
         gen.setValidFrom(new GregorianCalendar(2006, 0, 1));
-        IConfigElement ce = gen.newConfigElement();
-        ce.setPcTypeAttribute(a.getName());
-        ce.setType(ConfigElementType.FORMULA);
-        ce.setValue("42");
+        IFormula ce= gen.newFormula();
+        ce.setFormulaSignature(method.getFormulaName());
+        ce.setExpression("42");
         
         IProductCmpt refTarget = newProductCmpt(productCmptType, "RefProduct");
         refTarget.setRuntimeId("RefProductRuntimeId");

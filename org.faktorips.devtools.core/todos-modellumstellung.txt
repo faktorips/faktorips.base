@@ -8,3 +8,15 @@ PolicyCmptTypeAttribute
  XML-Format des Produktbausteins:
   - Umbennen von "Relation" in "Link"
   - Umbennen von "pcTypeRelation" in "association"
+  
+IPolicyCmptType muss IType implementieren
+ - in Formuala muessen die EnumDatatypes aus ProductCmptType beruecksichtigt werden.
+ - Verwendung von IType statt IPolicCmptType
+ 
+Delta Handling umstellen
+	Einfuehrung eines Delta-Entry
+	
+Abstraktion fuer IConfigElement, IFormula, ITableContentUsage: PropertyValue
+
+Abstraktion fuer ProductCmptTypeAttribute, FormulaSignature, TableStructureUsage: ProductCmptTypeProperty
+	Hier koennten wir auch "on the fly" die default values und value sets "rein mergen".

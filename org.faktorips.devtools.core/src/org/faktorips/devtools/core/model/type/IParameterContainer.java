@@ -27,10 +27,16 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 public interface IParameterContainer extends IIpsObjectPart {
 
     /**
-     * Returns the method's parameters. Returns an empty array if the mehthod
+     * Returns the method's parameters. Returns an empty array if the method
      * doeen't have any parameter.
      */
     public IParameter[] getParameters();
+    
+    /**
+     * Returns the method's parameter names. Returns an empty array if the method
+     * doeen't have any parameter.
+     */
+    public String[] getParameterNames();
     
     /**
      * Returns the number of parameters.

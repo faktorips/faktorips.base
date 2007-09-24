@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.eclipse.jface.util.Assert;
 import org.faktorips.devtools.core.model.pctype.Parameter;
+import org.faktorips.devtools.core.model.type.IParameter;
 
 
 public class ParameterInfo {
@@ -53,7 +54,15 @@ public class ParameterInfo {
 	    return result;
 	}
 	
-	public final static Parameter[] createParameters(List infolist) {
+    public final static List createInfosAsList(IParameter[] params) {
+        List result = new ArrayList(params.length);
+        for (int i=0; i<params.length; i++) {
+            result.add(new ParameterInfo(params[i].getDatatype(), params[i].getName(), i));
+        }
+        return result;
+    }
+    
+    public final static Parameter[] createParameters(List infolist) {
 	    List params = new ArrayList();
 	    int i=0;
 	    for (Iterator it=infolist.iterator(); it.hasNext();) {

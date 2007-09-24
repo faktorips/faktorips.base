@@ -2,6 +2,4 @@
 
 <ConfigElement id="42" type="productAttribute" pcTypeAttribute="rate">
     <Value><![CDATA[1.5]]></Value>
-    <FormulaTestCase name="formulaTest1">
-    </FormulaTestCase>
 </ConfigElement>

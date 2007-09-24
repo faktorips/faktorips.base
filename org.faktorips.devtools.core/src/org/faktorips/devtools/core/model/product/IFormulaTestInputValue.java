@@ -20,7 +20,8 @@ package org.faktorips.devtools.core.model.product;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.pctype.Parameter;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.type.IParameter;
 
 /**
  * Specification of a input test value to test a product formula.
@@ -78,7 +79,7 @@ public interface IFormulaTestInputValue extends IIpsObjectPart {
      * 
      * @throws CoreException If an error occured
      */
-    public Parameter findFormulaParameter() throws CoreException;
+    public IParameter findFormulaParameter(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Sets the value of the formula test input.
@@ -93,11 +94,11 @@ public interface IFormulaTestInputValue extends IIpsObjectPart {
     /**
      * Search and returns the datatype of the corresponding formula parameter. If the formula
      * parameter specifies a ValueDataType then this datatype will be returned and if the formula
-     * parameter specifies a PolicyCmptType parameter then the datatype of the attribute which is
-     * identified by the identifier will be returned (e.g. if the identifier is policy.attribute
-     * then the datatype of attribute will be returned).
+     * parameter specifies a type parameter then the datatype of the attribute which is
+     * identified by the identifier will be returned (e.g. if the identifier is "policy.premium"
+     * then the datatype of the attribute premium will be returned).
      * 
      * @throws CoreException If an error occurs during searching the corresponding datatype.
      */
-    public Datatype findDatatypeOfFormulaParameter() throws CoreException;    
+    public Datatype findDatatypeOfFormulaParameter(IIpsProject ipsProject) throws CoreException;    
 }

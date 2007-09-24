@@ -250,6 +250,25 @@ public interface IProductCmptType extends IIpsObject, IType {
      */
     public IProductCmptTypeMethod[] getProductCmptTypeMethods();
     
-    
+    /**
+     * Returns the method signature with the indicates formula name. Returns <code>null</code>
+     * if no such method is found in <strong>this</strong> type. The type hierarchy is not
+     * searched.
+     * Returns <code>null</code> if formulaName is <code>null</code>.
+     */
+    public IProductCmptTypeMethod getFormulaSignature(String formulaName) throws CoreException;
+
+    /**
+     * Searches the method signature with the indicates formula name. Returns <code>null</code>
+     * if no such method is found.
+     * 
+     * @param formulaName The formula name to search
+     * @param searchTypeHierarchy <code>true</code> if the type hierarchy should be searched.
+     * @param The ips project which ips object path is used to search.
+     * 
+     * @throws CoreException if an error occurs while searching.
+     * @throws NullPointerException if ips project is <code>null</code>.
+     */
+    public IProductCmptTypeMethod findFormulaSignature(String formulaName, boolean searchTypeHierarchy, IIpsProject ipsProject) throws CoreException;
     
 }

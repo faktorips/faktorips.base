@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype2;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -284,6 +285,34 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    public IProductCmptTypeMethod getFormulaSignature(String formulaName) throws CoreException {
+        if (StringUtils.isEmpty(formulaName)) {
+            return null;
+        }
+        for (Iterator it=methods.iterator(); it.hasNext(); ) {
+            IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
+            if (method.isFormulaSignatureDefinition() && formulaName.equalsIgnoreCase(method.getFormulaName())) {
+                return method;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IProductCmptTypeMethod findFormulaSignature(String formulaName, boolean searchTypeHierarchy, IIpsProject ipsProject) throws CoreException {
+        if (searchTypeHierarchy) {
+            FormulaSignatureFinder finder = new FormulaSignatureFinder(ipsProject, formulaName);
+            finder.start(this);
+            return finder.method;
+        }
+        return getFormulaSignature(formulaName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
         if (isConfigurationForPolicyCmptType()) {
@@ -304,6 +333,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     public QualifiedNameType[] dependsOn() throws CoreException {
         Set qualifiedNameTypes = new HashSet();
+        super.dependsOn(qualifiedNameTypes);
         if (hasSupertype()) {
             qualifiedNameTypes.add(new QualifiedNameType(getSupertype(), IpsObjectType.PRODUCT_CMPT_TYPE_V2));
         }
@@ -318,6 +348,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             qualifiedNameTypes.add(new QualifiedNameType(qualifiedName, IpsObjectType.PRODUCT_CMPT_TYPE_V2));
         }
     }
+
 
     class RelationFinder extends ProductCmptTypeHierarchyVisitor {
 
@@ -373,6 +404,26 @@ public class ProductCmptType extends Type implements IProductCmptType {
         protected boolean visit(IProductCmptType currentType) throws CoreException {
             policyCmptType = ipsProject.findPolicyCmptType(currentType.getPolicyCmptType());
             return !currentType.isConfigurationForPolicyCmptType();
+        }
+        
+    }
+    
+    class FormulaSignatureFinder extends ProductCmptTypeHierarchyVisitor {
+
+        private String formulaName;
+        private IProductCmptTypeMethod method;
+        
+        public FormulaSignatureFinder(IIpsProject ipsProject, String formulaName) {
+            super(ipsProject);
+            this.formulaName = formulaName;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+            method = currentType.getFormulaSignature(formulaName);
+            return method==null;
         }
         
     }

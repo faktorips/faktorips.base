@@ -22,7 +22,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  */
 public class FormulaEditControl extends TextButtonControl implements IDataChangeableReadWriteAccess{
 
-	private IConfigElement configElement;
+	private IFormula formula;
 	private Shell shell;
 	private IpsSection parentSection;
     
@@ -45,10 +45,10 @@ public class FormulaEditControl extends TextButtonControl implements IDataChange
     
     private boolean dataChangeable = true;
     
-	public FormulaEditControl(Composite parent, UIToolkit toolkit, IConfigElement configElement, Shell shell,
+	public FormulaEditControl(Composite parent, UIToolkit toolkit, IFormula formula, Shell shell,
             IpsSection parentSection) {
         super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
-        this.configElement = configElement;
+        this.formula = formula;
         this.shell = shell;
         this.parentSection = parentSection;
         this.uiToolkit = toolkit;
@@ -56,7 +56,7 @@ public class FormulaEditControl extends TextButtonControl implements IDataChange
 	
 	protected void buttonClicked() {
 		try {
-            EditDialog dialog = new FormulaEditDialog(configElement, shell);
+            EditDialog dialog = new FormulaEditDialog(formula, shell);
             dialog.setDataChangeable(isDataChangeable());
             if (dialog.open()==Window.OK) {
                 if (parentSection != null){

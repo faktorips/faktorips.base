@@ -28,14 +28,12 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.product.ConfigElementType;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 
 /**
  * 
@@ -61,21 +59,22 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
         props.setJavaSrcLanguage(Locale.GERMAN);
         project.setProperties(props);
         type = newPolicyAndProductCmptType(project, "Policy", "Product");
-        IAttribute a = type.newAttribute();
-        a.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-        a.setDatatype(Datatype.INTEGER.getQualifiedName());
-        a.setName("age");
+        
+        productCmptType = type.findProductCmptType(project);
+        IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
+        method.setDatatype(Datatype.INTEGER.getQualifiedName());
+        method.setName("age");
+        method.setFormulaSignatureDefinition(true);
+        method.setFormulaName("AgeCalculation");
         assertFalse(type.validate().containsErrorMsg());
         type.getIpsSrcFile().save(true, null);
         
-        productCmptType = type.findProductCmptType(project);
         productCmpt = newProductCmpt(productCmptType, "Product");
         productCmptGen = (IProductCmptGeneration)productCmpt.newGeneration();
         productCmptGen.setValidFrom(new GregorianCalendar(2006, 0, 1));
-        IConfigElement ce = productCmptGen.newConfigElement();
-        ce.setPcTypeAttribute(a.getName());
-        ce.setType(ConfigElementType.FORMULA);
-        ce.setValue("42");
+        IFormula ce = productCmptGen.newFormula();
+        ce.setFormulaSignature(method.getFormulaName());
+        ce.setExpression("42");
         productCmpt.getIpsSrcFile().save(true, null);
         assertFalse(productCmpt.validate().containsErrorMsg());
         

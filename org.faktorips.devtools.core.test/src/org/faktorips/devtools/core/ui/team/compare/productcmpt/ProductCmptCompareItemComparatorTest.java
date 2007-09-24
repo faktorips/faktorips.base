@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
@@ -42,7 +43,7 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
     
     private ProductCmptCompareItem compareItemRoot;
     
-    private IConfigElement formula;
+    private IFormula formula;
     private IConfigElement policyAttribute;
     private IConfigElement productAttribute;
     private ITableContentUsage tableUsage;
@@ -52,7 +53,7 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
     
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject proj= (IpsProject)newIpsProject("TestProject");
+        IIpsProject proj= (IpsProject)newIpsProject();
         IIpsPackageFragmentRoot root = proj.getIpsPackageFragmentRoots()[0];
         IProductCmpt product = newProductCmpt(root, "TestProductCmpt");
         IProductCmpt productReferenced = newProductCmpt(root, "TestProductCmptReferenced");
@@ -67,8 +68,7 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
         calendar.add(Calendar.MONTH, 2);
         product.newGeneration(calendar);
 
-        formula = generation1.newConfigElement();
-        formula.setType(ConfigElementType.FORMULA);
+        formula = generation1.newFormula();
         policyAttribute = generation1.newConfigElement();
         policyAttribute.setType(ConfigElementType.POLICY_ATTRIBUTE);
         productAttribute = generation1.newConfigElement();
@@ -98,6 +98,7 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
         
         // generations
         children= compareItem.getChildren();
+        assertEquals(3, children.length);
         ProductCmptCompareItem compareItemGen1= (ProductCmptCompareItem) children[0];
         ProductCmptCompareItem compareItemGen2= (ProductCmptCompareItem) children[1];
         ProductCmptCompareItem compareItemGen3= (ProductCmptCompareItem) children[2];
@@ -110,6 +111,7 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
 
         // relations and attributes
         children= compareItemGen1.getChildren();
+        assertEquals(7, children.length);
         ProductCmptCompareItem compareItemAttribute1= (ProductCmptCompareItem) children[0];
         ProductCmptCompareItem compareItemAttribute2= (ProductCmptCompareItem) children[1];
         ProductCmptCompareItem compareItemAttribute3= (ProductCmptCompareItem) children[2];

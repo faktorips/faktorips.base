@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -37,6 +38,8 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -238,6 +241,20 @@ public class Attribute extends IpsObjectPart implements IAttribute {
     /**
      * {@inheritDoc}
      */
+    public IProductCmptTypeMethod findMethodCalculationTheAttributesValues(IIpsProject ipsProject) throws CoreException {
+        if (attributeType!=AttributeType.DERIVED_ON_THE_FLY) {
+            return null;
+        }
+        IProductCmptType type = getPolicyCmptType().findProductCmptType(ipsProject);
+        if (type==null) {
+            return null;
+        }
+        return type.getFormulaSignature(name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public Modifier getModifier() {
         if (!overwrites) {
             return modifier;
@@ -346,7 +363,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
             return ConfigElementType.PRODUCT_ATTRIBUTE;
         }
         if (getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL || getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
-            return ConfigElementType.FORMULA;
+            return null;
         }
         throw new RuntimeException("Unkown AttributeType!"); //$NON-NLS-1$
     }

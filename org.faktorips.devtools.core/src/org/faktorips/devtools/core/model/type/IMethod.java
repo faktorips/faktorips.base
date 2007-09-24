@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.core.model.type;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 
 
@@ -50,6 +53,18 @@ public interface IMethod extends IParameterContainer {
      * Sets name of the value datatype this method returns. 
      */
     public void setDatatype(String newDatatype);
+    
+    /**
+     * Returns the method's (return) datatype. Returns <code>null</code> if the datatype
+     * can't be found.
+     *  
+     * @param project The project which ips object path is used to search.
+     * This is not neccessarily the project this method belongs to. 
+     * 
+     * @throws CoreException if an error occurs while searching.
+     * @throws NullPointerException if ipsProject is <code>null</code>.
+     */
+    public Datatype findDatatype(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns the modifier.

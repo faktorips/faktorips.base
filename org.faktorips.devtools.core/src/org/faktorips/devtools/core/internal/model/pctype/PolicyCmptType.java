@@ -983,7 +983,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         Set qualifiedNameTypes = new HashSet();
         new AddQNamesFromTypeHierarchyVisitor(qualifiedNameTypes).start(this);
         addQualifiedNameTypesForRelationTargets(qualifiedNameTypes, excludeNonProductRelations);
-        addQualifiedNameTypesForFormulaParameters(qualifiedNameTypes);
         addQualifiedNameTypesForTableBasedEnums(qualifiedNameTypes);
         return (QualifiedNameType[])qualifiedNameTypes.toArray(new QualifiedNameType[qualifiedNameTypes.size()]);
     }
@@ -1000,32 +999,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         }
     }
     
-    private void addQualifiedNameTypesForFormulaParameters(Set qualifiedNameTypes) throws CoreException {
-        IAttribute[] attributes = getAttributes();
-        IIpsProject ipsProject = getIpsProject();
-        for (int i = 0; i < attributes.length; i++) {
-            if (ConfigElementType.FORMULA.equals(attributes[i].getConfigElementType())) {
-                Parameter[] parameters = attributes[i].getFormulaParameters();
-                for (int j = 0; j < parameters.length; j++) {
-                    String datatypeId = parameters[j].getDatatype();
-                    Datatype datatype = ipsProject.findDatatype(datatypeId);
-                    if (datatype instanceof ValueDatatype) {
-                        // no dependency
-                    } else if (datatype instanceof IIpsObject) {
-                        IIpsObject ipsObject = (IIpsObject)datatype;
-                        qualifiedNameTypes.add(ipsObject.getQualifiedNameType());
-                    } else {
-                        for (int k = 0; k < IpsObjectType.ALL_TYPES.length; k++) {
-                            if (IpsObjectType.ALL_TYPES[k].isDatatype()) {
-                                qualifiedNameTypes.add(new QualifiedNameType(datatypeId, IpsObjectType.ALL_TYPES[k]));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private void addQualifiedNameTypesForRelationTargets(Set qualifiedNameTypes, boolean excludeNonProductRelations) throws CoreException {
         IRelation[] relations = getRelations();
         for (int i = 0; i < relations.length; i++) {

@@ -174,7 +174,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         IAttribute a1 = policyCmptType.newAttribute();
         a1.setName("a1");
         a1.setProductRelevant(true);
-        a1.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
+        a1.setAttributeType(AttributeType.CHANGEABLE);
         IAttribute a2 = policyCmptSupertype.newAttribute();
         a2.setName("a2");
         a2.setProductRelevant(true);
@@ -205,7 +205,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         assertEquals(ce1, elements[0]);
         
         // no typemismatchs
-        ce1.setType(ConfigElementType.FORMULA);
+        ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
         ce2.setType(ConfigElementType.POLICY_ATTRIBUTE);
         
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);

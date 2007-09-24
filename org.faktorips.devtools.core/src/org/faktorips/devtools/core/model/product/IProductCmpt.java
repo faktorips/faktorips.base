@@ -43,6 +43,12 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
     public final static String MSGCODE_PREFIX = "PRODUCT_CMPT-"; //$NON-NLS-1$
     
     /**
+     * Validation message code that indicates that the product component type the product component is an instance of
+     * is missing.
+     */
+    public final static String MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE = MSGCODE_PREFIX + "MissingProductCmptType"; //$NON-NLS-1$
+
+    /**
      * Validation message code that indicates if the type's hierarchy the product component
      * is based on is inconsistent.  
      */

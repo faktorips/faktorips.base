@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.Parameter;
+import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -53,7 +53,7 @@ public abstract class AbstractParameterIdentifierResolver implements
 
 	private IIpsProject project;
 
-	private Parameter[] params = new Parameter[0];
+	private IParameter[] params = new IParameter[0];
     private HashMap enumDatatypes = new HashMap(0); 
 
 	/**
@@ -70,7 +70,7 @@ public abstract class AbstractParameterIdentifierResolver implements
     /**
      * {@inheritDoc}
      */
-	public void setParameters(Parameter[] parameters) {
+	public void setParameters(IParameter[] parameters) {
 		ArgumentCheck.notNull(parameters);
 		this.params = parameters;
 	}
@@ -130,7 +130,7 @@ public abstract class AbstractParameterIdentifierResolver implements
 				identifier);
 	}
 
-	private CompilationResult compile(Parameter param, String attributeName,
+	private CompilationResult compile(IParameter param, String attributeName,
 			Locale locale) {
 		Datatype datatype;
 		try {
@@ -185,7 +185,7 @@ public abstract class AbstractParameterIdentifierResolver implements
 		return null;
 	}
 
-	private CompilationResult compilePcTypeAttributeIdentifier(Parameter param,
+	private CompilationResult compilePcTypeAttributeIdentifier(IParameter param,
 			IPolicyCmptType pcType, String attributeName, Locale locale) {
 
         if (StringUtils.isEmpty(attributeName)) {

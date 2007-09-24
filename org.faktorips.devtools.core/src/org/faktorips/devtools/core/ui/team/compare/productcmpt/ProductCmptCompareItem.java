@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
@@ -118,7 +119,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
         int currentLength= 0;
         sb.append(getContentString());
         currentLength += getContentString().length();
-        List attributes = getConfigElementsAndTableContentUsages(children);
+        List attributes = getConfigElementsAndTableContentUsagesAndFormulas(children);
         List relations = getRelations(children);
         if (!attributes.isEmpty()) {
             sb.append(NEWLINE);
@@ -199,11 +200,11 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
      * Returns a list containing all <code>ProductCmptCompareItem</code>s in the given list that
      * contain a <code>IConfigElement</code>.
      */
-    private List getConfigElementsAndTableContentUsages(List elements) {
+    private List getConfigElementsAndTableContentUsagesAndFormulas(List elements) {
         List ces = new ArrayList();
         for (Iterator iter = elements.iterator(); iter.hasNext();) {
             ProductCmptCompareItem item = (ProductCmptCompareItem)iter.next();
-            if (item.getIpsElement() instanceof IConfigElement || item.getIpsElement() instanceof ITableContentUsage) {
+            if (item.getIpsElement() instanceof IConfigElement || item.getIpsElement() instanceof ITableContentUsage || item instanceof IFormula) {
                 ces.add(item);
             }
         }
@@ -299,10 +300,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
             if(configElement.getType() == ConfigElementType.PRODUCT_ATTRIBUTE){
                 sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(COLON_BLANK);
                 sb.append(configElement.getValue());
-            }else if(configElement.getType() == ConfigElementType.FORMULA){
-                sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(COLON_BLANK);
-                sb.append(configElement.getValue());
-            }else if(configElement.getType() == ConfigElementType.POLICY_ATTRIBUTE){
+            } else if (configElement.getType() == ConfigElementType.POLICY_ATTRIBUTE){
                 sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(NEWLINE);
                 sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB)
                         .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PolicyAttributeEditDialog_defaultValue)
@@ -312,6 +310,12 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
                         .append(Messages.ProductCmptCompareItem_ValueSet).append(COLON_BLANK);
                 sb.append(getValueSetContent(configElement));
             }
+        } else if (getIpsElement() instanceof IFormula) {
+            IFormula  formula = (IFormula)getIpsElement();
+            String validFromSimple = simpleDateFormat.format(formula.getProductCmptGeneration().getValidFrom().getTime());
+            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(formula.getName()).append(COLON_BLANK);
+            sb.append(formula.getExpression());
+            
         } else if (getIpsElement() instanceof ITableContentUsage) {
             ITableContentUsage usage = (ITableContentUsage)getIpsElement();
             String validFromSimple = simpleDateFormat.format(((IIpsObjectGeneration)usage.getParent()).getValidFrom().getTime());
@@ -404,6 +408,10 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
                 IConfigElement ce = (IConfigElement)getIpsElement();
                 sb.append(Messages.ProductCmptCompareItem_Attribute).append(COLON_BLANK).append(QUOTE).append(
                         ce.getName()).append(QUOTE);
+            } else if (getIpsElement() instanceof IFormula) {
+                IFormula formula = (IFormula)getIpsElement();
+                sb.append(Messages.ProductCmptCompareItem_Attribute).append(COLON_BLANK).append(QUOTE).append(
+                        formula.getName()).append(QUOTE);
             } else if (getIpsElement() instanceof IIpsObjectGeneration) {
                 IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
                 sb.append(changingNamingConventionGenerationString).append(COLON_BLANK).append(QUOTE).append(

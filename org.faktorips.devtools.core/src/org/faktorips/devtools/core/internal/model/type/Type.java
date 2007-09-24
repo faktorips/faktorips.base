@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model.type;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -263,6 +264,36 @@ public abstract class Type extends BaseIpsObject implements IType {
                 }
             }
         }
+    }
+    
+    public void dependsOn(Set result) throws CoreException {
+        // TODO v2 - add dependencies for method parameters
+//      private void addQualifiedNameTypesForFormulaParameters(Set qualifiedNameTypes) throws CoreException {
+//          IAttribute[] attributes = getAttributes();
+//          IIpsProject ipsProject = getIpsProject();
+//          for (int i = 0; i < attributes.length; i++) {
+//              if (ConfigElementType.FORMULA.equals(attributes[i].getConfigElementType())) {
+//                  Parameter[] parameters = attributes[i].getFormulaParameters();
+//                  for (int j = 0; j < parameters.length; j++) {
+//                      String datatypeId = parameters[j].getDatatype();
+//                      Datatype datatype = ipsProject.findDatatype(datatypeId);
+//                      if (datatype instanceof ValueDatatype) {
+//                          // no dependency
+//                      } else if (datatype instanceof IIpsObject) {
+//                          IIpsObject ipsObject = (IIpsObject)datatype;
+//                          qualifiedNameTypes.add(ipsObject.getQualifiedNameType());
+//                      } else {
+//                          for (int k = 0; k < IpsObjectType.ALL_TYPES.length; k++) {
+//                              if (IpsObjectType.ALL_TYPES[k].isDatatype()) {
+//                                  qualifiedNameTypes.add(new QualifiedNameType(datatypeId, IpsObjectType.ALL_TYPES[k]));
+//                              }
+//                          }
+//                      }
+//                  }
+//              }
+//          }
+//      }
+        
     }
     
     class SupertypesCollector extends TypeHierarchyVisitor {

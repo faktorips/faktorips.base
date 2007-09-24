@@ -36,10 +36,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -59,10 +60,12 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     private static final String UI_FORMULA_TEST_CASE_NAME = "UIFormulaTest"; //$NON-NLS-1$
     
     // the formula configuration element being edited
-    private IConfigElement configElement;
+    private IFormula formula;
     
-    // the attribute the element is based on.
-    private IAttribute attribute;
+    // the formulas method signature
+    private IMethod signature;
+    
+    private IIpsProject ipsProject;
     
     // control to display & edit the formula parameters
     private ChangeParametersControl parametersControl;
@@ -84,11 +87,12 @@ public class FormulaEditDialog extends IpsPartEditDialog {
      * 
      * @throws CoreException if the config element is invalid (e.g. no datatype can be found for it).
      */
-    public FormulaEditDialog(IConfigElement configElement, Shell parentShell) throws CoreException {
-        super(configElement, parentShell, Messages.FormulaEditDialog_editFormula, true);
-        ArgumentCheck.notNull(configElement);
-        this.configElement = configElement;
-        attribute = configElement.findPcTypeAttribute();
+    public FormulaEditDialog(IFormula formula, Shell parentShell) throws CoreException {
+        super(formula, parentShell, Messages.FormulaEditDialog_editFormula, true);
+        ArgumentCheck.notNull(formula);
+        this.formula = formula;
+        this.ipsProject = formula.getIpsProject();
+        signature = formula.findFormulaSignature(ipsProject);
     }
 
     /**
@@ -171,7 +175,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
      */
     private List getPersistentFormulaTestCases(){
         List persitentFormulaTestCases = new ArrayList();
-        IFormulaTestCase[] ftc = configElement.getFormulaTestCases();
+        IFormulaTestCase[] ftc = formula.getFormulaTestCases();
         for (int i = 0; i < ftc.length; i++) {
             if (! ftc[i].getName().equals(UI_FORMULA_TEST_CASE_NAME)){
                 persitentFormulaTestCases.add(ftc[i]);
@@ -184,7 +188,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
      * Returns the transient formula test case which is used to preview the formula result on the first page.
      */
     private IFormulaTestCase getTransientFormulaTestCases(){
-        return configElement.getFormulaTestCase(UI_FORMULA_TEST_CASE_NAME);
+        return formula.getFormulaTestCase(UI_FORMULA_TEST_CASE_NAME);
     }
     
     /**
@@ -209,7 +213,8 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         GridLayout layout = (GridLayout)c.getLayout();
         layout.verticalSpacing = 20;
 
-        parametersControl = new ChangeParametersControl(c, uiToolkit, SWT.NONE, Messages.FormulaEditDialog_availableParameters, configElement.getIpsProject()) {
+
+        parametersControl = new ChangeParametersControl(c, uiToolkit, SWT.NONE, Messages.FormulaEditDialog_availableParameters, ipsProject) {
 
             public MessageList validate(int paramIndex) throws CoreException {
                 return new MessageList();
@@ -227,7 +232,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         
         Text formulaText = uiToolkit.createMultilineText(c);
         try {
-            FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(configElement);
+            FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(formula);
             ContentAssistHandler.createHandlerForText(formulaText, CompletionUtil.createContentAssistant(completionProcessor));
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -252,14 +257,15 @@ public class FormulaEditDialog extends IpsPartEditDialog {
      */
     private void updateUiPreviewFormulaResult(){
         try {
-            String[] parameterIdentifiers = configElement.getParameterIdentifiersUsedInFormula();
+            String[] parameterIdentifiers = formula.getParameterIdentifiersUsedInFormula(formula.getIpsProject());
             IFormulaTestCase formulaTestCase = getTransientFormulaTestCases();
             if (formulaTestCase == null){
-                formulaTestCase = configElement.newFormulaTestCase();
+                formulaTestCase = formula.newFormulaTestCase();
                 formulaTestCase.setName(UI_FORMULA_TEST_CASE_NAME);
             }
-            if (configElement.isValid()){
-                if (formulaTestCase.addOrDeleteFormulaTestInputValues(parameterIdentifiers) || formulaTestCase.getFormulaTestInputValues().length == 0){
+            if (formula.isValid()){
+                if (formulaTestCase.addOrDeleteFormulaTestInputValues(parameterIdentifiers, ipsProject) 
+                        || formulaTestCase.getFormulaTestInputValues().length == 0){
                     // only if the parameter have changes repack the table of input values
                     formulaDummyTestInputValuesControl.storeFormulaTestCase(formulaTestCase);
                 }
@@ -290,8 +296,8 @@ public class FormulaEditDialog extends IpsPartEditDialog {
      */
     protected void connectToModel() {
         super.connectToModel();
-        uiController.add(formulaField, IConfigElement.PROPERTY_VALUE);
-        List infos = ParameterInfo.createInfosAsList(attribute.getFormulaParameters());
+        uiController.add(formulaField, IFormula.PROPERTY_EXPRESSION);
+        List infos = ParameterInfo.createInfosAsList(signature.getParameters());
         parametersControl.setInput(infos);
     }
     
@@ -300,7 +306,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
      * the attribute this formula relates to.
      */
     protected String buildTitle() {
-    	return attribute.getName() + " - " + attribute.getDatatype(); //$NON-NLS-1$
+    	return formula.getFormulaSignature() + " - " + signature.getDatatype(); //$NON-NLS-1$
     }
 
     protected void okPressed() {
@@ -318,8 +324,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     private void createFormulaTestCasesTab(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
 
-        formulaTestCaseControl = new FormulaTestCaseControl(c, uiToolkit, uiController, configElement);
-        formulaTestCaseControl.setConfigElem(configElement);
+        formulaTestCaseControl = new FormulaTestCaseControl(c, uiToolkit, uiController, formula);
         formulaTestCaseControl.initControl();
         formulaTestCaseControl.storeFormulaTestCases(getPersistentFormulaTestCases());
         

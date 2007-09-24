@@ -46,13 +46,17 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
     private ExprCompiler compiler;
     private ITableContents tableContents;
     private String roleName;
-
+    
     /**
      * @param tableContents can be null. This indicates that it is a table access function for a table that doesn't allow multiple
      * 						contents
      * @param fct the table access function
      */
-    public TableUsageAccessFunctionFlFunctionAdapter(ITableContents tableContents, ITableAccessFunction fct, String roleName) {
+    public TableUsageAccessFunctionFlFunctionAdapter(
+            ITableContents tableContents, 
+            ITableAccessFunction fct, 
+            String roleName) {
+        
         ArgumentCheck.notNull(fct);
         ArgumentCheck.notNull(tableContents);
         ArgumentCheck.notNull(roleName);
@@ -62,7 +66,7 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public CompilationResult compile(CompilationResult[] argResults) {
         try {

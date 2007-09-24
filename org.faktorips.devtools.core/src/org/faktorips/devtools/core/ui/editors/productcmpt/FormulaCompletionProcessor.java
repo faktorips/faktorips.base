@@ -30,8 +30,9 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
-import org.faktorips.devtools.core.model.pctype.Parameter;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
+import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.fl.ExprCompiler;
@@ -44,15 +45,15 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
 
-    private IAttribute attribute;
-    private IConfigElement configElement;
+    private IMethod signature;
+    private IFormula formula;
     
-    public FormulaCompletionProcessor(IConfigElement configElement) throws CoreException {
+    public FormulaCompletionProcessor(IFormula formula) throws CoreException {
         super();
-        ArgumentCheck.notNull(configElement);
-        this.configElement = configElement;
-        setIpsProject(configElement.getIpsProject());
-        this.attribute = configElement.findPcTypeAttribute();
+        ArgumentCheck.notNull(formula);
+        this.formula = formula;
+        setIpsProject(formula.getIpsProject());
+        this.signature = formula.findFormulaSignature(formula.getIpsProject());
         setComputeProposalForEmptyPrefix(true);
     }
 
@@ -88,7 +89,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     }
     
     private void addMatchingEnumTypes(List result, String enumTypePrefix, int replacementOffset) throws CoreException{
-    	EnumDatatype[] enumTypes = configElement.getEnumDatatypesAllowedInFormula();
+    	EnumDatatype[] enumTypes = formula.getEnumDatatypesAllowedInFormula();
     	for (int i = 0; i < enumTypes.length; i++) {
 			if(enumTypes[i].getName().startsWith(enumTypePrefix)){
 		        CompletionProposal proposal = new CompletionProposal(
@@ -100,7 +101,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     }
     
     private void addMatchingEnumValues(List result, String enumTypeName, String enumValuePrefix, int replacementOffset) throws CoreException{
-		EnumDatatype[] enumTypes = configElement.getEnumDatatypesAllowedInFormula();
+		EnumDatatype[] enumTypes = formula.getEnumDatatypesAllowedInFormula();
 		for (int i = 0; i < enumTypes.length; i++) {
 			if(enumTypes[i].getName().equals(enumTypeName)){
 				String[] valueIds = enumTypes[i].getAllValueIds(false);
@@ -123,7 +124,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     }
     
     private void addMatchingParameters(List result, String prefix, int replacementOffset) {
-        Parameter[] params = attribute.getFormulaParameters();
+        IParameter[] params = signature.getParameters();
         for (int i=0; i<params.length; i++) {
             if (params[i].getName().startsWith(prefix)) {
                 addParamToResult(result, params[i], replacementOffset, prefix.length());
@@ -131,7 +132,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         }
     }
     
-    private void addParamToResult(List result, Parameter param, int replacementOffset, int replacementLength) {
+    private void addParamToResult(List result, IParameter param, int replacementOffset, int replacementLength) {
         String name = param.getName();
         String displayText = name + " - " + param.getDatatype(); //$NON-NLS-1$
         CompletionProposal proposal = new CompletionProposal(
@@ -141,7 +142,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     }
     
     private void addMatchingFunctions(List result, String prefix, int replacementOffset) throws CoreException {
-        ExprCompiler compiler = configElement.getExprCompiler();
+        ExprCompiler compiler = formula.getExprCompiler(formula.getIpsProject());
         FlFunction[] functions = compiler.getFunctions();
         Arrays.sort(functions, new Comparator() {
 
@@ -187,7 +188,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
             String attributePrefix, 
             int replacementOffset) throws CoreException {
         
-        Parameter param = getParameter(paramName);
+        IParameter param = getParameter(paramName);
         if (param==null) {
             return;
         }
@@ -222,8 +223,8 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         result.add(proposal);
     }
     
-    private Parameter getParameter(String name) {
-        Parameter[] params = attribute.getFormulaParameters();
+    private IParameter getParameter(String name) {
+        IParameter[] params = signature.getParameters();
         for (int i=0; i<params.length; i++) {
             if (params[i].getName().equals(name)) {
                 return params[i];

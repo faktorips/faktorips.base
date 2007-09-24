@@ -17,15 +17,12 @@
 
 package org.faktorips.devtools.stdbuilder.formulatest;
 
-import java.util.GregorianCalendar;
-
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.product.ConfigElementType;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
@@ -35,7 +32,7 @@ public class FormulaTestBuilderTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private IProductCmpt productCmpt;
     private IProductCmptType productCmptType;
-    private IConfigElement configElement;
+    private IFormula formula;
     
     /**
      * {@inheritDoc}
@@ -47,9 +44,8 @@ public class FormulaTestBuilderTest extends AbstractIpsPluginTest {
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
         productCmpt = newProductCmpt(productCmptType, "ProductCmpt");
         IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(0);
-        configElement = generation.newConfigElement();
-        configElement.setType(ConfigElementType.FORMULA);
-        configElement.newFormulaTestCase();
+        formula = generation.newFormula();
+        formula.newFormulaTestCase();
     }
 
     public void testDelete() throws CoreException{

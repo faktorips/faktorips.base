@@ -43,16 +43,15 @@ import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.Parameter;
-import org.faktorips.devtools.core.model.product.ConfigElementType;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
@@ -414,21 +413,21 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         body.appendln("\"));");
         body.appendln();
         body.appendln("Object formulaResult = null;");
-        IConfigElement[] formulas = generation.getConfigElements(ConfigElementType.FORMULA);
+        IFormula[] formulas = generation.getFormulas();
         for (int i = 0; i < formulas.length; i++) {
             IFormulaTestCase[] testCases = formulas[i].getFormulaTestCases();
             for (int j = 0; j < testCases.length; j++) {
                 // append compute method call
-                IAttribute attribute = formulas[i].findPcTypeAttribute();
+                IMethod method = formulas[i].findFormulaSignature(getIpsProject());
                 body.append("formulaResult = productComponentGen.");
-                body.append(productCmptGenImplClassBuilder.getMethodNameComputeValue(attribute));
+                body.append(method.getName());
                 body.append("(");
 
                 // append the method parameters in the correct order
-                Parameter[] params = attribute.getFormulaParameters();
+                IParameter[] params = method.getParameters();
                 Map identifierNameIdx = new HashMap(params.length);
                 for (int k = 0; k < params.length; k++) {
-                    identifierNameIdx.put(new Integer(params[k].getIndex()), params[k].getName());
+                    identifierNameIdx.put(new Integer(k), params[k].getName());
                 }
                 List orderedInputValue = new ArrayList(params.length);
                 for (int k = 0; k < params.length; k++) {
@@ -443,7 +442,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
                     if (inputValue == null){
                         body.append("null");
                     } else {
-                        DatatypeHelper inputValueHelper = project.getDatatypeHelper(inputValue.findDatatypeOfFormulaParameter());
+                        DatatypeHelper inputValueHelper = project.getDatatypeHelper(inputValue.findDatatypeOfFormulaParameter(project));
                         body.append(inputValueHelper.newInstance(inputValue.getValue()));
                     }
                 }
@@ -451,7 +450,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
                 
                 // append assert method call
                 body.append("assertEquals(");
-                DatatypeHelper valueHelper = project.getDatatypeHelper(formulas[i].findPcTypeAttribute().findDatatype());
+                DatatypeHelper valueHelper = project.getDatatypeHelper(method.findDatatype(project));
                 body.append(valueHelper.newInstance(testCases[j].getExpectedResult()));
                 body.append(", formulaResult, result, productComponentGen.toString(), \"");
                 body.append(formulas[i].getName());

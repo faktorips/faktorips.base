@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.MessageFragment;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ValueSetType;
@@ -45,8 +46,9 @@ import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
@@ -400,16 +402,22 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder builder) throws CoreException {
         
-        Parameter[] parameters = a.getFormulaParameters();
-        String[] paramNames = BuilderHelper.extractParameterNames(parameters);
-        String[] paramTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(
-                parameters, a.getIpsProject(), this);
-
+        IIpsProject ipsProject = getIpsProject();
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureGetPropertyValue(a, datatypeHelper, builder);
         builder.openBracket();
 
-        if (a.isProductRelevant()) {
+        IProductCmptTypeMethod formulaSignature = a.findMethodCalculationTheAttributesValues(ipsProject);
+        if (!a.isProductRelevant() || formulaSignature==null) {
+            builder.append("return ");
+            builder.append(datatypeHelper.newInstance(a.getDefaultValue()));
+            builder.appendln(";");
+        } else {
+            IParameter[] parameters = formulaSignature.getParameters();
+            String[] paramNames = BuilderHelper.extractParameterNames(parameters);
+            String[] paramTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(
+                    parameters, getIpsProject(), this);
+
             builder.appendln("// TODO Belegung der Berechnungsparameter implementieren");
             JavaCodeFragment paramFragment = new JavaCodeFragment();
             paramFragment.append('(');
@@ -418,8 +426,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 builder.append(' ');
                 builder.append(paramNames[i]);
                 builder.append(" = ");
-                Datatype paramDataype = a.getIpsProject().findDatatype(parameters[i].getDatatype());
-                DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(paramDataype);
+                Datatype paramDataype = ipsProject.findDatatype(parameters[i].getDatatype());
+                DatatypeHelper helper = ipsProject.getDatatypeHelper(paramDataype);
                 if(paramDataype.isPrimitive()){
                     builder.append(((ValueDatatype)paramDataype).getDefaultValue());
                 }
@@ -443,14 +451,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             builder.append(')');
             builder.append(interfaceBuilder.getMethodNameGetProductCmptGeneration(getProductCmptType()));
             builder.append("()).");
-            builder.append(productCmptGenImplBuilder.getMethodNameComputeValue(a));
+            builder.append(formulaSignature.getName());
             builder.append(paramFragment);
             builder.append(";");
-        } else {
-            builder.append("return ");
-            builder.append(datatypeHelper.newInstance(a.getDefaultValue()));
-            builder.appendln(";");
-        }
+        } 
         builder.closeBracket();
     }
 

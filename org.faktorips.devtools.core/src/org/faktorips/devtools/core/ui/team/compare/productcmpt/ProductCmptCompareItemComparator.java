@@ -22,6 +22,7 @@ import java.util.Comparator;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 
@@ -56,8 +57,8 @@ public class ProductCmptCompareItemComparator implements Comparator {
                 return ((IProductCmptGeneration)element1).getGenerationNo()
                         - ((IProductCmptGeneration)element2).getGenerationNo();
             }
-            if ((element1 instanceof IConfigElement||element1 instanceof ITableContentUsage) 
-                    && (element2 instanceof IConfigElement||element2 instanceof ITableContentUsage)) {
+            if ((element1 instanceof IConfigElement||element1 instanceof ITableContentUsage || element1 instanceof IFormula) 
+                    && (element2 instanceof IConfigElement||element2 instanceof ITableContentUsage || element2 instanceof IFormula)) {
                 int first= getOrderNumber(element1);
                 int second= getOrderNumber(element2);
                 return first-second;
@@ -82,12 +83,12 @@ public class ProductCmptCompareItemComparator implements Comparator {
             IConfigElement ce= (IConfigElement) element;
             if(ce.getType()==ConfigElementType.PRODUCT_ATTRIBUTE){
                 return 1;
-            }else if(ce.getType()==ConfigElementType.FORMULA){
-                return 3;
             }else if(ce.getType()==ConfigElementType.POLICY_ATTRIBUTE){
                 return 4;
             }
-        }else if(element instanceof ITableContentUsage){
+        } else if(element instanceof IFormula){
+            return 3;
+        } else if(element instanceof ITableContentUsage){
             return 2;
         }
         return 5;

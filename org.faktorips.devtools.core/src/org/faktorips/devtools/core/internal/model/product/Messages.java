@@ -110,8 +110,6 @@ public class Messages extends NLS {
 
     public static String FormulaTestInputValue_ValidationMessage_UnsupportedDatatype;
 
-    public static String ConfigElement_msgFormulaTestCaseNotAllowedIfTypeOfConfigElemIs;
-
     public static String FormulaTestCase_CoreException_DatatypeNotFoundOrWrongConfigured;
 
     public static String FormulaTestCase_ValidationMessage_DuplicateFormulaTestCaseName;

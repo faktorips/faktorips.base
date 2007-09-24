@@ -43,13 +43,14 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
@@ -546,7 +547,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForConstantAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder, JavaCodeFragmentBuilder constantBuilder) throws CoreException {
+    protected void generateCodeForProductCmptTypeAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder, JavaCodeFragmentBuilder constantBuilder) throws CoreException {
         generateFieldValue(a, datatypeHelper, memberVarsBuilder);
         generateMethodGetValue(a, datatypeHelper, methodsBuilder);
         generateMethodSetValue(a, datatypeHelper, methodsBuilder);
@@ -622,49 +623,41 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     private String getFieldNameValue(IAttribute a) throws CoreException {
         return getJavaNamingConvention().getMemberVarName(interfaceBuilder.getPropertyNameValue(a));
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForComputedAndDerivedAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        generateMethodComputeValue(a, datatypeHelper, methodsBuilder);
-    }
-    
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public abstract Money computePremium(Policy policy, Integer age);
-     * </pre>
-     */
-    public void generateMethodComputeValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        appendLocalizedJavaDoc("METHOD_COMPUTE_VALUE", StringUtils.capitalise(a.getName()), a, methodsBuilder);
-        generateSignatureComputeValue(a, datatypeHelper,Modifier.ABSTRACT | Modifier.PUBLIC, false, methodsBuilder);
+    protected void generateCodeForFormulaSignatureDefinition(IProductCmptTypeMethod method, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
+        generateSignatureForFormula(method, datatypeHelper,Modifier.ABSTRACT | Modifier.PUBLIC, false, methodsBuilder);
         methodsBuilder.appendln(";");
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForMethod(IMethod method, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        // TODO v2 - support for none formula methods implementieren
+    }
+
     /**
      * Code sample:
      * <pre>
-     * public abstract Money computePremium(Policy policy, Integer age)
+     * public abstract Money computePremium(Policy policy, Integer age) throws FormulaException
      * </pre>
      */
-    public void generateSignatureComputeValue(IAttribute a, DatatypeHelper datatypeHelper, int modifier, boolean withFinalParameters, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        Parameter[] parameters = a.getFormulaParameters();
-        String methodName = getMethodNameComputeValue(a);
+    public void generateSignatureForFormula(IProductCmptTypeMethod formulaSignature, DatatypeHelper datatypeHelper, int modifier, boolean withFinalParameters, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        IParameter[] parameters = formulaSignature.getParameters();
         methodsBuilder.signature(modifier, datatypeHelper.getJavaClassName(),
-                methodName, BuilderHelper.extractParameterNames(parameters),
-                StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters, a.getIpsProject(), policyCmptTypeImplBuilder),
+                formulaSignature.getName(), BuilderHelper.extractParameterNames(parameters),
+                StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters, formulaSignature.getIpsProject(), policyCmptTypeImplBuilder),
                 withFinalParameters);
         methodsBuilder.append(" throws ");
         methodsBuilder.appendClassName(FormulaExecutionException.class);
     }
     
-    public String getMethodNameComputeValue(IAttribute a) {
-        return getLocalizedText(a, "METHOD_COMPUTE_VALUE_NAME", StringUtils.capitalise(a.getName()));
-    }
-
     
+
     /**
      * {@inheritDoc}
      */

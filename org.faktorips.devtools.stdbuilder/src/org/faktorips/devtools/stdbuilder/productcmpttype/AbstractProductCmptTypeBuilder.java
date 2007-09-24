@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
@@ -42,7 +43,9 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -122,9 +125,9 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
         mainSection.setExtendedInterfaces(getExtendedInterfaces());
         mainSection.setUnqualifiedName(getUnqualifiedClassName());
         mainSection.setClass(!generatesInterface());
-        generateCodeForAttributes(mainSection.getConstantSectionBuilder(), 
-                mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateCodeForAttributes(mainSection.getConstantSectionBuilder(), mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
         generateCodeForRelations(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateCodeForMethods(mainSection.getConstantSectionBuilder(), mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
         generateConstructors(mainSection.getConstructorSectionBuilder());
         generateTypeJavadoc(mainSection.getJavaDocForTypeSectionBuilder());
         generateCodeForTableUsages(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
@@ -197,6 +200,30 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
         }
     }
 
+    private void generateCodeForMethods(JavaCodeFragmentBuilder constantBuilder,
+            JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        IProductCmptTypeMethod[] methods = getProductCmptType().getProductCmptTypeMethods();
+        for (int i = 0; i < methods.length; i++) {
+            try {
+                if (!methods[i].isValid()) {
+                    continue;
+                }
+                if (methods[i].isFormulaSignatureDefinition()) {
+                    ValueDatatype datatype = (ValueDatatype)methods[i].findDatatype(getIpsProject());
+                    DatatypeHelper helper = getIpsProject().findDatatypeHelper(datatype.getQualifiedName());
+                    generateCodeForFormulaSignatureDefinition(methods[i], helper, fieldsBuilder, methodsBuilder);
+                } else {
+                    generateCodeForMethod(methods[i], fieldsBuilder, methodsBuilder);
+                }
+            } catch (Exception e) {
+                throw new CoreException(new IpsStatus(IStatus.ERROR,
+                        "Error building method " + methods[i].getName() + " of "
+                                + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
+            }
+        }
+    }    
+        
     /*
      * Loops over all table structure usages and generates code for the table content access method.
      */
@@ -231,11 +258,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
         if (attribute.isChangeable()) {
             generateCodeForChangeableAttribute(attribute, datatypeHelper, fieldsBuilder, methodsBuilder);
         } else if (attribute.getAttributeType()==AttributeType.CONSTANT) {
-            generateCodeForConstantAttribute(attribute, datatypeHelper, fieldsBuilder, methodsBuilder, constantBuilder);
-        } else if (attribute.isDerived()) {
-            generateCodeForComputedAndDerivedAttribute(attribute, datatypeHelper, fieldsBuilder, methodsBuilder);
-        } else {
-            throw new RuntimeException("Attribute " + attribute +" has an unknown type " + attribute.getAttributeType());
+            generateCodeForProductCmptTypeAttribute(attribute, datatypeHelper, fieldsBuilder, methodsBuilder, constantBuilder);
         }
     }
     
@@ -245,18 +268,56 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
-    protected abstract void generateCodeForConstantAttribute(
+    protected abstract void generateCodeForProductCmptTypeAttribute(
             IAttribute a, 
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder, JavaCodeFragmentBuilder constantBuilder) throws CoreException;
     
-    protected abstract void generateCodeForComputedAndDerivedAttribute(
-            IAttribute a, 
+    protected abstract void generateCodeForMethod(
+            IMethod method, 
+            JavaCodeFragmentBuilder fieldsBuilder, 
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
+
+    protected abstract void generateCodeForFormulaSignatureDefinition (
+            IProductCmptTypeMethod method, 
             DatatypeHelper datatypeHelper, 
             JavaCodeFragmentBuilder fieldsBuilder, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
+    /**^
+     * Code samples:
+     * <pre>
+     * public void calculatePremium(IPolicy policy)
+     * public ICoverage getCoverageWithHighestSumInsured()
+     * </pre>
+     */
+    public void generateSignatureForMethodDefinedInModel(
+        IMethod method,
+        int javaModifier,
+        Datatype returnType,
+        Datatype[] paramTypes,
+        JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        String[] paramClassNames = new String[paramTypes.length];
+        for (int i = 0; i < paramClassNames.length; i++) {
+            if (paramTypes[i] instanceof IPolicyCmptType) {
+                paramClassNames[i] = getQualifiedClassName((IPolicyCmptType)paramTypes[i]);
+            } else {
+                paramClassNames[i] = paramTypes[i].getJavaClassName();
+            }
+        }
+        String returnClassName;
+        if  (returnType instanceof IPolicyCmptType) {
+            returnClassName = getQualifiedClassName((IPolicyCmptType)returnType);
+        } else {
+            returnClassName = returnType.getJavaClassName();
+        }
+        methodsBuilder.signature(javaModifier, returnClassName, method.getName(), 
+                method.getParameterNames(), paramClassNames);
+    }
+    
+    
     protected abstract void generateCodeForTableUsage(ITableStructureUsage tsu,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;

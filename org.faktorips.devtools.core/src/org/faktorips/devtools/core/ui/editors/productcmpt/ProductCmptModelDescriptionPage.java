@@ -26,13 +26,16 @@ import org.faktorips.devtools.core.internal.model.product.ProductCmptGeneration;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.ui.editors.IActiveGenerationChangedListener;
 import org.faktorips.devtools.core.ui.views.modeldescription.DefaultModelDescriptionPage;
@@ -85,19 +88,19 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
      * @throws CoreException
      */
     private void setDescriptionData(IIpsObjectGeneration generation) throws CoreException {
-        List attributeList = new ArrayList();
+        List items = new ArrayList();
         String productName = ((IProductCmptGeneration)generation).getProductCmpt().getName();
 
-        createAttributeDescription(attributeList, (IProductCmptGeneration)generation, ConfigElementType.PRODUCT_ATTRIBUTE);
-        createTableDescription(attributeList, (IProductCmptGeneration)generation);
-        createAttributeDescription(attributeList, (IProductCmptGeneration)generation, ConfigElementType.FORMULA);
-        createAttributeDescription(attributeList, (IProductCmptGeneration)generation, ConfigElementType.POLICY_ATTRIBUTE);
+        createAttributeDescription(items, (IProductCmptGeneration)generation, ConfigElementType.PRODUCT_ATTRIBUTE);
+        createTableDescription(items, (IProductCmptGeneration)generation);
+        createFormulaDescription(items, (IProductCmptGeneration)generation);
+        createAttributeDescription(items, (IProductCmptGeneration)generation, ConfigElementType.POLICY_ATTRIBUTE);
 
-        DescriptionItem[] itemList = new DescriptionItem[attributeList.size()];
-        itemList = (DescriptionItem[]) attributeList.toArray(itemList);
+        DescriptionItem[] itemDescs = new DescriptionItem[items.size()];
+        itemDescs = (DescriptionItem[]) items.toArray(itemDescs);
 
         super.setTitle(productName);
-        super.setDescriptionItems(itemList);
+        super.setDescriptionItems(itemDescs);
     }
 
     /**
@@ -127,6 +130,26 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
 			}
         }
 	}
+
+    /**
+     * Add description of attributes to the {@link DescriptionItem} ordered by {@link ConfigElementType}.
+     *
+     * @param attributeList List with the collected attributes.
+     * @param productCmptGen Get valid attributes from {@link IProductCmptGeneration}.
+     * @throws CoreException
+     */
+    private void createFormulaDescription(List attributeList, IProductCmptGeneration productCmptGen) throws CoreException {
+        // TODO v2 - sort order beruecksichtigen
+        IFormula[] elements = productCmptGen.getFormulas();
+        IIpsProject ipsProject = productCmptGen.getIpsProject();
+        for (int i = 0; i < elements.length; i++) {
+            IProductCmptTypeMethod method = elements[i].findFormulaSignature(ipsProject);
+            if (method!= null) {
+                DescriptionItem item = new DescriptionItem(method.getFormulaName(), method.getDescription());
+                attributeList.add(item);
+            }
+        }
+    }
 
     /**
      * Add description of used tables.

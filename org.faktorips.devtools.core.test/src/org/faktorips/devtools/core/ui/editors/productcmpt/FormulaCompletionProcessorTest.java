@@ -31,15 +31,12 @@ import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.pctype.Parameter;
-import org.faktorips.devtools.core.model.product.ConfigElementType;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -51,29 +48,28 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
 	private FormulaCompletionProcessor processor;
 	private IpsProject ipsProject;
 	private PolicyCmptType cmptType;
-    private IAttribute attr;
+    private IProductCmptType productCmptType;
+    private IProductCmptTypeMethod formulaSignature;
     private IProductCmptGeneration productCmptGen;
-    private IConfigElement configElement;
+    private IFormula configElement;
     private EnumDatatype enumDatatype;
     
 	public void setUp() throws Exception{
 		super.setUp();
-		ipsProject = (IpsProject)newIpsProject("TestProject");
+		ipsProject = (IpsProject)newIpsProject();
 		cmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
 		newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
         enumDatatype = ipsProject.findEnumDatatype("TestEnumType");
         
-		attr = cmptType.newAttribute();
-		attr.setAttributeType(AttributeType.CHANGEABLE);
-		attr.setDatatype("String");
-		attr.setModifier(Modifier.PUBLISHED);
-		attr.setName("a");
-		
-        IProductCmpt productCmpt = newProductCmpt(cmptType.findProductCmptType(ipsProject), "TestProduct");
+        productCmptType = cmptType.findProductCmptType(ipsProject);
+        formulaSignature = productCmptType.newProductCmptTypeMethod();
+        formulaSignature.setFormulaSignatureDefinition(true);
+        formulaSignature.setFormulaName("CalcPremium");
+        
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "TestProduct");
         productCmptGen = productCmpt.getProductCmptGeneration(0);
-        configElement = productCmptGen.newConfigElement();
-        configElement.setType(ConfigElementType.FORMULA);
-        configElement.setPcTypeAttribute(attr.getName());
+        configElement = productCmptGen.newFormula();
+        configElement.setFormulaSignature(formulaSignature.getFormulaName());
 		processor = new FormulaCompletionProcessor(configElement);
 	}
 	
@@ -85,7 +81,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
 		processor.doComputeCompletionProposals("Test", 0, results);
 		assertEquals(0, results.size());
         
-        attr.setDatatype(enumDatatype.getQualifiedName());
+        formulaSignature.setDatatype(enumDatatype.getQualifiedName());
         processor.doComputeCompletionProposals("Test", 0, results);
 		CompletionProposal proposal = (CompletionProposal)results.get(0);
 		assertEquals(StringUtil.unqualifiedName(TestEnumType.class.getName()), proposal.getDisplayString());
@@ -165,13 +161,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
     }
     
     public void testDoComputeCompletionProposalsForParam() throws Exception {
-        
-        IAttribute attr = cmptType.newAttribute();
-        attr.setName("newAttribute");
-        attr.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-        Parameter param = new Parameter(0, "abcparam", Datatype.DECIMAL.getQualifiedName());
-        attr.setFormulaParameters(new Parameter[] {param});
-        configElement.setPcTypeAttribute(attr.getName());
+        formulaSignature.newParameter(Datatype.DECIMAL.getQualifiedName(), "abcparam");
         
         ArrayList results = new ArrayList();
         processor = new FormulaCompletionProcessor(configElement);

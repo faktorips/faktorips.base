@@ -47,9 +47,9 @@ public interface IAssociation extends IIpsObjectPart {
     public final static String PROPERTY_IMPLEMENTED_CONTAINER_RELATION = "implementedContainerRelation"; //$NON-NLS-1$
     
     /**
-     * Returns the product component type this relation belongs to. Never returns <code>null</code>.
+     * Returns the type this association belongs to. Never returns <code>null</code>.
      */
-    public IProductCmptType getProductCmptType();
+    public IType getType();
     
     /**
      * Returns the kind of aggregation. The method never returns <code>null</code>.

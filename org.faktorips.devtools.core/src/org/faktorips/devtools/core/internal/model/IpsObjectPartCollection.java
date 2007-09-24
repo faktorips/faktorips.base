@@ -187,7 +187,7 @@ public class IpsObjectPartCollection {
             parts.add(newPart);
             return newPart;
         } catch (Exception e) {
-            throw new RuntimeException("Error creating new instance via constructor " + constructor);
+            throw new RuntimeException("Error creating new instance via constructor " + constructor, e);
         }
     }
     

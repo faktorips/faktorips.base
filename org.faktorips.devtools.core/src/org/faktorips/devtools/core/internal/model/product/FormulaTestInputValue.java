@@ -27,12 +27,14 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.Parameter;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
+import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -93,14 +95,14 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
     /**
      * {@inheritDoc}
      */
-    public Parameter findFormulaParameter() throws CoreException {
+    public IParameter findFormulaParameter(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(identifier)){
             return null;
         }
-        IFormulaTestCase f = (IFormulaTestCase) getParent();
-        IConfigElement cf = (IConfigElement) f.getParent();
-        IAttribute attribute = cf.findPcTypeAttribute();
-        if (attribute == null){
+        IFormulaTestCase testcase = (IFormulaTestCase) getParent();
+        IFormula formula = testcase.getFormula();
+        IMethod method = formula.findFormulaSignature(ipsProject);
+        if (method== null){
             return null;
         }
         
@@ -113,7 +115,7 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
         }
         
         // find the corresponding parameter
-        Parameter[] parameters = attribute.getFormulaParameters();
+        IParameter[] parameters = method.getParameters();
         for (int i = 0; i < parameters.length; i++) {
             if (parameterIdentifier.equals(parameters[i].getName())){
                 return parameters[i];
@@ -150,8 +152,9 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
     /**
      * {@inheritDoc}
      */
-    public Datatype findDatatypeOfFormulaParameter() throws CoreException {
-        Parameter param = findFormulaParameter();
+    public Datatype findDatatypeOfFormulaParameter(IIpsProject ipsProject) throws CoreException {
+        // v2 - die method muss mit Type anstatt PolicyCmptType arbeiten!
+        IParameter param = findFormulaParameter(ipsProject);
         if (param == null){
             return null;
         }
@@ -187,14 +190,14 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
      */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
-
-        Parameter param = findFormulaParameter();
+        IIpsProject ipsProject = getIpsProject();
+        IParameter param = findFormulaParameter(ipsProject);
         if (param == null) {
             String text = NLS.bind(Messages.FormulaTestInputValue_ValidationMessage_FormulaParameterNotFound,
                     identifier);
             list.add(new Message(MSGCODE_FORMULA_PARAMETER_NOT_FOUND, text, Message.ERROR, this, PROPERTY_IDENTIFIER));
         } else {
-            Datatype datatype = findDatatypeOfFormulaParameter();
+            Datatype datatype = findDatatypeOfFormulaParameter(ipsProject);
             if (datatype == null) {
                 // check the cause of the missing datatype
                 boolean knownReason = false;

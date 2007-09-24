@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.model;
 
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.model.pctype.Parameter;
+import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.fl.IdentifierResolver;
 
 /**
@@ -40,7 +40,7 @@ public interface IParameterIdentifierResolver extends IdentifierResolver {
 	/**
 	 * Parameters are provided to identifier resolver implementations by means of this method.
 	 */
-	public void setParameters(Parameter[] parameters);
+	public void setParameters(IParameter[] parameters);
 
     /**
      * Sets enum datatypes that can be resolved by this identifier.
@@ -54,7 +54,6 @@ public interface IParameterIdentifierResolver extends IdentifierResolver {
     
 	/**
 	 * Implementations might need a reference to the current IpsProject which is provided by this method.
-	 * @param ipsProject
 	 */
 	public void setIpsProject(IIpsProject ipsProject);
     

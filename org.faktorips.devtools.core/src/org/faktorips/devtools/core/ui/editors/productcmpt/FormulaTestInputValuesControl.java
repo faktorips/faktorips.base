@@ -46,7 +46,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
@@ -83,6 +84,8 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     /* Label to display the result of the formula */
     private Label formulaResult;
 
+    private IIpsProject ipsProject;
+    
     /* Buttons */
     private Button btnNewFormulaTestCase;
     private Button btnCalculate;
@@ -149,7 +152,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
                     return getTextInNullPresentationIfNull(((IFormulaTestInputValue)element).getIdentifier());
                 } else if (columnIndex == IDX_VALUE_COLUMN){
                         try {
-                            ValueDatatype vd = (ValueDatatype) (((IFormulaTestInputValue)element).findDatatypeOfFormulaParameter());
+                            ValueDatatype vd = (ValueDatatype) (((IFormulaTestInputValue)element).findDatatypeOfFormulaParameter(ipsProject));
                             return IpsPlugin.getDefault().getIpsPreferences().formatValue(vd, ((IFormulaTestInputValue)element).getValue());
                         } catch (CoreException e) {
                             // ignore exception, return the unformated value
@@ -172,7 +175,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             UIController uiController) {
         super(parent, SWT.NONE);
         ArgumentCheck.notNull(new Object[]{ parent, uiToolkit, uiController});
-
+        
         this.uiToolkit = uiToolkit;
         this.uiController = uiController;
         this.empytImage = new Image(getShell().getDisplay(), 16, 16);
@@ -229,6 +232,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
      */
     public void storeFormulaTestCase(IFormulaTestCase formulaTestCase) {
         this.formulaTestCase = formulaTestCase;
+        ipsProject = formulaTestCase.getIpsProject();
         clearResult();
         repackAndResfreshParamInputTable();
 
@@ -237,7 +241,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         ValueDatatype[] rowDatatypes = new ValueDatatype[inputValues.length];
         for (int i = 0; i < rowDatatypes.length; i++) {
             try {
-                rowDatatypes[i] = (ValueDatatype) inputValues[i].findDatatypeOfFormulaParameter();
+                rowDatatypes[i] = (ValueDatatype) inputValues[i].findDatatypeOfFormulaParameter(ipsProject);
             } catch (CoreException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
                 rowDatatypes[i] = null;
@@ -315,9 +319,8 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
      * Stores the current formula test case with all input values as new formula test case.
      */
     private void storeFormulaTestInputValuesAsNewFormulaTestCase() {
-        ArgumentCheck.isInstanceOf(formulaTestCase.getParent(), IConfigElement.class);
-        IConfigElement configElement = (IConfigElement) formulaTestCase.getParent();
-        IFormulaTestCase newFormulaTestCase = configElement.newFormulaTestCase();
+        IFormula formula = (IFormula)formulaTestCase.getFormula();
+        IFormulaTestCase newFormulaTestCase = formula.newFormulaTestCase();
         String name = newFormulaTestCase.generateUniqueNameForFormulaTestCase(Messages.FormulaTestInputValuesControl_DefaultFormulaTestCaseName);
         newFormulaTestCase.setName(name);
         newFormulaTestCase.setExpectedResult(formulaTestCase.getExpectedResult());
@@ -457,7 +460,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             // don't execute the formula if 
             //   - there is an error on the corresponding config element (e.g. error in formula)
             //   - the current formula test case contains at least one validation message (e.g. no value given)
-            MessageList ml = ((IConfigElement) formulaTestCase.getParent()).validate();
+            MessageList ml = formulaTestCase.getFormula().validate();
             if (ml.getFirstMessage(Message.ERROR) != null){
                 clearResult();
                 return null;
@@ -475,7 +478,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
                     if (isDisposed())
                         return;
                     try {
-                        lastCalculatedResult = formulaTestCase.execute();
+                        lastCalculatedResult = formulaTestCase.execute(formulaTestCase.getIpsProject());
                         lastCalculatedResult = lastCalculatedResult==null?null:lastCalculatedResult.toString();
                     }
                     catch (Exception e) {
@@ -570,10 +573,10 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             return;
         }
         String resultToDisplay=""; //$NON-NLS-1$
-        IConfigElement configElement = (IConfigElement) formulaTestCase.getParent();
+        IFormula formula = formulaTestCase.getFormula();
         ValueDatatype vd;
         try {
-            vd = configElement.findValueDatatype();
+            vd = formula.findValueDatatype(ipsProject);
             resultToDisplay = IpsPlugin.getDefault().getIpsPreferences().formatValue(vd,(String) (result==null?null:result.toString())); //$NON-NLS-1$
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);

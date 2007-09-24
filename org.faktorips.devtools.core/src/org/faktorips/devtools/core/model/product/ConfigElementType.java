@@ -32,15 +32,12 @@ public class ConfigElementType extends DefaultEnumValue {
 
     public final static ConfigElementType POLICY_ATTRIBUTE;
 
-    public final static ConfigElementType FORMULA;
-    
     private final static DefaultEnumType enumType; 
     
     static {
         enumType = new DefaultEnumType("ConfigElementType", ConfigElementType.class); //$NON-NLS-1$
         PRODUCT_ATTRIBUTE = new ConfigElementType(enumType, "productAttribute", Messages.ConfigElementType_productAttribute); //$NON-NLS-1$
         POLICY_ATTRIBUTE = new ConfigElementType(enumType, "policyAttribute", Messages.ConfigElementType_policyAttribute); //$NON-NLS-1$
-        FORMULA = new ConfigElementType(enumType, "formula", Messages.ConfigElementType_formula); //$NON-NLS-1$
     }
     
     public final static EnumType getEnumType() {
@@ -61,9 +58,6 @@ public class ConfigElementType extends DefaultEnumValue {
 		}
 		else if (this.equals(POLICY_ATTRIBUTE)) {
 			return IpsPlugin.getDefault().getImage("PolicyAttribute.gif"); //$NON-NLS-1$
-		}
-		else if (this.equals(FORMULA)) {
-			return IpsPlugin.getDefault().getImage("Formula.gif"); //$NON-NLS-1$
 		}
 		else {
 			return IpsPlugin.getDefault().getImage("<undefined>"); //$NON-NLS-1$

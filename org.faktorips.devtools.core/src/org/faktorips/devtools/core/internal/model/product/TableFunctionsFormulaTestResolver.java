@@ -31,7 +31,10 @@ public class TableFunctionsFormulaTestResolver extends TableUsageFunctionsResolv
 
     private IFormulaTestCase formulaTestCase;
     
-    public TableFunctionsFormulaTestResolver(IIpsProject ipsProject, ITableContentUsage[] tableContentUsages) {
+    public TableFunctionsFormulaTestResolver(
+            IIpsProject ipsProject, 
+            ITableContentUsage[] tableContentUsages) {
+        
         super(ipsProject, tableContentUsages);
     }
 
@@ -43,7 +46,11 @@ public class TableFunctionsFormulaTestResolver extends TableUsageFunctionsResolv
     /**
      * {@inheritDoc}
      */
-    protected FlFunction createFlFunctionAdapter(ITableContents tableContents, ITableAccessFunction function, String roleName){
-        return new TableFunctionFormulaTestFlFunctionAdapter(tableContents, function, formulaTestCase, roleName);
+    protected FlFunction createFlFunctionAdapter(
+            ITableContents tableContents, 
+            ITableAccessFunction function, 
+            String roleName){
+        
+        return new TableFunctionFormulaTestFlFunctionAdapter(tableContents, function, formulaTestCase, roleName, getIpsProject());
     }
 }

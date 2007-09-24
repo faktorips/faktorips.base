@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.IValueSetOwner;
 import org.faktorips.devtools.core.model.ValueSetType;
@@ -220,6 +221,16 @@ public interface IAttribute extends IMember, IValueSetOwner {
      * Returns <code>true</code> if this attribute is derived, otherwise <code>false</code>.
      */
     public boolean isDerived();
+    
+    /**
+     * If this is a derived attribute which value is derived by a method defined in the
+     * product component type, this method is search and returned.
+     * 
+     * @param ipsProject The projeht which ips object path is used to search.
+     * 
+     * @throws CoreException if an error occurs while searching.
+     */
+    public IProductCmptTypeMethod findMethodCalculationTheAttributesValues(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns the type of the product configuration element this attribute

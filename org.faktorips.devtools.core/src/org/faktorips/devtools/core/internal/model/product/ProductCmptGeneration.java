@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
-import org.faktorips.devtools.core.model.product.IFormulaTestCase;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
@@ -48,9 +48,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     private List configElements = new ArrayList(0);
 
-    private ArrayList links = new ArrayList(0);
+    private List links = new ArrayList(0);
 
     private List tableContentUsages = new ArrayList(0);
+    
+    private List formulas = new ArrayList(0);
 
     public ProductCmptGeneration(ITimedIpsObject ipsObject, int id) {
         super(ipsObject, id);
@@ -69,7 +71,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     /**
      * {@inheritDoc}
      */
-    public org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
         return getProductCmpt().findProductCmptType(ipsProject);
     }
 
@@ -77,12 +79,13 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * {@inheritDoc}
      */
     public IIpsElement[] getChildren() {
-        int numOfChildren = getNumOfConfigElements() + getNumOfLinks() + getTableContentUsages().length;
+        int numOfChildren = getNumOfConfigElements() + getNumOfLinks() + getTableContentUsages().length + getNumOfFormulas();
         IIpsElement[] childrenArray = new IIpsElement[numOfChildren];
         List childrenList = new ArrayList(numOfChildren);
         childrenList.addAll(configElements);
-        childrenList.addAll(links);
         childrenList.addAll(tableContentUsages);
+        childrenList.addAll(formulas);
+        childrenList.addAll(links);
         childrenList.toArray(childrenArray);
         return childrenArray;
     }
@@ -118,15 +121,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         elements = delta.getTypeMismatchElements();
         for (int i = 0; i < elements.length; i++) {
             IAttribute a = elements[i].findPcTypeAttribute();
-            if (elements[i].getType() == ConfigElementType.FORMULA) {
-                elements[i].setValue(""); //$NON-NLS-1$
-                // if the config element is no longer a formula delete all existing formula test
-                // cases
-                IFormulaTestCase[] formulaTest = elements[i].getFormulaTestCases();
-                for (int j = 0; j < formulaTest.length; j++) {
-                    formulaTest[j].delete();
-                }
-            }
             elements[i].setType(a.getConfigElementType());
         }
         elements = delta.getElementsWithValueSetMismatch();
@@ -250,7 +244,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * {@inheritDoc}
      */
     public IProductCmptLink newLink(String associationName) {
-        ProductCmptLink newRelation = newRelationInternal(getNextPartId());
+        ProductCmptLink newRelation = newLinkInternal(getNextPartId());
         newRelation.setProductCmptTypeRelation(associationName);
         objectHasChanged();
         return newRelation;
@@ -263,8 +257,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return newRelation;
     }
 
-    public IProductCmptLink newRelation() {
-        return newRelationInternal(getNextPartId());
+    public IProductCmptLink newLink() {
+        return newLinkInternal(getNextPartId());
     }
 
     /**
@@ -318,7 +312,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return newRelation;
     }
 
-    private ProductCmptLink newRelationInternal(int id) {
+    private ProductCmptLink newLinkInternal(int id) {
         return newRelationInternal(id, null);
     }
 
@@ -356,17 +350,59 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return retValue;
     }
 
-    /*
+    /**
      * Returns true if the generation contains a formula config element, otherwise false.
      */
-    boolean containsFormula() {
-        for (Iterator it = configElements.iterator(); it.hasNext();) {
-            IConfigElement element = (IConfigElement)it.next();
-            if (element.getType().equals(ConfigElementType.FORMULA)) {
-                return true;
-            }
+    public boolean containsFormula() {
+        return formulas.size() > 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getNumOfFormulas() {
+        return formulas.size();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IFormula[] getFormulas() {
+        return (IFormula[])formulas.toArray(new IFormula[formulas.size()]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IFormula newFormula() {
+        IFormula newFormula = newFormulaInternal(getNextPartId());
+        objectHasChanged();
+        return newFormula;
+    }
+
+    private IFormula newFormulaInternal(int id) {
+        IFormula newFormula = new Formula(this, id);
+        formulas.add(newFormula);
+        return newFormula;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObjectPart newPart(Class partType) {
+        if (partType.equals(IConfigElement.class)) {
+            return newConfigElement();
         }
-        return false;
+        else if (partType.equals(IRelation.class)) {
+            return newLink();
+        }
+        else if (partType.equals(ITableContentUsage.class)) {
+            return newTableContentUsage();
+        }
+        else if (partType.equals(IFormula.class)) {
+            return newFormula();
+        }
+        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
     /**
@@ -376,12 +412,12 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(ConfigElement.TAG_NAME)) {
             return newConfigElementInternal(id);
-        }
-        else if (xmlTagName.equals(ProductCmptLink.TAG_NAME)) {
-            return newRelationInternal(id);
-        }
-        else if (xmlTagName.equals(ITableContentUsage.TAG_NAME)) {
+        } else if (xmlTagName.equals(ProductCmptLink.TAG_NAME)) {
+            return newLinkInternal(id);
+        } else if (xmlTagName.equals(ITableContentUsage.TAG_NAME)) {
             return newTableContentUsageInternal(id);
+        } else if (xmlTagName.equals(Formula.TAG_NAME)) {
+            return newFormulaInternal(id);
         }
         throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
     }
@@ -400,6 +436,10 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         }
         else if (part instanceof ITableContentUsage) {
             tableContentUsages.add(part);
+            return;
+        }
+        else if (part instanceof IFormula) {
+            formulas.add(part);
             return;
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
@@ -421,6 +461,10 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             tableContentUsages.remove(part);
             return;
         }
+        else if (part instanceof IFormula) {
+            tableContentUsages.remove(part);
+            return;
+        }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
@@ -431,6 +475,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         configElements.clear();
         links.clear();
         tableContentUsages.clear();
+        formulas.clear();
     }
 
     /**
@@ -507,23 +552,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     /**
      * {@inheritDoc}
      */
-    public IIpsObjectPart newPart(Class partType) {
-        if (partType.equals(IConfigElement.class)) {
-            return newConfigElement();
-        }
-        else if (partType.equals(IRelation.class)) {
-            return newRelation();
-        }
-        else if (partType.equals(ITableContentUsage.class)) {
-            return newTableContentUsage();
-        }
-
-        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public ITableContentUsage getTableContentUsage(String rolename) {
         for (Iterator iter = this.tableContentUsages.iterator(); iter.hasNext();) {
             ITableContentUsage element = (ITableContentUsage)iter.next();
@@ -534,4 +562,5 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return null;
     }
 
+    
 }

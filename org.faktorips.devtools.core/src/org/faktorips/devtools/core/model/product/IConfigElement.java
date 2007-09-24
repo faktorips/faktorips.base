@@ -20,15 +20,12 @@ package org.faktorips.devtools.core.model.product;
 import javax.naming.OperationNotSupportedException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IValueDatatypeProvider;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.fl.ExprCompiler;
-import org.faktorips.util.message.MessageList;
 
 
 /**
@@ -54,12 +51,6 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider  
      */
     public final static String MSGCODE_UNKNWON_ATTRIBUTE = MSGCODE_PREFIX + "UnknownAttribute"; //$NON-NLS-1$
 
-    /**
-     * Validation message code to indicate that the attribute's datatype can't be found and so the 
-     * formula's datatype can't be checked against it.
-     */
-    public final static String MSGCODE_UNKNOWN_DATATYPE_FORMULA = MSGCODE_PREFIX + "UnknownDatatypeFormula"; //$NON-NLS-1$
-    
     /**
      * Validation message code to indicate that the attribute's datatype can't be found and so the 
      * value can't be parsed.
@@ -106,12 +97,7 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider  
     public final static String MSGCODE_VALUESET_IS_NOT_A_SUBSET = MSGCODE_PREFIX + "ValueSetIsNotASubset"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the type is not formula but formula test exists.
-     */
-    public final static String MSGCODE_WRONG_TYPE_FOR_FORMULA_TESTS = MSGCODE_PREFIX + "WrongTypeForFormulaTests"; //$NON-NLS-1$
-    
-    /**
-     * Returns the product component generation this config element belongs to.
+     * Returns the product component this config element belongs to.
      */
     public IProductCmpt getProductCmpt();
     
@@ -172,24 +158,6 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider  
 	public void setValueSetType(ValueSetType type);
 
     /**
-	 * Returns an expression compiler that can be used to compile the formula.
-	 * or <code>null</code> if the element does not contain a formula.
-	 */
-    public ExprCompiler getExprCompiler() throws CoreException;
-    
-    /**
-     * Returns the enum dataypes that can be use in this formula.
-     * Allowed enum types are those that are used as datatype in one of the parameters
-     * or in a table used by the product component generation this config element belongs to.
-     * If the datatype of the formula is itself an enum datatype, this one is also returned.
-     * <p>
-     * Returns an empty array if this config element does not represent a formula. 
-     * 
-     * @throws CoreException if an error occurs while searching the enum datatypes.
-     */
-    public EnumDatatype[] getEnumDatatypesAllowedInFormula() throws CoreException;
-    
-    /**
      * Finds the corresponding attribute in the product component type this
      * product component is an instance of.
      * 
@@ -208,12 +176,6 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider  
      */
     public ValueDatatype findValueDatatype() throws CoreException;
     
-    /**
-	 *  
-	 * @throws CoreException if an exception occurs while validating the object.
-	 */
-	public MessageList validate() throws CoreException;
-
 	/**
 	 * Creates a copy of the given value set and aplies this copy to this config
 	 * element.
@@ -224,50 +186,4 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider  
 	 */
 	public void setValueSetCopy(IValueSet source);
     
-    /**
-     * Returns all formula test cases.
-     */
-    public IFormulaTestCase[] getFormulaTestCases();
-
-    /**
-     * Returns the formula test case identified by the given name. Return <code>null</code> if no such
-     * element exists.
-     */
-    public IFormulaTestCase getFormulaTestCase(String name);
-    
-    /**
-     * Creates and returns a new formula test case.
-     */
-    public IFormulaTestCase newFormulaTestCase();
-
-    /**
-     * Removes the given formula test case from the list of formula test cases.
-     */
-    public void removeFormulaTestCase(IFormulaTestCase formulaTest);    
-    
-    /**
-     * Returns all parameter identifiers which are used in the formula. 
-     * Identifiers used in a formula an be either identify a parameter or an enum value.
-     * This methods returns all identifiers identifying parameters.
-     * Returns an empty string array if no identifier was found in formula or the config element is no formula type 
-     * or the policy component type attribute - which specifies the formula interface - wasn't found.
-     * 
-     * @throws CoreException If an error occurs while searching the corresponding attribute.
-     */
-    public String[] getParameterIdentifiersUsedInFormula() throws CoreException;
-
-    /**
-     * Moves the formula test case identified by the indexes up or down by one position. If
-     * one of the indexes is 0 (the first element), nothing is moved up. If one of the indexes is
-     * the number of elements - 1 (the last element) nothing moved down
-     * 
-     * @param indexes The indexes identifying the input value.
-     * @param up <code>true</code>, to move up, <false> to move them down.
-     * 
-     * @return The new indexes of the moved input values.
-     * 
-     * @throws NullPointerException if indexes is null.
-     * @throws IndexOutOfBoundsException if one of the indexes does not identify an input value.
-     */
-    public int[] moveFormulaTestCases(int[] indexes, boolean up);
 }

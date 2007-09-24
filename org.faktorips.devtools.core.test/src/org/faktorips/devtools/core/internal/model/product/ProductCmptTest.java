@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptKind;
@@ -72,6 +73,30 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         pack = root.createPackageFragment("products.folder", true, null);
         srcFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "TestProduct", true, null);
         productCmpt = (ProductCmpt)srcFile.getIpsObject();
+    }
+
+    public void testValidate_ProductCmptTypeIsMissing() throws Exception {
+        IProductCmptType type = newProductCmptType(ipsProject, "Product");
+        productCmpt.setProductCmptType(type.getQualifiedName());
+        
+        MessageList list = productCmpt.validate();
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE));
+        
+        productCmpt.setProductCmptType("UnknownType");
+        list = productCmpt.validate();
+        assertNotNull(list.getMessageByCode(IProductCmpt.MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE));
+        
+        productCmpt.setProductCmptType("");
+        list = productCmpt.validate();
+        assertNotNull(list.getMessageByCode(IProductCmpt.MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE));
+
+        // this has once been a bug (NPE in validation of the generation!)
+        IFormula ce = ((IProductCmptGeneration)productCmpt.newGeneration()).newFormula();
+        ce.setFormulaSignature("SomeFormula");
+        ce.setExpression("42");
+        list = productCmpt.validate();
+        assertNotNull(list.getMessageByCode(IProductCmpt.MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE));
+        
     }
     
     public void testValidate_InconsitencyInTypeHierarch() throws Exception {
@@ -227,13 +252,9 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
     
     public void testContainsFormula() {
-        IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt.newGeneration();
-        IConfigElement ce1 = gen1.newConfigElement();
-        ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
         assertFalse(productCmpt.containsFormula());
-
-        IConfigElement ce2 = gen1.newConfigElement();
-        ce2.setType(ConfigElementType.FORMULA);
+        IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt.newGeneration();
+        gen1.newFormula();
         assertTrue(productCmpt.containsFormula());
     }
     

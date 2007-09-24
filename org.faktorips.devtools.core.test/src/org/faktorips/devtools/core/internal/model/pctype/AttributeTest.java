@@ -99,10 +99,10 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertEquals(ConfigElementType.PRODUCT_ATTRIBUTE, attribute.getConfigElementType());
 
         attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-        assertEquals(ConfigElementType.FORMULA, attribute.getConfigElementType());
+        assertNull(attribute.getConfigElementType());
         
         attribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
-        assertEquals(ConfigElementType.FORMULA, attribute.getConfigElementType());
+        assertNull(attribute.getConfigElementType());
     }
     
     public void testRemove() {

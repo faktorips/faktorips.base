@@ -66,6 +66,39 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         ipsProject.getIpsModel().removeChangeListener(this);
     }
     
+    public void testFindFormulaSignature() throws CoreException {
+        IProductCmptTypeMethod method1 = superSuperProductCmptType.newProductCmptTypeMethod();
+        method1.setFormulaSignatureDefinition(true);
+        method1.setFormulaName("Premium Calculation");
+        
+        assertSame(method1, superSuperProductCmptType.findFormulaSignature("Premium Calculation", true, ipsProject));
+        assertSame(method1, superSuperProductCmptType.findFormulaSignature("Premium Calculation", false, ipsProject));
+        assertSame(method1, productCmptType.findFormulaSignature("Premium Calculation", true, ipsProject));
+        assertNull(productCmptType.findFormulaSignature("Premium Calculation", false, ipsProject));
+        
+        
+        method1.setFormulaSignatureDefinition(false);
+        assertNull(superSuperProductCmptType.findFormulaSignature("Unknown", true, ipsProject));
+        assertNull(superSuperProductCmptType.findFormulaSignature("Unknown", false, ipsProject));
+        assertNull(productCmptType.findFormulaSignature("Unknown", true, ipsProject));
+        assertNull(productCmptType.findFormulaSignature("Unknown", false, ipsProject));
+
+        method1.setFormulaSignatureDefinition(false);
+        assertNull(superSuperProductCmptType.findFormulaSignature("Premium Calculation", true, ipsProject));
+        assertNull(superSuperProductCmptType.findFormulaSignature("Premium Calculation", false, ipsProject));
+        assertNull(productCmptType.findFormulaSignature("Premium Calculation", true, ipsProject));
+        assertNull(productCmptType.findFormulaSignature("Premium Calculation", false, ipsProject));
+
+        // if the method is overloaded, make sure the first one is found.
+        method1.setFormulaSignatureDefinition(true);
+        IProductCmptTypeMethod method2 = productCmptType.newProductCmptTypeMethod();
+        method2.setFormulaSignatureDefinition(true);
+        method2.setFormulaName("Premium Calculation");
+        assertSame(method2, productCmptType.findFormulaSignature("Premium Calculation", true, ipsProject));
+        
+        
+    }
+    
     public void testValidatePolicyCmptType() throws CoreException {
         MessageList ml = productCmptType.validate();
         assertNull(ml.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST));

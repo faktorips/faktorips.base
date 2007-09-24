@@ -58,19 +58,28 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
     private ITableContents tableContents;
     private IFormulaTestCase formulaTestCase;
     private String roleName;
+    private IIpsProject ipsProject;
     
     /**
      *
      */
-    public TableFunctionFormulaTestFlFunctionAdapter(ITableContents tableContents, ITableAccessFunction fct,
-            IFormulaTestCase formulaTestCase, String roleName) {
+    public TableFunctionFormulaTestFlFunctionAdapter(
+            
+            ITableContents tableContents, 
+            ITableAccessFunction fct,
+            IFormulaTestCase formulaTestCase, 
+            String roleName,
+            IIpsProject ipsProject) {
+        
         ArgumentCheck.notNull(fct);
         ArgumentCheck.notNull(tableContents);
         ArgumentCheck.notNull(roleName);
+        ArgumentCheck.notNull(ipsProject);
         this.fct = fct;
         this.tableContents = tableContents;
         this.formulaTestCase = formulaTestCase;
         this.roleName = roleName;
+        this.ipsProject = ipsProject;
     }
         
     /**
@@ -78,7 +87,7 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
      */
     public CompilationResult compile(CompilationResult[] argResults) {
         try {
-            Object result = getTableContentValue(argResults);
+            Object result = getTableContentValue(argResults, ipsProject);
             
             // generate the code for the values inside the table content
             Datatype returnType = fct.getIpsProject().findDatatype(fct.getType());
@@ -199,10 +208,8 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
     /*
      * Returns the corresponding table content.
      */
-    private Object getTableContentValue(CompilationResult[] argResults) throws Exception{
+    private Object getTableContentValue(CompilationResult[] argResults, IIpsProject ipsProject) throws Exception{
         // create the classloader to run the table access function with and to create the runtime repository
-        IIpsProject ipsProject = tableContents.getIpsProject();
-        
         ClassLoader classLoaderForJavaProject = ipsProject.getClassLoaderForJavaProject();
         // accumulate the runtime classes from the current jvm, thus if a class exists in the
         // projects classpath and in the current jvm then the class from the current jvm will be choosen, 
@@ -221,7 +228,7 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
         Class[] argClasses = new Class[argResults.length];
         Object[] argValues = new Object[argResults.length];
         for (int i = 0; i < argResults.length; i++) {
-            argValues[i] = ((FormulaTestCase)formulaTestCase).execute(argResults[i].getCodeFragment(), classLoader);
+            argValues[i] = ((FormulaTestCase)formulaTestCase).execute(argResults[i].getCodeFragment(), classLoader, ipsProject);
             Class runtimeClass = classLoader.loadClass(argResults[i].getDatatype().getJavaClassName());
             argClasses[i] = runtimeClass;
         }

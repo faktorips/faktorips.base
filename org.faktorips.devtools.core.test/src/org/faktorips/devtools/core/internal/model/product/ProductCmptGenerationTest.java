@@ -28,9 +28,11 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.AggregationKind;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
@@ -72,6 +74,55 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         association.setTargetRoleSingular("testRelationProductSide");
         association.setTargetRolePlural("testRelationsProductSide");
     }
+    
+    public void testNewLink() {
+        IProductCmptLink link = generation.newLink("coverage");
+        assertEquals(generation, link.getParent());
+        assertEquals(1, generation.getNumOfLinks());
+        assertEquals(link, generation.getLinks()[0]);
+        
+        IProductCmptLink link2 = generation.newLink("covergae");
+        assertEquals(generation, link2.getParent());
+        assertEquals(2, generation.getNumOfLinks());
+        assertEquals(link, generation.getLinks()[0]);
+        assertEquals(link2, generation.getLinks()[1]);
+    }
+
+    /*
+     * Class under test for void toXml(Element)
+     */
+    public void testToXmlElement() {
+        generation.setValidFrom(new GregorianCalendar(2005, 0, 1));
+        generation.newConfigElement();
+        generation.newConfigElement();
+        generation.newLink("coverage");
+        generation.newLink("coverage");
+        generation.newLink("coverage");
+        generation.newFormula();
+        Element element = generation.toXml(newDocument());
+        
+        IProductCmptGeneration copy = new ProductCmptGeneration();
+        copy.initFromXml(element);
+        assertEquals(2, copy.getNumOfConfigElements());
+        assertEquals(3, copy.getNumOfLinks());
+        assertEquals(1, copy.getNumOfFormulas());
+    }
+
+    public void testInitFromXml() {
+        generation.initFromXml(getTestDocument().getDocumentElement());
+        assertEquals(new GregorianCalendar(2005, 0, 1), generation.getValidFrom());
+        
+        IConfigElement[] configElements = generation.getConfigElements();
+        assertEquals(1, configElements.length);
+        
+        IProductCmptLink[] relations = generation.getLinks();
+        assertEquals(1, relations.length);
+        
+        IFormula[] formulas = generation.getFormulas();
+        assertEquals(1, formulas.length);
+    }
+
+
     
     public void testValidateDuplicateRelationTarget() throws Exception {
         MessageList ml = generation.validate();
@@ -159,12 +210,17 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     
     
     public void testGetChildren() throws CoreException  {
-        IConfigElement cf0 = generation.newConfigElement();
-        IProductCmptLink r0 = generation.newLink("targetRole");
+        IConfigElement element = generation.newConfigElement();
+        IProductCmptLink link = generation.newLink("targetRole");
+        ITableContentUsage usage = generation.newTableContentUsage();
+        IFormula formula = generation.newFormula();
+        
         IIpsElement[] children = generation.getChildren();
-        assertEquals(2, children.length);
-        assertSame(cf0, children[0]);
-        assertSame(r0, children[1]);
+        assertEquals(4, children.length);
+        assertSame(element, children[0]);
+        assertSame(usage, children[1]);
+        assertSame(formula, children[2]);
+        assertSame(link, children[3]);
     }
     
     public void testGetConfigElements() {
@@ -181,8 +237,10 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void testGetConfigElements_Type() {
         IConfigElement ce1 = generation.newConfigElement();
         IConfigElement ce2 = generation.newConfigElement();
-        ce2.setType(ConfigElementType.FORMULA);
         IConfigElement ce3 = generation.newConfigElement();
+        ce1.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
+        ce2.setType(ConfigElementType.POLICY_ATTRIBUTE);
+        ce3.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
         
         IConfigElement[] elements = generation.getConfigElements(ConfigElementType.PRODUCT_ATTRIBUTE);
         assertEquals(2, elements.length);
@@ -190,7 +248,8 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertEquals(ce3, elements[1]);
         
         elements = generation.getConfigElements(ConfigElementType.POLICY_ATTRIBUTE);
-        assertEquals(0, elements.length);
+        assertEquals(1, elements.length);
+        assertEquals(ce2, elements[0]);
     }
     
     public void testGetConfigElement_AttributeName() {
@@ -256,42 +315,6 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
         generation.newLink("risk");
         assertEquals(2, generation.getNumOfLinks());
-    }
-
-    public void testNewLink() {
-        IProductCmptLink link = generation.newLink("coverage");
-        assertEquals(generation, link.getParent());
-        assertEquals(1, generation.getNumOfLinks());
-        assertEquals(link, generation.getLinks()[0]);
-    }
-
-    /*
-     * Class under test for void toXml(Element)
-     */
-    public void testToXmlElement() {
-        generation.setValidFrom(new GregorianCalendar(2005, 0, 1));
-        generation.newConfigElement();
-        generation.newConfigElement();
-        generation.newLink("coverage");
-        generation.newLink("coverage");
-        generation.newLink("coverage");
-        Element element = generation.toXml(newDocument());
-        
-        IProductCmptGeneration copy = new ProductCmptGeneration();
-        copy.initFromXml(element);
-        assertEquals(2, copy.getNumOfConfigElements());
-        assertEquals(3, copy.getNumOfLinks());
-    }
-
-    public void testInitFromXml() {
-        generation.initFromXml(getTestDocument().getDocumentElement());
-        assertEquals(new GregorianCalendar(2005, 0, 1), generation.getValidFrom());
-        
-        IConfigElement[] configElements = generation.getConfigElements();
-        assertEquals(1, configElements.length);
-        
-        IProductCmptLink[] relations = generation.getLinks();
-        assertEquals(1, relations.length);
     }
 
     public void testValidateNoTemplate() throws Exception {

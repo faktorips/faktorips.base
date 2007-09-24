@@ -18,16 +18,12 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -35,35 +31,19 @@ import org.faktorips.devtools.core.internal.model.AllValuesValueSet;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValueSet;
 import org.faktorips.devtools.core.model.IEnumValueSet;
-import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
-import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.Parameter;
-import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
-import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.util.ListElementMover;
-import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.ExcelFunctionsResolver;
-import org.faktorips.fl.ExprCompiler;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -85,12 +65,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	private String value = ""; //$NON-NLS-1$
 
     private List formulaTestCases = new ArrayList(0);
-    
-    // the cached "list" of identifiers used in this formula (if the config item is of type formula)
-    private String[] parameterIdentifiersUsedInFormula;
-    
-    // the previous formula value will be used if the cache isvalid or needs to be refreshed
-    private String previousFormulaValue;
     
 	public ConfigElement(ProductCmptGeneration parent, int id) {
 		super(parent, id);
@@ -191,110 +165,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-	 */
-    public ExprCompiler getExprCompiler() throws CoreException {
-        ExprCompiler compiler = new ExprCompiler();
-        compiler.add(new ExcelFunctionsResolver(getIpsProject().getExpressionLanguageFunctionsLanguage()));
-        
-        // add the table functions based on the table usages defined in the product cmpt type
-        IProductCmptGeneration gen = getProductCmptGeneration();
-        compiler.add(new TableUsageFunctionsResolver(getIpsProject(), gen.getTableContentUsages()));
-        
-        IIpsArtefactBuilderSet builderSet = getIpsProject().getIpsArtefactBuilderSet();
-        IAttribute a = findPcTypeAttribute();
-        if (a == null) {
-            return compiler;
-        }
-        IParameterIdentifierResolver resolver = builderSet.getFlParameterIdentifierResolver();
-        if (resolver == null) {
-            return compiler;
-        }
-        resolver.setIpsProject(getIpsProject());
-        resolver.setParameters(a.getFormulaParameters());
-        resolver.setEnumDatatypes(getEnumDatatypesAllowedInFormula());
-        compiler.setIdentifierResolver(resolver);
-        return compiler;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-	public EnumDatatype[] getEnumDatatypesAllowedInFormula() throws CoreException {
-        if (ConfigElementType.FORMULA!=type) {
-            return new EnumDatatype[0];
-        }
-        HashMap enumtypes = new HashMap();
-        collectEnumTypesFromAttribute(enumtypes);
-        collectEnumTypesFromUsedTableStructures(enumtypes);
-        return (EnumDatatype[])enumtypes.values().toArray(new EnumDatatype[enumtypes.size()]);
-	}
-    
-    private void collectEnumTypesFromAttribute(HashMap enumtypes) throws CoreException {
-        IAttribute a = findPcTypeAttribute();
-        if (a == null) {
-            return;
-        }
-        ValueDatatype valuetype = a.findDatatype();
-        if (valuetype instanceof EnumDatatype) {
-            enumtypes.put(valuetype.getName(), valuetype);
-        }
-        IIpsProject project = getIpsProject();
-        Parameter[] params = a.getFormulaParameters();
-        for (int i = 0; i < params.length; i++) {
-            try {
-                Datatype datatype = project.findDatatype(params[i].getDatatype());
-                if (datatype instanceof EnumDatatype) {
-                    enumtypes.put(datatype.getName(), datatype);
-                    continue;
-                }
-                if (datatype instanceof IPolicyCmptType) {
-                    IPolicyCmptType policyCmptType = (IPolicyCmptType)datatype;
-                    EnumDatatypesCollector collector = new EnumDatatypesCollector(project, enumtypes);
-                    collector.start(policyCmptType);
-                }
-            } catch (Exception e) {
-                IpsPlugin.log(e);
-            }
-        }
-    }
-    
-    private void collectEnumTypesFromUsedTableStructures(HashMap enumtypes) throws CoreException {
-        org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType type = getProductCmpt().findProductCmptType(getIpsProject());
-        if (type==null) {
-            return;
-        }
-        ITableStructureUsage[] usages = type.getTableStructureUsages();
-        for (int i = 0; i < usages.length; i++) {
-            String[] tableNames = usages[i].getTableStructures();
-            IIpsProject project = getIpsProject();
-            for (int j = 0; j < tableNames.length; j++) {
-                ITableStructure table = (ITableStructure)project.findIpsObject(new QualifiedNameType(tableNames[j], IpsObjectType.TABLE_STRUCTURE));
-                if (table!=null) {
-                    collectEnumTypesFromTable(table, project, enumtypes);
-                }
-            }
-        }
-    }
-    
-    private void collectEnumTypesFromTable(ITableStructure table, IIpsProject project, HashMap types) throws CoreException {
-        IColumn[] columns = table.getColumns();
-        for (int i = 0; i < columns.length; i++) {
-            searchAndAdd(project, columns[i].getDatatype(), types);
-        }
-    }
-    
-    private void searchAndAdd(IIpsProject ipsProject, String datatypeName, HashMap types) throws CoreException {
-        if (types.containsKey(datatypeName)) {
-            return;
-        }
-        ValueDatatype datatype = ipsProject.findValueDatatype(datatypeName);
-        if (datatype instanceof EnumDatatype) {
-            types.put(datatypeName, datatype);
-        }
-    }
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -308,56 +178,10 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     		if (attribute.getAttributeType() == AttributeType.CHANGEABLE
     				|| attribute.getAttributeType() == AttributeType.CONSTANT) {
     			validateValueAndValueSet(attribute, list);
-    		} else {
-    			validateFormula(attribute, list);
     		}
         }
-
-        // validate that formula tests are only allowed if the type of the config element is formula
-        if (formulaTestCases.size() > 0 && type != ConfigElementType.FORMULA) {
-            String text = NLS.bind(Messages.ConfigElement_msgFormulaTestCaseNotAllowedIfTypeOfConfigElemIs, type);
-            list.add(new Message(IConfigElement.MSGCODE_WRONG_TYPE_FOR_FORMULA_TESTS, text, Message.ERROR, this,
-                    PROPERTY_TYPE));
-        }
 	}
 
-	private void validateFormula(IAttribute attribute, MessageList list)
-			throws CoreException {
-		if (StringUtils.isEmpty(value)) {
-			list.add(new Message(MSGCODE_MISSING_FORMULA, Messages.ConfigElement_msgFormulaNotDefined, Message.ERROR, this, PROPERTY_VALUE));
-			return;
-		}
-		ExprCompiler compiler = getExprCompiler();
-		CompilationResult result = compiler.compile(value);
-		if (!result.successfull()) {
-			MessageList compilerMessageList = result.getMessages();
-			for (int i = 0; i < compilerMessageList.getNoOfMessages(); i++) {
-				Message msg = compilerMessageList.getMessage(i);
-				list.add(new Message(msg.getCode(), msg.getText(), msg
-						.getSeverity(), this, PROPERTY_VALUE));
-			}
-			return;
-		}
-		Datatype attributeDatatype = attribute.findDatatype();
-		if (attributeDatatype == null) {
-			String text = Messages.ConfigElement_msgDatatypeMissing;
-			list.add(new Message(
-					IConfigElement.MSGCODE_UNKNOWN_DATATYPE_FORMULA, text,
-					Message.ERROR, this, PROPERTY_VALUE));
-			return;
-		}
-		if (attributeDatatype.equals(result.getDatatype())) {
-			return;
-		}
-		if (compiler.getConversionCodeGenerator().canConvert(
-				result.getDatatype(), attributeDatatype)) {
-			return;
-		}
-		String text = NLS.bind(Messages.ConfigElement_msgReturnTypeMissmatch, attributeDatatype.getName(), result.getDatatype().getName());
-		list.add(new Message(IConfigElement.MSGCODE_WRONG_FORMULA_DATATYPE,
-				text, Message.ERROR, this, PROPERTY_VALUE));
-	}
-    
 	private void validateValueAndValueSet(IAttribute attribute, MessageList list)
 			throws CoreException {
 		
@@ -510,7 +334,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
      * {@inheritDoc}
      */
     protected void reinitPartCollections() {
-        formulaTestCases = new ArrayList();
     }
     
     /**
@@ -519,9 +342,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     protected void reAddPart(IIpsObjectPart part) {
         if (part instanceof IValueSet) {
             valueSet = (IValueSet)part;
-            return;
-        } else if (part instanceof IFormulaTestCase){
-            formulaTestCases.add(part);
             return;
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
@@ -533,9 +353,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     protected void removePart(IIpsObjectPart part) {
         if (part instanceof IValueSet) {
             this.valueSet = null;
-            return;
-        } else if (part instanceof IFormulaTestCase){
-            formulaTestCases.remove(part);
             return;
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
@@ -592,8 +409,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     	if (ValueSet.XML_TAG.equals(xmlTagName)) {
     		valueSet = ValueSetType.newValueSet(partEl, this, id);
     		return valueSet;
-    	} else if (FormulaTestCase.TAG_NAME.equals(xmlTagName)){
-    	    return newFormulaTestInternal(id);
         } else if (PROPERTY_VALUE.equalsIgnoreCase(xmlTagName)){
             // ignore value nodes, will be parsed in the this#initPropertiesFromXml method
             return null;
@@ -617,116 +432,4 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
 		return null;
 	}
-    
-
-    /**
-     * {@inheritDoc}
-     */
-    public IFormulaTestCase newFormulaTestCase() {
-        ArgumentCheck.isTrue(getType() == ConfigElementType.FORMULA);
-        IFormulaTestCase f = newFormulaTestInternal(getNextPartId());
-        objectHasChanged();
-        return f;
-    }
-    
-    /*
-     * Creates a new formula test without updating the source file.
-     */
-    private IFormulaTestCase newFormulaTestInternal(int nextPartId) {
-        IFormulaTestCase f = new FormulaTestCase(this, nextPartId);
-        formulaTestCases.add(f);
-        return f;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IFormulaTestCase getFormulaTestCase(String name) {
-        for (Iterator it = formulaTestCases.iterator(); it.hasNext();) {
-            IFormulaTestCase f = (IFormulaTestCase) it.next();
-            if (f.getName().equals(name)) {
-                return f;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IFormulaTestCase[] getFormulaTestCases() {
-        return (IFormulaTestCase[]) formulaTestCases.toArray(new IFormulaTestCase[0]);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void removeFormulaTestCase(IFormulaTestCase formulaTest) {
-        if (formulaTestCases.contains(formulaTest)){
-            formulaTestCases.remove(formulaTest);
-            objectHasChanged();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int[] moveFormulaTestCases(int[] indexes, boolean up) {
-        ListElementMover mover = new ListElementMover(formulaTestCases);
-        int[] newIdxs = mover.move(indexes, up);
-        valueChanged(indexes, newIdxs);
-        return newIdxs;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String[] getParameterIdentifiersUsedInFormula() throws CoreException {
-        if (!ConfigElementType.FORMULA.equals(type)){
-            return new String[0];
-        }
-        if (StringUtils.isEmpty(value)){
-            return new String[0];
-        }
-        IAttribute attribute = findPcTypeAttribute();
-        if (attribute == null){
-            return new String[0];
-        }
-        
-        // return the cached identifier if exists and up to date
-        if (parameterIdentifiersUsedInFormula != null && previousFormulaValue != null && previousFormulaValue.equals(value)){
-            // no changes in the formula => return the previous evaluated identifiers
-            return parameterIdentifiersUsedInFormula;
-        }
-        
-        ExprCompiler compiler = getExprCompiler();
-        CompilationResult compilationResult = compiler.compile(value);
-        
-        // store the resolved identifiers in the cache
-        IParameterIdentifierResolver resolver = (IParameterIdentifierResolver)compiler.getIdentifierResolver();
-        parameterIdentifiersUsedInFormula = resolver.removeIdentifieresOfEnumDatatypes(compilationResult.getResolvedIdentifiers());
-        previousFormulaValue = getValue();
-        return parameterIdentifiersUsedInFormula;
-    }
-   
-    class EnumDatatypesCollector extends PolicyCmptTypeHierarchyVisitor {
-        
-        private IIpsProject project;
-        private HashMap enumtypes;
-        
-        public EnumDatatypesCollector(IIpsProject project, HashMap enumtypes) {
-            super();
-            this.project = project;
-            this.enumtypes = enumtypes;
-        }
-
-        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
-            IAttribute[] attr = currentType.getAttributes();
-            for (int i = 0; i < attr.length; i++) {
-                searchAndAdd(project, attr[i].getDatatype(), enumtypes);
-            }
-            return true;
-        }
-        
-    }
 }

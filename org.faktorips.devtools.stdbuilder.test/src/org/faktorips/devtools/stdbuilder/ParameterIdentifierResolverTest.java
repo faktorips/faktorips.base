@@ -23,12 +23,16 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.type.Parameter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.Parameter;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
@@ -38,23 +42,25 @@ import org.faktorips.fl.ExprCompiler;
  */
 public class ParameterIdentifierResolverTest extends AbstractIpsPluginTest {
 
-    private PolicyCmptType pcType;
+    private IPolicyCmptType policyCmptType;
+    private IProductCmptType productCmptType;
     private IAttribute attribute;
     private IParameterIdentifierResolver resolver;
     private IIpsProject ipsProject;
 
     protected void setUp() throws Exception {
         super.setUp();
-        ipsProject = this.newIpsProject("TestProject");
+        ipsProject = this.newIpsProject();
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setJavaSrcLanguage(Locale.GERMAN);
         props.setBuilderSetId(StdBuilderPlugin.STANDARD_BUILDER_EXTENSION_ID);
         ipsProject.setProperties(props);
         ipsProject.getValueDatatypes(false);
-        pcType = newPolicyCmptType(ipsProject, "products.folder.TestPolicy");
-        attribute = pcType.newAttribute();
+        policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
+        attribute = policyCmptType.newAttribute();
         attribute.setName("tax");
         attribute.setDatatype(Datatype.DECIMAL.getQualifiedName());
+        productCmptType = policyCmptType.findProductCmptType(ipsProject);
         resolver = ipsProject.getIpsArtefactBuilderSet().getFlParameterIdentifierResolver();
         resolver.setIpsProject(ipsProject);
     }
@@ -78,9 +84,10 @@ public class ParameterIdentifierResolverTest extends AbstractIpsPluginTest {
         assertEquals(1, result.getMessages().getNoOfMessages());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
+        IMethod method = productCmptType.newMethod(); //needed as parameter factory
         // parameter with a value datatype
-        Parameter p1 = new Parameter(0, "rate", Datatype.MONEY.getQualifiedName());
-        resolver.setParameters(new Parameter[] { p1 });
+        IParameter p1 = method.newParameter(Datatype.MONEY.getQualifiedName(), "rate");
+        resolver.setParameters(new IParameter[] { p1 });
         result = resolver.compile("rate", locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.MONEY, result.getDatatype());
@@ -89,8 +96,8 @@ public class ParameterIdentifierResolverTest extends AbstractIpsPluginTest {
         // parameter with the datatype being a policy component type
         // => resolver can resolve identifiers with form paramName.attributeName
         // with attributeName is the name of one of the type's attributes
-        Parameter p2 = new Parameter(1, "policy", pcType.getQualifiedName());
-        resolver.setParameters(new Parameter[] { p2 });
+        IParameter p2 = method.newParameter(policyCmptType.getQualifiedName(), "policy");
+        resolver.setParameters(new IParameter[] { p2 });
         result = resolver.compile("policy.tax", locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.DECIMAL, result.getDatatype());
@@ -105,8 +112,8 @@ public class ParameterIdentifierResolverTest extends AbstractIpsPluginTest {
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
         // parameter with unkown datatype
-        Parameter p3 = new Parameter(0, "p3", "UnkownDatatype");
-        resolver.setParameters(new Parameter[] { p3 });
+        IParameter p3 = method.newParameter("UnknownDatatye", "p3");
+        resolver.setParameters(new IParameter[] { p3 });
         result = resolver.compile("p3", locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().getNoOfMessages());

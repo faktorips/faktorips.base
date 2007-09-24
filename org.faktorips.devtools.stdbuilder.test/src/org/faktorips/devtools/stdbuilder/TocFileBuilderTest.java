@@ -31,8 +31,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.product.ConfigElementType;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -147,8 +146,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         IProductCmpt pcFromula = newProductCmpt(productCmptType, "formulatests.PremiumCalcFormulaTest");
         IProductCmptGeneration pcdgFormula = pcFromula.getProductCmptGeneration(0);
         pcdgFormula.setValidFrom(validFrom);
-        IConfigElement ceFormula = pcdgFormula.newConfigElement();
-        ceFormula.setType(ConfigElementType.FORMULA);
+        IFormula ceFormula = pcdgFormula.newFormula();
         // only if the formula contains tests then the toc entry will be created
         ceFormula.newFormulaTestCase();
         pcFromula.getIpsSrcFile().save(true, null);
@@ -296,8 +294,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         
         assertEquals(0, toc.getTestCaseTocEntries().length);
         
-        IConfigElement ce = generation.newConfigElement();
-        ce.setType(ConfigElementType.FORMULA);
+        IFormula ce = generation.newFormula();
         IFormulaTestCase ftc = ce.newFormulaTestCase();
         
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);

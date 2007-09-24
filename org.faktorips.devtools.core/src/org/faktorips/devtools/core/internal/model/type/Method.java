@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.pctype.Messages;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
@@ -85,8 +86,15 @@ public class Method extends BaseIpsObjectPart implements IMethod {
     /**
      * {@inheritDoc}
      */
+    public Datatype findDatatype(IIpsProject ipsProject) throws CoreException {
+        return ipsProject.findDatatype(datatype);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void setDatatype(String newDatatype) {
-        String oldDatatype = newDatatype;
+        String oldDatatype = datatype;
         this.datatype = newDatatype;
         valueChanged(oldDatatype, newDatatype);
     }
@@ -159,6 +167,17 @@ public class Method extends BaseIpsObjectPart implements IMethod {
      */
     public IParameter[] getParameters() {
         return (IParameter[])parameters.toArray(new IParameter[parameters.size()]);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String[] getParameterNames() {
+        String[] names = new String[parameters.size()];
+        for (int i = 0; i < names.length; i++) {
+            names[i] = ((IParameter)parameters.getPart(i)).getName();
+        }
+        return names;
     }
 
     /**

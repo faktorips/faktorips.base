@@ -36,7 +36,8 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -45,7 +46,6 @@ import org.faktorips.fl.ExcelFunctionsResolver;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.ExprEvaluator;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -60,10 +60,17 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     
     private List formulaTestInputValues = new ArrayList(0);
     
-    public FormulaTestCase(IConfigElement parent, int id) {
+    public FormulaTestCase(Formula parent, int id) {
         super(parent, id);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public IFormula getFormula() {
+        return (IFormula)getParent();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -159,12 +166,12 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /*
      * Returns the expression compiler used to compile the formula preview result.
      */
-    private ExprCompiler getPreviewExprCompiler() throws CoreException {
+    private ExprCompiler getPreviewExprCompiler(IIpsProject ipsProject) throws CoreException {
         ExprCompiler compiler = new ExprCompiler();
-        compiler.add(new ExcelFunctionsResolver(getIpsProject().getExpressionLanguageFunctionsLanguage()));
+        compiler.add(new ExcelFunctionsResolver(ipsProject.getExpressionLanguageFunctionsLanguage()));
         
         // add the table functions based on the table usages defined in the product cmpt type
-        IProductCmptGeneration gen = ((ConfigElement)getParent()).getProductCmptGeneration();
+        IProductCmptGeneration gen = getFormula().getProductCmptGeneration();
         if (gen != null) {
             compiler.add(new TableFunctionsFormulaTestResolver(getIpsProject(), gen.getTableContentUsages(), this));
         }
@@ -174,7 +181,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         for (int i = 0; i < input.length; i++) {
             String storedValue = input[i].getValue();
             // get the datatype and the helper for generating the code fragment of the formula
-            Datatype datatype = input[i].findDatatypeOfFormulaParameter();
+            Datatype datatype = input[i].findDatatypeOfFormulaParameter(ipsProject);
             DatatypeHelper dataTypeHelper = getIpsProject().getDatatypeHelper(datatype);
             if (dataTypeHelper == null) {
                 throw new CoreException(new IpsStatus(NLS.bind(
@@ -218,32 +225,24 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * {@inheritDoc}
      */
-    public Object execute() throws Exception {
-        // compile the formular and execute it with the stored values
-        IConfigElement configElement = (IConfigElement) getParent();
-        String formula = configElement.getValue();
-        
-        ExprEvaluator processor = getExprEvaluatorInternal();
-        return processor.evaluate(formula);
+    public Object execute(IIpsProject ipsProject) throws Exception {
+        ExprEvaluator processor = getExprEvaluatorInternal(ipsProject.getClassLoaderForJavaProject(), ipsProject);
+        return processor.evaluate(getFormula().getExpression());
     }
 
     /**
      * Executes the given java code fragment.
      */
-    public Object execute(JavaCodeFragment javaCodeFragment, ClassLoader classLoader) throws Exception {
-        ExprEvaluator processor = getExprEvaluatorInternal(classLoader);
+    public Object execute(JavaCodeFragment javaCodeFragment, ClassLoader classLoader, IIpsProject ipsProject) throws Exception {
+        ExprEvaluator processor = getExprEvaluatorInternal(classLoader, ipsProject);
         return processor.evaluate(javaCodeFragment);
     }
     
-    private ExprEvaluator getExprEvaluatorInternal() throws CoreException {
-        return getExprEvaluatorInternal(getIpsProject().getClassLoaderForJavaProject());
-    }
-    
-    private ExprEvaluator getExprEvaluatorInternal(ClassLoader classLoader) throws CoreException {
-        ExprCompiler compiler = getPreviewExprCompiler();
+    private ExprEvaluator getExprEvaluatorInternal(ClassLoader classLoader, IIpsProject ipsProject) throws CoreException {
+        ExprCompiler compiler = getPreviewExprCompiler(ipsProject);
         return new ExprEvaluator(compiler, classLoader);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -310,12 +309,12 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * {@inheritDoc}
      */
-    public boolean addOrDeleteFormulaTestInputValues(String[] newIdentifiers) {
+    public boolean addOrDeleteFormulaTestInputValues(String[] newIdentifiers, IIpsProject ipsProject) {
         boolean changed = false;
         
         // add new or existing value on the given position
         List newListOfInputValues = new ArrayList();
-        changed = updateWithAllIdentifiers(newIdentifiers, newListOfInputValues);
+        changed = updateWithAllIdentifiers(newIdentifiers, newListOfInputValues, ipsProject);
         
         // store new list
         formulaTestInputValues = newListOfInputValues;
@@ -330,7 +329,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * Adds all of input values to the given list, returns <code>true</code> if there were changes.
      */
-    private boolean updateWithAllIdentifiers(String[] newIdentifiers, List newListOfInputValues){
+    private boolean updateWithAllIdentifiers(String[] newIdentifiers, List newListOfInputValues, IIpsProject ipsProject){
         boolean changed = false;
         List oldInputValues = new ArrayList();
         oldInputValues.addAll(formulaTestInputValues);
@@ -342,7 +341,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
                 inputValue.setIdentifier(newIdentifiers[i]);
                 // try to set the default value depending on the corresponding value datatype
                 try {
-                    Datatype datatype = inputValue.findDatatypeOfFormulaParameter();
+                    Datatype datatype = inputValue.findDatatypeOfFormulaParameter(ipsProject);
                     if (datatype instanceof ValueDatatype){
                         inputValue.setValue(((ValueDatatype)datatype).getDefaultValue());
                     }
@@ -391,11 +390,10 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
      * {@inheritDoc}
      */
     public String generateUniqueNameForFormulaTestCase(String nameProposal) {
-        IConfigElement parent = (IConfigElement) getParent();
         String uniqueName = nameProposal;
 
         int idx = 2;
-        IFormulaTestCase[] ftcs = parent.getFormulaTestCases();
+        IFormulaTestCase[] ftcs = getFormula().getFormulaTestCases();
         for (int i = 0; i < ftcs.length; i++) {
             if (! (ftcs[i] == this) && ftcs[i].getName().equals(uniqueName)){
                 uniqueName = nameProposal + " (" + idx++ + ")"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -410,12 +408,12 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
      */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
-        
-        IConfigElement parent = (IConfigElement) getParent();
-        ArgumentCheck.notNull(parent);
+        IIpsProject ipsProject = getIpsProject();
+        IFormula formula = getFormula();
         
         // check for duplicase formula test case names
-        IFormulaTestCase[] ftcs = parent.getFormulaTestCases();
+        IFormulaTestCase[] ftcs = getFormula().getFormulaTestCases();
+        // v2 - this code has to be moved to formula
         for (int i = 0; i < ftcs.length; i++) {
             if (! (ftcs[i] == this) && ftcs[i].getName().equals(name)){
                 String text = NLS.bind(Messages.FormulaTestCase_ValidationMessage_DuplicateFormulaTestCaseName, name);
@@ -426,7 +424,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         
         // check that the formula test input values matches the identifier in the formula
         boolean isIdentifierMismatch = false;
-        String[] identifierInFormula = parent.getParameterIdentifiersUsedInFormula();
+        String[] identifierInFormula = formula.getParameterIdentifiersUsedInFormula(ipsProject);
         if (identifierInFormula.length != formulaTestInputValues.size()){
             isIdentifierMismatch = true;
         }
@@ -439,7 +437,7 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         if (isIdentifierMismatch) {
             String text = NLS.bind(
                     Messages.FormulaTestCase_ValidationMessage_MismatchBetweenFormulaInputValuesAndIdentifierInFormula,
-                    name, ((IConfigElement)getParent()).getName());
+                    name, getFormula().getName());
             list.add(new Message(MSGCODE_IDENTIFIER_MISMATCH, text, Message.WARNING, this, PROPERTY_NAME));
         }
     }

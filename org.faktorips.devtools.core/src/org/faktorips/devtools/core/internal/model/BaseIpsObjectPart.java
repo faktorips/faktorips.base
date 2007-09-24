@@ -38,6 +38,7 @@ import org.w3c.dom.Element;
  */
 public abstract class BaseIpsObjectPart extends IpsObjectPart {
 
+    private List tagsToIgnore = new ArrayList(0);
     private List partCollections = new ArrayList(1);
     
     /**
@@ -58,6 +59,10 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
 
     protected void addPartCollection(IpsObjectPartCollection container) {
         partCollections.add(container);
+    }
+    
+    protected void addTagToIgnore(String xmlTagName) {
+        tagsToIgnore.add(xmlTagName);
     }
 
     /**
@@ -85,6 +90,9 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
             if (part!=null) {
                 return part;
             }
+        }
+        if (tagsToIgnore.contains(xmlTag.getNodeName())) {
+            return null;
         }
         throw new RuntimeException("Could not create part for xml element " + xmlTag.getNodeName()); //$NON-NLS-1$
     }

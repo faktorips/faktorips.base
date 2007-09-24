@@ -24,14 +24,14 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.Parameter;
-import org.faktorips.devtools.core.model.product.ConfigElementType;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -40,7 +40,8 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
     
     private IIpsProject ipsProject;
     private IPolicyCmptType policyCmptType;
-    private IConfigElement configElement;
+    private IProductCmptType productCmptType;
+    private IFormula formula;
     private IFormulaTestCase formulaTestCase;
     private IFormulaTestInputValue formulaTestInputValue;
 
@@ -48,15 +49,52 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = super.newIpsProject("TestProject");
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
-        IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
+        productCmptType = policyCmptType.findProductCmptType(ipsProject);
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
         IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(0);
-        configElement = generation.newConfigElement();
-        configElement.setType(ConfigElementType.FORMULA);
-        formulaTestCase = configElement.newFormulaTestCase();
+        formula = generation.newFormula();
+        formulaTestCase = formula.newFormulaTestCase();
         formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
     }
     
+    public void testValidate_relatedAttributeNotFound_datatypeOfRelatedAttributeNotFound() throws CoreException{      
+        
+        IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
+        method.setDatatype(Datatype.STRING.getQualifiedName());
+        method.setName("calculatePremium");
+        method.setFormulaSignatureDefinition(true);
+        method.setFormulaName("Premium Calculation");
+        method.newParameter(Datatype.INTEGER.getQualifiedName(), "param1");
+        method.newParameter(Datatype.BOOLEAN.getQualifiedName(), "param2");
+        IParameter param = method.newParameter(policyCmptType.getQualifiedName(), "policy");
+        
+        formula.setFormulaSignature(method.getFormulaName());
+        formula.setExpression("param1 * param2 * 2 * policy.premium");
+        
+        IAttribute attribute = policyCmptType.newAttribute();
+        attribute.setAttributeType(AttributeType.CHANGEABLE);
+        attribute.setName("premium");
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        
+        formulaTestInputValue.setIdentifier("policy.premium");
+        formulaTestInputValue.setValue("10");
+        assertEquals(param, formulaTestInputValue.findFormulaParameter(ipsProject)); // test setup
+
+        // ok case
+        MessageList ml = formulaTestInputValue.validate();
+        assertNull(ml.getMessageByCode(IFormulaTestInputValue.MSGCODE_DATATYPE_OF_RELATED_ATTRIBUTE_NOT_FOUND));
+        
+        // datatype of the referenced attribute wasn't found
+        attribute.setDatatype("UnknowDatatype");
+        ml = formulaTestInputValue.validate();
+        assertNotNull(ml.getMessageByCode(IFormulaTestInputValue.MSGCODE_DATATYPE_OF_RELATED_ATTRIBUTE_NOT_FOUND));
+
+        // related attribute not found (wrong identifier)
+        formulaTestInputValue.setIdentifier("policy.unknownAttribute");
+        ml = formulaTestInputValue.validate();
+        assertNotNull(ml.getMessageByCode(IFormulaTestInputValue.MSGCODE_RELATED_ATTRIBUTE_NOT_FOUND));
+    }    
+
     public void testInitFromXml() {
         Document doc = this.getTestDocument();
         formulaTestInputValue.initFromXml((Element)doc.getDocumentElement());
@@ -78,20 +116,18 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
     }
     
     public void testFindFormulaParameter() throws Exception{
-        IAttribute attribute = policyCmptType.newAttribute();
-        attribute.setName("attribute1");
-        attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
-        attribute.setName("premium");
-        Parameter[] params = new Parameter[]{new Parameter(0, "police", policyCmptType.getQualifiedName())};
-        attribute.setFormulaParameters(params);
+        IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
+        method.setDatatype(Datatype.INTEGER.getQualifiedName());
+        method.setName("calculatePremium");
+        method.setFormulaSignatureDefinition(true);
+        method.setFormulaName("Premium Calculation");
+        IParameter param = method.newParameter(policyCmptType.getQualifiedName(), "policy");
         
-        configElement.setType(ConfigElementType.FORMULA);
-        configElement.setPcTypeAttribute(attribute.getName());
-        formulaTestInputValue.setIdentifier("police");
+        formula.setFormulaSignature(method.getFormulaName());
+        formulaTestInputValue.setIdentifier("policy");
         
-        Parameter parameterFound = formulaTestInputValue.findFormulaParameter();
-        assertEquals(params[0], parameterFound);
+        IParameter parameterFound = formulaTestInputValue.findFormulaParameter(ipsProject);
+        assertEquals(param, parameterFound);
     }
 
     public void testFindDatatypeOfFormulaParameter() throws CoreException{
@@ -101,49 +137,35 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         attributeInput.setAttributeType(AttributeType.CHANGEABLE);
         attributeInput.setDatatype(Datatype.STRING.getQualifiedName());
         
-        IAttribute attribute = policyCmptType.newAttribute();
-        attribute.setName("attribute1");
-        attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
-        Parameter[] params = new Parameter[3];
-        params[0] = new Parameter(0, "param1", Datatype.INTEGER.getQualifiedName());
-        params[1] = new Parameter(1, "param2", Datatype.BOOLEAN.getQualifiedName());
-        params[2] = new Parameter(2, "policyInputX", pcTypeInput.getQualifiedName());
+        IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
+        method.setDatatype(Datatype.INTEGER.getQualifiedName());
+        method.setName("calculatePremium");
+        method.setFormulaSignatureDefinition(true);
+        method.setFormulaName("Premium Calculation");
+        method.newParameter(Datatype.INTEGER.getQualifiedName(), "param1");
+        method.newParameter(Datatype.BOOLEAN.getQualifiedName(), "param2");
+        method.newParameter(pcTypeInput.getQualifiedName(), "policyInputX");
         
-        attribute.setFormulaParameters(params);
-        
-        configElement.setType(ConfigElementType.FORMULA);
-        configElement.setPcTypeAttribute(attribute.getName());
-        configElement.setValue("param1 * param2 * 2 * policyInputX.attributeInput");
+        formula.setFormulaSignature(method.getFormulaName());
+        formula.setExpression("param1 * param2 * 2 * policyInputX.attributeInput");
         
         // param1
         IFormulaTestInputValue formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
         formulaTestInputValue.setIdentifier("param1");
         formulaTestInputValue.setValue("10");
-        assertEquals(Datatype.INTEGER, formulaTestInputValue.findDatatypeOfFormulaParameter());
-        
-        // check attribute in supertype
-        IPolicyCmptType superType = newPolicyCmptType(ipsProject, "base");
-        pcTypeInput.setSupertype(superType.getQualifiedName());
-        IAttribute attrInSuperType = superType.newAttribute();
-        attrInSuperType.setName("super");
-        attrInSuperType.setDatatype(Datatype.INTEGER.getQualifiedName());
-        attribute.setAttributeType(AttributeType.CHANGEABLE);
-        formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
-        formulaTestInputValue.setIdentifier("policyInputX.super");
-        formulaTestInputValue.setValue("10");
-        assertEquals(Datatype.INTEGER, formulaTestInputValue.findDatatypeOfFormulaParameter());
+        assertEquals(Datatype.INTEGER, formulaTestInputValue.findDatatypeOfFormulaParameter(ipsProject));
         
         // param2
         formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
         formulaTestInputValue.setIdentifier("param2");
         formulaTestInputValue.setValue("3");
-        assertEquals(Datatype.BOOLEAN, formulaTestInputValue.findDatatypeOfFormulaParameter());
+        assertEquals(Datatype.BOOLEAN, formulaTestInputValue.findDatatypeOfFormulaParameter(ipsProject));
+        
         // policyInput
         formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
         formulaTestInputValue.setIdentifier("policyInputX.attributeInput");
         formulaTestInputValue.setValue("10");
-        assertEquals(Datatype.STRING, formulaTestInputValue.findDatatypeOfFormulaParameter());
+        assertEquals(Datatype.STRING, formulaTestInputValue.findDatatypeOfFormulaParameter(ipsProject));
         
         // check if inconsistence doesn't cause an exception
         //   a) datatype of the related attribute wasn't found
@@ -151,45 +173,52 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
         formulaTestInputValue.setIdentifier("policyInputX.attributeInput");
         formulaTestInputValue.setValue("10");
-        assertEquals(null, formulaTestInputValue.findDatatypeOfFormulaParameter());
+        assertEquals(null, formulaTestInputValue.findDatatypeOfFormulaParameter(ipsProject));
         attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
 
+        // check attribute in supertype
+        IPolicyCmptType superType = newPolicyCmptType(ipsProject, "BaseType");
+        pcTypeInput.setSupertype(superType.getQualifiedName());
+        IAttribute attrInSuperType = superType.newAttribute();
+        attrInSuperType.setName("super");
+        attrInSuperType.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attrInSuperType.setAttributeType(AttributeType.CHANGEABLE);
+        formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
+        formulaTestInputValue.setIdentifier("policyInputX.super");
+        formulaTestInputValue.setValue("10");
+        assertEquals(Datatype.INTEGER, formulaTestInputValue.findDatatypeOfFormulaParameter(ipsProject));
+        
         //   b) wrong identifier
         formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
         formulaTestInputValue.setIdentifier("unknown_policyInputX.attributeInput");
         formulaTestInputValue.setValue("10");
-        assertEquals(null, formulaTestInputValue.findDatatypeOfFormulaParameter());
+        assertEquals(null, formulaTestInputValue.findDatatypeOfFormulaParameter(ipsProject));
         attributeInput.setName("attributeInput");
         
         //   c) related attribute not found (wrong identifier)
         formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
         formulaTestInputValue.setIdentifier("policyInputX.unknown_attributeInput");
         formulaTestInputValue.setValue("none");
-        assertEquals(null, formulaTestInputValue.findDatatypeOfFormulaParameter());
+        assertEquals(null, formulaTestInputValue.findDatatypeOfFormulaParameter(ipsProject));
     }
 
     public void testValidate_formulaParameterNotFound() throws CoreException{
-        IAttribute attribute = policyCmptType.newAttribute();
-        attribute.setName("attribute1");
-        attribute.setProductRelevant(true);
+        IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
+        method.setDatatype(Datatype.STRING.getQualifiedName());
+        method.setName("calculatePremium");
+        method.setFormulaSignatureDefinition(true);
+        method.setFormulaName("Premium Calculation");
+        method.newParameter(Datatype.INTEGER.getQualifiedName(), "param1");
+        method.newParameter(Datatype.BOOLEAN.getQualifiedName(), "param2");
+        method.newParameter(policyCmptType.getQualifiedName(), "policy");
 
-        attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-        attribute.setDatatype(Datatype.STRING.getQualifiedName());
-        Parameter[] params = new Parameter[3];
-        params[0] = new Parameter(0, "param1", Datatype.INTEGER.getQualifiedName());
-        params[1] = new Parameter(1, "param2", Datatype.BOOLEAN.getQualifiedName());
-        params[2] = new Parameter(2, "policyInputX", policyCmptType.getQualifiedName());
-        attribute.setFormulaParameters(params);
+        IAttribute attributeInput = policyCmptType.newAttribute();
+        attributeInput.setName("premium");
+        attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
         
-        configElement.setType(ConfigElementType.FORMULA);
-        configElement.setPcTypeAttribute(attribute.getName());
-        configElement.setValue("param1 * param2 * 2 * policyInputX.attributeInput");
+        formula.setFormulaSignature(method.getFormulaName());
+        formula.setExpression("param1 * param2 * 2 * policy.premium");
 
-        formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
-        formulaTestInputValue.setIdentifier("policyInputX.attribute1");
-        formulaTestInputValue.setValue("10");
-        assertEquals(Datatype.STRING, formulaTestInputValue.findDatatypeOfFormulaParameter());
-        
         // param1
         formulaTestInputValue.setIdentifier("param1");
         MessageList ml = formulaTestInputValue.validate();
@@ -198,55 +227,10 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         formulaTestInputValue.setIdentifier("xyz");
         ml = formulaTestInputValue.validate();
         assertNotNull(ml.getMessageByCode(IFormulaTestInputValue.MSGCODE_FORMULA_PARAMETER_NOT_FOUND));
+        
+        formulaTestInputValue.setIdentifier("policy123.premium");
+        ml = formulaTestInputValue.validate();
+        assertNotNull(ml.getMessageByCode(IFormulaTestInputValue.MSGCODE_FORMULA_PARAMETER_NOT_FOUND));
     }
     
-    public void testValidate_relatedAttributeNotFound_datatypeOfRelatedAttributeNotFound() throws CoreException{      
-        IAttribute attribute = policyCmptType.newAttribute();
-        attribute.setName("attribute1");
-        attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
-        Parameter[] params = new Parameter[3];
-        params[0] = new Parameter(0, "param1", Datatype.INTEGER.getQualifiedName());
-        params[1] = new Parameter(1, "param2", Datatype.BOOLEAN.getQualifiedName());
-        params[2] = new Parameter(2, "policyInputX", policyCmptType.getQualifiedName());
-        
-        attribute.setFormulaParameters(params);
-        
-        configElement.setType(ConfigElementType.FORMULA);
-        configElement.setPcTypeAttribute(attribute.getName());
-        configElement.setValue("param1 * param2 * 2 * policyInputX.attributeInput");
-        
-        // param1
-        IFormulaTestInputValue formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
-        formulaTestInputValue.setIdentifier("param1");
-        formulaTestInputValue.setValue("10");
-        assertEquals(Datatype.INTEGER, formulaTestInputValue.findDatatypeOfFormulaParameter());
-        // param2
-        formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
-        formulaTestInputValue.setIdentifier("param2");
-        formulaTestInputValue.setValue("3");
-        assertEquals(Datatype.BOOLEAN, formulaTestInputValue.findDatatypeOfFormulaParameter());
-        // policyInput
-        formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
-        formulaTestInputValue.setIdentifier("policyInputX.attribute1");
-        formulaTestInputValue.setValue("10");
-        assertEquals(Datatype.INTEGER, formulaTestInputValue.findDatatypeOfFormulaParameter());
-        
-        // check validate
-        // a) datatype of the related attribute wasn't found
-        attribute.setDatatype("UnknowDatatype");
-        formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
-        formulaTestInputValue.setIdentifier("policyCmptType1.attribute1");
-        formulaTestInputValue.setValue("10");
-        MessageList ml = formulaTestInputValue.validate();
-        assertNull(ml.getMessageByCode(IFormulaTestInputValue.MSGCODE_DATATYPE_OF_RELATED_ATTRIBUTE_NOT_FOUND));
-        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
-
-        //   b) related attribute not found (wrong identifier)
-        formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
-        formulaTestInputValue.setIdentifier("policyCmptType1.unknown_attributeInput");
-        formulaTestInputValue.setValue("none");
-        ml = formulaTestInputValue.validate();
-        assertNull(ml.getMessageByCode(IFormulaTestInputValue.MSGCODE_RELATED_ATTRIBUTE_NOT_FOUND));
-    }    
 }

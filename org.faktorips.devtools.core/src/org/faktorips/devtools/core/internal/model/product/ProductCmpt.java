@@ -40,13 +40,13 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptKind;
-import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
+import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
@@ -178,7 +178,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         IProductCmptType type = findProductCmptType(ipsProject);
         if (type == null) {
             String text = NLS.bind(Messages.ProductCmpt_msgUnknownTemplate, this.productCmptType);
-            list.add(new Message("", text, Message.ERROR, this, PROPERTY_PRODUCT_CMPT_TYPE)); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE, text, Message.ERROR, this, PROPERTY_PRODUCT_CMPT_TYPE)); //$NON-NLS-1$
         } else {
         	try {
 				MessageList list3 = type.validate();
@@ -240,10 +240,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     public boolean containsFormulaTest() {
         IIpsObjectGeneration[] generations = getGenerations();
         for (int i=0; i<generations.length; i++) {
-            if (((ProductCmptGeneration)generations[i]).containsFormula()) {
-                IConfigElement[] cfs = ((ProductCmptGeneration)generations[i]).getConfigElements();
-                for (int j = 0; j < cfs.length; j++) {
-                    if (cfs[j].getFormulaTestCases().length > 0){
+            IProductCmptGeneration gen = getProductCmptGeneration(0);
+            if (gen.getNumOfFormulas()>0) {
+                IFormula[] formulas = gen.getFormulas();
+                for (int j = 0; j < formulas.length; j++) {
+                    if (formulas[j].getFormulaTestCases().length > 0){
                         return true;
                     }
                 }
@@ -257,7 +258,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      */
     public QualifiedNameType[] dependsOn() throws CoreException {
         
-        // TODO is this correct? we still have dependencies to other product components!
+        // TODO v2 - is this correct? we still have dependencies to other product components!
         if(StringUtils.isEmpty(productCmptType)){
             return new QualifiedNameType[0];
         }

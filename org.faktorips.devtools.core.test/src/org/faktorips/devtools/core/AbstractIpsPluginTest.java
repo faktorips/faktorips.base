@@ -21,6 +21,7 @@ import java.beans.PropertyDescriptor;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -62,6 +63,9 @@ import org.faktorips.devtools.core.internal.model.IpsProjectProperties;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptType;
+import org.faktorips.devtools.core.internal.model.testcase.TestObject;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -79,6 +83,7 @@ import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.test.XmlAbstractTestCase;
 import org.faktorips.devtools.core.ui.binding.BeanUtil;
+import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.StringUtil;
 
@@ -550,7 +555,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	 * this method</li>
 	 * </ol>
 	 */
-	protected DynamicEnumDatatype[] newDefinedEnumDatatype(IpsProject project,
+	protected DynamicEnumDatatype[] newDefinedEnumDatatype(IIpsProject project,
 			Class[] adaptedClass) {
 
 		ArrayList dataTypes = new ArrayList(adaptedClass.length);
@@ -569,7 +574,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 		}
 
 		IpsProjectProperties properties = ((IpsModel) project.getIpsModel())
-				.getIpsProjectProperties(project);
+				.getIpsProjectProperties((IpsProject)project);
 		DynamicEnumDatatype[] returnValue = (DynamicEnumDatatype[]) dataTypes
 				.toArray(new DynamicEnumDatatype[adaptedClass.length]);
 		properties.setDefinedDatatypes(returnValue);
@@ -632,17 +637,44 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             printOriginalStatus(statuus[i]);
         }
     }
+    
+    protected IpsModel getIpsModel() {
+        return (IpsModel)IpsPlugin.getDefault().getIpsModel();
+    }
 
     protected void testPropertyAccessReadWrite(Class clazz, String propertyName) {
         testPropertyAccessReadOnly(clazz, propertyName);
         testPropertyAccessWriteOnly(clazz, propertyName);
     }
 
+    protected void testPropertyAccessReadWrite(Class clazz, String propertyName, Object object, Object testValueToSet)  {
+        testPropertyAccessReadWrite(clazz, propertyName);
+        PropertyDescriptor prop = BeanUtil.getPropertyDescriptor(clazz, propertyName);
+        ModelChangeListener listener = new ModelChangeListener();
+        boolean writeOk = false;
+        try {
+            getIpsModel().addChangeListener(listener);
+            prop.getWriteMethod().invoke(object, new Object[]{testValueToSet});
+            writeOk = true;
+            Object retValue = prop.getReadMethod().invoke(object, new Object[0]);
+            assertEquals("Getter method for property " + propertyName + " of class " + clazz.getName() + " does not return the expected value", testValueToSet, retValue);
+            assertNotNull("Setter method for property " + propertyName + " of class " + clazz.getName() + " hasn't triggered a change event", listener.lastEvent);
+        } catch (Exception e) {
+            if (writeOk) {
+                fail("An exception occured while reading property " + propertyName + " of class " + clazz.getName());
+            } else {
+                fail("An exception occured while setting property " + propertyName + " of class " + clazz.getName());
+            }
+        } finally {
+            getIpsModel().removeChangeListener(listener);
+        }
+    }
+
     protected void testPropertyAccessWriteOnly(Class clazz, String propertyName) {
         PropertyDescriptor prop = BeanUtil.getPropertyDescriptor(clazz, propertyName);
         Method writeMethod = prop.getWriteMethod();
         assertNotNull("Class " + clazz.getName() + " hasn't got a write method for property " + propertyName, writeMethod);
-        assertEquals(1, writeMethod.getParameterTypes().length);
+        assertEquals("Class " + clazz.getName() + ": Write method for property " + propertyName + " must have exactly 1 argument", 1, writeMethod.getParameterTypes().length);
     }
 
     protected void testPropertyAccessReadOnly(Class clazz, String propertyName) {
@@ -684,5 +716,18 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
         ByteArrayInputStream is= new ByteArrayInputStream(bytes);
         file.create(is, true, null);
+    }
+    
+    class ModelChangeListener implements ContentsChangeListener {
+
+        ContentChangeEvent lastEvent;
+        
+        /**
+         * {@inheritDoc}
+         */
+        public void contentsChanged(ContentChangeEvent event) {
+            lastEvent = event;
+        }
+        
     }
 }

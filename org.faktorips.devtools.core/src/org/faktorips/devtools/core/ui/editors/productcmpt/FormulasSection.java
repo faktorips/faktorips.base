@@ -33,14 +33,12 @@ import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.product.ConfigElement;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.product.ConfigElementType;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
@@ -121,20 +119,20 @@ public class FormulasSection extends IpsSection {
 	 */
 	private void createEditControls() {
 		uiMasterController = new CompositeUIController();
-        IpsObjectUIController ctrl = new IpsObjectUIController(generation
-				.getIpsObject());
+        IpsObjectUIController ctrl = new IpsObjectUIController(generation.getIpsObject());
 		uiMasterController.add(ctrl);
 	
-		IConfigElement[] elements = generation.getConfigElements(ConfigElementType.FORMULA);
-		Arrays.sort(elements, new ConfigElementComparator());
+		IFormula[] formulas = generation.getFormulas();
+		// TODO v2 - sort formulas
+        // Arrays.sort(formulas, new ConfigElementComparator());
 
         ITableContentUsage usages[] = generation.getTableContentUsages();
 
         // handle the "no formulas defined" label
-		if (elements.length + usages.length == 0 && noFormulasLabel == null) {
+		if (formulas.length + usages.length == 0 && noFormulasLabel == null) {
             noFormulasLabel = toolkit.createLabel(rootPane, Messages.FormulasSection_noFormulasDefined);
         }
-        else if (elements.length + usages.length > 0 && noFormulasLabel != null) {
+        else if (formulas.length + usages.length > 0 && noFormulasLabel != null) {
             noFormulasLabel.dispose();
             noFormulasLabel = null;
         }
@@ -162,23 +160,23 @@ public class FormulasSection extends IpsSection {
         }
 
         // create formula edit fields
-        for (int i = 0; i < elements.length; i++) {
-			Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalise(elements[i].getName()));
+        for (int i = 0; i < formulas.length; i++) {
+			Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalise(formulas[i].getName()));
              // use description of formula attribute as tooltip
-            label.setToolTipText(elements[i].getDescription());
+            label.setToolTipText(formulas[i].getDescription());
             
-            FormulaEditControl evc = new FormulaEditControl(rootPane, toolkit, elements[i], this.getShell(), this);
-            ctrl.add(new TextField(evc.getTextControl()), elements[i], ConfigElement.PROPERTY_VALUE);
+            FormulaEditControl evc = new FormulaEditControl(rootPane, toolkit, formulas[i], this.getShell(), this);
+            ctrl.add(new TextField(evc.getTextControl()), formulas[i], IFormula.PROPERTY_EXPRESSION);
             addFocusControl(evc.getTextControl());
 			this.editControls.add(evc);
 	
 			try {
-                FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(elements[i]);
+                FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(formulas[i]);
                 ContentAssistHandler.createHandlerForText(evc.getTextControl(), CompletionUtil
                         .createContentAssistant(completionProcessor));
-                IAttribute attribute = elements[i].findPcTypeAttribute();
-                if (attribute != null){
-                    label.setToolTipText(attribute.getDescription());
+                IMethod signature = formulas[i].findFormulaSignature(generation.getIpsProject());
+                if (signature != null){
+                    label.setToolTipText(signature.getDescription());
                 }
 			} catch (CoreException e) {
 				IpsPlugin.logAndShowErrorDialog(e);

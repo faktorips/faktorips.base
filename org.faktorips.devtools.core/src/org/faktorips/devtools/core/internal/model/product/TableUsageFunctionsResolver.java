@@ -32,13 +32,21 @@ import org.faktorips.fl.FunctionResolver;
 import org.faktorips.util.ArgumentCheck;
 
 public class TableUsageFunctionsResolver implements FunctionResolver {
+    
+    private IIpsProject ipsProject;
     private ITableContentUsage[] tableContentUsages;
     
     private FlFunction[] flFunctionsCache;
 
     public TableUsageFunctionsResolver(IIpsProject ipsProject, ITableContentUsage[] tableContentUsages) {
-        ArgumentCheck.notNull(tableContentUsages, ipsProject);
+        ArgumentCheck.notNull(ipsProject);
+        ArgumentCheck.notNull(tableContentUsages);
+        this.ipsProject = ipsProject;
         this.tableContentUsages = tableContentUsages;
+    }
+    
+    public IIpsProject getIpsProject() {
+        return ipsProject;
     }
     
     public FlFunction[] getFunctions() {

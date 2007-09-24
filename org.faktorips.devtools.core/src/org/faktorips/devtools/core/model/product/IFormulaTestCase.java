@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model.product;
 
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsProject;
 
 /**
  * Specification of a formula test to test a product formula.
@@ -51,6 +52,16 @@ public interface IFormulaTestCase extends IIpsObjectPart {
     public void setName(String name);
     
     /**
+     * Returns the formula this test case tests.
+     */
+    public IFormula getFormula();
+
+    /**
+     * Adds a new formula test input value.
+     */
+    public IFormulaTestInputValue newFormulaTestInputValue();
+
+    /**
      * Returns all formula test input values. Returns <code>null</code> if no values exist.
      */
     public IFormulaTestInputValue[] getFormulaTestInputValues();
@@ -75,18 +86,13 @@ public interface IFormulaTestCase extends IIpsObjectPart {
      * 
      * @throws Exception If an error occurs while evaluating the result
      */
-    public Object execute() throws Exception;
+    public Object execute(IIpsProject ipsProject) throws Exception;
     
-    /**
-     * Adds a new formula test input value.
-     */
-    public IFormulaTestInputValue newFormulaTestInputValue();
-
     /**
      * Adds new or delete unused formula test input values. Returns <code>true</code> if one or more
      * formula test input values are deleted or added. If there was no change returns <code>false</code>.
      */
-    public boolean addOrDeleteFormulaTestInputValues(String[] newIdentifiers);
+    public boolean addOrDeleteFormulaTestInputValues(String[] newIdentifiers, IIpsProject ipsProject);
     
     /**
      * Returns <code>true</code> if the formula test case is empty. The formula is empty if it has no formula test input values
@@ -99,5 +105,6 @@ public interface IFormulaTestCase extends IIpsObjectPart {
      * If there is already a name with the given name then the name concatinated with " (n)" will be returned,
      * n will be incremented until the name is unique for all formula test cases in the parent config element.
      */
+    // TODO v2 - sollte nach IFormula verschoben werden.
     public String generateUniqueNameForFormulaTestCase(String nameProposal);
 }
