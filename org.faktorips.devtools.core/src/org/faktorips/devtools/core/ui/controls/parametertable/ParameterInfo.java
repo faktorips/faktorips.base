@@ -15,14 +15,12 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.pctype;
+package org.faktorips.devtools.core.ui.controls.parametertable;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.util.Assert;
-import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.type.IParameter;
 
 
@@ -38,22 +36,6 @@ public class ParameterInfo {
 	private String fNewName;
 	private boolean fIsDeleted;
 	
-	public final static ParameterInfo[] createInfos(Parameter[] params) {
-	    ParameterInfo infos[] = new ParameterInfo[params.length];
-	    for (int i=0; i<params.length; i++) {
-	        infos[i] = new ParameterInfo(params[i].getDatatype(), params[i].getName(), i);
-	    }
-	    return infos;
-	}
-	
-	public final static List createInfosAsList(Parameter[] params) {
-	    List result = new ArrayList(params.length);
-	    for (int i=0; i<params.length; i++) {
-	        result.add(new ParameterInfo(params[i].getDatatype(), params[i].getName(), i));
-	    }
-	    return result;
-	}
-	
     public final static List createInfosAsList(IParameter[] params) {
         List result = new ArrayList(params.length);
         for (int i=0; i<params.length; i++) {
@@ -62,22 +44,6 @@ public class ParameterInfo {
         return result;
     }
     
-    public final static Parameter[] createParameters(List infolist) {
-	    List params = new ArrayList();
-	    int i=0;
-	    for (Iterator it=infolist.iterator(); it.hasNext();) {
-	        ParameterInfo info = (ParameterInfo)it.next();
-	        if (!info.isDeleted()) {
-	            Parameter p = new Parameter(i);
-	            i++;
-		        p.setName(info.fNewName);
-		        p.setDatatype(info.fNewTypeName);
-		        params.add(p);
-	        }
-	    }
-	    return (Parameter[])params.toArray(new Parameter[params.size()]);
-	}
-	
 	public ParameterInfo(String type, String name, int index) {
 		fOldTypeName= type;
 		fNewTypeName= type;

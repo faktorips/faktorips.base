@@ -20,7 +20,6 @@ package org.faktorips.devtools.core.builder;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.type.IParameter;
 
 /**
@@ -29,14 +28,6 @@ import org.faktorips.devtools.core.model.type.IParameter;
  * @author Jan Ortmann
  */
 public class BuilderHelper {
-    
-    public final static String[] extractParameterNames(Parameter[] params) {
-	    String[] paramNames = new String[params.length];
-	    for (int i=0; i<params.length; i++) {
-	        paramNames[i] = params[i].getName();
-	    }
-        return paramNames;
-    }
     
     public final static String[] extractParameterNames(IParameter[] params) {
         String[] paramNames = new String[params.length];

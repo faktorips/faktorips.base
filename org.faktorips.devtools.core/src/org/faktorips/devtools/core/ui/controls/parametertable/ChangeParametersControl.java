@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controls;
+package org.faktorips.devtools.core.ui.controls.parametertable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,9 +69,9 @@ import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DatatypeCompletionProcessor;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controls.Messages;
+import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
-import org.faktorips.devtools.core.ui.editors.pctype.ParameterInfo;
-import org.faktorips.devtools.core.ui.editors.pctype.ParameterListChangeListener;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 

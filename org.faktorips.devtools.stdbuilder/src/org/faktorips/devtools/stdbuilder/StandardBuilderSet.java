@@ -56,7 +56,6 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.runtime.TableFunctionExecution;
 import org.faktorips.runtime.internal.MethodNames;
-import org.osgi.framework.Version;
 
 /**
  * A IpsArtefactBuilderSet implementation that assembles the standard FaktorIPS artefact builders.

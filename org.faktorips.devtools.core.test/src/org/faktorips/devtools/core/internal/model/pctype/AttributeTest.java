@@ -34,7 +34,6 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -123,25 +122,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertTrue(ipsSrcFile.isDirty());
     }
     
-    public void testSetParameters() {
-        attribute.setFormulaParameters(new Parameter[]{new Parameter(0, "p", "int")});
-        assertEquals(1, attribute.getFormulaParameters().length);
-        assertEquals("p", attribute.getFormulaParameters()[0].getName());
-        assertEquals("int", attribute.getFormulaParameters()[0].getDatatype());
-        assertTrue(ipsSrcFile.isDirty());
-    }
-    
-    public void testGetParameters() {
-        Parameter[] params = new Parameter[]{new Parameter(0, "p", "int")};
-        attribute.setFormulaParameters(params);
-        params[0] = null;
-        Parameter[] params2 = attribute.getFormulaParameters();
-        assertEquals("p", params2[0].getName());
-        assertEquals("int", params2[0].getDatatype());
-        params2[0] = null;
-        assertNotNull(attribute.getFormulaParameters()[0]);
-    }
-    
     public void testInitFromXml() {
         Document doc = this.getTestDocument();
         Element root =(Element)doc.getDocumentElement();
@@ -153,12 +133,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertFalse(attribute.isProductRelevant());
         assertEquals(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL, attribute.getAttributeType());
         assertEquals("42EUR", attribute.getDefaultValue());
-        Parameter[] params = attribute.getFormulaParameters();
-        assertEquals(2, params.length);
-        assertEquals("policy", params[0].getName());
-        assertEquals("MotorPolicy", params[0].getDatatype());
-        assertEquals("vehicle", params[1].getName());
-        assertEquals("Vehicle", params[1].getDatatype());
         assertNotNull(attribute.getValueSet());
         assertFalse(attribute.getOverwrites());
         
@@ -183,10 +157,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
         attribute.setAttributeType(AttributeType.CONSTANT);
         attribute.setDefaultValue("18");
         attribute.setOverwrites(false);
-        Parameter[] params = new Parameter[2];
-        params[0] = new Parameter(0, "policy", "MotorPolicy");
-        params[1] = new Parameter(1, "vehicle", "Vehicle");
-        attribute.setFormulaParameters(params);
         attribute.setValueSetType(ValueSetType.RANGE);
         RangeValueSet set = (RangeValueSet)attribute.getValueSet();
         set.setLowerBound("unten");
@@ -203,12 +173,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertFalse(copy.getOverwrites());
         assertEquals(AttributeType.CONSTANT, copy.getAttributeType());
         assertEquals("18", copy.getDefaultValue());
-        Parameter[] paramsCopy = copy.getFormulaParameters();
-        assertEquals(2, paramsCopy.length);
-        assertEquals("policy", paramsCopy[0].getName());
-        assertEquals("MotorPolicy", paramsCopy[0].getDatatype());
-        assertEquals("vehicle", paramsCopy[1].getName());
-        assertEquals("Vehicle", paramsCopy[1].getDatatype());
         assertEquals("unten",((IRangeValueSet)copy.getValueSet()).getLowerBound());
         assertEquals("oben",((IRangeValueSet)copy.getValueSet()).getUpperBound());
         assertEquals("step",((IRangeValueSet)copy.getValueSet()).getStep());
@@ -219,10 +183,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
         attribute.setProductRelevant(true);
         attribute.setAttributeType(AttributeType.CONSTANT);
         attribute.setDefaultValue("18");
-        params = new Parameter[2];
-        params[0] = new Parameter(0, "policy", "MotorPolicy");
-        params[1] = new Parameter(1, "vehicle", "Vehicle");
-        attribute.setFormulaParameters(params);
         attribute.setValueSetType(ValueSetType.ENUM);
         EnumValueSet set2 = (EnumValueSet)attribute.getValueSet();
         set2.addValue("a");
@@ -237,12 +197,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertTrue(attribute.isProductRelevant());
         assertEquals(AttributeType.CONSTANT, attribute.getAttributeType());
         assertEquals("18", attribute.getDefaultValue());
-        paramsCopy = attribute.getFormulaParameters();
-        assertEquals(2, paramsCopy.length);
-        assertEquals("policy", paramsCopy[0].getName());
-        assertEquals("MotorPolicy", paramsCopy[0].getDatatype());
-        assertEquals("vehicle", paramsCopy[1].getName());
-        assertEquals("Vehicle", paramsCopy[1].getDatatype());
         String [] vekt = ((IEnumValueSet)copy.getValueSet()).getValues();
         assertEquals("a", vekt[0]);
         assertEquals("b", vekt[1]);
@@ -257,21 +211,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertEquals("", attribute.getDatatype());
     }
     
-    /**
-     * Tests if an calculates attribute that has a paramater that refers to the type
-     * the attribute is defined in produces not a stack overflow.
-     * @throws CoreException 
-     */
-    public void testValidate_ParamOfCalculatedAttributeRefersToTheTypeItIsDefinedIn() throws CoreException {
-    	attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-    	attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
-    	attribute.setName("premium");
-    	Parameter[] params = new Parameter[]{new Parameter(0, "police", pcType.getQualifiedName())};
-    	attribute.setFormulaParameters(params);
-    	
-    	attribute.validate(); // once this produced a stack overflow!
-    }
-
     /**
      * Tests for the correct type of excetion to be thrwon - no part of any type could ever be created.
      */
@@ -362,80 +301,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
-    public void testValidate_noInputParameters() throws Exception {
-        attribute.setProductRelevant(true);
-    	MessageList ml = attribute.validate();
-    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_NO_INPUT_PARAMETERS));
-    	
-    	attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-    	ml = attribute.validate();
-    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_NO_INPUT_PARAMETERS));
-    }
-
-    public void testValidate_noParametersNeccessary() throws Exception {
-    	attribute.setProductRelevant(false);
-    	MessageList ml = attribute.validate();
-    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_NO_PARAMETERS_NECCESSARY));
-    	       
-    	Parameter param = new Parameter(0, "test", Datatype.INTEGER.getQualifiedName());
-    	attribute.setFormulaParameters(new Parameter[] {param});
-    	ml = attribute.validate();
-    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_NO_PARAMETERS_NECCESSARY));
-    }
-
-    public void testValidate_emptyParameterName() throws Exception {
-    	attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-    	Parameter param = new Parameter(0, "test", Datatype.INTEGER.getQualifiedName());
-    	attribute.setFormulaParameters(new Parameter[] {param});
-
-    	MessageList ml = attribute.validate();
-    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_EMPTY_PARAMETER_NAME));
-    	
-    	param.setName("");
-    	ml = attribute.validate();
-    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_EMPTY_PARAMETER_NAME));
-    	
-    }
-
-    public void testValidate_invalidParameterName() throws Exception {
-    	attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-    	Parameter param = new Parameter(0, "test", Datatype.INTEGER.getQualifiedName());
-    	attribute.setFormulaParameters(new Parameter[] {param});
-
-    	MessageList ml = attribute.validate();
-    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_PARAMETER_NAME));
-    	
-    	param.setName("a.b");
-    	ml = attribute.validate();
-    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_PARAMETER_NAME));
-    }
-
-    public void testValidate_noDatatypeForParameter() throws Exception {
-    	attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-    	Parameter param = new Parameter(0, "test", Datatype.INTEGER.getQualifiedName());
-    	attribute.setFormulaParameters(new Parameter[] {param});
-
-    	MessageList ml = attribute.validate();
-    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_NO_DATATYPE_FOR_PARAMETER));
-    	
-    	param.setDatatype("");
-    	ml = attribute.validate();
-    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_NO_DATATYPE_FOR_PARAMETER));
-    }
-
-    public void testValidate_datatypeNotFound() throws Exception {
-    	attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-    	Parameter param = new Parameter(0, "test", Datatype.INTEGER.getQualifiedName());
-    	attribute.setFormulaParameters(new Parameter[] {param});
-
-    	MessageList ml = attribute.validate();
-    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DATATYPE_NOT_FOUND));
-
-    	param.setDatatype("abc");
-    	ml = attribute.validate();
-    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_DATATYPE_NOT_FOUND));
-    }
-    
     public void testOverwrites() throws Exception {
     	IPolicyCmptType supersupertype = newPolicyCmptType(project, "sup.SuperSuperType");
     	IAttribute supersuperAttr = supersupertype.newAttribute();

@@ -90,39 +90,6 @@ public interface IAttribute extends IMember, IValueSetOwner {
 			+ "DefaultNotInValueSet"; //$NON-NLS-1$
     
     /**
-	 * Validation message code to indicate that there is no input parameter
-	 * for this (computed or derived) attribute.
-	 */
-	public final static String MSGCODE_NO_INPUT_PARAMETERS = MSGCODE_PREFIX
-			+ "NoInputParameters"; //$NON-NLS-1$
-    
-    /**
-	 * Validation message code to indicate that parameters are provided, but they
-	 * are not neccessary because this attribute is neither computed nor derived.
-	 */
-	public final static String MSGCODE_NO_PARAMETERS_NECCESSARY = MSGCODE_PREFIX
-			+ "NoParametersNeccessary"; //$NON-NLS-1$
-    
-    /**
-	 * Validation message code to indicate that the name of a parameter is empty.
-	 */
-	public final static String MSGCODE_EMPTY_PARAMETER_NAME = MSGCODE_PREFIX
-			+ "EmptyParameterName"; //$NON-NLS-1$
-    
-    /**
-	 * Validation message code to indicate that the name of a parameter is not
-	 * a valid java identifier.
-	 */
-	public final static String MSGCODE_INVALID_PARAMETER_NAME = MSGCODE_PREFIX
-			+ "InvalidParameterName"; //$NON-NLS-1$
-    
-    /**
-	 * Validation message code to indicate that a datatype is missing for a parameter.
-	 */
-	public final static String MSGCODE_NO_DATATYPE_FOR_PARAMETER = MSGCODE_PREFIX
-			+ "NoDatatypeForParameter"; //$NON-NLS-1$
-    
-    /**
 	 * Validation message code to indicate that the datatype provided for a parameter 
 	 * is not valid.
 	 */
@@ -276,24 +243,6 @@ public interface IAttribute extends IMember, IValueSetOwner {
      * String if this is not the case. 
      */
     public String getComputationMethodName();
-    
-    /**
-     * Returns the attribute's formnula parameters. Returns an empty array if the method
-     * doesn't have any parameter. 
-     */
-    public Parameter[] getFormulaParameters();
-    
-    /**
-     * Returns the number of formula parameters.
-     */
-    public int getNumOfFormulaParameters();
-    
-    /**
-     * Sets the attributes's formula parameters.
-     * 
-     * @throws NullPointerException if params if <code>null</code>.
-     */
-    public void setFormulaParameters(Parameter[] params);
     
     /**
      * Returns the set of allowed values.

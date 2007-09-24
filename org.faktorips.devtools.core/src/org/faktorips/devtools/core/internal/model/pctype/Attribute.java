@@ -9,9 +9,6 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -21,7 +18,6 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.AllValuesValueSet;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
@@ -36,28 +32,21 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * Implementation of IAttribute.
  */
 public class Attribute extends IpsObjectPart implements IAttribute {
 
-    private static final String TAG_PROPERTY_PARAMETER = "FormulaParameter"; //$NON-NLS-1$
-
     final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
-    private static final String TAG_PARAM_NAME = "name"; //$NON-NLS-1$
-    private static final String TAG_PARAM_DATATYPE = "datatype"; //$NON-NLS-1$
 
     // member variables.
     private String datatype = ""; //$NON-NLS-1$
@@ -65,7 +54,6 @@ public class Attribute extends IpsObjectPart implements IAttribute {
     private AttributeType attributeType = AttributeType.CHANGEABLE;
     private String defaultValue = null;
     private Modifier modifier = Modifier.PUBLISHED;
-    private Parameter[] parameters = new Parameter[0];
     private IValueSet valueSet;
     private boolean overwrites = false;
 
@@ -390,31 +378,6 @@ public class Attribute extends IpsObjectPart implements IAttribute {
     /**
      * {@inheritDoc}
      */
-    public Parameter[] getFormulaParameters() {
-        Parameter[] copy = new Parameter[parameters.length];
-        System.arraycopy(parameters, 0, copy, 0, parameters.length);
-        return copy;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int getNumOfFormulaParameters() {
-        return parameters.length;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setFormulaParameters(Parameter[] params) {
-        parameters = new Parameter[params.length];
-        System.arraycopy(params, 0, parameters, 0, params.length);
-        objectHasChanged();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     protected void validateThis(MessageList result) throws CoreException {
         super.validateThis(result);
         IStatus status = JavaConventions.validateFieldName(name);
@@ -432,14 +395,6 @@ public class Attribute extends IpsObjectPart implements IAttribute {
                 result.add(new Message(MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE, text, Message.WARNING, this,
                         PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
             }
-        }
-
-        if (isDerived() && isProductRelevant() && parameters.length == 0) {
-            String text = Messages.Attribute_msgNoInputparams;
-            result.add(new Message(MSGCODE_NO_INPUT_PARAMETERS, text, Message.WARNING, this)); //$NON-NLS-1$
-        }
-        for (int i = 0; i < parameters.length; i++) {
-            validateParameter(parameters[i], result);
         }
 
         if (isProductRelevant() && !getPolicyCmptType().isConfigurableByProductCmptType()) {
@@ -514,46 +469,6 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         }
     }
 
-    private void validateParameter(Parameter param, MessageList result) throws CoreException {
-        if (!isDerived() && !isProductRelevant()) {
-            String text = Messages.Attribute_msgNoParamsNeccessary;
-            result.add(new Message(MSGCODE_NO_PARAMETERS_NECCESSARY, text, Message.WARNING, param)); //$NON-NLS-1$
-        }
-        if (StringUtils.isEmpty(param.getName())) {
-            result.add(new Message(MSGCODE_EMPTY_PARAMETER_NAME, Messages.Attribute_msgEmptyName, Message.ERROR, param,
-                    PROPERTY_FORMULAPARAM_NAME)); //$NON-NLS-1$
-        } else {
-            IStatus status = JavaConventions.validateIdentifier(param.getName());
-            if (!status.isOK()) {
-                result.add(new Message(MSGCODE_INVALID_PARAMETER_NAME, Messages.Attribute_msgInvalidParamName,
-                        Message.ERROR, param, //$NON-NLS-1$
-                        PROPERTY_FORMULAPARAM_NAME));
-            }
-        }
-        if (StringUtils.isEmpty(param.getDatatype())) {
-            result.add(new Message(MSGCODE_NO_DATATYPE_FOR_PARAMETER, Messages.Attribute_msgDatatypeEmpty,
-                    Message.ERROR, param, PROPERTY_FORMULAPARAM_DATATYPE)); //$NON-NLS-1$
-        } else {
-            Datatype datatypeObject = getIpsProject().findDatatype(param.getDatatype());
-            if (datatypeObject == null) {
-                result.add(new Message(MSGCODE_DATATYPE_NOT_FOUND, NLS.bind(Messages.Attribute_msgDatatypeNotFound,
-                        param.getDatatype()), //$NON-NLS-1$
-                        Message.ERROR, param, PROPERTY_FORMULAPARAM_DATATYPE));
-            } else {
-                if (datatypeObject instanceof ValueDatatype) {
-                    try {
-                        result.add(datatypeObject.validate(),
-                                new ObjectProperty(param, PROPERTY_FORMULAPARAM_DATATYPE), true);
-                    } catch (CoreException e) {
-                        throw e;
-                    } catch (Exception e) {
-                        throw new CoreException(new IpsStatus(e));
-                    }
-                }
-            }
-        }
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -577,22 +492,6 @@ public class Attribute extends IpsObjectPart implements IAttribute {
             productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
         }
         defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$
-
-        // get the nodes with the parameter information
-        NodeList nl = element.getElementsByTagName(TAG_PROPERTY_PARAMETER);
-        List params = new ArrayList();
-        int paramIndex = 0;
-        for (int i = 0; i < nl.getLength(); i++) {
-            if (nl.item(i) instanceof Element) {
-                Element paramElement = (Element)nl.item(i);
-                Parameter newParam = new Parameter(paramIndex);
-                newParam.setName(paramElement.getAttribute(TAG_PARAM_NAME));
-                newParam.setDatatype(paramElement.getAttribute(TAG_PARAM_DATATYPE));
-                params.add(newParam);
-                paramIndex++;
-            }
-        }
-        parameters = (Parameter[])params.toArray(new Parameter[0]);
     }
 
     /**
@@ -611,13 +510,6 @@ public class Attribute extends IpsObjectPart implements IAttribute {
             element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
         }
         ValueToXmlHelper.addValueToElement(defaultValue, element, "DefaultValue"); //$NON-NLS-1$
-        Document doc = element.getOwnerDocument();
-        for (int i = 0; i < parameters.length; i++) {
-            Element newParamElement = doc.createElement(TAG_PROPERTY_PARAMETER);
-            newParamElement.setAttribute(TAG_PARAM_NAME, parameters[i].getName());
-            newParamElement.setAttribute(TAG_PARAM_DATATYPE, parameters[i].getDatatype());
-            element.appendChild(newParamElement);
-        }
     }
 
     /**

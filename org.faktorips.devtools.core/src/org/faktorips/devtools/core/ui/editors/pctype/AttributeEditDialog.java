@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
@@ -41,7 +40,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -49,7 +47,6 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -61,22 +58,19 @@ import org.faktorips.devtools.core.ui.controller.fields.MessageCueController;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
-import org.faktorips.devtools.core.ui.controls.ChangeParametersControl;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.TableElementValidator;
 import org.faktorips.devtools.core.ui.controls.ValueSetEditControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 
 /**
  * Dialog to edit an attribute.
  * 
  * @author Jan Ortmann
  */
-public class AttributeEditDialog extends IpsPartEditDialog implements ParameterListChangeListener {
+public class AttributeEditDialog extends IpsPartEditDialog  {
 
     private IAttribute attribute;
     private IValidationRule rule;
@@ -96,9 +90,6 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     
     private ValueSetEditControl valueSetEditControl;
     private DatatypeRefControl datatypeControl;
-    
-    // control to edit the formula parameters
-    private ChangeParametersControl parametersControl;
     
     private Label labelDefaultValue;
     
@@ -193,10 +184,6 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         page = new TabItem(folder, SWT.NONE);
         page.setText(Messages.AttributeEditDialog_valuesetTitle);
         page.setControl(createValueSetPage(folder));
-
-        page = new TabItem(folder, SWT.NONE);
-        page.setText(Messages.AttributeEditDialog_calcParamsTitle);
-        page.setControl(createFormulaParametersPage(folder));
 
         final TabItem validationRulePage = new TabItem(folder, SWT.NONE);
         validationRulePage.setText(Messages.AttributeEditDialog_validationRuleTitle);
@@ -398,45 +385,6 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         uiController.add(defaultValueField, IAttribute.PROPERTY_DEFAULT_VALUE);
     }
 
-    private Control createFormulaParametersPage(TabFolder folder) {
-
-        Composite pageControl = createTabItemComposite(folder, 1, false);
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(pageControl);
-
-        parametersControl = new ChangeParametersControl(workArea, uiToolkit, SWT.NONE, Messages.AttributeEditDialog_labelParams, attribute.getIpsProject()) {
-
-            public MessageList validate(int paramIndex) throws CoreException {
-                MessageList result = new MessageList();
-                MessageList list = attribute.validate();
-                for (int i = 0; i < list.getNoOfMessages(); i++) {
-                    if (isMessageForParameter(list.getMessage(i), paramIndex)) {
-                        result.add(list.getMessage(i));
-                    }
-                }
-                return result;
-            }
-
-            private boolean isMessageForParameter(Message msg, int paramIndex) {
-                ObjectProperty[] op = msg.getInvalidObjectProperties();
-                for (int j = 0; j < op.length; j++) {
-                    if (op[j].getObject() instanceof Parameter) {
-                        if (((Parameter)op[j].getObject()).getIndex() == paramIndex) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-
-        };
-        
-        parametersControl.setDataChangeable(isDataChangeable());
-        parametersControl.initControl();
-        parametersControl.setLayoutData(new GridData(GridData.FILL_BOTH));
-        return pageControl;
-    }
-
-    
     private Control createValidationRulePage(TabFolder folder) {
         Composite workArea = createTabItemComposite(folder,1, false);
 
@@ -600,9 +548,6 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         }
         
         extFactory.connectToModel(uiController);
-        List infos = ParameterInfo.createInfosAsList(attribute.getFormulaParameters());
-        parametersControl.setInput(infos);
-        parametersControl.setParameterListChangeListener(this);
         
         overwritesListener.doEnablement(!this.attribute.getOverwrites());
         
@@ -610,28 +555,6 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         uiController.updateUI();
         updateValueSetTypes(datatypeField.getText());
         createDefaultValueEditField();
-    }
-
-	/**
-	 * {@inheritDoc}
-	 */
-    public void parameterChanged(ParameterInfo parameter) {
-        parameterListChanged();
-    }
-
-	/**
-	 * {@inheritDoc}
-	 */
-    public void parameterAdded(ParameterInfo parameter) {
-        parameterListChanged();
-    }
-
-	/**
-	 * {@inheritDoc}
-	 */
-    public void parameterListChanged() {
-        Parameter[] params = ParameterInfo.createParameters(parametersControl.getInput());
-        attribute.setFormulaParameters(params);
     }
 
     private class PcTypeValidator implements TableElementValidator {
