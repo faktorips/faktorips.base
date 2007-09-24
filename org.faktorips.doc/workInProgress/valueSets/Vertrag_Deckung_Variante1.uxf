@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><umlet_diagram><element><type>com.umlet.element.base.Class</type><coordinates><x>320</x><y>160</y><w>130</w><h>50</h></coordinates><panel_attributes>Deckungstyp
+--
+</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>289</x><y>190</y><w>102</w><h>120</h></coordinates><panel_attributes>lt=&lt;.
+instanceof</panel_attributes><additional_attributes>81;20;21;100</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>379</x><y>190</y><w>102</w><h>120</h></coordinates><panel_attributes>lt=&lt;.
+instanceof</panel_attributes><additional_attributes>21;20;81;100</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>410</x><y>290</y><w>130</w><h>40</h></coordinates><panel_attributes>_Invalidität_
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>240</x><y>290</y><w>130</w><h>40</h></coordinates><panel_attributes>_Hilfeleistungen_
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>360</x><y>70</y><w>40</w><h>110</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>20;90;20;20</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>320</x><y>40</y><w>130</w><h>50</h></coordinates><panel_attributes>Deckung
+--
+</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>140</x><y>40</y><w>200</w><h>40</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>20;20;180;20</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>30</x><y>40</y><w>130</w><h>50</h></coordinates><panel_attributes>Vertrag
+--
+</panel_attributes><additional_attributes></additional_attributes></element></umlet_diagram>
