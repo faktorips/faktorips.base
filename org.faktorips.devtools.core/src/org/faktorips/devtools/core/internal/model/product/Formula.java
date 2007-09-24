@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -86,6 +87,27 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
      */
     public String getName() {
         return formulaSignature;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getPropertyName() {
+        return formulaSignature;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ProdDefPropertyType getPropertyType() {
+        return ProdDefPropertyType.FORMULA;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getPropertyValue() {
+        return expression;
     }
 
     /**

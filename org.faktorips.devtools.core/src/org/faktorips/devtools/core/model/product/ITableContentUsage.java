@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model.product;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.product.IPropertyValue;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
@@ -27,7 +28,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
  * 
  * @author Thorsten Guenther
  */
-public interface ITableContentUsage extends IIpsObjectPart {
+public interface ITableContentUsage extends IIpsObjectPart, IPropertyValue {
 
     public static final String TAG_NAME = "TableContentUsage"; //$NON-NLS-1$
     

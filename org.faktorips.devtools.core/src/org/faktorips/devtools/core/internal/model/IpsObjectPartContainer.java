@@ -97,8 +97,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
-     * Overridden IMethod. The IpsObjectPartContainer version does not throw an exception as no
-     * resource access is neccessary.
+     * {@inheritDoc}
+     * 
+     * The IpsObjectPartContainer version does not throw an exception as no
+     * resource access is not neccessary.
      *
      * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
      */

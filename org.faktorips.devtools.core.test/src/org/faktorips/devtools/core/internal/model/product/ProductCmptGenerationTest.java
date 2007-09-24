@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
+import org.faktorips.devtools.core.model.product.IAttributeValue;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -99,19 +100,25 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         generation.newLink("coverage");
         generation.newLink("coverage");
         generation.newFormula();
+        generation.newFormula();
+        generation.newAttributeValue();
         Element element = generation.toXml(newDocument());
         
         IProductCmptGeneration copy = new ProductCmptGeneration();
         copy.initFromXml(element);
         assertEquals(2, copy.getNumOfConfigElements());
         assertEquals(3, copy.getNumOfLinks());
-        assertEquals(1, copy.getNumOfFormulas());
+        assertEquals(2, copy.getNumOfFormulas());
+        assertEquals(1, copy.getNumOfAttributeValues());
     }
 
     public void testInitFromXml() {
         generation.initFromXml(getTestDocument().getDocumentElement());
         assertEquals(new GregorianCalendar(2005, 0, 1), generation.getValidFrom());
         
+        IAttributeValue[] attrValues = generation.getAttributeValues();
+        assertEquals(1, attrValues.length);
+
         IConfigElement[] configElements = generation.getConfigElements();
         assertEquals(1, configElements.length);
         

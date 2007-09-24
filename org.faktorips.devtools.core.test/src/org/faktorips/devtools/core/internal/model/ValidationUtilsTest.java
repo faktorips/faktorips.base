@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.IValidationMsgCodes;
+import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.message.MessageList;
@@ -40,12 +40,12 @@ public class ValidationUtilsTest extends AbstractIpsPluginTest {
         IAttribute attribute = policyCmptType.newAttribute();
         attribute.setName("attribute");
         ValidationUtils.checkValue("Integer", "1", attribute, IAttribute.PROPERTY_DEFAULT_VALUE, ml);
-        assertNull(ml.getMessageByCode(IValidationMsgCodes.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
+        assertNull(ml.getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
         
         ValidationUtils.checkValue("Integer", "x", attribute, IAttribute.PROPERTY_DEFAULT_VALUE, ml);
-        assertNotNull(ml.getMessageByCode(IValidationMsgCodes.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
+        assertNotNull(ml.getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
 
         ValidationUtils.checkValue("x", "x", attribute, IAttribute.PROPERTY_DEFAULT_VALUE, ml);
-        assertNotNull(ml.getMessageByCode(IValidationMsgCodes.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND));
+        assertNotNull(ml.getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND));
     }
 }

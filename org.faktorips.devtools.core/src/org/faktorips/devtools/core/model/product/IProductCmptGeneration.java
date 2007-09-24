@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model.product;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 
@@ -104,6 +105,27 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      */
     public void fixDifferences(IProductCmptGenerationPolicyCmptTypeDelta delta) throws CoreException;
     
+    /**
+     * Returns the numer of attribute values defined in the generation. 
+     */
+    public int getNumOfAttributeValues();
+
+    /**
+     * Returns the attribute values defined in the generation. Returns an empty array if the generation
+     * hasn't got an attribute value. 
+     */
+    public IAttributeValue[] getAttributeValues();
+    
+    /**
+     * Creates a new attribute value.
+     */
+    public IAttributeValue newAttributeValue();
+
+    /**
+     * Creates a new attribute value for the given product component attribute and sets the value. 
+     */
+    public IAttributeValue newAttributeValue(IAttribute attribute, String value);
+
     /**
      * Returns the configuration elements.
      */
@@ -194,6 +216,11 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public ITableContentUsage newTableContentUsage();
 
     /**
+     * Returns the number of used table contents.
+     */
+    public int getNumOfTableContentUsages();
+
+    /**
      * @param rolename The rolename for the required content usage.
      * @return The table content usage for the table structure usage with the given rolename.
      */
@@ -219,4 +246,6 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * Creates a new formula.
      */
     public IFormula newFormula();
+    
+    
 }

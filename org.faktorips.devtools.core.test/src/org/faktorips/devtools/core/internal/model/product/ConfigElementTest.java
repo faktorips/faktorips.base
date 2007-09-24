@@ -323,9 +323,12 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         Document doc = this.getTestDocument();
         configElement.initFromXml((Element)doc.getDocumentElement());
         assertEquals(42, configElement.getId());
-        assertEquals(ConfigElementType.PRODUCT_ATTRIBUTE, configElement.getType());
-        assertEquals("rate", configElement.getPcTypeAttribute());
-        assertEquals("1.5", configElement.getValue());
+        assertEquals("sumInsured", configElement.getPcTypeAttribute());
+        assertEquals("10", configElement.getValue());
+        IRangeValueSet range = (IRangeValueSet)configElement.getValueSet();
+        assertEquals("22", range.getLowerBound());
+        assertEquals("33", range.getUpperBound());
+        assertEquals("4", range.getStep());
     }
 
     /*

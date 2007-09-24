@@ -23,7 +23,7 @@ package org.faktorips.devtools.core.model;
  * 
  * @author Joerg Ortmann
  */
-public interface IValidationMsgCodes {
+public interface IValidationMsgCodesForInvalidValues {
 
     /**
 	 * Validation message code to indicate that a value can't be validated because the required

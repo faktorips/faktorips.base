@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model.product;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.product.IPropertyValue;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
@@ -29,7 +30,7 @@ import org.faktorips.fl.ExprCompiler;
  * 
  * @author Jan Ortmann
  */
-public interface IFormula extends IIpsObjectPart {
+public interface IFormula extends IIpsObjectPart, IPropertyValue {
 
     public final static String PROPERTY_FORMULA_SIGNATURE_NAME = "formulaSignature"; 
     public final static String PROPERTY_EXPRESSION = "expression"; 

@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -134,16 +133,16 @@ public class FormulaTest extends AbstractIpsPluginTest  {
         formula.setFormulaSignature("CalcPremium");
         
         MessageList ml = formula.validate();
-        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_WRONG_FORMULA_DATATYPE));
+        assertNotNull(ml.getMessageByCode(IFormula.MSGCODE_WRONG_FORMULA_DATATYPE));
         
         formula.setExpression("1");
         ml = formula.validate();
-        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_WRONG_FORMULA_DATATYPE));
+        assertNull(ml.getMessageByCode(IFormula.MSGCODE_WRONG_FORMULA_DATATYPE));
         
         // test implicit conversion
         method.setDatatype(Datatype.DECIMAL.getQualifiedName());
         ml = formula.validate();
-        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_WRONG_FORMULA_DATATYPE));
+        assertNull(ml.getMessageByCode(IFormula.MSGCODE_WRONG_FORMULA_DATATYPE));
     }
     
     public void testFindFormulaSignature() throws CoreException {

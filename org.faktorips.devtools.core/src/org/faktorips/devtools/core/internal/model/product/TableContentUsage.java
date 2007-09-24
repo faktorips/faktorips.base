@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
@@ -60,6 +61,27 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         super();
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public String getPropertyName() {
+        return structureUsage;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ProdDefPropertyType getPropertyType() {
+        return ProdDefPropertyType.TABLE_CONTENT_USAGE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getPropertyValue() {
+        return tableContentName;
+    }
+
     private ProductCmptGeneration getProductCmptGeneration() {
         return (ProductCmptGeneration) getParent();
     }

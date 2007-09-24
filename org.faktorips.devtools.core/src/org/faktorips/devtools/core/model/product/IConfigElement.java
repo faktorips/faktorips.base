@@ -58,12 +58,6 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider  
     public final static String MSGCODE_UNKNOWN_DATATYPE_VALUE = MSGCODE_PREFIX + "UnknownDatatypeValue"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the formula's datatype is not compatible with the 
-     * one defined by the attribute.
-     */
-    public final static String MSGCODE_WRONG_FORMULA_DATATYPE = MSGCODE_PREFIX + "WrongFormulaDatatype"; //$NON-NLS-1$
-    
-    /**
      * Validation message code to indicate that the datatype is invalid. (E.g. the definition
      * of a dynamic datatype can be wrong.)
      */
@@ -80,11 +74,6 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider  
      */
     public final static String MSGCODE_VALUE_NOT_IN_VALUESET = MSGCODE_PREFIX + "ValueNotInValueSet"; //$NON-NLS-1$
     
-    /**
-     * Validation message code to indicate that formula is missing.
-     */
-    public final static String MSGCODE_MISSING_FORMULA = MSGCODE_PREFIX + "MissingFormula"; //$NON-NLS-1$
-
     /**
      * Validation message code to indicate that the value-set of the attribute (in the model) is invalid.
      */

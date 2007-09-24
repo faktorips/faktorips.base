@@ -26,7 +26,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.IValidationMsgCodes;
+import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -183,7 +183,7 @@ public class ValidationUtils {
 
     /**
      * Checks if a given value is an "instance" of the indicated value datatype. Adds a warning
-     * to the given list, of the datatype either can't be found or is invalid. Adds an error
+     * to the given list, if the datatype either can't be found or is invalid. Adds an error
      * message if the value datatype is ok, but the value is not an instance of it.
      * 
      * @param valueDatatype the qualified value datatype name which will be used to validate the given value
@@ -204,7 +204,7 @@ public class ValidationUtils {
     	ValueDatatype datatype = part.getIpsProject().findValueDatatype(valueDatatype);
     	if (datatype==null) {
     		String text = Messages.ValidationUtils_VALUE_VALUEDATATYPE_NOT_FOUND;
-			Message msg = new Message(IValidationMsgCodes.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND, 
+			Message msg = new Message(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND, 
 					text, Message.WARNING, part, propertyName); //$NON-NLS-1$
 			list.add(msg);
 			return;
@@ -212,7 +212,7 @@ public class ValidationUtils {
     	try {
     		if (datatype.validate().containsErrorMsg()) {
         		String text = NLS.bind(Messages.ValidationUtils_VALUEDATATYPE_INVALID, datatype.getName()); //$NON-NLS-2$
-    			Message msg = new Message(IValidationMsgCodes.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_IS_INVALID, text, Message.WARNING, part, propertyName); //$NON-NLS-1$
+    			Message msg = new Message(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_IS_INVALID, text, Message.WARNING, part, propertyName); //$NON-NLS-1$
     			list.add(msg);
     			return;
     		}
@@ -222,7 +222,7 @@ public class ValidationUtils {
     	
 		if (!datatype.isParsable(value)) {
 			String text = NLS.bind(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE, value, datatype);
-			Message msg = new Message(IValidationMsgCodes.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE, text, Message.ERROR, part, propertyName); //$NON-NLS-1$
+			Message msg = new Message(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE, text, Message.ERROR, part, propertyName); //$NON-NLS-1$
 			list.add(msg);
 		}
     }

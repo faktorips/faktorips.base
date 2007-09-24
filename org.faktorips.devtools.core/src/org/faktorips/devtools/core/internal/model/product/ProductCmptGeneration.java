@@ -23,9 +23,9 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
+import org.faktorips.devtools.core.model.product.IAttributeValue;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
@@ -46,6 +47,8 @@ import org.w3c.dom.Element;
  */
 public class ProductCmptGeneration extends IpsObjectGeneration implements IProductCmptGeneration {
 
+    private List attributeValues = new ArrayList(0);
+    
     private List configElements = new ArrayList(0);
 
     private List links = new ArrayList(0);
@@ -79,15 +82,14 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * {@inheritDoc}
      */
     public IIpsElement[] getChildren() {
-        int numOfChildren = getNumOfConfigElements() + getNumOfLinks() + getTableContentUsages().length + getNumOfFormulas();
-        IIpsElement[] childrenArray = new IIpsElement[numOfChildren];
+        int numOfChildren = getNumOfAttributeValues() + getNumOfConfigElements() + getNumOfLinks() + getNumOfTableContentUsages() + getNumOfFormulas();
         List childrenList = new ArrayList(numOfChildren);
+        childrenList.addAll(attributeValues);        
         childrenList.addAll(configElements);
         childrenList.addAll(tableContentUsages);
         childrenList.addAll(formulas);
         childrenList.addAll(links);
-        childrenList.toArray(childrenArray);
-        return childrenArray;
+        return (IIpsElement[])childrenList.toArray(new IIpsElement[childrenList.size()]);
     }
 
     /**
@@ -104,7 +106,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (delta == null) {
             return;
         }
-        IAttribute[] attributes = delta.getAttributesWithMissingConfigElements();
+        org.faktorips.devtools.core.model.pctype.IAttribute[] attributes = delta.getAttributesWithMissingConfigElements();
         for (int i = 0; i < attributes.length; i++) {
             IConfigElement element = newConfigElement();
             element.setPcTypeAttribute(attributes[i].getName());
@@ -120,12 +122,12 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         }
         elements = delta.getTypeMismatchElements();
         for (int i = 0; i < elements.length; i++) {
-            IAttribute a = elements[i].findPcTypeAttribute();
+            org.faktorips.devtools.core.model.pctype.IAttribute a = elements[i].findPcTypeAttribute();
             elements[i].setType(a.getConfigElementType());
         }
         elements = delta.getElementsWithValueSetMismatch();
         for (int i = 0; i < elements.length; i++) {
-            IAttribute a = elements[i].findPcTypeAttribute();
+            org.faktorips.devtools.core.model.pctype.IAttribute a = elements[i].findPcTypeAttribute();
             elements[i].setValueSetCopy(a.getValueSet());
         }
 
@@ -144,6 +146,56 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         for (int i = 0; i < tcus.length; i++) {
             tcus[i].delete();
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IAttributeValue[] getAttributeValues() {
+        return (IAttributeValue[])attributeValues.toArray(new IAttributeValue[attributeValues.size()]);    
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getNumOfAttributeValues() {
+        return attributeValues.size();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IAttributeValue newAttributeValue(IAttribute attribute, String value) {
+        IAttributeValue newValue = newAttributeValueInternal(getNextPartId(), attribute, value);
+        objectHasChanged();
+        return newValue;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IAttributeValue newAttributeValue() {
+        AttributeValue newElement = newAttributeValueInternal(getNextPartId());
+        objectHasChanged();
+        return newElement;
+    }
+
+    /*
+     * Creates a new attribute value without updating the src file.
+     */
+    private AttributeValue newAttributeValueInternal(int id) {
+        AttributeValue av = new AttributeValue(this, id);
+        attributeValues.add(av);
+        return av;
+    }
+
+    /*
+     * Creates a new attribute value without updating the src file.
+     */
+    private AttributeValue newAttributeValueInternal(int id, IAttribute attr, String value) {
+        AttributeValue av = new AttributeValue(this, id, attr==null ? "" : attr.getName(), value);
+        attributeValues.add(av);
+        return av;
     }
 
     /**
@@ -340,6 +392,16 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return retValue;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public int getNumOfTableContentUsages() {
+        return getTableContentUsages().length;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public ITableContentUsage[] getTableContentUsages() {
         return (ITableContentUsage[])tableContentUsages.toArray(new ITableContentUsage[tableContentUsages.size()]);
     }
@@ -390,6 +452,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * {@inheritDoc}
      */
     public IIpsObjectPart newPart(Class partType) {
+        if (partType.equals(IAttributeValue.class)) {
+            return newAttributeValue();
+        }
         if (partType.equals(IConfigElement.class)) {
             return newConfigElement();
         }
@@ -410,7 +475,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      */
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
         String xmlTagName = xmlTag.getNodeName();
-        if (xmlTagName.equals(ConfigElement.TAG_NAME)) {
+        if (xmlTagName.equals(AttributeValue.TAG_NAME)) {
+            return newAttributeValueInternal(id);
+        } else if (xmlTagName.equals(ConfigElement.TAG_NAME)) {
             return newConfigElementInternal(id);
         } else if (xmlTagName.equals(ProductCmptLink.TAG_NAME)) {
             return newLinkInternal(id);
@@ -426,19 +493,19 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * {@inheritDoc}
      */
     protected void reAddPart(IIpsObjectPart part) {
-        if (part instanceof IConfigElement) {
+        if (part instanceof IAttributeValue) {
+            attributeValues.add(part);
+            return;
+        } else if (part instanceof IConfigElement) {
             configElements.add(part);
             return;
-        }
-        else if (part instanceof IProductCmptLink) {
+        } else if (part instanceof IProductCmptLink) {
             links.add(part);
             return;
-        }
-        else if (part instanceof ITableContentUsage) {
+        } else if (part instanceof ITableContentUsage) {
             tableContentUsages.add(part);
             return;
-        }
-        else if (part instanceof IFormula) {
+        } else if (part instanceof IFormula) {
             formulas.add(part);
             return;
         }
@@ -449,19 +516,19 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * {@inheritDoc}
      */
     protected void removePart(IIpsObjectPart part) {
-        if (part instanceof IConfigElement) {
+        if (part instanceof IAttributeValue) {
+            attributeValues.remove(part);
+            return;
+        } else if (part instanceof IConfigElement) {
             configElements.remove(part);
             return;
-        }
-        else if (part instanceof IProductCmptLink) {
+        } else if (part instanceof IProductCmptLink) {
             links.remove(part);
             return;
-        }
-        else if (part instanceof ITableContentUsage) {
+        } else if (part instanceof ITableContentUsage) {
             tableContentUsages.remove(part);
             return;
-        }
-        else if (part instanceof IFormula) {
+        } else if (part instanceof IFormula) {
             tableContentUsages.remove(part);
             return;
         }
@@ -472,6 +539,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * {@inheritDoc}
      */
     protected void reinitPartCollections() {
+        attributeValues.clear();
         configElements.clear();
         links.clear();
         tableContentUsages.clear();
@@ -493,7 +561,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         }
 
         IProductCmptGenerationPolicyCmptTypeDelta delta = computeDeltaToPolicyCmptType();
-        IAttribute[] attributesWithMissingConfigElements = delta.getAttributesWithMissingConfigElements();
+        org.faktorips.devtools.core.model.pctype.IAttribute[] attributesWithMissingConfigElements = delta.getAttributesWithMissingConfigElements();
         for (int i = 0; i < attributesWithMissingConfigElements.length; i++) {
             String text = NLS.bind(Messages.ProductCmptGeneration_msgAttributeWithMissingConfigElement, attributesWithMissingConfigElements[i].getName());
             list.add(new Message(MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT, text, Message.WARNING, this)); //$NON-NLS-1$
