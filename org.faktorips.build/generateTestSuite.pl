@@ -72,8 +72,8 @@ foreach $project (@projects){
 		
 			my $fullclassname = $package . "." . $classname;
 			$importstatements = $importstatements . "\nimport $fullclassname;";
-			$testcases = $testcases . "\n\t\tSystem.err.println(\"executing ".$classname . "\");";
-			$testcases = $testcases . "\n\t\tsuite.addTestSuite(" . $classname. ".class);";
+			$testcases = $testcases . "\n\t\tSystem.err.println(\"executing ".$fullclassname . "\");";
+			$testcases = $testcases . "\n\t\tsuite.addTestSuite(" . $fullclassname. ".class);";
 
 		    
 
@@ -83,7 +83,7 @@ foreach $project (@projects){
 	
 	$skeleton = $skel;
 	$skeleton =~ s/--BASEPACKAGE--/$project/ig;	
-	$skeleton =~ s/--IMPORTSTATEMENTS--/$importstatements/ig;
+	#$skeleton =~ s/--IMPORTSTATEMENTS--/$importstatements/ig;  auskommentiert, da testfaelle direkt ueber vollen pfad referenziert werden sollen -> siehe FS#527
 	$skeleton =~ s/--TESTCASES--/$testcases/ig;
 	
 	my $packagedir = $project;
