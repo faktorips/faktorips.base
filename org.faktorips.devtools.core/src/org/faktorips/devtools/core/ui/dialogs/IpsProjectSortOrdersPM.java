@@ -376,8 +376,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
 
             // no wrapper-sortOrderPM function needed.
             try {
-                IIpsPackageFragment[] children = fragment.getChildIpsPackageFragments();
-                return ((children.length > 0) ? true : false);
+                return fragment.hasChildIpsPackageFragments();
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 return false;
