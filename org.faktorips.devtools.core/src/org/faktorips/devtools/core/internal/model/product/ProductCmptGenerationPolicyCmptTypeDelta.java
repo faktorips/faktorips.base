@@ -158,7 +158,7 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
         List result = new ArrayList();
         IProductCmptLink[] links = generation.getLinks();
         for (int i=0; i<links.length; i++) {
-            if (productCmptType.findAssociationInSupertypeHierarchy(links[i].getAssociation(), true, ipsProject)==null) {
+            if (productCmptType.findAssociation(links[i].getAssociation(), ipsProject)==null) {
                 result.add(links[i]);
             }
         }

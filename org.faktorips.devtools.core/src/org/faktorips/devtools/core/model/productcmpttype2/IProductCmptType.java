@@ -104,6 +104,20 @@ public interface IProductCmptType extends IIpsObject, IType {
      */
     public IAttribute getAttribute(String name);
 
+
+    /**
+     * Searches an attribute with the given name in the type and it's supertype hierarchy and returns it. 
+     * Returns <code>null</code> if no such attribute exists.
+     * 
+     * @param name          The attribute's name.
+     * @param project       The project which ips object path is used for the searched.
+     *                      This is not neccessarily the project this type is part of. 
+     * 
+     * @throws NullPointerException if project is <code>null</code>.
+     * @throws CoreException if an error occurs while searching.
+     */
+    public IAttribute findAttribute(String name, IIpsProject project) throws CoreException;
+    
     /**
      * Creates a new attribute and returns it.
      */
@@ -150,13 +164,12 @@ public interface IProductCmptType extends IIpsObject, IType {
      * Returns <code>null</code> if no such assoiation exists.
      * 
      * @param name          The association's name.
-     * @param includeSelf   <code>true</code> if this type itseld should be searched, <code>false</code> if only supertypes should be searched.
      * @param project       The project which ips object path is used for the searched.
      *                      This is not neccessarily the project this type is part of. 
      * 
      * @throws CoreException if an error occurs while searching.
      */
-    public IProductCmptTypeAssociation findAssociationInSupertypeHierarchy(String name, boolean includeSelf, IIpsProject project) throws CoreException;
+    public IProductCmptTypeAssociation findAssociation(String name, IIpsProject project) throws CoreException;
 
     /**
      * Creates a new association and returns it.
@@ -208,13 +221,12 @@ public interface IProductCmptType extends IIpsObject, IType {
      * supertype hierarchy. If no table structure usage is found, <code>null</code> is returned.
      * 
      * @param roleName the role name of the ITableStructureUsage in question 
-     * @param includeSelf   <code>true</code> if this type itseld should be searched, <code>false</code> if only supertypes should be searched.
      * @param project The project which ips object path is used for the searched.
      * This is not neccessarily the project this type is part of. 
      * 
      * @return the ITableStructureUsage for the provided name or <code>null</code> if non is found
      */
-    public ITableStructureUsage findTableStructureUsageInSupertypeHierarchy(String roleName, boolean includeSelf, IIpsProject project) throws CoreException;
+    public ITableStructureUsage findTableStructureUsage(String roleName, IIpsProject project) throws CoreException;
 
     /**
      * Creates a new table usage and returns it.
@@ -259,16 +271,37 @@ public interface IProductCmptType extends IIpsObject, IType {
     public IProductCmptTypeMethod getFormulaSignature(String formulaName) throws CoreException;
 
     /**
-     * Searches the method signature with the indicates formula name. Returns <code>null</code>
-     * if no such method is found.
+     * Searches the method signature with the indicated formula name in the type's supertype hierarchy. 
+     * Returns <code>null</code> if no such method is found.
      * 
      * @param formulaName The formula name to search
-     * @param searchTypeHierarchy <code>true</code> if the type hierarchy should be searched.
      * @param The ips project which ips object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching.
      * @throws NullPointerException if ips project is <code>null</code>.
      */
-    public IProductCmptTypeMethod findFormulaSignature(String formulaName, boolean searchTypeHierarchy, IIpsProject ipsProject) throws CoreException;
+    public IProductCmptTypeMethod findFormulaSignature(String formulaName, IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Returns the types product definition properties inlcuding properties defined in one of the type's supertypes.
+     * 
+     * @throws CoreException
+     */
+    public IProdDefProperty[] findProdDefProperties(IIpsProject ipsProject) throws CoreException;
     
+    /**
+     * Returns the product definition property with the given name and type. If no such property is found in the type itself, 
+     * the supertype hierarchy is searched. 
+     * 
+     * @throws CoreException
+     */
+    public IProdDefProperty findProdDefProperty(ProdDefPropertyType type, String propName, IIpsProject ipsProject) throws CoreException;
+    
+    /**
+     * Returns the product definition property with the given name. If no such property is found in the type itself, 
+     * the supertype hierarchy is searched. 
+     * 
+     * @throws CoreException
+     */
+    public IProdDefProperty findProdDefProperty(String propName, IIpsProject ipsProject) throws CoreException;
 }

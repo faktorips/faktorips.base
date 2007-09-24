@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
@@ -124,6 +125,30 @@ public class Attribute extends IpsObjectPart implements IAttribute, IValueDataty
         String oldDatatype = datatype;
         datatype = newDatatype;
         valueChanged(oldDatatype, newDatatype);
+    }
+    
+    /**
+     * {@inheritDoc}
+     * Implementation of IProdDefProperty.
+     */
+    public String getPropertyName() {
+        return name;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * Implementation of IProdDefProperty.
+     */
+    public ProdDefPropertyType getProdDefPropertyType() {
+        return ProdDefPropertyType.VALUE;
+    }
+
+    /**
+     * {@inheritDoc}
+     * Implementation of IProdDefProperty.
+     */
+    public String getPropertyDatatype() {
+        return datatype;
     }
 
     /**

@@ -23,18 +23,18 @@ package org.faktorips.devtools.core.model.productcmpttype2;
  * 
  * @author Jan Ortmann
  */
-public interface IPropDefProperty {
+public interface IProdDefProperty {
 
+    /**
+     * Returns the type of the property.
+     */
+    public ProdDefPropertyType getProdDefPropertyType();
+    
     /**
      * Returns the name of the property.
      */
     public String getPropertyName();
     
-    /**
-     * Returns the property's value.
-     */
-    public String getPropertyValue();
-
     /**
      * Returns the name of the datatype.
      */

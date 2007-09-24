@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.ProgramingLanguage;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype2.ImplementationType;
+import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 import org.w3c.dom.Element;
 
 /**
@@ -112,5 +113,33 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         element.setAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION, "" + formulaSignatureDefinition);
         element.setAttribute(PROPERTY_FORMULA_NAME, formulaName);
     }
+
+    /**
+     * {@inheritDoc}
+     * Implementation of IProdDefProperty.
+     */
+    public String getPropertyName() {
+        if (formulaSignatureDefinition) {
+            return formulaName;
+        }
+        return "";
+    }
+
+    /**
+     * {@inheritDoc}
+     * Implementation of IProdDefProperty.
+     */
+    public ProdDefPropertyType getProdDefPropertyType() {
+        return ProdDefPropertyType.FORMULA;
+    }
+
+    /**
+     * {@inheritDoc}
+     * Implementation of IProdDefProperty.
+     */
+    public String getPropertyDatatype() {
+        return getDatatype();
+    }
+    
     
 }

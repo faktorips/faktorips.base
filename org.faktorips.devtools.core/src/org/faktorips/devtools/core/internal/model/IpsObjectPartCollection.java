@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -104,6 +105,15 @@ public class IpsObjectPartCollection {
     
     public IIpsObjectPart getPart(int index) {
         return (IIpsObjectPart)parts.get(index);
+    }
+    
+    /**
+     * Adds the contents of this collection to the given other collection.
+     *  
+     * @throws NullPointerException if other is <code>null</code>.
+     */
+    public void addAllTo(Collection other) {
+        other.addAll(parts);
     }
     
     public Iterator iterator() {

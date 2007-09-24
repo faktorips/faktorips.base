@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -617,4 +618,30 @@ public class Attribute extends IpsObjectPart implements IAttribute {
     }
     
     
+    /**
+     * {@inheritDoc}
+     * Implementation of IProdDefProperty.
+     */
+    public String getPropertyName() {
+        if (productRelevant) {
+            return name;
+        }
+        return "";
+    }
+
+    /**
+     * {@inheritDoc}
+     * Implementation of IProdDefProperty.
+     */
+    public ProdDefPropertyType getProdDefPropertyType() {
+        return ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET;
+    }
+
+    /**
+     * {@inheritDoc}
+     * Implementation of IProdDefProperty.
+     */
+    public String getPropertyDatatype() {
+        return getDatatype();
+    }
 }

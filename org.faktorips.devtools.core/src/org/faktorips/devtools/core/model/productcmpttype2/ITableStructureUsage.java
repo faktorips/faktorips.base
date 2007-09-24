@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
  * 
  * @author Jan Ortmann
  */
-public interface ITableStructureUsage extends IIpsObjectPart {
+public interface ITableStructureUsage extends IIpsObjectPart, IProdDefProperty {
 
     public final static String PROPERTY_ROLENAME = "roleName"; //$NON-NLS-1$
     

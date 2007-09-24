@@ -24,9 +24,11 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
+import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.memento.Memento;
@@ -52,8 +54,8 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
-        policyCmptType = newPolicyCmptType(ipsProject, "Policy");
-        productCmptType = newProductCmptType(ipsProject, "Product");
+        policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
+        productCmptType = policyCmptType.findProductCmptType(ipsProject);
         superProductCmptType = newProductCmptType(ipsProject, "SuperProduct");
         productCmptType.setSupertype(superProductCmptType.getQualifiedName());
         superSuperProductCmptType = newProductCmptType(ipsProject, "SuperSuperProduct");
@@ -66,35 +68,235 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         ipsProject.getIpsModel().removeChangeListener(this);
     }
     
+    public void testFindAttribute() throws CoreException {
+        assertNull(productCmptType.findAttribute("unknown", ipsProject));
+        
+        IAttribute a1 = productCmptType.newAttribute();
+        a1.setName("a1");
+        IAttribute a2 = superProductCmptType.newAttribute();
+        a2.setName("a2");
+        IAttribute a3 = superSuperProductCmptType.newAttribute();
+        a3.setName("a3");
+        
+        assertSame(a1, productCmptType.findAttribute("a1", ipsProject));
+        assertSame(a2, productCmptType.findAttribute("a2", ipsProject));
+        assertSame(a3, productCmptType.findAttribute("a3", ipsProject));
+        
+        IAttribute a1b = superProductCmptType.newAttribute();
+        a1b.setName("a1b");
+        assertSame(a1, productCmptType.findAttribute("a1", ipsProject));
+        
+        assertNull(productCmptType.findAttribute("unknown", ipsProject));
+    }
+    
+    public void testFindProdDefProperties() throws CoreException {
+        IProdDefProperty[] props = productCmptType.findProdDefProperties(ipsProject);
+        assertEquals(0, props.length);
+
+        // attributes
+        IAttribute supertypeAttr  = superProductCmptType.newAttribute();
+        supertypeAttr.setName("attrInSupertype");
+        supertypeAttr.setDatatype("Money");
+
+        IAttribute typeAttribute = productCmptType.newAttribute();
+        typeAttribute.setName("attrInType");
+        typeAttribute.setDatatype("Money");
+        
+        props = superProductCmptType.findProdDefProperties(ipsProject);
+        assertEquals(1, props.length);
+        assertEquals(supertypeAttr, props[0]);
+        props = productCmptType.findProdDefProperties(ipsProject);
+        assertEquals(2, props.length);
+        assertEquals(supertypeAttr, props[0]);
+        assertEquals(typeAttribute, props[1]);
+
+        // table structure usages
+        ITableStructureUsage supertypeTsu = superProductCmptType.newTableStructureUsage();
+        ITableStructureUsage typeTsu = productCmptType.newTableStructureUsage();
+
+        props = superProductCmptType.findProdDefProperties(ipsProject);
+        assertEquals(2, props.length);
+        assertEquals(supertypeAttr, props[0]);
+        assertEquals(supertypeTsu, props[1]);
+        props = productCmptType.findProdDefProperties(ipsProject);
+        assertEquals(4, props.length);
+        assertEquals(supertypeAttr, props[0]);
+        assertEquals(typeAttribute, props[1]);
+        assertEquals(supertypeTsu, props[2]);
+        assertEquals(typeTsu, props[3]);
+        
+        // formula signatures
+        IProductCmptTypeMethod supertypeSignature = superProductCmptType.newProductCmptTypeMethod();
+        supertypeSignature.setFormulaSignatureDefinition(true);
+        supertypeSignature.setFormulaName("CalculatePremium");
+        IProductCmptTypeMethod typeSignature = productCmptType.newProductCmptTypeMethod();
+        typeSignature.setFormulaSignatureDefinition(true);
+        typeSignature.setFormulaName("CalculatePremium2");
+        productCmptType.newProductCmptTypeMethod().setFormulaSignatureDefinition(false);// this method is not a product def property as it is not a formula signature
+        
+        props = superProductCmptType.findProdDefProperties(ipsProject);
+        assertEquals(3, props.length);
+        assertEquals(supertypeAttr, props[0]);
+        assertEquals(supertypeTsu, props[1]);
+        assertEquals(supertypeSignature, props[2]);
+
+        props = productCmptType.findProdDefProperties(ipsProject);
+        assertEquals(6, props.length);
+        assertEquals(supertypeAttr, props[0]);
+        assertEquals(typeAttribute, props[1]);
+        assertEquals(supertypeTsu, props[2]);
+        assertEquals(typeTsu, props[3]);
+        assertEquals(supertypeSignature, props[4]);
+        assertEquals(typeSignature, props[5]);
+        
+        // default values and value sets
+        IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
+        superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
+        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptSupertypeAttr = policyCmptSupertype.newAttribute();
+        policyCmptSupertypeAttr.setProductRelevant(true);
+        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptTypeAttr = policyCmptType.newAttribute();
+        policyCmptTypeAttr.setProductRelevant(true);
+        policyCmptType.newAttribute().setProductRelevant(false); // this attribute is not a product def property as it is not product relevant!
+        
+        props = superProductCmptType.findProdDefProperties(ipsProject);
+        assertEquals(4, props.length);
+        assertEquals(supertypeAttr, props[0]);
+        assertEquals(supertypeTsu, props[1]);
+        assertEquals(supertypeSignature, props[2]);
+        assertEquals(policyCmptSupertypeAttr, props[3]);
+
+        props = productCmptType.findProdDefProperties(ipsProject);
+        assertEquals(8, props.length);
+        assertEquals(supertypeAttr, props[0]);
+        assertEquals(typeAttribute, props[1]);
+        assertEquals(supertypeTsu, props[2]);
+        assertEquals(typeTsu, props[3]);
+        assertEquals(supertypeSignature, props[4]);
+        assertEquals(typeSignature, props[5]);
+        assertEquals(policyCmptSupertypeAttr, props[6]);
+        assertEquals(policyCmptTypeAttr, props[7]);
+    }
+    
+    public void testFindProdDefProperty_ByTypeAndName() throws CoreException {
+        // attributes
+        IAttribute supertypeAttr  = superProductCmptType.newAttribute();
+        supertypeAttr.setName("attrInSupertype");
+        supertypeAttr.setDatatype("Money");
+
+        IAttribute typeAttribute = productCmptType.newAttribute();
+        typeAttribute.setName("attrInType");
+        
+        // table structure usages
+        ITableStructureUsage supertypeTsu = superProductCmptType.newTableStructureUsage();
+        supertypeTsu.setRoleName("SupertypeTsu");
+        ITableStructureUsage typeTsu = productCmptType.newTableStructureUsage();
+        typeTsu.setRoleName("TypeTsu");
+
+        // formula signatures
+        IProductCmptTypeMethod supertypeSignature = superProductCmptType.newProductCmptTypeMethod();
+        supertypeSignature.setFormulaSignatureDefinition(true);
+        supertypeSignature.setFormulaName("CalculatePremium");
+        IProductCmptTypeMethod typeSignature = productCmptType.newProductCmptTypeMethod();
+        typeSignature.setFormulaSignatureDefinition(true);
+        typeSignature.setFormulaName("CalculatePremium2");
+        
+        // default values and value sets
+        IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
+        superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
+        policyCmptType.setSupertype(policyCmptSupertype.getQualifiedName());
+        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptSupertypeAttr = policyCmptSupertype.newAttribute();
+        policyCmptSupertypeAttr.setName("policySuperAttr");
+        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptTypeAttr = policyCmptType.newAttribute();
+        policyCmptTypeAttr.setName("policyAttr");
+        
+        assertEquals(typeAttribute, productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, typeAttribute.getName(), ipsProject));
+        assertEquals(supertypeAttr, productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, supertypeAttr.getName(), ipsProject));
+        assertNull(productCmptType.findProdDefProperty(ProdDefPropertyType.FORMULA, typeAttribute.getName(), ipsProject));
+        
+        assertEquals(typeTsu, productCmptType.findProdDefProperty(ProdDefPropertyType.TABLE_CONTENT_USAGE, typeTsu.getRoleName(), ipsProject));
+        assertEquals(supertypeTsu, productCmptType.findProdDefProperty(ProdDefPropertyType.TABLE_CONTENT_USAGE, supertypeTsu.getRoleName(), ipsProject));
+        assertNull(productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, typeTsu.getRoleName(), ipsProject));
+        
+        assertEquals(typeSignature, productCmptType.findProdDefProperty(ProdDefPropertyType.FORMULA, typeSignature.getFormulaName(), ipsProject));
+        assertEquals(supertypeSignature, productCmptType.findProdDefProperty(ProdDefPropertyType.FORMULA, supertypeSignature.getFormulaName(), ipsProject));
+        assertNull(productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, typeSignature.getFormulaName(), ipsProject));
+        
+        assertEquals(policyCmptTypeAttr, productCmptType.findProdDefProperty(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, policyCmptTypeAttr.getName(), ipsProject));
+        assertEquals(policyCmptSupertypeAttr, productCmptType.findProdDefProperty(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, policyCmptSupertypeAttr.getName(), ipsProject));
+        assertNull(productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, policyCmptTypeAttr.getName(), ipsProject));
+    }
+    
+    public void testFindProdDefProperty_ByName() throws CoreException {
+        IProdDefProperty[] props = productCmptType.findProdDefProperties(ipsProject);
+        assertEquals(0, props.length);
+
+        // attributes
+        IAttribute supertypeAttr  = superProductCmptType.newAttribute();
+        supertypeAttr.setName("attrInSupertype");
+        supertypeAttr.setDatatype("Money");
+
+        IAttribute typeAttribute = productCmptType.newAttribute();
+        typeAttribute.setName("attrInType");
+        
+        // table structure usages
+        ITableStructureUsage supertypeTsu = superProductCmptType.newTableStructureUsage();
+        supertypeTsu.setRoleName("SupertypeTsu");
+        ITableStructureUsage typeTsu = productCmptType.newTableStructureUsage();
+        typeTsu.setRoleName("TypeTsu");
+
+        // formula signatures
+        IProductCmptTypeMethod supertypeSignature = superProductCmptType.newProductCmptTypeMethod();
+        supertypeSignature.setFormulaSignatureDefinition(true);
+        supertypeSignature.setFormulaName("CalculatePremium");
+        IProductCmptTypeMethod typeSignature = productCmptType.newProductCmptTypeMethod();
+        typeSignature.setFormulaSignatureDefinition(true);
+        typeSignature.setFormulaName("CalculatePremium2");
+        
+        // default values and value sets
+        IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
+        superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
+        policyCmptType.setSupertype(policyCmptSupertype.getQualifiedName());
+        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptSupertypeAttr = policyCmptSupertype.newAttribute();
+        policyCmptSupertypeAttr.setName("policySuperAttr");
+        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptTypeAttr = policyCmptType.newAttribute();
+        policyCmptTypeAttr.setName("policyAttr");
+        
+        assertEquals(typeAttribute, productCmptType.findProdDefProperty(typeAttribute.getName(), ipsProject));
+        assertEquals(supertypeAttr, productCmptType.findProdDefProperty(supertypeAttr.getName(), ipsProject));
+        
+        assertEquals(typeTsu, productCmptType.findProdDefProperty(typeTsu.getRoleName(), ipsProject));
+        assertEquals(supertypeTsu, productCmptType.findProdDefProperty(supertypeTsu.getRoleName(), ipsProject));
+        
+        assertEquals(typeSignature, productCmptType.findProdDefProperty(typeSignature.getFormulaName(), ipsProject));
+        assertEquals(supertypeSignature, productCmptType.findProdDefProperty(supertypeSignature.getFormulaName(), ipsProject));
+        
+        assertEquals(policyCmptTypeAttr, productCmptType.findProdDefProperty(policyCmptTypeAttr.getName(), ipsProject));
+        assertEquals(policyCmptSupertypeAttr, productCmptType.findProdDefProperty(policyCmptSupertypeAttr.getName(), ipsProject));
+    }
+    
     public void testFindFormulaSignature() throws CoreException {
         IProductCmptTypeMethod method1 = superSuperProductCmptType.newProductCmptTypeMethod();
         method1.setFormulaSignatureDefinition(true);
         method1.setFormulaName("Premium Calculation");
         
-        assertSame(method1, superSuperProductCmptType.findFormulaSignature("Premium Calculation", true, ipsProject));
-        assertSame(method1, superSuperProductCmptType.findFormulaSignature("Premium Calculation", false, ipsProject));
-        assertSame(method1, productCmptType.findFormulaSignature("Premium Calculation", true, ipsProject));
-        assertNull(productCmptType.findFormulaSignature("Premium Calculation", false, ipsProject));
+        assertSame(method1, superSuperProductCmptType.findFormulaSignature("Premium Calculation", ipsProject));
+        assertSame(method1, productCmptType.findFormulaSignature("Premium Calculation", ipsProject));
         
         
         method1.setFormulaSignatureDefinition(false);
-        assertNull(superSuperProductCmptType.findFormulaSignature("Unknown", true, ipsProject));
-        assertNull(superSuperProductCmptType.findFormulaSignature("Unknown", false, ipsProject));
-        assertNull(productCmptType.findFormulaSignature("Unknown", true, ipsProject));
-        assertNull(productCmptType.findFormulaSignature("Unknown", false, ipsProject));
+        assertNull(superSuperProductCmptType.findFormulaSignature("Unknown", ipsProject));
+        assertNull(productCmptType.findFormulaSignature("Unknown", ipsProject));
 
         method1.setFormulaSignatureDefinition(false);
-        assertNull(superSuperProductCmptType.findFormulaSignature("Premium Calculation", true, ipsProject));
-        assertNull(superSuperProductCmptType.findFormulaSignature("Premium Calculation", false, ipsProject));
-        assertNull(productCmptType.findFormulaSignature("Premium Calculation", true, ipsProject));
-        assertNull(productCmptType.findFormulaSignature("Premium Calculation", false, ipsProject));
+        assertNull(superSuperProductCmptType.findFormulaSignature("Premium Calculation", ipsProject));
+        assertNull(productCmptType.findFormulaSignature("Premium Calculation", ipsProject));
 
         // if the method is overloaded, make sure the first one is found.
         method1.setFormulaSignatureDefinition(true);
         IProductCmptTypeMethod method2 = productCmptType.newProductCmptTypeMethod();
         method2.setFormulaSignatureDefinition(true);
         method2.setFormulaName("Premium Calculation");
-        assertSame(method2, productCmptType.findFormulaSignature("Premium Calculation", true, ipsProject));
+        assertSame(method2, productCmptType.findFormulaSignature("Premium Calculation", ipsProject));
         
         
     }
@@ -148,28 +350,22 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     }
     
     public void testFindTableStructureUsageInSupertypeHierarchy() throws CoreException {
-        assertNull(superSuperProductCmptType.findTableStructureUsageInSupertypeHierarchy(null, true, ipsProject));
-        assertNull(superSuperProductCmptType.findTableStructureUsageInSupertypeHierarchy(null, false, ipsProject));
-        assertNull(superSuperProductCmptType.findTableStructureUsageInSupertypeHierarchy("someRole", true, ipsProject));
-        assertNull(superSuperProductCmptType.findTableStructureUsageInSupertypeHierarchy("someRole", false, ipsProject));
+        assertNull(superSuperProductCmptType.findTableStructureUsage(null, ipsProject));
+        assertNull(superSuperProductCmptType.findTableStructureUsage("someRole", ipsProject));
         
-        assertNull(productCmptType.findTableStructureUsageInSupertypeHierarchy("someRole", true, ipsProject));
-        assertNull(productCmptType.findTableStructureUsageInSupertypeHierarchy("someRole", false, ipsProject));
+        assertNull(productCmptType.findTableStructureUsage("someRole", ipsProject));
 
         ITableStructureUsage tsu1 = productCmptType.newTableStructureUsage();
         tsu1.setRoleName("role1");
-        assertNull(productCmptType.findTableStructureUsageInSupertypeHierarchy("role1", false, ipsProject));
-        assertEquals(tsu1, productCmptType.findTableStructureUsageInSupertypeHierarchy("role1", true, ipsProject));
-        assertNull(productCmptType.findTableStructureUsageInSupertypeHierarchy("unkownRole", true, ipsProject));
+        assertEquals(tsu1, productCmptType.findTableStructureUsage("role1", ipsProject));
+        assertNull(productCmptType.findTableStructureUsage("unkownRole", ipsProject));
         
         ITableStructureUsage tsu2 = superSuperProductCmptType.newTableStructureUsage();
         tsu2.setRoleName("role2");
-        assertEquals(tsu2, productCmptType.findTableStructureUsageInSupertypeHierarchy("role2", true, ipsProject));
-        assertEquals(tsu2, productCmptType.findTableStructureUsageInSupertypeHierarchy("role2", false, ipsProject));
+        assertEquals(tsu2, productCmptType.findTableStructureUsage("role2", ipsProject));
 
         tsu2.setRoleName("role1");
-        assertEquals(tsu1, productCmptType.findTableStructureUsageInSupertypeHierarchy("role1", true, ipsProject));
-        assertEquals(tsu2, productCmptType.findTableStructureUsageInSupertypeHierarchy("role1", false, ipsProject));
+        assertEquals(tsu1, productCmptType.findTableStructureUsage("role1", ipsProject));
         
     }
     

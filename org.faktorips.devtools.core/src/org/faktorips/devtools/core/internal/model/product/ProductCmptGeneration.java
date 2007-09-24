@@ -272,7 +272,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (type == null) {
             return false;
         }
-        IProductCmptTypeAssociation association = type.findAssociationInSupertypeHierarchy(associationName, true, ipsProject);
+        IProductCmptTypeAssociation association = type.findAssociation(associationName, ipsProject);
         if (association == null) {
             return false;
         }

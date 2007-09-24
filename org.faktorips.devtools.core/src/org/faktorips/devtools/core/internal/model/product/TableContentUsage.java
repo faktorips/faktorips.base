@@ -131,7 +131,7 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
             return;
         }
         
-        ITableStructureUsage tsu = type.findTableStructureUsageInSupertypeHierarchy(structureUsage, true, ipsProject);
+        ITableStructureUsage tsu = type.findTableStructureUsage(structureUsage, ipsProject);
         if (tsu == null) {
             String text = NLS.bind(Messages.TableContentUsage_msgUnknownStructureUsage, structureUsage);
             list.add(new Message(MSGCODE_UNKNOWN_STRUCTURE_USAGE, text, Message.ERROR, this, PROPERTY_STRUCTURE_USAGE));
@@ -183,7 +183,7 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         if (type==null) {
             return null;
         }
-		return type.findTableStructureUsageInSupertypeHierarchy(structureUsage, true, ipsProject);
+		return type.findTableStructureUsage(structureUsage, ipsProject);
 	}
 
 }

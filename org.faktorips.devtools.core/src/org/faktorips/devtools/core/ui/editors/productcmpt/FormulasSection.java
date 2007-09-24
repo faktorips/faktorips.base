@@ -193,7 +193,7 @@ public class FormulasSection extends IpsSection {
         if (type==null) {
             return null;
         }
-        return type.findTableStructureUsageInSupertypeHierarchy(rolename, true, ipsProject);
+        return type.findTableStructureUsage(rolename, ipsProject);
     }
 
 	/**

@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.pctype.Modifier;
  * 
  * @author Jan Ortmann
  */
-public interface IAttribute extends IIpsObjectPart, IValueSetOwner {
+public interface IAttribute extends IIpsObjectPart, IValueSetOwner, IProdDefProperty {
 
     // modifiable properties
     public final static String PROPERTY_DATATYPE = "datatype";

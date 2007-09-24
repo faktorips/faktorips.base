@@ -123,7 +123,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements
         if (productCmptType==null) {
             return null;
         }
-        return productCmptType.findAssociationInSupertypeHierarchy(association, true, ipsProject);
+        return productCmptType.findAssociation(association, ipsProject);
 	}
 
 	void setProductCmptTypeRelation(String newRelation) {

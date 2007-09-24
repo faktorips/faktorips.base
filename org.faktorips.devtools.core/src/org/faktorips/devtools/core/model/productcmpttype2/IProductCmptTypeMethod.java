@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
  * 
  * @author Jan Ortmann
  */
-public interface IProductCmptTypeMethod extends IMethod {
+public interface IProductCmptTypeMethod extends IMethod, IProdDefProperty {
 
     public final static String PROPERTY_FORMULA_SIGNATURE_DEFINITION = "formulaSignatureDefinition";
     public final static String PROPERTY_FORMULA_NAME = "formulaName";

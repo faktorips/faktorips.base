@@ -126,7 +126,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         if (type==null) {
             return null;
         }
-        return type.findFormulaSignature(formulaSignature, true, ipsProject);
+        return type.findFormulaSignature(formulaSignature, ipsProject);
     }
 
     /**

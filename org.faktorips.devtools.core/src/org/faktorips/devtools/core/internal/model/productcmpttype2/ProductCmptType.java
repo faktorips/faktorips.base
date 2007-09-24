@@ -17,8 +17,10 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype2;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -31,14 +33,17 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
+import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.productcmpttype2.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.EnumValue;
 import org.w3c.dom.Element;
 
 /**
@@ -128,6 +133,49 @@ public class ProductCmptType extends Type implements IProductCmptType {
     public IProductCmptType findSuperProductCmptType(IIpsProject project) throws CoreException {
         return (IProductCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE_V2, getSupertype());
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IProdDefProperty[] findProdDefProperties(IIpsProject ipsProject) throws CoreException {
+        ProdDefPropertyCollector collector = new ProdDefPropertyCollector(ipsProject);
+        collector.start(this);
+        return collector.getProperties();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IProdDefProperty findProdDefProperty(String propName, IIpsProject ipsProject) throws CoreException {
+        EnumValue[] types = ProdDefPropertyType.enumType.getValues();
+        for (int i = 0; i < types.length; i++) {
+            IProdDefProperty prop = findProdDefProperty((ProdDefPropertyType)types[i], propName, ipsProject);
+            if (prop!=null) {
+                return prop;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IProdDefProperty findProdDefProperty(ProdDefPropertyType type, String propName, IIpsProject ipsProject) throws CoreException {
+        if (ProdDefPropertyType.VALUE==type) {
+            return findAttribute(propName, ipsProject);
+        }
+        if (ProdDefPropertyType.FORMULA==type) {
+            return findFormulaSignature(propName, ipsProject);
+        }
+        if (ProdDefPropertyType.TABLE_CONTENT_USAGE==type) {
+            return findTableStructureUsage(propName, ipsProject);
+        }
+        if (ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET!=type) {
+            throw new RuntimeException("Unknown type " + type);
+        }
+        IPolicyCmptType policyCmptType = findPolicyCmptType(true, ipsProject);
+        return policyCmptType.findAttributeInSupertypeHierarchy(propName);
+    }
 
     /**
      * {@inheritDoc}
@@ -141,6 +189,15 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     public IAttribute getAttribute(String name) {
         return (IAttribute)attributes.getPartByName(name);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IAttribute findAttribute(String name, IIpsProject project) throws CoreException {
+        AttributeFinder finder = new AttributeFinder(project, name);
+        finder.start(this);
+        return finder.attribute;
     }
 
     /**
@@ -204,9 +261,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeAssociation findAssociationInSupertypeHierarchy(String name, boolean includeSelf, IIpsProject project) throws CoreException {
+    public IProductCmptTypeAssociation findAssociation(String name, IIpsProject project) throws CoreException {
         RelationFinder finder = new RelationFinder(project, name);
-        finder.start( includeSelf ? this : findSuperProductCmptType(project));
+        finder.start(this);
         return finder.relation;
     }
 
@@ -227,9 +284,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
-    public ITableStructureUsage findTableStructureUsageInSupertypeHierarchy(String roleName, boolean includeSelf, IIpsProject project) throws CoreException {
+    public ITableStructureUsage findTableStructureUsage(String roleName, IIpsProject project) throws CoreException {
         TableStructureUsageFinder finder = new TableStructureUsageFinder(project, roleName);
-        finder.start( includeSelf ? this : findSuperProductCmptType(project));
+        finder.start(this);
         return finder.tsu;
     }
 
@@ -301,15 +358,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeMethod findFormulaSignature(String formulaName, boolean searchTypeHierarchy, IIpsProject ipsProject) throws CoreException {
-        if (searchTypeHierarchy) {
-            FormulaSignatureFinder finder = new FormulaSignatureFinder(ipsProject, formulaName);
-            finder.start(this);
-            return finder.method;
-        }
-        return getFormulaSignature(formulaName);
+    public IProductCmptTypeMethod findFormulaSignature(String formulaName, IIpsProject ipsProject) throws CoreException {
+        FormulaSignatureFinder finder = new FormulaSignatureFinder(ipsProject, formulaName);
+        finder.start(this);
+        return finder.method;
     }
 
+    
     /**
      * {@inheritDoc}
      */
@@ -427,4 +482,81 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
         
     }
+
+    class AttributeFinder extends ProductCmptTypeHierarchyVisitor {
+
+        private String attributeName;
+        private IAttribute attribute;
+        
+        public AttributeFinder(IIpsProject ipsProject, String attrName) {
+            super(ipsProject);
+            this.attributeName = attrName;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+            attribute = currentType.getAttribute(attributeName);
+            return attribute==null;
+        }
+    }
+
+    class ProdDefPropertyCollector extends ProductCmptTypeHierarchyVisitor {
+
+        private List myAttributes = new ArrayList();
+        private List myTableStructureUsages = new ArrayList();
+        private List myFormulaSignatures = new ArrayList();
+        private List myPolicyCmptTypeAttributes = new ArrayList();
+        
+        public ProdDefPropertyCollector(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+            ((ProductCmptType)currentType).attributes.addAllTo(myAttributes);
+            ((ProductCmptType)currentType).tableStructureUsages.addAllTo(myTableStructureUsages);
+            for (Iterator it= ((ProductCmptType)currentType).methods.iterator(); it.hasNext();) {
+                IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
+                if (method.isFormulaSignatureDefinition()) {
+                    myFormulaSignatures.add(method);
+                }
+            }
+            IPolicyCmptType policyCmptType = currentType.findPolicyCmptType(false, ipsProject);
+            if (policyCmptType==null) {
+                return true;
+            }
+            org.faktorips.devtools.core.model.pctype.IAttribute[] polAttr = policyCmptType.getAttributes();
+            for (int i = 0; i < polAttr.length; i++) {
+                if (polAttr[i].isProductRelevant()) {
+                    myPolicyCmptTypeAttributes.add(polAttr[i]);
+                }
+            }
+            return true;
+        }
+        
+        public IProdDefProperty[] getProperties() {
+            int size = myAttributes.size() + myTableStructureUsages.size() + myFormulaSignatures.size() + myPolicyCmptTypeAttributes.size();
+            IProdDefProperty[] props = new IProdDefProperty[size];
+            int counter = 0;
+            for (int i=myAttributes.size()-1; i>=0; i--) {
+                props[counter++] = (IProdDefProperty)myAttributes.get(i);
+            }
+            for (int i=myTableStructureUsages.size()-1; i>=0; i--) {
+                props[counter++] = (IProdDefProperty)myTableStructureUsages.get(i);
+            }
+            for (int i=myFormulaSignatures.size()-1; i>=0; i--) {
+                props[counter++] = (IProdDefProperty)myFormulaSignatures.get(i);
+            }
+            for (int i=myPolicyCmptTypeAttributes.size()-1; i>=0; i--) {
+                props[counter++] = (IProdDefProperty)myPolicyCmptTypeAttributes.get(i);
+            }
+            return props;
+        }
+    
+    }
+
 }

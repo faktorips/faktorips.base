@@ -268,7 +268,7 @@ public class ProductCmptTypeAssociation extends AtomicIpsObjectPart implements I
      * {@inheritDoc}
      */
     public IProductCmptTypeAssociation findImplementedContainerRelation(IIpsProject project) throws CoreException {
-        return getProductCmptType().findAssociationInSupertypeHierarchy(implementedContainerRelation, true, project);
+        return getProductCmptType().findAssociation(implementedContainerRelation, project);
     }
     
     /**

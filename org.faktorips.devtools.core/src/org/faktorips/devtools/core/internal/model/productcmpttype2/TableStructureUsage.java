@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -339,7 +340,11 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     }
 
     private void validateRoleNameInSupertypeHierarchy(MessageList msgList) throws CoreException{
-        ITableStructureUsage tsu = getProductCmptType().findTableStructureUsageInSupertypeHierarchy(roleName, false, getIpsProject());
+        IProductCmptType supertype = getProductCmptType().findSuperProductCmptType(getIpsProject());
+        if (supertype==null) {
+            return;
+        }
+        ITableStructureUsage tsu = getProductCmptType().findTableStructureUsage(roleName, getIpsProject());
         if(tsu != null){
             String msg = NLS.bind(Messages.TableStructureUsage_msgRoleNameAlreadyInSupertype, getRoleName());
             msgList.add(new Message(MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE, 
@@ -410,6 +415,31 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
                 list.add(msg);
             }
         }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     * Implementation of IProdDefProperty.
+     */
+    public String getPropertyName() {
+        return name;
+    }
+
+    /**
+     * {@inheritDoc}
+     * Implementation of IProdDefProperty.
+     */
+    public ProdDefPropertyType getProdDefPropertyType() {
+        return ProdDefPropertyType.TABLE_CONTENT_USAGE;
+    }
+
+    /**
+     * {@inheritDoc}
+     * Implementation of IProdDefProperty.
+     */
+    public String getPropertyDatatype() {
+        return "";
     }
     
 }
