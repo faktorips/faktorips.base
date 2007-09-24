@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class MethodTest extends AbstractIpsPluginTest {
+public class PolicyCmptTypeMethodTest extends AbstractIpsPluginTest {
     
     private IIpsSrcFile ipsSrcFile;
     private PolicyCmptType pcType;
