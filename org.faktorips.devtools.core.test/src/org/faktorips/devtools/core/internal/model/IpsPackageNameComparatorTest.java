@@ -49,28 +49,158 @@ public class IpsPackageNameComparatorTest extends AbstractIpsPluginTest {
 
     }
 
-    public void testCompareBasic() throws CoreException {
+    public void testCompareBasicDefaultSortOrder() throws CoreException {
 
         comparator = new IpsPackageNameComparator(true);
 
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null); //$NON-NLS-1$
-        IIpsPackageFragment packD = ipsRoot.createPackageFragment("d", true, null); //$NON-NLS-1$
+        IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null); //$NON-NLS-1$
+        IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null); //$NON-NLS-1$
 
-        IIpsPackageFragment packB = ipsRoot.createPackageFragment("a.b", true, null); //$NON-NLS-1$
+        // check compareTo contracts:
+        // 1. ClassCastException
+        boolean caughtException = false;
+        try {
+            comparator.compare(packA, "a");
+        } catch (ClassCastException e) {
+            caughtException = true;
+        }
+        assertTrue(caughtException);
 
-        assertTrue( comparator.compare(packA, packD) < 0);
-        assertTrue( comparator.compare(packD, packA) > 0);
+        // 2. A < B <=> B > A
         assertTrue( comparator.compare(packA, packB) < 0);
         assertTrue( comparator.compare(packB, packA) > 0);
 
-        assertTrue( comparator.compare(packB, packA) > 0);
+        // 3. A < B & B < C => A < C
         assertTrue( comparator.compare(packA, packB) < 0);
-        assertTrue( comparator.compare(packB, packD) < 0);
-        assertTrue( comparator.compare(packD, packB) > 0);
+        assertTrue( comparator.compare(packB, packA) > 0);
+        assertTrue( comparator.compare(packB, packC) < 0);
+        assertTrue( comparator.compare(packC, packB) > 0);
+        assertTrue( comparator.compare(packA, packC) < 0);
+        assertTrue( comparator.compare(packC, packA) > 0);
 
+        // 4. equals
+        assertEquals(0, comparator.compare(packA, packA));
+
+        // 5. Object equals
+        assertTrue(packA.equals(packA));
+
+        // 6. NullPointerExeption
+        caughtException = false;
+        try {
+            comparator.compare(packA, null);
+        } catch (NullPointerException e) {
+            caughtException = true;
+        }
+        assertTrue(caughtException);
+
+        caughtException = false;
+        try {
+            comparator.compare(null, packA);
+        } catch (NullPointerException e) {
+            caughtException = true;
+        }
+        assertTrue(caughtException);
     }
 
-    public void testCompareExtended() throws CoreException, IOException {
+    public void testCompareExtendedDefaultSortOrder() throws CoreException {
+        comparator = new IpsPackageNameComparator(true);
+
+        IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null); //$NON-NLS-1$
+        IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null); //$NON-NLS-1$
+        IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null); //$NON-NLS-1$
+        IIpsPackageFragment packX = ipsRoot.createPackageFragment("a.a", true, null); //$NON-NLS-1$
+        IIpsPackageFragment packY = ipsRoot.createPackageFragment("a.b", true, null); //$NON-NLS-1$
+        IIpsPackageFragment packZ = ipsRoot.createPackageFragment("c.a", true, null); //$NON-NLS-1$
+        IIpsPackageFragment packW = ipsRoot.createPackageFragment("c.b", true, null); //$NON-NLS-1$
+
+        // check compareTo contracts:
+
+        // 2. A < D <=> D > A
+        assertTrue( comparator.compare(packX, packY) < 0);
+        assertTrue( comparator.compare(packY, packX) > 0);
+
+        assertTrue( comparator.compare(packB, packZ) < 0);
+        assertTrue( comparator.compare(packZ, packB) > 0);
+
+        // 3. A < B; B < C => A < C
+        assertTrue( comparator.compare(packX, packB) < 0);
+        assertTrue( comparator.compare(packB, packX) > 0);
+        assertTrue( comparator.compare(packB, packW) < 0);
+        assertTrue( comparator.compare(packW, packB) > 0);
+        assertTrue( comparator.compare(packA, packW) < 0);
+        assertTrue( comparator.compare(packW, packA) > 0);
+
+        // 4. equals
+        assertEquals(0, comparator.compare(packA, packX));
+
+        // 5. Object equals
+        assertFalse(packA.equals(packX));
+    }
+
+    public void testCompareBasicSortOrder() throws CoreException, IOException {
+        comparator = new IpsPackageNameComparator(false);
+
+        IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null); //$NON-NLS-1$
+        IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null); //$NON-NLS-1$
+        IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null); //$NON-NLS-1$
+
+        ArrayList orderList = new ArrayList(2);
+
+        orderList.add("b"); //$NON-NLS-1$
+        orderList.add("c"); //$NON-NLS-1$
+        orderList.add("a"); //$NON-NLS-1$
+
+        createPackageOrderFile((IFolder) ipsRoot.getCorrespondingResource(), orderList);
+        orderList.clear();
+
+        // check compareTo contracts:
+        // 1. ClassCastException
+        boolean caughtException = false;
+        try {
+            comparator.compare(packA, "a");
+        } catch (ClassCastException e) {
+            caughtException = true;
+        }
+        assertTrue(caughtException);
+
+        // 2. A < B <=> B > A
+        assertTrue( comparator.compare(packB, packC) < 0);
+        assertTrue( comparator.compare(packC, packB) > 0);
+
+        // 3. A < B & B < C => A < C
+        assertTrue( comparator.compare(packB, packC) < 0);
+        assertTrue( comparator.compare(packC, packB) > 0);
+        assertTrue( comparator.compare(packC, packA) < 0);
+        assertTrue( comparator.compare(packA, packC) > 0);
+        assertTrue( comparator.compare(packB, packA) < 0);
+        assertTrue( comparator.compare(packA, packB) > 0);
+
+        // 4. equals
+        assertEquals(0, comparator.compare(packA, packA));
+
+        // 5. Object equals
+        assertTrue(packA.equals(packA));
+
+        // 6. NullPointerExeption
+        caughtException = false;
+        try {
+            comparator.compare(packA, null);
+        } catch (NullPointerException e) {
+            caughtException = true;
+        }
+        assertTrue(caughtException);
+
+        caughtException = false;
+        try {
+            comparator.compare(null, packA);
+        } catch (NullPointerException e) {
+            caughtException = true;
+        }
+        assertTrue(caughtException);
+    }
+
+    public void testCompareExtendedSortOrder() throws CoreException, IOException {
 
         comparator = new IpsPackageNameComparator(false);
 
@@ -148,6 +278,6 @@ public class IpsPackageNameComparatorTest extends AbstractIpsPluginTest {
         assertTrue( comparator.compare(packA, packEnd2) < 0);
         assertTrue( comparator.compare(packF, packEnd2) < 0);
         assertTrue( comparator.compare(packEnd2, packF) > 0);
-
     }
+
 }

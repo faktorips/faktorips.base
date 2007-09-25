@@ -30,6 +30,8 @@ import org.faktorips.devtools.core.util.QNameUtil;
  * comparison of the package name (<code>defaultComparator</code> = <code>true</code>) or by a sort order
  * file (<code>defaultComparator</code> = <code>false</code>).
  *
+ * @note <i>Natural ordering</i> is <i>inconsistent with equals</i>.
+ *
  * @author Markus Blum
  */
 public class IpsPackageNameComparator implements Comparator {
@@ -48,16 +50,41 @@ public class IpsPackageNameComparator implements Comparator {
 
     /**
      * {@inheritDoc}
+     *
+     * @note <i>Natural ordering</i> is <i>inconsistent with equals</i>.
      */
     public int compare(Object o1, Object o2) {
         IIpsPackageFragment pack1 = (IIpsPackageFragment)o1;
         IIpsPackageFragment pack2 = (IIpsPackageFragment)o2;
 
-        if (defaultComparator == true) {
-            return compareByName(pack1, pack2);
+        String[] segments1 = QNameUtil.getSegments(pack1.getName());
+        String[] segments2 = QNameUtil.getSegments(pack2.getName());
+
+        int length = 0;
+
+        // Compare two IIpsPackageFragments by qualified name and level
+        if (segments1.length <= segments2.length) {
+            length = segments1.length;
         } else {
-            return compareBySortDefinition(pack1, pack2);
+            length = segments2.length;
         }
+
+        int cmp = 0;
+
+        for (int i = 0; i < length; i++) {
+            if (defaultComparator) {
+                cmp = segments1[i].compareTo(segments2[i]);
+            } else {
+                cmp = compareBySortDefinition(pack1, segments1[i], segments2[i], i+1);
+            }
+
+            // stop comparison if unequal
+            if (cmp != 0) {
+                return cmp;
+            }
+        }
+
+        return 0;
     }
 
     /**
@@ -96,19 +123,23 @@ public class IpsPackageNameComparator implements Comparator {
         return QNameUtil.getSubSegments(childPackageName, segments);
     }
 
+    private IpsModel getIpsModel() {
+        return (IpsModel) IpsPlugin.getDefault().getIpsModel();
+    }
+
     /**
-     * Compare 2 segments of a package. Don't read the sort order if the segments are identical:
-     * the segments are part of the same package path (folder) so we don't have to ask for the sort order of containing
-     * <code>IIpsPackageFragment</code>s.
+     * Compare two IpsPackage segments by sort order.
      *
-     * @param sortDef Sortdefinition of <code>IIpsPackageFragment</code>s.
-     * @param segmentName1 Segment (Folder) name of a qualified package name.
-     * @param segmentName2 Segment (Folder) name of a qualified package name.
+     * @param pack1 The 1st IpsPackageFragment.
+     * @param name1 The current segment to check of IpsPackageFragment 1.
+     * @param name2 The current segment to check of IpsPackageFragment 2.
+     * @param segmentNr The current segment nummber.
      * @return  a negative integer, zero, or a positive integer as the
      *         first argument is less than, equal to, or greater than the
      *         second
      */
-    private int comparePackageFragments(IIpsPackageFragmentSortDefinition sortDef, String segmentName1, String segmentName2) {
+    private int compareBySortDefinition(IIpsPackageFragment pack1, String segmentName1, String segmentName2, int segmentNr) {
+        IIpsPackageFragmentSortDefinition sortDef = getSortDefinition(pack1, getParentNameOfSegment(pack1.getName(), segmentNr));
 
         if (sortDef==null) {
             return segmentName1.compareTo(segmentName2);
@@ -119,57 +150,6 @@ public class IpsPackageNameComparator implements Comparator {
         } else {
             return sortDef.compare(segmentName1, segmentName2);
         }
-    }
-
-    private IpsModel getIpsModel() {
-        return (IpsModel) IpsPlugin.getDefault().getIpsModel();
-    }
-
-    /**
-     * Compare two IpsPackageFramgents by its given IIpsPackageFragmentSortDefinition.
-     *
-     * @param pack1 An IpsPackageFragment.
-     * @param pack2 An IpsPackageFragment.
-     * @return  a negative integer, zero, or a positive integer as the
-     *         first argument is less than, equal to, or greater than the
-     *         second
-     */
-    private int compareBySortDefinition(IIpsPackageFragment pack1, IIpsPackageFragment pack2) {
-        String[] segments1 = QNameUtil.getSegments(pack1.getName());
-        String[] segments2 = QNameUtil.getSegments(pack2.getName());
-
-         int length = 0;
-
-        // Compare two IIpsPackageFragments by qualified name and level
-        if (segments1.length <= segments2.length) {
-            length = segments1.length;
-        } else {
-            length = segments2.length;
-        }
-
-        for (int i = 0; i < length; i++) {
-            IIpsPackageFragmentSortDefinition sortDef = getSortDefinition(pack1, getParentNameOfSegment(pack1.getName(), i+1));
-
-            int c = comparePackageFragments(sortDef, segments1[i], segments2[i]);
-
-            if (c!=0) {
-                return c;
-            }
-        }
-        return 0;
-    }
-
-    /**
-     * Compare two IpsPackageFramgents by name.
-     *
-     * @param pack1 An IpsPackageFragment.
-     * @param pack2 An IpsPackageFragment.
-     * @return  a negative integer, zero, or a positive integer as the
-     *         first argument is less than, equal to, or greater than the
-     *         second
-     */
-    private int compareByName(IIpsPackageFragment pack1, IIpsPackageFragment pack2) {
-        return pack1.getName().compareTo(pack2.getName());
     }
 
 }
