@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
  * 
  * @author Jan Ortmann
  */
-public interface IProductCmptGenerationToTypeDelta {
+public interface IGenerationToTypeDelta {
 
     /**
      * Returns the product component generation this delta was computed for.
@@ -49,6 +49,11 @@ public interface IProductCmptGenerationToTypeDelta {
      * the generation and the product component type.
      */
     public IDeltaEntry[] getEntries();
+    
+    /**
+     * Returns all entries for the given type.
+     */
+    public IDeltaEntry[] getEntries(DeltaType type);
     
     /**
      * Fixes the generation so that it conforms to the type afterwards.

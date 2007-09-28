@@ -205,6 +205,15 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    public IProductCmptTypeAttribute newAttribute(String name) {
+        IProductCmptTypeAttribute newAttribute = newAttribute();
+        newAttribute.setName(name);
+        return newAttribute;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public IProductCmptTypeAttribute getAttribute(String name) {
         return (IProductCmptTypeAttribute)attributes.getPartByName(name);
     }

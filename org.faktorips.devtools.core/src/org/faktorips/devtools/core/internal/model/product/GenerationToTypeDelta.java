@@ -24,14 +24,18 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.product.deltaentries.AbstractDeltaEntry;
-import org.faktorips.devtools.core.internal.model.product.deltaentries.MissingPropertyEntry;
+import org.faktorips.devtools.core.internal.model.product.deltaentries.ValueWithoutPropertyEntry;
 import org.faktorips.devtools.core.internal.model.product.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.core.internal.model.product.deltaentries.PropertyTypeMismatchEntry;
+import org.faktorips.devtools.core.internal.model.product.deltaentries.ValueSetMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.product.DeltaType;
+import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IDeltaEntry;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptGenerationToTypeDelta;
+import org.faktorips.devtools.core.model.product.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
@@ -45,14 +49,14 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptGenerationToTypeDelta implements IProductCmptGenerationToTypeDelta {
+public class GenerationToTypeDelta implements IGenerationToTypeDelta {
 
     private IIpsProject ipsProject;
     private IProductCmptGeneration generation;
     private IProductCmptType productCmptType;
     private List entries = new ArrayList();
     
-    public ProductCmptGenerationToTypeDelta(IProductCmptGeneration generation) throws CoreException {
+    public GenerationToTypeDelta(IProductCmptGeneration generation) throws CoreException {
         ArgumentCheck.notNull(generation);
         this.generation = generation;
         ipsProject = generation.getIpsProject();
@@ -76,7 +80,12 @@ public class ProductCmptGenerationToTypeDelta implements IProductCmptGenerationT
         for (Iterator it=propertiesMap.values().iterator(); it.hasNext(); ) {
             IProdDefProperty property = (IProdDefProperty)it.next();
             if (generation.getPropertyValue(property)==null) {
-                new MissingPropertyValueEntry(this, property);
+                // no value found for the property with the given type, but we might have a type mismatch
+                if (generation.getPropertyValue(property.getPropertyName())==null) {
+                    new MissingPropertyValueEntry(this, property);
+                } 
+                // we create the entry for the type mismatch in checkForInconsistentPropertyValues()
+                // if we created it here, too, we would create two entries for the same aspect  
             }
         }
     }
@@ -86,21 +95,27 @@ public class ProductCmptGenerationToTypeDelta implements IProductCmptGenerationT
         for (int i = 0; i < values.length; i++) {
             IProdDefProperty property = (IProdDefProperty)propertiesMap.get(values[i].getPropertyName());
             if (property == null) {
-                new MissingPropertyEntry(this, values[i]);
+                // the map contains only properties for the current property type
+                // so we have to search if the property exists with a different type.
+                IProdDefProperty property2 = productCmptType.findProdDefProperty(values[i].getPropertyName(), ipsProject);
+                if (property2!=null) {
+                    // property2 must have a different type, otherwise it would have been in the property map!
+                    new PropertyTypeMismatchEntry(this, property2, values[i]);
+                } else {
+                    new ValueWithoutPropertyEntry(this, values[i]);
+                }
             } else {
-                if (!property.getProdDefPropertyType().equals(values[i].getPropertyType())) {
-                    // the map contains only properties for the current property type
-                    // so we have to search if the property exists with a different type.
-                    // as this happends not very often, this is fast for the most delta computations
-                    IProdDefProperty property2 = productCmptType.findProdDefProperty(values[i].getPropertyName(), ipsProject);
-                    if (property2!=null) {
-                        // property2 must have a different type, otherwise it would have been in the property map!
-                        new PropertyTypeMismatchEntry(this, property2, values[i]);
-                    }
+                if (ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(propertyType)) {
+                    checkForValueSetMismatch((IAttribute)property, (IConfigElement)values[i]);
                 }
             }
         }
-        
+    }
+
+    private void checkForValueSetMismatch(IAttribute attribute, IConfigElement element) {
+        if (!attribute.getValueSet().getValueSetType().equals(element.getValueSet().getValueSetType())) {
+            new ValueSetMismatchEntry(this, attribute, element);
+        }
     }
 
     /**
@@ -136,6 +151,20 @@ public class ProductCmptGenerationToTypeDelta implements IProductCmptGenerationT
      */
     public IDeltaEntry[] getEntries() {
         return (IDeltaEntry[])entries.toArray(new IDeltaEntry[entries.size()]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IDeltaEntry[] getEntries(DeltaType type) {
+        List result = new ArrayList(entries.size());
+        for (Iterator it = entries.iterator(); it.hasNext();) {
+            IDeltaEntry entry = (IDeltaEntry)it.next();
+            if (entry.getDeltaType().equals(type)) {
+                result.add(entry);
+            }
+        }
+        return (IDeltaEntry[])result.toArray(new IDeltaEntry[result.size()]);
     }
 
     /**

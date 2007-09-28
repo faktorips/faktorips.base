@@ -18,19 +18,42 @@
 package org.faktorips.devtools.core.internal.model.product.deltaentries;
 
 import org.faktorips.devtools.core.internal.model.product.IPropertyValue;
-import org.faktorips.devtools.core.internal.model.product.ProductCmptGenerationToTypeDelta;
+import org.faktorips.devtools.core.internal.model.product.GenerationToTypeDelta;
+import org.faktorips.devtools.core.model.product.DeltaType;
+import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class MissingPropertyEntry extends AbstractDeltaEntry {
+public class ValueWithoutPropertyEntry extends AbstractDeltaEntry {
 
     private IPropertyValue value;
     
-    public MissingPropertyEntry(ProductCmptGenerationToTypeDelta delta, IPropertyValue value) {
+    public ValueWithoutPropertyEntry(GenerationToTypeDelta delta, IPropertyValue value) {
         super(delta);
         this.value = value;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ProdDefPropertyType getPropertyType() {
+        return value.getPropertyType();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getPropertyName() {
+        return value.getPropertyName();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public DeltaType getDeltaType() {
+        return DeltaType.VALUE_WITHOUT_PROPERTY;
     }
 
     /**

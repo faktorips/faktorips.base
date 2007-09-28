@@ -103,29 +103,28 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * 
      * @throws CoreException
      */
-    public IProductCmptGenerationToTypeDelta computeDeltaToProductCmptType() throws CoreException;
+    public IGenerationToTypeDelta computeDeltaToProductCmptType() throws CoreException;
     
     /**
-     * Returns the delta between this product component and it's policy
-     * component type.
-     * 
-     * @throws CoreException
-     */
-    public IProductCmptGenerationPolicyCmptTypeDelta computeDeltaToPolicyCmptType() throws CoreException;
-    
-    /**
-     * Fixes all differences that are described in the delta.   
-     */
-    public void fixDifferences(IProductCmptGenerationPolicyCmptTypeDelta delta) throws CoreException;
-    
-    /**
-     * Returns the propery values for the given property or <code>null</code> if no value is defined
+     * Returns the propery value for the given property or <code>null</code> if no value is defined
      * for this generation. In this case {@link #computeDeltaToProductCmptType()} returns a delta containing
      * an entry for the missing property value.
-     * 
+     * <p>
      * Returns <code>null</code> if property is <code>null</code>.
+     * <p>
+     * Note that this method searches only the property values that have the same property type
+     * as the indicated property. If you want to search only by name, use {@link #getPropertyValue(String)}. 
      */
     public IPropertyValue getPropertyValue(IProdDefProperty property);
+
+    /**
+     * Returns the propery values for the given property name or <code>null</code> if no value is defined
+     * for this generation. In this case {@link #computeDeltaToProductCmptType()} returns a delta containing
+     * an entry for the missing property value.
+     * <p>
+     * Returns <code>null</code> if propertyName is <code>null</code>.
+     */
+    public IPropertyValue getPropertyValue(String propertyName);
 
     /**
      * Returns all propery values for the given type. Returns an empty array if type is <code>null</code>.

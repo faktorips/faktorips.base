@@ -14,6 +14,7 @@ PolicyCmptTypeAttribute
  - (Brauchen wir das wirklich?)
  - Dialog umbauen
  
+Korrektes Overloading von Attributen beruecksichtigen! Wo überall?
 
 Attribute Dialog im ProductCmptType-Editor überarbeiten.
 Prüfungen für ProductCmptType implementieren.

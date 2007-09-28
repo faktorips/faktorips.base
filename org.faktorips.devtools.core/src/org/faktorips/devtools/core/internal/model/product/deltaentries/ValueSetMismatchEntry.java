@@ -17,62 +17,61 @@
 
 package org.faktorips.devtools.core.internal.model.product.deltaentries;
 
-import org.faktorips.devtools.core.internal.model.product.IPropertyValue;
 import org.faktorips.devtools.core.internal.model.product.GenerationToTypeDelta;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.DeltaType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
+import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class PropertyTypeMismatchEntry extends AbstractDeltaEntry {
+public class ValueSetMismatchEntry extends AbstractDeltaEntry {
 
-    private IProdDefProperty property;
-    private IPropertyValue value;
+    private IAttribute attribute;
+    private IConfigElement element;
     
-    public PropertyTypeMismatchEntry(GenerationToTypeDelta delta, IProdDefProperty property, IPropertyValue value) {
+    public ValueSetMismatchEntry(GenerationToTypeDelta delta, IAttribute attribute, IConfigElement element) {
         super(delta);
-        this.property = property;
-        this.value = value;
+        this.attribute = attribute;
+        this.element = element;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public ProdDefPropertyType getPropertyType() {
-        return value.getPropertyType();
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String getPropertyName() {
-        return property.getPropertyName();
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public DeltaType getDeltaType() {
-        return DeltaType.PROPERTY_TYPE_MISMATCH;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String getDescription() {
-        return getPropertyName() + ": Expected " + property.getProdDefPropertyType().getName() 
-            + ", acual is " + value.getPropertyType().getName(); 
+        return ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET;
     }
     
     /**
      * {@inheritDoc}
      */
     public void fix() {
-        value.delete();
-        generation.newPropertyValue(property);
+        element.setValueSetCopy(attribute.getValueSet());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getPropertyName() {
+        return element.getName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public DeltaType getDeltaType() {
+        return DeltaType.VALUE_SET_MISMATCH;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDescription() {
+        return getPropertyName() + ": Expected " + attribute.getValueSet().getValueSetType().getName()
+             + ", actual is " + element.getValueSet().getValueSetType().getName();
     }
 
 }

@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.product.deltaentries;
 
-import org.faktorips.devtools.core.internal.model.product.ProductCmptGenerationToTypeDelta;
+import org.faktorips.devtools.core.internal.model.product.GenerationToTypeDelta;
 import org.faktorips.devtools.core.model.product.IDeltaEntry;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 
@@ -29,10 +29,16 @@ public abstract class AbstractDeltaEntry implements IDeltaEntry {
 
     protected IProductCmptGeneration generation;
 
-    public AbstractDeltaEntry(ProductCmptGenerationToTypeDelta delta) {
-        super();
+    public AbstractDeltaEntry(GenerationToTypeDelta delta) {
+        delta.addEntry(this);
         this.generation = delta.getProductCmptGeneration();
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getDescription() {
+        return getPropertyName();
+    }
     
 }

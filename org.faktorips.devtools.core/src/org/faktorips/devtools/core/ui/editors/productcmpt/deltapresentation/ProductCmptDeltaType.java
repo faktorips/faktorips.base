@@ -33,12 +33,12 @@ class ProductCmptDeltaType extends DefaultEnumValue {
 	 * A config element exists, but the attribute referenced by the config element does not
 	 * exist.
 	 */
-	public static final ProductCmptDeltaType MISSING_ATTRIBUTE;
+	public static final ProductCmptDeltaType VALUE_WITHOUT_PROPERTY;
 	
 	/**
 	 * An attribute exists, but no config element refers to it.
 	 */
-	public static final ProductCmptDeltaType MISSING_CFGELEMENT;
+	public static final ProductCmptDeltaType MISSING_PROPERTY_VALUE;
 	
 	/**
 	 * The valueset of the config element is not compatible with the valueset of the attribute.
@@ -49,7 +49,7 @@ class ProductCmptDeltaType extends DefaultEnumValue {
 	 * The type of the config element (formula, product or policy) does not match the
 	 * type which is given by the attribute.
 	 */
-	public static final ProductCmptDeltaType CFGELEMENT_TYPE_MISMATCH;
+	public static final ProductCmptDeltaType PROPERTY_TYPE_MISMATCH;
 	
 	/**
 	 * A relation exists in the product component, but its type is not defined.
@@ -71,10 +71,10 @@ class ProductCmptDeltaType extends DefaultEnumValue {
 
     static {
         enumType = new DefaultEnumType("ProductCmptDeltaType", ProductCmptDeltaType.class); //$NON-NLS-1$
-        MISSING_ATTRIBUTE = new ProductCmptDeltaType(enumType, "missingAttr", Messages.ProductCmptDeltaType_missingAttribute, "MissingAttribute.gif"); //$NON-NLS-1$ //$NON-NLS-2$
-        MISSING_CFGELEMENT = new ProductCmptDeltaType(enumType, "missingCfg", Messages.ProductCmptDeltaType_missingCfgElement, "MissingConfigElement.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+        VALUE_WITHOUT_PROPERTY = new ProductCmptDeltaType(enumType, "missingAttr", Messages.ProductCmptDeltaType_missingAttribute, "MissingAttribute.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+        MISSING_PROPERTY_VALUE = new ProductCmptDeltaType(enumType, "missingCfg", Messages.ProductCmptDeltaType_missingCfgElement, "MissingConfigElement.gif"); //$NON-NLS-1$ //$NON-NLS-2$
         VALUESET_MISMATCH = new ProductCmptDeltaType(enumType, "valuesetMismatch", Messages.ProductCmptDeltaType_valuesetMismatch, "ValueSetMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-2$
-        CFGELEMENT_TYPE_MISMATCH = new ProductCmptDeltaType(enumType, "typeMismatch", Messages.ProductCmptDeltaType_cfgElementTypeMismatch, "CfgElementTypeMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+        PROPERTY_TYPE_MISMATCH = new ProductCmptDeltaType(enumType, "typeMismatch", Messages.ProductCmptDeltaType_cfgElementTypeMismatch, "CfgElementTypeMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-2$
         RELATION_MISMATCH = new ProductCmptDeltaType(enumType, "relationMismatch", Messages.ProductCmptDeltaType_missingRelationDefinition, "RelationMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-2$
         MISSING_STRUCTUREUSAGE = new ProductCmptDeltaType(enumType, "missingStructure", Messages.ProductCmptDeltaType_missingTableStructureUsage, "MissingTableStructureUsage.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         MISSING_CONTENTUSAGE = new ProductCmptDeltaType(enumType, "missingContent", Messages.ProductCmptDeltaType_missingTableContentUsage, "MissingTableContentUsage.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

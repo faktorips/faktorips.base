@@ -32,8 +32,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.product.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
@@ -44,7 +44,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 public class ProductCmptDeltaDialog extends TitleAreaDialog {
 
 	private IProductCmptGeneration[] generations;
-	private IProductCmptGenerationPolicyCmptTypeDelta[] deltas;
+	private IGenerationToTypeDelta[] deltas;
 	private TreeViewer tree;
 	private List generationsList;
 	private UIToolkit toolkit;
@@ -58,7 +58,7 @@ public class ProductCmptDeltaDialog extends TitleAreaDialog {
 	 * @param generations All generations with differences.
 	 * @param deltas All deltas for the generations.
 	 */
-	public ProductCmptDeltaDialog(IProductCmptGeneration[] generations, IProductCmptGenerationPolicyCmptTypeDelta[] deltas, Shell parentShell) {
+	public ProductCmptDeltaDialog(IProductCmptGeneration[] generations, IGenerationToTypeDelta[] deltas, Shell parentShell) {
 		super(parentShell);
 		super.setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.generations = generations;
@@ -133,8 +133,8 @@ public class ProductCmptDeltaDialog extends TitleAreaDialog {
                             genTextPlural), IMessageProvider.WARNING);
         }
 
-        tree.setContentProvider(new ProductCmptDeltaContentProvider());
-        tree.setLabelProvider(new ProductCmptDeltaLabelProvider());
+        tree.setContentProvider(new DeltaContentProvider());
+        tree.setLabelProvider(new DeltaLabelProvider());
 		
 		generationsList.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -182,7 +182,7 @@ public class ProductCmptDeltaDialog extends TitleAreaDialog {
 		return generations;
 	}
 	
-	public IProductCmptGenerationPolicyCmptTypeDelta[] getDeltas() {
+	public IGenerationToTypeDelta[] getDeltas() {
 		return deltas;
 	}
 }

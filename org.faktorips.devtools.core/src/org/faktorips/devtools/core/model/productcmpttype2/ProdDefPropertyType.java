@@ -45,10 +45,10 @@ public class ProdDefPropertyType extends DefaultEnumValue {
     
     static {
         enumType = new DefaultEnumType("ProdDefPropertyType", ProdDefPropertyType.class); //$NON-NLS-1$
-        VALUE = new ProdDefPropertyType(enumType, "attribute", 10, "ProductAttribute.gif");
-        TABLE_CONTENT_USAGE = new ProdDefPropertyType(enumType, "tableContentUsage", 20, "TableContentsUsage.gif");
-        FORMULA = new ProdDefPropertyType(enumType, "formula", 30, "Formula.gif");
-        DEFAULT_VALUE_AND_VALUESET = new ProdDefPropertyType(enumType, "config", MAX_SORT_ORDER, "PolicyAttribute.gif");
+        VALUE = new ProdDefPropertyType(enumType, "attribute", "Product property", 10, "ProductAttribute.gif");
+        TABLE_CONTENT_USAGE = new ProdDefPropertyType(enumType, "tableContentUsage", "Table usage", 20, "TableContentsUsage.gif");
+        FORMULA = new ProdDefPropertyType(enumType, "formula", "Formula", 30, "Formula.gif");
+        DEFAULT_VALUE_AND_VALUESET = new ProdDefPropertyType(enumType, "config", "Default&ValueSet Configuration", MAX_SORT_ORDER, "PolicyAttribute.gif");
         
         ALL_TYPES = new ProdDefPropertyType[]{VALUE, TABLE_CONTENT_USAGE, FORMULA, DEFAULT_VALUE_AND_VALUESET};
     }
@@ -68,8 +68,8 @@ public class ProdDefPropertyType extends DefaultEnumValue {
         return IpsPlugin.getDefault().getImage(imageName);
     }
     
-    private ProdDefPropertyType(DefaultEnumType type, String id, int sortOrder, String imageName) {
-        super(type, id);
+    private ProdDefPropertyType(DefaultEnumType type, String id, String name, int sortOrder, String imageName) {
+        super(type, id, name);
         this.sortOrder = sortOrder;
         this.imageName = imageName;
     }

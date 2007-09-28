@@ -124,6 +124,11 @@ public interface IProductCmptType extends IIpsObject, IType {
     public IProductCmptTypeAttribute newAttribute();
 
     /**
+     * Creates a new attribute with the given name and returns it.
+     */
+    public IProductCmptTypeAttribute newAttribute(String name);
+
+    /**
      * Returns the number of attributes.
      */
     public int getNumOfAttributes();

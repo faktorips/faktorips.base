@@ -55,7 +55,6 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     public AttributeValue(IIpsObjectPart parent, int id, String attribute, String value) {
         super(parent, id);
         ArgumentCheck.notNull(attribute);
-        ArgumentCheck.notNull(value);
         this.attribute = attribute;
         this.value = value;
     }

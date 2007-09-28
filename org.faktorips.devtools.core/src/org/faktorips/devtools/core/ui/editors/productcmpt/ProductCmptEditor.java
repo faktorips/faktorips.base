@@ -33,9 +33,9 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.product.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.ui.editors.DescriptionPage;
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
@@ -389,9 +389,9 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         for (int i = 0; i < generations.length; i++) {
             generations[i] = (IProductCmptGeneration)gen[i];
         }
-        IProductCmptGenerationPolicyCmptTypeDelta[] deltas = new IProductCmptGenerationPolicyCmptTypeDelta[generations.length];
+        IGenerationToTypeDelta[] deltas = new IGenerationToTypeDelta[generations.length];
         for (int i = 0; i < generations.length; i++) {
-                deltas[i] = ((IProductCmptGeneration)generations[i]).computeDeltaToPolicyCmptType();
+                deltas[i] = ((IProductCmptGeneration)generations[i]).computeDeltaToProductCmptType();
         }
 
         return new ProductCmptDeltaDialog(generations, deltas, getSite().getShell());

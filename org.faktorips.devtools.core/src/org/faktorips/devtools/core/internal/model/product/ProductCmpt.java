@@ -41,9 +41,9 @@ import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IFormula;
+import org.faktorips.devtools.core.model.product.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptKind;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
@@ -369,8 +369,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         for (int i = 0; i < generations.length; i++) {
             IIpsObjectGeneration generation = generations[i];
             if(generation instanceof IProductCmptGeneration){
-                IProductCmptGenerationPolicyCmptTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToPolicyCmptType();
-                if(delta!=null && !delta.isEmpty()){
+                IGenerationToTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToProductCmptType();
+                if(!delta.isEmpty()){
                     return true;
                 }
             }
@@ -386,7 +386,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         for (int i = 0; i < generations.length; i++) {
             IIpsObjectGeneration generation = generations[i];
             if(generation instanceof IProductCmptGeneration){
-                ((IProductCmptGeneration)generation).fixDifferences(((IProductCmptGeneration)generation).computeDeltaToPolicyCmptType());
+                IGenerationToTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToProductCmptType();
+                delta.fix();
                 
             }
         }

@@ -70,7 +70,7 @@ public class NewProductCmptWizard extends NewIpsObjectWizard {
         productCmpt.setRuntimeId(productCmptPage.getRuntimeId());
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
         generation.setValidFrom(date);
-        generation.fixDifferences(generation.computeDeltaToPolicyCmptType());
+        productCmpt.fixAllDifferencesToModel();
     }
 
 }

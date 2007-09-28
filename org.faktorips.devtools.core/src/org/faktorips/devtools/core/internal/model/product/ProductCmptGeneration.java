@@ -29,11 +29,12 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IAttributeValue;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IDeltaEntry;
 import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
-import org.faktorips.devtools.core.model.product.IProductCmptGenerationToTypeDelta;
+import org.faktorips.devtools.core.model.product.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
@@ -120,6 +121,28 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         }
         throw new RuntimeException("Unknown property type " + type);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IPropertyValue getPropertyValue(String propertyName) {
+        if (propertyName==null) {
+            return null;
+        }
+        IPropertyValue value = getAttributeValue(propertyName);
+        if (value!=null) {
+            return value;
+        }
+        value = getTableContentUsage(propertyName);
+        if (value!=null) {
+            return value;
+        }
+        value = getFormula(propertyName);
+        if (value!=null) {
+            return value;
+        }
+        return getConfigElement(propertyName); 
+    }
 
     /**
      * {@inheritDoc}
@@ -166,15 +189,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     /**
      * {@inheritDoc}
      */
-    public IProductCmptGenerationToTypeDelta computeDeltaToProductCmptType() throws CoreException {
-        return new ProductCmptGenerationToTypeDelta(this);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IProductCmptGenerationPolicyCmptTypeDelta computeDeltaToPolicyCmptType() throws CoreException {
-        return new ProductCmptGenerationPolicyCmptTypeDelta(this);
+    public IGenerationToTypeDelta computeDeltaToProductCmptType() throws CoreException {
+        return new GenerationToTypeDelta(this);
     }
 
     /**
@@ -706,10 +722,10 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             return;
         }
 
-        IProductCmptGenerationPolicyCmptTypeDelta delta = computeDeltaToPolicyCmptType();
-        org.faktorips.devtools.core.model.pctype.IAttribute[] attributesWithMissingConfigElements = delta.getAttributesWithMissingConfigElements();
-        for (int i = 0; i < attributesWithMissingConfigElements.length; i++) {
-            String text = NLS.bind(Messages.ProductCmptGeneration_msgAttributeWithMissingConfigElement, attributesWithMissingConfigElements[i].getName());
+        IGenerationToTypeDelta delta = computeDeltaToProductCmptType();
+        IDeltaEntry[] entries = delta.getEntries();
+        for (int i = 0; i < entries.length; i++) {
+            String text = NLS.bind(Messages.ProductCmptGeneration_msgAttributeWithMissingConfigElement, entries[i].getPropertyName());
             list.add(new Message(MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT, text, Message.WARNING, this)); //$NON-NLS-1$
         }
 
