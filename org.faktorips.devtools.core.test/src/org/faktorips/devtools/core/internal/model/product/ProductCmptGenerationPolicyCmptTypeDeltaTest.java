@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
@@ -165,52 +164,6 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
         missing = delta.getConfigElementsWithMissingAttributes();
         assertEquals(0, missing.length);
-    }
-    
-    public void testGetElementsWithTypeMismatch() throws CoreException {
-        IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);  
-        assertEquals(0, delta.getTypeMismatchElements().length);
-        
-        IAttribute a1 = policyCmptType.newAttribute();
-        a1.setName("a1");
-        a1.setProductRelevant(true);
-        a1.setAttributeType(AttributeType.CHANGEABLE);
-        IAttribute a2 = policyCmptSupertype.newAttribute();
-        a2.setName("a2");
-        a2.setProductRelevant(true);
-        a2.setAttributeType(AttributeType.CHANGEABLE);
-        
-        IConfigElement ce1 = generation.newConfigElement();
-        ce1.setPcTypeAttribute("a1");
-        ce1.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
-        IConfigElement ce2 = generation.newConfigElement();
-        ce2.setPcTypeAttribute("a2");
-        ce2.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
-        IConfigElement ce3 = generation.newConfigElement();
-        ce3.setPcTypeAttribute("unkown");
-        
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
-        assertFalse(delta.isEmpty());
-        IConfigElement[] elements = delta.getTypeMismatchElements();
-        assertEquals(2, elements.length);
-        assertEquals(ce1, elements[0]);
-        assertEquals(ce2, elements[1]);
-
-        // corresponding attribute is not product relevant
-        // => this is not a typemismatch
-        a2.setProductRelevant(false);
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
-        elements = delta.getTypeMismatchElements();
-        assertEquals(1, elements.length);
-        assertEquals(ce1, elements[0]);
-        
-        // no typemismatchs
-        ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
-        ce2.setType(ConfigElementType.POLICY_ATTRIBUTE);
-        
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
-        elements = delta.getTypeMismatchElements();
-        assertEquals(0, elements.length);
     }
     
     public void testGetElementsWithValueSetMismatch() throws CoreException {

@@ -17,13 +17,15 @@
 
 package org.faktorips.devtools.core.model.productcmpttype2;
 
+import org.faktorips.devtools.core.model.Described;
+
 
 /**
  * 
  * 
  * @author Jan Ortmann
  */
-public interface IProdDefProperty {
+public interface IProdDefProperty extends Described {
 
     /**
      * Returns the type of the property.

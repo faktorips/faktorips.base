@@ -104,12 +104,12 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     
     public void testValidate_UnknownDatatypeValue() throws CoreException {
     	IConfigElement ce = generation.newConfigElement();
-    	ce.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
+    	ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
     	ce.setValue("1");
     	ce.setPcTypeAttribute("valueTest");
     	IAttribute attr = policyCmptType.newAttribute();
     	attr.setName("valueTest");
-    	attr.setAttributeType(AttributeType.CONSTANT);
+    	attr.setAttributeType(AttributeType.CHANGEABLE);
     	
     	MessageList ml = ce.validate();
     	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_VALUE));
@@ -124,12 +124,12 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 
     public void testValidate_ValueNotParsable() throws CoreException {
     	IConfigElement ce = generation.newConfigElement();
-    	ce.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
+    	ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
     	ce.setValue("1");
     	ce.setPcTypeAttribute("valueTest");
     	IAttribute attr = policyCmptType.newAttribute();
     	attr.setName("valueTest");
-    	attr.setAttributeType(AttributeType.CONSTANT);
+    	attr.setAttributeType(AttributeType.CHANGEABLE);
     	attr.setDatatype("Money");
 
     	policyCmptType.getIpsSrcFile().save(true, null);
@@ -148,7 +148,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     public void testValidate_InvalidValueset() throws CoreException {
     	IAttribute attr = policyCmptType.newAttribute();
     	attr.setName("valueTest");
-    	attr.setAttributeType(AttributeType.CONSTANT);
+    	attr.setAttributeType(AttributeType.CHANGEABLE);
     	attr.setDatatype("Decimal");
     	attr.setValueSetType(ValueSetType.RANGE);
     	IRangeValueSet valueSet = (IRangeValueSet)attr.getValueSet();

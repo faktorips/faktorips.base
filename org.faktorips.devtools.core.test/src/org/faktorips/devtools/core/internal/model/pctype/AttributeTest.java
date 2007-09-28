@@ -94,9 +94,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
         attribute.setAttributeType(AttributeType.CHANGEABLE);
         assertEquals(ConfigElementType.POLICY_ATTRIBUTE, attribute.getConfigElementType());
 
-        attribute.setAttributeType(AttributeType.CONSTANT);
-        assertEquals(ConfigElementType.PRODUCT_ATTRIBUTE, attribute.getConfigElementType());
-
         attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         assertNull(attribute.getConfigElementType());
         

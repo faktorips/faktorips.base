@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.product.IAttributeValue;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -35,7 +35,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private IProductCmptType productCmptType;
-    private IAttribute attribute;
+    private IProductCmptTypeAttribute attribute;
     private IProductCmpt productCmpt;
     private IProductCmptGeneration generation;
     

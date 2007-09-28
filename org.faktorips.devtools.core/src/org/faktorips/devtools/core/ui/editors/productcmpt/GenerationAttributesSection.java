@@ -34,14 +34,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ValueSet;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.product.ConfigElementType;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IValueSet;
+import org.faktorips.devtools.core.model.product.IAttributeValue;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
@@ -154,9 +154,9 @@ public class GenerationAttributesSection extends IpsSection {
 	private void createEditControls() {
 		uiMasterController = new CompositeUIController();
 
-		// create a label and edit control for each config element
-		IConfigElement[] elements = generation.getConfigElements(ConfigElementType.PRODUCT_ATTRIBUTE);
-		Arrays.sort(elements, new ConfigElementComparator());
+		// create a label and edit control for each attribute value
+		IAttributeValue[] elements = generation.getAttributeValues();
+		Arrays.sort(elements, new PropertyValueComparator(generation.getProductCmpt().getProductCmptType(), generation.getIpsProject()));
 		for (int i = 0; i < elements.length; i++) {
 			addAndRegister(elements[i]);
 		}
@@ -193,33 +193,29 @@ public class GenerationAttributesSection extends IpsSection {
 	/**
 	 * Creates a new label and input for the given config element and links the input with the config element.
 	 */
-	private void addAndRegister(IConfigElement toDisplay) {
+	private void addAndRegister(IAttributeValue toDisplay) {
 		if (toDisplay == null) {
 			// this can happen if the config element has no corresponding attribute... 
 			return;
 		}
-		
-		Label label = toolkit.createLabel(rootPane, StringUtils.capitalise(toDisplay.getPcTypeAttribute()));	
+		IIpsProject ipsProject = toDisplay.getIpsProject();
+		Label label = toolkit.createLabel(rootPane, StringUtils.capitalise(toDisplay.getAttribute()));	
         
         IpsObjectUIController controller = new IpsObjectUIController(toDisplay);
 		uiMasterController.add(controller);
 	
 		try {
-			IAttribute attr = toDisplay.findPcTypeAttribute();
-			Datatype datatype = null;
+			IProductCmptTypeAttribute attr = toDisplay.findAttribute(ipsProject);
+			ValueDatatype datatype = null;
+            IValueSet valueset = null;
             //  use description of attribute as tooltip
 			if (attr != null) {
 				label.setToolTipText(attr.getDescription());
-				datatype = attr.findDatatype();
+				datatype = attr.findDatatype(ipsProject);
+                valueset = attr.getValueSet();
 			}
-			ValueDatatypeControlFactory ctrlFactory;
-			if (datatype != null && datatype.isValueDatatype()) {
-				ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory((ValueDatatype)datatype);
-			} else {
-				ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(null);
-			}
-			
-			EditField field = ctrlFactory.createEditField(toolkit, rootPane, (ValueDatatype)datatype, (ValueSet)toDisplay.getValueSet());
+			ValueDatatypeControlFactory ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(datatype);
+			EditField field = ctrlFactory.createEditField(toolkit, rootPane, (ValueDatatype)datatype, valueset);
 			Control ctrl = field.getControl();
 			controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);
 			addFocusControl(ctrl);

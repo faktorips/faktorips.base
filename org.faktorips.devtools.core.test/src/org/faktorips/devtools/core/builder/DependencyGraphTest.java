@@ -46,10 +46,10 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         b = newPolicyCmptType(root, "B");
         c = newPolicyCmptType(root, "C");
         d = newPolicyCmptType(root, "D");
-        a.setUnqualifiedProductCmptType("");
-        b.setUnqualifiedProductCmptType("");
-        c.setUnqualifiedProductCmptType("");
-        d.setUnqualifiedProductCmptType("");
+        a.setProductCmptType("");
+        b.setProductCmptType("");
+        c.setProductCmptType("");
+        d.setProductCmptType("");
         
         // dependencies c->b, c->a, a->d, 
         a.newRelation().setTarget(d.getQualifiedName());

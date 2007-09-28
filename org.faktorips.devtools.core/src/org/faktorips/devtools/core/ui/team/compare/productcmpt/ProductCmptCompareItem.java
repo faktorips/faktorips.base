@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.core.resources.IFile;
+import org.faktorips.devtools.core.internal.model.product.IPropertyValue;
 import org.faktorips.devtools.core.model.IAllValuesValueSet;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -34,13 +35,11 @@ import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
-import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
-import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
 
@@ -119,7 +118,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
         int currentLength= 0;
         sb.append(getContentString());
         currentLength += getContentString().length();
-        List attributes = getConfigElementsAndTableContentUsagesAndFormulas(children);
+        List attributes = getPropertyValues(children);
         List relations = getRelations(children);
         if (!attributes.isEmpty()) {
             sb.append(NEWLINE);
@@ -200,11 +199,11 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
      * Returns a list containing all <code>ProductCmptCompareItem</code>s in the given list that
      * contain a <code>IConfigElement</code>.
      */
-    private List getConfigElementsAndTableContentUsagesAndFormulas(List elements) {
+    private List getPropertyValues(List elements) {
         List ces = new ArrayList();
         for (Iterator iter = elements.iterator(); iter.hasNext();) {
             ProductCmptCompareItem item = (ProductCmptCompareItem)iter.next();
-            if (item.getIpsElement() instanceof IConfigElement || item.getIpsElement() instanceof ITableContentUsage || item instanceof IFormula) {
+            if (item.getIpsElement() instanceof IPropertyValue) {
                 ces.add(item);
             }
         }
@@ -295,32 +294,20 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
             sb.append(BLANK).append(BLANK).append("(").append(rel.getId()).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
         } else if (getIpsElement() instanceof IConfigElement) {
             IConfigElement configElement = (IConfigElement)getIpsElement();
-            String validFromSimple = simpleDateFormat
-                .format(configElement.getProductCmptGeneration().getValidFrom().getTime());
-            if(configElement.getType() == ConfigElementType.PRODUCT_ATTRIBUTE){
-                sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(COLON_BLANK);
-                sb.append(configElement.getValue());
-            } else if (configElement.getType() == ConfigElementType.POLICY_ATTRIBUTE){
-                sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(NEWLINE);
-                sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB)
-                        .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PolicyAttributeEditDialog_defaultValue)
-                        .append(BLANK);
-                sb.append(configElement.getValue()).append(NEWLINE);
-                sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB)
-                        .append(Messages.ProductCmptCompareItem_ValueSet).append(COLON_BLANK);
-                sb.append(getValueSetContent(configElement));
-            }
-        } else if (getIpsElement() instanceof IFormula) {
-            IFormula  formula = (IFormula)getIpsElement();
-            String validFromSimple = simpleDateFormat.format(formula.getProductCmptGeneration().getValidFrom().getTime());
-            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(formula.getName()).append(COLON_BLANK);
-            sb.append(formula.getExpression());
-            
-        } else if (getIpsElement() instanceof ITableContentUsage) {
-            ITableContentUsage usage = (ITableContentUsage)getIpsElement();
-            String validFromSimple = simpleDateFormat.format(((IIpsObjectGeneration)usage.getParent()).getValidFrom().getTime());
-            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(usage.getStructureUsage()).append(COLON_BLANK);
-            sb.append(usage.getTableContentName());
+            String validFromSimple = simpleDateFormat.format(configElement.getProductCmptGeneration().getValidFrom().getTime());
+            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(NEWLINE);
+            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB)
+                    .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PolicyAttributeEditDialog_defaultValue)
+                    .append(BLANK);
+            sb.append(configElement.getValue()).append(NEWLINE);
+            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB)
+                    .append(Messages.ProductCmptCompareItem_ValueSet).append(COLON_BLANK);
+            sb.append(getValueSetContent(configElement));
+       } else if (getIpsElement() instanceof IPropertyValue) {
+            IPropertyValue value = (IPropertyValue)getIpsElement();
+            String validFromSimple = simpleDateFormat.format(value.getProductCmptGeneration().getValidFrom().getTime());
+            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(value.getPropertyName()).append(COLON_BLANK);
+            sb.append(value.getPropertyValue());
         } else if (getIpsElement() instanceof IIpsObjectGeneration) {
             IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
             String validFromSimple = simpleDateFormat.format(gen.getValidFrom().getTime());

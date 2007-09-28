@@ -22,27 +22,22 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.product.IPropertyValue;
 import org.faktorips.devtools.core.internal.model.product.ProductCmptGeneration;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.product.ConfigElementType;
-import org.faktorips.devtools.core.model.product.IConfigElement;
-import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 import org.faktorips.devtools.core.ui.editors.IActiveGenerationChangedListener;
 import org.faktorips.devtools.core.ui.views.modeldescription.DefaultModelDescriptionPage;
 import org.faktorips.devtools.core.ui.views.modeldescription.DescriptionItem;
 
 /**
- * A page for presenting the attributes of a {@link IProductCmptType}. This page is
+ * A page for presenting the properties of a {@link IProductCmptType}. This page is
  * connected to a {@link ProductCmptEditor} similiar to the outline view.
  *
  * @author Markus Blum
@@ -51,12 +46,12 @@ import org.faktorips.devtools.core.ui.views.modeldescription.DescriptionItem;
 public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage implements IActiveGenerationChangedListener, ContentsChangeListener {
 
     private ProductCmptEditor editor;
+    private PropertyValueComparator valueComparator;
 
     public ProductCmptModelDescriptionPage(ProductCmptEditor editor) throws CoreException {
     	super();
-
         this.editor = editor;
-        // register with GenerationChangedEvent
+        valueComparator = new PropertyValueComparator(editor.getProductCmpt().getProductCmptType(), editor.getIpsProject());
         editor.addListener(this);
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
         setDescriptionData(editor.getActiveGeneration());
@@ -69,7 +64,6 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
         try {
             setDescriptionData(generation);
         } catch (CoreException e) {
-            // TODO Show or handle Excpetion.
             IpsPlugin.log(e);
         }
     }
@@ -88,86 +82,37 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
      * @throws CoreException
      */
     private void setDescriptionData(IIpsObjectGeneration generation) throws CoreException {
+        IProductCmptGeneration prodCmptGen = (IProductCmptGeneration)generation;
+        super.setTitle(prodCmptGen.getProductCmpt().getName());
+
         List items = new ArrayList();
-        String productName = ((IProductCmptGeneration)generation).getProductCmpt().getName();
-
-        createAttributeDescription(items, (IProductCmptGeneration)generation, ConfigElementType.PRODUCT_ATTRIBUTE);
-        createTableDescription(items, (IProductCmptGeneration)generation);
-        createFormulaDescription(items, (IProductCmptGeneration)generation);
-        createAttributeDescription(items, (IProductCmptGeneration)generation, ConfigElementType.POLICY_ATTRIBUTE);
-
-        DescriptionItem[] itemDescs = new DescriptionItem[items.size()];
-        itemDescs = (DescriptionItem[]) items.toArray(itemDescs);
-
-        super.setTitle(productName);
+        for (int i=0; i<ProdDefPropertyType.ALL_TYPES.length; i++) {
+            createPropertyDescription(items, prodCmptGen, ProdDefPropertyType.ALL_TYPES[i]);
+        }
+        
+        DescriptionItem[] itemDescs = (DescriptionItem[]) items.toArray(new DescriptionItem[items.size()]);
         super.setDescriptionItems(itemDescs);
-    }
-
-    /**
-     * Add description of attributes to the {@link DescriptionItem} ordered by {@link ConfigElementType}.
-     *
-     * @param attributeList List with the collected attributes.
-     * @param productCmptGen Get valid attributes from {@link IProductCmptGeneration}.
-     * @param type Read attributes of {@link ConfigElementType} only.
-     * @throws CoreException
-     */
-    private void createAttributeDescription(List attributeList, IProductCmptGeneration productCmptGen, ConfigElementType type) throws CoreException {
-
-        // Get names and descriptions of attributetypes by ConfigElementType
-    	IConfigElement[] elements = productCmptGen.getConfigElements(type);
-
-        if (elements.length > 0)
-        {
-    		Arrays.sort(elements, new ConfigElementComparator());
-
-    		for (int i = 0; i < elements.length; i++) {
-				IAttribute attribute = elements[i].findPcTypeAttribute();
-
-				if (attribute != null) {
-					DescriptionItem item = new DescriptionItem(attribute.getName(), attribute.getDescription());
-					attributeList.add(item);
-				}
-			}
-        }
-	}
-
-    /**
-     * Add description of attributes to the {@link DescriptionItem} ordered by {@link ConfigElementType}.
-     *
-     * @param attributeList List with the collected attributes.
-     * @param productCmptGen Get valid attributes from {@link IProductCmptGeneration}.
-     * @throws CoreException
-     */
-    private void createFormulaDescription(List attributeList, IProductCmptGeneration productCmptGen) throws CoreException {
-        // TODO v2 - sort order beruecksichtigen
-        IFormula[] elements = productCmptGen.getFormulas();
-        IIpsProject ipsProject = productCmptGen.getIpsProject();
-        for (int i = 0; i < elements.length; i++) {
-            IProductCmptTypeMethod method = elements[i].findFormulaSignature(ipsProject);
-            if (method!= null) {
-                DescriptionItem item = new DescriptionItem(method.getFormulaName(), method.getDescription());
-                attributeList.add(item);
-            }
-        }
     }
 
     /**
      * Add description of used tables.
      *
-     * @param attributeList List with the collected attributes.
+     * @param descriptionsList List with the collected descriptions.
      * @param productCmptGen Get valid tables from {@link IProductCmptGeneration}.
+     * 
      * @throws CoreException
      */
-    private void createTableDescription(List attributeList, IProductCmptGeneration productCmptGen) throws CoreException {
-        ITableContentUsage[] contentUsage  = productCmptGen.getTableContentUsages();
-        for (int i = 0; i < contentUsage.length; i++) {
-			ITableStructureUsage structure = contentUsage[i].findTableStructureUsage(productCmptGen.getIpsProject());
-			if (structure != null ) {
-				DescriptionItem item = new DescriptionItem(contentUsage[i].getStructureUsage() , structure.getDescription());
-				attributeList.add(item);
-			}
+    private void createPropertyDescription(List descriptions, IProductCmptGeneration productCmptGen, ProdDefPropertyType propertyType) throws CoreException {
+        IPropertyValue[] values  = productCmptGen.getPropertyValues(propertyType);
+        Arrays.sort(values, valueComparator);
+        for (int i = 0; i < values.length; i++) {
+            IProdDefProperty property = values[i].findProperty(productCmptGen.getIpsProject());
+            if (property != null ) {
+                DescriptionItem item = new DescriptionItem(values[i].getPropertyName() , property.getDescription());
+                descriptions.add(item);
+            }
         }
-	}
+    }
 
     /**
      * {@inheritDoc}

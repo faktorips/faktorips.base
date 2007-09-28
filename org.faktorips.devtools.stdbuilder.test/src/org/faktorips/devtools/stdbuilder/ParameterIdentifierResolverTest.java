@@ -22,8 +22,6 @@ import java.util.Locale;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.type.Parameter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
@@ -102,7 +100,7 @@ public class ParameterIdentifierResolverTest extends AbstractIpsPluginTest {
         assertTrue(result.successfull());
         assertEquals(Datatype.DECIMAL, result.getDatatype());
         String expected = "policy."
-                + getPolicyCmptInterfaceBuilder().getMethodNameGetPropertyValue(attribute, result.getDatatype()) + "()";
+                + getPolicyCmptInterfaceBuilder().getMethodNameGetPropertyValue(attribute.getName(), result.getDatatype()) + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
 
         // unkown parameter

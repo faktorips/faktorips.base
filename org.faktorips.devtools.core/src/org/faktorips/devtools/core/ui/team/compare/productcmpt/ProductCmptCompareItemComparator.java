@@ -19,12 +19,9 @@ package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 
 import java.util.Comparator;
 
+import org.faktorips.devtools.core.internal.model.product.IPropertyValue;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.product.ConfigElementType;
-import org.faktorips.devtools.core.model.product.IConfigElement;
-import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.ITableContentUsage;
 
 /**
  * Comparator for <code>ProductCmptCompareItem</code>s. Compares the actual
@@ -57,41 +54,12 @@ public class ProductCmptCompareItemComparator implements Comparator {
                 return ((IProductCmptGeneration)element1).getGenerationNo()
                         - ((IProductCmptGeneration)element2).getGenerationNo();
             }
-            if ((element1 instanceof IConfigElement||element1 instanceof ITableContentUsage || element1 instanceof IFormula) 
-                    && (element2 instanceof IConfigElement||element2 instanceof ITableContentUsage || element2 instanceof IFormula)) {
-                int first= getOrderNumber(element1);
-                int second= getOrderNumber(element2);
+            if ((element1 instanceof IPropertyValue) && (element2 instanceof IPropertyValue)) {
+                int first= ((IPropertyValue)element1).getPropertyType().getSortOrder();
+                int second= ((IPropertyValue)element2).getPropertyType().getSortOrder();
                 return first-second;
             }
         }
         return 0;
     }
-
-    /** 
-     * Sorts configElements and tableUsages in the following oder:
-     * <ul>
-     *  <li>product attribute</li>
-     *  <li>tableUsage</li>
-     *  <li>formula</li>
-     *  <li>policy attribute</li>
-     * </ul>
-     * @param element
-     * @return
-     */
-    private int getOrderNumber(IIpsElement element){
-        if(element instanceof IConfigElement){
-            IConfigElement ce= (IConfigElement) element;
-            if(ce.getType()==ConfigElementType.PRODUCT_ATTRIBUTE){
-                return 1;
-            }else if(ce.getType()==ConfigElementType.POLICY_ATTRIBUTE){
-                return 4;
-            }
-        } else if(element instanceof IFormula){
-            return 3;
-        } else if(element instanceof ITableContentUsage){
-            return 2;
-        }
-        return 5;
-    }
-
 }

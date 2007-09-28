@@ -28,15 +28,12 @@ import org.faktorips.values.EnumType;
  */
 public class ConfigElementType extends DefaultEnumValue {
     
-    public final static ConfigElementType PRODUCT_ATTRIBUTE;
-
     public final static ConfigElementType POLICY_ATTRIBUTE;
 
     private final static DefaultEnumType enumType; 
     
     static {
         enumType = new DefaultEnumType("ConfigElementType", ConfigElementType.class); //$NON-NLS-1$
-        PRODUCT_ATTRIBUTE = new ConfigElementType(enumType, "productAttribute", Messages.ConfigElementType_productAttribute); //$NON-NLS-1$
         POLICY_ATTRIBUTE = new ConfigElementType(enumType, "policyAttribute", Messages.ConfigElementType_policyAttribute); //$NON-NLS-1$
     }
     
@@ -53,10 +50,7 @@ public class ConfigElementType extends DefaultEnumValue {
     }
 
 	public Image getImage() {
-		if (this.equals(PRODUCT_ATTRIBUTE)) {
-			return IpsPlugin.getDefault().getImage("ProductAttribute.gif"); //$NON-NLS-1$
-		}
-		else if (this.equals(POLICY_ATTRIBUTE)) {
+		if (this.equals(POLICY_ATTRIBUTE)) {
 			return IpsPlugin.getDefault().getImage("PolicyAttribute.gif"); //$NON-NLS-1$
 		}
 		else {

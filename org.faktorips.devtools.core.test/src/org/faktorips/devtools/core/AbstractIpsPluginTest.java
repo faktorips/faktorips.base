@@ -21,7 +21,6 @@ import java.beans.PropertyDescriptor;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -63,7 +62,6 @@ import org.faktorips.devtools.core.internal.model.IpsProjectProperties;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptType;
-import org.faktorips.devtools.core.internal.model.testcase.TestObject;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
@@ -83,8 +81,6 @@ import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.test.XmlAbstractTestCase;
 import org.faktorips.devtools.core.ui.binding.BeanUtil;
-import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
-import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -395,8 +391,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                     ((IPolicyCmptType) ipsObject)
                             .setConfigurableByProductCmptType(true);
                     ((IPolicyCmptType) ipsObject)
-                            .setUnqualifiedProductCmptType(unqualifiedName
-                                    + "ProductCmpt");
+                            .setProductCmptType(qualifiedName + "ProductCmpt");
                     newProductCmptType(root, qualifiedName + "ProductCmpt");
                 }
             }
@@ -468,7 +463,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         ProductCmptType productCmptType = newProductCmptType(project, productCmptTypeName);
         productCmptType.setPolicyCmptType(policyCmptTypeName);
         policyCmptType.setConfigurableByProductCmptType(true);
-        policyCmptType.setUnqualifiedProductCmptType(QNameUtil.getUnqualifiedName(productCmptTypeName));
+        policyCmptType.setProductCmptType(productCmptTypeName);
         policyCmptType.getIpsSrcFile().save(true, null);
         productCmptType.getIpsSrcFile().save(true, null);
         return (PolicyCmptType)policyCmptType;

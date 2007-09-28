@@ -53,7 +53,7 @@ public class MissingProductCmptTypeTest extends AbstractIpsPluginTest {
         IIpsProject project = newIpsProject();
         IPolicyCmptType type = newPolicyCmptTypeWithoutProductCmptType(project, "Policy");
         type.setConfigurableByProductCmptType(true);
-        type.setUnqualifiedProductCmptType("Product"); // missing product component type!
+        type.setProductCmptType("Product"); // missing product component type!
         
 //        IAttribute a = type.newAttribute();
 //        a.setName("a");

@@ -33,10 +33,11 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -91,6 +92,28 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         childrenList.addAll(links);
         return (IIpsElement[])childrenList.toArray(new IIpsElement[childrenList.size()]);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IPropertyValue[] getPropertyValues(ProdDefPropertyType type) {
+        if (type==null) {
+            return new IPropertyValue[0];
+        }
+        if (type.equals(ProdDefPropertyType.VALUE)) {
+            return (IPropertyValue[])attributeValues.toArray(new IPropertyValue[attributeValues.size()]);
+        }
+        if (type.equals(ProdDefPropertyType.TABLE_CONTENT_USAGE)) {
+            return (IPropertyValue[])tableContentUsages.toArray(new IPropertyValue[tableContentUsages.size()]);
+        }
+        if (type.equals(ProdDefPropertyType.FORMULA)) {
+            return (IPropertyValue[])formulas.toArray(new IPropertyValue[formulas.size()]);
+        }
+        if (type.equals(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET)) {
+            return (IPropertyValue[])configElements.toArray(new IPropertyValue[configElements.size()]);
+        }
+        throw new RuntimeException("Unknown type " + type);
+    }
 
     /**
      * {@inheritDoc}
@@ -112,7 +135,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             element.setPcTypeAttribute(attributes[i].getName());
             element.setType(attributes[i].getConfigElementType());
             element.setValue(attributes[i].getDefaultValue());
-            if (element.getType() != ConfigElementType.PRODUCT_ATTRIBUTE) {
+            if (element.getType() == ConfigElementType.POLICY_ATTRIBUTE) {
                 element.setValueSetCopy(attributes[i].getValueSet());
             }
         }
@@ -165,7 +188,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     /**
      * {@inheritDoc}
      */
-    public IAttributeValue newAttributeValue(IAttribute attribute, String value) {
+    public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute, String value) {
         IAttributeValue newValue = newAttributeValueInternal(getNextPartId(), attribute, value);
         objectHasChanged();
         return newValue;
@@ -192,7 +215,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     /*
      * Creates a new attribute value without updating the src file.
      */
-    private AttributeValue newAttributeValueInternal(int id, IAttribute attr, String value) {
+    private AttributeValue newAttributeValueInternal(int id, IProductCmptTypeAttribute attr, String value) {
         AttributeValue av = new AttributeValue(this, id, attr==null ? "" : attr.getName(), value);
         attributeValues.add(av);
         return av;

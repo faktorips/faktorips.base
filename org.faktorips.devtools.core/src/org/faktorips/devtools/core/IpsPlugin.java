@@ -414,6 +414,7 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     /**
      * Returns a control factory that can create controls (and edit fields) for the given datatype.
+     * Returns a default factory if datatype is <code>null</code>.
      * 
      * @throws RuntimeException if no factory is found for the given datatype.
      */

@@ -20,16 +20,14 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
+import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -60,7 +58,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 
     private boolean configurableByProductCmptType = false;
 
-    private String unqalifiedProductCmptType = ""; //$NON-NLS-1$
+    private String productCmptType = ""; //$NON-NLS-1$
 
     private String supertype = ""; //$NON-NLS-1$
 
@@ -90,12 +88,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      * {@inheritDoc}
      */
     public String getProductCmptType() {
-        IIpsPackageFragment pack = getIpsPackageFragment();
-        if (pack.isDefaultPackage()) {
-            return unqalifiedProductCmptType;
-        } else {
-            return pack.getName() + '.' + unqalifiedProductCmptType;
-        }
+        return productCmptType;
     }
 
     /**
@@ -111,6 +104,9 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     public void setConfigurableByProductCmptType(boolean newValue) {
         boolean oldValue = configurableByProductCmptType;
         configurableByProductCmptType = newValue;
+        if (!configurableByProductCmptType) {
+            setProductCmptType("");
+        }
         valueChanged(oldValue, newValue);
     }
 
@@ -124,18 +120,11 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
-    public String getUnqualifiedProductCmptType() {
-        return unqalifiedProductCmptType;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setUnqualifiedProductCmptType(String newUnqualifiedName) {
-        ArgumentCheck.notNull(newUnqualifiedName);
-        String oldName = unqalifiedProductCmptType;
-        unqalifiedProductCmptType = newUnqualifiedName;
-        valueChanged(oldName, newUnqualifiedName);
+    public void setProductCmptType(String newName) {
+        ArgumentCheck.notNull(newName);
+        String oldName = productCmptType;
+        productCmptType = newName;
+        valueChanged(oldName, newName);
     }
 
     /**
@@ -604,7 +593,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         super.initPropertiesFromXml(element, id);
         configurableByProductCmptType = Boolean.valueOf(element.getAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE))
                 .booleanValue();
-        unqalifiedProductCmptType = element.getAttribute(PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE);
+        productCmptType = element.getAttribute(PROPERTY_PRODUCT_CMPT_TYPE);
         supertype = element.getAttribute(PROPERTY_SUPERTYPE);
         abstractFlag = Boolean.valueOf(element.getAttribute(PROPERTY_ABSTRACT)).booleanValue();
         forceExtensionCompilationUnitGeneration = Boolean.valueOf(
@@ -684,7 +673,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE, "" + configurableByProductCmptType); //$NON-NLS-1$
-        newElement.setAttribute(PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE, unqalifiedProductCmptType);
+        newElement.setAttribute(PROPERTY_PRODUCT_CMPT_TYPE, productCmptType);
         newElement.setAttribute(PROPERTY_SUPERTYPE, supertype);
         newElement.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag); //$NON-NLS-1$
         newElement
@@ -738,25 +727,14 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         if (!isConfigurableByProductCmptType()) {
             return;
         }
-
-        validateNamingConventionsForProductCmptType(list);
-        
-        if (StringUtils.isEmpty(this.unqalifiedProductCmptType)) {
+        if (StringUtils.isEmpty(this.productCmptType)) {
             String text = Messages.PolicyCmptType_msgNameMissing;
             list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING, text, Message.ERROR, this,
-                    IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE));
+                    IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
         } else {
-            IStatus status = JavaConventions.validateJavaTypeName(unqalifiedProductCmptType);
-            if (status.getSeverity() == IStatus.ERROR) {
-                String msg = Messages.PolicyCmptType_msgInvalidProductCmptTypeName;
-                list.add(new Message(MSGCODE_INVALID_PRODUCT_CMPT_TYPE_NAME, msg, Message.ERROR, this,
-                        PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE));
+            if (!ValidationUtils.checkIpsObjectReference(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "Product component type", this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE, IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NOT_FOUND, list)) {
+                return;
             }
-        }
-        if (this.unqalifiedProductCmptType.equals(this.getName())) {
-            String msg = Messages.PolicyCmptType_msgNameMissmatch;
-            list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSMATCH, msg, Message.ERROR, this,
-                    IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE));
         }
         
         IPolicyCmptType superPolicyCmptType = findSupertype();
@@ -767,13 +745,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
                         IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE));
             }
         }
-    }
-
-    /*
-     *  Validate naming conventions for the product cmpt type
-     */
-    private void validateNamingConventionsForProductCmptType(MessageList list) throws CoreException {
-        validateNamingConventions(list, getUnqualifiedProductCmptType(), PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE);
     }
 
     /**

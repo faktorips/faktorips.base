@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
@@ -67,6 +68,13 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     public String getPropertyName() {
         return structureUsage;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IProdDefProperty findProperty(IIpsProject ipsProject) throws CoreException {
+        return findTableStructureUsage(ipsProject);
+    }
 
     /**
      * {@inheritDoc}
@@ -82,7 +90,10 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         return tableContentName;
     }
 
-    private ProductCmptGeneration getProductCmptGeneration() {
+    /**
+     * {@inheritDoc}
+     */
+    public IProductCmptGeneration getProductCmptGeneration() {
         return (ProductCmptGeneration) getParent();
     }
     

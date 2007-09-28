@@ -20,14 +20,10 @@ package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 import org.eclipse.compare.structuremergeviewer.IStructureComparator;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.product.IConfigElement;
-import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptLink;
-import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItemCreator;
 
 /**
@@ -79,25 +75,9 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator{
                 IIpsObjectGeneration[] gens = product.getGenerations();
                 for (int i = 0; i < gens.length; i++) {
                     ProductCmptCompareItem generation = new ProductCmptCompareItem(ipsObject, gens[i]);
-                    // configElements for each generation
-                    IConfigElement[] ces = ((IProductCmptGeneration)gens[i]).getConfigElements();
-                    for (int j = 0; j < ces.length; j++) {
-                        new ProductCmptCompareItem(generation, ces[j]);
-                    }
-                    // tablecontentusages for each generation
-                    ITableContentUsage[] usages = ((IProductCmptGeneration)gens[i]).getTableContentUsages();
-                    for (int j = 0; j < usages.length; j++) {
-                        new ProductCmptCompareItem(generation, usages[j]);
-                    }
-                    // formulas for each generation
-                    IFormula[] formulas = ((IProductCmptGeneration)gens[i]).getFormulas();
-                    for (int j = 0; j < formulas.length; j++) {
-                        new ProductCmptCompareItem(generation, formulas[j]);
-                    }
-                    // relations for each generation
-                    IProductCmptLink[] rels = ((IProductCmptGeneration)gens[i]).getLinks();
-                    for (int j = 0; j < rels.length; j++) {
-                        new ProductCmptCompareItem(generation, rels[j]);
+                    IIpsElement[] children = gens[i].getChildren();
+                    for (int j = 0; j < children.length; j++) {
+                        new ProductCmptCompareItem(generation, children[j]);
                     }
                 }
                 // create the name, root document and ranges for all nodes

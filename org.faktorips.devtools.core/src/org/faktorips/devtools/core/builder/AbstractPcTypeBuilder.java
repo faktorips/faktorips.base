@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -106,10 +107,11 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
         mainSection.setExtendedInterfaces(getExtendedInterfaces());
         mainSection.setUnqualifiedName(getUnqualifiedClassName());
         mainSection.setClass(!generatesInterface());
+        generateCodeForProductCmptTypeAttributes(mainSection);
         generateCodeForAttributes(mainSection.getConstantSectionBuilder(), 
-                mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
-        generateCodeForRelations(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
-        generateOther(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
+                mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateCodeForRelations(mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateOther(mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
         generateCodeForMethodsDefinedInModel(mainSection.getMethodSectionBuilder());
         generateConstructors(mainSection.getConstructorSectionBuilder());
         generateTypeJavadoc(mainSection.getJavaDocForTypeSectionBuilder());
@@ -232,6 +234,53 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
             JavaCodeFragmentBuilder memberVarsBuilder, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
+    /*
+     * Generates the code for all product component type attributes.
+     */
+    private void generateCodeForProductCmptTypeAttributes(TypeSection typeSection) throws CoreException {
+        
+        IProductCmptType productCmptType = getProductCmptType();
+        if (productCmptType==null) {
+            return;
+        }
+        IProductCmptTypeAttribute[] attributes = productCmptType.getAttributes();
+        for (int i = 0; i < attributes.length; i++) {
+            IProductCmptTypeAttribute a = attributes[i];
+            if (!a.isValid()) {
+                continue;
+            }
+            try {
+                Datatype datatype = a.findDatatype(getIpsProject());
+                DatatypeHelper helper = getIpsProject().getDatatypeHelper(datatype);
+                if (helper == null) {
+                    throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));             //$NON-NLS-1$
+                }
+                generateCodeForProductCmptTypeAttribute(a, helper, typeSection.getConstantSectionBuilder(), typeSection.getMemberVarSectionBuilder(), typeSection.getMethodSectionBuilder());
+            } catch (Exception e) {
+                throw new CoreException(new IpsStatus(IStatus.ERROR,
+                        "Error building attribute " + attributes[i].getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
+                                + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
+            }
+        }
+    }
+
+    /**
+     * This method is called from the build product component type attributes method if the attribute is valid and
+     * therefore code can be generated.
+     * 
+     * @param attribute The attribute sourcecode should be generated for.
+     * @param datatypeHelper The datatype code generation helper for the attribute's datatype.
+     * @param constantBuilder The code fragment builder to build the java source file's static section.
+     * @param memberVarsBuilder The code fragment builder to build the memeber variabales section.
+     * @param memberVarsBuilder The code fragment builder to build the method section.
+     */
+    protected abstract void generateCodeForProductCmptTypeAttribute(
+            IProductCmptTypeAttribute attribute, 
+            DatatypeHelper helper, 
+            JavaCodeFragmentBuilder constantBuilder, 
+            JavaCodeFragmentBuilder memberVarBuilder, 
+            JavaCodeFragmentBuilder methodBuilder) throws CoreException;
+    
     /*
      * Loops over the relations and generates code for a relation if it is valid.
      * Takes care of proper exception handling.

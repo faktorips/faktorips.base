@@ -26,6 +26,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.message.Message;
@@ -62,7 +63,7 @@ public class ValidationUtils {
             String objectName,
             IpsObjectType type,
             String propertyDisplayName,
-            IIpsObjectPart part,
+            IIpsObjectPartContainer part,
             String propertyName,
             String msgCode,
             MessageList list) throws CoreException {

@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation;
 
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.product.ConfigElementType;
+import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 
 /**
  * Representation of exactly one delta by its type and a message describing the delta.
@@ -45,13 +45,13 @@ final class ProductCmptDeltaDetail {
     
     public Image getImage() {
         if (type == ProductCmptDeltaType.MISSING_ATTRIBUTE) {
-            return DeltaCompositeIcon.createDeleteImage(ConfigElementType.PRODUCT_ATTRIBUTE.getImage());
+            return DeltaCompositeIcon.createDeleteImage(ProdDefPropertyType.VALUE.getImage());
         }
         if (type == ProductCmptDeltaType.MISSING_CFGELEMENT) {
-            return DeltaCompositeIcon.createAddImage(ConfigElementType.PRODUCT_ATTRIBUTE.getImage());
+            return DeltaCompositeIcon.createAddImage(ProdDefPropertyType.VALUE.getImage());
         }
         if (type == ProductCmptDeltaType.CFGELEMENT_TYPE_MISMATCH) {
-            return DeltaCompositeIcon.createModifyImage(ConfigElementType.PRODUCT_ATTRIBUTE.getImage());
+            return DeltaCompositeIcon.createModifyImage(ProdDefPropertyType.VALUE.getImage());
         }
         if (type == ProductCmptDeltaType.RELATION_MISMATCH) {
             return DeltaCompositeIcon.createDeleteImage(IpsPlugin.getDefault().getImage("Relation.gif")); //$NON-NLS-1$

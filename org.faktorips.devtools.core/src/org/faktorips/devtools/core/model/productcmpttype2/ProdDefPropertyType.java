@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.model.productcmpttype2;
 
+import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.values.DefaultEnumType;
 import org.faktorips.values.DefaultEnumValue;
 import org.faktorips.values.EnumType;
@@ -35,23 +37,49 @@ public class ProdDefPropertyType extends DefaultEnumValue {
     
     public final static ProdDefPropertyType DEFAULT_VALUE_AND_VALUESET;
     
+    public final static int MAX_SORT_ORDER = 40;
+    
     public final static DefaultEnumType enumType; 
+
+    public final static ProdDefPropertyType[] ALL_TYPES;
     
     static {
         enumType = new DefaultEnumType("ProdDefPropertyType", ProdDefPropertyType.class); //$NON-NLS-1$
-        VALUE = new ProdDefPropertyType(enumType, "attribute");
-        FORMULA = new ProdDefPropertyType(enumType, "formula");
-        TABLE_CONTENT_USAGE = new ProdDefPropertyType(enumType, "tableContentUsage");
-        DEFAULT_VALUE_AND_VALUESET = new ProdDefPropertyType(enumType, "config");
+        VALUE = new ProdDefPropertyType(enumType, "attribute", 10, "ProductAttribute.gif");
+        TABLE_CONTENT_USAGE = new ProdDefPropertyType(enumType, "tableContentUsage", 20, "TableContentsUsage.gif");
+        FORMULA = new ProdDefPropertyType(enumType, "formula", 30, "Formula.gif");
+        DEFAULT_VALUE_AND_VALUESET = new ProdDefPropertyType(enumType, "config", MAX_SORT_ORDER, "PolicyAttribute.gif");
+        
+        ALL_TYPES = new ProdDefPropertyType[]{VALUE, TABLE_CONTENT_USAGE, FORMULA, DEFAULT_VALUE_AND_VALUESET};
     }
 
     public final static EnumType getEnumType() {
         return enumType;
     }
     
-    private ProdDefPropertyType(DefaultEnumType type, String id) {
+    private int sortOrder;
+    private String imageName;
+    
+    public int getSortOrder() {
+        return sortOrder;
+    }
+    
+    public Image getImage() {
+        return IpsPlugin.getDefault().getImage(imageName);
+    }
+    
+    private ProdDefPropertyType(DefaultEnumType type, String id, int sortOrder, String imageName) {
         super(type, id);
+        this.sortOrder = sortOrder;
+        this.imageName = imageName;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public int compareTo(Object o) {
+        ProdDefPropertyType otherType = (ProdDefPropertyType)o;
+        return sortOrder - otherType.sortOrder;
+    }
     
 }

@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.internal.model.product.IPropertyValue;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
-import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 
 /**
  * 
@@ -73,6 +73,6 @@ public interface IAttributeValue extends IIpsObjectPart, IPropertyValue {
     /**
      * Returns the product component type attribute this object provides the value for.
      */
-    public IAttribute findAttribute(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException;
     
 }

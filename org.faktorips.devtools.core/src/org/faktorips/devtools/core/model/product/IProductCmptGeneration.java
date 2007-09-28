@@ -18,11 +18,13 @@
 package org.faktorips.devtools.core.model.product;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.product.IPropertyValue;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 
 
 /**
@@ -106,6 +108,11 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public void fixDifferences(IProductCmptGenerationPolicyCmptTypeDelta delta) throws CoreException;
     
     /**
+     * Returns all propery values for the given type. Returns an empty array if type is <code>null</code>.
+     */
+    public IPropertyValue[] getPropertyValues(ProdDefPropertyType type);
+    
+    /**
      * Returns the numer of attribute values defined in the generation. 
      */
     public int getNumOfAttributeValues();
@@ -124,7 +131,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     /**
      * Creates a new attribute value for the given product component attribute and sets the value. 
      */
-    public IAttributeValue newAttributeValue(IAttribute attribute, String value);
+    public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute, String value);
 
     /**
      * Returns the configuration elements.

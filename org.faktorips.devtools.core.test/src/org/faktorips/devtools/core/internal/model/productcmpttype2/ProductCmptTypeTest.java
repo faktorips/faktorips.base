@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
@@ -71,18 +71,18 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     public void testFindAttribute() throws CoreException {
         assertNull(productCmptType.findAttribute("unknown", ipsProject));
         
-        IAttribute a1 = productCmptType.newAttribute();
+        IProductCmptTypeAttribute a1 = productCmptType.newAttribute();
         a1.setName("a1");
-        IAttribute a2 = superProductCmptType.newAttribute();
+        IProductCmptTypeAttribute a2 = superProductCmptType.newAttribute();
         a2.setName("a2");
-        IAttribute a3 = superSuperProductCmptType.newAttribute();
+        IProductCmptTypeAttribute a3 = superSuperProductCmptType.newAttribute();
         a3.setName("a3");
         
         assertSame(a1, productCmptType.findAttribute("a1", ipsProject));
         assertSame(a2, productCmptType.findAttribute("a2", ipsProject));
         assertSame(a3, productCmptType.findAttribute("a3", ipsProject));
         
-        IAttribute a1b = superProductCmptType.newAttribute();
+        IProductCmptTypeAttribute a1b = superProductCmptType.newAttribute();
         a1b.setName("a1b");
         assertSame(a1, productCmptType.findAttribute("a1", ipsProject));
         
@@ -94,11 +94,11 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(0, props.length);
 
         // attributes
-        IAttribute supertypeAttr  = superProductCmptType.newAttribute();
+        IProductCmptTypeAttribute supertypeAttr  = superProductCmptType.newAttribute();
         supertypeAttr.setName("attrInSupertype");
         supertypeAttr.setDatatype("Money");
 
-        IAttribute typeAttribute = productCmptType.newAttribute();
+        IProductCmptTypeAttribute typeAttribute = productCmptType.newAttribute();
         typeAttribute.setName("attrInType");
         typeAttribute.setDatatype("Money");
         
@@ -179,11 +179,11 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     
     public void testFindProdDefProperty_ByTypeAndName() throws CoreException {
         // attributes
-        IAttribute supertypeAttr  = superProductCmptType.newAttribute();
+        IProductCmptTypeAttribute supertypeAttr  = superProductCmptType.newAttribute();
         supertypeAttr.setName("attrInSupertype");
         supertypeAttr.setDatatype("Money");
 
-        IAttribute typeAttribute = productCmptType.newAttribute();
+        IProductCmptTypeAttribute typeAttribute = productCmptType.newAttribute();
         typeAttribute.setName("attrInType");
         
         // table structure usages
@@ -231,11 +231,11 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(0, props.length);
 
         // attributes
-        IAttribute supertypeAttr  = superProductCmptType.newAttribute();
+        IProductCmptTypeAttribute supertypeAttr  = superProductCmptType.newAttribute();
         supertypeAttr.setName("attrInSupertype");
         supertypeAttr.setDatatype("Money");
 
-        IAttribute typeAttribute = productCmptType.newAttribute();
+        IProductCmptTypeAttribute typeAttribute = productCmptType.newAttribute();
         typeAttribute.setName("attrInType");
         
         // table structure usages
@@ -419,7 +419,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     }
 
     public void testNewAttribute() {
-        IAttribute a1 = productCmptType.newAttribute();
+        IProductCmptTypeAttribute a1 = productCmptType.newAttribute();
         assertEquals(1, productCmptType.getNumOfAttributes());
         assertEquals(a1, productCmptType.getAttributes()[0]);
         assertEquals(productCmptType, a1.getProductCmptType());
@@ -430,9 +430,9 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     public void testGetAttribute() {
         assertNull(productCmptType.getAttribute("a"));
         
-        IAttribute a1 = productCmptType.newAttribute();
+        IProductCmptTypeAttribute a1 = productCmptType.newAttribute();
         productCmptType.newAttribute();
-        IAttribute a3 = productCmptType.newAttribute();
+        IProductCmptTypeAttribute a3 = productCmptType.newAttribute();
         a1.setName("a1");
         a3.setName("a3");
         
@@ -446,11 +446,11 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     public void testGetAttributes() {
         assertEquals(0, productCmptType.getAttributes().length);
 
-        IAttribute a1 = productCmptType.newAttribute();
-        IAttribute[] attributes = productCmptType.getAttributes();
+        IProductCmptTypeAttribute a1 = productCmptType.newAttribute();
+        IProductCmptTypeAttribute[] attributes = productCmptType.getAttributes();
         assertEquals(a1, attributes[0]);
         
-        IAttribute a2 = productCmptType.newAttribute();
+        IProductCmptTypeAttribute a2 = productCmptType.newAttribute();
         attributes = productCmptType.getAttributes();
         assertEquals(a1, attributes[0]);
         assertEquals(a2, attributes[1]);
@@ -467,12 +467,12 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     }
 
     public void testMoveAttributes() {
-        IAttribute a1 = productCmptType.newAttribute();
-        IAttribute a2 = productCmptType.newAttribute();
-        IAttribute a3 = productCmptType.newAttribute();
+        IProductCmptTypeAttribute a1 = productCmptType.newAttribute();
+        IProductCmptTypeAttribute a2 = productCmptType.newAttribute();
+        IProductCmptTypeAttribute a3 = productCmptType.newAttribute();
         
         productCmptType.moveAttributes(new int[]{1, 2}, true);
-        IAttribute[] attributes = productCmptType.getAttributes();
+        IProductCmptTypeAttribute[] attributes = productCmptType.getAttributes();
         assertEquals(a2, attributes[0]);
         assertEquals(a3, attributes[1]);
         assertEquals(a1, attributes[2]);

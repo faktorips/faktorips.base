@@ -185,13 +185,22 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         ITableStructureUsage aStructureUsage = a.newTableStructureUsage();
         aStructureUsage.setRoleName("usage");
 
+        MessageList ml = aStructureUsage.validate();
+        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
+
         IProductCmptType b = newProductCmptType(project, "b");
+        a.setSupertype(b.getQualifiedName());
+        ml = aStructureUsage.validate();
+        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
+
         ITableStructureUsage bStructureUsage = b.newTableStructureUsage();
         bStructureUsage.setRoleName("usage");
-        
-        b.setSupertype(a.getQualifiedName());
-        
-        MessageList ml = bStructureUsage.validate();
+        ml = aStructureUsage.validate();
         assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
+        
+        bStructureUsage.setRoleName("otherName");
+        ml = aStructureUsage.validate();
+        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
+
     }
 }

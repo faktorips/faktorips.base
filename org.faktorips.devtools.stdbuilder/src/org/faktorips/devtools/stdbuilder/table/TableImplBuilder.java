@@ -291,7 +291,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setClass(true);
         
         appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), getIpsObject().getDescription(), mainSection.getJavaDocForTypeSectionBuilder());
-        createFields(mainSection.getAttributesSectionBuilder());
+        createFields(mainSection.getMemberVarSectionBuilder());
         createAddRowMethod(mainSection.getMethodSectionBuilder());
         createInitKeyMapsMethod(mainSection.getMethodSectionBuilder());
         // create single instance method only if no multi content is allowed
@@ -710,11 +710,11 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         innerClassBody.setClassModifier(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
         innerClassBody.setUnqualifiedName(hashKeyClassName);
         for (int i = 0; i < keyNames.length; i++) {
-            innerClassBody.getAttributesSectionBuilder().varDeclaration(Modifier.PRIVATE, keyItemTypes[i],
+            innerClassBody.getMemberVarSectionBuilder().varDeclaration(Modifier.PRIVATE, keyItemTypes[i],
                     keyNames[i]);
         }
         // create hashCode field
-        innerClassBody.getAttributesSectionBuilder().varDeclaration(Modifier.PRIVATE, Integer.TYPE, "hashCode");
+        innerClassBody.getMemberVarSectionBuilder().varDeclaration(Modifier.PRIVATE, Integer.TYPE, "hashCode");
 
         JavaCodeFragment constructorBody = new JavaCodeFragment();
         for (int i = 0; i < keyNames.length; i++) {

@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
@@ -47,7 +47,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
      */
     private TabFolder folder;
     
-    private IAttribute attribute;
+    private IProductCmptTypeAttribute attribute;
 
     // the page to edit default value and value set
     private DefaultValueAndValueSetTabPage defaultValueAndValueSetPage;
@@ -58,7 +58,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
      * @param parentShell
      * @param windowTitle
      */
-    public AttributeEditDialog(IAttribute a, Shell parentShell) {
+    public AttributeEditDialog(IProductCmptTypeAttribute a, Shell parentShell) {
         super(a, parentShell, "Edit Attribute", true);
         this.attribute = a;
     }
@@ -87,17 +87,17 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         uiToolkit.createFormLabel(workArea, "Name:");
         Text nameText = uiToolkit.createText(workArea);
-        bindingContext.bindContent(nameText, attribute, IAttribute.PROPERTY_NAME);
+        bindingContext.bindContent(nameText, attribute, IProductCmptTypeAttribute.PROPERTY_NAME);
         
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelDatatype);
         DatatypeRefControl datatypeControl = uiToolkit.createDatatypeRefEdit(attribute.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
-        bindingContext.bindContent(datatypeControl, attribute, IAttribute.PROPERTY_DATATYPE);
+        bindingContext.bindContent(datatypeControl, attribute, IProductCmptTypeAttribute.PROPERTY_DATATYPE);
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelModifier);
         Combo modifierCombo = uiToolkit.createCombo(workArea, Modifier.getEnumType());
-        bindingContext.bindContent(modifierCombo, attribute, IAttribute.PROPERTY_MODIFIER, Modifier.getEnumType());
+        bindingContext.bindContent(modifierCombo, attribute, IProductCmptTypeAttribute.PROPERTY_MODIFIER, Modifier.getEnumType());
         
 //        policyCmptTypeAttributeField.addChangeListener(new ValueChangeListener() {
 //

@@ -28,6 +28,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartCollection;
+import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -40,6 +41,7 @@ import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
@@ -94,6 +96,13 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
      */
     public String getPropertyName() {
         return formulaSignature;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IProdDefProperty findProperty(IIpsProject ipsProject) throws CoreException {
+        return findFormulaSignature(ipsProject);
     }
 
     /**

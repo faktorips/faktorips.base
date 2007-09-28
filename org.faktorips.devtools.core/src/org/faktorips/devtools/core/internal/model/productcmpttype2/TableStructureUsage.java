@@ -344,7 +344,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         if (supertype==null) {
             return;
         }
-        ITableStructureUsage tsu = getProductCmptType().findTableStructureUsage(roleName, getIpsProject());
+        ITableStructureUsage tsu = supertype.findTableStructureUsage(roleName, getIpsProject());
         if(tsu != null){
             String msg = NLS.bind(Messages.TableStructureUsage_msgRoleNameAlreadyInSupertype, getRoleName());
             msgList.add(new Message(MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE, 

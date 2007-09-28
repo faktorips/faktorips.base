@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class Attribute2Test extends AbstractIpsPluginTest implements ContentsChangeListener {
+public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest implements ContentsChangeListener {
 
     private ContentChangeEvent lastEvent = null;
     private IIpsProject ipsProject;
@@ -44,7 +44,7 @@ public class Attribute2Test extends AbstractIpsPluginTest implements ContentsCha
     private IProductCmptType productCmptType;
     private org.faktorips.devtools.core.model.pctype.IAttribute policyAttribute;
     
-    private IAttribute productAttribute;
+    private IProductCmptTypeAttribute productAttribute;
     
     /**
      * {@inheritDoc}
@@ -72,7 +72,7 @@ public class Attribute2Test extends AbstractIpsPluginTest implements ContentsCha
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.Attribute#setName(java.lang.String)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAttribute#setName(java.lang.String)}.
      */
     public void testSetName() {
         productAttribute.setName("newName");
@@ -81,7 +81,7 @@ public class Attribute2Test extends AbstractIpsPluginTest implements ContentsCha
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.Attribute#setModifier(org.faktorips.devtools.core.model.pctype.Modifier)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAttribute#setModifier(org.faktorips.devtools.core.model.pctype.Modifier)}.
      */
     public void testSetModifier() {
         productAttribute.setModifier(Modifier.PUBLIC);
@@ -90,7 +90,7 @@ public class Attribute2Test extends AbstractIpsPluginTest implements ContentsCha
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.Attribute#setDatatype(java.lang.String)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAttribute#setDatatype(java.lang.String)}.
      */
     public void testSetValueDatatype() {
         productAttribute.setDatatype(Datatype.BOOLEAN.getName());
@@ -99,7 +99,7 @@ public class Attribute2Test extends AbstractIpsPluginTest implements ContentsCha
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.Attribute#findDatatype()}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAttribute#findDatatype()}.
      * @throws CoreException 
      */
     public void testFindValueDatatype() throws CoreException {
@@ -123,19 +123,19 @@ public class Attribute2Test extends AbstractIpsPluginTest implements ContentsCha
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.Attribute#getImage()}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAttribute#getImage()}.
      */
     public void testGetImage() {
         assertNotNull(productAttribute.getImage());
     }
     
     public void testInitFromXml() {
-        IAttribute attr = productCmptType.newAttribute();
+        IProductCmptTypeAttribute attr = productCmptType.newAttribute();
         Element rootEl = getTestDocument().getDocumentElement();
         
         // product attribute
         attr.setModifier(Modifier.PUBLISHED);
-        attr.initFromXml(XmlUtil.getElement(rootEl, Attribute.TAG_NAME, 0));
+        attr.initFromXml(XmlUtil.getElement(rootEl, ProductCmptTypeAttribute.TAG_NAME, 0));
         assertEquals("rate", attr.getName());
         assertEquals(Modifier.PUBLIC, attr.getModifier());
         assertEquals("Integer", attr.getDatatype());
@@ -144,7 +144,7 @@ public class Attribute2Test extends AbstractIpsPluginTest implements ContentsCha
     public void testToXml_ProductAttribute() {
         Element el = productAttribute.toXml(newDocument());
         
-        IAttribute a = productCmptType.newAttribute();
+        IProductCmptTypeAttribute a = productCmptType.newAttribute();
         a.initFromXml(el);
         assertEquals(productAttribute.getName(), a.getName());
         assertEquals(productAttribute.getModifier(), a.getModifier());
@@ -158,7 +158,7 @@ public class Attribute2Test extends AbstractIpsPluginTest implements ContentsCha
      * @throws TransformerException 
      */
     public void testToXml_NullHandlng() throws TransformerException {
-        IAttribute a = productCmptType.newAttribute();
+        IProductCmptTypeAttribute a = productCmptType.newAttribute();
         Element el = a.toXml(newDocument());
         XmlUtil.nodeToString(el, "UTF-8");
     }

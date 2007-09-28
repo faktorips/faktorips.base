@@ -348,9 +348,6 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         if (getAttributeType() == AttributeType.CHANGEABLE) {
             return ConfigElementType.POLICY_ATTRIBUTE;
         }
-        if (getAttributeType() == AttributeType.CONSTANT) {
-            return ConfigElementType.PRODUCT_ATTRIBUTE;
-        }
         if (getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL || getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
             return null;
         }

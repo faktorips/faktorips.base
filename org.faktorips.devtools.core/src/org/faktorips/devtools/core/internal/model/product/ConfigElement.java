@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.internal.model.ValueSet;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
@@ -43,6 +44,8 @@ import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
+import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -56,7 +59,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
 	final static String TAG_NAME = "ConfigElement"; //$NON-NLS-1$
 
-	private ConfigElementType type = ConfigElementType.PRODUCT_ATTRIBUTE;
+	private ConfigElementType type = ConfigElementType.POLICY_ATTRIBUTE;
 
 	private String pcTypeAttribute = ""; //$NON-NLS-1$
 
@@ -99,10 +102,37 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		ConfigElementType oldType = type;
 		type = newType;
 		valueChanged(oldType, newType);
-
 	}
 
-	/**
+    /**
+     * {@inheritDoc}
+     */
+	public String getPropertyName() {
+        return pcTypeAttribute;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IProdDefProperty findProperty(IIpsProject ipsProject) throws CoreException {
+        return findPcTypeAttribute();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ProdDefPropertyType getPropertyType() {
+        return ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getPropertyValue() {
+        return value;
+    }
+
+    /**
      * {@inheritDoc}
 	 */
 	public String getPcTypeAttribute() {
@@ -279,20 +309,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	 * {@inheritDoc}
 	 */
 	public IValueSet getValueSet() {
-		if (type == ConfigElementType.PRODUCT_ATTRIBUTE) {
-			IAttribute attr = null;
-			try {
-				attr = findPcTypeAttribute();
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
-			if (attr != null) {
-				return attr.getValueSet();
-			}
-			else {
-				return null;
-			}
-		}
 		return valueSet;
 	}
 
@@ -300,10 +316,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	 * {@inheritDoc}
 	 */
 	public void setValueSetType(ValueSetType type) {
-		if (this.type == ConfigElementType.PRODUCT_ATTRIBUTE) {
-			throw new UnsupportedOperationException(
-					"ConfigElement of type PRODUCT_ATTRIBUTE does not support own value sets."); //$NON-NLS-1$
-		}
 		IValueSet oldset = valueSet;
 		valueSet = type.newValueSet(this, getNextPartId());
 		valueChanged(oldset, valueSet);
@@ -313,11 +325,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	 * {@inheritDoc}
 	 */
 	public void setValueSetCopy(IValueSet source) {
-		if (this.type == ConfigElementType.PRODUCT_ATTRIBUTE) {
-			throw new UnsupportedOperationException(
-					"ConfigElement of type PRODUCT_ATTRIBUTE does not support own value sets."); //$NON-NLS-1$
-		}
-
 		IValueSet oldset = valueSet;
 		valueSet = source.copy(this, getNextPartId());
 		valueChanged(oldset, valueSet);

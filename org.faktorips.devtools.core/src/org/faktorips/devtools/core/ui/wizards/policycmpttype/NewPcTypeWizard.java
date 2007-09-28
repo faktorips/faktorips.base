@@ -43,9 +43,7 @@ public class NewPcTypeWizard extends NewIpsObjectWizard {
     }
     
     /** 
-     * Overridden method.
-     * @throws JavaModelException
-     * @see org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard#createFirstPage()
+     * {@inheritDoc}
      */
     protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws JavaModelException {
         typePage = new PcTypePage(selection);
@@ -53,15 +51,13 @@ public class NewPcTypeWizard extends NewIpsObjectWizard {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard#createAdditionalPages()
+     * {@inheritDoc}
      */
     protected void createAdditionalPages() {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard#finishIpsObject(org.faktorips.devtools.core.model.IIpsObject)
+     * {@inheritDoc}
      */
     protected void finishIpsObject(IIpsObject pdObject) throws CoreException {
         IPolicyCmptType type = (IPolicyCmptType)pdObject;
@@ -70,7 +66,7 @@ public class NewPcTypeWizard extends NewIpsObjectWizard {
         String postfix = IpsPlugin.getDefault().getIpsPreferences().getDefaultProductCmptTypePostfix();
         if (StringUtils.isNotEmpty(postfix)) {
         	type.setConfigurableByProductCmptType(true);
-        	type.setUnqualifiedProductCmptType(type.getName() + postfix);
+        	type.setProductCmptType(type.getQualifiedName() + postfix);
         } else {
         	type.setConfigurableByProductCmptType(false);
         }

@@ -82,19 +82,19 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
     
     public void testFindProductCmptType() throws CoreException {
-        pcType.setUnqualifiedProductCmptType("");
+        pcType.setProductCmptType("");
         assertNull(pcType.findProductCmptType(ipsProject));
 
-        pcType.setUnqualifiedProductCmptType("MotorProduct");
+        pcType.setProductCmptType("MotorProduct");
         pcType.setConfigurableByProductCmptType(false);
         assertNull(pcType.findProductCmptType(ipsProject));
         
         pcType.setConfigurableByProductCmptType(true);
-        pcType.setUnqualifiedProductCmptType("Unkown");
+        pcType.setProductCmptType("Unkown");
         assertNull(pcType.findProductCmptType(ipsProject));
         
         IProductCmptType productCmptType = newProductCmptType(ipsProject, pcType.getIpsPackageFragment().getName() + ".Product");
-        pcType.setUnqualifiedProductCmptType("Product");
+        pcType.setProductCmptType(productCmptType.getQualifiedName());
         assertSame(productCmptType, pcType.findProductCmptType(ipsProject));
     }
     
@@ -459,7 +459,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         pcType.setConfigurableByProductCmptType(false);
         pcType.initFromXml(element);
         assertTrue(pcType.isConfigurableByProductCmptType());
-        assertEquals("Product", pcType.getUnqualifiedProductCmptType());
+        assertEquals("Product", pcType.getProductCmptType());
         assertEquals("SuperType", pcType.getSupertype());
         assertTrue(pcType.isAbstract());
         assertEquals("blabla", pcType.getDescription());
@@ -491,7 +491,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     
     public void testToXml() throws CoreException {
     	pcType.setConfigurableByProductCmptType(true);
-    	pcType.setUnqualifiedProductCmptType("Product");
+    	pcType.setProductCmptType("Product");
         pcType.setDescription("blabla");
         pcType.setAbstract(true);
         pcType.setSupertype("NewSuperType");
@@ -518,7 +518,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         copy.setConfigurableByProductCmptType(false);
         copy.initFromXml(element);
         assertTrue(copy.isConfigurableByProductCmptType());
-        assertEquals("Product", copy.getUnqualifiedProductCmptType());
+        assertEquals("Product", copy.getProductCmptType());
         assertEquals("NewSuperType", copy.getSupertype());
         assertTrue(copy.isAbstract());
         assertEquals("blabla", copy.getDescription());
@@ -665,13 +665,8 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         
     }
     
-    public void testGetProductCmptType() throws CoreException {
-    	pcType.setUnqualifiedProductCmptType("MotorProduct");
-    	assertEquals(pack.getName() + '.' + "MotorProduct", pcType.getProductCmptType());
-        
-        pcType = newPolicyCmptType(ipsProject, "Type");
-        pcType.setUnqualifiedProductCmptType("MotorProduct");
-        assertEquals("MotorProduct", pcType.getProductCmptType());
+    public void testSetProductCmptType() throws CoreException {
+        super.testPropertyAccessReadWrite(IPolicyCmptType.class, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE, pcType, "NewProduct");
     }
     
     /** 
@@ -737,7 +732,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     	MessageList ml = pcType.validate();
     	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING));
     	pcType.setConfigurableByProductCmptType(true);
-    	pcType.setUnqualifiedProductCmptType("");
+    	pcType.setProductCmptType("");
     	ml = pcType.validate();
     	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING));
     }
@@ -850,31 +845,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     	assertEquals(1, candidates.length);
     }
 
-    public void testValidateProductCmptTypeNameMissmatch() throws Exception {
-        pcType.setUnqualifiedProductCmptType(pcType.getName());
-        pcType.setConfigurableByProductCmptType(true);
-
-        MessageList ml = pcType.validate();
-        assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSMATCH));
-        
-        pcType.setUnqualifiedProductCmptType(pcType.getName() + "Art");
-        
-        ml = pcType.validate();
-        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSMATCH));
-    }
-
-    public void testValidateProductCmptTypeNameInvalid() throws Exception {
-        pcType.setConfigurableByProductCmptType(true);
-        pcType.setUnqualifiedProductCmptType("a bc");
-        MessageList ml = pcType.validate();
-        assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_INVALID_PRODUCT_CMPT_TYPE_NAME));
-        
-        pcType.setUnqualifiedProductCmptType("abc");
-        
-        ml = pcType.validate();
-        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_INVALID_PRODUCT_CMPT_TYPE_NAME));
-    }
-    
     public void testValidateMustImplementContainerRelation() throws Exception {
         IPolicyCmptType target = newPolicyCmptType(ipsProject, "TargetType");
         

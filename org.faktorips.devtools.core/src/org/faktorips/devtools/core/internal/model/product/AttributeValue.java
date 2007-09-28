@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.internal.model.product;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
@@ -27,7 +26,8 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IAttributeValue;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
@@ -119,6 +119,13 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     public String getPropertyName() {
         return attribute;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IProdDefProperty findProperty(IIpsProject ipsProject) throws CoreException {
+        return findAttribute(ipsProject);
+    }
 
     /**
      * {@inheritDoc}
@@ -137,7 +144,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     /**
      * {@inheritDoc}
      */
-    public IAttribute findAttribute(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException {
         IProductCmptType type = getProductCmptGeneration().findProductCmptType(ipsProject);
         if (type==null) {
             return null;
@@ -169,7 +176,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
         IIpsProject ipsProject = getIpsProject();
-        IAttribute attr = findAttribute(ipsProject);
+        IProductCmptTypeAttribute attr = findAttribute(ipsProject);
         if (attr==null) {
             String text = "Attribute " + attribute + " not found in the type " + getProductCmptGeneration().getProductCmpt().getProductCmptType();
             list.add(new Message(MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_ATTRIBUTE));

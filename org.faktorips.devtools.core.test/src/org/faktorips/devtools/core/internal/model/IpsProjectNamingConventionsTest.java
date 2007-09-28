@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.businessfct.BusinessFunction;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -95,7 +96,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
     }
 
     public void testValidateNameForProductCmptType() throws CoreException {
-        IpsObjectType type = IpsObjectType.OLD_PRODUCT_CMPT_TYPE;
+        IpsObjectType type = IpsObjectType.PRODUCT_CMPT_TYPE_V2;
         testCommonJavaTypeNameValidation(type); 
     }
     
@@ -284,12 +285,10 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         testTypesCount ++;
             
         // Product cmpt type
-        pct = newPolicyCmptType(ipsProject, "test.test");
-        pct.setConfigurableByProductCmptType(true);
-        pct.setUnqualifiedProductCmptType("1testType");
-        ml = pct.validate();
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "test.1Product");
+        ml = productCmptType.validate();
         assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
-        assertEquals(IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE, ml.getMessageByCode(
+        assertEquals(IProductCmptType.PROPERTY_NAME, ml.getMessageByCode(
                 IIpsProjectNamingConventions.INVALID_NAME).getInvalidObjectProperties()[0].getProperty());
         // testTypesCount ++;  is currently no ips object type
         

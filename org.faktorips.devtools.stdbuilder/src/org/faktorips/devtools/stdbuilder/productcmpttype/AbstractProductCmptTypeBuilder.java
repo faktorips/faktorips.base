@@ -38,11 +38,11 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -125,13 +125,14 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
         mainSection.setExtendedInterfaces(getExtendedInterfaces());
         mainSection.setUnqualifiedName(getUnqualifiedClassName());
         mainSection.setClass(!generatesInterface());
-        generateCodeForAttributes(mainSection.getConstantSectionBuilder(), mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
-        generateCodeForRelations(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
-        generateCodeForMethods(mainSection.getConstantSectionBuilder(), mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateCodeForProductCmptTypeAttributes(mainSection);
+        generateCodeForPolicyCmptTypeAttributes(mainSection);
+        generateCodeForRelations(mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateCodeForMethods(mainSection.getConstantSectionBuilder(), mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
         generateConstructors(mainSection.getConstructorSectionBuilder());
         generateTypeJavadoc(mainSection.getJavaDocForTypeSectionBuilder());
-        generateCodeForTableUsages(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
-        generateOtherCode(mainSection.getAttributesSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateCodeForTableUsages(mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
+        generateOtherCode(mainSection.getMemberVarSectionBuilder(), mainSection.getMethodSectionBuilder());
     }
 
     /**
@@ -173,29 +174,55 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
      * Loops over the attributes and generates code for an attribute if it is valid.
      * Takes care of proper exception handling.
      */
-    private void generateCodeForAttributes(JavaCodeFragmentBuilder constantBuilder,
-            JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    private void generateCodeForPolicyCmptTypeAttributes(TypeSection typeSection) throws CoreException {
         
         IPolicyCmptType policyCmptType = getPolicyCmptType();
         IAttribute[] attributes = policyCmptType == null ? new IAttribute[0] : policyCmptType.getAttributes();
         for (int i = 0; i < attributes.length; i++) {
             IAttribute a = attributes[i];
-            if (!a.isProductRelevant()) {
+            if (!a.isProductRelevant() || !a.isChangeable() || !a.isValid()) {
                 continue;
             }
-            if (!a.validate().containsErrorMsg()) {
-                try {
-                    Datatype datatype = a.findDatatype();
-                    DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(datatype);
-                    if (helper == null) {
-                        throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));            
-                    }
-                    generateCodeForAttribute(a, helper, fieldsBuilder, methodsBuilder, constantBuilder);
-                } catch (Exception e) {
-                    throw new CoreException(new IpsStatus(IStatus.ERROR,
-                            "Error building attribute " + attributes[i].getName() + " of "
-                                    + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
+            try {
+                Datatype datatype = a.findDatatype();
+                DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(datatype);
+                if (helper == null) {
+                    throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));            
                 }
+                generateCodeForPolicyCmptTypeAttribute(a, helper, typeSection.getMemberVarSectionBuilder(), typeSection.getMethodSectionBuilder());
+            } catch (Exception e) {
+                throw new CoreException(new IpsStatus(IStatus.ERROR,
+                        "Error building attribute " + attributes[i].getName() + " of "
+                                + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
+            }
+        }
+    }
+
+    /*
+     * Loops over the attributes and generates code for an attribute if it is valid.
+     * Takes care of proper exception handling.
+     */
+    private void generateCodeForProductCmptTypeAttributes(TypeSection typeSection) throws CoreException {
+        
+        IProductCmptType productCmptType = getProductCmptType();
+        IProductCmptTypeAttribute[] attributes = 
+            productCmptType == null ? new IProductCmptTypeAttribute[0] : productCmptType.getAttributes();
+        for (int i = 0; i < attributes.length; i++) {
+            IProductCmptTypeAttribute a = attributes[i];
+            if (!a.isValid()) {
+                continue;
+            }
+            try {
+                Datatype datatype = a.findDatatype(getIpsProject());
+                DatatypeHelper helper = getIpsProject().getDatatypeHelper(datatype);
+                if (helper == null) {
+                    throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));            
+                }
+                generateCodeForProductCmptTypeAttribute(a, helper, typeSection.getConstantSectionBuilder(), typeSection.getMemberVarSectionBuilder(), typeSection.getMethodSectionBuilder());
+            } catch (Exception e) {
+                throw new CoreException(new IpsStatus(IStatus.ERROR,
+                        "Error building attribute " + attributes[i].getName() + " of "
+                                + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }
     }
@@ -240,39 +267,35 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
     }
     
     /**
-     * This method is called from the build attributes method if the attribute is valid and
+     * This method is called from the abstract builder if the policy component attribute is valid and
      * therefore code can be generated.
      * <p>
-     * The default implementation delegates to special methods depending on the atttribute type.
-     * 
      * @param attribute The attribute sourcecode should be generated for.
      * @param datatypeHelper The datatype code generation helper for the attribute's datatype.
-     * @param fieldsBuilder The code fragment builder to build the memeber variabales section.
-     * @param fieldsBuilder The code fragment builder to build the method section.
+     * @param fieldsBuilder The code fragment builder to build the member variabales section.
+     * @param methodsBuilder The code fragment builder to build the method section.
      */
-    protected void generateCodeForAttribute(IAttribute attribute,
-            DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder fieldsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder, JavaCodeFragmentBuilder constantBuilder) throws CoreException {
-
-        if (attribute.isChangeable()) {
-            generateCodeForChangeableAttribute(attribute, datatypeHelper, fieldsBuilder, methodsBuilder);
-        } else if (attribute.getAttributeType()==AttributeType.CONSTANT) {
-            generateCodeForProductCmptTypeAttribute(attribute, datatypeHelper, fieldsBuilder, methodsBuilder, constantBuilder);
-        }
-    }
-    
-    protected abstract void generateCodeForChangeableAttribute(
+    protected abstract void generateCodeForPolicyCmptTypeAttribute(
             IAttribute a, 
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
+    /**
+     * This method is called from the abstract builder if the product component attribute is valid and
+     * therefore code can be generated.
+     * <p>
+     * @param attribute The attribute sourcecode should be generated for.
+     * @param datatypeHelper The datatype code generation helper for the attribute's datatype.
+     * @param fieldsBuilder The code fragment builder to build the member variabales section.
+     * @param methodsBuilder The code fragment builder to build the method section.
+     */
     protected abstract void generateCodeForProductCmptTypeAttribute(
-            IAttribute a, 
+            org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute attribute, 
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder fieldsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder, JavaCodeFragmentBuilder constantBuilder) throws CoreException;
+            JavaCodeFragmentBuilder methodsBuilder, 
+            JavaCodeFragmentBuilder constantBuilder) throws CoreException;
     
     protected abstract void generateCodeForMethod(
             IMethod method, 

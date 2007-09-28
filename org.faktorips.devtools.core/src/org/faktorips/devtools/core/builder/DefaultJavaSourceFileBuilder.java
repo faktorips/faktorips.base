@@ -164,7 +164,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         codeBuilder.appendln();
         codeBuilder.append(section.getConstantSectionBuilder().getFragment());
         codeBuilder.appendln();
-        codeBuilder.append(section.getAttributesSectionBuilder().getFragment());
+        codeBuilder.append(section.getMemberVarSectionBuilder().getFragment());
         codeBuilder.appendln();
         codeBuilder.append(section.getConstructorSectionBuilder().getFragment());
         codeBuilder.appendln();
@@ -630,9 +630,9 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         }
 
         /**
-         * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the attribute definitions.
+         * Returns the {@link <code>JavaCodeFragmentBuilder</code>} that assembles the code for the member variable definitions.
          */
-        public JavaCodeFragmentBuilder getAttributesSectionBuilder() {
+        public JavaCodeFragmentBuilder getMemberVarSectionBuilder() {
             return memberVariableSectionBuilder;
         }
 

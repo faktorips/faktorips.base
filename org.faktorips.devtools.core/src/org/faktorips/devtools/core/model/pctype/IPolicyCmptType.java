@@ -30,14 +30,14 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     
 	
     /**
-     * The name of the product component type property.
+     * The name of the "configurableByProductComponentType" property.
      */
     public final static String PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE = "configurableByProductCmptType"; //$NON-NLS-1$
 
 	/**
      * The name of the product component type property.
      */
-    public final static String PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE = "unqualifiedProductCmptType"; //$NON-NLS-1$
+    public final static String PROPERTY_PRODUCT_CMPT_TYPE = "productCmptType"; //$NON-NLS-1$
 
     /**
      * The name of the supertype property.
@@ -95,6 +95,13 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     	MSGCODE_PREFIX + "ProductCmptTypeNameMissing"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that this policy component type is defined as configurable by 
+     * product, but the product component type name is not set.
+     */
+    public final static String MSGCODE_PRODUCT_CMPT_TYPE_NOT_FOUND = MSGCODE_PREFIX + "ProductCmptTypeNotFound"; //$NON-NLS-1$
+
+
+    /**
      * Validation message code to indicate that this policy component type is defined configurable by 
      * product and the product type name is the same as this type's name.
      */
@@ -108,13 +115,6 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     public final static String MSGCODE_ABSTRACT_MISSING = 
     	MSGCODE_PREFIX + "AbstractMissing"; //$NON-NLS-1$
 
-    /**
-     * Validation message code to indicate that the name of the product component type is not a valid
-     * java identifier.
-     */
-    public final static String MSGCODE_INVALID_PRODUCT_CMPT_TYPE_NAME = 
-    	MSGCODE_PREFIX + "InvalidProductCmptTypeName"; //$NON-NLS-1$
-    
     /**
      * Validation message code to indicate that table structures can only be used if the type is product
      * relevant.
@@ -155,15 +155,9 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the unqualified name of the product component type. Returns an empty
-     * string if no product component type is specified.
+     * Sets the qualified name of the product component type that configures this type.
      */
-    public String getUnqualifiedProductCmptType();
-
-    /**
-     * Sets the unqualified name of the product component type.
-     */
-    public void setUnqualifiedProductCmptType(String unqualifiedName);
+    public void setProductCmptType(String qualifiedName);
     
     /**
      * Returns the qualified name of the type's supertype. Returns an empty

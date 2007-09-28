@@ -233,6 +233,7 @@ public abstract class Type extends BaseIpsObject implements IType {
      * {@inheritDoc}
      */
     protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
         IIpsProject ipsProject = getIpsProject();
         if (hasSupertype()) {
             validateSupertype(list, ipsProject);

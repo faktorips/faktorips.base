@@ -30,6 +30,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -42,6 +43,7 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
@@ -413,6 +415,12 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         generateMethodGetPropertyValue(attribute, datatypeHelper, methodsBuilder);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForProductCmptTypeAttribute(IProductCmptTypeAttribute attribute, DatatypeHelper helper, JavaCodeFragmentBuilder constantBuilder, JavaCodeFragmentBuilder memberVarBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        generateMethodGetPropertyValue(attribute, helper, methodsBuilder);    }
+
     void generateFieldConstPropertyValue(
             IAttribute a,
             DatatypeHelper helper,
@@ -434,14 +442,14 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     public void generateMethodGetPropertyValue(
-            IAttribute a,
+            IIpsObjectPartContainer property,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        String description = StringUtils.isEmpty(a.getDescription()) ? "" : SystemUtils.LINE_SEPARATOR + "<p>" + SystemUtils.LINE_SEPARATOR + a.getDescription();
-        String[] replacements = new String[]{a.getName(), description};
-        appendLocalizedJavaDoc("METHOD_GETVALUE", replacements, a, methodsBuilder);
-        generateSignatureGetPropertyValue(a, datatypeHelper, methodsBuilder);
+        String description = StringUtils.isEmpty(property.getDescription()) ? "" : SystemUtils.LINE_SEPARATOR + "<p>" + SystemUtils.LINE_SEPARATOR + property.getDescription();
+        String[] replacements = new String[]{property.getName(), description};
+        appendLocalizedJavaDoc("METHOD_GETVALUE", replacements, property, methodsBuilder);
+        generateSignatureGetPropertyValue(property.getName(), datatypeHelper, methodsBuilder);
         methodsBuilder.appendln(";");
     }
         
@@ -452,20 +460,20 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     public void generateSignatureGetPropertyValue(
-            IAttribute a,
+            String propName,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         int modifier = java.lang.reflect.Modifier.PUBLIC;
-        String methodName = getMethodNameGetPropertyValue(a, datatypeHelper.getDatatype());
+        String methodName = getMethodNameGetPropertyValue(propName, datatypeHelper.getDatatype());
         methodsBuilder.signature(modifier, datatypeHelper.getJavaClassName(), methodName, new String[0], new String[0]);
     }
     
     /**
      * Returns the getter method to access a property/attribute value.
      */
-    public String getMethodNameGetPropertyValue(IAttribute a, Datatype datatype){
-        return getJavaNamingConvention().getGetterMethodName(a.getName(), datatype);
+    public String getMethodNameGetPropertyValue(String propName, Datatype datatype){
+        return getJavaNamingConvention().getGetterMethodName(propName, datatype);
     }
 
     /**

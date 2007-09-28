@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
@@ -55,7 +55,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private String policyCmptType = "";
     
-    private IpsObjectPartCollection attributes = new IpsObjectPartCollection(this, Attribute.class, "Attribute");
+    private IpsObjectPartCollection attributes = new IpsObjectPartCollection(this, ProductCmptTypeAttribute.class, "Attribute");
     private IpsObjectPartCollection associations = new IpsObjectPartCollection(this, ProductCmptTypeAssociation.class, "Association");
     private IpsObjectPartCollection tableStructureUsages = new IpsObjectPartCollection(this, TableStructureUsage.class, "TableStructureUsage");
     
@@ -180,21 +180,21 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
-    public IAttribute newAttribute() {
-        return (IAttribute)attributes.newPart();
+    public IProductCmptTypeAttribute newAttribute() {
+        return (IProductCmptTypeAttribute)attributes.newPart();
     }
     
     /**
      * {@inheritDoc}
      */
-    public IAttribute getAttribute(String name) {
-        return (IAttribute)attributes.getPartByName(name);
+    public IProductCmptTypeAttribute getAttribute(String name) {
+        return (IProductCmptTypeAttribute)attributes.getPartByName(name);
     }
     
     /**
      * {@inheritDoc}
      */
-    public IAttribute findAttribute(String name, IIpsProject project) throws CoreException {
+    public IProductCmptTypeAttribute findAttribute(String name, IIpsProject project) throws CoreException {
         AttributeFinder finder = new AttributeFinder(project, name);
         finder.start(this);
         return finder.attribute;
@@ -203,8 +203,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
-    public IAttribute[] getAttributes() {
-        return (IAttribute[])attributes.toArray(new IAttribute[attributes.size()]);
+    public IProductCmptTypeAttribute[] getAttributes() {
+        return (IProductCmptTypeAttribute[])attributes.toArray(new IProductCmptTypeAttribute[attributes.size()]);
     }
 
     /**
@@ -486,7 +486,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     class AttributeFinder extends ProductCmptTypeHierarchyVisitor {
 
         private String attributeName;
-        private IAttribute attribute;
+        private IProductCmptTypeAttribute attribute;
         
         public AttributeFinder(IIpsProject ipsProject, String attrName) {
             super(ipsProject);

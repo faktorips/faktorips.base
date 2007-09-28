@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.IValueDatatypeProvider;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -44,21 +44,21 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class Attribute extends IpsObjectPart implements IAttribute, IValueDatatypeProvider {
+public class ProductCmptTypeAttribute extends IpsObjectPart implements IProductCmptTypeAttribute, IValueDatatypeProvider {
 
     final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
 
     private String datatype = "";
     private Modifier modifier = Modifier.PUBLISHED;
     
-    private String defaultValue = "";
+    private String defaultValue = null;
     private IValueSet valueSet;
     
     /**
      * @param parent
      * @param id
      */
-    public Attribute(IIpsObject parent, int id) {
+    public ProductCmptTypeAttribute(IIpsObject parent, int id) {
         super(parent, id);
         name = "";
         valueSet = new AllValuesValueSet(this, getNextPartId());

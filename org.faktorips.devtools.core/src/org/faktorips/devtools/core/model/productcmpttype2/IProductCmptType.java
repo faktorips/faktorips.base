@@ -94,7 +94,7 @@ public interface IProductCmptType extends IIpsObject, IType {
     /**
      * Returns the type's attributes.
      */
-    public IAttribute[] getAttributes();
+    public IProductCmptTypeAttribute[] getAttributes();
     
     /**
      * Returns the attribute with the given name defined in <strong>this</strong> type
@@ -102,7 +102,7 @@ public interface IProductCmptType extends IIpsObject, IType {
      * If more than one attribute with the name exist, the first attribute with the name is returned.
      * Returns <code>null</code> if no attribute with the given name exists.
      */
-    public IAttribute getAttribute(String name);
+    public IProductCmptTypeAttribute getAttribute(String name);
 
 
     /**
@@ -116,12 +116,12 @@ public interface IProductCmptType extends IIpsObject, IType {
      * @throws NullPointerException if project is <code>null</code>.
      * @throws CoreException if an error occurs while searching.
      */
-    public IAttribute findAttribute(String name, IIpsProject project) throws CoreException;
+    public IProductCmptTypeAttribute findAttribute(String name, IIpsProject project) throws CoreException;
     
     /**
      * Creates a new attribute and returns it.
      */
-    public IAttribute newAttribute();
+    public IProductCmptTypeAttribute newAttribute();
 
     /**
      * Returns the number of attributes.

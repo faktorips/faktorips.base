@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -112,7 +113,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForChangeableAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateCodeForPolicyCmptTypeAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         generateMethodGetDefaultValue(a, datatypeHelper, methodsBuilder);
         
         //TODO the generateCodeForAttribute method of the abstract builder needs to discriminate against
@@ -170,7 +171,13 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForProductCmptTypeAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder, JavaCodeFragmentBuilder constantBuilder) throws CoreException {
+    protected void generateCodeForProductCmptTypeAttribute(
+            IProductCmptTypeAttribute a, 
+            DatatypeHelper datatypeHelper, 
+            JavaCodeFragmentBuilder memberVarsBuilder, 
+            JavaCodeFragmentBuilder methodsBuilder, 
+            JavaCodeFragmentBuilder constantBuilder) throws CoreException {
+        
         generateMethodGetValue(a, datatypeHelper, methodsBuilder);
     }
 
@@ -181,7 +188,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      * public Integer getTaxRate();
      * </pre>
      */
-    void generateMethodGetValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
+    void generateMethodGetValue(IProductCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
         String description = StringUtils.isEmpty(a.getDescription()) ? "" : SystemUtils.LINE_SEPARATOR + "<p>" + SystemUtils.LINE_SEPARATOR + a.getDescription();
         String[] replacements = new String[]{a.getName(), description};
         appendLocalizedJavaDoc("METHOD_GET_VALUE", replacements, a, builder);
@@ -195,17 +202,17 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      * public Integer getTaxRate()
      * </pre>
      */
-    void generateSignatureGetValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
+    void generateSignatureGetValue(IProductCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
         String methodName = getMethodNameGetValue(a, datatypeHelper);
         builder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(),
                 methodName, new String[0], new String[0]);
     }
     
-    public String getMethodNameGetValue(IAttribute a, DatatypeHelper datatypeHelper) throws CoreException {
+    public String getMethodNameGetValue(IProductCmptTypeAttribute a, DatatypeHelper datatypeHelper) throws CoreException {
         return getJavaNamingConvention().getGetterMethodName(getPropertyNameValue(a), datatypeHelper.getDatatype());
     }
     
-    String getPropertyNameValue(IAttribute a) {
+    String getPropertyNameValue(IProductCmptTypeAttribute a) {
         return getLocalizedText(a, "PROPERTY_VALUE_NAME", StringUtils.capitalise(a.getName()));
     }
 

@@ -93,7 +93,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setExtendedInterfaces(new String[]{Serializable.class.getName(), 
                 enumTypeInterfaceBuilder.getQualifiedClassName(tableStructure)});
 
-        JavaCodeFragmentBuilder memberBuilder = getMainTypeSection().getAttributesSectionBuilder();
+        JavaCodeFragmentBuilder memberBuilder = getMainTypeSection().getMemberVarSectionBuilder();
         JavaCodeFragmentBuilder methodBuilder = getMainTypeSection().getMethodSectionBuilder();
         
         appendLocalizedJavaDoc("CLASS_DESCRIPTION", getTableContents().getName(), getIpsObject().getDescription(), 

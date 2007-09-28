@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.productcmpttype2.IAttribute;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -96,7 +96,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
          * {@inheritDoc}
          */
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            return new AttributeEditDialog((IAttribute)part, shell);
+            return new AttributeEditDialog((IProductCmptTypeAttribute)part, shell);
         }
         
         protected int[] moveParts(int[] indexes, boolean up) {

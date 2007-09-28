@@ -1,22 +1,45 @@
 
-PolicyCmptTypeAttribute
- - um computationMethod erweitern (setter, xml konvertierung, validierung)
- - (Brauchen wir das wirklich?)
- - Dialog umbauen
- - ComputationParameters entfernen.
- 
- XML-Format des Produktbausteins:
-  - Umbennen von "Relation" in "Link"
-  - Umbennen von "pcTypeRelation" in "association"
-  
+Generierung der Derived Getter in PolicyCmpt Klassen fuer Properties von ProductCmpts
+Delta Handling
+Test: Description View, Compare, Deep Copy Wizard
+Validierung: Einfuerhung IIpsProject Parameter
+NewProductCmptType Wizard
 IPolicyCmptType muss IType implementieren
  - in Formuala muessen die EnumDatatypes aus ProductCmptType beruecksichtigt werden.
  - Verwendung von IType statt IPolicCmptType
  
-Delta Handling umstellen
-	Einfuehrung eines Delta-Entry
-	
-Abstraktion fuer IConfigElement, IFormula, ITableContentUsage: PropertyValue
+Welche Beziehungen gibt es zwischen den Ableitungshierarchien auf Vertrags & Produktseite?
 
-Abstraktion fuer ProductCmptTypeAttribute, FormulaSignature, TableStructureUsage: ProductCmptTypeProperty
-	Hier koennten wir auch "on the fly" die default values und value sets "rein mergen".
+PolicyCmptTypeAttribute
+ - um computationMethod erweitern (setter, xml konvertierung, validierung)
+ - (Brauchen wir das wirklich?)
+ - Dialog umbauen
+ 
+
+Attribute Dialog im ProductCmptType-Editor überarbeiten.
+Prüfungen für ProductCmptType implementieren.
+
+Klären:
+=======
+Werden die beiden type-arten nicht besser in einem file gespeichert?
+
+XML-Format des Produktbausteins:
+  - Umbennen von "Relation" in "Link"
+  - Umbennen von "pcTypeRelation" in "association"
+  => Achtung hier muss auch die Laufzeit angepasst werden!!!
+  
+
+Benutzerfreundlichkeit:
+=======================
+Modellexplorer: Filter auf Vertrags / Produktklassen
+New PolicyCmptTypeWizard muss optional auch einen neuen ProductCmptType anlegen können.
+
+Offen: Wie kann man das Anlegen von Beziehungen auf beiden Seiten optimieren?
+x.) Im Dialog zur Definition der Beziehung auf Vertragsseite folgendes einfügen:
+ - Checkbox: Allowed links are defined by product structure
+ - Association in product type: [this is automatically derived from the product type ]
+   [kann man das eventuell im ipsproject konfigurieren]
+ - Checkbox: Use product component type as qualifier
+	 Note: The association becomes a qualified association. The cardinality is specified per qualifier instance!
+	
+x.) Bisherigen Wizard umbauen, dass man die Beziehung auf Produktseite mitanlegen kann, wenn beide PolicyCmptTypes konfigurierbar sind.

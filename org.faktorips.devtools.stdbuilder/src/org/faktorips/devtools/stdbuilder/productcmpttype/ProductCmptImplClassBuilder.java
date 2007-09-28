@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -216,25 +217,26 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForChangeableAttribute(IAttribute a,
+    protected void generateCodeForPolicyCmptTypeAttribute(IAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         // nothing to do
+
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForProductCmptTypeAttribute(IAttribute a,
+    protected void generateCodeForProductCmptTypeAttribute(IProductCmptTypeAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder, JavaCodeFragmentBuilder constantBuilder) throws CoreException {
         
-        // nothing to do
+        //  nothing to do
     }
-    
+
     /**
      * {@inheritDoc}
      */

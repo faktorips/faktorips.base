@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
+import org.faktorips.devtools.core.model.product.IAttributeValue;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -45,7 +46,7 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
     
     private IFormula formula;
     private IConfigElement policyAttribute;
-    private IConfigElement productAttribute;
+    private IAttributeValue productAttribute;
     private ITableContentUsage tableUsage;
     private IProductCmptLink relation1;
     private IProductCmptLink relation2;
@@ -71,8 +72,7 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
         formula = generation1.newFormula();
         policyAttribute = generation1.newConfigElement();
         policyAttribute.setType(ConfigElementType.POLICY_ATTRIBUTE);
-        productAttribute = generation1.newConfigElement();
-        productAttribute.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
+        productAttribute = generation1.newAttributeValue();
         tableUsage= generation1.newTableContentUsage();
         tableUsage.setTableContentName("TestTableContents");
         
