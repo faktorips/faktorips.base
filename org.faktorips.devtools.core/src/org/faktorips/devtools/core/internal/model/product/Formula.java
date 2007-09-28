@@ -28,7 +28,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartCollection;
-import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -74,6 +73,12 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
     
     public Formula(IIpsObjectPart parent, int id) {
         super(parent, id);
+        addTagToIgnore(TAG_NAME_FOR_EXPRESSION);
+    }
+
+    public Formula(IIpsObjectPart parent, int id, String formulaSignature) {
+        super(parent, id);
+        this.formulaSignature = formulaSignature;
         addTagToIgnore(TAG_NAME_FOR_EXPRESSION);
     }
 

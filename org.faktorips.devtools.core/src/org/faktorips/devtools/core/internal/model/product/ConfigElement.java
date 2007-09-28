@@ -74,7 +74,13 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		valueSet = new AllValuesValueSet(this, getNextPartId());
 	}
 
-	/**
+    public ConfigElement(ProductCmptGeneration parent, int id, String pcTypeAttribute) {
+        super(parent, id);
+        this.pcTypeAttribute = pcTypeAttribute;
+        valueSet = new AllValuesValueSet(this, getNextPartId());
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public IProductCmpt getProductCmpt() {

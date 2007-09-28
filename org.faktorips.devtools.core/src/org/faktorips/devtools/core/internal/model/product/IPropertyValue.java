@@ -59,4 +59,9 @@ public interface IPropertyValue {
      * Returns the value.
      */
     public String getPropertyValue();
+    
+    /**
+     * Removes the part from the parent.
+     */
+    public void delete();
 }

@@ -15,32 +15,22 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.productcmpttype2;
-
-import org.faktorips.devtools.core.model.Described;
-
+package org.faktorips.devtools.core.model.product;
 
 /**
- * 
- * 
+ * A delta entry desribes a single difference between a product component generation and the type
+ * it is based on. For example the type might contain a new attribute but the product component
+ * has not matching attribute value. 
+ *  
  * @author Jan Ortmann
  */
-public interface IProdDefProperty extends Described {
+public interface IDeltaEntry {
 
     /**
-     * Returns the type of the property.
+     * Fixes the difference between the type and the produt component.
+     * <p>
+     * For example if the type contains a new attribute but the product component generation.
+     * has not matching attribute value, this method creates the attribute vlaue.
      */
-    public ProdDefPropertyType getProdDefPropertyType();
-    
-    /**
-     * Returns the name of the property.
-     */
-    public String getPropertyName();
-    
-    /**
-     * Returns the name of the datatype.
-     */
-    public String getPropertyDatatype();
-    
-
+    public void fix();
 }

@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IRangeValueSet;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -37,6 +39,9 @@ import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.AggregationKind;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -75,6 +80,107 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         association.setTarget(targetProductType.getQualifiedName());
         association.setTargetRoleSingular("testRelationProductSide");
         association.setTargetRolePlural("testRelationsProductSide");
+    }
+    
+    public void testGetAttributeValue() {
+        IAttributeValue value1 = generation.newAttributeValue();
+        value1.setAttribute("a1");
+        IAttributeValue value2 = generation.newAttributeValue();
+        value2.setAttribute("a2");
+        
+        assertEquals(value1, generation.getAttributeValue("a1"));
+        assertEquals(value2, generation.getAttributeValue("a2"));
+        
+        assertNull(generation.getAttributeValue("unknwon"));
+        assertNull(generation.getAttributeValue(null));
+    }
+    
+    public void testGetFormula() {
+        IFormula formula1 = generation.newFormula();
+        formula1.setFormulaSignature("f1");
+        IFormula formula2 = generation.newFormula();
+        formula2.setFormulaSignature("f2");
+        
+        assertEquals(formula1, generation.getFormula("f1"));
+        assertEquals(formula2, generation.getFormula("f2"));
+        
+        assertNull(generation.getFormula("unknwon"));
+        assertNull(generation.getFormula(null));
+    }
+    
+    public void testGetPropertyValue() {
+        IProductCmptTypeAttribute attribute = productCmptType.newAttribute();
+        attribute.setName("a1");
+        ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
+        structureUsage.setRoleName("RateTable");
+        IProductCmptTypeMethod signature = productCmptType.newFormulaSignature("calculation");
+        IAttribute policyAttr = policyCmptType.newAttribute();
+        policyAttr.setName("policyAttribute");
+        policyAttr.setProductRelevant(true);
+        
+        IAttributeValue value = generation.newAttributeValue();
+        value.setAttribute("a1");
+        IFormula formula = generation.newFormula();
+        formula.setFormulaSignature("calculation");
+        ITableContentUsage contentUsage = generation.newTableContentUsage();
+        contentUsage.setStructureUsage("RateTable");
+        IConfigElement element = generation.newConfigElement();
+        element.setPcTypeAttribute("policyAttribute");
+        
+        assertEquals(value, generation.getPropertyValue(attribute));
+        assertEquals(formula, generation.getPropertyValue(signature));
+        assertEquals(contentUsage, generation.getPropertyValue(structureUsage));
+        assertEquals(element, generation.getPropertyValue(policyAttr));
+    }
+
+    public void testNewFormula_FormulaSignature() {
+        IProductCmptTypeMethod signature = productCmptType.newFormulaSignature("Calc");
+        IFormula formula = generation.newFormula(signature);
+        assertEquals("Calc", formula.getFormulaSignature());
+        
+        formula = generation.newFormula(null);
+        assertEquals("", formula.getFormulaSignature());
+    }
+    
+    public void testNewTableContentUsage_TableStructure() {
+        ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
+        structureUsage.setRoleName("RateTable");
+        ITableContentUsage contentUsage  = generation.newTableContentUsage(structureUsage);
+        assertEquals("RateTable", contentUsage.getStructureUsage());
+        
+        contentUsage  = generation.newTableContentUsage(null);
+        assertEquals("", contentUsage.getStructureUsage());
+    }
+    
+    public void testNewAttributeValue_Attribute() {
+        IProductCmptTypeAttribute attribute = productCmptType.newAttribute();
+        attribute.setName("premium");
+        attribute.setDefaultValue("123");
+        IAttributeValue value = generation.newAttributeValue(attribute);
+        assertEquals("123", value.getValue());
+        assertEquals("premium", value.getAttribute());
+        
+        value = generation.newAttributeValue(null);
+        assertEquals("", value.getValue());
+        assertEquals("", value.getAttribute());
+    }
+    
+    public void testNewConfigElement_PolicyAttribute() {
+        IAttribute attribute = policyCmptType.newAttribute();
+        attribute.setName("a1");
+        attribute.setProductRelevant(true);
+        attribute.setDefaultValue("10");
+        attribute.setValueSetType(ValueSetType.RANGE);
+        IRangeValueSet range = (IRangeValueSet)attribute.getValueSet();
+        range.setLowerBound("1");
+        range.setUpperBound("42");
+        
+        IConfigElement el = generation.newConfigElement(attribute);
+        assertEquals("a1", el.getPcTypeAttribute());
+        assertEquals("10", el.getValue());
+        range = (IRangeValueSet)el.getValueSet();
+        assertEquals("1", range.getLowerBound());
+        assertEquals("42", range.getUpperBound());
     }
     
     public void testGetPropertyValues() {

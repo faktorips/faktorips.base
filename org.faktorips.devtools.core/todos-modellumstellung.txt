@@ -1,5 +1,4 @@
 
-Generierung der Derived Getter in PolicyCmpt Klassen fuer Properties von ProductCmpts
 Delta Handling
 Test: Description View, Compare, Deep Copy Wizard
 Validierung: Einfuerhung IIpsProject Parameter

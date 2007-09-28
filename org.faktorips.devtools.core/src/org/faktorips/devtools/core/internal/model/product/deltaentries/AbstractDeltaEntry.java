@@ -15,32 +15,24 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.productcmpttype2;
+package org.faktorips.devtools.core.internal.model.product.deltaentries;
 
-import org.faktorips.devtools.core.model.Described;
-
+import org.faktorips.devtools.core.internal.model.product.ProductCmptGenerationToTypeDelta;
+import org.faktorips.devtools.core.model.product.IDeltaEntry;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 
 /**
  * 
- * 
  * @author Jan Ortmann
  */
-public interface IProdDefProperty extends Described {
+public abstract class AbstractDeltaEntry implements IDeltaEntry {
 
-    /**
-     * Returns the type of the property.
-     */
-    public ProdDefPropertyType getProdDefPropertyType();
-    
-    /**
-     * Returns the name of the property.
-     */
-    public String getPropertyName();
-    
-    /**
-     * Returns the name of the datatype.
-     */
-    public String getPropertyDatatype();
-    
+    protected IProductCmptGeneration generation;
 
+    public AbstractDeltaEntry(ProductCmptGenerationToTypeDelta delta) {
+        super();
+        this.generation = delta.getProductCmptGeneration();
+    }
+
+    
 }

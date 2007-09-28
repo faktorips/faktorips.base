@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.product.IPropertyValue;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 
 /**

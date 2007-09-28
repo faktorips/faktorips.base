@@ -58,6 +58,11 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         super(generation, id);
     }
 
+    public TableContentUsage(IProductCmptGeneration generation, int id, String structureUsage) {
+        super(generation, id);
+        this.structureUsage = structureUsage;
+    }
+
     public TableContentUsage() {
         super();
     }

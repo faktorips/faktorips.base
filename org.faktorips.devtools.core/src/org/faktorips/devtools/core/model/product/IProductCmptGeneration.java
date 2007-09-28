@@ -21,9 +21,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.product.IPropertyValue;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
 
 
@@ -95,6 +99,13 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
     
     /**
+     * Returns the delta between this product component and it's product component type.
+     * 
+     * @throws CoreException
+     */
+    public IProductCmptGenerationToTypeDelta computeDeltaToProductCmptType() throws CoreException;
+    
+    /**
      * Returns the delta between this product component and it's policy
      * component type.
      * 
@@ -108,9 +119,25 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public void fixDifferences(IProductCmptGenerationPolicyCmptTypeDelta delta) throws CoreException;
     
     /**
+     * Returns the propery values for the given property or <code>null</code> if no value is defined
+     * for this generation. In this case {@link #computeDeltaToProductCmptType()} returns a delta containing
+     * an entry for the missing property value.
+     * 
+     * Returns <code>null</code> if property is <code>null</code>.
+     */
+    public IPropertyValue getPropertyValue(IProdDefProperty property);
+
+    /**
      * Returns all propery values for the given type. Returns an empty array if type is <code>null</code>.
      */
     public IPropertyValue[] getPropertyValues(ProdDefPropertyType type);
+    
+    /**
+     * Creates a new property value for the given property.
+     * 
+     * @throws NullPointerException if property is <code>null</code>.
+     */
+    public IPropertyValue newPropertyValue(IProdDefProperty property);
     
     /**
      * Returns the numer of attribute values defined in the generation. 
@@ -124,9 +151,22 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public IAttributeValue[] getAttributeValues();
     
     /**
+     * Returns the attribute value for the given attribute name. Returns <code>null</code> if the
+     * generation has no value for the given attribute. Returns <code>null</code> if attribute is <code>null</code>. 
+     */
+    public IAttributeValue getAttributeValue(String attribute);
+    
+    /**
      * Creates a new attribute value.
      */
     public IAttributeValue newAttributeValue();
+
+    /**
+     * Creates a new attribute value for the given product component attribute and sets the value
+     * to the default value defined in the attribute. If attribute is <code>null</code> the value
+     * is still created but no reference to the attribute is set. 
+     */
+    public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute);
 
     /**
      * Creates a new attribute value for the given product component attribute and sets the value. 
@@ -154,6 +194,12 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      */
     public IConfigElement newConfigElement();
     
+    /**
+     * Creates a new configuration element for the given attribute. If attribute is <code>null</code>
+     * no reference to an attribute is set, but the new config element is still created.
+     */
+    public IConfigElement newConfigElement(IAttribute attribute);
+
     /**
      * Returns the number of configuration elements.
      */
@@ -218,9 +264,14 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public void moveLink(IProductCmptLink toMove, IProductCmptLink moveBefore);
     
     /**
-     * @return A new table content usage. 
+     * Returns a new table content usage. 
      */
     public ITableContentUsage newTableContentUsage();
+
+    /**
+     * Returns a new table content usage that is based on the table structure usage.
+     */
+    public ITableContentUsage newTableContentUsage(ITableStructureUsage structureUsage);
 
     /**
      * Returns the number of used table contents.
@@ -250,9 +301,22 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public IFormula[] getFormulas();
     
     /**
+     * Returns the formula with given name or <code>null</code> if no such formula is found.
+     * Returns <code>null</code> if formulaName is <code>null</code>.
+     */
+    public IFormula getFormula(String formulaName);
+    
+    /**
      * Creates a new formula.
      */
     public IFormula newFormula();
+    
+    /**
+     * Creates a new formula based on the given signture. If signature is <code>null</code> the
+     * formula is still created, but no reference to a signature is set.
+     */
+    public IFormula newFormula(IProductCmptTypeMethod signature);
+    
     
     
 }

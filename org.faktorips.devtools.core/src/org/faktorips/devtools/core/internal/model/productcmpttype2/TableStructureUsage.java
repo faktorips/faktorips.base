@@ -52,8 +52,6 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     
     final static String TAG_NAME_TABLE_STRUCTURE = "TableStructure"; //$NON-NLS-1$
     
-    private String roleName = ""; //$NON-NLS-1$
-    
     private boolean mandatoryTableContent = false;
     
     // Contains the related table structures identified by the full qualified name
@@ -153,7 +151,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        roleName = element.getAttribute(PROPERTY_ROLENAME);
+        name = element.getAttribute(PROPERTY_ROLENAME);
         mandatoryTableContent = Boolean.valueOf(element.getAttribute(PROPERTY_MANDATORY_TABLE_CONTENT)).booleanValue();
     }
 
@@ -162,30 +160,23 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_ROLENAME, roleName);
+        element.setAttribute(PROPERTY_ROLENAME, name);
         element.setAttribute(PROPERTY_MANDATORY_TABLE_CONTENT, "" + mandatoryTableContent);
     }
 
-    /** 
-     * {@inheritDoc}
-     */
-    public String getName() {
-        return roleName;
-    }
-    
     /**
      * {@inheritDoc}
      */
     public String getRoleName() {
-        return roleName;
+        return name;
     }
 
     /**
      * {@inheritDoc}
      */
     public void setRoleName(String newRoleName) {
-        String oldRoleName = roleName;
-        roleName = newRoleName;
+        String oldRoleName = name;
+        name = newRoleName;
         valueChanged(oldRoleName, newRoleName);
     }
 
@@ -310,9 +301,9 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         super.validateThis(list);
                 
         // check the correct name format
-        IStatus status = JavaConventions.validateFieldName(roleName);
+        IStatus status = JavaConventions.validateFieldName(name);
         if (!status.isOK()){
-            String text = NLS.bind(Messages.TableStructureUsage_msgInvalidRoleName, roleName);
+            String text = NLS.bind(Messages.TableStructureUsage_msgInvalidRoleName, name);
             Message msg = new Message(MSGCODE_INVALID_ROLE_NAME, text, Message.ERROR, this, PROPERTY_ROLENAME);
             list.add(msg);
         }
@@ -344,7 +335,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         if (supertype==null) {
             return;
         }
-        ITableStructureUsage tsu = supertype.findTableStructureUsage(roleName, getIpsProject());
+        ITableStructureUsage tsu = supertype.findTableStructureUsage(name, getIpsProject());
         if(tsu != null){
             String msg = NLS.bind(Messages.TableStructureUsage_msgRoleNameAlreadyInSupertype, getRoleName());
             msgList.add(new Message(MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE, 

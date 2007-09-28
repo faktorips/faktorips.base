@@ -15,32 +15,30 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.productcmpttype2;
+package org.faktorips.devtools.core.internal.model.product.deltaentries;
 
-import org.faktorips.devtools.core.model.Described;
-
+import org.faktorips.devtools.core.internal.model.product.ProductCmptGenerationToTypeDelta;
+import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
 
 /**
  * 
- * 
  * @author Jan Ortmann
  */
-public interface IProdDefProperty extends Described {
+public class MissingPropertyValueEntry extends AbstractDeltaEntry {
+
+    private IProdDefProperty property;
+    
+    public MissingPropertyValueEntry(ProductCmptGenerationToTypeDelta delta, IProdDefProperty property) {
+        super(delta);
+        this.property = property;
+    }
 
     /**
-     * Returns the type of the property.
+     * {@inheritDoc}
      */
-    public ProdDefPropertyType getProdDefPropertyType();
-    
-    /**
-     * Returns the name of the property.
-     */
-    public String getPropertyName();
-    
-    /**
-     * Returns the name of the datatype.
-     */
-    public String getPropertyDatatype();
-    
+    public void fix() {
+        generation.newPropertyValue(property);
+    }
 
+    
 }

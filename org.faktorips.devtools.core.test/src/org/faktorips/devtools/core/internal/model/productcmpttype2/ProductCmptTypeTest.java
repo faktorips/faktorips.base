@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype2;
 
+import java.util.Map;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -175,6 +177,74 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(typeSignature, props[5]);
         assertEquals(policyCmptSupertypeAttr, props[6]);
         assertEquals(policyCmptTypeAttr, props[7]);
+    }
+    
+    public void testGetProdDefPropertiesMap() throws CoreException {
+        // attributes
+        IProductCmptTypeAttribute supertypeAttr  = superProductCmptType.newAttribute();
+        supertypeAttr.setName("attrInSupertype");
+        supertypeAttr.setDatatype("Money");
+
+        IProductCmptTypeAttribute typeAttribute = productCmptType.newAttribute();
+        typeAttribute.setName("attrInType");
+        typeAttribute.setDatatype("Money");
+        
+        // table structure usages
+        ITableStructureUsage supertypeTsu = superProductCmptType.newTableStructureUsage();
+        supertypeTsu.setRoleName("SuperTable");
+        ITableStructureUsage typeTsu = productCmptType.newTableStructureUsage();
+        typeTsu.setRoleName("Table");
+
+        // formula signatures
+        IProductCmptTypeMethod supertypeSignature = superProductCmptType.newFormulaSignature("CalculatePremium");
+        IProductCmptTypeMethod typeSignature = productCmptType.newFormulaSignature("CalculatePremium2");
+        productCmptType.newProductCmptTypeMethod().setFormulaSignatureDefinition(false);// this method is not a product def property as it is not a formula signature
+        
+        // default values and value sets
+        IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
+        superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
+        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptSupertypeAttr = policyCmptSupertype.newAttribute();
+        policyCmptSupertypeAttr.setName("PolicySuperAttribute");
+        policyCmptSupertypeAttr.setProductRelevant(true);
+        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptTypeAttr = policyCmptType.newAttribute();
+        policyCmptTypeAttr.setName("PolicyAttribute");
+        policyCmptTypeAttr.setProductRelevant(true);
+        policyCmptType.newAttribute().setProductRelevant(false); // this attribute is not a product def property as it is not product relevant!
+
+        // test property type = null
+        Map propertyMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(null, ipsProject);
+        assertEquals(8, propertyMap.size());
+        assertEquals(supertypeAttr, propertyMap.get(supertypeAttr.getPropertyName()));
+        assertEquals(typeAttribute, propertyMap.get(typeAttribute.getPropertyName()));
+        assertEquals(supertypeTsu, propertyMap.get(supertypeTsu.getPropertyName()));
+        assertEquals(typeTsu, propertyMap.get(typeTsu.getPropertyName()));
+        assertEquals(supertypeSignature, propertyMap.get(supertypeSignature.getPropertyName()));
+        assertEquals(typeSignature, propertyMap.get(typeSignature.getPropertyName()));
+        assertEquals(policyCmptSupertypeAttr, propertyMap.get(policyCmptSupertypeAttr.getPropertyName()));
+        assertEquals(policyCmptTypeAttr, propertyMap.get(policyCmptTypeAttr.getPropertyName()));
+        
+        // test with specific property types
+        propertyMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(ProdDefPropertyType.VALUE, ipsProject);
+        assertEquals(2, propertyMap.size());
+        assertEquals(supertypeAttr, propertyMap.get(supertypeAttr.getPropertyName()));
+        assertEquals(typeAttribute, propertyMap.get(typeAttribute.getPropertyName()));
+        
+        propertyMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(ProdDefPropertyType.TABLE_CONTENT_USAGE, ipsProject);
+        assertEquals(2, propertyMap.size());
+        assertEquals(supertypeTsu, propertyMap.get(supertypeTsu.getPropertyName()));
+        assertEquals(typeTsu, propertyMap.get(typeTsu.getPropertyName()));
+        
+        propertyMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(ProdDefPropertyType.FORMULA, ipsProject);
+        assertEquals(2, propertyMap.size());
+        assertEquals(supertypeSignature, propertyMap.get(supertypeSignature.getPropertyName()));
+        assertEquals(typeSignature, propertyMap.get(typeSignature.getPropertyName()));
+
+        propertyMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, ipsProject);
+        assertEquals(2, propertyMap.size());
+        assertEquals(policyCmptSupertypeAttr, propertyMap.get(policyCmptSupertypeAttr.getPropertyName()));
+        assertEquals(policyCmptTypeAttr, propertyMap.get(policyCmptTypeAttr.getPropertyName()));
+        
+        
     }
     
     public void testFindProdDefProperty_ByTypeAndName() throws CoreException {
