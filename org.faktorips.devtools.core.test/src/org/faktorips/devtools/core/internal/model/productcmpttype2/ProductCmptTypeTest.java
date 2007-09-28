@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
@@ -159,6 +161,9 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         org.faktorips.devtools.core.model.pctype.IAttribute policyCmptTypeAttr = policyCmptType.newAttribute();
         policyCmptTypeAttr.setProductRelevant(true);
         policyCmptType.newAttribute().setProductRelevant(false); // this attribute is not a product def property as it is not product relevant!
+        IAttribute derivedAttr = policyCmptType.newAttribute();
+        derivedAttr.setProductRelevant(true);
+        derivedAttr.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
         
         props = superProductCmptType.findProdDefProperties(ipsProject);
         assertEquals(4, props.length);

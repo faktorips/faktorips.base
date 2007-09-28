@@ -63,7 +63,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
     }
     
     public void testEmpty() throws CoreException {
-        IGenerationToTypeDelta delta = generation.computeDeltaToProductCmptType();
+        IGenerationToTypeDelta delta = generation.computeDeltaToModel();
         assertEquals(0, delta.getEntries().length);
         assertEquals(true, delta.isEmpty());
         assertEquals(generation, delta.getProductCmptGeneration());
@@ -75,7 +75,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         productCmptType.newAttribute("a1");
         productCmptType.newAttribute("a2");
         
-        IGenerationToTypeDelta delta = generation.computeDeltaToProductCmptType();
+        IGenerationToTypeDelta delta = generation.computeDeltaToModel();
         assertEquals(2, delta.getEntries(DeltaType.MISSING_PROPERTY_VALUE).length);
         assertEquals(0, delta.getEntries(DeltaType.VALUE_SET_MISMATCH).length);
     }
@@ -84,7 +84,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         IProductCmptTypeAttribute attribute1 = productCmptType.newAttribute("a1");
         IProductCmptTypeAttribute attribute2 = superProductCmptType.newAttribute("a2");
 
-        IGenerationToTypeDelta delta = generation.computeDeltaToProductCmptType();
+        IGenerationToTypeDelta delta = generation.computeDeltaToModel();
         IDeltaEntry[] entries = delta.getEntries();
         assertEquals(2, entries.length);
         assertEquals("a2", entries[0].getPropertyName());
@@ -93,7 +93,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         assertEquals("a1", entries[1].getPropertyName());
         
         delta.fix();
-        delta = generation.computeDeltaToProductCmptType();
+        delta = generation.computeDeltaToModel();
         entries = delta.getEntries();
         assertEquals(0, entries.length);
         assertNotNull(generation.getAttributeValue("a1"));
@@ -103,7 +103,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         attribute2.delete();
         productCmptType.newAttribute("a3");
         
-        delta = generation.computeDeltaToProductCmptType();
+        delta = generation.computeDeltaToModel();
         entries = delta.getEntries();
         assertEquals(3, entries.length);
         assertEquals("a3", entries[0].getPropertyName());
@@ -115,7 +115,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         assertEquals(ProdDefPropertyType.VALUE, entries[0].getPropertyType());
         
         delta.fix();
-        delta = generation.computeDeltaToProductCmptType();
+        delta = generation.computeDeltaToModel();
         entries = delta.getEntries();
         assertEquals(0, entries.length);
         assertNull(generation.getAttributeValue("a1"));
@@ -125,13 +125,13 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
     
     public void testTypeMismatch() throws CoreException {
         IProductCmptTypeAttribute attribute = productCmptType.newAttribute("premium");
-        IGenerationToTypeDelta delta = generation.computeDeltaToProductCmptType();
+        IGenerationToTypeDelta delta = generation.computeDeltaToModel();
         delta.fix();
         assertNotNull(generation.getAttributeValue("premium"));
         
         attribute.delete();
         productCmptType.newFormulaSignature("premium");
-        delta = generation.computeDeltaToProductCmptType();
+        delta = generation.computeDeltaToModel();
         assertEquals(1, delta.getEntries().length);
         assertEquals("premium", delta.getEntries()[0].getPropertyName());
         assertEquals(DeltaType.PROPERTY_TYPE_MISMATCH, delta.getEntries()[0].getDeltaType());
@@ -151,7 +151,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         range.setLowerBound("1");
         range.setUpperBound("10");
         
-        IGenerationToTypeDelta delta = generation.computeDeltaToProductCmptType();
+        IGenerationToTypeDelta delta = generation.computeDeltaToModel();
         delta.fix();
         assertNotNull(generation.getConfigElement("a1"));
         range = (IRangeValueSet)generation.getConfigElement("a1").getValueSet();
@@ -159,7 +159,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         assertEquals("10", range.getUpperBound());
         
         attr.setValueSetType(ValueSetType.ENUM);
-        delta = generation.computeDeltaToProductCmptType();
+        delta = generation.computeDeltaToModel();
         assertEquals(1, delta.getEntries().length);
         assertEquals(DeltaType.VALUE_SET_MISMATCH, delta.getEntries()[0].getDeltaType());
         assertEquals(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, delta.getEntries()[0].getPropertyType());

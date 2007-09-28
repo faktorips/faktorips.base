@@ -41,4 +41,7 @@ public abstract class AbstractDeltaEntry implements IDeltaEntry {
         return getPropertyName();
     }
     
+    public String toString() {
+        return getDeltaType() + ": " + getPropertyName() + "(" + getPropertyType().getName() + ")";
+    }
 }

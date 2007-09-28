@@ -103,11 +103,11 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * 
      * @throws CoreException
      */
-    public IGenerationToTypeDelta computeDeltaToProductCmptType() throws CoreException;
+    public IGenerationToTypeDelta computeDeltaToModel() throws CoreException;
     
     /**
      * Returns the propery value for the given property or <code>null</code> if no value is defined
-     * for this generation. In this case {@link #computeDeltaToProductCmptType()} returns a delta containing
+     * for this generation. In this case {@link #computeDeltaToModel()} returns a delta containing
      * an entry for the missing property value.
      * <p>
      * Returns <code>null</code> if property is <code>null</code>.
@@ -119,7 +119,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
 
     /**
      * Returns the propery values for the given property name or <code>null</code> if no value is defined
-     * for this generation. In this case {@link #computeDeltaToProductCmptType()} returns a delta containing
+     * for this generation. In this case {@link #computeDeltaToModel()} returns a delta containing
      * an entry for the missing property value.
      * <p>
      * Returns <code>null</code> if propertyName is <code>null</code>.

@@ -27,14 +27,14 @@ import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
+import org.faktorips.devtools.core.model.product.DeltaType;
 import org.faktorips.devtools.core.model.product.IAttributeValue;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IDeltaEntry;
 import org.faktorips.devtools.core.model.product.IFormula;
+import org.faktorips.devtools.core.model.product.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
-import org.faktorips.devtools.core.model.product.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
@@ -189,59 +189,10 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     /**
      * {@inheritDoc}
      */
-    public IGenerationToTypeDelta computeDeltaToProductCmptType() throws CoreException {
+    public IGenerationToTypeDelta computeDeltaToModel() throws CoreException {
         return new GenerationToTypeDelta(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void fixDifferences(IProductCmptGenerationPolicyCmptTypeDelta delta) throws CoreException {
-        if (delta == null) {
-            return;
-        }
-        org.faktorips.devtools.core.model.pctype.IAttribute[] attributes = delta.getAttributesWithMissingConfigElements();
-        for (int i = 0; i < attributes.length; i++) {
-            IConfigElement element = newConfigElement();
-            element.setPcTypeAttribute(attributes[i].getName());
-            element.setType(attributes[i].getConfigElementType());
-            element.setValue(attributes[i].getDefaultValue());
-            if (element.getType() == ConfigElementType.POLICY_ATTRIBUTE) {
-                element.setValueSetCopy(attributes[i].getValueSet());
-            }
-        }
-        IConfigElement[] elements = delta.getConfigElementsWithMissingAttributes();
-        for (int i = 0; i < elements.length; i++) {
-            elements[i].delete();
-        }
-        elements = delta.getTypeMismatchElements();
-        for (int i = 0; i < elements.length; i++) {
-            org.faktorips.devtools.core.model.pctype.IAttribute a = elements[i].findPcTypeAttribute();
-            elements[i].setType(a.getConfigElementType());
-        }
-        elements = delta.getElementsWithValueSetMismatch();
-        for (int i = 0; i < elements.length; i++) {
-            org.faktorips.devtools.core.model.pctype.IAttribute a = elements[i].findPcTypeAttribute();
-            elements[i].setValueSetCopy(a.getValueSet());
-        }
-
-        IProductCmptLink[] relations = delta.getLinksWithMissingAssociations();
-        for (int i = 0; i < relations.length; i++) {
-            relations[i].delete();
-        }
-
-        ITableStructureUsage[] tsus = delta.getTableStructureUsagesWithMissingContentUsages();
-        for (int i = 0; i < tsus.length; i++) {
-            ITableContentUsage tcu = newTableContentUsage();
-            tcu.setStructureUsage(tsus[i].getRoleName());
-        }
-
-        ITableContentUsage[] tcus = delta.getTableContentUsagesWithMissingStructureUsages();
-        for (int i = 0; i < tcus.length; i++) {
-            tcus[i].delete();
-        }
-    }
-    
     /**
      * {@inheritDoc}
      */
@@ -722,11 +673,13 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             return;
         }
 
-        IGenerationToTypeDelta delta = computeDeltaToProductCmptType();
+        IGenerationToTypeDelta delta = computeDeltaToModel();
         IDeltaEntry[] entries = delta.getEntries();
         for (int i = 0; i < entries.length; i++) {
-            String text = NLS.bind(Messages.ProductCmptGeneration_msgAttributeWithMissingConfigElement, entries[i].getPropertyName());
-            list.add(new Message(MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT, text, Message.WARNING, this)); //$NON-NLS-1$
+            if (entries[i].getDeltaType()==DeltaType.MISSING_PROPERTY_VALUE) {
+                String text = NLS.bind(Messages.ProductCmptGeneration_msgAttributeWithMissingConfigElement, entries[i].getPropertyName());
+                list.add(new Message(MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT, text, Message.WARNING, this)); //$NON-NLS-1$
+            }
         }
 
         IProductCmptTypeAssociation[] relationTypes = type.getAssociations();

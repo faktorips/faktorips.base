@@ -580,7 +580,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 }
                 org.faktorips.devtools.core.model.pctype.IAttribute[] polAttr = policyCmptType.getAttributes();
                 for (int i = 0; i < polAttr.length; i++) {
-                    if (polAttr[i].isProductRelevant()) {
+                    if (polAttr[i].isProductRelevant() && polAttr[i].isChangeable()) {
                         myPolicyCmptTypeAttributes.add(polAttr[i]);
                     }
                 }

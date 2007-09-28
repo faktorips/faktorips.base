@@ -369,7 +369,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         for (int i = 0; i < generations.length; i++) {
             IIpsObjectGeneration generation = generations[i];
             if(generation instanceof IProductCmptGeneration){
-                IGenerationToTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToProductCmptType();
+                IGenerationToTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToModel();
                 if(!delta.isEmpty()){
                     return true;
                 }
@@ -386,7 +386,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         for (int i = 0; i < generations.length; i++) {
             IIpsObjectGeneration generation = generations[i];
             if(generation instanceof IProductCmptGeneration){
-                IGenerationToTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToProductCmptType();
+                IGenerationToTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToModel();
                 delta.fix();
                 
             }
