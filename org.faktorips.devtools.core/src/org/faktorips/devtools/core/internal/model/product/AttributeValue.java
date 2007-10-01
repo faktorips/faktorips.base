@@ -90,9 +90,10 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     /**
      * {@inheritDoc}
      */
-    public void setAttribute(String name) {
+    public void setAttribute(String newAttribute) {
         String oldAttr = attribute;
-        attribute = name;
+        attribute = newAttribute;
+        name = attribute;
         valueChanged(oldAttr, attribute);
     }
 
@@ -185,6 +186,6 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     public String toString() {
-        return getAttribute() + "=" + value;
+        return attribute + "=" + value;
     }
 }

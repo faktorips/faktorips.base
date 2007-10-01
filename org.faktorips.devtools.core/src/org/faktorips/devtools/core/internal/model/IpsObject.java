@@ -223,7 +223,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         if (getParent()==null) {
             return "unnamed object"; // can only happen in test cases.  //$NON-NLS-1$
         }
-        return super.toString();
+        return getParent().toString(); // ips object's name is the same as the file name, so use the parent's to string method
     }
 
     /**

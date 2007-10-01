@@ -1565,4 +1565,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
         String location = resourcePath.substring(projectPath.length() +1);
         return props.isResourceExcludedFromProductDefinition(location);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        return getName();
+    }
 }
