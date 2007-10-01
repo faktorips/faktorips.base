@@ -1,7 +1,7 @@
 
 
 
-Test: Description View, Compare, Deep Copy Wizard
+Test: Compare
 Validierung: Einfuerhung IIpsProject Parameter
 NewProductCmptType Wizard
 IPolicyCmptType muss IType implementieren
@@ -19,6 +19,8 @@ Korrektes Overloading von Attributen beruecksichtigen! Wo überall?
 
 Attribute Dialog im ProductCmptType-Editor überarbeiten.
 Prüfungen für ProductCmptType implementieren.
+
+dependsOn() Methoden implementieren.
 
 Klären:
 =======

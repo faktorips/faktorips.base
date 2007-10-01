@@ -325,7 +325,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
                     .append(COLON_BLANK).append(NEWLINE);
             sb.append(TAB).append(TAB).append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_template)
                     .append(COLON_BLANK);
-            sb.append(QUOTE).append(product.getPolicyCmptType()).append(QUOTE).append(NEWLINE);
+            sb.append(QUOTE).append(product.getProductCmptType()).append(QUOTE).append(NEWLINE);
             sb.append(TAB).append(TAB)
                     .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_labelRuntimeId)
                     .append(COLON_BLANK);

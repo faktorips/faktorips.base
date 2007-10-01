@@ -101,7 +101,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
                 && couldDateBeChangedIfProductCmptTypeWasntMissing()
                 && !IpsPlugin.getDefault().isTestMode()
                 && !settings.getBoolean(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE)) {
-            String msg = NLS.bind(Messages.ProductCmptEditor_msgTemplateNotFound, cmpt.getPolicyCmptType());
+            String msg = NLS.bind(Messages.ProductCmptEditor_msgTemplateNotFound, cmpt.getProductCmptType());
             SetTemplateDialog d = new SetTemplateDialog(cmpt, getSite().getShell(), msg);
             int rc = d.open();
             if (rc==Dialog.CANCEL) {

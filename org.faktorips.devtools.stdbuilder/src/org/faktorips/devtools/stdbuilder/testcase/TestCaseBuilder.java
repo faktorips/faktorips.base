@@ -345,8 +345,8 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             String pcTypeName = "";
             if (productCmpt != null){
                 // the test policy cmpt type parameter is product relevant
-                pcTypeName = productCmpt.getPolicyCmptType();
                 pcType = productCmpt.findPolicyCmptType();
+                pcTypeName = pcType == null ? "" : pcType.getQualifiedName();
                 testPolicyCmptElem.setAttribute("productCmpt", productCmpt.getRuntimeId());
             } else {
                 // the test policy cmpt type parameter is not product relevant

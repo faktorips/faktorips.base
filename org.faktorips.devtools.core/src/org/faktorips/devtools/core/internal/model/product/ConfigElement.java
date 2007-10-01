@@ -208,8 +208,14 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		super.validateThis(list);
 		IAttribute attribute = findPcTypeAttribute();
 		if (attribute == null) {
-			String text = NLS.bind(Messages.ConfigElement_msgAttrNotDefined, pcTypeAttribute, getProductCmpt().getPolicyCmptType());
-			list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_VALUE));
+            IPolicyCmptType policyCmptType = getProductCmpt().findPolicyCmptType();
+            if (policyCmptType==null) {
+                String text = NLS.bind(Messages.ConfigElement_policyCmptTypeNotFound, pcTypeAttribute);
+                list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_VALUE));
+            } else {
+                String text = NLS.bind(Messages.ConfigElement_msgAttrNotDefined, pcTypeAttribute, policyCmptType.getName());
+                list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_VALUE));
+            }
 		} else {
     		if (attribute.getAttributeType() == AttributeType.CHANGEABLE
     				|| attribute.getAttributeType() == AttributeType.CONSTANT) {

@@ -268,7 +268,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
     
     public void dependsOn(Set result) throws CoreException {
-        // TODO v2 - add dependencies for method parameters
+        // TODO v2 - dependeny - add dependencies for method parameters
 //      private void addQualifiedNameTypesForFormulaParameters(Set qualifiedNameTypes) throws CoreException {
 //          IAttribute[] attributes = getAttributes();
 //          IIpsProject ipsProject = getIpsProject();

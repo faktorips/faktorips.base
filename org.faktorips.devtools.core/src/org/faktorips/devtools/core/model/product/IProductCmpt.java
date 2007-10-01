@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 
 /**
@@ -81,12 +82,6 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
     public String getVersionId() throws CoreException;
     
     /**
-     * Returns the qualified name of the policy component type this product component
-     * is based on.
-     */
-    public String getPolicyCmptType();
-    
-    /**
      * Searches the policy component type this product component is based on.
      *  
      * @return The policy component type this product component is based on 
@@ -121,7 +116,7 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
      *  
      * @throws CoreException if an exception occurs while searching for the type.
      */
-    public org.faktorips.devtools.core.model.productcmpttype.IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Searches the relation with the given name in the policy component type 

@@ -64,7 +64,6 @@ import org.w3c.dom.Element;
 public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     
     private String productCmptType = ""; //$NON-NLS-1$
-    private String policyCmptType = ""; //$NON-NLS-1$
     private String runtimeId = ""; //$NON-NLS-1$
 
     public ProductCmpt(IIpsSrcFile file) {
@@ -113,18 +112,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 		}
 	}
 
-	/** 
-	 * {@inheritDoc}
-	 */
-    public String getPolicyCmptType() {
-        return policyCmptType;
-    }
-
     /** 
      * {@inheritDoc}
      */
     public IPolicyCmptType findPolicyCmptType() throws CoreException {
-        org.faktorips.devtools.core.model.productcmpttype.IProductCmptType productCmptType = findProductCmptType(getIpsProject());
+        IProductCmptType productCmptType = findProductCmptType(getIpsProject());
         if (productCmptType==null) {
             return null;
         }
@@ -138,20 +130,12 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         return productCmptType;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setProductCmptType(String newType) {
         String oldType = productCmptType;
         productCmptType = newType;
-        // TODO: V2-temp code entfernen
-        try {
-            IProductCmptType typeObj = findProductCmptType(getIpsProject());
-            if (typeObj!=null) {
-                policyCmptType = typeObj.getPolicyCmptType();
-            } else {
-                policyCmptType = "";
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         valueChanged(oldType, newType);
     }
     
@@ -263,22 +247,22 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             return new QualifiedNameType[0];
         }
         Set qaTypes = new HashSet();
-        qaTypes.add(new QualifiedNameType(policyCmptType, IpsObjectType.POLICY_CMPT_TYPE));
+        
         qaTypes.add(new QualifiedNameType(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE_V2));
         
-    	IPolicyCmptType pcType = findPolicyCmptType();
-    	if (pcType!=null) {
-            qaTypes.addAll(Arrays.asList(((PolicyCmptType)pcType).dependsOn(true)));
+        // TODO v2 - dependency - hier nur mit direkten abhaengigkeiten arbeiten?
+    	IPolicyCmptType policyCmptType = findPolicyCmptType();
+    	if (policyCmptType!=null) {
+            qaTypes.add(new QualifiedNameType(policyCmptType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE));
+            qaTypes.addAll(Arrays.asList(((PolicyCmptType)policyCmptType).dependsOn(true)));
     	}
-        // TODO v2 - ist das wirklich richtig?
         org.faktorips.devtools.core.model.productcmpttype.IProductCmptType type = findProductCmptType(getIpsProject());
         if (type!=null) {
             qaTypes.addAll(Arrays.asList(type.dependsOn()));
         }
         
         
-    	// add dependency to related product cmpt's and
-    	// add dependency to table contents
+    	// add dependency to related product cmpt's and add dependency to table contents
         IIpsObjectGeneration[] generations = getGenerations();
         for (int i = 0; i < generations.length; i++) {
             addRelatedProductCmptQualifiedNameTypes(qaTypes, (IProductCmptGeneration) generations[i]);

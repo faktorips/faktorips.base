@@ -224,7 +224,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
      * 
      * @param attribute The attribute sourcecode should be generated for.
      * @param datatypeHelper The datatype code generation helper for the attribute's datatype.
-     * @param constantBuilder TODO
+     * @param constantBuilder The code fragment builder for the static section
      * @param memberVarsBuilder The code fragment builder to build the memeber variabales section.
      * @param memberVarsBuilder The code fragment builder to build the method section.
      */
