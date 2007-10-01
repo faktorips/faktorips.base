@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.product.deltaentries.AbstractDeltaEntry;
+import org.faktorips.devtools.core.internal.model.product.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.core.internal.model.product.deltaentries.ValueWithoutPropertyEntry;
 import org.faktorips.devtools.core.internal.model.product.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.core.internal.model.product.deltaentries.PropertyTypeMismatchEntry;
@@ -36,6 +37,7 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IDeltaEntry;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IGenerationToTypeDelta;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -64,7 +66,17 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
         if (productCmptType==null) {
             return;
         }
+        computeLinksWithMissingAssociations();
         createEntriesForProperties();
+    }
+    
+    private void computeLinksWithMissingAssociations() throws CoreException {
+        IProductCmptLink[] links = generation.getLinks();
+        for (int i=0; i<links.length; i++) {
+            if (productCmptType.findAssociation(links[i].getAssociation(), ipsProject)==null) {
+                new LinkWithoutAssociationEntry(this, links[i]);
+            }
+        }
     }
     
     private void createEntriesForProperties() throws CoreException {

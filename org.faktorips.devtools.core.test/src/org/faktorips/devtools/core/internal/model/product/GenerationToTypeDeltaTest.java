@@ -31,7 +31,9 @@ import org.faktorips.devtools.core.model.product.IDeltaEntry;
 import org.faktorips.devtools.core.model.product.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 
@@ -78,6 +80,24 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         IGenerationToTypeDelta delta = generation.computeDeltaToModel();
         assertEquals(2, delta.getEntries(DeltaType.MISSING_PROPERTY_VALUE).length);
         assertEquals(0, delta.getEntries(DeltaType.VALUE_SET_MISMATCH).length);
+    }
+    
+    public void testLinksWithMissingAssociation() throws CoreException {
+        IProductCmptTypeAssociation association = productCmptType.newAssociation();
+        IProductCmptLink link = generation.newLink(association.getName());
+        assertEquals(1, generation.getNumOfLinks());
+        
+        IGenerationToTypeDelta delta = generation.computeDeltaToModel();
+        assertTrue(delta.isEmpty());
+        
+        association.delete();
+        delta = generation.computeDeltaToModel();
+        IDeltaEntry[] entries = delta.getEntries();
+        assertEquals(1, entries.length);
+        
+        delta.fix();
+        assertEquals(0, generation.getNumOfLinks());
+        assertTrue(link.isDeleted());
     }
      
     public void testAttributes() throws CoreException {

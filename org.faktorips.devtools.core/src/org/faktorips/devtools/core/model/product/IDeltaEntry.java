@@ -29,12 +29,14 @@ import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 public interface IDeltaEntry {
 
     /**
-     * Returns the type of the property this entry refers to. 
+     * Returns the type of the property this entry refers to or <code>null</code> if this entry
+     * does no refer to a (single) property.
      */
     public ProdDefPropertyType getPropertyType();
     
     /**
-     * Returns the name of the property this entry relates to.
+     * Returns the name of the product definition property this entry relates to or <code>null</code> if this entry
+     * does no refer to a (single) property.
      */
     public String getPropertyName();
 
