@@ -31,9 +31,9 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
-import org.faktorips.devtools.core.model.productcmpttype2.ProductCmptTypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.util.ArgumentCheck;
 
 

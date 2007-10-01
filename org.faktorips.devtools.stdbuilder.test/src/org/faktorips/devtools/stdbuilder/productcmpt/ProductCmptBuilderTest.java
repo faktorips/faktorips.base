@@ -32,8 +32,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 
 /**
  * 

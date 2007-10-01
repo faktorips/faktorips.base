@@ -24,8 +24,8 @@ import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.IValueSetOwner;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 
 
 /**

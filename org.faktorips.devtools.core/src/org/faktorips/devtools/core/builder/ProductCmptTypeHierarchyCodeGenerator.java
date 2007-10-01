@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.builder;
 
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype2.ProductCmptTypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 
 /**
  * A visitor makes it easy to implement a code generation function for all types in a supertype hierarchy.

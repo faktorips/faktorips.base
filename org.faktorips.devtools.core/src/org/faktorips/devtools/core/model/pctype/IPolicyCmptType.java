@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 /**
  * The policy component type represents a Java class that is part of a policy class model.

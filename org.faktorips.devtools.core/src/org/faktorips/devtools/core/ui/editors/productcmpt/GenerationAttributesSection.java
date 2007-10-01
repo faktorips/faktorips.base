@@ -41,7 +41,7 @@ import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.product.IAttributeValue;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;

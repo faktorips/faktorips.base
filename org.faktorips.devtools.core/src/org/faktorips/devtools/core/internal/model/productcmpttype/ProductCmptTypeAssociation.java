@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.productcmpttype2;
+package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,9 +30,9 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.AggregationKind;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;

@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.productcmpttype2;
+package org.faktorips.devtools.core.model.productcmpttype;
 
 import org.faktorips.devtools.core.model.Described;
 

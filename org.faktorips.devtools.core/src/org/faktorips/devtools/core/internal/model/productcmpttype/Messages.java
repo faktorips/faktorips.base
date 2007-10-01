@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.productcmpttype2;
+package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import org.eclipse.osgi.util.NLS;
 

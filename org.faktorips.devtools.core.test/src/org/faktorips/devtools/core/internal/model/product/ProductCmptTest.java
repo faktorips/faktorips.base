@@ -46,7 +46,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptKind;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -145,7 +145,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IProductCmptType c = newProductCmptType(root, "C");
         IProductCmptType d = newProductCmptType(root, "D");
         
-        org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation association = c.newAssociation();
+        org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation association = c.newAssociation();
         association.setTargetRoleSingular("relationD");
         association.setTarget(d.getQualifiedName());
         IProductCmpt productCmptC = newProductCmpt(c, "tests.productC");

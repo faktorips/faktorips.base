@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.model.product;
 
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
  * A reference to a <code>IProductCmptTypeRelation</code> which is used in the 

@@ -24,8 +24,8 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
  * Tests for product component structure.

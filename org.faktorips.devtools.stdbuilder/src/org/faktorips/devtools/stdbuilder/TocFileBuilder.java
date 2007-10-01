@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptKind;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;

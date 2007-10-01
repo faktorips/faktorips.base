@@ -49,7 +49,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -124,7 +124,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      * {@inheritDoc}
      */
     public IPolicyCmptType findPolicyCmptType() throws CoreException {
-        org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType productCmptType = findProductCmptType(getIpsProject());
+        org.faktorips.devtools.core.model.productcmpttype.IProductCmptType productCmptType = findProductCmptType(getIpsProject());
         if (productCmptType==null) {
             return null;
         }
@@ -271,7 +271,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             qaTypes.addAll(Arrays.asList(((PolicyCmptType)pcType).dependsOn(true)));
     	}
         // TODO v2 - ist das wirklich richtig?
-        org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType type = findProductCmptType(getIpsProject());
+        org.faktorips.devtools.core.model.productcmpttype.IProductCmptType type = findProductCmptType(getIpsProject());
         if (type!=null) {
             qaTypes.addAll(Arrays.asList(type.dependsOn()));
         }

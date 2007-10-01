@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.model.product;
 
-import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 
 /**
  * A delta entry desribes a single difference between a product component generation and the type

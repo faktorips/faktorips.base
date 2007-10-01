@@ -15,15 +15,15 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.productcmpttype2;
+package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.model.ProgramingLanguage;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.productcmpttype2.ImplementationType;
-import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.productcmpttype.ImplementationType;
+import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.w3c.dom.Element;
 
 /**

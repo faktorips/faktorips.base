@@ -23,7 +23,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.product.IPropertyValue;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.fl.ExprCompiler;
 
 /**

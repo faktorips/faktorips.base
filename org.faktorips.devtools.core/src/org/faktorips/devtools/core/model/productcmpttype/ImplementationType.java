@@ -15,35 +15,39 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.productcmpttype2;
+package org.faktorips.devtools.core.model.productcmpttype;
 
 import org.faktorips.values.DefaultEnumType;
 import org.faktorips.values.DefaultEnumValue;
+import org.faktorips.values.EnumType;
 
 /**
- * The aggregation kind as specified in the UML superstructure document.
  * 
  * @author Jan Ortmann
  */
-public class AggregationKind extends DefaultEnumValue {
+public class ImplementationType extends DefaultEnumValue {
 
-    public final static AggregationKind NONE;
+    public final static ImplementationType IN_PRODUCT_CMPT_GENERATION; 
     
-    public final static AggregationKind SHARED;
+    public final static ImplementationType IN_TYPE; 
 
     private final static DefaultEnumType enumType; 
     
-    public final static AggregationKind getKind(String id) {
-        return (AggregationKind)enumType.getEnumValue(id);
-    }
-    
     static {
-        enumType = new DefaultEnumType("AggregationKind", AggregationKind.class); //$NON-NLS-1$
-        NONE = new AggregationKind(enumType, "none", "None");
-        SHARED = new AggregationKind(enumType, "shared", "Shared");
+        enumType = new DefaultEnumType("ImplementationType", ImplementationType.class); //$NON-NLS-1$
+        IN_PRODUCT_CMPT_GENERATION = new ImplementationType(enumType, "generation", "Implemented in product compontent generation");
+        IN_TYPE = new ImplementationType(enumType, "type", "Implemented in the type");
     }
     
-    private AggregationKind(DefaultEnumType type, String id, String name) {
+    public final static ImplementationType getType(String id) {
+        return (ImplementationType)enumType.getEnumValue(id);
+    }
+    
+    public final static EnumType getEnumType() {
+        return enumType;
+    }
+    
+    private ImplementationType(DefaultEnumType type, String id, String name) {
         super(type, id, name);
     }
 

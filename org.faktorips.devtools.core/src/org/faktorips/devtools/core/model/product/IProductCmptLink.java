@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 
 /**

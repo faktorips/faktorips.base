@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.productcmpttype2;
+package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,14 +35,14 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
-import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
-import org.faktorips.devtools.core.model.productcmpttype2.ProductCmptTypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;

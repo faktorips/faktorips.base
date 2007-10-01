@@ -20,8 +20,8 @@ package org.faktorips.devtools.core.internal.model.product;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
-import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
+import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 
 /**
  * 

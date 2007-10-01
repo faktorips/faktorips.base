@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.productcmpttype2;
+package org.faktorips.devtools.core.model.productcmpttype;
 
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;

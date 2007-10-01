@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
  * A reference to a <code>IProductCmptTypeRelation</code>. Used by <code>ProductCmptStructure</code>.

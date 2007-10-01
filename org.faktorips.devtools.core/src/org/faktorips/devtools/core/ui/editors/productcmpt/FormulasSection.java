@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -189,7 +189,7 @@ public class FormulasSection extends IpsSection {
     
     private ITableStructureUsage findTableStructureUsage(String rolename) throws CoreException {
         IIpsProject ipsProject = generation.getIpsProject();
-        org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType type = generation.findProductCmptType(ipsProject);
+        org.faktorips.devtools.core.model.productcmpttype.IProductCmptType type = generation.findProductCmptType(ipsProject);
         if (type==null) {
             return null;
         }

@@ -25,8 +25,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.product.IPropertyValue;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 /**
  * 

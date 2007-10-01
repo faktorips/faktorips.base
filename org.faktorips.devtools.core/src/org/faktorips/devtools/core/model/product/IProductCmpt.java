@@ -121,7 +121,7 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
      *  
      * @throws CoreException if an exception occurs while searching for the type.
      */
-    public org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
+    public org.faktorips.devtools.core.model.productcmpttype.IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Searches the relation with the given name in the policy component type 

@@ -15,24 +15,25 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.productcmpttype2;
+package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
-import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.memento.Memento;

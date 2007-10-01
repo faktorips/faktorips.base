@@ -42,7 +42,7 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;

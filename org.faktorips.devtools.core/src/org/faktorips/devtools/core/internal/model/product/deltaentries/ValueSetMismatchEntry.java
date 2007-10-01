@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.internal.model.product.GenerationToTypeDelta;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.DeltaType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
-import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 
 /**
  * 

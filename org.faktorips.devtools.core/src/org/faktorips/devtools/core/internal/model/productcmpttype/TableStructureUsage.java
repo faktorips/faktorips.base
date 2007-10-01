@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.productcmpttype2;
+package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,9 +32,9 @@ import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
-import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;

@@ -40,11 +40,11 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -291,7 +291,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
      * @param methodsBuilder The code fragment builder to build the method section.
      */
     protected abstract void generateCodeForProductCmptTypeAttribute(
-            org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute attribute, 
+            org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute attribute, 
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder, 

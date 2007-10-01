@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.productcmpttype2;
+package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
@@ -31,9 +31,9 @@ import org.faktorips.devtools.core.model.IValueDatatypeProvider;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;

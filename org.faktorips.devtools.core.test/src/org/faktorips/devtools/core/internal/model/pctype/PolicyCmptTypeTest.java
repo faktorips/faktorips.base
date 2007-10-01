@@ -52,7 +52,7 @@ import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.RelationType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;

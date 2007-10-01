@@ -23,9 +23,9 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype2.ProductCmptTypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.util.ArgumentCheck;
 

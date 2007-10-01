@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
  * Listener to support special check-/uncheck-handling for CheckboxTreeViewer.

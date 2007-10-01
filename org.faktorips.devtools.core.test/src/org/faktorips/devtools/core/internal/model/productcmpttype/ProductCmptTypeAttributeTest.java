@@ -15,20 +15,21 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.productcmpttype2;
+package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
 
@@ -72,7 +73,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest implemen
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAttribute#setName(java.lang.String)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute#setName(java.lang.String)}.
      */
     public void testSetName() {
         productAttribute.setName("newName");
@@ -81,7 +82,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest implemen
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAttribute#setModifier(org.faktorips.devtools.core.model.pctype.Modifier)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute#setModifier(org.faktorips.devtools.core.model.pctype.Modifier)}.
      */
     public void testSetModifier() {
         productAttribute.setModifier(Modifier.PUBLIC);
@@ -90,7 +91,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest implemen
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAttribute#setDatatype(java.lang.String)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute#setDatatype(java.lang.String)}.
      */
     public void testSetValueDatatype() {
         productAttribute.setDatatype(Datatype.BOOLEAN.getName());
@@ -99,7 +100,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest implemen
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAttribute#findDatatype()}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute#findDatatype()}.
      * @throws CoreException 
      */
     public void testFindValueDatatype() throws CoreException {
@@ -123,7 +124,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest implemen
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAttribute#getImage()}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute#getImage()}.
      */
     public void testGetImage() {
         assertNotNull(productAttribute.getImage());

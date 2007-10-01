@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
  * Abstract reference for <code>ProductCmptStructure</code>.

@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.internal.model.product.deltaentries.ValueWith
 import org.faktorips.devtools.core.internal.model.product.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.core.internal.model.product.deltaentries.PropertyTypeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.product.deltaentries.ValueSetMismatchEntry;
-import org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptType;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.DeltaType;
@@ -36,12 +36,12 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IDeltaEntry;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IGenerationToTypeDelta;
-import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
-import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
-import org.faktorips.devtools.core.model.productcmpttype2.ProductCmptTypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.util.ArgumentCheck;
 
 /**

@@ -39,8 +39,8 @@ import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpttype2.AggregationKind;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.util.ArgumentCheck;
 
 /**

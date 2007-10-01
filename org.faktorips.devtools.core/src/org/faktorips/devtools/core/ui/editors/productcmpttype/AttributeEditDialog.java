@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;

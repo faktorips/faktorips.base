@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.productcmpttype2;
+package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
@@ -24,9 +24,9 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.RelationType;
-import org.faktorips.devtools.core.model.productcmpttype2.AggregationKind;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
 
@@ -138,7 +138,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest implem
     }
         
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAssociation#findTarget()}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#findTarget()}.
      * @throws CoreException 
      */
     public void testFindTarget() throws CoreException {
@@ -153,7 +153,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest implem
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAssociation#setTarget(java.lang.String)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setTarget(java.lang.String)}.
      */
     public void testSetTarget() {
         association.setTarget("Target");
@@ -162,7 +162,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest implem
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAssociation#setTargetRoleSingular(java.lang.String)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setTargetRoleSingular(java.lang.String)}.
      */
     public void testSetTargetRoleSingular() {
         association.setTargetRoleSingular("TargetRole");
@@ -171,7 +171,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest implem
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAssociation#setTargetRolePlural(java.lang.String)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setTargetRolePlural(java.lang.String)}.
      */
     public void testSetTargetRolePlural() {
         association.setTargetRolePlural("TargetRole");
@@ -180,7 +180,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest implem
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAssociation#setMinCardinality(int)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setMinCardinality(int)}.
      */
     public void testSetMinCardinality() {
         association.setMinCardinality(2);
@@ -189,7 +189,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest implem
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAssociation#setMaxCardinality(int)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setMaxCardinality(int)}.
      */
     public void testSetMaxCardinality() {
         association.setMinCardinality(42);
@@ -198,7 +198,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest implem
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAssociation#isContainerRelationImplementation()}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#isContainerRelationImplementation()}.
      */
     public void testIsContainerRelationImplementation() {
         association.setImplementedContainerRelation("");
@@ -208,7 +208,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest implem
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype2.ProductCmptTypeAssociation#setImplementedContainerRelation(java.lang.String)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setImplementedContainerRelation(java.lang.String)}.
      */
     public void testSetImplementedContainerRelation() {
         association.setImplementedContainerRelation("someRelation");

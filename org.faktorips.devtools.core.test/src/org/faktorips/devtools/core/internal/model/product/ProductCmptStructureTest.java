@@ -28,10 +28,10 @@ import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpttype2.AggregationKind;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 
 /**
  * Tests for product component structure.

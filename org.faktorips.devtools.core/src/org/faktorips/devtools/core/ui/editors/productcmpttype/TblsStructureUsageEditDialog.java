@@ -47,7 +47,7 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;

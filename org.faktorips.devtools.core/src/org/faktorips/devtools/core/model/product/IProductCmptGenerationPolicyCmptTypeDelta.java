@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.model.product;
 
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 
 /**
  * A product component generation /policy component type delta describes the difference
