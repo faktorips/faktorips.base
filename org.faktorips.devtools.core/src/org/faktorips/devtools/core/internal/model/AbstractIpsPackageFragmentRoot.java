@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
@@ -113,43 +112,6 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
      * Searches all objects of the given type in the root folder and adds them to the result.
      */
     abstract void findIpsObjects(IpsObjectType type, List result) throws CoreException;
-
-     /**
-     * Searches all product components that are based on the given policy component type (either
-     * directly or because they are based on a subtype of the given type) and adds them to the
-     * result. If pcTypeName is <code>null</code>, returns all product components found in the
-     * fragment root.
-     * 
-     * @param pcTypeName The qualified name of the policy component type, product components are
-     *            searched for.
-     * @param includeSubtypes If <code>true</code> is passed also product component that are based
-     *            on subtypes of the given policy component are returned, otherwise only product
-     *            components that are directly based on the given type are returned.
-     * @param result List in which the product components being found are stored in.
-     */
-    public void findProductCmpts(String pcTypeName, boolean includeSubtypes, List result) throws CoreException {
-        List allCmpts = new ArrayList(100);
-        IPolicyCmptType pcType = null;
-        if (includeSubtypes && pcTypeName != null) {
-            pcType = getIpsProject().findPolicyCmptType(pcTypeName);
-        }
-        findIpsObjects(IpsObjectType.PRODUCT_CMPT, allCmpts);
-        for (Iterator it = allCmpts.iterator(); it.hasNext();) {
-            IProductCmpt each = (IProductCmpt)it.next();
-            if (pcTypeName == null || pcTypeName.equals(each.getPolicyCmptType())) {
-                result.add(each);
-            } else {
-                IPolicyCmptType eachPcType = getIpsProject().findPolicyCmptType(each.getPolicyCmptType());
-                if (eachPcType == null){
-                    // invalid product, cannot find policy cmpt type of product
-                    continue;
-                }
-                if (eachPcType.isSubtypeOf(pcType)) {
-                    result.add(each);
-                }
-            }
-        }
-    }
 
     /**
      * Searches all product components that are based on the given product component type (either
