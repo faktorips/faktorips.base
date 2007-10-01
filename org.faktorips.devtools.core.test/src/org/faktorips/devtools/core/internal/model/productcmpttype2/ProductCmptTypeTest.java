@@ -102,40 +102,42 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         supertypeAttr.setName("attrInSupertype");
         supertypeAttr.setDatatype("Money");
 
-        IProductCmptTypeAttribute typeAttribute = productCmptType.newAttribute();
-        typeAttribute.setName("attrInType");
-        typeAttribute.setDatatype("Money");
+        IProductCmptTypeAttribute typeAttribute1 = productCmptType.newAttribute("attrInType1");
+        IProductCmptTypeAttribute typeAttribute2 = productCmptType.newAttribute("attrInType2");
         
         props = superProductCmptType.findProdDefProperties(ipsProject);
         assertEquals(1, props.length);
         assertEquals(supertypeAttr, props[0]);
         props = productCmptType.findProdDefProperties(ipsProject);
-        assertEquals(2, props.length);
+        assertEquals(3, props.length);
         assertEquals(supertypeAttr, props[0]);
-        assertEquals(typeAttribute, props[1]);
+        assertEquals(typeAttribute1, props[1]);
+        assertEquals(typeAttribute2, props[2]);
 
         // table structure usages
         ITableStructureUsage supertypeTsu = superProductCmptType.newTableStructureUsage();
-        ITableStructureUsage typeTsu = productCmptType.newTableStructureUsage();
+        ITableStructureUsage typeTsu1 = productCmptType.newTableStructureUsage();
+        ITableStructureUsage typeTsu2 = productCmptType.newTableStructureUsage();
 
         props = superProductCmptType.findProdDefProperties(ipsProject);
         assertEquals(2, props.length);
         assertEquals(supertypeAttr, props[0]);
         assertEquals(supertypeTsu, props[1]);
         props = productCmptType.findProdDefProperties(ipsProject);
-        assertEquals(4, props.length);
+        assertEquals(6, props.length);
         assertEquals(supertypeAttr, props[0]);
-        assertEquals(typeAttribute, props[1]);
-        assertEquals(supertypeTsu, props[2]);
-        assertEquals(typeTsu, props[3]);
+        assertEquals(typeAttribute1, props[1]);
+        assertEquals(typeAttribute2, props[2]);
+        assertEquals(supertypeTsu, props[3]);
+        assertEquals(typeTsu1, props[4]);
+        assertEquals(typeTsu2, props[5]);
         
         // formula signatures
         IProductCmptTypeMethod supertypeSignature = superProductCmptType.newProductCmptTypeMethod();
         supertypeSignature.setFormulaSignatureDefinition(true);
         supertypeSignature.setFormulaName("CalculatePremium");
-        IProductCmptTypeMethod typeSignature = productCmptType.newProductCmptTypeMethod();
-        typeSignature.setFormulaSignatureDefinition(true);
-        typeSignature.setFormulaName("CalculatePremium2");
+        IProductCmptTypeMethod typeSignature1 = productCmptType.newFormulaSignature("CalculatePremium1");
+        IProductCmptTypeMethod typeSignature2 = productCmptType.newFormulaSignature("CalculatePremium2");
         productCmptType.newProductCmptTypeMethod().setFormulaSignatureDefinition(false);// this method is not a product def property as it is not a formula signature
         
         props = superProductCmptType.findProdDefProperties(ipsProject);
@@ -145,21 +147,26 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(supertypeSignature, props[2]);
 
         props = productCmptType.findProdDefProperties(ipsProject);
-        assertEquals(6, props.length);
+        assertEquals(9, props.length);
         assertEquals(supertypeAttr, props[0]);
-        assertEquals(typeAttribute, props[1]);
-        assertEquals(supertypeTsu, props[2]);
-        assertEquals(typeTsu, props[3]);
-        assertEquals(supertypeSignature, props[4]);
-        assertEquals(typeSignature, props[5]);
+        assertEquals(typeAttribute1, props[1]);
+        assertEquals(typeAttribute2, props[2]);
+        assertEquals(supertypeTsu, props[3]);
+        assertEquals(typeTsu1, props[4]);
+        assertEquals(typeTsu2, props[5]);
+        assertEquals(supertypeSignature, props[6]);
+        assertEquals(typeSignature1, props[7]);
+        assertEquals(typeSignature2, props[8]);
         
         // default values and value sets
         IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
         superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
         org.faktorips.devtools.core.model.pctype.IAttribute policyCmptSupertypeAttr = policyCmptSupertype.newAttribute();
         policyCmptSupertypeAttr.setProductRelevant(true);
-        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptTypeAttr = policyCmptType.newAttribute();
-        policyCmptTypeAttr.setProductRelevant(true);
+        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptTypeAttr1 = policyCmptType.newAttribute();
+        policyCmptTypeAttr1.setProductRelevant(true);
+        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptTypeAttr2 = policyCmptType.newAttribute();
+        policyCmptTypeAttr2.setProductRelevant(true);
         policyCmptType.newAttribute().setProductRelevant(false); // this attribute is not a product def property as it is not product relevant!
         IAttribute derivedAttr = policyCmptType.newAttribute();
         derivedAttr.setProductRelevant(true);
@@ -173,15 +180,19 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(policyCmptSupertypeAttr, props[3]);
 
         props = productCmptType.findProdDefProperties(ipsProject);
-        assertEquals(8, props.length);
+        assertEquals(12, props.length);
         assertEquals(supertypeAttr, props[0]);
-        assertEquals(typeAttribute, props[1]);
-        assertEquals(supertypeTsu, props[2]);
-        assertEquals(typeTsu, props[3]);
-        assertEquals(supertypeSignature, props[4]);
-        assertEquals(typeSignature, props[5]);
-        assertEquals(policyCmptSupertypeAttr, props[6]);
-        assertEquals(policyCmptTypeAttr, props[7]);
+        assertEquals(typeAttribute1, props[1]);
+        assertEquals(typeAttribute2, props[2]);
+        assertEquals(supertypeTsu, props[3]);
+        assertEquals(typeTsu1, props[4]);
+        assertEquals(typeTsu2, props[5]);
+        assertEquals(supertypeSignature, props[6]);
+        assertEquals(typeSignature1, props[7]);
+        assertEquals(typeSignature2, props[8]);
+        assertEquals(policyCmptSupertypeAttr, props[9]);
+        assertEquals(policyCmptTypeAttr1, props[10]);
+        assertEquals(policyCmptTypeAttr2, props[11]);
     }
     
     public void testGetProdDefPropertiesMap() throws CoreException {

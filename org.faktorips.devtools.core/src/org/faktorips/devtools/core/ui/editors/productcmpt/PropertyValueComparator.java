@@ -47,6 +47,7 @@ public class PropertyValueComparator implements Comparator {
     }
 
     public PropertyValueComparator(IProductCmptType type, IIpsProject ipsProject) {
+        this.type = type;
         initPropIndexMap(ipsProject);
     }
     
@@ -63,6 +64,10 @@ public class PropertyValueComparator implements Comparator {
             IpsPlugin.log(new IpsStatus("Error initializing property comparator for type " + type, e));
         }
     }
+    
+    public IProductCmptType getProductCmptType() {
+        return type;
+    }
 
     /**
      * {@inheritDoc}
@@ -74,7 +79,7 @@ public class PropertyValueComparator implements Comparator {
         if (typeCompare!=0) {
             return typeCompare;
         }
-        return getIndex(prop2) - getIndex(prop1);
+        return getIndex(prop1) - getIndex(prop2);
     }
     
     private int getIndex(IPropertyValue prop) {

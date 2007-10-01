@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype2;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -34,10 +35,10 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype2.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype2.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype2.ProdDefPropertyType;
@@ -559,15 +560,16 @@ public class ProductCmptType extends Type implements IProductCmptType {
          * {@inheritDoc}
          */
         protected boolean visit(IProductCmptType currentType) throws CoreException {
+            ProductCmptType currType = (ProductCmptType)currentType;
             if (propertyType==null || ProdDefPropertyType.VALUE.equals(propertyType)) {
-                ((ProductCmptType)currentType).attributes.addAllTo(myAttributes);
+                addInReverseOrder(currType.attributes, myAttributes);
             }
             if (propertyType==null || ProdDefPropertyType.TABLE_CONTENT_USAGE.equals(propertyType)) {
-                ((ProductCmptType)currentType).tableStructureUsages.addAllTo(myTableStructureUsages);
+                addInReverseOrder(currType.tableStructureUsages, myTableStructureUsages);
             }
             if (propertyType==null || ProdDefPropertyType.FORMULA.equals(propertyType)) {
-                for (Iterator it= ((ProductCmptType)currentType).methods.iterator(); it.hasNext();) {
-                    IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
+                for (int i=currType.methods.size()-1; i>=0; i--) {
+                    IProductCmptTypeMethod method = (IProductCmptTypeMethod)currType.methods.getPart(i);
                     if (method.isFormulaSignatureDefinition()) {
                         myFormulaSignatures.add(method);
                     }
@@ -579,13 +581,20 @@ public class ProductCmptType extends Type implements IProductCmptType {
                     return true;
                 }
                 org.faktorips.devtools.core.model.pctype.IAttribute[] polAttr = policyCmptType.getAttributes();
-                for (int i = 0; i < polAttr.length; i++) {
+                for (int i = polAttr.length-1; i>=0; i--) {
                     if (polAttr[i].isProductRelevant() && polAttr[i].isChangeable()) {
                         myPolicyCmptTypeAttributes.add(polAttr[i]);
                     }
                 }
             }
             return true;
+        }
+        
+        private void addInReverseOrder(IpsObjectPartCollection source, Collection target) {
+            int size = source.size();
+            for (int i = size-1; i>=0; i--) {
+                target.add(source.getPart(i));
+            }
         }
         
         public IProdDefProperty[] getProperties() {

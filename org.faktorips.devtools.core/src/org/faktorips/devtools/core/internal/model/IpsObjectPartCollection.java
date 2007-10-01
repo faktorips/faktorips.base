@@ -107,15 +107,6 @@ public class IpsObjectPartCollection {
         return (IIpsObjectPart)parts.get(index);
     }
     
-    /**
-     * Adds the contents of this collection to the given other collection.
-     *  
-     * @throws NullPointerException if other is <code>null</code>.
-     */
-    public void addAllTo(Collection other) {
-        other.addAll(parts);
-    }
-    
     public Iterator iterator() {
         return parts.iterator();
     }

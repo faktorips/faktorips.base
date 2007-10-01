@@ -184,5 +184,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         ValidationUtils.checkValue(attr.getDatatype(), value, this, PROPERTY_VALUE, list);
     }
 
-    
+    public String toString() {
+        return getAttribute() + "=" + value;
+    }
 }
