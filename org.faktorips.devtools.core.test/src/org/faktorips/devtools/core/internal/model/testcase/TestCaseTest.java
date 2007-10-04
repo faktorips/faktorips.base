@@ -558,6 +558,16 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         testPolicyCmpt2.setProductCmpt(prodCmpt2.getQualifiedName());
         referencedProductCmpts = CollectionUtil.toArrayList(testCase.getReferencedProductCmpts());
         assertEquals(2, referencedProductCmpts.size());
+    }
+    
+    public void testFindTestCaseType() throws CoreException {
+        IIpsProject project2 = newIpsProject("Project2");
+        ITestCaseType testCaseType2 = (ITestCaseType) newIpsObject(project2, IpsObjectType.TEST_CASE_TYPE, "testCaseType1");
         
+        assertTrue(testCaseType2.equals(testCase.findTestCaseType(project2)));
+        assertFalse(testCaseType.equals(testCase.findTestCaseType(project2)));
+
+        assertFalse(testCaseType2.equals(testCase.findTestCaseType(ipsProject)));
+        assertTrue(testCaseType.equals(testCase.findTestCaseType(ipsProject)));
     }
 }

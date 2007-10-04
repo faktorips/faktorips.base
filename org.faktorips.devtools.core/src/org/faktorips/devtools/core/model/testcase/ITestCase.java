@@ -17,6 +17,7 @@ package org.faktorips.devtools.core.model.testcase;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 
@@ -66,9 +67,23 @@ public interface ITestCase extends IIpsObject, IFixDifferencesToModelSupport {
      * Search and return the test case type object in the model. Returns <code>null</code> if the
      * test case type not found.
      * 
+     * @deprecated use {@link #findTestCaseType(IIpsProject)}
+     * 
      * @throws CoreException if an error occurs while searching for the test case type.
      */
     public ITestCaseType findTestCaseType() throws CoreException;
+    
+    /**
+     * Search and return the test case type object in the model.
+     * 
+     * @param ipsProject The project which ips object path is used for the searched.
+     *                   This is not neccessarily the project this component is part of.
+     *                   
+     * @return The test case type or <code>null</code> if the test case type can't be found.
+     * 
+     * @throws CoreException if an error occurs while searching for the test case type.
+     */
+    public ITestCaseType findTestCaseType(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns all test objects or an empty array if the test case hasn't got any

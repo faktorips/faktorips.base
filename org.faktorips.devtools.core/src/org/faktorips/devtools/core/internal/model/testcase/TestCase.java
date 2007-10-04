@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestValueParameter;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -262,6 +263,15 @@ public class TestCase extends IpsObject implements ITestCase {
         if (StringUtils.isEmpty(testCaseType))
             return null;
         return (ITestCaseType)getIpsProject().findIpsObject(IpsObjectType.TEST_CASE_TYPE, testCaseType);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ITestCaseType findTestCaseType(IIpsProject ipsProject) throws CoreException {
+        if (StringUtils.isEmpty(testCaseType))
+            return null;
+        return (ITestCaseType)ipsProject.findIpsObject(IpsObjectType.TEST_CASE_TYPE, testCaseType);
     }
 
     /**
