@@ -4,7 +4,8 @@ ProductCmptType & ProductCmptTypeEditor
  - Beziehungen: Derived Union, AggregationKind, Pruefungen
  - Pruefungen fuer ProductCmptType. Welche Beziehungen gibt es zwischen den Ableitungshierarchien auf Vertrags & Produktseite? 
  
-Validierung: Einfuerhung IIpsProject Parameter
+Validierung: Einfuerhung IIpsProject Parameter. WOllen wir auch direkt einen localCacheParameter einfuehren.
+
 NewProductCmptType Wizard
 IPolicyCmptType muss IType implementieren
  - in Formuala muessen die EnumDatatypes aus ProductCmptType beruecksichtigt werden.
