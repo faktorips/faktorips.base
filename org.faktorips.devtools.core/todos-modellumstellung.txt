@@ -1,4 +1,5 @@
 
+
 ProductCmptType & ProductCmptTypeEditor
  - Dialog fuer Attribute (Zusammenfassen auf eine Seite, Description Page fehlt)
  - Beziehungen: Derived Union, AggregationKind, Pruefungen
@@ -18,6 +19,8 @@ PolicyCmptTypeAttribute
  - Dialog umbauen
  
 Korrektes Overloading von Attributen beruecksichtigen! Wo überall?
+
+Large Contents: Noch mal die Verwendung der Subtype-Hierarchy überprüfen
 
 Test: Compare
 
