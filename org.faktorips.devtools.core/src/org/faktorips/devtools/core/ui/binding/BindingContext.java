@@ -17,16 +17,19 @@
 
 package org.faktorips.devtools.core.ui.binding;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -69,9 +72,6 @@ import org.faktorips.values.EnumType;
  * <li>bindVisible: binds a control's visible property to a model object property of type boolean.</li>
  * </ul>
  * <p>
- * Currently the bindContent methods work for IpsObjectPartContainers only.
- * The bindVisible and bindEnabled methods for work IpsObjectPartContainers and objects implementing
- * {@link IPropertyChangeListenerSupport}, e.g. presentation model objects. 
  * 
  * @author Jan Ortmann
  */
@@ -117,7 +117,7 @@ public class BindingContext {
      * @throws IllegalArgumentException if the property is not of type String.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public EditField bindContent(Text text, IIpsObjectPartContainer object, String propertyName) {
+    public EditField bindContent(Text text, Object object, String propertyName) {
         EditField field = null;
         PropertyDescriptor property = BeanUtil.getPropertyDescriptor(object.getClass(), propertyName);
         if (String.class==property.getPropertyType()) {
@@ -140,7 +140,7 @@ public class BindingContext {
      * @throws IllegalArgumentException if the property is not of type String.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public EditField bindContent(Label label, IIpsObjectPartContainer object, String property) {
+    public EditField bindContent(Label label, Object object, String property) {
         checkPropertyType(object, property, String.class);
         EditField field = new LabelField(label);
         bindContent(field, object, property);
@@ -155,7 +155,7 @@ public class BindingContext {
      * @throws IllegalArgumentException if the property is not of type Boolean or boolean.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public EditField bindContent(AbstractCheckbox checkbox, IIpsObjectPartContainer object, String propertyName) {
+    public EditField bindContent(AbstractCheckbox checkbox, Object object, String propertyName) {
         PropertyDescriptor property = BeanUtil.getPropertyDescriptor(object.getClass(), propertyName);
         if (Boolean.class!=property.getPropertyType() && Boolean.TYPE!=property.getPropertyType()) {
             throwWrongPropertyTypeException(property, new Class[]{Boolean.class, Boolean.TYPE});
@@ -173,7 +173,7 @@ public class BindingContext {
      * @throws IllegalArgumentException if the property is not of type String.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public EditField bindContent(TextButtonControl control, IIpsObjectPartContainer object, String property) {
+    public EditField bindContent(TextButtonControl control, Object object, String property) {
         checkPropertyType(object, property, String.class);
         EditField field = new TextButtonField(control);
         bindContent(field, object, property);
@@ -190,7 +190,7 @@ public class BindingContext {
      * 
      * @see DefaultEnumValue
      */
-    public EnumValueField bindContent(Combo combo, IIpsObjectPartContainer object, String property, EnumType enumType) {
+    public EnumValueField bindContent(Combo combo, Object object, String property, EnumType enumType) {
         checkPropertyType(object, property, DefaultEnumValue.class);
         EnumValueField field = new EnumValueField(combo, enumType);
         bindContent(field, object, property);
@@ -202,7 +202,7 @@ public class BindingContext {
      * 
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public void bindContent(EditField field, IIpsObjectPartContainer object, String property) {
+    public void bindContent(EditField field, Object object, String property) {
         add(createMapping(field, object, property));
     }
 
@@ -247,7 +247,7 @@ public class BindingContext {
      * @throws IllegalArgumentException if the object's property is not of type boolean.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public void bindEnabled(Control control, IIpsObjectPartContainer object, String property) {
+    public void bindEnabled(Control control, Object object, String property) {
         add(new EnableBinding(control, object, property, true));
     }
     
@@ -263,7 +263,7 @@ public class BindingContext {
      * @throws IllegalArgumentException if the object's property is not of type boolean.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public void bindEnabled(Control control, IIpsObjectPartContainer object, String property, boolean enabledIfTrue) {
+    public void bindEnabled(Control control, Object object, String property, boolean enabledIfTrue) {
         add(new EnableBinding(control, object, property, enabledIfTrue));
     }
     
@@ -273,22 +273,12 @@ public class BindingContext {
      * @throws IllegalArgumentException if the object's property is not of type boolean.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public void bindVisible(Control control, IIpsObjectPartContainer object, String property) {
+    public void bindVisible(Control control, Object object, String property) {
         add(new VisibleBinding(control, object, property));
     }
     
-    /**
-     * Binds the control's visible property to the given model object's property.
-     * 
-     * @throws IllegalArgumentException if the object's property is not of type boolean.
-     * @throws NullPointerException if any argument is <code>null</code>.
-     */
-    public void bindVisible(Composite control, IPropertyChangeListenerSupport object, String property) {
-        add(new VisibleBinding(control, object, property));
-    }
-
     private void add(FieldPropertyMapping mapping) {
-        registerChangeListener();
+        registerIpsModelChangeListener();
         mapping.getField().addChangeListener(listener);
         mapping.getField().getControl().addFocusListener(listener);
         mappings.add(mapping);
@@ -298,15 +288,18 @@ public class BindingContext {
             if (!ipsObjects.contains(ipsObject)) {
                 ipsObjects.add(ipsObject);
             }
+        } else if (mapping.getObject() instanceof PresentationModelObject) {
+            PresentationModelObject pmo = (PresentationModelObject)mapping.getObject();
+            pmo.addPropertyChangeListener(listener);
         }
     }
     
-    private void add(ControlPropertyBinding binding) {
-        registerChangeListener();
+    public void add(ControlPropertyBinding binding) {
+        registerIpsModelChangeListener();
         controlBindings.add(binding);
     }
 
-    private void registerChangeListener() {
+    private void registerIpsModelChangeListener() {
         if (mappings.size()==0 && controlBindings.size()==0) {
             IpsPlugin.getDefault().getIpsModel().addChangeListener(listener);
         }
@@ -318,11 +311,27 @@ public class BindingContext {
     public void dispose() {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(listener);
         List copy = new ArrayList(mappings); // defensive copy to avoid concurrent modification exceptions
+        Set disposedPmos = new HashSet();
         for (Iterator it = copy.iterator(); it.hasNext();) {
             FieldPropertyMapping mapping = (FieldPropertyMapping) it.next();
             if (mapping.getField().removeChangeListener(listener));
             if (!mapping.getField().getControl().isDisposed()) {
                 mapping.getField().getControl().removeFocusListener(listener);
+            }
+            disposeObjectIfNeccessary(disposedPmos, mapping);
+        }
+        copy = new ArrayList(this.controlBindings); // defensive copy to avoid concurrent modification exceptions
+        for (Iterator it = copy.iterator(); it.hasNext();) {
+            ControlPropertyBinding mapping = (ControlPropertyBinding) it.next();
+            disposeObjectIfNeccessary(disposedPmos, mapping);
+        }
+    }
+
+    private void disposeObjectIfNeccessary(Set disposedPmos, Object object) {
+        if (object instanceof IpsObjectPartPmo) {
+            if (!disposedPmos.contains(object)) {
+                ((IpsObjectPartPmo)object).dispose();
+                disposedPmos.add(object);
             }
         }
     }
@@ -386,7 +395,7 @@ public class BindingContext {
         
     }
 
-    class Listener implements ContentsChangeListener, ValueChangeListener, FocusListener {
+    class Listener implements ContentsChangeListener, ValueChangeListener, FocusListener, PropertyChangeListener {
         
         public void valueChanged(FieldValueChangedEvent e) {
             List copy = new ArrayList(mappings); // defensive copy to avoid concurrent modification exceptions
@@ -431,5 +440,23 @@ public class BindingContext {
             applyControlBindings();
         }
 
+        /**
+         * {@inheritDoc}
+         */
+        public void propertyChange(PropertyChangeEvent evt) {
+            List copy = new ArrayList(mappings); // defensive copy to avoid concurrent modification exceptions
+            for (Iterator it = copy.iterator(); it.hasNext();) {
+                FieldPropertyMapping mapping = (FieldPropertyMapping) it.next();
+                if (mapping.getObject()==evt.getSource()) {
+                    try {
+                        mapping.setControlValue();
+                    } catch (Exception ex) {
+                        IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
+                                + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
+                    }
+                }
+            }
+            applyControlBindings();
+        }
     }
 }

@@ -177,6 +177,16 @@ public interface IProductCmptType extends IIpsObject, IType {
     public IProductCmptTypeAssociation findAssociation(String name, IIpsProject project) throws CoreException;
 
     /**
+     * Returns all associations that have the indicated target. Returns an empty array if no such assoiation exists
+     * or target is <code>null</code>.
+     * <p>
+     * Note that this does NOT search the supertype hierarchy.
+     * 
+     * @param target The qualified name of the target product component type.
+     */
+    public IProductCmptTypeAssociation[] getAssociationsForTarget(String target);
+    
+    /**
      * Creates a new association and returns it.
      */
     public IProductCmptTypeAssociation newAssociation();

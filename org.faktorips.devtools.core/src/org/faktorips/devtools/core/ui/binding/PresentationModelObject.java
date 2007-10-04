@@ -26,13 +26,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.binding.BindingContext.Listener;
 
 /**
  * Base class for presentation model objects implementing IPropertyChangeListenerSupport.
  * 
  * @author Jan Ortmann
  */
-public class PresentationModelObject implements IPropertyChangeListenerSupport {
+public class PresentationModelObject  {
 
     private Set propertyChangeListeners = new HashSet(1); 
     
@@ -57,6 +58,17 @@ public class PresentationModelObject implements IPropertyChangeListenerSupport {
     }
 
     /**
+     * Notifies all listeners that the object has chnaged. No detailed information about property and
+     * old and new value is passed to the listeners.
+     * <p> 
+     * If a listener throws an exception while dealing with the exception, the exception
+     * is logged, but NOT rethrown. Instead the method continues to notify the remaining listeners.
+     */
+    protected void notifyListeners() {
+        notifyListeners(new PropertyChangeEvent(this, null, null, null));
+    }
+
+    /**
      * Notifies all listeners that the given event has occured.
      * If a listener throws an exception while dealing with the exception, the exception
      * is logged, but NOT rethrown. Instead the method continues to notify the remaining listeners.
@@ -72,4 +84,5 @@ public class PresentationModelObject implements IPropertyChangeListenerSupport {
             }
         }
     }
+
 }

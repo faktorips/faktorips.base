@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -298,14 +299,14 @@ public class ProductCmptTypeAssociation extends AtomicIpsObjectPart implements I
         if (targetPolicyCmptType==null) {
             return null;
         }
-        org.faktorips.devtools.core.model.pctype.IRelation[] policyRelations = getRelationsFor(policyCmptType, targetPolicyCmptType); 
+        IRelation[] policyRelations = getRelationsFor(policyCmptType, targetPolicyCmptType); 
         if (policyRelations.length==0) {
             return null;
         }
         return policyRelations[getAssociationIndex()];
     }
     
-    private org.faktorips.devtools.core.model.pctype.IRelation[] getRelationsFor(IPolicyCmptType from, IPolicyCmptType target) {
+    private IRelation[] getRelationsFor(IPolicyCmptType from, IPolicyCmptType target) {
         List result = new ArrayList();
         String targetQName = target.getQualifiedName();
         org.faktorips.devtools.core.model.pctype.IRelation[] policyRelations = from.getRelations();
@@ -314,7 +315,7 @@ public class ProductCmptTypeAssociation extends AtomicIpsObjectPart implements I
                 result.add(policyRelations[i]);
             }
         }
-        return (org.faktorips.devtools.core.model.pctype.IRelation[])result.toArray(new org.faktorips.devtools.core.model.pctype.IRelation[result.size()]);
+        return (IRelation[])result.toArray(new IRelation[result.size()]);
     }
     
     private int getAssociationIndex() {

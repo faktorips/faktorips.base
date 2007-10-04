@@ -124,6 +124,9 @@ public class ContentChangeEvent  {
         if (partContainer.getIpsSrcFile()!=null && partContainer.getIpsSrcFile().equals(ipsSrcFile)) {
             return true;
         }
+        if (type==TYPE_WHOLE_CONTENT_CHANGED) {
+            return true;
+        }
         if (movedParts==null) {
             return false;
         }

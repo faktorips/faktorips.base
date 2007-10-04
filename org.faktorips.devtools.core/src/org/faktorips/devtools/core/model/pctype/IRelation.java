@@ -20,6 +20,9 @@ package org.faktorips.devtools.core.model.pctype;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 
 /**
@@ -300,8 +303,20 @@ public interface IRelation extends IIpsObjectPart {
      * or the target does not exists.
      * 
      * @throws CoreException if an error occurs while searching for the target.
+     * 
+     * @deprecated use {@link #findTarget(IIpsProject)}
      */
     public IPolicyCmptType findTarget() throws CoreException;
+    
+    /**
+     * Returns the target policy component type or <code>null</code> if either this relation hasn't got a target
+     * or the target does not exists.
+     * 
+     * @param ipsProject The ips project which ips object path is used to search.
+     * 
+     * @throws CoreException if an error occurs while searching for the target.
+     */
+    public IPolicyCmptType findTarget(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Sets the qualified name of the target policy component class.
@@ -347,6 +362,21 @@ public interface IRelation extends IIpsObjectPart {
     public String getDefaultTargetRolePlural();
     
     /**
+     * Searches for a matching association in the product side of the model.
+     * <p>
+     * Example:
+     * We have two policy component types called 'Policy' and 'Coverage' with a composition relationship
+     * between them. A policy contains severall coverages. Policy ist configured by the product component type
+     * 'Product' and coverage by 'CoverageType'. There is also an association between product and coverage type.
+     * This association is the matching association for the Policy-Coverage composition. 
+     * 
+     * @param ipsProject The ips project which ips object path is used to search.
+     * 
+     * @throws CoreException if an error occurs while searching for the target.     
+     */
+    public IProductCmptTypeAssociation findMatchingProductCmptTypeAssociation(IIpsProject ipsProject) throws CoreException;
+    
+    /**
      * Returns <code>true</code> if this is an abstract, read-only container relation. 
      * otherwise false.
      */
@@ -390,6 +420,16 @@ public interface IRelation extends IIpsObjectPart {
      * An unlimited number is represented by CARDINALITY_MANY.
      */
     public void setMaxCardinality(int newValue);
+    
+    /**
+     * Returns <code>true</code> if it is possible to mark this association as qualified by product component type.
+     * This is the case, if the target exists and the target is configured by a product component type.
+     * 
+     * @param ipsProject The ips project which ips object path is used to search.
+     * 
+     * @throws CoreException if an error occurs while searching for the target.     
+     */
+//    public boolean isQualificationByProductCmptTypePossible(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns true if this relation is can be customized during product definition.
@@ -463,7 +503,7 @@ public interface IRelation extends IIpsObjectPart {
     /**
      * Returns <code>true</code> if this relation implements a container relation, otherwise <code>false</code>.
      */
-    public boolean isContainerRelationImplementation() throws CoreException;
+    public boolean isContainerRelationImplementation();
 
     /**
      * Returns <code>true</code> if this relation implements the given container relation, otherwise <code>false</code>.

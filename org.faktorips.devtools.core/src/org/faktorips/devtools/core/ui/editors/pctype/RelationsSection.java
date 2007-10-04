@@ -111,7 +111,7 @@ public class RelationsSection extends SimpleIpsPartsSection {
          * {@inheritDoc}
          */
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            return new RelationEditDialog2((IRelation)part, shell);
+            return new RelationEditDialog((IRelation)part, shell);
         }
         
         /**

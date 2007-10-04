@@ -289,6 +289,20 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    public IProductCmptTypeAssociation[] getAssociationsForTarget(String target) {
+        List result = new ArrayList();
+        for (Iterator it = associations.iterator(); it.hasNext();) {
+            IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)it.next();
+            if (association.getTarget().equals(target)) {
+                result.add(association);
+            }
+        }
+        return (IProductCmptTypeAssociation[])result.toArray(new IProductCmptTypeAssociation[result.size()]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public IProductCmptTypeAssociation findAssociation(String name, IIpsProject project) throws CoreException {
         RelationFinder finder = new RelationFinder(project, name);
         finder.start(this);

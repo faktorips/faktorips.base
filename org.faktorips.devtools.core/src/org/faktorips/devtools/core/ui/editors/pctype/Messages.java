@@ -114,7 +114,6 @@ public class Messages extends NLS {
 	public static String RuleEditDialog_contains;
     public static String RelationEditDialog_GroupLabel_General;
     public static String RelationEditDialog_GroupLabel_PolicySide;
-    public static String RelationEditDialog_GroupLabel_ProductSide;
     public static String OverrideAttributeDialog_title;
     public static String OverrideAttributeDialog_labelNoAttributes;
     public static String OverrideAttributeDialog_labelSelectAttribute;

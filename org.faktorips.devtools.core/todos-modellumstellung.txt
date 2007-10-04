@@ -1,7 +1,6 @@
 
 
 
-Test: Compare
 Validierung: Einfuerhung IIpsProject Parameter
 NewProductCmptType Wizard
 IPolicyCmptType muss IType implementieren
@@ -21,6 +20,9 @@ Attribute Dialog im ProductCmptType-Editor überarbeiten.
 Prüfungen für ProductCmptType implementieren.
 
 dependsOn() Methoden implementieren.
+
+Test: Compare
+
 
 Klären:
 =======
@@ -46,3 +48,11 @@ x.) Im Dialog zur Definition der Beziehung auf Vertragsseite folgendes einfügen
 	 Note: The association becomes a qualified association. The cardinality is specified per qualifier instance!
 	
 x.) Bisherigen Wizard umbauen, dass man die Beziehung auf Produktseite mitanlegen kann, wenn beide PolicyCmptTypes konfigurierbar sind.
+
+
+[ ] Association is qualified by "TargetType"
+Note that for qualified associations multiplicty is defined per qualified instance.
+
+This association is constrained by product structure. Matching association on product side is "".
+
+

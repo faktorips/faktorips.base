@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -28,12 +29,15 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -193,7 +197,14 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
         }
         return getIpsProject().findPolicyCmptType(target);
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    public IPolicyCmptType findTarget(IIpsProject ipsProject) throws CoreException {
+        return ipsProject.findPolicyCmptType(target);
+    }
+
     /** 
      * {@inheritDoc}
      */
@@ -258,6 +269,43 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     public String getDefaultTargetRolePlural() {
         return targetRoleSingular;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IProductCmptTypeAssociation findMatchingProductCmptTypeAssociation(IIpsProject ipsProject) throws CoreException {
+        IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(ipsProject);
+        if (productCmptType==null) {
+            return null;
+        }
+        IPolicyCmptType targetType = findTarget();
+        if (targetType==null) {
+            return null;
+        }
+        IProductCmptTypeAssociation[] candidates = productCmptType.getAssociationsForTarget(targetType.getProductCmptType());
+        int index = getAssociationIndex();
+        if (index>=candidates.length) {
+            return null;
+        }
+        return candidates[index];
+    }
+
+    private int getAssociationIndex() {
+        List allAssociationsForTheTargetType = new ArrayList();
+        IRelation[] ass = getPolicyCmptType().getRelations();
+        for (int i = 0; i < ass.length; i++) {
+            if (target.equals(ass[i].getTarget())) {
+                allAssociationsForTheTargetType.add(ass[i]);
+            }
+        }
+        int index = 0;
+        for (Iterator it=allAssociationsForTheTargetType.iterator(); it.hasNext(); index++) {
+            if (it.next()==this) {
+                return index;
+            }
+        }
+        throw new RuntimeException("Can't get index of association " + this);
+    }
 
     /** 
      * {@inheritDoc}
@@ -305,7 +353,7 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
         maxCardinality = newValue;
         valueChanged(oldValue, newValue);
     }
-
+    
     /** 
      * {@inheritDoc}
      */
@@ -437,7 +485,7 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     /**
 	 * {@inheritDoc}
 	 */
-	public boolean isContainerRelationImplementation() throws CoreException {
+	public boolean isContainerRelationImplementation() {
 		return StringUtils.isNotEmpty(containerRelation);
 	}
     

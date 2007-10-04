@@ -6,10 +6,8 @@ import org.eclipse.swt.widgets.Control;
  * Binding between the enable property of a SWT control and a boolean
  * property of an abitrary object, usually a domain model object or presentation model
  * object.
- *  
  * 
- * @author     $Author: ortmann $
- * @version    $Revision: 1.2 $
+ * @author Jan Ortmann
  */
 public class EnableBinding extends ControlPropertyBinding {
 
