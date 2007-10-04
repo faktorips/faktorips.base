@@ -32,13 +32,15 @@ import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 
 /**
+ * A section that shows a product component type's associations in a viewer and 
+ * allows to edit association in a dialog, create new associations and delete associations.
  * 
  * @author Jan Ortmann
  */
-public class RelationsSection extends SimpleIpsPartsSection {
+public class AssociationsSection extends SimpleIpsPartsSection {
 
-    public RelationsSection(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
-        super(pdObject, parent, "Relations", toolkit);
+    public AssociationsSection(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
+        super(pdObject, parent, "Associations", toolkit);
     }
 
     /**
@@ -52,16 +54,10 @@ public class RelationsSection extends SimpleIpsPartsSection {
         return (IProductCmptType)getIpsObject();
     }
     
-    /**
-     * A composite that shows a policy component's relations in a viewer and 
-     * allows to edit relations in a dialog, create new relations and delete relations.
-     */
     private class RelationsComposite extends IpsPartsComposite {
 
         RelationsComposite(IIpsObject pdObject, Composite parent,
                 UIToolkit toolkit) {
-            // create default buttons without the new button, 
-            //   because the new button will be overridden with wizard functionality
             super(pdObject, parent, true, true, true, true, true, toolkit);
         }
 
@@ -83,7 +79,7 @@ public class RelationsSection extends SimpleIpsPartsSection {
         }
 
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
-            return new RelationEditDialog((IProductCmptTypeAssociation)part, shell);
+            return new AssociationEditDialog((IProductCmptTypeAssociation)part, shell);
         }
 
         protected IIpsObjectPart newIpsPart() {

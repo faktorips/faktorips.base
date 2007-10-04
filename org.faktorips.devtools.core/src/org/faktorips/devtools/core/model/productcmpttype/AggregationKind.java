@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.model.productcmpttype;
 
+import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.values.DefaultEnumType;
 import org.faktorips.values.DefaultEnumValue;
 
@@ -31,7 +33,13 @@ public class AggregationKind extends DefaultEnumValue {
     
     public final static AggregationKind SHARED;
 
+    public final static AggregationKind COMPOSITE;
+
     private final static DefaultEnumType enumType; 
+    
+    public final static DefaultEnumType getEnumType() {
+        return enumType;
+    }
     
     public final static AggregationKind getKind(String id) {
         return (AggregationKind)enumType.getEnumValue(id);
@@ -39,12 +47,20 @@ public class AggregationKind extends DefaultEnumValue {
     
     static {
         enumType = new DefaultEnumType("AggregationKind", AggregationKind.class); //$NON-NLS-1$
-        NONE = new AggregationKind(enumType, "none", "None");
-        SHARED = new AggregationKind(enumType, "shared", "Shared");
+        NONE = new AggregationKind(enumType, "none", "None", "AggregationKind-None.gif");
+        SHARED = new AggregationKind(enumType, "shared", "Shared", "AggregationKind-Shared.gif");
+        COMPOSITE = new AggregationKind(enumType, "composite", "Composite", "AggregationKind-Composite.gif");
     }
     
-    private AggregationKind(DefaultEnumType type, String id, String name) {
+    private String image;
+    
+    public Image getImage() {
+        return IpsPlugin.getDefault().getImage(image);
+    }
+    
+    private AggregationKind(DefaultEnumType type, String id, String name, String image) {
         super(type, id, name);
+        this.image = image;
     }
 
 }

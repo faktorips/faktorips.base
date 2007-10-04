@@ -346,7 +346,7 @@ public class ProductCmptTypeAssociation extends AtomicIpsObjectPart implements I
      * {@inheritDoc}
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$
+        return aggregationKind.getImage();
     }
 
     /**

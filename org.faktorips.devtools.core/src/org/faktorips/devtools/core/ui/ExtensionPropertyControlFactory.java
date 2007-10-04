@@ -43,14 +43,24 @@ public class ExtensionPropertyControlFactory {
 		extensionEditFields = new EditField[extensionProperties.length];
         partContainers = new IIpsObjectPartContainer[extensionProperties.length];
 	}
+    
+    public boolean needsToCreateControlsFor(IIpsObjectPartContainer ipsObjectPart, String position) {
+        for (int i = 0; i < extensionProperties.length; i++) {
+            if (extensionProperties[i].getEditedInStandardTextArea().equals(position)
+                    && (extensionEditFields[i] == null)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 	/**
 	 * Creates the <code>EditFields</code> of extension at <code>where</code> position
 	 */
 	public void createControls(Composite workArea, UIToolkit uiToolkit,
-            IIpsObjectPartContainer ipsObjectPart, String where) {
+            IIpsObjectPartContainer ipsObjectPart, String position) {
 		for (int i = 0; i < extensionProperties.length; i++) {
-			if (extensionProperties[i].getEditedInStandardTextArea().equals(where)
+			if (extensionProperties[i].getEditedInStandardTextArea().equals(position)
 					&& (extensionEditFields[i] == null)) {
 
                 createLabelAndEditField(workArea, uiToolkit, ipsObjectPart, i);

@@ -53,7 +53,7 @@ public class StructurePage extends IpsObjectEditorPage {
         new GeneralInfoSection(getProductCmptType(), formBody, toolkit); 
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
         new AttributesSection(getProductCmptType(), members, toolkit);
-        new RelationsSection(getProductCmptType(), members, toolkit);
+        new AssociationsSection(getProductCmptType(), members, toolkit);
         new MethodsAndFormulaSection(getProductCmptType(), members, toolkit);
         new TableStructureUsageSection(getProductCmptType(), members, toolkit);
     }

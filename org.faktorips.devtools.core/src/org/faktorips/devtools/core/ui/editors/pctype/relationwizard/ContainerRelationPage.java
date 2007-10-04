@@ -84,7 +84,7 @@ public class ContainerRelationPage extends AbstractPcTypeRelationWizardPage {
 		
 		// visible only if target has a container relation
         try {
-            isPageVisible = wizard.getRelation().findContainerRelationCandidates().length > 0;
+            isPageVisible = wizard.getRelation().findContainerRelationCandidates(wizard.getRelation().getIpsProject()).length > 0;
         } catch (CoreException e) {
             IpsPlugin.log(e);
             wizard.showErrorPage(e);
@@ -106,7 +106,7 @@ public class ContainerRelationPage extends AbstractPcTypeRelationWizardPage {
 		if (! prevTarget.equals(wizard.getRelation().getTarget())){
 			prevTarget = wizard.getRelation().getTarget();
 			try {
-			    IRelation[] containerRelations = wizard.getRelation().findContainerRelationCandidates();
+			    IRelation[] containerRelations = wizard.getRelation().findContainerRelationCandidates(wizard.getRelation().getIpsProject());
 				if (containerRelations.length>0){
                     String[] names = new String[containerRelations.length + 1];
                     names[0] = ""; // first entry to select none container relation //$NON-NLS-1$

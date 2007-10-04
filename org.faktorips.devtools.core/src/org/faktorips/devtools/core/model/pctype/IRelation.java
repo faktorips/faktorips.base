@@ -362,6 +362,17 @@ public interface IRelation extends IIpsObjectPart {
     public String getDefaultTargetRolePlural();
     
     /**
+     * Returns <code>true</code> if this allowed links for this association are contrained
+     * by the product structure. n this case {@link #findMatchingProductCmptTypeAssociation(IIpsProject)} returns
+     * the matching association on the product side of the model. See the method's Javadoc for a detailed description.
+     * 
+     * @param ipsProject The ips project which ips object path is used to search.
+     * 
+     * @throws CoreException if an error occurs while searching for the target.     
+     */
+    public boolean isContrainedByProductStructure(IIpsProject ipsProject) throws CoreException;
+    
+    /**
      * Searches for a matching association in the product side of the model.
      * <p>
      * Example:
@@ -420,16 +431,6 @@ public interface IRelation extends IIpsObjectPart {
      * An unlimited number is represented by CARDINALITY_MANY.
      */
     public void setMaxCardinality(int newValue);
-    
-    /**
-     * Returns <code>true</code> if it is possible to mark this association as qualified by product component type.
-     * This is the case, if the target exists and the target is configured by a product component type.
-     * 
-     * @param ipsProject The ips project which ips object path is used to search.
-     * 
-     * @throws CoreException if an error occurs while searching for the target.     
-     */
-//    public boolean isQualificationByProductCmptTypePossible(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns true if this relation is can be customized during product definition.
@@ -596,5 +597,5 @@ public interface IRelation extends IIpsObjectPart {
      * 
      * @throws CoreException if an error occurs while searching.
      */
-    public IRelation[] findContainerRelationCandidates() throws CoreException;    
+    public IRelation[] findContainerRelationCandidates(IIpsProject ipsProject) throws CoreException;    
 }

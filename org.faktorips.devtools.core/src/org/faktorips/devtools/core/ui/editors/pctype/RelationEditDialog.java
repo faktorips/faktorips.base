@@ -103,13 +103,11 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
         uiToolkit.createVerticalSpacer(c, 12);
         
         // Group groupPolicySide = uiToolkit.createGroup(c, Messages.RelationEditDialog_GroupLabel_PolicySide);
-        Group groupPolicySide = uiToolkit.createGroup(c, "Derived union");
-        createDerivedUnionGroup(groupPolicySide);
+        createDerivedUnionGroup(uiToolkit.createGroup(c, "Derived union"));
         
         uiToolkit.createVerticalSpacer(c, 12);
         
-        Group groupProductSide = uiToolkit.createGroup(c, "Qualification");
-        createQualificationGroup(groupProductSide);
+        createQualificationGroup(uiToolkit.createGroup(c, "Qualification"));
         
         return c;
     }

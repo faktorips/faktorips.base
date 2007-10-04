@@ -25,8 +25,7 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 public class RelationLabelProvider extends DefaultLabelProvider {
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
+     * {@inheritDoc}
      */
     public String getText(Object element) {
         if (!(element instanceof IRelation)) {

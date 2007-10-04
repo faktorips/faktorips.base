@@ -511,15 +511,18 @@ public class UIToolkit {
 	}
 
 	public Combo createCombo(Composite parent, EnumType type) {
-		Combo newCombo = createCombo(parent);
-		String[] names = new String[type.getNumOfValues()];
-		EnumValue[] values = type.getValues();
-		for (int i = 0; i < values.length; i++) {
-			names[i] = values[i].getName();
-		}
-		newCombo.setItems(names);
-		return newCombo;
+        return createCombo(parent, type.getValues());
 	}
+
+    public Combo createCombo(Composite parent, EnumValue[] values) {
+        Combo newCombo = createCombo(parent);
+        String[] names = new String[values.length];
+        for (int i = 0; i < values.length; i++) {
+            names[i] = values[i].getName();
+        }
+        newCombo.setItems(names);
+        return newCombo;
+    }
 
     /**
      * Creates a combo containing the given <code>EnumDatatype</code>'s values as items. The

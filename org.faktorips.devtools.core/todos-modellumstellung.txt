@@ -1,7 +1,8 @@
 
-ProductCmptTypeEditor
+ProductCmptType & ProductCmptTypeEditor
  - Dialog fuer Attribute (Zusammenfassen auf eine Seite, Description Page fehlt)
  - Beziehungen: Derived Union, AggregationKind, Pruefungen
+ - Pruefungen fuer ProductCmptType. Welche Beziehungen gibt es zwischen den Ableitungshierarchien auf Vertrags & Produktseite? 
  
 Validierung: Einfuerhung IIpsProject Parameter
 NewProductCmptType Wizard
@@ -9,7 +10,6 @@ IPolicyCmptType muss IType implementieren
  - in Formuala muessen die EnumDatatypes aus ProductCmptType beruecksichtigt werden.
  - Verwendung von IType statt IPolicCmptType
  
-Welche Beziehungen gibt es zwischen den Ableitungshierarchien auf Vertrags & Produktseite?
 
 PolicyCmptTypeAttribute
  - um computationMethod erweitern (setter, xml konvertierung, validierung)
@@ -17,11 +17,6 @@ PolicyCmptTypeAttribute
  - Dialog umbauen
  
 Korrektes Overloading von Attributen beruecksichtigen! Wo überall?
-
-Attribute Dialog im ProductCmptType-Editor überarbeiten.
-Prüfungen für ProductCmptType implementieren.
-
-dependsOn() Methoden implementieren.
 
 Test: Compare
 

@@ -271,6 +271,13 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     }
     
     /**
+     * {@inheritDoc} 
+     */
+    public boolean isContrainedByProductStructure(IIpsProject ipsProject) throws CoreException {
+        return findMatchingProductCmptTypeAssociation(ipsProject)!=null;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public IProductCmptTypeAssociation findMatchingProductCmptTypeAssociation(IIpsProject ipsProject) throws CoreException {
@@ -572,11 +579,15 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
         } else {
         	baseImageName = "Relation.gif"; //$NON-NLS-1$ 
         }
-        if (isProductRelevant()) {
-        	return IpsPlugin.getDefault().getProductRelevantImage(baseImageName);
-        } else {
-        	return IpsPlugin.getDefault().getImage(baseImageName);
+        try {
+            if (isContrainedByProductStructure(getIpsProject())) {
+            	return IpsPlugin.getDefault().getProductRelevantImage(baseImageName);
+            }
         }
+        catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        return IpsPlugin.getDefault().getImage(baseImageName);
     }
 
     /** 
@@ -786,7 +797,7 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
     /**
      * {@inheritDoc}
      */
-    public IRelation[] findContainerRelationCandidates() throws CoreException {
+    public IRelation[] findContainerRelationCandidates(IIpsProject ipsProject) throws CoreException {
         List containerRelationCandidates = new ArrayList();
         IPolicyCmptType targetPolicyCmptType = findTarget();
         if (targetPolicyCmptType != null){
@@ -800,7 +811,7 @@ public class Relation extends AtomicIpsObjectPart implements IRelation {
                     if (!relations[j].isReadOnlyContainer())
                         continue;
                     
-                    IPolicyCmptType targetOfContainerRelation = relations[j].findTarget();
+                    IPolicyCmptType targetOfContainerRelation = relations[j].findTarget(ipsProject);
                     if (targetOfContainerRelation == null)
                         continue;
                     
