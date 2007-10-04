@@ -697,6 +697,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         if (productCmptObj == null){
             return null;
         }
+        // TODO v2 - Joerg: search attribute using product cmpt type
         IPolicyCmptType pct = productCmptObj.findPolicyCmptType();
         if (pct==null){
             return null;

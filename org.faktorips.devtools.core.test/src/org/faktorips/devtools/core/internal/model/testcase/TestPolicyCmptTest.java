@@ -20,6 +20,8 @@ package org.faktorips.devtools.core.internal.model.testcase;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -447,5 +449,31 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         testPolicyCmptObjectInput.setProductCmpt("");
         generation = ((TestPolicyCmpt)testPolicyCmptObjectInput).findProductCmpsCurrentGeneration();
         assertNull(generation);
+    }
+    
+    public void testFindProductCmptAttribute() throws CoreException{
+        IAttribute attribute = testPolicyCmptObjectInput.findProductCmptAttribute("unknown");
+        assertNull(attribute);
+        
+        // create policy cmpt type and product cmpt type
+        // with missing link
+        ITestPolicyCmptTypeParameter parameter = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter();
+        parameter.setRequiresProductCmpt(true);
+        IPolicyCmptType policyCmptType = parameter.findPolicyCmptType();
+        ProductCmptType productCmptType = newProductCmptType(project, "productCmptType");
+        policyCmptType.setProductCmptType(productCmptType.getQualifiedName());        
+        ProductCmpt productCmpt = newProductCmpt(project, "product1");
+        productCmpt.setProductCmptType(productCmptType.getQualifiedName());
+        testPolicyCmptObjectInput.setProductCmpt(productCmpt.getQualifiedName());
+
+        attribute = testPolicyCmptObjectInput.findProductCmptAttribute("unknown");
+        assertNull(attribute);
+        
+        // link policy cmpt type and product cmpt type
+        productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
+        policyCmptType.newAttribute().setName("attribute");
+        
+        attribute = testPolicyCmptObjectInput.findProductCmptAttribute("attribute");
+        assertNotNull(attribute);
     }
 }
