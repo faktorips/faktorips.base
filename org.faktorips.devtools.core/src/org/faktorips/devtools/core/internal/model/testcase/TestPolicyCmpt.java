@@ -698,6 +698,9 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             return null;
         }
         IPolicyCmptType pct = productCmptObj.findPolicyCmptType();
+        if (pct==null){
+            return null;
+        }
         return pct.findAttributeInSupertypeHierarchy(attribute);
     }
 }
