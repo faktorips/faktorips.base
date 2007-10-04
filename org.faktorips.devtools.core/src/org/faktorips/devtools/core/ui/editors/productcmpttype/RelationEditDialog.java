@@ -95,12 +95,12 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
         // read only container
         uiToolkit.createFormLabel(workArea, "Is read-only container:");
         Checkbox containerCheckbox = uiToolkit.createCheckbox(workArea);
-        bindingContext.bindContent(containerCheckbox, relation, IProductCmptTypeAssociation.PROPERTY_READ_ONLY_CONTAINER);
+        bindingContext.bindContent(containerCheckbox, relation, IProductCmptTypeAssociation.PROPERTY_DERIVED_UNION);
         
         // container relation
         uiToolkit.createFormLabel(workArea, "Implemented container relation:");
         Text containerRelationText = uiToolkit.createText(workArea);
-        bindingContext.bindContent(containerRelationText, relation, IProductCmptTypeAssociation.PROPERTY_IMPLEMENTED_CONTAINER_RELATION);
+        bindingContext.bindContent(containerRelationText, relation, IProductCmptTypeAssociation.PROPERTY_SUBSETTED_DERIVED_UNION);
         ContainerRelationCompletionProcessor completionProcessor = new ContainerRelationCompletionProcessor(relation);
         completionProcessor.setComputeProposalForEmptyPrefix(true);
         ContentAssistHandler.createHandlerForText(containerRelationText, CompletionUtil.createContentAssistant(completionProcessor));

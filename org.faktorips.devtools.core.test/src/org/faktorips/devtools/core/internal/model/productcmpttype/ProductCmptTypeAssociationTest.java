@@ -19,8 +19,6 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.RelationType;
@@ -34,9 +32,8 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest implements ContentsChangeListener {
+public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
 
-    private ContentChangeEvent lastEvent = null;
     private IIpsProject ipsProject;
     private IProductCmptType productType;
     private IProductCmptType coverageTypeType;
@@ -51,34 +48,27 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest implem
         productType = newProductCmptType(ipsProject, "Product");
         coverageTypeType = newProductCmptType(ipsProject, "CoverageType");
         association = productType.newAssociation();
-        
-        ipsProject.getIpsModel().addChangeListener(this);
     }
     
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        ipsProject.getIpsModel().removeChangeListener(this);
-    }
-
     public void testFindPolicyCmptTypeRelation() throws CoreException {
-        assertNull(association.findPolicyCmptTypeRelation(ipsProject));
+        assertNull(association.findMatchingPolicyCmptTypeRelation(ipsProject));
         
         association.setTarget(coverageTypeType.getQualifiedName());
-        assertNull(association.findPolicyCmptTypeRelation(ipsProject));
+        assertNull(association.findMatchingPolicyCmptTypeRelation(ipsProject));
         
         IPolicyCmptType policyType = newPolicyCmptType(ipsProject, "Policy");
         productType.setPolicyCmptType(policyType.getQualifiedName());
         
         org.faktorips.devtools.core.model.pctype.IRelation policyTypeRelation = policyType.newRelation();
         policyTypeRelation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
-        assertNull(association.findPolicyCmptTypeRelation(ipsProject));
+        assertNull(association.findMatchingPolicyCmptTypeRelation(ipsProject));
 
         IPolicyCmptType coverageType = newPolicyCmptType(ipsProject, "Coverage");
         policyTypeRelation.setTarget(coverageType.getQualifiedName());
-        assertNull(association.findPolicyCmptTypeRelation(ipsProject));
+        assertNull(association.findMatchingPolicyCmptTypeRelation(ipsProject));
 
         coverageTypeType.setPolicyCmptType(coverageType.getQualifiedName());
-        assertEquals(policyTypeRelation, association.findPolicyCmptTypeRelation(ipsProject));
+        assertEquals(policyTypeRelation, association.findMatchingPolicyCmptTypeRelation(ipsProject));
     }
     
     /**
@@ -90,8 +80,8 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest implem
         association.setTargetRolePlural("CoverageTypes");
         association.setMinCardinality(2);
         association.setMaxCardinality(4);
-        association.setReadOnlyContainer(true);
-        association.setImplementedContainerRelation("BaseCoverageType");
+        association.setDerivedUnion(true);
+        association.setSubsettedDerivedUnion("BaseCoverageType");
         association.setAggregationKind(AggregationKind.SHARED);
         
         Element el = association.toXml(newDocument());
@@ -103,8 +93,8 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest implem
         assertEquals("CoverageTypes", association.getTargetRolePlural());
         assertEquals(2, association.getMinCardinality());
         assertEquals(4, association.getMaxCardinality());
-        assertTrue(association.isReadOnlyContainer());
-        assertEquals("BaseCoverageType", association.getImplementedContainerRelation());
+        assertTrue(association.isDerivedUnion());
+        assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
         assertEquals(AggregationKind.SHARED, association.getAggregationKind());
     }
 
@@ -121,22 +111,11 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest implem
         assertEquals("CoverageTypes", association.getTargetRolePlural());
         assertEquals(1, association.getMinCardinality());
         assertEquals(Integer.MAX_VALUE, association.getMaxCardinality());
-        assertTrue(association.isReadOnlyContainer());
-        assertEquals("BaseCoverageType", association.getImplementedContainerRelation());
+        assertTrue(association.isDerivedUnion());
+        assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
         assertEquals("blabla", association.getDescription());
     }
 
-    public void testPropertyConstants() {
-        testPropertyAccessReadWrite(IProductCmptTypeAssociation.class, IProductCmptTypeAssociation.PROPERTY_AGGREGATION_KIND);
-        testPropertyAccessReadWrite(IProductCmptTypeAssociation.class, IProductCmptTypeAssociation.PROPERTY_READ_ONLY_CONTAINER);
-        testPropertyAccessReadWrite(IProductCmptTypeAssociation.class, IProductCmptTypeAssociation.PROPERTY_IMPLEMENTED_CONTAINER_RELATION);
-        testPropertyAccessReadWrite(IProductCmptTypeAssociation.class, IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
-        testPropertyAccessReadWrite(IProductCmptTypeAssociation.class, IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
-        testPropertyAccessReadWrite(IProductCmptTypeAssociation.class, IProductCmptTypeAssociation.PROPERTY_TARGET);
-        testPropertyAccessReadWrite(IProductCmptTypeAssociation.class, IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
-        testPropertyAccessReadWrite(IProductCmptTypeAssociation.class, IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
-    }
-        
     /**
      * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#findTarget()}.
      * @throws CoreException 
@@ -156,80 +135,52 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest implem
      * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setTarget(java.lang.String)}.
      */
     public void testSetTarget() {
-        association.setTarget("Target");
-        assertEquals("Target", association.getTarget());
-        assertEquals(association, lastEvent.getPart());
+        super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class, IProductCmptTypeAssociation.PROPERTY_TARGET, association, "newTarget");
     }
 
     /**
      * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setTargetRoleSingular(java.lang.String)}.
      */
     public void testSetTargetRoleSingular() {
-        association.setTargetRoleSingular("TargetRole");
-        assertEquals("TargetRole", association.getTargetRoleSingular());
-        assertEquals(association, lastEvent.getPart());
+        super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class, IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR, association, "newRole");
     }
 
     /**
      * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setTargetRolePlural(java.lang.String)}.
      */
     public void testSetTargetRolePlural() {
-        association.setTargetRolePlural("TargetRole");
-        assertEquals("TargetRole", association.getTargetRolePlural());
-        assertEquals(association, lastEvent.getPart());
+        super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class, IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL, association, "newRoles");
     }
 
     /**
      * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setMinCardinality(int)}.
      */
     public void testSetMinCardinality() {
-        association.setMinCardinality(2);
-        assertEquals(2, association.getMinCardinality());
-        assertEquals(association, lastEvent.getPart());
+        super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class, IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY, association, new Integer(42));
     }
 
     /**
      * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setMaxCardinality(int)}.
      */
     public void testSetMaxCardinality() {
-        association.setMinCardinality(42);
-        assertEquals(42, association.getMinCardinality());
-        assertEquals(association, lastEvent.getPart());
+        super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class, IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY, association, new Integer(42));
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#isContainerRelationImplementation()}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#isSubsetOfADerivedUnion()}.
      */
-    public void testIsContainerRelationImplementation() {
-        association.setImplementedContainerRelation("");
-        assertFalse(association.isContainerRelationImplementation());
-        association.setImplementedContainerRelation("someContainerRelation");
-        assertTrue(association.isContainerRelationImplementation());
+    public void testIsSubsetOfADerivedUnion() {
+        association.setSubsettedDerivedUnion("");
+        assertFalse(association.isSubsetOfADerivedUnion());
+        association.setSubsettedDerivedUnion("someContainerRelation");
+        assertTrue(association.isSubsetOfADerivedUnion());
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setImplementedContainerRelation(java.lang.String)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setSubsettedDerivedUnion(java.lang.String)}.
      */
-    public void testSetImplementedContainerRelation() {
-        association.setImplementedContainerRelation("someRelation");
-        assertEquals("someRelation", association.getImplementedContainerRelation());
-        assertEquals(association, lastEvent.getPart());
-    }
-    
-    public void testFindContainerRelation() {
-        // TODO test
-    }
-
-    public void testFindContainerRelation_GivenRelation() {
-        // TODO test
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void contentsChanged(ContentChangeEvent event) {
-        lastEvent = event;
-        
+    public void testSetSubsettedDerivedUnion() {
+        super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class, IProductCmptTypeAssociation.PROPERTY_SUBSETTED_DERIVED_UNION, association, "SomeUnion");
     }
 
 }

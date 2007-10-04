@@ -1,6 +1,8 @@
 
-
-
+ProductCmptTypeEditor
+ - Dialog fuer Attribute (Zusammenfassen auf eine Seite, Description Page fehlt)
+ - Beziehungen: Derived Union, AggregationKind, Pruefungen
+ 
 Validierung: Einfuerhung IIpsProject Parameter
 NewProductCmptType Wizard
 IPolicyCmptType muss IType implementieren

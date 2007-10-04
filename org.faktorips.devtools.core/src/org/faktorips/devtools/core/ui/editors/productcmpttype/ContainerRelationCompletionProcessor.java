@@ -76,7 +76,7 @@ public class ContainerRelationCompletionProcessor extends AbstractCompletionProc
         protected boolean visit(IProductCmptType currentType) throws CoreException {
             IProductCmptTypeAssociation[] candidates = currentType.getAssociations();
             for (int i = 0; i < candidates.length; i++) {
-                if (candidates[i]!=relation && candidates[i].isReadOnlyContainer() && candidates[i].getName().toLowerCase().startsWith(namePrefix)) {
+                if (candidates[i]!=relation && candidates[i].isDerivedUnion() && candidates[i].getName().toLowerCase().startsWith(namePrefix)) {
                     addToResult(candidates[i]);
                 }
             }

@@ -42,8 +42,8 @@ public interface IProductCmptTypeAssociation extends IIpsObjectPart {
     public final static String PROPERTY_TARGET_ROLE_PLURAL = "targetRolePlural"; //$NON-NLS-1$
     public final static String PROPERTY_MIN_CARDINALITY = "minCardinality"; //$NON-NLS-1$
     public final static String PROPERTY_MAX_CARDINALITY = "maxCardinality"; //$NON-NLS-1$
-    public final static String PROPERTY_READ_ONLY_CONTAINER = "readOnlyContainer"; //$NON-NLS-1$
-    public final static String PROPERTY_IMPLEMENTED_CONTAINER_RELATION = "implementedContainerRelation"; //$NON-NLS-1$
+    public final static String PROPERTY_DERIVED_UNION = "derivedUnion"; //$NON-NLS-1$
+    public final static String PROPERTY_SUBSETTED_DERIVED_UNION = "subsettedDerivedUnion"; //$NON-NLS-1$
     
     /**
      * Returns the product component type this relation belongs to. Never returns <code>null</code>.
@@ -130,12 +130,12 @@ public interface IProductCmptTypeAssociation extends IIpsObjectPart {
      * Returns <code>true</code> if this is an abstract, read-only container relation. 
      * otherwise false.
      */
-    public boolean isReadOnlyContainer();
+    public boolean isDerivedUnion();
     
     /**
      * Sets the information if this is an abstract read-only container relation or not.
      */
-    public void setReadOnlyContainer(boolean flag);
+    public void setDerivedUnion(boolean flag);
     
     /**
      * Returns the minmum number of target instances required in this relation.   
@@ -174,55 +174,64 @@ public interface IProductCmptTypeAssociation extends IIpsObjectPart {
     /**
      * Sets the container relation that is implemented by this relation. 
      */
-    public void setImplementedContainerRelation(String containerRelation);
+    public void setSubsettedDerivedUnion(String containerRelation);
     
     /**
-     * Returns the name of the container relation this one implements.
+     * Returns the name of the derived union association this one is a subset of.
      * <p>
      * Example:
      * <br>
-     * A <code>Policy</code> class has a 1-many relation to it's <code>PolicyPart</code>s (PolicyPartRelation).
+     * A <code>Policy</code> class has a 1-many association to it's <code>PolicyPart</code>s (PolicyPartAssociation).
      * Derived from <code>Policy</code> is a <code>MotorPolicy</code>. Derived from <code>PolicyPart</code>
      * is a <code>MotorCollisionPart</code>. There exists a 1-1 relation between
      * <code>MotorPolicy</code> and <code>MotorCollisionPart</code>.
      * To express that the a motor policy instance returns the collision part
-     * when all it's parts (PolicyPartRelation) are requested, the policy part relation
-     * has to be defined as container relation. This relation between the motor policy
-     * and the motor collision part then implements the PolicyPartRelation.
+     * when all it's parts (PolicyPartAssociation) are requested, the policy part association
+     * has to be defined as derived union. The association between the motor policy
+     * and the motor collision part then defines a subset of the PolicyPartAssociation. Of course multiple
+     * subsets can belong to the same derived union. For example a MotorTplCoverage could also be a policy part.
      */
-    public String getImplementedContainerRelation();     
+    public String getSubsettedDerivedUnion();     
 
     /**
-     * Returns <code>true</code> if this relation is based on a container relation.
+     * Returns <code>true</code> if this association defines a subset of a derived union.
+     * Note that it is possible for an association to be a derived union itself and also be a subset
+     * of another derived union.
      */
-    public boolean isContainerRelationImplementation();
+    public boolean isSubsetOfADerivedUnion();
     
     /**
      * Returns <code>true</code> if this relation implements the given container relation, 
      * <code>false</code> otherwise. Returns <code>false</code> if containerRelation is <code>null</code>.
      * This method does not check if the given container relation is *really* a container relation.
      * 
-     * @param project The project which ips object path is used for the searched.
+     * @param ipsProject The project which ips object path is used for the searched.
      * This is not neccessarily the project this type is part of.
      * 
      * @throws CoreException if an error occurs while searching for the container relation this ones implements.
      */
-    public boolean isContainerRelationImplementation(IProductCmptTypeAssociation containerRelation, IIpsProject project) throws CoreException;
+    public boolean isSubsetOfDerivedUnion(IProductCmptTypeAssociation derivedUnion, IIpsProject ipsProject) throws CoreException;
     
     /**
-     * Searches the container relation object and returns it, if it exists. Returns <code>null</code> if the container
-     * relation does not exists.
+     * Searches the derived union association and returns it, if it exists. Returns <code>null</code> if the derived
+     * union does not exist.
+     * 
+     * @param ipsProject The project which ips object path is used for the searched.
+     * This is not neccessarily the project this type is part of.
      * 
      * @throws CoreException if an error occurs while searching.
      */
-    public IProductCmptTypeAssociation findImplementedContainerRelation(IIpsProject project) throws CoreException;
+    public IProductCmptTypeAssociation findSubsettedDerivedUnion(IIpsProject project) throws CoreException;
     
     /**
-     * Returns the corresponding policy component type relation or <code>null</code> if no
-     * such relation is found.
+     * Returns the corresponding policy component type association or <code>null</code> if no
+     * such association is found.
      * 
-     * @throws CoreException if an error occurs while searching for the relation.
+     * @param ipsProject The project which ips object path is used for the searched.
+     * This is not neccessarily the project this type is part of.
+     * 
+     * @throws CoreException if an error occurs while searching for the matching association.
      */
-    public IRelation findPolicyCmptTypeRelation(IIpsProject ipsProject) throws CoreException;
+    public IRelation findMatchingPolicyCmptTypeRelation(IIpsProject ipsProject) throws CoreException;
 
 }

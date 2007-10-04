@@ -362,7 +362,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                 builder.appendQuoted(ass.getName());
                 builder.appendln(");");
                 builder.append("if (relationElements != null) {");
-                IRelation policyCmptTypeRelation = ass.findPolicyCmptTypeRelation(getIpsProject());
+                IRelation policyCmptTypeRelation = ass.findMatchingPolicyCmptTypeRelation(getIpsProject());
                 String cardinalityFieldName = policyCmptTypeRelation == null ? "" : getFieldNameCardinalityForRelation(ass);
                 if (ass.is1ToMany()) {
                     String fieldName = getFieldNameToManyRelation(ass);
@@ -722,7 +722,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
 //            generateMethodGetCardinalityFor1To1Relation(relation, methodsBuilder);
 //            generateFieldCardinalityFor1To1Relation(relation, memberVarsBuilder);
         }
-        if (relation.findPolicyCmptTypeRelation(getIpsProject())!=null) {
+        if (relation.findMatchingPolicyCmptTypeRelation(getIpsProject())!=null) {
             generateMethodGetCardinalityFor1ToManyRelation(relation, methodsBuilder);
             generateFieldCardinalityForRelation(relation, memberVarsBuilder);
         }
@@ -997,7 +997,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                 methodsBuilder.appendln("}");
             } else {
                 String accessCode;
-                if (implRelation.isReadOnlyContainer()) {
+                if (implRelation.isDerivedUnion()) {
                     // if the implementation relation is itself a container relation, use the access method
                     accessCode = interfaceBuilder.getMethodNameGet1RelatedCmpt(implRelation) + "()";
                 } else {
@@ -1033,7 +1033,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     private void generateMethodGetNumOfRelatedProductCmpts(IProductCmptTypeAssociation relation, JavaCodeFragmentBuilder builder) throws CoreException {
-        if (relation.isReadOnlyContainer()) {
+        if (relation.isDerivedUnion()) {
             throw new IllegalArgumentException("Relation needn't be a container relation.");
         }
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
@@ -1062,7 +1062,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     private void generateMethodGetNumOfRelatedProductCmpts(IProductCmptTypeAssociation containerRelation, List implRelations, JavaCodeFragmentBuilder builder) throws CoreException {
-        if (!containerRelation.isReadOnlyContainer()) {
+        if (!containerRelation.isDerivedUnion()) {
             throw new IllegalArgumentException("Relation must be a container relation.");
         }
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
@@ -1088,7 +1088,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     private void generateMethodGetNumOfRelatedProductCmptsInternal(IProductCmptTypeAssociation containerRelation, List implRelations, JavaCodeFragmentBuilder builder) throws CoreException {
-        if (!containerRelation.isReadOnlyContainer()) {
+        if (!containerRelation.isDerivedUnion()) {
             throw new IllegalArgumentException("Relation must be a container relation.");
         }
         builder.javaDoc("", ANNOTATION_GENERATED);
@@ -1144,12 +1144,12 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
 
     public String getFieldNameCardinalityForRelation(IProductCmptTypeAssociation relation) throws CoreException{
-        return getLocalizedText(relation, "FIELD_CARDINALITIES_FOR_NAME", relation.findPolicyCmptTypeRelation(getIpsProject()).getTargetRoleSingular());
+        return getLocalizedText(relation, "FIELD_CARDINALITIES_FOR_NAME", relation.findMatchingPolicyCmptTypeRelation(getIpsProject()).getTargetRoleSingular());
     }
     
     private void generateFieldCardinalityForRelation(
             IProductCmptTypeAssociation association, JavaCodeFragmentBuilder fieldsBuilder) throws CoreException{
-        appendLocalizedJavaDoc("FIELD_CARDINALITIES_FOR", association.findPolicyCmptTypeRelation(getIpsProject()).getTargetRoleSingular(), association, fieldsBuilder);
+        appendLocalizedJavaDoc("FIELD_CARDINALITIES_FOR", association.findMatchingPolicyCmptTypeRelation(getIpsProject()).getTargetRoleSingular(), association, fieldsBuilder);
         JavaCodeFragment expression = new JavaCodeFragment();
         expression.append(" new ");
         expression.appendClassName(HashMap.class);

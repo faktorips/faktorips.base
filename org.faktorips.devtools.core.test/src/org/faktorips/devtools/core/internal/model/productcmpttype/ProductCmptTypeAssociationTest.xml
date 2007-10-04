@@ -13,8 +13,8 @@
           targetRolePlural="CoverageTypes" 
           minCardinality="1" 
           maxCardinality="*" 
-          readOnlyContainer="true"
-          implementedContainerRelation="BaseCoverageType">
+          derivedUnion="true"
+          subsettedDerivedUnion="BaseCoverageType">
 		<Description>blabla</Description>
 	</Association>
 		

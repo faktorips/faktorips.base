@@ -359,13 +359,13 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
                 if (relations[i].validate().containsErrorMsg()) {
                     continue;
                 }
-                if (relations[i].isReadOnlyContainer()) {
+                if (relations[i].isDerivedUnion()) {
                     generateCodeForContainerRelationDefinition(relations[i], fieldsBuilder, methodsBuilder);
                 } else {
                     generateCodeForNoneContainerRelation(relations[i], fieldsBuilder, methodsBuilder);                
                 }
-                if (relations[i].isContainerRelationImplementation()) {
-                    IProductCmptTypeAssociation containerRel = relations[i].findImplementedContainerRelation(getIpsSrcFile().getIpsProject());
+                if (relations[i].isSubsetOfADerivedUnion()) {
+                    IProductCmptTypeAssociation containerRel = relations[i].findSubsettedDerivedUnion(getIpsSrcFile().getIpsProject());
                     List implementationRelations = (List)containerRelations.get(containerRel);
                     if (implementationRelations==null) {
                         implementationRelations = new ArrayList();
@@ -467,7 +467,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
         protected boolean visit(IProductCmptType type) {
             IProductCmptTypeAssociation[] associations = type.getAssociations();
             for (int i = 0; i < associations.length; i++) {
-                if (associations[i].isReadOnlyContainer()) {
+                if (associations[i].isDerivedUnion()) {
                     try {
                         List implRelations = (List)containerImplMap.get(associations[i]);
                         if (implRelations!=null) {

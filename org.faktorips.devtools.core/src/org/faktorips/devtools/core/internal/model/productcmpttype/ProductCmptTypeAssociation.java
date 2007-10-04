@@ -54,8 +54,8 @@ public class ProductCmptTypeAssociation extends AtomicIpsObjectPart implements I
     private String targetRolePlural = ""; //$NON-NLS-1$
     private int minCardinality = 0;
     private int maxCardinality = Integer.MAX_VALUE; 
-    private String implementedContainerRelation = ""; //$NON-NLS-1$
-    private boolean readOnlyContainer = false;
+    private String subsettedDerivedUnion = ""; //$NON-NLS-1$
+    private boolean derivedUnion = false;
     
     public ProductCmptTypeAssociation(IIpsObject parent, int id) {
         super(parent, id);
@@ -79,7 +79,7 @@ public class ProductCmptTypeAssociation extends AtomicIpsObjectPart implements I
      * {@inheritDoc}
      */
     public boolean isDerived() {
-        return isReadOnlyContainer();
+        return isDerivedUnion();
     }
 
     /**
@@ -102,17 +102,17 @@ public class ProductCmptTypeAssociation extends AtomicIpsObjectPart implements I
     /**
      * {@inheritDoc}
      */
-    public boolean isReadOnlyContainer() {
-        return readOnlyContainer;
+    public boolean isDerivedUnion() {
+        return derivedUnion;
     }
     
     /**
      * {@inheritDoc}
      */
-    public void setReadOnlyContainer(boolean flag) {
-        boolean oldValue = readOnlyContainer;
-        this.readOnlyContainer = flag;
-        valueChanged(oldValue, readOnlyContainer);
+    public void setDerivedUnion(boolean flag) {
+        boolean oldValue = derivedUnion;
+        this.derivedUnion = flag;
+        valueChanged(oldValue, derivedUnion);
     }
     
     /** 
@@ -245,48 +245,48 @@ public class ProductCmptTypeAssociation extends AtomicIpsObjectPart implements I
     /** 
      * {@inheritDoc}
      */
-    public void setImplementedContainerRelation(String newRelation) {
-        String oldValue = implementedContainerRelation;
-        implementedContainerRelation = newRelation;
+    public void setSubsettedDerivedUnion(String newRelation) {
+        String oldValue = subsettedDerivedUnion;
+        subsettedDerivedUnion = newRelation;
         valueChanged(oldValue, newRelation);
     }
     
     /** 
      * {@inheritDoc}
      */
-    public String getImplementedContainerRelation() {
-        return implementedContainerRelation;
+    public String getSubsettedDerivedUnion() {
+        return subsettedDerivedUnion;
     }
     
     /**
      * {@inheritDoc}
      */
-    public boolean isContainerRelationImplementation() {
-        return StringUtils.isNotEmpty(implementedContainerRelation);
+    public boolean isSubsetOfADerivedUnion() {
+        return StringUtils.isNotEmpty(subsettedDerivedUnion);
     }
     
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeAssociation findImplementedContainerRelation(IIpsProject project) throws CoreException {
-        return getProductCmptType().findAssociation(implementedContainerRelation, project);
+    public IProductCmptTypeAssociation findSubsettedDerivedUnion(IIpsProject project) throws CoreException {
+        return getProductCmptType().findAssociation(subsettedDerivedUnion, project);
     }
     
     /**
      * {@inheritDoc}
      */
-    public boolean isContainerRelationImplementation(IProductCmptTypeAssociation containerRelation, IIpsProject project) throws CoreException {
+    public boolean isSubsetOfDerivedUnion(IProductCmptTypeAssociation containerRelation, IIpsProject project) throws CoreException {
         if (containerRelation==null) {
             return false;
         }
-        return containerRelation.equals(findImplementedContainerRelation(project));
+        return containerRelation.equals(findSubsettedDerivedUnion(project));
     }
     
     /**
      * {@inheritDoc}
      */
 
-    public org.faktorips.devtools.core.model.pctype.IRelation findPolicyCmptTypeRelation(IIpsProject ipsProject) throws CoreException {
+    public org.faktorips.devtools.core.model.pctype.IRelation findMatchingPolicyCmptTypeRelation(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(true, ipsProject);
         if (policyCmptType==null) {
             return null;
@@ -376,8 +376,8 @@ public class ProductCmptTypeAssociation extends AtomicIpsObjectPart implements I
                 maxCardinality = 0;
             }
         }
-        readOnlyContainer = Boolean.valueOf(element.getAttribute(PROPERTY_READ_ONLY_CONTAINER)).booleanValue();
-        implementedContainerRelation = element.getAttribute(PROPERTY_IMPLEMENTED_CONTAINER_RELATION);
+        derivedUnion = Boolean.valueOf(element.getAttribute(PROPERTY_DERIVED_UNION)).booleanValue();
+        subsettedDerivedUnion = element.getAttribute(PROPERTY_SUBSETTED_DERIVED_UNION);
     }
     
     /**
@@ -397,8 +397,8 @@ public class ProductCmptTypeAssociation extends AtomicIpsObjectPart implements I
             newElement.setAttribute(PROPERTY_MAX_CARDINALITY, "" + maxCardinality); //$NON-NLS-1$
         }
         
-        newElement.setAttribute(PROPERTY_READ_ONLY_CONTAINER, "" + readOnlyContainer); //$NON-NLS-1$
-        newElement.setAttribute(PROPERTY_IMPLEMENTED_CONTAINER_RELATION, implementedContainerRelation); 
+        newElement.setAttribute(PROPERTY_DERIVED_UNION, "" + derivedUnion); //$NON-NLS-1$
+        newElement.setAttribute(PROPERTY_SUBSETTED_DERIVED_UNION, subsettedDerivedUnion); 
     }
     
 }
