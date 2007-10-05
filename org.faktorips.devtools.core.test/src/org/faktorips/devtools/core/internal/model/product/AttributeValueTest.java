@@ -21,7 +21,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.product.IAttributeValue;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -77,6 +79,37 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         ml = attrValue.validate();
         assertNotNull(ml.getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
     }    
+    
+    public void testValidate_ValueNotInSet() throws CoreException {
+        MessageList ml = attrValue.validate();
+        assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
+        
+        attribute.setValueSetType(ValueSetType.RANGE);
+        IRangeValueSet range = (IRangeValueSet)attribute.getValueSet();
+        range.setLowerBound("0");
+        range.setUpperBound("100");
+
+        attrValue.setValue("0");
+        ml = attrValue.validate();
+        assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
+        
+        attrValue.setValue("100");
+        ml = attrValue.validate();
+        assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
+        
+        attrValue.setValue("42");
+        ml = attrValue.validate();
+        assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
+        
+        attrValue.setValue("-1");
+        ml = attrValue.validate();
+        assertNotNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
+        
+        attrValue.setValue("101");
+        ml = attrValue.validate();
+        assertNotNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
+        
+    }
     
     public void testSetAttribute() {
         super.testPropertyAccessReadWrite(IAttributeValue.class, IAttributeValue.PROPERTY_ATTRIBUTE, attrValue, "premium");

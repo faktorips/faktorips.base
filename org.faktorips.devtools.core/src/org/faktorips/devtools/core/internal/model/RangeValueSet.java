@@ -468,7 +468,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         StringBuffer sb = new StringBuffer();
         sb.append('[');
         sb.append( (lowerBound==null ? "unlimited" : lowerBound) ); //$NON-NLS-1$
-        sb.append(';');
+        sb.append('-'); //$NON-NLS-1$
         sb.append( (upperBound==null ? "unlimited" : upperBound) ); //$NON-NLS-1$
         sb.append(']');
         if (step!=null) {

@@ -43,6 +43,12 @@ public interface IAttributeValue extends IIpsObjectPart, IPropertyValue {
     public final static String MSGCODE_UNKNWON_ATTRIBUTE = MSGCODE_PREFIX + "UnknownAttribute"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the value is not an element of the value set defined
+     * in the model attribute.
+     */
+    public final static String MSGCODE_VALUE_NOT_IN_SET = MSGCODE_PREFIX + "ValueNotInSet"; //$NON-NLS-1$
+
+    /**
      * Returns the product component generation this value belongs to.
      */
     public IProductCmptGeneration getProductCmptGeneration();

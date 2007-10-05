@@ -18,12 +18,14 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.product.IAttributeValue;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
@@ -182,7 +184,18 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
             list.add(new Message(MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_ATTRIBUTE));
             return;
         }
-        ValidationUtils.checkValue(attr.getDatatype(), value, this, PROPERTY_VALUE, list);
+        if (!ValidationUtils.checkValue(attr.getDatatype(), value, this, PROPERTY_VALUE, list)) {
+            return;
+        }
+        if (!attr.getValueSet().containsValue(value)) {
+            String text;
+            if (attr.getValueSet().getValueSetType()==ValueSetType.RANGE) {
+                text = NLS.bind("Allowed values are {0}", attr.getValueSet().toShortString());
+            } else {
+                text = NLS.bind("{0} is not allowed.", value);
+            }
+            list.add(new Message(MSGCODE_VALUE_NOT_IN_SET, text, Message.ERROR, this, PROPERTY_VALUE));
+        }
     }
 
     public String toString() {

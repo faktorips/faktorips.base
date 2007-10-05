@@ -193,9 +193,11 @@ public class ValidationUtils {
      * @param propertyName The (technical) name of the property used if a message has to be created.
      * @param list The list of messages to add a new one.
      * 
+     * @return <code>true</code> if the value is valid otherwise <code>false</code>.
+     * 
      * @throws CoreException
      */
-    public final static void checkValue (
+    public final static boolean checkValue (
             String valueDatatype,
             String value,
             IIpsObjectPart part,
@@ -208,14 +210,14 @@ public class ValidationUtils {
 			Message msg = new Message(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND, 
 					text, Message.WARNING, part, propertyName); //$NON-NLS-1$
 			list.add(msg);
-			return;
+			return false;
     	}
     	try {
     		if (datatype.validate().containsErrorMsg()) {
         		String text = NLS.bind(Messages.ValidationUtils_VALUEDATATYPE_INVALID, datatype.getName()); //$NON-NLS-2$
     			Message msg = new Message(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_IS_INVALID, text, Message.WARNING, part, propertyName); //$NON-NLS-1$
     			list.add(msg);
-    			return;
+    			return false;
     		}
 		} catch (Exception e) {
 			throw new CoreException(new IpsStatus(e));
@@ -225,7 +227,9 @@ public class ValidationUtils {
 			String text = NLS.bind(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE, value, datatype);
 			Message msg = new Message(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE, text, Message.ERROR, part, propertyName); //$NON-NLS-1$
 			list.add(msg);
+            return false;
 		}
+        return true;
     }
     
     /**
