@@ -81,7 +81,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
         try {
             IProductCmptTypeAssociation typeRelation = link.findAssociation(link.getIpsProject());
             if (typeRelation != null) {
-                IProductCmptType productCmptType = typeRelation.findTarget(link.getIpsProject());
+                IProductCmptType productCmptType = typeRelation.findTargetProductCmptType(link.getIpsProject());
                 if (productCmptType != null) {
                     targetControl.setProductCmptType(productCmptType, true);
                 }

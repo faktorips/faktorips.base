@@ -365,7 +365,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
                     generateCodeForNoneContainerRelation(relations[i], fieldsBuilder, methodsBuilder);                
                 }
                 if (relations[i].isSubsetOfADerivedUnion()) {
-                    IProductCmptTypeAssociation containerRel = relations[i].findSubsettedDerivedUnion(getIpsSrcFile().getIpsProject());
+                    IProductCmptTypeAssociation containerRel = (IProductCmptTypeAssociation)relations[i].findSubsettedDerivedUnion(getIpsSrcFile().getIpsProject());
                     List implementationRelations = (List)containerRelations.get(containerRel);
                     if (implementationRelations==null) {
                         implementationRelations = new ArrayList();

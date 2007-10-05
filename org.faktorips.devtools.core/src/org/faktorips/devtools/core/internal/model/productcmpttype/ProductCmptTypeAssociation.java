@@ -24,7 +24,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -34,6 +33,8 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
@@ -61,6 +62,13 @@ public class ProductCmptTypeAssociation extends AtomicIpsObjectPart implements I
         super(parent, id);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public IType getType() {
+        return (IType)getParent();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -121,15 +129,22 @@ public class ProductCmptTypeAssociation extends AtomicIpsObjectPart implements I
     public String getTarget() {
         return target;
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public IProductCmptType findTarget(IIpsProject project) throws CoreException {
+    public IType findTarget(IIpsProject ipsProject) throws CoreException {
+        return findTargetProductCmptType(ipsProject);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IProductCmptType findTargetProductCmptType(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(target)) {
             return null;
         }
-        return (IProductCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE_V2, target);
+        return (IProductCmptType)ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE_V2, target);
     }
     
     /** 
@@ -268,30 +283,30 @@ public class ProductCmptTypeAssociation extends AtomicIpsObjectPart implements I
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeAssociation findSubsettedDerivedUnion(IIpsProject project) throws CoreException {
+    public IAssociation findSubsettedDerivedUnion(IIpsProject project) throws CoreException {
         return getProductCmptType().findAssociation(subsettedDerivedUnion, project);
     }
     
     /**
      * {@inheritDoc}
      */
-    public boolean isSubsetOfDerivedUnion(IProductCmptTypeAssociation containerRelation, IIpsProject project) throws CoreException {
-        if (containerRelation==null) {
+    public boolean isSubsetOfDerivedUnion(IAssociation derivedUnion, IIpsProject project) throws CoreException {
+        if (derivedUnion==null) {
             return false;
         }
-        return containerRelation.equals(findSubsettedDerivedUnion(project));
+        return derivedUnion.equals(findSubsettedDerivedUnion(project));
     }
     
     /**
      * {@inheritDoc}
      */
 
-    public org.faktorips.devtools.core.model.pctype.IRelation findMatchingPolicyCmptTypeRelation(IIpsProject ipsProject) throws CoreException {
+    public IRelation findMatchingPolicyCmptTypeRelation(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(true, ipsProject);
         if (policyCmptType==null) {
             return null;
         }
-        IProductCmptType targetType = findTarget(ipsProject);
+        IProductCmptType targetType = findTargetProductCmptType(ipsProject);
         if (targetType==null) {
             return null;
         }

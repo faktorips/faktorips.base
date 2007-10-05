@@ -805,17 +805,17 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     private void generateMethodAddRelatedCmpt(
-            IProductCmptTypeAssociation relation, 
+            IProductCmptTypeAssociation association, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        IProductCmptType target = relation.findTarget(getIpsProject());
-        appendLocalizedJavaDoc("METHOD_ADD_RELATED_CMPT", relation.getTargetRoleSingular(), relation, methodsBuilder);
-        String methodName = "add" + StringUtils.capitalise(relation.getTargetRoleSingular());
+        IProductCmptType target = association.findTargetProductCmptType(getIpsProject());
+        appendLocalizedJavaDoc("METHOD_ADD_RELATED_CMPT", association.getTargetRoleSingular(), association, methodsBuilder);
+        String methodName = "add" + StringUtils.capitalise(association.getTargetRoleSingular());
         String[] argNames = new String[]{"target"};
         String[] argTypes = new String[]{productCmptTypeInterfaceBuilder.getQualifiedClassName(target)};
         methodsBuilder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), 
                 "void", methodName, argNames, argTypes);
-        String fieldName = getFieldNameToManyRelation(relation);
+        String fieldName = getFieldNameToManyRelation(association);
         methodsBuilder.openBracket();
         methodsBuilder.append(generateFragmentCheckIfRepositoryIsModifiable());
         methodsBuilder.appendln("String[] tmp = new String[this." + fieldName + ".length+1];");

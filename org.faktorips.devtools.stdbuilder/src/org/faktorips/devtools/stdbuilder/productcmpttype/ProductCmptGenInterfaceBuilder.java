@@ -258,9 +258,9 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      * public CoverageType[] getCoverageTypes()
      * </pre>
      */
-    void generateSignatureGetManyRelatedCmpts(IProductCmptTypeAssociation relation, JavaCodeFragmentBuilder builder) throws CoreException {
-        String methodName = getMethodNameGetManyRelatedCmpts(relation);
-        IProductCmptType target = relation.findTarget(getIpsProject());
+    void generateSignatureGetManyRelatedCmpts(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder builder) throws CoreException {
+        String methodName = getMethodNameGetManyRelatedCmpts(association);
+        IProductCmptType target = association.findTargetProductCmptType(getIpsProject());
         String returnType = productCmptTypeInterfaceBuilder.getQualifiedClassName(target) + "[]";
         builder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), 
                 returnType, methodName, new String[0], new String[0]);
@@ -292,7 +292,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      */
     void generateSignatureGet1RelatedCmpt(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder builder) throws CoreException {
         String methodName = getMethodNameGet1RelatedCmpt(association);
-        IProductCmptType target = association.findTarget(getIpsProject());
+        IProductCmptType target = association.findTargetProductCmptType(getIpsProject());
         String returnType = productCmptTypeInterfaceBuilder.getQualifiedClassName(target);
         builder.signature(Modifier.PUBLIC, returnType, methodName, new String[0], new String[0]);
     }
@@ -384,7 +384,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      */
     void generateSignatureGetRelatedCmptsAtIndex(IProductCmptTypeAssociation relation, JavaCodeFragmentBuilder builder) throws CoreException {
         String methodName = getMethodNameGetRelatedCmptAtIndex(relation);
-        IProductCmptType target = relation.findTarget(getIpsProject());
+        IProductCmptType target = relation.findTargetProductCmptType(getIpsProject());
         String returnType = productCmptTypeInterfaceBuilder.getQualifiedClassName(target);
         builder.signature(Modifier.PUBLIC, returnType, methodName, new String[]{"index"}, new String[]{"int"});
     }
