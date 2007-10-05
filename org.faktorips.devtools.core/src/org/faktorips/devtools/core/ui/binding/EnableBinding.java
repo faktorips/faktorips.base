@@ -18,7 +18,7 @@ public class EnableBinding extends ControlPropertyBinding {
         this.enabledIfObjectPropertyIsTrue = enabledIfTrue;
     }
     
-    public void updateUI() {
+    public void updateUiIfNotDisposed() {
         try {
             Boolean value = (Boolean)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
             boolean enabled = value.booleanValue() == enabledIfObjectPropertyIsTrue;

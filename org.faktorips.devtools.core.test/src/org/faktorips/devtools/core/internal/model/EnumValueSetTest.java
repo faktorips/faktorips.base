@@ -233,34 +233,33 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     public void testValidate() throws Exception {
         EnumValueSet set = new EnumValueSet(ce, 1);
-        MessageList list = new MessageList();
-        set.validate(list);
+        MessageList list = set.validate();
         assertEquals(0, list.getNoOfMessages());
 
         set.addValue("2EUR");
-        set.validate(list);
+        list = set.validate();
         assertEquals(0, list.getNoOfMessages());
 
         set.addValue("2w");
-        set.validate(list);
+        list = set.validate();
         assertEquals(1, list.getNoOfMessages());
 
         assertFalse(list.getMessagesFor("2w").isEmpty());
         set.removeValue("2w");
         set.addValue("2EUR");
         list.clear();
-        set.validate(list);
+        list = set.validate();
         assertEquals(2, list.getNoOfMessages());
         assertEquals(list.getMessage(0).getCode(), IEnumValueSet.MSGCODE_DUPLICATE_VALUE);
         
         list.clear();
         set.removeValue("2EUR");
         set.addValue(null);
-        set.validate(list);
+        list = set.validate();
         assertEquals(0, list.getNoOfMessages());
         
         set.addValue(null);
-        set.validate(list);
+        list = set.validate();
         assertNotNull(list.getMessageByCode(IEnumValueSet.MSGCODE_DUPLICATE_VALUE));
         
         set.removeValue(null);
@@ -277,7 +276,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         attr.getIpsObject().getIpsSrcFile().save(true, null);
 
         list.clear();
-        set.validate(list);
+        list = set.validate();
         assertNotNull(list.getMessageByCode(IEnumValueSet.MSGCODE_VALUE_NOT_PARSABLE));
         
         set.removeValue(0);
@@ -285,7 +284,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         set.addValue("1");
         set.addValue(null);
         list.clear();
-        set.validate(list);
+        list = set.validate();
         assertNotNull(list.getMessageByCode(IEnumValueSet.MSGCODE_NULL_NOT_SUPPORTED));
         
     }

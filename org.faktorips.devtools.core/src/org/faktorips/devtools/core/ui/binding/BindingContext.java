@@ -105,7 +105,7 @@ public class BindingContext {
                         + " of object " + mapping.getObject(), e)); //$NON-NLS-1$
             }
         }
-        showValidationStatus();
+        showValidationStatus(copy);
         applyControlBindings();
     }
 
@@ -306,6 +306,24 @@ public class BindingContext {
     }
     
     /**
+     * Removes all bindings for the given control.
+     */
+    public void removeBindings(Control control) {
+        for (Iterator it = controlBindings.iterator(); it.hasNext();) {
+            ControlPropertyBinding binding = (ControlPropertyBinding)it.next();
+            if (binding.getControl()==control) {
+                it.remove();
+            }
+        }
+        for (Iterator it = this.mappings.iterator(); it.hasNext(); ) {
+            FieldPropertyMapping binding = (FieldPropertyMapping)it.next();
+            if (binding.getField().getControl()==control) {
+                it.remove();
+            }
+        }
+    }
+
+    /**
      * Removes the registered listener.
      */
     public void dispose() {
@@ -343,9 +361,10 @@ public class BindingContext {
      * 
      * @return the validation message list. Never returns <code>null</code>.
      */
-    protected void showValidationStatus() {
-        for (Iterator it = ipsObjects.iterator(); it.hasNext(); ) {
-            showValidationStatus((IIpsObject)it.next());
+    protected void showValidationStatus(List propertyMappings) {
+        ArrayList copy = new ArrayList(ipsObjects);
+        for (Iterator it = copy.iterator(); it.hasNext(); ) {
+            showValidationStatus((IIpsObject)it.next(), propertyMappings);
         }
     }
     
@@ -356,10 +375,10 @@ public class BindingContext {
      * 
      * @return the validation message list. Never returns <code>null</code>.
      */
-    protected MessageList showValidationStatus(IIpsObject ipsObject) {
+    protected MessageList showValidationStatus(IIpsObject ipsObject, List propertyMappings) {
         try {
             MessageList list = ipsObject.validate();
-            for (Iterator it=mappings.iterator(); it.hasNext();) {
+            for (Iterator it=propertyMappings.iterator(); it.hasNext();) {
                 FieldPropertyMapping mapping = (FieldPropertyMapping)it.next();
                 Control c = mapping.getField().getControl();
                 if (c==null || c.isDisposed()) {
@@ -436,7 +455,7 @@ public class BindingContext {
                     }
                 }
             }
-            showValidationStatus();
+            showValidationStatus(copy);
             applyControlBindings();
         }
 

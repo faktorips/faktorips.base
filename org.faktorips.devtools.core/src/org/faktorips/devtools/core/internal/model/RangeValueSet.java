@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -366,11 +367,11 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         MessageList dummy = new MessageList();
         return containsValueSet(subset, dummy, null, null);
     }
-
+    
     /**
      * {@inheritDoc}
      */
-    public void validate(MessageList list) {
+    public void validateThis(MessageList list) throws CoreException {
         ValueDatatype datatype = getValueDatatype();
         if (datatype == null) {
             String text = Messages.Range_msgUnknownDatatype;

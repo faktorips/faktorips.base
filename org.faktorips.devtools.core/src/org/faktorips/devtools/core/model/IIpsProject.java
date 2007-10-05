@@ -538,12 +538,10 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * Returns the possible value set types that are defined for the given datatype.
      * The type <code>ALL_VALUES</code> is always returned and is the first element in the array.
+     * If datatype is <code>null</code> then an array with ALL_VALUES is returned.
      * 
      * @throws CoreException if an error occurs while retrieving the value set types, possible reasons
      * are that the datatypes files can't be read or the xml can't be parsed.
-     * 
-     * @throws NullPointerException if datatype is <code>null</code> or the datatype is not defined
-     * in the project.
      */
     public ValueSetType[] getValueSetTypes(ValueDatatype datatype) throws CoreException;
     

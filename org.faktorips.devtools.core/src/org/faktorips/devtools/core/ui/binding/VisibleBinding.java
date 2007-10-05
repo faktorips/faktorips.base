@@ -31,7 +31,7 @@ public class VisibleBinding extends ControlPropertyBinding {
         super(control, object, propertyName, Boolean.TYPE);
     }
     
-    public void updateUI() {
+    public void updateUiIfNotDisposed() {
         try {
             Boolean value = (Boolean)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
             getControl().setVisible(value.booleanValue());

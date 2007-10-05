@@ -28,7 +28,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.DefaultUIController;
+import org.faktorips.devtools.core.ui.controller.UIController;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -51,7 +51,7 @@ public class EnumValueSetChooser extends ListChooser {
     /**
 	 * The controller to notify of changes to the target value set
 	 */
-	private DefaultUIController uiController;
+	private UIController uiController;
 	
 	/**
 	 * Mapping of human representation names to value ids.
@@ -70,7 +70,7 @@ public class EnumValueSetChooser extends ListChooser {
      * @param uiController The controller to notify upon change
      */
     public EnumValueSetChooser(Composite parent, UIToolkit toolkit, IEnumValueSet source, IEnumValueSet target,
-            EnumDatatype type, DefaultUIController uiController) {
+            EnumDatatype type, UIController uiController) {
         super(parent, toolkit);
         this.targetValueSet = target;
         this.sourceValueSet = source;

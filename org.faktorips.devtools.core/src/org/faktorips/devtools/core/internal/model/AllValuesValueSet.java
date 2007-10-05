@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.internal.model;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IAllValuesValueSet;
@@ -53,20 +52,6 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
     	super(ValueSetType.ALL_VALUES, parent, partId);
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    public MessageList validate() throws CoreException {
-        return new MessageList();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void validate(MessageList list) {
-        return;
-    }
-
     /**
      * {@inheritDoc}
      */

@@ -137,14 +137,6 @@ public interface IValueSet extends IIpsObjectPart {
     		MessageList list, Object invalidObject, String invalidProperty);
 
     /**
-     * Validates the value set.
-     * 
-     * @param datatype The value datatype to parse the set's string values to 'real' values.
-     * @param list Message collection paramter.
-     */
-    public void validate(MessageList list);
-    
-    /**
      * Creates a copy of this value set (type and values, parent and id are set
      * to the given values).
      */

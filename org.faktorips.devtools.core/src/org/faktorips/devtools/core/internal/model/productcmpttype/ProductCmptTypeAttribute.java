@@ -23,6 +23,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.AllValuesValueSet;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -34,7 +35,7 @@ import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
-import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -82,7 +83,11 @@ public class ProductCmptTypeAttribute extends IpsObjectPart implements IProductC
      * {@inheritDoc}
      */
     public IIpsElement[] getChildren() {
-        return new IIpsElement[0];
+        if (valueSet != null) {
+            return new IIpsElement[] { valueSet };
+        } else {
+            return new IIpsElement[0];
+        }
     }
 
     /**
@@ -225,6 +230,7 @@ public class ProductCmptTypeAttribute extends IpsObjectPart implements IProductC
             modifier = Modifier.PUBLISHED;
         }
         datatype = element.getAttribute(PROPERTY_DATATYPE);
+        defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$    
     }
 
     /**
@@ -232,41 +238,49 @@ public class ProductCmptTypeAttribute extends IpsObjectPart implements IProductC
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        XmlUtil.setAttributeConvertNullToEmptyString(element, PROPERTY_NAME, name); 
-        XmlUtil.setAttributeConvertNullToEmptyString(element, PROPERTY_DATATYPE, datatype); 
+        element.setAttribute(PROPERTY_NAME, name); 
+        element.setAttribute(PROPERTY_DATATYPE, datatype); 
         element.setAttribute(PROPERTY_MODIFIER, modifier.getId());
+        ValueToXmlHelper.addValueToElement(defaultValue, element, "DefaultValue"); //$NON-NLS-1$
     }
-
+    
     /**
      * {@inheritDoc}
      */
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
-        return null;
+    public IIpsObjectPart newPart(Class partType) {
+        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
     /**
      * {@inheritDoc}
      */
     protected void reAddPart(IIpsObjectPart part) {
+        valueSet = (IValueSet)part;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+        if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
+            valueSet = ValueSetType.newValueSet(xmlTag, this, id);
+            return valueSet;
+        }
+        return null;
     }
 
     /**
      * {@inheritDoc}
      */
     protected void reinitPartCollections() {
+        // nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
     protected void removePart(IIpsObjectPart part) {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsObjectPart newPart(Class partType) {
-        return null;
+        valueSet = new AllValuesValueSet(this, getNextPartId());
     }
 
     /**

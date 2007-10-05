@@ -58,6 +58,9 @@ public class FieldExtensionPropertyMapping implements FieldPropertyMapping {
      * {@inheritDoc}
      */
     public void setPropertyValue() {
+        if (field.getControl().isDisposed()) {
+            return;
+        }
         if (!field.isTextContentParsable()) {
             return;
         }
@@ -71,11 +74,18 @@ public class FieldExtensionPropertyMapping implements FieldPropertyMapping {
      * {@inheritDoc}
      */
     public void setControlValue() {
-        Object propertyValue = getPropertyValue();
-        if (field.isTextContentParsable() && ObjectUtils.equals(propertyValue, field.getValue())) {
+        if (field.getControl().isDisposed()) {
             return;
         }
-        field.setValue(propertyValue, false);
+        try {
+            Object propertyValue = getPropertyValue();
+            if (field.isTextContentParsable() && ObjectUtils.equals(propertyValue, field.getValue())) {
+                return;
+            }
+            field.setValue(propertyValue, false);
+        } catch (Exception e) {
+            throw new RuntimeException("Error setting value in control for property " + getPropertyName(), e); //$NON-NLS-1$            
+        }
     }
     
     private Object getPropertyValue() {

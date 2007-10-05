@@ -62,6 +62,9 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
      * {@inheritDoc}
      */
     public void setPropertyValue() {
+        if (field.getControl().isDisposed()) {
+            return;
+        }
         if (!field.isTextContentParsable()) {
             return;
         }
@@ -81,6 +84,9 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
      */
     public void setControlValue() {
         try {
+            if (field.getControl().isDisposed()) {
+                return;
+            }
             Object propertyValue = getPropertyValue();
             
             // if we have a field which maintans a list - update it.

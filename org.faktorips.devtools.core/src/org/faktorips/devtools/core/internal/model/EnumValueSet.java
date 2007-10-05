@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -222,7 +223,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     /**
      * {@inheritDoc}
      */
-    public void validate(MessageList list) {
+    public void validateThis(MessageList list) throws CoreException {
     	ValueDatatype datatype = getValueDatatype();
     	
         int numOfValues = elements.size();

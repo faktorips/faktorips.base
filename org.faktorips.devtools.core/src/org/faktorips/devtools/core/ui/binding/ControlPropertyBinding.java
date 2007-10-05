@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Control;
  * object.
  * 
  * @author     $Author: ortmann $
- * @version    $Revision: 1.2 $
+ * @version    $Revision: 1.3 $
  */
 public abstract class ControlPropertyBinding {
 
@@ -41,7 +41,13 @@ public abstract class ControlPropertyBinding {
         return property;
     }
     
-    public abstract void updateUI();
+    public final void updateUI() {
+        if (!control.isDisposed()) {
+            updateUiIfNotDisposed();
+        }
+    }
+
+    public abstract void updateUiIfNotDisposed();
     
     public String toString() {
         return "Binding " + object.toString() + "#" + property.getName() + " to control " + control;

@@ -224,29 +224,28 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 	    RangeValueSet range = new RangeValueSet (intEl, 50);
 	    range.setLowerBound("20");
 	    range.setUpperBound("25");
-	    MessageList list = new MessageList();
-	    range.validate(list);
+	    MessageList list = range.validate();
 	    assertTrue(list.isEmpty());
 	    
 	    range.setLowerBound("blabla");
-	    range.validate(list);
+        list = range.validate();
 	    assertFalse(list.isEmpty());
 	    
 	    range.setLowerBound("22");
 	    range.setUpperBound("blabla");
 	    list.clear();
-	    range.validate(list);
+        list = range.validate();
 	    assertFalse(list.isEmpty());
 	    
 	    range.setUpperBound("12");
 	    list.clear();
-	    range.validate(list);
+        list = range.validate();
 	    assertFalse(list.isEmpty());
 
 	    range.setLowerBound(null);
 	    range.setUpperBound(null);
         list.clear();
-        range.validate(list);
+        list = range.validate();
         assertFalse(list.containsErrorMsg());
         
 		ValueDatatype[] vds = ipsProject.getValueDatatypes(false);
@@ -260,11 +259,11 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         IAttribute attr = intEl.findPcTypeAttribute();
 		attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
 
-		range.validate(list);
+        list = range.validate();
 		assertNull(list.getMessageByCode(IRangeValueSet.MSGCODE_NULL_NOT_SUPPORTED));
 		
 		range.setContainsNull(true);
-		range.validate(list);
+        list = range.validate();
 		assertNotNull(list.getMessageByCode(IRangeValueSet.MSGCODE_NULL_NOT_SUPPORTED));
     }
     

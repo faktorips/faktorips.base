@@ -1044,7 +1044,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	 * {@inheritDoc}
 	 */
     public ValueSetType[] getValueSetTypes(ValueDatatype datatype) throws CoreException {
-        ArgumentCheck.notNull(datatype);
+        if (datatype==null) {
+            return new ValueSetType[] { ValueSetType.ALL_VALUES};
+        }
         if (datatype instanceof NumericDatatype) {
             return ValueSetType.getValueSetTypes();
         }

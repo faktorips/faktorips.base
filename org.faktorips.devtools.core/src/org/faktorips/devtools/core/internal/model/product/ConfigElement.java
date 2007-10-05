@@ -219,12 +219,12 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		} else {
     		if (attribute.getAttributeType() == AttributeType.CHANGEABLE
     				|| attribute.getAttributeType() == AttributeType.CONSTANT) {
-    			validateValueAndValueSet(attribute, list);
+    			validateValue(attribute, list);
     		}
         }
 	}
 
-	private void validateValueAndValueSet(IAttribute attribute, MessageList list)
+	private void validateValue(IAttribute attribute, MessageList list)
 			throws CoreException {
 		
 		ValueDatatype valueDatatype = attribute.findDatatype();
@@ -247,8 +247,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 			throw new CoreException(new IpsStatus(e));
 		}
 
-        valueSet.validate(list);
-        
 		if (!valueDatatype.isParsable(value)) {
         	String valueInMsg = value;
         	if (value==null) {

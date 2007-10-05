@@ -145,11 +145,6 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         return original;
     }
 
-    // This method is listed here to avoid compilation problems
-	// caused by a visibility conflict between this method and
-	// IpsObjectPart.validate(MessageList).
-	public abstract void validate(MessageList list);
-
     /**
      * Returns the datatype this value set is based on or <code>null</code>, if the 
      * datatype is not provided by the parent or the datatype provided is not a 
