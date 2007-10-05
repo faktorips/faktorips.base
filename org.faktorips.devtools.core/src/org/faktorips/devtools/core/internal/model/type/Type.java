@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.internal.model.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
@@ -210,6 +211,17 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
         return null;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IAssociation findAssociation(String name, IIpsProject project) throws CoreException {
+        AssociationFinder finder = new AssociationFinder(project, name);
+        finder.start(this);
+        return finder.association;
+    }
+
+    
 
     /**
      * {@inheritDoc}
@@ -357,4 +369,26 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
     }
+    
+    class AssociationFinder extends TypeHierarchyVisitor {
+
+        private String associationName;
+        private IAssociation association = null;
+        
+        public AssociationFinder(IIpsProject project, String associationName) {
+            super(project);
+            this.associationName = associationName;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IType currentType) {
+            association = currentType.getAssociation(associationName);
+            return association==null;
+        }
+        
+    }
+
+    
 }

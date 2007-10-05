@@ -20,7 +20,6 @@ package org.faktorips.devtools.core.model.type;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.type.IMethod;
 
 /**
  * Common interface for types, policy component type and product component type.
@@ -183,4 +182,30 @@ public interface IType extends IIpsObject {
      */
     public IMethod getMatchingMethod(IMethod method);
 
+    /**
+     * Returns the type's associations.
+     */
+    public IAssociation[] getAssociations();
+    
+    /**
+     * Returns the assocation with the given name defined in <strong>this</strong> type.
+     * (This method does not search the supertype hierarchy.)
+     * If more than one association with the name exist, the first one is returned.
+     * Returns <code>null</code> if no association with the given name exists or name is <code>null</code>.
+     */
+    public IAssociation getAssociation(String name);
+    
+    /**
+     * Searches an association with the given name in the type and it's supertype hierarchy and returns it. 
+     * Returns <code>null</code> if no such assoiation exists.
+     * 
+     * @param name          The association's name.
+     * @param project       The project which ips object path is used for the searched.
+     *                      This is not neccessarily the project this type is part of. 
+     * 
+     * @throws CoreException if an error occurs while searching.
+     */
+    public IAssociation findAssociation(String name, IIpsProject project) throws CoreException;
+
+    
 }

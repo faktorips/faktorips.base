@@ -45,6 +45,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -353,29 +354,30 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         HashMap containerRelations = new HashMap();
-        IProductCmptTypeAssociation[] relations = getProductCmptType().getAssociations();
-        for (int i = 0; i < relations.length; i++) {
+        IAssociation[] associations = getProductCmptType().getAssociations();
+        for (int i = 0; i < associations.length; i++) {
+            IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)associations[i];
             try {
-                if (relations[i].validate().containsErrorMsg()) {
+                if (associations[i].validate().containsErrorMsg()) {
                     continue;
                 }
-                if (relations[i].isDerivedUnion()) {
-                    generateCodeForContainerRelationDefinition(relations[i], fieldsBuilder, methodsBuilder);
+                if (associations[i].isDerivedUnion()) {
+                    generateCodeForContainerRelationDefinition(association, fieldsBuilder, methodsBuilder);
                 } else {
-                    generateCodeForNoneContainerRelation(relations[i], fieldsBuilder, methodsBuilder);                
+                    generateCodeForNoneContainerRelation(association, fieldsBuilder, methodsBuilder);                
                 }
-                if (relations[i].isSubsetOfADerivedUnion()) {
-                    IProductCmptTypeAssociation containerRel = (IProductCmptTypeAssociation)relations[i].findSubsettedDerivedUnion(getIpsSrcFile().getIpsProject());
+                if (associations[i].isSubsetOfADerivedUnion()) {
+                    IAssociation containerRel = associations[i].findSubsettedDerivedUnion(getIpsSrcFile().getIpsProject());
                     List implementationRelations = (List)containerRelations.get(containerRel);
                     if (implementationRelations==null) {
                         implementationRelations = new ArrayList();
                         containerRelations.put(containerRel, implementationRelations);
                     }
-                    implementationRelations.add(relations[i]);
+                    implementationRelations.add(associations[i]);
                 }
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building relation "
-                        + relations[i].getName() + " of "
+                        + associations[i].getName() + " of "
                         + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }
@@ -465,13 +467,13 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
          * {@inheritDoc}
          */
         protected boolean visit(IProductCmptType type) {
-            IProductCmptTypeAssociation[] associations = type.getAssociations();
+            IAssociation[] associations = type.getAssociations();
             for (int i = 0; i < associations.length; i++) {
                 if (associations[i].isDerivedUnion()) {
                     try {
                         List implRelations = (List)containerImplMap.get(associations[i]);
                         if (implRelations!=null) {
-                            generateCodeForContainerRelationImplementation(associations[i], implRelations, fieldsBuilder, methodsBuilder);
+                            generateCodeForContainerRelationImplementation((IProductCmptTypeAssociation)associations[i], implRelations, fieldsBuilder, methodsBuilder);
                         }
                     } catch (Exception e) {
                         addToBuildStatus(new IpsStatus("Error building container relation implementation. "

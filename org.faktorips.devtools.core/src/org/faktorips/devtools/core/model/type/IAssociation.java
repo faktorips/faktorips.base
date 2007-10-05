@@ -55,13 +55,6 @@ public interface IAssociation extends IIpsObjectPart {
     public AggregationKind getAggregationKind();
     
     /**
-     * Sets the kind of aggregation.
-     * 
-     * @throws NullPointerException if newKind is <code>null</code>.
-     */
-    public void setAggregationKind(AggregationKind newKind);
-    
-    /**
      * Returns <code>true</code> if this is a derived association, otherwise <code>false</code>.
      */
     public boolean isDerived();

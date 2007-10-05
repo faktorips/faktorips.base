@@ -152,31 +152,6 @@ public interface IProductCmptType extends IIpsObject, IType {
     public int[] moveAttributes(int[] indexes, boolean up);
 
     /**
-     * Returns the type's associations.
-     */
-    public IProductCmptTypeAssociation[] getAssociations();
-    
-    /**
-     * Returns the assocation with the given name defined in <strong>this</strong> type
-     * (This method does not search the supertype hierarchy.)
-     * If more than one association with the name exist, the first one is returned.
-     * Returns <code>null</code> if no association with the given name exists or name is <code>null</code>.
-     */
-    public IProductCmptTypeAssociation getAssociation(String name);
-
-    /**
-     * Searches an association with the given name in the type and it's supertype hierarchy and returns it. 
-     * Returns <code>null</code> if no such assoiation exists.
-     * 
-     * @param name          The association's name.
-     * @param project       The project which ips object path is used for the searched.
-     *                      This is not neccessarily the project this type is part of. 
-     * 
-     * @throws CoreException if an error occurs while searching.
-     */
-    public IProductCmptTypeAssociation findAssociation(String name, IIpsProject project) throws CoreException;
-
-    /**
      * Returns all associations that have the indicated target. Returns an empty array if no such assoiation exists
      * or target is <code>null</code>.
      * <p>

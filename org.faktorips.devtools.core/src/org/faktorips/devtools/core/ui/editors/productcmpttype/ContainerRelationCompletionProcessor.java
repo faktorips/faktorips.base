@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.util.ArgumentCheck;
 
@@ -74,7 +75,7 @@ public class ContainerRelationCompletionProcessor extends AbstractCompletionProc
          * {@inheritDoc}
          */
         protected boolean visit(IProductCmptType currentType) throws CoreException {
-            IProductCmptTypeAssociation[] candidates = currentType.getAssociations();
+            IAssociation[] candidates = currentType.getAssociations();
             for (int i = 0; i < candidates.length; i++) {
                 if (candidates[i]!=relation && candidates[i].isDerivedUnion() && candidates[i].getName().toLowerCase().startsWith(namePrefix)) {
                     addToResult(candidates[i]);
@@ -83,7 +84,7 @@ public class ContainerRelationCompletionProcessor extends AbstractCompletionProc
             return true;
         }
         
-        private void addToResult(IProductCmptTypeAssociation relation) {
+        private void addToResult(IAssociation relation) {
             String name = relation.getName();
             String displayText = name + " - " + relation.getParent().getName(); //$NON-NLS-1$
             CompletionProposal proposal = new CompletionProposal(

@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -55,7 +56,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements
      * @throws CoreException
      *             if an error occurs during supertype-evaluation
      */
-    public static boolean willBeValid(IProductCmpt target, IProductCmptTypeAssociation association, IIpsProject ipsProject) throws CoreException {
+    public static boolean willBeValid(IProductCmpt target, IAssociation association, IIpsProject ipsProject) throws CoreException {
         if (target == null || association == null) {
             return false;
         }
@@ -123,7 +124,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements
         if (productCmptType==null) {
             return null;
         }
-        return productCmptType.findAssociation(association, ipsProject);
+        return (IProductCmptTypeAssociation)productCmptType.findAssociation(association, ipsProject);
 	}
 
 	void setProductCmptTypeRelation(String newRelation) {

@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -283,8 +284,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeAssociation getAssociation(String name) {
-        return (IProductCmptTypeAssociation)associations.getPartByName(name);
+    public IAssociation getAssociation(String name) {
+        return (IAssociation)associations.getPartByName(name);
     }
     
     /**
@@ -304,17 +305,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeAssociation findAssociation(String name, IIpsProject project) throws CoreException {
-        RelationFinder finder = new RelationFinder(project, name);
-        finder.start(this);
-        return finder.relation;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IProductCmptTypeAssociation[] getAssociations() {
-        return (IProductCmptTypeAssociation[])associations.toArray(new IProductCmptTypeAssociation[associations.size()]);
+    public IAssociation[] getAssociations() {
+        return (IAssociation[])associations.toArray(new IAssociation[associations.size()]);
     }
 
     /**
@@ -436,11 +428,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
     }
     
-    /**
-     * {@inheritDoc}
-     */
     public Dependency[] dependsOn() throws CoreException {
         Set dependencies = new HashSet();
+        dependencies.clear();
         super.dependsOn(dependencies);
         if (hasSupertype()) {
             dependencies.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(getSupertype(),
@@ -451,33 +441,14 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void addQualifiedNameTypesForRelationTargets(Set dependencies) throws CoreException {
-        IProductCmptTypeAssociation[] relations = getAssociations();
-        for (int i = 0; i < relations.length; i++) {
-            String qualifiedName = relations[i].getTarget();
+        IAssociation[] associations = getAssociations();
+        for (int i = 0; i < associations.length; i++) {
+            String qualifiedName = associations[i].getTarget();
             dependencies.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(qualifiedName,
                     IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
         }
     }
 
-    class RelationFinder extends ProductCmptTypeHierarchyVisitor {
-
-        private String relationName;
-        private IProductCmptTypeAssociation relation = null;
-        
-        public RelationFinder(IIpsProject project, String relationName) {
-            super(project);
-            this.relationName = relationName;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        protected boolean visit(IProductCmptType currentType) {
-            relation = currentType.getAssociation(relationName);
-            return relation==null;
-        }
-        
-    }
 
     class TableStructureUsageFinder extends ProductCmptTypeHierarchyVisitor {
 

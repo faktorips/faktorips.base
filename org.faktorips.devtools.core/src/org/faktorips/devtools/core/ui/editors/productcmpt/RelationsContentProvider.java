@@ -30,8 +30,8 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.type.IAssociation;
 
 /**
  * Provides the content for a generation-based relations-tree. The relations-types are
@@ -143,7 +143,7 @@ public class RelationsContentProvider implements ITreeContentProvider {
         }
 
         protected boolean visit(IProductCmptType currentType) throws CoreException {
-            IProductCmptTypeAssociation[] typeAssociations = currentType.getAssociations();
+            IAssociation[] typeAssociations = currentType.getAssociations();
             int index = 0;
             for (int i = 0; i < typeAssociations.length; i++) {
                 // to get the assocations of the root type of the supertype hierarchy first,

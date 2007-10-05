@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
@@ -345,10 +346,10 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         //         }
         //     }
         // }
-        IProductCmptTypeAssociation[] associations = getProductCmptType().getAssociations();
+        IAssociation[] associations = getProductCmptType().getAssociations();
         boolean relationFound = false;
         for (int i = 0; i < associations.length; i++) {
-            IProductCmptTypeAssociation ass = associations[i];
+            IProductCmptTypeAssociation ass = (IProductCmptTypeAssociation)associations[i];
             if (!ass.isDerived()) {
                 if (relationFound == false) {
                     builder.appendln();

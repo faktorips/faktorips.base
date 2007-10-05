@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -407,7 +408,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (type == null) {
             return false;
         }
-        IProductCmptTypeAssociation association = type.findAssociation(associationName, ipsProject);
+        IAssociation association = type.findAssociation(associationName, ipsProject);
         if (association == null) {
             return false;
         }
@@ -419,7 +420,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
                 && ProductCmptLink.willBeValid(target, association, ipsProject);
     }
 
-    private boolean isFirstRelationOfThisType(IProductCmptTypeAssociation association, IProductCmpt target, IIpsProject ipsProject)
+    private boolean isFirstRelationOfThisType(IAssociation association, IProductCmpt target, IIpsProject ipsProject)
             throws CoreException {
         for (Iterator iter = links.iterator(); iter.hasNext();) {
             IProductCmptLink link = (IProductCmptLink)iter.next();
@@ -682,7 +683,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             }
         }
 
-        IProductCmptTypeAssociation[] relationTypes = type.getAssociations();
+        IAssociation[] relationTypes = type.getAssociations();
         for (int i = 0; i < relationTypes.length; i++) {
             IProductCmptLink[] relations = getLinks(relationTypes[i].getTargetRoleSingular());
 
