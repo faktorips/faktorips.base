@@ -22,12 +22,9 @@ import javax.xml.transform.TransformerException;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.RangeValueSet;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -142,36 +139,16 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest implemen
         assertEquals("rate", attr.getName());
         assertEquals(Modifier.PUBLIC, attr.getModifier());
         assertEquals("Integer", attr.getDatatype());
-        
-        assertEquals("20", attr.getDefaultValue());
-        RangeValueSet range = (RangeValueSet)attr.getValueSet();
-        assertEquals("18", range.getLowerBound());
-        assertEquals("60", range.getUpperBound());
     }
     
     public void testToXml_ProductAttribute() {
-        productAttribute.setName("rate");
-        productAttribute.setModifier(Modifier.PUBLIC);
-        productAttribute.setDatatype("Integer");
-        productAttribute.setDefaultValue("42");
-        productAttribute.setValueSetType(ValueSetType.RANGE);
-        RangeValueSet range = (RangeValueSet)productAttribute.getValueSet();
-        range.setLowerBound("1");
-        range.setUpperBound("100");
-        
         Element el = productAttribute.toXml(newDocument());
         
         IProductCmptTypeAttribute a = productCmptType.newAttribute();
         a.initFromXml(el);
-        assertEquals("rate", a.getName());
-        assertEquals(Modifier.PUBLIC, a.getModifier());
-        assertEquals("Integer", a.getDatatype());
-        assertEquals("42", a.getDefaultValue());
-        range = (RangeValueSet)a.getValueSet();
-        assertEquals("1", range.getLowerBound());
-        assertEquals("100", range.getUpperBound());
-        
-        
+        assertEquals(productAttribute.getName(), a.getName());
+        assertEquals(productAttribute.getModifier(), a.getModifier());
+        assertEquals(productAttribute.getDatatype(), a.getDatatype());
     }
     
     /**

@@ -80,4 +80,8 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
         }
         assertTrue(connectorIds.contains("org.faktorips.devtools.core.javaUtilLoggingConnector"));
     }
+    
+    public void testGetIpsFeatureVersion(){
+        System.out.println(IpsPlugin.getDefault().getIpsFeatureVersion());
+    }
 }
