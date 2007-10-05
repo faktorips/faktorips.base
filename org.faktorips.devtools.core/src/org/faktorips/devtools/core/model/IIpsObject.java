@@ -64,16 +64,19 @@ public interface IIpsObject extends IIpsObjectPartContainer {
     public IIpsPackageFragment getIpsPackageFragment();
     
     /**
-     * Returns the qualified name type object of the ips objects this one depends on.
-     * E.g. a policy component type depends on its supertype.
+     * Returns the Dependencys of this IpsObject. A Dependency contains the QualifiedNameType of the
+     * IpsObject this IpsObject depends on and an additional information if the dependency is a deep
+     * one or not. A deep dependency means that not only the direct dependency will be considered
+     * but also the dependencies of the IpsObject this one depends on will be considered when the dependency
+     * graph is evaluated. 
      * <p>
-     * We use the qualified name type instead of ips object references because an 
-     * object can depend on another object that does not exist, e.g. because the other
-     * object has been deleted. However, if the deleted object is created again, 
-     * we must rebuild this dependant object so that the problem marker is removed.
+     * We use Dependency instances instead of ips object references because an object can depend
+     * on another object that does not exist, e.g. because the other object has been deleted.
+     * However, if the deleted object is created again, we must rebuild this dependant object so
+     * that the problem marker will be removed.
      * 
-     * @throws CoreException 
+     * @throws CoreException
      */
-    public QualifiedNameType[] dependsOn() throws CoreException;
+    public Dependency[] dependsOn() throws CoreException;
     
 }

@@ -30,6 +30,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestValueParameter;
+import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -167,35 +168,37 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * {@inheritDoc}
      */
-    public QualifiedNameType[] dependsOn() throws CoreException {
-        Set qualifiedNameTypes = new HashSet();
+    public Dependency[] dependsOn() throws CoreException {
+        Set dependencies = new HashSet();
         // the test case depends on the test case type
         if (StringUtils.isNotEmpty(testCaseType)) {
-            qualifiedNameTypes.add(new QualifiedNameType(testCaseType, IpsObjectType.TEST_CASE_TYPE));
+            dependencies.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(testCaseType,
+                    IpsObjectType.TEST_CASE_TYPE)));
         }
         // add dependency to product cmpts
         ITestPolicyCmpt[] testCmpts = getTestPolicyCmpts();
         for (int i = 0; i < testCmpts.length; i++) {
-            addQualifiedNameTypesForTestPolicyCmpt(qualifiedNameTypes, testCmpts[i]);
-        }        
-        return (QualifiedNameType[])qualifiedNameTypes.toArray(new QualifiedNameType[0]);
+            addQualifiedNameTypesForTestPolicyCmpt(dependencies, testCmpts[i]);
+        }
+        return (Dependency[])dependencies.toArray(new Dependency[0]);
     }
 
     /*
      * Adds the dependencies to the given list for the given test policy cmpt and their childs
      */
-    private void addQualifiedNameTypesForTestPolicyCmpt(Set qualifiedNameTypes, ITestPolicyCmpt cmpt) throws CoreException {
-        if (cmpt == null){
+    private void addQualifiedNameTypesForTestPolicyCmpt(Set dependencies, ITestPolicyCmpt cmpt) throws CoreException {
+        if (cmpt == null) {
             return;
         }
-        if (StringUtils.isNotEmpty(cmpt.getProductCmpt())){
-            qualifiedNameTypes.add(new QualifiedNameType(cmpt.getProductCmpt(), IpsObjectType.PRODUCT_CMPT));
+        if (StringUtils.isNotEmpty(cmpt.getProductCmpt())) {
+            dependencies.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(
+                    cmpt.getProductCmpt(), IpsObjectType.PRODUCT_CMPT)));
         }
         ITestPolicyCmptRelation[] testRelations = cmpt.getTestPolicyCmptRelations();
         for (int i = 0; i < testRelations.length; i++) {
             // get the dependencies for the childs of the given test policy cmpt
-            if (testRelations[i].isComposition()){
-                addQualifiedNameTypesForTestPolicyCmpt(qualifiedNameTypes, testRelations[i].findTarget());
+            if (testRelations[i].isComposition()) {
+                addQualifiedNameTypesForTestPolicyCmpt(dependencies, testRelations[i].findTarget());
             }
         }
     }
@@ -767,7 +770,15 @@ public class TestCase extends IpsObject implements ITestCase {
                 if (pcTarget == null)
                     return null;
 
-                if (currElem.equals(pcTarget.getName())) {                     if (found){                         // exception more than one element found with the given path                         throw new CoreException(new IpsStatus(NLS.bind(                                 Messages.TestCase_Error_MoreThanOneObject, searchedPath)));                     }                     found = true;                                             pc = pcTarget;                }
+                if (currElem.equals(pcTarget.getName())) {
+                     if (found){
+                         // exception more than one element found with the given path
+                         throw new CoreException(new IpsStatus(NLS.bind(
+                                 Messages.TestCase_Error_MoreThanOneObject, searchedPath)));
+                     }
+                     found = true;                        
+                     pc = pcTarget;
+                }
             }
         }
         return pc;

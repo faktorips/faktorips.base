@@ -10,7 +10,6 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,6 +25,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -933,7 +933,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
-    public QualifiedNameType[] dependsOn() throws CoreException {
+    public Dependency[] dependsOn() throws CoreException {
         return dependsOn(false);
     }
 
@@ -946,42 +946,47 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      *            productrelevant are considered
      * @throws CoreException delegates rising CoreExceptions
      */
-    public QualifiedNameType[] dependsOn(boolean excludeNonProductRelations) throws CoreException {
-        Set qualifiedNameTypes = new HashSet();
-        new AddQNamesFromTypeHierarchyVisitor(qualifiedNameTypes).start(this);
-        addQualifiedNameTypesForRelationTargets(qualifiedNameTypes, excludeNonProductRelations);
-        addQualifiedNameTypesForTableBasedEnums(qualifiedNameTypes);
-        return (QualifiedNameType[])qualifiedNameTypes.toArray(new QualifiedNameType[qualifiedNameTypes.size()]);
+    public Dependency[] dependsOn(boolean excludeNonProductRelations) throws CoreException {
+        Set dependencies = new HashSet();
+        if (hasSupertype()) {
+            dependencies.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(getSupertype(),
+                    IpsObjectType.POLICY_CMPT_TYPE), true));
+        }
+        addQualifiedNameTypesForRelationTargets(dependencies, excludeNonProductRelations);
+        addQualifiedNameTypesForTableBasedEnums(dependencies);
+        return (Dependency[])dependencies.toArray(new Dependency[dependencies.size()]);
     }
 
-    private void addQualifiedNameTypesForTableBasedEnums(Set qualifedNameTypes) throws CoreException{
+    private void addQualifiedNameTypesForTableBasedEnums(Set qualifedNameTypes) throws CoreException {
         IAttribute[] attributes = getAttributes();
         for (int i = 0; i < attributes.length; i++) {
             Datatype datatype = attributes[i].findDatatype();
-            if(datatype instanceof TableContentsEnumDatatypeAdapter){
+            if (datatype instanceof TableContentsEnumDatatypeAdapter) {
                 TableContentsEnumDatatypeAdapter enumDatatype = (TableContentsEnumDatatypeAdapter)datatype;
-                qualifedNameTypes.add(enumDatatype.getTableContents().getQualifiedNameType());
-                qualifedNameTypes.add(new QualifiedNameType(enumDatatype.getTableContents().getTableStructure(), IpsObjectType.TABLE_STRUCTURE));
+                qualifedNameTypes.add(Dependency.create(this.getQualifiedNameType(), enumDatatype.getTableContents()
+                        .getQualifiedNameType()));
+                qualifedNameTypes.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(enumDatatype
+                        .getTableContents().getTableStructure(), IpsObjectType.TABLE_STRUCTURE)));
             }
         }
     }
     
-    private void addQualifiedNameTypesForRelationTargets(Set qualifiedNameTypes, boolean excludeNonProductRelations) throws CoreException {
+    private void addQualifiedNameTypesForRelationTargets(Set dependencies, boolean excludeNonProductRelations) throws CoreException {
         IRelation[] relations = getRelations();
         for (int i = 0; i < relations.length; i++) {
             if (excludeNonProductRelations && !relations[i].isProductRelevant()) {
                 continue;
             }
             String qualifiedName = relations[i].getTarget();
-            qualifiedNameTypes.add(new QualifiedNameType(qualifiedName, IpsObjectType.POLICY_CMPT_TYPE));
-
             // an additional condition "&& this.isAggregateRoot()" will _not_ be helpfull, because this
             // method is called recursively for the detail and so on. But this detail is not an 
             // aggregate root and the recursion will terminate to early.
             if (relations[i].isCompositionMasterToDetail() 
                     && this.getIpsProject().getIpsArtefactBuilderSet().containsAggregateRootBuilder()) {
-                IPolicyCmptType target = getIpsProject().findPolicyCmptType(qualifiedName);
-                qualifiedNameTypes.addAll(Arrays.asList(target.dependsOn()));
+                dependencies.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(qualifiedName, IpsObjectType.POLICY_CMPT_TYPE), true));
+            }
+            else {
+                dependencies.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(qualifiedName, IpsObjectType.POLICY_CMPT_TYPE)));
             }
         }
     }
@@ -1142,31 +1147,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         
         public boolean isRoot() {
             return root;
-        }
-        
-    }
-    
-    private class AddQNamesFromTypeHierarchyVisitor extends PolicyCmptTypeHierarchyVisitor {
-
-        private Set qNames;
-
-        public AddQNamesFromTypeHierarchyVisitor(Set names) {
-            super();
-            qNames = names;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        protected boolean visit(IPolicyCmptType currentType) {
-            if (!currentType.hasSupertype()) {
-                return false;
-            }
-            if (getQualifiedName().equals(currentType.getSupertype())) {
-                return false; // don't create a QNameType for this type
-            }
-            qNames.add(new QualifiedNameType(currentType.getSupertype(), IpsObjectType.POLICY_CMPT_TYPE));
-            return true;
         }
         
     }

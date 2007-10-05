@@ -21,6 +21,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IBundleGroup;
+import org.eclipse.core.runtime.IBundleGroupProvider;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -30,6 +32,7 @@ import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osgi.framework.internal.core.IBuddyPolicy;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -168,6 +171,23 @@ public class IpsPlugin extends AbstractUIPlugin {
         log(e.getStatus());
     }
 
+    /**
+     * Returns the version of the Faktor-IPS feature. If the Faktor-IPS feature is not found
+     * <code>null</code> will be returned.
+     */
+    public String getIpsFeatureVersion(){
+        IBundleGroupProvider[] bundleGroupProviders = Platform.getBundleGroupProviders();
+        for (int i = 0; i < bundleGroupProviders.length; i++) {
+            IBundleGroup[] bundleGroups = bundleGroupProviders[i].getBundleGroups();
+            for (int j = 0; j < bundleGroups.length; j++) {
+                if(bundleGroups[i].getIdentifier().equals("org.faktorips.feature")){
+                    return bundleGroups[i].getVersion();
+                }
+            }
+        }
+        return null;
+    }
+    
     /**
      * This method is called upon plug-in activation
      */

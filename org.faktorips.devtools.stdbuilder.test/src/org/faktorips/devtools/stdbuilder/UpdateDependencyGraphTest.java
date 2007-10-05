@@ -21,8 +21,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
 /**
@@ -50,30 +50,30 @@ public class UpdateDependencyGraphTest extends AbstractIpsPluginTest {
         // B depends on A
         fullBuild();
         DependencyGraph graph = ((IpsModel)project.getIpsModel()).getDependencyGraph(project);
-        QualifiedNameType[] qnt = graph.getDependants(typeA.getQualifiedNameType());
-        assertEquals(1, qnt.length);
-        assertEquals(typeB.getQualifiedNameType(), qnt[0]);
+        Dependency[] dependency = graph.getDependants(typeA.getQualifiedNameType());
+        assertEquals(1, dependency.length);
+        assertEquals(Dependency.create(typeB.getQualifiedNameType(), typeA.getQualifiedNameType(), true), dependency[0]);
 
         // delete the dependency
         typeB.setSupertype("");
         typeB.getIpsSrcFile().save(true, null);
         incrementalBuild();
-        qnt = graph.getDependants(typeA.getQualifiedNameType());
-        assertEquals(0, qnt.length);
+        dependency = graph.getDependants(typeA.getQualifiedNameType());
+        assertEquals(0, dependency.length);
         
         // recreate the dependeny
         typeB.setSupertype(typeA.getQualifiedName());
         typeB.getIpsSrcFile().save(true, null);
         incrementalBuild();
-        qnt = graph.getDependants(typeA.getQualifiedNameType());
-        assertEquals(1, qnt.length);
-        assertEquals(typeB.getQualifiedNameType(), qnt[0]);
+        dependency = graph.getDependants(typeA.getQualifiedNameType());
+        assertEquals(1, dependency.length);
+        assertEquals(Dependency.create(typeB.getQualifiedNameType(), typeA.getQualifiedNameType(), true), dependency[0]);
         
         typeB.setSupertype("");
         typeB.getIpsSrcFile().save(true, null);
         incrementalBuild();
-        qnt = graph.getDependants(typeA.getQualifiedNameType());
-        assertEquals(0, qnt.length);
+        dependency = graph.getDependants(typeA.getQualifiedNameType());
+        assertEquals(0, dependency.length);
     }
 
 }

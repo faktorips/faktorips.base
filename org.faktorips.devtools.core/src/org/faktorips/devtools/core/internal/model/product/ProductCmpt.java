@@ -30,8 +30,8 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.TimedIpsObject;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.CycleException;
+import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -240,36 +240,22 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
-    public QualifiedNameType[] dependsOn() throws CoreException {
+    public Dependency[] dependsOn() throws CoreException {
         
-        // TODO v2 - is this correct? we still have dependencies to other product components!
+        Set dependencySet = new HashSet();
+        
         if(StringUtils.isEmpty(productCmptType)){
-            return new QualifiedNameType[0];
+            dependencySet.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
         }
-        Set qaTypes = new HashSet();
-        
-        qaTypes.add(new QualifiedNameType(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE_V2));
-        
-        // TODO v2 - dependency - hier nur mit direkten abhaengigkeiten arbeiten?
-    	IPolicyCmptType policyCmptType = findPolicyCmptType();
-    	if (policyCmptType!=null) {
-            qaTypes.add(new QualifiedNameType(policyCmptType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE));
-            qaTypes.addAll(Arrays.asList(((PolicyCmptType)policyCmptType).dependsOn(true)));
-    	}
-        org.faktorips.devtools.core.model.productcmpttype.IProductCmptType type = findProductCmptType(getIpsProject());
-        if (type!=null) {
-            qaTypes.addAll(Arrays.asList(type.dependsOn()));
-        }
-        
         
     	// add dependency to related product cmpt's and add dependency to table contents
         IIpsObjectGeneration[] generations = getGenerations();
         for (int i = 0; i < generations.length; i++) {
-            addRelatedProductCmptQualifiedNameTypes(qaTypes, (IProductCmptGeneration) generations[i]);
-            addRelatedTableContentsQualifiedNameTypes(qaTypes, (IProductCmptGeneration) generations[i]);
+            addRelatedProductCmptQualifiedNameTypes(dependencySet, (IProductCmptGeneration) generations[i]);
+            addRelatedTableContentsQualifiedNameTypes(dependencySet, (IProductCmptGeneration) generations[i]);
         }
         
-        return (QualifiedNameType[])qaTypes.toArray(new QualifiedNameType[qaTypes.size()]);
+        return (Dependency[])dependencySet.toArray(new Dependency[dependencySet.size()]);
     }
     
     /*
@@ -278,8 +264,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     private void addRelatedTableContentsQualifiedNameTypes(Set qaTypes, IProductCmptGeneration generation) {
         ITableContentUsage[] tableContentUsages = generation.getTableContentUsages();
         for (int i = 0; i < tableContentUsages.length; i++) {
-            qaTypes.add(new QualifiedNameType(tableContentUsages[i].getTableContentName(),
-                    IpsObjectType.TABLE_CONTENTS));
+            qaTypes.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(tableContentUsages[i]
+                    .getTableContentName(), IpsObjectType.TABLE_CONTENTS)));
         }
     }
 
@@ -289,7 +275,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     private void addRelatedProductCmptQualifiedNameTypes(Set qaTypes, IProductCmptGeneration generation) {
         IProductCmptLink[] relations = generation.getLinks();
         for (int j = 0; j < relations.length; j++) {
-            qaTypes.add(new QualifiedNameType(relations[j].getTarget(), IpsObjectType.PRODUCT_CMPT));
+            qaTypes.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(relations[j].getTarget(),
+                    IpsObjectType.PRODUCT_CMPT)));
         }
     }
     

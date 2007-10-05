@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
+import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -79,25 +80,25 @@ public class DependencyGraph {
         }
         for (Iterator it = allIpsObjects.iterator(); it.hasNext();) {
             IIpsObject ipsObject = (IIpsObject)it.next();
-            QualifiedNameType[] dependsOn = ipsObject.dependsOn();
+            Dependency[] dependsOn = ipsObject.dependsOn();
             addEntriesToDependsOnMap(dependsOn, ipsObject.getQualifiedNameType());
-            addEntryToDependantsForMap(dependsOn, ipsObject.getQualifiedNameType());
+            addEntryToDependantsForMap(dependsOn);
         }
     }
 
-    private void addEntriesToDependsOnMap(QualifiedNameType[] dependsOn,
+    private void addEntriesToDependsOnMap(Dependency[] dependsOn,
             QualifiedNameType requestedNameType) {
         dependsOnMap.put(requestedNameType, CollectionUtil.toArrayList(dependsOn));
     }
 
-    private void addEntryToDependantsForMap(QualifiedNameType[] dependsOn, QualifiedNameType entry) {
+    private void addEntryToDependantsForMap(Dependency[] dependsOn) {
         for (int i = 0; i < dependsOn.length; i++) {
-            List dependants = getDependantsAsList(dependsOn[i]);
+            List dependants = getDependantsAsList(dependsOn[i].getTarget());
             if (dependants == null) {
                 dependants = new ArrayList();
-                dependantsForMap.put(dependsOn[i], dependants);
+                dependantsForMap.put(dependsOn[i].getTarget(), dependants);
             }
-            dependants.add(entry);
+            dependants.add(dependsOn[i]);
         }
     }
 
@@ -108,14 +109,14 @@ public class DependencyGraph {
      * @param qName the fully qualified name type of the ips object for which the dependant objects
      *            should be returned.
      */
-    public QualifiedNameType[] getDependants(QualifiedNameType qName) {
+    public Dependency[] getDependants(QualifiedNameType qName) {
         List qualfiedNameTypes = getDependantsAsList(qName);
 
         if (qualfiedNameTypes == null) {
-            return new QualifiedNameType[0];
+            return new Dependency[0];
         }
-        return (QualifiedNameType[])qualfiedNameTypes
-                .toArray(new QualifiedNameType[qualfiedNameTypes.size()]);
+        return (Dependency[])qualfiedNameTypes
+                .toArray(new Dependency[qualfiedNameTypes.size()]);
     }
 
     private List getDependantsAsList(QualifiedNameType nameType) {
@@ -146,20 +147,26 @@ public class DependencyGraph {
         removeDependency(qName);
         IIpsObject ipsObject = ipsProject.findIpsObject(qName);
         if (ipsObject != null) {
-            QualifiedNameType[] newDependOnNameTypes = ipsObject.dependsOn();
+            Dependency[] newDependOnNameTypes = ipsObject.dependsOn();
             addEntriesToDependsOnMap(newDependOnNameTypes, qName);
-            addEntryToDependantsForMap(newDependOnNameTypes, qName);
+            addEntryToDependantsForMap(newDependOnNameTypes);
         }
     }
 
     private void removeDependency(QualifiedNameType qName) {
         List dependsOnList = (List)dependsOnMap.remove(qName);
         if (dependsOnList != null && !dependsOnList.isEmpty()) {
+            
             for (Iterator it = dependsOnList.iterator(); it.hasNext();) {
-                QualifiedNameType nameType = (QualifiedNameType)it.next();
-                List dependants = getDependantsAsList(nameType);
+                Dependency dependency = (Dependency)it.next();
+                List dependants = getDependantsAsList(dependency.getTarget());
                 if (dependants != null) {
-                    dependants.remove(qName);
+                    for (Iterator itDependants = dependants.iterator(); itDependants.hasNext();) {
+                        Dependency dependency2 = (Dependency)itDependants.next();
+                        if(dependency2.getSource().equals(qName)){
+                            itDependants.remove();
+                        }
+                    }
                 }
             }
         }
@@ -168,6 +175,4 @@ public class DependencyGraph {
     public String toString() {
         return "DependencyGraph for " + ipsProject.getName(); //$NON-NLS-1$
     }
-    
-    
 }

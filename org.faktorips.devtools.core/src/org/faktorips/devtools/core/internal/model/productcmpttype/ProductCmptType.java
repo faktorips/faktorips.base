@@ -30,6 +30,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.type.Type;
+import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -438,24 +439,25 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
-    public QualifiedNameType[] dependsOn() throws CoreException {
-        Set qualifiedNameTypes = new HashSet();
-        super.dependsOn(qualifiedNameTypes);
+    public Dependency[] dependsOn() throws CoreException {
+        Set dependencies = new HashSet();
+        super.dependsOn(dependencies);
         if (hasSupertype()) {
-            qualifiedNameTypes.add(new QualifiedNameType(getSupertype(), IpsObjectType.PRODUCT_CMPT_TYPE_V2));
+            dependencies.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(getSupertype(),
+                    IpsObjectType.PRODUCT_CMPT_TYPE_V2), true));
         }
-        addQualifiedNameTypesForRelationTargets(qualifiedNameTypes);
-        return (QualifiedNameType[])qualifiedNameTypes.toArray(new QualifiedNameType[qualifiedNameTypes.size()]);
+        addQualifiedNameTypesForRelationTargets(dependencies);
+        return (Dependency[])dependencies.toArray(new Dependency[dependencies.size()]);
     }
 
-    private void addQualifiedNameTypesForRelationTargets(Set qualifiedNameTypes) throws CoreException {
+    private void addQualifiedNameTypesForRelationTargets(Set dependencies) throws CoreException {
         IProductCmptTypeAssociation[] relations = getAssociations();
         for (int i = 0; i < relations.length; i++) {
             String qualifiedName = relations[i].getTarget();
-            qualifiedNameTypes.add(new QualifiedNameType(qualifiedName, IpsObjectType.PRODUCT_CMPT_TYPE_V2));
+            dependencies.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(qualifiedName,
+                    IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
         }
     }
-
 
     class RelationFinder extends ProductCmptTypeHierarchyVisitor {
 

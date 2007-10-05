@@ -23,6 +23,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.TimedIpsObject;
+import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -138,11 +139,12 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     /**
      * {@inheritDoc}
      */
-    public QualifiedNameType[] dependsOn() throws CoreException {
-        if(StringUtils.isEmpty(getTableStructure())){
-            return new QualifiedNameType[0];
+    public Dependency[] dependsOn() throws CoreException {
+        if (StringUtils.isEmpty(getTableStructure())) {
+            return new Dependency[0];
         }
-        return new QualifiedNameType[]{new QualifiedNameType(getTableStructure(), IpsObjectType.TABLE_STRUCTURE)};
+        return new Dependency[] { Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(
+                getTableStructure(), IpsObjectType.TABLE_STRUCTURE)) };
     }
     
     /**
