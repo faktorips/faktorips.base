@@ -158,7 +158,7 @@ public interface IType extends IIpsObject {
      * 
      * @param onlyAbstractMethods if true only abstract methods are returned.
      */
-    public IMethod[] findOverrideMethodCandidates(boolean onlyAbstractMethods, IIpsProject project) throws CoreException;
+    public IMethod[] findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject project) throws CoreException;
     
     /**
      * Creates new methods in this type that overrides the given methods.

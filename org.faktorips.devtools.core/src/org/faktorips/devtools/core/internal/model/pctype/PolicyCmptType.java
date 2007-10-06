@@ -21,10 +21,11 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.IpsObject;
+import org.faktorips.devtools.core.internal.model.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.internal.model.type.Method;
+import org.faktorips.devtools.core.internal.model.type.Type;
 import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -35,14 +36,15 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IMethod;
-import org.faktorips.devtools.core.model.pctype.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -54,21 +56,15 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
+public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     private boolean configurableByProductCmptType = false;
 
     private String productCmptType = ""; //$NON-NLS-1$
 
-    private String supertype = ""; //$NON-NLS-1$
-
-    private boolean abstractFlag = false;
-
     private boolean forceExtensionCompilationUnitGeneration = false;
 
     private List attributes = new ArrayList(0);
-
-    private List methods = new ArrayList(0);
 
     private List relations = new ArrayList(0);
 
@@ -79,11 +75,12 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
 
     /**
-     * Constructor for testing purposes.
+     * {@inheritDoc}
      */
-    PolicyCmptType() {
+    protected IpsObjectPartCollection createCollectionForMethods() {
+        return new IpsObjectPartCollection(this, Method.class, "Method");
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -146,36 +143,10 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
-    public String getSupertype() {
-        return supertype;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean hasSupertype() {
-        return StringUtils.isNotEmpty(supertype);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptType findSupertype() throws CoreException {
-        if (StringUtils.isEmpty(supertype)) {
-            return null;
-        }
-        return getIpsProject().findPolicyCmptType(supertype);
+        return getIpsProject().findPolicyCmptType(getSupertype());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setSupertype(String newSupertype) {
-        String oldSupertype = supertype;
-        supertype = newSupertype;
-        valueChanged(oldSupertype, newSupertype);
-    }
-    
     /**
      * {@inheritDoc}
      */
@@ -256,7 +227,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         IIpsElement[] childrenArray = new IIpsElement[numOfChildren];
         List childrenList = new ArrayList(numOfChildren);
         childrenList.addAll(attributes);
-        childrenList.addAll(methods);
+        childrenList.addAll(methods.getBackingList());
         childrenList.addAll(relations);
         childrenList.addAll(rules);
         childrenList.toArray(childrenArray);
@@ -337,39 +308,19 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         return a;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public IMethod[] getMethods() {
-        IMethod[] m = new IMethod[methods.size()];
-        methods.toArray(m);
-        return m;
-    }
-
     /*
      * Returns the list holding the methods as a reference. Package private for use in
      * TypeHierarchy.
      */
     List getMethodList() {
-        return methods;
+        return methods.getBackingList();
     }
 
     /**
      * {@inheritDoc}
      */
     public IMethod newMethod() {
-        Method m = newMethodInternal(getNextPartId());
-        partWasAdded(m);
-        return m;
-    }
-
-    /*
-     * Creates a new attribute without updating the src file.
-     */
-    private Method newMethodInternal(int id) {
-        Method m = new Method(this, id);
-        methods.add(m);
-        return m;
+        return (IMethod)methods.newPart();
     }
 
     /**
@@ -383,10 +334,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      * {@inheritDoc}
      */
     public int[] moveMethods(int[] indexes, boolean up) {
-        ListElementMover mover = new ListElementMover(methods);
-        int[] newIndices = mover.move(indexes, up);
-        partsMoved(getMethods());
-        return newIndices;
+        return methods.moveParts(indexes, up);
     }
 
     /**
@@ -594,8 +542,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         configurableByProductCmptType = Boolean.valueOf(element.getAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE))
                 .booleanValue();
         productCmptType = element.getAttribute(PROPERTY_PRODUCT_CMPT_TYPE);
-        supertype = element.getAttribute(PROPERTY_SUPERTYPE);
-        abstractFlag = Boolean.valueOf(element.getAttribute(PROPERTY_ABSTRACT)).booleanValue();
         forceExtensionCompilationUnitGeneration = Boolean.valueOf(
                 element.getAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU)).booleanValue();
     }
@@ -618,7 +564,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             attributes.add(part);
             return;
         } else if (part instanceof IMethod) {
-            methods.add(part);
+            methods.readdPart(part);
             return;
         } else if (part instanceof IRelation) {
             relations.add(part);
@@ -638,7 +584,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             attributes.remove(part);
             return;
         } else if (part instanceof IMethod) {
-            methods.remove(part);
+            methods.removePart(part);
             return;
         } else if (part instanceof IRelation) {
             relations.remove(part);
@@ -659,8 +605,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             return newAttributeInternal(id);
         } else if (xmlTagName.equals(Relation.TAG_NAME)) {
             return newRelationInternal(id);
-        } else if (xmlTagName.equals(Method.TAG_NAME)) {
-            return newMethodInternal(id);
+        } else if (xmlTagName.equals(Method.XML_ELEMENT_NAME)) {
+            return methods.newPart(xmlTag, id);
         } else if (xmlTagName.equals(ValidationRule.TAG_NAME)) {
             return newRuleInternal(id);
         }
@@ -674,10 +620,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE, "" + configurableByProductCmptType); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_PRODUCT_CMPT_TYPE, productCmptType);
-        newElement.setAttribute(PROPERTY_SUPERTYPE, supertype);
-        newElement.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag); //$NON-NLS-1$
-        newElement
-                .setAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU, "" + forceExtensionCompilationUnitGeneration); //$NON-NLS-1$
+        newElement.setAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU, "" + forceExtensionCompilationUnitGeneration); //$NON-NLS-1$
     }
 
     /**
@@ -687,27 +630,11 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         super.validateThis(list);
         TypeHierarchy supertypeHierarchy = null;
         supertypeHierarchy = TypeHierarchy.getSupertypeHierarchy(this);
-        if (supertypeHierarchy.containsCycle()) {
-            String msg = "Cycle detected in type hierarchy."; //$NON-NLS-1$
-            list.add(new Message(MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg.toString(), Message.ERROR, this, IPolicyCmptType.PROPERTY_SUPERTYPE));
-            return;
-        }
-        validateSupertypeHierarchy(supertypeHierarchy, list);
-
-        IPolicyCmptType supertypeObj = null;
-        if (!supertype.equals("")) { //$NON-NLS-1$
-            supertypeObj = (IPolicyCmptType)getIpsProject().findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, supertype);
-            if (supertypeObj == null) {
-                String text = NLS.bind(Messages.PolicyCmptType_msgSupertypeNotFound, supertype);
-                list.add(new Message(MSGCODE_SUPERTYPE_NOT_FOUND, text, Message.ERROR, this,
-                        IPolicyCmptType.PROPERTY_SUPERTYPE)); //$NON-NLS-1$
-            }
-        }
 
         validateProductSide(list);
 
         if (!isAbstract()) {
-            validateIfAllAbstractMethodsAreImplemented(supertypeHierarchy, list);
+            validateIfAllAbstractMethodsAreImplemented(getIpsProject(), list);
             IIpsProjectProperties props = getIpsProject().getProperties();
             if (props.isContainerRelationIsImplementedRuleEnabled()) {
                 validateIfAllContainerRelationsAreImplemented(supertypeHierarchy, list);
@@ -736,7 +663,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
                 return;
             }
         }
-        
         IPolicyCmptType superPolicyCmptType = findSupertype();
         if (superPolicyCmptType != null){
             if (! superPolicyCmptType.isConfigurableByProductCmptType()){
@@ -750,42 +676,15 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /**
      * Validation for {@link IPolicyCmptType#MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD}
      */
-    private void validateIfAllAbstractMethodsAreImplemented(ITypeHierarchy hierarchy, MessageList list)
+    private void validateIfAllAbstractMethodsAreImplemented(IIpsProject ipsProject, MessageList list)
             throws CoreException {
-        if (hierarchy.getSupertype(this) == null) {
-            return;
-        }
-        IMethod[] methods = hierarchy.getAllMethods(hierarchy.getSupertype(this));
+        
+        IMethod[] methods = findOverrideMethodCandidates(true, ipsProject);
         for (int i = 0; i < methods.length; i++) {
-            if (methods[i].isAbstract()) {
-                if (!isAbstractMethodImplemented(this, methods[i], hierarchy)) {
-                    String text = NLS.bind(Messages.PolicyCmptType_msgMustOverrideAbstractMethod, methods[i].getName(),
-                            methods[i].getPolicyCmptType().getQualifiedName());
-                    list.add(new Message(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, text, Message.ERROR,
-                            this));
-                }
-            }
+            String text = NLS.bind(Messages.PolicyCmptType_msgMustOverrideAbstractMethod, methods[i].getName(),
+                    methods[i].getType().getQualifiedName());
+            list.add(new Message(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, text, Message.ERROR, this));
         }
-    }
-
-    /**
-     * Returns true if the method is implemented in the indicated type or one of the type's
-     * supertypes. Helper method for the one above.
-     * 
-     * @param pcType The policy component type where the search for the implementation starts.
-     * @param method An abstract method of one the type's supertypes.
-     * @param hierarchy The supertype hierarchy where the supertype relation is already resolved.
-     */
-    private boolean isAbstractMethodImplemented(IPolicyCmptType pcType, IMethod method, ITypeHierarchy hierarchy) {
-        IMethod match = pcType.getMatchingMethod(method);
-        if (match != null && !match.isAbstract()) {
-            return true;
-        }
-        IPolicyCmptType supertype = hierarchy.getSupertype(pcType);
-        if (supertype == null) {
-            return false;
-        }
-        return isAbstractMethodImplemented(supertype, method, hierarchy);
     }
 
     /**
@@ -800,7 +699,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
                     String text = NLS.bind(Messages.PolicyCmptType_msgMustImplementContainerRelation, relations[i]
                             .getName(), relations[i].getPolicyCmptType().getQualifiedName());
                     list.add(new Message(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION, text,
-                            Message.ERROR, this, PROPERTY_ABSTRACT));
+                            Message.ERROR, this, IType.PROPERTY_ABSTRACT));
                 }
             }
         }
@@ -823,55 +722,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
 
     /**
-     * Checks if an MSGCODE_SUPERTYPE_NOT_FOUND error in the supertype hirarchy exists. If so, this
-     * is reported with a new message with code MSGCODE_INCONSISTENT_TYPE_HIERARCHY in the given
-     * list. The message(s) returned by the supertype ar not added.
-     */
-    private void validateSupertypeHierarchy(TypeHierarchy supertypeHierarchy, MessageList ml) throws CoreException {
-        if (supertypeHierarchy == null) {
-            return;
-        }
-        IPolicyCmptType supertype = supertypeHierarchy.getSupertype(this);
-        if (supertype == null) {
-            return; 
-        }
-        try {
-            MessageList tmpList = supertype.validate();
-            for (int i=0; i<tmpList.getNoOfMessages(); i++) {
-                Message msg = tmpList.getMessage(i);
-                if (msg.getCode().equals(MSGCODE_INCONSISTENT_TYPE_HIERARCHY)
-                        || msg.getCode().equals(MSGCODE_SUPERTYPE_NOT_FOUND)
-                        || msg.getCode().equals(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING)
-                        || msg.getCode().equals(MSGCODE_CYCLE_IN_TYPE_HIERARCHY)) {
-                    ml.add(new Message(MSGCODE_INCONSISTENT_TYPE_HIERARCHY,
-                            Messages.PolicyCmptType_msgInconsistentTypeHierarchy, Message.ERROR, this, PROPERTY_SUPERTYPE));
-                    
-                }
-            }
-        } catch (CoreException ce) {
-            throw ce;
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus(e));
-        }
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isAbstract() {
-        return abstractFlag;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setAbstract(boolean newValue) {
-        boolean oldValue = abstractFlag;
-        abstractFlag = newValue;
-        valueChanged(oldValue, newValue);
-    }
-
-    /**
      * {@inheritDoc}
      */
     public ITypeHierarchy getSupertypeHierarchy() throws CoreException {
@@ -883,19 +733,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      */
     public ITypeHierarchy getSubtypeHierarchy() throws CoreException {
         return TypeHierarchy.getSubtypeHierarchy(this);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IMethod[] findOverrideMethodCandidates(boolean onlyAbstractMethods) throws CoreException {
-        List candidates = new ArrayList();
-        ITypeHierarchy hierarchy = getSupertypeHierarchy();
-        IPolicyCmptType[] supertypes = hierarchy.getAllSupertypes(this);
-        for (int i = 0; i < supertypes.length; i++) {
-            getOverrideCandidates(supertypes[i], onlyAbstractMethods, candidates);
-        }
-        return (IMethod[])candidates.toArray(new IMethod[candidates.size()]);
     }
 
     /**
@@ -989,78 +826,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
                 dependencies.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(qualifiedName, IpsObjectType.POLICY_CMPT_TYPE)));
             }
         }
-    }
-
-    /*
-     * helper method for getOverrideCandidates
-     */
-    private void getOverrideCandidates(IPolicyCmptType type, boolean onlyAbstractMethods, List candidates) {
-        IMethod[] supertypeMethods = type.getMethods();
-        for (int i = 0; i < supertypeMethods.length; i++) {
-            if (!hasSameMethod(supertypeMethods[i])) {
-                if (!onlyAbstractMethods || supertypeMethods[i].isAbstract()) {
-                    // candidate found, but it might be already in the list
-                    if (!sameMethodAlreadyInCandidateList(supertypeMethods[i], candidates)) {
-                        candidates.add(supertypeMethods[i]);
-                    }
-                }
-            }
-        }
-    }
-
-    /*
-     * helper method for getOverrideCandidates
-     */
-    private boolean sameMethodAlreadyInCandidateList(IMethod method, List candidates) {
-        for (Iterator it = candidates.iterator(); it.hasNext();) {
-            IMethod candidate = (IMethod)it.next();
-            if (method.isSame(candidate)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean hasSameMethod(IMethod method) {
-        return getMatchingMethod(method) != null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IMethod getMatchingMethod(IMethod method) {
-        for (Iterator it = this.methods.iterator(); it.hasNext();) {
-            IMethod thisMethod = (IMethod)it.next();
-            if (thisMethod.isSame(method)) {
-                return thisMethod;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IMethod[] overrideMethods(IMethod[] methods) {
-        IMethod[] newMethods = new IMethod[methods.length];
-        for (int i = 0; i < methods.length; i++) {
-            IMethod override = newMethod();
-            override.setModifier(methods[i].getModifier());
-            override.setAbstract(false);
-            override.setDatatype(methods[i].getDatatype());
-            override.setName(methods[i].getName());
-            IParameter[] params = methods[i].getParameters();
-            for (int j = 0; j < params.length; j++) {
-                IParameter newParam = override.newParameter();
-                newParam.setName(params[j].getName());
-                newParam.setDatatype(params[j].getDatatype());
-            }
-            newMethods[i] = override;
-        }
-        return newMethods;
     }
 
     /**
@@ -1172,6 +937,20 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             attribute = currentType.getAttribute(attributeName);
             return attribute==null;
         }
+    }
+
+     /**
+     * {@inheritDoc}
+     */
+    public IAssociation getAssociation(String name) {
+        throw new RuntimeException("Not implemented yet");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IAssociation[] getAssociations() {
+        throw new RuntimeException("Not implemented yet");
     }    
 
 }

@@ -33,7 +33,8 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IMethod;
+import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -366,10 +367,10 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
             if (!method.validate().containsErrorMsg()) {
                 try {
                     Datatype returnType = project.findDatatype(method.getDatatype());
-                    String[] paramTypes = method.getParameterTypes();
-                    Datatype[] paramDatatypes = new Datatype[paramTypes.length];
+                    IParameter[] params = method.getParameters();
+                    Datatype[] paramDatatypes = new Datatype[params.length];
                     for (int j = 0; j < paramDatatypes.length; j++) {
-                    	paramDatatypes[j] = project.findDatatype(paramTypes[j]);
+                    	paramDatatypes[j] = project.findDatatype(params[j].getDatatype());
 					}
                     generateCodeForMethodDefinedInModel(method, returnType, paramDatatypes, methodsBuilder);
                     

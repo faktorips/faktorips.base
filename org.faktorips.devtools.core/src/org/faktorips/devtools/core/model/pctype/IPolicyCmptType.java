@@ -19,14 +19,14 @@ package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IType;
 
 /**
  * The policy component type represents a Java class that is part of a policy class model.
  */
-public interface IPolicyCmptType extends IIpsObject, Datatype {
+public interface IPolicyCmptType extends IType, Datatype {
     
 	
     /**
@@ -66,27 +66,11 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     public final static String MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD = MSGCODE_PREFIX + "MustOverrideAbstractMethod"; //$NON-NLS-1$
     
     /**
-     * Validation message code to indicate that the supertype hierarchy contains a cycle.
-     */
-    public final static String MSGCODE_CYCLE_IN_TYPE_HIERARCHY = MSGCODE_PREFIX + "SupertypeHierarchyContainsCycle"; //$NON-NLS-1$
-
-    /**
      * Validation message code to indicate that a readonly-container relation exists in the type's supertype
      * hierarchy that must be implemented, or the type must also be abstract.
      */
     public final static String MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION = MSGCODE_PREFIX + "MustImplementContainerRelation"; //$NON-NLS-1$
     
-    /**
-     * Validation message code to indicate that there exists an error within the type hierarchy of this type.
-     */
-    public final static String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistentTypeHierarchy"; //$NON-NLS-1$
-    
-    /**
-     * Validation message code to indicate that the supertype can not be found.
-     */
-    public final static String MSGCODE_SUPERTYPE_NOT_FOUND = 
-    	MSGCODE_PREFIX + "SupertypeNotFound"; //$NON-NLS-1$
-
     /**
      * Validation message code to indicate that this policy component type is defined as configurable by 
      * product, but the product component type name is not set.
@@ -292,73 +276,10 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     public int[] moveAttributes(int[] indexes, boolean up);
     
     /**
-     * Returns the type's methods. 
-     */
-    public IMethod[] getMethods();
-    
-    /**
-     * Creates a new method and returns it.
-     */
-    public IMethod newMethod();
-
-    /**
-     * Returns the number of methods.
-     */
-    public int getNumOfMethods();
-    
-    /**
-     * Moves the methods identified by the indexes up or down by one position.
-     * If one of the indexes is 0 (the first method), no method is moved up. 
-     * If one of the indexes is the number of methods - 1 (the last method)
-     * no method is moved down. 
-     * 
-     * @param indexes	The indexes identifying the methods.
-     * @param up 		<code>true</code>, to move the methods up, 
-     * <false> to move them down.
-     * 
-     * @return The new indexes of the moved methods.
-     * 
-     * @throws NullPointerException if indexes is null.
-     * @throws IndexOutOfBoundsException if one of the indexes does not identify
-     * a method.
-     */
-    public int[] moveMethods(int[] indexes, boolean up);
-    
-    /**
-     * Returns true if this type has a same method as the indicated one.
-     * Two methods are considered to be same when they have the same name,
-     * the same number of parameters and the parameter's datatypes are equal. 
-     */
-    public boolean hasSameMethod(IMethod method);
-    
-    /**
-     * Returns the method that matches the indicated one regarding it's signature. Two methods match if they have 
-     * the same name, the same number of parameters and the parameter's datatypes are equal.
-     * Returns <code>null</code> if the type does not contain a matching method or the indicated method is 
-     * <code>null</code>. 
-     */
-    public IMethod getMatchingMethod(IMethod method);
-
-    /**
-     * Returns a list of methods defined in any of the type's supertypes
-     * that can be overriden (and isn't overriden yet).
-     * 
-     * @param onlyAbstractMethods if true only abstract methods are returned.
-     */
-    public IMethod[] findOverrideMethodCandidates(boolean onlyAbstractMethods) throws CoreException;
-    
-    /**
      * Returns an array of all attributes of all supertypes not yet overwritten by this 
      * policy component type.
      */
     public IAttribute[] findOverrideAttributeCandidates() throws CoreException;
-    
-    /**
-     * Creates new methods in this type that overrides the given methods.
-     * Note that it is not checked, if the methods really belong to one of
-     * the type's supertypes.
-     */
-    public IMethod[] overrideMethods(IMethod[] methods);
     
     /**
      * Creates new attributes in this type overriding the given attributes.

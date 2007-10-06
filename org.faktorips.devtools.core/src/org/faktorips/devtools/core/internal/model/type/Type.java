@@ -89,6 +89,13 @@ public abstract class Type extends BaseIpsObject implements IType {
     public String getSupertype() {
         return supertype;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IType findSupertype(IIpsProject ipsProject) throws CoreException {
+        return (IType)ipsProject.findIpsObject(getIpsObjectType(), supertype);
+    }
 
     /**
      * {@inheritDoc}
@@ -164,9 +171,9 @@ public abstract class Type extends BaseIpsObject implements IType {
     /**
      * {@inheritDoc}
      */
-    public IMethod[] findOverrideMethodCandidates(boolean onlyAbstractMethods, IIpsProject project) throws CoreException {
-        MethodOverrideCandidatesFinder finder = new MethodOverrideCandidatesFinder(project, onlyAbstractMethods);
-        finder.start(this);
+    public IMethod[] findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject) throws CoreException {
+        MethodOverrideCandidatesFinder finder = new MethodOverrideCandidatesFinder(ipsProject, onlyNotImplementedAbstractMethods);
+        finder.start(findSupertype(ipsProject));
         return finder.getCandidates();
     }
     
@@ -220,8 +227,6 @@ public abstract class Type extends BaseIpsObject implements IType {
         finder.start(this);
         return finder.association;
     }
-
-    
 
     /**
      * {@inheritDoc}
@@ -329,11 +334,11 @@ public abstract class Type extends BaseIpsObject implements IType {
     class MethodOverrideCandidatesFinder extends TypeHierarchyVisitor {
 
         private List candidates = new ArrayList();
-        private boolean onlyAbstractMethods;
+        private boolean onlyNotImplementedAbstractMethods;
         
-        public MethodOverrideCandidatesFinder(IIpsProject ipsProject, boolean onlyAbstractMethods) {
+        public MethodOverrideCandidatesFinder(IIpsProject ipsProject, boolean onlyNotImplementedAbstractMethods) {
             super(ipsProject);
-            this.onlyAbstractMethods = onlyAbstractMethods;
+            this.onlyNotImplementedAbstractMethods = onlyNotImplementedAbstractMethods;
         }
         
         public IMethod[] getCandidates() {
@@ -344,14 +349,19 @@ public abstract class Type extends BaseIpsObject implements IType {
          * {@inheritDoc}
          */
         protected boolean visit(IType currentType) throws CoreException {
-            IMethod[] supertypeMethods = currentType.getMethods();
-            for (int i = 0; i < supertypeMethods.length; i++) {
-                if (!hasSameMethod(supertypeMethods[i])) {
-                    if (!onlyAbstractMethods || supertypeMethods[i].isAbstract()) {
-                        // candidate found, but it might be already in the list
-                        if (!sameMethodAlreadyInCandidateList(supertypeMethods[i], candidates)) {
-                            candidates.add(supertypeMethods[i]);
-                        }
+            IMethod[] typeMethods = currentType.getMethods();
+            for (int i = 0; i < typeMethods.length; i++) {
+                if (onlyNotImplementedAbstractMethods && !typeMethods[i].isAbstract()) {
+                    continue;
+                }
+                IMethod overridingMethod = typeMethods[i].findOverridingMethod(Type.this, ipsProject);
+                if (overridingMethod!=null && overridingMethod.getType()==Type.this) {
+                    continue;
+                }
+                if (overridingMethod==null || (!onlyNotImplementedAbstractMethods)) {
+                    // candidate found, but it might be already in the list
+                    if (!sameMethodAlreadyInCandidateList(typeMethods[i], candidates)) {
+                        candidates.add(typeMethods[i]);
                     }
                 }
             }

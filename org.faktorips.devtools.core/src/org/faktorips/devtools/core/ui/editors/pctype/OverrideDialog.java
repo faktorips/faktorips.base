@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
-import org.faktorips.devtools.core.model.pctype.IMember;
+import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 
@@ -167,7 +167,7 @@ public abstract class OverrideDialog extends CheckedTreeSelectionDialog {
     
     static abstract class CandidatesContentProvider implements ITreeContentProvider {
         
-        private IMember[] candidates;
+        private IIpsObjectPartContainer[] candidates;
         private IPolicyCmptType[] supertypes;
 
         CandidatesContentProvider(IPolicyCmptType pcType) {
@@ -180,8 +180,7 @@ public abstract class OverrideDialog extends CheckedTreeSelectionDialog {
         }
         
         /** 
-         * Overridden method.
-         * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
+         * {@inheritDoc}
          */
         public Object[] getChildren(Object parentElement) {
             if (parentElement instanceof IPolicyCmptType) {
@@ -198,51 +197,46 @@ public abstract class OverrideDialog extends CheckedTreeSelectionDialog {
         }
 
         /** 
-         * Overridden method.
-         * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
+         * {@inheritDoc}
          */
         public Object getParent(Object element) {
             if (element instanceof IPolicyCmptType) {
                 return null;
             }
-            if (element instanceof IMember) {
-                return ((IMember)element).getParent();
+            if (element instanceof IIpsObjectPartContainer) {
+                return ((IIpsObjectPartContainer)element).getParent();
             }
             throw new RuntimeException("Unkown element " + element); //$NON-NLS-1$
         }
 
         /** 
-         * Overridden method.
-         * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
+         * {@inheritDoc}
          */
         public boolean hasChildren(Object element) {
             return getChildren(element).length>0;
         }
 
         /** 
-         * Overridden method.
-         * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+         * {@inheritDoc}
          */
         public Object[] getElements(Object inputElement) {
             return supertypes;
         }
 
         /** 
-         * Overridden method.
-         * @see org.eclipse.jface.viewers.IContentProvider#dispose()
+         * {@inheritDoc}
          */
         public void dispose() {
             // nothing to do
         }
 
         /** 
-         * Overridden method.
-         * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+         * {@inheritDoc}
          */
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             // nothing to do
         }
         
-        public abstract IMember[] getCandidates(IPolicyCmptType pcType);
+        public abstract IIpsObjectPartContainer[] getCandidates(IPolicyCmptType pcType);
 	}
 }

@@ -23,9 +23,8 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IMember;
-import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
 
@@ -42,37 +41,20 @@ public class OverrideAttributeDialog extends OverrideDialog {
         setTitle(Messages.OverrideAttributeDialog_title);
         setEmptyListMessage(Messages.OverrideAttributeDialog_labelNoAttributes);
         setSelectLabelText(Messages.OverrideAttributeDialog_labelSelectAttribute);
-       	selectAbstractMethods(pcType);
     }
     
-    private void selectAbstractMethods(IPolicyCmptType pcType) {
-        try {
-            // select abstract mehods
-            List selected = new ArrayList();
-            IMethod[] method = pcType.findOverrideMethodCandidates(false);
-            for (int i=0; i<method.length; i++) {
-                if (method[i].isAbstract()) {
-                    selected.add(method[i]);
-                }
-            }
-            setInitialElementSelections(selected);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 	/**
 	 * Returns the methods the user has selected to override. 
 	 */
 	public IAttribute[] getSelectedAttributes() {
-	    List methods = new ArrayList();
+	    List attributes = new ArrayList();
 	    Object[] checked = getResult();
 	    for (int i=0; i<checked.length; i++) {
 	        if (checked[i] instanceof IAttribute) {
-	            methods.add(checked[i]);
+	            attributes.add(checked[i]);
 	        }
 	    }
-	    return (IAttribute[])methods.toArray(new IAttribute[methods.size()]);
+	    return (IAttribute[])attributes.toArray(new IAttribute[attributes.size()]);
 	}
 
     private static class CandidatesContentProvider extends OverrideDialog.CandidatesContentProvider {
@@ -81,12 +63,12 @@ public class OverrideAttributeDialog extends OverrideDialog {
         	super(pcType);
         }
 
-		public IMember[] getCandidates(IPolicyCmptType pcType) {
+		public IIpsObjectPartContainer[] getCandidates(IPolicyCmptType pcType) {
 			try {
 				return pcType.findOverrideAttributeCandidates();
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
-				return new IMember[0];
+				return new IIpsObjectPartContainer[0];
 			}
 		}
 	}

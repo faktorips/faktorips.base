@@ -115,6 +115,13 @@ public class IpsObjectPartCollection {
         return parts.toArray(emptyArray);
     }
     
+    /**
+     * Returns the underlying list that stores the parts. 
+     */
+    public List getBackingList() {
+        return parts;
+    }
+    
     public IIpsObjectPart[] getParts() {
         return (IIpsObjectPart[])parts.toArray(new IIpsObjectPart[parts.size()]);
     }

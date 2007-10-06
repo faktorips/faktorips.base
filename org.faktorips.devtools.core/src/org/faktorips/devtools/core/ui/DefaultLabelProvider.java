@@ -25,9 +25,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IMethod;
-import org.faktorips.devtools.core.model.pctype.IParameter;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.fl.FlFunction;
 
 
@@ -110,13 +109,14 @@ public class DefaultLabelProvider extends LabelProvider {
     }
     
     private Image getMethodImage(IMethod method) throws CoreException {
-        IPolicyCmptType type = method.getPolicyCmptType(); 
-        IPolicyCmptType[] supertypes = type.getSupertypeHierarchy().getAllSupertypes(type);
-        for (int i=0; i<supertypes.length; i++) {
-            if (supertypes[i].hasSameMethod(method)) {
-                return new OverrideImageDescriptor(method.getImage()).createImage();
-            }
-        }
+        // TODO v2 - fix default labeler provider for methods.
+        //        IType type = method.getType(); 
+//        IType[] supertypes = type.getSupertypeHierarchy().getAllSupertypes(type);
+//        for (int i=0; i<supertypes.length; i++) {
+//            if (supertypes[i].hasSameMethod(method)) {
+//                return new OverrideImageDescriptor(method.getImage()).createImage();
+//            }
+//        }
         return method.getImage();
     }
     

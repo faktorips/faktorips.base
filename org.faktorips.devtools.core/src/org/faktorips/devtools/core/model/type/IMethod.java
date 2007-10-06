@@ -100,5 +100,14 @@ public interface IMethod extends IParameterContainer {
      */
     public boolean isSame(IMethod method);
     
-    
+    /**
+     * Returns the method overriding this one or <code>null</code> if no such method is found. 
+     * The search starts from the given type up the supertype hierarchy.
+     * 
+     * @param typeToSearchFrom  The type to start the search from 
+     * @param ipsProject        The project which ips object path is used to search.
+     * 
+     * @throws CoreException if an error occurs while searching.
+     */
+    public IMethod findOverridingMethod(IType typeToSearchFrom, IIpsProject ipsProject) throws CoreException;
 }

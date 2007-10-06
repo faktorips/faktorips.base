@@ -24,7 +24,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IMethod;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
@@ -59,8 +59,8 @@ public class NewPcTypeWizard extends NewIpsObjectWizard {
     /** 
      * {@inheritDoc}
      */
-    protected void finishIpsObject(IIpsObject pdObject) throws CoreException {
-        IPolicyCmptType type = (IPolicyCmptType)pdObject;
+    protected void finishIpsObject(IIpsObject ipsObject) throws CoreException {
+        IPolicyCmptType type = (IPolicyCmptType)ipsObject;
         String supertypeName = typePage.getSuperType(); 
         type.setSupertype(supertypeName);
         String postfix = IpsPlugin.getDefault().getIpsPreferences().getDefaultProductCmptTypePostfix();
@@ -71,7 +71,7 @@ public class NewPcTypeWizard extends NewIpsObjectWizard {
         	type.setConfigurableByProductCmptType(false);
         }
         if (typePage.overrideAbstractMethods()) {
-            IMethod[] abstractMethods = type.findOverrideMethodCandidates(true);
+            IMethod[] abstractMethods = type.findOverrideMethodCandidates(true, ipsObject.getIpsProject());
             type.overrideMethods(abstractMethods);
         }
     }

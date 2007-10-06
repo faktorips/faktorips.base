@@ -23,9 +23,9 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.pctype.IMember;
-import org.faktorips.devtools.core.model.pctype.IMethod;
+import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.type.IMethod;
 
 
 public class OverrideMethodDialog extends OverrideDialog {
@@ -48,7 +48,7 @@ public class OverrideMethodDialog extends OverrideDialog {
         try {
             // select abstract mehods
             List selected = new ArrayList();
-            IMethod[] method = pcType.findOverrideMethodCandidates(false);
+            IMethod[] method = pcType.findOverrideMethodCandidates(false, pcType.getIpsProject());
             for (int i=0; i<method.length; i++) {
                 if (method[i].isAbstract()) {
                     selected.add(method[i]);
@@ -80,12 +80,12 @@ public class OverrideMethodDialog extends OverrideDialog {
         	super(pcType);
         }
 
-		public IMember[] getCandidates(IPolicyCmptType pcType) {
+		public IIpsObjectPartContainer[] getCandidates(IPolicyCmptType pcType) {
 			try {
-				return pcType.findOverrideMethodCandidates(false);
+				return pcType.findOverrideMethodCandidates(false, pcType.getIpsProject());
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
-				return new IMember[0];
+				return new IIpsObjectPartContainer[0];
 			}
 		}
 	}

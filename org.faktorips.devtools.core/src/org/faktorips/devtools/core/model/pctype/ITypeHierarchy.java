@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
+import org.faktorips.devtools.core.model.type.IMethod;
+
 
 /**
  * Represents the hierarchy formed by the subtype/supertype relationship

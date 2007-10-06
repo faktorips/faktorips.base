@@ -44,8 +44,8 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IMethod;
-import org.faktorips.devtools.core.model.pctype.IParameter;
+import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
@@ -79,6 +79,58 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         sourceFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
         pcType = (PolicyCmptType)sourceFile.getIpsObject();
         pcType.setConfigurableByProductCmptType(false);
+    }
+    
+    public void testGetOverrideCandidates() throws CoreException {
+        assertEquals(0, pcType.findOverrideMethodCandidates(false, ipsProject).length);
+        
+        // create two more types that act as supertype and supertype's supertype 
+        IIpsSrcFile file1 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supertype", true, null);
+        IPolicyCmptType supertype = (PolicyCmptType)file1.getIpsObject();
+        IIpsSrcFile file2 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supersupertype", true, null);
+        IPolicyCmptType supersupertype = (PolicyCmptType)file2.getIpsObject();
+        pcType.setSupertype(supertype.getQualifiedName());
+        supertype.setSupertype(supersupertype.getQualifiedName());
+        
+        IMethod m1 = pcType.newMethod();
+        m1.setName("calc");
+        
+        // supertype methods
+        IMethod m2 = supertype.newMethod();
+        m2.setName("calc");
+        IMethod m3 = supertype.newMethod();
+        m3.setName("calc");
+        m3.newParameter("Decimal", "p1");
+        
+        // supersupertype methods
+        IMethod m4 = supersupertype.newMethod();
+        m4.setName("calc");
+        m4.newParameter("Decimal", "p1");
+        
+        IMethod m5 = supersupertype.newMethod();
+        m5.setName("calc");
+        m5.setAbstract(true);        
+        m5.newParameter("Money", "p1");
+        
+        IMethod[] candidates = pcType.findOverrideMethodCandidates(false, ipsProject);
+        assertEquals(2, candidates.length);
+        assertEquals(m3, candidates[0]);
+        assertEquals(m5, candidates[1]);
+        // notes: 
+        // m2 is not a candidate because it is already overridden by m1
+        // m4 is not a candidate because it is overridden by m3 and m3 comes first in the hierarchy
+        
+        // only not implemented abstract methods
+        candidates = pcType.findOverrideMethodCandidates(true, ipsProject);
+        assertEquals(1, candidates.length);
+        assertEquals(m5, candidates[0]);
+        // note: now only m5 is a candidate as it's abstract, m3 is not.
+        
+        // override the supersupertype method m5 in the supertype
+        // => now also m5 is not a candidate any more, if only not implemented abstract methods are requested.
+        supertype.overrideMethods(new IMethod[]{m5});
+        candidates = pcType.findOverrideMethodCandidates(true, ipsProject);
+        assertEquals(0, candidates.length);
     }
     
     public void testFindProductCmptType() throws CoreException {
@@ -550,50 +602,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertNotNull(hierarchy);
     }
     
-    public void testGetOverrideCandidates() throws CoreException {
-        assertEquals(0, pcType.findOverrideMethodCandidates(false).length);
-        
-        // create two more types that act as supertype and supertype's supertype 
-        IIpsSrcFile file1 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supertype", true, null);
-        IPolicyCmptType supertype = (PolicyCmptType)file1.getIpsObject();
-        IIpsSrcFile file2 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supersupertype", true, null);
-        IPolicyCmptType supersupertype = (PolicyCmptType)file2.getIpsObject();
-        pcType.setSupertype(supertype.getQualifiedName());
-        supertype.setSupertype(supersupertype.getQualifiedName());
-        
-        IMethod m1 = pcType.newMethod();
-        m1.setName("calc");
-        
-        // supertype methods
-        IMethod m2 = supertype.newMethod();
-        m2.setName("calc");
-        IMethod m3 = supertype.newMethod();
-        m3.setName("calc");
-        m3.newParameter("Decimal", "p1");
-        
-        // supersupertype methods
-        IMethod m4 = supersupertype.newMethod();
-        m4.setName("calc");
-        m4.newParameter("Decimal", "p1");
-        
-        IMethod m5 = supersupertype.newMethod();
-        m5.setName("calc");
-        m5.setAbstract(true);        m5.newParameter("Money", "p1");
-        
-        IMethod[] candidates = pcType.findOverrideMethodCandidates(false);
-        assertEquals(2, candidates.length);
-        assertEquals(m3, candidates[0]);
-        assertEquals(m5, candidates[1]);
-        // notes: 
-        // m2 is not a candidate because it is already overriden by m1
-        // m4 is not a candidate because it is the same as m3
-        
-        // only abstract methods
-        candidates = pcType.findOverrideMethodCandidates(true);
-        assertEquals(1, candidates.length);
-        assertEquals(m5, candidates[0]);
-        // note: now only m5 is a candidate as it's abstract, m2 is not.
-    }
     
     public void testOverride() throws CoreException {
         IIpsSrcFile file1 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supertype", true, null);

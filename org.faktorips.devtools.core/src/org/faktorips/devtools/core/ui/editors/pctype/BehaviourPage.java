@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.editors.type.MethodsSection;
 
 
 /**
@@ -33,9 +34,8 @@ public class BehaviourPage extends PctEditorPage {
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage#createPageContent(org.eclipse.swt.widgets.Composite, org.faktorips.devtools.core.ui.controls.UIToolkit)
-     */ 
+     * {@inheritDoc}
+     */
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
 		formBody.setLayout(createPageLayout(2, true));
 		new MethodsSection(getPolicyCmptType(), formBody, toolkit);

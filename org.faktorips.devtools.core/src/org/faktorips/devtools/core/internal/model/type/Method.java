@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -48,7 +49,7 @@ import org.w3c.dom.Element;
  */
 public class Method extends BaseIpsObjectPart implements IMethod {
 
-    private final static String XML_ELEMENT_NAME = "Method";
+    public final static String XML_ELEMENT_NAME = "Method";
     
     private String datatype = "void"; //$NON-NLS-1$
     private Modifier modifier = Modifier.PUBLISHED;
@@ -190,6 +191,15 @@ public class Method extends BaseIpsObjectPart implements IMethod {
     public IParameter getParameter(int i) {
         return (IParameter)parameters.getPart(i);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IMethod findOverridingMethod(IType typeToSearchFrom, IIpsProject ipsProject) throws CoreException {
+        OverridingMethodFinder finder = new OverridingMethodFinder(ipsProject);
+        finder.start(typeToSearchFrom);
+        return finder.overridingMethod;
+    }
 
     /** 
      * {@inheritDoc}
@@ -276,6 +286,27 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         }
     }
     
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(getType().getQualifiedName());
+        buffer.append(": ");
+        buffer.append(datatype);
+        buffer.append(' ');
+        buffer.append(getName());
+        buffer.append('(');
+        IParameter[] params = getParameters();
+        for (int i = 0; i < params.length; i++) {
+            if (i>0) {
+                buffer.append(", ");
+            }
+            buffer.append(params[i].getDatatype());
+            buffer.append(' ');
+            buffer.append(params[i].getName());
+        }
+        buffer.append(')');
+        return buffer.toString();
+    }
+    
     private static class AbstractPropertyImageDescriptor extends CompositeImageDescriptor {
 
         private final static Point DEFAULT_SIZE = new Point(16, 16);
@@ -304,5 +335,25 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         }
     }
 
+    class OverridingMethodFinder extends TypeHierarchyVisitor {
 
+        private IMethod overridingMethod;
+        
+        public OverridingMethodFinder(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IType currentType) throws CoreException {
+            IMethod match = currentType.getMatchingMethod(Method.this);
+            if (match != null && match!=Method.this) {
+                overridingMethod = match;
+                return false;
+            }
+            return true;
+        }
+        
+    }
 }
