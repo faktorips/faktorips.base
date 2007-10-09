@@ -264,6 +264,16 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         }
     }
 
+    void findIpsObjects(List result) throws CoreException {
+        if (!exists()) {
+            return;
+        }
+        IIpsPackageFragment[] packs = this.getIpsPackageFragments();
+        for (int i = 0; i < packs.length; i++) {
+            ((IpsPackageFragment)packs[i]).findIpsObjects(result);
+        }
+    }
+
     /**
      * Searches all objects of the given type starting with the given prefix in this root folder and
      * adds them to the result.

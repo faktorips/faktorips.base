@@ -795,6 +795,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
     	getIpsObjectPathInternal().findIpsObjects(this, type, result, visitedEntries);
     }
 
+    public void findAllIpsObjectsOfSrcFolderEntries(List result) throws CoreException {
+        Set visitedEntries = new HashSet();
+        getIpsObjectPathInternal().findAllIpsObjectsOfSrcFolderEntries(this, result, visitedEntries);
+    }
+
     /**
      * {@inheritDoc}
      */

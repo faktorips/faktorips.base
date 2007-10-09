@@ -127,6 +127,11 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         ((ArchiveIpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsObjects(type, result);
     }
 
+    //TODO implementation
+    protected void findIpsObjectsInternal(IIpsProject ipsProject, List result, Set visitedEntries) throws CoreException {
+        throw new RuntimeException("Not implemented yet.");
+    }
+
     /**
      * {@inheritDoc}
      */

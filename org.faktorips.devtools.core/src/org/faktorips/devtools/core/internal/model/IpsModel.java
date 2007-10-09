@@ -1420,7 +1420,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public IpsObjectType[] getIpsObjectTypes() {
         return ipsObjectTypes;
     }
-
+    
     /**
      * {@inheritDoc}
      */

@@ -218,6 +218,10 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         basePackageDerived = name;
     }
 
+    protected void findIpsObjectsInternal(IIpsProject ipsProject, List result, Set visitedEntries) throws CoreException {
+        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsObjects(result);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -352,5 +356,6 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         }
         return path + IPath.SEPARATOR + tocPath;
     }
+
     
 }

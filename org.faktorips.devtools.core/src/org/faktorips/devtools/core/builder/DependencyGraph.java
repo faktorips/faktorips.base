@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
-import org.faktorips.devtools.core.model.Dependency;
+import org.faktorips.devtools.core.internal.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -74,7 +74,7 @@ public class DependencyGraph {
         dependantsForMap = new HashMap();
         dependsOnMap = new HashMap();
         List allIpsObjects = new ArrayList();
-        ipsProject.findAllIpsObjects(allIpsObjects);
+        ipsProject.findAllIpsObjectsOfSrcFolderEntries(allIpsObjects);
         if(TRACE_DEPENDENCY_GRAPH_MANAGEMENT){
             System.out.println("all: " + allIpsObjects); //$NON-NLS-1$
         }

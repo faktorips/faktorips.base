@@ -21,12 +21,12 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.Dependency;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.internal.model.type.Type;
-import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -786,13 +786,13 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     public Dependency[] dependsOn(boolean excludeNonProductRelations) throws CoreException {
         Set dependencies = new HashSet();
         if (hasSupertype()) {
-            dependencies.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(getSupertype(),
-                    IpsObjectType.POLICY_CMPT_TYPE), true));
+            dependencies.add(Dependency.createSubtypeDependency(this.getQualifiedNameType(), new QualifiedNameType(getSupertype(),
+                    IpsObjectType.POLICY_CMPT_TYPE)));
         }
         addQualifiedNameTypesForRelationTargets(dependencies, excludeNonProductRelations);
         addQualifiedNameTypesForTableBasedEnums(dependencies);
         return (Dependency[])dependencies.toArray(new Dependency[dependencies.size()]);
-    }
+}
 
     private void addQualifiedNameTypesForTableBasedEnums(Set qualifedNameTypes) throws CoreException {
         IAttribute[] attributes = getAttributes();
@@ -800,34 +800,36 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             Datatype datatype = attributes[i].findDatatype();
             if (datatype instanceof TableContentsEnumDatatypeAdapter) {
                 TableContentsEnumDatatypeAdapter enumDatatype = (TableContentsEnumDatatypeAdapter)datatype;
-                qualifedNameTypes.add(Dependency.create(this.getQualifiedNameType(), enumDatatype.getTableContents()
-                        .getQualifiedNameType()));
-                qualifedNameTypes.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(enumDatatype
-                        .getTableContents().getTableStructure(), IpsObjectType.TABLE_STRUCTURE)));
+                qualifedNameTypes.add(Dependency.createReferenceDependency(this.getQualifiedNameType(), enumDatatype
+                        .getTableContents().getQualifiedNameType()));
+                qualifedNameTypes.add(Dependency.createReferenceDependency(this.getQualifiedNameType(),
+                        new QualifiedNameType(enumDatatype.getTableContents().getTableStructure(),
+                                IpsObjectType.TABLE_STRUCTURE)));
             }
         }
     }
     
-    private void addQualifiedNameTypesForRelationTargets(Set dependencies, boolean excludeNonProductRelations) throws CoreException {
+    private void addQualifiedNameTypesForRelationTargets(Set dependencies, boolean excludeNonProductRelations)
+            throws CoreException {
         IRelation[] relations = getRelations();
         for (int i = 0; i < relations.length; i++) {
             if (excludeNonProductRelations && !relations[i].isProductRelevant()) {
                 continue;
             }
             String qualifiedName = relations[i].getTarget();
-            // an additional condition "&& this.isAggregateRoot()" will _not_ be helpfull, because this
-            // method is called recursively for the detail and so on. But this detail is not an 
+            // an additional condition "&& this.isAggregateRoot()" will _not_ be helpfull, because
+            // this
+            // method is called recursively for the detail and so on. But this detail is not an
             // aggregate root and the recursion will terminate to early.
-            if (relations[i].isCompositionMasterToDetail() 
-                    && this.getIpsProject().getIpsArtefactBuilderSet().containsAggregateRootBuilder()) {
-                dependencies.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(qualifiedName, IpsObjectType.POLICY_CMPT_TYPE), true));
-            }
-            else {
-                dependencies.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(qualifiedName, IpsObjectType.POLICY_CMPT_TYPE)));
+            if (relations[i].isCompositionMasterToDetail()) {
+                dependencies.add(Dependency.createCompostionMasterDetailDependency(this.getQualifiedNameType(),
+                        new QualifiedNameType(qualifiedName, IpsObjectType.POLICY_CMPT_TYPE)));
+            } else {
+                dependencies.add(Dependency.createReferenceDependency(this.getQualifiedNameType(),
+                        new QualifiedNameType(qualifiedName, IpsObjectType.POLICY_CMPT_TYPE)));
             }
         }
     }
-
     /**
      * {@inheritDoc}
      */

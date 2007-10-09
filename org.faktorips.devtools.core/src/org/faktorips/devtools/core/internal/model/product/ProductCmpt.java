@@ -18,7 +18,6 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
-import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -28,10 +27,10 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.Dependency;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.TimedIpsObject;
 import org.faktorips.devtools.core.model.CycleException;
-import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -241,20 +240,21 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      * {@inheritDoc}
      */
     public Dependency[] dependsOn() throws CoreException {
-        
+
         Set dependencySet = new HashSet();
-        
-        if(StringUtils.isEmpty(productCmptType)){
-            dependencySet.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
+
+        if (!StringUtils.isEmpty(productCmptType)) {
+            dependencySet.add(Dependency.createInstanceOfDependency(this.getQualifiedNameType(), new QualifiedNameType(
+                    productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
         }
-        
-    	// add dependency to related product cmpt's and add dependency to table contents
+
+        // add dependency to related product cmpt's and add dependency to table contents
         IIpsObjectGeneration[] generations = getGenerations();
         for (int i = 0; i < generations.length; i++) {
-            addRelatedProductCmptQualifiedNameTypes(dependencySet, (IProductCmptGeneration) generations[i]);
-            addRelatedTableContentsQualifiedNameTypes(dependencySet, (IProductCmptGeneration) generations[i]);
+            addRelatedProductCmptQualifiedNameTypes(dependencySet, (IProductCmptGeneration)generations[i]);
+            addRelatedTableContentsQualifiedNameTypes(dependencySet, (IProductCmptGeneration)generations[i]);
         }
-        
+
         return (Dependency[])dependencySet.toArray(new Dependency[dependencySet.size()]);
     }
     
@@ -264,8 +264,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     private void addRelatedTableContentsQualifiedNameTypes(Set qaTypes, IProductCmptGeneration generation) {
         ITableContentUsage[] tableContentUsages = generation.getTableContentUsages();
         for (int i = 0; i < tableContentUsages.length; i++) {
-            qaTypes.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(tableContentUsages[i]
-                    .getTableContentName(), IpsObjectType.TABLE_CONTENTS)));
+            qaTypes.add(Dependency.createReferenceDependency(this.getQualifiedNameType(), new QualifiedNameType(
+                    tableContentUsages[i].getTableContentName(), IpsObjectType.TABLE_CONTENTS)));
         }
     }
 
@@ -275,8 +275,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     private void addRelatedProductCmptQualifiedNameTypes(Set qaTypes, IProductCmptGeneration generation) {
         IProductCmptLink[] relations = generation.getLinks();
         for (int j = 0; j < relations.length; j++) {
-            qaTypes.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(relations[j].getTarget(),
-                    IpsObjectType.PRODUCT_CMPT)));
+            qaTypes.add(Dependency.createReferenceDependency(this.getQualifiedNameType(), new QualifiedNameType(
+                    relations[j].getTarget(), IpsObjectType.PRODUCT_CMPT)));
         }
     }
     

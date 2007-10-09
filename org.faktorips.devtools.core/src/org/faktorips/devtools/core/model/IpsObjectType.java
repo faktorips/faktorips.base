@@ -100,6 +100,7 @@ public class IpsObjectType {
     public final static IpsObjectType IPS_SOURCE_FILE =  
         new IpsObjectType("Unknown", "Ips Source file", "*", false, true, "IpsSrcFile.gif", "IpsSrcFileDisabled.gif");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
+    
     /**
      * Returns the IpsObjectType that has the given file extension. 
 	 * Returns null, if no type with the given file extension exists or the given

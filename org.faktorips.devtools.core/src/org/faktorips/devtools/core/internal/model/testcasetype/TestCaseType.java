@@ -25,8 +25,8 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.Dependency;
 import org.faktorips.devtools.core.internal.model.IpsObject;
-import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -142,7 +142,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             ITestPolicyCmptTypeParameter[] parameters) {
         for (int i = 0; i < parameters.length; i++) {
             if (StringUtils.isNotEmpty(parameters[i].getPolicyCmptType())) {
-                qualifiedNameTypes.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(
+                qualifiedNameTypes.add(Dependency.createReferenceDependency(this.getQualifiedNameType(), new QualifiedNameType(
                         parameters[i].getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE)));
             }
             addQualifiedNameTypesForTestPolicyCmptTypeParams(qualifiedNameTypes, parameters[i]

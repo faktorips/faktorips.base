@@ -169,5 +169,10 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     public String toString() {
         return "ProjectRefEntry[" + (referencedIpsProject==null?"null":referencedIpsProject.getName()) + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
+
+    //TODO implementation
+    protected void findIpsObjectsInternal(IIpsProject ipsProject, List result, Set visitedEntries) throws CoreException {
+        throw new RuntimeException("Not implemented yet.");
+    }
     
 }

@@ -95,6 +95,24 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
      */
     protected abstract void findIpsObjectsInternal(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException;
 
+    
+    /**
+     * Adds all objects of the given type found in the path entry to the result list. 
+     */
+    public final void findIpsObjects(IIpsProject ipsProject, List result, Set visitedEntries) throws CoreException {
+        if (visitedEntries.contains(this)) {
+            return;
+        }
+        visitedEntries.add(this);
+        findIpsObjectsInternal(ipsProject, result, visitedEntries);
+    }
+    
+    /**
+     * Adds all objects of the given type found in the path entry to the result list. 
+     */
+    protected abstract void findIpsObjectsInternal(IIpsProject ipsProject, List result, Set visitedEntries) throws CoreException;
+    
+    
     /**
      * Returns all objects of the given type starting with the given prefix found on the path.
      * 

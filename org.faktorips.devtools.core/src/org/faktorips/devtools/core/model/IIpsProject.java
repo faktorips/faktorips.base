@@ -387,6 +387,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public void findAllIpsObjects(List result) throws CoreException;
 
     /**
+     * Returns all IpsObjects that are accessible through IpsSrcFolder entries of this IpsProject.
+     */
+    public void findAllIpsObjectsOfSrcFolderEntries(List result) throws CoreException;
+    
+    /**
      * Returns all objects of the given type starting with the given prefix found on the ipsobject path.
      */
     public IIpsObject[] findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase) throws CoreException;

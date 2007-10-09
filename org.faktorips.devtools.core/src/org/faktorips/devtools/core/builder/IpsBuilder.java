@@ -35,9 +35,9 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.Dependency;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.IpsSrcFile;
-import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
@@ -381,11 +381,15 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             for (Iterator it = dependenciesForProjectsMap.keySet().iterator(); it.hasNext();) {
                 IIpsProject ipsProject = (IIpsProject)it.next();
                 Set dependencySet = (Set)dependenciesForProjectsMap.get(ipsProject);
+                
+                //dependent ips object can be located in a different project which can have a differen artefact builder set
+                //therefor the builder set needs to be determined for each project at this point
+                ipsArtefactBuilderSet = ipsProject.getIpsArtefactBuilderSet();
                 Set alreadyBuild = new HashSet(dependencySet.size());
                 for (Iterator it2 = dependencySet.iterator(); it2.hasNext();) {
                     Dependency dependency = (Dependency)it2.next();
                     QualifiedNameType buildCandidate = dependency.getSource();
-                    if(alreadyBuild.contains(buildCandidate)){
+                    if (alreadyBuild.contains(buildCandidate)) {
                         continue;
                     }
                     alreadyBuild.add(buildCandidate);
@@ -484,44 +488,6 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
     }
 
-    private int collectDependenciesForIncrementalBuild(List addedOrChangesIpsSrcFiles,
-            List removedIpsSrcFiles,
-            Map dependenciesForProjectsMap) throws CoreException {
-
-        IIpsProject ipsProject = getIpsProject();
-        int numberOfBuildCandidates = 0;
-        for (Iterator it = addedOrChangesIpsSrcFiles.iterator(); it.hasNext();) {
-            IpsSrcFile ipsSrcFile = (IpsSrcFile)it.next();
-            numberOfBuildCandidates += collectDependenciesForDependantProjects(ipsSrcFile.getQualifiedNameType(),
-                    ipsProject, new HashSet(), dependenciesForProjectsMap);
-        }
-        for (Iterator it = removedIpsSrcFiles.iterator(); it.hasNext();) {
-            IpsSrcFile ipsSrcFile = (IpsSrcFile)it.next();
-            // TODO do we still need to find out if the file is in the ips projects roots?
-            IIpsPackageFragmentRoot[] roots = ipsSrcFile.getIpsProject().getSourceIpsPackageFragmentRoots();
-            for (int i = 0; i < roots.length; i++) {
-                if (ipsSrcFile.getIpsPackageFragment().getRoot().equals(roots[i])) {
-                    numberOfBuildCandidates += collectDependenciesForDependantProjects(ipsSrcFile.getQualifiedNameType(),
-                            ipsProject, new HashSet(), dependenciesForProjectsMap);
-                }
-            }
-        }
-        return numberOfBuildCandidates;
-    }
-
-    private int collectDependencies(DependencyGraph graph, Set dependencySet, QualifiedNameType nameType) {
-        Dependency[] dependencies = graph.getDependants(nameType);
-        for (int i = 0; i < dependencies.length; i++) {
-            if (!dependencySet.contains(dependencies[i])) {
-                dependencySet.add(dependencies[i]);
-                if(dependencies[i].isTransitive()){
-                    collectDependencies(graph, dependencySet, dependencies[i].getSource());
-                }
-            }
-        }
-        return dependencies.length;
-    }
-
     private void updateDependencyGraph(MultiStatus buildStatus, IIpsSrcFile ipsSrcFile) {
         try {
             DependencyGraph graph = ((IpsModel)ipsSrcFile.getIpsProject().getIpsModel()).getDependencyGraph(ipsSrcFile
@@ -532,36 +498,137 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                     "dependency graph for the IpsSrcFile: " + ipsSrcFile, e)); //$NON-NLS-1$
         }
     }
+    
+    private int collectDependenciesForIncrementalBuild(List addedOrChangesIpsSrcFiles,
+            List removedIpsSrcFiles,
+            Map dependenciesForProjectsMap) throws CoreException {
 
-    private int collectDependenciesForDependantProjects(QualifiedNameType root,
+        IIpsProject ipsProject = getIpsProject();
+        Counter counter = new Counter(0);
+        for (Iterator it = addedOrChangesIpsSrcFiles.iterator(); it.hasNext();) {
+            IpsSrcFile ipsSrcFile = (IpsSrcFile)it.next();
+            collectDependenciesForProject(ipsSrcFile.getQualifiedNameType(), ipsProject, new HashSet(),
+                    dependenciesForProjectsMap, counter, false);
+        }
+        for (Iterator it = removedIpsSrcFiles.iterator(); it.hasNext();) {
+            IpsSrcFile ipsSrcFile = (IpsSrcFile)it.next();
+            // TODO do we still need to find out if the file is in the ips projects roots?
+            IIpsPackageFragmentRoot[] roots = ipsSrcFile.getIpsProject().getSourceIpsPackageFragmentRoots();
+            for (int i = 0; i < roots.length; i++) {
+                if (ipsSrcFile.getIpsPackageFragment().getRoot().equals(roots[i])) {
+                    collectDependenciesForProject(ipsSrcFile.getQualifiedNameType(),
+                            ipsProject, new HashSet(), dependenciesForProjectsMap, counter, false);
+                }
+            }
+        }
+        return counter.getCounts();
+    }
+
+    private void collectDependenciesForProject(QualifiedNameType root,
             IIpsProject ipsProject,
             Set visitedProjects,
-            Map buildCandidatesForProjectMap) throws CoreException {
+            Map dependenciesForProjectMap,
+            Counter counter,
+            boolean searchInstanceOfDependencyOnly) throws CoreException {
 
-        int numberOfCandidates = 0;
         // build object of dependant projects only if the dependant project can be build...
         if (!ipsProject.canBeBuild()) {
-            return numberOfCandidates;
+            return;
         }
 
         IpsModel model = (IpsModel)IpsPlugin.getDefault().getIpsModel();
         DependencyGraph graph = model.getDependencyGraph(ipsProject);
         if (graph == null) {
-            return numberOfCandidates;
+            return;
         }
-
-        Set dependencySet = getDependencySetForProject(ipsProject, buildCandidatesForProjectMap);
-        numberOfCandidates += collectDependencies(graph, dependencySet, root);
-        visitedProjects.add(ipsProject);
-        IIpsProject[] dependantProjects = ipsProject.getReferencingProjects(false);
-
-        for (int i = 0; i < dependantProjects.length && !visitedProjects.contains(dependantProjects[i]); i++) {
-            numberOfCandidates += collectDependenciesForDependantProjects(root, dependantProjects[i],
-                    visitedProjects, buildCandidatesForProjectMap);
-        }
-        return numberOfCandidates;
+        // when collecting dependencies it is necessary to know if the builder set has any
+        // properties that influences the dependency management
+        IIpsArtefactBuilderSet ipsArtefactBuilderSet = model.getIpsArtefactBuilderSet(ipsProject, false);
+        collectDependencies(ipsArtefactBuilderSet, graph, dependenciesForProjectMap, root, counter, searchInstanceOfDependencyOnly);
+        collectDependenciesWithinDependantProjects(root, ipsProject, visitedProjects, dependenciesForProjectMap,
+                counter, searchInstanceOfDependencyOnly);
     }
 
+    private void collectDependenciesWithinDependantProjects(QualifiedNameType root,
+            IIpsProject ipsProject,
+            Set visitedProjects,
+            Map dependenciesForProjectMap,
+            Counter counter,
+            boolean searchInstanceOfDependencyOnly) throws CoreException {
+
+        visitedProjects.add(ipsProject);
+        IIpsProject[] dependantProjects = ipsProject.getReferencingProjects(false);
+        for (int i = 0; i < dependantProjects.length && !visitedProjects.contains(dependantProjects[i]); i++) {
+            collectDependenciesForProject(root, dependantProjects[i], visitedProjects, dependenciesForProjectMap,
+                    counter, searchInstanceOfDependencyOnly);
+        }
+        return;
+    }    
+    
+    private void collectDependencies(IIpsArtefactBuilderSet ipsArtefactBuilderSet,
+            DependencyGraph graph,
+            Map dependenciesForProjectMap,
+            QualifiedNameType nameType,
+            Counter counter,
+            boolean searchInstanceOfDependencyOnly) throws CoreException {
+
+        Set dependencySet = getDependencySetForProject(graph.getIpsProject(), dependenciesForProjectMap);
+        Dependency[] dependencies = graph.getDependants(nameType);
+
+        for (int i = 0; i < dependencies.length; i++) {
+            if (!dependencySet.contains(dependencies[i])) {
+                
+                if(searchInstanceOfDependencyOnly){
+                    if (dependencies[i].isInstanceOf()) {
+                        dependencySet.add(dependencies[i]);
+                        counter.increment();
+                    }
+                    continue;
+                }
+                
+                dependencySet.add(dependencies[i]);
+                counter.increment();
+                if (dependencies[i].isSubtype()) {
+                    collectDependencies(ipsArtefactBuilderSet, graph, dependenciesForProjectMap, dependencies[i]
+                            .getSource(), counter, false);
+                    collectDependenciesWithinDependantProjects(dependencies[i].getSource(), graph.getIpsProject(),
+                            new HashSet(100), dependenciesForProjectMap, counter, false);
+                    continue;
+                }
+
+                if (dependencies[i].isCompositionMasterDetail() && ipsArtefactBuilderSet.containsAggregateRootBuilder()) {
+                    collectDependencies(ipsArtefactBuilderSet, graph, dependenciesForProjectMap, dependencies[i]
+                            .getSource(), counter, false);
+                    collectDependenciesWithinDependantProjects(dependencies[i].getSource(), graph.getIpsProject(),
+                            new HashSet(100), dependenciesForProjectMap, counter, false);
+                    continue;
+                }
+                collectDependencies(ipsArtefactBuilderSet, graph, dependenciesForProjectMap, dependencies[i]
+                        .getSource(), counter, true);
+                collectDependenciesWithinDependantProjects(dependencies[i].getSource(), graph.getIpsProject(),
+                        new HashSet(100), dependenciesForProjectMap, counter, true);
+            }
+        }
+        return;
+    }
+    
+    private static class Counter{
+        
+        private int counts = 0;
+        
+        private Counter(int offSet){
+            this.counts = offSet;
+        }
+        
+        private void increment(){
+            counts++;
+        }
+        
+        private int getCounts(){
+            return counts;
+        }
+    }
+    
     /**
      * ResourceDeltaVisitor for the incremental build.
      */

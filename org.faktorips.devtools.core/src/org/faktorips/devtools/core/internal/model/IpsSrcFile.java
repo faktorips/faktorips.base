@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
 

@@ -28,9 +28,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.Dependency;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestValueParameter;
-import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -172,7 +172,7 @@ public class TestCase extends IpsObject implements ITestCase {
         Set dependencies = new HashSet();
         // the test case depends on the test case type
         if (StringUtils.isNotEmpty(testCaseType)) {
-            dependencies.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(testCaseType,
+            dependencies.add(Dependency.createInstanceOfDependency(this.getQualifiedNameType(), new QualifiedNameType(testCaseType,
                     IpsObjectType.TEST_CASE_TYPE)));
         }
         // add dependency to product cmpts
@@ -191,7 +191,7 @@ public class TestCase extends IpsObject implements ITestCase {
             return;
         }
         if (StringUtils.isNotEmpty(cmpt.getProductCmpt())) {
-            dependencies.add(Dependency.create(this.getQualifiedNameType(), new QualifiedNameType(
+            dependencies.add(Dependency.createReferenceDependency(this.getQualifiedNameType(), new QualifiedNameType(
                     cmpt.getProductCmpt(), IpsObjectType.PRODUCT_CMPT)));
         }
         ITestPolicyCmptRelation[] testRelations = cmpt.getTestPolicyCmptRelations();

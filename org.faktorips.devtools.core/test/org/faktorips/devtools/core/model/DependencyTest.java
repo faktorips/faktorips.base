@@ -17,34 +17,36 @@
 
 package org.faktorips.devtools.core.model;
 
+import org.faktorips.devtools.core.internal.model.Dependency;
+
 import junit.framework.TestCase;
 
 public class DependencyTest extends TestCase {
 
     public final void testEqualsObject() {
         
-        Dependency dependency1 = Dependency.create(new QualifiedNameType("a.b.A", IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.B", IpsObjectType.POLICY_CMPT_TYPE));
-        Dependency dependency2 = Dependency.create(new QualifiedNameType("a.b.A", IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.B", IpsObjectType.POLICY_CMPT_TYPE));
+        Dependency dependency1 = Dependency.createReferenceDependency(new QualifiedNameType("a.b.A", IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.B", IpsObjectType.POLICY_CMPT_TYPE));
+        Dependency dependency2 = Dependency.createReferenceDependency(new QualifiedNameType("a.b.A", IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.B", IpsObjectType.POLICY_CMPT_TYPE));
         assertEquals(dependency1, dependency2);
         
-        dependency2 = Dependency.create(new QualifiedNameType("a.b.A", IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.C", IpsObjectType.POLICY_CMPT_TYPE));
+        dependency2 = Dependency.createReferenceDependency(new QualifiedNameType("a.b.A", IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.C", IpsObjectType.POLICY_CMPT_TYPE));
         assertFalse(dependency1.equals(dependency2));
 
-        dependency2 = Dependency.create(new QualifiedNameType("a.b.A", IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.B", IpsObjectType.POLICY_CMPT_TYPE), true);
+        dependency2 = Dependency.createSubtypeDependency(new QualifiedNameType("a.b.A", IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.B", IpsObjectType.POLICY_CMPT_TYPE));
         assertFalse(dependency1.equals(dependency2));
         
         assertFalse(dependency1.equals(null));
     }
 
     public void testHashCode(){
-        Dependency dependency1 = Dependency.create(new QualifiedNameType("a.b.A", IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.B", IpsObjectType.POLICY_CMPT_TYPE));
-        Dependency dependency2 = Dependency.create(new QualifiedNameType("a.b.A", IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.B", IpsObjectType.POLICY_CMPT_TYPE));
+        Dependency dependency1 = Dependency.createReferenceDependency(new QualifiedNameType("a.b.A", IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.B", IpsObjectType.POLICY_CMPT_TYPE));
+        Dependency dependency2 = Dependency.createReferenceDependency(new QualifiedNameType("a.b.A", IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.B", IpsObjectType.POLICY_CMPT_TYPE));
         assertEquals(dependency1.hashCode(), dependency2.hashCode());
         
-        dependency2 = Dependency.create(new QualifiedNameType("a.b.A", IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.C", IpsObjectType.POLICY_CMPT_TYPE));
+        dependency2 = Dependency.createReferenceDependency(new QualifiedNameType("a.b.A", IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.C", IpsObjectType.POLICY_CMPT_TYPE));
         assertFalse(dependency1.hashCode() ==  dependency2.hashCode());
 
-        dependency2 = Dependency.create(new QualifiedNameType("a.b.A", IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.B", IpsObjectType.POLICY_CMPT_TYPE), true);
+        dependency2 = Dependency.createSubtypeDependency(new QualifiedNameType("a.b.A", IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.B", IpsObjectType.POLICY_CMPT_TYPE));
         assertFalse(dependency1.equals(dependency2));
 
     }

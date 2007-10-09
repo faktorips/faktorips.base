@@ -44,8 +44,11 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -269,6 +272,35 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertEquals(msgList.getNoOfMessages(), markers.length);
     }
 
+    public void testDependencyGraphInstanceOfDependency() throws Exception{
+        IProductCmptType a = newProductCmptType(root, "A");
+        IProductCmptType b = newProductCmptType(root, "B");
+        IAssociation aToB = a.newAssociation();
+        aToB.setTarget(b.getQualifiedName());
+        
+        IProductCmpt aProduct = newProductCmpt(a, "AProduct");
+        
+        TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        List builtIpsObjects = builder.getBuiltIpsObjects();
+        assertTrue(builtIpsObjects.contains(a));
+        assertTrue(builtIpsObjects.contains(b));
+        assertTrue(builtIpsObjects.contains(aProduct));
+        
+        builtIpsObjects.clear();
+        assertTrue(builtIpsObjects.isEmpty());
+        
+        IProductCmptTypeAttribute bAttr = b.newAttribute("bAttr");
+        bAttr.setDatatype("String");
+        b.getIpsSrcFile().save(true, null);
+
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        assertTrue(builtIpsObjects.contains(a));
+        assertTrue(builtIpsObjects.contains(b));
+        assertTrue(builtIpsObjects.contains(aProduct));
+
+    }
+    
     public void testDependencyGraph() throws CoreException {
 
         IProductCmptType a = newProductCmptType(root, "A");
@@ -306,18 +338,14 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         builtIpsObjects = builder.getBuiltIpsObjects();
         assertTrue(builtIpsObjects.contains(a));
-        
-        //TODO wieso muss aProduct enthalten sein
-//        assertTrue(builtIpsObjects.contains(aProduct));
+        assertTrue(builtIpsObjects.contains(aProduct));
 
         // recreate d. All dependants are expected to be rebuilt
         d = newProductCmptType(root, "D");
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         builtIpsObjects = builder.getBuiltIpsObjects();
         assertTrue(builtIpsObjects.contains(a));
-
-        //TODO wieso muss aProduct enthalten sein
-//        assertTrue(builtIpsObjects.contains(aProduct));
+        assertTrue(builtIpsObjects.contains(aProduct));
 
         // delete d and dependants. The IpsBuilder has to make sure to only build the existing
         // IpsObjects though the graph still contains the dependency chain of the deleted IpsOjects
@@ -406,31 +434,41 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     public void testDependencyGraphWithReferencingProjects() throws Exception {
 
-        IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
         IIpsProject projectB = createSubProject(ipsProject, "projectB");
-        IPolicyCmptType b = newPolicyCmptType(projectB, "B");
         IIpsProject projectC = createSubProject(projectB, "projectC");
-        IPolicyCmptType c = newPolicyCmptType(projectC, "C");
-        b.setSupertype(a.getQualifiedName());
-        c.setSupertype(b.getQualifiedName());
 
-        TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject);
+        IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
+        
+        IPolicyCmptType b = newPolicyCmptType(projectB, "B");
+        b.setSupertype(a.getQualifiedName());
+        
+        IPolicyCmptType c = newPolicyCmptType(projectC, "C");
+        c.setSupertype(b.getQualifiedName());
+        
+        TestDependencyIpsArtefactBuilder builderProjectA = createTestBuilderForProject(ipsProject);
         // the project needs to have its own builder set otherwise the project is considered
         // invalid since there is no builder set found for the builder set id defined in the
         // project properties
-        createTestBuilderForProject(projectB);
-        createTestBuilderForProject(projectC);
+        TestDependencyIpsArtefactBuilder builderProjectB = createTestBuilderForProject(projectB);
+        TestDependencyIpsArtefactBuilder builderProjectC = createTestBuilderForProject(projectC);
 
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
-
         projectB.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
-
         projectC.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
 
-        List buildObjects = builder.getBuiltIpsObjects();
+        List buildObjects = builderProjectA.getBuiltIpsObjects();
         assertTrue(buildObjects.contains(a));
 
-        builder.clear();
+        List buildObjectsB = builderProjectB.getBuiltIpsObjects();
+        assertTrue(buildObjectsB.contains(b));
+
+        List buildObjectsC = builderProjectC.getBuiltIpsObjects();
+        assertTrue(buildObjectsC.contains(c));
+        
+        builderProjectA.clear();
+        builderProjectB.clear();
+        builderProjectC.clear();
+        
         IAttribute attrA = a.newAttribute();
         attrA.setName("AttrA");
         attrA.setAttributeType(AttributeType.CHANGEABLE);
@@ -439,11 +477,19 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
 
+        buildObjects = builderProjectA.getBuiltIpsObjects();
         assertTrue(buildObjects.contains(a));
-        assertTrue(buildObjects.contains(b));
-        assertTrue(buildObjects.contains(c));
 
-        builder.clear();
+        buildObjectsB = builderProjectB.getBuiltIpsObjects();
+        assertTrue(buildObjectsB.contains(b));
+
+        buildObjectsC = builderProjectC.getBuiltIpsObjects();
+        assertTrue(buildObjectsC.contains(c));
+
+        builderProjectA.clear();
+        builderProjectB.clear();
+        builderProjectC.clear();
+        
         attrA = a.newAttribute();
         attrA.setName("attrB");
         attrA.setAttributeType(AttributeType.CHANGEABLE);
@@ -453,11 +499,98 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         ((IpsProject)projectC).getIpsProjectPropertiesFile().delete(true, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
 
+        buildObjects = builderProjectA.getBuiltIpsObjects();
         assertTrue(buildObjects.contains(a));
-        assertTrue(buildObjects.contains(b));
-        assertFalse(buildObjects.contains(c));
+
+        buildObjectsB = builderProjectB.getBuiltIpsObjects();
+        assertTrue(buildObjectsB.contains(b));
+
+        buildObjectsC = builderProjectC.getBuiltIpsObjects();
+        assertFalse(buildObjectsC.contains(c));
     }
 
+    public void testDependencyGraphWithProductsInReferencingProjects() throws Exception {
+        IIpsProject projectB = createSubProject(ipsProject, "projectB");
+        IIpsProject projectC = createSubProject(projectB, "projectC");
+
+        IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
+        IProductCmptType aProductType = newProductCmptType(ipsProject, "aProductType");
+        IProductCmpt aProduct = newProductCmpt(aProductType, "aProduct");
+        a.setProductCmptType(aProductType.getQualifiedName());
+        aProductType.setPolicyCmptType(a.getQualifiedName());
+        
+        IPolicyCmptType b = newPolicyCmptType(projectB, "B");
+        b.setSupertype(a.getQualifiedName());
+        
+        IProductCmptType bProductType = newProductCmptType(projectB, "bProductType");
+        bProductType.setPolicyCmptType(b.getQualifiedName());
+        bProductType.setSupertype(aProductType.getQualifiedName());
+        
+        IProductCmpt bProduct = newProductCmpt(bProductType, "bProduct");
+        b.setProductCmptType(bProductType.getQualifiedName());
+        
+        IPolicyCmptType c = newPolicyCmptType(projectC, "C");
+        c.setSupertype(b.getQualifiedName());
+        
+        IProductCmptType cProductType = newProductCmptType(projectC, "cProductType");
+        c.setProductCmptType(cProductType.getQualifiedName());
+        cProductType.setPolicyCmptType(c.getQualifiedName());
+        
+        cProductType.setSupertype(bProductType.getQualifiedName());
+        IProductCmpt cProduct = newProductCmpt(cProductType, "cProduct");
+        
+        TestDependencyIpsArtefactBuilder builderProjectA = createTestBuilderForProject(ipsProject);
+        // the project needs to have its own builder set otherwise the project is considered
+        // invalid since there is no builder set found for the builder set id defined in the
+        // project properties
+        TestDependencyIpsArtefactBuilder builderProjectB = createTestBuilderForProject(projectB);
+        TestDependencyIpsArtefactBuilder builderProjectC = createTestBuilderForProject(projectC);
+
+        //first initial build
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        projectB.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        projectC.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+
+        //expect the following object in the builders of the projects
+        List buildObjects = builderProjectA.getBuiltIpsObjects();
+        assertTrue(buildObjects.contains(a));
+        assertTrue(buildObjects.contains(aProduct));
+
+        List buildObjectsB = builderProjectB.getBuiltIpsObjects();
+        assertTrue(buildObjectsB.contains(b));
+        assertTrue(buildObjectsB.contains(bProduct));
+
+        List buildObjectsC = builderProjectC.getBuiltIpsObjects();
+        assertTrue(buildObjectsC.contains(c));
+        assertTrue(buildObjectsC.contains(cProduct));
+
+        //clean the builders after initial build
+        builderProjectA.clear();
+        builderProjectB.clear();
+        builderProjectC.clear();
+ 
+        //change a product component type in the root project
+        IProductCmptTypeAttribute aProductTypeAttr = aProductType.newAttribute();
+        aProductTypeAttr.setName("aProductTypeAttr");
+        aProductTypeAttr.setDatatype("Integer");
+        aProductTypeAttr.setModifier(Modifier.PUBLIC);
+        aProductTypeAttr.getIpsSrcFile().save(true, null);
+        
+        //build
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+
+        //expect a build of the product components in all the projects
+        buildObjects = builderProjectA.getBuiltIpsObjects();
+        assertTrue(buildObjects.contains(aProduct));
+
+        buildObjectsB = builderProjectB.getBuiltIpsObjects();
+        assertTrue(buildObjectsB.contains(bProduct));
+
+        buildObjectsC = builderProjectC.getBuiltIpsObjects();
+        assertTrue(buildObjectsC.contains(cProduct));
+        
+    }
+    
     private IIpsProject createSubProject(IIpsProject superProject, String projectName) throws CoreException {
         IIpsProject subProject = newIpsProject(projectName);
         // set the reference from the ips project to the referenced project

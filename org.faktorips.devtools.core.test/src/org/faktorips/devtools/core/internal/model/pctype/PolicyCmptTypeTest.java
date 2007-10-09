@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.EmptyBuilderSet;
+import org.faktorips.devtools.core.internal.model.Dependency;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.tablecontents.Row;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
@@ -34,7 +35,6 @@ import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureT
 import org.faktorips.devtools.core.internal.model.tablestructure.UniqueKey;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -406,22 +406,22 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         c.newRelation().setTarget(b.getQualifiedName());
         List dependencyList = CollectionUtil.toArrayList(c.dependsOn());
         assertEquals(2, dependencyList.size());
-        assertTrue(dependencyList.contains(Dependency.create(c.getQualifiedNameType(), a.getQualifiedNameType(), true)));
-        assertTrue(dependencyList.contains(Dependency.create(c.getQualifiedNameType(), b.getQualifiedNameType())));
+        assertTrue(dependencyList.contains(Dependency.createSubtypeDependency(c.getQualifiedNameType(), a.getQualifiedNameType())));
+        assertTrue(dependencyList.contains(Dependency.createReferenceDependency(c.getQualifiedNameType(), b.getQualifiedNameType())));
         
         // test if a cicle in the type hierarchy does not lead to a stack overflow exception
         c.setSupertype(c.getQualifiedName());
         dependencyList = CollectionUtil.toArrayList(c.dependsOn());
         assertEquals(2, dependencyList.size());
-        assertTrue(dependencyList.contains(Dependency.create(c.getQualifiedNameType(), b.getQualifiedNameType())));
+        assertTrue(dependencyList.contains(Dependency.createReferenceDependency(c.getQualifiedNameType(), b.getQualifiedNameType())));
         
         // this is actually not possible
         c.setSupertype(a.getQualifiedName());
         a.setSupertype(c.getQualifiedName());
         dependencyList = CollectionUtil.toArrayList(c.dependsOn());
         assertEquals(2, dependencyList.size());
-        assertTrue(dependencyList.contains(Dependency.create(c.getQualifiedNameType(), a.getQualifiedNameType(), true)));
-        assertTrue(dependencyList.contains(Dependency.create(c.getQualifiedNameType(), b.getQualifiedNameType(), false)));
+        assertTrue(dependencyList.contains(Dependency.createSubtypeDependency(c.getQualifiedNameType(), a.getQualifiedNameType())));
+        assertTrue(dependencyList.contains(Dependency.createReferenceDependency(c.getQualifiedNameType(), b.getQualifiedNameType())));
     }
     
     public void testDependsOnTableBasedEnums() throws Exception{
@@ -467,8 +467,8 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         //expect dependency on the TableContents and Tablestructure defined above
         Dependency[] dependencies = a.dependsOn();
         List nameTypeList = Arrays.asList(dependencies);
-        assertTrue(nameTypeList.contains(Dependency.create(a.getQualifiedNameType(), contents.getQualifiedNameType())));
-        assertTrue(nameTypeList.contains(Dependency.create(a.getQualifiedNameType(), structure.getQualifiedNameType())));
+        assertTrue(nameTypeList.contains(Dependency.createReferenceDependency(a.getQualifiedNameType(), contents.getQualifiedNameType())));
+        assertTrue(nameTypeList.contains(Dependency.createReferenceDependency(a.getQualifiedNameType(), structure.getQualifiedNameType())));
         
     }
     
@@ -496,13 +496,13 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSet(ipsProject, new AggregateRootBuilderSet());
 
         List dependsOn = Arrays.asList(a.dependsOn());
-        assertTrue(dependsOn.contains(Dependency.create(a.getQualifiedNameType(), d1.getQualifiedNameType(), true)));
+        assertTrue(dependsOn.contains(Dependency.createCompostionMasterDetailDependency(a.getQualifiedNameType(), d1.getQualifiedNameType())));
 
         dependsOn = Arrays.asList(d1.dependsOn());
-        assertTrue(dependsOn.contains(Dependency.create(d1.getQualifiedNameType(), d2.getQualifiedNameType(), true)));
+        assertTrue(dependsOn.contains(Dependency.createCompostionMasterDetailDependency(d1.getQualifiedNameType(), d2.getQualifiedNameType())));
         
         dependsOn = Arrays.asList(d2.dependsOn());
-        assertTrue(dependsOn.contains(Dependency.create(d2.getQualifiedNameType(), s2.getQualifiedNameType(), true)));
+        assertTrue(dependsOn.contains(Dependency.createSubtypeDependency(d2.getQualifiedNameType(), s2.getQualifiedNameType())));
     }
     
     public void testGetPdObjectType() {

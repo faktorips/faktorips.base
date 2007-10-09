@@ -20,7 +20,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.transform.TransformerException;
 
@@ -445,6 +447,32 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             if (members[i].getType() == IResource.FILE) {
                 IFile file = (IFile)members[i];
                 if (extension.equals(file.getFileExtension())) {
+                    IIpsSrcFile srcFile = new IpsSrcFile(this, file.getName());
+                    if (srcFile.getIpsObject() != null) {
+                        result.add(srcFile.getIpsObject());
+                    }
+                }
+            }
+        }
+    }
+
+    public void findIpsObjects(List result) throws CoreException {
+        if (!exists()) {
+            return;
+        }
+        IFolder folder = (IFolder)getCorrespondingResource();
+        IResource[] members = folder.members();
+        
+        IpsObjectType[] types = getIpsModel().getIpsObjectTypes();
+        
+        Set fileExtensionNames = new HashSet(); 
+        for (int i = 0; i < types.length; i++) {
+            fileExtensionNames.add(types[i].getFileExtension());
+        }
+        for (int i = 0; i < members.length; i++) {
+            if (members[i].getType() == IResource.FILE) {
+                IFile file = (IFile)members[i];
+                if (fileExtensionNames.contains(file.getFileExtension())) {
                     IIpsSrcFile srcFile = new IpsSrcFile(this, file.getName());
                     if (srcFile.getIpsObject() != null) {
                         result.add(srcFile.getIpsObject());

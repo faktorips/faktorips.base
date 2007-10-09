@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.Dependency;
+import org.faktorips.devtools.core.internal.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -194,32 +194,32 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
         param1.setPolicyCmptType(pcType1.getQualifiedName());
         dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
         assertEquals(1, dependsOnList.size());
-        assertTrue(dependsOnList.contains(Dependency.create(type.getQualifiedNameType(), pcType1.getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(Dependency.createReferenceDependency(type.getQualifiedNameType(), pcType1.getQualifiedNameType())));
 
         // test dependency to policy cmpt type of child
         ITestPolicyCmptTypeParameter param2 = param1.newTestPolicyCmptTypeParamChild();
         param2.setPolicyCmptType(pcType2.getQualifiedName());
         dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
         assertEquals(2, dependsOnList.size());
-        assertTrue(dependsOnList.contains(Dependency.create(type.getQualifiedNameType(), pcType1.getQualifiedNameType())));
-        assertTrue(dependsOnList.contains(Dependency.create(type.getQualifiedNameType(), pcType2.getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(Dependency.createReferenceDependency(type.getQualifiedNameType(), pcType1.getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(Dependency.createReferenceDependency(type.getQualifiedNameType(), pcType2.getQualifiedNameType())));
  
         // test duplicate dependency
         ITestPolicyCmptTypeParameter param3 = param1.newTestPolicyCmptTypeParamChild();
         param3.setPolicyCmptType(pcType1.getQualifiedName());
         dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
         assertEquals(2, dependsOnList.size());
-        assertTrue(dependsOnList.contains(Dependency.create(type.getQualifiedNameType(), pcType1.getQualifiedNameType())));
-        assertTrue(dependsOnList.contains(Dependency.create(type.getQualifiedNameType(), pcType2.getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(Dependency.createReferenceDependency(type.getQualifiedNameType(), pcType1.getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(Dependency.createReferenceDependency(type.getQualifiedNameType(), pcType2.getQualifiedNameType())));
 
         // test dependency to policy cmpt type child of child
         ITestPolicyCmptTypeParameter param4 = param3.newTestPolicyCmptTypeParamChild();
         param4.setPolicyCmptType(pcType3.getQualifiedName());
         dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
         assertEquals(3, dependsOnList.size());
-        assertTrue(dependsOnList.contains(Dependency.create(type.getQualifiedNameType(), pcType1.getQualifiedNameType())));
-        assertTrue(dependsOnList.contains(Dependency.create(type.getQualifiedNameType(), pcType2.getQualifiedNameType())));
-        assertTrue(dependsOnList.contains(Dependency.create(type.getQualifiedNameType(), pcType3.getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(Dependency.createReferenceDependency(type.getQualifiedNameType(), pcType1.getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(Dependency.createReferenceDependency(type.getQualifiedNameType(), pcType2.getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(Dependency.createReferenceDependency(type.getQualifiedNameType(), pcType3.getQualifiedNameType())));
     }
     
     public void testGetTestRuleCandidates() throws CoreException{

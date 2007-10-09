@@ -415,7 +415,20 @@ public class IpsObjectPath implements IIpsObjectPath {
             ((IpsObjectPathEntry)entries[i]).findIpsObjects(project, type, result, visitedEntries);
         }
     }
-    
+
+    //TODO implementation
+    public void findAllIpsObjects(IIpsProject project, List result, Set visitedEntries) throws CoreException {
+        throw new RuntimeException("Not implemented yet.");
+    }
+
+    public void findAllIpsObjectsOfSrcFolderEntries(IIpsProject project, List result, Set visitedEntries) throws CoreException {
+        for (int i=0; i<entries.length; i++) {
+            if(entries[i].getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)){
+                ((IpsObjectPathEntry)entries[i]).findIpsObjects(project, result, visitedEntries);
+            }
+        }
+    }
+
     /**
      * Returns an xml representation of the object path.
      * 
