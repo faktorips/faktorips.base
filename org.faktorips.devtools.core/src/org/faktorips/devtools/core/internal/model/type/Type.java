@@ -212,7 +212,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     public IMethod getMatchingMethod(IMethod method) {
         for (Iterator it = this.methods.iterator(); it.hasNext();) {
             IMethod thisMethod = (IMethod)it.next();
-            if (thisMethod.isSame(method)) {
+            if (thisMethod.overrides(method)) {
                 return thisMethod;
             }
         }
@@ -371,7 +371,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         private boolean sameMethodAlreadyInCandidateList(IMethod method, List candidates) {
             for (Iterator it = candidates.iterator(); it.hasNext();) {
                 IMethod candidate = (IMethod)it.next();
-                if (method.isSame(candidate)) {
+                if (method.overrides(candidate)) {
                     return true;
                 }
             }

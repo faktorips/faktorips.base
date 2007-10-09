@@ -44,8 +44,6 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
@@ -53,6 +51,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -601,35 +600,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         ITypeHierarchy hierarchy = pcType.getSubtypeHierarchy();
         assertNotNull(hierarchy);
     }
-    
-    
-    public void testOverride() throws CoreException {
-        IIpsSrcFile file1 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supertype", true, null);
-        IPolicyCmptType supertype = (PolicyCmptType)file1.getIpsObject();
-        IMethod m1 = supertype.newMethod();
-        m1.setModifier(Modifier.PUBLISHED);
-        m1.setAbstract(true);
-        m1.setDatatype("int");
-        m1.setName("m1");
-        IParameter p1 = m1.newParameter();
-        p1.setName("p");
-        p1.setDatatype("int");
-              
-
-        IMethod m2 = supertype.newMethod();
-        m1.setName("m2");
         
-        pcType.overrideMethods(new IMethod[]{m1, m2});
-        assertEquals(2, pcType.getNumOfMethods());
-        IMethod[] methods = pcType.getMethods();
-        assertTrue(methods[0].isSame(m1));
-        assertEquals("int", methods[0].getDatatype());
-        assertEquals(Modifier.PUBLISHED, methods[0].getModifier());
-        assertEquals("p", methods[0].getParameters()[0].getName());
-        
-        assertTrue(methods[1].isSame(m2));
-    }
-    
     public void testValidate_MustOverrideAbstractMethod() throws CoreException {
         int numOfMsg = pcType.validate().getNoOfMessages();
         
@@ -731,14 +702,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertTrue(invalidType.isAggregateRoot());
     }
     
-    public void testValidate_SupertypeNotFound() throws Exception {
-    	MessageList ml = pcType.validate();
-    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_FOUND));
-    	pcType.setSupertype("abc");
-    	ml = pcType.validate();
-    	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_FOUND));
-    }
-
     public void testValidate_ProductCmptTypeNameMissing() throws Exception {
     	MessageList ml = pcType.validate();
     	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING));
@@ -755,30 +718,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     	pcType.setAbstract(false);
     	ml = pcType.validate();
     	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_ABSTRACT_MISSING));
-    }
-
-    public void testValidate_CycleInTypeHirarchy() throws Exception {
-        // create two more types that act as supertype and supertype's supertype 
-        IIpsSrcFile file1 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supertype", true, null);
-        PolicyCmptType supertype = (PolicyCmptType)file1.getIpsObject();
-        IIpsSrcFile file2 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supersupertype", true, null);
-        PolicyCmptType supersupertype = (PolicyCmptType)file2.getIpsObject();
-
-        pcType.setSupertype(supertype.getQualifiedName());
-        supertype.setSupertype(supersupertype.getQualifiedName());
-        
-        MessageList ml = pcType.validate();
-    	Message msg = ml.getMessageByCode(IPolicyCmptType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY);
-        assertNull(msg);
-    	
-    	supersupertype.setSupertype(pcType.getQualifiedName());
-    	
-    	ml = pcType.validate();
-        msg = ml.getMessageByCode(IPolicyCmptType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY);
-        assertNotNull(msg);
-        assertEquals(1, msg.getInvalidObjectProperties().length);
-        assertEquals(IPolicyCmptType.PROPERTY_SUPERTYPE, msg.getInvalidObjectProperties()[0].getProperty());
-        assertEquals(pcType, msg.getInvalidObjectProperties()[0].getObject());
     }
 
 // deactivated because at the moment unimplemented container relations are valid...
@@ -802,59 +741,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
 //    	ml = pcType.validate();
 //    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION));
 //    }
-
-    public void testValidate_InconsistentTypeHirachy() throws Exception {
-        // create two more types that act as supertype and supertype's supertype 
-        IIpsSrcFile file1 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supertype", true, null);
-        PolicyCmptType supertype = (PolicyCmptType)file1.getIpsObject();
-        IIpsSrcFile file2 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supersupertype", true, null);
-        PolicyCmptType supersupertype = (PolicyCmptType)file2.getIpsObject();
-
-        pcType.setSupertype(supertype.getQualifiedName());
-        supertype.setSupertype(supersupertype.getQualifiedName());
-    	supersupertype.setAbstract(false);
-    	supersupertype.newMethod().setAbstract(true);
-
-        MessageList ml = pcType.validate();
-    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
-
-    	supersupertype.setSupertype("abc");
-    	
-    	ml = pcType.validate();
-    	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
-    }
-
-    public void testFindOverwriteAttributeCandidates() throws Exception {
-    	IAttribute[] candidates = pcType.findOverrideAttributeCandidates();
-    	
-    	assertEquals(0, candidates.length);
-
-        PolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
-        PolicyCmptType supersupertype = newPolicyCmptType(ipsProject, "Supersupertype");
-
-        supertype.setSupertype(supersupertype.getQualifiedName());
-        pcType.setSupertype(supertype.getQualifiedName());
-    	
-    	candidates = pcType.findOverrideAttributeCandidates();
-    	assertEquals(0, candidates.length);
-    	
-    	supersupertype.newAttribute().setName("name");
-    	supertype.newAttribute().setName("name2");
-    	
-    	candidates = pcType.findOverrideAttributeCandidates();
-    	assertEquals(2, candidates.length);
-    	
-    	IAttribute attr = pcType.newAttribute();
-    	attr.setName("name");
-    	
-    	candidates = pcType.findOverrideAttributeCandidates();
-    	assertEquals(2, candidates.length);
-    	
-    	attr.setOverwrites(true);
-
-    	candidates = pcType.findOverrideAttributeCandidates();
-    	assertEquals(1, candidates.length);
-    }
 
     public void testValidateMustImplementContainerRelation() throws Exception {
         IPolicyCmptType target = newPolicyCmptType(ipsProject, "TargetType");

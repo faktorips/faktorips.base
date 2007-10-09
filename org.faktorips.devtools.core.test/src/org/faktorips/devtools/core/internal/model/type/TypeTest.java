@@ -42,6 +42,68 @@ public class TypeTest extends AbstractIpsPluginTest {
         type = newProductCmptType(ipsProject, "MotorProduct");
     }
     
+    public void testGetMethods() {
+        assertEquals(0, type.getMethods().length);
+        IMethod m1 = type.newMethod();
+        IMethod m2 = type.newMethod();
+        assertSame(m1, type.getMethods()[0]);
+        assertSame(m2, type.getMethods()[1]);
+        
+        // make sure a defensive copy is returned.
+        type.getMethods()[0] = null;
+        assertNotNull(type.getMethods()[0]);
+    }
+
+    public void testGetOverrideCandidates() throws CoreException {
+        assertEquals(0, type.findOverrideMethodCandidates(false, ipsProject).length);
+        
+        // create two more types that act as supertype and supertype's supertype 
+        IType supertype = newProductCmptType(ipsProject, "Supertype");
+        IType supersupertype = newProductCmptType(ipsProject, "Supersupertype");
+        type.setSupertype(supertype.getQualifiedName());
+        supertype.setSupertype(supersupertype.getQualifiedName());
+        
+        IMethod m1 = type.newMethod();
+        m1.setName("calc");
+        
+        // supertype methods
+        IMethod m2 = supertype.newMethod();
+        m2.setName("calc");
+        IMethod m3 = supertype.newMethod();
+        m3.setName("calc");
+        m3.newParameter("Decimal", "p1");
+        
+        // supersupertype methods
+        IMethod m4 = supersupertype.newMethod();
+        m4.setName("calc");
+        m4.newParameter("Decimal", "p1");
+        
+        IMethod m5 = supersupertype.newMethod();
+        m5.setName("calc");
+        m5.setAbstract(true);        
+        m5.newParameter("Money", "p1");
+        
+        IMethod[] candidates = type.findOverrideMethodCandidates(false, ipsProject);
+        assertEquals(2, candidates.length);
+        assertEquals(m3, candidates[0]);
+        assertEquals(m5, candidates[1]);
+        // notes: 
+        // m2 is not a candidate because it is already overridden by m1
+        // m4 is not a candidate because it is overridden by m3 and m3 comes first in the hierarchy
+        
+        // only not implemented abstract methods
+        candidates = type.findOverrideMethodCandidates(true, ipsProject);
+        assertEquals(1, candidates.length);
+        assertEquals(m5, candidates[0]);
+        // note: now only m5 is a candidate as it's abstract, m3 is not.
+        
+        // override the supersupertype method m5 in the supertype
+        // => now also m5 is not a candidate any more, if only not implemented abstract methods are requested.
+        supertype.overrideMethods(new IMethod[]{m5});
+        candidates = type.findOverrideMethodCandidates(true, ipsProject);
+        assertEquals(0, candidates.length);
+    }
+    
     public void testValidate_SupertypeNotFound() throws Exception {
         MessageList ml = type.validate();
         assertNull(ml.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
@@ -163,12 +225,12 @@ public class TypeTest extends AbstractIpsPluginTest {
         type.overrideMethods(new IMethod[]{m1, m2});
         assertEquals(2, type.getNumOfMethods());
         IMethod[] methods = type.getMethods();
-        assertTrue(methods[0].isSame(m1));
+        assertTrue(methods[0].overrides(m1));
         assertEquals("int", methods[0].getDatatype());
         assertEquals(Modifier.PUBLISHED, methods[0].getModifier());
         assertEquals("p", methods[0].getParameters()[0].getName());
         
-        assertTrue(methods[1].isSame(m2));
+        assertTrue(methods[1].overrides(m2));
     }
     
 

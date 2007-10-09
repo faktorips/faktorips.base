@@ -204,7 +204,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
     /** 
      * {@inheritDoc}
      */
-    public boolean isSame(IMethod other) {
+    public boolean overrides(IMethod other) {
         if (!getName().equals(other.getName())) {
             return false;
         }

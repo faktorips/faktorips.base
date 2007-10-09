@@ -94,11 +94,12 @@ public interface IMethod extends IParameterContainer {
     public int getJavaModifier();
 
     /**
-     * Returns <code>true</code> if the other method has the same name, the same numer of parameters
-     * and each parameter has the same datatype as the parameter in this method. Returns <code>false</code> otherwise.
+     * Returns <code>true</code> if the other method signature overrides this one. This is the case if
+     * it has the same name and the same numer of parameters and each parameter has the same datatype as the parameter 
+     * in this method. Returns <code>false</code> otherwise.
      * Note that the return type is not checked. 
      */
-    public boolean isSame(IMethod method);
+    public boolean overrides(IMethod method);
     
     /**
      * Returns the method overriding this one or <code>null</code> if no such method is found. 
