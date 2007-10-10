@@ -44,7 +44,9 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.Modifier;
+import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -280,7 +282,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         
         IProductCmpt aProduct = newProductCmpt(a, "AProduct");
         
-        TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject);
+        TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, false);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         List builtIpsObjects = builder.getBuiltIpsObjects();
         assertTrue(builtIpsObjects.contains(a));
@@ -301,6 +303,92 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     }
     
+    public void testDependencyGraphWithAggregateRootBuilderNoComposits() throws Exception{
+
+        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.A");
+        IPolicyCmptType b= newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.B");
+        IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.C");
+        IRelation rel = a.newRelation();
+        rel.setTarget(b.getQualifiedName());
+        rel.setRelationType(RelationType.ASSOCIATION);
+        rel = b.newRelation();
+        rel.setTarget(c.getQualifiedName());
+        rel.setRelationType(RelationType.ASSOCIATION);
+        
+        TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, true);
+        //initial build: all ipsobjects will be touched
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        
+        IAttribute cAttr = c.newAttribute();
+        cAttr.setName("cAttr");
+        c.getIpsSrcFile().save(true, null);
+        
+        builder.getBuiltIpsObjects().clear();
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        //list is expected to be empty since only master to detail compositions will be build when the
+        //the builder set is an aggregate root builder set
+        List builtIpsObjects = builder.getBuiltIpsObjects();
+        assertTrue(builtIpsObjects.contains(c));
+    }
+    
+    public void testDependencyGraphWithAggregateRootBuilderWithMasterToChildComposits() throws Exception{
+
+        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.A");
+        IPolicyCmptType b= newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.B");
+        IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.C");
+        IRelation rel = a.newRelation();
+        rel.setTarget(b.getQualifiedName());
+        rel.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        rel = b.newRelation();
+        rel.setTarget(c.getQualifiedName());
+        rel.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        
+        TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, true);
+        //initial build: all ipsobjects will be touched
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        
+        IAttribute cAttr = c.newAttribute();
+        cAttr.setName("cAttr");
+        c.getIpsSrcFile().save(true, null);
+        
+        builder.getBuiltIpsObjects().clear();
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        //all dependent objects are expected to be in the list since all relations are composite master to
+        //detail relations
+        List builtIpsObjects = builder.getBuiltIpsObjects();
+        assertTrue(builtIpsObjects.contains(a));
+        assertTrue(builtIpsObjects.contains(b));
+        assertTrue(builtIpsObjects.contains(c));
+    }
+    
+    public void testDependencyGraphWithAggregateRootBuilderWithChildToMasterComposits() throws Exception{
+
+        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.A");
+        IPolicyCmptType b= newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.B");
+        IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.C");
+        IRelation rel = a.newRelation();
+        rel.setTarget(b.getQualifiedName());
+        rel.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
+        rel = b.newRelation();
+        rel.setTarget(c.getQualifiedName());
+        rel.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
+        
+        TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, true);
+        //initial build: all ipsobjects will be touched
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        
+        IAttribute cAttr = c.newAttribute();
+        cAttr.setName("cAttr");
+        c.getIpsSrcFile().save(true, null);
+        
+        builder.getBuiltIpsObjects().clear();
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        //all dependent objects are expected to be in the list since all relations are composite master to
+        //detail relations
+        List builtIpsObjects = builder.getBuiltIpsObjects();
+        assertTrue(builtIpsObjects.contains(c));
+    }
+    
     public void testDependencyGraph() throws CoreException {
 
         IProductCmptType a = newProductCmptType(root, "A");
@@ -314,7 +402,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
         // dependencies: b->a, c->a, aProduct->a, a->d
         
-        TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject);
+        TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, false);
 
         // after this incremental build the TestDependencyIpsArtefactBuilder is expected to contain
         // all new IpsObjects in its build list.
@@ -445,12 +533,12 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         IPolicyCmptType c = newPolicyCmptType(projectC, "C");
         c.setSupertype(b.getQualifiedName());
         
-        TestDependencyIpsArtefactBuilder builderProjectA = createTestBuilderForProject(ipsProject);
+        TestDependencyIpsArtefactBuilder builderProjectA = createTestBuilderForProject(ipsProject, false);
         // the project needs to have its own builder set otherwise the project is considered
         // invalid since there is no builder set found for the builder set id defined in the
         // project properties
-        TestDependencyIpsArtefactBuilder builderProjectB = createTestBuilderForProject(projectB);
-        TestDependencyIpsArtefactBuilder builderProjectC = createTestBuilderForProject(projectC);
+        TestDependencyIpsArtefactBuilder builderProjectB = createTestBuilderForProject(projectB, false);
+        TestDependencyIpsArtefactBuilder builderProjectC = createTestBuilderForProject(projectC, false);
 
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         projectB.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
@@ -539,12 +627,12 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         cProductType.setSupertype(bProductType.getQualifiedName());
         IProductCmpt cProduct = newProductCmpt(cProductType, "cProduct");
         
-        TestDependencyIpsArtefactBuilder builderProjectA = createTestBuilderForProject(ipsProject);
+        TestDependencyIpsArtefactBuilder builderProjectA = createTestBuilderForProject(ipsProject, false);
         // the project needs to have its own builder set otherwise the project is considered
         // invalid since there is no builder set found for the builder set id defined in the
         // project properties
-        TestDependencyIpsArtefactBuilder builderProjectB = createTestBuilderForProject(projectB);
-        TestDependencyIpsArtefactBuilder builderProjectC = createTestBuilderForProject(projectC);
+        TestDependencyIpsArtefactBuilder builderProjectB = createTestBuilderForProject(projectB, false);
+        TestDependencyIpsArtefactBuilder builderProjectC = createTestBuilderForProject(projectC, false);
 
         //first initial build
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
@@ -603,13 +691,14 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         return subProject;
     }
 
-    private TestDependencyIpsArtefactBuilder createTestBuilderForProject(IIpsProject project) throws CoreException {
+    private TestDependencyIpsArtefactBuilder createTestBuilderForProject(IIpsProject project, boolean isAggregateRootBuilderSet) throws CoreException {
         IIpsProjectProperties props = project.getProperties();
         props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
         project.setProperties(props);
         TestDependencyIpsArtefactBuilder builder = new TestDependencyIpsArtefactBuilder();
-        ((IpsModel)project.getIpsModel()).setIpsArtefactBuilderSet(project, new TestIpsArtefactBuilderSet(
-                new IIpsArtefactBuilder[] { builder }));
+        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
+        builderSet.setAggregateRootBuilder(isAggregateRootBuilderSet);
+        ((IpsModel)project.getIpsModel()).setIpsArtefactBuilderSet(project, builderSet);
         return builder;
     }
 

@@ -40,9 +40,18 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
     private IIpsArtefactBuilder[] artefactBuilders;
     private boolean inverseRelationLinkRequiredFor2WayCompositions = false;
     private boolean roleNamePluralRequiredForTo1Relations = true;
+    private boolean isAggregateRootBuilder = false;
 
     public TestIpsArtefactBuilderSet(){
         artefactBuilders = new IIpsArtefactBuilder[0];
+    }
+
+    public void setAggregateRootBuilder(boolean enable){
+        isAggregateRootBuilder = enable;
+    }
+    
+    public boolean containsAggregateRootBuilder() {
+        return isAggregateRootBuilder;
     }
 
     public TestIpsArtefactBuilderSet(IIpsArtefactBuilder[] builders){
