@@ -228,6 +228,21 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertTrue(result.contains(obj2));
     }
     
+    public void testFineIpsObjects() throws Exception{
+    
+        IIpsObject obj1 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.b.A");
+        IIpsObject obj2 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.b.B");
+        IIpsObject obj3 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.b.C");
+        
+        ArrayList result = new ArrayList();
+        Set visitedEntries = new HashSet();
+        ((IpsObjectPath)ipsProject.getIpsObjectPath()).findAllIpsObjects(ipsProject, result, visitedEntries);
+        
+        assertTrue(result.contains(obj1));
+        assertTrue(result.contains(obj2));
+        assertTrue(result.contains(obj3));
+    }
+    
     public void testGetOutputFolders() {
         IProject project = ipsProject.getProject();
         IpsObjectPath path = new IpsObjectPath();

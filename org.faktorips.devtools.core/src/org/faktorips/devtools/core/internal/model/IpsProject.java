@@ -770,24 +770,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * @throws CoreException
      */
     public void findAllIpsObjects(List result) throws CoreException{
-        // TODO v2 - reimplement: die bereitstellung einer findAllIpsOObjects Methode im ipsobjectpath.
-        // kein harted codieren der einzelnen types!
         Set visitedEntries = new HashSet();
-        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.POLICY_CMPT_TYPE, result, visitedEntries);
-        visitedEntries.clear();
-        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.OLD_PRODUCT_CMPT_TYPE, result, visitedEntries);
-        visitedEntries.clear();
-        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.PRODUCT_CMPT, result, visitedEntries);
-        visitedEntries.clear();
-        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TABLE_STRUCTURE, result, visitedEntries);
-        visitedEntries.clear();
-        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TABLE_CONTENTS, result, visitedEntries);
-        visitedEntries.clear();
-        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.BUSINESS_FUNCTION, result, visitedEntries);
-        visitedEntries.clear();
-        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TEST_CASE, result, visitedEntries);
-        visitedEntries.clear();
-        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TEST_CASE_TYPE, result, visitedEntries);        
+        ((IpsObjectPath)getIpsObjectPathInternal()).findAllIpsObjects(this, result, visitedEntries);
     }
     
     public void findIpsObjects(IpsObjectType type, List result) throws CoreException {

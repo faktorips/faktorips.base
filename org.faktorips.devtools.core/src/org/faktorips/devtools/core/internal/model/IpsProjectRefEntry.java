@@ -115,6 +115,15 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     /**
      * {@inheritDoc}
      */
+    protected void findIpsObjectsInternal(IIpsProject ipsProject, List result, Set visitedEntries) throws CoreException {
+        if (referencedIpsProject!=null) {
+            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findAllIpsObjects(referencedIpsProject, result, visitedEntries);
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     public void findIpsObjectsStartingWithInternal(IIpsProject project, IpsObjectType type, String prefix, boolean ignoreCase, List result,Set visitedEntries)
             throws CoreException {
         
@@ -170,9 +179,4 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
         return "ProjectRefEntry[" + (referencedIpsProject==null?"null":referencedIpsProject.getName()) + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
-    //TODO implementation
-    protected void findIpsObjectsInternal(IIpsProject ipsProject, List result, Set visitedEntries) throws CoreException {
-        throw new RuntimeException("Not implemented yet.");
-    }
-    
 }

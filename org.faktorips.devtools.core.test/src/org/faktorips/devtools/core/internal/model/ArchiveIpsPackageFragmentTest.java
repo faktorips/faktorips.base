@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -44,7 +45,8 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
     private IFile archiveFile;
     private ArchiveIpsPackageFragmentRoot root;
     private ArchiveIpsPackageFragment pack;
-    private IPolicyCmptType type;
+    private IPolicyCmptType policy;
+    private IPolicyCmptType coverage;
 
     /*
      * @see AbstractIpsPluginTest#setUp()
@@ -52,8 +54,8 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject archiveProject = newIpsProject("ArchiveProject");
-        type = newPolicyCmptTypeWithoutProductCmptType(archiveProject, "mycompany.motor.Policy");
-        newPolicyCmptTypeWithoutProductCmptType(archiveProject, "mycompany.motor.Coverage");
+        policy = newPolicyCmptTypeWithoutProductCmptType(archiveProject, "mycompany.motor.Policy");
+        coverage = newPolicyCmptTypeWithoutProductCmptType(archiveProject, "mycompany.motor.Coverage");
         newPolicyCmptTypeWithoutProductCmptType(archiveProject, "mycompany.motor.collision.CollisionCoverage");
 
         project = newIpsProject();
@@ -76,12 +78,12 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     public void testGetIpsSrcFile() {
-        IIpsSrcFile file = pack.getIpsSrcFile(type.getIpsSrcFile().getName());
+        IIpsSrcFile file = pack.getIpsSrcFile(policy.getIpsSrcFile().getName());
         assertNotNull(file);
         assertEquals(pack, file.getParent());
     }
 
-    public void testFindIpsObjects() throws CoreException {
+    public void testFindIpsObjectsByIpsObjectType() throws CoreException {
         List result = new ArrayList();
         pack.findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE, result);
         assertEquals(2, result.size());
@@ -89,6 +91,20 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         assertTrue(result.contains(obj));
         obj = project.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "mycompany.motor.Coverage");
         assertTrue(result.contains(obj));
+    }
+
+    public void testFindIpsObjects() throws CoreException {
+        List result = new ArrayList();
+        pack.findIpsObjects(result);
+        assertEquals(2, result.size());
+        List qnts = new ArrayList();
+        for (Iterator it = result.iterator(); it.hasNext();) {
+            IIpsObject ipsObject = (IIpsObject)it.next();
+            qnts.add(ipsObject.getQualifiedNameType());
+        }
+        
+        assertTrue(qnts.contains(policy.getQualifiedNameType()));
+        assertTrue(qnts.contains(coverage.getQualifiedNameType()));
     }
 
     public void testGetChildIpsPackageFragments() throws CoreException {

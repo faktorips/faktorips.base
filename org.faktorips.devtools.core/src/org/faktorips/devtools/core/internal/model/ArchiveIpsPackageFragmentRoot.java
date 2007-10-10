@@ -204,6 +204,17 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         }
     }
 
+    public void findIpsObjects(List result) throws CoreException {
+        IIpsArchive archive = getIpsArchive();
+        if (archive == null) {
+            return;
+        }
+        
+        IIpsPackageFragment[] packs = this.getIpsPackageFragments();
+        for (int i = 0; i < packs.length; i++) {
+            ((ArchiveIpsPackageFragment)packs[i]).findIpsObjects(result);
+        }
+    }
 
     /**
      * {@inheritDoc}

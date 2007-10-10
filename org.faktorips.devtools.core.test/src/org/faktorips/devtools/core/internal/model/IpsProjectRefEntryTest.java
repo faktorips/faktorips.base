@@ -17,6 +17,10 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -24,6 +28,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsProjectRefEntry;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -43,6 +48,26 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         path = new IpsObjectPath();
     }
 
+    public void testFindIpsObjectsInternal() throws Exception{
+        
+        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
+        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.A");
+        IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.B");
+
+        IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "b.C");
+
+        
+        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
+        IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
+        
+        ArrayList result = new ArrayList();
+        Set visitedEntries = new HashSet();
+        entry.findIpsObjects(refProject, result, visitedEntries);
+        
+        assertTrue(result.contains(a));
+        assertTrue(result.contains(b));
+        assertFalse(result.contains(c));
+    }
     
     public void testInitFromXml() {
         Document doc = getTestDocument();

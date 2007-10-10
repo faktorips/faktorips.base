@@ -416,11 +416,18 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
     }
 
-    //TODO implementation
+    /**
+     * Adds all objects found on the path to the result list.
+     */
     public void findAllIpsObjects(IIpsProject project, List result, Set visitedEntries) throws CoreException {
-        throw new RuntimeException("Not implemented yet.");
+        for (int i=0; i<entries.length; i++) {
+            ((IpsObjectPathEntry)entries[i]).findIpsObjects(project, result, visitedEntries);
+        }
     }
 
+    /**
+     * Adds all objects found in <code>IpsSrcFolderEntry</code>s on the path to the result list.
+     */
     public void findAllIpsObjectsOfSrcFolderEntries(IIpsProject project, List result, Set visitedEntries) throws CoreException {
         for (int i=0; i<entries.length; i++) {
             if(entries[i].getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)){

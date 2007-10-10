@@ -264,8 +264,11 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         }
     }
 
-    void findIpsObjects(List result) throws CoreException {
-        if (!exists()) {
+    /**
+     * {@inheritDoc}
+     */
+    public void findIpsObjects(List result) throws CoreException {
+        if (!exists() || result == null) {
             return;
         }
         IIpsPackageFragment[] packs = this.getIpsPackageFragments();

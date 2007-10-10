@@ -191,6 +191,42 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         assertEquals(srcFile.getIpsObject(), result.get(0));
     }
 
+    public void testFindIpsObjects() throws Exception{
+    
+        IIpsObject obj1 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.b.A");
+        IIpsObject obj2 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.b.B");
+        IIpsObject obj3 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.b.C");
+
+        IIpsObject obj4 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.c.D");
+        IIpsObject obj5 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.c.E");
+        IIpsObject obj6 = newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.c.F");
+        
+        IpsPackageFragment fragment = (IpsPackageFragment)obj1.getIpsPackageFragment();
+
+        ArrayList result = new ArrayList();
+        fragment.findIpsObjects(result);
+        
+        assertTrue(result.contains(obj1));
+        assertTrue(result.contains(obj2));
+        assertTrue(result.contains(obj3));
+        assertFalse(result.contains(obj4));
+        assertFalse(result.contains(obj5));
+        assertFalse(result.contains(obj6));
+
+        fragment = (IpsPackageFragment)obj4.getIpsPackageFragment();
+
+        result.clear();
+        fragment.findIpsObjects(result);
+        
+        assertTrue(result.contains(obj4));
+        assertTrue(result.contains(obj5));
+        assertTrue(result.contains(obj6));
+        assertFalse(result.contains(obj1));
+        assertFalse(result.contains(obj2));
+        assertFalse(result.contains(obj3));
+
+    }
+    
     public void testFindIpsObjectsStartingWith() throws CoreException {
         IIpsObject obj1 = newIpsObject(pack, IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy");
         IIpsObject obj2 = newIpsObject(pack, IpsObjectType.POLICY_CMPT_TYPE, "motorCoverage");

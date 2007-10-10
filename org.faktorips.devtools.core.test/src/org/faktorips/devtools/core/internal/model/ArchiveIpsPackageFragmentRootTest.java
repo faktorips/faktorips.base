@@ -51,7 +51,7 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         IIpsProject archiveProject = newIpsProject("ArchiveProject");
         type = newPolicyCmptType(archiveProject, "motor.Policy");
         type.getIpsSrcFile().save(true, null);
-        newPolicyCmptType(archiveProject, "motor.collision.CollisionCoverage").getIpsSrcFile().save(true, null);
+        newPolicyCmptTypeWithoutProductCmptType(archiveProject, "motor.collision.CollisionCoverage").getIpsSrcFile().save(true, null);
         newProductCmpt(archiveProject, "motor.MotorProduct").getIpsSrcFile().save(true, null);
 
         project = newIpsProject();
@@ -108,12 +108,22 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertNotNull(root.findIpsObject(IpsObjectType.OLD_PRODUCT_CMPT_TYPE, type.getProductCmptType()));
     }
 
-    public void testFindIpsObjects() throws CoreException {
+    public void testFindIpsObjectsByIpsObjectType() throws CoreException {
         List result = new ArrayList();
         root.findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE, result);
         assertEquals(2, result.size());
         assertTrue(result.contains(root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.Policy")));
         assertTrue(result.contains(root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.collision.CollisionCoverage")));
+    }
+
+    public void testFindIpsObjects() throws CoreException {
+        List result = new ArrayList();
+        root.findIpsObjects(result);
+        assertEquals(4, result.size());
+        assertTrue(result.contains(root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.Policy")));
+        assertTrue(result.contains(root.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE_V2, "motor.PolicyProductCmpt")));
+        assertTrue(result.contains(root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.collision.CollisionCoverage")));
+        assertTrue(result.contains(root.findIpsObject(IpsObjectType.PRODUCT_CMPT, "motor.MotorProduct")));
     }
 
     public void testGetSortedIpsPackageFragments() throws CoreException {

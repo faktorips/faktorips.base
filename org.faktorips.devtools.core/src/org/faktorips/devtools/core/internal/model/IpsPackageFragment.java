@@ -456,6 +456,9 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void findIpsObjects(List result) throws CoreException {
         if (!exists()) {
             return;

@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
@@ -207,6 +208,33 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         }
     }
 
+    public void testFindIpsObjects() throws Exception{
+        IPolicyCmptType obj1 = (IPolicyCmptType)newIpsObject(ipsRoot, IpsObjectType.POLICY_CMPT_TYPE, "a.b.A");
+        IPolicyCmptType obj2 = (IPolicyCmptType)newIpsObject(ipsRoot, IpsObjectType.POLICY_CMPT_TYPE, "a.b.B");
+        IIpsObject obj3 = newIpsObject(ipsRoot, IpsObjectType.TABLE_STRUCTURE, "a.b.C");
+        IIpsObject obj4 = newIpsObject(ipsRoot, IpsObjectType.PRODUCT_CMPT_TYPE_V2, "a.b.D");
+        ArrayList result = new ArrayList();
+        ipsRoot.findIpsObjects(result);
+        assertTrue(result.contains(obj1));
+        assertTrue(result.contains(obj2));
+        assertTrue(result.contains(obj3));
+        assertTrue(result.contains(obj4));
+        
+        //null handling
+        ipsRoot.findIpsObjects(null);
+        
+        obj1.findProductCmptType(obj1.getIpsProject()).getIpsSrcFile().getCorrespondingFile().delete(true, null);
+        obj2.findProductCmptType(obj2.getIpsProject()).getIpsSrcFile().getCorrespondingFile().delete(true, null);
+        obj1.getIpsSrcFile().getCorrespondingFile().delete(true, null);
+        obj2.getIpsSrcFile().getCorrespondingFile().delete(true, null);
+        obj3.getIpsSrcFile().getCorrespondingFile().delete(true, null);
+        obj4.getIpsSrcFile().getCorrespondingFile().delete(true, null);
+        
+        result.clear();
+        ipsRoot.findIpsObjects(result);
+        assertTrue(result.isEmpty());
+    }
+    
     public void testGetIpsDefaultPackageFragment() {
     	IIpsPackageFragment def = this.ipsRoot.getDefaultIpsPackageFragment();
     	assertEquals(def.getName(), "");

@@ -97,6 +97,19 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         
     }
     
+    public void testFindIpsObjects() throws Exception{
+        
+        ArrayList result = new ArrayList();
+        Set visitedEntries = new HashSet();
+        entry.findIpsObjects(project, result, visitedEntries);
+        
+        IIpsObject motorPolicy = project.findIpsObject(qntMotorPolicy);
+        IIpsObject motorCollision = project.findIpsObject(qntMotorCollision);
+
+        assertTrue(result.contains(motorPolicy));
+        assertTrue(result.contains(motorCollision));
+    }
+    
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         entry.initFromXml(XmlUtil.getElement(docEl, 0), project.getProject());

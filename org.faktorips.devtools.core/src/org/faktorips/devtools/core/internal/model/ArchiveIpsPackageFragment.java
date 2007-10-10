@@ -191,6 +191,22 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
     /**
      * {@inheritDoc}
      */
+    public void findIpsObjects(List result) throws CoreException {
+        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
+        IIpsArchive archive = root.getIpsArchive();
+        if (archive == null) {
+            return;
+        }
+        Set set = archive.getQNameTypes(getName());
+        for (Iterator it = set.iterator(); it.hasNext();) {
+            QualifiedNameType qnt = (QualifiedNameType)it.next();
+            result.add(getIpsSrcFile(qnt.getFileName()).getIpsObject());
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public IIpsPackageFragmentSortDefinition getSortDefinition() {
         // TODO Cache sort definition
 
