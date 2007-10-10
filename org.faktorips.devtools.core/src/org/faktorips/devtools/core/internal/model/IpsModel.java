@@ -1227,13 +1227,21 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Returns the content for the given ips src file. If the ips source file's corresponding
-     * resource does not exist, the method returns <code>null</code>.
+     * Returns the content for the given IpsSrcFile.
      */
     synchronized public void removeIpsSrcFileContent(IIpsSrcFile file) {
-        ipsObjectsMap.remove(file);
+        if(file != null){
+            ipsObjectsMap.remove(file);
+        }
     }
 
+    /**
+     * Returns true if the IIpsSrcFileContents of the provided IIpsSrcFile has been cached.
+     */
+    public boolean isCached(IIpsSrcFile file){
+        return ipsObjectsMap.get(file) != null;
+    }
+    
     /**
      * Returns the content for the given ips src file. If the ips source file's corresponding
      * resource does not exist, the method returns <code>null</code>.
@@ -1323,6 +1331,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     validationResultCache.clear();
                     return false;
                 }
+                if(delta.getKind() == IResourceDelta.REMOVED){
+                    IIpsElement ipsElement = getIpsElement(resource);
+                    if(ipsElement instanceof IIpsSrcFile){
+                        removeIpsSrcFileContent((IIpsSrcFile)ipsElement);
+                        return false;
+                    }
+                }
+                
                 final IIpsElement element = findIpsElement(resource);
                 if (!(element instanceof IIpsSrcFile)) { // this includes element==null!
                     return true;

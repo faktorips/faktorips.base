@@ -231,8 +231,6 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         object = (IPolicyCmptType)sourceFile.getIpsObject();
         attribute = object.getAttributes()[0];
         assertEquals("something serious", attribute.getDescription());
-
-
     }
 
     public void testGetIpsObjectExtensionProperties() {
@@ -508,5 +506,34 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         return folder.getFile(new Path(IpsPackageFragment.SORT_ORDER_FILE));
     }
 
+    public void testClearIpsSrcFileContentsCacheWhenFileDeleted() throws Exception {
+        IIpsProject project = newIpsProject("TestProject");
+        IPolicyCmptType pcType = newPolicyCmptTypeWithoutProductCmptType(project, "A");
+        pcType.getIpsSrcFile().save(true, null);
 
+        pcType = (IPolicyCmptType)project.findIpsObject(pcType.getQualifiedNameType());
+
+        boolean status = false;
+        int counter = 0;
+        while (!status || counter > 200) {
+            status = model.isCached(pcType.getIpsSrcFile());
+            counter++;
+        }
+        assertTrue("The IpsSrcFile " + pcType.getIpsSrcFile() + " is not in the IpsModel cache as expected", status);
+
+        pcType.getIpsSrcFile().getEnclosingResource().delete(true, null);
+
+        status = false;
+        counter = 0;
+        while (!status || counter > 200) {
+            status = !model.isCached(pcType.getIpsSrcFile());
+        }
+
+        assertTrue(
+                "The IpsSrcFile "
+                        + pcType.getIpsSrcFile()
+                        + " is in the IpsModel cache which is not expected since the resource changed listener " +
+                                "should be triggered by know and have the cache cleared.",
+                status);
+    }
 }

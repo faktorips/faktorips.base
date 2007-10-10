@@ -15,15 +15,19 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.internal.model.Dependency;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
+import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
@@ -99,6 +103,35 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         childrenList.addAll(links);
         return (IIpsElement[])childrenList.toArray(new IIpsElement[childrenList.size()]);
     }
+    
+    public void dependsOn(Set dependencies) throws CoreException {
+        addRelatedProductCmptQualifiedNameTypes(dependencies);
+        addRelatedTableContentsQualifiedNameTypes(dependencies);
+    }
+    
+    /*
+     * Add the qualified name types of all related table contents inside the given generation to the
+     * given set
+     */
+    private void addRelatedTableContentsQualifiedNameTypes(Set qaTypes) {
+        ITableContentUsage[] tableContentUsages = getTableContentUsages();
+        for (int i = 0; i < tableContentUsages.length; i++) {
+            qaTypes.add(Dependency.createReferenceDependency(getIpsObject().getQualifiedNameType(),
+                    new QualifiedNameType(tableContentUsages[i].getTableContentName(), IpsObjectType.TABLE_CONTENTS)));
+        }
+    }
+
+    /*
+     * Add the qualified name types of all related product cmpt's inside the given generation to the given set
+     */
+    private void addRelatedProductCmptQualifiedNameTypes(Set qaTypes) {
+        IProductCmptLink[] relations = getLinks();
+        for (int j = 0; j < relations.length; j++) {
+            qaTypes.add(Dependency.createReferenceDependency(getIpsObject().getQualifiedNameType(),
+                    new QualifiedNameType(relations[j].getTarget(), IpsObjectType.PRODUCT_CMPT)));
+        }
+    }
+
     
     /**
      * {@inheritDoc}

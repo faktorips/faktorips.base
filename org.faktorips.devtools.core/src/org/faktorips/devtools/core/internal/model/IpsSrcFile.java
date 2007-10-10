@@ -171,5 +171,4 @@ public class IpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         return entry.getBasePackageNameForDerivedJavaClasses();
     }
-    
 }

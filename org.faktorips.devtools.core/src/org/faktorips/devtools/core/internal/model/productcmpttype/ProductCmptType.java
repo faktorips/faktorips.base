@@ -437,6 +437,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                     IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
         }
         addQualifiedNameTypesForRelationTargets(dependencies);
+        
         return (Dependency[])dependencies.toArray(new Dependency[dependencies.size()]);
     }
 
