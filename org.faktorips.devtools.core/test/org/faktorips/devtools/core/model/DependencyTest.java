@@ -17,9 +17,9 @@
 
 package org.faktorips.devtools.core.model;
 
-import org.faktorips.devtools.core.internal.model.Dependency;
-
 import junit.framework.TestCase;
+
+import org.faktorips.devtools.core.internal.model.Dependency;
 
 public class DependencyTest extends TestCase {
 

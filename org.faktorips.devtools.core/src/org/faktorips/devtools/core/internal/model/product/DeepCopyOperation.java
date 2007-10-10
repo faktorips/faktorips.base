@@ -32,8 +32,8 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
+import org.faktorips.devtools.core.model.product.IProductCmptReference;
 
 public class DeepCopyOperation implements IWorkspaceRunnable{
 

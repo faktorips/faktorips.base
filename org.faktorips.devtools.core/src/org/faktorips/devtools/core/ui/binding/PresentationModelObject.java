@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.ui.binding.BindingContext.Listener;
 
 /**
  * Base class for presentation model objects implementing IPropertyChangeListenerSupport.

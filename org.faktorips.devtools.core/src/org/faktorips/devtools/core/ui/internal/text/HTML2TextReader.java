@@ -26,10 +26,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jface.text.TextPresentation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
-
-import org.eclipse.jface.text.TextPresentation;
 
 
 /**

@@ -18,6 +18,7 @@ package org.faktorips.devtools.core.ui.views.modeldescription;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.part.IPage;
+import org.eclipse.ui.part.PageBookView;
 
 /**
  * Mark a class for providing input to {@link ModelDescriptionView}. 

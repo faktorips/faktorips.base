@@ -49,7 +49,6 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
-import org.faktorips.values.EnumValue;
 
 
 /**
