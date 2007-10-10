@@ -706,7 +706,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             String[] keyItemTypes) throws CoreException {
         
         TypeSection innerClassBody = createInnerClassSection();
-        innerClassBody.getJavaDocForTypeSectionBuilder().javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_JAVADOC));
+        innerClassBody.getJavaDocForTypeSectionBuilder().javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_JAVADOC), ANNOTATION_GENERATED);
         innerClassBody.setClassModifier(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
         innerClassBody.setUnqualifiedName(hashKeyClassName);
         for (int i = 0; i < keyNames.length; i++) {
@@ -729,7 +729,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         // constructor
         innerClassBody.getConstructorSectionBuilder()
                 .method(Modifier.PRIVATE, null, hashKeyClassName, keyNames, keyItemTypes,
-                        constructorBody, getLocalizedText(getIpsObject(), KEY_CLASS_CONSTRUCTOR_JAVADOC));
+                        constructorBody, getLocalizedText(getIpsObject(), KEY_CLASS_CONSTRUCTOR_JAVADOC), ANNOTATION_GENERATED);
         createKeyClassCalHashCodeMethod(keyNames, innerClassBody.getMethodSectionBuilder());
         createKeyClassEqualsMethod(hashKeyClassName, keyNames, innerClassBody.getMethodSectionBuilder());
         createKeyClassHashCodeMethod(keyNames, innerClassBody.getMethodSectionBuilder());
@@ -746,7 +746,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.appendln("return result;");
 
         codeBuilder.methodBegin(Modifier.PRIVATE, Integer.TYPE,
-                "calculateHashCode", new String[0], new Class[0]);
+                "calculateHashCode", new String[0], new Class[0], "", ANNOTATION_GENERATED);
         codeBuilder.append(methodBody);
         codeBuilder.methodEnd();
     }
