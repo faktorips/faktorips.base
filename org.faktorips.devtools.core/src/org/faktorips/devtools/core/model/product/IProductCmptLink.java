@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.model.product;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 
@@ -37,7 +37,7 @@ public interface IProductCmptLink extends IIpsObjectPart {
     public final static String PROPERTY_MIN_CARDINALITY = "minCardinality"; //$NON-NLS-1$
     public final static String PROPERTY_MAX_CARDINALITY = "maxCardinality"; //$NON-NLS-1$
     
-    public final static int CARDINALITY_MANY = IRelation.CARDINALITY_MANY;
+    public final static int CARDINALITY_MANY = IPolicyCmptTypeAssociation.CARDINALITY_MANY;
     
     /**
      * The name of the xml-tag used if this object is saved to xml.

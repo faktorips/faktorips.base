@@ -62,7 +62,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -748,15 +748,15 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testFindReferencingPolicyCmptTypes() throws CoreException{
         IPolicyCmptType pcTypeReferenced = newPolicyCmptType(root, "tobereferenced");
         IPolicyCmptType pcType = newPolicyCmptType(root, "TestPCType");
-        IRelation relation= pcType.newRelation();
+        IPolicyCmptTypeAssociation relation= pcType.newPolicyCmptTypeAssociation();
         relation.setTarget(pcTypeReferenced.getQualifiedName());
 
         IPolicyCmptType pcType2 = newPolicyCmptType(root, "TestPCType2");
-        IRelation relation2= pcType2.newRelation();
+        IPolicyCmptTypeAssociation relation2= pcType2.newPolicyCmptTypeAssociation();
         relation2.setTarget(pcTypeReferenced.getQualifiedName());
         
         IPolicyCmptType pcType3 = newPolicyCmptType(root, "TestPCType3");
-        IRelation relation3= pcType3.newRelation();
+        IPolicyCmptTypeAssociation relation3= pcType3.newPolicyCmptTypeAssociation();
         relation3.setTarget(pcTypeReferenced.getQualifiedName());
         
         IPolicyCmptType pcTypeNoRef = newPolicyCmptType(root, "TestPCTypeNoRef");

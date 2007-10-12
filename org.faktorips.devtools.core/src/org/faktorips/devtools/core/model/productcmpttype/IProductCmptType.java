@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 
 /**
@@ -150,43 +151,12 @@ public interface IProductCmptType extends IIpsObject, IType {
      * an attribute.
      */
     public int[] moveAttributes(int[] indexes, boolean up);
-
-    /**
-     * Returns all associations that have the indicated target. Returns an empty array if no such assoiation exists
-     * or target is <code>null</code>.
-     * <p>
-     * Note that this does NOT search the supertype hierarchy.
-     * 
-     * @param target The qualified name of the target product component type.
-     */
-    public IProductCmptTypeAssociation[] getAssociationsForTarget(String target);
     
     /**
      * Creates a new association and returns it.
      */
-    public IProductCmptTypeAssociation newAssociation();
+    public IProductCmptTypeAssociation newProductCmptTypeAssociation();
 
-    /**
-     * Returns the number of associations.
-     */
-    public int getNumOfAssociations();
-    
-    /**
-     * Moves the associations identified by the indexes up or down by one position.
-     * If one of the indexes is 0 (the first association), no association is moved up. 
-     * If one of the indexes is the number of associations - 1 (the last association)
-     * no association is moved down. 
-     * 
-     * @param indexes   The indexes identifying the associations.
-     * @param up        <code>true</code>, to move the associations up, <false> to move them down.
-     * 
-     * @return The new indexes of the moved associations.
-     * 
-     * @throws NullPointerException if indexes is <code>null</code>.
-     * @throws IndexOutOfBoundsException if one of the indexes does not identify an association.
-     */
-    public int[] moveAssociations(int[] indexes, boolean up);
-    
     /**
      * Returns the number of table structure usages.
      */

@@ -33,12 +33,13 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -290,19 +291,19 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         HashMap containerRelations = new HashMap();
-        IRelation[] relations = getPcType().getRelations();
+        IPolicyCmptTypeAssociation[] relations = getPcType().getPolicyCmptTypeAssociations();
         for (int i = 0; i < relations.length; i++) {
             try {
                 if (!relations[i].isValid()) {
                     continue;
                 }
                 generateCodeForRelation(relations[i], fieldsBuilder, methodsBuilder);                
-                if (relations[i].isContainerRelationImplementation()) {
-                    IRelation containerRel = relations[i].findContainerRelation();
-                    List implementationRelations = (List)containerRelations.get(containerRel);
+                if (relations[i].isSubsetOfADerivedUnion()) {
+                    IAssociation derivedUnion = relations[i].findSubsettedDerivedUnion(getIpsProject());
+                    List implementationRelations = (List)containerRelations.get(derivedUnion);
                     if (implementationRelations==null) {
                         implementationRelations = new ArrayList();
-                        containerRelations.put(containerRel, implementationRelations);
+                        containerRelations.put(derivedUnion, implementationRelations);
                     }
                     implementationRelations.add(relations[i]);
                 }
@@ -331,7 +332,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
      * @see JavaSourceFileBuilder#addToBuildStatus(IStatus)
      */
     protected abstract void generateCodeForRelation(
-    		IRelation relation,
+    		IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
@@ -349,7 +350,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
      *             class.
      */
     protected abstract void generateCodeForContainerRelationImplementation(
-    		IRelation containerRelation,
+    		IPolicyCmptTypeAssociation containerRelation,
             List subRelations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
@@ -406,9 +407,9 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
          * {@inheritDoc}
          */
         protected boolean visit(IPolicyCmptType currentType) {
-            IRelation[] relations = currentType.getRelations();
+            IPolicyCmptTypeAssociation[] relations = currentType.getPolicyCmptTypeAssociations();
             for (int i = 0; i < relations.length; i++) {
-                if (relations[i].isReadOnlyContainer()) {
+                if (relations[i].isDerivedUnion()) {
                     try {
                         List implRelations = (List)containerImplMap.get(relations[i]);
                         if (implRelations!=null) {

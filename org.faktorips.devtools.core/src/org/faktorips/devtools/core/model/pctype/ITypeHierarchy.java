@@ -91,7 +91,7 @@ public interface ITypeHierarchy {
      * Returns all relations of the given type either defined in the type itself
      * or any of it's supertyes found in the hierarchy.
      */
-    public IRelation[] getAllRelations(IPolicyCmptType type);
+    public IPolicyCmptTypeAssociation[] getAllRelations(IPolicyCmptType type);
 
     /**
      * Returns all rules of the given type either defined in the type itself
@@ -111,7 +111,7 @@ public interface ITypeHierarchy {
      * it's supertypes contains a relation with that target role. Returns <code>null</code>
      * if no relation with the given target role is found.  
      */
-    public IRelation findRelation(IPolicyCmptType type, String targetRole);
+    public IPolicyCmptTypeAssociation findRelation(IPolicyCmptType type, String targetRole);
     
     /**
      * Returns the direct subtypes for the given policy component type.

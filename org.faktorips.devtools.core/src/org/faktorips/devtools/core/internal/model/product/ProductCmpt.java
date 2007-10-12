@@ -38,14 +38,16 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptKind;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
@@ -194,7 +196,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /** 
      * {@inheritDoc}
      */
-    public IRelation findPcTypeRelation(String relationName) throws CoreException {
+    public IPolicyCmptTypeAssociation findPcTypeRelation(String relationName) throws CoreException {
         IPolicyCmptType pcType = findPolicyCmptType();
         if (pcType==null) {
             return null;

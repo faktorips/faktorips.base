@@ -45,7 +45,7 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
         
         IIpsProject prj = super.newIpsProject();
         IProductCmptType productCmptType = newProductCmptType(prj, "BaseType");
-        IProductCmptTypeAssociation association = productCmptType.newAssociation();
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
         association.setTarget("SomeOtherType");
         association.setTargetRoleSingular("RoleName");
         

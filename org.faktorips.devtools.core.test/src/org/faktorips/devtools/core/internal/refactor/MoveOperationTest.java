@@ -66,7 +66,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         ipsRoot = ipsProject.getIpsPackageFragmentRoots()[0];
         IProductCmptType productCmptType1 = newProductCmptType(ipsProject, "model.Product");
         IProductCmptType productCmptType2 = newProductCmptType(ipsProject, "model.CoverageType");
-        IProductCmptTypeAssociation relation = productCmptType1.newAssociation();
+        IProductCmptTypeAssociation relation = productCmptType1.newProductCmptTypeAssociation();
         relation.setTarget(productCmptType2.getQualifiedName());
         relation.setTargetRoleSingular("CoverageType");
         productCmptType1.getIpsSrcFile().save(true, null);

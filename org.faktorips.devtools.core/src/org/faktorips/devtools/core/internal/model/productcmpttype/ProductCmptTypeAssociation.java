@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -86,7 +86,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     /**
      * {@inheritDoc}
      */
-    public IRelation findMatchingPolicyCmptTypeRelation(IIpsProject ipsProject) throws CoreException {
+    public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeRelation(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(true, ipsProject);
         if (policyCmptType==null) {
             return null;
@@ -99,23 +99,23 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         if (targetPolicyCmptType==null) {
             return null;
         }
-        IRelation[] policyRelations = getRelationsFor(policyCmptType, targetPolicyCmptType); 
+        IPolicyCmptTypeAssociation[] policyRelations = getRelationsFor(policyCmptType, targetPolicyCmptType); 
         if (policyRelations.length==0) {
             return null;
         }
         return policyRelations[getAssociationIndex()];
     }
     
-    private IRelation[] getRelationsFor(IPolicyCmptType from, IPolicyCmptType target) {
+    private IPolicyCmptTypeAssociation[] getRelationsFor(IPolicyCmptType from, IPolicyCmptType target) {
         List result = new ArrayList();
         String targetQName = target.getQualifiedName();
-        org.faktorips.devtools.core.model.pctype.IRelation[] policyRelations = from.getRelations();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation[] policyRelations = from.getPolicyCmptTypeAssociations();
         for (int i=0; i<policyRelations.length; i++) {
             if (targetQName.equals(policyRelations[i].getTarget())) {
                 result.add(policyRelations[i]);
             }
         }
-        return (IRelation[])result.toArray(new IRelation[result.size()]);
+        return (IPolicyCmptTypeAssociation[])result.toArray(new IPolicyCmptTypeAssociation[result.size()]);
     }
     
     private int getAssociationIndex() {

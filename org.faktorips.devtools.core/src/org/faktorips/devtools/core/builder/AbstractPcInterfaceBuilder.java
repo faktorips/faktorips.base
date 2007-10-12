@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.builder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.util.LocalizedStringsSet;
 
 public abstract class AbstractPcInterfaceBuilder extends AbstractPcTypeBuilder {
@@ -29,19 +29,19 @@ public abstract class AbstractPcInterfaceBuilder extends AbstractPcTypeBuilder {
 		super(builderSet, kindId, stringsSet);
 	}
 	
-	abstract public void generateCodeForRelationGetOneSignature(IRelation relation,
+	abstract public void generateCodeForRelationGetOneSignature(IPolicyCmptTypeAssociation relation,
 			JavaCodeFragmentBuilder memberVarsBuilder,
 			JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-	abstract public void generateCodeForRelationGetManySignature(IRelation relation,
+	abstract public void generateCodeForRelationGetManySignature(IPolicyCmptTypeAssociation relation,
 			JavaCodeFragmentBuilder memberVarsBuilder,
 			JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-	abstract public void generateCodeForRelationSetSignature(IRelation relation,
+	abstract public void generateCodeForRelationSetSignature(IPolicyCmptTypeAssociation relation,
 			JavaCodeFragmentBuilder memberVarsBuilder,
 			JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-	abstract public void generateCodeForRelationAddSignature(IRelation relation,
+	abstract public void generateCodeForRelationAddSignature(IPolicyCmptTypeAssociation relation,
 			JavaCodeFragmentBuilder memberVarsBuilder,
 			JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-	abstract public void generateCodeForRelationRemoveSignature(IRelation relation,
+	abstract public void generateCodeForRelationRemoveSignature(IPolicyCmptTypeAssociation relation,
 			JavaCodeFragmentBuilder memberVarsBuilder,
 			JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 

@@ -53,7 +53,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
                 IFile file = folder.getFile("A.ipspct");
                 System.out.println("" + file + ", exists=" + file.exists());
                 type = newPolicyCmptType(project, "A");
-                type.newRelation();
+                type.newPolicyCmptTypeAssociation();
                 type.getIpsSrcFile().save(true, null);
             }
             
@@ -65,7 +65,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("===== Start test1() =====");
         }
-        assertEquals(1, type.getNumOfRelations());
+        assertEquals(1, type.getNumOfAssociations());
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("===== Finished test1() =====");
         }
@@ -75,7 +75,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("===== Start test2() =====");
         }
-        assertEquals(1, type.getNumOfRelations());
+        assertEquals(1, type.getNumOfAssociations());
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("===== Finished test2() =====");
         }

@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
@@ -241,7 +241,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     public void testGetChildren() {
         IAttribute a1 = pcType.newAttribute();
         IMethod m1 = pcType.newMethod();
-        IRelation r1 = pcType.newRelation();
+        IPolicyCmptTypeAssociation r1 = pcType.newPolicyCmptTypeAssociation();
         IValidationRule rule1 = pcType.newRule();
         pcType.setConfigurableByProductCmptType(true);
         
@@ -348,51 +348,36 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
 
     public void testNewRelation() {
         sourceFile.getIpsModel().addChangeListener(this);
-        IRelation r = pcType.newRelation();
+        IPolicyCmptTypeAssociation r = pcType.newPolicyCmptTypeAssociation();
         assertEquals(0, r.getId());    
         assertSame(pcType, r.getIpsObject());
-        assertEquals(1, pcType.getNumOfRelations());
+        assertEquals(1, pcType.getNumOfAssociations());
         assertTrue(sourceFile.isDirty());
         assertEquals(sourceFile, lastEvent.getIpsSrcFile());
         
-        IRelation r2 = pcType.newRelation();
+        IPolicyCmptTypeAssociation r2 = pcType.newPolicyCmptTypeAssociation();
         assertEquals(1, r2.getId());    
     }
 
     public void testGetRelations() {
-        assertEquals(0, pcType.getRelations().length);
-        IRelation r1 = pcType.newRelation();
-        IRelation r2 = pcType.newRelation();
-        assertSame(r1, pcType.getRelations()[0]);
-        assertSame(r2, pcType.getRelations()[1]);
+        assertEquals(0, pcType.getPolicyCmptTypeAssociations().length);
+        IPolicyCmptTypeAssociation r1 = pcType.newPolicyCmptTypeAssociation();
+        IPolicyCmptTypeAssociation r2 = pcType.newPolicyCmptTypeAssociation();
+        assertSame(r1, pcType.getPolicyCmptTypeAssociations()[0]);
+        assertSame(r2, pcType.getPolicyCmptTypeAssociations()[1]);
         
         // make sure a defensive copy is returned.
-        pcType.getRelations()[0] = null;
-        assertNotNull(pcType.getRelations()[0]);
-    }
-    
-    public void testGetProductRelevantRelations() {
-    	IRelation[] relations = pcType.getProductRelevantRelations();
-    	assertEquals(0, relations.length);
-    	
-    	IRelation rel1 = pcType.newRelation();
-    	IRelation rel2 = pcType.newRelation();
-    	
-    	rel1.setProductRelevant(false);
-    	rel2.setProductRelevant(true);
-    	
-    	relations = pcType.getProductRelevantRelations();
-    	assertEquals(1, relations.length);
-    	assertSame(rel2, relations[0]);
+        pcType.getPolicyCmptTypeAssociations()[0] = null;
+        assertNotNull(pcType.getPolicyCmptTypeAssociations()[0]);
     }
     
     public void testGetRelation() {
         assertNull(pcType.getRelation("unkown"));
-        IRelation r1 = pcType.newRelation();
+        IPolicyCmptTypeAssociation r1 = pcType.newPolicyCmptTypeAssociation();
         r1.setTargetRoleSingular("r1");
-        IRelation r2 = pcType.newRelation();
+        IPolicyCmptTypeAssociation r2 = pcType.newPolicyCmptTypeAssociation();
         r2.setTargetRoleSingular("r2");
-        IRelation r3 = pcType.newRelation();
+        IPolicyCmptTypeAssociation r3 = pcType.newPolicyCmptTypeAssociation();
         r3.setTargetRoleSingular("r2");
         assertEquals(r2, pcType.getRelation("r2"));
     }
@@ -402,7 +387,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         IPolicyCmptType b = newPolicyCmptType(root, "B");
         IPolicyCmptType c = newPolicyCmptType(root, "C");
         c.setSupertype(a.getQualifiedName());
-        c.newRelation().setTarget(b.getQualifiedName());
+        c.newPolicyCmptTypeAssociation().setTarget(b.getQualifiedName());
         List dependencyList = CollectionUtil.toArrayList(c.dependsOn());
         assertEquals(2, dependencyList.size());
         assertTrue(dependencyList.contains(Dependency.createSubtypeDependency(c.getQualifiedNameType(), a.getQualifiedNameType())));
@@ -477,11 +462,11 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         IPolicyCmptType d2 = newPolicyCmptType(root, "Detail2");
         IPolicyCmptType s2 = newPolicyCmptType(root, "SupertypeOfDetail2");
        
-        IRelation rel = a.newRelation();
+        IPolicyCmptTypeAssociation rel = a.newPolicyCmptTypeAssociation();
         rel.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
         rel.setTarget(d1.getQualifiedName());
         
-        rel = d1.newRelation();
+        rel = d1.newPolicyCmptTypeAssociation();
         rel.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
         rel.setTarget(d2.getQualifiedName());
         
@@ -527,18 +512,18 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         IValidationRule[] rules = pcType.getRules();
         assertEquals(1, rules.length);
         
-        IRelation[] r = pcType.getRelations();
+        IPolicyCmptTypeAssociation[] r = pcType.getPolicyCmptTypeAssociations();
         assertEquals(1, r.length);
         
         pcType.initFromXml(element);
         assertEquals(1, pcType.getNumOfAttributes());
         assertEquals(1, pcType.getNumOfMethods());
-        assertEquals(1, pcType.getNumOfRelations());
+        assertEquals(1, pcType.getNumOfAssociations());
         assertEquals(1, pcType.getNumOfRules());
         
         // test if the object references have remained the same
         assertSame(a[0], pcType.getAttributes()[0]);
-        assertSame(r[0], pcType.getRelations()[0]);
+        assertSame(r[0], pcType.getPolicyCmptTypeAssociations()[0]);
         assertSame(m[0], pcType.getMethods()[0]);
         assertSame(rules[0], pcType.getRules()[0]);
     }
@@ -561,9 +546,9 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         rule1.setName("rule1");
         IValidationRule rule2 = pcType.newRule();
         rule2.setName("rule2");
-        IRelation r1 = pcType.newRelation();
+        IPolicyCmptTypeAssociation r1 = pcType.newPolicyCmptTypeAssociation();
         r1.setTarget("t1");
-        IRelation r2 = pcType.newRelation();
+        IPolicyCmptTypeAssociation r2 = pcType.newPolicyCmptTypeAssociation();
         r2.setTarget("t2");
         
         Element element = pcType.toXml(this.newDocument());
@@ -586,7 +571,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         IValidationRule[] rules= copy.getRules();
         assertEquals("rule1", rules[0].getName());
         assertEquals("rule2", rules[1].getName());
-        IRelation[] relations = copy.getRelations();
+        IPolicyCmptTypeAssociation[] relations = copy.getPolicyCmptTypeAssociations();
         assertEquals("t1", relations[0].getTarget());
         assertEquals("t2", relations[1].getTarget());
     }
@@ -662,7 +647,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     	try {
     		assertTrue(pcType.newPart(IAttribute.class) instanceof IAttribute);
     		assertTrue(pcType.newPart(IMethod.class) instanceof IMethod);
-    		assertTrue(pcType.newPart(IRelation.class) instanceof IRelation);
+    		assertTrue(pcType.newPart(IPolicyCmptTypeAssociation.class) instanceof IPolicyCmptTypeAssociation);
     		assertTrue(pcType.newPart(IValidationRule.class) instanceof IValidationRule);
     		
     		pcType.newPart(Object.class);
@@ -675,13 +660,13 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     public void testIsAggregateRoot() throws CoreException {
     	assertTrue(pcType.isAggregateRoot());
     	
-    	pcType.newRelation().setRelationType(RelationType.ASSOCIATION);
+    	pcType.newPolicyCmptTypeAssociation().setRelationType(RelationType.ASSOCIATION);
     	assertTrue(pcType.isAggregateRoot());
 
-    	pcType.newRelation().setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+    	pcType.newPolicyCmptTypeAssociation().setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
     	assertTrue(pcType.isAggregateRoot());
     	
-    	pcType.newRelation().setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
+    	pcType.newPolicyCmptTypeAssociation().setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
     	assertFalse(pcType.isAggregateRoot());
     	
     	// create a supertype
@@ -690,11 +675,11 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     	subtype.setSupertype(supertype.getQualifiedName());
     	subtype.getIpsSrcFile().save(true, null);
     	
-    	supertype.newRelation().setRelationType(RelationType.ASSOCIATION);
+    	supertype.newPolicyCmptTypeAssociation().setRelationType(RelationType.ASSOCIATION);
     	assertTrue(subtype.isAggregateRoot());
-    	supertype.newRelation().setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+    	supertype.newPolicyCmptTypeAssociation().setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
     	assertTrue(subtype.isAggregateRoot());
-    	supertype.newRelation().setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
+    	supertype.newPolicyCmptTypeAssociation().setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
     	assertFalse(subtype.isAggregateRoot());
         
         IPolicyCmptType invalidType = newPolicyCmptType(ipsProject, "InvalidType");
@@ -748,8 +733,8 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         MessageList ml = pcType.validate();
         assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
         
-        IRelation container = pcType.newRelation();
-        container.setReadOnlyContainer(true);
+        IPolicyCmptTypeAssociation container = pcType.newPolicyCmptTypeAssociation();
+        container.setDerivedUnion(true);
         container.setTargetRoleSingular("Target");
         container.setTarget(target.getQualifiedName());
         
@@ -772,9 +757,9 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         pcType.setAbstract(false);
         
         // implement the container relation in the same type
-        IRelation relation = pcType.newRelation();
-        relation.setReadOnlyContainer(false);
-        relation.setContainerRelation(container.getName());
+        IPolicyCmptTypeAssociation relation = pcType.newPolicyCmptTypeAssociation();
+        relation.setDerivedUnion(false);
+        relation.setSubsettedDerivedUnion(container.getName());
         relation.setTarget(target.getQualifiedName());
         
         ml = pcType.validate();
@@ -793,9 +778,9 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
         subtype.setAbstract(false);
 
-        relation = subtype.newRelation();
-        relation.setReadOnlyContainer(false);
-        relation.setContainerRelation(container.getName());
+        relation = subtype.newPolicyCmptTypeAssociation();
+        relation.setDerivedUnion(false);
+        relation.setSubsettedDerivedUnion(container.getName());
         relation.setTarget(target.getQualifiedName());
         
         ml = subtype.validate();
@@ -808,9 +793,9 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         ml = subsubtype.validate();
         assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
 
-        relation = subtype.newRelation();
-        relation.setReadOnlyContainer(false);
-        relation.setContainerRelation(container.getName());
+        relation = subtype.newPolicyCmptTypeAssociation();
+        relation.setDerivedUnion(false);
+        relation.setSubsettedDerivedUnion(container.getName());
         relation.setTarget(target.getQualifiedName());
         
         ml = subtype.validate();
@@ -834,54 +819,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         ml = pcType.validate();
         assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
     }
-    
-    public void testFindRelationsImplementingContainerRelation() throws CoreException {
-        assertEquals(0, pcType.findRelationsImplementingContainerRelation(null, true).length);
         
-        IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
-        pcType.setSupertype(supertype.getQualifiedName());
-        IRelation container = supertype.newRelation();
-        container.setReadOnlyContainer(true);
-        container.setTargetRoleSingular("Target");
-        
-        IRelation[] relations = pcType.findRelationsImplementingContainerRelation(container, true);
-        assertEquals(0, relations.length);
-        
-        IRelation relation0 = pcType.newRelation();
-        relation0.setContainerRelation(container.getName());
-        pcType.newRelation(); // relation1
-        
-        relations = pcType.findRelationsImplementingContainerRelation(container, true);
-        assertEquals(1, relations.length);
-        assertEquals(relation0, relations[0]);
-        
-        relations = pcType.findRelationsImplementingContainerRelation(container, false);
-        assertEquals(1, relations.length);
-        assertEquals(relation0, relations[0]);
-        
-        IRelation relation2 = supertype.newRelation();
-        relation2.setContainerRelation(container.getName());
-        
-        relations = pcType.findRelationsImplementingContainerRelation(container, true);
-        assertEquals(2, relations.length);
-        assertEquals(relation0, relations[0]);
-        assertEquals(relation2, relations[1]);
-        
-        relations = pcType.findRelationsImplementingContainerRelation(container, false);
-        assertEquals(1, relations.length);
-        assertEquals(relation0, relations[0]);
-
-        // test if relations above the container relation aren't found
-        IPolicyCmptType supersupertype = newPolicyCmptType(ipsProject, "SuperSupertype");
-        supertype.setSupertype(supersupertype.getQualifiedName());
-        IRelation relation3 = supersupertype.newRelation();
-        relation3.setContainerRelation(container.getName());
-        relations = pcType.findRelationsImplementingContainerRelation(container, true);
-        assertEquals(2, relations.length);
-        assertEquals(relation0, relations[0]);
-        assertEquals(relation2, relations[1]);
-    }
-    
     private class AggregateRootBuilderSet extends EmptyBuilderSet {
 
         public final static String ID = "AggregateRootBuilderSet";

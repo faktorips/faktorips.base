@@ -66,7 +66,7 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
         
         assertTrue(productCmptType.isValid());
         
-        IProductCmptTypeAssociation rel = productCmptType.newAssociation();
+        IProductCmptTypeAssociation rel = productCmptType.newProductCmptTypeAssociation();
         rel.setTargetRoleSingular("role");
         rel.setTargetRolePlural("roles");
         rel.setTarget(productCmptType.getQualifiedName());

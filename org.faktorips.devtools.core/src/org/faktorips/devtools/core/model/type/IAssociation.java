@@ -18,8 +18,10 @@
 package org.faktorips.devtools.core.model.type;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
 
 /**
@@ -45,6 +47,75 @@ public interface IAssociation extends IIpsObjectPart {
     public final static String PROPERTY_SUBSETTED_DERIVED_UNION = "subsettedDerivedUnion"; //$NON-NLS-1$
     
     /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "Association-"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the target does not exist.
+     */
+    public final static String MSGCODE_TARGET_DOES_NOT_EXIST = MSGCODE_PREFIX + "TargetDoesNotExists"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the target role singular must be set and it's not.
+     */
+    public final static String MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET = MSGCODE_PREFIX + "TargetRoleSingularMustBeSet"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the target role plural must be set if the max cardinality is
+     * greater than 1.
+     */
+    public final static String MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET = MSGCODE_PREFIX + "TargetRolePluralMustBeSet"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that an association has the same rolename singular and plural
+     */
+    public final static String MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR = 
+        MSGCODE_PREFIX + "TargetRoleSingularEqualsTargetRoleSingular"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the max cardinality must be at least 1 and it's not.
+     */
+    public final static String MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1 = MSGCODE_PREFIX + "MaxCardinalityMustBeAtLeast1"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that for derived union associations the max cardinality must be greater than 1,
+     * but it's not.
+     */
+    public final static String MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW = MSGCODE_PREFIX + "MaxCardinalityForContainerRelationTooLow"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the max cardinality is less than min, but it must be
+     * greater or equal than min.
+     */
+    public final static String MSGCODE_MAX_IS_LESS_THAN_MIN = MSGCODE_PREFIX + "MaxIsLessThanMin"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the an association subsets a derived union, but the derived union
+     * can't be found in the type's hierarchy.
+     */
+    public final static String MSGCODE_DERIVED_UNION_NOT_FOUND = MSGCODE_PREFIX + "DerivedUnionNotFound"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that an association specifies to subset another association, but
+     * the other one is not marked as derived union.
+     */
+    public final static String MSGCODE_NOT_MARKED_AS_DERIVED_UNION = MSGCODE_PREFIX + "NotMarkedAsDerivedUnion"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that an association specifies to subset a derived union,
+     * but the target of the derived union does not exist and so it can't be checked, it the target type of the
+     * subsetting association is a subtype (or the same type) as the target type of the derived union.
+     */
+    public final static String MSGCODE_TARGET_OF_DERIVED_UNION_DOES_NOT_EXIST = MSGCODE_PREFIX + "ContainerRelationTargetDoesNotExist"; //$NON-NLS-1$
+
+    /**
+     * Given an association that is subsetting a derived union, this validation message code indicates that the association's target type 
+     * is not a sutype (or the same type) of the derived union's target type.
+     */
+    public final static String MSGCODE_TARGET_TYPE_NOT_A_SUBTYPE = IPolicyCmptTypeAssociation.MSGCODE_PREFIX + "TargetTypeNotASubtype"; //$NON-NLS-1$
+
+    /**
      * Returns the type this association belongs to. Never returns <code>null</code>.
      */
     public IType getType();
@@ -60,12 +131,12 @@ public interface IAssociation extends IIpsObjectPart {
     public boolean isDerived();
     
     /**
-     * Returns the qualified name of the target product component type.
+     * Returns the qualified name of the target type.
      */
     public String getTarget();
     
     /**
-     * Returns the target product component type or <code>null</code> if either this relation hasn't got a target
+     * Returns the target type or <code>null</code> if either this association hasn't got a target
      * or the target does not exists.
      * 
      * @param project The project which ips object path is used for the searched.
@@ -76,12 +147,12 @@ public interface IAssociation extends IIpsObjectPart {
     public IType findTarget(IIpsProject ipsProject) throws CoreException;
     
     /**
-     * Sets the qualified name of the target product component type.
+     * Sets the qualified name of the target type.
      */
     public void setTarget(String newTarget);
     
     /**
-     * Returns the role of the target in this relation.
+     * Returns the role of the target in this association.
      */
     public String getTargetRoleSingular();
     
@@ -91,7 +162,7 @@ public interface IAssociation extends IIpsObjectPart {
     public String getDefaultTargetRoleSingular();
     
     /**
-     * Sets the role of the target in this relation. The role is specified in singular form, e.g. policy and not
+     * Sets the role of the target in this association. The role is specified in singular form, e.g. policy and not
      * policies. The distinction is more relevant in other languages than English, where you can't derive the 
      * plural from the singular form.
      */
@@ -108,28 +179,30 @@ public interface IAssociation extends IIpsObjectPart {
     public String getDefaultTargetRolePlural();
 
     /**
-     * Sets the new role in plural form of the target in this relation.
+     * Sets the new role in plural form of the target in this association.
      */
     public void setTargetRolePlural(String newRole);
     
     /**
-     * Returns if the target role plural is required (or not) based on the relation's max cardinality
+     * Returns if the target role plural is required (or not) based on the associations's max cardinality
      * and the aretfact builderset's information if it needs the plural form for to 1 relations.
+     * 
+     * @see IIpsArtefactBuilderSet#isRoleNamePluralRequiredForTo1Relations()
      */
     public boolean isTargetRolePluralRequired();
     
     /**
-     * Returns the minmum number of target instances required in this relation.   
+     * Returns the minmum number of target instances required in this association.   
      */
     public int getMinCardinality();
     
     /**
-     * Sets the minmum number of target instances required in this relation.   
+     * Sets the minmum number of target instances required in this association.   
      */
     public void setMinCardinality(int newValue);
     
     /**
-     * Returns the maxmium number of target instances allowed in this relation.
+     * Returns the maxmium number of target instances allowed in this association.
      * If the number is not limited, CARDINALITY_MANY is returned. 
      */
     public int getMaxCardinality();
@@ -137,18 +210,18 @@ public interface IAssociation extends IIpsObjectPart {
     /**
      * Returns <code>true</code> if this is a to-many association. This is the case if
      * either the max cardinality is greater than 1 or (!) this association is a qualified association.
-     * In the latter case the max cardinality specified the number of allowed links per qualifier instance(!).
+     * In the latter case the max cardinality specifies the number of allowed links per qualifier instance(!).
      */
     public boolean is1ToMany();
     
     /**
-     * Returns true if this is a 1 (or 0) to 1 relation. This is the case if
+     * Returns <code>true</code> if this is a 1 (or 0) to 1 association. This is the case if
      * the max cardinality is 1.
      */
     public boolean is1To1();
     
     /**
-     * Sets the maxmium number of target instances allowed in this relation.
+     * Sets the maxmium number of target instances allowed in this association.
      * An unlimited number is represented by CARDINALITY_MANY.
      */
     public void setMaxCardinality(int newValue);
@@ -166,9 +239,9 @@ public interface IAssociation extends IIpsObjectPart {
     public void setDerivedUnion(boolean flag);
     
     /**
-     * Sets the container relation that is implemented by this relation. 
+     * Sets the derived union association that is subsetted by this association. 
      */
-    public void setSubsettedDerivedUnion(String containerRelation);
+    public void setSubsettedDerivedUnion(String newDerivedUnion);
     
     /**
      * Returns the name of the derived union association this one is a subset of.
@@ -195,20 +268,22 @@ public interface IAssociation extends IIpsObjectPart {
     public boolean isSubsetOfADerivedUnion();
     
     /**
-     * Returns <code>true</code> if this relation implements the given container relation, 
-     * <code>false</code> otherwise. Returns <code>false</code> if containerRelation is <code>null</code>.
-     * This method does not check if the given container relation is *really* a container relation.
+     * Returns <code>true</code> if this association defines a (direct) subset of the given derived union,
+     * otherwise <code>false</code>. Returns <code>false</code> if derived union is <code>null</code>.
+     * This method does not check if the given association is *really* a derived union.
      * 
      * @param ipsProject The project which ips object path is used for the searched.
      * This is not neccessarily the project this type is part of.
      * 
-     * @throws CoreException if an error occurs while searching for the container relation this ones implements.
+     * @throws CoreException if an error occurs while searching for the derived union.
      */
     public boolean isSubsetOfDerivedUnion(IAssociation derivedUnion, IIpsProject ipsProject) throws CoreException;
     
     /**
      * Searches the derived union association and returns it, if it exists. Returns <code>null</code> if the derived
-     * union does not exist.
+     * union does not exist. Not that this method does not check if the assocation refered by this one as
+     * a derived union is *really* a derived union. It just returns the association that is defined as being
+     * subsetted by this one. 
      * 
      * @param ipsProject The project which ips object path is used for the searched.
      * This is not neccessarily the project this type is part of.
@@ -217,4 +292,15 @@ public interface IAssociation extends IIpsObjectPart {
      */
     public IAssociation findSubsettedDerivedUnion(IIpsProject project) throws CoreException;
     
+    /**
+     * Searches for derived union associations in the type's hierarchy (of the type this assocation belongs to)
+     * which are canditates for a derived union for this associations. This is the case if an association in 
+     * the type's hierarchy is marked as a derived union and the target is the same or a supertype of this
+     * association's target.
+     *   
+     * Returns and emty array if no such associations exists.
+     * 
+     * @throws CoreException if an error occurs while searching.
+     */
+    public IAssociation[] findDerivedUnionCandidates(IIpsProject ipsProject) throws CoreException;    
 }

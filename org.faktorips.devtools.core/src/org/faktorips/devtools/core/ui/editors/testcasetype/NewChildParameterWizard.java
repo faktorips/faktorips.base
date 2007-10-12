@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.Wizard;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -140,7 +140,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
         newTestParameter.setRelation(relation);
         
         try {
-            IRelation modelRelation = newTestParameter.findRelation();
+            IPolicyCmptTypeAssociation modelRelation = newTestParameter.findRelation();
             if (modelRelation != null){
                 IPolicyCmptType pcType = modelRelation.findTarget();
                 if (pcType != null){

@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.DeltaType;
 import org.faktorips.devtools.core.model.product.IAttributeValue;
@@ -605,7 +605,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (partType.equals(IConfigElement.class)) {
             return newConfigElement();
         }
-        else if (partType.equals(IRelation.class)) {
+        else if (partType.equals(IPolicyCmptTypeAssociation.class)) {
             return newLink();
         }
         else if (partType.equals(ITableContentUsage.class)) {

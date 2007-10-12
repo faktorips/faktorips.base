@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -65,7 +65,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         
         project = newIpsProject("TestProject");
         PolicyCmptType type = newPolicyCmptType(project, "testValueParameter1");
-        IRelation relation = type.newRelation();
+        IPolicyCmptTypeAssociation relation = type.newPolicyCmptTypeAssociation();
         relation.setTargetRoleSingular("relation1");
         newPolicyCmptType(project, "testValueParameter2");
         newPolicyCmptType(project, "testValueParameter3");
@@ -345,7 +345,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     public void testUpdateDefaultTestAttributeValues() throws CoreException{
         // create model objects
         IPolicyCmptType policy = newPolicyAndProductCmptType(project, "Policy", "Product");
-        IRelation relation = policy.newRelation();
+        IPolicyCmptTypeAssociation relation = policy.newPolicyCmptTypeAssociation();
         relation.setTargetRoleSingular("childPolicyCmptType");
         relation.setTarget("Coverage");
         IPolicyCmptType coverage = newPolicyAndProductCmptType(project, "Coverage", "CoverageType");

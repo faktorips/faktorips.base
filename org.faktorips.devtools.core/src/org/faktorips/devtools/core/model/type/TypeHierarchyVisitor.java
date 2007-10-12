@@ -100,4 +100,5 @@ public abstract class TypeHierarchyVisitor {
      * <code>false</code> if not.
      */
     protected abstract boolean visit(IType currentType) throws CoreException;
+    
 }

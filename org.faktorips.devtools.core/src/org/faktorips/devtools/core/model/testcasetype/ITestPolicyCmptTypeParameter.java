@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.model.testcasetype;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 
 /**
  *  Specification of a test policy component parameter.
@@ -134,7 +134,7 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
      * 
      * @throws CoreException if an error occurs while searching for the relation.
      */	
-	public IRelation findRelation() throws CoreException;
+	public IPolicyCmptTypeAssociation findRelation() throws CoreException;
 		
     /**
      * Creates a new input test attribute and returns it.

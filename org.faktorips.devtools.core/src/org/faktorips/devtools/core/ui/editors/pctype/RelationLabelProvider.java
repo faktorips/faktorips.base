@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 
 
@@ -28,10 +28,10 @@ public class RelationLabelProvider extends DefaultLabelProvider {
      * {@inheritDoc}
      */
     public String getText(Object element) {
-        if (!(element instanceof IRelation)) {
+        if (!(element instanceof IPolicyCmptTypeAssociation)) {
             return super.getText(element);    
         }
-        IRelation relation = (IRelation)element;
+        IPolicyCmptTypeAssociation relation = (IPolicyCmptTypeAssociation)element;
         String targetName = relation.getTarget();
         int pos = targetName.lastIndexOf('.');
         if (pos>0) {

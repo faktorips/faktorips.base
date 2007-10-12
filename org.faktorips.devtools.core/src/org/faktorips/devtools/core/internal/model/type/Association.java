@@ -17,14 +17,23 @@
 
 package org.faktorips.devtools.core.internal.model.type;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.internal.model.pctype.Messages;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -37,13 +46,13 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
 
     final static String TAG_NAME = "Association"; //$NON-NLS-1$
 
-    private String target = ""; //$NON-NLS-1$
-    private String targetRoleSingular = ""; //$NON-NLS-1$
-    private String targetRolePlural = ""; //$NON-NLS-1$
-    private int minCardinality = 0;
-    private int maxCardinality = Integer.MAX_VALUE; 
-    private String subsettedDerivedUnion = ""; //$NON-NLS-1$
-    private boolean derivedUnion = false;
+    protected String target = ""; //$NON-NLS-1$
+    protected String targetRoleSingular = ""; //$NON-NLS-1$
+    protected String targetRolePlural = ""; //$NON-NLS-1$
+    protected int minCardinality = 0;
+    protected int maxCardinality = Integer.MAX_VALUE; 
+    protected String subsettedDerivedUnion = ""; //$NON-NLS-1$
+    protected boolean derivedUnion = false;
     
     public Association(IIpsObject parent, int id) {
         super(parent, id);
@@ -242,6 +251,19 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
     /**
      * {@inheritDoc}
      */
+    public IAssociation[] findDerivedUnionCandidates(IIpsProject ipsProject) throws CoreException {
+        IType targetType = findTarget(ipsProject);
+        if (target==null) {
+            return new IAssociation[0];
+        }
+        DerivedUnionCandidatesFinder finder = new DerivedUnionCandidatesFinder(targetType, ipsProject);
+        finder.start(getType());
+        return (IAssociation[])finder.candidates.toArray(new IAssociation[finder.candidates.size()]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean isSubsetOfDerivedUnion(IAssociation derivedUnion, IIpsProject project) throws CoreException {
         if (derivedUnion==null) {
             return false;
@@ -302,5 +324,102 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
         newElement.setAttribute(PROPERTY_DERIVED_UNION, "" + derivedUnion); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_SUBSETTED_DERIVED_UNION, subsettedDerivedUnion); 
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
+        IIpsProject ipsProject = getIpsProject();
+        ValidationUtils.checkIpsObjectReference(target, getIpsObject().getIpsObjectType(), "target", this,  //$NON-NLS-1$
+                PROPERTY_TARGET, MSGCODE_TARGET_DOES_NOT_EXIST, list); //$NON-NLS-1$
+        ValidationUtils.checkStringPropertyNotEmpty(targetRoleSingular, "Target role (singular)", this, PROPERTY_TARGET_ROLE_SINGULAR,
+                MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET, list);
+        if (maxCardinality == 0) {
+            String text = Messages.Relation_msgMaxCardinalityMustBeAtLeast1;
+            list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1, text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY)); //$NON-NLS-1$
+        } else if (maxCardinality == 1 && isDerivedUnion()) {
+            String text = Messages.Relation_msgMaxCardinalityForContainerRelationTooLow;
+            list.add(new Message(MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW, text, Message.ERROR, this, new String[]{PROPERTY_DERIVED_UNION, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
+        } else if (minCardinality > maxCardinality) {
+            String text = Messages.Relation_msgMinCardinalityGreaterThanMaxCardinality;
+            list.add(new Message(MSGCODE_MAX_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[]{PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
+        }
+        
+        if (maxCardinality > 1 || getIpsProject().getIpsArtefactBuilderSet().isRoleNamePluralRequiredForTo1Relations()) {
+            ValidationUtils.checkStringPropertyNotEmpty(targetRolePlural,
+                    Messages.Relation_msgTargetRolePlural, this, PROPERTY_TARGET_ROLE_PLURAL,
+                    MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET, list);
+        }
+        if (StringUtils.isNotEmpty(this.getTargetRolePlural())
+                && this.getTargetRolePlural().equals(this.getTargetRoleSingular())) {
+            String text = Messages.Relation_msgTargetRoleSingularIlleaglySameAsTargetRolePlural;
+            list.add(new Message(
+                    MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR,
+                    text, Message.ERROR, this, new String[] {
+                            PROPERTY_TARGET_ROLE_SINGULAR,
+                            PROPERTY_TARGET_ROLE_PLURAL }));
+        }
+        validateDerivedUnion(list, ipsProject);
+    }
     
+    private void validateDerivedUnion(MessageList list, IIpsProject ipsProject) throws CoreException {
+        if (StringUtils.isEmpty(subsettedDerivedUnion)) {
+            return;
+        }
+        IAssociation unionAss = findSubsettedDerivedUnion(ipsProject);
+        if (unionAss==null) {
+            String text = NLS.bind(Messages.Relation_msgContainerRelNotInSupertype, subsettedDerivedUnion);
+            list.add(new Message(MSGCODE_DERIVED_UNION_NOT_FOUND, text, Message.ERROR, this, PROPERTY_SUBSETTED_DERIVED_UNION)); //$NON-NLS-1$
+            return;
+        }
+        if (!unionAss.isDerivedUnion()) {
+            String text = Messages.Relation_msgNotMarkedAsContainerRel;
+            list.add(new Message(MSGCODE_NOT_MARKED_AS_DERIVED_UNION, text, Message.ERROR, this, PROPERTY_SUBSETTED_DERIVED_UNION)); //$NON-NLS-1$
+        }
+        IType unionTarget = unionAss.findTarget(ipsProject);
+        if (unionTarget==null) {
+            String text = Messages.Relation_msgNoTarget;
+            list.add(new Message(MSGCODE_TARGET_OF_DERIVED_UNION_DOES_NOT_EXIST, text, Message.WARNING, this, PROPERTY_SUBSETTED_DERIVED_UNION)); //$NON-NLS-1$
+            return;
+        }
+        IType targetType = findTarget(ipsProject);
+        if (targetType!=null && !targetType.isSubtypeOrSameType(unionTarget, ipsProject)) {
+            String text = Messages.Relation_msgTargetNotSubclass;
+            list.add(new Message(IAssociation.MSGCODE_TARGET_TYPE_NOT_A_SUBTYPE, text, Message.ERROR, this, PROPERTY_SUBSETTED_DERIVED_UNION));     //$NON-NLS-1$
+        }
+    }
+    
+    
+    private class DerivedUnionCandidatesFinder extends TypeHierarchyVisitor {
+
+        private List candidates = new ArrayList();
+        private IType targetType;
+        
+        public DerivedUnionCandidatesFinder(IType targetType, IIpsProject ipsProject) {
+            super(ipsProject);
+            this.targetType = targetType;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IType currentType) throws CoreException {
+            IAssociation[] associations = currentType.getAssociations();
+            for (int j = 0; j < associations.length; j++) {
+                if (!associations[j].isDerivedUnion())
+                    continue;
+                
+                IType derivedUnionTarget = associations[j].findTarget(ipsProject);
+                if (derivedUnionTarget == null)
+                    continue;
+                
+                if (targetType.isSubtypeOrSameType(derivedUnionTarget, ipsProject)) {
+                    candidates.add(associations[j]);
+                }
+            }
+            return true;
+        }
+        
+    }
 }

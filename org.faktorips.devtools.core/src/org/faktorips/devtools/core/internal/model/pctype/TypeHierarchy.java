@@ -30,11 +30,11 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.util.ArgumentCheck;
 
 
@@ -315,13 +315,13 @@ public class TypeHierarchy implements ITypeHierarchy {
     /**
 	 * {@inheritDoc}
 	 */
-	public IRelation[] getAllRelations(IPolicyCmptType type) {
+	public IPolicyCmptTypeAssociation[] getAllRelations(IPolicyCmptType type) {
         List relations = new ArrayList();
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
         for (int i=0; i<types.length; i++) {
             relations.addAll(((PolicyCmptType)types[i]).getRelationList());
         }
-        return (IRelation[])relations.toArray(new IRelation[relations.size()]);
+        return (IPolicyCmptTypeAssociation[])relations.toArray(new IPolicyCmptTypeAssociation[relations.size()]);
 	}
 
     /**
@@ -353,10 +353,10 @@ public class TypeHierarchy implements ITypeHierarchy {
     /**
      * {@inheritDoc}
      */
-    public IRelation findRelation(IPolicyCmptType type, String targetRole) {
+    public IPolicyCmptTypeAssociation findRelation(IPolicyCmptType type, String targetRole) {
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
         for (int i=0; i<types.length; i++) {
-            IRelation r = types[i].getRelation(targetRole);
+            IPolicyCmptTypeAssociation r = types[i].getRelation(targetRole);
             if (r!=null) {
                 return r;
             }

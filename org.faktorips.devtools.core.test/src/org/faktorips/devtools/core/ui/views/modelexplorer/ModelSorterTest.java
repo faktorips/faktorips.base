@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
 public class ModelSorterTest extends AbstractIpsPluginTest {
@@ -60,7 +60,7 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
 
     private IAttribute attr1;
 
-    private IRelation rel;
+    private IPolicyCmptTypeAssociation rel;
 
     private IAttribute attr2;
 
@@ -85,7 +85,7 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
 
 
         attr1 = policyCT.newAttribute();
-        rel = policyCT.newRelation();
+        rel = policyCT.newPolicyCmptTypeAssociation();
         attr2 = policyCT.newAttribute();
 
         projectResource1 = (IProject) proj3.getCorrespondingResource();

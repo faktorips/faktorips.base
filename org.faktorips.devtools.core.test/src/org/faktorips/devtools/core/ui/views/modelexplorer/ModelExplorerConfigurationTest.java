@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -43,7 +43,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
     private IProductCmpt prodCmpt;
     private IIpsPackageFragmentRoot root;
     private IAttribute attribute;
-    private IRelation relation;
+    private IPolicyCmptTypeAssociation relation;
     private ITableContents tableContents;
     private ITableStructure tableStructure;
     
@@ -64,13 +64,13 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         defaultPackage = root.getDefaultIpsPackageFragment();
         pcType = newPolicyCmptType(root, "TestPCType");
         attribute = pcType.newAttribute();
-        relation = pcType.newRelation();
+        relation = pcType.newPolicyCmptTypeAssociation();
         prodCmpt = newProductCmpt(root, "TestProdCmpt");
         tableContents = (ITableContents) newIpsObject(root.getDefaultIpsPackageFragment(), IpsObjectType.TABLE_CONTENTS, "TestTableContents");
         tableStructure = (ITableStructure) newIpsObject(root.getDefaultIpsPackageFragment(), IpsObjectType.TABLE_STRUCTURE, "TestTableStructure");
         
         config = new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class, IProductCmpt.class,
-                        IAttribute.class, IRelation.class }, new Class[]{IFolder.class});
+                        IAttribute.class, IPolicyCmptTypeAssociation.class }, new Class[]{IFolder.class});
 
         folder = ((IProject)proj.getCorrespondingResource()).getFolder("testfolder");
         folder.create(true, false, null);

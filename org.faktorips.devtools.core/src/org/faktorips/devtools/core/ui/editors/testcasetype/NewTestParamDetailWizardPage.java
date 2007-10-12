@@ -22,7 +22,7 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -104,7 +104,7 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
         // req product cmpt is not editable for associations
         if (testParameter instanceof ITestPolicyCmptTypeParameter){
             ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter = (ITestPolicyCmptTypeParameter) testParameter;
-            IRelation relation;
+            IPolicyCmptTypeAssociation relation;
             try {
                 relation = testPolicyCmptTypeParameter.findRelation();
                 if (relation != null && relation.isAssoziation()){

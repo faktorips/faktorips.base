@@ -25,7 +25,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
@@ -57,7 +57,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
     private EditField editFieldParamType;
     
     private String prevRelation;
-    private IRelation relation;
+    private IPolicyCmptTypeAssociation relation;
     
     private RelationTargetRefControl relTargetRefControl;
     private RelationRefControl relationRefControl;

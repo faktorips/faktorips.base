@@ -41,7 +41,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -363,7 +363,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                 builder.appendQuoted(ass.getName());
                 builder.appendln(");");
                 builder.append("if (relationElements != null) {");
-                IRelation policyCmptTypeRelation = ass.findMatchingPolicyCmptTypeRelation(getIpsProject());
+                IPolicyCmptTypeAssociation policyCmptTypeRelation = ass.findMatchingPolicyCmptTypeRelation(getIpsProject());
                 String cardinalityFieldName = policyCmptTypeRelation == null ? "" : getFieldNameCardinalityForRelation(ass);
                 if (ass.is1ToMany()) {
                     String fieldName = getFieldNameToManyRelation(ass);

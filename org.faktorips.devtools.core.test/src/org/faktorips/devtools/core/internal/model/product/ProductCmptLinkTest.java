@@ -63,7 +63,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     public void testFindAssociation() throws CoreException {
-    	IProductCmptTypeAssociation assocation = productCmptType.newAssociation();
+    	IProductCmptTypeAssociation assocation = productCmptType.newProductCmptTypeAssociation();
 
         assocation.setTargetRoleSingular("CoverageType");
     	assertEquals(assocation, link.findAssociation(ipsProject));
@@ -135,7 +135,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     	MessageList ml = link.validate();
     	assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_UNKNWON_RELATIONTYPE));
     	
-    	IProductCmptTypeAssociation association = productCmptType.newAssociation();
+    	IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
     	association.setTargetRoleSingular("CoverageType");
 
     	ml = link.validate();
@@ -178,7 +178,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     public void testValidateInvalidTarget() throws Exception{
         IPolicyCmptType targetType = newPolicyAndProductCmptType(ipsProject, "Coverage", "CoverageType");
         IProductCmptType targetProductType = targetType.findProductCmptType(ipsProject);
-        IProductCmptTypeAssociation association = productCmptType.newAssociation();
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
         association.setTarget(targetProductType.getQualifiedName());
         association.setTargetRoleSingular("testRelation");
         

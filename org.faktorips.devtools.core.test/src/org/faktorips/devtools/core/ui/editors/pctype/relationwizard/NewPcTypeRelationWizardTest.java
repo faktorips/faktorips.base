@@ -22,7 +22,7 @@ import java.util.List;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 
 public class NewPcTypeRelationWizardTest  extends AbstractIpsPluginTest {
@@ -35,7 +35,7 @@ public class NewPcTypeRelationWizardTest  extends AbstractIpsPluginTest {
 
     public void testGetCorrespondingRelationType() throws Exception {
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
-        IRelation relation = policyCmptType.newRelation();
+        IPolicyCmptTypeAssociation relation = policyCmptType.newPolicyCmptTypeAssociation();
         relation.setTargetRoleSingular("relation");
         
         // no relation type specified
@@ -62,14 +62,14 @@ public class NewPcTypeRelationWizardTest  extends AbstractIpsPluginTest {
         
         IPolicyCmptType policyCmptType2 = newPolicyCmptType(project, "policyCmpt2");
         
-        policyCmptTypeSuper1.newRelation().setTargetRoleSingular("dummy");
-        IRelation superRelation = policyCmptTypeSuper1.newRelation();
+        policyCmptTypeSuper1.newPolicyCmptTypeAssociation().setTargetRoleSingular("dummy");
+        IPolicyCmptTypeAssociation superRelation = policyCmptTypeSuper1.newPolicyCmptTypeAssociation();
         superRelation.setTargetRoleSingular("realtionSuper");
         superRelation.setRelationType(RelationType.ASSOCIATION);
-        IRelation relation12 = policyCmptType1.newRelation();
+        IPolicyCmptTypeAssociation relation12 = policyCmptType1.newPolicyCmptTypeAssociation();
         relation12.setTargetRoleSingular("realtion12");
         
-        IRelation relation21 = policyCmptType2.newRelation();
+        IPolicyCmptTypeAssociation relation21 = policyCmptType2.newPolicyCmptTypeAssociation();
         relation21.setRelationType(RelationType.ASSOCIATION);
         
         // don't find any relations because no relation on policyCmptType1 have policyCmptType2 as target

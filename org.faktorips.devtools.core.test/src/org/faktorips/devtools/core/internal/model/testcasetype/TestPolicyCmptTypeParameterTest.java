@@ -19,7 +19,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
@@ -180,14 +180,14 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
     
     public void testFindRelationTest() throws Exception {
         IPolicyCmptType policyCmptTypeSuper = newPolicyCmptType(project, "policyCmptSuper");
-        IRelation rel1 = policyCmptTypeSuper.newRelation();
+        IPolicyCmptTypeAssociation rel1 = policyCmptTypeSuper.newPolicyCmptTypeAssociation();
         rel1.setTargetRoleSingular("relation1");
-        IRelation rel2 = policyCmptTypeSuper.newRelation();
+        IPolicyCmptTypeAssociation rel2 = policyCmptTypeSuper.newPolicyCmptTypeAssociation();
         rel2.setTargetRoleSingular("relation2");
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
-        IRelation rel3 = policyCmptType.newRelation();
+        IPolicyCmptTypeAssociation rel3 = policyCmptType.newPolicyCmptTypeAssociation();
         rel3.setTargetRoleSingular("relation3");
-        IRelation rel4 = policyCmptType.newRelation();
+        IPolicyCmptTypeAssociation rel4 = policyCmptType.newPolicyCmptTypeAssociation();
         rel4.setTargetRoleSingular("relation4");
         policyCmptType.setSupertype(policyCmptTypeSuper.getQualifiedName());
         
@@ -212,7 +212,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         targetPolicyCmptType.setSupertype(targetPolicyCmptTypeSuper.getQualifiedName());
         
         IPolicyCmptType sourcePolicyCmptType = newPolicyCmptType(project, "sourcePolicyCmpt");
-        IRelation relation = sourcePolicyCmptType.newRelation();
+        IPolicyCmptTypeAssociation relation = sourcePolicyCmptType.newPolicyCmptTypeAssociation();
         relation.setTargetRoleSingular("relation");
         relation.setTarget(targetPolicyCmptTypeSuperSuper.getQualifiedName());
         
@@ -308,7 +308,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
     
     public void testValidateRelationNotExists() throws Exception {
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
-        IRelation rel1 = policyCmptType.newRelation();
+        IPolicyCmptTypeAssociation rel1 = policyCmptType.newPolicyCmptTypeAssociation();
         rel1.setTargetRoleSingular("relation1");
         
         policyCmptTypeParameterInput.setPolicyCmptType(policyCmptType.getQualifiedName());
@@ -326,7 +326,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
     public void testValidateTargetOfRelationNotExists() throws Exception {
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
         IPolicyCmptType policyCmptTypeTarget = newPolicyCmptType(project, "policyCmptTarget");
-        IRelation rel1 = policyCmptType.newRelation();
+        IPolicyCmptTypeAssociation rel1 = policyCmptType.newPolicyCmptTypeAssociation();
         rel1.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);        
         rel1.setTargetRoleSingular("relation1");
         rel1.setTarget(policyCmptTypeTarget.getQualifiedName());
@@ -392,7 +392,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
     public void testValidateTargetOfAssociationNotExistsInTestCaseType() throws Exception{
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
         IPolicyCmptType policyCmptTypeTarget = newPolicyCmptType(project, "policyCmptTarget");
-        IRelation rel1 = policyCmptType.newRelation();
+        IPolicyCmptTypeAssociation rel1 = policyCmptType.newPolicyCmptTypeAssociation();
         rel1.setRelationType(RelationType.ASSOCIATION);
         rel1.setTargetRoleSingular("relation1");
         rel1.setTarget(policyCmptTypeTarget.getQualifiedName());

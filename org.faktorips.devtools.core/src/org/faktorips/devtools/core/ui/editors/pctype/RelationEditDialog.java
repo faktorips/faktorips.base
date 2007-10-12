@@ -37,10 +37,11 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.binding.ButtonTextBinding;
@@ -49,6 +50,7 @@ import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.core.ui.editors.type.DerivedUnionCompletionProcessor;
 import org.faktorips.devtools.core.util.QNameUtil;
 
 
@@ -58,7 +60,7 @@ import org.faktorips.devtools.core.util.QNameUtil;
 public class RelationEditDialog extends IpsPartEditDialog2 {
     
     private IIpsProject ipsProject;
-    private IRelation relation;
+    private IPolicyCmptTypeAssociation association;
     private PmoAssociation pmoAssociation;
     
     private ExtensionPropertyControlFactory extFactory;
@@ -67,12 +69,12 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
      * @param parentShell
      * @param title
      */
-    public RelationEditDialog(IRelation relation, Shell parentShell) {
-        super(relation, parentShell, Messages.RelationEditDialog_title, true );
-        this.relation = relation;
-        this.ipsProject = relation.getIpsProject();
-        pmoAssociation = new PmoAssociation(relation);
-        extFactory = new ExtensionPropertyControlFactory(relation.getClass());
+    public RelationEditDialog(IPolicyCmptTypeAssociation relation2, Shell parentShell) {
+        super(relation2, parentShell, Messages.RelationEditDialog_title, true );
+        this.association = relation2;
+        this.ipsProject = association.getIpsProject();
+        pmoAssociation = new PmoAssociation(association);
+        extFactory = new ExtensionPropertyControlFactory(association.getClass());
     }
     
     /**
@@ -116,27 +118,27 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
         // top extensions
-        extFactory.createControls(workArea, uiToolkit, relation, IExtensionPropertyDefinition.POSITION_TOP); //$NON-NLS-1$
+        extFactory.createControls(workArea, uiToolkit, association, IExtensionPropertyDefinition.POSITION_TOP); //$NON-NLS-1$
                 
         // target
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelTarget);
-        PcTypeRefControl targetControl = uiToolkit.createPcTypeRefControl(relation.getIpsProject(), workArea);
-        bindingContext.bindContent(targetControl, relation, IRelation.PROPERTY_TARGET);
+        PcTypeRefControl targetControl = uiToolkit.createPcTypeRefControl(association.getIpsProject(), workArea);
+        bindingContext.bindContent(targetControl, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET);
         
         // type
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelType);
         final Combo typeCombo = uiToolkit.createCombo(workArea, RelationType.getEnumType());
-        bindingContext.bindContent(typeCombo, relation, IRelation.PROPERTY_RELATIONTYPE, RelationType.getEnumType());
+        bindingContext.bindContent(typeCombo, association, IPolicyCmptTypeAssociation.PROPERTY_RELATIONTYPE, RelationType.getEnumType());
         typeCombo.setFocus();
         
         // role singular
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelTargetRoleSingular);
         final Text targetRoleSingularText = uiToolkit.createText(workArea);
-        bindingContext.bindContent(targetRoleSingularText, relation, IRelation.PROPERTY_TARGET_ROLE_SINGULAR);
+        bindingContext.bindContent(targetRoleSingularText, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
         targetRoleSingularText.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
-                if (StringUtils.isEmpty(relation.getTargetRoleSingular())) {
-                    relation.setTargetRoleSingular(relation.getDefaultTargetRoleSingular());
+                if (StringUtils.isEmpty(association.getTargetRoleSingular())) {
+                    association.setTargetRoleSingular(association.getDefaultTargetRoleSingular());
                 }
             }
         });
@@ -144,12 +146,12 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
         // role plural
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelTargetRolePlural);
         final Text targetRolePluralText = uiToolkit.createText(workArea);
-        bindingContext.bindContent(targetRolePluralText, relation, IRelation.PROPERTY_TARGET_ROLE_PLURAL);
+        bindingContext.bindContent(targetRolePluralText, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
         targetRolePluralText.addFocusListener(new FocusAdapter() {
             
             public void focusGained(FocusEvent e) {
-                if (StringUtils.isEmpty(targetRolePluralText.getText()) && relation.isTargetRolePluralRequired()) {
-                    relation.setTargetRolePlural(relation.getDefaultTargetRolePlural());
+                if (StringUtils.isEmpty(targetRolePluralText.getText()) && association.isTargetRolePluralRequired()) {
+                    association.setTargetRolePlural(association.getDefaultTargetRolePlural());
                 }
             }
         });
@@ -159,21 +161,21 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
         Text minCardinalityText = uiToolkit.createText(workArea);
         CardinalityField cardinalityField = new CardinalityField(minCardinalityText);
         cardinalityField.setSupportsNull(false);
-        bindingContext.bindContent(cardinalityField, relation, IRelation.PROPERTY_MIN_CARDINALITY);
+        bindingContext.bindContent(cardinalityField, association, IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
         
         // max cardinality
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelMaxCardinality);
         Text maxCardinalityText = uiToolkit.createText(workArea);
         cardinalityField = new CardinalityField(maxCardinalityText);
         cardinalityField.setSupportsNull(false);
-        bindingContext.bindContent(cardinalityField, relation, IRelation.PROPERTY_MAX_CARDINALITY);
+        bindingContext.bindContent(cardinalityField, association, IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
 
         // inverse relation
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelReverseRel);
         Text reverseRelationText = uiToolkit.createText(workArea);
-        bindingContext.bindContent(reverseRelationText, relation, IRelation.PROPERTY_INVERSE_RELATION);
-        bindingContext.bindEnabled(reverseRelationText, relation, IRelation.PROPERTY_INVERSE_RELATION_APPLICABLE);
-        ReverseRelationCompletionProcessor reverseRelationCompletionProcessor = new ReverseRelationCompletionProcessor(relation);
+        bindingContext.bindContent(reverseRelationText, association, IPolicyCmptTypeAssociation.PROPERTY_INVERSE_RELATION);
+        bindingContext.bindEnabled(reverseRelationText, association, IPolicyCmptTypeAssociation.PROPERTY_INVERSE_RELATION_APPLICABLE);
+        ReverseRelationCompletionProcessor reverseRelationCompletionProcessor = new ReverseRelationCompletionProcessor(association);
         reverseRelationCompletionProcessor.setComputeProposalForEmptyPrefix(true);
         ContentAssistHandler.createHandlerForText(reverseRelationText, CompletionUtil.createContentAssistant(reverseRelationCompletionProcessor));
         
@@ -182,7 +184,7 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
         bindingContext.bindContent(note, pmoAssociation, PmoAssociation.PROPERTY_CONSTRAINED_NOTE);
         
         // bottom extensions
-        extFactory.createControls(workArea, uiToolkit, relation, IExtensionPropertyDefinition.POSITION_BOTTOM); //$NON-NLS-1$
+        extFactory.createControls(workArea, uiToolkit, association, IExtensionPropertyDefinition.POSITION_BOTTOM); //$NON-NLS-1$
         extFactory.bind(bindingContext);
     }
 
@@ -191,8 +193,8 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
         // derived union checkbox
         Checkbox containerCheckbox = uiToolkit.createCheckbox(c, "This association is a derived union");
         // uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelReadOnlyContainer);
-        bindingContext.bindContent(containerCheckbox, relation, IRelation.PROPERTY_READONLY_CONTAINER);
-        bindingContext.bindEnabled(containerCheckbox, relation, IRelation.PROPERTY_CONTAINER_RELATION_APPLICABLE);
+        bindingContext.bindContent(containerCheckbox, association, IAssociation.PROPERTY_DERIVED_UNION);
+        bindingContext.bindEnabled(containerCheckbox, association, IPolicyCmptTypeAssociation.PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE);
         
         // is subset checkbox
         // uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelContainerRel);
@@ -202,12 +204,12 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         uiToolkit.createFormLabel(workArea, "Derived union:");
-        Text containerRelationText = uiToolkit.createText(workArea);
-        bindingContext.bindContent(containerRelationText, relation, IRelation.PROPERTY_CONTAINER_RELATION);
-        bindingContext.bindEnabled(containerRelationText, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
-        ContainerRelationCompletionProcessor completionProcessor = new ContainerRelationCompletionProcessor(relation);
+        Text derivedUnion = uiToolkit.createText(workArea);
+        bindingContext.bindContent(derivedUnion, association, IAssociation.PROPERTY_SUBSETTED_DERIVED_UNION);
+        bindingContext.bindEnabled(derivedUnion, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
+        DerivedUnionCompletionProcessor completionProcessor = new DerivedUnionCompletionProcessor(association);
         completionProcessor.setComputeProposalForEmptyPrefix(true);
-        ContentAssistHandler.createHandlerForText(containerRelationText, CompletionUtil.createContentAssistant(completionProcessor));
+        ContentAssistHandler.createHandlerForText(derivedUnion, CompletionUtil.createContentAssistant(completionProcessor));
     }
     
     private void createQualificationGroup(Composite c) {
@@ -222,17 +224,14 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
     public class PmoAssociation extends IpsObjectPartPmo {
 
         public final static String PROPERTY_SUBSET = "subset";
-        public final static String PROPERTY_DERIVEDD_UNION = "derivedUnion";
         public final static String PROPERTY_QUALIFICATION_LABEL = "qualificationLabel";
         public final static String PROPERTY_CONSTRAINED_NOTE = "constrainedNote";
 
-        private IRelation association;
         private boolean subset;
         
-        public PmoAssociation(IRelation association) {
+        public PmoAssociation(IPolicyCmptTypeAssociation association) {
             super(association);
-            this.association = association;
-            subset = association.isContainerRelationImplementation();
+            subset = association.isSubsetOfADerivedUnion();
         }
         
         public boolean isSubset() {
@@ -242,7 +241,7 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
         public void setSubset(boolean newValue) {
             subset = newValue;
             if (!subset) {
-                association.setContainerRelation("");
+                association.setSubsettedDerivedUnion("");
             }
             notifyListeners();
         }
@@ -250,7 +249,7 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
         public String getQualificationLabel() {
             String label = "This association is qualified";
             try {
-                IPolicyCmptType type = association.findTarget(ipsProject);
+                IPolicyCmptType type = association.findTargetPolicyCmptType(ipsProject);
                 if (type!=null) {
                     String productCmptType = QNameUtil.getUnqualifiedName(type.getProductCmptType());
                     return label + " by type '" + productCmptType + "'";
@@ -273,7 +272,7 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
                 } else {
                     String note = "Note: This association is not constrained by product structure."; 
                     IProductCmptType sourceProductType = association.getPolicyCmptType().findProductCmptType(ipsProject);
-                    IPolicyCmptType targetType = association.findTarget(ipsProject);
+                    IPolicyCmptType targetType = association.findTargetPolicyCmptType(ipsProject);
                     if (sourceProductType!=null && targetType!=null) {
                         IProductCmptType targetProductType = targetType.findProductCmptType(ipsProject);
                         if (targetProductType!=null) {

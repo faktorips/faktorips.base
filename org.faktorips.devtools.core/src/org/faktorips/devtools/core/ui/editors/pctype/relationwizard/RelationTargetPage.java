@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
@@ -117,7 +117,7 @@ public class RelationTargetPage extends AbstractPcTypeRelationWizardPage  {
         abstractContainerCheckbox.getButton().addSelectionListener( new SelectionAdapter () {
 			 public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
 				// first store the current modified value, because the controller updates the model later
-				 wizard.getRelation().setReadOnlyContainer(abstractContainerCheckbox.getButton().getSelection());
+				 wizard.getRelation().setDerivedUnion(abstractContainerCheckbox.getButton().getSelection());
 				 setDefaults();
 			}
 		});
@@ -138,11 +138,10 @@ public class RelationTargetPage extends AbstractPcTypeRelationWizardPage  {
 	 * {@inheritDoc}
 	 */
 	protected void connectToModel() {
-		wizard.addToUiControllerRelation(targetField, IRelation.PROPERTY_TARGET);
-		wizard.addToUiControllerRelation(typeField, IRelation.PROPERTY_RELATIONTYPE);
-		wizard.addToUiControllerRelation(abstractContainerField,
-				IRelation.PROPERTY_READONLY_CONTAINER);
-		wizard.addToUiControllerRelation(descriptionField, IRelation.PROPERTY_DESCRIPTION);
+		wizard.addToUiControllerRelation(targetField, IPolicyCmptTypeAssociation.PROPERTY_TARGET);
+		wizard.addToUiControllerRelation(typeField, IPolicyCmptTypeAssociation.PROPERTY_RELATIONTYPE);
+		wizard.addToUiControllerRelation(abstractContainerField, IPolicyCmptTypeAssociation.PROPERTY_DERIVED_UNION);
+		wizard.addToUiControllerRelation(descriptionField, IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
 	}
 
 	/**

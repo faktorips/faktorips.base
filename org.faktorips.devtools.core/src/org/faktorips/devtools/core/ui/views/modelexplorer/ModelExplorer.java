@@ -56,7 +56,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -175,7 +175,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
 
     protected ModelExplorerConfiguration createConfig() {
         return new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class, ITableStructure.class,
-                IProductCmpt.class, ITableContents.class, IAttribute.class, IRelation.class, ITestCase.class,
+                IProductCmpt.class, ITableContents.class, IAttribute.class, IPolicyCmptTypeAssociation.class, ITestCase.class,
                 ITestCaseType.class }, new Class[] { IFolder.class, IFile.class, IProject.class });
     }
 
@@ -633,7 +633,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
         }
 
         protected void createOpenMenu(IMenuManager manager, Object selected, IStructuredSelection structuredSelected) {
-            if (selected instanceof IIpsObject || selected instanceof IRelation || selected instanceof IAttribute) {
+            if (selected instanceof IIpsObject || selected instanceof IPolicyCmptTypeAssociation || selected instanceof IAttribute) {
                 manager.add(new OpenEditorAction(treeViewer));
             } else {
                 openActionGroup.setContext(new ActionContext(structuredSelected));

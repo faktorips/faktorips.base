@@ -17,7 +17,7 @@ import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.message.MessageList;
@@ -115,7 +115,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForRelation(IRelation relation,
+    protected void generateCodeForRelation(IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
 
@@ -138,7 +138,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
      * @param methodsBuilder
      * @throws Exception
      */
-    protected abstract void generateCodeForRelationInCommon(IRelation relation,
+    protected abstract void generateCodeForRelationInCommon(IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
@@ -146,7 +146,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
      * Generates the code for a 1-to-many relation. The method is called for every valid relation
      * defined in the policy component type we currently build sourcecode for.
      */
-    protected abstract void generateCodeFor1ToManyRelation(IRelation relation,
+    protected abstract void generateCodeFor1ToManyRelation(IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
@@ -154,7 +154,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
      * Generates the code for a 1-to-many relation. The method is called for every valid relation
      * defined in the policy component type we currently build sourcecode for.
      */
-    protected abstract void generateCodeFor1To1Relation(IRelation relation,
+    protected abstract void generateCodeFor1To1Relation(IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
@@ -163,7 +163,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
      * the target is not abstract. If the target is configurable by product a second method with the
      * product component type as argument should also be generated.
      */
-    protected void generateNewChildMethodsIfApplicable(IRelation relation,
+    protected void generateNewChildMethodsIfApplicable(IPolicyCmptTypeAssociation relation,
             IPolicyCmptType target,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
@@ -191,7 +191,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
      * 
      * @throws CoreException
      */
-    public abstract void generateMethodNewChild(IRelation relation,
+    public abstract void generateMethodNewChild(IPolicyCmptTypeAssociation relation,
             IPolicyCmptType target,
             boolean inclProductCmptArg,
             JavaCodeFragmentBuilder builder) throws CoreException;

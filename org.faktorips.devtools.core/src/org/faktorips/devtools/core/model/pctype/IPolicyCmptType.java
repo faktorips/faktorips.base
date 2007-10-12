@@ -344,13 +344,8 @@ public interface IPolicyCmptType extends IType, Datatype {
     /**
      * Returns the type's relations.
      */
-    public IRelation[] getRelations();
+    public IPolicyCmptTypeAssociation[] getPolicyCmptTypeAssociations();
     
-    /**
-     * Returns the relations of this type that are indicated as product relevant.
-     */
-    public IRelation[] getProductRelevantRelations();
-
     /**
      * Returns the first relation with the indicated name or null if
      * no such relation exists.
@@ -360,17 +355,17 @@ public interface IPolicyCmptType extends IType, Datatype {
      * 
      * @throws IllegalArgumentException if name is <code>null</code>.
      */
-    public IRelation getRelation(String name);
+    public IPolicyCmptTypeAssociation getRelation(String name);
     
     /**
-     * Creates a new relation and returns it.
+     * Creates a new association and returns it.
      */
-    public IRelation newRelation();
+    public IPolicyCmptTypeAssociation newPolicyCmptTypeAssociation();
     
     /**
      * Returns the number of relations.
      */
-    public int getNumOfRelations();
+    public int getNumOfAssociations();
     
     /**
      * Moves the relations identified by the indexes up or down by one position.
@@ -388,18 +383,7 @@ public interface IPolicyCmptType extends IType, Datatype {
      * @throws IndexOutOfBoundsException if one of the indexes does not identify
      * a relation.
      */
-    public int[] moveRelations(int[] indexes, boolean up);
-    
-    /**
-     * Returns the type's relations implementing the given container relation.
-     * Returns an empty array if no such relation exists or containerRelation is <code>null</code>.
-     * 
-     * @param containerRelation the container relation to search implementing relations for
-     * @param seachSupertypeHierarchy if also the type's supertypes should be searched.
-     * 
-     * @throws CoreException if an exception occurs while searching
-     */
-    public IRelation[] findRelationsImplementingContainerRelation(IRelation containerRelation, boolean searchSupertypeHierarchy) throws CoreException;
+    public int[] moveAssociations(int[] indexes, boolean up);
     
     /**
      * Creates a new supertype hierarchy for the type and returns it.

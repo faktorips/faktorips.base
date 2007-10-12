@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -71,25 +70,6 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     protected void tearDown() throws Exception {
         super.tearDown();
         ipsProject.getIpsModel().removeChangeListener(this);
-    }
-    
-    public void testGetAssociationsForTarget() {
-        assertEquals(0, productCmptType.getAssociationsForTarget(null).length);
-        
-        IProductCmptTypeAssociation ass1 = productCmptType.newAssociation();
-        ass1.setTarget("Target1");
-        IProductCmptTypeAssociation ass2 = productCmptType.newAssociation();
-        ass2.setTarget("Target2");
-        IProductCmptTypeAssociation ass3 = productCmptType.newAssociation();
-        ass3.setTarget("Target1");
-        
-        IProductCmptTypeAssociation[] ass = productCmptType.getAssociationsForTarget("Target1");
-        assertEquals(2, ass.length);
-        assertEquals(ass1, ass[0]);
-        assertEquals(ass3, ass[1]);
-        
-        ass = productCmptType.getAssociationsForTarget("UnknownTarget");
-        assertEquals(0, ass.length);
     }
     
     public void testFindAttribute() throws CoreException {
@@ -603,7 +583,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     public void testToXml() throws CoreException {
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
         productCmptType.newAttribute().setName("attr");
-        productCmptType.newAssociation().setTargetRoleSingular("role");
+        productCmptType.newProductCmptTypeAssociation().setTargetRoleSingular("role");
         productCmptType.newTableStructureUsage().setRoleName("roleTsu");
         productCmptType.newMethod().setName("method1");
         

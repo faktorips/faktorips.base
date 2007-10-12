@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 
 /**
  * 
@@ -44,14 +44,14 @@ public class RelationTargetDoesNotExist extends AbstractIpsPluginTest {
         IPolicyCmptType sourceType = newPolicyCmptType(project, "Source");
         IPolicyCmptType targetType = newPolicyCmptType(project, "target");
         
-        IRelation fromSourceToTarget = sourceType.newRelation();
+        IPolicyCmptTypeAssociation fromSourceToTarget = sourceType.newPolicyCmptTypeAssociation();
         fromSourceToTarget.setTarget(targetType.getQualifiedName());
         fromSourceToTarget.setTargetRoleSingular("Target");
         fromSourceToTarget.setTargetRolePlural("Targets");
         fromSourceToTarget.setTargetRoleSingularProductSide("TargetProduct");
         fromSourceToTarget.setTargetRolePluralProductSide("TargetProducts");
         
-        IRelation fromTargetToSource= targetType.newRelation();
+        IPolicyCmptTypeAssociation fromTargetToSource= targetType.newPolicyCmptTypeAssociation();
         fromTargetToSource.setTarget(sourceType.getQualifiedName());
         fromTargetToSource.setTargetRoleSingular("Source");
         fromTargetToSource.setTargetRolePlural("Sources");

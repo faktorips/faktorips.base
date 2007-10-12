@@ -83,7 +83,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
     }
     
     public void testLinksWithMissingAssociation() throws CoreException {
-        IProductCmptTypeAssociation association = productCmptType.newAssociation();
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
         IProductCmptLink link = generation.newLink(association.getName());
         assertEquals(1, generation.getNumOfLinks());
         

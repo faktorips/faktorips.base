@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
@@ -421,7 +421,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	public ITestPolicyCmptRelation addTestPcTypeRelation(ITestPolicyCmptTypeParameter typeParam, String productCmpt, String targetName) throws CoreException {
 		ArgumentCheck.notNull(typeParam);
 		
-		IRelation relation = typeParam.findRelation();
+		IPolicyCmptTypeAssociation relation = typeParam.findRelation();
 		if (relation == null){
 			throw new CoreException(new IpsStatus(NLS.bind(Messages.TestPolicyCmpt_Error_RelationNotFound, typeParam.getRelation())));
 		}

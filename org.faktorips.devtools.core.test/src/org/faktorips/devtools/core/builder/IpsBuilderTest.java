@@ -44,7 +44,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -308,10 +308,10 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.A");
         IPolicyCmptType b= newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.B");
         IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.C");
-        IRelation rel = a.newRelation();
+        IPolicyCmptTypeAssociation rel = a.newPolicyCmptTypeAssociation();
         rel.setTarget(b.getQualifiedName());
         rel.setRelationType(RelationType.ASSOCIATION);
-        rel = b.newRelation();
+        rel = b.newPolicyCmptTypeAssociation();
         rel.setTarget(c.getQualifiedName());
         rel.setRelationType(RelationType.ASSOCIATION);
         
@@ -336,10 +336,10 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.A");
         IPolicyCmptType b= newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.B");
         IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.C");
-        IRelation rel = a.newRelation();
+        IPolicyCmptTypeAssociation rel = a.newPolicyCmptTypeAssociation();
         rel.setTarget(b.getQualifiedName());
         rel.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
-        rel = b.newRelation();
+        rel = b.newPolicyCmptTypeAssociation();
         rel.setTarget(c.getQualifiedName());
         rel.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
         
@@ -366,10 +366,10 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.A");
         IPolicyCmptType b= newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.B");
         IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.C");
-        IRelation rel = a.newRelation();
+        IPolicyCmptTypeAssociation rel = a.newPolicyCmptTypeAssociation();
         rel.setTarget(b.getQualifiedName());
         rel.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
-        rel = b.newRelation();
+        rel = b.newPolicyCmptTypeAssociation();
         rel.setTarget(c.getQualifiedName());
         rel.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
         

@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.core.ui.editors.type.DerivedUnionCompletionProcessor;
 import org.faktorips.values.EnumValue;
 
 
@@ -166,7 +167,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         Text unionText = uiToolkit.createText(temp);
         bindingContext.bindContent(unionText, association, IProductCmptTypeAssociation.PROPERTY_SUBSETTED_DERIVED_UNION);
         bindingContext.bindEnabled(unionText, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
-        ContainerRelationCompletionProcessor completionProcessor = new ContainerRelationCompletionProcessor(association);
+        DerivedUnionCompletionProcessor completionProcessor = new DerivedUnionCompletionProcessor(association);
         completionProcessor.setComputeProposalForEmptyPrefix(true);
         ContentAssistHandler.createHandlerForText(unionText, CompletionUtil.createContentAssistant(completionProcessor));
     }

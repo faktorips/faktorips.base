@@ -24,7 +24,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 
@@ -34,7 +35,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 public class ContainerRelationPage extends AbstractPcTypeRelationWizardPage {
 	private static final String PAGE_ID = "NewPcTypeRelationWizard.ContainerRelation"; //$NON-NLS-1$
 	
-	private ComboField containerRelationsField;
+	private ComboField derivedUnionField;
 	
 	// stores the previous target to indicate changes on the target
 	private String prevTarget=""; //$NON-NLS-1$
@@ -61,19 +62,19 @@ public class ContainerRelationPage extends AbstractPcTypeRelationWizardPage {
 		final Combo containerRelationsCombo = uiToolkit.createCombo(workArea);	
 		containerRelationsCombo.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				wizard.getRelation().setContainerRelation(containerRelationsCombo.getItem(containerRelationsCombo
+				wizard.getRelation().setSubsettedDerivedUnion(containerRelationsCombo.getItem(containerRelationsCombo
 						.getSelectionIndex()));
 			}
 		});
 		
-		containerRelationsField = new ComboField(containerRelationsCombo);
+		derivedUnionField = new ComboField(containerRelationsCombo);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void connectToModel() {
-		wizard.addToUiControllerRelation(containerRelationsField, IRelation.PROPERTY_CONTAINER_RELATION);     
+		wizard.addToUiControllerRelation(derivedUnionField, IAssociation.PROPERTY_SUBSETTED_DERIVED_UNION);     
 	}
 
 	/**
@@ -84,14 +85,14 @@ public class ContainerRelationPage extends AbstractPcTypeRelationWizardPage {
 		
 		// visible only if target has a container relation
         try {
-            isPageVisible = wizard.getRelation().findContainerRelationCandidates(wizard.getRelation().getIpsProject()).length > 0;
+            isPageVisible = wizard.getRelation().findDerivedUnionCandidates(wizard.getRelation().getIpsProject()).length > 0;
         } catch (CoreException e) {
             IpsPlugin.log(e);
             wizard.showErrorPage(e);
         }
 		
 		// visible only if this relation is no container relation
-		if (wizard.getRelation().isReadOnlyContainer()){
+		if (wizard.getRelation().isDerivedUnion()){
 			isPageVisible = false;
 		}
 
@@ -106,19 +107,19 @@ public class ContainerRelationPage extends AbstractPcTypeRelationWizardPage {
 		if (! prevTarget.equals(wizard.getRelation().getTarget())){
 			prevTarget = wizard.getRelation().getTarget();
 			try {
-			    IRelation[] containerRelations = wizard.getRelation().findContainerRelationCandidates(wizard.getRelation().getIpsProject());
-				if (containerRelations.length>0){
-                    String[] names = new String[containerRelations.length + 1];
+			    IAssociation[] candidates = wizard.getRelation().findDerivedUnionCandidates(wizard.getRelation().getIpsProject());
+				if (candidates.length>0){
+                    String[] names = new String[candidates.length + 1];
                     names[0] = ""; // first entry to select none container relation //$NON-NLS-1$
-                    for (int i = 0; i < containerRelations.length; i++) {
-                        names[i+1] = containerRelations[i].getName();
+                    for (int i = 0; i < candidates.length; i++) {
+                        names[i+1] = candidates[i].getName();
                     }
-                    containerRelationsField.getCombo().setItems(names);
+                    derivedUnionField.getCombo().setItems(names);
                     // default is the first container relation
-                    containerRelationsField.getCombo().select(1);
+                    derivedUnionField.getCombo().select(1);
                     wizard.getUiControllerRelation().updateModel();
 				}else{
-					containerRelationsField.getCombo().setItems(new String[0]);
+					derivedUnionField.getCombo().setItems(new String[0]);
 				}
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
@@ -127,7 +128,7 @@ public class ContainerRelationPage extends AbstractPcTypeRelationWizardPage {
 			}
 		}
 		
-		wizard.setFocusIfPageChanged(containerRelationsField.getControl());
+		wizard.setFocusIfPageChanged(derivedUnionField.getControl());
 		
 		return true;
 	}

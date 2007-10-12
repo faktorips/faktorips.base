@@ -145,7 +145,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IProductCmptType c = newProductCmptType(root, "C");
         IProductCmptType d = newProductCmptType(root, "D");
         
-        org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation association = c.newAssociation();
+        org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation association = c.newProductCmptTypeAssociation();
         association.setTargetRoleSingular("relationD");
         association.setTarget(d.getQualifiedName());
         IProductCmpt productCmptC = newProductCmpt(c, "tests.productC");

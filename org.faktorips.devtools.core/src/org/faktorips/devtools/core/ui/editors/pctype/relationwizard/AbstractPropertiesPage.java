@@ -14,8 +14,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
@@ -177,7 +178,7 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
         targetRoleSingularText.addListener (SWT.Modify, new Listener () {
 			public void handleEvent (Event ev) {
 				// store the new name in the relation's inverse relation  
-				IRelation inverseRelation = getInverseOfCurrentRelation();
+				IPolicyCmptTypeAssociation inverseRelation = getInverseOfCurrentRelation();
                 if (inverseRelation != null && inverseRelation.isAssoziation()){
 					inverseRelation.setInverseRelation(targetRoleSingularField.getText());
 				}
@@ -299,12 +300,12 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
 	/**
 	 * Returns the relation which will be changed by this wizard page.
 	 */
-	abstract protected IRelation getCurrentRelation();
+	abstract protected IPolicyCmptTypeAssociation getCurrentRelation();
 	
 	/**
 	 * Returns the reverse relation of the relation which will changed by this wizard page.
 	 */
-	abstract protected IRelation getInverseOfCurrentRelation();
+	abstract protected IPolicyCmptTypeAssociation getInverseOfCurrentRelation();
 
     /**
      * Returns the target of the current relation.

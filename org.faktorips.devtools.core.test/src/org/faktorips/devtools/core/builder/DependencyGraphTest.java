@@ -52,9 +52,9 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         d.setProductCmptType("");
         
         // dependencies c->b, c->a, a->d, 
-        a.newRelation().setTarget(d.getQualifiedName());
+        a.newPolicyCmptTypeAssociation().setTarget(d.getQualifiedName());
         c.setSupertype(a.getQualifiedName());
-        c.newRelation().setTarget(b.getQualifiedName());
+        c.newPolicyCmptTypeAssociation().setTarget(b.getQualifiedName());
         
         a.getIpsSrcFile().save(true, null);
         c.getIpsSrcFile().save(true, null);
@@ -89,7 +89,7 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
      * Test method for 'org.faktorips.plugin.builder.DependencyGraph.update(String)'
      */
     public void testUpdate() throws Exception {
-        a.getRelations()[0].delete();
+        a.getPolicyCmptTypeAssociations()[0].delete();
         a.getIpsSrcFile().save(true, null);
         
         Dependency[] dependants = graph.getDependants(a.getQualifiedNameType());

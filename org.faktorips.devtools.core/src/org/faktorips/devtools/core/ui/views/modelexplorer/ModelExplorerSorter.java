@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -98,10 +98,10 @@ public class ModelExplorerSorter extends ViewerSorter{
 			// sort IpsPackages by SortDefinition
 			return packageComparator.compare(o1, o2);
 		}
-        if(o1 instanceof IRelation && o2 instanceof IAttribute){
+        if(o1 instanceof IPolicyCmptTypeAssociation && o2 instanceof IAttribute){
             return 1;
         }
-        if(o1 instanceof IAttribute && o2 instanceof IRelation){
+        if(o1 instanceof IAttribute && o2 instanceof IPolicyCmptTypeAssociation){
             return -1;
         }
 

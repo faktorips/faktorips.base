@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -111,9 +111,9 @@ public class RelationEditDialog extends IpsPartEditDialog {
      */
     protected void connectToModel() {
         super.connectToModel();
-        uiController.add(targetField, IRelation.PROPERTY_TARGET);
-        uiController.add(minCardinalityField, IRelation.PROPERTY_MIN_CARDINALITY);
-        uiController.add(maxCardinalityField, IRelation.PROPERTY_MAX_CARDINALITY);
+        uiController.add(targetField, IPolicyCmptTypeAssociation.PROPERTY_TARGET);
+        uiController.add(minCardinalityField, IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
+        uiController.add(maxCardinalityField, IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
     }
     
     public void setProductCmptsToExclude(IProductCmpt[] toExclude) {

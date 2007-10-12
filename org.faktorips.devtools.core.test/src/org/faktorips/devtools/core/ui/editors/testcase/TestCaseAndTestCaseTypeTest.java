@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -55,7 +55,7 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
         IPolicyCmptType pctContract = newPolicyCmptType(project, "Contract");
         IPolicyCmptType pctCoverage = newPolicyCmptType(project, "Coverage");
         
-        IRelation relation = pctContract.newRelation();
+        IPolicyCmptTypeAssociation relation = pctContract.newPolicyCmptTypeAssociation();
         relation.setTargetRoleSingular("Coverage");
         relation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
         relation.setTarget(pctCoverage.getQualifiedName());

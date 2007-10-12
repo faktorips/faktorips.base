@@ -61,7 +61,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
     private String policyCmptType = "";
     
     private IpsObjectPartCollection attributes = new IpsObjectPartCollection(this, ProductCmptTypeAttribute.class, "Attribute");
-    private IpsObjectPartCollection associations = new IpsObjectPartCollection(this, ProductCmptTypeAssociation.class, "Association");
     private IpsObjectPartCollection tableStructureUsages = new IpsObjectPartCollection(this, TableStructureUsage.class, "TableStructureUsage");
     
     public ProductCmptType(IIpsSrcFile file) {
@@ -73,6 +72,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     protected IpsObjectPartCollection createCollectionForMethods() {
         return new IpsObjectPartCollection(this, ProductCmptTypeMethod.class, "Method");
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected IpsObjectPartCollection createCollectionForAssociations() {
+        return new IpsObjectPartCollection(this, ProductCmptTypeAssociation.class, "Association");
     }
 
     /**
@@ -86,7 +92,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if (supertype!=null) {
             return supertype;
         }
-        return null; // TODO hier muessen auch policy component types gefunden werden! 
+        return null;  
     }
 
 
@@ -270,52 +276,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeAssociation newAssociation() {
-        return (IProductCmptTypeAssociation)associations.newPart();
+    public IProductCmptTypeAssociation newProductCmptTypeAssociation() {
+        return (IProductCmptTypeAssociation)newAssociation();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public int getNumOfAssociations() {
-        return associations.size();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IAssociation getAssociation(String name) {
-        return (IAssociation)associations.getPartByName(name);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public IProductCmptTypeAssociation[] getAssociationsForTarget(String target) {
-        List result = new ArrayList();
-        for (Iterator it = associations.iterator(); it.hasNext();) {
-            IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)it.next();
-            if (association.getTarget().equals(target)) {
-                result.add(association);
-            }
-        }
-        return (IProductCmptTypeAssociation[])result.toArray(new IProductCmptTypeAssociation[result.size()]);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IAssociation[] getAssociations() {
-        return (IAssociation[])associations.toArray(new IAssociation[associations.size()]);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int[] moveAssociations(int[] indexes, boolean up) {
-        return associations.moveParts(indexes, up);
-    }
-    
     /**
      * {@inheritDoc}
      */
@@ -437,7 +401,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
                     IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
         }
         addQualifiedNameTypesForRelationTargets(dependencies);
-        
         return (Dependency[])dependencies.toArray(new Dependency[dependencies.size()]);
     }
 

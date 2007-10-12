@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 
@@ -128,7 +128,7 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
      *  
      * @throws CoreException if an exception occurs while searching for the type.
      */
-    public IRelation findPcTypeRelation(String relationName) throws CoreException;
+    public IPolicyCmptTypeAssociation findPcTypeRelation(String relationName) throws CoreException;
     
     /**
      * Returns <code>true</code> if any of the generations contain at least one formula.

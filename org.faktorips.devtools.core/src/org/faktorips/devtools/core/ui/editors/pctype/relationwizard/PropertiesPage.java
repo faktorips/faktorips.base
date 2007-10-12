@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
@@ -76,17 +76,17 @@ public class PropertiesPage extends AbstractPropertiesPage {
 	 * {@inheritDoc}
 	 */
 	protected void connectToModel(){
-		wizard.addToUiControllerRelation(minCardinalityField, IRelation.PROPERTY_MIN_CARDINALITY);     
-		wizard.addToUiControllerRelation(maxCardinalityField, IRelation.PROPERTY_MAX_CARDINALITY);     
-		wizard.addToUiControllerRelation(targetRoleSingularField, IRelation.PROPERTY_TARGET_ROLE_SINGULAR);
-		wizard.addToUiControllerRelation(targetRolePluralField, IRelation.PROPERTY_TARGET_ROLE_PLURAL);
+		wizard.addToUiControllerRelation(minCardinalityField, IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);     
+		wizard.addToUiControllerRelation(maxCardinalityField, IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);     
+		wizard.addToUiControllerRelation(targetRoleSingularField, IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
+		wizard.addToUiControllerRelation(targetRolePluralField, IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
         
-		wizard.addToUiControllerRelation(productRelevantField, IRelation.PROPERTY_PRODUCT_RELEVANT);
+		wizard.addToUiControllerRelation(productRelevantField, IPolicyCmptTypeAssociation.PROPERTY_PRODUCT_RELEVANT);
         
-		wizard.addToUiControllerRelation(minCardinalityProdRelevantField, IRelation.PROPERTY_MIN_CARDINALITY_PRODUCTSIDE);
-		wizard.addToUiControllerRelation(maxCardinalityProdRelevantField, IRelation.PROPERTY_MAX_CARDINALITY_PRODUCTSIDE); 	
-		wizard.addToUiControllerRelation(targetRoleSingularProdRelevantField, IRelation.PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE);
-		wizard.addToUiControllerRelation(targetRolePluralProdRelevantField, IRelation.PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE);
+		wizard.addToUiControllerRelation(minCardinalityProdRelevantField, IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY_PRODUCTSIDE);
+		wizard.addToUiControllerRelation(maxCardinalityProdRelevantField, IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY_PRODUCTSIDE); 	
+		wizard.addToUiControllerRelation(targetRoleSingularProdRelevantField, IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE);
+		wizard.addToUiControllerRelation(targetRolePluralProdRelevantField, IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE);
 		
         
         // Connect the extension controls to the ui controller
@@ -119,14 +119,14 @@ public class PropertiesPage extends AbstractPropertiesPage {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IRelation getCurrentRelation(){
+	protected IPolicyCmptTypeAssociation getCurrentRelation(){
 		return wizard.getRelation();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected IRelation getInverseOfCurrentRelation(){
+	protected IPolicyCmptTypeAssociation getInverseOfCurrentRelation(){
 	    return wizard.getInverseRelation();
 	}
 

@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.util.LocalizedStringsSet;
 
 public abstract class AbstractPcImplementationBuilder extends
@@ -48,14 +48,14 @@ public abstract class AbstractPcImplementationBuilder extends
 	abstract protected void generateGetterBodyForDerivedAttribute(IAttribute attribute, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder);
 
 
-	protected void generateCodeForRelation(IRelation relation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+	protected void generateCodeForRelation(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 	
 		IPolicyCmptType targetType = relation.findTarget();
 		if (targetType == null) {
 			throw new CoreException(new IpsStatus("Target not found: " + relation.getTarget())); //$NON-NLS-1$
 		}
 	
-		if (relation.getMaxCardinality() == IRelation.CARDINALITY_ONE) {
+		if (relation.getMaxCardinality() == IPolicyCmptTypeAssociation.CARDINALITY_ONE) {
 			/* get */
 	
 			policyInterfaceBuilder.generateCodeForRelationGetOneSignature(relation,memberVarsBuilder,methodsBuilder);
@@ -77,11 +77,11 @@ public abstract class AbstractPcImplementationBuilder extends
 	
 		}
 	}	
-	abstract protected void generateRelationGetToOneBody(IPolicyCmptType targetType, IRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException ;	
-	abstract protected void generateRelationGetToManyBody(IPolicyCmptType targetType, IRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException ;
-	abstract protected void generateRelationSetBody(IPolicyCmptType targetType, IRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException ;
-	abstract protected void generateRelationAddBody(IPolicyCmptType targetType, IRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException ;
-	abstract protected void generateRelationRemoveBody(IPolicyCmptType targetType, IRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException ;
+	abstract protected void generateRelationGetToOneBody(IPolicyCmptType targetType, IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException ;	
+	abstract protected void generateRelationGetToManyBody(IPolicyCmptType targetType, IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException ;
+	abstract protected void generateRelationSetBody(IPolicyCmptType targetType, IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException ;
+	abstract protected void generateRelationAddBody(IPolicyCmptType targetType, IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException ;
+	abstract protected void generateRelationRemoveBody(IPolicyCmptType targetType, IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException ;
 		
 	
 

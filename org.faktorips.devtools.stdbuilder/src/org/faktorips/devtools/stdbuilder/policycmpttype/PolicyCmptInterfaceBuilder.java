@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -535,8 +535,8 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForRelationInCommon(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        if(!relation.isReadOnlyContainer() && 
+    protected void generateCodeForRelationInCommon(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        if(!relation.isDerivedUnion() && 
            !relation.getRelationType().isCompositionDetailToMaster()){
             generateFieldGetMaxCardinalityFor(relation, fieldsBuilder);
         }
@@ -545,10 +545,10 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeFor1To1Relation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateCodeFor1To1Relation(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         IPolicyCmptType target = relation.findTarget();
         generateMethodGetRefObject(relation, methodsBuilder);
-        if (!relation.isReadOnlyContainer() && !relation.getRelationType().isCompositionDetailToMaster()) {
+        if (!relation.isDerivedUnion() && !relation.getRelationType().isCompositionDetailToMaster()) {
             generateMethodSetObject(relation, methodsBuilder);
             generateNewChildMethodsIfApplicable(relation, target, methodsBuilder);
         }
@@ -557,12 +557,12 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeFor1ToManyRelation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateCodeFor1ToManyRelation(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         IPolicyCmptType target = relation.findTarget();
         generateMethodGetNumOfRefObjects(relation, methodsBuilder);
         generateMethodGetAllRefObjects(relation, methodsBuilder);
         generateMethodContainsObject(relation, methodsBuilder);
-        if (!relation.isReadOnlyContainer()) {
+        if (!relation.isDerivedUnion()) {
             generateMethodAddObject(relation, methodsBuilder);
             generateMethodRemoveObject(relation, methodsBuilder);
             generateNewChildMethodsIfApplicable(relation, target, methodsBuilder);
@@ -578,7 +578,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodGetNumOfRefObjects(
-            IRelation relation,
+            IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         appendLocalizedJavaDoc("METHOD_GET_NUM_OF", relation.getTargetRolePlural(), relation, methodsBuilder);
@@ -593,7 +593,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     public void generateSignatureGetNumOfRefObjects(
-            IRelation relation,
+            IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         String methodName = getMethodNameGetNumOfRefObjects(relation);
@@ -604,7 +604,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the method returning the number of referenced objects,
      * e.g. getNumOfCoverages()
      */
-    public String getMethodNameGetNumOfRefObjects(IRelation relation) {
+    public String getMethodNameGetNumOfRefObjects(IPolicyCmptTypeAssociation relation) {
         return getLocalizedText(relation, "METHOD_GET_NUM_OF_NAME", StringUtils.capitalise(relation.getTargetRolePlural()));
     }
 
@@ -616,7 +616,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodGetAllRefObjects(
-            IRelation relation,
+            IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         appendLocalizedJavaDoc("METHOD_GET_ALL_REF_OBJECTS", relation.getTargetRolePlural(), relation, methodsBuilder);
@@ -631,7 +631,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     public void generateSignatureGetAllRefObjects(
-            IRelation relation,
+            IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         String methodName = getMethodNameGetAllRefObjects(relation);
@@ -643,7 +643,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the method returning the referenced objects,
      * e.g. getCoverages()
      */
-    public String getMethodNameGetAllRefObjects(IRelation relation) {
+    public String getMethodNameGetAllRefObjects(IPolicyCmptTypeAssociation relation) {
         return getLocalizedText(relation, "METHOD_GET_ALL_REF_OBJECTS_NAME", StringUtils.capitalise(relation.getTargetRolePlural()));
     }
 
@@ -655,7 +655,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodGetRefObject(
-            IRelation relation,
+            IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT", StringUtils.capitalise(relation.getTargetRoleSingular()), relation, methodsBuilder);
@@ -670,7 +670,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     public void generateSignatureGetRefObject(
-            IRelation relation,
+            IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         String methodName = getMethodNameGetRefObject(relation);
@@ -682,7 +682,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the method returning the single referenced object.
      * e.g. getCoverage()
      */
-    public String getMethodNameGetRefObject(IRelation relation) {
+    public String getMethodNameGetRefObject(IPolicyCmptTypeAssociation relation) {
         return getLocalizedText(relation, "METHOD_GET_REF_OBJECT_NAME", relation.getTargetRoleSingular());
     }
 
@@ -694,7 +694,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodAddObject(
-            IRelation relation,
+            IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         appendLocalizedJavaDoc("METHOD_ADD_OBJECT", relation.getTargetRoleSingular(), relation, methodsBuilder);
@@ -709,7 +709,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     public void generateSignatureAddObject(
-            IRelation relation,
+            IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         String methodName = getMethodNameAddObject(relation);
@@ -722,7 +722,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the method adding an object to a multi-value relation,
      * e.g. getCoverage()
      */
-    public String getMethodNameAddObject(IRelation relation) {
+    public String getMethodNameAddObject(IPolicyCmptTypeAssociation relation) {
         return getLocalizedText(relation, "METHOD_ADD_OBJECT_NAME", relation.getTargetRoleSingular());
     }
 
@@ -730,7 +730,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the paramter for the method adding an object to a multi-value relation,
      * e.g. objectToAdd
      */
-    public String getParamNameForAddObject(IRelation relation) {
+    public String getParamNameForAddObject(IPolicyCmptTypeAssociation relation) {
         return getLocalizedText(relation, "PARAM_OBJECT_TO_ADD_NAME", relation.getTargetRoleSingular());
     }
     
@@ -748,7 +748,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     public void generateMethodNewChild(
-            IRelation relation, 
+            IPolicyCmptTypeAssociation relation, 
             IPolicyCmptType target,
             boolean inclProductCmptArg,
             JavaCodeFragmentBuilder builder) throws CoreException {
@@ -777,7 +777,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     public void generateSignatureNewChild(
-            IRelation relation, 
+            IPolicyCmptTypeAssociation relation, 
             IPolicyCmptType target,
             boolean inclProductCmptArg,
             JavaCodeFragmentBuilder builder) throws CoreException {
@@ -799,7 +799,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * Returns the name of the method to create a new child object and add it to the parent. 
      */
-    public String getMethodNameNewChild(IRelation relation) {
+    public String getMethodNameNewChild(IPolicyCmptTypeAssociation relation) {
         return getLocalizedText(relation, "METHOD_NEW_CHILD_NAME", relation.getTargetRoleSingular());
     }
 
@@ -819,7 +819,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodRemoveObject(
-            IRelation relation,
+            IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         appendLocalizedJavaDoc("METHOD_REMOVE_OBJECT", relation.getTargetRoleSingular(), relation, methodsBuilder);
@@ -834,7 +834,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     public void generateSignatureRemoveObject(
-            IRelation relation,
+            IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         String methodName = getMethodNameRemoveObject(relation);
@@ -847,7 +847,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the method removing an object from a multi-value relation,
      * e.g. removeCoverage()
      */
-    public String getMethodNameRemoveObject(IRelation relation) {
+    public String getMethodNameRemoveObject(IPolicyCmptTypeAssociation relation) {
         return getLocalizedText(relation, "METHOD_REMOVE_OBJECT_NAME", relation.getTargetRoleSingular());
     }
 
@@ -855,7 +855,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the paramter for the method removing an object from a multi-value relation,
      * e.g. objectToRemove
      */
-    public String getParamNameForRemoveObject(IRelation relation) {
+    public String getParamNameForRemoveObject(IPolicyCmptTypeAssociation relation) {
         return getLocalizedText(relation, "PARAM_OBJECT_TO_REMOVE_NAME", relation.getTargetRoleSingular());
     }
     
@@ -867,7 +867,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodContainsObject(
-            IRelation relation,
+            IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         appendLocalizedJavaDoc("METHOD_CONTAINS_OBJECT", relation.getTargetRoleSingular(), relation, methodsBuilder);
@@ -882,7 +882,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     public void generateSignatureContainsObject(
-            IRelation relation,
+            IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         String methodName = getMethodNameContainsObject(relation);
@@ -895,7 +895,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the method returning the number of referenced objects,
      * e.g. getNumOfCoverages()
      */
-    public String getMethodNameContainsObject(IRelation relation) {
+    public String getMethodNameContainsObject(IPolicyCmptTypeAssociation relation) {
         return getLocalizedText(relation, "METHOD_CONTAINS_OBJECT_NAME", relation.getTargetRoleSingular());
     }
 
@@ -903,7 +903,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the paramter for the method that tests if an object is references in a multi-value relation,
      * e.g. objectToTest
      */
-    public String getParamNameForContainsObject(IRelation relation) {
+    public String getParamNameForContainsObject(IPolicyCmptTypeAssociation relation) {
         return getLocalizedText(relation, "PARAM_OBJECT_TO_TEST_NAME", relation.getTargetRoleSingular());
     }
     
@@ -915,7 +915,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodSetObject(
-            IRelation relation,
+            IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         appendLocalizedJavaDoc("METHOD_SET_OBJECT", relation.getTargetRoleSingular(), relation, methodsBuilder);
@@ -930,7 +930,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     public void generateSignatureSetObject(
-            IRelation relation,
+            IPolicyCmptTypeAssociation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         String methodName = getMethodNameSetObject(relation);
@@ -943,7 +943,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the method setting the referenced object.
      * e.g. setCoverage(ICoverage newObject)
      */
-    public String getMethodNameSetObject(IRelation relation) {
+    public String getMethodNameSetObject(IPolicyCmptTypeAssociation relation) {
         return getLocalizedText(relation, "METHOD_SET_OBJECT_NAME", relation.getTargetRoleSingular());
     }
     
@@ -951,7 +951,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the method that adds an object to a toMany relation or that sets
      * the object in a to1 relation respectively.
      */
-    public String getMethodNameAddOrSetObject(IRelation relation) {
+    public String getMethodNameAddOrSetObject(IPolicyCmptTypeAssociation relation) {
         if (relation.is1ToMany()) {
             return getMethodNameAddObject(relation);
         } else {
@@ -963,7 +963,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the paramter for the method that tests if an object is references in a multi-value relation,
      * e.g. objectToTest
      */
-    public String getParamNameForSetObject(IRelation relation) {
+    public String getParamNameForSetObject(IPolicyCmptTypeAssociation relation) {
         return getLocalizedText(relation, "PARAM_OBJECT_TO_SET_NAME", relation.getTargetRoleSingular());
     }
     
@@ -973,22 +973,22 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * overidden
      */
     protected void generateCodeForContainerRelationImplementation(
-            IRelation containerRelation,
+            IPolicyCmptTypeAssociation containerRelation,
             List subRelations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
     }
     
-    public void generateSignatureGetMaxCardinalityFor(IRelation relation, JavaCodeFragmentBuilder methodsBuilder){
+    public void generateSignatureGetMaxCardinalityFor(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder methodsBuilder){
         String methodName = getMethodNameGetMaxCardinalityFor(relation);
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, IntegerRange.class.getName(), methodName, new String[0], new String[0]);
     }
     
-    public String getMethodNameGetMaxCardinalityFor(IRelation relation){
+    public String getMethodNameGetMaxCardinalityFor(IPolicyCmptTypeAssociation relation){
         return getLocalizedText(relation, "METHOD_GET_MAX_CARDINALITY_NAME", StringUtils.capitalise(relation.getTargetRoleSingular()));
     }
     
-    public void generateMethodGetMaxCardinalityFor(IRelation relation, JavaCodeFragmentBuilder methodsBuilder){
+    public void generateMethodGetMaxCardinalityFor(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder methodsBuilder){
         String[] replacements = new String[]{relation.getTargetRoleSingular()};
         appendLocalizedJavaDoc("METHOD_GET_MAX_CARDINALITY", replacements, getPcType(), methodsBuilder);
         generateSignatureGetMaxCardinalityFor(relation, methodsBuilder);
@@ -1094,7 +1094,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
                 getFieldNameMaxAllowedValuesFor(a), frag);
     }
     
-    protected void generateFieldGetMaxCardinalityFor(IRelation relation, JavaCodeFragmentBuilder attrBuilder){
+    protected void generateFieldGetMaxCardinalityFor(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder attrBuilder){
         appendLocalizedJavaDoc("FIELD_MAX_CARDINALITY", relation.getTargetRoleSingular(), relation, attrBuilder);
         String fieldName = getFieldNameGetMaxCardinalityFor(relation);
         JavaCodeFragment frag = new JavaCodeFragment();
@@ -1115,7 +1115,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * Returns the name for the field GetMaxCardinalityFor + single target role of the provided relation
      */
-    public String getFieldNameGetMaxCardinalityFor(IRelation relation){
+    public String getFieldNameGetMaxCardinalityFor(IPolicyCmptTypeAssociation relation){
         return getLocalizedText(getPcType(), "FIELD_MAX_CARDINALITY_NAME", 
                 StringUtils.upperCase(relation.getTargetRoleSingular()));
     }
@@ -1123,7 +1123,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * Returns the name of the method that returns a reference object at a specified index.
      */
-    public String getMethodNameGetRefObjectAtIndex(IRelation relation){
+    public String getMethodNameGetRefObjectAtIndex(IPolicyCmptTypeAssociation relation){
         //TODO extend JavaNamingConvensions for relation accessor an mutator methods 
         return "get" + relation.getTargetRoleSingular();
     }
@@ -1135,7 +1135,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * public IMotorCoverage getMotorCoverage(int index)
      * </pre>
      */
-    public void generateSignatureGetRefObjectAtIndex(IRelation relation, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
+    public void generateSignatureGetRefObjectAtIndex(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
         appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT_BY_INDEX", relation.getTargetRoleSingular(), relation, methodBuilder);
         methodBuilder.signature(java.lang.reflect.Modifier.PUBLIC, getQualifiedClassName(relation.findTarget()), 
                     getMethodNameGetRefObjectAtIndex(relation), 
@@ -1149,7 +1149,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * public IMotorCoverage getMotorCoverage(int index);
      * </pre>
      */
-    protected void generateMethodGetRefObjectAtIndex(IRelation relation, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
+    protected void generateMethodGetRefObjectAtIndex(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
         generateSignatureGetRefObjectAtIndex(relation, methodBuilder);
         methodBuilder.append(';');
     }

@@ -22,7 +22,7 @@ import java.util.Iterator;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.Validatable;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
@@ -104,7 +104,7 @@ public class TestCaseTypeRelation implements Validatable {
 	/**
 	 * Returns the relation object which is related by the test relation type.
 	 */
-	public IRelation findRelation() throws CoreException {
+	public IPolicyCmptTypeAssociation findRelation() throws CoreException {
 		return testPolicyCmptTypeParameter.findRelation();
 	}
 

@@ -76,11 +76,11 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -1243,7 +1243,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		// get referenced PCTypes
 		IIpsObject[] pcTypes= findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE);
 		for(int i=0; i<pcTypes.length; i++){
-			IRelation[] relations= ((PolicyCmptType) pcTypes[i]).getRelations();
+			IPolicyCmptTypeAssociation[] relations= ((PolicyCmptType) pcTypes[i]).getPolicyCmptTypeAssociations();
 			for(int x=0; x<relations.length; x++){
 				if(relations[x].getTarget().equals(pcType.getQualifiedName())){
 					list.add(pcTypes[i]);

@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 
 /**
@@ -77,6 +77,6 @@ public interface IProductCmptTypeAssociation extends IAssociation {
      * 
      * @throws CoreException if an error occurs while searching for the matching association.
      */
-    public IRelation findMatchingPolicyCmptTypeRelation(IIpsProject ipsProject) throws CoreException;
+    public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeRelation(IIpsProject ipsProject) throws CoreException;
 
 }

@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IAttributeValue;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -75,7 +75,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         targetProductType = targetPolicyType.findProductCmptType(ipsProject);
         target = newProductCmpt(targetProductType, "TargetProduct");
         
-        association = productCmptType.newAssociation();
+        association = productCmptType.newProductCmptTypeAssociation();
         association.setAggregationKind(AggregationKind.SHARED);
         association.setTarget(targetProductType.getQualifiedName());
         association.setTargetRoleSingular("testRelationProductSide");
@@ -470,7 +470,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void testNewPart() {
     	try {
     		assertTrue(productCmpt.newPart(IConfigElement.class) instanceof IConfigElement);
-    		assertTrue(productCmpt.newPart(IRelation.class) instanceof IRelation);
+    		assertTrue(productCmpt.newPart(IPolicyCmptTypeAssociation.class) instanceof IPolicyCmptTypeAssociation);
     		
     		productCmpt.newPart(Object.class);
 			fail();

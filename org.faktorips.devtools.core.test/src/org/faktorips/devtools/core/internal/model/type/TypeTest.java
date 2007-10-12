@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Modifier;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
@@ -40,6 +41,25 @@ public class TypeTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = newIpsProject();
         type = newProductCmptType(ipsProject, "MotorProduct");
+    }
+    
+    public void testGetAssociationsForTarget() {
+        assertEquals(0, type.getAssociationsForTarget(null).length);
+        
+        IAssociation ass1 = type.newAssociation();
+        ass1.setTarget("Target1");
+        IAssociation ass2 = type.newAssociation();
+        ass2.setTarget("Target2");
+        IAssociation ass3 = type.newAssociation();
+        ass3.setTarget("Target1");
+        
+        IAssociation[] ass = type.getAssociationsForTarget("Target1");
+        assertEquals(2, ass.length);
+        assertEquals(ass1, ass[0]);
+        assertEquals(ass3, ass[1]);
+        
+        ass = type.getAssociationsForTarget("UnknownTarget");
+        assertEquals(0, ass.length);
     }
     
     public void testGetMethods() {

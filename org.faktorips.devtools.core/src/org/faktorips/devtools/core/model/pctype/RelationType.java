@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
+import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
 import org.faktorips.values.DefaultEnumType;
 import org.faktorips.values.DefaultEnumValue;
 import org.faktorips.values.EnumType;
@@ -67,6 +68,14 @@ public class RelationType extends DefaultEnumValue {
     
     public boolean isAssoziation() {
         return this==ASSOCIATION;
+    }
+    
+    public AggregationKind getAggregationKind() {
+        if (isCompositionMasterToDetail() ) {
+            return AggregationKind.COMPOSITE;
+        } else {
+            return AggregationKind.NONE;
+        }
     }
     
     private RelationType(DefaultEnumType type, String id, String name) {

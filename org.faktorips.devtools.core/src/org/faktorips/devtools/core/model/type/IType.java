@@ -119,6 +119,65 @@ public interface IType extends IIpsObject {
      */
     public boolean isSubtypeOrSameType(IType candidate, IIpsProject project) throws CoreException;
 
+    
+    /**
+     * Returns the assocation with the given name defined in <strong>this</strong> type.
+     * (This method does not search the supertype hierarchy.)
+     * If more than one association with the name exist, the first one is returned.
+     * Returns <code>null</code> if no association with the given name exists or name is <code>null</code>.
+     */
+    public IAssociation getAssociation(String name);
+    
+    /**
+     * Searches an association with the given name in the type and it's supertype hierarchy and returns it. 
+     * Returns <code>null</code> if no such assoiation exists.
+     * 
+     * @param name          The association's name.
+     * @param project       The project which ips object path is used for the searched.
+     *                      This is not neccessarily the project this type is part of. 
+     * 
+     * @throws CoreException if an error occurs while searching.
+     */
+    public IAssociation findAssociation(String name, IIpsProject project) throws CoreException;
+
+    /**
+     * Returns all associations that have the indicated target. Returns an empty array if no such assoiation exists
+     * or target is <code>null</code>.
+     * <p>
+     * Note that this does NOT search the supertype hierarchy.
+     * 
+     * @param target The qualified name of the target type.
+     */
+    public IAssociation[] getAssociationsForTarget(String target);
+
+    /**
+     * Creates a new association and returns it.
+     */
+    public IAssociation newAssociation();
+    
+    /**
+     * Returns the number of associations.
+     */
+    public int getNumOfAssociations();
+    
+    /**
+     * Moves the associations identified by the indexes up or down by one position.
+     * If one of the indexes is 0 (the first association), no association is moved up. 
+     * If one of the indexes is the number of associations - 1 (the last association)
+     * no association is moved down. 
+     * 
+     * @param indexes   The indexes identifying the associations.
+     * @param up        <code>true</code>, to move the associations up, 
+     *                  <false> to move them down.
+     * 
+     * @return The new indexes of the moved associations.
+     * 
+     * @throws NullPointerException if indexes is null.
+     * @throws IndexOutOfBoundsException if one of the indexes does not identify
+     * an association.
+     */
+    public int[] moveAssociations(int[] indexes, boolean up);
+    
     /**
      * Returns the type's methods. 
      */
@@ -186,26 +245,5 @@ public interface IType extends IIpsObject {
      * Returns the type's associations.
      */
     public IAssociation[] getAssociations();
-    
-    /**
-     * Returns the assocation with the given name defined in <strong>this</strong> type.
-     * (This method does not search the supertype hierarchy.)
-     * If more than one association with the name exist, the first one is returned.
-     * Returns <code>null</code> if no association with the given name exists or name is <code>null</code>.
-     */
-    public IAssociation getAssociation(String name);
-    
-    /**
-     * Searches an association with the given name in the type and it's supertype hierarchy and returns it. 
-     * Returns <code>null</code> if no such assoiation exists.
-     * 
-     * @param name          The association's name.
-     * @param project       The project which ips object path is used for the searched.
-     *                      This is not neccessarily the project this type is part of. 
-     * 
-     * @throws CoreException if an error occurs while searching.
-     */
-    public IAssociation findAssociation(String name, IIpsProject project) throws CoreException;
-
     
 }

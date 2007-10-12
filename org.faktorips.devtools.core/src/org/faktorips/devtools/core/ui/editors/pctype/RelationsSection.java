@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
@@ -96,7 +96,7 @@ public class RelationsSection extends SimpleIpsPartsSection {
          * {@inheritDoc}
          */
         protected IIpsObjectPart newIpsPart() {
-            return getPcType().newRelation();
+            return getPcType().newPolicyCmptTypeAssociation();
         }
         
         /**
@@ -111,14 +111,14 @@ public class RelationsSection extends SimpleIpsPartsSection {
          * {@inheritDoc}
          */
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            return new RelationEditDialog((IRelation)part, shell);
+            return new RelationEditDialog((IPolicyCmptTypeAssociation)part, shell);
         }
         
         /**
          * {@inheritDoc}
          */
         protected int[] moveParts(int[] indexes, boolean up) {
-            return getPcType().moveRelations(indexes, up);
+            return getPcType().moveAssociations(indexes, up);
         }
 
         /**
@@ -157,7 +157,7 @@ public class RelationsSection extends SimpleIpsPartsSection {
 			boolean dirty = file.isDirty();
 			Memento memento = getIpsObject().newMemento();
 			IIpsObjectPart newRelation = newIpsPart();
-			WizardDialog dialog = new WizardDialog(getShell(), new NewPcTypeRelationWizard((IRelation)newRelation));
+			WizardDialog dialog = new WizardDialog(getShell(), new NewPcTypeRelationWizard((IPolicyCmptTypeAssociation)newRelation));
 	        dialog.open();
             if (dialog.getReturnCode()==Window.CANCEL) {
             	getIpsObject().setState(memento);
@@ -170,7 +170,7 @@ public class RelationsSection extends SimpleIpsPartsSection {
 		
         private class RelationContentProvider implements IStructuredContentProvider {
     		public Object[] getElements(Object inputElement) {
-    			 return getPcType().getRelations();
+    			 return getPcType().getPolicyCmptTypeAssociations();
     		}
     		public void dispose() {
     			// nothing todo

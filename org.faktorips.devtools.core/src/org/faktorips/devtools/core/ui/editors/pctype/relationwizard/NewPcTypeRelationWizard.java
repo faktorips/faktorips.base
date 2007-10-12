@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -59,8 +59,8 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	private UIToolkit uiToolkit = new UIToolkit(null);
 
 	/* Model objects */
-	private IRelation relation;
-	private IRelation reverseRelation;
+	private IPolicyCmptTypeAssociation relation;
+	private IPolicyCmptTypeAssociation reverseRelation;
 	private IPolicyCmptType targetPolicyCmptType;
     
 	/* State variables */
@@ -106,7 +106,7 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
                sourceRelType.isCompositionMasterToDetail()        ? RelationType.COMPOSITION_DETAIL_TO_MASTER : null;
     }
     
-    public NewPcTypeRelationWizard(IRelation relation) {
+    public NewPcTypeRelationWizard(IPolicyCmptTypeAssociation relation) {
     	super();
 
     	ArgumentCheck.notNull(relation);
@@ -128,8 +128,8 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 		if (event.getIpsSrcFile().equals(
 				relation.getIpsObject().getIpsSrcFile())) {
 
-			if (relation.isReadOnlyContainer()){
-				relation.setContainerRelation(""); //$NON-NLS-1$
+			if (relation.isDerivedUnion()){
+				relation.setSubsettedDerivedUnion(""); //$NON-NLS-1$
 			}
 			
 			if (isNewReverseRelation() && reverseRelation != null){
@@ -137,23 +137,23 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 				reverseRelation.setTargetRoleSingular(relation.getPolicyCmptType().getName());
 				reverseRelation.setRelationType(getCorrespondingRelationType(relation.getRelationType()));
 				if (reverseRelation.isAssoziation()) {
-                    reverseRelation.setReadOnlyContainer(relation.isReadOnlyContainer());
+                    reverseRelation.setDerivedUnion(relation.isDerivedUnion());
                 } else {
-                    reverseRelation.setReadOnlyContainer(false);
+                    reverseRelation.setDerivedUnion(false);
                 }
 				
-				IRelation containerRelation;
+				IPolicyCmptTypeAssociation containerRelation;
 				try {
-					containerRelation = relation.findContainerRelation();
+					containerRelation = (IPolicyCmptTypeAssociation)relation.findSubsettedDerivedUnion(relation.getIpsProject());
 				} catch (CoreException e) {
 					IpsPlugin.log(e);
 					showErrorPage(e);
 					return;
 				}
 				if (containerRelation != null){
-					reverseRelation.setContainerRelation(containerRelation.getInverseRelation());
+					reverseRelation.setSubsettedDerivedUnion(containerRelation.getInverseRelation());
 				}else{
-					reverseRelation.setContainerRelation(""); //$NON-NLS-1$
+					reverseRelation.setSubsettedDerivedUnion(""); //$NON-NLS-1$
 				}
 			}
 		}
@@ -319,7 +319,7 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	/**
 	 * Set the default values depending on the relation type and read-only container flag.
 	 */
-	void setDefaultsByRelationTypeAndTarget(IRelation newRelation){
+	void setDefaultsByRelationTypeAndTarget(IPolicyCmptTypeAssociation newRelation){
 		RelationType type = newRelation.getRelationType();
 		if (type != null) {
             boolean targetIsProductRelevantOrNull = getTargetPolicyCmptType()==null?true:getTargetPolicyCmptType().isConfigurableByProductCmptType();
@@ -333,11 +333,11 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 				newRelation.setTargetRolePluralProductSide(""); //$NON-NLS-1$
 				newRelation.setTargetRoleSingularProductSide(""); //$NON-NLS-1$
 				newRelation.setProductRelevant(false);
-                newRelation.setReadOnlyContainer(false);
+                newRelation.setDerivedUnion(false);
 			} else if (type.isAssoziation()) {
-				newRelation.setContainerRelation(""); //$NON-NLS-1$
-				newRelation.setReadOnlyContainer(false);
-				if (newRelation.isReadOnlyContainer()){
+				newRelation.setSubsettedDerivedUnion(""); //$NON-NLS-1$
+				newRelation.setDerivedUnion(false);
+				if (newRelation.isDerivedUnion()){
 					newRelation.setMaxCardinality(Integer.MAX_VALUE);
 				}
 				newRelation.setProductRelevant(defaultProductRelevant);
@@ -405,7 +405,7 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	/**
 	 * Create a new ui controller for a reverse relation.
 	 */
-	void createUIControllerReverseRelation(IRelation newReverseRelation){
+	void createUIControllerReverseRelation(IPolicyCmptTypeAssociation newReverseRelation){
 		uiControllerReverseRelation = createUIController(newReverseRelation);
 		reverseRelationPropertiesPage.connectToModel();
 	}
@@ -436,14 +436,14 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	/**
 	 * Returns the relation.
 	 */
-	IRelation getRelation() {
+	IPolicyCmptTypeAssociation getRelation() {
 		return relation;
 	}
 
 	/**
 	 * Returns the reverse relation.
 	 */
-	IRelation getInverseRelation() {
+	IPolicyCmptTypeAssociation getInverseRelation() {
 		return reverseRelation;
 	}
 	
@@ -451,7 +451,7 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	 * Stores a reverse relation.
 	 * Additional the correct reverse relation names will be set in both relation.
 	 */
-	void storeInverseRelation(IRelation reverseRelation){
+	void storeInverseRelation(IPolicyCmptTypeAssociation reverseRelation){
 	    this.reverseRelation = reverseRelation;
 		if (reverseRelation != null && reverseRelation.isAssoziation()){
 			relation.setInverseRelation(reverseRelation.getTargetRoleSingular());

@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 
 public class ReferencesToPolicySearchQueryTest extends AbstractIpsPluginTest {
 
@@ -49,20 +49,20 @@ public class ReferencesToPolicySearchQueryTest extends AbstractIpsPluginTest {
         
         pcType = newPolicyCmptType(root, "TestPCType");
         pcType.newAttribute();
-        IRelation relation= pcType.newRelation();
+        IPolicyCmptTypeAssociation relation= pcType.newPolicyCmptTypeAssociation();
         relation.setTarget(pcTypeReferenced.getQualifiedName());
 
         pcType2 = newPolicyCmptType(root, "TestPCType2");
         pcType2.newAttribute();
         pcType2.newAttribute();
-        IRelation relation2= pcType2.newRelation();
+        IPolicyCmptTypeAssociation relation2= pcType2.newPolicyCmptTypeAssociation();
         relation2.setTarget(pcTypeReferenced.getQualifiedName());
         
         pcType3 = newPolicyCmptType(root, "TestPCType3");
         pcType3.newAttribute();
         pcType3.newAttribute();
         pcType3.newAttribute();
-        IRelation relation3= pcType3.newRelation();
+        IPolicyCmptTypeAssociation relation3= pcType3.newPolicyCmptTypeAssociation();
         relation3.setTarget(pcTypeReferenced.getQualifiedName());
         
         pcTypeNoRef = newPolicyCmptType(root, "TestPCTypeNoRef");

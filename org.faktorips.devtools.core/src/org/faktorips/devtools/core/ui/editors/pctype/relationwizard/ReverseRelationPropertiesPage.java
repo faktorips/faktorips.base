@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -75,12 +75,12 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
      * 
      * @throws CoreException
      */
-     public static List getCorrespondingTargetRelations(IRelation sourceRelation,
+     public static List getCorrespondingTargetRelations(IPolicyCmptTypeAssociation sourceRelation,
             IPolicyCmptType target) throws CoreException {
         ArrayList relationsOfTarget = new ArrayList();
         IPolicyCmptType currTargetPolicyCmptType = target;
         while (currTargetPolicyCmptType != null){
-            IRelation[] relations = currTargetPolicyCmptType.getRelations();
+            IPolicyCmptTypeAssociation[] relations = currTargetPolicyCmptType.getPolicyCmptTypeAssociations();
             for (int i = 0; i < relations.length; i++) {
                 // add the relation of the target if it points to the source policy cmpt
                 // and the type is matching to the source relation
@@ -154,28 +154,28 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 	 */
 	protected void connectToModel() {
 		wizard.addToUiControllerReverseRelation(typeField,
-				IRelation.PROPERTY_RELATIONTYPE);
+				IPolicyCmptTypeAssociation.PROPERTY_RELATIONTYPE);
 
 		wizard.addToUiControllerReverseRelation(minCardinalityField,
-				IRelation.PROPERTY_MIN_CARDINALITY);
+				IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
 		wizard.addToUiControllerReverseRelation(maxCardinalityField,
-				IRelation.PROPERTY_MAX_CARDINALITY);
+				IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
 		wizard.addToUiControllerReverseRelation(targetRoleSingularField,
-				IRelation.PROPERTY_TARGET_ROLE_SINGULAR);
+				IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
 		wizard.addToUiControllerReverseRelation(targetRolePluralField,
-				IRelation.PROPERTY_TARGET_ROLE_PLURAL);
+				IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
 
 		wizard.addToUiControllerReverseRelation(productRelevantField,
-				IRelation.PROPERTY_PRODUCT_RELEVANT);
+				IPolicyCmptTypeAssociation.PROPERTY_PRODUCT_RELEVANT);
 
 		wizard.addToUiControllerReverseRelation(minCardinalityProdRelevantField,
-				IRelation.PROPERTY_MIN_CARDINALITY_PRODUCTSIDE);
+				IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY_PRODUCTSIDE);
 		wizard.addToUiControllerReverseRelation(maxCardinalityProdRelevantField,
-				IRelation.PROPERTY_MAX_CARDINALITY_PRODUCTSIDE);
+				IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY_PRODUCTSIDE);
 		wizard.addToUiControllerReverseRelation(targetRoleSingularProdRelevantField,
-				IRelation.PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE);
+				IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE);
 		wizard.addToUiControllerReverseRelation(targetRolePluralProdRelevantField,
-				IRelation.PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE);
+				IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE);
         
         // Connect the extension controls to the ui controller
         if (wizard.getUiControllerReverseRelation() != null && wizard.getExtensionFactoryReverseRelation() != null)
@@ -232,7 +232,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 					if (existingRelations.size() > 0) {
 						String[] names = new String[existingRelations.size()];
 						for (int i = 0; i < existingRelations.size(); i++) {
-							names[i] = (((IRelation) existingRelations.get(i)).getName());
+							names[i] = (((IPolicyCmptTypeAssociation) existingRelations.get(i)).getName());
 						}
 						existingRelationsField.getCombo().setItems(names);
 					} else {
@@ -316,7 +316,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 			if (!selExistingRelation.equals(prevSelExistingRelation)){
 				prevSelExistingRelation = selExistingRelation;
 
-				wizard.storeInverseRelation((IRelation) existingRelations.get(selIdx));
+				wizard.storeInverseRelation((IPolicyCmptTypeAssociation) existingRelations.get(selIdx));
                 
                 createPropertyFields();
                 setStatusPropertyFields();
@@ -337,16 +337,16 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 			return;
         }
         
-		IRelation newReverseRelation = wizard.getTargetPolicyCmptType().newRelation();
+		IPolicyCmptTypeAssociation newReverseRelation = wizard.getTargetPolicyCmptType().newPolicyCmptTypeAssociation();
 		newReverseRelation.setTarget(wizard.getPolicyCmptTypeQualifiedName());
 		newReverseRelation.setTargetRoleSingular(wizard.getRelation().getPolicyCmptType().getName());
 		newReverseRelation.setRelationType(NewPcTypeRelationWizard.getCorrespondingRelationType(wizard.getRelation().getRelationType()));
-		IRelation containerRelation = wizard.getRelation().findContainerRelation();
+		IPolicyCmptTypeAssociation containerRelation = (IPolicyCmptTypeAssociation)wizard.getRelation().findSubsettedDerivedUnion(wizard.getRelation().getIpsProject());
 		if (newReverseRelation.isAssoziation() && containerRelation != null){
-			newReverseRelation.setContainerRelation(containerRelation.getInverseRelation());
+			newReverseRelation.setSubsettedDerivedUnion(containerRelation.getInverseRelation());
 		}
-		if (wizard.getRelation().isAssoziation() && wizard.getRelation().isReadOnlyContainer()){
-			newReverseRelation.setReadOnlyContainer(true);
+		if (wizard.getRelation().isAssoziation() && wizard.getRelation().isDerivedUnion()){
+			newReverseRelation.setDerivedUnion(true);
         }
         
 		wizard.setDefaultsByRelationTypeAndTarget(newReverseRelation);
@@ -422,14 +422,14 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
     /**
 	 * {@inheritDoc}
 	 */
-	protected IRelation getCurrentRelation(){
+	protected IPolicyCmptTypeAssociation getCurrentRelation(){
 		return wizard.getInverseRelation();
 	}
 
     /**
 	 * {@inheritDoc}
 	 */
-	protected IRelation getInverseOfCurrentRelation(){
+	protected IPolicyCmptTypeAssociation getInverseOfCurrentRelation(){
 	    return wizard.getRelation();
 	}
 

@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.util.ArgumentCheck;
 
@@ -59,7 +59,7 @@ public class RelationCompletionProcessor extends AbstractCompletionProcessor {
 
         IPolicyCmptType currentPcType = pcType;
         while (currentPcType != null){
-            IRelation[] relations = currentPcType.getRelations();
+            IPolicyCmptTypeAssociation[] relations = currentPcType.getPolicyCmptTypeAssociations();
             for (int i = 0; i < relations.length; i++) {
                 if (onlyAssoziationOrComposition &&
                     !(relations[i].isAssoziation() || relations[i].isCompositionMasterToDetail())){
@@ -74,7 +74,7 @@ public class RelationCompletionProcessor extends AbstractCompletionProcessor {
         }
     }
     
-    private void addToResult(List result, IRelation relation, int documentOffset) {
+    private void addToResult(List result, IPolicyCmptTypeAssociation relation, int documentOffset) {
         String name = relation.getName();
         String displayText = name + " - " + relation.getParent().getName(); //$NON-NLS-1$
         CompletionProposal proposal = new CompletionProposal(

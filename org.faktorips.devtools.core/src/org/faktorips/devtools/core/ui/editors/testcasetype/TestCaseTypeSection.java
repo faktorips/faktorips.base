@@ -83,7 +83,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
@@ -1267,7 +1267,7 @@ public class TestCaseTypeSection extends IpsSection {
 
     private boolean isAssociation(ITestPolicyCmptTypeParameter testParam) {
         try {
-            IRelation relation = ((ITestPolicyCmptTypeParameter)testParam).findRelation();
+            IPolicyCmptTypeAssociation relation = ((ITestPolicyCmptTypeParameter)testParam).findRelation();
             if (relation != null){
                 if (relation.isAssoziation()){
                     return true;

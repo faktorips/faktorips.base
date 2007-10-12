@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
@@ -164,7 +164,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
             try {
                 ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter();
                 if (param != null){
-                    IRelation relation = param.findRelation();
+                    IPolicyCmptTypeAssociation relation = param.findRelation();
                     if (relation != null){
                         return relation.getImage();
                     }
@@ -305,7 +305,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		
 		// validate if the model relation exists
         if (messageList.getMessageByCode(MSGCODE_MODEL_RELATION_NOT_FOUND) == null){
-            IRelation modelRelation = testCaseTypeParam.findRelation();
+            IPolicyCmptTypeAssociation modelRelation = testCaseTypeParam.findRelation();
             if (modelRelation == null){
     			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_ModelRelationNotFound, testCaseTypeParam.getRelation());
     			Message msg = new Message(MSGCODE_MODEL_RELATION_NOT_FOUND, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);

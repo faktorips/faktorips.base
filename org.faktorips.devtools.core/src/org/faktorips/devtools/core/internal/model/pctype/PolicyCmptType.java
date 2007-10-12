@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
@@ -45,6 +45,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -66,8 +67,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     private List attributes = new ArrayList(0);
 
-    private List relations = new ArrayList(0);
-
     private List rules = new ArrayList(0);
 
     public PolicyCmptType(IIpsSrcFile file) {
@@ -78,7 +77,14 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
      * {@inheritDoc}
      */
     protected IpsObjectPartCollection createCollectionForMethods() {
-        return new IpsObjectPartCollection(this, Method.class, "Method");
+        return new IpsObjectPartCollection(this, Method.class, Method.XML_ELEMENT_NAME);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected IpsObjectPartCollection createCollectionForAssociations() {
+        return new IpsObjectPartCollection(this, PolicyCmptTypeAssociation.class, PolicyCmptTypeAssociation.TAG_NAME);
     }
     
     /**
@@ -132,8 +138,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             return newAttribute();
         } else if (partType.equals(IMethod.class)) {
             return newMethod();
-        } else if (partType.equals(IRelation.class)) {
-            return newRelation();
+        } else if (partType.equals(IPolicyCmptTypeAssociation.class)) {
+            return newPolicyCmptTypeAssociation();
         } else if (partType.equals(IValidationRule.class)) {
             return newRule();
         }
@@ -223,12 +229,12 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
      * {@inheritDoc}
      */
     public IIpsElement[] getChildren() {
-        int numOfChildren = getNumOfAttributes() + getNumOfMethods() + getNumOfRelations() + getNumOfRules();
+        int numOfChildren = getNumOfAttributes() + getNumOfMethods() + getNumOfAssociations() + getNumOfRules();
         IIpsElement[] childrenArray = new IIpsElement[numOfChildren];
         List childrenList = new ArrayList(numOfChildren);
         childrenList.addAll(attributes);
         childrenList.addAll(methods.getBackingList());
-        childrenList.addAll(relations);
+        childrenList.addAll(associations.getBackingList());
         childrenList.addAll(rules);
         childrenList.toArray(childrenArray);
         return childrenArray;
@@ -358,9 +364,9 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
-    public IRelation[] getRelations() {
-        IRelation[] r = new IRelation[relations.size()];
-        relations.toArray(r);
+    public IPolicyCmptTypeAssociation[] getPolicyCmptTypeAssociations() {
+        IPolicyCmptTypeAssociation[] r = new IPolicyCmptTypeAssociation[associations.size()];
+        associations.toArray(r);
         return r;
     }
     
@@ -369,110 +375,21 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
      * TypeHierarchy.
      */
     List getRelationList() {
-        return relations;
+        return associations.getBackingList();
     }
 
     /**
      * {@inheritDoc}
      */
-    public IRelation getRelation(String name) {
-        ArgumentCheck.notNull(name);
-        for (Iterator it = relations.iterator(); it.hasNext();) {
-            IRelation each = (IRelation)it.next();
-            if (name.equals(each.getName())) {
-                return each;
-            }
-        }
-        return null;
+    public IPolicyCmptTypeAssociation getRelation(String name) {
+        return (IPolicyCmptTypeAssociation)getAssociation(name);
     }
 
     /**
      * {@inheritDoc}
      */
-    public IRelation[] getProductRelevantRelations() {
-        ArrayList productRelevantRelations = new ArrayList();
-        for (Iterator it = relations.iterator(); it.hasNext();) {
-            IRelation relation = (IRelation)it.next();
-            if (relation.isProductRelevant()) {
-                productRelevantRelations.add(relation);
-            }
-        }
-        return (IRelation[])productRelevantRelations.toArray(new IRelation[productRelevantRelations.size()]);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int getNumOfRelations() {
-        return relations.size();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int[] moveRelations(int[] indexes, boolean up) {
-        ListElementMover mover = new ListElementMover(relations);
-        int[] newIndices = mover.move(indexes, up);
-        partsMoved(getRelations());
-        return newIndices;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IRelation newRelation() {
-        Relation r = newRelationInternal(getNextPartId());
-        partWasAdded(r);
-        return r;
-    }
-
-    /*
-     * Creates a new attribute without updating the src file.
-     */
-    private Relation newRelationInternal(int id) {
-        Relation r = new Relation(this, id);
-        relations.add(r);
-        return r;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IRelation[] findRelationsImplementingContainerRelation(IRelation containerRelation,
-            boolean searchSupertypeHierarchy) throws CoreException {
-        if (containerRelation == null) {
-            return new IRelation[0];
-        }
-        IRelation[] candidates;
-        if (searchSupertypeHierarchy) {
-            ITypeHierarchy hierarchy = getSupertypeHierarchy();
-            candidates = hierarchy.getAllRelations(this);
-        } else {
-            candidates = getRelations();
-        }
-        return findRelationsImplementingContainerRelation(containerRelation, candidates);
-    }
-
-    /*
-     * candicates must contain relations in supertype hierarchy order
-     */
-    private IRelation[] findRelationsImplementingContainerRelation(IRelation containerRelation, IRelation[] candidates)
-            throws CoreException {
-        List result = new ArrayList();
-        boolean containerRelationTypeReached = false;
-        for (int i = 0; i < candidates.length; i++) {
-            if (candidates[i].getPolicyCmptType().equals(containerRelation.getPolicyCmptType())) {
-                containerRelationTypeReached = true;
-            } else {
-                if (containerRelationTypeReached) {
-                    break; // do not walk past the container relation's type in the hierarchy
-                }
-            }
-            if (candidates[i].isContainerRelationImplementation(containerRelation)) {
-                result.add(candidates[i]);
-            }
-        }
-        return (IRelation[])result.toArray(new IRelation[result.size()]);
+    public IPolicyCmptTypeAssociation newPolicyCmptTypeAssociation() {
+        return (IPolicyCmptTypeAssociation)newAssociation();
     }
 
     /**
@@ -553,7 +470,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         attributes.clear();
         methods.clear();
         rules.clear();
-        relations.clear();
+        associations.clear();
     }
 
     /**
@@ -566,8 +483,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         } else if (part instanceof IMethod) {
             methods.readdPart(part);
             return;
-        } else if (part instanceof IRelation) {
-            relations.add(part);
+        } else if (part instanceof IPolicyCmptTypeAssociation) {
+            associations.readdPart(part);
             return;
         } else if (part instanceof IValidationRule) {
             rules.add(part);
@@ -586,8 +503,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         } else if (part instanceof IMethod) {
             methods.removePart(part);
             return;
-        } else if (part instanceof IRelation) {
-            relations.remove(part);
+        } else if (part instanceof IPolicyCmptTypeAssociation) {
+            associations.removePart(part);
             return;
         } else if (part instanceof IValidationRule) {
             rules.remove(part);
@@ -603,14 +520,14 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(Attribute.TAG_NAME)) {
             return newAttributeInternal(id);
-        } else if (xmlTagName.equals(Relation.TAG_NAME)) {
-            return newRelationInternal(id);
+        } else if (xmlTagName.equals(PolicyCmptTypeAssociation.TAG_NAME)) {
+            return associations.newPart(xmlTag, id);
         } else if (xmlTagName.equals(Method.XML_ELEMENT_NAME)) {
             return methods.newPart(xmlTag, id);
         } else if (xmlTagName.equals(ValidationRule.TAG_NAME)) {
             return newRuleInternal(id);
         }
-        throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
+        throw new RuntimeException("Could not create part for tag name " + xmlTagName); //$NON-NLS-1$
     }
 
     /**
@@ -628,8 +545,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
      */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
-        TypeHierarchy supertypeHierarchy = null;
-        supertypeHierarchy = TypeHierarchy.getSupertypeHierarchy(this);
+        IIpsProject ipsProject = getIpsProject();
 
         validateProductSide(list);
 
@@ -637,7 +553,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             validateIfAllAbstractMethodsAreImplemented(getIpsProject(), list);
             IIpsProjectProperties props = getIpsProject().getProperties();
             if (props.isContainerRelationIsImplementedRuleEnabled()) {
-                validateIfAllContainerRelationsAreImplemented(supertypeHierarchy, list);
+                DerivedUnionsSpecifiedValidator validator = new DerivedUnionsSpecifiedValidator(list, ipsProject);
+                validator.start(this);
             }
             IMethod[] methods = getMethods();
             for (int i = 0; i < methods.length; i++) {
@@ -685,40 +602,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                     methods[i].getType().getQualifiedName());
             list.add(new Message(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, text, Message.ERROR, this));
         }
-    }
-
-    /**
-     * Validation for {@link IPolicyCmptType#MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION}
-     */
-    private void validateIfAllContainerRelationsAreImplemented(ITypeHierarchy hierarchy, MessageList list)
-            throws CoreException {
-        IRelation[] relations = hierarchy.getAllRelations(this);
-        for (int i = 0; i < relations.length; i++) {
-            if (relations[i].isReadOnlyContainer()) {
-                if (!isContainerRelationImplemented(relations[i], hierarchy)) {
-                    String text = NLS.bind(Messages.PolicyCmptType_msgMustImplementContainerRelation, relations[i]
-                            .getName(), relations[i].getPolicyCmptType().getQualifiedName());
-                    list.add(new Message(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION, text,
-                            Message.ERROR, this, IType.PROPERTY_ABSTRACT));
-                }
-            }
-        }
-    }
-
-    /**
-     * Returns true if the container relation is implemented in this type or one of it's
-     * supertypes. Helper method for the one above.
-     * 
-     * @param relation A container relation of one the type's supertypes.
-     * @param hierarchy The supertype hierarchy where the supertype relation is already resolved.
-     * 
-     * @throws CoreException
-     */
-    private boolean isContainerRelationImplemented(IRelation containerRelation, ITypeHierarchy hierarchy)
-            throws CoreException {
-
-        IRelation[] candidates = hierarchy.getAllRelations(this);
-        return findRelationsImplementingContainerRelation(containerRelation, candidates).length > 0;
     }
 
     /**
@@ -811,7 +694,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     
     private void addQualifiedNameTypesForRelationTargets(Set dependencies, boolean excludeNonProductRelations)
             throws CoreException {
-        IRelation[] relations = getRelations();
+        IPolicyCmptTypeAssociation[] relations = getPolicyCmptTypeAssociations();
         for (int i = 0; i < relations.length; i++) {
             if (excludeNonProductRelations && !relations[i].isProductRelevant()) {
                 continue;
@@ -901,9 +784,9 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
          * {@inheritDoc}
          */
         protected boolean visit(IPolicyCmptType currentType) {
-            IRelation[] relations = currentType.getRelations();
+            IPolicyCmptTypeAssociation[] relations = currentType.getPolicyCmptTypeAssociations();
             for (int i=0; i<relations.length; i++) {
-                IRelation each = relations[i];
+                IPolicyCmptTypeAssociation each = relations[i];
                 if (each.getRelationType().isCompositionDetailToMaster()) {
                     root = false;
                     return false; // stop the visit, we have the result
@@ -940,19 +823,50 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             return attribute==null;
         }
     }
+    
+    private class DerivedUnionsSpecifiedValidator extends TypeHierarchyVisitor {
 
-     /**
-     * {@inheritDoc}
-     */
-    public IAssociation getAssociation(String name) {
-        throw new RuntimeException("Not implemented yet");
+        private MessageList msgList;
+        private List candidateSubsets = new ArrayList(0);
+        
+        
+        public DerivedUnionsSpecifiedValidator(MessageList msgList, IIpsProject ipsProject) {
+            super(ipsProject);
+            this.msgList = msgList;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IType currentType) throws CoreException {
+            IAssociation[] associations = currentType.getAssociations();
+            for (int i = 0; i < associations.length; i++) {
+                candidateSubsets.add(associations[i]);
+            }
+            for (int i = 0; i < associations.length; i++) {
+                if (associations[i].isDerivedUnion()) {
+                    if (!isSubsetted(associations[i])) {
+                        String text = NLS.bind(Messages.PolicyCmptType_msgMustImplementContainerRelation, associations[i].getName(), 
+                                associations[i].getType().getQualifiedName());
+                        msgList.add(new Message(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION, text, Message.ERROR, this, IType.PROPERTY_ABSTRACT));
+                        
+                    }
+                }
+            }
+            return true;
+        }
+        
+        private boolean isSubsetted(IAssociation derivedUnion) throws CoreException {
+            for (Iterator it = candidateSubsets.iterator(); it.hasNext();) {
+                IAssociation candidate = (IAssociation)it.next();
+                if (derivedUnion==candidate.findSubsettedDerivedUnion(ipsProject)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IAssociation[] getAssociations() {
-        throw new RuntimeException("Not implemented yet");
-    }    
 
 }

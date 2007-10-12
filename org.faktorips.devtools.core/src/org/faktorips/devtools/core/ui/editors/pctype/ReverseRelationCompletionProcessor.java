@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.util.ArgumentCheck;
 
@@ -32,13 +32,13 @@ import org.faktorips.util.ArgumentCheck;
 public class ReverseRelationCompletionProcessor extends AbstractCompletionProcessor {
     
     private IPolicyCmptType pcType;
-    private IRelation relation;
+    private IPolicyCmptTypeAssociation relation;
     
     public ReverseRelationCompletionProcessor() {
         
     }
     
-    public ReverseRelationCompletionProcessor(IRelation relation) {
+    public ReverseRelationCompletionProcessor(IPolicyCmptTypeAssociation relation) {
         ArgumentCheck.notNull(relation);
         this.relation = relation;
         this.pcType = (IPolicyCmptType)relation.getIpsObject();
@@ -55,7 +55,7 @@ public class ReverseRelationCompletionProcessor extends AbstractCompletionProces
         if (target==null) {
             return;
         }
-        IRelation[] relations = target.getRelations();
+        IPolicyCmptTypeAssociation[] relations = target.getPolicyCmptTypeAssociations();
         for (int j=0; j<relations.length; j++) {
             if (relations[j].getName().toLowerCase().startsWith(prefix)) {
                 addToResult(result, relations[j], documentOffset);
@@ -63,7 +63,7 @@ public class ReverseRelationCompletionProcessor extends AbstractCompletionProces
         }
     }
     
-    private void addToResult(List result, IRelation relation, int documentOffset) {
+    private void addToResult(List result, IPolicyCmptTypeAssociation relation, int documentOffset) {
         String name = relation.getName();
         String displayText = name + " - " + relation.getParent().getName(); //$NON-NLS-1$
         CompletionProposal proposal = new CompletionProposal(

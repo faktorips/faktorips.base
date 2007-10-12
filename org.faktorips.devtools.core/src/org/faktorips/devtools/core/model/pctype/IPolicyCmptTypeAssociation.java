@@ -19,9 +19,9 @@ package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 
 
 /**
@@ -35,30 +35,20 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
  *
  * @author Jan Ortmann
  */
-public interface IRelation extends IIpsObjectPart {
+public interface IPolicyCmptTypeAssociation extends IAssociation {
     
     // String constants for the relation class' properties according
     // to the Java beans standard.
     public final static String PROPERTY_RELATIONTYPE = "relationType"; //$NON-NLS-1$
-    public final static String PROPERTY_TARGET = "target"; //$NON-NLS-1$
-    public final static String PROPERTY_TARGET_ROLE_SINGULAR = "targetRoleSingular"; //$NON-NLS-1$
-    public final static String PROPERTY_TARGET_ROLE_PLURAL = "targetRolePlural"; //$NON-NLS-1$
-    public final static String PROPERTY_MIN_CARDINALITY = "minCardinality"; //$NON-NLS-1$
-    public final static String PROPERTY_MAX_CARDINALITY = "maxCardinality"; //$NON-NLS-1$
     public final static String PROPERTY_PRODUCT_RELEVANT = "productRelevant"; //$NON-NLS-1$
-    public final static String PROPERTY_CONTAINER_RELATION = "containerRelation"; //$NON-NLS-1$
     public final static String PROPERTY_INVERSE_RELATION = "inverseRelation"; //$NON-NLS-1$
-    public final static String PROPERTY_READONLY_CONTAINER = "readOnlyContainer"; //$NON-NLS-1$
     public final static String PROPERTY_INVERSE_RELATION_APPLICABLE = "inverseRelationApplicable"; //$NON-NLS-1$
-    public final static String PROPERTY_CONTAINER_RELATION_APPLICABLE = "containerRelationApplicable"; //$NON-NLS-1$
+    public final static String PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE = "containerRelationApplicable"; //$NON-NLS-1$
     
     public final static String PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE = "targetRoleSingularProductSide"; //$NON-NLS-1$
     public final static String PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE = "targetRolePluralProductSide"; //$NON-NLS-1$
     public final static String PROPERTY_MIN_CARDINALITY_PRODUCTSIDE = "minCardinalityProductSide"; //$NON-NLS-1$
     public final static String PROPERTY_MAX_CARDINALITY_PRODUCTSIDE = "maxCardinalityProductSide"; //$NON-NLS-1$
-
-	public static final int CARDINALITY_ONE = 1;
-	public static final int CARDINALITY_MANY = Integer.MAX_VALUE;
 
     public final static RelationType DEFAULT_RELATION_TYPE = RelationType.ASSOCIATION; 
     
@@ -68,116 +58,10 @@ public interface IRelation extends IIpsObjectPart {
     public final static String MSGCODE_PREFIX = "PolicyCmptTypeRelation-"; //$NON-NLS-1$
     
     /**
-     * Validation message code to indicate that the target does not exist.
-     */
-    public final static String MSGCODE_TARGET_DOES_NOT_EXIST = MSGCODE_PREFIX + "TargetDoesNotExists"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the target role singular must be set and it's not.
-     */
-    public final static String MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET = MSGCODE_PREFIX + "TargetRoleSingularMustBeSet"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the target role plural must be set if the max cardinality is
-     * greater than 1.
-     */
-    public final static String MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET = MSGCODE_PREFIX + "TargetRolePluralMustBeSet"; //$NON-NLS-1$
-    
-    /**
-     * Validation message code to indicate that a relation has the same rolename singular and plural
-     */
-    public final static String MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR = 
-        MSGCODE_PREFIX + "TargetRoleSingularEqualsTargetRoleSingular"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the max cardinality must be at least 1 and it's not.
-     */
-    public final static String MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1 = MSGCODE_PREFIX + "MaxCardinalityMustBeAtLeast1"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that for container relations the max cardinality must be greater than 1,
-     * but it's not.
-     */
-    public final static String MSGCODE_MAX_CARDINALITY_FOR_CONTAINERRELATION_TOO_LOW = MSGCODE_PREFIX + "MaxCardinalityForContainerRelationTooLow"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the max cardinality is less than min, but it must be
-     * greater or equal than min.
-     */
-    public final static String MSGCODE_MAX_IS_LESS_THAN_MIN = MSGCODE_PREFIX + "MaxIsLessThanMin"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that an relation implementing a container relation
-     * must have the same value for the product relevant property as it's container relation.
-     */
-    public final static String MSGCODE_IMPLEMENTATION_MUST_HAVE_SAME_PRODUCT_RELEVANT_VALUE = MSGCODE_PREFIX + "MustHaveSameProductRelevantValue"; //$NON-NLS-1$
-	
-    /**
      * Validation message code to indicate that a reverse composition's max cardinality is not 1.
      */
     public final static String MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION = MSGCODE_PREFIX + "MaxCardinalityMustBe1ForReverseCombosition"; //$NON-NLS-1$
     
-    /**
-     * Validation message code to indicate that a reverse composition cant be marked as product relevant.
-     */
-    public final static String MSGCODE_REVERSE_COMPOSITION_CANT_BE_MARKED_AS_PRODUCT_RELEVANT = MSGCODE_PREFIX + "ReverseCompositionCantBeMarkedAsProductRelevant"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that a relation can only be product relevant
-     * if the type is configurable by product.
-     */
-    public final static String MSGCODE_RELATION_CAN_ONLY_BE_PRODUCT_RELEVANT_IF_THE_TYPE_IS = 
-    	MSGCODE_PREFIX + "RelationoNLYCanBeProductRelevantIfTheTypeIs"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that a relation can only be product relevant
-     * if the target type is configurable by product.
-     */
-    public final static String MSGCODE_RELATION_CAN_ONLY_BE_PRODUCT_RELEVANT_IF_THE_TARGET_TYPE_IS = 
-        MSGCODE_PREFIX + "RelationCanOnlyBeProductRelevantIfTheTargetIs"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that a relation marked as product relevant
-     * is missing the target role singular at product side.
-     */
-    public final static String MSGCODE_NO_TARGET_ROLE_SINGULAR_PRODUCTSIDE = 
-    	MSGCODE_PREFIX + "NoTargetRoleSingularProductSide"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that a relation marked as product relevant
-     * is missing the target role plural at product side.
-     */
-    public final static String MSGCODE_NO_TARGET_ROLE_PLURAL_PRODUCTSIDE = 
-    	MSGCODE_PREFIX + "NoTargetRolePluralProductSide"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that a relation marked as product relevant
-     * has the same target role for singular and plural for the product side.
-     */
-    public final static String MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQUALS_TARGET_ROLE_SINGULAR_PRODUCTSIDE = 
-    	MSGCODE_PREFIX + "TargetRoleSingularProductSideEqualsTargetRoleSingularProductSide"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the container relation does not exist in the supertype hirachy.
-     */
-    public final static String MSGCODE_CONTAINERRELATION_NOT_IN_SUPERTYPE = MSGCODE_PREFIX + "ContainerRelationNotInSupertype"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the container relation this relation implements is not marked as such.
-     */
-    public final static String MSGCODE_NOT_MARKED_AS_CONTAINERRELATION = MSGCODE_PREFIX + "NotMarkedAsContainerRelation"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the specified container relation does not exist.
-     */
-    public final static String MSGCODE_CONTAINERRELATION_TARGET_DOES_NOT_EXIST = MSGCODE_PREFIX + "ContainerRelationTargetDoesNotExist"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that an implementation relation's the target class is not a a subclass 
-     * (or the same class) as the container relations target.
-     */
-    public final static String MSGCODE_TARGET_CLASS_NOT_A_SUBCLASS = MSGCODE_PREFIX + "TargetClassNotASubclass"; //$NON-NLS-1$
-
     /**
      * Validation message code to indicate the inverse relation definition is inkonsistent with the container
      * relation.
@@ -193,16 +77,6 @@ public interface IRelation extends IIpsObjectPart {
      * Validation message code to indicate that the relation has the same singular rolename like another relation in supertype hirachy.
      */
     public final static String MSGCODE_SAME_SINGULAR_ROLENAME = MSGCODE_PREFIX + "RelationHasSameSingularRolename"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the relation has the same plural rolename product side like another relation in supertype hirachy.
-     */
-    public final static String MSGCODE_SAME_PLURAL_ROLENAME_PRODUCTSIDE = MSGCODE_PREFIX + "RelationHasSamePluralRolenameProductSide"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the relation has the same singular rolename product side like another relation in supertype hirachy.
-     */
-    public final static String MSGCODE_SAME_SINGULAR_ROLENAME_PRODUCTSIDE = MSGCODE_PREFIX + "RelationHasSameSingularRolenameProductSide"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an association and it's inverse assoication must be marked as 
@@ -303,7 +177,7 @@ public interface IRelation extends IIpsObjectPart {
      * 
      * @throws CoreException if an error occurs while searching for the target.
      * 
-     * @deprecated use {@link #findTarget(IIpsProject)}
+     * @deprecated use {@link #findTargetPolicyCmptType(IIpsProject)}
      */
     public IPolicyCmptType findTarget() throws CoreException;
     
@@ -315,7 +189,7 @@ public interface IRelation extends IIpsObjectPart {
      * 
      * @throws CoreException if an error occurs while searching for the target.
      */
-    public IPolicyCmptType findTarget(IIpsProject ipsProject) throws CoreException;
+    public IPolicyCmptType findTargetPolicyCmptType(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Sets the qualified name of the target policy component class.
@@ -369,7 +243,7 @@ public interface IRelation extends IIpsObjectPart {
      * 
      * @throws CoreException if an error occurs while searching for the target.     
      */
-    public boolean isContrainedByProductStructure(IIpsProject ipsProject) throws CoreException;
+    public boolean isConstrainedByProductStructure(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Searches for a matching association in the product side of the model.
@@ -390,12 +264,12 @@ public interface IRelation extends IIpsObjectPart {
      * Returns <code>true</code> if this is an abstract, read-only container relation. 
      * otherwise false.
      */
-    public boolean isReadOnlyContainer();
+    public boolean isDerivedUnion();
     
     /**
      * Sets the information if this is an abstract read-only container relation or not.
      */
-    public void setReadOnlyContainer(boolean flag);
+    public void setDerivedUnion(boolean flag);
     
     /**
      * Returns the minmum number of target instances required in this relation.   
@@ -442,41 +316,6 @@ public interface IRelation extends IIpsObjectPart {
     public void setProductRelevant(boolean newValue);
     
     /**
-     * Returns the name of the container relation.
-     * <p>
-     * Example:
-     * <br>
-     * A <code>Policy</code> class has a 1-many relation to it's <code>PolicyPart</code>s (PolicyPartRelation).
-     * Derived from <code>Policy</code> is a <code>MotorPolicy</code>. Derived from <code>PolicyPart</code>
-     * is a <code>MotorCollisionPart</code>. There exists a 1-1 relation between
-     * <code>MotorPolicy</code> and <code>MotorCollisionPart</code>.
-     * To express that the a motor policy instance returns the collision part
-     * when all it's parts (PolicyPartRelation) are requested, the policy part relation
-     * has to be defined as container relation of the 0-1 relation between the motor policy
-     * and the motor collision part.
-     */
-    public String getContainerRelation();     
-
-    /**
-     * Returns <code>true</code> if this relation is based on a container relation.
-     */
-    public boolean hasContainerRelation();
-    
-    /**
-     * Sets the container relation. See <code>getContainerRelation()</code> for further
-     * details.
-     */
-    public void setContainerRelation(String containerRelation);
-    
-    /**
-     * Searches the container relation object and returns it, if it exists. Returns <code>null</code> if the container
-     * relation does not exists.
-     * 
-     * @throws CoreException if an error occurs while searching.
-     */
-    public IRelation findContainerRelation() throws CoreException;
-    
-    /**
      * Returns the name of the reverse relation.
      */
     public String getInverseRelation();
@@ -498,19 +337,7 @@ public interface IRelation extends IIpsObjectPart {
      * 
      * @throws CoreException if an error occurs while searching.
      */
-    public IRelation findInverseRelation() throws CoreException;
-    
-    /**
-     * Returns <code>true</code> if this relation implements a container relation, otherwise <code>false</code>.
-     */
-    public boolean isContainerRelationImplementation();
-
-    /**
-     * Returns <code>true</code> if this relation implements the given container relation, otherwise <code>false</code>.
-     * 
-     * @throws CoreException if the given container relation is not marked as such.
-     */
-    public boolean isContainerRelationImplementation(IRelation containerRelation) throws CoreException;
+    public IPolicyCmptTypeAssociation findInverseRelation() throws CoreException;
 
     /**
      * Returns the role of the target in this relation on the product side.
@@ -588,13 +415,4 @@ public interface IRelation extends IIpsObjectPart {
      */
     public void setMaxCardinalityProductSide(int newValue);
     
-    /**
-     * Searches for container relations - in the supertype hierarchy of the policy cmpt this
-     * relation belongs to - which are canditates of a corresponding container relation for this
-     * relation. See <code>getContainerRelation()</code> for further details. 
-     * Returns and emty array if no such container relation exists.
-     * 
-     * @throws CoreException if an error occurs while searching.
-     */
-    public IRelation[] findContainerRelationCandidates(IIpsProject ipsProject) throws CoreException;    
 }

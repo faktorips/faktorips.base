@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -210,7 +210,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
     /**
      * {@inheritDoc}
      */
-    public IRelation findRelation() throws CoreException {
+    public IPolicyCmptTypeAssociation findRelation() throws CoreException {
         if (StringUtils.isEmpty(relation)) {
             return null;
         }
@@ -224,7 +224,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         IPolicyCmptType pcType = parent.findPolicyCmptType();
         
         while (pcType != null){
-            IRelation[] relations = pcType.getRelations();
+            IPolicyCmptTypeAssociation[] relations = pcType.getPolicyCmptTypeAssociations();
             for (int i = 0; i < relations.length; i++) {
                 if (relations[i].getName().equals(relation)) {
                     return relations[i];
@@ -298,7 +298,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         
         if (!isRoot()) {
             try {
-                IRelation relation = findRelation();
+                IPolicyCmptTypeAssociation relation = findRelation();
                 if (relation != null)
                     return relation.getImage();
             } catch (CoreException e) {
@@ -556,7 +556,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         // check if the relation exists
         //  if the parameter is root, no relation is defined
         if (! isRoot()){
-            IRelation relationFound = findRelation();
+            IPolicyCmptTypeAssociation relationFound = findRelation();
             if (relationFound == null) {
                 String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_RelationNotExists, relation);
                 Message msg = new Message(MSGCODE_RELATION_NOT_EXISTS, text, Message.ERROR, this,
@@ -592,7 +592,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                             if (!isTestObject){
                                 // check if the test parameter implements no accosiation
                                 // because we search only for non accosiations
-                                IRelation relation = tPCTP.findRelation();
+                                IPolicyCmptTypeAssociation relation = tPCTP.findRelation();
                                 isTestObject =  (relation == null) || ! relation.isAssoziation();
                             }
                             if (isTestObject && tPCTP.getPolicyCmptType().equals(relationFound.getTarget())) {

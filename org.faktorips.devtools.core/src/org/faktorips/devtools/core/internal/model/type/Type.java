@@ -49,24 +49,35 @@ public abstract class Type extends BaseIpsObject implements IType {
     private boolean abstractFlag;
     
     protected IpsObjectPartCollection methods;
-
+    protected IpsObjectPartCollection associations;
+    
     /**
      * @param file
      */
     public Type(IIpsSrcFile file) {
         super(file);
         methods = createCollectionForMethods();
+        associations = createCollectionForAssociations();
     }
 
     /**
-     * Faktory method to create the collection holding the methods.
+     * Factory method to create the collection holding the methods.
      */
     protected abstract IpsObjectPartCollection createCollectionForMethods();
     
+    /**
+     * Factory method to create the collection holding the associations.
+     */
+    protected abstract IpsObjectPartCollection createCollectionForAssociations();
+
     protected Iterator getIteratorForMethods(){
         return methods.iterator();
     }
     
+    protected Iterator getIteratorForAssociations(){
+        return associations.iterator();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -138,6 +149,64 @@ public abstract class Type extends BaseIpsObject implements IType {
             return true;
         }
         return isSubtypeOf(candidate, project);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IAssociation findAssociation(String name, IIpsProject project) throws CoreException {
+        AssociationFinder finder = new AssociationFinder(project, name);
+        finder.start(this);
+        return finder.association;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IAssociation getAssociation(String name) {
+        return (IAssociation)associations.getPartByName(name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IAssociation[] getAssociationsForTarget(String target) {
+        List result = new ArrayList();
+        for (Iterator it = associations.iterator(); it.hasNext();) {
+            IAssociation association = (IAssociation)it.next();
+            if (association.getTarget().equals(target)) {
+                result.add(association);
+            }
+        }
+        return (IAssociation[])result.toArray(new IAssociation[result.size()]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IAssociation[] getAssociations() {
+        return (IAssociation[])associations.toArray(new IAssociation[associations.size()]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getNumOfAssociations() {
+        return associations.size();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int[] moveAssociations(int[] indexes, boolean up) {
+        return associations.moveParts(indexes, up);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IAssociation newAssociation() {
+        return (IAssociation)associations.newPart();
     }
 
     /**
@@ -219,15 +288,6 @@ public abstract class Type extends BaseIpsObject implements IType {
         return null;
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    public IAssociation findAssociation(String name, IIpsProject project) throws CoreException {
-        AssociationFinder finder = new AssociationFinder(project, name);
-        finder.start(this);
-        return finder.association;
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -399,6 +459,5 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
         
     }
-
     
 }

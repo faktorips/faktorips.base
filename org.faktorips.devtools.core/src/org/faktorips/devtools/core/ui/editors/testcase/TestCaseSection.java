@@ -91,7 +91,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -311,7 +311,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     		try {
     			ITestPolicyCmptTypeParameter typeParam = null;
     			typeParam = dummyRelation.getTestPolicyCmptTypeParam();
-    			IRelation relation = typeParam.findRelation();
+    			IPolicyCmptTypeAssociation relation = typeParam.findRelation();
     			if (relation == null){
     				return null;
     			}		
@@ -1208,7 +1208,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         if (selection instanceof TestCaseTypeRelation){
             TestCaseTypeRelation relation = (TestCaseTypeRelation) selection;
             try {
-                IRelation modelRelation = null;
+                IPolicyCmptTypeAssociation modelRelation = null;
                 if ( relation != null){
                     modelRelation = relation.findRelation();
                 }
@@ -1564,7 +1564,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	private void addRelation(final TestCaseTypeRelation relationType) throws CoreException{
 		String[] productCmptQualifiedNames = null;
 		if (relationType.isRequiresProductCmpt()) {
-            IRelation relation = relationType.findRelation();
+            IPolicyCmptTypeAssociation relation = relationType.findRelation();
             if (relation == null){
                 // validation error
                 return;
@@ -1586,7 +1586,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 return;
         }
 		
-		final IRelation relation = relationType.findRelation();
+		final IPolicyCmptTypeAssociation relation = relationType.findRelation();
 		if (relation == null){
 			// relation not found, no add allowed
 			return;

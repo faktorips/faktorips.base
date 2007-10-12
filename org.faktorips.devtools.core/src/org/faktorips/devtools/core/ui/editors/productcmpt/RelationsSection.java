@@ -59,7 +59,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.pctype.Relation;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -388,8 +388,8 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 				cardMaxField = new CardinalityPaneEditField(cardinalityPanel,
 						false);
 
-				uiController.add(cardMinField, rel, Relation.PROPERTY_MIN_CARDINALITY);
-                uiController.add(cardMaxField, rel, Relation.PROPERTY_MAX_CARDINALITY);
+				uiController.add(cardMinField, rel, PolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
+                uiController.add(cardMaxField, rel, PolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
                 uiController.updateUI();
 
 				// enable the fields for cardinality only, if this section

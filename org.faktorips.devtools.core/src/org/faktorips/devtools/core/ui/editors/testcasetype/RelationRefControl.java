@@ -27,7 +27,7 @@ import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -70,7 +70,7 @@ public class RelationRefControl extends TextButtonControl {
             selectDialog.setFilter(StringUtil.unqualifiedName(super.getText()));
             if (selectDialog.open()==Window.OK) {
                 if (selectDialog.getResult().length>0) {
-                    IRelation relationResult = (IRelation)selectDialog.getResult()[0];
+                    IPolicyCmptTypeAssociation relationResult = (IPolicyCmptTypeAssociation)selectDialog.getResult()[0];
                     setText(relationResult.getName());
                 } else {
                     setText(""); //$NON-NLS-1$
@@ -86,11 +86,11 @@ public class RelationRefControl extends TextButtonControl {
      * 
      * @throws CoreException in case of an error
      */
-    protected IRelation[] getRelations() throws CoreException {
+    protected IPolicyCmptTypeAssociation[] getRelations() throws CoreException {
         List relationsToSelect = new ArrayList();
         IPolicyCmptType currPolicyCmptType = parentPolicyCmptType;
         while (currPolicyCmptType != null){
-            IRelation[] relations = currPolicyCmptType.getRelations();
+            IPolicyCmptTypeAssociation[] relations = currPolicyCmptType.getPolicyCmptTypeAssociations();
             for (int i = 0; i < relations.length; i++) {
                 if (relations[i].isAssoziation() || relations[i].isCompositionMasterToDetail()){
                     relationsToSelect.add(relations[i]);
@@ -98,12 +98,12 @@ public class RelationRefControl extends TextButtonControl {
             }
             currPolicyCmptType = currPolicyCmptType.findSupertype();
         }
-        return (IRelation[]) relationsToSelect.toArray(new IRelation[0]);
+        return (IPolicyCmptTypeAssociation[]) relationsToSelect.toArray(new IPolicyCmptTypeAssociation[0]);
     }
 
-    public IRelation findRelation() throws CoreException{
+    public IPolicyCmptTypeAssociation findRelation() throws CoreException{
         String relation = getText();
-        IRelation[] relations = getRelations();
+        IPolicyCmptTypeAssociation[] relations = getRelations();
         for (int i = 0; i < relations.length; i++) {
             if (relations[i].getName().equals(relation))
                 return relations[i];

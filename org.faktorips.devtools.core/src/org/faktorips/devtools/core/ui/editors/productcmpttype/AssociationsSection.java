@@ -83,7 +83,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         }
 
         protected IIpsObjectPart newIpsPart() {
-            return getProductCmptType().newAssociation();
+            return getProductCmptType().newProductCmptTypeAssociation();
         }
         
     }

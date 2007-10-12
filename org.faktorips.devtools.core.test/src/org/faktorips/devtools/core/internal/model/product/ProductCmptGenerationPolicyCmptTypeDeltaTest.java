@@ -283,8 +283,8 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         assertEquals(link1, links[0]);
         assertEquals(link2, links[1]);
         
-        productCmptType.newAssociation().setTargetRoleSingular("typeRelation1");
-        productCmptSupertype.newAssociation().setTargetRoleSingular("typeRelation2");
+        productCmptType.newProductCmptTypeAssociation().setTargetRoleSingular("typeRelation1");
+        productCmptSupertype.newProductCmptTypeAssociation().setTargetRoleSingular("typeRelation2");
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
         links = delta.getLinksWithMissingAssociations();
         assertEquals(0, links.length);

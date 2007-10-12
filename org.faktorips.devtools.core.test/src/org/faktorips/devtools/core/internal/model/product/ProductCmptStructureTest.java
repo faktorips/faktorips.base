@@ -66,7 +66,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         tsu2.setRoleName("usage2");
         tsu2.addTableStructure("tableStructure2");
         
-        association = productCmptType.newAssociation();
+        association = productCmptType.newProductCmptTypeAssociation();
         association.setAggregationKind(AggregationKind.SHARED);
         association.setTargetRoleSingular("TestRelation");
         association.setTarget(productCmptTypeTarget.getQualifiedName());

@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -51,7 +51,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
     private ModelExplorerConfiguration config= new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class
             , ITableStructure.class, IProductCmpt.class
             , ITableContents.class, IAttribute.class
-            , IRelation.class}
+            , IPolicyCmptTypeAssociation.class}
             , new Class[]{IProject.class, IFolder.class, IFile.class});
     
     private ModelContentProvider flatProvider= new ModelContentProvider(config, true);
@@ -110,7 +110,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         polCmptType= newPolicyCmptType(root, "subpackage.model.TestPolicy");
         attribute = polCmptType.newAttribute();
         polCmptType.newAttribute();
-        polCmptType.newRelation();
+        polCmptType.newPolicyCmptTypeAssociation();
         tableStructure = (ITableStructure) newIpsObject(modelPackage, IpsObjectType.TABLE_STRUCTURE, "subpackage.model.TestTableStructure");
         prodCmpt= newProductCmpt(root, "subpackage.product.TestProductComponent");
         tableContents = (ITableContents) newIpsObject(productPackage, IpsObjectType.TABLE_CONTENTS, "subpackage.product.TestTableContents");

@@ -25,10 +25,10 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 
 
 /**
@@ -394,9 +394,9 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
 
-        IRelation r1 = pcType.newRelation();
+        IPolicyCmptTypeAssociation r1 = pcType.newPolicyCmptTypeAssociation();
         r1.setTargetRoleSingular("r1");
-        IRelation r2 = supersupertype.newRelation();
+        IPolicyCmptTypeAssociation r2 = supersupertype.newPolicyCmptTypeAssociation();
         r2.setTargetRoleSingular("r2");
         
         TypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
@@ -420,11 +420,11 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
 
-        IRelation r1 = pcType.newRelation();
-        IRelation r2 = supertype.newRelation();
-        IRelation r3 = supersupertype.newRelation();
+        IPolicyCmptTypeAssociation r1 = pcType.newPolicyCmptTypeAssociation();
+        IPolicyCmptTypeAssociation r2 = supertype.newPolicyCmptTypeAssociation();
+        IPolicyCmptTypeAssociation r3 = supersupertype.newPolicyCmptTypeAssociation();
         TypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        IRelation[] relations = hierarchy.getAllRelations(pcType);
+        IPolicyCmptTypeAssociation[] relations = hierarchy.getAllRelations(pcType);
         assertEquals(3, relations.length);
         assertEquals(r1, relations[0]);
         assertEquals(r2, relations[1]);

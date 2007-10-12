@@ -15,6 +15,6 @@
     <ValidationRuleDef id="2" name="checkAge">
         <Message severity="30" code="f10" text="blabla"/>
     </ValidationRuleDef>
-    <Relation id="3" type="1" sourceRole="Policy" target="MotorPart" targetRole="PolicyPart" minCardinality="1" maxCardinality="1" exclusiveChoice="false">
-    </Relation>
+    <Association id="3" type="1" sourceRole="Policy" target="MotorPart" targetRole="PolicyPart" minCardinality="1" maxCardinality="1" exclusiveChoice="false">
+    </Association>
 </PolicyCmptType>
