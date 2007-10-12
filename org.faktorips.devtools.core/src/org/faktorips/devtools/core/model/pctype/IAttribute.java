@@ -31,71 +31,22 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 /**
  * A policy component type's attribute.
  */
-public interface IAttribute extends IMember, IValueSetOwner, IProdDefProperty {
+public interface IAttribute extends org.faktorips.devtools.core.model.type.IAttribute, IMember, IValueSetOwner, IProdDefProperty {
 
     // property names
-    public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
     public final static String PROPERTY_ATTRIBUTE_TYPE = "attributeType"; //$NON-NLS-1$
-    public final static String PROPERTY_MODIFIER = "modifier"; //$NON-NLS-1$
     public final static String PROPERTY_PRODUCT_RELEVANT = "productRelevant"; //$NON-NLS-1$
-    public final static String PROPERTY_DEFAULT_VALUE = "defaultValue"; //$NON-NLS-1$
-    public final static String PROPERTY_FORMULA_PARAMETERS = "parameters"; //$NON-NLS-1$
     
     public final static String PROPERTY_FORMULAPARAM_NAME = "param.name"; //$NON-NLS-1$
     public final static String PROPERTY_FORMULAPARAM_DATATYPE = "param.datatype"; //$NON-NLS-1$
     public final static String PROPERTY_OVERWRITES = "overwrites"; //$NON-NLS-1$
     
     /**
-     * Prefix for all message codes of this class.
-     */
-    public final static String MSGCODE_PREFIX = "ATTRIBUTE-"; //$NON-NLS-1$
-
-    /**
 	 * Validation message code to indicate that an attribute can't be product
 	 * relevant if the type is configurable by product.
 	 */
 	public final static String MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT = MSGCODE_PREFIX
 			+ "AttributeCantBeProductRelevantIfTypeIsNot"; //$NON-NLS-1$
-    
-    /**
-	 * Validation message code to indicate that the name of the attribute is not a valid
-	 * java field identifier.
-	 */
-	public final static String MSGCODE_INVALID_ATTRIBUTE_NAME = MSGCODE_PREFIX
-			+ "InvalidAttributeName"; //$NON-NLS-1$
-    
-    /**
-	 * Validation message code to indicate that the datatype of this attribute is not set.
-	 */
-	public final static String MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE = MSGCODE_PREFIX
-			+ "DefaultNotParsableUnknownDatatype"; //$NON-NLS-1$
-    
-    /**
-	 * Validation message code to indicate that the datatype of this attibute is not a valid datatype.
-	 */
-	public final static String MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE = MSGCODE_PREFIX
-			+ "ValueNotParsableInvalidDatatype"; //$NON-NLS-1$
-    
-    /**
-	 * Validation message code to indicate that the default-value of this attribute can not be
-	 * parsed by the datatype of this attribute.
-	 */
-	public final static String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX
-			+ "ValueTypeMissmatch"; //$NON-NLS-1$
-    
-    /**
-	 * Validation message code to indicate that the default-value of this attribute
-	 * is not contained in the valueset of this attribute.
-	 */
-	public final static String MSGCODE_DEFAULT_NOT_IN_VALUESET = MSGCODE_PREFIX
-			+ "DefaultNotInValueSet"; //$NON-NLS-1$
-    
-    /**
-	 * Validation message code to indicate that the datatype provided for a parameter 
-	 * is not valid.
-	 */
-	public final static String MSGCODE_DATATYPE_NOT_FOUND = MSGCODE_PREFIX
-			+ "DatatypeNotFound"; //$NON-NLS-1$
     
     /**
 	 * Validation message code to indicate that the attribute is marked overwriting 
@@ -119,18 +70,6 @@ public interface IAttribute extends IMember, IValueSetOwner, IProdDefProperty {
 	public final static String MSGCODE_NAME_COLLISION_LOCAL = MSGCODE_PREFIX
 			+ "NameCollsionLocal"; //$NON-NLS-1$
 
-	/**
-	 * Returns the attribute's datatype. Note that only value datatypes are allowed as
-	 * attribute datatype.
-	 */
-    public String getDatatype();
-    
-    /**
-     * Sets the attribute's datatype. Note that only value datatypes are allowed as
-	 * attribute datatype.
-     */
-    public void setDatatype(String newDatatype);
-    
     /**
      * Returns the attribute's value datatype or <code>null</code> if the datatype name
      * can't be resolved.
@@ -206,26 +145,6 @@ public interface IAttribute extends IMember, IValueSetOwner, IProdDefProperty {
      * relevant.
      */
     public ConfigElementType getConfigElementType();
-    
-    /**
-     * Returns the attribute's modifier.
-     */
-    public Modifier getModifier();
-    
-    /**
-     * Sets the attribute's modifier.
-     */
-    public void setModifier(Modifier newModifier);
-    
-    /**
-     * Returns the attribute's default value.
-     */
-    public String getDefaultValue();
-    
-    /**
-     * Sets the attribute's default value.
-     */
-    public void setDefaultValue(String newValue);
     
     /**
      * Returns true if this attribute is product relevant, that means the

@@ -161,7 +161,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         set.setStep("step");
         Element element = attribute.toXml(this.newDocument());
         
-        Attribute copy = new Attribute();
+        IAttribute copy = pcType.newAttribute();
         copy.initFromXml(element);
         assertEquals(1, copy.getId());
         assertEquals("age", copy.getName());
@@ -187,7 +187,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         set2.addValue("x");
         
         element = attribute.toXml(this.newDocument());
-        copy = new Attribute();
+        copy = pcType.newAttribute();
         copy.initFromXml(element);
         assertEquals("age", attribute.getName());
         assertEquals("decimal", attribute.getDatatype());
@@ -202,7 +202,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         // and now an attribute which overwrites
         attribute.setOverwrites(true);
         element = attribute.toXml(this.newDocument());
-        copy = new Attribute();
+        copy = pcType.newAttribute();
         copy.initFromXml(element);
         assertTrue(attribute.getOverwrites());
         assertEquals("", attribute.getDatatype());
@@ -230,72 +230,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
     	pcType.setConfigurableByProductCmptType(false);
     	ml = attribute.validate();
     	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
-    }
-
-    public void testValidate_invalidAttributeName() throws Exception {
-    	attribute.setName("test");
-    	MessageList ml = attribute.validate();
-    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_ATTRIBUTE_NAME));
-    	
-    	attribute.setName("a.b");
-    	ml = attribute.validate();
-    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_ATTRIBUTE_NAME));
-    }
-
-    public void testValidate_defaultNotParsableUnknownDatatype() throws Exception {
-    	attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
-    	attribute.setDefaultValue("1");
-    	
-    	MessageList ml = attribute.validate();
-    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE));
-    	
-    	attribute.setDatatype("a");
-    	ml = attribute.validate();
-    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE));
-    }
-
-    public void testValidate_defaultNotParsableInvalidDatatype() throws Exception {
-    	attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
-
-    	MessageList ml = attribute.validate();
-    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE));
-    	
-    	attribute.setDatatype("abc");
-    	ml = attribute.validate();
-    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE));
-    }
-
-    public void testValidate_valueNotParsable() throws Exception {
-    	attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
-    	attribute.setDefaultValue("1");
-    	MessageList ml = attribute.validate();
-    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
-    	
-    	attribute.setDefaultValue("a");
-    	ml = attribute.validate();
-    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
-    }
-
-    public void testValidate_defaultNotInValueset() throws Exception {
-    	attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
-    	attribute.setValueSetType(ValueSetType.RANGE);
-    	IRangeValueSet range = (IRangeValueSet)attribute.getValueSet();
-    	range.setLowerBound("0");
-    	range.setUpperBound("10");
-    	range.setStep("1");
-    	attribute.setDefaultValue("1");
-    	MessageList ml = attribute.validate();
-    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
-
-    	attribute.setDefaultValue("100");
-    	ml = attribute.validate();
-        Message msg = ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET);
-    	assertNotNull(msg);
-        assertEquals(Message.WARNING, msg.getSeverity());
-        
-        attribute.setDefaultValue(null);
-        ml = attribute.validate();
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     public void testOverwrites() throws Exception {

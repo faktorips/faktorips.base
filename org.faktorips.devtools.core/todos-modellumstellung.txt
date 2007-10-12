@@ -22,13 +22,11 @@ Korrektes Overloading von Attributen beruecksichtigen! Wo überall?
 
 Large Contents: Noch mal die Verwendung der Subtype-Hierarchy überprüfen
 
-Test: Compare
+Testen: Compare
 
 
 Klären:
 =======
-Werden die beiden type-arten nicht besser in einem file gespeichert?
-
 XML-Format des Produktbausteins:
   - Umbennen von "Relation" in "Link"
   - Umbennen von "pcTypeRelation" in "association"
@@ -39,21 +37,7 @@ Benutzerfreundlichkeit:
 =======================
 Modellexplorer: Filter auf Vertrags / Produktklassen
 New PolicyCmptTypeWizard muss optional auch einen neuen ProductCmptType anlegen können.
-
-Offen: Wie kann man das Anlegen von Beziehungen auf beiden Seiten optimieren?
-x.) Im Dialog zur Definition der Beziehung auf Vertragsseite folgendes einfügen:
- - Checkbox: Allowed links are defined by product structure
- - Association in product type: [this is automatically derived from the product type ]
-   [kann man das eventuell im ipsproject konfigurieren]
- - Checkbox: Use product component type as qualifier
-	 Note: The association becomes a qualified association. The cardinality is specified per qualifier instance!
 	
 x.) Bisherigen Wizard umbauen, dass man die Beziehung auf Produktseite mitanlegen kann, wenn beide PolicyCmptTypes konfigurierbar sind.
-
-
-[ ] Association is qualified by "TargetType"
-Note that for qualified associations multiplicty is defined per qualified instance.
-
-This association is constrained by product structure. Matching association on product side is "".
 
 

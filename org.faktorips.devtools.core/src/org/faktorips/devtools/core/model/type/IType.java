@@ -141,6 +141,11 @@ public interface IType extends IIpsObject {
     public IAssociation findAssociation(String name, IIpsProject project) throws CoreException;
 
     /**
+     * Returns the type's associations.
+     */
+    public IAssociation[] getAssociations();
+
+    /**
      * Returns all associations that have the indicated target. Returns an empty array if no such assoiation exists
      * or target is <code>null</code>.
      * <p>
@@ -241,9 +246,5 @@ public interface IType extends IIpsObject {
      */
     public IMethod getMatchingMethod(IMethod method);
 
-    /**
-     * Returns the type's associations.
-     */
-    public IAssociation[] getAssociations();
     
 }

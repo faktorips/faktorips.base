@@ -11,16 +11,12 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.AllValuesValueSet;
-import org.faktorips.devtools.core.internal.model.IpsObjectPart;
-import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -36,7 +32,6 @@ import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -45,16 +40,13 @@ import org.w3c.dom.Element;
 /**
  * Implementation of IAttribute.
  */
-public class Attribute extends IpsObjectPart implements IAttribute {
+public class Attribute extends org.faktorips.devtools.core.internal.model.type.Attribute implements IAttribute {
 
     final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
 
     // member variables.
-    private String datatype = ""; //$NON-NLS-1$
     private boolean productRelevant = false;
     private AttributeType attributeType = AttributeType.CHANGEABLE;
-    private String defaultValue = null;
-    private Modifier modifier = Modifier.PUBLISHED;
     private IValueSet valueSet;
     private boolean overwrites = false;
 
@@ -69,13 +61,6 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         valueSet = new AllValuesValueSet(this, getNextPartId());
     }
 
-    /**
-     * Constructor for testing purposes.
-     */
-    public Attribute() {
-        valueSet = new AllValuesValueSet(this, getNextPartId());
-    }
-
     PolicyCmptType getPolicyCmptType() {
         return (PolicyCmptType)getIpsObject();
     }
@@ -83,18 +68,9 @@ public class Attribute extends IpsObjectPart implements IAttribute {
     /**
      * {@inheritDoc}
      */
-    public void setName(String newName) {
-        String oldName = name;
-        this.name = newName;
-        valueChanged(oldName, name);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public String getDatatype() {
         if (!overwrites) {
-            return datatype;
+            return super.getDatatype();
         }
         IAttribute superAttr;
         try {
@@ -121,15 +97,6 @@ public class Attribute extends IpsObjectPart implements IAttribute {
             return null; // can happen if the type hierarchy contains a cycle
         }
         return a;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setDatatype(String newDatatype) {
-        String oldDatatype = datatype;
-        this.datatype = newDatatype;
-        valueChanged(oldDatatype, newDatatype);
     }
 
     /**
@@ -246,7 +213,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
      */
     public Modifier getModifier() {
         if (!overwrites) {
-            return modifier;
+            return super.getModifier();
         }
         IAttribute superAttr;
         try {
@@ -258,15 +225,6 @@ public class Attribute extends IpsObjectPart implements IAttribute {
             throw new RuntimeException(e);
         }
         return Modifier.PUBLISHED;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setModifier(Modifier newModifier) {
-        Modifier oldModifier = modifier;
-        modifier = newModifier;
-        valueChanged(oldModifier, newModifier);
     }
 
     /**
@@ -294,22 +252,6 @@ public class Attribute extends IpsObjectPart implements IAttribute {
     public void setProductRelevant(boolean newValue) {
         boolean oldValue = productRelevant;
         productRelevant = newValue;
-        valueChanged(oldValue, newValue);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getDefaultValue() {
-        return defaultValue;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setDefaultValue(String newValue) {
-        String oldValue = defaultValue;
-        defaultValue = newValue;
         valueChanged(oldValue, newValue);
     }
 
@@ -378,23 +320,6 @@ public class Attribute extends IpsObjectPart implements IAttribute {
      */
     protected void validateThis(MessageList result) throws CoreException {
         super.validateThis(result);
-        IStatus status = JavaConventions.validateFieldName(name);
-        if (!status.isOK()) {
-            result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, Messages.Attribute_msgInvalidAttributeName + name
-                    + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
-        ValueDatatype datatypeObject = ValidationUtils.checkValueDatatypeReference(getDatatype(), false, this,
-                PROPERTY_DATATYPE, "", result); //$NON-NLS-1$
-        if (datatypeObject != null) {
-            validateDefaultValue(datatypeObject, result);
-        } else {
-            if (!StringUtils.isEmpty(defaultValue)) {
-                String text = NLS.bind(Messages.Attribute_msgDefaultNotParsable_UnknownDatatype, defaultValue);
-                result.add(new Message(MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE, text, Message.WARNING, this,
-                        PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
-            }
-        }
-
         if (isProductRelevant() && !getPolicyCmptType().isConfigurableByProductCmptType()) {
             String text = Messages.Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;
             result.add(new Message(MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT, text, Message.ERROR,
@@ -445,27 +370,6 @@ public class Attribute extends IpsObjectPart implements IAttribute {
 
     }
 
-    private void validateDefaultValue(ValueDatatype valueDatatype, MessageList result) throws CoreException {
-        if (!valueDatatype.isParsable(defaultValue)) {
-            String defaultValueInMsg = defaultValue;
-            if (defaultValue == null) {
-                defaultValueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-            } else if (defaultValue.equals("")) { //$NON-NLS-1$
-                defaultValueInMsg = Messages.Attribute_msgDefaultValueIsEmptyString;
-            }
-            String text = NLS.bind(Messages.Attribute_msgValueTypeMismatch, defaultValueInMsg, getDatatype());
-            result.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
-            return;
-        }
-        if (valueSet != null) {
-            if (defaultValue!=null && !valueSet.containsValue(defaultValue)) {
-                result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET, NLS.bind(
-                        Messages.Attribute_msgDefaultNotInValueset, defaultValue), //$NON-NLS-1$
-                        Message.WARNING, this, PROPERTY_DEFAULT_VALUE));
-            }
-        }
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -478,17 +382,9 @@ public class Attribute extends IpsObjectPart implements IAttribute {
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        name = element.getAttribute("name"); //$NON-NLS-1$
         overwrites = Boolean.valueOf(element.getAttribute(PROPERTY_OVERWRITES)).booleanValue();
-
-        if (!overwrites) {
-            // these values are only neccessary if this attribute does not overwrite one.
-            datatype = element.getAttribute(PROPERTY_DATATYPE);
-            modifier = Modifier.getModifier(element.getAttribute(PROPERTY_MODIFIER));
-            attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
-            productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
-        }
-        defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$
+        productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
+        attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
     }
 
     /**
@@ -496,17 +392,9 @@ public class Attribute extends IpsObjectPart implements IAttribute {
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute("name", name); //$NON-NLS-1$
         element.setAttribute(PROPERTY_OVERWRITES, "" + overwrites); //$NON-NLS-1$
-
-        if (!overwrites) {
-            // these values are only neccessary if this attribute does not overwrite one.
-            element.setAttribute(PROPERTY_DATATYPE, datatype);
-            element.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant); //$NON-NLS-1$
-            element.setAttribute(PROPERTY_MODIFIER, modifier.getId());
-            element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
-        }
-        ValueToXmlHelper.addValueToElement(defaultValue, element, "DefaultValue"); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
     }
 
     /**
