@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.EmptyBuilderSet;
-import org.faktorips.devtools.core.internal.model.Dependency;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.tablecontents.Row;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
@@ -35,6 +34,7 @@ import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureT
 import org.faktorips.devtools.core.internal.model.tablestructure.UniqueKey;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;

@@ -18,7 +18,6 @@
 package org.faktorips.devtools.core.model;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.Dependency;
 
 
 /**

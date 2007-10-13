@@ -17,6 +17,11 @@
 
 package org.faktorips.devtools.core.model;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.CoreException;
@@ -50,6 +55,19 @@ public class QualifiedNameTypeTest extends TestCase {
             fail();
         } catch (IllegalArgumentException e) {
         }
+    }
+    
+    public void testSerialize() throws Exception{
+        
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bos);
+        QualifiedNameType qnt = new QualifiedNameType("test", IpsObjectType.POLICY_CMPT_TYPE);
+        oos.writeObject(qnt);
+        
+        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bis);
+        QualifiedNameType qnt2 = (QualifiedNameType)ois.readObject();
+        assertEquals(qnt, qnt2);
     }
     
     public void testGetPackageName() {

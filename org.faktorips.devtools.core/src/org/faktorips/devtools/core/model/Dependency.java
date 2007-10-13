@@ -7,9 +7,10 @@
  * initial API and implementation
  **************************************************************************************************/
 
-package org.faktorips.devtools.core.internal.model;
+package org.faktorips.devtools.core.model;
 
-import org.faktorips.devtools.core.model.QualifiedNameType;
+import java.io.Serializable;
+
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -23,7 +24,9 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Peter Erzberger
  */
-public class Dependency {
+public class Dependency implements Serializable{
+
+    private static final long serialVersionUID = -4763466997240470890L;
 
     private QualifiedNameType source;
     private QualifiedNameType target;

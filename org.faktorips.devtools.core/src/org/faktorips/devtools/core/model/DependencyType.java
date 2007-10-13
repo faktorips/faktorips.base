@@ -15,14 +15,18 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model;
+package org.faktorips.devtools.core.model;
+
+import java.io.Serializable;
 
 /**
  * An enumeration type that describes the type of dependency.
  * 
  * @author Peter Erzberger
  */
-public class DependencyType {
+public class DependencyType implements Serializable{
+
+    private static final long serialVersionUID = 615796376725042939L;
 
     /**
      *  

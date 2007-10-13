@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.builder;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,7 +26,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
-import org.faktorips.devtools.core.internal.model.Dependency;
+import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -38,8 +39,10 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Jan Ortmann, Peter Erzberger
  */
-public class DependencyGraph {
+public class DependencyGraph implements Serializable {
     
+    private static final long serialVersionUID = 5692023485881401223L;
+
     public final static boolean TRACE_DEPENDENCY_GRAPH_MANAGEMENT;
     
     static {
@@ -48,7 +51,7 @@ public class DependencyGraph {
 
     private Map dependantsForMap;
     private Map dependsOnMap;
-    private IIpsProject ipsProject;
+    private transient IIpsProject ipsProject;
 
     /**
      * Creates a new DependencyGraph object.
@@ -65,9 +68,20 @@ public class DependencyGraph {
     public IIpsProject getIpsProject(){
     	return ipsProject;
     }
-    
+
+    public void setIpsProject(IIpsProject ipsProject) throws CoreException{
+        ArgumentCheck.notNull(ipsProject, this);
+        if(this.ipsProject == null){
+            this.ipsProject = ipsProject;
+            return;
+        }
+        if(!this.ipsProject.equals(ipsProject)){
+            this.ipsProject = ipsProject;
+            init();
+        }
+    }
     public void reInit() throws CoreException{
-    	init();
+        init();
     }
     
     private void init() throws CoreException {
@@ -81,6 +95,9 @@ public class DependencyGraph {
         for (Iterator it = allIpsObjects.iterator(); it.hasNext();) {
             IIpsObject ipsObject = (IIpsObject)it.next();
             Dependency[] dependsOn = ipsObject.dependsOn();
+            if(dependsOn == null || dependsOn.length == 0){
+                continue;
+            }
             addEntriesToDependsOnMap(dependsOn, ipsObject.getQualifiedNameType());
             addEntryToDependantsForMap(dependsOn);
         }
@@ -172,6 +189,9 @@ public class DependencyGraph {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "DependencyGraph for " + ipsProject.getName(); //$NON-NLS-1$
     }

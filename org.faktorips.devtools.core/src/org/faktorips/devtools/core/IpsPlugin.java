@@ -46,6 +46,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.builder.DependencyGraphPersistenceManager;
 import org.faktorips.devtools.core.internal.model.ArchiveIpsSrcFile;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.pctype.ProductRelevantIcon;
@@ -141,6 +142,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     // Manager to update ips problem marker
     private IpsProblemMarkerManager ipsProblemMarkerManager;
     
+    private DependencyGraphPersistenceManager dependencyGraphPersistenceManager;
     /**
      * Returns the number of the installed Faktor-IPS version. 
      */
@@ -195,8 +197,15 @@ public class IpsPlugin extends AbstractUIPlugin {
         preferences = new IpsPreferences(getPreferenceStore());
         docBuilderFactory = DocumentBuilderFactory.newInstance();
         ipsEditorSettings = new IpsObjectEditorSettings();
-        ResourcesPlugin.getWorkspace().addSaveParticipant(this, ipsEditorSettings);
         ipsEditorSettings.load(getStateLocation());
+        dependencyGraphPersistenceManager = new DependencyGraphPersistenceManager();
+
+        IpsCompositeSaveParticipant saveParticipant = new IpsCompositeSaveParticipant();
+        saveParticipant.addSaveParticipant(ipsEditorSettings);
+        saveParticipant.addSaveParticipant(dependencyGraphPersistenceManager);
+        
+        ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
+        
         IpsObjectType.POLICY_CMPT_TYPE.getName(); // force loading of class before model is created!
         model = new IpsModel();
         model.startListeningToResourceChanges();
@@ -838,6 +847,13 @@ public class IpsPlugin extends AbstractUIPlugin {
             ipsProblemMarkerManager = new IpsProblemMarkerManager();
         }
         return ipsProblemMarkerManager;
+    }
+
+    /**
+     * Returns the persistence manager of the dependency graphs.
+     */
+    public DependencyGraphPersistenceManager getDependencyGraphPersistenceManager() {
+        return dependencyGraphPersistenceManager;
     }
     
 }

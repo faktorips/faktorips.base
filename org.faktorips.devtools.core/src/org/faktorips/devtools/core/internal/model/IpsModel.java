@@ -733,19 +733,34 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public DependencyGraph getDependencyGraph(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject, this);
         DependencyGraph graph = (DependencyGraph)dependencyGraphForProjectsMap.get(ipsProject);
-        if (graph == null) {
-            IIpsProject[] ipsProjects = getIpsProjects();
-            for (int i = 0; i < ipsProjects.length; i++) {
-                if (ipsProject.equals(ipsProjects[i])) {
-                    graph = new DependencyGraph(ipsProject);
-                    dependencyGraphForProjectsMap.put(ipsProject, graph);
-                    return graph;
-                }
+        if(graph == null){
+            graph = IpsPlugin.getDefault().getDependencyGraphPersistenceManager().getDependencyGraph(ipsProject);
+            if(graph != null){
+                dependencyGraphForProjectsMap.put(ipsProject, graph);
+                return graph;
             }
+            if(ipsProject.exists()){
+                graph = new DependencyGraph(ipsProject);
+                dependencyGraphForProjectsMap.put(ipsProject, graph);
+            }
+            return graph;
         }
+        
         return graph;
     }
 
+    /**
+     * Returns the dependency graph objects that are currently hold by this model. This method
+     * doesn't guarantee to return the dependency graph objects for all IpsProjects within the
+     * workspace but only for those whom have already been instantiated. 
+     * <p>
+     * This method is not part of the published interface.
+     */
+    public DependencyGraph[] getCachedDependencyGraphs(){
+        Collection graphs = dependencyGraphForProjectsMap.values();
+        return (DependencyGraph[])graphs.toArray(new DependencyGraph[graphs.size()]);
+    }
+    
     /**
      * Returns the datatype helper for the given value datatype or <code>null</code> if no helper
      * is defined for the value datatype.

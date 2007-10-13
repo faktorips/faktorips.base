@@ -17,9 +17,15 @@
 
 package org.faktorips.devtools.core.model;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsPackageFragment;
 import org.faktorips.util.ArgumentCheck;
 
@@ -28,10 +34,12 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Jan Ortmann
  */
-public class QualifiedNameType {
+public class QualifiedNameType implements Serializable{
 
+    private static final long serialVersionUID = -5891585006868536302L;
+    
     private String qualifiedName;
-    private IpsObjectType type;
+    private transient IpsObjectType type;
     private int hashCode;
     
     /**
@@ -140,10 +148,16 @@ public class QualifiedNameType {
         hashCode = result;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public int hashCode() {
         return hashCode;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object obj) {
         if(obj instanceof QualifiedNameType){
             QualifiedNameType other = (QualifiedNameType)obj;
@@ -151,10 +165,25 @@ public class QualifiedNameType {
         }
         return false;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return type + ": " + qualifiedName; //$NON-NLS-1$
     }
-    
 
+    /**
+     * @serialData the default serialization is called followed by the IpsObjectType name
+     */
+    private void writeObject(ObjectOutputStream s) throws IOException {
+        s.defaultWriteObject();
+        s.writeObject(type.getName());
+    }
+
+    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+        s.defaultReadObject();
+        String typeName = (String)s.readObject();
+        type = IpsPlugin.getDefault().getIpsModel().getIpsObjectType(typeName);
+    }
 }
