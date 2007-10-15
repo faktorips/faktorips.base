@@ -781,11 +781,17 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
     public void testFindIpsSrcFiles() throws CoreException {
         // create the following types: Type0, a.b.Type1 and c.Type2
-        root.getIpsPackageFragment("").createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type0", true, null);
+        IIpsPackageFragment pack = root.getIpsPackageFragment("");
+        IPolicyCmptType type0 = (IPolicyCmptType)pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type0", true, null).getIpsObject();
         IIpsPackageFragment folderAB = root.createPackageFragment("a.b", true, null);
         folderAB.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type1", true, null);
         IIpsPackageFragment folderC = root.createPackageFragment("c", true, null);
         folderC.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type2", true, null);
+        
+        IProductCmptType productCmptType0 = (IProductCmptType) pack.createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE_V2, "ProductCmptType0", true, null).getIpsObject();
+        productCmptType0.setPolicyCmptType(type0.getQualifiedName());
+        type0.setProductCmptType(productCmptType0.getQualifiedName());
+        type0.setConfigurableByProductCmptType(true);
         
         // create table c.Table1
         folderC.createIpsFile(IpsObjectType.TABLE_STRUCTURE, "Table1", true, null);
@@ -803,10 +809,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(1, result.length);
         
         result = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE_V2);
-        assertEquals(0, result.length);
-
-        pct.setConfigurableByProductCmptType(true);
-        pct.setProductCmptType("productCmptTypeName");
+        assertEquals(1, result.length);
 
         result = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE_V2);
         assertEquals(1, result.length);
