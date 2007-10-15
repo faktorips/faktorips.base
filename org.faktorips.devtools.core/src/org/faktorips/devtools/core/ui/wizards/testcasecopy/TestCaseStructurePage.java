@@ -346,7 +346,11 @@ public class TestCaseStructurePage extends WizardPage {
     private void pageChanged() {
         boolean pageComplete = validatePage();
         setPageComplete(pageComplete);
-        getContainer().updateButtons();
+        getShell().getDisplay().asyncExec(new Runnable() {
+            public void run() {
+                getContainer().updateButtons();
+            }
+        });
     }
     
     /**
