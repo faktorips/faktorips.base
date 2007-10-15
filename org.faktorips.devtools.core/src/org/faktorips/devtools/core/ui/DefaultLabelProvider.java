@@ -42,7 +42,6 @@ import org.faktorips.util.StringUtil;
 public class DefaultLabelProvider extends LabelProvider {
     /* indicates the mapping of an ips source files to the their corresponding ips objects */
     private boolean ispSourceFile2IpsObjectMapping = false;
-    private boolean ispPolicyCmptType2ProductCmptTypeMapping = false;
     
     /**
      * Creates an DefaultLabelProvider with additional IpsSourceFile mapping support: In case of an

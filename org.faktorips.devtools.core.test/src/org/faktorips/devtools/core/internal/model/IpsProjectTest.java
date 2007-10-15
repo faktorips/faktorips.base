@@ -1330,17 +1330,25 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     
     public void testFindIpsSourceFiles() throws CoreException {
         // create the following types: Type0, a.b.Type1 and c.Type2, and table structure
-        root.getIpsPackageFragment("").createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type0", true, null);
+        
+        IIpsSrcFile type0 = root.getIpsPackageFragment("").createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type0", true, null);
+        IIpsSrcFile productCmptType0 = root.getIpsPackageFragment("").createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE_V2, "ProductCmptType0", true, null);
+        ((IPolicyCmptType)type0.getIpsObject()).setProductCmptType(productCmptType0.getQualifiedNameType().getName());
+        ((IPolicyCmptType)type0.getIpsObject()).setConfigurableByProductCmptType(true);
+        ((IProductCmptType)productCmptType0.getIpsObject()).setPolicyCmptType(type0.getQualifiedNameType().getName());
+        
         IIpsPackageFragment folderAB = root.createPackageFragment("a.b", true, null);
         folderAB.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type1", true, null);
         IIpsPackageFragment folderC = root.createPackageFragment("c", true, null);
         IIpsSrcFile policyCmptType = folderC.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type2", true, null);
         
+
         IIpsSrcFile tableStructure = folderC.createIpsFile(IpsObjectType.TABLE_STRUCTURE, "Table1", true, null);
         IIpsSrcFile tableContents = folderC.createIpsFile(IpsObjectType.TABLE_CONTENTS, "TableContents1", true, null);
         IIpsSrcFile testCaseType = folderC.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestCaseType1", true, null);
         IIpsSrcFile testCase = folderC.createIpsFile(IpsObjectType.TEST_CASE, "TestCase1", true, null);
         IIpsSrcFile productCmpt = folderC.createIpsFile(IpsObjectType.PRODUCT_CMPT, "ProductCmpt1", true, null);
+
         
         IIpsSrcFile[] result = null;
         
@@ -1368,11 +1376,15 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(1, result.length);
         assertTrue(containsIpsSrcFile(result, productCmpt));
         
+        result = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE_V2);
+        assertEquals(1, result.length);
+        assertTrue(containsIpsSrcFile(result, productCmptType0));
+        
         List resultList = new ArrayList();
         ipsProject.findAllIpsSrcFiles(resultList);
-        assertEquals(8, resultList.size());
-
-        // FIXME Joerg: Test nach Modellumstellung erweitern mit suchen von ProductCmptType
+        assertEquals(9, resultList.size());
+        
+        
     }
 
     private boolean containsIpsSrcFile(IIpsSrcFile[] result, IIpsSrcFile policyCmptType) throws CoreException {

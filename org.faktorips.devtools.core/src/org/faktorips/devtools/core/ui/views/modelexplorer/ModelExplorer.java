@@ -68,6 +68,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -295,10 +296,20 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     }    
     
     protected ModelExplorerConfiguration createConfig() {
-        return new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class, ITableStructure.class,
-                IProductCmpt.class, ITableContents.class, IAttribute.class, IPolicyCmptTypeAssociation.class, ITestCase.class,
-                ITestCaseType.class, IProductCmptGeneration.class}, new Class[] { IFolder.class,
-                IFile.class, IProject.class });
+        return new ModelExplorerConfiguration(new Class[] {
+                    IPolicyCmptType.class, 
+                    IProductCmptType.class,
+                    IProductCmpt.class, 
+                    IProductCmptGeneration.class,
+                    ITableStructure.class,
+                    ITableContents.class,
+                    IAttribute.class, 
+                    IPolicyCmptTypeAssociation.class,
+                    ITestCase.class, 
+                    ITestCaseType.class}, 
+                new Class[] { IFolder.class,
+                              IFile.class, 
+                              IProject.class });
     }
 
     protected ModelContentProvider createContentProvider() {

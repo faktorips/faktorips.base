@@ -39,7 +39,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
@@ -498,15 +497,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         for (int i = 0; i < members.length; i++) {
             if (members[i].getType() == IResource.FILE) {
                 IFile file = (IFile)members[i];
-                if (type == IpsObjectType.PRODUCT_CMPT_TYPE_V2
-                        && IpsObjectType.POLICY_CMPT_TYPE.getFileExtension().equals(file.getFileExtension())) {
-                    IpsSrcFile ipsSrcFile = new IpsSrcFile(this, file.getName());
-                    if (! Boolean.valueOf(ipsSrcFile
-                            .getPropertyValue(PolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE)).booleanValue()) {
-                        return;
-                    }
-                    result.add(ipsSrcFile);
-                } else if (type.getFileExtension().equals(file.getFileExtension())) {
+                if (type.getFileExtension().equals(file.getFileExtension())) {
                     IpsSrcFile ipsSrcFile = new IpsSrcFile(this, file.getName());
                     result.add(ipsSrcFile);
                 }
