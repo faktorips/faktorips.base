@@ -21,9 +21,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -171,6 +173,31 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         }         
     }
     
+    /*
+     * Inner class to store (keep) a formula test case
+     */
+    private class StoreFormulaRunnable implements IWorkspaceRunnable{
+        private String name;
+        
+        public void run(IProgressMonitor monitor) throws CoreException {
+            IFormula formula = (IFormula)formulaTestCase.getFormula();
+            IFormulaTestCase newFormulaTestCase = formula.newFormulaTestCase();
+            name = newFormulaTestCase.generateUniqueNameForFormulaTestCase(Messages.FormulaTestInputValuesControl_DefaultFormulaTestCaseName);
+            newFormulaTestCase.setName(name);
+            newFormulaTestCase.setExpectedResult(formulaTestCase.getExpectedResult());
+
+            IFormulaTestInputValue[] inputValues = formulaTestCase.getFormulaTestInputValues();
+            for (int i = 0; i < inputValues.length; i++) {
+                IFormulaTestInputValue newInputValue = newFormulaTestCase.newFormulaTestInputValue();
+                newInputValue.setIdentifier(inputValues[i].getIdentifier());
+                newInputValue.setValue(inputValues[i].getValue());
+            }
+        }
+        public String getName() {
+            return name;
+        }
+    }
+    
     public FormulaTestInputValuesControl(Composite parent, UIToolkit uiToolkit,
             UIController uiController) {
         super(parent, SWT.NONE);
@@ -290,7 +317,11 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             btnNewFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true ));
             btnNewFormulaTestCase.addSelectionListener(new SelectionListener() {
                 public void widgetSelected(SelectionEvent e) {
-                    storeFormulaTestInputValuesAsNewFormulaTestCase();
+                    try {
+                        storeFormulaTestInputValuesAsNewFormulaTestCase();
+                    } catch (CoreException ex) {
+                        IpsPlugin.logAndShowErrorDialog(ex);
+                    }
                 }
                 public void widgetDefaultSelected(SelectionEvent e) {
                 }
@@ -318,27 +349,17 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     /*
      * Stores the current formula test case with all input values as new formula test case.
      */
-    private void storeFormulaTestInputValuesAsNewFormulaTestCase() {
-        IFormula formula = (IFormula)formulaTestCase.getFormula();
-        IFormulaTestCase newFormulaTestCase = formula.newFormulaTestCase();
-        String name = newFormulaTestCase.generateUniqueNameForFormulaTestCase(Messages.FormulaTestInputValuesControl_DefaultFormulaTestCaseName);
-        newFormulaTestCase.setName(name);
-        newFormulaTestCase.setExpectedResult(formulaTestCase.getExpectedResult());
-
-        IFormulaTestInputValue[] inputValues = formulaTestCase.getFormulaTestInputValues();
-        for (int i = 0; i < inputValues.length; i++) {
-            IFormulaTestInputValue newInputValue = newFormulaTestCase.newFormulaTestInputValue();
-            newInputValue.setIdentifier(inputValues[i].getIdentifier());
-            newInputValue.setValue(inputValues[i].getValue());
-        }
+    private void storeFormulaTestInputValuesAsNewFormulaTestCase() throws CoreException {
+        StoreFormulaRunnable storeFormulaRunnable = new StoreFormulaRunnable();
+        formulaTestCase.getIpsModel().runAndQueueChangeEvents(storeFormulaRunnable, null);
         if (uiController != null){
             uiController.updateUI();
         }
         
         MessageDialog.openInformation(getShell(), Messages.FormulaTestInputValuesControl_InfoDialogSuccessfullyStored_Title, NLS.bind(
-                Messages.FormulaTestInputValuesControl_InfoDialogSuccessfullyStored_Text, name));
+                Messages.FormulaTestInputValuesControl_InfoDialogSuccessfullyStored_Text, storeFormulaRunnable.getName()));
     }
-
+    
     /*
      * Clears all values in all corresponding formula test input value object parts.
      * Setting all values to an empty string.
