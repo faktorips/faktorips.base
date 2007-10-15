@@ -202,5 +202,10 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         //or greater than the number of table contents columns.
         msgList = table.validate();
         assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_COLUMNCOUNT_MISMATCH));
+        
+        // test validate with missing table structure
+        table.setTableStructure("NONE");
+        msgList = table.validate();
+        assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_UNKNWON_STRUCTURE));
     }
 }

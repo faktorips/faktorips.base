@@ -391,7 +391,9 @@ public class ContentPage extends IpsObjectEditorPage {
                     structure = getTableStructure();
                 }
             }
-            
+            if (structure == null){
+                return;
+            }
             int difference = structure.getColumns().length - getTableContents().getNumOfColumns();
             
             if (difference != 0) {

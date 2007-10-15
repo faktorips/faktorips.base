@@ -237,6 +237,9 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
             return;
         }
         ITableStructure structure = getTableContents().findTableStructure();
+        if (structure == null){
+            return;
+        }
         if(structure.isModelEnumType()){
             IColumn column = getTableContents().findTableStructure().getColumn(0);
             ValueDatatype idDatatype = column.findValueDatatype();
@@ -282,6 +285,9 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
      */
     protected void validateChildren(MessageList result) throws CoreException {
         ITableStructure tableStructure = getTableContents().findTableStructure();
+        if  (tableStructure == null){
+            return;
+        }
         ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypes(tableStructure);
 
         IIpsElement[] children = getChildren();
