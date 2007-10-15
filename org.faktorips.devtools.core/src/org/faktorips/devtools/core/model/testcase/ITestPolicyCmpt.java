@@ -75,15 +75,6 @@ public interface ITestPolicyCmpt extends ITestObject {
     public final static String MSGCODE_MAX_INSTANCES_REACHED = MSGCODE_PREFIX
         + "MaxInstancesReached"; //$NON-NLS-1$
     
-    // TODO Joerg validation test
-    /**
-     * Validation message code to indicate that the product cmpt is not specified in the
-     * corresponding relation.
-     */
-    public final static String MSGCODE_PRODUCT_CMPT_NOT_IN_PRODUCT_RELATION_DEFINITION = MSGCODE_PREFIX
-        + "ProductCmptNotInProductRelationDefinition"; //$NON-NLS-1$
-    
-
     /**
      * Validation message code to indicate that the product cmpt is not allowed for the relation.
      */
