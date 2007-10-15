@@ -19,13 +19,14 @@ package org.faktorips.devtools.core.model.tablecontents;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
+import org.faktorips.devtools.core.model.XmlSaxSupport;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
 
 /**
  *
  */
-public interface ITableContents extends ITimedIpsObject {
+public interface ITableContents extends ITimedIpsObject, XmlSaxSupport {
 
     public final static String PROPERTY_TABLESTRUCTURE = "tableStructure"; //$NON-NLS-1$
     public final static String PROPERTY_NUMOFCOLUMNS = "numOfColumns"; //$NON-NLS-1$

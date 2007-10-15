@@ -3,14 +3,26 @@
 <!--
  Test data for TableImplTest.java
 -->
-<Table description="blabla" tableStructure="RateTableStructure" numOfColumns="2">
+<TableContents description="blabla" tableStructure="RateTableStructure" numOfColumns="2">
 	<Generation id="0">
-    	<Row id="0" c0="18" c1="0.5"/>
-    	<Row id="1" c0="19" c2="0.6"/>
+    	<Row id="0" c0="18" c1="0.5">
+    		<Value isNull="false">18</Value>
+    		<Value isNull="false">0.5</Value>
+    	</Row>
+    	<Row id="1" c0="19" c2="0.6">
+    		<Value isNull="false">19</Value>
+    		<Value isNull="false">0.6</Value>
+    	</Row>
 	</Generation>
 	<Generation id="1">
-    	<Row id="0" c0="18" c1="0.5"/>
-    	<Row id="1" c0="19" c2="0.6"/>
+    	<Row id="0" c0="18" c1="0.5">
+    		<Value isNull="false">180</Value>
+    		<Value isNull="false">0.05</Value>
+    	</Row>
+    	<Row id="1" c0="19" c2="0.6">
+    		<Value isNull="false">190</Value>
+    		<Value isNull="false">0.06</Value>
+    	</Row>
 	</Generation>
 	
-</Table>
+</TableContents>

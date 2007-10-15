@@ -17,12 +17,17 @@
 
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
+import java.io.InputStream;
 import java.util.GregorianCalendar;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.TimedIpsObject;
 import org.faktorips.devtools.core.model.Dependency;
@@ -37,6 +42,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 
 /**
@@ -98,7 +104,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     protected void setTableStructureInternal(String qName){
         structure = qName;
     }
-    
+   
     /**
      * {@inheritDoc}
      */
@@ -186,6 +192,18 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         super.initPropertiesFromXml(element, id);
         structure = element.getAttribute(PROPERTY_TABLESTRUCTURE);
         numOfColumns = Integer.parseInt(element.getAttribute(PROPERTY_NUMOFCOLUMNS)); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void initFromInputStream(InputStream is) throws CoreException {
+        try {
+            SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+            saxParser.parse(new InputSource(is), new TableContentsSaxHandler(this));
+        } catch (Exception e) {
+            throw new CoreException(new IpsStatus(e));
+        }
     }
 
     /**

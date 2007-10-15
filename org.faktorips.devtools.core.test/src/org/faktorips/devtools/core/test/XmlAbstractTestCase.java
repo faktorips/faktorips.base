@@ -56,12 +56,7 @@ public abstract class XmlAbstractTestCase extends TestCase {
      */
     public Document getTestDocument() {
         try {
-            String className = getClass().getName();
-            int index = className.lastIndexOf('.');
-            if (index > -1) {
-                className = className.substring(index+1);
-            }
-            String resourceName = className + ".xml";
+            String resourceName = getXmlResourceName();
             InputStream is = getClass().getResourceAsStream(resourceName);
             if (is==null) {
                 throw new RuntimeException("Can't find resource " + resourceName);
@@ -70,6 +65,19 @@ public abstract class XmlAbstractTestCase extends TestCase {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    /**
+     * Returns the xml file name that is associated with the test case.
+     * This file name has the same name as the test case class and the ending "+.xml".
+     */
+    public String getXmlResourceName(){
+        String className = getClass().getName();
+        int index = className.lastIndexOf('.');
+        if (index > -1) {
+            className = className.substring(index+1);
+        }
+        return className + ".xml";
     }
     
     public final Document newDocument() {

@@ -30,7 +30,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * SAX event handler class for ips table contents.
+ * SAX event handler class for ips table contents.<br>
+ * Note that the description is currently not supported for table contents.
  * 
  * @author Joerg Ortmann
  */

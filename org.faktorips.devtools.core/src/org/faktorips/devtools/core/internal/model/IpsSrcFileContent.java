@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.beans.PropertyDescriptor;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -26,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -36,20 +35,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContentsSaxHandler;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IpsSrcFileSaxHelper;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.XmlSaxSupport;
 import org.faktorips.devtools.core.ui.binding.BeanUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * 
@@ -208,6 +203,7 @@ public class IpsSrcFileContent {
     
     public void initContentFromFile() {
         IIpsSrcFile file = getIpsSrcFile();
+        InputStream is = null;
         try {
             long startTime = 0;
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
@@ -216,20 +212,16 @@ public class IpsSrcFileContent {
                 startTime = System.currentTimeMillis();
             }
             IpsObject ipsObject = getIpsObject();
-            // FIXME Joerg unterscheidung Table Content sax parser?
-            // als XMLSaxSupport
-            if (ipsObject.getIpsObjectType() != IpsObjectType.TABLE_CONTENTS) {
+            if (ipsObject instanceof XmlSaxSupport) {
+                is = file.getCorrespondingFile().getContents(true);
+                ((XmlSaxSupport)ipsObject).initFromInputStream(is);
+            }  else {
                 String fileContent = file.getContentFromEnclosingResource();
                 String encoding = file.getIpsProject().getXmlFileCharset();
-                ByteArrayInputStream is = new ByteArrayInputStream(fileContent.getBytes(encoding));
+                is = new ByteArrayInputStream(fileContent.getBytes(encoding));
                 DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
                 Document doc = builder.parse(is);
-                is.close();
-                getIpsObject().initFromXml(doc.getDocumentElement());
-            } else {
-                InputStream is = file.getCorrespondingFile().getContents(true);
-                SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
-                saxParser.parse(new InputSource(is), new TableContentsSaxHandler((ITableContents)getIpsObject()));
+                ipsObject.initFromXml(doc.getDocumentElement());
             }
             modificationStamp = file.getEnclosingResource().getModificationStamp();
             modified = false;
@@ -239,15 +231,6 @@ public class IpsSrcFileContent {
                 System.out.println("IpsSrcFileContent.initContentFromFile: Content read from disk, durration: " + (System.currentTimeMillis() - startTime) + ", file=" + file //$NON-NLS-1$
                                 + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
             }
-        } catch (SAXException e) {
-            parsable = false;
-            IpsPlugin.log(new IpsStatus("Error reading file " + file, e));
-            ipsObject.markAsFromUnparsableFile();
-            if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                System.out.println("IpsSrcFileContent.initContentFromFile: Error parsing xml , file=" +  file //$NON-NLS-1$
-                        + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
-            }
-            return;
         } catch (Exception e) {
             parsable = false;
             IpsPlugin.log(new IpsStatus("Error reading file " + file, e));
@@ -255,6 +238,13 @@ public class IpsSrcFileContent {
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                 System.out.println("IpsSrcFileContent.initContentFromFile: Error reading content from disk, file=" +  file //$NON-NLS-1$
                         + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
+            }
+        } finally {
+            if (is != null){
+                try {
+                    is.close();
+                } catch (IOException ignored) {
+                }
             }
         }
     }

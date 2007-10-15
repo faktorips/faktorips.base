@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.Dependency;
@@ -128,6 +129,29 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         assertEquals(2, table.getNumOfGenerations());
     }
 
+    public void testInitFromInputStream() throws CoreException {
+        table.initFromInputStream(getClass().getResourceAsStream(getXmlResourceName()));
+        assertEquals("RateTableStructure", table.getTableStructure());
+        assertEquals(2, table.getNumOfColumns());
+        assertEquals(2, table.getNumOfGenerations());
+        ITableContentsGeneration generation = (ITableContentsGeneration)table.getFirstGeneration();
+        IRow[] rows = generation.getRows();
+        assertEquals(2, rows.length);
+        assertEquals("18", rows[0].getValue(0));
+        assertEquals("0.5", rows[0].getValue(1));
+        assertEquals("19", rows[1].getValue(0));
+        assertEquals("0.6", rows[1].getValue(1));
+        
+        generation = (ITableContentsGeneration)generation.getNext();
+        rows = generation.getRows();
+        assertEquals(2, rows.length);
+        assertEquals("180", rows[0].getValue(0));
+        assertEquals("0.05", rows[0].getValue(1));
+        assertEquals("190", rows[1].getValue(0));
+        assertEquals("0.06", rows[1].getValue(1));
+        
+    }
+    
     /*
      * Class under test for Element toXml(Document)
      */
