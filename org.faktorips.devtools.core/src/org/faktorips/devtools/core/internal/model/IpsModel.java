@@ -41,6 +41,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -72,6 +73,7 @@ import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
+import org.faktorips.runtime.SoftReferenceCache;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 
@@ -146,8 +148,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private Map classLoaderProviderMap = new HashMap();
 
     // map containing IpsSrcFileContents as values and IpsSrcFiles as keys.
-    private Map ipsObjectsMap = new HashMap(1000);
-
+    private SoftReferenceCache ipsObjectsMap = new SoftReferenceCache(1000);
+    
     // validation result cache
     private ValidationResultCache validationResultCache = new ValidationResultCache();
 
@@ -1254,14 +1256,21 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Returns true if the IIpsSrcFileContents of the provided IIpsSrcFile has been cached.
      */
     public boolean isCached(IIpsSrcFile file){
-        return ipsObjectsMap.get(file) != null;
+        return ipsObjectsMap.getObject(file) != null;
     }
     
     /**
      * Returns the content for the given ips src file. If the ips source file's corresponding
-     * resource does not exist, the method returns <code>null</code>.
+     * resource does not exist, the method returns <code>null</code>. If loadCompleteContent is
+     * <code>true</code> then the complete content will be read from the source file, if
+     * <code>false</code> then only the properties of the ips object will be read.
+     * 
+     * @param file the file to read
+     * 
+     * @param loadCompleteContent <code>true</code> if the completely file should be read,
+     *            <code>false</code> if only the properties will be read
      */
-    synchronized public IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file) {
+    synchronized public IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file, boolean loadCompleteContent) {
         if (file == null) {
             return null;
         }
@@ -1269,34 +1278,70 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (enclResource == null || !enclResource.exists()) {
             return null;
         }
-        IpsSrcFileContent content = (IpsSrcFileContent)ipsObjectsMap.get(file);
+        IpsSrcFileContent content = (IpsSrcFileContent)ipsObjectsMap.getObject(file);
         long resourceModStamp = enclResource.getModificationStamp();
 
         // new content
         if (content == null) {
-            content = new IpsSrcFileContent((IpsObject)file.getIpsObjectType().newObject(file));
+            content = readContentFromFile(file, loadCompleteContent);
             ipsObjectsMap.put(file, content);
-            if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                System.out.println("IpsModel.getIpsSrcFileContent(): New content created for " + file + ", Thead: " //$NON-NLS-1$ //$NON-NLS-2$
-                        + Thread.currentThread().getName());
-            }
-            content.initContentFromFile();
             return content;
         }
-
+        
         // existing, synchronized content
         if (content.getModificationStamp() == resourceModStamp) {
-            if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                System.out.println("IpsModel.getIpsSrcFileContent(): Content returned from cache, file=" + file //$NON-NLS-1$
-                        + ", FileModStamp=" + resourceModStamp + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            return content;
+            return checkSynchronizedContent(content, loadCompleteContent);
         }
+        
         // existing, but unsynchronized content
-        content.initContentFromFile();
+        if (loadCompleteContent){
+            content.initContentFromFile();
+        } else {
+            content.initRootPropertiesFromFile();
+        }
         return content;
     }
+    
+    private IpsSrcFileContent readContentFromFile(IIpsSrcFile file, boolean loadCompleteContent) {
+        IpsSrcFileContent content = new IpsSrcFileContent((IpsObject)file.getIpsObjectType().newObject(file));
 
+        if (loadCompleteContent){
+            logTraceMessage("New content created", file);
+            content.initContentFromFile();
+        } else {
+            logTraceMessage("New properties read", file);
+            content.initRootPropertiesFromFile();
+        }
+        return content;
+    }
+    
+    private IpsSrcFileContent checkSynchronizedContent(IpsSrcFileContent content, boolean loadCompleteContent) {
+        if (loadCompleteContent) {
+            if (content.isInitialized()) {
+                logTraceMessage("Content returned from cache", content.getIpsSrcFile());
+                return content;
+            } else {
+                logTraceMessage("Content initialized", content.getIpsSrcFile());
+                content.initContentFromFile();
+                return content;
+            }
+        } else {
+            // only properties are needed
+            if (content.areRootPropertiesAvailable()) {
+                logTraceMessage("Properties returned from cache", content.getIpsSrcFile());
+                return content;
+            } else {
+                logTraceMessage("Properties initialized", content.getIpsSrcFile());
+                content.initRootPropertiesFromFile();
+                return content;
+            }
+        }
+    }
+
+    synchronized public IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file) {
+        return getIpsSrcFileContent(file, true);
+    }
+    
     /**
      * Returns <code>true</code> if the ips source file' content is in sync with the
      * enclosing resource storing it's contents.
@@ -1306,7 +1351,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (enclResource == null || !enclResource.exists()) {
             return false;
         }
-        IpsSrcFileContent content = (IpsSrcFileContent)ipsObjectsMap.get(file);
+        IpsSrcFileContent content = (IpsSrcFileContent)ipsObjectsMap.getObject(file);
         if (content==null) {
             return true;
         }
@@ -1474,6 +1519,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
         }
         return null;
+    }
+
+    private static void logTraceMessage(String text, IIpsSrcFile ipsSrcFile) {
+        if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+            IResource enclosingResource = ipsSrcFile.getEnclosingResource();
+            System.out.println(NLS.bind("IpsModel.getIpsSrcFileContent(): {0}, file={1}, FileModStamp={2}, Thread={3}",
+                    new String[] { text, "" + ipsSrcFile, "" + enclosingResource.getModificationStamp(), Thread.currentThread().getName() }));
+        }
     }
 
     /**

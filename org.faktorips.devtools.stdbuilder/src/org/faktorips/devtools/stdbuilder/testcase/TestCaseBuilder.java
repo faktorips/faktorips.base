@@ -41,9 +41,9 @@ import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -340,31 +340,41 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             objectIdMap.put(testPolicyCmpt[i], "" + currObjectId);
             testPolicyCmptElem.setAttribute("objectId", ""+currObjectId);
             
-            IProductCmpt productCmpt = testPolicyCmpt[i].findProductCmpt();
-            IPolicyCmptType pcType = null;
-            String pcTypeName = "";
-            if (productCmpt != null){
+            IIpsSrcFile policyCmptTypeSrcFile = null;
+            String policyCmptTypeQName = null;
+            if (testPolicyCmpt[i].isProductRelevant()){
                 // the test policy cmpt type parameter is product relevant
-                pcType = productCmpt.findPolicyCmptType();
-                pcTypeName = pcType == null ? "" : pcType.getQualifiedName();
-                testPolicyCmptElem.setAttribute("productCmpt", productCmpt.getRuntimeId());
+                IIpsSrcFile productCmptSrcFile = testPolicyCmpt[i].getIpsProject().findIpsSrcFile(
+                        IpsObjectType.PRODUCT_CMPT, testPolicyCmpt[i].getProductCmpt());
+                if (productCmptSrcFile == null){
+                    throw new CoreException(new IpsStatus(NLS.bind("The product component {0} was not found.",
+                            testPolicyCmpt[i].getProductCmpt())));
+                }
+                testPolicyCmptElem.setAttribute("productCmpt", productCmptSrcFile.getPropertyValue(IProductCmpt.PROPERTY_RUNTIME_ID));
+                // because the product can be based on a subtype defined in the test type parameter we must search for the correct policy cmpt
+                String productCmptTypeQName = productCmptSrcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
+                IIpsSrcFile productCmptTypeSrcFile = testPolicyCmpt[i].getIpsProject().findIpsSrcFile(IpsObjectType.PRODUCT_CMPT_TYPE_V2, productCmptTypeQName);
+                policyCmptTypeQName = productCmptTypeSrcFile.getPropertyValue(IProductCmptType.PROPERTY_POLICY_CMPT_TYPE);
+                policyCmptTypeSrcFile = testPolicyCmpt[i].getIpsProject().findIpsSrcFile(IpsObjectType.POLICY_CMPT_TYPE, policyCmptTypeQName);
             } else {
                 // the test policy cmpt type parameter is not product relevant
                 ITestPolicyCmptTypeParameter parameter = testPolicyCmpt[i].findTestPolicyCmptTypeParameter();
-                if (parameter == null){
+                if (parameter == null) {
                     throw new CoreException(new IpsStatus(NLS.bind(
-                            "The test policy component type parameter {0} was not found.", relation.getTestPolicyCmptTypeParameter())));
+                            "The test policy component type parameter {0} was not found.", relation
+                                    .getTestPolicyCmptTypeParameter())));
                 }
-                pcTypeName = parameter.getPolicyCmptType();
-                pcType = parameter.findPolicyCmptType();
+                policyCmptTypeSrcFile = testPolicyCmpt[i].getIpsProject().findIpsSrcFile(
+                        IpsObjectType.POLICY_CMPT_TYPE, parameter.getPolicyCmptType());
+                policyCmptTypeQName = parameter.getPolicyCmptType();
             }
-            if (pcType == null){
-                throw new CoreException(new IpsStatus(NLS.bind(
-                        "The policy component type {0} was not found.", pcTypeName)));
+            if (policyCmptTypeSrcFile == null) {
+                throw new CoreException(new IpsStatus(NLS.bind("The policy component type {0} was not found.",
+                        policyCmptTypeQName)));
             }
-            testPolicyCmptElem.setAttribute("class", javaSourceFileBuilder.getQualifiedClassName(pcType));
+            testPolicyCmptElem.setAttribute("class", javaSourceFileBuilder.getQualifiedClassName(policyCmptTypeSrcFile));
             addTestAttrValues(doc, testPolicyCmptElem, testPolicyCmpt[i].getTestAttributeValues(), isInput);
-            addRelations(doc, testPolicyCmptElem, testPolicyCmpt[i].getTestPolicyCmptRelations(), isInput, objectId);                
+            addRelations(doc, testPolicyCmptElem, testPolicyCmpt[i].getTestPolicyCmptRelations(), isInput, objectId);    
         }
     }
     

@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectRefEntry;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -386,6 +387,28 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     /**
+     * Returns the first ips source file with the indicated qualified name tpye found
+     * on the path. Returns <code>null</code> if no such object is found.
+     */
+    public IIpsSrcFile findIpsSrcFile(IIpsProject project, IpsObjectType type, String qualifiedName, Set visitedEntries) throws CoreException {
+        return findIpsSrcFile(project, new QualifiedNameType(qualifiedName, type), visitedEntries);
+    }
+
+    /**
+     * Returns the first ips source file with the indicated qualified name tpye found
+     * on the path. Returns <code>null</code> if no such object is found.
+     */
+    public IIpsSrcFile findIpsSrcFile(IIpsProject project, QualifiedNameType nameType, Set visitedEntries) throws CoreException {
+        for (int i=0; i<entries.length; i++) {
+            IIpsSrcFile ipsSrcFile = ((IpsObjectPathEntry)entries[i]).findIpsSrcFile(project, nameType, visitedEntries);
+            if (ipsSrcFile!=null) {
+                return ipsSrcFile;
+            }
+        }
+        return null;
+    }
+    
+    /**
      * Searches all objects of the given type starting with the given prefix found on the path and adds
      * them to the given result list.
      * 
@@ -398,8 +421,22 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
     
     /**
+     * Searches all isp src files of the given type starting with the given prefix found on the path and adds
+     * them to the given result list.
+     * 
+     * @throws CoreException if an error occurs while searching for the source files. 
+     */    
+    public void findIpsSrcFilesStartingWith(IIpsProject project, IpsObjectType type, String prefix, boolean ignoreCase, List result, Set visitedEntries) throws CoreException {
+        for (int i=0; i<entries.length; i++) {
+            ((IpsObjectPathEntry)entries[i]).findIpsSrcFilesStartingWith(project, type, prefix, ignoreCase, result, visitedEntries);
+        }
+    }
+    
+    /**
      * Returns all objects of the given type found on the path. Returns an empty array if no
      * object is found. 
+     * 
+     * @deprecated use IIpsObjectPath#findIpsSrcFiles(IIpsProject project, IpsObjectType type, Set visitedEntries) due to better performance  
      */
     public IIpsObject[] findIpsObjects(IIpsProject project, IpsObjectType type, Set visitedEntries) throws CoreException {
         List result = new ArrayList();
@@ -408,7 +445,19 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
     
     /**
+     * Returns all ips source files of the given type found on the path. Returns an empty array if no
+     * object is found. 
+     */    
+    public IIpsSrcFile[] findIpsSrcFiles(IIpsProject project, IpsObjectType type, Set visitedEntries) throws CoreException {
+        List result = new ArrayList();
+        findIpsSrcFiles(project, type, result, visitedEntries);
+        return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
+    }
+    
+    /**
      * Adds all objects of the given type found on the path to the result list.
+     * 
+     * @deprecated use IIpsObjectPath#findIpsSrcFiles(IIpsProject project, IpsObjectType type, List result, Set visitedEntries) due to better performance
      */
     public void findIpsObjects(IIpsProject project, IpsObjectType type, List result, Set visitedEntries) throws CoreException {
         for (int i=0; i<entries.length; i++) {
@@ -424,7 +473,16 @@ public class IpsObjectPath implements IIpsObjectPath {
             ((IpsObjectPathEntry)entries[i]).findIpsObjects(project, result, visitedEntries);
         }
     }
-
+    
+    /**
+     * Adds all ips source files of the given type found on the path to the result list.
+     */
+    public void findIpsSrcFiles(IIpsProject project, IpsObjectType type, List result, Set visitedEntries) throws CoreException {
+        for (int i=0; i<entries.length; i++) {
+            ((IpsObjectPathEntry)entries[i]).findIpsSrcFiles(project, type, result, visitedEntries);
+        }
+    }
+    
     /**
      * Adds all objects found in <code>IpsSrcFolderEntry</code>s on the path to the result list.
      */
@@ -435,7 +493,7 @@ public class IpsObjectPath implements IIpsObjectPath {
             }
         }
     }
-
+        
     /**
      * Returns an xml representation of the object path.
      * 

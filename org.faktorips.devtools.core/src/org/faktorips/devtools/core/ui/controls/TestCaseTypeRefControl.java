@@ -19,8 +19,8 @@ package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
@@ -35,15 +35,15 @@ public class TestCaseTypeRefControl extends IpsObjectRefControl {
             UIToolkit toolkit) {
         super(project, parent, toolkit, Messages.TestCaseTypeRefControl_title, Messages.TestCaseTypeRefControl_description);
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
-    protected IIpsObject[] getIpsObjects() throws CoreException {
+    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         if (getIpsProject()==null) {
-            return new IIpsObject[0];
+            return new IIpsSrcFile[0];
         }
-        return getIpsProject().findIpsObjects(IpsObjectType.TEST_CASE_TYPE);
+        return getIpsProject().findIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE);
     }
 
     /**

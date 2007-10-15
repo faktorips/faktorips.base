@@ -19,8 +19,8 @@ package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -38,16 +38,16 @@ public class PcTypeRefControl extends IpsObjectRefControl {
         super(project, parent, toolkit, Messages.PcTypeRefControl_title, Messages.PcTypeRefControl_description);
     }
     
-    /** 
+    /**
      * {@inheritDoc}
      */
-    protected IIpsObject[] getIpsObjects() throws CoreException {
+    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         if (getIpsProject()==null) {
-            return new IIpsObject[0];
+            return new IIpsSrcFile[0];
         }
-        return getIpsProject().findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE);
+        return getIpsProject().findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
     }
-    
+
     /**
      * Returns the policy component type identified by the qualified name found in this control's text value.
      * Returns <code>null</code> if the text value does not identify a policy component type.

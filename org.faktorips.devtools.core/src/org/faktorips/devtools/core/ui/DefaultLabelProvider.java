@@ -18,16 +18,20 @@
 package org.faktorips.devtools.core.ui;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.fl.FlFunction;
+import org.faktorips.util.StringUtil;
 
 
 /**
@@ -36,9 +40,29 @@ import org.faktorips.fl.FlFunction;
  * @author Jan Ortmann
  */
 public class DefaultLabelProvider extends LabelProvider {
+    /* indicates the mapping of an ips source files to the their corresponding ips objects */
+    private boolean ispSourceFile2IpsObjectMapping = false;
+    private boolean ispPolicyCmptType2ProductCmptTypeMapping = false;
+    
+    /**
+     * Creates an DefaultLabelProvider with additional IpsSourceFile mapping support: In case of an
+     * IpsSourceFile the text and the image of the corresponding IpsObject will be returned.s
+     */
+    public static ILabelProvider createWithIpsSourceFileMapping() {
+        return new DefaultLabelProvider(true);
+    }
     
     public DefaultLabelProvider() {
         super();
+    }
+
+    protected DefaultLabelProvider(boolean ispSourceFile2IpsObjectMapping) {
+        super();
+        this.ispSourceFile2IpsObjectMapping = ispSourceFile2IpsObjectMapping;
+    }
+    
+    public void setIspSourceFile2IpsObjectMapping(boolean ispSourceFile2IpsObjectMapping) {
+        this.ispSourceFile2IpsObjectMapping = ispSourceFile2IpsObjectMapping;
     }
 
     /** 
@@ -46,6 +70,9 @@ public class DefaultLabelProvider extends LabelProvider {
      */
     public Image getImage(Object element) {
         try {
+            if (element instanceof IIpsSrcFile && ispSourceFile2IpsObjectMapping){
+                return getMappedImageForIpsSrcFile((IIpsSrcFile) element);
+            }
             if (element instanceof IMethod) {
                 return getMethodImage((IMethod)element);
             }
@@ -72,6 +99,9 @@ public class DefaultLabelProvider extends LabelProvider {
         if (element==null) {
             return "null"; //$NON-NLS-1$
         }
+        if (element instanceof IIpsSrcFile && ispSourceFile2IpsObjectMapping){
+            return getMappedNameForIpsSrcFile((IIpsSrcFile) element);
+        }
         if (!(element instanceof IIpsElement)) {
             return element.toString();
         }
@@ -93,6 +123,19 @@ public class DefaultLabelProvider extends LabelProvider {
         }
         return ipsElement.getName();
     }
+    
+    private String getMappedNameForIpsSrcFile(IIpsSrcFile file) {
+        return StringUtil.getFilenameWithoutExtension(file.getName());
+    }
+
+    private Image getMappedImageForIpsSrcFile(IIpsSrcFile ipsSrcFile) {
+        if (ipsSrcFile.exists()){
+            return ipsSrcFile.getIpsObjectType().getEnabledImage();
+        } else {
+            // @see IpsObject#getImage()
+            return IpsObjectType.IPS_SOURCE_FILE.getEnabledImage();
+        }
+    }   
     
     private String getMethodLabel(IMethod method) {
         StringBuffer buffer = new StringBuffer(method.getName());
@@ -119,5 +162,4 @@ public class DefaultLabelProvider extends LabelProvider {
 //        }
         return method.getImage();
     }
-    
 }

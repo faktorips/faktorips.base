@@ -39,6 +39,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
@@ -484,6 +485,34 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             }
         }
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void findIpsSourceFiles(IpsObjectType type, List result) throws CoreException {
+        if (!exists()) {
+            return;
+        }
+        IFolder folder = (IFolder)getCorrespondingResource();
+        IResource[] members = folder.members();
+        for (int i = 0; i < members.length; i++) {
+            if (members[i].getType() == IResource.FILE) {
+                IFile file = (IFile)members[i];
+                if (type == IpsObjectType.PRODUCT_CMPT_TYPE_V2
+                        && IpsObjectType.POLICY_CMPT_TYPE.getFileExtension().equals(file.getFileExtension())) {
+                    IpsSrcFile ipsSrcFile = new IpsSrcFile(this, file.getName());
+                    if (! Boolean.valueOf(ipsSrcFile
+                            .getPropertyValue(PolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE)).booleanValue()) {
+                        return;
+                    }
+                    result.add(ipsSrcFile);
+                } else if (type.getFileExtension().equals(file.getFileExtension())) {
+                    IpsSrcFile ipsSrcFile = new IpsSrcFile(this, file.getName());
+                    result.add(ipsSrcFile);
+                }
+            }
+        }
+    }
 
     /**
      * Searches all objects of the given type starting with the given prefix and adds them to the
@@ -494,6 +523,23 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
      */
     public void findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase, List result)
             throws CoreException {
+        findIpsSourceFilesStartingWithInternal(type, prefix, ignoreCase, result, true);
+    }
+
+    /**
+     * Searches all objects of the given type starting with the given prefix and adds them to the
+     * result.
+     *
+     * @throws NullPointerException if either type, prefix or result is null.
+     * @throws CoreException if an error occurs while searching.
+     */
+    public void findIpsSourceFilesStartingWith(IpsObjectType type, String prefix, boolean ignoreCase, List result)
+            throws CoreException {
+        findIpsSourceFilesStartingWithInternal(type, prefix, ignoreCase, result, false);
+    }
+    
+    public void findIpsSourceFilesStartingWithInternal(IpsObjectType type, String prefix, boolean ignoreCase, List result, boolean returnIpsObject)
+    throws CoreException {
         ArgumentCheck.notNull(type);
         ArgumentCheck.notNull(prefix);
         ArgumentCheck.notNull(result);
@@ -510,15 +556,18 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
                     String filename = ignoreCase ? file.getName().toLowerCase() : file.getName();
                     if (filename.startsWith(newPrefix)) {
                         IIpsSrcFile srcFile = new IpsSrcFile(this, file.getName());
-                        if (srcFile.getIpsObject() != null) {
+                        if (returnIpsObject){
                             result.add(srcFile.getIpsObject());
+                        } else {
+                            result.add(srcFile);
                         }
                     }
                 }
             }
         }
     }
-
+    
+    
     public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor)
             throws CoreException {
         if (getIpsProject().getNamingConventions().validateIpsPackageName(name).containsErrorMsg()) {

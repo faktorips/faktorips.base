@@ -23,7 +23,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.codegen.DatatypeHelper;
@@ -330,46 +332,78 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
      * Adds all of input values to the given list, returns <code>true</code> if there were changes.
      */
     private boolean updateWithAllIdentifiers(String[] newIdentifiers, List newListOfInputValues, IIpsProject ipsProject){
-        boolean changed = false;
         List oldInputValues = new ArrayList();
         oldInputValues.addAll(formulaTestInputValues);
         
-        for (int i = 0; i < newIdentifiers.length; i++) {
-            IFormulaTestInputValue inputValue = getFormulaTestInputValue(newIdentifiers[i]);
-            if (inputValue == null){
-                inputValue = newFormulaTestInputValue();
-                inputValue.setIdentifier(newIdentifiers[i]);
-                // try to set the default value depending on the corresponding value datatype
-                try {
-                    Datatype datatype = inputValue.findDatatypeOfFormulaParameter(ipsProject);
-                    if (datatype instanceof ValueDatatype){
-                        inputValue.setValue(((ValueDatatype)datatype).getDefaultValue());
-                    }
-                    // ignore if the datatype is not value datatype
-                    //   this is a validation error see FormulaTestInputValue#validateThis method
-                } catch (CoreException e) {
-                    // ignore exception if the datatype wasn't found, this error will be handled as validation error
-                    // see FormulaTestInputValue#validateThis method
-                }
-                changed = true;
-            } else {
-                int idxOld = formulaTestInputValues.indexOf(inputValue);
-                oldInputValues.remove(inputValue);
-                if (idxOld != i){
-                    changed = true;
-                }
-            }
-            newListOfInputValues.add(inputValue);
+        FormulaUpdater formulaUpdater = new FormulaUpdater(newIdentifiers, oldInputValues, newListOfInputValues, ipsProject);
+        try {
+            getIpsModel().runAndQueueChangeEvents(formulaUpdater, null);
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
         }
-        // delete old input value
-        for (Iterator iter = oldInputValues.iterator(); iter.hasNext();) {
-            IFormulaTestInputValue oldInputValue = (IFormulaTestInputValue)iter.next();
-            oldInputValue.delete();
-            changed = true;
-        }
-        return changed;
+        
+        return formulaUpdater.isFormulaTestCaseChanged();
     }
 
+    private class FormulaUpdater implements IWorkspaceRunnable {
+        private boolean formulaTestCaseChanged;
+        private String[] newIdentifiers;
+        private List oldInputValues;
+        private List newListOfInputValues;
+        private IIpsProject ipsProject;
+        
+        public FormulaUpdater(String[] newIdentifiers, List oldInputValues, List newListOfInputValues, IIpsProject ipsProject) {
+            this.newIdentifiers = newIdentifiers;
+            this.oldInputValues = oldInputValues;
+            this.newListOfInputValues = newListOfInputValues;
+            this.ipsProject = ipsProject;
+        }
+
+        public void run(IProgressMonitor monitor) throws CoreException {
+            for (int i = 0; i < newIdentifiers.length; i++) {
+                IFormulaTestInputValue inputValue = getFormulaTestInputValue(newIdentifiers[i]);
+                if (inputValue == null){
+                    inputValue = newFormulaTestInputValue();
+                    inputValue.setIdentifier(newIdentifiers[i]);
+                    // try to set the default value depending on the corresponding value datatype
+                    try {
+                        Datatype datatype = inputValue.findDatatypeOfFormulaParameter(ipsProject);
+                        if (datatype instanceof ValueDatatype){
+                            inputValue.setValue(((ValueDatatype)datatype).getDefaultValue());
+                        }
+                        // ignore if the datatype is not value datatype
+                        //   this is a validation error see FormulaTestInputValue#validateThis method
+                    } catch (CoreException e) {
+                        // ignore exception if the datatype wasn't found, this error will be handled as validation error
+                        // see FormulaTestInputValue#validateThis method
+                    }
+                    formulaTestCaseChanged = true;
+                } else {
+                    int idxOld = formulaTestInputValues.indexOf(inputValue);
+                    oldInputValues.remove(inputValue);
+                    if (idxOld != i){
+                        formulaTestCaseChanged = true;
+                    }
+                }
+                newListOfInputValues.add(inputValue);
+            }
+            // delete old input value
+            for (Iterator iter = oldInputValues.iterator(); iter.hasNext();) {
+                IFormulaTestInputValue oldInputValue = (IFormulaTestInputValue)iter.next();
+                oldInputValue.delete();
+                formulaTestCaseChanged = true;
+            }
+        }
+        
+        public boolean isFormulaTestCaseChanged() {
+            return formulaTestCaseChanged;
+        }
+        
+        public List getNewListOfInputValues() {
+            return newListOfInputValues;
+        }
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -440,5 +474,10 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
                     name, getFormula().getName());
             list.add(new Message(MSGCODE_IDENTIFIER_MISMATCH, text, Message.WARNING, this, PROPERTY_NAME));
         }
+    }
+
+    public void run(IProgressMonitor monitor) throws CoreException {
+        // TODO Auto-generated method stub
+        
     }
 }

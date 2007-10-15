@@ -52,6 +52,8 @@ public class Messages extends NLS {
     public static String TestCaseSection_Menu_Down;
     public static String TestCaseSection_Menu_OpenInNewEditor;
     public static String TestCaseSection_Menu_Up;
+    public static String TestCaseSection_MessageDialog_TextInfoTestNotExecuted;
+    public static String TestCaseSection_MessageDialog_TitleInfoTestNotExecuted;
     public static String TestCaseSection_StatusMessage_FieldNotFound;
 	public static String TestPolicyCmptSelectionDialog_Title;
 	public static String TestPolicyCmptSelectionDialog_Error_NoTestPolicyCmptFound;

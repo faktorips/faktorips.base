@@ -187,7 +187,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             list.add(msgNew);
         }
 
-        list2 = getIpsProject().checkForDuplicateRuntimeIds(new IProductCmpt[] {this});
+        list2 = getIpsProject().checkForDuplicateRuntimeIds(new IIpsSrcFile[] {this.getIpsSrcFile()});
         list.add(list2);
     }
     

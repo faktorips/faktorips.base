@@ -264,6 +264,16 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         }
     }
 
+    void findIpsSourceFiles(IpsObjectType type, List result) throws CoreException {
+        if (!exists()) {
+            return;
+        }
+        IIpsPackageFragment[] packs = this.getIpsPackageFragments();
+        for (int i = 0; i < packs.length; i++) {
+            ((IpsPackageFragment)packs[i]).findIpsSourceFiles(type, result);
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -298,6 +308,28 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot imple
         }
     }
 
+    
+    /**
+     * Searches all objects of the given type starting with the given prefix in this root folder and
+     * adds them to the result.
+     *
+     * @throws NullPointerException if either type, prefix or result is null.
+     * @throws CoreException if an error occurs while searching.
+     */
+    public void findIpsSourceFilesStartingWithInternal(IpsObjectType type, String prefix, boolean ignoreCase, List result)
+            throws CoreException {
+        ArgumentCheck.notNull(type);
+        ArgumentCheck.notNull(prefix);
+        ArgumentCheck.notNull(result);
+        if (!exists()) {
+            return;
+        }
+        IIpsPackageFragment[] packs = getIpsPackageFragments();
+        for (int i = 0; i < packs.length; i++) {
+            ((IpsPackageFragment)packs[i]).findIpsSourceFilesStartingWith(type, prefix, ignoreCase, result);
+        }
+    }
+    
     /**
      * {@inheritDoc}
      */

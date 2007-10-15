@@ -72,7 +72,10 @@ public class ValidationUtils {
     		return false;
     	}
 
-    	if (part.getIpsProject().findIpsObject(type, objectName)==null) {
+        // due to better performance findIpsSrcFile is used instead of findIpsObject,
+        // because only the existence of the ips object needs to be checked here, 
+        // not the initialization (which is implicitly done by calling findIpsObject)
+    	if (part.getIpsProject().findIpsSrcFile(type, objectName)==null) {
             String text = NLS.bind(Messages.ValidationUtils_msgObjectDoesNotExist, StringUtils.capitalise(propertyDisplayName), objectName);
             list.add(new Message(msgCode, text, Message.ERROR, part, propertyName));
             return false;

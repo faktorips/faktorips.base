@@ -29,7 +29,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
@@ -207,7 +206,13 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             IpsPlugin.log(e);
             return;
         }
-		IProductCmpt prod = getProductCmpt();
+
+        if (ignoreHandlingOfWorkingDateMissmatch){
+            return;
+        }
+        ignoreHandlingOfWorkingDateMissmatch = true;
+        
+        IProductCmpt prod = getProductCmpt();
 		GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
 		IProductCmptGeneration generation = (IProductCmptGeneration)prod.getGenerationByEffectiveDate(workingDate);
 
@@ -333,15 +338,22 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 	private void handleWorkingDateMissmatch() {
         // following if statement is there as closing the dialog triggers a window activated event
         // and handling the evant calls this method.
-        if (isHandlingWorkingDateMismatch || ignoreHandlingOfWorkingDateMissmatch) {
+        if (isHandlingWorkingDateMismatch) {
             return;
         }
         isHandlingWorkingDateMismatch = true;
 		IProductCmpt cmpt = getProductCmpt();
-		GenerationSelectionDialog dialog = new GenerationSelectionDialog(getContainer().getShell(), cmpt);
-		dialog.open(); // closing the dialog triggers an window activation event
+        
+        IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
+        String generationConceptNameSingular = prefs.getChangesOverTimeNamingConvention()
+                .getGenerationConceptNameSingular();
+        String generationConceptNamePlural = prefs.getChangesOverTimeNamingConvention()
+                .getGenerationConceptNamePlural();
+        GenerationSelectionDialog dialog = new GenerationSelectionDialog(getContainer().getShell(), cmpt, prefs
+                .getFormattedWorkingDate(), prefs.getWorkingDate(), generationConceptNameSingular, generationConceptNamePlural, prefs.canEditRecentGeneration(), prefs.isWorkingModeEdit());
+        dialog.open(); // closing the dialog triggers an window activation event
         isHandlingWorkingDateMismatch = false;
-        int choice = GenerationSelectionDialog.CHOICE_BROWSE;
+        int choice = -1;
         if (IpsPlugin.getDefault().isTestMode()) {
             choice = IpsPlugin.getDefault().getTestAnswerProvider().getIntAnswer();
         } else {
@@ -353,31 +365,27 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         setWorkingDateUsedInEditor(workingDate);
         switch (choice) {
             case GenerationSelectionDialog.CHOICE_BROWSE:
-                setActiveGeneration(cmpt.findGenerationEffectiveOn(workingDate), false);
+                setActiveGeneration(dialog.getSelectedGeneration(), false);
                 break;
-
             case GenerationSelectionDialog.CHOICE_CREATE:
                 setActiveGeneration(cmpt.newGeneration(workingDate), false);
                 break;
-
             case GenerationSelectionDialog.CHOICE_SWITCH:
-                IProductCmptGeneration generation = dialog.getSelectedGeneration();
-                if (generation == null) {
-                    generation = (IProductCmptGeneration) getProductCmpt()
-                            .getFirstGeneration();
-                }
-                setActiveGeneration(generation, true);
-                IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
-                prefs.setWorkingDate(generation.getValidFrom());
+                setActiveGeneration(dialog.getSelectedGeneration(), true);
+                prefs.setWorkingDate(dialog.getSelectedGeneration().getValidFrom());
                 break;
-
             default:
-                IpsPlugin.log(new IpsStatus("Unknown choice: " //$NON-NLS-1$
-                        + dialog.getChoice()));
+                // show generation valid on current working date or if there is no valid generation,
+                // show the first generation
+                IIpsObjectGeneration currGeneration = cmpt.findGenerationEffectiveOn(workingDate);
+                if (currGeneration == null){
+                    currGeneration = cmpt.getFirstGeneration();
+                }
+                setActiveGeneration(currGeneration, false);
                 break;
         }
 	}
-
+    
     /**
      * {@inheritDoc}
      * @throws CoreException
@@ -451,4 +459,13 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 
 		return fModelDescriptionPage;
 	}
+
+    /**
+     * Set if a missmatch of a working date will be handled or ignored.
+     */
+    public void setIgnoreHandlingOfWorkingDateMissmatch(boolean ignoreHandlingOfWorkingDateMissmatch) {
+        this.ignoreHandlingOfWorkingDateMissmatch = ignoreHandlingOfWorkingDateMissmatch;
+    }
+    
+    
 }

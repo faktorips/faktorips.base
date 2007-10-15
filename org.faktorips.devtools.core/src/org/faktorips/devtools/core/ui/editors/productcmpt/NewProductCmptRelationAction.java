@@ -66,7 +66,7 @@ public class NewProductCmptRelationAction extends IpsAction {
 		Object selected = selection.getFirstElement();
 		if (selected instanceof String) {
 			setSyncpoint();
-			IProductCmptLink relation = parent.newRelation((String)selected);
+            IProductCmptLink relation = parent.newRelation((String)selected);
 			relation.setMaxCardinality(1);
 			relation.setMinCardinality(0); // todo get min from modell
 			RelationEditDialog dialog = new RelationEditDialog(relation, shell);

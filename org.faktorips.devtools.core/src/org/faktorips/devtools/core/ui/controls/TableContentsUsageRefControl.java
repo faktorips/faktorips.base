@@ -22,10 +22,10 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
@@ -50,31 +50,27 @@ public class TableContentsUsageRefControl extends TableContentsRefControl {
         this.structureUsage = structureUsage;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected IIpsObject[] getIpsObjects() throws CoreException {
+    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         if (structureUsage==null) {
-            return new IIpsObject[0];
+            return new IIpsSrcFile[0];
         }
-        IIpsObject[] allFound = super.getIpsObjects();
-        if (allFound.length==0) {
-            return allFound;
+        IIpsSrcFile[] allTableContents = super.getIpsSrcFiles();
+        if (allTableContents.length==0) {
+            return allTableContents;
         }
         String[] structures = structureUsage.getTableStructures();
         List result = new ArrayList();
-        
+        // search in all found table contents if the table structure is
+        // a configurated table structures in the table structure usage
         for (int i = 0; i < structures.length; i++) {
-            for (int j = 0; j < allFound.length; j++) {
-                if (((ITableContents)allFound[j]).getTableStructure().equals(structures[i])) {
-                    result.add(allFound[j]);
+            for (int j = 0; j < allTableContents.length; j++) {
+                String tableStructure = allTableContents[j].getPropertyValue(TableContents.PROPERTY_TABLE_STRUCTURE);
+                if (tableStructure != null && tableStructure.equals(structures[i])) {
+                    result.add(allTableContents[j]);
                 }
             }
         }
         
-        return (IIpsObject[])result.toArray(new IIpsObject[result.size()]);
+        return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
     }
-
-    
-    
 }

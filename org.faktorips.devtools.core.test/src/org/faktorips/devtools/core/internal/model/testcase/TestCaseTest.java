@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
@@ -539,6 +540,42 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         assertTrue(allTestPolicyCmptNames.contains("root2_child1"));
         assertTrue(allTestPolicyCmptNames.contains("root2_child1_child1"));
         assertTrue(allTestPolicyCmptNames.contains("root2_child2"));
+    }
+    
+    public void getAllTestObjects() throws CoreException{
+        ITestPolicyCmpt testPolicyCmptRoot1 = testCase.newTestPolicyCmpt();
+        testPolicyCmptRoot1.setName("root");
+        
+        assertEquals(1, testCase.getAllTestObjects().length);
+        assertContains(testCase.getAllTestObjects(), new Object[]{testPolicyCmptRoot1});
+        
+        ITestPolicyCmptRelation testPolicyCmptRelation = testPolicyCmptRoot1.newTestPolicyCmptRelation();
+        ITestPolicyCmpt testPolicyCmpt = testPolicyCmptRelation.newTargetTestPolicyCmptChild();
+        testPolicyCmpt.setName("root1_child1");
+        
+        assertEquals(2, testCase.getAllTestObjects().length);
+        assertContains(testCase.getAllTestObjects(), new Object[]{testPolicyCmptRoot1, testPolicyCmpt});
+        
+        ITestValue testValue = testCase.newTestValue();
+        ITestRule testRule = testCase.newTestRule();
+        
+        assertEquals(4, testCase.getAllTestObjects().length);
+        assertContains(testCase.getAllTestObjects(), new Object[]{testPolicyCmptRoot1, testPolicyCmpt, testValue, testRule});
+    }
+    
+    private void assertContains(ITestObject[] testObjects, Object[] expected){
+        for (int i = 0; i < expected.length; i++) {
+            boolean found = false;
+            for (int j = 0; j < testObjects.length; j++) {
+                if (testObjects.equals(testObjects)){
+                    found = true;
+                    break;
+                }
+            }
+            if (!found){
+                fail("expected object not found: " + expected[i]);
+            }
+        }
     }
     
     public void testGetReferencedProductCmpts() throws CoreException{

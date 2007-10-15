@@ -37,8 +37,10 @@ import org.eclipse.ui.dialogs.AbstractElementListSelectionDialog;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 
@@ -49,12 +51,13 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDialog {
 
     private Object[] fElements;
+    
     private IpsObjectType[] types;
     private Table filterList;
     
     private ViewForm fForm;
     private CLabel packageInfo;
-
+    
     /**
      * Creates a list selection dialog.
      * 
@@ -62,7 +65,7 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
      * @param renderer the label renderer.
      */
     public OpenIpsObjectSelectionDialog(Shell parent, String dialogTitle, String dialogMessage) {
-        super(parent, new DefaultLabelProvider());
+        super(parent, DefaultLabelProvider.createWithIpsSourceFileMapping());
         setTitle(dialogTitle);
         setMessage(dialogMessage);
         setIgnoreCase(true);
@@ -76,7 +79,7 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
      * @param elements the elements of the list.
      */
     public void setElements(Object[] elements) {
-        if (elements instanceof IIpsObject[]) {
+        if (elements instanceof IIpsObject[] || elements instanceof IIpsSrcFile[]) {
             fElements = elements;
         }
     }
@@ -146,6 +149,12 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
                     packageSource += " - " + frgmt.getIpsProject().getName() + "/" + frgmt.getRoot().getName(); //$NON-NLS-1$ //$NON-NLS-2$
                     packageInfo.setText(packageSource);
                     packageInfo.setImage(fFilteredList.getLabelProvider().getImage(frgmt));
+                } else if (selection[0] instanceof IIpsSrcFile) {
+                    IIpsPackageFragment frgmt = ((IIpsSrcFile)selection[0]).getIpsPackageFragment();
+                    String packageSource = frgmt.getName();
+                    packageSource += " - " + frgmt.getIpsProject().getName() + "/" + frgmt.getRoot().getName(); //$NON-NLS-1$ //$NON-NLS-2$
+                    packageInfo.setText(packageSource);
+                    packageInfo.setImage(fFilteredList.getLabelProvider().getImage(frgmt));
                 }
             }
         });
@@ -192,17 +201,28 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
         }
         List list = new ArrayList();
         for (int i = 0; i < fElements.length; i++) {
-            IIpsObject object = (IIpsObject)fElements[i];
-            if (activeFilters.contains(object.getIpsObjectType())) {
-                list.add(object);
+            IpsObjectType ipsObjectType = null;
+            if (fElements[i] instanceof IIpsObject){
+                ipsObjectType = ((IIpsObject)fElements[i]).getIpsObjectType();
+            } else if (fElements[i] instanceof IIpsSrcFile){
+                ipsObjectType = ((IIpsSrcFile)fElements[i]).getIpsObjectType();
+            }
+            if (ipsObjectType != null) {
+                if (activeFilters.contains(ipsObjectType)) {
+                    list.add(fElements[i]);
+                }
             }
         }
-        setListElements((IIpsObject[])list.toArray(new IIpsObject[list.size()]));
+        if (fElements instanceof IIpsObject[]){
+            setListElements((IIpsObject[])list.toArray(new IIpsObject[list.size()]));
+        } else if (fElements instanceof IIpsSrcFile[]){
+            setListElements((IIpsSrcFile[])list.toArray(new IIpsSrcFile[list.size()]));
+        }
     }
 
-    public IIpsObject getSelectedObject() {
+    public IIpsElement getSelectedObject() {
         if (getResult().length > 0) {
-            return (IIpsObject)getResult()[0];
+            return (IIpsElement)getResult()[0];
         }
         return null;
     }

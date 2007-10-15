@@ -31,6 +31,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -111,7 +112,7 @@ public abstract class IpsAction extends Action {
 		ISelection sel = selectionProvider.getSelection();
 		if (sel != null) {
 			if (sel instanceof IStructuredSelection) {
-				run((IStructuredSelection) sel);
+				run(new StructuredSelection(mapIpsSrcFilesToIpsObjects((IStructuredSelection)sel)));
 			} else {
 				throw new RuntimeException(
 						Messages.IpsAction_msgUnsupportedSelection
@@ -119,6 +120,26 @@ public abstract class IpsAction extends Action {
 			}
 		}
 	}
+
+    /*
+     * Returns a list of selected objects, map all selected ips source files to the corresponding ips object.
+     */
+    private List mapIpsSrcFilesToIpsObjects(IStructuredSelection selection) {
+        List selectedIpsObjects = new ArrayList(((IStructuredSelection)selection).size());
+        for (Iterator iter = ((IStructuredSelection)selection).iterator(); iter.hasNext();) {
+            Object select = iter.next();
+            if (select instanceof IIpsSrcFile){
+                try {
+                    selectedIpsObjects.add(((IIpsSrcFile)select).getIpsObject());
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+            } else {
+                selectedIpsObjects.add(select);
+            }
+        }
+        return selectedIpsObjects;
+    }
 
 	abstract public void run(IStructuredSelection selection);
 

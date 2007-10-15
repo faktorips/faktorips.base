@@ -83,6 +83,19 @@ public interface ITestPolicyCmpt extends ITestObject {
     public final static String MSGCODE_PRODUCT_CMPT_NOT_IN_PRODUCT_RELATION_DEFINITION = MSGCODE_PREFIX
         + "ProductCmptNotInProductRelationDefinition"; //$NON-NLS-1$
     
+
+    /**
+     * Validation message code to indicate that the product cmpt is not allowed for the relation.
+     */
+    public final static String MSGCODE_WRONG_PRODUCT_CMPT_OF_RELATION = MSGCODE_PREFIX + "WrongProductCmptOfRelation"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the product cmpt of the parent of a relation is not
+     * specified.
+     */
+    public final static String MSGCODE_PARENT_PRODUCT_CMPT_OF_RELATION_NOT_SPECIFIED = MSGCODE_PREFIX
+            + "ParentProductCmptOfRelationNotSpecified"; //$NON-NLS-1$
+    
     /**
      * Returns the qualified name of the test policy component type parameter class.
      */
@@ -117,7 +130,13 @@ public interface ITestPolicyCmpt extends ITestObject {
      * @throws CoreException if an error occurs while searching for the product component.
      */	
 	public IProductCmpt findProductCmpt() throws CoreException;
-	
+
+    /**
+     * Returns <code>true</code> if the given test policy cmpt is product relevant,
+     * otherwise <code>false</code>
+     */ 
+    public boolean isProductRelevant();
+
     /**
      * Sets the unique name of the test policy component.
      */	

@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
+import java.util.GregorianCalendar;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -57,6 +59,12 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         super(file);
     }
 
+    IpsObjectGeneration createNewGenerationInternal(GregorianCalendar validFrom) {
+        TableContentsGeneration generation = (TableContentsGeneration)super.newGenerationInternal(getNextPartId());
+        generation.setValidFromInternal(validFrom);
+        return generation;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -83,8 +91,12 @@ public class TableContents extends TimedIpsObject implements ITableContents {
      */
     public void setTableStructure(String qName) {
         String oldStructure = structure;
-        structure = qName;
+        setTableStructureInternal(qName);
         valueChanged(oldStructure, structure);
+    }
+    
+    protected void setTableStructureInternal(String qName){
+        structure = qName;
     }
     
     /**
@@ -101,6 +113,10 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         return numOfColumns;
     }
 
+    protected void setNumOfColumnsInternal(int numOfColumns){
+        this.numOfColumns = numOfColumns;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -160,7 +176,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_TABLESTRUCTURE, structure);
-        newElement.setAttribute("numOfColumns", "" + numOfColumns); //$NON-NLS-1$ //$NON-NLS-2$
+        newElement.setAttribute(PROPERTY_NUMOFCOLUMNS, "" + numOfColumns); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -169,7 +185,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         structure = element.getAttribute(PROPERTY_TABLESTRUCTURE);
-        numOfColumns = Integer.parseInt(element.getAttribute("numOfColumns")); //$NON-NLS-1$
+        numOfColumns = Integer.parseInt(element.getAttribute(PROPERTY_NUMOFCOLUMNS)); //$NON-NLS-1$
     }
 
     /**

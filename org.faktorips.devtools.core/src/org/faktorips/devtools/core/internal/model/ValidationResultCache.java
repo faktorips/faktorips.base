@@ -82,7 +82,7 @@ public class ValidationResultCache {
 	 * the exact dependencies between objects to solve this more efficiently.  
 	 */
     synchronized public void removeStaleData(IIpsSrcFile file) {
-		data.clear();
+        data.clear();
 	}
 
 	/**

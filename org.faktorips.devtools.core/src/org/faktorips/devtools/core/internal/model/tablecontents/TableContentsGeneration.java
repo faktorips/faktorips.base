@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -55,6 +56,14 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         return getRows();
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void setValidFromInternal(GregorianCalendar validFrom) {
+        super.setValidFromInternal(validFrom);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -87,6 +96,16 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     public IRow newRow() {
         IRow newRow = newRowInternal(getNextPartId());
         objectHasChanged();
+        return newRow;
+    }
+    
+    Row newRow(List columns) {
+        Row newRow = newRowInternal(getNextPartId());
+        int column = 0;
+        for (Iterator iter = columns.iterator(); iter.hasNext();) {
+            String value = (String)iter.next();
+            newRow.setValueInternal(column++, value);
+        }
         return newRow;
     }
     

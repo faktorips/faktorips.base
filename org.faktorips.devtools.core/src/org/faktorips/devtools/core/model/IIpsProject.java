@@ -377,14 +377,67 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IProductCmptType findProductCmptType(String qualifiedName) throws CoreException;
 
     /**
-     * Returns all objects of the given type found on the classpath. 
+     * Returns the product component with the given qualified name or <code>null</code> if no such
+     * product component exists. If more than one product component with the given id exists, the
+     * first one found is returned.
+     *
+     * @param qualifiedName the name to find the product component for
+     * @throws CoreException if an error occurs during search.
+     */
+    public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException;
+
+    /**
+     * Returns the product component with the given runtime id or <code>null</code> if no such
+     * product component exists. If more than one product component with the given id exists, the
+     * first one found is returned.
+     *
+     * @param runtimeId The runtime-id to find the product component for.
+     * @throws CoreException if an error occurs during search.
+     */
+    public IProductCmpt findProductCmptByRuntimeId(String runtimeId) throws CoreException;
+
+    /**
+     * Fills the provided <code>java.util.List</code> with <code>ITableContent</code> objects that are found in the
+     * workspace and are based on the provided <code>ITableStructure</code>.
+     *
+     * @throws CoreException if an error occurs during search.
+     */
+    public void findTableContents(ITableStructure structure, List tableContents) throws CoreException;
+
+    /**
+     * Returns the first ips source file with the the indicated ips object type and qualified name
+     * found on the objectpath.<br>
+     * Returns <code>null</code> if the source file wasn't found (not exists).
+     */
+    public IIpsSrcFile findIpsSrcFile(IpsObjectType type, String qualifiedName) throws CoreException;
+
+    //
+    // Find methods with result array
+    //
+    
+    /**
+     * Returns all objects of the given type found on the classpath.
+     * 
+     * @deprecated use IIpsProject#findIpsSrcFiles(IProductCmptType, boolean) due to better performance 
      */
     public IIpsObject[] findIpsObjects(IpsObjectType type) throws CoreException;
     
     /**
+     * Returns all ips source files of the given type found on the classpath.
+     */
+    public IIpsSrcFile[] findIpsSrcFiles(IpsObjectType type) throws CoreException;
+    
+    /**
      * Returns all IpsObjects within this IpsProject and the IpsProjects this one depends on.
+     * 
+     * @deprecated use IIpsProject#findAllIpsSrcFiles(IProductCmptType, boolean) due to better performance  
      */
     public void findAllIpsObjects(List result) throws CoreException;
+
+    /**
+     * Returns all ips source files within this IpsProject and the IpsProjects this one depends on.
+     */
+    public void findAllIpsSrcFiles(List result) throws CoreException;
 
     /**
      * Returns all IpsObjects that are accessible through IpsSrcFolder entries of this IpsProject.
@@ -393,8 +446,15 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     
     /**
      * Returns all objects of the given type starting with the given prefix found on the ipsobject path.
+     * 
+     * @deprecated use IIpsProject#findIpsSrcFilesStartingWith(IProductCmptType, boolean) due to better performance  
      */
     public IIpsObject[] findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase) throws CoreException;
+    
+    /**
+     * Returns all ips source files of the given type starting with the given prefix found on the ipsobject path.
+     */
+    public IIpsSrcFile[] findIpsSrcFilesStartingWith(IpsObjectType type, String prefix, boolean ignoreCase) throws CoreException;
     
     /**
      * Returns all product components that are based on the given product component type (either
@@ -406,31 +466,27 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @param includeSubtypes If <code>true</code> is passed also product component that are based
      *            on subtypes of the given product components type are returned, otherwise only
      *            product components that are directly based on the given type are returned.
+     *            
+     * @deprecated use IIpsProject#findAllProductCmptSrcFiles(IProductCmptType, boolean) due to better performance            
      */
     public IProductCmpt[] findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubtypes) throws CoreException;
-    
-    /**
-     * Returns the product component with the given runtime id or <code>null</code> if no such
-     * product component exists. If more than one product component with the given id exists, the
-     * first one found is returned. 
-     * 
-     * @param runtimeId The runtime-id to find the product component for.
-     * @throws CoreException if an error occurs during search.
-     */
-    public IProductCmpt findProductCmptByRuntimeId(String runtimeId) throws CoreException;
-    
-    /**
-     * Returns the product component with the given qualified name or <code>null</code> if no such
-     * product component exists. If more than one product component with the given id exists, the
-     * first one found is returned. 
-     * 
-     * @param qualifiedName the name to find the product component for
-     * @throws CoreException if an error occurs during search.
-     */
-    public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException;
 
     /**
-     * Returns all product component generation that refer to the given object, identified by the qualified name type. 
+     * Returns all ips source files represents product components that are based on the given
+     * product component type (either directly or because they are based on a subtype of the given
+     * type) in this and all referenced projects. If productCmptType is null, the method returns all
+     * source files (product components) found on the classpath.
+     * 
+     * @param pcTypeName The product components type product component will be searched for.
+     * @param includeSubtypes If <code>true</code> is passed also product component that are based
+     *            on subtypes of the given product components type are returned, otherwise only
+     *            product components that are directly based on the given type are returned.
+     * 
+     */    
+    public IIpsSrcFile[] findAllProductCmptSrcFiles(IProductCmptType productCmptType, boolean includeSubtypes) throws CoreException;
+
+    /**
+     * Returns all product component generation that refer to the given object, identified by the qualified name type.
      * Returns an empty array if none is found.
      * 
      * @throws CoreException if an exception occurs while searching.
@@ -613,7 +669,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      * @throws CoreException if an error occurs during search.
      */
-    public MessageList checkForDuplicateRuntimeIds(IProductCmpt[] cmptsToCheck) throws CoreException;
+    public MessageList checkForDuplicateRuntimeIds(IIpsSrcFile[] cmptsToCheck) throws CoreException;
 
     
     /**
@@ -627,14 +683,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public MessageList checkForDuplicateRuntimeIds() throws CoreException;
     
-    /**
-     * Fills the provided <code>java.util.List</code> with <code>ITableContent</code> objects that are found in the
-     * workspace and are based on the provided <code>ITableStructure</code>.
-     * 
-     * @throws CoreException if an error occurs during search.
-     */
-    public void findTableContents(ITableStructure structure, List tableContents) throws CoreException;
-
     /**
      * Returns <code>true</code> if the given resource will be excluded from the product definition.<br>
      * If the given resource is relevant for the product definition the method returns <code>false</code>.

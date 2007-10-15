@@ -149,10 +149,10 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
     public abstract void findIpsObjects(IpsObjectType type, List result) throws CoreException;
 
     /**
-     * Searches all ips objects within this package fragment and adds them to the result.
+     * Searches all ips source files of the given type and adds them to the result.
      *
      * @throws CoreException if an error occurs while searching
      */
-    public abstract void findIpsObjects(List result) throws CoreException;
+    public abstract void findIpsSourceFiles(IpsObjectType type, List result) throws CoreException;
 
 }

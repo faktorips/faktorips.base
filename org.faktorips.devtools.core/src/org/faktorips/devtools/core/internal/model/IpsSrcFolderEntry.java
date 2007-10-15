@@ -31,6 +31,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -239,12 +240,35 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     /**
      * {@inheritDoc}
      */
+    public void findIpsSrcFilesInternal(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException {
+        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsSourceFiles(type, result);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsSrcFile findIpsSrcFileInternal(IIpsProject ipsProject, QualifiedNameType nameType, Set visitedEntries) throws CoreException {
+        return getIpsPackageFragmentRoot(ipsProject).findIpsSrcFile(nameType);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     protected void findIpsObjectsStartingWithInternal(IIpsProject ipsProject, IpsObjectType type, String prefix, boolean ignoreCase, List result, Set visitedEntries)
             throws CoreException {
         ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsObjectsStartingWith(type, prefix, ignoreCase,
                 result);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    protected void findIpsSrcFilesStartingWithInternal(IIpsProject ipsProject, IpsObjectType type, String prefix, boolean ignoreCase, List result, Set visitedEntries)
+            throws CoreException {
+        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsSourceFilesStartingWithInternal(type, prefix, ignoreCase,
+                result);
+    }
+    
     /**
      * {@inheritDoc}
      */

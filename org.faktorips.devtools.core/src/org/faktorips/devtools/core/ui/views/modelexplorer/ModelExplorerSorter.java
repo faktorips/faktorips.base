@@ -30,6 +30,8 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -51,7 +53,10 @@ public class ModelExplorerSorter extends ViewerSorter{
     }
 
 	public int compare(Viewer viewer, Object o1, Object o2) {
-		if(o1==null || o2==null){
+		o1 = mapIpsSrcFileToIpsObject(o1);
+		o2 = mapIpsSrcFileToIpsObject(o2);
+        
+        if(o1==null || o2==null){
 			return 0;
 		}
 		// place TableStructures below PolicyComponentTypes
@@ -140,4 +145,15 @@ public class ModelExplorerSorter extends ViewerSorter{
         }
     }
 
+    private Object mapIpsSrcFileToIpsObject(Object o1) {
+        if (! (o1 instanceof IIpsSrcFile)){
+            return o1;
+        }
+        IIpsSrcFile ipsSrcFile = (IIpsSrcFile) o1;
+        IpsObjectType ipsObjectType = ipsSrcFile.getIpsObjectType();
+        if (ipsObjectType == null){
+            return null;
+        }
+        return ipsObjectType.newObject(ipsSrcFile);
+    }
 }

@@ -18,13 +18,12 @@
 package org.faktorips.devtools.core.ui.controls;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -56,26 +55,29 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
         this.includeCmptsForSubtypes = includeCmptsForSubtypes;
     }
     
-    /** 
+	/**
      * {@inheritDoc}
      */
-    protected IIpsObject[] getIpsObjects() throws CoreException {
+    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         if (getIpsProject()==null) {
-            return new IIpsObject[0];
+            return new IIpsSrcFile[0];
         }
 
-        IProductCmpt[] cmpts = getIpsProject().findAllProductCmpts(productCmptType, includeCmptsForSubtypes);
-
-    	List cmptList = new ArrayList();
-    	cmptList.addAll(Arrays.asList(cmpts));
-    	for (int i = 0; i < toExclude.length; i++) {
-			cmptList.remove(toExclude[i]);
-		}
-    	
-        return (IIpsObject[])cmptList.toArray(new IIpsObject[cmptList.size()]);
+        IIpsSrcFile[] ipsSrcFiles = getIpsProject().findAllProductCmptSrcFiles(productCmptType, includeCmptsForSubtypes);
+        List result = new ArrayList(ipsSrcFiles.length);
+        for (int i = 0; i < ipsSrcFiles.length; i++) {
+            result.add(ipsSrcFiles[i]);
+        }
+        if (result.size() > 0){
+            for (int i = 0; i < toExclude.length; i++) {
+                result.remove(toExclude[i].getIpsSrcFile());
+            }
+        }
+        
+        return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
     }
 
-	/**
+    /**
 	 * Set all product components to exclude from result.
 	 * 
 	 * @param cmpts All product components to exclude. 
@@ -88,5 +90,4 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
 			toExclude = cmpts;
 		}
 	}
-
 }

@@ -95,8 +95,12 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
      */
     public void setValidFrom(GregorianCalendar validFrom) {
         GregorianCalendar oldValue = this.validFrom;
-        this.validFrom = validFrom;
+        setValidFromInternal(validFrom);
         valueChanged(oldValue, validFrom);
+    }
+    
+    protected void setValidFromInternal(GregorianCalendar validFrom) {
+        this.validFrom = validFrom;
     }
     
     /**

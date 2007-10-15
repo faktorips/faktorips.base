@@ -84,6 +84,13 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 		return testCase;
 	}
 	
+    /**
+     * Set the test case to be displayed.
+     */
+    public void setTestCase(ITestCase testCase){
+        this.testCase = testCase;
+    }
+    
 	/**
 	 * Returns <code>true</code> if the content will be provided without the relation layer.
 	 * If the complete structure will be displayed (with relations) then <code>false</code> will be returned.
@@ -269,7 +276,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         // furthermore show the test rule objects as childs of a dummy test rule parameter node 
         ITestCaseType testCaseType = null;
         try {
-            testCaseType = testCase.findTestCaseType();
+            testCaseType = testCase.findTestCaseType(testCase.getIpsProject());
         } catch (CoreException e) {
             // ignore exception while retrieving the test rule parameter
         }

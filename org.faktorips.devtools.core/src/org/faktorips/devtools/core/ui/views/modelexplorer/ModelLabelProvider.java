@@ -48,7 +48,13 @@ public class ModelLabelProvider implements ILabelProvider {
 
 	public Image getImage(Object element) {
 		if(element instanceof IIpsElement){
-		    return ((IIpsElement) element).getImage();
+		    if (element instanceof IIpsSrcFile){
+                IIpsSrcFile ipsSrcFile = (IIpsSrcFile) element;
+                if (ipsSrcFile.exists()){
+                    return getImage(ipsSrcFile.getIpsObjectType().newObject(ipsSrcFile));
+                }
+            } 
+		    return ((IIpsElement)element).getImage();
 		} else if(element instanceof IResource){
             // check if the resource is an ips source file, in this case return the image of the ips source,
             // remark: if we use the IWorkbenchAdapter to retrieve the image, we get the
@@ -84,6 +90,12 @@ public class ModelLabelProvider implements ILabelProvider {
 
 	public String getText(Object element) {
 		if (element instanceof IIpsElement) {
+            if (element instanceof IIpsSrcFile){
+                IIpsSrcFile ipsSrcFile = (IIpsSrcFile) element;
+                if (ipsSrcFile.exists()){
+                    return getText(ipsSrcFile.getIpsObjectType().newObject(ipsSrcFile));
+                }
+            }
             if (element instanceof IIpsPackageFragment) {
                 IIpsPackageFragment fragment = (IIpsPackageFragment)element;
                 if (fragment.isDefaultPackage()) {

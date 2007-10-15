@@ -14,13 +14,24 @@
 
 package org.faktorips.devtools.core.internal.model.testcasetype;
 
+import java.util.Arrays;
+import java.util.GregorianCalendar;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -43,8 +54,11 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
+        PolicyCmptType pct = newPolicyCmptType(project, "TestPolicy");
         testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         policyCmptTypeParameterInput = testCaseType.newInputTestPolicyCmptTypeParameter();
+        policyCmptTypeParameterInput.setName("Parameter1");
+        policyCmptTypeParameterInput.setPolicyCmptType(pct.getQualifiedName());
     }
 
     public void testIsRootParameter() {
@@ -439,5 +453,124 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         targetOfAss.setTestParameterType(TestParameterType.INPUT);
         ml = policyCmptTypeParameterInput.validate();
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
+    }
+    
+    private class TestContent{
+        private IPolicyCmptType policy;
+        private IPolicyCmptTypeAssociation coverages;
+        private IPolicyCmptType coverage;
+        private IProductCmpt policyProduct;
+        private IProductCmpt coverageProductA;
+        private IProductCmpt coverageProductB;
+
+        private ITestPolicyCmptTypeParameter parameter;
+        private ITestPolicyCmptTypeParameter childParameter;
+        
+        public void init(IIpsProject project) throws CoreException {
+            policy = newPolicyCmptType(project, "Policy");
+            policy.setConfigurableByProductCmptType(true);
+            ProductCmptType productCmptTypePolicy = newProductCmptType(project, "PolicyType");
+            policy.setProductCmptType(productCmptTypePolicy.getQualifiedName());
+            productCmptTypePolicy.setPolicyCmptType(policy.getQualifiedName());
+            
+            coverage = newPolicyCmptType(project, "Coverage");
+            coverage.setConfigurableByProductCmptType(true);
+            ProductCmptType productCmptTypeCoverage = newProductCmptType(project, "CoverageType");
+            coverage.setProductCmptType(productCmptTypeCoverage.getQualifiedName());
+            productCmptTypeCoverage.setPolicyCmptType(coverage.getQualifiedName());
+
+            coverages = policy.newPolicyCmptTypeAssociation();
+            coverages.setTarget(coverage.getQualifiedName());
+            coverages.setProductRelevant(true);
+            coverages.setTargetRoleSingular("Coverage");
+            coverages.setTargetRolePlural("Coverages");
+            coverages.setTargetRoleSingularProductSide("Coverage");
+            coverages.setTargetRolePluralProductSide("Coverages");
+            coverages.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+            coverages.setProductRelevant(true);
+
+            IProductCmptTypeAssociation association = productCmptTypePolicy.newProductCmptTypeAssociation();
+            association.setTarget(productCmptTypeCoverage.getQualifiedName());
+            association.setTargetRoleSingular("Coverage");
+            association.setTargetRolePlural("Coverages");
+            
+            policyProduct = newProductCmpt(project, "PolicyA 2007-09");
+            policyProduct.setProductCmptType(productCmptTypePolicy.getQualifiedName());
+            coverageProductA = newProductCmpt(project, "CoverageA 2007-09");
+            coverageProductA.setProductCmptType(productCmptTypeCoverage.getQualifiedName());
+            coverageProductA.newGeneration(new GregorianCalendar());
+            coverageProductB = newProductCmpt(project, "CoverageB 2007-09");
+            coverageProductB.setProductCmptType(productCmptTypeCoverage.getQualifiedName());
+            coverageProductB.newGeneration(new GregorianCalendar());
+            
+            parameter = testCaseType.newCombinedPolicyCmptTypeParameter();
+            parameter.setPolicyCmptType(policy.getQualifiedName());
+            parameter.setName("PolicyParam");
+            childParameter = parameter.newTestPolicyCmptTypeParamChild();
+            childParameter.setPolicyCmptType(coverage.getQualifiedName());
+            childParameter.setRelation(coverages.getName());
+            childParameter.setName("CoverageParam");            
+
+        }
+    }
+    
+    public void testGetAllowedProductCmpt() throws CoreException{
+        TestContent testContent = new TestContent();
+        testContent.init(project);
+        
+        // no relation defined
+        // => root 1, child no result
+        IIpsSrcFile[] allowedProductCmpt = testContent.parameter.getAllowedProductCmpt(project, testContent.policyProduct);
+        assertEquals(1, allowedProductCmpt.length);
+        assertEquals(testContent.policyProduct.getIpsSrcFile(), allowedProductCmpt[0]);
+        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
+        assertEquals(0, allowedProductCmpt.length);
+        
+        // one relation defined, but without target
+        // => child no result
+        IProductCmptGeneration generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
+        IProductCmptLink productCmptRelation = generation.newLink(testContent.coverages.getTargetRoleSingularProductSide());
+        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
+        assertEquals(0, allowedProductCmpt.length);
+        
+        // one relation with target
+        productCmptRelation.setTarget(testContent.coverageProductA.getQualifiedName());
+        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
+        
+        
+        assertEquals(1, allowedProductCmpt.length);
+        assertEquals(testContent.coverageProductA.getIpsSrcFile(), allowedProductCmpt[0]);
+        
+        // relation exists twice
+        // find product cmpt only once
+        generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
+        productCmptRelation = generation.newLink(testContent.coverages.getTargetRoleSingularProductSide());
+        productCmptRelation.setTarget(testContent.coverageProductA.getQualifiedName());
+        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
+        assertEquals(1, allowedProductCmpt.length);
+        assertEquals(testContent.coverageProductA.getIpsSrcFile(), allowedProductCmpt[0]);
+        
+        // if no parent product cmpt is given, return all product cmpt which matches the
+        // relation of the parameter
+        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, null);
+        assertEquals(2, allowedProductCmpt.length);
+        asserContains(allowedProductCmpt, testContent.coverageProductA);
+        asserContains(allowedProductCmpt, testContent.coverageProductB);
+
+        // test with two generations
+        //   coverageProductA specified in generation 1
+        //   coverageProductB specified in generation 2
+        generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
+        productCmptRelation = generation.newLink(testContent.coverages.getTargetRoleSingularProductSide());
+        productCmptRelation.setTarget(testContent.coverageProductB.getQualifiedName());
+        allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
+        assertEquals(2, allowedProductCmpt.length);
+        asserContains(allowedProductCmpt, testContent.coverageProductA);
+        asserContains(allowedProductCmpt, testContent.coverageProductB);
+    }
+
+    private void asserContains(IIpsSrcFile[] allowedProductCmpt, IProductCmpt productCmpt) {
+        List list = Arrays.asList(allowedProductCmpt);
+        assertTrue(list.contains(productCmpt.getIpsSrcFile()));
     }
 }

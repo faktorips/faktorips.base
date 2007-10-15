@@ -71,6 +71,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -79,8 +80,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
+import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -698,14 +699,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
         getProject().setDescription(description, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException {
-        Set visitedEntries = new HashSet();
-        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObject(this, nameType, visitedEntries);
-    }
-
+    //
+    // Find methods with single result
+    //
+    
     /**
      * {@inheritDoc}
      */
@@ -720,27 +717,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
-    public IIpsObject[] findIpsObjectsStartingWith(IpsObjectType type,
-            String prefix,
-            boolean ignoreCase) throws CoreException {
-        ArrayList result = new ArrayList();
-        findIpsObjectsStartingWith(type, prefix, ignoreCase, result);
-        return (IIpsObject[])result.toArray(new IIpsObject[result.size()]);
-    }
-
-    /**
-     * Searches all objects of the given type starting with the given prefix found on the project's
-     * path and adds them to the given result list.
-     * 
-     * @throws CoreException if an error occurs while searching for the objects.
-     */
-    public void findIpsObjectsStartingWith(IpsObjectType type,
-            String prefix,
-            boolean ignoreCase,
-            List result) throws CoreException {
+    public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException {
         Set visitedEntries = new HashSet();
-        ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObjectsStartingWith(this, type, prefix,
-            ignoreCase, result, visitedEntries);
+        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObject(this, nameType, visitedEntries);
     }
 
     /**
@@ -756,34 +735,165 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public IProductCmptType findProductCmptType(String qualifiedName) throws CoreException {
         return (IProductCmptType)findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE_V2, qualifiedName);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException{
+        return (IProductCmpt)findIpsObject(IpsObjectType.PRODUCT_CMPT, qualifiedName);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IProductCmpt findProductCmptByRuntimeId(String runtimeId) throws CoreException {
+        if(runtimeId == null){
+            return null;
+        }
+        IIpsSrcFile[] all = findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
+        for (int i = 0; i < all.length; i++) {
+            if (runtimeId.equals(((IIpsSrcFile)all[i]).getPropertyValue(IProductCmpt.PROPERTY_RUNTIME_ID))) {
+                return (IProductCmpt)((IIpsSrcFile)all[i]).getIpsObject();
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void findTableContents(ITableStructure structure, List tableContents) throws CoreException{
+        List alltableContents = new ArrayList();
+        findIpsObjects(IpsObjectType.TABLE_CONTENTS, alltableContents);
+        for (Iterator it = alltableContents.iterator(); it.hasNext();) {
+            ITableContents content = (ITableContents)it.next();
+            if(content.getTableStructure().equals(structure.getQualifiedName())){
+                tableContents.add(content);
+            }
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsSrcFile findIpsSrcFile(IpsObjectType type, String qualifiedName) throws CoreException{
+        Set visitedEntries = new HashSet();
+        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsSrcFile(this, type, qualifiedName, visitedEntries);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObject[] findIpsObjectsStartingWith(IpsObjectType type,
+            String prefix,
+            boolean ignoreCase) throws CoreException {
+        ArrayList result = new ArrayList();
+        findIpsObjectsStartingWith(type, prefix, ignoreCase, result);
+        return (IIpsObject[])result.toArray(new IIpsObject[result.size()]);
+    }
+    
+    /*
+     * Searches all objects of the given type starting with the given prefix found on the project's
+     * path and adds them to the given result list.
+     * 
+     * @throws CoreException if an error occurs while searching for the objects.
+     */
+    private void findIpsObjectsStartingWith(IpsObjectType type,
+            String prefix,
+            boolean ignoreCase,
+            List result) throws CoreException {
+        Set visitedEntries = new HashSet();
+        ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObjectsStartingWith(this, type, prefix,
+            ignoreCase, result, visitedEntries);
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsSrcFile[] findIpsSrcFilesStartingWith(IpsObjectType type,
+            String prefix,
+            boolean ignoreCase) throws CoreException {
+        ArrayList result = new ArrayList();
+        findIpsSrcFilesStartingWith(type, prefix, ignoreCase, result);
+        return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
+    }
+    
+    /*
+     * Searches all objects of the given type starting with the given prefix found on the project's
+     * path and adds them to the given result list.
+     *
+     * @throws CoreException if an error occurs while searching for the objects.
+     */
+    private void findIpsSrcFilesStartingWith(IpsObjectType type,
+            String prefix,
+            boolean ignoreCase,
+            List result) throws CoreException {
+        Set visitedEntries = new HashSet();
+        ((IpsObjectPath)getIpsObjectPathInternal()).findIpsSrcFilesStartingWith(this, type, prefix,
+            ignoreCase, result, visitedEntries);
+    }
+	
 	/**
      * {@inheritDoc}
+     * 
+     * @deprecated use this{@link #findIpsSrcFiles(IpsObjectType)} instead
 	 */
     public IIpsObject[] findIpsObjects(IpsObjectType type) throws CoreException {
         Set visitedEntries = new HashSet();
         return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObjects(this, type, visitedEntries);
     }
-
+    
     /**
      * Returns all IpsObjects within this IpsProject and the IpsProjects this one depends on.
      * @throws CoreException
+     * 
+     * @deprecated use this{@link #findAllIpsSrcFiles(List)} instead
      */
     public void findAllIpsObjects(List result) throws CoreException{
+        findAllIpsObjects(result, IpsObjectType.ALL_TYPES);
+    }
+
+    private void findAllIpsObjects(List result, IpsObjectType[] ipsObjectTypes) throws CoreException{
         Set visitedEntries = new HashSet();
-        ((IpsObjectPath)getIpsObjectPathInternal()).findAllIpsObjects(this, result, visitedEntries);
+        for (int i = 0; i < ipsObjectTypes.length; i++) {
+            getIpsObjectPathInternal().findIpsObjects(this, ipsObjectTypes[i], result, visitedEntries);
+            visitedEntries.clear();
+        }
     }
     
-    public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
-        Set visitedEntries = new HashSet();
-    	getIpsObjectPathInternal().findIpsObjects(this, type, result, visitedEntries);
+    private void findIpsObjects(IpsObjectType type, List result) throws CoreException {
+    	getIpsObjectPathInternal().findIpsObjects(this, type, result, new HashSet());
     }
+    
 
     public void findAllIpsObjectsOfSrcFolderEntries(List result) throws CoreException {
         Set visitedEntries = new HashSet();
         getIpsObjectPathInternal().findAllIpsObjectsOfSrcFolderEntries(this, result, visitedEntries);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsSrcFile[] findIpsSrcFiles(IpsObjectType type) throws CoreException {
+        Set visitedEntries = new HashSet();
+        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsSrcFiles(this, type, visitedEntries);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void findAllIpsSrcFiles(List result) throws CoreException{
+        findAllIpsSrcFiles(result, IpsObjectType.ALL_TYPES);
+    }
+    
+    private void findAllIpsSrcFiles(List result, IpsObjectType[] ipsObjectTypes) throws CoreException{
+        Set visitedEntries = new HashSet();
+        for (int i = 0; i < ipsObjectTypes.length; i++) {
+            getIpsObjectPathInternal().findIpsSrcFiles(this, ipsObjectTypes[i], result, visitedEntries);
+            visitedEntries.clear();
+        }
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -1076,38 +1186,26 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
-	public IProductCmpt findProductCmptByRuntimeId(String runtimeId) throws CoreException {
-		if(runtimeId == null){
-			return null;
-		}
-		IIpsObject[] all = findIpsObjects(IpsObjectType.PRODUCT_CMPT);
-		for (int i = 0; i < all.length; i++) {
-			if (((IProductCmpt)all[i]).getRuntimeId().equals(runtimeId)) {
-				return (IProductCmpt)all[i];
-			}
-		}
-		return null;
-	}
-
-    /**
-     * {@inheritDoc}
-     */
-    public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException{
-        return (IProductCmpt)findIpsObject(IpsObjectType.PRODUCT_CMPT, qualifiedName);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void findTableContents(ITableStructure structure, List tableContents) throws CoreException{
-        List alltableContents = new ArrayList();
-        findIpsObjects(IpsObjectType.TABLE_CONTENTS, alltableContents);
-        for (Iterator it = alltableContents.iterator(); it.hasNext();) {
-            ITableContents content = (ITableContents)it.next();
-            if(content.getTableStructure().equals(structure.getQualifiedName())){
-                tableContents.add(content);
+    public IIpsSrcFile[] findAllProductCmptSrcFiles(IProductCmptType productCmptType, boolean includeCmptsForSubtypes) throws CoreException {
+        IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
+        List result = new ArrayList(ipsSrcFiles.length);
+        for (int i = 0; i < ipsSrcFiles.length; i++) {
+            String strProductCmptTypeOfCandidate = ipsSrcFiles[i].getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
+            if (productCmptType == null || productCmptType.getQualifiedName().equals(strProductCmptTypeOfCandidate)) {
+                result.add(ipsSrcFiles[i]);
+            } else if (includeCmptsForSubtypes) {
+                // TODO Joerg v2 performance verbessern?
+                IProductCmpt productCmpt = (IProductCmpt)ipsSrcFiles[i].getIpsObject();
+                IProductCmptType type = productCmpt.findProductCmptType(this);
+                if (type == null) {
+                    continue;
+                }
+                if (type.isSubtypeOrSameType(productCmptType, this)) {
+                    result.add(ipsSrcFiles[i]);
+                }
             }
         }
+        return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
     }
     
 	/**
@@ -1234,7 +1332,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         result.toArray(resultArray);
         return resultArray;
     }
-
+    
     /**
 	 * {@inheritDoc}
 	 */
@@ -1439,13 +1537,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public MessageList checkForDuplicateRuntimeIds() throws CoreException {
-        return checkForDuplicateRuntimeIdsInternal((IIpsObject[]) findIpsObjects(IpsObjectType.PRODUCT_CMPT), true);
+        return checkForDuplicateRuntimeIdsInternal((IIpsSrcFile[]) findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT), true);
     }
 
     /**
      * {@inheritDoc}
      */
-    public MessageList checkForDuplicateRuntimeIds(IProductCmpt[] cmptsToCheck) throws CoreException {
+    public MessageList checkForDuplicateRuntimeIds(IIpsSrcFile[] cmptsToCheck) throws CoreException {
         return checkForDuplicateRuntimeIdsInternal(cmptsToCheck, false);
     }
     
@@ -1465,21 +1563,22 @@ public class IpsProject extends IpsElement implements IIpsProject {
      *         components with the same runtime id if <code>all</code> is <code>true</code>.
      * @throws CoreException if an error occurs during processing.
      */
-    private MessageList checkForDuplicateRuntimeIdsInternal(IIpsObject[] cmptsToCheck, boolean all)
+    private MessageList checkForDuplicateRuntimeIdsInternal(IIpsSrcFile[] cmptsToCheck, boolean all)
             throws CoreException {
-        IIpsObject[] baseCheck;
+        IIpsSrcFile[] baseCheck;
         if (all) {
             baseCheck = cmptsToCheck;
         } else {
-            baseCheck = (IIpsObject[]) findIpsObjects(IpsObjectType.PRODUCT_CMPT);
+            baseCheck = (IIpsSrcFile[]) findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
         }
-
+        
         MessageList result = new MessageList();
         IProductCmptNamingStrategy strategyI = null;
         IProductCmptNamingStrategy strategyJ = null;
         for (int i = 0; i < cmptsToCheck.length; i++) {
-            ArgumentCheck.isInstanceOf(cmptsToCheck[i], IProductCmpt.class);
-            IProductCmpt productCmptToCheck = (IProductCmpt)cmptsToCheck[i];
+            ArgumentCheck.equals(cmptsToCheck[i].getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE_V2);
+            
+            IIpsSrcFile productCmptToCheck = (IIpsSrcFile)cmptsToCheck[i];
             strategyI = productCmptToCheck.getIpsProject().getProductCmptNamingStrategy();
 
             if (all) {
@@ -1487,8 +1586,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 // i, index j can start allways with i+1 without overlooking some product
                 // component combinations.
                 for (int j = i + 1; j < cmptsToCheck.length; j++) {
-                    ArgumentCheck.isInstanceOf(cmptsToCheck[j], IProductCmpt.class);
-                    IProductCmpt productCmptToCheckB = (IProductCmpt)cmptsToCheck[j];
+                    ArgumentCheck.equals(cmptsToCheck[j].getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE_V2);
+                    IIpsSrcFile productCmptToCheckB = (IIpsSrcFile)cmptsToCheck[j];
                     strategyJ = productCmptToCheckB.getIpsProject().getProductCmptNamingStrategy();
                     checkRuntimeId(strategyI, productCmptToCheck, productCmptToCheckB, result, true);
                     if (!strategyI.equals(strategyJ)) {
@@ -1497,9 +1596,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 }
             } else {
                 for (int j = 0; j < baseCheck.length; j++) {
-                    ArgumentCheck.isInstanceOf(baseCheck[j], IProductCmpt.class);
-                    IProductCmpt productCmptToCheckB = (IProductCmpt)baseCheck[j];                    
-                    if (productCmptToCheck != productCmptToCheckB) {
+                    ArgumentCheck.equals(baseCheck[j].getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE_V2);
+                    IIpsSrcFile productCmptToCheckB = (IIpsSrcFile)baseCheck[j];
+                    if (!productCmptToCheck.getQualifiedNameType().equals((productCmptToCheckB.getQualifiedNameType()))) {
                         strategyJ = productCmptToCheckB.getIpsProject().getProductCmptNamingStrategy();
                         checkRuntimeId(strategyI, productCmptToCheck, productCmptToCheckB, result, false);
                         if (!strategyI.equals(strategyJ)) {
@@ -1513,26 +1612,29 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     private void checkRuntimeId(IProductCmptNamingStrategy strategy,
-            IProductCmpt cmpt1,
-            IProductCmpt cmpt2,
+            IIpsSrcFile cmpt1,
+            IIpsSrcFile cmpt2,
             MessageList list,
-            boolean addBoth) {
-        if (strategy.sameRuntimeId(cmpt1, cmpt2)) {
+            boolean addBoth) throws CoreException {
+        
+        String runtimeId1 = cmpt1.getPropertyValue(IProductCmpt.PROPERTY_RUNTIME_ID);
+        String runtimeId2 = cmpt2.getPropertyValue(IProductCmpt.PROPERTY_RUNTIME_ID);
+        if (strategy.sameRuntimeId(runtimeId1, runtimeId2)) {
             ObjectProperty[] objects;
 
             if (addBoth) {
                 objects = new ObjectProperty[2];
-                objects[0] = new ObjectProperty(cmpt1, IProductCmpt.PROPERTY_RUNTIME_ID);
-                objects[1] = new ObjectProperty(cmpt2, IProductCmpt.PROPERTY_RUNTIME_ID);
+                objects[0] = new ObjectProperty(cmpt1.getIpsObject(), IProductCmpt.PROPERTY_RUNTIME_ID);
+                objects[1] = new ObjectProperty(cmpt2.getIpsObject(), IProductCmpt.PROPERTY_RUNTIME_ID);
             }
             else {
                 objects = new ObjectProperty[1];
-                objects[0] = new ObjectProperty(cmpt1, IProductCmpt.PROPERTY_RUNTIME_ID);
+                objects[0] = new ObjectProperty(cmpt1.getIpsObject(), IProductCmpt.PROPERTY_RUNTIME_ID);
             }
 
             String projectName = cmpt2.getIpsProject().getName();
-            String msg = NLS.bind(Messages.IpsModel_msgRuntimeIDCollision, new String[] { cmpt1.getQualifiedName(),
-                    cmpt2.getQualifiedName(), projectName });
+            String msg = NLS.bind(Messages.IpsModel_msgRuntimeIDCollision, new String[] { cmpt1.getQualifiedNameType().getName(),
+                    cmpt2.getQualifiedNameType().getName(), projectName });
             list.add(new Message(MSGCODE_RUNTIME_ID_COLLISION, msg, Message.ERROR, objects));
         }
     }

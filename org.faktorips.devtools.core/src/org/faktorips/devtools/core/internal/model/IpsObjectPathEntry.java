@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.util.ArgumentCheck;
@@ -73,11 +74,14 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
         visitedEntries.add(this);
         return findIpsObjectInternal(ipsProject, nameType, visitedEntries);
     }
-
-    /**
-     * Returns the first object with the indicated qualified name type found in the path entry.
-     */
-    protected abstract IIpsObject findIpsObjectInternal(IIpsProject ipsProject, QualifiedNameType nameType, Set visitedEntries) throws CoreException;
+    
+    public final IIpsSrcFile findIpsSrcFile(IIpsProject ipsProject, QualifiedNameType nameType, Set visitedEntries) throws CoreException {
+        if (visitedEntries.contains(this)) {
+            return null;
+        }
+        visitedEntries.add(this);
+        return findIpsSrcFileInternal(ipsProject, nameType, visitedEntries);
+    }
 
     /**
      * Adds all objects of the given type found in the path entry to the result list. 
@@ -89,13 +93,18 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
         visitedEntries.add(this);
         findIpsObjectsInternal(ipsProject, type, result, visitedEntries);
     }
-    
-    /**
-     * Adds all objects of the given type found in the path entry to the result list. 
-     */
-    protected abstract void findIpsObjectsInternal(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException;
 
-    
+    /**
+     * Adds all ips source files of the given type found in the path entry to the result list. 
+     */
+    public final void findIpsSrcFiles(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException {
+        if (visitedEntries.contains(this)) {
+            return;
+        }
+        visitedEntries.add(this);
+        findIpsSrcFilesInternal(ipsProject, type, result, visitedEntries);
+    }
+        
     /**
      * Adds all objects of the given type found in the path entry to the result list. 
      */
@@ -133,9 +142,50 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
         }
         visitedEntries.add(this);
         findIpsObjectsStartingWithInternal(ipsProject, type, prefix, ignoreCase, result, visitedEntries);
-        
     }
 
+    /**
+     * Returns all isp source files of the given type starting with the given prefix found on the path.
+     * 
+     * @param ignoreCase <code>true</code> if case differences should be ignored during the search.
+     * 
+     * @throws CoreException if an error occurs while searching for the source files. 
+     */
+    public final void findIpsSrcFilesStartingWith(
+            IIpsProject ipsProject, 
+            IpsObjectType type, 
+            String prefix, 
+            boolean ignoreCase, 
+            List result,
+            Set visitedEntries) throws CoreException {
+
+        if (visitedEntries.contains(this)) {
+            return;
+        }
+        visitedEntries.add(this);
+        findIpsSrcFilesStartingWithInternal(ipsProject, type, prefix, ignoreCase, result, visitedEntries);
+    }
+
+    /**
+     * Adds all objects of the given type found in the path entry to the result list. 
+     */
+    protected abstract void findIpsObjectsInternal(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException;
+
+    /**
+     * Adds all objects of the given type found in the path entry to the result list. 
+     */
+    protected abstract void findIpsSrcFilesInternal(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException;
+
+    /**
+     * Returns the first object with the indicated qualified name type found in the path entry.
+     */
+    protected abstract IIpsObject findIpsObjectInternal(IIpsProject ipsProject, QualifiedNameType nameType, Set visitedEntries) throws CoreException;
+
+    /**
+     * Returns the first ips source file with the indicated qualified name type found in the path entry. 
+     */
+    protected abstract IIpsSrcFile findIpsSrcFileInternal(IIpsProject ipsProject, QualifiedNameType nameType, Set visitedEntries) throws CoreException;
+    
     /**
      * Returns all objects of the given type starting with the given prefix found on the path.
      * 
@@ -150,7 +200,22 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
             boolean ignoreCase, 
             List result,
             Set visitedEntries) throws CoreException;
-
+    
+    /**
+     * Returns all ips source files of the given type starting with the given prefix found on the path.
+     * 
+     * @param ignoreCase <code>true</code> if case differences should be ignored during the search.
+     * 
+     * @throws CoreException if an error occurs while searching for the source files. 
+     */
+    protected abstract void findIpsSrcFilesStartingWithInternal(
+            IIpsProject ipsProject, 
+            IpsObjectType type, 
+            String prefix, 
+            boolean ignoreCase, 
+            List result,
+            Set visitedEntries) throws CoreException;
+    
     /**
      * Initializes the entry with the data stored in the xml element.
      */
@@ -161,7 +226,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
      * @param doc The xml document used to created the element.
      */
     public abstract Element toXml(Document doc);
-    
+
     /**
      * Returns the object path entry stored in the xml element.     
      */
@@ -185,6 +250,4 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
         }
         throw new RuntimeException("Unknown entry type " + type); //$NON-NLS-1$
     }
-    
-
 }

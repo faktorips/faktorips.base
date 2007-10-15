@@ -188,7 +188,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         return generations.size();
     }
     
-    IpsObjectGeneration newGenerationInternal(int id) {
+    protected IpsObjectGeneration newGenerationInternal(int id) {
         IpsObjectGeneration generation = createNewGeneration(id);
         generations.add(generation);
         return generation;

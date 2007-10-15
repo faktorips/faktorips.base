@@ -107,7 +107,4 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
     public int getIntAnswer() {
         return answer;
     }
-
-    
-    
 }

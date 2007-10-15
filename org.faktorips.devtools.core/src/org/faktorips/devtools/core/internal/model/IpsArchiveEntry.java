@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.util.message.Message;
@@ -133,6 +134,17 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     protected void findIpsObjectsInternal(IIpsProject ipsProject, List result, Set visitedEntries) throws CoreException {
         ((ArchiveIpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsObjects(result);
     }
+    
+    public void findIpsSrcFilesInternal(IIpsProject ipsProject, IpsObjectType type, List result, Set visitedEntries) throws CoreException {
+        ((ArchiveIpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsSourceFiles(type, result);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected IIpsSrcFile findIpsSrcFileInternal(IIpsProject ipsProject, QualifiedNameType qnt, Set visitedEntries) throws CoreException {
+        return getIpsPackageFragmentRoot(ipsProject).findIpsSrcFile(qnt);
+    }
 
     /**
      * {@inheritDoc}
@@ -143,23 +155,48 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
             boolean ignoreCase,
             List result,
             Set visitedEntries) throws CoreException {
-        
+        findIpsSrcFilesStartingWithInternal(ipsProject, type, prefix, ignoreCase, result, visitedEntries, true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void findIpsSrcFilesStartingWithInternal(IIpsProject ipsProject,
+            IpsObjectType type,
+            String prefix,
+            boolean ignoreCase,
+            List result,
+            Set visitedEntries) throws CoreException {
+        findIpsSrcFilesStartingWithInternal(ipsProject, type, prefix, ignoreCase, result, visitedEntries, false);
+    }
+    
+    private void findIpsSrcFilesStartingWithInternal(IIpsProject ipsProject,
+            IpsObjectType type,
+            String prefix,
+            boolean ignoreCase,
+            List result,
+            Set visitedEntries,
+            boolean returnIpsObjects) throws CoreException {
         if (ignoreCase) {
             prefix = prefix.toLowerCase();
         }
-        
-        for (Iterator it=archive.getQNameTypes().iterator(); it.hasNext();) {
+
+        for (Iterator it = archive.getQNameTypes().iterator(); it.hasNext();) {
             QualifiedNameType qnt = (QualifiedNameType)it.next();
             String name = qnt.getUnqualifiedName();
             if (ignoreCase) {
                 name = name.toLowerCase();
             }
             if (name.startsWith(prefix)) {
-                result.add(getIpsObject(qnt, ipsProject));
+                if (returnIpsObjects) {
+                    result.add(getIpsObject(qnt, ipsProject));
+                } else {
+                    result.add(getIpsSrcFile(qnt, ipsProject));
+                }
             }
         }
     }
-    
+
     private IIpsObject getIpsObject(QualifiedNameType qNameType, IIpsProject project) throws CoreException {
         IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot(project);
         IIpsObject object = root.findIpsObject(qNameType);
@@ -169,6 +206,15 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
         throw new CoreException(new IpsStatus("IpsObject not found for qNameType " + qNameType + " (but was expectedt to be in the archive!")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    private IIpsSrcFile getIpsSrcFile(QualifiedNameType qNameType, IIpsProject project) throws CoreException {
+        IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot(project);
+        IIpsSrcFile object = root.findIpsSrcFile(qNameType);
+        if (object!=null) {
+            return object;
+        }
+        throw new CoreException(new IpsStatus("IpsObject not found for qNameType " + qNameType + " (but was expectedt to be in the archive!")); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    
     /**
      * {@inheritDoc}
      */

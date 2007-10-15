@@ -23,10 +23,13 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 
 /**
  * Configuration class for <code>ModelExlporer</code>s, that can be asked if a specific
@@ -72,14 +75,27 @@ public class ModelExplorerConfiguration {
 		}
 	}
 
-	/**
+    /**
 	 * Returns true if the given IpsElement's class is allowed by this
 	 * configuration, false otherwise.
 	 */
-	public boolean isAllowedIpsElement(Object type) {
-		return isAllowedIpsElementType(type.getClass());
+	public boolean isAllowedIpsElement(IIpsElement type) {
+        if (type instanceof IIpsSrcFile){
+            return isAllowedIpsSrcFile((IIpsSrcFile) type);
+        } else {
+            return isAllowedIpsElementType(type.getClass());
+        }
 	}
-	/**
+
+    private boolean isAllowedIpsSrcFile(IIpsSrcFile ipsSrcFile) {
+        IpsObjectType ipsObjectType = ipsSrcFile.getIpsObjectType();
+        if (ipsObjectType == null){
+            return false;
+        }
+        return isAllowedIpsElementType(ipsObjectType.newObject(ipsSrcFile).getClass());
+    }
+    
+    /**
 	 * Returns true if the given type is allowed by this
 	 * configuration, false otherwise. This method also checks if 
 	 * superclasses an implemented interfaces of the given class are

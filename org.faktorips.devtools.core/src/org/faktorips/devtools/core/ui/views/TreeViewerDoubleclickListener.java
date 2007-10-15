@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.ui.IEditorPart;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -47,11 +48,13 @@ public class TreeViewerDoubleclickListener implements IDoubleClickListener {
 	}
 	
 	public void doubleClick(DoubleClickEvent event) {
+		openEditorsForSelection();
+        
+		collapsOrExpandTree(event);
+	}
 
-		OpenEditorAction action= new OpenEditorAction(tree);
-		action.run();
-		
-		if (event.getSelection() instanceof StructuredSelection) {
+    protected void collapsOrExpandTree(DoubleClickEvent event) {
+        if (event.getSelection() instanceof StructuredSelection) {
 			IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 			Object selectedObject = selection.getFirstElement();
 
@@ -68,5 +71,10 @@ public class TreeViewerDoubleclickListener implements IDoubleClickListener {
 				}
 			}
 		}
-	}
+    }
+
+    protected IEditorPart openEditorsForSelection() {
+        OpenEditorAction action= new OpenEditorAction(tree);
+		return action.openEditor();
+    }
 }

@@ -311,8 +311,8 @@ public abstract class AbstractProductCmptNamingStrategy implements
     /**
      * {@inheritDoc}
      */
-    public boolean sameRuntimeId(IProductCmpt cmpt1, IProductCmpt cmpt2) {
-        return cmpt1.getRuntimeId().equals(cmpt2.getRuntimeId());
+    public boolean sameRuntimeId(String runtimeId1, String runtimeId2) {
+        return runtimeId1.equals(runtimeId2);
     }
     
     /**

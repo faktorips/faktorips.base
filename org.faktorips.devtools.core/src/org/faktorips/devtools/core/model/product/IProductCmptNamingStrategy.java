@@ -221,7 +221,7 @@ public interface IProductCmptNamingStrategy {
             throws CoreException;
     
     /**
-     * Compares the runtime ids of the given product components. This method was introduced
+     * Compares the given runtime ids. This method was introduced
      * because a simple call to <code>equals()</code> comparing the two runtime ids returned by a
      * call to <code>getRuntimeId()</code> can not be used to decide whether the runtime ids of
      * two product compontes are the same or not. This is because the strategy might also use the templates
@@ -230,12 +230,12 @@ public interface IProductCmptNamingStrategy {
      * might both have the same runtime id 42, but because they are based on different templates they are
      * considered as different.  
      * 
-     * @param cmpt1 The first product component to check.
-     * @param cmpt2 The second product component to check.
+     * @param runtimeId1 The first product component to check.
+     * @param runtimeId2 The second product component to check.
      * @return <code>true</code> if the runtime ids of both product components 
      * are the same, <code>false</code> otherwise.
      */
-    public boolean sameRuntimeId(IProductCmpt cmpt1, IProductCmpt cmpt2);
+    public boolean sameRuntimeId(String runtimeId1, String runtimeId2);
     
     /**
      * Validates the given runtime id.

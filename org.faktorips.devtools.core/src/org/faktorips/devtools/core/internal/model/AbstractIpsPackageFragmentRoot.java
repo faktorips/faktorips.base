@@ -97,6 +97,17 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
      * {@inheritDoc}
      */
     public final IIpsObject findIpsObject(QualifiedNameType qnt) throws CoreException {
+        IIpsSrcFile file = findIpsSrcFile(qnt);
+        if (file == null) {
+            return null;
+        }
+        return file.getIpsObject();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public final IIpsSrcFile findIpsSrcFile(QualifiedNameType qnt) throws CoreException {
         IIpsPackageFragment pack = getIpsPackageFragment(qnt.getPackageName());
         if (pack==null) {
             return null;
@@ -105,9 +116,9 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
         if (!file.exists()) {
             return null;
         }
-        return file.getIpsObject();
+        return file;
     }
-    
+
     /**
      * Searches all objects of the given type in the root folder and adds them to the result.
      */

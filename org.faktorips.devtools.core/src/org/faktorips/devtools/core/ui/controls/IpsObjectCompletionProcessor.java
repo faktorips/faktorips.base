@@ -24,10 +24,11 @@ import org.eclipse.jface.contentassist.IContentAssistSubjectControl;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.util.StringUtil;
 
@@ -94,19 +95,28 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
         String matchName = StringUtil.unqualifiedName(match);
         
         try {
-            IIpsObject[] objects;
+            IIpsSrcFile[] ipsSrcFiles;
             if (control != null) {
-                objects = control.getIpsObjects();    
+                ipsSrcFiles = control.getIpsSrcFiles();    
             } else {
-                objects = ipsProject.findIpsObjects(ipsObjectType);
+                ipsSrcFiles = ipsProject.findIpsSrcFiles(ipsObjectType);
             }
-            for (int i = 0; i < objects.length; i++) {
-                if (match(matchPack, matchName, objects[i].getQualifiedName())) {
-                    String qName = objects[i].getQualifiedName();
-                    String displayText = objects[i].getName()
-                            + " - " + mapDefaultPackageName(objects[i].getParent().getParent().getName()); //$NON-NLS-1$
+            for (int i = 0; i < ipsSrcFiles.length; i++) {
+                QualifiedNameType qnt = ipsSrcFiles[i].getQualifiedNameType();
+                if (match(matchPack, matchName, qnt.getName())) {
+                    String qName = qnt.getName();
+                    String displayText = qnt.getUnqualifiedName()
+                            + " - " + mapDefaultPackageName(ipsSrcFiles[i].getParent().getParent().getName()); //$NON-NLS-1$
+                    // TODO: Joerg v2: getIpsObject fuer Description???
+                    String description = null;
+                    if (IpsObjectType.TABLE_CONTENTS != ipsSrcFiles[i].getIpsObjectType()){
+                        // table contents doesn't support description, thus doen't call getIpsObject
+                        // due to performance reason
+                        description = ipsSrcFiles[i].getIpsObject().getDescription();
+                    }
+                    
                     CompletionProposal proposal = new CompletionProposal(qName, 0, documentOffset, qName.length(),
-                            objects[i].getImage(), displayText, null, objects[i].getDescription());
+                            ipsSrcFiles[i].getIpsObjectType().getEnabledImage(), displayText, null, description);
                     result.add(proposal);
                 }
             }

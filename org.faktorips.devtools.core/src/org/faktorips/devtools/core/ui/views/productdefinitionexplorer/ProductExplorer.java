@@ -27,11 +27,13 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.actions.WrapperAction;
@@ -62,15 +64,22 @@ public class ProductExplorer extends ModelExplorer {
 
 	public ProductExplorer() {
 		super();
-        labelProvider.setProductDefinitionLabelProvider(true);
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public void createPartControl(Composite parent) {
+        super.createPartControl(parent);
+        labelProvider.setProductDefinitionLabelProvider(true);
+    }
 
     /**
      * {@inheritDoc}
      */
     protected ModelExplorerConfiguration createConfig() {
 		return new ModelExplorerConfiguration(new Class[] { IProductCmpt.class,
-				ITableContents.class, ITestCase.class}
+				ITableContents.class, ITestCase.class, IProductCmptGeneration.class}
 				, new Class[]{IFile.class, IFolder.class, IProject.class});
 	}
 

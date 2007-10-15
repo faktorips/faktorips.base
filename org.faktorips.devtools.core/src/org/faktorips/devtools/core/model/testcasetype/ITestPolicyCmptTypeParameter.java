@@ -19,8 +19,11 @@ package org.faktorips.devtools.core.model.testcasetype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 
 /**
  *  Specification of a test policy component parameter.
@@ -97,11 +100,12 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     
     
     /**
-     * Validation message code to indicate that the target of an accociation is not in the test case type. 
+     * Validation message code to indicate that the target of an accociation is not in the test case
+     * type.
      */
     public final static String MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE = MSGCODE_PREFIX
-    + "TargetOfAssociationNotExistsInTestcasetype"; //$NON-NLS-1$
-    
+            + "TargetOfAssociationNotExistsInTestcasetype"; //$NON-NLS-1$
+
     /**
      * Returns the qualified name of policy component class.
      */
@@ -167,6 +171,12 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
      */
     public ITestPolicyCmptTypeParameter newTestPolicyCmptTypeParamChild();
 
+    /**
+     * Returns the parent test policy cmpt type parameter or <code>null</code> if this
+     * parameter specifies a root parameter.
+     */
+    public ITestPolicyCmptTypeParameter getParentTestPolicyCmptTypeParam();
+    
     /**
      * Returns the child of the test policy component type parameter.
      */
@@ -251,4 +261,15 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
      * an child.
      */
     public int[] moveTestPolicyCmptTypeChild(int[] indexes, boolean up);
+
+    /**
+     * Returns all allowed product cmpts source files which could be added as target of child test
+     * policy cmpt type parameters. Only product cmpts are allowed which are defined as targets
+     * within the given parentProductCmpt, in at least one generation. If the given product cmpt is
+     * <code>null</code> then all product cmpts, which matches the relation this parameter is related to,
+     * are returned.
+     * <p>
+     * Returns an empty array if no product cmpts are found as valid product cmpt.
+     */
+    public IIpsSrcFile[] getAllowedProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt parentProductCmpt) throws CoreException ;
 }

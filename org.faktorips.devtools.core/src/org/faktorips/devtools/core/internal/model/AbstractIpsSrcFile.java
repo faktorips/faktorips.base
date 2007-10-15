@@ -98,14 +98,27 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
         if (!exists()) {
             throw new CoreException(new IpsStatus("Can't get ips object because file does not exist." + this)); //$NON-NLS-1$
         }
-        IpsSrcFileContent content = getContent();
-        return content.getIpsObject();
+        return getContent().getIpsObject();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getPropertyValue(String name) throws CoreException {
+        if (!exists()) {
+            throw new CoreException(new IpsStatus("Can't get property value because file does not exist." + this)); //$NON-NLS-1$
+        }
+        return getContent(false).getRootPropertyValue(name);
     }
     
     protected IpsSrcFileContent getContent() {
-        return ((IpsModel)getIpsModel()).getIpsSrcFileContent(this);
+        return getContent(true);
     }
-
+    
+    private IpsSrcFileContent getContent(boolean loadCompleteContent) {
+        return ((IpsModel)getIpsModel()).getIpsSrcFileContent(this, loadCompleteContent);
+    }
+    
     /** 
      * {@inheritDoc}
      */

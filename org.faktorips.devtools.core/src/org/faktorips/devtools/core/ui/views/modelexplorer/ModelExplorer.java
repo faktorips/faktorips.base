@@ -1,6 +1,10 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -19,6 +23,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -33,10 +38,14 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionGroup;
@@ -68,12 +77,14 @@ import org.faktorips.devtools.core.ui.actions.ExpandCollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.FindPolicyReferencesAction;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.FixDifferencesAction;
+import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsEditSortOrderAction;
 import org.faktorips.devtools.core.ui.actions.IpsPasteAction;
 import org.faktorips.devtools.core.ui.actions.IpsPropertiesAction;
 import org.faktorips.devtools.core.ui.actions.IpsTestAction;
+import org.faktorips.devtools.core.ui.actions.IpsTestCaseCopyAction;
 import org.faktorips.devtools.core.ui.actions.MigrateProjectAction;
 import org.faktorips.devtools.core.ui.actions.ModelExplorerDeleteAction;
 import org.faktorips.devtools.core.ui.actions.MoveAction;
@@ -107,7 +118,7 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
  * @author Stefan Widmaier
  */
 
-public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListener {
+public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     /**
      * Extension id of this views extension.
@@ -131,6 +142,11 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
     protected static final String FILTER_KEY = "filter"; //$NON-NLS-1$
     protected static final String LINK_TO_EDITOR_KEY = "linktoeditor"; //$NON-NLS-1$
 
+    /*
+     * Listener for activation of editors.
+     */
+    private ActivationListener editorActivationListener;
+    
     /**
      * The TreeViewer displaying the object model.
      */
@@ -150,7 +166,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
     /**
      * Label provider for the tree viewer.
      */
-    protected ModelLabelProvider labelProvider = new ModelLabelProvider();
+    protected ModelLabelProvider labelProvider;
 
     private IpsResourceChangeListener resourceListener;
 
@@ -173,10 +189,116 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
         contentProvider = createContentProvider();
     }
 
+    /*
+     * Internal part and shell activation listener.
+     */
+    private class ActivationListener implements IPartListener, IWindowListener {
+        private IPartService partService;
+        
+        /* indicates if the last activation event was triggered by the model explorer */
+        private boolean activatedByModelExplorer;
+        
+        /**
+         * Creates this activation listener.
+         */
+        public ActivationListener(IPartService partService) {
+            this.partService = partService;
+            partService.addPartListener(this);
+            PlatformUI.getWorkbench().addWindowListener(this);
+        }
+
+        /**
+         * Sets the "activation by model explorer" flag.
+         * Set <code>true</code> if the next activation event was initiated by the model explorer.
+         * 
+         */
+        public void setActivatedByModelExplorer(boolean activatedByModelExplorer) {
+            this.activatedByModelExplorer = activatedByModelExplorer;
+        }
+
+        /**
+         * Disposes this activation listener.
+         */
+        public void dispose() {
+            partService.removePartListener(this);
+            PlatformUI.getWorkbench().removeWindowListener(this);
+            partService= null;
+        }
+
+        public void partActivated(IWorkbenchPart part) {
+            if (wasActivatedByModelExplorer()){
+                return;
+            }
+            if (part instanceof IEditorPart){
+                editorActivated((IEditorPart) part);
+            }
+        }
+
+        public void windowActivated(IWorkbenchWindow window) {
+            if (wasActivatedByModelExplorer()){
+                return;
+            }
+            editorActivated(window.getActivePage().getActiveEditor());
+        }
+
+        /*
+         * Returns <code>true</code> if the activation was triggered by the model explorer.
+         * Additionally resets the activation flag.
+         */
+        private boolean wasActivatedByModelExplorer() {
+            if (activatedByModelExplorer){
+                activatedByModelExplorer = false;
+                return true;
+            }
+            return false;
+        }
+        
+        public void partBroughtToTop(IWorkbenchPart part) {
+        }
+        public void partClosed(IWorkbenchPart part) {
+        }
+        public void partDeactivated(IWorkbenchPart part) {
+        }
+        public void partOpened(IWorkbenchPart part) {
+        }
+        public void windowDeactivated(IWorkbenchWindow window) {
+        }
+        public void windowClosed(IWorkbenchWindow window) {
+        }
+        public void windowOpened(IWorkbenchWindow window) {
+        }
+    }
+    
+    /*
+     * DoubleClickListener which infoms the model explorer about double clicking inside the tree.
+     * Used to avoid the handling of editor activation (linking) if the editor was activated
+     * by the model explorer.<p>
+     * Avoid the following scenario: if a child is double clicked then the editor will be opened (activated)
+     * afterwards the activation will by catched by this model explorer and the model explorer selects the corresponding
+     * parent object (linking), the selection of the child will be lost!
+     */
+    private class ModelExplorerDoubleclickListener extends TreeViewerDoubleclickListener {
+        
+        public ModelExplorerDoubleclickListener(TreeViewer tree) {
+            super(tree);
+        }
+
+        public void doubleClick(DoubleClickEvent event) {
+            ModelExplorer.this.editorActivationListener.setActivatedByModelExplorer(true);
+            IEditorPart editorPart = openEditorsForSelection();
+            if (editorPart == null){
+                // editor wasn't opened, therfore the activation flag must be reseted
+                ModelExplorer.this.editorActivationListener.setActivatedByModelExplorer(false);
+            }
+            collapsOrExpandTree(event);
+        }
+    }    
+    
     protected ModelExplorerConfiguration createConfig() {
         return new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class, ITableStructure.class,
                 IProductCmpt.class, ITableContents.class, IAttribute.class, IPolicyCmptTypeAssociation.class, ITestCase.class,
-                ITestCaseType.class }, new Class[] { IFolder.class, IFile.class, IProject.class });
+                ITestCaseType.class, IProductCmptGeneration.class}, new Class[] { IFolder.class,
+                IFile.class, IProject.class });
     }
 
     protected ModelContentProvider createContentProvider() {
@@ -187,13 +309,14 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
         // init saved state
         contentProvider.setExcludeNoIpsProjects(excludeNoIpsProjects);
 
+        labelProvider = new ModelLabelProvider();
         treeViewer = new TreeViewer(parent);
         treeViewer.setContentProvider(contentProvider);
         treeViewer.setLabelProvider(labelProvider);
         treeViewer.setSorter(new ModelExplorerSorter());
         treeViewer.setInput(IpsPlugin.getDefault().getIpsModel());
 
-        treeViewer.addDoubleClickListener(new TreeViewerDoubleclickListener(treeViewer));
+        treeViewer.addDoubleClickListener(new ModelExplorerDoubleclickListener(treeViewer));
         treeViewer.addDragSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance() },
                 new IpsElementDragListener(treeViewer));
         treeViewer.addDropSupport(DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance() },
@@ -243,46 +366,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
             }
         }
 
-        getSite().getPage().addPartListener(this);
+        editorActivationListener = new ActivationListener(getSite().getPage());
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void partActivated(IWorkbenchPart part) {
-
-        if (part instanceof IEditorPart)
-            editorActivated((IEditorPart) part);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void partBroughtToTop(IWorkbenchPart part) {
-        // Nothing to implement.
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void partClosed(IWorkbenchPart part) {
-        // Nothing to implement.
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void partDeactivated(IWorkbenchPart part) {
-        // Nothing to implement.
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void partOpened(IWorkbenchPart part) {
-        // Nothing to implement.
-    }
-
+    
     /**
      * Show an IPS File or normal File in the navigator view corresponding to
      * the active editor if "link with editor" is enabled.
@@ -290,25 +376,19 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
      * @param part editor
      */
     private void editorActivated(IEditorPart editorPart) {
-
-        if (!isLinkingEnabled()) {
+        if (!isLinkingEnabled() || editorPart == null) {
             return;
         }
 
         if (editorPart instanceof IpsObjectEditor) {
             IpsObjectEditor ipsEditor = (IpsObjectEditor)editorPart;
 
-            try {
-                IStructuredSelection newSelection = new StructuredSelection(ipsEditor.getIpsSrcFile().getIpsObject());
-                if (treeViewer.getSelection().equals(newSelection)) {
-                    treeViewer.getTree().showSelection();
-                } else {
-                    treeViewer.setSelection(newSelection, true);
-                }
-            } catch (CoreException e) {
-                e.printStackTrace();
+            IStructuredSelection newSelection = new StructuredSelection(ipsEditor.getIpsSrcFile());
+            if (treeViewer.getSelection().equals(newSelection)) {
+                treeViewer.getTree().showSelection();
+            } else {
+                treeViewer.setSelection(newSelection, true);
             }
-
             return;
         }
 
@@ -342,8 +422,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
         // Actions are unchecked as per default, check action for current layout
         if (isFlatLayout()) {
             flatLayoutAction.setChecked(true);
-        }
-        else {
+        } else {
             hierarchicalLayoutAction.setChecked(true);
         }
         IMenuManager layoutMenu = new MenuManager(Messages.ModelExplorer_submenuLayout);
@@ -473,9 +552,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
      * Unregisters this part as resource-listener in the workspace, and disposes of it.
      */
     public void dispose() {
+        editorActivationListener.dispose();
+        
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceListener);
-
-        getSite().getPage().removePartListener(this);
 
         super.dispose();
     }
@@ -572,6 +651,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
             if (selected == null) {
                 return;
             }
+            selected = mapIpsSrcFile2IpsObject(selected);
             createNewMenu(manager, selected);
             manager.add(new Separator());
             createOpenMenu(manager, selected, (IStructuredSelection)treeViewer.getSelection());
@@ -594,6 +674,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
         }
 
         protected void createNewMenu(IMenuManager manager, Object selected) {
+            selected = mapIpsSrcFile2IpsObject(selected);
             MenuManager newMenu = new MenuManager(Messages.ModelExplorer_submenuNew);
             if ((selected instanceof IFolder) || (selected instanceof IIpsProject)) {
                 newMenu.add(new NewFolderAction(getSite().getShell(), treeViewer));
@@ -621,15 +702,33 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
                     newMenu.add(new NewTestCaseTypeAction(getSite().getWorkbenchWindow()));
                 }
 
+                // add copy actions depend on selected ips object type
+                List ipsCopyActions = new ArrayList(3);
                 if (selected instanceof IProductCmpt) {
-                    newMenu.add(new Separator());
-                    newMenu.add(new IpsDeepCopyAction(getSite().getShell(), treeViewer,
-                                    DeepCopyWizard.TYPE_NEW_VERSION));
-                    newMenu.add(new IpsDeepCopyAction(getSite().getShell(), treeViewer,
+                    ipsCopyActions.add(new IpsDeepCopyAction(getSite().getShell(), treeViewer,
+                            DeepCopyWizard.TYPE_NEW_VERSION));
+                    ipsCopyActions.add(new IpsDeepCopyAction(getSite().getShell(), treeViewer,
                             DeepCopyWizard.TYPE_COPY_PRODUCT));
+                } else if (selected instanceof ITestCase) {
+                    ipsCopyActions.add(new IpsTestCaseCopyAction(getSite().getShell(), treeViewer));
+                }
+                if (ipsCopyActions.size()>0){
+                    newMenu.add(new Separator());
+                    for (Iterator iter = ipsCopyActions.iterator(); iter.hasNext();) {
+                        newMenu.add((IpsAction)iter.next());
+                    }
+                    
                 }
             }
             manager.add(newMenu);
+        }
+
+        private Object mapIpsSrcFile2IpsObject(Object selected) {
+            if (selected instanceof IIpsSrcFile){
+                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)selected;
+                selected = ipsSrcFile.getIpsObjectType().newObject(ipsSrcFile);
+            }
+            return selected;
         }
 
         protected void createOpenMenu(IMenuManager manager, Object selected, IStructuredSelection structuredSelected) {
@@ -815,7 +914,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget, IPartListe
                 manager.add(new IpsEditSortOrderAction(treeViewer));
             }
         }
-
+        
         protected void createAdditionalActions(IMenuManager manager, IStructuredSelection structuredSelection) {
             manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));//$NON-NLS-1$

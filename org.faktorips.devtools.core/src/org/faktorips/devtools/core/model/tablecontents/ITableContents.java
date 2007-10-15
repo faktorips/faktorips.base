@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 public interface ITableContents extends ITimedIpsObject {
 
     public final static String PROPERTY_TABLESTRUCTURE = "tableStructure"; //$NON-NLS-1$
+    public final static String PROPERTY_NUMOFCOLUMNS = "numOfColumns"; //$NON-NLS-1$
     
     /**
      * Prefix for all message codes of this class.

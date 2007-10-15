@@ -19,11 +19,12 @@ package org.faktorips.devtools.core.ui;
 
 import java.util.Arrays;
 
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.TwoPaneElementSelector;
-import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.internal.model.IpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 
 
@@ -32,13 +33,17 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
  */
 public class PdObjectSelectionDialog extends TwoPaneElementSelector {
 
+    public PdObjectSelectionDialog(Shell parent, String title, String message) {
+        this(parent, title, message, DefaultLabelProvider.createWithIpsSourceFileMapping());
+    }
+    
     /**
      * @param parent
      * @param elementRenderer
      * @param qualifierRenderer
      */
-    public PdObjectSelectionDialog(Shell parent, String title, String message) {
-        super(parent, new DefaultLabelProvider(), new QualifierLabelProvider());
+    public PdObjectSelectionDialog(Shell parent, String title, String message, ILabelProvider labelProvider) {
+        super(parent, labelProvider, new QualifierLabelProvider());
         setTitle(title);
         setMessage(message);
         setUpperListLabel(Messages.PdObjectSelectionDialog_labelMatches);
@@ -50,11 +55,11 @@ public class PdObjectSelectionDialog extends TwoPaneElementSelector {
     private static class QualifierLabelProvider extends LabelProvider {
         
         public Image getImage(Object element) {
-            return ((IIpsObject)element).getIpsPackageFragment().getImage();
+            return ((IpsSrcFile)element).getIpsPackageFragment().getImage();
         }
         
         public String getText(Object element) {
-            IIpsPackageFragment pck = ((IIpsObject)element).getIpsPackageFragment(); 
+            IIpsPackageFragment pck = ((IpsSrcFile)element).getIpsPackageFragment(); 
             return pck.getName()
             	+ " - " + pck.getEnclosingResource().getFullPath().toString(); //$NON-NLS-1$
         }

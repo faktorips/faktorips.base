@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.util.GregorianCalendar;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -82,6 +84,15 @@ public class GenerationsSection extends SimpleIpsPartsSection{
             return;
         }
         if (generation==page.getProductCmptEditor().getGenerationEffectiveOnCurrentEffectiveDate()) {
+            page.getProductCmptEditor().setActiveGeneration(generation, false);
+            return;
+        }
+        if (IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse()){
+            page.getProductCmptEditor().setActiveGeneration(generation, false);
+            return;
+        }
+        if (!IpsPlugin.getDefault().getIpsPreferences().canEditRecentGeneration()
+                && generation.getValidFrom().before(new GregorianCalendar())) {
             page.getProductCmptEditor().setActiveGeneration(generation, false);
             return;
         }

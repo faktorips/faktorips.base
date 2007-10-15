@@ -17,11 +17,17 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import java.beans.PropertyDescriptor;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -30,13 +36,19 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableContentsSaxHandler;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.IpsSrcFileSaxHelper;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.ui.binding.BeanUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -46,6 +58,9 @@ import org.xml.sax.SAXException;
 public class IpsSrcFileContent {
 
     private IpsObject ipsObject;
+
+    // Map containing the root properties of the source file
+    private Map rootProperties = null;
 
     // true if the content has been modified.
     private boolean modified = false;
@@ -58,6 +73,9 @@ public class IpsSrcFileContent {
 
     // see the wasModStampTriggeredBySave() for details.
     private List modStampsAfterSave = null;
+    
+    // inicates if the ips object is completely initialized with the ips source file content,
+    private boolean initialized = false;
     
     public IpsSrcFileContent(IpsObject ipsObject) {
         ArgumentCheck.notNull(ipsObject);
@@ -77,8 +95,9 @@ public class IpsSrcFileContent {
             Document doc = builder.parse(is);
             is.close();
             ipsObject.initFromXml(doc.getDocumentElement());
-            this.modified = newModified;
+            modified = newModified;
             parsable = true;
+            initializedFinished();
         } catch (Exception e) {
             parsable = false;
             ipsObject.markAsFromUnparsableFile();
@@ -94,6 +113,7 @@ public class IpsSrcFileContent {
             ipsObject.initFromXml(el);
             setModified(modified);
             parsable = true;
+            initializedFinished();
         } catch (Exception e) {
             parsable = false;
             ipsObject.markAsFromUnparsableFile();
@@ -189,23 +209,35 @@ public class IpsSrcFileContent {
     public void initContentFromFile() {
         IIpsSrcFile file = getIpsSrcFile();
         try {
+            long startTime = 0;
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                 System.out.println("IpsSrcFileContent.initContentFromFile(): About to read content from disk, file=" +  file //$NON-NLS-1$
                         + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
+                startTime = System.currentTimeMillis();
             }
-            String fileContent = file.getContentFromEnclosingResource();
-            String encoding = file.getIpsProject().getXmlFileCharset();
-            ByteArrayInputStream is = new ByteArrayInputStream(fileContent.getBytes(encoding)); 
-            DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
-            Document doc = builder.parse(is);
-            is.close();
+            IpsObject ipsObject = getIpsObject();
+            // FIXME Joerg unterscheidung Table Content sax parser?
+            // als XMLSaxSupport
+            if (ipsObject.getIpsObjectType() != IpsObjectType.TABLE_CONTENTS) {
+                String fileContent = file.getContentFromEnclosingResource();
+                String encoding = file.getIpsProject().getXmlFileCharset();
+                ByteArrayInputStream is = new ByteArrayInputStream(fileContent.getBytes(encoding));
+                DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
+                Document doc = builder.parse(is);
+                is.close();
+                getIpsObject().initFromXml(doc.getDocumentElement());
+            } else {
+                InputStream is = file.getCorrespondingFile().getContents(true);
+                SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+                saxParser.parse(new InputSource(is), new TableContentsSaxHandler((ITableContents)getIpsObject()));
+            }
             modificationStamp = file.getEnclosingResource().getModificationStamp();
-            getIpsObject().initFromXml(doc.getDocumentElement());
             modified = false;
             parsable = true;
+            initializedFinished();
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                System.out.println("IpsSrcFileContent.initContentFromFile: Content read from disk, file=" +  file //$NON-NLS-1$
-                        + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
+                System.out.println("IpsSrcFileContent.initContentFromFile: Content read from disk, durration: " + (System.currentTimeMillis() - startTime) + ", file=" + file //$NON-NLS-1$
+                                + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
             }
         } catch (SAXException e) {
             parsable = false;
@@ -227,6 +259,73 @@ public class IpsSrcFileContent {
         }
     }
     
+    private void clearRootPropertyCache(){
+        rootProperties = null;
+    }
+    
+    /*
+     * Indicates that the initialization was finished.
+     */
+    private void initializedFinished(){
+        initialized = true;
+        clearRootPropertyCache();
+    }
+    
+    /**
+     * Reads and stores all root properties of the corresponding source file.
+     */
+    public void initRootPropertiesFromFile(){
+        IIpsSrcFile file = getIpsSrcFile();
+        try {
+            clearRootPropertyCache();
+            modificationStamp = file.getEnclosingResource().getModificationStamp();
+            rootProperties = IpsSrcFileSaxHelper.getHeaderAttributes(file);
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+    }
+    
+    /**
+     * Returns <code>true</code> ips object was initialized with the ips source file content.
+     * Returns <code>false</code> if the content wasn't read from the source file.
+     */
+    public boolean isInitialized() {
+        return initialized;
+    }
+    
+    /**
+     * Returns <code>true</code> if the root properties are read from the source file.
+     * Returns <code>false</code> if the root properties are not read.
+     */
+    public boolean areRootPropertiesAvailable(){
+        return rootProperties != null || initialized;
+    }
+    
+    /**
+     * Returns the given root property value. Returns <code>null</code> if the given root property wasn't found.
+     */
+    public String getRootPropertyValue(String propertyName){
+        if (initialized){
+            return getPropertyFromIpsObject(propertyName);
+        }
+        if (rootProperties == null){
+            // lazy load of root properties
+            initRootPropertiesFromFile();
+        }
+        return (String) rootProperties.get(propertyName);
+    }
+    
+    private String getPropertyFromIpsObject(String propertyName) {
+        try {
+            PropertyDescriptor propertyDescriptor = BeanUtil.getPropertyDescriptor(ipsObject.getClass(), propertyName);
+            Method readMethod = propertyDescriptor.getReadMethod();
+            return "" + readMethod.invoke(ipsObject, new Object[0]);
+        } catch (Exception e) {
+            IpsPlugin.log(e);
+        }
+        return null;
+    }
+
     public void save(final boolean force, final IProgressMonitor monitor) throws CoreException {
         if (!modified) {
             return;
@@ -253,6 +352,7 @@ public class IpsSrcFileContent {
                     if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                         System.out.println("IpsSrcFileContent.save() finished. ModStamp=" + modificationStamp + ", " + IpsSrcFileContent.this); //$NON-NLS-1$ //$NON-NLS-2$
                     }
+                    clearRootPropertyCache();
                 } catch (Exception e) {
                     if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                         System.out.println("IpsSrcFileContent.save() failed: " + IpsSrcFileContent.this); //$NON-NLS-1$

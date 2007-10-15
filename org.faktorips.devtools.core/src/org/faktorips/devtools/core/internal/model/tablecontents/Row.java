@@ -116,8 +116,12 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 	 * {@inheritDoc}
 	 */
     public void setValue(int column, String newValue) {
-    	values.set(column, newValue);
+        setValueInternal(column, newValue);
         objectHasChanged();
+    }
+
+    public void setValueInternal(int column, String newValue) {
+        values.set(column, newValue);
     }
     
     void newColumn(int insertAfter, String defaultValue) {

@@ -28,10 +28,18 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -172,7 +180,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 		return policyCmptType;
 	}
 
-	/**
+    /**
 	 * {@inheritDoc}
 	 */
 	public void setPolicyCmptType(String policyCmptType) {
@@ -418,6 +426,13 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 		testPolicyCmptTypeChilds.add(p);
 		return p;
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ITestPolicyCmptTypeParameter getParentTestPolicyCmptTypeParam() {
+        return (ITestPolicyCmptTypeParameter)getParent();
+    }
 
     /**
      * {@inheritDoc}
@@ -515,6 +530,52 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
     /**
      * {@inheritDoc}
      */
+    public IIpsSrcFile[] getAllowedProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmpt) throws CoreException {
+        if (isRoot() || productCmpt == null){
+            IPolicyCmptType policyCmptType = findPolicyCmptType();
+            if (policyCmptType == null){
+                return new IIpsSrcFile[0];
+            }
+            IProductCmptType productCmptType = policyCmptType.findProductCmptType(getIpsProject());
+            if (productCmptType == null){
+                return new IIpsSrcFile[0];
+            }            
+            return ipsProjectToSearch.findAllProductCmptSrcFiles(productCmptType, true);
+        }
+        IPolicyCmptTypeAssociation relation = findRelation();
+        if (relation == null){
+            return new IIpsSrcFile[0];
+        }
+        IPolicyCmptType policyCmptTypeTarget = relation.findTargetPolicyCmptType(getIpsProject());
+        if (!policyCmptTypeTarget.isConfigurableByProductCmptType()){
+            return new IIpsSrcFile[0];
+        }
+        IProductCmptType productCmptTypeTarget = policyCmptTypeTarget.findProductCmptType(getIpsProject());
+        if (productCmptTypeTarget == null){
+            return new IIpsSrcFile[0];
+        }
+        IProductCmptTypeAssociation association = relation.findMatchingProductCmptTypeAssociation(getIpsProject());
+        if (association == null){
+            // no matching association found
+            return new IIpsSrcFile[0];
+        }
+        List result = new ArrayList(100);
+        IIpsObjectGeneration[] generations = productCmpt.getGenerations();
+        for (int i = 0; i < generations.length; i++) {
+            IProductCmptLink[] relations = ((IProductCmptGeneration)generations[i]).getLinks(association.getName());
+            for (int j = 0; j < relations.length; j++) {
+                IIpsSrcFile productCmptFound = ipsProjectToSearch.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT, relations[j].getTarget());
+                if (productCmptFound != null && !result.contains(productCmptFound)) {
+                    result.add(productCmptFound);
+                }
+            }
+        }
+        return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
         
@@ -565,7 +626,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
             } else if (policyCmptTypeFound != null){
                 // check if the relation is specified and the policy component type exists
                 //   that the policy cmpt type is a possible target of the relation  
-                IPolicyCmptType targetOfRelation = relationFound.findTarget();
+                IPolicyCmptType targetOfRelation = relationFound.findTargetPolicyCmptType(getIpsProject());
                 if (targetOfRelation == null){
                     String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_TargetOfRelationNotExists, relationFound.getTarget(), relation);
                     Message msg = new Message(MSGCODE_TARGET_OF_RELATION_NOT_EXISTS, text, Message.WARNING, this,

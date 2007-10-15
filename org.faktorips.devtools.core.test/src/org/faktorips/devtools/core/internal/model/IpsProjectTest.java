@@ -691,6 +691,129 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         
         ipsProject.findAllProductCmpts(null, true);
     }
+
+    public IProductCmptType createProductCmptType(IIpsPackageFragment packageFragment, IPolicyCmptType policyCmptType, String name) throws CoreException{
+        IProductCmptType productCmptType = (IProductCmptType) packageFragment.createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE_V2, name, true, null).getIpsObject();
+        productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
+        policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
+        return productCmptType;
+    }
+    
+    public void testFindAllProductCmptSrcFiles() throws CoreException {
+        // create the following types: Type0, Type1 and Type2
+        IIpsPackageFragment pack = root.createPackageFragment("pack", true, null);
+        IPolicyCmptType policyCmptType0 = (IPolicyCmptType) pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type0", true, null).getIpsObject();
+        policyCmptType0.setConfigurableByProductCmptType(true);
+        createProductCmptType(pack, policyCmptType0, "ProductCmptType0");
+
+        pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type1", true, null);
+        IPolicyCmptType policyCmptType2 = (IPolicyCmptType)pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type2", true, null).getIpsObject();
+        IProductCmptType productCmptType2 = (IProductCmptType) pack.createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE_V2, "ProductCmptType2", true, null).getIpsObject();
+        productCmptType2.setPolicyCmptType(policyCmptType2.getQualifiedName());
+        policyCmptType2.setProductCmptType(productCmptType2.getQualifiedName());
+        
+        // create the following product compnent: product0, product1, product2
+        IIpsSrcFile productFile0 = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Product0", true, null);
+        IIpsSrcFile productFile1 = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Product1", true, null);
+        IIpsSrcFile productFile2 = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Product2", true, null);
+        
+        IProductCmpt product0 = (IProductCmpt)productFile0.getIpsObject();
+        IProductCmpt product1 = (IProductCmpt)productFile1.getIpsObject();
+        IProductCmpt product2 = (IProductCmpt)productFile2.getIpsObject();
+        
+        product0.setProductCmptType("pack.ProductCmptType0");
+        product1.setProductCmptType("pack.ProductCmptType2");
+        product2.setProductCmptType("pack.ProductCmptType0");
+        
+        product0.getIpsSrcFile().save(true, null);
+        product1.getIpsSrcFile().save(true, null);
+        product2.getIpsSrcFile().save(true, null);
+
+        assertNotNull(product0.findProductCmptType(product0.getIpsProject()));
+        IIpsSrcFile[] result = ipsProject.findAllProductCmptSrcFiles(product0.findProductCmptType(ipsProject), true);
+        assertEquals(2, result.length);
+        assertEquals(product0.getIpsSrcFile(), result[0]);
+        assertEquals(product2.getIpsSrcFile(), result[1]);
+        
+        result = ipsProject.findAllProductCmptSrcFiles(null, true);
+        assertEquals(3, result.length);
+        assertEquals(product0.getIpsSrcFile(), result[0]);
+        assertEquals(product1.getIpsSrcFile(), result[1]);
+        assertEquals(product2.getIpsSrcFile(), result[2]);
+        
+        //
+        // test search with different projects
+        //
+        IIpsProject ipsProject2 = newIpsProject("Project2");
+        
+        pack = ipsProject2.getIpsPackageFragmentRoots()[0].createPackageFragment("pack", true, null);
+        IPolicyCmptType policyCmptType10 = (IPolicyCmptType) pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type10", true, null).getIpsObject();
+        policyCmptType10.setConfigurableByProductCmptType(true);
+        createProductCmptType(pack, policyCmptType10, "ProductCmptType10");
+        
+        IIpsSrcFile productFile10 = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Product10", true, null);
+        IProductCmpt product10 = (IProductCmpt)productFile10.getIpsObject();
+        product10.setProductCmptType("pack.ProductCmptType10");
+        product10.getIpsSrcFile().save(true, null);
+        
+        assertNotNull(product10.findProductCmptType(product10.getIpsProject()));
+        result = ipsProject.findAllProductCmptSrcFiles(product10.findProductCmptType(product10.getIpsProject()), true);
+        assertEquals(0, result.length);
+
+        IIpsObjectPath ipsObjectPath = ((IpsProject)ipsProject).getIpsObjectPath();
+        ipsObjectPath.newIpsProjectRefEntry(ipsProject2);
+        ipsProject.setIpsObjectPath(ipsObjectPath);
+
+        result = ipsProject.findAllProductCmptSrcFiles(product10.findProductCmptType(product10.getIpsProject()), true);
+        assertEquals(1, result.length);
+        assertEquals(product10.getIpsSrcFile(), result[0]);
+
+        result = ipsProject.findAllProductCmptSrcFiles(null, true);
+        assertEquals(4, result.length);
+        assertEquals(product0.getIpsSrcFile(), result[0]);
+        assertEquals(product1.getIpsSrcFile(), result[1]);
+        assertEquals(product2.getIpsSrcFile(), result[2]);
+        assertEquals(product10.getIpsSrcFile(), result[3]);
+        
+        // Remark: the parameter includeSubtypes of method findAllProductCmpts will be tested in IpsPackageFragmentRootTest;
+    }
+
+
+    public void testFindIpsSrcFiles() throws CoreException {
+        // create the following types: Type0, a.b.Type1 and c.Type2
+        root.getIpsPackageFragment("").createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type0", true, null);
+        IIpsPackageFragment folderAB = root.createPackageFragment("a.b", true, null);
+        folderAB.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type1", true, null);
+        IIpsPackageFragment folderC = root.createPackageFragment("c", true, null);
+        folderC.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type2", true, null);
+        
+        // create table c.Table1
+        folderC.createIpsFile(IpsObjectType.TABLE_STRUCTURE, "Table1", true, null);
+        
+        IIpsSrcFile[] result = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
+        assertEquals(0, result.length);
+        
+        result = ipsProject.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
+        assertEquals(3, result.length);
+
+        IIpsSrcFile pctSrcFile = (IIpsSrcFile)result[1]; 
+        IPolicyCmptType pct = (IPolicyCmptType)pctSrcFile.getIpsObject();
+        
+        result = ipsProject.findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
+        assertEquals(1, result.length);
+        
+        result = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE_V2);
+        assertEquals(0, result.length);
+
+        pct.setConfigurableByProductCmptType(true);
+        pct.setProductCmptType("productCmptTypeName");
+
+        result = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE_V2);
+        assertEquals(1, result.length);
+        
+        IIpsObject ipsObj = ipsProject.findIpsObject(pct.getQualifiedNameType());
+        assertEquals(pct, ipsObj);
+    }
     
     public void testSetIpsObjectPath() throws CoreException {
         IFile projectFile = ipsProject.getIpsProjectPropertiesFile();
@@ -1129,11 +1252,11 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(3, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
-        ml = prj.checkForDuplicateRuntimeIds(new IProductCmpt[] { cmpt3 });
+        ml = prj.checkForDuplicateRuntimeIds(new IIpsSrcFile[] { cmpt3.getIpsSrcFile() });
         assertEquals(2, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
-        ml = prj.checkForDuplicateRuntimeIds(new IProductCmpt[] { cmpt1, cmpt3 });
+        ml = prj.checkForDuplicateRuntimeIds(new IIpsSrcFile[] { cmpt1.getIpsSrcFile(), cmpt3.getIpsSrcFile() });
         assertEquals(4, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
     }    
@@ -1205,10 +1328,66 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertFalse(ipsProject.isResourceExcludedFromProductDefinition(folder1));
     }
     
+    public void testFindIpsSourceFiles() throws CoreException {
+        // create the following types: Type0, a.b.Type1 and c.Type2, and table structure
+        root.getIpsPackageFragment("").createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type0", true, null);
+        IIpsPackageFragment folderAB = root.createPackageFragment("a.b", true, null);
+        folderAB.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type1", true, null);
+        IIpsPackageFragment folderC = root.createPackageFragment("c", true, null);
+        IIpsSrcFile policyCmptType = folderC.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type2", true, null);
+        
+        IIpsSrcFile tableStructure = folderC.createIpsFile(IpsObjectType.TABLE_STRUCTURE, "Table1", true, null);
+        IIpsSrcFile tableContents = folderC.createIpsFile(IpsObjectType.TABLE_CONTENTS, "TableContents1", true, null);
+        IIpsSrcFile testCaseType = folderC.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestCaseType1", true, null);
+        IIpsSrcFile testCase = folderC.createIpsFile(IpsObjectType.TEST_CASE, "TestCase1", true, null);
+        IIpsSrcFile productCmpt = folderC.createIpsFile(IpsObjectType.PRODUCT_CMPT, "ProductCmpt1", true, null);
+        
+        IIpsSrcFile[] result = null;
+        
+        result = ipsProject.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
+        assertEquals(3, result.length);
+        assertTrue(containsIpsSrcFile(result, policyCmptType));
+
+        result = ipsProject.findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
+        assertEquals(1, result.length);
+        assertTrue(containsIpsSrcFile(result, tableStructure));
+        
+        result = ipsProject.findIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
+        assertEquals(1, result.length);
+        assertTrue(containsIpsSrcFile(result, tableContents));
+
+        result = ipsProject.findIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE);
+        assertEquals(1, result.length);
+        assertTrue(containsIpsSrcFile(result, testCaseType));
+
+        result = ipsProject.findIpsSrcFiles(IpsObjectType.TEST_CASE);
+        assertEquals(1, result.length);
+        assertTrue(containsIpsSrcFile(result, testCase));
+        
+        result = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
+        assertEquals(1, result.length);
+        assertTrue(containsIpsSrcFile(result, productCmpt));
+        
+        List resultList = new ArrayList();
+        ipsProject.findAllIpsSrcFiles(resultList);
+        assertEquals(8, resultList.size());
+
+        // FIXME Joerg: Test nach Modellumstellung erweitern mit suchen von ProductCmptType
+    }
+
+    private boolean containsIpsSrcFile(IIpsSrcFile[] result, IIpsSrcFile policyCmptType) throws CoreException {
+        for (int i = 0; i < result.length; i++) {
+            if (result[i].getIpsObject().equals(policyCmptType.getIpsObject())){
+                return true;
+            }
+        }
+        return false;
+    }    
+    
     class InvalidMigrationMockManager extends TestIpsFeatureVersionManager {
 
         public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) throws CoreException {
             throw new UnsupportedOperationException();
         }
-    }
+    }    
 }

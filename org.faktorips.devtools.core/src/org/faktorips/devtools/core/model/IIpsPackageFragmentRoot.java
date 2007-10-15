@@ -125,9 +125,13 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException;
 
     /**
+     * Returns the IPS source file with the indicated qualified name type.
+     */
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) throws CoreException;
+
+    /**
      * If this root is based on an archive, the method returns the archive, otherwise <code>null</code>
      * is returned.
      */
     public IIpsArchive getIpsArchive() throws CoreException;
-
 }

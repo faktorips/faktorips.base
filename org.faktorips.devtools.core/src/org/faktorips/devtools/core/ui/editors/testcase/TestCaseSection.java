@@ -85,10 +85,10 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -882,7 +882,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         // refresh and check for delta to the test case type 
         //   if the test case type changed
         try {
-            ITestCaseType testCaseType = testCase.findTestCaseType();
+            ITestCaseType testCaseType = testCase.findTestCaseType(testCase.getIpsProject());
             if (testCaseType == null){
                 return;
             }
@@ -1569,7 +1569,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 // validation error
                 return;
             }
-            IPolicyCmptType policyCmptType = relation.findTarget();
+            IPolicyCmptType policyCmptType = (IPolicyCmptType)relation.findTarget(testCase.getIpsProject());
             if (policyCmptType == null){
                 // validation error
                 return;
@@ -1579,8 +1579,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 // validation error
                 return;
             }
-            productCmptQualifiedNames = selectProductCmptsDialog(productCmptType, relationType
-                    .getParentTestPolicyCmpt().findProductCmpt(), true);
+            
+            productCmptQualifiedNames = selectProductCmptsDialog(relationType.getTestPolicyCmptTypeParam(), relationType.getParentTestPolicyCmpt(), true);
             if (productCmptQualifiedNames == null)
                 // chancel dialog
                 return;
@@ -1762,7 +1762,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         // policy cmpt type not found, this is a validation error
                         return;
                     }
-					productCmptQualifiedNames = selectProductCmptsDialog(productCmptType, testPolicyCmpt.findProductCmpt(), false);
+					productCmptQualifiedNames = selectProductCmptsDialog(testTypeParam, testPolicyCmpt.getParentPolicyCmpt(), false);
 					if (productCmptQualifiedNames == null || productCmptQualifiedNames.length == 0){
 						// chancel
 						return;
@@ -1795,6 +1795,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     private void runAndStoreExpectedResultClicked() {
         if (!isDataChangeable()){
+            return;
+        }
+        if (containsErrors()){
             return;
         }
         boolean overwriteExpectedResult = MessageDialog.openQuestion(getShell(), Messages.TestCaseSection_MessageDialog_TitleRunTestAndStoreExpectedResults,
@@ -1856,13 +1859,30 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         prevTestObjects = list;
     }
 
-	private void runTestClicked(){
+	private void runTestClicked() {
         resetTestRunStatus();
         clearTestFailures(true);
+        if (containsErrors()){
+            return;
+        }
         registerTestRunListener();
-	    startTestRunner();
-	}
+        startTestRunner();
+    }
     
+    private boolean containsErrors() {
+        try {
+            if (testCase.validate().containsErrorMsg()) {
+                MessageDialog.openWarning(getShell(), Messages.TestCaseSection_MessageDialog_TitleInfoTestNotExecuted,
+                        Messages.TestCaseSection_MessageDialog_TextInfoTestNotExecuted);
+                return true;
+            }
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            return true;
+        }
+        return false;
+    }
+
     /*
      * Returns the toc file package name which stores the current test case.
      */
@@ -1878,24 +1898,25 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         return builderSet.getRuntimeRepositoryTocResourceName(root);        
     }
     
-	/**
+	/*
      * Shows the select product component dialog and returns the selected product component
      * qualified name. Returns <code>null</code> if no selection or an unsupported type was
      * chosen.
      * 
      * @throws CoreException If an error occurs
      */
-	private String[] selectProductCmptsDialog(IProductCmptType productCmptType, IProductCmpt productCmptParent, boolean multiSelectiion) throws CoreException {
-	    PdObjectSelectionDialog dialog = new PdObjectSelectionDialog(getShell(), Messages.TestCaseSection_DialogSelectProductCmpt_Title, 
+	private String[] selectProductCmptsDialog(ITestPolicyCmptTypeParameter testTypeParam, ITestPolicyCmpt testPolicyCmptParent, boolean multiSelectiion) throws CoreException {
+	    IIpsSrcFile[] productCmptSrcFiles = getProductCmptSrcFiles(testTypeParam, testPolicyCmptParent);
+        PdObjectSelectionDialog dialog = new PdObjectSelectionDialog(getShell(), Messages.TestCaseSection_DialogSelectProductCmpt_Title, 
         		Messages.TestCaseSection_DialogSelectProductCmpt_Description);
-        dialog.setElements(getProductCmptObjects(productCmptType));
+        dialog.setElements(productCmptSrcFiles);
         dialog.setMultipleSelection(multiSelectiion);
         if (dialog.open()==Window.OK) {
             if (dialog.getResult().length>0) {
             	Object[] productCmpts = dialog.getResult();
         		String[] qualifedNames = new String[productCmpts.length];
                 for (int i = 0; i < productCmpts.length; i++) {
-                    qualifedNames[i] = ((IProductCmpt)productCmpts[i]).getQualifiedName();
+                    qualifedNames[i] = ((IIpsSrcFile)productCmpts[i]).getQualifiedNameType().getName();
                 }
                 return qualifedNames;
             }
@@ -1903,21 +1924,26 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	    return null;
 	}
 	
-	/**
+	private IIpsSrcFile[] getProductCmptSrcFiles(ITestPolicyCmptTypeParameter testTypeParam,
+            ITestPolicyCmpt testPolicyCmptParent) throws CoreException {
+        return testTypeParam.getAllowedProductCmpt(testCase.getIpsProject(), testPolicyCmptParent!=null?testPolicyCmptParent.findProductCmpt():null);
+    }
+
+    /**
 	 * Returns all product component objects in the model which are related to the given type name.
 	 * 
 	 * @throws CoreException If an error occurs
 	 */
-    public IIpsObject[] getProductCmptObjects(IProductCmptType productCmptType) throws CoreException {
+    public IIpsSrcFile[] getProductCmptSrcFiles(IProductCmptType productCmptType) throws CoreException {
         // TODO v2 - was macht die methode, braucht man das umkopieren wirklich?
+        
         List allProductCmpts = new ArrayList();
         
         getProductCmptObjects(testCase.getIpsProject(), productCmptType, allProductCmpts);
-        
-        IProductCmpt[] cmpts = (IProductCmpt[]) allProductCmpts.toArray(new IProductCmpt[0]);
+        IIpsSrcFile[] cmpts = (IIpsSrcFile[]) allProductCmpts.toArray(new IIpsSrcFile[0]);
     	List cmptList = new ArrayList();
     	cmptList.addAll(Arrays.asList(cmpts));
-        return (IIpsObject[])cmptList.toArray(new IIpsObject[cmptList.size()]);
+        return (IIpsSrcFile[])cmptList.toArray(new IIpsSrcFile[cmptList.size()]);
     }
 
     /*
@@ -1925,7 +1951,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * with the given qualified name to the given result list.
      */
     private void getProductCmptObjects(IIpsProject ipsProject, IProductCmptType productCmptType, List result) throws CoreException {
-        IProductCmpt[] cmpts = ipsProject.findAllProductCmpts(productCmptType, true);
+        IIpsSrcFile[] cmpts = ipsProject.findAllProductCmptSrcFiles(productCmptType, true);
         for (int i = 0; i < cmpts.length; i++) {
             result.add(cmpts[i]);
         }
@@ -2193,7 +2219,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * (@inheritDoc)
      */
     protected void performRefresh() {
-        treeViewer.refresh();
+        refreshTree();
         
         // reset the test status color of the title area
         postResetTestRunStatus();

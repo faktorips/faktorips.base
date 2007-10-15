@@ -168,14 +168,14 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         assertEquals(3, children.length);
         list= Arrays.asList(children);
         assertTrue(list.contains(emptyPackage));
-        assertTrue(list.contains(polCmptType));
-        assertTrue(list.contains(tableStructure));
+        assertTrue(list.contains(polCmptType.getIpsSrcFile()));
+        assertTrue(list.contains(tableStructure.getIpsSrcFile()));
         // productPackage has two children: one productCmpt and one tableContent
         children= hierarchyProvider.getChildren(productPackage);
         assertEquals(2, children.length);
         list= Arrays.asList(children);
-        assertTrue(list.contains(prodCmpt));
-        assertTrue(list.contains(tableContents));
+        assertTrue(list.contains(prodCmpt.getIpsSrcFile()));
+        assertTrue(list.contains(tableContents.getIpsSrcFile()));
         // emptyPackage has no children
         assertEquals(0, hierarchyProvider.getChildren(emptyPackage).length);
         // filePackage contains a file
@@ -218,14 +218,14 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         children= flatProvider.getChildren(modelPackage);
         assertEquals(2, children.length);
         list= Arrays.asList(children);
-        assertTrue(list.contains(polCmptType));
-        assertTrue(list.contains(tableStructure));
+        assertTrue(list.contains(polCmptType.getIpsSrcFile()));
+        assertTrue(list.contains(tableStructure.getIpsSrcFile()));
         // productPackage contains two children, one ProductComponent, one TableContents
         children= flatProvider.getChildren(productPackage);
         assertEquals(2, children.length);
         list= Arrays.asList(children);
-        assertTrue(list.contains(prodCmpt));
-        assertTrue(list.contains(tableContents));
+        assertTrue(list.contains(prodCmpt.getIpsSrcFile()));
+        assertTrue(list.contains(tableContents.getIpsSrcFile()));
         // emptyPackage has no children
         assertEquals(0, flatProvider.getChildren(emptyPackage).length);
         // filePackage contains a file

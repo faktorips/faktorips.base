@@ -21,8 +21,8 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -43,25 +43,26 @@ public class ProductCmptType2RefControl extends IpsObjectRefControl {
         super(project, parent, toolkit, Messages.ProductCmptTypeRefControl_title, Messages.ProductCmptTypeRefControl_description);
         this.excludeAbstractTypes = excludeAbstractTypes;
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      */
-    protected IIpsObject[] getIpsObjects() throws CoreException {
-    	if (getIpsProject()==null) {
-    		return new IIpsObject[0];
-    	}
-    	IIpsObject[] allProductCmptTypes = getIpsProject().findIpsObjects(IpsObjectType.PRODUCT_CMPT_TYPE_V2);
-    	ArrayList result = new ArrayList();
-    	for (int i = 0; i < allProductCmptTypes.length; i++) {
-            IProductCmptType type = (IProductCmptType)allProductCmptTypes[i];
-			if (!excludeAbstractTypes || !type.isAbstract()) {
-				result.add(allProductCmptTypes[i]);
-			}
-		}
-        return (IIpsObject[])result.toArray(new IIpsObject[result.size()]);
+    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
+        if (getIpsProject()==null) {
+            return new IIpsSrcFile[0];
+        }
+        IIpsSrcFile[] allProductCmptTypes = getIpsProject().findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE_V2);
+        ArrayList result = new ArrayList();
+        for (int i = 0; i < allProductCmptTypes.length; i++) {
+            if (!excludeAbstractTypes
+                    || !Boolean.valueOf(allProductCmptTypes[i].getPropertyValue(IProductCmptType.PROPERTY_ABSTRACT))
+                            .booleanValue()) {
+                result.add(allProductCmptTypes[i]);
+            }
+        }
+        return (IIpsSrcFile[])result.toArray(new IIpsSrcFile[result.size()]);
     }
-
+    
     /**
      * Returns the product component type entered in this control. Returns <code>null</code>
      * if the text in the control does not identify a product component type.

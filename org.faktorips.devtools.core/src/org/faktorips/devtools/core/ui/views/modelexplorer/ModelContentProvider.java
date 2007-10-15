@@ -21,12 +21,13 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.product.IProductCmpt;
 
 /**
  * Class for calculation the content of the ModelExplorer tree. The returned Lists of
@@ -66,7 +67,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      */
     protected Object[] getUnfilteredChildren(Object parentElement) {
         if (parentElement instanceof IIpsElement) {
-            if (parentElement instanceof IAttribute || parentElement instanceof IProductCmpt) {
+            if (parentElement instanceof IAttribute) {
                 return EMPTY_ARRAY;
             }
             try {
@@ -76,6 +77,12 @@ public class ModelContentProvider implements ITreeContentProvider {
                     return getPackageFragmentRootContent((IIpsPackageFragmentRoot)parentElement);
                 } else if (parentElement instanceof IIpsPackageFragment) {
                     return getPackageFragmentContent((IIpsPackageFragment)parentElement);
+                } else if (parentElement instanceof IIpsSrcFile) {
+                    if (IpsObjectType.TABLE_CONTENTS.equals(((IIpsSrcFile)parentElement).getIpsObjectType())){
+                        return EMPTY_ARRAY;
+                    }
+                    IIpsObject ipsObject = ((IIpsSrcFile)parentElement).getIpsObject();
+                    return getChildren(ipsObject);
                 } else {
                     return ((IIpsElement)parentElement).getChildren();
                 }
@@ -310,7 +317,7 @@ public class ModelContentProvider implements ITreeContentProvider {
                 if (file!=null && !file.isSynchronized(IResource.DEPTH_ZERO)) {
                     file.getParent().refreshLocal(IResource.DEPTH_ONE, null);
                 }
-                pcts.add(((IIpsSrcFile)files[i]).getIpsObject());
+                pcts.add(files[i]);
             }
         }
         /*
@@ -333,7 +340,7 @@ public class ModelContentProvider implements ITreeContentProvider {
 
         for (int i = 0; i < elements.length; i++) {
             if (elements[i] instanceof IIpsElement) {
-                if (configuration.isAllowedIpsElement(elements[i])) {
+                if (configuration.isAllowedIpsElement((IIpsElement)elements[i])) {
                     filtered.add(elements[i]);
                 }
             } else if (elements[i] instanceof IResource) {

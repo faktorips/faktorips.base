@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 
@@ -200,6 +201,28 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
                 if (object!=null) {
                     result.add(object);
                 }
+            }
+        }
+    }
+    
+    public void findIpsSourceFiles(IpsObjectType type, List result) throws CoreException {
+        if (type==null) {
+            return;
+        }
+        IIpsArchive archive = getIpsArchive();
+        if (archive==null) {
+            return;
+        }
+        Set qntSet = archive.getQNameTypes();
+        for (Iterator it = qntSet.iterator(); it.hasNext();) {
+            QualifiedNameType qnt = (QualifiedNameType)it.next();
+            IIpsPackageFragment pack = getIpsPackageFragment(qnt.getPackageName());
+            if (pack==null) {
+                return;
+            }
+            IIpsSrcFile file = pack.getIpsSrcFile(qnt.getFileName());
+            if (!file.exists()) {
+                result.add(file);
             }
         }
     }

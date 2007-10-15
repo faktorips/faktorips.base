@@ -17,10 +17,11 @@
 
 package org.faktorips.devtools.core.internal.model.testcase;
 
+import java.util.GregorianCalendar;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -28,9 +29,13 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -64,34 +69,108 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         super.setUp();
         
         project = newIpsProject("TestProject");
-        PolicyCmptType type = newPolicyCmptType(project, "testValueParameter1");
-        IPolicyCmptTypeAssociation relation = type.newPolicyCmptTypeAssociation();
-        relation.setTargetRoleSingular("relation1");
-        newPolicyCmptType(project, "testValueParameter2");
-        newPolicyCmptType(project, "testValueParameter3");
         
+        // PolicyCmptType1 and ProductCmptType1
+        PolicyCmptType type1 = newPolicyCmptType(project, "PolicyCmptType1");
+        IProductCmptType productCmptType1 = newProductCmptType(project, "ProductCmptType1");
+        productCmptType1.setPolicyCmptType(type1.getQualifiedName());
+        type1.setProductCmptType(productCmptType1.getQualifiedName());
+        
+        // PolicyCmptType2 and ProductCmptType2
+        PolicyCmptType type2 = newPolicyCmptType(project, "PolicyCmptType2");
+        IProductCmptType productCmptType2 = newProductCmptType(project, "ProductCmptType2");
+        productCmptType2.setPolicyCmptType(type2.getQualifiedName());
+        type2.setProductCmptType(productCmptType2.getQualifiedName());
+        
+        // PolicyCmptType3
+        newPolicyCmptType(project, "PolicyCmptType3");
+        
+        // Product1 based ProductCmptType1
+        IProductCmpt productCmpt1 = newProductCmpt(project, "ProductCmpt1");
+        productCmpt1.setProductCmptType("ProductCmptType1");
+        IProductCmptGeneration generationProductCmpt1 = (IProductCmptGeneration) productCmpt1.newGeneration(new GregorianCalendar());
+        
+        // Product2 based ProductCmptType2
+        IProductCmpt productCmpt2 = newProductCmpt(project, "ProductCmpt2");
+        productCmpt2.setProductCmptType("ProductCmptType2");
+        productCmpt2.newGeneration(new GregorianCalendar());
+        
+        // Product3 based ProductCmptType2
+        IProductCmpt productCmpt3 = newProductCmpt(project, "ProductCmpt3");
+        productCmpt3.setProductCmptType("ProductCmptType2");
+        productCmpt3.newGeneration(new GregorianCalendar());
+        
+
+        // relation1: PolicyCmptType1 -> PolicyCmptType2
+        IPolicyCmptTypeAssociation relation = type1.newPolicyCmptTypeAssociation();
+        relation.setTargetRoleSingular("relation1");
+        relation.setTargetRolePlural("relations1");
+        relation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        relation.setTarget(type2.getQualifiedName());
+        relation.setProductRelevant(false);
+        // assoziaotion1: ProductCmptType1 -> ProductCmptType2
+        IProductCmptTypeAssociation association1 = productCmptType1.newProductCmptTypeAssociation();
+        association1.setTarget("ProductCmptType2");
+        association1.setTargetRoleSingular("relation1");
+        association1.setTargetRolePlural("relations1");
+        
+        // relation2: PolicyCmptType1 -> PolicyCmptType1
+        IPolicyCmptTypeAssociation relation2 = type1.newPolicyCmptTypeAssociation();
+        relation2.setTargetRoleSingular("relation2");
+        relation2.setTargetRolePlural("relations2");
+        relation2.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        relation2.setTarget(type1.getQualifiedName());
+        relation2.setProductRelevant(false);
+        //  assoziaotion2: ProductCmptType1 -> ProductCmptType1
+        IProductCmptTypeAssociation association2 = productCmptType1.newProductCmptTypeAssociation();
+        association2.setTarget("ProductCmptType1");
+        association2.setTargetRoleSingular("relation2");
+        association2.setTargetRolePlural("relations2");
+
+        
+        // Link: between Product1 -> Product2 (Relation1)
+        generationProductCmpt1.newLink("relation1").setTarget(productCmpt2.getQualifiedName());
+        // Link: between Product1 -> Product3 (Relation2)
+        generationProductCmpt1.newLink("relation2").setTarget(productCmpt1.getQualifiedName());
+
         testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         ITestPolicyCmptTypeParameter parameter = testCaseType.newInputTestPolicyCmptTypeParameter();
-        parameter.setName("testValueParameter1");
-        parameter.setPolicyCmptType("testValueParameter1");
+        parameter.setName("testPolicyCmptTypeParameter1");
+        parameter.setPolicyCmptType("PolicyCmptType1");
+
         childTestPolicyCmptTypeParameter = parameter.newTestPolicyCmptTypeParamChild();
-        childTestPolicyCmptTypeParameter.setName("testValueParameter1Child");
-        childTestPolicyCmptTypeParameter.setPolicyCmptType("testValueParameter1");
+        childTestPolicyCmptTypeParameter.setName("testPolicyCmptTypeParameterChild1");
+        childTestPolicyCmptTypeParameter.setPolicyCmptType("PolicyCmptType2");
         childTestPolicyCmptTypeParameter.setRelation("relation1");
         childTestPolicyCmptTypeParameter.setTestParameterType(TestParameterType.INPUT);
+        childTestPolicyCmptTypeParameter.setMaxInstances(2);
+        childTestPolicyCmptTypeParameter.setRequiresProductCmpt(true);
+        
+        ITestPolicyCmptTypeParameter childTestPolicyCmptTypeParameter2 = parameter.newTestPolicyCmptTypeParamChild();
+        childTestPolicyCmptTypeParameter2.setName("testPolicyCmptTypeParameterChild2");
+        childTestPolicyCmptTypeParameter2.setPolicyCmptType("PolicyCmptType1");
+        childTestPolicyCmptTypeParameter2.setRelation("relation2");
+        childTestPolicyCmptTypeParameter2.setTestParameterType(TestParameterType.INPUT);
+        childTestPolicyCmptTypeParameter2.setMaxInstances(2);
+        childTestPolicyCmptTypeParameter2.setRequiresProductCmpt(true);
+
         ITestPolicyCmptTypeParameter parameter2 = testCaseType.newExpectedResultPolicyCmptTypeParameter();
-        parameter2.setName("testValueParameter2");
-        parameter2.setPolicyCmptType("testValueParameter2");
+        parameter2.setName("testPolicyCmptTypeParameter2");
+        parameter2.setPolicyCmptType("PolicyCmptType2");
         ITestPolicyCmptTypeParameter parameter3 = testCaseType.newCombinedPolicyCmptTypeParameter();
-        parameter3.setName("testValueParameter3");
-        parameter3.setPolicyCmptType("testValueParameter3");
+        parameter3.setName("testPolicyCmptTypeParameter3");
+        parameter3.setPolicyCmptType("PolicyCmptType3");
         
         testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "PremiumCalculation");
-        (testPolicyCmptObjectInput = testCase.newTestPolicyCmpt()).setTestPolicyCmptTypeParameter("testValueParameter1");
-        testPolicyCmptObjectInput.setName(testPolicyCmptObjectInput.getTestPolicyCmptTypeParameter());
-        (testPolicyCmptObjectExpected = testCase.newTestPolicyCmpt()).setTestPolicyCmptTypeParameter("testValueParameter2");
-        testPolicyCmptObjectExpected.setName(testPolicyCmptObjectExpected.getTestPolicyCmptTypeParameter());
         testCase.setTestCaseType(testCaseType.getName());
+        (testPolicyCmptObjectInput = testCase.newTestPolicyCmpt()).setTestPolicyCmptTypeParameter("testPolicyCmptTypeParameter1");
+        testPolicyCmptObjectInput.setName(testPolicyCmptObjectInput.getTestPolicyCmptTypeParameter());
+        (testPolicyCmptObjectExpected = testCase.newTestPolicyCmpt()).setTestPolicyCmptTypeParameter("testPolicyCmptTypeParameter2");
+        testPolicyCmptObjectExpected.setName(testPolicyCmptObjectExpected.getTestPolicyCmptTypeParameter());
+        ITestPolicyCmpt testPolicyCmptObjectCombined;
+        (testPolicyCmptObjectCombined = testCase.newTestPolicyCmpt()).setTestPolicyCmptTypeParameter("testPolicyCmptTypeParameter3");
+        testPolicyCmptObjectCombined.setName(testPolicyCmptObjectCombined.getTestPolicyCmptTypeParameter());
+        
     }
  
     public void testInitFromXml() {
@@ -142,14 +221,14 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     }
     
     public void testNewAndDelete(){
-        assertEquals(2, testCase.getTestPolicyCmpts().length);
+        assertEquals(3, testCase.getTestPolicyCmpts().length);
         
         // test root
         ITestPolicyCmpt policyCmpt = testCase.newTestPolicyCmpt();
-        assertEquals(3, testCase.getTestPolicyCmpts().length);
+        assertEquals(4, testCase.getTestPolicyCmpts().length);
         
         policyCmpt.delete();
-        assertEquals(2, testCase.getTestPolicyCmpts().length);
+        assertEquals(3, testCase.getTestPolicyCmpts().length);
         assertEquals(testPolicyCmptObjectExpected, testCase.getExpectedResultTestPolicyCmpts()[0]);
         assertEquals(testPolicyCmptObjectInput, testCase.getInputTestPolicyCmpts()[0]);
         
@@ -242,14 +321,14 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
 
         // create mandatory instance child 1 on parameter side and validate
         ITestPolicyCmptTypeParameter paramChild = param.newTestPolicyCmptTypeParamChild();
-        paramChild.setName("child1");
+        paramChild.setName("ProductCmpt1");
         paramChild.setMinInstances(1);
         ml = testPolicyCmptObjectInput.validate();
         assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
         
         // create child and validate again
         ITestPolicyCmptRelation testRelation = testPolicyCmptObjectInput.newTestPolicyCmptRelation();
-        testRelation.setTestPolicyCmptTypeParameter("child1");
+        testRelation.setTestPolicyCmptTypeParameter("ProductCmpt1");
         testRelation.newTargetTestPolicyCmptChild();
         ml = testPolicyCmptObjectInput.validate();
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
@@ -263,19 +342,19 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
 
         // create instance child 1 on parameter side and validate
         ITestPolicyCmptTypeParameter paramChild = param.newTestPolicyCmptTypeParamChild();
-        paramChild.setName("child1");
+        paramChild.setName("ProductCmpt1");
         paramChild.setMaxInstances(1);
         ml = testPolicyCmptObjectInput.validate();
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
         
         // create two child and validate again
         ITestPolicyCmptRelation testRelation = testPolicyCmptObjectInput.newTestPolicyCmptRelation();
-        testRelation.setTestPolicyCmptTypeParameter("child1");
+        testRelation.setTestPolicyCmptTypeParameter("ProductCmpt1");
         testRelation.newTargetTestPolicyCmptChild();
         ml = testPolicyCmptObjectInput.validate();
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
         testRelation = testPolicyCmptObjectInput.newTestPolicyCmptRelation();
-        testRelation.setTestPolicyCmptTypeParameter("child1");
+        testRelation.setTestPolicyCmptTypeParameter("ProductCmpt1");
         testRelation.newTargetTestPolicyCmptChild();
         ml = testPolicyCmptObjectInput.validate();
         assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));        
@@ -342,14 +421,29 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertEquals(relationPos0, testPolicyCmptObjectInput.getTestPolicyCmptRelations()[2]);
     }
     
+    /*
+     * Test that adding test objects doesn't end in a fix sort order
+     */
+    public void testAddTestPcTypeRelationCorrectOrder() throws CoreException{
+        ITestPolicyCmptTypeParameter parentTestPolicyCmptTypeParam = childTestPolicyCmptTypeParameter.getParentTestPolicyCmptTypeParam();
+        ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParamChilds = parentTestPolicyCmptTypeParam.getTestPolicyCmptTypeParamChilds();
+
+        testPolicyCmptObjectInput.addTestPcTypeRelation(testPolicyCmptTypeParamChilds[1], "ProductCmpt1", null);
+        testPolicyCmptObjectInput.addTestPcTypeRelation(testPolicyCmptTypeParamChilds[0], "ProductCmpt3", null);
+        
+        assertFalse(testCase.validate().containsErrorMsg());
+        assertFalse(testCase.containsDifferenceToModel());
+    }
+    
     public void testUpdateDefaultTestAttributeValues() throws CoreException{
         // create model objects
-        IPolicyCmptType policy = newPolicyAndProductCmptType(project, "Policy", "Product");
+        IPolicyCmptType policy = newPolicyCmptType(project, "Policy");
         IPolicyCmptTypeAssociation relation = policy.newPolicyCmptTypeAssociation();
         relation.setTargetRoleSingular("childPolicyCmptType");
         relation.setTarget("Coverage");
-        IPolicyCmptType coverage = newPolicyAndProductCmptType(project, "Coverage", "CoverageType");
-        IProductCmpt product = newProductCmpt(coverage.findProductCmptType(project), "Product");
+        IPolicyCmptType coverage = newPolicyCmptType(project, "Coverage");
+        IProductCmpt product = newProductCmpt(project, "Product");
+        product.setProductCmptType(coverage.getQualifiedName());
         
         // add attributes with their defaults
         IAttribute attr = policy.newAttribute();
@@ -362,7 +456,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         attr.setDefaultValue("attrCoverage_Default");
         attr.setProductRelevant(true);
 
-        IProductCmptGeneration generation = product.getProductCmptGeneration(0);
+        IProductCmptGeneration generation = (IProductCmptGeneration) product.newGeneration(new GregorianCalendar(1742, 12, 1));
         IConfigElement ce = generation.newConfigElement();
         ce.setPcTypeAttribute(attr.getName());
         ce.setValue("attrCoverage_Default_Product");
@@ -451,29 +545,145 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertNull(generation);
     }
     
-    public void testFindProductCmptAttribute() throws CoreException{
-        IAttribute attribute = testPolicyCmptObjectInput.findProductCmptAttribute("unknown");
-        assertNull(attribute);
-        
-        // create policy cmpt type and product cmpt type
-        // with missing link
-        ITestPolicyCmptTypeParameter parameter = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter();
-        parameter.setRequiresProductCmpt(true);
-        IPolicyCmptType policyCmptType = parameter.findPolicyCmptType();
-        ProductCmptType productCmptType = newProductCmptType(project, "productCmptType");
-        policyCmptType.setProductCmptType(productCmptType.getQualifiedName());        
-        ProductCmpt productCmpt = newProductCmpt(project, "product1");
-        productCmpt.setProductCmptType(productCmptType.getQualifiedName());
-        testPolicyCmptObjectInput.setProductCmpt(productCmpt.getQualifiedName());
+    private class TestContent{
+        private IPolicyCmptType policy;
+        private IPolicyCmptTypeAssociation coverages;
+        private IPolicyCmptType coverage;
+        private IProductCmpt policyProduct;
+        private IProductCmpt coverageProductA; // is related in policyProduct
+        private IProductCmpt coverageProductB; // is not related in policyProduct
 
-        attribute = testPolicyCmptObjectInput.findProductCmptAttribute("unknown");
-        assertNull(attribute);
+        private ITestPolicyCmptTypeParameter parameter;
+        private ITestPolicyCmptTypeParameter childParameter;
         
-        // link policy cmpt type and product cmpt type
-        productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
-        policyCmptType.newAttribute().setName("attribute");
-        
-        attribute = testPolicyCmptObjectInput.findProductCmptAttribute("attribute");
-        assertNotNull(attribute);
+        public void init(IIpsProject project) throws CoreException {
+            policy = newPolicyCmptType(project, "Policy");
+            policy.setConfigurableByProductCmptType(true);
+            ProductCmptType productCmptTypePolicy = newProductCmptType(project, "PolicyType");
+            policy.setProductCmptType(productCmptTypePolicy.getQualifiedName());
+            productCmptTypePolicy.setPolicyCmptType(policy.getQualifiedName());
+            
+            coverage = newPolicyCmptType(project, "Coverage");
+            coverage.setConfigurableByProductCmptType(true);
+            ProductCmptType productCmptTypeCoverage = newProductCmptType(project, "CoverageType");
+            coverage.setProductCmptType(productCmptTypeCoverage.getQualifiedName());
+            productCmptTypeCoverage.setPolicyCmptType(coverage.getQualifiedName());
+            
+            coverages = policy.newPolicyCmptTypeAssociation();
+            coverages.setTarget(coverage.getQualifiedName());
+            coverages.setProductRelevant(true);
+            coverages.setTargetRoleSingular("Coverage");
+            coverages.setTargetRolePlural("Coverages");
+            coverages.setTargetRoleSingularProductSide("Coverage");
+            coverages.setTargetRolePluralProductSide("Coverages");
+            coverages.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+            coverages.setProductRelevant(true);
+            
+            IProductCmptTypeAssociation association = productCmptTypePolicy.newProductCmptTypeAssociation();
+            association.setTarget("CoverageType");
+            association.setTargetRoleSingular("Coverage");
+            association.setTargetRolePlural("Coverages");
+            
+            policyProduct = newProductCmpt(project, "PolicyA 2007-09");
+            policyProduct.setProductCmptType(productCmptTypePolicy.getQualifiedName());
+            coverageProductA = newProductCmpt(project, "CoverageA 2007-09");
+            coverageProductA.setProductCmptType(productCmptTypeCoverage.getQualifiedName());
+            coverageProductA.newGeneration(new GregorianCalendar());
+            coverageProductB = newProductCmpt(project, "CoverageB 2007-09");
+            coverageProductB.setProductCmptType(productCmptTypeCoverage.getQualifiedName());
+            coverageProductB.newGeneration(new GregorianCalendar());
+            
+            parameter = testCaseType.newCombinedPolicyCmptTypeParameter();
+            parameter.setPolicyCmptType(policy.getQualifiedName());
+            parameter.setName("PolicyParam");
+            parameter.setRequiresProductCmpt(true);
+            childParameter = parameter.newTestPolicyCmptTypeParamChild();
+            childParameter.setPolicyCmptType(coverage.getQualifiedName());
+            childParameter.setRelation(coverages.getName());
+            childParameter.setName("CoverageParam");            
+            childParameter.setRequiresProductCmpt(true);
+            
+            IProductCmptGeneration generation = (IProductCmptGeneration)policyProduct.newGeneration(new GregorianCalendar());
+            IProductCmptLink productCmptRelation = generation.newLink(coverages.getTargetRoleSingularProductSide());
+            productCmptRelation.setTarget(coverageProductA.getQualifiedName());
+            
+        }
     }
+    
+  public void testValidateAllowedProductCmpt() throws Exception {
+      // test these two validation messages:
+      //  Error: WrongProductCmptOfRelation
+      //  Warning: ParentProductCmptOfRelationNotSpecified
+      ITestPolicyCmpt testPolicyCmpt;
+      ITestPolicyCmpt testPolicyCmptChild;
+      MessageList ml;
+      
+      TestContent testContent = new TestContent();
+      testContent.init(project);
+      
+      testPolicyCmpt = testCase.newTestPolicyCmpt();
+      testPolicyCmpt.setTestPolicyCmptTypeParameter(testContent.parameter.getName());
+      testPolicyCmpt.setName(testContent.parameter.getName());
+      ITestPolicyCmptRelation testPolicyCmptRelation = testPolicyCmpt.newTestPolicyCmptRelation();
+      testPolicyCmptRelation.setTestPolicyCmptTypeParameter(testContent.childParameter.getName());
+      testPolicyCmptChild = testPolicyCmptRelation.newTargetTestPolicyCmptChild();
+      testPolicyCmptChild.setTestPolicyCmptTypeParameter(testContent.childParameter.getName());
+      testPolicyCmptChild.setName(testContent.childParameter.getName());
+      
+      // wrong product cmpt of parent (root)
+      testPolicyCmpt.setProductCmpt(testContent.coverageProductA.getQualifiedName());
+      ml = testPolicyCmpt.validate();
+      assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_RELATION));
+      assertEquals(ml.getFirstMessage(Message.ERROR).getCode(), ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_RELATION);
+      
+      // no product definied, no error about a wrong product cmpt and no warning about missing parent product cmpt
+      testPolicyCmptChild.setProductCmpt("");
+      ml = testPolicyCmptChild.validate();
+      assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_RELATION));
+      assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_RELATION_NOT_SPECIFIED));
+      
+      // product definied but parent product cmpt not specified, no error but warning
+      testPolicyCmpt.setProductCmpt("");
+      testPolicyCmptChild.setProductCmpt(testContent.policyProduct.getQualifiedName());
+      ml = testPolicyCmptChild.validate();
+      assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_RELATION));
+      assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_RELATION_NOT_SPECIFIED));
+      assertEquals(ml.getFirstMessage(Message.WARNING).getCode(), ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_RELATION_NOT_SPECIFIED);
+      // product definied but parent not specified, no error but warning
+      testPolicyCmptChild.setProductCmpt(testContent.coverageProductA.getQualifiedName());
+      ml = testPolicyCmptChild.validate();
+      assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_RELATION));
+      assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_RELATION_NOT_SPECIFIED));
+      // product definied but parent not specified and not product relevant, no error no warning
+      testContent.parameter.setRequiresProductCmpt(false);
+      testPolicyCmptChild.setProductCmpt(testContent.coverageProductA.getQualifiedName());
+      ml = testPolicyCmptChild.validate();
+      
+      assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_RELATION));
+      assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_RELATION_NOT_SPECIFIED));
+      testContent.parameter.setRequiresProductCmpt(true);
+      
+      // correct product cmpt of parent (root)
+      testPolicyCmpt.setProductCmpt(testContent.policyProduct.getQualifiedName());
+      ml = testPolicyCmpt.validate();
+      
+      assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_RELATION));
+      // with wrong child a)
+      testPolicyCmptChild.setProductCmpt(testContent.policyProduct.getQualifiedName());
+      ml = testPolicyCmptChild.validate();
+      assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_RELATION));
+      assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_RELATION_NOT_SPECIFIED));
+      // with wrong child a)
+      testPolicyCmptChild.setProductCmpt(testContent.coverageProductB.getQualifiedName());
+      ml = testPolicyCmptChild.validate();
+      assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_RELATION));
+      assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_RELATION_NOT_SPECIFIED));
+       
+      // with correct child
+      testPolicyCmpt.setProductCmpt(testContent.policyProduct.getQualifiedName());
+      testPolicyCmptChild.setProductCmpt(testContent.coverageProductA.getQualifiedName());
+      ml = testPolicyCmptChild.validate();
+      assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_RELATION));
+      assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_RELATION_NOT_SPECIFIED));
+  }
 }

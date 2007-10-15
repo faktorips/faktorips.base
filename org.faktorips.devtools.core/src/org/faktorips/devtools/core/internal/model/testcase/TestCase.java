@@ -215,6 +215,22 @@ public class TestCase extends IpsObject implements ITestCase {
         return (ITestPolicyCmpt[]) allPolicyCmpts.toArray(new ITestPolicyCmpt[allPolicyCmpts.size()]);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public ITestObject[] getAllTestObjects() throws CoreException{
+        ITestPolicyCmpt[] testPolicyCmpts = getAllTestPolicyCmpt();
+        ITestRule[] testRuleObjects = getTestRuleObjects();
+        ITestValue[] testValues = getTestValues();
+        
+        ITestObject[] result = new ITestObject[testPolicyCmpts.length + testRuleObjects.length + testValues.length];
+        System.arraycopy(testPolicyCmpts, 0, result, 0, testPolicyCmpts.length);
+        System.arraycopy(testRuleObjects, 0, result, testPolicyCmpts.length, testRuleObjects.length);
+        System.arraycopy(testValues, 0, result, (testRuleObjects.length + testPolicyCmpts.length), testValues.length);
+        
+        return result;
+    }
+    
     /*
      * Adds all test policy cmpts and its child test policy cmpts to the given list.
      */
@@ -228,7 +244,7 @@ public class TestCase extends IpsObject implements ITestCase {
             }
         }
     }
-
+    
     /**
      * {@inheritDoc}
      */

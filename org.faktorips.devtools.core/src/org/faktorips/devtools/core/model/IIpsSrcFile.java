@@ -100,6 +100,17 @@ public interface IIpsSrcFile extends IIpsElement {
     public IIpsObject getIpsObject() throws CoreException;
     
     /**
+     * Returns the given property of the source file.Returns <code>null</code> if the given property 
+     * wasn't found.<br>
+     * Performance hint: this method reads only the properties of the ips source file (attributes of
+     * the first xml node) and returns the value of the given property, the ips object is not
+     * completely read until {@link #getIpsObject()} method is called.
+     * 
+     * @throws CoreException if the file can't be read or it's contents can't be parsed.
+     */
+    public String getPropertyValue(String name) throws CoreException;
+    
+    /**
      * Returns the IpsObjectType that is contain in this IpsSrcFile. 
      */
     public IpsObjectType getIpsObjectType();

@@ -227,6 +227,24 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertTrue(result.contains(obj1));
         assertTrue(result.contains(obj2));
     }
+
+    public void testFindIpsSrcFileStartingWith() throws CoreException {
+        IIpsProject ipsProject2 = newIpsProject("TestProject2");
+        
+        IpsObjectPath path = (IpsObjectPath)ipsProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject2);
+        ipsProject.setIpsObjectPath(path);
+        
+        IIpsObject obj1 = newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy");
+        IIpsObject obj2 = newIpsObject(ipsProject2, IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy2");
+        
+        ArrayList result = new ArrayList();
+        Set visitedEntries = new HashSet();
+        path.findIpsSrcFilesStartingWith(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result, visitedEntries);
+        assertEquals(2, result.size());
+        assertTrue(result.contains(obj1.getIpsSrcFile()));
+        assertTrue(result.contains(obj2.getIpsSrcFile()));
+    }
     
     public void testFineIpsObjects() throws Exception{
     

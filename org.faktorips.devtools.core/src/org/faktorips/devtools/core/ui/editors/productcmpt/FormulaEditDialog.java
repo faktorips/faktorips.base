@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -260,8 +262,16 @@ public class FormulaEditDialog extends IpsPartEditDialog {
             String[] parameterIdentifiers = formula.getParameterIdentifiersUsedInFormula(formula.getIpsProject());
             IFormulaTestCase formulaTestCase = getTransientFormulaTestCases();
             if (formulaTestCase == null){
-                formulaTestCase = formula.newFormulaTestCase();
-                formulaTestCase.setName(UI_FORMULA_TEST_CASE_NAME);
+                formula.getIpsProject().getIpsModel().runAndQueueChangeEvents(new IWorkspaceRunnable(){
+                    public void run(IProgressMonitor monitor) throws CoreException {
+                        IFormulaTestCase formulaTestCase = formula.newFormulaTestCase();
+                        formulaTestCase.setName(UI_FORMULA_TEST_CASE_NAME);
+                    }
+                }, null);
+                formulaTestCase = getTransientFormulaTestCases();
+                if (formulaTestCase == null){
+                    throw new RuntimeException("Fromula test case couldn't be created!");
+                }
             }
             if (formula.isValid()){
                 if (formulaTestCase.addOrDeleteFormulaTestInputValues(parameterIdentifiers, ipsProject) 

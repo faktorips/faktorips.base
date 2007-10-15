@@ -174,6 +174,17 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
      * {@inheritDoc}
      */
     public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
+        findIpsSourceFilesInternal(type, result, true); 
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void findIpsSourceFiles(IpsObjectType type, List result) throws CoreException {
+        findIpsSourceFilesInternal(type, result, false);    
+    }
+
+    private void findIpsSourceFilesInternal(IpsObjectType type, List result, boolean asIpsObject) throws CoreException {
         ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
         IIpsArchive archive = root.getIpsArchive();
         if (archive==null) {
@@ -183,11 +194,16 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
         for (Iterator it = set.iterator(); it.hasNext();) {
             QualifiedNameType qnt = (QualifiedNameType)it.next();
             if (qnt.getIpsObjectType()==type) {
-                result.add(getIpsSrcFile(qnt.getFileName()).getIpsObject());
+                IIpsSrcFile ipsSrcFile = getIpsSrcFile(qnt.getFileName());
+                if (asIpsObject){
+                    result.add(ipsSrcFile.getIpsObject());
+                } else {
+                    result.add(ipsSrcFile);
+                }
             }
-        }
+        }        
     }
-
+    
     /**
      * {@inheritDoc}
      */

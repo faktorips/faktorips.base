@@ -165,6 +165,12 @@ public interface ITestCase extends IIpsObject, IFixDifferencesToModelSupport {
     public ITestPolicyCmpt[] getAllTestPolicyCmpt() throws CoreException;
 
     /**
+     * Returns all test objects of this test case.<br>
+     * Returns an empty array if the test case has no test objetcs cmpts.
+     */
+    public ITestObject[] getAllTestObjects() throws CoreException;
+    
+    /**
      * Creates a new test value object.
      */
     public ITestValue newTestValue();

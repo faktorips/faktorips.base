@@ -19,12 +19,11 @@ package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.UIToolkit;
-
 
 /**
  * A control to edit table content references.  
@@ -55,11 +54,10 @@ public class TableContentsRefControl extends IpsObjectRefControl {
     /** 
      * {@inheritDoc}
      */
-    protected IIpsObject[] getIpsObjects() throws CoreException {
+    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
         if (getIpsProject()==null) {
-            return new IIpsObject[0];
+            return new IIpsSrcFile[0];
         }
-        return getIpsProject().findIpsObjects(IpsObjectType.TABLE_CONTENTS);
+        return getIpsProject().findIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
     }
-
 }
