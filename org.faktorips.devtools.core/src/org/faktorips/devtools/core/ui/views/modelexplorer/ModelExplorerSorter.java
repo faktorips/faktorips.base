@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
@@ -103,6 +104,14 @@ public class ModelExplorerSorter extends ViewerSorter{
 			// sort IpsPackages by SortDefinition
 			return packageComparator.compare(o1, o2);
 		}
+        
+        if (o1 instanceof IProductCmptGeneration && o2 instanceof IProductCmptGeneration) {
+            // sort newest generation first
+            IProductCmptGeneration g1 = (IProductCmptGeneration)o1;
+            IProductCmptGeneration g2 = (IProductCmptGeneration)o2;
+            return g1.getValidFrom().after(g2.getValidFrom()) ? -1 : g1.getValidFrom().before(g2.getValidFrom()) ? 1 : 0;
+        }
+        
         if(o1 instanceof IPolicyCmptTypeAssociation && o2 instanceof IAttribute){
             return 1;
         }
