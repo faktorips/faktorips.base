@@ -136,7 +136,11 @@ public class FormulaEditDialog extends IpsPartEditDialog {
 			setMessage(""); //$NON-NLS-1$
 		}
 		updateUiFormulaTestCaseTab();
-		updateUiPreviewFormulaResult();
+		try {
+            updateUiPreviewFormulaResult();
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
 		return relevantMessages;
     }
     
@@ -257,33 +261,33 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     /*
      * If necessary updates the ui formula test case to calculate a preview result and execute it if the formula is valid.
      */
-    private void updateUiPreviewFormulaResult(){
-        try {
-            String[] parameterIdentifiers = formula.getParameterIdentifiersUsedInFormula(formula.getIpsProject());
-            IFormulaTestCase formulaTestCase = getTransientFormulaTestCases();
-            if (formulaTestCase == null){
-                formula.getIpsProject().getIpsModel().runAndQueueChangeEvents(new IWorkspaceRunnable(){
-                    public void run(IProgressMonitor monitor) throws CoreException {
-                        IFormulaTestCase formulaTestCase = formula.newFormulaTestCase();
+    private void updateUiPreviewFormulaResult() throws CoreException {
+        formula.getIpsProject().getIpsModel().runAndQueueChangeEvents(new IWorkspaceRunnable() {
+            public void run(IProgressMonitor monitor) throws CoreException {
+                try {
+                    String[] parameterIdentifiers = formula.getParameterIdentifiersUsedInFormula(formula.getIpsProject());
+                    IFormulaTestCase formulaTestCase = getTransientFormulaTestCases();
+                    if (formulaTestCase == null) {
+                        formulaTestCase = formula.newFormulaTestCase();
                         formulaTestCase.setName(UI_FORMULA_TEST_CASE_NAME);
                     }
-                }, null);
-                formulaTestCase = getTransientFormulaTestCases();
-                if (formulaTestCase == null){
-                    throw new RuntimeException("Fromula test case couldn't be created!");
+                    formulaTestCase = getTransientFormulaTestCases();
+                    if (formulaTestCase == null) {
+                        throw new RuntimeException("Fromula test case couldn't be created!");
+                    }
+                    if (formula.isValid()) {
+                        if (formulaTestCase.addOrDeleteFormulaTestInputValues(parameterIdentifiers, ipsProject)
+                                || formulaTestCase.getFormulaTestInputValues().length == 0) {
+                            // only if the parameter have changes repack the table of input values
+                            formulaDummyTestInputValuesControl.storeFormulaTestCase(formulaTestCase);
+                        }
+                    }
+                    formulaDummyTestInputValuesControl.clearResult();
+                } catch (Exception ex) {
+                    IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
-            if (formula.isValid()){
-                if (formulaTestCase.addOrDeleteFormulaTestInputValues(parameterIdentifiers, ipsProject) 
-                        || formulaTestCase.getFormulaTestInputValues().length == 0){
-                    // only if the parameter have changes repack the table of input values
-                    formulaDummyTestInputValuesControl.storeFormulaTestCase(formulaTestCase);
-                }
-            }
-            formulaDummyTestInputValuesControl.clearResult();
-        } catch (Exception ex) {
-            IpsPlugin.logAndShowErrorDialog(ex);
-        }
+        }, null);
     }
     
     private int getJFaceMessageType(int severity){
