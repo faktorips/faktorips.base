@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -29,6 +31,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartState;
@@ -230,6 +235,34 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         assertEquals(1, folder.members().length);
         assertEquals(2, ((IFolder)folder.members()[0]).members().length);
     }    
+    
+    public void testCopyPasteUnknown() throws Exception {
+        IIpsPackageFragment destFragment = root.createPackageFragment("testTarget", true, null);
+        
+        // create source file
+        String folderPath = folder.getRawLocation().toOSString();
+        File file = new File(folderPath + "/unknown.xyz");
+        assertTrue(file.createNewFile());
+        FileWriter writer = new FileWriter(file);
+        writer.write("dummy test file");
+        writer.close();
+        
+        // add source file to clipboard
+        Clipboard clipboard = new Clipboard(IpsPlugin.getDefault()
+                .getWorkbench().getActiveWorkbenchWindow().getShell().getDisplay());
+        FileTransfer fileTransfer = FileTransfer.getInstance();
+        Transfer[] transfers = new Transfer[]{fileTransfer};
+        Object[] data = new Object[]{new String[]{file.getAbsolutePath()}};
+        clipboard.setContents(data, transfers);
+
+        // paste clipboard
+        newIpsPasteAction(destFragment).run();
+        assertEquals(0, destFragment.getChildren().length);
+        clipboard.dispose();
+        
+        IFolder destFolder = (IFolder)destFragment.getEnclosingResource();
+        assertEquals(1, destFolder.members().length);
+    }  
     
     private IpsCopyAction newIpsCopyAction(Object selection) {
         return new IpsCopyAction(new TestSelectionProvider(selection), IpsPlugin.getDefault().getWorkbench()

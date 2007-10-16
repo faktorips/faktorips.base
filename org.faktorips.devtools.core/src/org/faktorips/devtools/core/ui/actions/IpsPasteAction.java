@@ -32,9 +32,11 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.actions.CopyFilesAndFoldersOperation;
 import org.eclipse.ui.part.ResourceTransfer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -177,24 +179,42 @@ public class IpsPasteAction extends IpsAction {
      */
     private void paste(IIpsPackageFragment parent) {
         Object stored = clipboard.getContents(ResourceTransfer.getInstance());
-        if (stored instanceof IResource[]) {
-            IResource[] res = (IResource[])stored;
-            for (int i = 0; i < res.length; i++) {
-                try {
-                    IResource resource = ((IIpsElement)parent).getCorrespondingResource();
-                    if (resource != null) {
-                        copy(resource, res[i]);
-                    } else {
-                        showPasteNotSupportedError();
-                    }
-                } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                }
-            }
+        if (stored == null){
+            stored = clipboard.getContents(FileTransfer.getInstance());
         }
+        
+        if (stored instanceof IResource[]) {
+            copyResources(parent, (IResource[])stored);
+        } else if (stored instanceof String[]){
+            copyFiles(parent, (String[])stored);
+        }
+        
         // Paste objects by resource links (e.g. files inside an ips archive)
         String storedText = (String)clipboard.getContents(TextTransfer.getInstance());
         pasteResourceLinks(parent, storedText);
+    }
+
+    private void copyResources(IIpsPackageFragment parent, IResource[] resources){
+        for (int i = 0; i < resources.length; i++) {
+            try {
+                IResource resource = ((IIpsElement)parent).getCorrespondingResource();
+                if (resource != null) {
+                    copy(resource, resources[i]);
+                } else {
+                    showPasteNotSupportedError();
+                }
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
+    }
+    
+    private void copyFiles(IIpsPackageFragment parent, String[] fileNames) {
+        IResource destinationResource = parent.getEnclosingResource();
+        if (destinationResource instanceof IFolder){
+            CopyFilesAndFoldersOperation operation = new CopyFilesAndFoldersOperation(shell);
+            operation.copyFiles(fileNames, (IFolder)destinationResource);
+        }
     }
 
     /*
