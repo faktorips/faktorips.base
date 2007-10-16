@@ -73,7 +73,6 @@ import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
-import org.faktorips.runtime.SoftReferenceCache;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 
@@ -148,7 +147,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private Map classLoaderProviderMap = new HashMap();
 
     // map containing IpsSrcFileContents as values and IpsSrcFiles as keys.
-    private SoftReferenceCache ipsObjectsMap = new SoftReferenceCache(1000);
+    private IpsObjectCache ipsObjectsMap = new IpsObjectCache(1000);
     
     // validation result cache
     private ValidationResultCache validationResultCache = new ValidationResultCache();
