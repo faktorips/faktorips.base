@@ -198,7 +198,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
     /**
      * {@inheritDoc}
      */
-    public ExprCompiler getExprCompiler(IIpsProject ipsProject) throws CoreException {
+    public ExprCompiler newExprCompiler(IIpsProject ipsProject) throws CoreException {
         ExprCompiler compiler = new ExprCompiler();
         compiler.add(new ExcelFunctionsResolver(ipsProject.getExpressionLanguageFunctionsLanguage()));
         
@@ -314,7 +314,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         if (signature == null){
             return new String[0];
         }
-        ExprCompiler compiler = getExprCompiler(ipsProject);
+        ExprCompiler compiler = newExprCompiler(ipsProject);
         CompilationResult compilationResult = compiler.compile(expression);
         
         // store the resolved identifiers in the cache
@@ -386,7 +386,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
             list.add(new Message(MSGCODE_EXPRESSION_IS_EMPTY, text, Message.ERROR, this, PROPERTY_EXPRESSION));
             return;
         }
-        ExprCompiler compiler = getExprCompiler(ipsProject);
+        ExprCompiler compiler = newExprCompiler(ipsProject);
         CompilationResult result = compiler.compile(expression);
         if (!result.successfull()) {
             MessageList compilerMessageList = result.getMessages();

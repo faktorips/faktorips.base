@@ -385,7 +385,7 @@ public class FormulaTest extends AbstractIpsPluginTest  {
     }
     
     public void testGetExprCompiler() throws CoreException {
-        assertNotNull(formula.getExprCompiler(ipsProject));
+        assertNotNull(formula.newExprCompiler(ipsProject));
     }
 
     public void testSetFormulaSignature() {

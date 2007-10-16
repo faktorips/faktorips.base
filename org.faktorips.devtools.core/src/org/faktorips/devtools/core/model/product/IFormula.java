@@ -121,7 +121,7 @@ public interface IFormula extends IIpsObjectPart, IPropertyValue {
      * Returns an expression compiler that can be used to compile the formula.
      * or <code>null</code> if the element does not contain a formula.
      */
-    public ExprCompiler getExprCompiler(IIpsProject ipsProject) throws CoreException;
+    public ExprCompiler newExprCompiler(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns the enum dataypes that can be use in this formula.

@@ -205,7 +205,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
             return fragment;
         }
         try {
-            ExprCompiler compiler = formula.getExprCompiler(getIpsProject());
+            ExprCompiler compiler = formula.newExprCompiler(getIpsProject());
             CompilationResult result = compiler.compile(expression);
             if (result.successfull()) {
                 Datatype attributeDatatype = formulaSignature.findDatatype(getIpsProject());

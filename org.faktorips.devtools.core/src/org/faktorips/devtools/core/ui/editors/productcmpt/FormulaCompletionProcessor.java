@@ -142,7 +142,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     }
     
     private void addMatchingFunctions(List result, String prefix, int replacementOffset) throws CoreException {
-        ExprCompiler compiler = formula.getExprCompiler(formula.getIpsProject());
+        ExprCompiler compiler = formula.newExprCompiler(formula.getIpsProject());
         FlFunction[] functions = compiler.getFunctions();
         Arrays.sort(functions, new Comparator() {
 
