@@ -133,7 +133,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         
         // create choise buttons
         Composite selectPane = new Composite(workArea, SWT.None);
-        selectPane.setLayout(new GridLayout(2, false));
+        selectPane.setLayout(new GridLayout(3, false));
         
         createChoiseControls(selectPane);
 		
@@ -145,6 +145,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         createChoiseForSwitchWorkingDate(selectPane);
         createChoiseForCreateNewGeneration(selectPane);
         createInfoMessageNoRecentCange(selectPane);
+        
         initSelectionFromPreferences();
     }
 
@@ -184,15 +185,11 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         allButtons.put(new Integer(CHOICE_SWITCH), switchButton);
         choices.put(switchButton, new Integer(CHOICE_SWITCH));
         
-		Composite switchPane = new Composite(selectPane, SWT.NONE);
-		GridLayout gridLayout = new GridLayout(2, false);
-		gridLayout.marginWidth = 0;
-		switchPane.setLayout(gridLayout);
-		Label l3 = new Label(switchPane, SWT.NONE);
+		Label l3 = new Label(selectPane, SWT.NONE);
 		l3.setText(NLS.bind(Messages.GenerationSelectionDialog_labelSwitch, generationConceptNameSingular));
 		l3.addMouseListener(new ActivateButtonOnClickListener(switchButton));
 		
-        createGenerationsDropDown(switchPane, switchButton, relevantGenerations, false);
+        createGenerationsDropDown(selectPane, switchButton, relevantGenerations, false);
     }
     
     public List getRelevantGenerations(boolean forReadOnlyCombo){
@@ -268,25 +265,23 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         allButtons.put(new Integer(CHOICE_BROWSE), browseButton);
         choices.put(browseButton, new Integer(CHOICE_BROWSE));
         
-        Composite switchPane = new Composite(selectPane, SWT.NONE);
-        GridLayout gridLayout = new GridLayout(2, false);
-        gridLayout.marginWidth = 0;
-        switchPane.setLayout(gridLayout);
-
-        Label l2 = new Label(switchPane, SWT.NONE);
+        Label l2 = new Label(selectPane, SWT.NONE);
         l2.setText(NLS.bind(Messages.GenerationSelectionDialog_labelShowReadOnlyGeneration, generationConceptNameSingular));
         l2.addMouseListener(new ActivateButtonOnClickListener(browseButton));
 
-        createGenerationsDropDown(switchPane, browseButton, relevantGenerations, true);
+        createGenerationsDropDown(selectPane, browseButton, relevantGenerations, true);
     }
 
     private void createHoricontalSpace(Composite selectPane) {
+        new Composite(selectPane, SWT.NONE).setLayoutData(new GridData(1, 3));
         new Composite(selectPane, SWT.NONE).setLayoutData(new GridData(1, 3));
         new Composite(selectPane, SWT.NONE).setLayoutData(new GridData(1, 3));
     }
     
     private void createChoiseForCreateNewGeneration(Composite selectPane) {
         GregorianCalendar now = getToday();
+        
+        createHoricontalSpace(selectPane);
         
         if (!cmpt.getIpsSrcFile().isMutable()) {
             return;
@@ -312,6 +307,9 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         Label l1 = new Label(selectPane, SWT.NONE);
         l1.setText(NLS.bind(Messages.GenerationSelectionDialog_labelCreate, generationConceptNameSingular, formatedWorkingDate));
         l1.addMouseListener(new ActivateButtonOnClickListener(createButton));
+        
+        // fill grid composite
+        new Composite(selectPane, SWT.NONE).setLayoutData(new GridData(1, 3));
     }
 
     private GregorianCalendar getToday() {
