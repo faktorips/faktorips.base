@@ -57,7 +57,7 @@ import org.faktorips.devtools.core.util.QNameUtil;
 /**
  * A dialog to edit a relation.
  */
-public class RelationEditDialog extends IpsPartEditDialog2 {
+public class AssociationEditDialog extends IpsPartEditDialog2 {
     
     private IIpsProject ipsProject;
     private IPolicyCmptTypeAssociation association;
@@ -69,7 +69,7 @@ public class RelationEditDialog extends IpsPartEditDialog2 {
      * @param parentShell
      * @param title
      */
-    public RelationEditDialog(IPolicyCmptTypeAssociation relation2, Shell parentShell) {
+    public AssociationEditDialog(IPolicyCmptTypeAssociation relation2, Shell parentShell) {
         super(relation2, parentShell, Messages.RelationEditDialog_title, true );
         this.association = relation2;
         this.ipsProject = association.getIpsProject();
