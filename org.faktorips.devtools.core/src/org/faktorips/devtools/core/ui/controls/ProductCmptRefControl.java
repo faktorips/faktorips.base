@@ -70,7 +70,9 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
         }
         if (result.size() > 0){
             for (int i = 0; i < toExclude.length; i++) {
-                result.remove(toExclude[i].getIpsSrcFile());
+                if (toExclude[i] != null){
+                    result.remove(toExclude[i].getIpsSrcFile());
+                }
             }
         }
         
