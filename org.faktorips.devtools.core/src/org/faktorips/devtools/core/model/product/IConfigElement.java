@@ -169,10 +169,6 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider, 
 	/**
 	 * Creates a copy of the given value set and aplies this copy to this config
 	 * element.
-	 * 
-	 * @throws OperationNotSupportedException
-	 *             if this element ist of type PRODUCT_ATTRIBUTE because config
-	 *             elements of this type does not support own value sets.
 	 */
 	public void setValueSetCopy(IValueSet source);
     

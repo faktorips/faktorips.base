@@ -140,7 +140,7 @@ public interface IValueSet extends IIpsObjectPart {
      * Creates a copy of this value set (type and values, parent and id are set
      * to the given values).
      */
-    public IValueSet copy(IIpsObjectPart parent, int id);
+    public IValueSet copy(IIpsObjectPart newParent, int id);
 
     /**
      * Copy all values (not the parent or the id) of the given source to this value set.

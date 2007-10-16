@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.model.productcmpttype;
 
+import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.IValueSetOwner;
 import org.faktorips.devtools.core.model.type.IAttribute;
 
@@ -33,5 +34,10 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * Returns the product component type the attribute belongs to.
      */
     public IProductCmptType getProductCmptType();
+    
+    /**
+     * Creates a copy of the given value set and assigns it to this attribute. 
+     */
+    public void setValueSetCopy(IValueSet source);
     
 }
