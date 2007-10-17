@@ -20,6 +20,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.ViewForm;
@@ -37,6 +39,7 @@ import org.eclipse.ui.dialogs.AbstractElementListSelectionDialog;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -50,6 +53,8 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
  */
 public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDialog {
 
+    private static final String IPSOBJECTTYPESFILTER_KEY = "IpsObjectTypesFilter";
+
     private Object[] fElements;
     
     private IpsObjectType[] types;
@@ -57,6 +62,12 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
     
     private ViewForm fForm;
     private CLabel packageInfo;
+    
+    private IDialogSettings dialogSettingsSection;
+
+    private ExpandableComposite expandableComposite;
+
+    private Composite thisDialogArea;
     
     /**
      * Creates a list selection dialog.
@@ -71,6 +82,15 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
         setIgnoreCase(true);
         setMatchEmptyString(true);
         setMultipleSelection(false);
+    }
+
+    private IDialogSettings getDialogSettingsSection(String sectionName) {
+        IDialogSettings dialogSettings = IpsPlugin.getDefault().getDialogSettings();
+        IDialogSettings section = dialogSettings.getSection(sectionName);
+        if (section == null){
+            section = dialogSettings.addNewSection(sectionName);
+        }
+        return section;
     }
 
     /**
@@ -114,19 +134,51 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
      * @see Dialog#createDialogArea(Composite)
      */
     protected Control createDialogArea(Composite parent) {
-        Composite contents = (Composite)super.createDialogArea(parent);
+        thisDialogArea = (Composite)super.createDialogArea(parent);
 
-        createMessageArea(contents);
-        createFilterText(contents);
-        createTypeList(contents);
-        createFilteredList(contents);
-        createPackageInfo(contents);
+        createMessageArea(thisDialogArea);
+        createFilterText(thisDialogArea);
+        createTypeList(thisDialogArea);
+        createFilteredList(thisDialogArea);
+        createPackageInfo(thisDialogArea);
         
         setListElements(fElements);
 
         setSelection(getInitialElementSelections().toArray());
         
-        return contents;
+        restoreState();
+        
+        return thisDialogArea;
+    }
+    
+    private void restoreState() {
+        dialogSettingsSection = getDialogSettingsSection("OpenIpsObjectSelectionDialog");
+        
+        // set size of dialog
+        setDialogBoundsSettings(dialogSettingsSection, Dialog.DIALOG_PERSISTSIZE);
+
+        // restore filter
+        String[] filters = dialogSettingsSection.getArray(IPSOBJECTTYPESFILTER_KEY);
+        if (filters == null){
+            return;
+        }
+        if (filters.length > 0){
+            expandableComposite.setExpanded(true);
+            updateFilterList();
+        }
+        
+        List selTableItems = new ArrayList(filters.length);
+        for (int i = 0; i < filters.length; i++) {
+            for (int j = 0; j < filterList.getItemCount(); j++) {
+                TableItem item = filterList.getItem(j);
+                if (item.getText().equals(filters[i])){
+                    selTableItems.add(item);
+                    break;
+                }
+            }
+        }
+        filterList.setSelection((TableItem[])selTableItems.toArray(new TableItem[selTableItems.size()]));
+        handleFilterSelectionChanged();
     }
     
     private void createPackageInfo(Composite contents) {
@@ -161,17 +213,18 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
     }
     
     private void createTypeList(Composite contents) {
-        ExpandableComposite composite = new ExpandableComposite(contents, SWT.NONE);
-        composite.setText(Messages.OpenIpsObjectSelectionDialog_Filter);
-        composite.addExpansionListener(new ExpansionAdapter() {
+        expandableComposite = new ExpandableComposite(contents, SWT.NONE);
+        expandableComposite.setText(Messages.OpenIpsObjectSelectionDialog_Filter);
+        expandableComposite.addExpansionListener(new ExpansionAdapter() {
             public void expansionStateChanged(ExpansionEvent e) {
                 // resizes the application window.
                 updateFilterList();
-                getShell().pack(true);
+                thisDialogArea.pack(true);
+                thisDialogArea.getParent().layout(true);
             }
         });
 
-        filterList = new Table(composite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI);
+        filterList = new Table(expandableComposite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI);
         filterList.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event evt) {
                 handleFilterSelectionChanged();
@@ -184,8 +237,8 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
         filterList.setFont(contents.getFont());
 
         data = new GridData(GridData.FILL_HORIZONTAL);
-        composite.setLayoutData(data);
-        composite.setClient(filterList);
+        expandableComposite.setLayoutData(data);
+        expandableComposite.setClient(filterList);
     }
 
     protected void handleFilterSelectionChanged() {
@@ -225,5 +278,16 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
             return (IIpsElement)getResult()[0];
         }
         return null;
+    }
+    
+    public boolean close() {
+        // store current filter
+        TableItem[] selection = filterList.getSelection();
+        String[] filters = new String[selection.length];
+        for (int i = 0; i < filters.length; i++) {
+            filters[i] = selection[i].getText();
+        }
+        dialogSettingsSection.put("IpsObjectTypesFilter", filters);
+        return super.close();
     }
 }

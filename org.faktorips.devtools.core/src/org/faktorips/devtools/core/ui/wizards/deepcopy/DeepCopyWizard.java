@@ -18,21 +18,14 @@
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -41,13 +34,14 @@ import org.faktorips.devtools.core.internal.model.product.ProductCmptStructure;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
+import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
 
 /**
  * A wizard to create a deep copy from a given product component.
  *
  * @author Thorsten Guenther
  */
-public class DeepCopyWizard extends Wizard {
+public class DeepCopyWizard extends ResizableWizard {
 
 	public static final int TYPE_COPY_PRODUCT = 10;
 	public static final int TYPE_NEW_VERSION = 100;
@@ -58,13 +52,6 @@ public class DeepCopyWizard extends Wizard {
 	private IProductCmpt copiedRoot;
 	private ISchedulingRule schedulingRule;
 	private int type;
-	private DialogSettings settings;
-	private Composite pageContainer;
-
-	private static String settingsFilename;
-	private static final String SETTINGS_SECTION_SIZE = "size"; //$NON-NLS-1$
-	private static final String SETTINGS_SIZE_X = "x"; //$NON-NLS-1$
-	private static final String SETTINGS_SIZE_Y = "y"; //$NON-NLS-1$
 
 	/**
 	 * Creates a new wizard which can make a deep copy of the given product.
@@ -78,7 +65,7 @@ public class DeepCopyWizard extends Wizard {
 	 * @throws IllegalArgumentException if the given type is not valid.
 	 */
 	public DeepCopyWizard(IProductCmpt product, int type) throws IllegalArgumentException {
-		super();
+		super("DeepCopyWizard", IpsPlugin.getDefault().getDialogSettings(), 600, 800);
         setNeedsProgressMonitor(true);
 
 		if (type != TYPE_COPY_PRODUCT && type != TYPE_NEW_VERSION) {
@@ -118,21 +105,6 @@ public class DeepCopyWizard extends Wizard {
 			super.setWindowTitle(title);
             super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewVersionWizard.png")); //$NON-NLS-1$
 		}
-
-		IPath path = IpsPlugin.getDefault().getStateLocation();
-		settingsFilename = path.append("deepCopyWizard.settings").toOSString(); //$NON-NLS-1$
-
-		settings = new DialogSettings(SETTINGS_SECTION_SIZE);
-        // set default size if no settings exists
-		settings.put(SETTINGS_SIZE_X, 800);
-		settings.put(SETTINGS_SIZE_Y, 600);
-		try {
-			settings.load(settingsFilename);
-		} catch (IOException e) {
-			// cant read the settings, use defaults.
-            IpsPlugin.log(e);
-		}
-
 	}
 
 	/**
@@ -143,23 +115,6 @@ public class DeepCopyWizard extends Wizard {
 		super.addPage(sourcePage);
 		previewPage = new ReferenceAndPreviewPage(structure, sourcePage, type);
 		super.addPage(previewPage);
-	}
-
-	public void createPageControls(Composite pageContainer) {
-		super.createPageControls(pageContainer);
-		this.pageContainer = pageContainer;
-		GridData layoutData = (GridData)pageContainer.getLayoutData();
-
-		// restore size
-		int width = Math.max(settings.getInt(SETTINGS_SIZE_X), layoutData.heightHint);
-		int height = Math.max(settings.getInt(SETTINGS_SIZE_Y), layoutData.widthHint);
-		layoutData.widthHint = Math.max(width, layoutData.minimumWidth);
-		layoutData.heightHint = Math.max(height, layoutData.minimumHeight);
-	}
-
-	public boolean performCancel() {
-		storeSize();
-		return super.performCancel();
 	}
 
 	/**
@@ -186,23 +141,9 @@ public class DeepCopyWizard extends Wizard {
 			IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occured during the copying process.",e)); //$NON-NLS-1$
 		}
 
-		storeSize();
-
 		//this implementation of this method should always return true since this causes the wizard dialog to close.
 		//in either case if an exception arises or not it doesn't make sense to keep the dialog up
-		return true;
-	}
-
-	private void storeSize() {
-		Point size = pageContainer.getSize();
-		settings.put(SETTINGS_SIZE_X, size.x);
-		settings.put(SETTINGS_SIZE_Y, size.y);
-		try {
-			settings.save(settingsFilename);
-		} catch (IOException e) {
-			// cant save - use defaults the next time
-            IpsPlugin.log(e);
-		}
+		return super.performFinish();
 	}
 
 	/**

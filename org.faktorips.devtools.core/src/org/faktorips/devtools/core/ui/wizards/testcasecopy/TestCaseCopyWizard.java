@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.testcasecopy;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -25,12 +24,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.DialogSettings;
-import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -45,34 +39,25 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
 
 /**
  * Wizard to copy a given test case.
  * 
  * @author Joerg Ortmann
  */
-public class TestCaseCopyWizard extends Wizard {
-    private static String ID = "TestCaseCopyWizard"; //$NON-NLS-1$
-    
+public class TestCaseCopyWizard extends ResizableWizard {
     private ITestCase sourceTestCase;
     private ITestCase targetTestCase;
 
     private UIToolkit toolkit;
     private TestCaseCopyDesinationPage testCaseCopyDestinationPage; 
     private TestCaseStructurePage testCaseStructurePage;
-
-    private DialogSettings settings;
-    private Composite pageContainer;
-    
-    private static String settingsFilename;
-    private static final String SETTINGS_SECTION_SIZE = "size"; //$NON-NLS-1$
-    private static final String SETTINGS_SIZE_X = "x"; //$NON-NLS-1$
-    private static final String SETTINGS_SIZE_Y = "y"; //$NON-NLS-1$
     
     private List packageFrgmtsCreatedByWizard = new ArrayList(5);
     
     public TestCaseCopyWizard(ITestCase sourceTestCase) {
-        super();
+        super("TestCaseCopyWizard", IpsPlugin.getDefault().getDialogSettings(), 600, 800);
         
         this.sourceTestCase = sourceTestCase;
         
@@ -80,19 +65,6 @@ public class TestCaseCopyWizard extends Wizard {
         
         super.setWindowTitle(Messages.TestCaseCopyWizard_title);
         super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/DeepCopyWizard.png")); //$NON-NLS-1$
-        
-        IPath path = IpsPlugin.getDefault().getStateLocation();
-        settingsFilename = path.append("deepCopyWizard.settings").toOSString(); //$NON-NLS-1$
-
-        settings = new DialogSettings(ID + "." + SETTINGS_SECTION_SIZE); //$NON-NLS-1$
-        // set default size if no settings exists
-        settings.put(SETTINGS_SIZE_X, 800);
-        settings.put(SETTINGS_SIZE_Y, 600);
-        try {
-            settings.load(settingsFilename);
-        } catch (IOException e) {
-            // cant read the settings, use defaults.
-        }
     }
 
     /**
@@ -100,15 +72,6 @@ public class TestCaseCopyWizard extends Wizard {
      */
     public void createPageControls(Composite pageContainer) {
         super.createPageControls(pageContainer);
-        this.pageContainer = pageContainer;
-        
-        GridData layoutData = (GridData)pageContainer.getLayoutData();
-        
-        // restore size
-        int width = Math.max(settings.getInt(SETTINGS_SIZE_X), layoutData.heightHint);
-        int height = Math.max(settings.getInt(SETTINGS_SIZE_Y), layoutData.widthHint);
-        layoutData.widthHint = Math.max(width, layoutData.minimumWidth);
-        layoutData.heightHint = Math.max(height, layoutData.minimumHeight);        
     }
 
     /**
@@ -120,17 +83,6 @@ public class TestCaseCopyWizard extends Wizard {
         
         testCaseStructurePage = new TestCaseStructurePage(toolkit);
         addPage(testCaseStructurePage);
-    }
-
-    private void storeSize() {
-        Point size = pageContainer.getSize();
-        settings.put(SETTINGS_SIZE_X, size.x);
-        settings.put(SETTINGS_SIZE_Y, size.y);
-        try {
-            settings.save(settingsFilename);
-        } catch (IOException e) {
-            // cant save - use defaults the next time
-        }
     }
 
     /**
@@ -305,11 +257,9 @@ public class TestCaseCopyWizard extends Wizard {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         
-        storeSize();
-        
         IpsPlugin.getDefault().openEditor(targetTestCase);
 
-        return true;
+        return super.performFinish();
     }
     
     /**
