@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
 /**
@@ -47,7 +47,7 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
         super.setUp();
         IIpsProject project = newIpsProject();
         IPolicyCmptType type = newPolicyCmptType(project, "Policy");
-        IAttribute a = type.newAttribute();
+        IPolicyCmptTypeAttribute a = type.newPolicyCmptTypeAttribute();
         datatype = new PaymentMode();
         a.setValueSetType(ValueSetType.ENUM);
         valueSet = (IEnumValueSet)a.getValueSet();

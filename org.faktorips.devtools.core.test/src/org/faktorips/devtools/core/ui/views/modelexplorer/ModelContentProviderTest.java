@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -50,7 +50,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 public class ModelContentProviderTest extends AbstractIpsPluginTest {
     private ModelExplorerConfiguration config= new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class
             , ITableStructure.class, IProductCmpt.class
-            , ITableContents.class, IAttribute.class
+            , ITableContents.class, IPolicyCmptTypeAttribute.class
             , IPolicyCmptTypeAssociation.class}
             , new Class[]{IProject.class, IFolder.class, IFile.class});
     
@@ -78,7 +78,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
     private IFolder subFolder;
     private IFile file;
 
-    private IAttribute attribute;
+    private IPolicyCmptTypeAttribute attribute;
     
     private IIpsPackageFragmentRoot modelRoot;
     private IIpsPackageFragment modelDefaultPackage;
@@ -108,8 +108,8 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         packageFile.create(null, true, null);
         
         polCmptType= newPolicyCmptType(root, "subpackage.model.TestPolicy");
-        attribute = polCmptType.newAttribute();
-        polCmptType.newAttribute();
+        attribute = polCmptType.newPolicyCmptTypeAttribute();
+        polCmptType.newPolicyCmptTypeAttribute();
         polCmptType.newPolicyCmptTypeAssociation();
         tableStructure = (ITableStructure) newIpsObject(modelPackage, IpsObjectType.TABLE_STRUCTURE, "subpackage.model.TestTableStructure");
         prodCmpt= newProductCmpt(root, "subpackage.product.TestProductComponent");

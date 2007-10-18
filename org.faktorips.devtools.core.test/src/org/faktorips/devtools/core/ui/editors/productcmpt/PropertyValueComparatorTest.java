@@ -68,9 +68,9 @@ public class PropertyValueComparatorTest extends AbstractIpsPluginTest {
     }
     
     public void testAttributeValueOrder() {
-        IProductCmptTypeAttribute a1 = productType.newAttribute("a1");
-        IProductCmptTypeAttribute a2 = productType.newAttribute("a2");
-        IProductCmptTypeAttribute a3 = productSupertype.newAttribute("a3");
+        IProductCmptTypeAttribute a1 = productType.newProductCmptTypeAttribute("a1");
+        IProductCmptTypeAttribute a2 = productType.newProductCmptTypeAttribute("a2");
+        IProductCmptTypeAttribute a3 = productSupertype.newProductCmptTypeAttribute("a3");
         
         IAttributeValue value2 = generation.newAttributeValue(a2, "value2");
         IAttributeValue value3 = generation.newAttributeValue(a3, "value3");

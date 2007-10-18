@@ -48,20 +48,20 @@ public class ReferencesToPolicySearchQueryTest extends AbstractIpsPluginTest {
         pcTypeReferenced = newPolicyCmptType(root, "TestPCTypeReferenced");
         
         pcType = newPolicyCmptType(root, "TestPCType");
-        pcType.newAttribute();
+        pcType.newPolicyCmptTypeAttribute();
         IPolicyCmptTypeAssociation relation= pcType.newPolicyCmptTypeAssociation();
         relation.setTarget(pcTypeReferenced.getQualifiedName());
 
         pcType2 = newPolicyCmptType(root, "TestPCType2");
-        pcType2.newAttribute();
-        pcType2.newAttribute();
+        pcType2.newPolicyCmptTypeAttribute();
+        pcType2.newPolicyCmptTypeAttribute();
         IPolicyCmptTypeAssociation relation2= pcType2.newPolicyCmptTypeAssociation();
         relation2.setTarget(pcTypeReferenced.getQualifiedName());
         
         pcType3 = newPolicyCmptType(root, "TestPCType3");
-        pcType3.newAttribute();
-        pcType3.newAttribute();
-        pcType3.newAttribute();
+        pcType3.newPolicyCmptTypeAttribute();
+        pcType3.newPolicyCmptTypeAttribute();
+        pcType3.newPolicyCmptTypeAttribute();
         IPolicyCmptTypeAssociation relation3= pcType3.newPolicyCmptTypeAssociation();
         relation3.setTarget(pcTypeReferenced.getQualifiedName());
         

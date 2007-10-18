@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
 public class ModelLabelProviderTest extends AbstractIpsPluginTest {
@@ -41,9 +41,9 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
     private IIpsPackageFragment subPackage;
     private IIpsPackageFragment subsubPackage;
     private IIpsPackageFragment empty;
-    private IAttribute attr;
-    private IAttribute attr2;
-    private IAttribute attr3;
+    private IPolicyCmptTypeAttribute attr;
+    private IPolicyCmptTypeAttribute attr2;
+    private IPolicyCmptTypeAttribute attr3;
 
     private IFolder folder;
     private IFolder subFolder;
@@ -58,13 +58,13 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         subsubPackage= root.createPackageFragment("subpackage.subsubpackage", true, null);
         empty= root.createPackageFragment("subpackage.subsubpackage.emptypackage", true, null);
         polCmptType= newPolicyCmptType(root, "subpackage.subsubpackage.TestPolicy");
-        attr= polCmptType.newAttribute();
+        attr= polCmptType.newPolicyCmptTypeAttribute();
         attr.setDatatype("String");
         attr.setAttributeType(AttributeType.CONSTANT);
-        attr2= polCmptType.newAttribute();
+        attr2= polCmptType.newPolicyCmptTypeAttribute();
         attr2.setDatatype("int");
         attr2.setAttributeType(AttributeType.CHANGEABLE);
-        attr3= polCmptType.newAttribute();
+        attr3= polCmptType.newPolicyCmptTypeAttribute();
         attr3.setDatatype("float");
         attr3.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
 
@@ -201,7 +201,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
     }
     
     // format: "<attributeName><blank>:<blank><dataType>,<blank><attributeType>" 
-    private void testAttribute(ModelLabelProvider provider, IAttribute a) {
+    private void testAttribute(ModelLabelProvider provider, IPolicyCmptTypeAttribute a) {
         String attrLabel= provider.getText(a);
         assertTrue(attrLabel.startsWith(a.getName()));
         String dType= attrLabel.substring(attrLabel.indexOf(":")+2, attrLabel.lastIndexOf(",")); // +2 -> ignore following blank

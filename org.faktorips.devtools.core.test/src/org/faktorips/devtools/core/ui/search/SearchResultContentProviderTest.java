@@ -37,9 +37,9 @@ public class SearchResultContentProviderTest extends AbstractIpsPluginTest {
 		root = (IpsPackageFragmentRoot) proj.getIpsPackageFragmentRoots()[0];
         pcType = newPolicyCmptType(root, "TestPCType");
         pcType2 = newPolicyCmptType(root, "TestPCType2");
-        pcType2.newAttribute();
-        pcType2.newAttribute();
-        pcType2.newAttribute();
+        pcType2.newPolicyCmptTypeAttribute();
+        pcType2.newPolicyCmptTypeAttribute();
+        pcType2.newPolicyCmptTypeAttribute();
 		prodCmpt = newProductCmpt(root, "TestProdType");
 		generation = (IProductCmptGeneration) prodCmpt.newGeneration();
         // Setup Arrays with element and children

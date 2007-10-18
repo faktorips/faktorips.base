@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -42,7 +42,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
     private PolicyCmptType pcType;
     private IProductCmpt prodCmpt;
     private IIpsPackageFragmentRoot root;
-    private IAttribute attribute;
+    private IPolicyCmptTypeAttribute attribute;
     private IPolicyCmptTypeAssociation relation;
     private ITableContents tableContents;
     private ITableStructure tableStructure;
@@ -63,14 +63,14 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         root = proj.getIpsPackageFragmentRoots()[0];
         defaultPackage = root.getDefaultIpsPackageFragment();
         pcType = newPolicyCmptType(root, "TestPCType");
-        attribute = pcType.newAttribute();
+        attribute = pcType.newPolicyCmptTypeAttribute();
         relation = pcType.newPolicyCmptTypeAssociation();
         prodCmpt = newProductCmpt(root, "TestProdCmpt");
         tableContents = (ITableContents) newIpsObject(root.getDefaultIpsPackageFragment(), IpsObjectType.TABLE_CONTENTS, "TestTableContents");
         tableStructure = (ITableStructure) newIpsObject(root.getDefaultIpsPackageFragment(), IpsObjectType.TABLE_STRUCTURE, "TestTableStructure");
         
         config = new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class, IProductCmpt.class,
-                        IAttribute.class, IPolicyCmptTypeAssociation.class }, new Class[]{IFolder.class});
+                        IPolicyCmptTypeAttribute.class, IPolicyCmptTypeAssociation.class }, new Class[]{IFolder.class});
 
         folder = ((IProject)proj.getCorrespondingResource()).getFolder("testfolder");
         folder.create(true, false, null);

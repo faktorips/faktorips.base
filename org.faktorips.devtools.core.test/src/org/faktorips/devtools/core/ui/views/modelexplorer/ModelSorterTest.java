@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -58,11 +58,11 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
     private IProject projectResource1;
     private IProject projectResource2;
 
-    private IAttribute attr1;
+    private IPolicyCmptTypeAttribute attr1;
 
     private IPolicyCmptTypeAssociation rel;
 
-    private IAttribute attr2;
+    private IPolicyCmptTypeAttribute attr2;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -84,9 +84,9 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
         packageFragment4= root2.createPackageFragment("ZTestPackageFragment", false, null);
 
 
-        attr1 = policyCT.newAttribute();
+        attr1 = policyCT.newPolicyCmptTypeAttribute();
         rel = policyCT.newPolicyCmptTypeAssociation();
-        attr2 = policyCT.newAttribute();
+        attr2 = policyCT.newPolicyCmptTypeAttribute();
 
         projectResource1 = (IProject) proj3.getCorrespondingResource();
         projectResource2 = (IProject) proj4.getCorrespondingResource();

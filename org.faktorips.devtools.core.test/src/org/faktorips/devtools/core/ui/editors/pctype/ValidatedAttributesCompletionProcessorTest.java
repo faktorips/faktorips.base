@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 
 public class ValidatedAttributesCompletionProcessorTest extends AbstractIpsPluginTest {
@@ -42,15 +42,15 @@ public class ValidatedAttributesCompletionProcessorTest extends AbstractIpsPlugi
 	 * Test method for 'org.faktorips.devtools.core.ui.editors.pctype.ValidatedAttributesCompletionProcessor.doComputeCompletionProposals(String, int, List)'
 	 */
 	public void testDoComputeCompletionProposals() throws Exception {
-		IAttribute attr = pcType.newAttribute();
+		IPolicyCmptTypeAttribute attr = pcType.newPolicyCmptTypeAttribute();
 		attr.setName("anna");
-		attr = pcType.newAttribute();
+		attr = pcType.newPolicyCmptTypeAttribute();
 		attr.setName("anne");
-		attr = pcType.newAttribute();
+		attr = pcType.newPolicyCmptTypeAttribute();
 		attr.setName("anton");
-		attr = pcType.newAttribute();
+		attr = pcType.newPolicyCmptTypeAttribute();
 		attr.setName("albert");
-		attr = pcType.newAttribute();
+		attr = pcType.newPolicyCmptTypeAttribute();
 		attr.setName("Berta");
 		
 		IValidationRule rule = pcType.newRule();

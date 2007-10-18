@@ -44,10 +44,10 @@ public class ConfigElementComparatorTest extends AbstractIpsPluginTest {
         childType.setSupertype(superType.getQualifiedName());
         superType.setSupertype(superSuperType.getQualifiedName());
         
-        superSuperType.newAttribute().setName("SS");
-        superType.newAttribute().setName("S1");
-        superType.newAttribute().setName("S2");
-        childType.newAttribute().setName("C");
+        superSuperType.newPolicyCmptTypeAttribute().setName("SS");
+        superType.newPolicyCmptTypeAttribute().setName("S1");
+        superType.newPolicyCmptTypeAttribute().setName("S2");
+        childType.newPolicyCmptTypeAttribute().setName("C");
         
         IProductCmpt product = newProductCmpt(childType.findProductCmptType(prj), "Product");
         generation = product.getProductCmptGeneration(0);
