@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
@@ -167,14 +167,14 @@ public class AttributesSection extends SimpleIpsPartsSection {
          * {@inheritDoc}
          */
         protected IIpsObjectPart newIpsPart() {
-            return getPcType().newAttribute();
+            return getPcType().newPolicyCmptTypeAttribute();
         }
 
         /**
          * {@inheritDoc}
          */
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            return new AttributeEditDialog((IAttribute)part, shell);
+            return new AttributeEditDialog((IPolicyCmptTypeAttribute)part, shell);
         }
         
         protected int[] moveParts(int[] indexes, boolean up) {
@@ -183,7 +183,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
         
     	private class AttributeContentProvider implements IStructuredContentProvider {
     		public Object[] getElements(Object inputElement) {
-    			 return getPcType().getAttributes();
+    			 return getPcType().getPolicyCmptTypeAttributes();
     		}
     		public void dispose() {
     			// nothing todo
@@ -197,7 +197,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
     	    
             public String getText(Object element) {
                 String text = super.getText(element);
-                IAttribute a = (IAttribute)element;
+                IPolicyCmptTypeAttribute a = (IPolicyCmptTypeAttribute)element;
                 return text + " : " + a.getDatatype(); //$NON-NLS-1$
             }
     	}

@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -178,9 +178,9 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
     private void generateCodeForPolicyCmptTypeAttributes(TypeSection typeSection) throws CoreException {
         
         IPolicyCmptType policyCmptType = getPolicyCmptType();
-        IAttribute[] attributes = policyCmptType == null ? new IAttribute[0] : policyCmptType.getAttributes();
+        IPolicyCmptTypeAttribute[] attributes = policyCmptType == null ? new IPolicyCmptTypeAttribute[0] : policyCmptType.getPolicyCmptTypeAttributes();
         for (int i = 0; i < attributes.length; i++) {
-            IAttribute a = attributes[i];
+            IPolicyCmptTypeAttribute a = attributes[i];
             if (!a.isProductRelevant() || !a.isChangeable() || !a.isValid()) {
                 continue;
             }
@@ -207,7 +207,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
         
         IProductCmptType productCmptType = getProductCmptType();
         IProductCmptTypeAttribute[] attributes = 
-            productCmptType == null ? new IProductCmptTypeAttribute[0] : productCmptType.getAttributes();
+            productCmptType == null ? new IProductCmptTypeAttribute[0] : productCmptType.getProductCmptTypeAttributes();
         for (int i = 0; i < attributes.length; i++) {
             IProductCmptTypeAttribute a = attributes[i];
             if (!a.isValid()) {
@@ -277,7 +277,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
      * @param methodsBuilder The code fragment builder to build the method section.
      */
     protected abstract void generateCodeForPolicyCmptTypeAttribute(
-            IAttribute a, 
+            IPolicyCmptTypeAttribute a, 
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;

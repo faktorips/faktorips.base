@@ -35,7 +35,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
@@ -235,7 +235,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     
         if(isCheckValueAgainstValueSetRule()){
             String attributeName = getValidatedAttributeAt(0);
-            IAttribute attribute = getPolicyCmptType().getAttribute(attributeName);
+            IPolicyCmptTypeAttribute attribute = getPolicyCmptType().getPolicyCmptTypeAttribute(attributeName);
             if (attribute==null) {
                 return;
             }
@@ -253,7 +253,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
 	private void validateValidatedAttribute(MessageList list)
 			throws CoreException {
 
-		IAttribute[] attributes = getPolicyCmptType().getSupertypeHierarchy()
+		IPolicyCmptTypeAttribute[] attributes = getPolicyCmptType().getSupertypeHierarchy()
 				.getAllAttributes(getPolicyCmptType());
 		Set attributeNames = new HashSet(attributes.length);
 		for (int i = 0; i < attributes.length; i++) {
@@ -266,7 +266,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
 				list.add(new Message(MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED, text, Message.ERROR, //$NON-NLS-1$
 						new ObjectProperty(this, "validatedAttributes", i))); //$NON-NLS-1$
 			} else {
-                IAttribute attribute = getPolicyCmptType().findAttributeInSupertypeHierarchy(validatedAttribute);
+                IPolicyCmptTypeAttribute attribute = getPolicyCmptType().findAttributeInSupertypeHierarchy(validatedAttribute);
                 if (attribute.getAttributeType()==AttributeType.CONSTANT) {
                     list.add(new Message(IValidationRule.MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED, Messages.ValidationRule_ConstantAttributesCantBeValidated, Message.ERROR, 
                             new ObjectProperty(this, "validatedAttributes", i))); //$NON-NLS-1$

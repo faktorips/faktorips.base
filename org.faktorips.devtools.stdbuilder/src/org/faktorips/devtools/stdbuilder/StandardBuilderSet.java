@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -137,7 +137,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public IParameterIdentifierResolver getFlParameterIdentifierResolver() {
         return new AbstractParameterIdentifierResolver(){
 
-            protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
+            protected String getParameterAttributGetterName(IPolicyCmptTypeAttribute attribute, Datatype datatype) {
                 return policyCmptInterfaceBuilder.getMethodNameGetPropertyValue(attribute.getName(), datatype);    
             }
         };

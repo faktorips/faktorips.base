@@ -151,7 +151,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         if (type==null) {
             return null;
         }
-        return type.findAttribute(attribute, ipsProject);
+        return type.findProductCmptTypeAttribute(attribute, ipsProject);
     }
 
     /**

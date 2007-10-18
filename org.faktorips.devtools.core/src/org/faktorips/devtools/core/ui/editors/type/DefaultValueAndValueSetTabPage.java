@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IValueSetOwner;
 import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -153,7 +153,7 @@ public class DefaultValueAndValueSetTabPage extends Composite {
         defaultEditFieldPlaceholder.layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout();
 
-        uiController.add(defaultValueField, IAttribute.PROPERTY_DEFAULT_VALUE);
+        uiController.add(defaultValueField, IPolicyCmptTypeAttribute.PROPERTY_DEFAULT_VALUE);
     }
     
     private void updateValueSetTypes() {

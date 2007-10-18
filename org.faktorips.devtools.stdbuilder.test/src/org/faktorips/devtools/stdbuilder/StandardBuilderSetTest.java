@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
 /**
@@ -48,7 +48,7 @@ public class StandardBuilderSetTest extends AbstractIpsPluginTest {
         props.setJavaSrcLanguage(Locale.GERMAN);
         project.setProperties(props);
         type = newPolicyCmptType(project, "Policy");
-        IAttribute a = type.newAttribute();
+        IPolicyCmptTypeAttribute a = type.newPolicyCmptTypeAttribute();
         a.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         a.setDatatype(Datatype.INTEGER.getQualifiedName());
         a.setName("age");

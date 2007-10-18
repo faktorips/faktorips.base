@@ -60,8 +60,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private String policyCmptType = "";
     
-    private IpsObjectPartCollection attributes = new IpsObjectPartCollection(this, ProductCmptTypeAttribute.class, "Attribute");
-    private IpsObjectPartCollection tableStructureUsages = new IpsObjectPartCollection(this, TableStructureUsage.class, "TableStructureUsage");
+    private IpsObjectPartCollection tableStructureUsages = new IpsObjectPartCollection(this, TableStructureUsage.class, ITableStructureUsage.class, "TableStructureUsage");
     
     public ProductCmptType(IIpsSrcFile file) {
         super(file);
@@ -70,15 +69,22 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
+    protected IpsObjectPartCollection createCollectionForAttributes() {
+        return new IpsObjectPartCollection(this, ProductCmptTypeAttribute.class, IProductCmptTypeAttribute.class, ProductCmptTypeAttribute.TAG_NAME);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     protected IpsObjectPartCollection createCollectionForMethods() {
-        return new IpsObjectPartCollection(this, ProductCmptTypeMethod.class, "Method");
+        return new IpsObjectPartCollection(this, ProductCmptTypeMethod.class, IProductCmptTypeMethod.class, "Method");
     }
     
     /**
      * {@inheritDoc}
      */
     protected IpsObjectPartCollection createCollectionForAssociations() {
-        return new IpsObjectPartCollection(this, ProductCmptTypeAssociation.class, "Association");
+        return new IpsObjectPartCollection(this, ProductCmptTypeAssociation.class, IProductCmptTypeAssociation.class, "Association");
     }
 
     /**
@@ -189,7 +195,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     public IProdDefProperty findProdDefProperty(ProdDefPropertyType type, String propName, IIpsProject ipsProject) throws CoreException {
         if (ProdDefPropertyType.VALUE==type) {
-            return findAttribute(propName, ipsProject);
+            return findProductCmptTypeAttribute(propName, ipsProject);
         }
         if (ProdDefPropertyType.FORMULA==type) {
             return findFormulaSignature(propName, ipsProject);
@@ -207,15 +213,15 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeAttribute newAttribute() {
-        return (IProductCmptTypeAttribute)attributes.newPart();
+    public IProductCmptTypeAttribute newProductCmptTypeAttribute() {
+        return (IProductCmptTypeAttribute)newAttribute();
     }
     
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeAttribute newAttribute(String name) {
-        IProductCmptTypeAttribute newAttribute = newAttribute();
+    public IProductCmptTypeAttribute newProductCmptTypeAttribute(String name) {
+        IProductCmptTypeAttribute newAttribute = newProductCmptTypeAttribute();
         newAttribute.setName(name);
         return newAttribute;
     }
@@ -223,38 +229,22 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeAttribute getAttribute(String name) {
+    public IProductCmptTypeAttribute getProductCmptTypeAttribute(String name) {
         return (IProductCmptTypeAttribute)attributes.getPartByName(name);
     }
     
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeAttribute findAttribute(String name, IIpsProject project) throws CoreException {
-        AttributeFinder finder = new AttributeFinder(project, name);
-        finder.start(this);
-        return finder.attribute;
+    public IProductCmptTypeAttribute findProductCmptTypeAttribute(String name, IIpsProject ipsProject) throws CoreException {
+        return (IProductCmptTypeAttribute)findAttribute(name, ipsProject);
     }
 
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeAttribute[] getAttributes() {
+    public IProductCmptTypeAttribute[] getProductCmptTypeAttributes() {
         return (IProductCmptTypeAttribute[])attributes.toArray(new IProductCmptTypeAttribute[attributes.size()]);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int getNumOfAttributes() {
-        return attributes.size();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int[] moveAttributes(int[] indexes, boolean up) {
-        return attributes.moveParts(indexes, up);
     }
 
     /**
@@ -472,25 +462,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         
     }
 
-    class AttributeFinder extends ProductCmptTypeHierarchyVisitor {
-
-        private String attributeName;
-        private IProductCmptTypeAttribute attribute;
-        
-        public AttributeFinder(IIpsProject ipsProject, String attrName) {
-            super(ipsProject);
-            this.attributeName = attrName;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
-            attribute = currentType.getAttribute(attributeName);
-            return attribute==null;
-        }
-    }
-
     class ProdDefPropertyCollector extends ProductCmptTypeHierarchyVisitor {
 
         // if set, indicates the type of properties that are collected
@@ -531,7 +502,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 if (policyCmptType==null) {
                     return true;
                 }
-                org.faktorips.devtools.core.model.pctype.IAttribute[] polAttr = policyCmptType.getAttributes();
+                org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute[] polAttr = policyCmptType.getPolicyCmptTypeAttributes();
                 for (int i = polAttr.length-1; i>=0; i--) {
                     if (polAttr[i].isProductRelevant() && polAttr[i].isChangeable()) {
                         myPolicyCmptTypeAttributes.add(polAttr[i]);

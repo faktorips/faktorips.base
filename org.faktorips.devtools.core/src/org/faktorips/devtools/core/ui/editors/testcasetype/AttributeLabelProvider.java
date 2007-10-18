@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 
 /**
@@ -33,7 +33,7 @@ public class AttributeLabelProvider extends DefaultLabelProvider {
      * {@inheritDoc}
      */
     public String getText(Object element) {
-        IAttribute attribute = (IAttribute) element;
+        IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute) element;
         
         if (!showPolicyCmptTypeName){
             return super.getText(element);

@@ -43,7 +43,7 @@ import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.model.pctype.Modifier;
@@ -72,7 +72,7 @@ import org.faktorips.util.message.MessageList;
  */
 public class AttributeEditDialog extends IpsPartEditDialog  {
 
-    private IAttribute attribute;
+    private IPolicyCmptTypeAttribute attribute;
     private IValidationRule rule;
 
     // edit fields
@@ -164,7 +164,7 @@ public class AttributeEditDialog extends IpsPartEditDialog  {
      * @param parentShell
      * @param title
      */
-    public AttributeEditDialog(IAttribute attribute, Shell parentShell) {
+    public AttributeEditDialog(IPolicyCmptTypeAttribute attribute, Shell parentShell) {
         super(attribute, parentShell, Messages.AttributeEditDialog_title, true);
         this.attribute = attribute;
         this.rule = attribute.findValueSetRule();
@@ -382,7 +382,7 @@ public class AttributeEditDialog extends IpsPartEditDialog  {
         defaultEditFieldPlaceholder.layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout();
 
-        uiController.add(defaultValueField, IAttribute.PROPERTY_DEFAULT_VALUE);
+        uiController.add(defaultValueField, IPolicyCmptTypeAttribute.PROPERTY_DEFAULT_VALUE);
     }
 
     private Control createValidationRulePage(TabFolder folder) {
@@ -534,13 +534,13 @@ public class AttributeEditDialog extends IpsPartEditDialog  {
 	 */
     protected void connectToModel() {
         super.connectToModel();
-        uiController.add(nameField, IAttribute.PROPERTY_NAME);
-        uiController.add(datatypeField, IAttribute.PROPERTY_DATATYPE);
-        uiController.add(modifierField, IAttribute.PROPERTY_MODIFIER);
-        uiController.add(attributeTypeField, IAttribute.PROPERTY_ATTRIBUTE_TYPE);
-        uiController.add(defaultValueField, IAttribute.PROPERTY_DEFAULT_VALUE);
-        uiController.add(productRelevantField, IAttribute.PROPERTY_PRODUCT_RELEVANT);
-        uiController.add(overrideField, IAttribute.PROPERTY_OVERWRITES);
+        uiController.add(nameField, IPolicyCmptTypeAttribute.PROPERTY_NAME);
+        uiController.add(datatypeField, IPolicyCmptTypeAttribute.PROPERTY_DATATYPE);
+        uiController.add(modifierField, IPolicyCmptTypeAttribute.PROPERTY_MODIFIER);
+        uiController.add(attributeTypeField, IPolicyCmptTypeAttribute.PROPERTY_ATTRIBUTE_TYPE);
+        uiController.add(defaultValueField, IPolicyCmptTypeAttribute.PROPERTY_DEFAULT_VALUE);
+        uiController.add(productRelevantField, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
+        uiController.add(overrideField, IPolicyCmptTypeAttribute.PROPERTY_OVERWRITES);
 
         if (rule != null) {
         	createRuleUIController();

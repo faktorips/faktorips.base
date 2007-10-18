@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -95,8 +95,8 @@ public class ColumnEditDialog extends IpsPartEditDialog {
      */
     protected void connectToModel() {
         super.connectToModel();
-        uiController.add(nameField, IAttribute.PROPERTY_NAME);
-        uiController.add(datatypeField, IAttribute.PROPERTY_DATATYPE);
+        uiController.add(nameField, IPolicyCmptTypeAttribute.PROPERTY_NAME);
+        uiController.add(datatypeField, IPolicyCmptTypeAttribute.PROPERTY_DATATYPE);
     }
     
 }

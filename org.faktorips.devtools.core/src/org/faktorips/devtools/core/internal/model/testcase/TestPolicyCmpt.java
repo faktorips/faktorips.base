@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -763,7 +763,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     /**
      * {@inheritDoc}
      */
-    public IAttribute findProductCmptAttribute(String attribute) throws CoreException {
+    public IPolicyCmptTypeAttribute findProductCmptAttribute(String attribute) throws CoreException {
         if (StringUtils.isEmpty(getProductCmpt())) {
             // no product cmpt is set, therefore no attribute could be searched, 
             // currently an attributes (from sublcasses) could only be searched if an product cmpt was set

@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 
 /**
  * Class for calculation the content of the ModelExplorer tree. The returned Lists of
@@ -67,7 +67,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      */
     protected Object[] getUnfilteredChildren(Object parentElement) {
         if (parentElement instanceof IIpsElement) {
-            if (parentElement instanceof IAttribute) {
+            if (parentElement instanceof IPolicyCmptTypeAttribute) {
                 return EMPTY_ARRAY;
             }
             try {

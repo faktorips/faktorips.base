@@ -41,14 +41,14 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
@@ -286,7 +286,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.methodEnd();
     }
 
-    protected void generateCodeForAttribute(IAttribute attribute,
+    protected void generateCodeForAttribute(IPolicyCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder constantBuilder,
             JavaCodeFragmentBuilder memberVarsBuilder, 
@@ -320,7 +320,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForConstantAttribute(IAttribute attribute,
+    protected void generateCodeForConstantAttribute(IPolicyCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder constantBuilder,
             JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -334,7 +334,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForChangeableAttribute(IAttribute attribute,
+    protected void generateCodeForChangeableAttribute(IPolicyCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -362,7 +362,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForDerivedAttribute(IAttribute attribute,
+    protected void generateCodeForDerivedAttribute(IPolicyCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -373,7 +373,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForComputedAttribute(IAttribute attribute,
+    protected void generateCodeForComputedAttribute(IPolicyCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -401,7 +401,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
     
     protected void generateFieldForAttribute(            
-            IAttribute a,
+            IPolicyCmptTypeAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilders) throws CoreException {
         
@@ -415,7 +415,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
     
     private void generateMethodAttributeDerivedGetter(
-            IAttribute a,
+            IPolicyCmptTypeAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder builder) throws CoreException {
         
@@ -479,7 +479,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the field/member variable that stores the values
      * for the property/attribute.
      */
-    public String getFieldNameForAttribute(IAttribute a) throws CoreException {
+    public String getFieldNameForAttribute(IPolicyCmptTypeAttribute a) throws CoreException {
         return getJavaNamingConvention().getMemberVarName(a.getName());
     }
     
@@ -492,7 +492,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     private void generateMethodAttributeGetterFromMemberVar(
-            IAttribute a,
+            IPolicyCmptTypeAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
@@ -515,7 +515,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodAttributeSetter(
-            IAttribute a,
+            IPolicyCmptTypeAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
@@ -1315,7 +1315,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     private void buildValidation(JavaCodeFragmentBuilder builder) throws CoreException {
-        generateMethodValidateSelf(builder, getPcType().getAttributes());
+        generateMethodValidateSelf(builder, getPcType().getPolicyCmptTypeAttributes());
         createMethodValidateDependants(builder);
         IValidationRule[] rules = getPcType().getRules();
         for (int i = 0; i < rules.length; i++) {
@@ -1381,7 +1381,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             javaDoc, ANNOTATION_GENERATED);
     }
 
-    private void generateMethodValidateSelf(JavaCodeFragmentBuilder builder, IAttribute[] attributes)
+    private void generateMethodValidateSelf(JavaCodeFragmentBuilder builder, IPolicyCmptTypeAttribute[] attributes)
             throws CoreException {
         /*
          * public void validateSelf(MessageList ml, String businessFunction) { super.validateSelf(ml, businessFunction); }
@@ -1507,7 +1507,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             code.appendClassName(ObjectProperty.class);
             code.append("[]{");
             for (int j = 0; j < validatedAttributes.length; j++) {
-                IAttribute attr = getPcType().findAttributeInSupertypeHierarchy(validatedAttributes[j]);
+                IPolicyCmptTypeAttribute attr = getPcType().findAttributeInSupertypeHierarchy(validatedAttributes[j]);
                 String propertyConstName = interfaceBuilder.getPropertyName(attr, attr.findDatatype());
                 code.append(" new ");
                 code.appendClassName(ObjectProperty.class);
@@ -1613,7 +1613,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     private void generateInitializationForOverrideAttributes(JavaCodeFragmentBuilder builder) throws CoreException{
-        IAttribute[] attributes = getPcType().getAttributes();
+        IPolicyCmptTypeAttribute[] attributes = getPcType().getPolicyCmptTypeAttributes();
         for (int i = 0; i < attributes.length; i++) {
             if(attributes[i].isChangeable() && attributes[i].getOverwrites() && attributes[i].validate().isEmpty()){
                 DatatypeHelper helper = getPcType().getIpsProject().getDatatypeHelper(attributes[i].getValueDatatype());
@@ -1635,10 +1635,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * </pre>
      */
     protected void generateMethodInitialize(JavaCodeFragmentBuilder builder) throws CoreException {
-        IAttribute[] attributes = getPcType().getAttributes();
+        IPolicyCmptTypeAttribute[] attributes = getPcType().getPolicyCmptTypeAttributes();
         ArrayList selectedValues = new ArrayList();
         for (int i = 0; i < attributes.length; i++) {
-            IAttribute a = attributes[i];
+            IPolicyCmptTypeAttribute a = attributes[i];
             if (!a.validate().containsErrorMsg()) {
                 if (a.isProductRelevant() && a.isChangeable() && !a.getOverwrites()) {
                     selectedValues.add(a);
@@ -1664,7 +1664,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.appendln("return;");
         builder.appendln("}");
         for (Iterator it = selectedValues.iterator(); it.hasNext();) {
-            IAttribute a = (IAttribute)it.next();
+            IPolicyCmptTypeAttribute a = (IPolicyCmptTypeAttribute)it.next();
             DatatypeHelper datatype = a.getIpsProject().findDatatypeHelper(a.getDatatype());
             builder.append(getFieldNameForAttribute(a));
             builder.append(" = ");
@@ -1742,7 +1742,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.closeBracket();
     }
 
-    private String getMethodNameGetDefaultValueFromProductCmpt(IAttribute a, DatatypeHelper datatype) throws CoreException {
+    private String getMethodNameGetDefaultValueFromProductCmpt(IPolicyCmptTypeAttribute a, DatatypeHelper datatype) throws CoreException {
         String methodName = productCmptGenInterfaceBuilder.getMethodNameGetDefaultValue(a, datatype);
         return interfaceBuilder.getMethodNameGetProductCmptGeneration(getProductCmptType()) + "()." + methodName + "()";
     }
@@ -1812,7 +1812,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         String[] javaDocAnnotation = ANNOTATION_RESTRAINED_MODIFIABLE;
         if(rule.isCheckValueAgainstValueSetRule()){
             javaDocAnnotation = ANNOTATION_GENERATED;
-            IAttribute attr = getPcType().getAttribute(rule.getValidatedAttributeAt(0));
+            IPolicyCmptTypeAttribute attr = getPcType().getPolicyCmptTypeAttribute(rule.getValidatedAttributeAt(0));
             Datatype attrDatatype = attr.findDatatype();
             body.append('!');
             if(attr.getValueSet().getValueSetType().equals(ValueSetType.ENUM)){
@@ -1911,10 +1911,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     private void generateMethodInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
 
-        IAttribute[] attributes = getPolicyCmptType().getAttributes();
+        IPolicyCmptTypeAttribute[] attributes = getPolicyCmptType().getPolicyCmptTypeAttributes();
         ArrayList selectedAttributes = new ArrayList();
         for (int i = 0; i < attributes.length; i++) {
-            IAttribute a = attributes[i];
+            IPolicyCmptTypeAttribute a = attributes[i];
             if (a.getAttributeType()==AttributeType.DERIVED_ON_THE_FLY 
                     || a.getAttributeType()==AttributeType.CONSTANT
                     || a.getOverwrites()
@@ -1930,7 +1930,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.TYPE, MethodNames.INIT_PROPERTIES_FROM_XML, new String[]{"propMap"}, new Class[]{HashMap.class});
         builder.appendln("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap);");
         for (Iterator it = selectedAttributes.iterator(); it.hasNext();) {
-            IAttribute a = (IAttribute)it.next();
+            IPolicyCmptTypeAttribute a = (IPolicyCmptTypeAttribute)it.next();
             Datatype datatype = a.findDatatype();
             DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(datatype);
             builder.append("if (propMap.containsKey(");
@@ -2075,7 +2075,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.methodEnd();
     }
     
-    private void generateMethodGetRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
+    private void generateMethodGetRangeFor(IPolicyCmptTypeAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
         methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
         productCmptGenInterfaceBuilder.generateSignatureGetRangeFor(a, helper, methodBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
@@ -2097,7 +2097,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodBuilder.append(body);
     }
     
-    private void generateMethodGetAllowedValuesFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
+    private void generateMethodGetAllowedValuesFor(IPolicyCmptTypeAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
         methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
         productCmptGenInterfaceBuilder.generateSignatureGetAllowedValuesFor(a, helper.getDatatype(), methodBuilder);
         JavaCodeFragment body = new JavaCodeFragment();

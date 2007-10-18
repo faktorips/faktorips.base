@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model.type;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 
@@ -26,7 +27,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
  * 
  * @author Jan Ortmann
  */
-public interface IType extends IIpsObject {
+public interface IType extends IIpsObject, Datatype {
 
     public final static String PROPERTY_SUPERTYPE = "supertype";
     public final static String PROPERTY_ABSTRACT= "abstract";
@@ -79,12 +80,12 @@ public interface IType extends IIpsObject {
      * on the project's ips object path. Returns <code>null</code> if either this type is not derived from 
      * a supertype or the supertype can't be found on the project's ips object path. 
      * 
-     * @param project The project which ips object path is used for the searched.
+     * @param ipsProject The project which ips object path is used for the searched.
      * This is not neccessarily the project this type is part of. 
      *
      * @throws CoreException if an error occurs while searching for the supertype.
      */
-    public IType findSupertype(IIpsProject project) throws CoreException;
+    public IType findSupertype(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Sets the type's supertype.
@@ -99,12 +100,12 @@ public interface IType extends IIpsObject {
      * is <code>null</code>.
      * 
      * @param supertypeCandidate The type which is the possibly a supertype of this type
-     * @param project The project which ips object path is used for the searched.
+     * @param ipsProject The project which ips object path is used for the searched.
      * This is not neccessarily the project this type is part of. 
      * 
      * @throws CoreException if an error occurs while searching the type hierarchy.
      */
-    public boolean isSubtypeOf(IType supertypeCandidate, IIpsProject project) throws CoreException;
+    public boolean isSubtypeOf(IType supertypeCandidate, IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns <code>true</code> if this type is a subtype of the given candidate, or if the
@@ -112,13 +113,66 @@ public interface IType extends IIpsObject {
      * Returns <code>false</code> if candidate is <code>null</code>.
      * 
      * @param supertypeCandidate The type which is the possibly a supertype of this type
-     * @param project The project which ips object path is used for the searched.
+     * @param ipsProject The project which ips object path is used for the searched.
      * This is not neccessarily the project this type is part of. 
      * 
      * @throws CoreException if an error occurs while searching the type hierarchy.
      */
-    public boolean isSubtypeOrSameType(IType candidate, IIpsProject project) throws CoreException;
+    public boolean isSubtypeOrSameType(IType candidate, IIpsProject ipsProject) throws CoreException;
 
+    /**
+     * Returns the type's attributes.
+     */
+    public IAttribute[] getAttributes();
+    
+    /**
+     * Returns the attribute with the given name defined in <strong>this</strong> type
+     * (This method does not search the supertype hierarchy.)
+     * If more than one attribute with the name exist, the first attribute with the name is returned.
+     * Returns <code>null</code> if no attribute with the given name exists.
+     */
+    public IAttribute getAttribute(String name);
+
+    /**
+     * Searches an attribute with the given name in the type and it's supertype hierarchy and returns it. 
+     * Returns <code>null</code> if no such attribute exists.
+     * 
+     * @param name          The attribute's name.
+     * @param ipsProject    The project which ips object path is used for the searched.
+     *                      This is not neccessarily the project this type is part of. 
+     * 
+     * @throws NullPointerException if project is <code>null</code>.
+     * @throws CoreException if an error occurs while searching.
+     */
+    public IAttribute findAttribute(String name, IIpsProject ipsProject) throws CoreException;
+    
+    /**
+     * Creates a new attribute and returns it.
+     */
+    public IAttribute newAttribute();
+
+    /**
+     * Returns the number of attributes.
+     */
+    public int getNumOfAttributes();
+    
+    /**
+     * Moves the attributes identified by the indexes up or down by one position.
+     * If one of the indexes is 0 (the first attribute), no attribute is moved up. 
+     * If one of the indexes is the number of attributes - 1 (the last attribute)
+     * no attribute is moved down. 
+     * 
+     * @param indexes   The indexes identifying the attributes.
+     * @param up        <code>true</code>, to move the attributes up, 
+     * <false> to move them down.
+     * 
+     * @return The new indexes of the moved attributes.
+     * 
+     * @throws NullPointerException if indexes is null.
+     * @throws IndexOutOfBoundsException if one of the indexes does not identify
+     * an attribute.
+     */
+    public int[] moveAttributes(int[] indexes, boolean up);
     
     /**
      * Returns the assocation with the given name defined in <strong>this</strong> type.
@@ -133,12 +187,12 @@ public interface IType extends IIpsObject {
      * Returns <code>null</code> if no such assoiation exists.
      * 
      * @param name          The association's name.
-     * @param project       The project which ips object path is used for the searched.
+     * @param ipsProject    The project which ips object path is used for the searched.
      *                      This is not neccessarily the project this type is part of. 
      * 
      * @throws CoreException if an error occurs while searching.
      */
-    public IAssociation findAssociation(String name, IIpsProject project) throws CoreException;
+    public IAssociation findAssociation(String name, IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the type's associations.
@@ -221,8 +275,10 @@ public interface IType extends IIpsObject {
      * that can be overriden (and isn't overriden yet).
      * 
      * @param onlyAbstractMethods if true only abstract methods are returned.
+     * @param ipsProject          The project which ips object path is used for the searched.
+     *                            This is not neccessarily the project this type is part of. 
      */
-    public IMethod[] findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject project) throws CoreException;
+    public IMethod[] findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject) throws CoreException;
     
     /**
      * Creates new methods in this type that overrides the given methods.

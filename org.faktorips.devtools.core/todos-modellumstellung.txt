@@ -1,17 +1,23 @@
 
 
+Type muss Datatype implementieren!!!
+
+
 ProductCmptType & ProductCmptTypeEditor
  - Dialog fuer Attribute (Zusammenfassen auf eine Seite, Description Page fehlt)
  - Beziehungen: Derived Union, AggregationKind, Pruefungen
  - Pruefungen fuer ProductCmptType. Welche Beziehungen gibt es zwischen den Ableitungshierarchien auf Vertrags & Produktseite? 
+
+Entfernen der "Product-side" aus dem IPolicyCmptTypeAssociation.
+Adapter IPolicyCmptTypeAssociation to IRelation
  
-Validierung: Einfuerhung IIpsProject Parameter. WOllen wir auch direkt einen localCacheParameter einfuehren.
+Validierung: Einfuerhung IIpsProject Parameter. Wollen wir auch direkt einen localCacheParameter einfuehren
 
 NewProductCmptType Wizard
 IPolicyCmptType muss IType implementieren
  - in Formuala muessen die EnumDatatypes aus ProductCmptType beruecksichtigt werden.
  - Verwendung von IType statt IPolicCmptType
- 
+=> Voraussetzung: Type implementiert Datatype. 
 
 PolicyCmptTypeAttribute
  - um computationMethod erweitern (setter, xml konvertierung, validierung)
@@ -32,6 +38,7 @@ XML-Format des Produktbausteins:
   - Umbennen von "pcTypeRelation" in "association"
   => Achtung hier muss auch die Laufzeit angepasst werden!!!
   
+Änderung der Sortierreihenfolge als eigener DeltaEntry.
 
 Benutzerfreundlichkeit:
 =======================

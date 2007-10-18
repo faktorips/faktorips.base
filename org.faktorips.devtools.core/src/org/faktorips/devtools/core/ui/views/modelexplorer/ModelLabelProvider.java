@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 
 /**
  * This class provides the ModelExplorer with labels for its tree-elements.
@@ -111,8 +111,8 @@ public class ModelLabelProvider implements ILabelProvider {
                     }
                     return name.substring(index + 1);
                 }
-            } else if (element instanceof IAttribute) {
-                IAttribute attrib = (IAttribute)element;
+            } else if (element instanceof IPolicyCmptTypeAttribute) {
+                IPolicyCmptTypeAttribute attrib = (IPolicyCmptTypeAttribute)element;
                 StringBuffer sb = new StringBuffer();
                 sb.append(attrib.getName());
                 sb.append(" : "); //$NON-NLS-1$

@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -268,26 +268,26 @@ public class TypeHierarchy implements ITypeHierarchy {
     /** 
      * {@inheritDoc}
      */
-    public IAttribute[] getAllAttributes(IPolicyCmptType type) {
+    public IPolicyCmptTypeAttribute[] getAllAttributes(IPolicyCmptType type) {
         List attributes = new ArrayList();
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
         for (int i=0; i<types.length; i++) {
             attributes.addAll(((PolicyCmptType)types[i]).getAttributeList());
         }
-        return (IAttribute[])attributes.toArray(new IAttribute[attributes.size()]);
+        return (IPolicyCmptTypeAttribute[])attributes.toArray(new IPolicyCmptTypeAttribute[attributes.size()]);
     }
     
     /**
 	 * {@inheritDoc}
 	 */
-	public IAttribute[] getAllAttributesRespectingOverride(IPolicyCmptType type) {
+	public IPolicyCmptTypeAttribute[] getAllAttributesRespectingOverride(IPolicyCmptType type) {
         List attributes = new ArrayList();
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
         
         Map overriden = new HashMap();
         
         for (int i=0; i<types.length; i++) {
-        	IAttribute[] attrs = types[i].getAttributes();
+        	IPolicyCmptTypeAttribute[] attrs = types[i].getPolicyCmptTypeAttributes();
         	for (int j = 0; j < attrs.length; j++) {
 				if (!overriden.containsKey(attrs[j].getName())) {
 					attributes.add(attrs[j]);
@@ -297,7 +297,7 @@ public class TypeHierarchy implements ITypeHierarchy {
 				}
 			}
         }
-        return (IAttribute[])attributes.toArray(new IAttribute[attributes.size()]);
+        return (IPolicyCmptTypeAttribute[])attributes.toArray(new IPolicyCmptTypeAttribute[attributes.size()]);
 	}
 	
 	/**
@@ -319,7 +319,7 @@ public class TypeHierarchy implements ITypeHierarchy {
         List relations = new ArrayList();
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
         for (int i=0; i<types.length; i++) {
-            relations.addAll(((PolicyCmptType)types[i]).getRelationList());
+            relations.addAll(((PolicyCmptType)types[i]).getAssociationList());
         }
         return (IPolicyCmptTypeAssociation[])relations.toArray(new IPolicyCmptTypeAssociation[relations.size()]);
 	}
@@ -339,10 +339,10 @@ public class TypeHierarchy implements ITypeHierarchy {
     /** 
      * {@inheritDoc}
 	 */
-    public IAttribute findAttribute(IPolicyCmptType type, String attributeName) {
+    public IPolicyCmptTypeAttribute findAttribute(IPolicyCmptType type, String attributeName) {
         IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
         for (int i=0; i<types.length; i++) {
-            IAttribute a = types[i].getAttribute(attributeName);
+            IPolicyCmptTypeAttribute a = types[i].getPolicyCmptTypeAttribute(attributeName);
             if (a!=null) {
                 return a;
             }

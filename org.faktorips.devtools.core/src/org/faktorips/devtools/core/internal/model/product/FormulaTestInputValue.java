@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
@@ -174,7 +174,7 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
             }
             String attributeName = identifier.substring(parameterName.length() + 1);
             IPolicyCmptType policyCmptType = (IPolicyCmptType) datatype;
-            IAttribute attribute = policyCmptType.findAttributeInSupertypeHierarchy(attributeName);
+            IPolicyCmptTypeAttribute attribute = policyCmptType.findAttributeInSupertypeHierarchy(attributeName);
             if (attribute == null){
                 // attribute not found, therfore the datatype couldn't be determined, 
                 // remark this inconsistence will be reported in the vaildate method
@@ -203,7 +203,7 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
                 boolean knownReason = false;
                 Datatype datatypeOfParam = getIpsProject().findDatatype(param.getDatatype());
                 if (datatypeOfParam instanceof IPolicyCmptType) {
-                    IAttribute attribute = null;
+                    IPolicyCmptTypeAttribute attribute = null;
                     String attributeName = identifier.substring(param.getName().length() + 1);
                     IPolicyCmptType policyCmptType = (IPolicyCmptType)datatypeOfParam;
 

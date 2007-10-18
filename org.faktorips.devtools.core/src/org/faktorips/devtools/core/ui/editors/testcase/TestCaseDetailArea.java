@@ -42,7 +42,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -319,7 +319,7 @@ public class TestCaseDetailArea {
                 // ignore not existing test attributes, will be checked in the vaidate method
                 failure = true;
             } else {
-                IAttribute attribute = testAttr.findAttribute();
+                IPolicyCmptTypeAttribute attribute = testAttr.findAttribute();
                 if (attribute == null) {
                     // find attribute by using the product cmpt
                     attribute = testPolicyCmpt.findProductCmptAttribute(testAttr.getAttribute());

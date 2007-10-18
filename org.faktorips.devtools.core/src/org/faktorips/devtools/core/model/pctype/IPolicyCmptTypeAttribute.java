@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 /**
  * A policy component type's attribute.
  */
-public interface IAttribute extends org.faktorips.devtools.core.model.type.IAttribute, IMember, IValueSetOwner, IProdDefProperty {
+public interface IPolicyCmptTypeAttribute extends org.faktorips.devtools.core.model.type.IAttribute, IMember, IValueSetOwner, IProdDefProperty {
 
     // property names
     public final static String PROPERTY_ATTRIBUTE_TYPE = "attributeType"; //$NON-NLS-1$
@@ -200,6 +200,6 @@ public interface IAttribute extends org.faktorips.devtools.core.model.type.IAttr
      * 
      * @throws CoreException if an error occurs while searching the attribute.
      */
-    public IAttribute findSupertypeAttribute() throws CoreException;
+    public IPolicyCmptTypeAttribute findSupertypeAttribute() throws CoreException;
 
 }

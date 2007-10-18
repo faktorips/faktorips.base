@@ -228,7 +228,7 @@ public interface IPolicyCmptType extends IType, Datatype {
     /**
      * Returns the type's attributes.
      */
-    public IAttribute[] getAttributes();
+    public IPolicyCmptTypeAttribute[] getPolicyCmptTypeAttributes();
     
     /**
      * Returns the attribute with the given name defined in <strong>this</strong> type
@@ -236,7 +236,7 @@ public interface IPolicyCmptType extends IType, Datatype {
      * If more than one attribute with the name exist, the first attribute with the name is returned.
      * Returns <code>null</code> if no attribute with the given name exists.
      */
-    public IAttribute getAttribute(String name);
+    public IPolicyCmptTypeAttribute getPolicyCmptTypeAttribute(String name);
 
     /**
      * Searches this type and it's supertyes for an attribute with the given name.
@@ -245,12 +245,12 @@ public interface IPolicyCmptType extends IType, Datatype {
      * 
      * @throws CoreException if an error occurs while searching.
      */
-    public IAttribute findAttributeInSupertypeHierarchy(String name) throws CoreException;
+    public IPolicyCmptTypeAttribute findAttributeInSupertypeHierarchy(String name) throws CoreException;
     
     /**
      * Creates a new attribute and returns it.
      */
-    public IAttribute newAttribute();
+    public IPolicyCmptTypeAttribute newPolicyCmptTypeAttribute();
 
     /**
      * Returns the number of attributes.
@@ -279,7 +279,7 @@ public interface IPolicyCmptType extends IType, Datatype {
      * Returns an array of all attributes of all supertypes not yet overwritten by this 
      * policy component type.
      */
-    public IAttribute[] findOverrideAttributeCandidates() throws CoreException;
+    public IPolicyCmptTypeAttribute[] findOverrideAttributeCandidates() throws CoreException;
     
     /**
      * Creates new attributes in this type overriding the given attributes.
@@ -288,7 +288,7 @@ public interface IPolicyCmptType extends IType, Datatype {
      * 
      * @return The created attributes.
      */
-    public IAttribute[] overrideAttributes(IAttribute[] attributes);
+    public IPolicyCmptTypeAttribute[] overrideAttributes(IPolicyCmptTypeAttribute[] attributes);
     
     /**
      * Returns the type's vallidation rules.

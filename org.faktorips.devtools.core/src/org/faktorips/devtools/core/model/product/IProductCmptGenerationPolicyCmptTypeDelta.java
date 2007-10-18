@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.model.product;
 
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 
@@ -48,7 +48,7 @@ public interface IProductCmptGenerationPolicyCmptTypeDelta {
      * Returns the attributes defined in the policy component type that aren't
      * defined in the product component.
      */
-    public IAttribute[] getAttributesWithMissingConfigElements();
+    public IPolicyCmptTypeAttribute[] getAttributesWithMissingConfigElements();
     
     /**
      * Returns the elements where the type defined in the product component

@@ -94,7 +94,7 @@ public interface IProductCmptType extends IIpsObject, IType {
     /**
      * Returns the type's attributes.
      */
-    public IProductCmptTypeAttribute[] getAttributes();
+    public IProductCmptTypeAttribute[] getProductCmptTypeAttributes();
     
     /**
      * Returns the attribute with the given name defined in <strong>this</strong> type
@@ -102,7 +102,7 @@ public interface IProductCmptType extends IIpsObject, IType {
      * If more than one attribute with the name exist, the first attribute with the name is returned.
      * Returns <code>null</code> if no attribute with the given name exists.
      */
-    public IProductCmptTypeAttribute getAttribute(String name);
+    public IProductCmptTypeAttribute getProductCmptTypeAttribute(String name);
 
 
     /**
@@ -110,47 +110,24 @@ public interface IProductCmptType extends IIpsObject, IType {
      * Returns <code>null</code> if no such attribute exists.
      * 
      * @param name          The attribute's name.
-     * @param project       The project which ips object path is used for the searched.
+     * @param ipsProject       The project which ips object path is used for the searched.
      *                      This is not neccessarily the project this type is part of. 
      * 
      * @throws NullPointerException if project is <code>null</code>.
      * @throws CoreException if an error occurs while searching.
      */
-    public IProductCmptTypeAttribute findAttribute(String name, IIpsProject project) throws CoreException;
+    public IProductCmptTypeAttribute findProductCmptTypeAttribute(String name, IIpsProject ipsProject) throws CoreException;
     
     /**
      * Creates a new attribute and returns it.
      */
-    public IProductCmptTypeAttribute newAttribute();
+    public IProductCmptTypeAttribute newProductCmptTypeAttribute();
 
     /**
      * Creates a new attribute with the given name and returns it.
      */
-    public IProductCmptTypeAttribute newAttribute(String name);
+    public IProductCmptTypeAttribute newProductCmptTypeAttribute(String name);
 
-    /**
-     * Returns the number of attributes.
-     */
-    public int getNumOfAttributes();
-    
-    /**
-     * Moves the attributes identified by the indexes up or down by one position.
-     * If one of the indexes is 0 (the first attribute), no attribute is moved up. 
-     * If one of the indexes is the number of attributes - 1 (the last attribute)
-     * no attribute is moved down. 
-     * 
-     * @param indexes   The indexes identifying the attributes.
-     * @param up        <code>true</code>, to move the attributes up, 
-     * <false> to move them down.
-     * 
-     * @return The new indexes of the moved attributes.
-     * 
-     * @throws NullPointerException if indexes is null.
-     * @throws IndexOutOfBoundsException if one of the indexes does not identify
-     * an attribute.
-     */
-    public int[] moveAttributes(int[] indexes, boolean up);
-    
     /**
      * Creates a new association and returns it.
      */

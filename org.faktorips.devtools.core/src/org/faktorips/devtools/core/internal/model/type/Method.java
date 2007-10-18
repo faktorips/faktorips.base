@@ -55,7 +55,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
     private Modifier modifier = Modifier.PUBLISHED;
     private boolean abstractFlag = false;
     
-    private IpsObjectPartCollection parameters = new IpsObjectPartCollection(this, Parameter.class, Parameter.TAG_NAME);
+    private IpsObjectPartCollection parameters = new IpsObjectPartCollection(this, Parameter.class, IParameter.class, Parameter.TAG_NAME);
     
     public Method(IType parent, int id) {
         super(parent, id);

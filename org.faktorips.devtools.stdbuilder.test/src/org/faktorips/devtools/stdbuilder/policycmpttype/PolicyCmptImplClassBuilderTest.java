@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 
 /**
  * 
@@ -64,7 +64,7 @@ public class PolicyCmptImplClassBuilderTest extends AbstractIpsPluginTest {
         //there was a bug that caused a NPE for this scenario.
         //This testcase makes sure that this bug will be found fast if it comes up again.
         PolicyCmptType b = newPolicyCmptType(project, "SubType");
-        IAttribute bAttr = b.newAttribute();
+        IPolicyCmptTypeAttribute bAttr = b.newPolicyCmptTypeAttribute();
         bAttr.setAttributeType(AttributeType.CHANGEABLE);
         bAttr.setDatatype(Datatype.INTEGER.getQualifiedName());
         bAttr.setOverwrites(true);

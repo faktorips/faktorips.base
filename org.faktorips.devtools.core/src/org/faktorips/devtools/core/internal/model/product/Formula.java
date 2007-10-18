@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.product.IFormula;
@@ -69,7 +69,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
 
     private String formulaSignature = "";
     private String expression = "";
-    private IpsObjectPartCollection testcases = new IpsObjectPartCollection(this, FormulaTestCase.class, FormulaTestCase.TAG_NAME);
+    private IpsObjectPartCollection testcases = new IpsObjectPartCollection(this, FormulaTestCase.class, IFormulaTestCase.class, FormulaTestCase.TAG_NAME);
     
     public Formula(IIpsObjectPart parent, int id) {
         super(parent, id);
@@ -434,7 +434,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         }
 
         protected boolean visit(IPolicyCmptType currentType) throws CoreException {
-            IAttribute[] attr = currentType.getAttributes();
+            IPolicyCmptTypeAttribute[] attr = currentType.getPolicyCmptTypeAttributes();
             for (int i = 0; i < attr.length; i++) {
                 searchAndAdd(project, attr[i].getDatatype(), enumtypes);
             }

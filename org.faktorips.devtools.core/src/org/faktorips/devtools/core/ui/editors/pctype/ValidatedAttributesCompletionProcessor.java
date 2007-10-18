@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
@@ -51,7 +51,7 @@ public class ValidatedAttributesCompletionProcessor extends
 	public void doComputeCompletionProposals(String prefix,
 			int documentOffset, List result) throws Exception {
 		prefix = prefix.toLowerCase();
-		IAttribute[] attributes = pcType.getSupertypeHierarchy().getAllAttributes(pcType);
+		IPolicyCmptTypeAttribute[] attributes = pcType.getSupertypeHierarchy().getAllAttributes(pcType);
 		List validatedAttributes = Arrays.asList(rule.getValidatedAttributes());
 		for (int i = 0; i < attributes.length; i++) {
             if (attributes[i].getAttributeType()!=AttributeType.CONSTANT) {
@@ -63,7 +63,7 @@ public class ValidatedAttributesCompletionProcessor extends
 		}
 	}
 
-	private void addToResult(List result, IAttribute attribute,
+	private void addToResult(List result, IPolicyCmptTypeAttribute attribute,
 			int documentOffset) {
 		String name = attribute.getName();
 		CompletionProposal proposal = new CompletionProposal(name, 0,

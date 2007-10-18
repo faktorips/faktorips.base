@@ -89,7 +89,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
          * {@inheritDoc}
          */
         protected IIpsObjectPart newIpsPart() {
-            return getProductCmptType().newAttribute();
+            return getProductCmptType().newProductCmptTypeAttribute();
         }
 
         /**
@@ -105,7 +105,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
         
         private class AttributeContentProvider implements IStructuredContentProvider {
             public Object[] getElements(Object inputElement) {
-                 return getProductCmptType().getAttributes();
+                 return getProductCmptType().getProductCmptTypeAttributes();
             }
             public void dispose() {
                 // nothing todo

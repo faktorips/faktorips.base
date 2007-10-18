@@ -132,7 +132,7 @@ public interface Datatype extends Comparable {
     
     /**
      * Validates the datatype and returns a message list containing appropriate error messages.
-     * If the datatype is valid and empty list is returned.
+     * If the datatype is valid an empty list is returned.
      * <p>
      * Datatypes like the predefined datatypes (defined by the constants in this class) are 
      * always valid. However new datatypes can be defined as part of a model and these datatypes

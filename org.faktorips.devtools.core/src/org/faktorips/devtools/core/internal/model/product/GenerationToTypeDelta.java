@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.internal.model.product.deltaentries.ValueSetM
 import org.faktorips.devtools.core.internal.model.product.deltaentries.ValueWithoutPropertyEntry;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.product.DeltaType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IDeltaEntry;
@@ -118,13 +118,13 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
                 }
             } else {
                 if (ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(propertyType)) {
-                    checkForValueSetMismatch((IAttribute)property, (IConfigElement)values[i]);
+                    checkForValueSetMismatch((IPolicyCmptTypeAttribute)property, (IConfigElement)values[i]);
                 }
             }
         }
     }
 
-    private void checkForValueSetMismatch(IAttribute attribute, IConfigElement element) {
+    private void checkForValueSetMismatch(IPolicyCmptTypeAttribute attribute, IConfigElement element) {
         if (!attribute.getValueSet().getValueSetType().equals(element.getValueSet().getValueSetType())) {
             new ValueSetMismatchEntry(this, attribute, element);
         }
@@ -203,7 +203,7 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
             for (int i = 0; i < tsu.length; i++) {
                 tableStructureUsages.add(tsu[i]);
             }
-            IProductCmptTypeAttribute[] attr = currentType.getAttributes();
+            IProductCmptTypeAttribute[] attr = currentType.getProductCmptTypeAttributes();
             for (int i = 0; i < attr.length; i++) {
                 attributes.add(attr[i]);
             }

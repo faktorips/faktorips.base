@@ -49,28 +49,31 @@ public class IpsObjectPartCollection {
     private IpsObjectPartContainer parent;
     private String xmlTag;
     private Class partsBaseClass;
+    private Class partsPublishedInterface;
     private Constructor constructor;
     
     private List parts = new ArrayList();
     
-    public IpsObjectPartCollection(BaseIpsObject ipsObject, Class partsClazz, String xmlTag) {
-        this(partsClazz, xmlTag);
+    public IpsObjectPartCollection(BaseIpsObject ipsObject, Class partsClazz, Class publishedInterface, String xmlTag) {
+        this(partsClazz, publishedInterface, xmlTag);
         ArgumentCheck.notNull(ipsObject);
         this.parent = ipsObject;
         ipsObject.addPartCollection(this);
     }
     
-    public IpsObjectPartCollection(BaseIpsObjectPart ipsObjectPart, Class partsClazz, String xmlTag) {
-        this(partsClazz, xmlTag);
+    public IpsObjectPartCollection(BaseIpsObjectPart ipsObjectPart, Class partsClazz, Class publishedInterface, String xmlTag) {
+        this(partsClazz, publishedInterface, xmlTag);
         ArgumentCheck.notNull(ipsObjectPart);
         this.parent = ipsObjectPart;
         ipsObjectPart.addPartCollection(this);
     }
     
-    private IpsObjectPartCollection(Class partsClazz, String xmlTag) {
+    private IpsObjectPartCollection(Class partsClazz, Class publishedInterface, String xmlTag) {
         ArgumentCheck.notNull(partsClazz);
+        ArgumentCheck.notNull(publishedInterface);
         ArgumentCheck.notNull(xmlTag);
         this.partsBaseClass = partsClazz;
+        this.partsPublishedInterface = publishedInterface;
         this.xmlTag = xmlTag;
         constructor = getConstructor();
     }
@@ -91,7 +94,7 @@ public class IpsObjectPartCollection {
                 }
             }
         }
-        throw new RuntimeException("Part class hasn't got an appropriate constructor.");
+        throw new RuntimeException(this + ", Part class hasn't got an appropriate constructor.");
     }
     
     public void clear() {
@@ -161,7 +164,7 @@ public class IpsObjectPartCollection {
     }
 
     public IpsObjectPart newPart(Class clazz) {
-        if (this.partsBaseClass.isAssignableFrom(clazz)) {
+        if (partsPublishedInterface.isAssignableFrom(clazz)) {
             return newPart();
         }
         return null;
@@ -194,7 +197,7 @@ public class IpsObjectPartCollection {
             parts.add(newPart);
             return newPart;
         } catch (Exception e) {
-            throw new RuntimeException("Error creating new instance via constructor " + constructor, e);
+            throw new RuntimeException(this + ", Error creating new instance via constructor " + constructor, e);
         }
     }
     

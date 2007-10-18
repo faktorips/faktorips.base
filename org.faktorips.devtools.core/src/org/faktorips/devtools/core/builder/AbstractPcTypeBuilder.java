@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
@@ -199,9 +199,9 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
     private void generateCodeForAttributes(JavaCodeFragmentBuilder constantBuilder,
                                            JavaCodeFragmentBuilder memberVarsBuilder,
                                            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        IAttribute[] attributes = getPcType().getAttributes();
+        IPolicyCmptTypeAttribute[] attributes = getPcType().getPolicyCmptTypeAttributes();
         for (int i = 0; i < attributes.length; i++) {
-            IAttribute a = attributes[i];
+            IPolicyCmptTypeAttribute a = attributes[i];
             if (!a.validate().containsErrorMsg()) {
                 try {
                     Datatype datatype = a.findDatatype();
@@ -230,7 +230,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
      * @param memberVarsBuilder The code fragment builder to build the memeber variabales section.
      * @param memberVarsBuilder The code fragment builder to build the method section.
      */
-    protected abstract void generateCodeForAttribute(IAttribute attribute,
+    protected abstract void generateCodeForAttribute(IPolicyCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder constantBuilder,
             JavaCodeFragmentBuilder memberVarsBuilder, 
@@ -245,7 +245,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
         if (productCmptType==null) {
             return;
         }
-        IProductCmptTypeAttribute[] attributes = productCmptType.getAttributes();
+        IProductCmptTypeAttribute[] attributes = productCmptType.getProductCmptTypeAttributes();
         for (int i = 0; i < attributes.length; i++) {
             IProductCmptTypeAttribute a = attributes[i];
             if (!a.isValid()) {

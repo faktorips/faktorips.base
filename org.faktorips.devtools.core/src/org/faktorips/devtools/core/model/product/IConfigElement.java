@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IValueDatatypeProvider;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 
 
 /**
@@ -156,7 +156,7 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider, 
      * 
      * @throws CoreException if an exception occurs while searching for the attribute. 
      */
-    public IAttribute findPcTypeAttribute() throws CoreException;
+    public IPolicyCmptTypeAttribute findPcTypeAttribute() throws CoreException;
 
     /**
      * Returns the element's value datatype, or <code>null</code> if it can't be found.

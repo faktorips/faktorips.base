@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -165,7 +165,7 @@ public class DefaultsAndRangesSection extends IpsSection {
     private void createEditControlForDefaultValue(IConfigElement element, ValueDatatype dataType, IpsObjectUIController controller) throws CoreException {
         Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalise(element.getName()));
         // use the description of the attribute as tooltip 
-        IAttribute attribute = element.findPcTypeAttribute();
+        IPolicyCmptTypeAttribute attribute = element.findPcTypeAttribute();
         if (attribute != null) {
             label.setToolTipText(attribute.getDescription());
         }

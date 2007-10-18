@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -48,7 +48,7 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
     
-    private IAttribute[] attributesWithMissingConfigElements = new IAttribute[0];
+    private IPolicyCmptTypeAttribute[] attributesWithMissingConfigElements = new IPolicyCmptTypeAttribute[0];
     private IConfigElement[] elementsWithMissingAttributes = new IConfigElement[0];
     private IConfigElement[] elementsWithTypeMismatch = new IConfigElement[0];
     private IConfigElement[] elementsWithValueSetMismatch = new IConfigElement[0]; 
@@ -110,7 +110,7 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
 
     private void computeAttributesWithMissingConfigElements(ITypeHierarchy hierarchy) throws CoreException {
         List missing = new ArrayList();
-        IAttribute[] attributes = hierarchy.getAllAttributesRespectingOverride(policyCmptType);
+        IPolicyCmptTypeAttribute[] attributes = hierarchy.getAllAttributesRespectingOverride(policyCmptType);
         for (int i=0; i<attributes.length; i++) {
             if (attributes[i].isProductRelevant()) {
                 if (generation.getConfigElement(attributes[i].getName())==null) {
@@ -118,14 +118,14 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
                 }
             }
         }
-        attributesWithMissingConfigElements = (IAttribute[])missing.toArray(new IAttribute[missing.size()]);
+        attributesWithMissingConfigElements = (IPolicyCmptTypeAttribute[])missing.toArray(new IPolicyCmptTypeAttribute[missing.size()]);
     }
 
     private void computeElementsWithMissingAttributes(ITypeHierarchy hierarchy) {
         List missing = new ArrayList();
         IConfigElement[] elements = generation.getConfigElements();
         for (int i=0; i<elements.length; i++) {
-            IAttribute attribute = hierarchy.findAttribute(policyCmptType, elements[i].getPcTypeAttribute());
+            IPolicyCmptTypeAttribute attribute = hierarchy.findAttribute(policyCmptType, elements[i].getPcTypeAttribute());
             if (attribute==null || !attribute.isProductRelevant()) {
                 missing.add(elements[i]);
             }
@@ -138,7 +138,7 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
         List valueSetMismatchs = new ArrayList();
         IConfigElement[] elements = generation.getConfigElements();
         for (int i=0; i<elements.length; i++) {
-            IAttribute attribute =hierarchy.findAttribute(policyCmptType, elements[i].getPcTypeAttribute()); 
+            IPolicyCmptTypeAttribute attribute =hierarchy.findAttribute(policyCmptType, elements[i].getPcTypeAttribute()); 
             if (attribute != null && attribute.isProductRelevant()) {
                 if (attribute.getConfigElementType() != elements[i].getType()) {
                     typeMismatchs.add(elements[i]);
@@ -196,7 +196,7 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
     /** 
      * {@inheritDoc}
      */
-    public IAttribute[] getAttributesWithMissingConfigElements() {
+    public IPolicyCmptTypeAttribute[] getAttributesWithMissingConfigElements() {
         return attributesWithMissingConfigElements;
     }
 

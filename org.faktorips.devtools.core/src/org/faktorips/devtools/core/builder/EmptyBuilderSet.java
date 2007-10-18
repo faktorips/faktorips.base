@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -85,7 +85,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
 		return new AbstractParameterIdentifierResolver() {
 
 			protected String getParameterAttributGetterName(
-					IAttribute attribute, Datatype datatype) {
+					IPolicyCmptTypeAttribute attribute, Datatype datatype) {
 				return ""; //$NON-NLS-1$
 			}
 		};

@@ -81,7 +81,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
@@ -546,7 +546,7 @@ public class TestCaseTypeSection extends IpsSection {
                 switch (columnIndex) {
                     case 0:
                         try {
-                            IAttribute attr = testAttribute.findAttribute();
+                            IPolicyCmptTypeAttribute attr = testAttribute.findAttribute();
                             if (attr != null){
                                 return super.getText(attr);
                             }
@@ -1157,7 +1157,7 @@ public class TestCaseTypeSection extends IpsSection {
         
         // open a dialog to select an attribute of the policy cmpt 
         // wich is related by the given test policy cmpt type param
-        IAttribute[] attributesSelected;
+        IPolicyCmptTypeAttribute[] attributesSelected;
         try {
             attributesSelected = selectAttributeByDialog(testPolicyCmptTypeParam,
                     Messages.TestCaseTypeSection_Dialog_SelectAttributeAdd_Message, true);
@@ -1169,7 +1169,7 @@ public class TestCaseTypeSection extends IpsSection {
         
         ITestAttribute testAttribute = null;
         for (int i = 0; i < attributesSelected.length; i++) {
-            IAttribute modelAttribute = attributesSelected[i];
+            IPolicyCmptTypeAttribute modelAttribute = attributesSelected[i];
             try {
                 if (testPolicyCmptTypeParam.isCombinedParameter()){
                     // if the type of the parent is combined 
@@ -2117,7 +2117,7 @@ public class TestCaseTypeSection extends IpsSection {
     /*
      * Displays a dialog to select attributes of a policy component.
      */
-    private IAttribute[] selectAttributeByDialog(ITestPolicyCmptTypeParameter testPolicyCmptTypeParam,
+    private IPolicyCmptTypeAttribute[] selectAttributeByDialog(ITestPolicyCmptTypeParameter testPolicyCmptTypeParam,
             String message,
             boolean multi) throws CoreException {
         AttributeElementListSelectionDialog selectDialog = new AttributeElementListSelectionDialog(getShell(), toolkit);
@@ -2140,7 +2140,7 @@ public class TestCaseTypeSection extends IpsSection {
             showSubtypeAttributes = selectDialog.isShowSubtypes();
             if (selectDialog.getResult().length > 0) {
                 Object[] result = (Object[])selectDialog.getResult();
-                IAttribute[] attributeResult = new IAttribute[result.length];
+                IPolicyCmptTypeAttribute[] attributeResult = new IPolicyCmptTypeAttribute[result.length];
                 System.arraycopy(result, 0, attributeResult, 0, result.length);
                 return attributeResult;
             }

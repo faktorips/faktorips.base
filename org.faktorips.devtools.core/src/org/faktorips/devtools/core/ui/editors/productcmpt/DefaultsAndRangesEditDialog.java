@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.internal.model.RangeValueSet;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.DefaultUIController;
@@ -57,7 +57,7 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
 
     private IConfigElement configElement;
     
-    private IAttribute attribute = null;
+    private IPolicyCmptTypeAttribute attribute = null;
     
     // edit fields
     private DefaultEditField defaultValueField;
@@ -133,7 +133,7 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
         try {
             IValueSet valueSet = configElement.getValueSet();
             IValueSet attrValueSet = null;
-            IAttribute attribute = configElement.findPcTypeAttribute();
+            IPolicyCmptTypeAttribute attribute = configElement.findPcTypeAttribute();
             if (attribute != null) {
                 attrValueSet = attribute.getValueSet();
                 if (attrValueSet.getValueSetType() == ValueSetType.ALL_VALUES) {

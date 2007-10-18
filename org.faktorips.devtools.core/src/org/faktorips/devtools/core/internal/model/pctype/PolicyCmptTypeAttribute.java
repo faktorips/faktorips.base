@@ -18,13 +18,14 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.AllValuesValueSet;
 import org.faktorips.devtools.core.internal.model.ValueSet;
+import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
@@ -40,7 +41,7 @@ import org.w3c.dom.Element;
 /**
  * Implementation of IAttribute.
  */
-public class Attribute extends org.faktorips.devtools.core.internal.model.type.Attribute implements IAttribute {
+public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTypeAttribute {
 
     final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
 
@@ -56,7 +57,7 @@ public class Attribute extends org.faktorips.devtools.core.internal.model.type.A
      * @param pcType The type the attribute belongs to.
      * @param id The attribute's unique id within the type.
      */
-    Attribute(PolicyCmptType pcType, int id) {
+    public PolicyCmptTypeAttribute(PolicyCmptType pcType, int id) {
         super(pcType, id);
         valueSet = new AllValuesValueSet(this, getNextPartId());
     }
@@ -72,7 +73,7 @@ public class Attribute extends org.faktorips.devtools.core.internal.model.type.A
         if (!overwrites) {
             return super.getDatatype();
         }
-        IAttribute superAttr;
+        IPolicyCmptTypeAttribute superAttr;
         try {
             superAttr = findSupertypeAttribute();
             if (superAttr != null) {
@@ -87,12 +88,12 @@ public class Attribute extends org.faktorips.devtools.core.internal.model.type.A
     /**
      * {@inheritDoc}
      */
-    public IAttribute findSupertypeAttribute() throws CoreException {
+    public IPolicyCmptTypeAttribute findSupertypeAttribute() throws CoreException {
         IPolicyCmptType supertype = getPolicyCmptType().findSupertype();
         if (supertype == null) {
             return null;
         }
-        IAttribute a = supertype.findAttributeInSupertypeHierarchy(name);
+        IPolicyCmptTypeAttribute a = supertype.findAttributeInSupertypeHierarchy(name);
         if (this==a) {
             return null; // can happen if the type hierarchy contains a cycle
         }
@@ -168,7 +169,7 @@ public class Attribute extends org.faktorips.devtools.core.internal.model.type.A
         if (!overwrites) {
             return attributeType;
         }
-        IAttribute superAttr;
+        IPolicyCmptTypeAttribute superAttr;
         try {
             superAttr = findSupertypeAttribute();
             if (superAttr != null) {
@@ -215,7 +216,7 @@ public class Attribute extends org.faktorips.devtools.core.internal.model.type.A
         if (!overwrites) {
             return super.getModifier();
         }
-        IAttribute superAttr;
+        IPolicyCmptTypeAttribute superAttr;
         try {
             superAttr = findSupertypeAttribute();
             if (superAttr != null) {
@@ -234,7 +235,7 @@ public class Attribute extends org.faktorips.devtools.core.internal.model.type.A
         if (!overwrites) {
             return productRelevant;
         }
-        IAttribute superAttr;
+        IPolicyCmptTypeAttribute superAttr;
         try {
             superAttr = findSupertypeAttribute();
         } catch (CoreException e) {
@@ -326,7 +327,7 @@ public class Attribute extends org.faktorips.devtools.core.internal.model.type.A
                     this, PROPERTY_PRODUCT_RELEVANT));
         }
 
-        IAttribute[] allAttributes = getPolicyCmptType().getAttributes();
+        IPolicyCmptTypeAttribute[] allAttributes = getPolicyCmptType().getPolicyCmptTypeAttributes();
         for (int i = 0; i < allAttributes.length; i++) {
             if (allAttributes[i] != this && collideNames(allAttributes[i].getName(), name)) {
                 String txt = Messages.Attribute_msgNameCollisionLocal;
@@ -334,7 +335,7 @@ public class Attribute extends org.faktorips.devtools.core.internal.model.type.A
             }
         }
 
-        IAttribute superAttr = findSupertypeAttribute();
+        IPolicyCmptTypeAttribute superAttr = findSupertypeAttribute();
         if (overwrites) {
             if (superAttr == null) {
                 String text = NLS.bind(Messages.Attribute_msgNothingToOverwrite, getName());

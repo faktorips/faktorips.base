@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -209,7 +209,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         builder.appendln("super.doInitPropertiesFromXml(configMap);");
         
         boolean attributeFound = false;
-        IProductCmptTypeAttribute[] productAttributes = getProductCmptType().getAttributes();
+        IProductCmptTypeAttribute[] productAttributes = getProductCmptType().getProductCmptTypeAttributes();
         for (int i = 0; i < productAttributes.length; i++) {
             IProductCmptTypeAttribute a = productAttributes[i];
             if (a.validate().containsErrorMsg()) {
@@ -226,9 +226,9 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             builder.closeBracket(); // close if statement generated three lines above
         }
         IPolicyCmptType policyCmptType = getPolicyCmptType();
-        IAttribute[] attributes = policyCmptType == null ? new IAttribute[0] : policyCmptType.getAttributes();
+        IPolicyCmptTypeAttribute[] attributes = policyCmptType == null ? new IPolicyCmptTypeAttribute[0] : policyCmptType.getPolicyCmptTypeAttributes();
         for (int i = 0; i < attributes.length; i++) {
-            IAttribute a = attributes[i];
+            IPolicyCmptTypeAttribute a = attributes[i];
             if (a.validate().containsErrorMsg()) {
                 continue;
             }
@@ -276,7 +276,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         builder.appendln(";");
     }
     
-    private void generateExtractValueSetFromXml(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder builder) throws CoreException {
+    private void generateExtractValueSetFromXml(IPolicyCmptTypeAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder builder) throws CoreException {
         ValueSetType valueSetType = a.getValueSet().getValueSetType();
         JavaCodeFragment frag = new JavaCodeFragment();
         helper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsSrcFile().getIpsProject(), helper);
@@ -514,7 +514,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         return "get" + StringUtils.capitalise(tsu.getRoleName());
     }
     
-    protected void generateCodeForPolicyCmptTypeAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateCodeForPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         generateFieldDefaultValue(a, datatypeHelper, memberVarsBuilder);
         generateMethodGetDefaultValue(a, datatypeHelper, methodsBuilder);
 
@@ -539,7 +539,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * private Integer minAge;
      * </pre>
      */
-    private void generateFieldDefaultValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
+    private void generateFieldDefaultValue(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
         appendLocalizedJavaDoc("FIELD_DEFAULTVALUE", a.getName(), a, memberVarsBuilder);
         JavaCodeFragment defaultValueExpression = datatypeHelper.newInstance(a.getDefaultValue());
         memberVarsBuilder.varDeclaration(Modifier.PRIVATE, datatypeHelper.getJavaClassName(),
@@ -554,7 +554,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      *     return minAge;
      * </pre>
      */
-    private void generateMethodGetDefaultValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    private void generateMethodGetDefaultValue(IPolicyCmptTypeAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureGetDefaultValue(a, datatypeHelper, methodsBuilder);
         methodsBuilder.openBracket();
@@ -564,7 +564,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.closeBracket();
     }
     
-    private String getFieldNameDefaulValue(IAttribute a) throws CoreException {
+    private String getFieldNameDefaulValue(IPolicyCmptTypeAttribute a) throws CoreException {
         return getJavaNamingConvention().getMemberVarName(interfaceBuilder.getPropertyNameDefaultValue(a));
     }
     
@@ -1158,7 +1158,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         fieldsBuilder.varDeclaration(Modifier.PRIVATE, Map.class, getFieldNameCardinalityForRelation(association), expression);
     }
     
-    private void generateMethodGetRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+    private void generateMethodGetRangeFor(IPolicyCmptTypeAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
         methodsBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureGetRangeFor(a, helper, methodsBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
@@ -1170,16 +1170,16 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.append(body);
     }
     
-    public String getFieldNameRangeFor(IAttribute a){
+    public String getFieldNameRangeFor(IPolicyCmptTypeAttribute a){
         return getLocalizedText(a, "FIELD_RANGE_FOR_NAME", StringUtils.capitalise(a.getName()));
     }
     
-    private void generateFieldRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder memberVarBuilder){
+    private void generateFieldRangeFor(IPolicyCmptTypeAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder memberVarBuilder){
         appendLocalizedJavaDoc("FIELD_RANGE_FOR", a.getName(), a, memberVarBuilder);
         memberVarBuilder.varDeclaration(Modifier.PRIVATE, helper.getRangeJavaClassName(), getFieldNameRangeFor(a)); 
     }
 
-    private void generateMethodGetAllowedValuesFor(IAttribute a, Datatype datatype, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+    private void generateMethodGetAllowedValuesFor(IPolicyCmptTypeAttribute a, Datatype datatype, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
         methodsBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureGetAllowedValuesFor(a, datatype, methodsBuilder);
         JavaCodeFragment body = new JavaCodeFragment();
@@ -1191,11 +1191,11 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.append(body);
     }
     
-    public String getFieldNameAllowedValuesFor(IAttribute a){
+    public String getFieldNameAllowedValuesFor(IPolicyCmptTypeAttribute a){
         return getLocalizedText(a, "FIELD_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalise(a.getName()));
     }
     
-    private void generateFieldAllowedValuesFor(IAttribute a, JavaCodeFragmentBuilder memberVarBuilder){
+    private void generateFieldAllowedValuesFor(IPolicyCmptTypeAttribute a, JavaCodeFragmentBuilder memberVarBuilder){
         appendLocalizedJavaDoc("FIELD_ALLOWED_VALUES_FOR", a.getName(), a, memberVarBuilder);
         memberVarBuilder.varDeclaration(Modifier.PRIVATE, EnumValueSet.class, getFieldNameAllowedValuesFor(a)); 
     }

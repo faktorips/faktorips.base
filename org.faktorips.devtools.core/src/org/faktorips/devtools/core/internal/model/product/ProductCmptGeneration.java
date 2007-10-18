@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.DeltaType;
@@ -215,7 +215,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             return newFormula((IProductCmptTypeMethod)property);
         }
         if (ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(type)) {
-            return newConfigElement((IAttribute)property);
+            return newConfigElement((IPolicyCmptTypeAttribute)property);
         }
         throw new RuntimeException("Unknown type " + type);
     }
@@ -349,7 +349,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     /**
      * {@inheritDoc}
      */
-    public IConfigElement newConfigElement(IAttribute attribute) {
+    public IConfigElement newConfigElement(IPolicyCmptTypeAttribute attribute) {
         IConfigElement newElement = newConfigElementInternal(getNextPartId(), attribute);
         objectHasChanged();
         return newElement;
@@ -358,7 +358,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     /*
      * Creates a new attribute without updating the src file.
      */
-    private ConfigElement newConfigElementInternal(int id, IAttribute attribute) {
+    private ConfigElement newConfigElementInternal(int id, IPolicyCmptTypeAttribute attribute) {
         ConfigElement e = new ConfigElement(this, id);
         if (attribute!=null) {
             try {

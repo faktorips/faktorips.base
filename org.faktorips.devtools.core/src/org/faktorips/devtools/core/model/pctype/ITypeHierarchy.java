@@ -72,14 +72,14 @@ public interface ITypeHierarchy {
      * Returns all attributes of the given type either defined in the type itself
      * or any of it's supertyes found in the hierarchy.
      */
-    public IAttribute[] getAllAttributes(IPolicyCmptType type);
+    public IPolicyCmptTypeAttribute[] getAllAttributes(IPolicyCmptType type);
     
     /**
      * Returns all attributes of the given type either defined in the type itself
      * or any of it's supertyes found in the hierarchy. If an attribute overrides another,
      * only the one overriding is contained in the result, but not the overridden one.
      */
-    public IAttribute[] getAllAttributesRespectingOverride(IPolicyCmptType type);
+    public IPolicyCmptTypeAttribute[] getAllAttributesRespectingOverride(IPolicyCmptType type);
     
     /**
      * Returns all methods of the given type either defined in the type itself
@@ -104,7 +104,7 @@ public interface ITypeHierarchy {
      * it's supertypes contains an attribute with that name. Returns <code>null</code>
      * if no attribute with the given name is found.  
      */
-    public IAttribute findAttribute(IPolicyCmptType type, String attributeName);
+    public IPolicyCmptTypeAttribute findAttribute(IPolicyCmptType type, String attributeName);
     
     /**
      * Returns the relation with the given target role if either the type or one of

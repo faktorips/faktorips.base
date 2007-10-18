@@ -15,7 +15,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -62,7 +62,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForAttribute(IAttribute attribute,
+    protected void generateCodeForAttribute(IPolicyCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder constantBuilder,
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -92,22 +92,22 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         }
     }
 
-    protected abstract void generateCodeForConstantAttribute(IAttribute attribute,
+    protected abstract void generateCodeForConstantAttribute(IPolicyCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder constantBuilder,
             JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
-    protected abstract void generateCodeForChangeableAttribute(IAttribute attribute,
+    protected abstract void generateCodeForChangeableAttribute(IPolicyCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
-    protected abstract void generateCodeForDerivedAttribute(IAttribute attribute,
+    protected abstract void generateCodeForDerivedAttribute(IPolicyCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
-    protected abstract void generateCodeForComputedAttribute(IAttribute attribute,
+    protected abstract void generateCodeForComputedAttribute(IPolicyCmptTypeAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;

@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.product.IFormula;
@@ -197,7 +197,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
             return;
         }
         ITypeHierarchy hierarchy = pcType.getSupertypeHierarchy();
-        IAttribute[] attributes = hierarchy.getAllAttributes(pcType);
+        IPolicyCmptTypeAttribute[] attributes = hierarchy.getAllAttributes(pcType);
         List attributeNames = new ArrayList();
         for (int i=0; i<attributes.length; i++) {
             if (attributes[i].getName().startsWith(attributePrefix)) {
@@ -212,7 +212,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     private void addAttributeToResult(
             List result, 
             String paramName, 
-            IAttribute attribute, 
+            IPolicyCmptTypeAttribute attribute, 
             int replacementOffset,
             int replacementLength) {
         String name = attribute.getName();

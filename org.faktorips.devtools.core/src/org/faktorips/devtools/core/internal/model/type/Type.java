@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.internal.model.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
@@ -50,12 +51,14 @@ public abstract class Type extends BaseIpsObject implements IType {
     
     protected IpsObjectPartCollection methods;
     protected IpsObjectPartCollection associations;
+    protected IpsObjectPartCollection attributes;
     
     /**
      * @param file
      */
     public Type(IIpsSrcFile file) {
         super(file);
+        attributes = createCollectionForAttributes();
         methods = createCollectionForMethods();
         associations = createCollectionForAssociations();
     }
@@ -70,12 +73,21 @@ public abstract class Type extends BaseIpsObject implements IType {
      */
     protected abstract IpsObjectPartCollection createCollectionForAssociations();
 
+    /**
+     * Factory method to create the collection holding the attributes.
+     */
+    protected abstract IpsObjectPartCollection createCollectionForAttributes();
+
     protected Iterator getIteratorForMethods(){
         return methods.iterator();
     }
     
     protected Iterator getIteratorForAssociations(){
         return associations.iterator();
+    }
+
+    protected Iterator getIteratorForAttributes(){
+        return attributes.iterator();
     }
 
     /**
@@ -150,7 +162,51 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
         return isSubtypeOf(candidate, project);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IAttribute[] getAttributes() {
+        return (IAttribute[])attributes.toArray(new IAttribute[attributes.size()]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IAttribute getAttribute(String name) {
+        return (IAttribute)attributes.getPartByName(name);
+    }
     
+    /**
+     * {@inheritDoc}
+     */
+    public IAttribute findAttribute(String name, IIpsProject project) throws CoreException {
+        AttributeFinder finder = new AttributeFinder(project, name);
+        finder.start(this);
+        return finder.attribute;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IAttribute newAttribute() {
+        return (IAttribute)attributes.newPart();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getNumOfAttributes() {
+        return attributes.size();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int[] moveAttributes(int[] indexes, boolean up) {
+        return attributes.moveParts(indexes, up);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -344,6 +400,54 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    // Implementation of the Datatype interface.
+    public boolean isVoid() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    // Implementation of the Datatype interface.
+    public boolean isPrimitive() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    // Implementation of the Datatype interface.
+    public boolean isValueDatatype() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    // Implementation of the Datatype interface.
+    public int compareTo(Object o) {
+        return 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    // Implementation of the Datatype interface.
+    public String getJavaClassName() {
+        throw new RuntimeException("getJavaClassName is not supported by " + getClass()); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    // Implementation of the Datatype interface.
+    public boolean hasNullObject() {
+        return false;
+    }
+
     public void dependsOn(Set result) throws CoreException {
         // TODO v2 - dependeny - add dependencies for method parameters
 //      private void addQualifiedNameTypesForFormulaParameters(Set qualifiedNameTypes) throws CoreException {
@@ -460,4 +564,23 @@ public abstract class Type extends BaseIpsObject implements IType {
         
     }
     
+    class AttributeFinder extends TypeHierarchyVisitor {
+
+        private String attributeName;
+        private IAttribute attribute;
+        
+        public AttributeFinder(IIpsProject ipsProject, String attrName) {
+            super(ipsProject);
+            this.attributeName = attrName;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IType currentType) throws CoreException {
+            attribute = currentType.getAttribute(attributeName);
+            return attribute==null;
+        }
+    }
+
 }

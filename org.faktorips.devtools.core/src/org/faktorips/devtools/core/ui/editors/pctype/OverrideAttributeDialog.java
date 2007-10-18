@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
 
@@ -46,15 +46,15 @@ public class OverrideAttributeDialog extends OverrideDialog {
 	/**
 	 * Returns the methods the user has selected to override. 
 	 */
-	public IAttribute[] getSelectedAttributes() {
+	public IPolicyCmptTypeAttribute[] getSelectedAttributes() {
 	    List attributes = new ArrayList();
 	    Object[] checked = getResult();
 	    for (int i=0; i<checked.length; i++) {
-	        if (checked[i] instanceof IAttribute) {
+	        if (checked[i] instanceof IPolicyCmptTypeAttribute) {
 	            attributes.add(checked[i]);
 	        }
 	    }
-	    return (IAttribute[])attributes.toArray(new IAttribute[attributes.size()]);
+	    return (IPolicyCmptTypeAttribute[])attributes.toArray(new IPolicyCmptTypeAttribute[attributes.size()]);
 	}
 
     private static class CandidatesContentProvider extends OverrideDialog.CandidatesContentProvider {

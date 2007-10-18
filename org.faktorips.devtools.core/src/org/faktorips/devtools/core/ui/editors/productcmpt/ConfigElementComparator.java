@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 
@@ -57,8 +57,8 @@ public class ConfigElementComparator implements Comparator {
 	 */
 	public int compare(Object o1, Object o2) {
 		try {
-			IAttribute a1 = ((IConfigElement)o1).findPcTypeAttribute();
-			IAttribute a2 = ((IConfigElement)o2).findPcTypeAttribute();
+			IPolicyCmptTypeAttribute a1 = ((IConfigElement)o1).findPcTypeAttribute();
+			IPolicyCmptTypeAttribute a2 = ((IConfigElement)o2).findPcTypeAttribute();
 			
 			if (a1 == null || a2 == null) {
 				return 0;
@@ -75,7 +75,7 @@ public class ConfigElementComparator implements Comparator {
 				return -1;
 			}
 			else if (t1.getQualifiedName().equals(t2.getQualifiedName())){
-				List attrs = Arrays.asList(t1.getAttributes()); 
+				List attrs = Arrays.asList(t1.getPolicyCmptTypeAttributes()); 
 			    return attrs.indexOf(a1) - attrs.indexOf(a2);
 			}
 			else {

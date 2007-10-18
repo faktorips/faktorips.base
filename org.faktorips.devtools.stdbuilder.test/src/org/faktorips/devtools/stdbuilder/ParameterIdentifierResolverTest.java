@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -42,7 +42,7 @@ public class ParameterIdentifierResolverTest extends AbstractIpsPluginTest {
 
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
-    private IAttribute attribute;
+    private IPolicyCmptTypeAttribute attribute;
     private IParameterIdentifierResolver resolver;
     private IIpsProject ipsProject;
 
@@ -55,7 +55,7 @@ public class ParameterIdentifierResolverTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(props);
         ipsProject.getValueDatatypes(false);
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
-        attribute = policyCmptType.newAttribute();
+        attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setName("tax");
         attribute.setDatatype(Datatype.DECIMAL.getQualifiedName());
         productCmptType = policyCmptType.findProductCmptType(ipsProject);

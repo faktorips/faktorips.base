@@ -98,8 +98,7 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 			CompilationResult[] argResults) throws CoreException;
 
 	/**
-	 * Returns the
-	 * <code>org.faktorips.devtools.core.model.IParameterIdentifierResolver</code>.
+	 * Returns the <code>org.faktorips.devtools.core.model.IParameterIdentifierResolver</code>.
 	 * Returns <code>null</code> if this builder set doesn't support an
 	 * formula language identifier resolver.
 	 */

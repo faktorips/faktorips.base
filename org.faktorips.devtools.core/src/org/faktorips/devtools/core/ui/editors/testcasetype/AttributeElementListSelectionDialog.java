@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -98,8 +98,8 @@ public class AttributeElementListSelectionDialog extends ElementListSelectionDia
         super.setListElements(elements);
     }
     
-    private IAttribute[] getElements(boolean showAttrOfSubclasses) throws CoreException{
-        IAttribute[] attributes = typeHierarchy.getAllAttributesRespectingOverride(policyCmptType);
+    private IPolicyCmptTypeAttribute[] getElements(boolean showAttrOfSubclasses) throws CoreException{
+        IPolicyCmptTypeAttribute[] attributes = typeHierarchy.getAllAttributesRespectingOverride(policyCmptType);
         List attributesInDialog = new ArrayList();
         for (int i = 0; i < attributes.length; i++) {
             if (isAllowedAttribute(attributes[i])) {
@@ -112,7 +112,7 @@ public class AttributeElementListSelectionDialog extends ElementListSelectionDia
             }
             IPolicyCmptType[] allSubtypes = subtypeHierarchy.getAllSubtypes(policyCmptType);
             for (int i = 0; i < allSubtypes.length; i++) {
-                attributes = allSubtypes[i].getAttributes();
+                attributes = allSubtypes[i].getPolicyCmptTypeAttributes();
                 for (int j = 0; j < attributes.length; j++) {
                     if (isAllowedAttribute(attributes[j])) {
                         attributesInDialog.add(attributes[j]);
@@ -120,13 +120,13 @@ public class AttributeElementListSelectionDialog extends ElementListSelectionDia
                 }
             }
         }
-        return (IAttribute[]) attributesInDialog.toArray(new IAttribute[attributesInDialog.size()]);
+        return (IPolicyCmptTypeAttribute[]) attributesInDialog.toArray(new IPolicyCmptTypeAttribute[attributesInDialog.size()]);
     }
     
     /*
      * Only changeable or derived or computed attributes are allowed
      */
-    private boolean isAllowedAttribute(IAttribute attribute){
+    private boolean isAllowedAttribute(IPolicyCmptTypeAttribute attribute){
         return attribute.isChangeable() || attribute.isDerived();
     }
     

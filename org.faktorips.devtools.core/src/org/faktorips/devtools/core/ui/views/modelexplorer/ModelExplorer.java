@@ -63,7 +63,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -303,7 +303,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                     IProductCmptGeneration.class,
                     ITableStructure.class,
                     ITableContents.class,
-                    IAttribute.class, 
+                    IPolicyCmptTypeAttribute.class, 
                     IPolicyCmptTypeAssociation.class,
                     ITestCase.class, 
                     ITestCaseType.class}, 
@@ -743,7 +743,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         }
 
         protected void createOpenMenu(IMenuManager manager, Object selected, IStructuredSelection structuredSelected) {
-            if (selected instanceof IIpsObject || selected instanceof IPolicyCmptTypeAssociation || selected instanceof IAttribute) {
+            if (selected instanceof IIpsObject || selected instanceof IPolicyCmptTypeAssociation || selected instanceof IPolicyCmptTypeAttribute) {
                 manager.add(new OpenEditorAction(treeViewer));
             } else {
                 openActionGroup.setContext(new ActionContext(structuredSelected));

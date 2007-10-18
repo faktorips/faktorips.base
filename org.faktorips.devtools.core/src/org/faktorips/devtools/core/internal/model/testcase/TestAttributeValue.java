@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
@@ -227,7 +227,7 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
             return;
         }
         
-        IAttribute modelAttribute = testAttribute.findAttribute();
+        IPolicyCmptTypeAttribute modelAttribute = testAttribute.findAttribute();
         if (modelAttribute != null){
             boolean defaultSet = false;
             // set default as specified in the product cmpt 
@@ -262,7 +262,7 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
             Message msg = new Message(MSGCODE_TESTATTRIBUTE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUE);
             messageList.add(msg);
         } else {
-            IAttribute attribute = testAttr.findAttribute();
+            IPolicyCmptTypeAttribute attribute = testAttr.findAttribute();
             if (attribute == null){
                 // attribute not found in test case type definition, maybe this is a concrete subclass with additional attributes,
                 // therefore try to find the attribute by using the product cmpt (product cmpt type the product cmpt is based on)

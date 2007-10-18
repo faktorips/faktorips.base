@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -100,7 +100,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 	/**
 	 * {@inheritDoc}
 	 */
-	public IAttribute findAttribute() throws CoreException {
+	public IPolicyCmptTypeAttribute findAttribute() throws CoreException {
         if (StringUtils.isEmpty(attribute)) {
             return null;
         }
@@ -143,7 +143,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
      */
     public Image getImage() {
         try {
-            IAttribute attribute = findAttribute();
+            IPolicyCmptTypeAttribute attribute = findAttribute();
             if (attribute != null){
                 return attribute.getImage();
             }            
@@ -201,24 +201,24 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         return ! (policyCmptType.findAttributeInSupertypeHierarchy(getAttribute()) == null);
     }
 
-    private IAttribute findAttributeInSubtypehierarchy() throws CoreException {
+    private IPolicyCmptTypeAttribute findAttributeInSubtypehierarchy() throws CoreException {
         if (StringUtils.isEmpty(attribute)) {
             return null;
         }
         IPolicyCmptType pcType = ((TestPolicyCmptTypeParameter)getParent()).findPolicyCmptType();
 
         if (pcType != null) {
-            IAttribute[] attributes;
+            IPolicyCmptTypeAttribute[] attributes;
             List allAttributes = new ArrayList();
             ITypeHierarchy subtypeHierarchy = pcType.getSubtypeHierarchy();
             IPolicyCmptType[] allSubtypes = subtypeHierarchy.getAllSubtypes(pcType);
             for (int i = 0; i < allSubtypes.length; i++) {
-                attributes = allSubtypes[i].getAttributes();
+                attributes = allSubtypes[i].getPolicyCmptTypeAttributes();
                 for (int j = 0; j < attributes.length; j++) {
                     allAttributes.add(attributes[j]);
                 }
             }
-            attributes = (IAttribute[])allAttributes.toArray(new IAttribute[allAttributes.size()]);
+            attributes = (IPolicyCmptTypeAttribute[])allAttributes.toArray(new IPolicyCmptTypeAttribute[allAttributes.size()]);
 
             for (int i = 0; i < attributes.length; i++) {
                 if (attributes[i].getName().equals(attribute)) {
@@ -243,7 +243,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         }
         
         // check if the attribute exists
-        IAttribute modelAttribute = findAttribute();
+        IPolicyCmptTypeAttribute modelAttribute = findAttribute();
         if (modelAttribute == null){
             // special case if the attribute wasn't found in the supertype then
             // search in the subtype hierarchy, the test case type attributes supports attributes of subclasses

@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -181,7 +181,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	/**
      * {@inheritDoc}
 	 */
-	public IAttribute findPcTypeAttribute() throws CoreException {
+	public IPolicyCmptTypeAttribute findPcTypeAttribute() throws CoreException {
 		IPolicyCmptType pcType = ((IProductCmpt) getIpsObject())
 				.findPolicyCmptType();
 		if (pcType == null) {
@@ -194,7 +194,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
      * {@inheritDoc}
      */
 	public ValueDatatype findValueDatatype() throws CoreException {
-        IAttribute a = findPcTypeAttribute();
+        IPolicyCmptTypeAttribute a = findPcTypeAttribute();
         if (a!=null) {
             return a.findDatatype();
         }
@@ -206,7 +206,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	 */
 	protected void validateThis(MessageList list) throws CoreException {
 		super.validateThis(list);
-		IAttribute attribute = findPcTypeAttribute();
+		IPolicyCmptTypeAttribute attribute = findPcTypeAttribute();
 		if (attribute == null) {
             IPolicyCmptType policyCmptType = getProductCmpt().findPolicyCmptType();
             if (policyCmptType==null) {
@@ -224,7 +224,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         }
 	}
 
-	private void validateValue(IAttribute attribute, MessageList list)
+	private void validateValue(IPolicyCmptTypeAttribute attribute, MessageList list)
 			throws CoreException {
 		
 		ValueDatatype valueDatatype = attribute.findDatatype();
@@ -438,7 +438,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	 */
 	public ValueDatatype getValueDatatype() {
 		try {
-			IAttribute attr = findPcTypeAttribute();
+			IPolicyCmptTypeAttribute attr = findPcTypeAttribute();
 			if (attr == null){
 				return null;
 			}
