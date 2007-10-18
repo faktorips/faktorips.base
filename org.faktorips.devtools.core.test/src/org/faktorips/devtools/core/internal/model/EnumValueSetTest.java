@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IValueSet;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -51,7 +51,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
     
-    private IAttribute attr;
+    private IPolicyCmptTypeAttribute attr;
     private IConfigElement ce;
 
     private IIpsProject ipsProject;
@@ -66,7 +66,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         
         ipsProject = super.newIpsProject("TestProject");
         policyCmptType = newPolicyCmptType(ipsProject, "test.Base");
-        attr = policyCmptType.newAttribute();
+        attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("attr");
         attr.setDatatype(Datatype.MONEY.getQualifiedName());
         policyCmptType.getIpsSrcFile().save(true, null);
@@ -152,7 +152,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     	superset.addValue(null);
     	assertTrue(superset.containsValueSet(subset));
     	
-        IAttribute attr2 = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute attr2 = policyCmptType.newPolicyCmptTypeAttribute();
         attr2.setName("attr2");
         attr2.setDatatype(Datatype.STRING.getQualifiedName());
         policyCmptType.getIpsSrcFile().save(true, null);
@@ -271,7 +271,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         properties.setPredefinedDatatypesUsed((ValueDatatype[])vdlist.toArray(new ValueDatatype[vdlist.size()]));
         ipsProject.setProperties(properties);
         
-        IAttribute attr = ce.findPcTypeAttribute();
+        IPolicyCmptTypeAttribute attr = ce.findPcTypeAttribute();
         attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
         attr.getIpsObject().getIpsSrcFile().save(true, null);
 

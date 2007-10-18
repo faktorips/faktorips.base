@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
@@ -109,12 +109,12 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
     
     public void testGetPropertyValue() {
-        IProductCmptTypeAttribute attribute = productCmptType.newAttribute();
+        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
         attribute.setName("a1");
         ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
         structureUsage.setRoleName("RateTable");
         IProductCmptTypeMethod signature = productCmptType.newFormulaSignature("calculation");
-        IAttribute policyAttr = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute policyAttr = policyCmptType.newPolicyCmptTypeAttribute();
         policyAttr.setName("policyAttribute");
         policyAttr.setProductRelevant(true);
         
@@ -153,7 +153,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
     
     public void testNewAttributeValue_Attribute() {
-        IProductCmptTypeAttribute attribute = productCmptType.newAttribute();
+        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
         attribute.setName("premium");
         attribute.setDefaultValue("123");
         IAttributeValue value = generation.newAttributeValue(attribute);
@@ -166,7 +166,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
     
     public void testNewConfigElement_PolicyAttribute() {
-        IAttribute attribute = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setName("a1");
         attribute.setProductRelevant(true);
         attribute.setDefaultValue("10");
@@ -325,7 +325,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         MessageList msgList = gen.validate();
         assertTrue(msgList.isEmpty());
         
-        IAttribute attribute = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setProductRelevant(true);
         attribute.setName("test");        
         msgList = gen.validate();

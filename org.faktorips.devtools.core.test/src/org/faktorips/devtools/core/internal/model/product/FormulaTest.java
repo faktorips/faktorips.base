@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
@@ -202,12 +202,12 @@ public class FormulaTest extends AbstractIpsPluginTest  {
         enumtypes = formula.getEnumDatatypesAllowedInFormula();
         assertEquals(0, enumtypes.length); // 0 because policeType hasn't got an attribute so far
 
-        IAttribute policyAttr = policyType.newAttribute();
+        IPolicyCmptTypeAttribute policyAttr = policyType.newPolicyCmptTypeAttribute();
         policyAttr.setDatatype("Integer");
         enumtypes = formula.getEnumDatatypesAllowedInFormula();
         assertEquals(0, enumtypes.length); // 0 because policeType hasn't got an attribute with an enum type so far
         
-        IAttribute policyAttr2 = policyType.newAttribute();
+        IPolicyCmptTypeAttribute policyAttr2 = policyType.newPolicyCmptTypeAttribute();
         policyAttr2.setDatatype(testType.getQualifiedName());
 
         enumtypes = formula.getEnumDatatypesAllowedInFormula();
@@ -240,10 +240,10 @@ public class FormulaTest extends AbstractIpsPluginTest  {
     public void testGetParameterIdentifiersUsedInFormula() throws CoreException {
         newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
         
-        IAttribute attributeInput = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute attributeInput = policyCmptType.newPolicyCmptTypeAttribute();
         attributeInput.setName("attributeInput1");
         attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
-        attributeInput = policyCmptType.newAttribute();
+        attributeInput = policyCmptType.newPolicyCmptTypeAttribute();
         attributeInput.setName("attributeInput2");
         attributeInput.setAttributeType(AttributeType.CHANGEABLE);
         attributeInput.setDatatype(Datatype.STRING.getQualifiedName());

@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -72,38 +72,17 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         ipsProject.getIpsModel().removeChangeListener(this);
     }
     
-    public void testFindAttribute() throws CoreException {
-        assertNull(productCmptType.findAttribute("unknown", ipsProject));
-        
-        IProductCmptTypeAttribute a1 = productCmptType.newAttribute();
-        a1.setName("a1");
-        IProductCmptTypeAttribute a2 = superProductCmptType.newAttribute();
-        a2.setName("a2");
-        IProductCmptTypeAttribute a3 = superSuperProductCmptType.newAttribute();
-        a3.setName("a3");
-        
-        assertSame(a1, productCmptType.findAttribute("a1", ipsProject));
-        assertSame(a2, productCmptType.findAttribute("a2", ipsProject));
-        assertSame(a3, productCmptType.findAttribute("a3", ipsProject));
-        
-        IProductCmptTypeAttribute a1b = superProductCmptType.newAttribute();
-        a1b.setName("a1b");
-        assertSame(a1, productCmptType.findAttribute("a1", ipsProject));
-        
-        assertNull(productCmptType.findAttribute("unknown", ipsProject));
-    }
-    
     public void testFindProdDefProperties() throws CoreException {
         IProdDefProperty[] props = productCmptType.findProdDefProperties(ipsProject);
         assertEquals(0, props.length);
 
         // attributes
-        IProductCmptTypeAttribute supertypeAttr  = superProductCmptType.newAttribute();
+        IProductCmptTypeAttribute supertypeAttr  = superProductCmptType.newProductCmptTypeAttribute();
         supertypeAttr.setName("attrInSupertype");
         supertypeAttr.setDatatype("Money");
 
-        IProductCmptTypeAttribute typeAttribute1 = productCmptType.newAttribute("attrInType1");
-        IProductCmptTypeAttribute typeAttribute2 = productCmptType.newAttribute("attrInType2");
+        IProductCmptTypeAttribute typeAttribute1 = productCmptType.newProductCmptTypeAttribute("attrInType1");
+        IProductCmptTypeAttribute typeAttribute2 = productCmptType.newProductCmptTypeAttribute("attrInType2");
         
         props = superProductCmptType.findProdDefProperties(ipsProject);
         assertEquals(1, props.length);
@@ -161,14 +140,14 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         // default values and value sets
         IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
         superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
-        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptSupertypeAttr = policyCmptSupertype.newAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype.newPolicyCmptTypeAttribute();
         policyCmptSupertypeAttr.setProductRelevant(true);
-        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptTypeAttr1 = policyCmptType.newAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr1 = policyCmptType.newPolicyCmptTypeAttribute();
         policyCmptTypeAttr1.setProductRelevant(true);
-        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptTypeAttr2 = policyCmptType.newAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr2 = policyCmptType.newPolicyCmptTypeAttribute();
         policyCmptTypeAttr2.setProductRelevant(true);
-        policyCmptType.newAttribute().setProductRelevant(false); // this attribute is not a product def property as it is not product relevant!
-        IAttribute derivedAttr = policyCmptType.newAttribute();
+        policyCmptType.newPolicyCmptTypeAttribute().setProductRelevant(false); // this attribute is not a product def property as it is not product relevant!
+        IPolicyCmptTypeAttribute derivedAttr = policyCmptType.newPolicyCmptTypeAttribute();
         derivedAttr.setProductRelevant(true);
         derivedAttr.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
         
@@ -197,11 +176,11 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     
     public void testGetProdDefPropertiesMap() throws CoreException {
         // attributes
-        IProductCmptTypeAttribute supertypeAttr  = superProductCmptType.newAttribute();
+        IProductCmptTypeAttribute supertypeAttr  = superProductCmptType.newProductCmptTypeAttribute();
         supertypeAttr.setName("attrInSupertype");
         supertypeAttr.setDatatype("Money");
 
-        IProductCmptTypeAttribute typeAttribute = productCmptType.newAttribute();
+        IProductCmptTypeAttribute typeAttribute = productCmptType.newProductCmptTypeAttribute();
         typeAttribute.setName("attrInType");
         typeAttribute.setDatatype("Money");
         
@@ -219,13 +198,13 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         // default values and value sets
         IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
         superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
-        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptSupertypeAttr = policyCmptSupertype.newAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype.newPolicyCmptTypeAttribute();
         policyCmptSupertypeAttr.setName("PolicySuperAttribute");
         policyCmptSupertypeAttr.setProductRelevant(true);
-        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptTypeAttr = policyCmptType.newAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr = policyCmptType.newPolicyCmptTypeAttribute();
         policyCmptTypeAttr.setName("PolicyAttribute");
         policyCmptTypeAttr.setProductRelevant(true);
-        policyCmptType.newAttribute().setProductRelevant(false); // this attribute is not a product def property as it is not product relevant!
+        policyCmptType.newPolicyCmptTypeAttribute().setProductRelevant(false); // this attribute is not a product def property as it is not product relevant!
 
         // test property type = null
         Map propertyMap = ((ProductCmptType)productCmptType).getProdDefPropertiesMap(null, ipsProject);
@@ -265,11 +244,11 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     
     public void testFindProdDefProperty_ByTypeAndName() throws CoreException {
         // attributes
-        IProductCmptTypeAttribute supertypeAttr  = superProductCmptType.newAttribute();
+        IProductCmptTypeAttribute supertypeAttr  = superProductCmptType.newProductCmptTypeAttribute();
         supertypeAttr.setName("attrInSupertype");
         supertypeAttr.setDatatype("Money");
 
-        IProductCmptTypeAttribute typeAttribute = productCmptType.newAttribute();
+        IProductCmptTypeAttribute typeAttribute = productCmptType.newProductCmptTypeAttribute();
         typeAttribute.setName("attrInType");
         
         // table structure usages
@@ -290,9 +269,9 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
         superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
         policyCmptType.setSupertype(policyCmptSupertype.getQualifiedName());
-        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptSupertypeAttr = policyCmptSupertype.newAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype.newPolicyCmptTypeAttribute();
         policyCmptSupertypeAttr.setName("policySuperAttr");
-        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptTypeAttr = policyCmptType.newAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr = policyCmptType.newPolicyCmptTypeAttribute();
         policyCmptTypeAttr.setName("policyAttr");
         
         assertEquals(typeAttribute, productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, typeAttribute.getName(), ipsProject));
@@ -317,11 +296,11 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(0, props.length);
 
         // attributes
-        IProductCmptTypeAttribute supertypeAttr  = superProductCmptType.newAttribute();
+        IProductCmptTypeAttribute supertypeAttr  = superProductCmptType.newProductCmptTypeAttribute();
         supertypeAttr.setName("attrInSupertype");
         supertypeAttr.setDatatype("Money");
 
-        IProductCmptTypeAttribute typeAttribute = productCmptType.newAttribute();
+        IProductCmptTypeAttribute typeAttribute = productCmptType.newProductCmptTypeAttribute();
         typeAttribute.setName("attrInType");
         
         // table structure usages
@@ -342,9 +321,9 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
         superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
         policyCmptType.setSupertype(policyCmptSupertype.getQualifiedName());
-        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptSupertypeAttr = policyCmptSupertype.newAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype.newPolicyCmptTypeAttribute();
         policyCmptSupertypeAttr.setName("policySuperAttr");
-        org.faktorips.devtools.core.model.pctype.IAttribute policyCmptTypeAttr = policyCmptType.newAttribute();
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr = policyCmptType.newPolicyCmptTypeAttribute();
         policyCmptTypeAttr.setName("policyAttr");
         
         assertEquals(typeAttribute, productCmptType.findProdDefProperty(typeAttribute.getName(), ipsProject));
@@ -459,7 +438,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         Memento memento = productCmptType.newMemento();
         assertNotNull(memento);
         
-        productCmptType.newAttribute();
+        productCmptType.newProductCmptTypeAttribute();
         memento = productCmptType.newMemento();
         assertNotNull(memento);
     }
@@ -505,39 +484,39 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     }
 
     public void testNewAttribute() {
-        IProductCmptTypeAttribute a1 = productCmptType.newAttribute();
+        IProductCmptTypeAttribute a1 = productCmptType.newProductCmptTypeAttribute();
         assertEquals(1, productCmptType.getNumOfAttributes());
-        assertEquals(a1, productCmptType.getAttributes()[0]);
+        assertEquals(a1, productCmptType.getProductCmptTypeAttributes()[0]);
         assertEquals(productCmptType, a1.getProductCmptType());
         
         assertEquals(a1, lastEvent.getPart());
     }
 
     public void testGetAttribute() {
-        assertNull(productCmptType.getAttribute("a"));
+        assertNull(productCmptType.getProductCmptTypeAttribute("a"));
         
-        IProductCmptTypeAttribute a1 = productCmptType.newAttribute();
-        productCmptType.newAttribute();
-        IProductCmptTypeAttribute a3 = productCmptType.newAttribute();
+        IProductCmptTypeAttribute a1 = productCmptType.newProductCmptTypeAttribute();
+        productCmptType.newProductCmptTypeAttribute();
+        IProductCmptTypeAttribute a3 = productCmptType.newProductCmptTypeAttribute();
         a1.setName("a1");
         a3.setName("a3");
         
-        assertEquals(a1, productCmptType.getAttribute("a1"));
-        assertEquals(a3, productCmptType.getAttribute("a3"));
-        assertNull(productCmptType.getAttribute("unkown"));
+        assertEquals(a1, productCmptType.getProductCmptTypeAttribute("a1"));
+        assertEquals(a3, productCmptType.getProductCmptTypeAttribute("a3"));
+        assertNull(productCmptType.getProductCmptTypeAttribute("unkown"));
         
-        assertNull(productCmptType.getAttribute(null));
+        assertNull(productCmptType.getProductCmptTypeAttribute(null));
     }
 
     public void testGetAttributes() {
-        assertEquals(0, productCmptType.getAttributes().length);
+        assertEquals(0, productCmptType.getProductCmptTypeAttributes().length);
 
-        IProductCmptTypeAttribute a1 = productCmptType.newAttribute();
-        IProductCmptTypeAttribute[] attributes = productCmptType.getAttributes();
+        IProductCmptTypeAttribute a1 = productCmptType.newProductCmptTypeAttribute();
+        IProductCmptTypeAttribute[] attributes = productCmptType.getProductCmptTypeAttributes();
         assertEquals(a1, attributes[0]);
         
-        IProductCmptTypeAttribute a2 = productCmptType.newAttribute();
-        attributes = productCmptType.getAttributes();
+        IProductCmptTypeAttribute a2 = productCmptType.newProductCmptTypeAttribute();
+        attributes = productCmptType.getProductCmptTypeAttributes();
         assertEquals(a1, attributes[0]);
         assertEquals(a2, attributes[1]);
     }
@@ -545,20 +524,20 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     public void testGetNumOfAttributes() {
         assertEquals(0, productCmptType.getNumOfAttributes());
         
-        productCmptType.newAttribute();
+        productCmptType.newProductCmptTypeAttribute();
         assertEquals(1, productCmptType.getNumOfAttributes());
         
-        productCmptType.newAttribute();
+        productCmptType.newProductCmptTypeAttribute();
         assertEquals(2, productCmptType.getNumOfAttributes());
     }
 
     public void testMoveAttributes() {
-        IProductCmptTypeAttribute a1 = productCmptType.newAttribute();
-        IProductCmptTypeAttribute a2 = productCmptType.newAttribute();
-        IProductCmptTypeAttribute a3 = productCmptType.newAttribute();
+        IProductCmptTypeAttribute a1 = productCmptType.newProductCmptTypeAttribute();
+        IProductCmptTypeAttribute a2 = productCmptType.newProductCmptTypeAttribute();
+        IProductCmptTypeAttribute a3 = productCmptType.newProductCmptTypeAttribute();
         
         productCmptType.moveAttributes(new int[]{1, 2}, true);
-        IProductCmptTypeAttribute[] attributes = productCmptType.getAttributes();
+        IProductCmptTypeAttribute[] attributes = productCmptType.getProductCmptTypeAttributes();
         assertEquals(a2, attributes[0]);
         assertEquals(a3, attributes[1]);
         assertEquals(a1, attributes[2]);
@@ -582,7 +561,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     
     public void testToXml() throws CoreException {
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
-        productCmptType.newAttribute().setName("attr");
+        productCmptType.newProductCmptTypeAttribute().setName("attr");
         productCmptType.newProductCmptTypeAssociation().setTargetRoleSingular("role");
         productCmptType.newTableStructureUsage().setRoleName("roleTsu");
         productCmptType.newMethod().setName("method1");

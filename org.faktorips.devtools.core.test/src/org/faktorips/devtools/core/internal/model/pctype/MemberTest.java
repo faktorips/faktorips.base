@@ -37,7 +37,7 @@ public class MemberTest extends AbstractIpsPluginTest {
         IIpsProject project = newIpsProject("TestProject");
         pcType = newPolicyCmptType(project, "Policy");
         ipsSrcFile = pcType.getIpsSrcFile();
-        member = pcType.newAttribute();
+        member = pcType.newPolicyCmptTypeAttribute();
         ipsSrcFile.save(true, null);
     }
     

@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
@@ -112,14 +112,14 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
     
     public void testFindAttribute() throws Exception{
         IPolicyCmptType policyCmptTypeSuper = newPolicyCmptType(project, "policyCmptSuper");
-        IAttribute attr1 = policyCmptTypeSuper.newAttribute();
+        IPolicyCmptTypeAttribute attr1 = policyCmptTypeSuper.newPolicyCmptTypeAttribute();
         attr1.setName("attribute1");
-        IAttribute attr2 = policyCmptTypeSuper.newAttribute();
+        IPolicyCmptTypeAttribute attr2 = policyCmptTypeSuper.newPolicyCmptTypeAttribute();
         attr2.setName("attribute2");
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
-        IAttribute attr3 = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute attr3 = policyCmptType.newPolicyCmptTypeAttribute();
         attr3.setName("attribute3");
-        IAttribute attr4 = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute attr4 = policyCmptType.newPolicyCmptTypeAttribute();
         attr4.setName("attribute4");
         policyCmptType.setSupertype(policyCmptTypeSuper.getQualifiedName());
         
@@ -140,14 +140,14 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
      */
     public void testFindAttributeInSubtype() throws Exception{
         IPolicyCmptType policyCmptTypeSuper = newPolicyCmptType(project, "policyCmptSuper");
-        IAttribute attr1 = policyCmptTypeSuper.newAttribute();
+        IPolicyCmptTypeAttribute attr1 = policyCmptTypeSuper.newPolicyCmptTypeAttribute();
         attr1.setName("attribute1");
-        IAttribute attr2 = policyCmptTypeSuper.newAttribute();
+        IPolicyCmptTypeAttribute attr2 = policyCmptTypeSuper.newPolicyCmptTypeAttribute();
         attr2.setName("attribute2");
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
-        IAttribute attr3 = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute attr3 = policyCmptType.newPolicyCmptTypeAttribute();
         attr3.setName("attribute3");
-        IAttribute attr4 = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute attr4 = policyCmptType.newPolicyCmptTypeAttribute();
         attr4.setName("attribute4");
         policyCmptType.setSupertype(policyCmptTypeSuper.getQualifiedName());
         
@@ -162,7 +162,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
     
     public void testValidateAttributeNotFound() throws Exception{
         IPolicyCmptType pct = newPolicyCmptType(project, "policyCmptType");
-        IAttribute attr = pct.newAttribute();
+        IPolicyCmptTypeAttribute attr = pct.newPolicyCmptTypeAttribute();
         attr.setName("attribute1");
         
         ((ITestPolicyCmptTypeParameter)testAttribute.getParent()).setPolicyCmptType(pct.getQualifiedName());
@@ -235,7 +235,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
 
     public void testValidateExpectedOrComputedButNotExpectedRes() throws Exception{
         IPolicyCmptType pct = newPolicyCmptType(project, "policyCmptType");
-        IAttribute attr = pct.newAttribute();
+        IPolicyCmptTypeAttribute attr = pct.newPolicyCmptTypeAttribute();
         attr.setName("attribute1");
         
         ((ITestPolicyCmptTypeParameter)testAttribute.getParent()).setPolicyCmptType(pct.getQualifiedName());
@@ -312,12 +312,12 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         IProductCmpt productCmptSub1 = newProductCmpt(sub1.findProductCmptType(project), "productSub1");
         IProductCmpt productCmptSub2 = newProductCmpt(sub2.findProductCmptType(project), "productSub2");
         
-        IAttribute attributeSub1 = sub1.newAttribute();
+        IPolicyCmptTypeAttribute attributeSub1 = sub1.newPolicyCmptTypeAttribute();
         attributeSub1.setName("attrSub1");
         attributeSub1.setProductRelevant(true);
         attributeSub1.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
         
-        IAttribute attributeSub2 = sub2.newAttribute();
+        IPolicyCmptTypeAttribute attributeSub2 = sub2.newPolicyCmptTypeAttribute();
         attributeSub2.setName("attrSub2");
         attributeSub2.setProductRelevant(true);
         attributeSub2.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);

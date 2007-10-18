@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.IAllValuesValueSet;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IValueSet;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -46,7 +46,7 @@ import org.xml.sax.SAXException;
 
 public class AllValuesValueSetTest extends AbstractIpsPluginTest {
 
-    private IAttribute attr;
+    private IPolicyCmptTypeAttribute attr;
 	private IConfigElement ce;
 
     private IConfigElement ce2;
@@ -58,11 +58,11 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
 		super.setUp();
         ipsProject = super.newIpsProject("TestProject");
         IPolicyCmptType policy = newPolicyCmptType(ipsProject, "test.Base");
-        attr = policy.newAttribute();
+        attr = policy.newPolicyCmptTypeAttribute();
         attr.setName("attr");
         attr.setDatatype(Datatype.MONEY.getQualifiedName());
         
-        IAttribute attr2 = policy.newAttribute();
+        IPolicyCmptTypeAttribute attr2 = policy.newPolicyCmptTypeAttribute();
         attr2.setName("attr2");
         attr2.setDatatype(Datatype.STRING.getQualifiedName());
         

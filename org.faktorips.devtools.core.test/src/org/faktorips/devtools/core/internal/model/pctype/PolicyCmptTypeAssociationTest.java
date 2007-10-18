@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
@@ -324,7 +324,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
      */
     public void testNewPart() {
     	try {
-			relation.newPart(IAttribute.class);
+			relation.newPart(IPolicyCmptTypeAttribute.class);
 			fail();
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)

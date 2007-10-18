@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
@@ -146,7 +146,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
      */
     public void testNewPart() {
     	try {
-			range.newPart(IAttribute.class);
+			range.newPart(IPolicyCmptTypeAttribute.class);
 			fail();
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)

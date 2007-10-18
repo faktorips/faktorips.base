@@ -55,7 +55,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
@@ -216,7 +216,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         IIpsPackageFragment pack = root.createPackageFragment("pack", true, null);
         IIpsSrcFile sourceFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
         IPolicyCmptType object = (PolicyCmptType)sourceFile.getIpsObject();
-        IAttribute attribute = object.newAttribute();
+        IPolicyCmptTypeAttribute attribute = object.newPolicyCmptTypeAttribute();
         attribute.setDescription("blabla");
         sourceFile.save(true, null);
 
@@ -229,7 +229,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         file.setContents(is, true, false, null);
 
         object = (IPolicyCmptType)sourceFile.getIpsObject();
-        attribute = object.getAttributes()[0];
+        attribute = object.getPolicyCmptTypeAttributes()[0];
         assertEquals("something serious", attribute.getDescription());
     }
 

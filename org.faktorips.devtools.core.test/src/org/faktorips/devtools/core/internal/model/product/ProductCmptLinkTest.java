@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -124,7 +124,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
      */
     public void testNewPart() {
     	try {
-			link.newPart(IAttribute.class);
+			link.newPart(IPolicyCmptTypeAttribute.class);
 			fail();
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)

@@ -38,7 +38,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
-    private org.faktorips.devtools.core.model.pctype.IAttribute policyAttribute;
+    private org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyAttribute;
     
     private IProductCmptTypeAttribute productAttribute;
     
@@ -49,20 +49,20 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = newIpsProject();
         policyCmptType = newPolicyCmptType(ipsProject, "Policy");
-        policyAttribute = policyCmptType.newAttribute();
+        policyAttribute = policyCmptType.newPolicyCmptTypeAttribute();
         policyAttribute.setName("policyAttribute");
         policyAttribute.setDatatype(Datatype.INTEGER.getName());
         
         productCmptType = newProductCmptType(ipsProject, "Product");
         productCmptType.setPolicyCmptType("Policy");
 
-        productAttribute = productCmptType.newAttribute();
+        productAttribute = productCmptType.newProductCmptTypeAttribute();
         productAttribute.setName("productAttribute");
     }
     
     public void testDelete() {
         productAttribute.delete();
-        assertNull(productCmptType.getAttribute(productAttribute.getName()));
+        assertNull(productCmptType.getProductCmptTypeAttribute(productAttribute.getName()));
         assertEquals(0, productCmptType.getNumOfAttributes());
     }
 
@@ -74,7 +74,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
     
     public void testInitFromXml() {
-        IProductCmptTypeAttribute attr = productCmptType.newAttribute();
+        IProductCmptTypeAttribute attr = productCmptType.newProductCmptTypeAttribute();
         Element rootEl = getTestDocument().getDocumentElement();
         
         // product attribute
@@ -88,7 +88,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     public void testToXml_ProductAttribute() {
         Element el = productAttribute.toXml(newDocument());
         
-        IProductCmptTypeAttribute a = productCmptType.newAttribute();
+        IProductCmptTypeAttribute a = productCmptType.newProductCmptTypeAttribute();
         a.initFromXml(el);
         assertEquals(productAttribute.getName(), a.getName());
         assertEquals(productAttribute.getModifier(), a.getModifier());
@@ -102,7 +102,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
      * @throws TransformerException 
      */
     public void testToXml_NullHandlng() throws TransformerException {
-        IProductCmptTypeAttribute a = productCmptType.newAttribute();
+        IProductCmptTypeAttribute a = productCmptType.newProductCmptTypeAttribute();
         Element el = a.toXml(newDocument());
         XmlUtil.nodeToString(el, "UTF-8");
     }

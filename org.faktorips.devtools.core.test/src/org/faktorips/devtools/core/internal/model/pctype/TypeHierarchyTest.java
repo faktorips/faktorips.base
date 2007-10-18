@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -265,11 +265,11 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
 
-        IAttribute a1 = pcType.newAttribute();
-        IAttribute a2 = supertype.newAttribute();
-        IAttribute a3 = supersupertype.newAttribute();
+        IPolicyCmptTypeAttribute a1 = pcType.newPolicyCmptTypeAttribute();
+        IPolicyCmptTypeAttribute a2 = supertype.newPolicyCmptTypeAttribute();
+        IPolicyCmptTypeAttribute a3 = supersupertype.newPolicyCmptTypeAttribute();
         TypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        IAttribute[] attributes = hierarchy.getAllAttributes(pcType);
+        IPolicyCmptTypeAttribute[] attributes = hierarchy.getAllAttributes(pcType);
         assertEquals(3, attributes.length);
         assertEquals(a1, attributes[0]);
         assertEquals(a2, attributes[1]);
@@ -291,15 +291,15 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         supertype.setSupertype(supersupertype.getQualifiedName());
 
         // no attribute overridden
-        IAttribute a1 = pcType.newAttribute();
+        IPolicyCmptTypeAttribute a1 = pcType.newPolicyCmptTypeAttribute();
         a1.setName("a");
-        IAttribute a2 = supertype.newAttribute();
+        IPolicyCmptTypeAttribute a2 = supertype.newPolicyCmptTypeAttribute();
         a2.setName("b");
-        IAttribute a3 = supersupertype.newAttribute();
+        IPolicyCmptTypeAttribute a3 = supersupertype.newPolicyCmptTypeAttribute();
         a3.setName("c");
         
         TypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
-        IAttribute[] attributes = hierarchy.getAllAttributesRespectingOverride(pcType);
+        IPolicyCmptTypeAttribute[] attributes = hierarchy.getAllAttributesRespectingOverride(pcType);
         assertEquals(3, attributes.length);
         
         // a1 overrides a2, a3 not overridden
@@ -368,9 +368,9 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
 
-        IAttribute a1 = pcType.newAttribute();
+        IPolicyCmptTypeAttribute a1 = pcType.newPolicyCmptTypeAttribute();
         a1.setName("a1");
-        IAttribute a2 = supersupertype.newAttribute();
+        IPolicyCmptTypeAttribute a2 = supersupertype.newPolicyCmptTypeAttribute();
         a2.setName("a2");
         
         TypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);

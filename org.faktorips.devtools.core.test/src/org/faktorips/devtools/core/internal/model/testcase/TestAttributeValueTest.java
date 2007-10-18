@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -93,7 +93,7 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
 
     public void testValidateAttributeNotFound() throws Exception{
         IPolicyCmptType pct = newPolicyCmptType(project, "policyCmptType");
-        IAttribute attr = pct.newAttribute();
+        IPolicyCmptTypeAttribute attr = pct.newPolicyCmptTypeAttribute();
         attr.setName("attribute1");
         ITestAttribute testAttribute = testAttributeValue.findTestAttribute();
         ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter) testAttribute.getParent();
@@ -127,7 +127,7 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
         IPolicyCmptType pctSuper = newPolicyAndProductCmptType(project, "Policy", "Product");
         IPolicyCmptType pct = newPolicyAndProductCmptType(project, "MotorPolicy", "MotorProduct");
         pct.setSupertype(pctSuper.getQualifiedName());
-        IAttribute attr = pct.newAttribute();
+        IPolicyCmptTypeAttribute attr = pct.newPolicyCmptTypeAttribute();
         attr.setName("attribute1");
         
         ProductCmpt pc = newProductCmpt(pct.findProductCmptType(project), "productA");
@@ -165,7 +165,7 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
         ml = testAttributeValue.validate();
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
         
-        pctSuper.newAttribute().setName("attributeSuper");
+        pctSuper.newPolicyCmptTypeAttribute().setName("attributeSuper");
         testAttribute.setAttribute("attributeSuper");
         assertNotNull(testAttribute.findAttribute());
     }

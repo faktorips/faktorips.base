@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.DeltaType;
 import org.faktorips.devtools.core.model.product.IDeltaEntry;
@@ -74,8 +74,8 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
     }
     
     public void getEntriesByType() throws CoreException {
-        productCmptType.newAttribute("a1");
-        productCmptType.newAttribute("a2");
+        productCmptType.newProductCmptTypeAttribute("a1");
+        productCmptType.newProductCmptTypeAttribute("a2");
         
         IGenerationToTypeDelta delta = generation.computeDeltaToModel();
         assertEquals(2, delta.getEntries(DeltaType.MISSING_PROPERTY_VALUE).length);
@@ -101,8 +101,8 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
     }
      
     public void testAttributes() throws CoreException {
-        IProductCmptTypeAttribute attribute1 = productCmptType.newAttribute("a1");
-        IProductCmptTypeAttribute attribute2 = superProductCmptType.newAttribute("a2");
+        IProductCmptTypeAttribute attribute1 = productCmptType.newProductCmptTypeAttribute("a1");
+        IProductCmptTypeAttribute attribute2 = superProductCmptType.newProductCmptTypeAttribute("a2");
 
         IGenerationToTypeDelta delta = generation.computeDeltaToModel();
         IDeltaEntry[] entries = delta.getEntries();
@@ -121,7 +121,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
 
         attribute1.delete();
         attribute2.delete();
-        productCmptType.newAttribute("a3");
+        productCmptType.newProductCmptTypeAttribute("a3");
         
         delta = generation.computeDeltaToModel();
         entries = delta.getEntries();
@@ -144,7 +144,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
     }
     
     public void testTypeMismatch() throws CoreException {
-        IProductCmptTypeAttribute attribute = productCmptType.newAttribute("premium");
+        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute("premium");
         IGenerationToTypeDelta delta = generation.computeDeltaToModel();
         delta.fix();
         assertNotNull(generation.getAttributeValue("premium"));
@@ -163,7 +163,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
     }
     
     public void testValueSetTypeMismatch() throws CoreException {
-        IAttribute attr = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setProductRelevant(true);
         attr.setName("a1");
         attr.setValueSetType(ValueSetType.RANGE);

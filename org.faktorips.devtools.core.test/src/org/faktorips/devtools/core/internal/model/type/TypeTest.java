@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
@@ -41,6 +42,91 @@ public class TypeTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = newIpsProject();
         type = newProductCmptType(ipsProject, "MotorProduct");
+    }
+    
+    public void testFindAttribute() throws CoreException {
+        assertNull(type.findAttribute("unknown", ipsProject));
+        
+        IAttribute a1 = type.newAttribute();
+        a1.setName("a1");
+        
+        IType supertype = newProductCmptType(ipsProject, "Supertype");
+        type.setSupertype(supertype.getQualifiedName());
+        
+        IAttribute a2 = supertype.newAttribute();
+        a2.setName("a2");
+        
+        IType superSupertype = newProductCmptType(ipsProject, "SuperSupertype");
+        supertype.setSupertype(superSupertype.getQualifiedName());
+        IAttribute a3 = superSupertype.newAttribute();
+        a3.setName("a3");
+        
+        assertSame(a1, type.findAttribute("a1", ipsProject));
+        assertSame(a2, type.findAttribute("a2", ipsProject));
+        assertSame(a3, type.findAttribute("a3", ipsProject));
+        
+        IAttribute a1b = supertype.newAttribute();
+        a1b.setName("a1b");
+        assertSame(a1, type.findAttribute("a1", ipsProject));
+        
+        assertNull(type.findAttribute("unknown", ipsProject));
+    }
+    
+    public void testNewAttribute() {
+        IAttribute attr = type.newAttribute();
+        assertEquals(1, type.getAttributes().length);
+        assertEquals(attr, type.getAttributes()[0]);
+    }
+    
+    public void testGetAttribute() {
+        assertNull(type.getAttribute("a"));
+        
+        IAttribute a1 = type.newAttribute();
+        type.newAttribute();
+        IAttribute a3 = type.newAttribute();
+        a1.setName("a1");
+        a3.setName("a3");
+        
+        assertEquals(a1, type.getAttribute("a1"));
+        assertEquals(a3, type.getAttribute("a3"));
+        assertNull(type.getAttribute("unkown"));
+        
+        assertNull(type.getAttribute(null));
+    }
+
+    public void testGetAttributes() {
+        assertEquals(0, type.getAttributes().length);
+
+        IAttribute a1 = type.newAttribute();
+        IAttribute[] attributes = type.getAttributes();
+        assertEquals(a1, attributes[0]);
+        
+        IAttribute a2 = type.newAttribute();
+        attributes = type.getAttributes();
+        assertEquals(a1, attributes[0]);
+        assertEquals(a2, attributes[1]);
+    }
+
+    public void testGetNumOfAttributes() {
+        assertEquals(0, type.getNumOfAttributes());
+        
+        type.newAttribute();
+        assertEquals(1, type.getNumOfAttributes());
+        
+        type.newAttribute();
+        assertEquals(2, type.getNumOfAttributes());
+    }
+
+    public void testMoveAttributes() {
+        IAttribute a1 = type.newAttribute();
+        IAttribute a2 = type.newAttribute();
+        IAttribute a3 = type.newAttribute();
+        
+        type.moveAttributes(new int[]{1, 2}, true);
+        IAttribute[] attributes = type.getAttributes();
+        assertEquals(a2, attributes[0]);
+        assertEquals(a3, attributes[1]);
+        assertEquals(a1, attributes[2]);
     }
     
     public void testGetAssociationsForTarget() {

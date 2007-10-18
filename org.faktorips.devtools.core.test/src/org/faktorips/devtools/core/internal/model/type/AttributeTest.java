@@ -50,11 +50,11 @@ public class AttributeTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = newIpsProject();
         type = newProductCmptType(ipsProject, "Product");
-        attribute = ((IProductCmptType)type).newAttribute();
+        attribute = ((IProductCmptType)type).newProductCmptTypeAttribute();
     }
     
     public void testValidate_defaultNotInValueset() throws Exception {
-        IProductCmptTypeAttribute attributeWithValueSet = ((IProductCmptType)type).newAttribute();
+        IProductCmptTypeAttribute attributeWithValueSet = ((IProductCmptType)type).newProductCmptTypeAttribute();
         attributeWithValueSet.setDatatype(Datatype.INTEGER.getQualifiedName());
         attributeWithValueSet.setValueSetType(ValueSetType.RANGE);
         IRangeValueSet range = (IRangeValueSet)attributeWithValueSet.getValueSet();
@@ -161,7 +161,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     }
     
     public void testInitFromXml() {
-        IProductCmptTypeAttribute attr = ((IProductCmptType)type).newAttribute();
+        IProductCmptTypeAttribute attr = ((IProductCmptType)type).newProductCmptTypeAttribute();
         Element rootEl = getTestDocument().getDocumentElement();
         
         // product attribute
@@ -180,7 +180,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         
         Element el = attribute.toXml(newDocument());
         
-        IAttribute copy = ((IProductCmptType)type).newAttribute();
+        IAttribute copy = ((IProductCmptType)type).newProductCmptTypeAttribute();
         copy.initFromXml(el);
         assertEquals(attribute.getName(), copy.getName());
         assertEquals(attribute.getModifier(), copy.getModifier());

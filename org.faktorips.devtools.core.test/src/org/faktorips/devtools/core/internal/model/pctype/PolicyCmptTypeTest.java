@@ -43,7 +43,7 @@ import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
@@ -151,13 +151,13 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     
     public void testFindAttributeInSupertypeHierarchy() throws CoreException {
         assertNull(pcType.findAttributeInSupertypeHierarchy("unkown"));
-        IAttribute a1 = pcType.newAttribute();
+        IPolicyCmptTypeAttribute a1 = pcType.newPolicyCmptTypeAttribute();
         a1.setName("a1");
         assertNull(pcType.findAttributeInSupertypeHierarchy("unkown"));
         assertEquals(a1, pcType.findAttributeInSupertypeHierarchy("a1"));
         
         IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
-        IAttribute a2 = supertype.newAttribute();
+        IPolicyCmptTypeAttribute a2 = supertype.newPolicyCmptTypeAttribute();
         a2.setName("a2");
         pcType.setSupertype(supertype.getQualifiedName());
         
@@ -223,7 +223,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         method.delete();
 
         // attribute
-        IAttribute attribute = pcType.newAttribute();
+        IPolicyCmptTypeAttribute attribute = pcType.newPolicyCmptTypeAttribute();
         attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         attribute.setProductRelevant(true);
         assertFalse(pcType.isExtensionCompilationUnitGenerated());
@@ -239,7 +239,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
     
     public void testGetChildren() {
-        IAttribute a1 = pcType.newAttribute();
+        IPolicyCmptTypeAttribute a1 = pcType.newPolicyCmptTypeAttribute();
         IMethod m1 = pcType.newMethod();
         IPolicyCmptTypeAssociation r1 = pcType.newPolicyCmptTypeAssociation();
         IValidationRule rule1 = pcType.newRule();
@@ -255,7 +255,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
 
     public void testNewAttribute() {
         sourceFile.getIpsModel().addChangeListener(this);
-        IAttribute a = pcType.newAttribute();
+        IPolicyCmptTypeAttribute a = pcType.newPolicyCmptTypeAttribute();
         assertSame(pcType, a.getIpsObject());
         assertEquals(1, pcType.getNumOfAttributes());
         assertTrue(sourceFile.isDirty());
@@ -266,34 +266,34 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
 
         IMethod m = pcType.newMethod();
         assertEquals(1, m.getId());
-        IAttribute a2 = pcType.newAttribute();
+        IPolicyCmptTypeAttribute a2 = pcType.newPolicyCmptTypeAttribute();
         assertEquals(2, a2.getId());
     }
 
     public void testGetAttributes() {
-        assertEquals(0, pcType.getAttributes().length);
-        IAttribute a1 = pcType.newAttribute();
-        IAttribute a2 = pcType.newAttribute();
-        assertSame(a1, pcType.getAttributes()[0]);
-        assertSame(a2, pcType.getAttributes()[1]);
+        assertEquals(0, pcType.getPolicyCmptTypeAttributes().length);
+        IPolicyCmptTypeAttribute a1 = pcType.newPolicyCmptTypeAttribute();
+        IPolicyCmptTypeAttribute a2 = pcType.newPolicyCmptTypeAttribute();
+        assertSame(a1, pcType.getPolicyCmptTypeAttributes()[0]);
+        assertSame(a2, pcType.getPolicyCmptTypeAttributes()[1]);
         
         // make sure a defensive copy is returned.
-        pcType.getAttributes()[0] = null;
-        assertNotNull(pcType.getAttributes()[0]);
+        pcType.getPolicyCmptTypeAttributes()[0] = null;
+        assertNotNull(pcType.getPolicyCmptTypeAttributes()[0]);
     }
     
     public void testGetAttribute() {
-        IAttribute a1 = pcType.newAttribute();
+        IPolicyCmptTypeAttribute a1 = pcType.newPolicyCmptTypeAttribute();
         a1.setName("a1");
-        IAttribute a2 = pcType.newAttribute();
+        IPolicyCmptTypeAttribute a2 = pcType.newPolicyCmptTypeAttribute();
         a2.setName("a2");
-        IAttribute a3 = pcType.newAttribute();
+        IPolicyCmptTypeAttribute a3 = pcType.newPolicyCmptTypeAttribute();
         a3.setName("a2"); // same name!
         
-        assertEquals(a1, pcType.getAttribute("a1"));
-        assertEquals(a2, pcType.getAttribute("a2"));
-        assertNull(pcType.getAttribute("b"));
-        assertNull(pcType.getAttribute(null));
+        assertEquals(a1, pcType.getPolicyCmptTypeAttribute("a1"));
+        assertEquals(a2, pcType.getPolicyCmptTypeAttribute("a2"));
+        assertNull(pcType.getPolicyCmptTypeAttribute("b"));
+        assertNull(pcType.getPolicyCmptTypeAttribute(null));
     }
 
     public void testNewMethod() {
@@ -435,7 +435,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         row.setValue(1, "female");
         
         IPolicyCmptType a = newPolicyCmptType(root, "A");
-        Attribute aAttr = (Attribute)a.newAttribute();
+        PolicyCmptTypeAttribute aAttr = (PolicyCmptTypeAttribute)a.newPolicyCmptTypeAttribute();
         aAttr.setAttributeType(AttributeType.CHANGEABLE);
         aAttr.setDatatype("TestGender");
         aAttr.setModifier(Modifier.PUBLIC);
@@ -503,7 +503,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertTrue(pcType.isAbstract());
         assertEquals("blabla", pcType.getDescription());
         
-        IAttribute[] a = pcType.getAttributes();
+        IPolicyCmptTypeAttribute[] a = pcType.getPolicyCmptTypeAttributes();
         assertEquals(1, a.length);
         
         IMethod[] m = pcType.getMethods();
@@ -522,7 +522,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertEquals(1, pcType.getNumOfRules());
         
         // test if the object references have remained the same
-        assertSame(a[0], pcType.getAttributes()[0]);
+        assertSame(a[0], pcType.getPolicyCmptTypeAttributes()[0]);
         assertSame(r[0], pcType.getPolicyCmptTypeAssociations()[0]);
         assertSame(m[0], pcType.getMethods()[0]);
         assertSame(rules[0], pcType.getRules()[0]);
@@ -534,9 +534,9 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         pcType.setDescription("blabla");
         pcType.setAbstract(true);
         pcType.setSupertype("NewSuperType");
-        IAttribute a1 = pcType.newAttribute();
+        IPolicyCmptTypeAttribute a1 = pcType.newPolicyCmptTypeAttribute();
         a1.setName("a1");
-        IAttribute a2 = pcType.newAttribute();
+        IPolicyCmptTypeAttribute a2 = pcType.newPolicyCmptTypeAttribute();
         a2.setName("a2");
         IMethod m1 = pcType.newMethod();
         m1.setName("m1");
@@ -561,7 +561,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertEquals("NewSuperType", copy.getSupertype());
         assertTrue(copy.isAbstract());
         assertEquals("blabla", copy.getDescription());
-        IAttribute[] attributes = copy.getAttributes();
+        IPolicyCmptTypeAttribute[] attributes = copy.getPolicyCmptTypeAttributes();
         assertEquals(2, attributes.length);
         assertEquals("a1", attributes[0].getName());
         assertEquals("a2", attributes[1].getName());
@@ -644,12 +644,12 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
 
     public void testNewPart() {
-    	try {
-    		assertTrue(pcType.newPart(IAttribute.class) instanceof IAttribute);
-    		assertTrue(pcType.newPart(IMethod.class) instanceof IMethod);
-    		assertTrue(pcType.newPart(IPolicyCmptTypeAssociation.class) instanceof IPolicyCmptTypeAssociation);
-    		assertTrue(pcType.newPart(IValidationRule.class) instanceof IValidationRule);
+		assertTrue(pcType.newPart(IPolicyCmptTypeAttribute.class) instanceof IPolicyCmptTypeAttribute);
+		assertTrue(pcType.newPart(IMethod.class) instanceof IMethod);
+		assertTrue(pcType.newPart(IPolicyCmptTypeAssociation.class) instanceof IPolicyCmptTypeAssociation);
+		assertTrue(pcType.newPart(IValidationRule.class) instanceof IValidationRule);
     		
+        try {
     		pcType.newPart(Object.class);
 			fail();
 		} catch (IllegalArgumentException e) {

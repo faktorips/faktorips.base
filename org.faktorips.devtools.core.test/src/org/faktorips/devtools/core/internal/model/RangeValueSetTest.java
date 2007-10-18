@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -44,7 +44,7 @@ import org.w3c.dom.Element;
 
 public class RangeValueSetTest extends AbstractIpsPluginTest {
 
-    private IAttribute attr;
+    private IPolicyCmptTypeAttribute attr;
 	private IConfigElement ce;
 	private IConfigElement intEl;
 
@@ -58,7 +58,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         ipsProject = super.newIpsProject("TestProject");
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "test.Base", "test.Product");
         IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
-        attr = policyCmptType.newAttribute();
+        attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("attr");
         attr.setDatatype(Datatype.MONEY.getQualifiedName());
 
@@ -68,7 +68,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         ce = generation.newConfigElement();
         ce.setPcTypeAttribute("attr");
         
-        IAttribute attr2 = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute attr2 = policyCmptType.newPolicyCmptTypeAttribute();
         attr2.setName("test");
         attr2.setDatatype(Datatype.INTEGER.getQualifiedName());
         attr2.setProductRelevant(true);
@@ -203,7 +203,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 	}
 	
     public void testContainsValueSetEmptyWithDecimal() throws Exception {
-        IAttribute attr = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("attrX");
         attr.setDatatype(Datatype.DECIMAL.getQualifiedName());
         attr.setProductRelevant(true);
@@ -256,7 +256,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         properties.setPredefinedDatatypesUsed((ValueDatatype[])vdlist.toArray(new ValueDatatype[vdlist.size()]));
         ipsProject.setProperties(properties);
 
-        IAttribute attr = intEl.findPcTypeAttribute();
+        IPolicyCmptTypeAttribute attr = intEl.findPcTypeAttribute();
 		attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
 
         list = range.validate();

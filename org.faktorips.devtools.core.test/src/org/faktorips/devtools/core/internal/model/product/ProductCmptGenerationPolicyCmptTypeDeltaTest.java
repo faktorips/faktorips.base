@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -96,19 +96,19 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);  
         assertEquals(0, delta.getAttributesWithMissingConfigElements().length);
         
-        IAttribute a1 = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
         a1.setName("a1");
         a1.setProductRelevant(true);
-        IAttribute a2 = policyCmptSupertype.newAttribute();
+        IPolicyCmptTypeAttribute a2 = policyCmptSupertype.newPolicyCmptTypeAttribute();
         a2.setName("a2");
         a2.setProductRelevant(true);
-        IAttribute a3 = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute a3 = policyCmptType.newPolicyCmptTypeAttribute();
         a3.setName("a3");
         a3.setProductRelevant(false);
         
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
         assertFalse(delta.isEmpty());
-        IAttribute[] missing = delta.getAttributesWithMissingConfigElements();
+        IPolicyCmptTypeAttribute[] missing = delta.getAttributesWithMissingConfigElements();
         assertEquals(2, missing.length);
         assertEquals(a1, missing[0]);
         assertEquals(a2, missing[1]);
@@ -148,10 +148,10 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         assertEquals(ce1, missing[0]);
         assertEquals(ce2, missing[1]);
         
-        IAttribute a1 = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
         a1.setName("a1");
         a1.setProductRelevant(false);
-        IAttribute a2 = policyCmptSupertype.newAttribute();
+        IPolicyCmptTypeAttribute a2 = policyCmptSupertype.newPolicyCmptTypeAttribute();
         a2.setName("a2");
         a2.setProductRelevant(true);
         
@@ -170,7 +170,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);  
         assertEquals(0, delta.getElementsWithValueSetMismatch().length);
         
-        IAttribute a1 = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
         a1.setName("a1");
         a1.setProductRelevant(true);
         a1.setValueSetType(ValueSetType.RANGE);
@@ -247,7 +247,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         assertEquals(1, delta.getConfigElementsWithMissingAttributes().length);
 
         // does it work along the pctype hierarchy?
-        IAttribute a2 = policyCmptSupertype.newAttribute();
+        IPolicyCmptTypeAttribute a2 = policyCmptSupertype.newPolicyCmptTypeAttribute();
         a2.setName("a2");
         a2.setProductRelevant(true);
         a2.setValueSetType(ValueSetType.RANGE);

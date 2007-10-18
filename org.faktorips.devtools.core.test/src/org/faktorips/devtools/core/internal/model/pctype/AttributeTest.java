@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
@@ -51,7 +51,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     private IIpsPackageFragment ipsFolder;
     private IIpsSrcFile ipsSrcFile;
     private PolicyCmptType pcType;
-    private IAttribute attribute;
+    private IPolicyCmptTypeAttribute attribute;
     private IIpsProject project;
     
     protected void setUp() throws Exception {
@@ -61,7 +61,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         ipsFolder = ipsRootFolder.createPackageFragment("products.folder", true, null);
         ipsSrcFile = ipsFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
         pcType = (PolicyCmptType)ipsSrcFile.getIpsObject();
-        attribute = pcType.newAttribute();
+        attribute = pcType.newPolicyCmptTypeAttribute();
     }
     
     public void testFindSupertypeAttribute() throws CoreException {
@@ -73,7 +73,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         
         assertNull(attribute.findSupertypeAttribute());
         
-        IAttribute aInSupertype = supersupertype.newAttribute();
+        IPolicyCmptTypeAttribute aInSupertype = supersupertype.newPolicyCmptTypeAttribute();
         aInSupertype.setName("a");
         
         assertEquals(aInSupertype, attribute.findSupertypeAttribute());
@@ -103,7 +103,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     
     public void testRemove() {
         attribute.delete();
-        assertEquals(0, pcType.getAttributes().length);
+        assertEquals(0, pcType.getPolicyCmptTypeAttributes().length);
         assertTrue(ipsSrcFile.isDirty());
     }
     
@@ -147,7 +147,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
      * Class under test for Element toXml(Document)
      */
     public void testToXml() {
-        attribute = pcType.newAttribute();  // => id=1 as this is the type's 2 attribute
+        attribute = pcType.newPolicyCmptTypeAttribute();  // => id=1 as this is the type's 2 attribute
         attribute.setName("age");
         attribute.setDatatype("decimal");
         attribute.setProductRelevant(true);
@@ -161,7 +161,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         set.setStep("step");
         Element element = attribute.toXml(this.newDocument());
         
-        IAttribute copy = pcType.newAttribute();
+        IPolicyCmptTypeAttribute copy = pcType.newPolicyCmptTypeAttribute();
         copy.initFromXml(element);
         assertEquals(1, copy.getId());
         assertEquals("age", copy.getName());
@@ -187,7 +187,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         set2.addValue("x");
         
         element = attribute.toXml(this.newDocument());
-        copy = pcType.newAttribute();
+        copy = pcType.newPolicyCmptTypeAttribute();
         copy.initFromXml(element);
         assertEquals("age", attribute.getName());
         assertEquals("decimal", attribute.getDatatype());
@@ -202,7 +202,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         // and now an attribute which overwrites
         attribute.setOverwrites(true);
         element = attribute.toXml(this.newDocument());
-        copy = pcType.newAttribute();
+        copy = pcType.newPolicyCmptTypeAttribute();
         copy.initFromXml(element);
         assertTrue(attribute.getOverwrites());
         assertEquals("", attribute.getDatatype());
@@ -213,7 +213,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
      */
     public void testNewPart() {
     	try {
-			attribute.newPart(IAttribute.class);
+			attribute.newPart(IPolicyCmptTypeAttribute.class);
 			fail();
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)
@@ -225,16 +225,16 @@ public class AttributeTest extends AbstractIpsPluginTest {
     	attribute.setProductRelevant(true);
     	
     	MessageList ml = attribute.validate();
-    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
+    	assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
     	
     	pcType.setConfigurableByProductCmptType(false);
     	ml = attribute.validate();
-    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
+    	assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
     }
 
     public void testOverwrites() throws Exception {
     	IPolicyCmptType supersupertype = newPolicyCmptType(project, "sup.SuperSuperType");
-    	IAttribute supersuperAttr = supersupertype.newAttribute();
+    	IPolicyCmptTypeAttribute supersuperAttr = supersupertype.newPolicyCmptTypeAttribute();
     	supersuperAttr.setDatatype("superDatatype");
     	supersuperAttr.setProductRelevant(false);
     	supersuperAttr.setModifier(Modifier.PUBLIC);
@@ -263,7 +263,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     	pcType.setSupertype(supertype.getQualifiedName());
     	supertype.setSupertype(supersupertype.getQualifiedName());
     	
-    	IAttribute superAttr = supertype.newAttribute();
+    	IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute();
     	superAttr.setName("name");
     	superAttr.setOverwrites(true);
 
@@ -278,34 +278,34 @@ public class AttributeTest extends AbstractIpsPluginTest {
     	attribute.setName("name");
 
     	MessageList ml = attribute.validate();
-    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
+    	assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
     	
     	attribute.setOverwrites(true);
     	ml = attribute.validate();
-    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
+    	assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
     	
     	IPolicyCmptType supertype = newPolicyCmptType(project, "sup.SuperType");
-    	IAttribute superAttr = supertype.newAttribute();
+    	IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute();
     	superAttr.setName("name");
     	pcType.setSupertype(supertype.getQualifiedName());
     	
     	ml = attribute.validate();
-    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
+    	assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
     }
 
     public void testValidate_nameCollision() throws Exception {
     	IPolicyCmptType supertype = newPolicyCmptType(project, "sup.SuperType");
-    	IAttribute superAttr = supertype.newAttribute();
+    	IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute();
     	superAttr.setName("name");
     	pcType.setSupertype(supertype.getQualifiedName());    	
     	attribute.setName("name");
     	
     	MessageList ml = attribute.validate();
-    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_NAME_COLLISION));
+    	assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NAME_COLLISION));
     	
     	attribute.setName("abc");
     	ml = attribute.validate();
-    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_NAME_COLLISION));
+    	assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NAME_COLLISION));
     }
 }
 

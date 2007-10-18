@@ -35,7 +35,7 @@ import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -75,9 +75,9 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         IPolicyCmptType policyCmptSupertype = newPolicyCmptType(project, "SuperPolicy");
         policyCmptType.setSupertype(policyCmptSupertype.getQualifiedName());
         
-        IAttribute a1 = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
         a1.setName("a1");
-        IAttribute a2 = policyCmptSupertype.newAttribute();
+        IPolicyCmptTypeAttribute a2 = policyCmptSupertype.newPolicyCmptTypeAttribute();
         a2.setName("a2");
         
         generation = productCmpt.getProductCmptGeneration(0);
@@ -95,7 +95,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	MessageList ml = configElement.validate();
     	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
     	
-    	policyCmptType.newAttribute().setName("a");
+    	policyCmptType.newPolicyCmptTypeAttribute().setName("a");
         policyCmptType.getIpsSrcFile().save(true, null);
     	
     	ml = configElement.validate();
@@ -107,7 +107,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
     	ce.setValue("1");
     	ce.setPcTypeAttribute("valueTest");
-    	IAttribute attr = policyCmptType.newAttribute();
+    	IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
     	attr.setName("valueTest");
     	attr.setAttributeType(AttributeType.CHANGEABLE);
     	
@@ -127,7 +127,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
     	ce.setValue("1");
     	ce.setPcTypeAttribute("valueTest");
-    	IAttribute attr = policyCmptType.newAttribute();
+    	IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
     	attr.setName("valueTest");
     	attr.setAttributeType(AttributeType.CHANGEABLE);
     	attr.setDatatype("Money");
@@ -146,7 +146,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     }
     
     public void testValidate_InvalidValueset() throws CoreException {
-    	IAttribute attr = policyCmptType.newAttribute();
+    	IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
     	attr.setName("valueTest");
     	attr.setAttributeType(AttributeType.CHANGEABLE);
     	attr.setDatatype("Decimal");
@@ -187,7 +187,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     }
     
     public void testValidate_InvalidDatatype() throws Exception {
-    	IAttribute attr = policyCmptType.newAttribute();
+    	IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
     	attr.setName("test");
     	InvalidDatatype datatype = new InvalidDatatype();
     	attr.setDatatype(datatype.getQualifiedName());
@@ -221,7 +221,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	valueSet.setLowerBound("10");
     	valueSet.setUpperBound("20");
 
-    	IAttribute attr = policyCmptType.newAttribute();
+    	IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
     	attr.setName("valueTest");
     	
     	attr.setAttributeType(AttributeType.CONSTANT);
@@ -244,7 +244,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     }
     
     public void testValidate_ValueSetNotASubset() throws CoreException {
-    	IAttribute attr = policyCmptType.newAttribute();
+    	IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
     	attr.setName("valueTest");
     	attr.setValueSetType(ValueSetType.RANGE);
     	IRangeValueSet valueSet = (IRangeValueSet)attr.getValueSet();
@@ -378,7 +378,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
      */
     public void testNewPart() {
     	try {
-			configElement.newPart(IAttribute.class);
+			configElement.newPart(IPolicyCmptTypeAttribute.class);
 			fail();
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)

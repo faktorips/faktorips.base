@@ -47,7 +47,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = newIpsProject();
         productCmptType = newProductCmptType(ipsProject, "Product");
-        attribute = productCmptType.newAttribute();
+        attribute = productCmptType.newProductCmptTypeAttribute();
         attribute.setName("Minimum Premium");
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productCmpt = newProductCmpt(productCmptType, "ProductA");
@@ -66,7 +66,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         IProductCmptType supertype = newProductCmptType(ipsProject, "SuperProduct");
         productCmptType.setSupertype(supertype.getQualifiedName());
         
-        supertype.newAttribute().setName("AnotherAttribute");
+        supertype.newProductCmptTypeAttribute().setName("AnotherAttribute");
         ml = attrValue.validate();
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
     }

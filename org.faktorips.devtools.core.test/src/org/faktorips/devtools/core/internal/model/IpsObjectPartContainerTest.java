@@ -226,7 +226,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         IIpsPackageFragmentRoot rootFolder = ipsProject.getIpsPackageFragmentRoots()[0];
         IPolicyCmptType type = this.newPolicyCmptType(rootFolder, "folder.TestProduct");
         memento = type.newMemento();
-        type.newAttribute();
+        type.newPolicyCmptTypeAttribute();
         assertEquals(1, type.getChildren().length);
         type.setState(memento);
         assertEquals(0, type.getChildren().length);

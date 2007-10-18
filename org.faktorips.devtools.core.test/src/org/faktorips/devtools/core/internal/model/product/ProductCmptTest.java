@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -366,7 +366,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      */
     public void testNewPart() {
     	try {
-    		productCmpt.newPart(IAttribute.class);
+    		productCmpt.newPart(IPolicyCmptTypeAttribute.class);
 			fail();
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)
@@ -379,7 +379,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      */
     public void testContainsDifferenceToModel() throws CoreException {
         PolicyCmptType testType = newPolicyAndProductCmptType(ipsProject, "TestPolicyType", "TestProductType");
-        IAttribute a1 = testType.newAttribute();
+        IPolicyCmptTypeAttribute a1 = testType.newPolicyCmptTypeAttribute();
         a1.setName("A1");
         a1.setProductRelevant(true);
         
@@ -390,7 +390,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         ce1.setPcTypeAttribute("A1");
         ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
         
-        IAttribute a2 = testType.newAttribute();
+        IPolicyCmptTypeAttribute a2 = testType.newPolicyCmptTypeAttribute();
         a2.setName("A2");
         a2.setProductRelevant(true);
         
@@ -405,7 +405,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         
         assertEquals(true, product.containsDifferenceToModel());
         assertEquals(false, product2.containsDifferenceToModel());
-        testType.getAttribute("A2").delete();
+        testType.getPolicyCmptTypeAttribute("A2").delete();
         assertEquals(false, product.containsDifferenceToModel());
         assertEquals(true, product2.containsDifferenceToModel());       
     }
@@ -417,7 +417,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     public void testFixAllDifferencesToModel() throws CoreException {
         IPolicyCmptType testType = newPolicyAndProductCmptType(ipsProject, "TestPolicyType", "TestProductType");
         IProductCmptType productCmptType = testType.findProductCmptType(ipsProject);
-        IAttribute a1 = testType.newAttribute();
+        IPolicyCmptTypeAttribute a1 = testType.newPolicyCmptTypeAttribute();
         a1.setName("A1");
         a1.setProductRelevant(true);
 
@@ -427,7 +427,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         ce1.setPcTypeAttribute("A1");
         ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
         
-        IAttribute a2 = testType.newAttribute();
+        IPolicyCmptTypeAttribute a2 = testType.newPolicyCmptTypeAttribute();
         a2.setName("A2");
         a2.setProductRelevant(true);
         

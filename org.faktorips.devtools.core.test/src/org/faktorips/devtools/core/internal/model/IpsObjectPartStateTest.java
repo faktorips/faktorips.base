@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 
@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
  */
 public class IpsObjectPartStateTest extends AbstractIpsPluginTest {
     
-	IAttribute attribute;
+	IPolicyCmptTypeAttribute attribute;
 	IPolicyCmptType pcType;
 	
     protected void setUp() throws Exception {
@@ -46,7 +46,7 @@ public class IpsObjectPartStateTest extends AbstractIpsPluginTest {
 
         IIpsSrcFile pdSrcFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
         pcType = (PolicyCmptType)pdSrcFile.getIpsObject();
-        attribute = pcType.newAttribute();
+        attribute = pcType.newPolicyCmptTypeAttribute();
     }
 
     public void testAll() {
@@ -56,7 +56,7 @@ public class IpsObjectPartStateTest extends AbstractIpsPluginTest {
     	assertEquals(1, pcType.getNumOfAttributes());
     	attribute.delete();
     	assertEquals(0, pcType.getNumOfAttributes());
-    	attribute = (IAttribute)state.newPart(pcType);
+    	attribute = (IPolicyCmptTypeAttribute)state.newPart(pcType);
     	assertEquals(1, pcType.getNumOfAttributes());
     	attribute.delete();
     	assertEquals(0, pcType.getNumOfAttributes());

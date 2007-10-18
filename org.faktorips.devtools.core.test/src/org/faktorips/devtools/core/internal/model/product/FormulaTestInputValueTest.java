@@ -22,7 +22,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
@@ -71,7 +71,7 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         formula.setFormulaSignature(method.getFormulaName());
         formula.setExpression("param1 * param2 * 2 * policy.premium");
         
-        IAttribute attribute = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setAttributeType(AttributeType.CHANGEABLE);
         attribute.setName("premium");
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -132,7 +132,7 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
 
     public void testFindDatatypeOfFormulaParameter() throws CoreException{
         IPolicyCmptType pcTypeInput = newPolicyCmptType(ipsProject, "policyCmptTypeInput");
-        IAttribute attributeInput = pcTypeInput.newAttribute();
+        IPolicyCmptTypeAttribute attributeInput = pcTypeInput.newPolicyCmptTypeAttribute();
         attributeInput.setName("attributeInput");
         attributeInput.setAttributeType(AttributeType.CHANGEABLE);
         attributeInput.setDatatype(Datatype.STRING.getQualifiedName());
@@ -179,7 +179,7 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         // check attribute in supertype
         IPolicyCmptType superType = newPolicyCmptType(ipsProject, "BaseType");
         pcTypeInput.setSupertype(superType.getQualifiedName());
-        IAttribute attrInSuperType = superType.newAttribute();
+        IPolicyCmptTypeAttribute attrInSuperType = superType.newPolicyCmptTypeAttribute();
         attrInSuperType.setName("super");
         attrInSuperType.setDatatype(Datatype.INTEGER.getQualifiedName());
         attrInSuperType.setAttributeType(AttributeType.CHANGEABLE);
@@ -212,7 +212,7 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         method.newParameter(Datatype.BOOLEAN.getQualifiedName(), "param2");
         method.newParameter(policyCmptType.getQualifiedName(), "policy");
 
-        IAttribute attributeInput = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute attributeInput = policyCmptType.newPolicyCmptTypeAttribute();
         attributeInput.setName("premium");
         attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
         

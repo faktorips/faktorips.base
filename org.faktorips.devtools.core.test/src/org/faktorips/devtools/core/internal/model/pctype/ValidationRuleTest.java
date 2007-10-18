@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.util.message.MessageList;
@@ -198,7 +198,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     	MessageList messageList = rule.validate().getMessagesFor(rule, "validatedAttributes");
     	assertEquals(1, messageList.getNoOfMessages());
     	
-    	IAttribute attr = pcType.newAttribute();
+    	IPolicyCmptTypeAttribute attr = pcType.newPolicyCmptTypeAttribute();
     	attr.setName("a");
     	attr.setAttributeType(AttributeType.CHANGEABLE);
     	attr.setDatatype("String");
@@ -250,7 +250,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
      */
     public void testNewPart() {
     	try {
-			rule.newPart(IAttribute.class);
+			rule.newPart(IPolicyCmptTypeAttribute.class);
 			fail();
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)
@@ -268,7 +268,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
     
     public void testConstantAttributesCantBeValidated() throws CoreException {
-        IAttribute a = pcType.newAttribute();
+        IPolicyCmptTypeAttribute a = pcType.newPolicyCmptTypeAttribute();
         a.setName("a1");
         a.setAttributeType(AttributeType.CONSTANT);
         rule.addValidatedAttribute("a1");

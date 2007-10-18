@@ -22,7 +22,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
@@ -49,7 +49,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         ipsProject = super.newIpsProject();
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
-        IAttribute attributeInput = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute attributeInput = policyCmptType.newPolicyCmptTypeAttribute();
         attributeInput.setName("attributeInput");
         attributeInput.setAttributeType(AttributeType.CHANGEABLE);
         attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());

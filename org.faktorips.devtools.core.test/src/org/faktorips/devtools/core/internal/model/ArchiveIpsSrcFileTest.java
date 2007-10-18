@@ -47,7 +47,7 @@ public class ArchiveIpsSrcFileTest extends AbstractIpsPluginTest {
         super.setUp();
         IIpsProject archiveProject = newIpsProject("ArchiveProject");
         originalType = newPolicyCmptType(archiveProject, "motor.Policy");
-        originalType.newAttribute();
+        originalType.newPolicyCmptTypeAttribute();
         originalType.getIpsSrcFile().save(true, null);
         
         project = newIpsProject();

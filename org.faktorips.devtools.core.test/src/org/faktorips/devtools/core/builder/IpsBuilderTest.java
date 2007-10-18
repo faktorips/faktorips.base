@@ -42,7 +42,7 @@ import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.Modifier;
@@ -292,7 +292,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         builtIpsObjects.clear();
         assertTrue(builtIpsObjects.isEmpty());
         
-        IProductCmptTypeAttribute bAttr = b.newAttribute("bAttr");
+        IProductCmptTypeAttribute bAttr = b.newProductCmptTypeAttribute("bAttr");
         bAttr.setDatatype("String");
         b.getIpsSrcFile().save(true, null);
 
@@ -319,7 +319,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         //initial build: all ipsobjects will be touched
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         
-        IAttribute cAttr = c.newAttribute();
+        IPolicyCmptTypeAttribute cAttr = c.newPolicyCmptTypeAttribute();
         cAttr.setName("cAttr");
         c.getIpsSrcFile().save(true, null);
         
@@ -347,7 +347,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         //initial build: all ipsobjects will be touched
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         
-        IAttribute cAttr = c.newAttribute();
+        IPolicyCmptTypeAttribute cAttr = c.newPolicyCmptTypeAttribute();
         cAttr.setName("cAttr");
         c.getIpsSrcFile().save(true, null);
         
@@ -377,7 +377,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         //initial build: all ipsobjects will be touched
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         
-        IAttribute cAttr = c.newAttribute();
+        IPolicyCmptTypeAttribute cAttr = c.newPolicyCmptTypeAttribute();
         cAttr.setName("cAttr");
         c.getIpsSrcFile().save(true, null);
         
@@ -557,7 +557,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         builderProjectB.clear();
         builderProjectC.clear();
         
-        IAttribute attrA = a.newAttribute();
+        IPolicyCmptTypeAttribute attrA = a.newPolicyCmptTypeAttribute();
         attrA.setName("AttrA");
         attrA.setAttributeType(AttributeType.CHANGEABLE);
         attrA.setDatatype("String");
@@ -578,7 +578,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         builderProjectB.clear();
         builderProjectC.clear();
         
-        attrA = a.newAttribute();
+        attrA = a.newPolicyCmptTypeAttribute();
         attrA.setName("attrB");
         attrA.setAttributeType(AttributeType.CHANGEABLE);
         attrA.setDatatype("String");
@@ -658,7 +658,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         builderProjectC.clear();
  
         //change a product component type in the root project
-        IProductCmptTypeAttribute aProductTypeAttr = aProductType.newAttribute();
+        IProductCmptTypeAttribute aProductTypeAttr = aProductType.newProductCmptTypeAttribute();
         aProductTypeAttr.setName("aProductTypeAttr");
         aProductTypeAttr.setDatatype("Integer");
         aProductTypeAttr.setModifier(Modifier.PUBLIC);

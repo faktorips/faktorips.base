@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.xml.sax.SAXException;
 
@@ -50,7 +50,7 @@ import org.xml.sax.SAXException;
 public class IpsCutActionTest extends AbstractIpsPluginTest {
     
 	IpsCutAction cutAction;
-	IAttribute attribute;
+	IPolicyCmptTypeAttribute attribute;
 	IPolicyCmptType pcType;
 	
     protected void setUp() throws Exception {
@@ -62,7 +62,7 @@ public class IpsCutActionTest extends AbstractIpsPluginTest {
 
         IIpsSrcFile pdSrcFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
         pcType = (PolicyCmptType)pdSrcFile.getIpsObject();
-        attribute = pcType.newAttribute();
+        attribute = pcType.newPolicyCmptTypeAttribute();
 
         cutAction = new IpsCutAction(new TestSelectionProvider(), IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell());
 

@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -447,11 +447,11 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         assertEquals(false, testCaseX.containsDifferenceToModel());
         
         PolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "PolicyCmptType");
-        IAttribute attribute = policyCmptType.newAttribute();
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setName("Attribute1");
         attribute.setDatatype("String");
         attribute.setDefaultValue("Test1");
-        attribute = policyCmptType.newAttribute();
+        attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setName("Attribute2");
         attribute.setDatatype("String");
         attribute.setDefaultValue("Test2");

@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
 /**
@@ -89,7 +89,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
     }
     
     public void testChangeIpsPartProperty() throws CoreException {
-        IAttribute attribute = type.newAttribute();
+        IPolicyCmptTypeAttribute attribute = type.newPolicyCmptTypeAttribute();
         file.save(true, null);
         
         contentChangeListener.count = 0;
@@ -110,7 +110,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
     }
 
     public void testAddPart() throws CoreException {
-        IAttribute attribute = type.newAttribute();
+        IPolicyCmptTypeAttribute attribute = type.newPolicyCmptTypeAttribute();
         
         assertEquals(1, contentChangeListener.count);
         assertEquals(1, statusChangeListener.count);
@@ -120,14 +120,14 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         assertEquals(attribute, contentChangeListener.lastEvent.getPart());
         assertEquals(0, contentChangeListener.lastEvent.getMovedParts().length);
         
-        type.newAttribute();
+        type.newPolicyCmptTypeAttribute();
         assertEquals(2, contentChangeListener.count);
         assertEquals(1, statusChangeListener.count);
     }
 
     public void testDeletePart() throws CoreException {
-        IAttribute attribute1 = type.newAttribute();
-        IAttribute attribute2 = type.newAttribute();
+        IPolicyCmptTypeAttribute attribute1 = type.newPolicyCmptTypeAttribute();
+        IPolicyCmptTypeAttribute attribute2 = type.newPolicyCmptTypeAttribute();
         file.save(true, null);
         contentChangeListener.count = 0;
         statusChangeListener .count = 0;

@@ -79,7 +79,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
     
     public void testSave() throws IOException, CoreException {
-        policyCmptType.newAttribute();
+        policyCmptType.newPolicyCmptTypeAttribute();
         assertTrue(parsableFile.isDirty());
         
         lastModStatusEvent = null;
@@ -98,7 +98,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     public void testDiscardChanges_ParsableContents() throws Exception {
         IPolicyCmptType type = newPolicyCmptType(this.ipsProject, "Policy");
         IIpsSrcFile file = type.getIpsSrcFile();
-        type.newAttribute();
+        type.newPolicyCmptTypeAttribute();
         assertEquals(1, type.getNumOfAttributes());
         assertTrue(file.isDirty());
         type.setSupertype("UnknownType");
@@ -174,7 +174,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     public void testNewMemento() throws CoreException {
-        policyCmptType.newAttribute();
+        policyCmptType.newPolicyCmptTypeAttribute();
         IIpsSrcFileMemento memento = parsableFile.newMemento();
         assertEquals(true, memento.isDirty());
         assertEquals(parsableFile, memento.getIpsSrcFile());
@@ -182,7 +182,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     
     public void testSetMemento() throws CoreException {
         IIpsSrcFileMemento memento = parsableFile.newMemento();
-        policyCmptType.newAttribute();
+        policyCmptType.newPolicyCmptTypeAttribute();
         parsableFile.setMemento(memento);
         assertEquals(0, policyCmptType.getNumOfAttributes());
         assertFalse(parsableFile.isDirty());
