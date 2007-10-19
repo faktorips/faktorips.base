@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -58,6 +59,70 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         implementationRelation = motorPolicyType.newPolicyCmptTypeAssociation();
         implementationRelation.setTargetRoleSingular("CollisionCoverage");
         implementationRelation.setTarget(collisionCoverageType.getQualifiedName());
+    }
+    
+    public void testIsQualificationPossible() throws CoreException {
+        relation.setTarget("UnknownTarget");
+        assertFalse(relation.isQualificationPossible(ipsProject));
+        
+        relation.setTarget(targetType.getQualifiedName());
+        targetType.setConfigurableByProductCmptType(false);
+        assertFalse(relation.isQualificationPossible(ipsProject));
+
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "producttypes.CoverageType");
+        targetType.setProductCmptType(productCmptType.getQualifiedName());
+        targetType.setConfigurableByProductCmptType(true);
+        relation.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
+        assertFalse(relation.isQualificationPossible(ipsProject));
+
+        relation.setRelationType(RelationType.ASSOCIATION);
+        assertFalse(relation.isQualificationPossible(ipsProject));
+        
+        relation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        assertTrue(relation.isQualificationPossible(ipsProject));
+    }
+    
+    public void testFindQualifierCandidate() throws CoreException {
+        relation.setQualified(false);
+        relation.setTarget("UnknownTarget");
+        assertEquals("", relation.findQualifierCandidate(ipsProject));
+        
+        relation.setTarget(targetType.getQualifiedName());
+        targetType.setConfigurableByProductCmptType(false);
+        assertEquals("", relation.findQualifierCandidate(ipsProject));
+        
+        targetType.setConfigurableByProductCmptType(true);
+        targetType.setProductCmptType("UnkownType");
+        assertEquals("UnkownType", relation.findQualifierCandidate(ipsProject));
+        
+        relation.setQualified(true);
+        assertEquals("UnkownType", relation.findQualifierCandidate(ipsProject));
+    }
+    
+    public void testFindQualifier() throws CoreException {
+        relation.setQualified(false);
+        assertNull(relation.findQualifier(ipsProject));
+
+        relation.setQualified(true);
+        relation.setTarget("UnknownTarget");
+        assertNull(relation.findQualifier(ipsProject));
+        
+        relation.setTarget(targetType.getQualifiedName());
+        targetType.setConfigurableByProductCmptType(false);
+        assertNull(relation.findQualifier(ipsProject));
+        
+        targetType.setConfigurableByProductCmptType(true);
+        targetType.setProductCmptType("UnkownType");
+        assertNull(relation.findQualifier(ipsProject));
+        
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "producttypes.CoverageType");
+        targetType.setProductCmptType(productCmptType.getQualifiedName());
+        
+        assertEquals(productCmptType, relation.findQualifier(ipsProject));
+    }
+    
+    public void testSetQualified() {
+        testPropertyAccessReadWrite(PolicyCmptTypeAssociation.class, IPolicyCmptTypeAssociation.PROPERTY_QUALIFIED, relation, Boolean.TRUE);
     }
     
     public void testValidateContainerRelation_ReverseRelation_Mismtach() throws CoreException {
@@ -264,6 +329,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertEquals(42, relation.getId());
         assertEquals(RelationType.ASSOCIATION, relation.getRelationType());
         assertTrue(relation.isDerivedUnion());
+        assertTrue(relation.isQualified());
         assertEquals("MotorPart", relation.getTarget());
         assertEquals("blabla", relation.getDescription());
         assertEquals("PolicyPart", relation.getTargetRoleSingular());
@@ -283,6 +349,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         relation = pcType.newPolicyCmptTypeAssociation(); 
         relation.setRelationType(RelationType.ASSOCIATION);
         relation.setDerivedUnion(true);
+        relation.setQualified(true);
         relation.setTarget("target");
         relation.setTargetRoleSingular("targetRoleSingular");
         relation.setTargetRolePlural("targetRolePlural");
@@ -303,6 +370,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         copy.initFromXml(element);
         assertEquals(RelationType.ASSOCIATION, copy.getRelationType());
         assertTrue(copy.isDerivedUnion());
+        assertTrue(copy.isQualified());
         assertEquals("target", copy.getTarget());
         assertEquals("targetRoleSingular", copy.getTargetRoleSingular());
         assertEquals("targetRolePlural", copy.getTargetRolePlural());

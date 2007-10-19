@@ -199,7 +199,7 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
      * {@inheritDoc}
      */
     public boolean is1ToMany() {
-        return maxCardinality > 1;
+        return isQualified() || maxCardinality > 1;
     }
     
     /**

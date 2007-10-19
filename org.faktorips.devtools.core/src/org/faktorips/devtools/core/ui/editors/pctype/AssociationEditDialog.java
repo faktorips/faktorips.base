@@ -55,7 +55,7 @@ import org.faktorips.devtools.core.util.QNameUtil;
 
 
 /**
- * A dialog to edit a relation.
+ * A dialog to edit an association.
  */
 public class AssociationEditDialog extends IpsPartEditDialog2 {
     
@@ -102,13 +102,10 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     	createGeneralControls(groupGeneral);
         
         uiToolkit.createVerticalSpacer(c, 12);
-        
-        // Group groupPolicySide = uiToolkit.createGroup(c, Messages.RelationEditDialog_GroupLabel_PolicySide);
-        createDerivedUnionGroup(uiToolkit.createGroup(c, "Derived union"));
+        createQualificationGroup(uiToolkit.createGroup(c, "Qualification"));
         
         uiToolkit.createVerticalSpacer(c, 12);
-        
-        createQualificationGroup(uiToolkit.createGroup(c, "Qualification"));
+        createDerivedUnionGroup(uiToolkit.createGroup(c, "Derived union"));
         
         return c;
     }
@@ -200,6 +197,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         // uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelContainerRel);
         Checkbox subsetCheckbox = uiToolkit.createCheckbox(c, "This association defines a subset of a derived union");
         bindingContext.bindContent(subsetCheckbox, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
+        bindingContext.bindEnabled(subsetCheckbox, association, IPolicyCmptTypeAssociation.PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE);
         
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -217,7 +215,10 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
         Checkbox qualifiedCheckbox = uiToolkit.createCheckbox(workArea);
-        uiToolkit.createFormLabel(workArea, "Note: For qualified associations multiplicty is defined per qualified instance.");
+        bindingContext.bindContent(qualifiedCheckbox, association, IAssociation.PROPERTY_QUALIFIED);
+        bindingContext.bindEnabled(qualifiedCheckbox, pmoAssociation, PmoAssociation.PROPERTY_QUALIFICATION_POSSIBLE);
+        Label note = uiToolkit.createFormLabel(workArea, StringUtils.rightPad("", 120));
+        bindingContext.bindContent(note, pmoAssociation, PmoAssociation.PROPERTY_QUALIFICATION_NOTE);
         bindingContext.add(new ButtonTextBinding(qualifiedCheckbox, pmoAssociation, PmoAssociation.PROPERTY_QUALIFICATION_LABEL));
     }
 
@@ -225,6 +226,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         public final static String PROPERTY_SUBSET = "subset";
         public final static String PROPERTY_QUALIFICATION_LABEL = "qualificationLabel";
+        public final static String PROPERTY_QUALIFICATION_NOTE = "qualificationNote";
+        public final static String PROPERTY_QUALIFICATION_POSSIBLE = "qualificationPossible";
         public final static String PROPERTY_CONSTRAINED_NOTE = "constrainedNote";
 
         private boolean subset;
@@ -249,20 +252,51 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         public String getQualificationLabel() {
             String label = "This association is qualified";
             try {
-                IPolicyCmptType type = association.findTargetPolicyCmptType(ipsProject);
-                if (type!=null) {
-                    String productCmptType = QNameUtil.getUnqualifiedName(type.getProductCmptType());
-                    return label + " by type '" + productCmptType + "'";
+                String productCmptType = QNameUtil.getUnqualifiedName(association.findQualifierCandidate(ipsProject));
+                if (StringUtils.isNotEmpty(productCmptType)) {
+                    label = label + " by type '" + productCmptType + "'";
                 }
             }
             catch (CoreException e) {
                 IpsPlugin.log(e);
             }
-            return label;            
+            return StringUtils.rightPad(label, 80);            
+        }
+
+        public String getQualificationNote() {
+            String note = "Note: ";
+            if (!association.isCompositionMasterToDetail()) {
+                note = note + "Qualification is only applicable for compositions (master to detail).";
+            } else {
+                try {
+                    if (!association.isQualificationPossible(ipsProject)) {
+                        note = note + "Qualification is only applicable, if the target type is configurable by a product.";
+                    } else {
+                        note = note + "For qualified associations multiplicty is defined per qualified instance.";
+                    }
+                }
+                catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
+            }
+            return StringUtils.rightPad(note, 90);
+        }
+        
+        public boolean isQualificationPossible() {
+            try {
+                return association.isQualificationPossible(ipsProject);
+            }
+            catch (CoreException e) {
+                IpsPlugin.log(e);
+                return false;
+            }
         }
 
         public String getConstrainedNote() {
             try {
+                if (association.isCompositionDetailToMaster()) {
+                    return StringUtils.rightPad("", 120) + StringUtils.rightPad("\n", 120) + StringUtils.right("\n", 120);
+                }
                 IProductCmptTypeAssociation matchingAss = association.findMatchingProductCmptTypeAssociation(ipsProject);
                 if (matchingAss!=null) {
                     String type = matchingAss.getProductCmptType().getName();
@@ -276,7 +310,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                     if (sourceProductType!=null && targetType!=null) {
                         IProductCmptType targetProductType = targetType.findProductCmptType(ipsProject);
                         if (targetProductType!=null) {
-                            return note + "\nTo constrain the association by product structure create an association between the "
+                            return note + "\nTo constrain the association by product structure, create an association between the "
                                 + "\nproduct component types '" + sourceProductType.getName() + "' and '" + targetProductType.getName() + "'.";
                         }
                     }
@@ -289,6 +323,16 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             }
             
         }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected void partHasChanged() {
+            if (association.isCompositionDetailToMaster()) {
+                subset = false;
+            }
+        }
+        
         
     }
 }

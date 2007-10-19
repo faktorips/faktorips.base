@@ -50,6 +50,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     final static String TAG_NAME = "Association"; //$NON-NLS-1$
 
     private RelationType type = IPolicyCmptTypeAssociation.DEFAULT_RELATION_TYPE;
+    private boolean qualified = false;
     private boolean productRelevant = true;
     private String inverseRelation = ""; //$NON-NLS-1$
     private String targetRoleSingularProductSide = ""; //$NON-NLS-1$
@@ -140,6 +141,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             subsettedDerivedUnion = "";
             inverseRelation = "";
             derivedUnion = false;
+            qualified = false;
             minCardinality = 0;
             maxCardinality = 1;
             productRelevant = false;
@@ -225,8 +227,59 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         productRelevant = newValue;
         valueChanged(oldValue, newValue);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+	public boolean isQualified() {
+        return qualified;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setQualified(boolean newValue) {
+        boolean oldValue = qualified;
+        qualified = newValue;
+        valueChanged(oldValue, newValue);
+    }
     
-	/**
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isQualificationPossible(IIpsProject ipsProject) throws CoreException {
+        if (!isCompositionMasterToDetail()) {
+            return false;
+        }
+        IPolicyCmptType targetType = findTargetPolicyCmptType(ipsProject);
+        if (targetType==null || !targetType.isConfigurableByProductCmptType()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String findQualifierCandidate(IIpsProject ipsProject) throws CoreException {
+        IPolicyCmptType targetType = findTargetPolicyCmptType(ipsProject);
+        if (targetType==null || !targetType.isConfigurableByProductCmptType()) {
+            return "";
+        }
+        return targetType.getProductCmptType();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IProductCmptType findQualifier(IIpsProject ipsProject) throws CoreException {
+        if (!qualified) {
+            return null;
+        }
+        return ipsProject.findProductCmptType(findQualifierCandidate(ipsProject));
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public String getTargetRoleSingularProductSide() {
@@ -488,6 +541,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             type = IPolicyCmptTypeAssociation.DEFAULT_RELATION_TYPE;
         }
         derivedUnion = Boolean.valueOf(element.getAttribute(PROPERTY_DERIVED_UNION)).booleanValue();
+        qualified = Boolean.valueOf(element.getAttribute(PROPERTY_QUALIFIED)).booleanValue();
         target = element.getAttribute(PROPERTY_TARGET);
         targetRoleSingular = element.getAttribute(PROPERTY_TARGET_ROLE_SINGULAR);
         targetRolePlural = element.getAttribute(PROPERTY_TARGET_ROLE_PLURAL);
@@ -546,6 +600,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_RELATIONTYPE, type.getId());
         newElement.setAttribute(PROPERTY_DERIVED_UNION, "" + derivedUnion); //$NON-NLS-1$
+        newElement.setAttribute(PROPERTY_QUALIFIED, "" + qualified); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_TARGET, target);
         newElement.setAttribute(PROPERTY_TARGET_ROLE_SINGULAR, targetRoleSingular);
         newElement.setAttribute(PROPERTY_TARGET_ROLE_PLURAL, targetRolePlural);

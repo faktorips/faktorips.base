@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model.pctype;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 
@@ -261,51 +262,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     public IProductCmptTypeAssociation findMatchingProductCmptTypeAssociation(IIpsProject ipsProject) throws CoreException;
     
     /**
-     * Returns <code>true</code> if this is an abstract, read-only container relation. 
-     * otherwise false.
-     */
-    public boolean isDerivedUnion();
-    
-    /**
-     * Sets the information if this is an abstract read-only container relation or not.
-     */
-    public void setDerivedUnion(boolean flag);
-    
-    /**
-     * Returns the minmum number of target instances required in this relation.   
-     */
-    public int getMinCardinality();
-    
-    /**
-     * Sets the minmum number of target instances required in this relation.   
-     */
-    public void setMinCardinality(int newValue);
-    
-    /**
-     * Returns the maxmium number of target instances allowed in this relation.
-     * If the number is not limited, CARDINALITY_MANY is returned. 
-     */
-    public int getMaxCardinality();
-    
-    /**
-     * Returns true if this is a 1 (or 0) to many relation. This is the case if
-     * the max cardinality is greater than 1.
-     */
-    public boolean is1ToMany();
-    
-    /**
-     * Returns true if this is a 1 (or 0) to 1 relation. This is the case if
-     * the max cardinality is 1.
-     */
-    public boolean is1To1();
-    
-    /**
-     * Sets the maxmium number of target instances allowed in this relation.
-     * An unlimited number is represented by CARDINALITY_MANY.
-     */
-    public void setMaxCardinality(int newValue);
-    
-    /**
      * Returns true if this relation is can be customized during product definition.
      */
     public boolean isProductRelevant();
@@ -415,4 +371,50 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      */
     public void setMaxCardinalityProductSide(int newValue);
     
+    /**
+     * Sets whether this association is qualified or not.
+     */
+    public void setQualified(boolean newValue);
+    
+    /**
+     * Returns <code>true</code> if it is possible to mark this association as beeing qualified, otherwise <code>false</code>.
+     * It is possible to mark an association as beeing qualified if the following conditions hold true:
+     * <p>
+     * <ul>
+     * <li>The association is a composition (master-to-detail)</li>
+     * <li>Te target policy component type exists and is configurable by a product component type.
+     * </ul>
+     *  
+     * @param ipsProject The ips project which ips object path is used to search.
+     * 
+     * @throws CoreException if an error occurs while searching for the target.
+     * 
+     * @see #setQualified(boolean)
+     */
+    public boolean isQualificationPossible(IIpsProject ipsProject) throws CoreException;
+    
+    /**
+     * Returns the (fully qualified) name of the product component type that can qualify this association.
+     * Candidate for a qualifier is *the* product component type that configures the target of this association. 
+     * In contrast to {@link #findQualifier(IIpsProject)} this method returns the name, even when this association 
+     * is not marked as qualified and/or the product component type isn't found. However it is a finder() method (not a getter)
+     * because at least the target policy component type has to be found. 
+     * <p>
+     * Returns am empty String if either this association can't be qualified.
+     * 
+     * @param ipsProject The ips project which ips object path is used to search.
+     * 
+     * @throws CoreException if an error occurs while searching for the target.
+     */
+    public String findQualifierCandidate(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Returns the product component type that qualifies this association. Returns <code>null</code>
+     * if either the association is not qualified or the qualifier can't be found.
+     * 
+     * @param ipsProject The ips project which ips object path is used to search.
+     * 
+     * @throws CoreException if an error occurs while searching for the target.
+     */
+    public IProductCmptType findQualifier(IIpsProject ipsProject) throws CoreException;
 }

@@ -58,6 +58,13 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     public IProductCmptType getProductCmptType() {
         return (IProductCmptType)getParent();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isQualified() {
+        return false;
+    }
 
     /**
      * {@inheritDoc}

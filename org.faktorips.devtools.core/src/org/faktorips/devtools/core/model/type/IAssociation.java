@@ -45,6 +45,7 @@ public interface IAssociation extends IIpsObjectPart {
     public final static String PROPERTY_MAX_CARDINALITY = "maxCardinality"; //$NON-NLS-1$
     public final static String PROPERTY_DERIVED_UNION = "derivedUnion"; //$NON-NLS-1$
     public final static String PROPERTY_SUBSETTED_DERIVED_UNION = "subsettedDerivedUnion"; //$NON-NLS-1$
+    public final static String PROPERTY_QUALIFIED = "qualified"; //$NON-NLS-1$
     
     /**
      * Prefix for all message codes of this class.
@@ -202,10 +203,23 @@ public interface IAssociation extends IIpsObjectPart {
     public void setMinCardinality(int newValue);
     
     /**
-     * Returns the maxmium number of target instances allowed in this association.
+     * Returns the maxmium number of links allowed in this association.
+     * If this is a qualified association, the max cardinality specifies the number of links
+     * per qualifier(!).
+     * <p> 
      * If the number is not limited, CARDINALITY_MANY is returned. 
      */
     public int getMaxCardinality();
+    
+    /**
+     * Returns <code>true</code> if this association is qualified, <code>false</code> otherwise.
+     * <p>
+     * At the moment only compositions between policy component types can be qualified. In this case
+     * The qualifier is always the product component type that configures the target policy component type.
+     * <p>
+     * For associations between product component types, this method returns <code>false</code>.
+     */
+    public boolean isQualified();
     
     /**
      * Returns <code>true</code> if this is a to-many association. This is the case if
