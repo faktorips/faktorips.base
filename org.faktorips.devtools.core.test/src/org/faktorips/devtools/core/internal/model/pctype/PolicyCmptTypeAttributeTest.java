@@ -18,7 +18,6 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.RangeValueSet;
@@ -31,11 +30,9 @@ import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.Modifier;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -45,7 +42,7 @@ import org.w3c.dom.NodeList;
 /**
  *
  */
-public class AttributeTest extends AbstractIpsPluginTest {
+public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     
     private IIpsPackageFragmentRoot ipsRootFolder;
     private IIpsPackageFragment ipsFolder;
@@ -205,7 +202,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
         copy = pcType.newPolicyCmptTypeAttribute();
         copy.initFromXml(element);
         assertTrue(attribute.getOverwrites());
-        assertEquals("", attribute.getDatatype());
     }
     
     /**
@@ -232,48 +228,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
     	assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
     }
 
-    public void testOverwrites() throws Exception {
-    	IPolicyCmptType supersupertype = newPolicyCmptType(project, "sup.SuperSuperType");
-    	IPolicyCmptTypeAttribute supersuperAttr = supersupertype.newPolicyCmptTypeAttribute();
-    	supersuperAttr.setDatatype("superDatatype");
-    	supersuperAttr.setProductRelevant(false);
-    	supersuperAttr.setModifier(Modifier.PUBLIC);
-    	supersuperAttr.setAttributeType(AttributeType.CHANGEABLE);
-    	supersuperAttr.setName("name");
-
-    	pcType.setSupertype(supersupertype.getQualifiedName());
-    	attribute.setDatatype("Datatype");
-    	attribute.setProductRelevant(true);
-    	attribute.setModifier(Modifier.PUBLISHED);
-    	attribute.setAttributeType(AttributeType.CONSTANT);
-    	attribute.setName("name");
-    	
-    	assertFalse(attribute.getDatatype().equals(supersuperAttr.getDatatype()));
-    	assertFalse(attribute.isProductRelevant() == supersuperAttr.isProductRelevant());
-    	assertFalse(attribute.getModifier() == supersuperAttr.getModifier());
-    	assertFalse(attribute.getAttributeType() == supersuperAttr.getAttributeType());
-    	
-    	attribute.setOverwrites(true);
-    	assertTrue(attribute.getDatatype().equals(supersuperAttr.getDatatype()));
-    	assertTrue(attribute.isProductRelevant() == supersuperAttr.isProductRelevant());
-    	assertTrue(attribute.getModifier() == supersuperAttr.getModifier());
-    	assertTrue(attribute.getAttributeType() == supersuperAttr.getAttributeType());
-
-    	IPolicyCmptType supertype = newPolicyCmptType(project, "sup.SuperType");
-    	pcType.setSupertype(supertype.getQualifiedName());
-    	supertype.setSupertype(supersupertype.getQualifiedName());
-    	
-    	IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute();
-    	superAttr.setName("name");
-    	superAttr.setOverwrites(true);
-
-    	assertTrue(attribute.getDatatype().equals(supersuperAttr.getDatatype()));
-    	assertTrue(attribute.isProductRelevant() == supersuperAttr.isProductRelevant());
-    	assertTrue(attribute.getModifier() == supersuperAttr.getModifier());
-    	assertTrue(attribute.getAttributeType() == supersuperAttr.getAttributeType());
-    	
-    }
-    
     public void testValidate_nothingToOverwrite() throws Exception {
     	attribute.setName("name");
 
@@ -307,6 +261,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     	ml = attribute.validate();
     	assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NAME_COLLISION));
     }
+
 }
 
     
