@@ -25,14 +25,15 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -69,35 +70,16 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
-    public String getDatatype() {
-        if (!overwrites) {
-            return super.getDatatype();
-        }
-        IPolicyCmptTypeAttribute superAttr;
-        try {
-            superAttr = findSupertypeAttribute();
-            if (superAttr != null) {
-                return superAttr.getDatatype();
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
-        return ""; //$NON-NLS-1$
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IPolicyCmptTypeAttribute findSupertypeAttribute() throws CoreException {
-        IPolicyCmptType supertype = getPolicyCmptType().findSupertype();
-        if (supertype == null) {
+    public IPolicyCmptTypeAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws CoreException {
+        IType supertype = getPolicyCmptType().findSupertype(ipsProject);
+        if (supertype==null) {
             return null;
         }
-        IPolicyCmptTypeAttribute a = supertype.findAttributeInSupertypeHierarchy(name);
-        if (this==a) {
-            return null; // can happen if the type hierarchy contains a cycle
+        IAttribute candidate = supertype.findAttribute(name, ipsProject);
+        if (candidate==this) {
+            return null; // can happen if we have a cycle in the type hierarchy!
         }
-        return a;
+        return (IPolicyCmptTypeAttribute)candidate;
     }
 
     /**
@@ -166,19 +148,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      * {@inheritDoc}
      */
     public AttributeType getAttributeType() {
-        if (!overwrites) {
-            return attributeType;
-        }
-        IPolicyCmptTypeAttribute superAttr;
-        try {
-            superAttr = findSupertypeAttribute();
-            if (superAttr != null) {
-                return superAttr.getAttributeType();
-            }
-            return AttributeType.CHANGEABLE;
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        return attributeType;
     }
 
     /**
@@ -212,39 +182,8 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
-    public Modifier getModifier() {
-        if (!overwrites) {
-            return super.getModifier();
-        }
-        IPolicyCmptTypeAttribute superAttr;
-        try {
-            superAttr = findSupertypeAttribute();
-            if (superAttr != null) {
-                return superAttr.getModifier();
-            }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-        return Modifier.PUBLISHED;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public boolean isProductRelevant() {
-        if (!overwrites) {
-            return productRelevant;
-        }
-        IPolicyCmptTypeAttribute superAttr;
-        try {
-            superAttr = findSupertypeAttribute();
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-        if (superAttr != null) {
-            return superAttr.isProductRelevant();
-        }
-        return true;
+        return productRelevant;
     }
 
     /**
@@ -321,6 +260,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      */
     protected void validateThis(MessageList result) throws CoreException {
         super.validateThis(result);
+        IIpsProject ipsProject = getIpsProject();
         if (isProductRelevant() && !getPolicyCmptType().isConfigurableByProductCmptType()) {
             String text = Messages.Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;
             result.add(new Message(MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT, text, Message.ERROR,
@@ -335,7 +275,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             }
         }
 
-        IPolicyCmptTypeAttribute superAttr = findSupertypeAttribute();
+        IPolicyCmptTypeAttribute superAttr = findOverwrittenAttribute(ipsProject);
         if (overwrites) {
             if (superAttr == null) {
                 String text = NLS.bind(Messages.Attribute_msgNothingToOverwrite, getName());

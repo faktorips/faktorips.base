@@ -152,20 +152,14 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         
     }
     
-    /*
-     * Create the default value edit field, if the field exists, recreate it
-     */
     private void createDefaultValueEditField() {
         ValueDatatypeControlFactory datatypeCtrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(currentDatatype);
         defaultValueField = datatypeCtrlFactory.createEditField(uiToolkit, defaultEditFieldPlaceholder, currentDatatype, null);
         defaultValueField.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
-//        adjustLabelWidth();
 
         defaultEditFieldPlaceholder.layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout();
         bindingContext.bindContent(defaultValueField, attribute, IProductCmptTypeAttribute.PROPERTY_DEFAULT_VALUE);
-        
-        
     }
 
     public void contentsChanged(ContentChangeEvent event) {

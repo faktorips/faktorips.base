@@ -133,7 +133,7 @@ public interface IPolicyCmptTypeAttribute extends org.faktorips.devtools.core.mo
      * If this is a derived attribute which value is derived by a method defined in the
      * product component type, this method is search and returned.
      * 
-     * @param ipsProject The projeht which ips object path is used to search.
+     * @param ipsProject The project which ips object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching.
      */
@@ -198,8 +198,9 @@ public interface IPolicyCmptTypeAttribute extends org.faktorips.devtools.core.mo
      * Returns the first attribute found with the same name in the supertypes hierarchy or
      * <code>null</code> if no such attribute exists.
      * 
-     * @throws CoreException if an error occurs while searching the attribute.
+     * @param ipsProject The project which ips object path is used to search.
+     * 
+     * @throws CoreException if an error occurs while searching.
      */
-    public IPolicyCmptTypeAttribute findSupertypeAttribute() throws CoreException;
-
+    public IPolicyCmptTypeAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws CoreException;
 }

@@ -64,26 +64,26 @@ public class AttributeTest extends AbstractIpsPluginTest {
         attribute = pcType.newPolicyCmptTypeAttribute();
     }
     
-    public void testFindSupertypeAttribute() throws CoreException {
+    public void testFindOverwrittenAttribute() throws CoreException {
         attribute.setName("a");
         IPolicyCmptType supertype = newPolicyCmptType(project, "Supertype");
         IPolicyCmptType supersupertype = newPolicyCmptType(project, "SuperSupertype");
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
         
-        assertNull(attribute.findSupertypeAttribute());
+        assertNull(attribute.findOverwrittenAttribute(project));
         
         IPolicyCmptTypeAttribute aInSupertype = supersupertype.newPolicyCmptTypeAttribute();
         aInSupertype.setName("a");
         
-        assertEquals(aInSupertype, attribute.findSupertypeAttribute());
+        assertEquals(aInSupertype, attribute.findOverwrittenAttribute(project));
         
         // cycle in type hierarchy
         supersupertype.setSupertype(pcType.getQualifiedName());
-        assertEquals(aInSupertype, attribute.findSupertypeAttribute());
+        assertEquals(aInSupertype, attribute.findOverwrittenAttribute(project));
 
         aInSupertype.delete();
-        assertNull(attribute.findSupertypeAttribute()); // this should not return a itself!
+        assertNull(attribute.findOverwrittenAttribute(project)); // this should not return a itself!
     }
     
     public void testGetConfigElementType() {

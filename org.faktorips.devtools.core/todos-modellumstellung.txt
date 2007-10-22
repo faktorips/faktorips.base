@@ -1,50 +1,36 @@
+Klären:
+=======
+Abhängigkeiten zwischen den Ableitungshierarchien auf Verrtrags & Produktseite. 
+=> Erbt ein
+Abstrakt Flag & abstrakte Methoden bei ProductCmptTypes / Formulas.
+Aggregation Kind / RelationType
+Modelltype-Editoren: 2 oder 4 Sections verwenden? Preference einführen?
 
-
-Type muss Datatype implementieren!!!
-
-
-ProductCmptType & ProductCmptTypeEditor
- - Dialog fuer Attribute (Zusammenfassen auf eine Seite, Description Page fehlt)
- - Beziehungen: Derived Union, AggregationKind, Pruefungen
- - Pruefungen fuer ProductCmptType. Welche Beziehungen gibt es zwischen den Ableitungshierarchien auf Vertrags & Produktseite? 
-
+ToDos
+=====
 Entfernen der "Product-side" aus dem IPolicyCmptTypeAssociation.
 Adapter IPolicyCmptTypeAssociation to IRelation
- 
-Validierung: Einfuerhung IIpsProject Parameter. Wollen wir auch direkt einen localCacheParameter einfuehren
-
+ Validierung: Einfuerhung IIpsProject Parameter. Wollen wir auch direkt einen localCacheParameter einfuehren
 NewProductCmptType Wizard
-IPolicyCmptType muss IType implementieren
- - in Formuala muessen die EnumDatatypes aus ProductCmptType beruecksichtigt werden.
- - Verwendung von IType statt IPolicCmptType
-=> Voraussetzung: Type implementiert Datatype. 
-
 PolicyCmptTypeAttribute
  - um computationMethod erweitern (setter, xml konvertierung, validierung)
  - (Brauchen wir das wirklich?)
  - Dialog umbauen
- 
-Korrektes Overloading von Attributen beruecksichtigen! Wo überall?
-
+ - Prüfungen ergänzen: Datatype, Modifier, Product-relevant, AttributeType, bei Überschriebenen Attributen
+ Korrektes Overloading von Attributen beruecksichtigen! Wo überall?
 Large Contents: Noch mal die Verwendung der Subtype-Hierarchy überprüfen
-
 Testen: Compare
+Codegenerierung Testen/Erweitern
+ - Unabhängige ProductCmptTypes
+ - Methoden von ProductCmptTypes
 
-
-Klären:
-=======
-XML-Format des Produktbausteins:
+XML-Format des Produktbausteins anpassen
   - Umbennen von "Relation" in "Link"
   - Umbennen von "pcTypeRelation" in "association"
   => Achtung hier muss auch die Laufzeit angepasst werden!!!
   
 Änderung der Sortierreihenfolge als eigener DeltaEntry.
-
-Benutzerfreundlichkeit:
-=======================
 Modellexplorer: Filter auf Vertrags / Produktklassen
 New PolicyCmptTypeWizard muss optional auch einen neuen ProductCmptType anlegen können.
-	
-x.) Bisherigen Wizard umbauen, dass man die Beziehung auf Produktseite mitanlegen kann, wenn beide PolicyCmptTypes konfigurierbar sind.
-
-
+Bisherigen RelationWizard umbauen, dass man die Beziehung auf Produktseite mitanlegen kann, wenn beide PolicyCmptTypes konfigurierbar sind.
+Lokalisierung

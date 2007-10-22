@@ -87,6 +87,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         createDerivedUnionGroup(uiToolkit.createGroup(panel, "Derived union"));
         createExtensionArea(panel, IExtensionPropertyDefinition.POSITION_BOTTOM);
         
+        extFactory.bind(bindingContext);
+        
         return panel;
     }
     

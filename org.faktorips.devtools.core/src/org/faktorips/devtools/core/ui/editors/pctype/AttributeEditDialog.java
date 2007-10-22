@@ -39,30 +39,31 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.IValueSet;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.model.pctype.Modifier;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
-import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.MessageCueController;
-import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.TableElementValidator;
 import org.faktorips.devtools.core.ui.controls.ValueSetEditControl;
-import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
+import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -70,21 +71,16 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Jan Ortmann
  */
-public class AttributeEditDialog extends IpsPartEditDialog  {
+public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsChangeListener {
 
+    // the attribute beeing edited.
     private IPolicyCmptTypeAttribute attribute;
+
+    private IIpsProject ipsProject;
+    
     private IValidationRule rule;
 
-    // edit fields
-    private TextField nameField;
-
-    private TextButtonField datatypeField;
-
-    private EnumValueField modifierField;
-
-    private EnumValueField attributeTypeField;
-
-    private CheckboxField productRelevantField;
+    private Text nameText;
     
     private EditField defaultValueField;
     
@@ -94,11 +90,6 @@ public class AttributeEditDialog extends IpsPartEditDialog  {
     private Label labelDefaultValue;
     
     private ExtensionPropertyControlFactory extFactory;
-    
-    /**
-     * Checkbox to edit the "overwrites"-Flag of the attribute.
-     */
-    private CheckboxField overrideField;
     
     private Checkbox validationRuleAdded;
     
@@ -131,7 +122,7 @@ public class AttributeEditDialog extends IpsPartEditDialog  {
      * Folder which contains the pages shown by this editor. Used to modify which page
      * is shown.
      */
-    private TabFolder folder;
+    private TabFolder tabFolder;
     
     /**
      * Flag that indicates whether this dialog should startUp with the rule page 
@@ -145,20 +136,13 @@ public class AttributeEditDialog extends IpsPartEditDialog  {
      */
     private IpsObjectUIController ruleUIController;
     
-    /**
-     * Listener to handle changes to the overwrites-Checkbox
-     */
-    private OverwritesListener overwritesListener;
+    private ValueSetType currentValueSetType;
     
-    private ValueSetType prevSelectedType;
-    
-    private ValueDatatype prevDatatype;
+    private ValueDatatype currentDatatype;
     
     // placeholder for the default edit field, the edit field for the default value depends on
     // the attributes datatype
     private Composite defaultEditFieldPlaceholder;
-    
-    private String prevDatatypeName;
     
     /**
      * @param parentShell
@@ -167,7 +151,15 @@ public class AttributeEditDialog extends IpsPartEditDialog  {
     public AttributeEditDialog(IPolicyCmptTypeAttribute attribute, Shell parentShell) {
         super(attribute, parentShell, Messages.AttributeEditDialog_title, true);
         this.attribute = attribute;
+        this.ipsProject = attribute.getIpsProject();
         this.rule = attribute.findValueSetRule();
+        try {
+            currentDatatype = attribute.findDatatype(ipsProject);
+        }
+        catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        currentValueSetType = attribute.getValueSet().getValueSetType();
         extFactory = new ExtensionPropertyControlFactory(attribute.getClass());
     }
     
@@ -175,36 +167,38 @@ public class AttributeEditDialog extends IpsPartEditDialog  {
 	 * {@inheritDoc}
 	 */
     protected Composite createWorkArea(Composite parent) throws CoreException {
-        folder = (TabFolder)parent;
+        tabFolder = (TabFolder)parent;
         
-        TabItem page = new TabItem(folder, SWT.NONE);
+        TabItem page = new TabItem(tabFolder, SWT.NONE);
         page.setText(Messages.AttributeEditDialog_generalTitle);
-        page.setControl(createGeneralPage(folder));
+        page.setControl(createGeneralPage(tabFolder));
 
-        page = new TabItem(folder, SWT.NONE);
+        page = new TabItem(tabFolder, SWT.NONE);
         page.setText(Messages.AttributeEditDialog_valuesetTitle);
-        page.setControl(createValueSetPage(folder));
+        page.setControl(createValueSetPage(tabFolder));
 
-        final TabItem validationRulePage = new TabItem(folder, SWT.NONE);
+        final TabItem validationRulePage = new TabItem(tabFolder, SWT.NONE);
         validationRulePage.setText(Messages.AttributeEditDialog_validationRuleTitle);
-        validationRulePage.setControl(createValidationRulePage(folder));
+        validationRulePage.setControl(createValidationRulePage(tabFolder));
         if (startWithRulePage) {
-        	folder.setSelection(3);
+        	tabFolder.setSelection(2);
         	ruleNameField.getControl().setFocus();
         } else {
-        	folder.setSelection(0);
-        	nameField.getControl().setFocus();
+        	tabFolder.setSelection(0);
+        	nameText.setFocus();
         }
 
-        createDescriptionTabItem(folder);
+        createDescriptionTabItem(tabFolder);
         
-        folder.addSelectionListener(new SelectionListener() {
+        tabFolder.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				widgetSelected(e);
 			}
 		
 			public void widgetSelected(SelectionEvent e) {
-                updateUIControllers();
+                if (ruleUIController != null) {
+                    ruleUIController.updateUI();
+                }
 			}
 		});
         
@@ -225,7 +219,7 @@ public class AttributeEditDialog extends IpsPartEditDialog  {
         //initial update of the checkBox "validationRuleAdded"
         updateFieldValidationRuleAdded();
         
-        return folder;
+        return tabFolder;
     }
     
     private void updateFieldValidationRuleAdded(){
@@ -252,8 +246,8 @@ public class AttributeEditDialog extends IpsPartEditDialog  {
      */
     protected void showValidationRulePage() {
     	startWithRulePage = true;
-    	if (folder != null) {
-    		folder.setSelection(3);
+    	if (tabFolder != null) {
+    		tabFolder.setSelection(3);
     	}
     }
 
@@ -264,47 +258,55 @@ public class AttributeEditDialog extends IpsPartEditDialog  {
         extFactory.createControls(workArea, uiToolkit, attribute, IExtensionPropertyDefinition.POSITION_TOP);
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelName);
-        Text nameText = uiToolkit.createText(workArea);
+        nameText = uiToolkit.createText(workArea);
+        bindingContext.bindContent(nameText, attribute, IAttribute.PROPERTY_NAME);
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_lableOverwrites);
-        Checkbox cb = new Checkbox(workArea, uiToolkit);
-        overwritesListener = new OverwritesListener(cb);
-        cb.getButton().addSelectionListener(overwritesListener);
+        final Checkbox cb = new Checkbox(workArea, uiToolkit);
+        EditField overwrittenField = bindingContext.bindContent(cb, attribute, IPolicyCmptTypeAttribute.PROPERTY_OVERWRITES);
+        overwrittenField.addChangeListener(new ValueChangeListener() {
 
+            public void valueChanged(FieldValueChangedEvent event) {
+                if (cb.isChecked()) {
+                    try {
+                        IPolicyCmptTypeAttribute overwrittenAttribute = attribute.findOverwrittenAttribute(ipsProject);
+                        if (overwrittenAttribute!=null) {
+                            attribute.setDatatype(overwrittenAttribute.getDatatype());
+                            attribute.setModifier(overwrittenAttribute.getModifier());
+                            attribute.setProductRelevant(overwrittenAttribute.isProductRelevant());
+                            attribute.setAttributeType(overwrittenAttribute.getAttributeType());
+                            attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
+                        }
+                    }
+                    catch (CoreException e) {
+                        IpsPlugin.log(e);
+                    }
+                }
+                
+            }
+            
+        });
+        
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelDatatype);
         datatypeControl = uiToolkit.createDatatypeRefEdit(attribute.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
-
+        bindingContext.bindContent(datatypeControl, attribute, IAttribute.PROPERTY_DATATYPE);
+        
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelModifier);
         Combo modifierCombo = uiToolkit.createCombo(workArea, Modifier.getEnumType());
-
+        bindingContext.bindContent(modifierCombo, attribute, IAttribute.PROPERTY_MODIFIER, Modifier.getEnumType());
+        
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelAttrType);
         Combo typeCombo = uiToolkit.createCombo(workArea, AttributeType.getEnumType());
-
+        bindingContext.bindContent(typeCombo, attribute, IPolicyCmptTypeAttribute.PROPERTY_ATTRIBUTE_TYPE, AttributeType.getEnumType());
+        
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelProdRelevant);
         Checkbox checkbox = uiToolkit.createCheckbox(workArea);
-
+        bindingContext.bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
+        
         extFactory.createControls(workArea, uiToolkit, attribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
-        
-        // create fields
-        nameField = new TextField(nameText);
-        datatypeField = new TextButtonField(datatypeControl);
-        modifierField = new EnumValueField(modifierCombo, Modifier.getEnumType());
-        attributeTypeField = new EnumValueField(typeCombo, AttributeType.getEnumType());
-        productRelevantField = new CheckboxField(checkbox);
-        overrideField = new CheckboxField(cb);
-        
-        datatypeField.addChangeListener(new ValueChangeListener(){
-            public void valueChanged(FieldValueChangedEvent e) {
-                // set the datatype of the attribute without using the ui controller, 
-                // because we need this information when creating the value set controls,
-                // maybe the ui controler notification is to late
-                attribute.setDatatype(e.field.getText());
-                updateValueSetTypes(e.field.getText());
-                createDefaultValueEditField();
-            }
-        });
+        extFactory.bind(bindingContext);
         
         return c;
     }
@@ -320,7 +322,9 @@ public class AttributeEditDialog extends IpsPartEditDialog  {
         defaultEditFieldPlaceholder.setLayoutData(new GridData(GridData.FILL_BOTH));
         createDefaultValueEditField();
         
+        IpsObjectUIController uiController = new IpsObjectUIController(attribute);
         valueSetEditControl = new ValueSetEditControl(pageControl, uiToolkit, uiController, attribute, new PcTypeValidator());
+        updateValueSetTypes();
         
         Object layoutData = valueSetEditControl.getLayoutData();
         if (layoutData instanceof GridData){
@@ -353,36 +357,57 @@ public class AttributeEditDialog extends IpsPartEditDialog  {
         }
     }
 
-    /*
-     * Create the default value edit field, if the field exists, recreate it
-     */
     private void createDefaultValueEditField() {
-        if (attribute.getDatatype().equals(prevDatatypeName)){
-            return;
-        }
-        prevDatatypeName = attribute.getDatatype();
-        
-        if (defaultValueField != null){
-            uiController.remove(defaultValueField);
-            defaultValueField.getControl().dispose();
-        }
-        
-        ValueDatatype datatypeOfAttribute = null;
-        try { 
-            datatypeOfAttribute = attribute.findDatatype();
-        }
-        catch (CoreException e) {
-            // ignore exception, the default edit field will be created
-        }
-        ValueDatatypeControlFactory datatypeCtrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(datatypeOfAttribute);
-        defaultValueField = datatypeCtrlFactory.createEditField(uiToolkit, defaultEditFieldPlaceholder, datatypeOfAttribute, null);
+        ValueDatatypeControlFactory datatypeCtrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(currentDatatype);
+        defaultValueField = datatypeCtrlFactory.createEditField(uiToolkit, defaultEditFieldPlaceholder, currentDatatype, null);
         defaultValueField.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
-        adjustLabelWidth();
+//        adjustLabelWidth();
 
         defaultEditFieldPlaceholder.layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout();
+        bindingContext.bindContent(defaultValueField, attribute, IProductCmptTypeAttribute.PROPERTY_DEFAULT_VALUE);
+    }
 
-        uiController.add(defaultValueField, IPolicyCmptTypeAttribute.PROPERTY_DEFAULT_VALUE);
+    public void contentsChanged(ContentChangeEvent event) {
+        super.contentsChanged(event);
+        ValueDatatype newDatatype = null;
+        try {
+            newDatatype  = attribute.findDatatype(ipsProject);
+        }
+        catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        boolean enabled = newDatatype != null;
+        defaultValueField.getControl().setEnabled(enabled);
+        valueSetEditControl.setDataChangeable(enabled);
+        if (newDatatype==null || newDatatype.equals(currentDatatype)) {
+            return;
+        }
+        currentDatatype = newDatatype;
+        if (defaultValueField!=null) {
+            bindingContext.removeBindings(defaultValueField.getControl());
+            defaultValueField.getControl().dispose();
+        }
+        createDefaultValueEditField();
+        updateValueSetTypes();
+    }
+    
+    private void updateValueSetTypes() {
+        currentValueSetType = valueSetEditControl.getValueSetType();
+        ValueSetType[] types;
+        try {
+            types = ipsProject.getValueSetTypes(currentDatatype);
+        }
+        catch (CoreException e) {
+            IpsPlugin.log(e);
+            types = new ValueSetType[]{ValueSetType.ALL_VALUES};
+        }
+        valueSetEditControl.setTypes(types, currentDatatype);
+        if (currentValueSetType != null){
+            // if the previous selction was a valid selection use this one as new selection in drop down,
+            // otherwise the default (first one) is selected
+            valueSetEditControl.selectValueSetType(currentValueSetType);
+        }
     }
 
     private Control createValidationRulePage(TabFolder folder) {
@@ -447,7 +472,10 @@ public class AttributeEditDialog extends IpsPartEditDialog  {
         	validationRuleAdded.setChecked(false);
         	enableCheckValueAgainstValueSetRule(false);
         }
-        
+        if (rule != null) {
+            createRuleUIController();
+            ruleUIController.updateUI();
+        }
         return workArea;
     }
 
@@ -494,69 +522,6 @@ public class AttributeEditDialog extends IpsPartEditDialog  {
         ruleUIController.add(msgSeverityField, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
     }
     
-    private void updateUIControllers(){
-        uiController.updateUI();
-        if (ruleUIController != null) {
-            ruleUIController.updateUI();
-        }
-    }
-    
-    private void updateValueSetTypes(String strDatatype) {
-        ValueDatatype datatype;
-        try {
-            datatype = attribute.getIpsProject().findValueDatatype(strDatatype);
-
-            if (prevDatatype != null){
-                // the previous selection was a valid selection, thus store the selection, 
-                // to restore it later if a new valid selection is done
-                prevSelectedType = valueSetEditControl.getValueSetType();
-            }
-            prevDatatype = datatype;
-            
-            if (datatype != null) {
-                ValueSetType[] types = attribute.getIpsProject().getValueSetTypes(datatype);
-                valueSetEditControl.setTypes(types, datatype);
-                if (prevSelectedType != null){
-                    // if the previous selction was a valid selection use this one as new selection in drop down,
-                    // otherwise the default (first one) is selected
-                    valueSetEditControl.selectValueSetType(prevSelectedType);
-                }
-            } else {
-                valueSetEditControl.setTypes(new ValueSetType[]{ValueSetType.ALL_VALUES}, null);
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
-    }
-
-    /**
-	 * {@inheritDoc}
-	 */
-    protected void connectToModel() {
-        super.connectToModel();
-        uiController.add(nameField, IPolicyCmptTypeAttribute.PROPERTY_NAME);
-        uiController.add(datatypeField, IPolicyCmptTypeAttribute.PROPERTY_DATATYPE);
-        uiController.add(modifierField, IPolicyCmptTypeAttribute.PROPERTY_MODIFIER);
-        uiController.add(attributeTypeField, IPolicyCmptTypeAttribute.PROPERTY_ATTRIBUTE_TYPE);
-        uiController.add(defaultValueField, IPolicyCmptTypeAttribute.PROPERTY_DEFAULT_VALUE);
-        uiController.add(productRelevantField, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
-        uiController.add(overrideField, IPolicyCmptTypeAttribute.PROPERTY_OVERWRITES);
-
-        if (rule != null) {
-        	createRuleUIController();
-        	ruleUIController.updateUI();
-        }
-        
-        extFactory.connectToModel(uiController);
-        
-        overwritesListener.doEnablement(!this.attribute.getOverwrites());
-        
-        // set defaults
-        uiController.updateUI();
-        updateValueSetTypes(datatypeField.getText());
-        createDefaultValueEditField();
-    }
-
     private class PcTypeValidator implements TableElementValidator {
 
         public MessageList validate(String element) {
@@ -564,7 +529,7 @@ public class AttributeEditDialog extends IpsPartEditDialog  {
             try {
                 list = attribute.validate();
                 // update the ui to set the current messages for all registered controls
-                uiController.updateUI();
+                bindingContext.updateUI();
                 return list.getMessagesFor(element);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
@@ -573,39 +538,4 @@ public class AttributeEditDialog extends IpsPartEditDialog  {
         }
     }
     
-    private class OverwritesListener implements SelectionListener {
-    	Checkbox source;
-    	IValueSet oldValueSet;
-    	
-    	public OverwritesListener(Checkbox source) {
-    		this.source = source;
-    	}
-    	
-		public void widgetSelected(SelectionEvent e) {
-			doEnablement(!source.isChecked());
-			
-			if (source.isChecked()) {
-				oldValueSet = attribute.getValueSet();
-			} else if (oldValueSet != null) {
-				attribute.setValueSetCopy(oldValueSet);
-			}
-			
-			uiController.updateModel();
-			uiController.updateUI();
-		}
-
-		public void widgetDefaultSelected(SelectionEvent e) {
-			widgetSelected(e);
-		}
-		
-		public void doEnablement(boolean enabled) {
-			if (!isDataChangeable()) {
-			    return; // don't enabled if the dialog does not allow to change anything
-            }
-            uiToolkit.setDataChangeable(datatypeField.getControl(), enabled);
-            uiToolkit.setDataChangeable(modifierField.getControl(), enabled);
-            uiToolkit.setDataChangeable(attributeTypeField.getControl(), enabled);
-            uiToolkit.setDataChangeable(productRelevantField.getControl(), enabled);
-		}
-    }
 }
