@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.type;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -177,6 +178,15 @@ public abstract class Type extends BaseIpsObject implements IType {
         return (IAttribute)attributes.getPartByName(name);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public IAttribute[] findAllAttributes() throws CoreException {
+        AllAttributeFinder finder = new AllAttributeFinder(getIpsProject());
+        finder.start(this);
+        return finder.getAttributes();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -564,7 +574,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         
     }
     
-    class AttributeFinder extends TypeHierarchyVisitor {
+    private static class AttributeFinder extends TypeHierarchyVisitor {
 
         private String attributeName;
         private IAttribute attribute;
@@ -580,6 +590,37 @@ public abstract class Type extends BaseIpsObject implements IType {
         protected boolean visit(IType currentType) throws CoreException {
             attribute = currentType.getAttribute(attributeName);
             return attribute==null;
+        }
+    }
+
+    private static class AllAttributeFinder extends TypeHierarchyVisitor {
+
+        private List attributes;
+        private Set attributeNames;
+        
+        public AllAttributeFinder(IIpsProject ipsProject) {
+            super(ipsProject);
+            attributes = new ArrayList();
+            attributeNames = new HashSet();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IType currentType) throws CoreException {
+            IAttribute[] lattributes = currentType.getAttributes();
+            //considers overridden attributes
+            for (int i = 0; i < lattributes.length; i++) {
+                if(!attributeNames.contains(lattributes[i].getName())){
+                    attributeNames.add(lattributes[i].getName());
+                    attributes.add(lattributes[i]);
+                }
+            }
+            return true;
+        }
+        
+        private IAttribute[] getAttributes(){
+            return (IAttribute[])attributes.toArray(new IAttribute[attributes.size()]);
         }
     }
 

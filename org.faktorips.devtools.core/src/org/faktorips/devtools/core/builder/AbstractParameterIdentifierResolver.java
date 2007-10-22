@@ -34,9 +34,9 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -60,7 +60,7 @@ public abstract class AbstractParameterIdentifierResolver implements
 	 * Provides the name of the getter method for the provided attribute.
 	 */
 	protected abstract String getParameterAttributGetterName(
-			IPolicyCmptTypeAttribute attribute, Datatype datatype);
+			IAttribute attribute, Datatype datatype);
 
 	public void setIpsProject(IIpsProject ipsProject) {
 		ArgumentCheck.notNull(ipsProject);
@@ -130,32 +130,30 @@ public abstract class AbstractParameterIdentifierResolver implements
 				identifier);
 	}
 
-	private CompilationResult compile(IParameter param, String attributeName,
-			Locale locale) {
-		Datatype datatype;
-		try {
-			datatype = ipsproject.findDatatype(param.getDatatype());
-			if (datatype == null) {
-				String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgDatatypeCanNotBeResolved, param.getDatatype(), param.getName());
-				return new CompilationResultImpl(Message.newError(
-						ExprCompiler.UNDEFINED_IDENTIFIER, text));
-			}
-		} catch (Exception e) {
-			IpsPlugin.log(e);
-			String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorParameterDatatypeResolving, param.getDatatype(), param.getName());
-			return new CompilationResultImpl(Message.newError(
-					ExprCompiler.INTERNAL_ERROR, text));
-		}
-		if (datatype instanceof IPolicyCmptType) {
-			return compilePcTypeAttributeIdentifier(param,
-					(IPolicyCmptType) datatype, attributeName, locale);
-		}
-		if (datatype instanceof ValueDatatype) {
-			return new CompilationResultImpl(param.getName(), datatype);
-		}
-		throw new RuntimeException("Unkown datatype class " //$NON-NLS-1$
-				+ datatype.getClass());
-	}
+	private CompilationResult compile(IParameter param, String attributeName, Locale locale) {
+        Datatype datatype;
+        try {
+            datatype = param.findDatatype(ipsproject);
+            if (datatype == null) {
+                String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgDatatypeCanNotBeResolved, param
+                        .getDatatype(), param.getName());
+                return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+            }
+        } catch (Exception e) {
+            IpsPlugin.log(e);
+            String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorParameterDatatypeResolving,
+                    param.getDatatype(), param.getName());
+            return new CompilationResultImpl(Message.newError(ExprCompiler.INTERNAL_ERROR, text));
+        }
+        if (datatype instanceof IType) {
+            return compileTypeAttributeIdentifier(param, (IType)datatype, attributeName, locale);
+        }
+        if (datatype instanceof ValueDatatype) {
+            return new CompilationResultImpl(param.getName(), datatype);
+        }
+        throw new RuntimeException("Unkown datatype class " //$NON-NLS-1$
+                + datatype.getClass());
+    }
 
 	private CompilationResult compileEnumDatatypeValueIdentifier(
 			String enumTypeName, String valueName, Locale locale) {
@@ -185,37 +183,37 @@ public abstract class AbstractParameterIdentifierResolver implements
 		return null;
 	}
 
-	private CompilationResult compilePcTypeAttributeIdentifier(IParameter param,
-			IPolicyCmptType pcType, String attributeName, Locale locale) {
+	private CompilationResult compileTypeAttributeIdentifier(IParameter param,
+			IType type, String attributeName, Locale locale) {
 
         if (StringUtils.isEmpty(attributeName)) {
             return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, Messages.AbstractParameterIdentifierResolver_msgAttributeMissing));
         }
         
-		IPolicyCmptTypeAttribute attribute = null;
+		IAttribute attribute = null;
 		try {
-			attribute = pcType.findAttributeInSupertypeHierarchy(attributeName);
+			attribute = type.findAttribute(attributeName, ipsproject);
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
-			String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute, attributeName, pcType);
+			String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute, attributeName, type);
 			return new CompilationResultImpl(Message.newError(
 					ExprCompiler.INTERNAL_ERROR, text));
 		}
 		if (attribute == null) {
-			String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {param.getName(), pcType.getName(), attributeName});
+			String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {param.getName(), type.getName(), attributeName});
 			return new CompilationResultImpl(Message.newError(
 					ExprCompiler.UNDEFINED_IDENTIFIER, text));
 		}
 
 		try {
-			Datatype datatype = attribute.findDatatype();
+			Datatype datatype = attribute.findDatatype(ipsproject);
 			if (datatype == null) {
 				String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoDatatypeForAttribute, attribute.getDatatype(), attributeName);
 				return new CompilationResultImpl(Message.newError(
 						ExprCompiler.UNDEFINED_IDENTIFIER, text));
 			}
 			String code = param.getName() + '.'
-					+ getParameterAttributGetterName(attribute, datatype)
+					+ getParameterAttributGetterName(attribute, type)
 					+ "()"; //$NON-NLS-1$
 			return new CompilationResultImpl(code, datatype);
 		} catch (Exception e) {

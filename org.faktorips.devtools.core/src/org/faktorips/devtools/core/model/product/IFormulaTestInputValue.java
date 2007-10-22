@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.model.product;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.type.IParameter;
@@ -100,5 +100,5 @@ public interface IFormulaTestInputValue extends IIpsObjectPart {
      * 
      * @throws CoreException If an error occurs during searching the corresponding datatype.
      */
-    public Datatype findDatatypeOfFormulaParameter(IIpsProject ipsProject) throws CoreException;    
+    public ValueDatatype findDatatypeOfFormulaParameter(IIpsProject ipsProject) throws CoreException;    
 }

@@ -433,7 +433,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             IParameter[] parameters = formulaSignature.getParameters();
             String[] paramNames = BuilderHelper.extractParameterNames(parameters);
             String[] paramTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(
-                    parameters, getIpsProject(), this);
+                    parameters, getIpsProject(), this, productCmptGenInterfaceBuilder);
 
             builder.appendln("// TODO Belegung der Berechnungsparameter implementieren");
             JavaCodeFragment paramFragment = new JavaCodeFragment();

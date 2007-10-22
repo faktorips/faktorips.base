@@ -268,7 +268,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         ValueDatatype[] rowDatatypes = new ValueDatatype[inputValues.length];
         for (int i = 0; i < rowDatatypes.length; i++) {
             try {
-                rowDatatypes[i] = (ValueDatatype) inputValues[i].findDatatypeOfFormulaParameter(ipsProject);
+                rowDatatypes[i] = inputValues[i].findDatatypeOfFormulaParameter(ipsProject);
             } catch (CoreException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
                 rowDatatypes[i] = null;

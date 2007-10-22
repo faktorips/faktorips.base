@@ -978,7 +978,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
         getValueDatatypes(includeVoid, includePrimitives, result);
         if (!valuetypesOnly) {
             List refDatatypes = new ArrayList();
-            findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE, refDatatypes);
+            IpsObjectType[] objectTypes = IpsObjectType.ALL_TYPES;
+            for (int i = 0; i < objectTypes.length; i++) {
+                if (objectTypes[i].isDatatype()) {
+                    findIpsObjects(objectTypes[i], refDatatypes);
+                }
+            }
             result.addAll(refDatatypes);
         }
         Datatype[] array = new Datatype[result.size()];

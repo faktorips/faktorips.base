@@ -27,12 +27,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.product.IFormula;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.fl.ExprCompiler;
@@ -192,12 +191,11 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         if (param==null) {
             return;
         }
-        IPolicyCmptType pcType = ipsProject.findPolicyCmptType(param.getDatatype());
-        if (pcType==null) {
+        Datatype datatype = param.findDatatype(ipsProject);
+        if(!(datatype instanceof IType)){
             return;
         }
-        ITypeHierarchy hierarchy = pcType.getSupertypeHierarchy();
-        IPolicyCmptTypeAttribute[] attributes = hierarchy.getAllAttributes(pcType);
+        IAttribute[] attributes = ((IType)datatype).findAllAttributes();
         List attributeNames = new ArrayList();
         for (int i=0; i<attributes.length; i++) {
             if (attributes[i].getName().startsWith(attributePrefix)) {
@@ -212,7 +210,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     private void addAttributeToResult(
             List result, 
             String paramName, 
-            IPolicyCmptTypeAttribute attribute, 
+            IAttribute attribute, 
             int replacementOffset,
             int replacementLength) {
         String name = attribute.getName();

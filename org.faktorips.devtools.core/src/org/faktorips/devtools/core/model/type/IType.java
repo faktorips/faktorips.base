@@ -126,6 +126,15 @@ public interface IType extends IIpsObject, Datatype {
     public IAttribute[] getAttributes();
     
     /**
+     * Returns this type's attributes and the attributes within the supertype hierarchy. It considers overridden attributes. 
+     * That means if an attribute has been overridden by a subtype this attribute instance will be in the returned array
+     * all attributes in the supertype hierarchy with the same name will be neglected.
+     *  
+     * @throws CoreException if an exception occurs while collecting the attributes 
+     */
+    public IAttribute[] findAllAttributes() throws CoreException;
+
+    /**
      * Returns the attribute with the given name defined in <strong>this</strong> type
      * (This method does not search the supertype hierarchy.)
      * If more than one attribute with the name exist, the first attribute with the name is returned.
@@ -134,7 +143,7 @@ public interface IType extends IIpsObject, Datatype {
     public IAttribute getAttribute(String name);
 
     /**
-     * Searches an attribute with the given name in the type and it's supertype hierarchy and returns it. 
+     * Searches an attribute with the given name in the type and its supertype hierarchy and returns it. 
      * Returns <code>null</code> if no such attribute exists.
      * 
      * @param name          The attribute's name.

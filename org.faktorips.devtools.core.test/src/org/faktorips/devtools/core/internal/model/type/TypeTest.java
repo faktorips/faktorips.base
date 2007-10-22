@@ -17,6 +17,10 @@
 
 package org.faktorips.devtools.core.internal.model.type;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -70,6 +74,45 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertSame(a1, type.findAttribute("a1", ipsProject));
         
         assertNull(type.findAttribute("unknown", ipsProject));
+    }
+    
+    public void testFindAllAttributes() throws Exception{
+        assertNull(type.findAttribute("unknown", ipsProject));
+        
+        IAttribute a1 = type.newAttribute();
+        a1.setName("a1");
+        
+        IType supertype = newProductCmptType(ipsProject, "Supertype");
+        type.setSupertype(supertype.getQualifiedName());
+        
+        IAttribute a2 = supertype.newAttribute();
+        a2.setName("a2");
+        
+        IType superSupertype = newProductCmptType(ipsProject, "SuperSupertype");
+        supertype.setSupertype(superSupertype.getQualifiedName());
+        IAttribute a3 = superSupertype.newAttribute();
+        a3.setName("a3");
+        
+        List all = Arrays.asList(type.findAllAttributes());
+        assertTrue(all.contains(a1));
+        assertTrue(all.contains(a2));
+        assertTrue(all.contains(a3));
+        
+        IAttribute a1Supertype = supertype.newAttribute();
+        a1Supertype.setName("a1");
+        
+        all = Arrays.asList(type.findAllAttributes());
+        assertTrue(all.contains(a1));
+        assertTrue(all.contains(a2));
+        assertTrue(all.contains(a3));
+        
+        for (Iterator it = all.iterator(); it.hasNext();) {
+            IAttribute attribute = (IAttribute)it.next();
+            if(attribute == a1Supertype){
+                fail("the attribute is expected to be overridden.");
+            }
+        }
+
     }
     
     public void testNewAttribute() {

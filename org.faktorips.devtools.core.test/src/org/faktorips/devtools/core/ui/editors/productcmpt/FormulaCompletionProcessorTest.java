@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.faktorips.datatype.Datatype;
@@ -29,6 +30,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IFormula;
@@ -172,4 +174,21 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         assertEquals("abcparam", document.get());
     }
 
+    public void testDoComputeCompletionProposalsForPolicyCmptTypeAndProductCmptTypeParams() throws Exception{
+        PolicyCmptType a = newPolicyAndProductCmptType(ipsProject, "a", "aConfigtype");
+        ProductCmptType aConfig = (ProductCmptType)a.findProductCmptType(ipsProject);
+        formulaSignature.newParameter(a.getQualifiedName(), "aParam");
+        formulaSignature.newParameter(aConfig.getQualifiedName(), "aConfigParam");
+        
+        ArrayList results = new ArrayList();
+        processor = new FormulaCompletionProcessor(configElement);
+        processor.doComputeCompletionProposals("", 1, results);
+        CompletionProposal proposal = (CompletionProposal)results.get(0);
+        assertEquals("aParam - a" , proposal.getDisplayString());
+        
+        proposal = (CompletionProposal)results.get(1);
+        assertEquals("aConfigParam - aConfigtype", proposal.getDisplayString());
+        
+        System.out.println(results);
+    }
 }

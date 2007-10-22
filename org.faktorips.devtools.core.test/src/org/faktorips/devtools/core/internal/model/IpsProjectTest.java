@@ -620,6 +620,16 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 	    
     }
     
+    public void testFindDatatypes3Parameters() throws Exception{
+    
+        IPolicyCmptType a = newPolicyAndProductCmptType(ipsProject, "a", "aConfig");
+        List datatypes = Arrays.asList(ipsProject.findDatatypes(false, false, false));
+        assertTrue(datatypes.contains(a));
+        IProductCmptType aConfig = a.findProductCmptType(ipsProject);
+        assertTrue(datatypes.contains(aConfig));
+        
+    }
+    
     /*
      * Creates an ips project called RefProject that is referenced by the ips project and has 2 predefined datatypes and
      * one dynamic datatype.

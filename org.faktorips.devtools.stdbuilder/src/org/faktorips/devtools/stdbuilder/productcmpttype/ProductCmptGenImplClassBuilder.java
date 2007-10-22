@@ -87,6 +87,8 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     private ProductCmptImplClassBuilder productCmptTypeImplCuBuilder;
     private ProductCmptInterfaceBuilder productCmptTypeInterfaceBuilder;
     private PolicyCmptImplClassBuilder policyCmptTypeImplBuilder;
+    private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
+    
     private TableImplBuilder tableImplBuilder;
     
     public ProductCmptGenImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
@@ -676,12 +678,16 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * public abstract Money computePremium(Policy policy, Integer age) throws FormulaException
      * </pre>
      */
-    public void generateSignatureForFormula(IProductCmptTypeMethod formulaSignature, DatatypeHelper datatypeHelper, int modifier, boolean withFinalParameters, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    public void generateSignatureForFormula(IProductCmptTypeMethod formulaSignature,
+            DatatypeHelper datatypeHelper,
+            int modifier,
+            boolean withFinalParameters,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         IParameter[] parameters = formulaSignature.getParameters();
-        methodsBuilder.signature(modifier, datatypeHelper.getJavaClassName(),
-                formulaSignature.getName(), BuilderHelper.extractParameterNames(parameters),
-                StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters, formulaSignature.getIpsProject(), policyCmptTypeImplBuilder),
-                withFinalParameters);
+        methodsBuilder.signature(modifier, datatypeHelper.getJavaClassName(), formulaSignature.getName(), BuilderHelper
+                .extractParameterNames(parameters), StdBuilderHelper
+                .transformParameterTypesToJavaClassNames(parameters, formulaSignature.getIpsProject(),
+                        policyCmptTypeImplBuilder, productCmptGenInterfaceBuilder), withFinalParameters);
         methodsBuilder.append(" throws ");
         methodsBuilder.appendClassName(FormulaExecutionException.class);
     }
@@ -1200,6 +1206,10 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         memberVarBuilder.varDeclaration(Modifier.PRIVATE, EnumValueSet.class, getFieldNameAllowedValuesFor(a)); 
     }
 
+    public void setProductCmptGenInterfaceBuilder(ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder) {
+        this.productCmptGenInterfaceBuilder = productCmptGenInterfaceBuilder;
+    }
+
     class GetClassModifierFunction extends ProductCmptTypeHierarchyVisitor {
 
         private int modifier;
@@ -1228,4 +1238,5 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         }
         
     }
+
 }

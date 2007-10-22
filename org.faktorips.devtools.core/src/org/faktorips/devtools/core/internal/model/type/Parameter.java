@@ -26,6 +26,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IParameterContainer;
 import org.faktorips.fl.ExprCompiler;
@@ -84,8 +85,8 @@ public class Parameter extends AtomicIpsObjectPart implements IParameter {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Datatype findDatatype() throws CoreException {
-		return getIpsProject().findDatatype(datatype);
+	public Datatype findDatatype(IIpsProject ipsProject) throws CoreException {
+		return ipsProject.findDatatype(datatype);
 	}
 
 	/**

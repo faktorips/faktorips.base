@@ -112,7 +112,7 @@ public class DependencyGraph implements Serializable {
         for (int i = 0; i < dependsOn.length; i++) {
             List dependants = getDependantsAsList(dependsOn[i].getTarget());
             if (dependants == null) {
-                dependants = new ArrayList();
+                dependants = new ArrayList(0);
                 dependantsForMap.put(dependsOn[i].getTarget(), dependants);
             }
             dependants.add(dependsOn[i]);

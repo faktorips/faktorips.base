@@ -28,13 +28,13 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -105,7 +105,7 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
         if (method== null){
             return null;
         }
-        
+        //TODO pk 2007-10-19 this kind of code appears in several areas. Think about refactoring it
         int index = identifier.lastIndexOf("."); //$NON-NLS-1$
         String parameterIdentifier = ""; //$NON-NLS-1$
         if (index == -1){
@@ -152,18 +152,19 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
     /**
      * {@inheritDoc}
      */
-    public Datatype findDatatypeOfFormulaParameter(IIpsProject ipsProject) throws CoreException {
-        // v2 - die method muss mit Type anstatt PolicyCmptType arbeiten!
+    public ValueDatatype findDatatypeOfFormulaParameter(IIpsProject ipsProject) throws CoreException {
         IParameter param = findFormulaParameter(ipsProject);
         if (param == null){
             return null;
         }
         Datatype datatype = getIpsProject().findDatatype(param.getDatatype());
-        if (datatype instanceof IPolicyCmptType) {
-            // if the datatype specifies a policy cmpt type get the datatype of the attribute
+        if (datatype instanceof IType) {
+            // if the datatype specifies an IType get the datatype of the attribute
             // identified by the formula test input value identifier
-            // e.g. "policy.attribute" id specified in the formula input and policy is specified in the parameter
-            // thus policy is the policy cmpt type datatype and attribute is the attribute inside policy
+            // e.g. "policy.attribute" id specified in the formula input and policy is specified in
+            // the parameter
+            // thus policy is the policy cmpt type datatype and attribute is the attribute inside
+            // policy
             String parameterName = param.getName();
             if (!identifier.startsWith(parameterName)) {
                 // error because the PolicyCmptType datatype was found with an invalid identifier,
@@ -173,16 +174,16 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
                         identifier)));
             }
             String attributeName = identifier.substring(parameterName.length() + 1);
-            IPolicyCmptType policyCmptType = (IPolicyCmptType) datatype;
-            IPolicyCmptTypeAttribute attribute = policyCmptType.findAttributeInSupertypeHierarchy(attributeName);
+            IType type = (IType) datatype;
+            IAttribute attribute = type.findAttribute(attributeName, ipsProject);
             if (attribute == null){
                 // attribute not found, therfore the datatype couldn't be determined, 
                 // remark this inconsistence will be reported in the vaildate method
                 return null;
             }
-            datatype = attribute.findDatatype();
+            return attribute.findDatatype(ipsProject);
         }
-        return datatype;
+        return (ValueDatatype)datatype;
     }
     
     /**
@@ -190,6 +191,7 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
      */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
+        //TODO pk: seems not to be correct to get the IpsProject like this. Should be provided as parameter
         IIpsProject ipsProject = getIpsProject();
         IParameter param = findFormulaParameter(ipsProject);
         if (param == null) {
@@ -202,19 +204,19 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
                 // check the cause of the missing datatype
                 boolean knownReason = false;
                 Datatype datatypeOfParam = getIpsProject().findDatatype(param.getDatatype());
-                if (datatypeOfParam instanceof IPolicyCmptType) {
-                    IPolicyCmptTypeAttribute attribute = null;
+                if (datatypeOfParam instanceof IType) {
+                    IAttribute attribute = null;
                     String attributeName = identifier.substring(param.getName().length() + 1);
-                    IPolicyCmptType policyCmptType = (IPolicyCmptType)datatypeOfParam;
+                    IType type = (IType)datatypeOfParam;
 
-                    attribute = policyCmptType.findAttributeInSupertypeHierarchy(attributeName);
+                    attribute = type.findAttribute(attributeName, ipsProject);
                     if (attribute == null) {
                         // attribute not found
                         knownReason = true;
                         String text = NLS.bind(Messages.FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_AttributeNotFound, attributeName);
                         list.add(new Message(MSGCODE_RELATED_ATTRIBUTE_NOT_FOUND, text, Message.ERROR, this,
                                 PROPERTY_IDENTIFIER));
-                    } else if (attribute.findDatatype() == null) {
+                    } else if (attribute.findDatatype(ipsProject) == null) {
                         // datatype of attribute not found
                         knownReason = true;
                         String text = NLS.bind(Messages.FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_DatatypeOfParameterNotFound,

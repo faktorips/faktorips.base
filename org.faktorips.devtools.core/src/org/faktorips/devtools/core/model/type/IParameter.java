@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model.type;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsProject;
 
 /**
  * A parameter (or argument) of a method.
@@ -48,8 +49,9 @@ public interface IParameter extends IIpsObjectPart {
 	/**
 	 * Returns the parameter's datatype or <code>null</code> if the datatype
 	 * can't be found.
+	 * @param ipsProject TODO
 	 * 
 	 * @throws CoreException if an excpetion occurs while searching for the datatype.
 	 */
-	public Datatype findDatatype() throws CoreException;
+	public Datatype findDatatype(IIpsProject ipsProject) throws CoreException;
 }

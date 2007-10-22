@@ -31,10 +31,12 @@ import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.stdbuilder.enums.EnumClassesBuilder;
 import org.faktorips.devtools.stdbuilder.enums.EnumTypeInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
@@ -68,6 +70,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private TableImplBuilder tableImplBuilder;
     private TableRowBuilder tableRowBuilder;
     private PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder;
+    private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private EnumClassesBuilder enumClassesBuilder;
 
     /**
@@ -137,8 +140,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public IParameterIdentifierResolver getFlParameterIdentifierResolver() {
         return new AbstractParameterIdentifierResolver(){
 
-            protected String getParameterAttributGetterName(IPolicyCmptTypeAttribute attribute, Datatype datatype) {
-                return policyCmptInterfaceBuilder.getMethodNameGetPropertyValue(attribute.getName(), datatype);    
+            protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
+                if(datatype instanceof IPolicyCmptType){
+                    return policyCmptInterfaceBuilder.getMethodNameGetPropertyValue(attribute.getName(), datatype);    
+                }
+                if(datatype instanceof IProductCmptType){
+                    return productCmptGenInterfaceBuilder.getMethodNameGetPropertyValue(attribute.getName(), datatype);
+                }
+                return null;
             }
         };
     }
@@ -191,7 +200,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         ProductCmptInterfaceBuilder productCmptInterfaceBuilder = new ProductCmptInterfaceBuilder(this,
                 KIND_PRODUCT_CMPT_INTERFACE);
         ProductCmptImplClassBuilder productCmptImplClassBuilder = new ProductCmptImplClassBuilder(this, KIND_PRODUCT_CMPT_IMPL);
-        ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder = new ProductCmptGenInterfaceBuilder(this, DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION_INTERFACE);
+        productCmptGenInterfaceBuilder = new ProductCmptGenInterfaceBuilder(this, DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION_INTERFACE);
         ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder = new ProductCmptGenImplClassBuilder(this, DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION_IMPL);
 
         // product component builders
@@ -248,6 +257,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         productCmptGenImplClassBuilder.setProductCmptTypeImplBuilder(productCmptImplClassBuilder);
         productCmptGenImplClassBuilder.setProductCmptTypeInterfaceBuilder(productCmptInterfaceBuilder);
         productCmptGenImplClassBuilder.setPolicyCmptTypeImplBuilder(policyCmptImplClassBuilder);
+        productCmptGenImplClassBuilder.setProductCmptGenInterfaceBuilder(productCmptGenInterfaceBuilder);
         productCmptGenImplClassBuilder.setTableImplBuilder(tableImplBuilder);
         
         // product component builders.

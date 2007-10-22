@@ -23,9 +23,11 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 
 /**
  * 
@@ -36,14 +38,18 @@ public class StdBuilderHelper {
     public final static String[] transformParameterTypesToJavaClassNames(
             IParameter[] params,
             IIpsProject ipsProject,
-            PolicyCmptImplClassBuilder policyCmptImplBuilder) throws CoreException {
+            PolicyCmptImplClassBuilder policyCmptImplBuilder,
+            ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder) throws CoreException {
         
         String[] javaClasses = new String[params.length];
         for (int i=0; i<params.length; i++) {
             Datatype paramDatatype = ipsProject.findDatatype(params[i].getDatatype());
             if (paramDatatype instanceof PolicyCmptType) {
                 javaClasses[i] = policyCmptImplBuilder.getQualifiedClassName((IpsObject)paramDatatype);
-            } else {
+            } else if(paramDatatype instanceof ProductCmptType){
+                javaClasses[i] = productCmptGenInterfaceBuilder.getQualifiedClassName((IpsObject)paramDatatype);
+            }
+            else {
                 javaClasses[i] = paramDatatype.getJavaClassName();
             }
         }

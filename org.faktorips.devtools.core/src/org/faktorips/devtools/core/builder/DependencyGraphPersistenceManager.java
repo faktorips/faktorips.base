@@ -28,7 +28,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * This manager is instantiated at start up of the faktor ips plugin and the plugin holds a single
  * instance of it during its life cycle. It is responsible for saving the states of the dependency
- * graphs that have been accessed during startup and shut down of the faktor ips plugin. The states
+ * graphs that have been accessed during startup and shut down phase of the faktor ips plugin. The states
  * will be saved at shut down of the eclipse application. The dependency graph states are saved to
  * files located at the eclipse save location of the org.faktorips.devtools.core plugin. Once a
  * state of a dependency graph has been saved this state can be retrieved by this persistence
