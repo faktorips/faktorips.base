@@ -82,9 +82,15 @@ public class IpsObjectCache {
      * Go through the ReferenceQueue and remove garbage collected SoftValue objects.
      */
     private void processQueue() {
+        if(IpsModel.TRACE_MODEL_MANAGEMENT){
+            System.out.println("IpsObjectCache.processQueue - start");
+        }
         SoftValue sv;
         while ((sv = (SoftValue)queue.poll()) != null){
-            hash.remove(sv.key);
+            remove(sv.key);
+        }
+        if(IpsModel.TRACE_MODEL_MANAGEMENT){
+            System.out.println("IpsObjectCache.processQueue - finish");
         }
     }
     
@@ -92,9 +98,15 @@ public class IpsObjectCache {
      * {@inheritDoc}
      */
     public void clear() {
+        if(IpsModel.TRACE_MODEL_MANAGEMENT){
+            System.out.println("IpsObjectCache.clear - start");
+        }
         hardCache.clear();
         processQueue();
         hash.clear();
+        if(IpsModel.TRACE_MODEL_MANAGEMENT){
+            System.out.println("IpsObjectCache.clear - finished");
+        }
     }
 
     /**
@@ -136,6 +148,9 @@ public class IpsObjectCache {
      *         if there was no object for key.
      */
     public Object remove(Object key){
+        if(IpsModel.TRACE_MODEL_MANAGEMENT){
+            System.out.println("IpsObjectCache.remove " + key);
+        }
         return hash.remove(key);
     }
 }
