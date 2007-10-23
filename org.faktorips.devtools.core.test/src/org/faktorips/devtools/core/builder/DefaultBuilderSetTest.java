@@ -28,8 +28,9 @@ import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
-import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.fl.IdentifierResolver;
 
 /**
  * 
@@ -84,7 +85,7 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
 		/**
 		 * {@inheritDoc}
 		 */
-		public IParameterIdentifierResolver getFlParameterIdentifierResolver() {
+		public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException {
 			return null;
 		}
 

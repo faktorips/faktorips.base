@@ -25,12 +25,13 @@ import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
-import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.IdentifierResolver;
 
 /**
  * A default implementation that extends the AbstractBuilderSet and implements the IJavaPackageStructure
@@ -260,7 +261,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
-    public IParameterIdentifierResolver getFlParameterIdentifierResolver() {
+    public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException {
         return null;
     }
     

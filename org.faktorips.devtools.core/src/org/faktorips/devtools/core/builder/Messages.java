@@ -34,7 +34,9 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String AbstractParameterIdentifierResolver_msgResolverMustBeSet;
+	public static String AbstractParameterIdentifierResolver_msgExceptionWhileResolvingIdentifierAtThis;
+
+    public static String AbstractParameterIdentifierResolver_msgResolverMustBeSet;
 
 	public static String AbstractParameterIdentifierResolver_msgDatatypeCanNotBeResolved;
 
@@ -47,6 +49,8 @@ public class Messages extends NLS {
 	public static String AbstractParameterIdentifierResolver_msgErrorNoAttribute;
 
 	public static String AbstractParameterIdentifierResolver_msgErrorNoDatatypeForAttribute;
+
+    public static String AbstractParameterIdentifierResolver_msgNoDatatypeForProductCmptTypeAttribute;
 
     public static String IpsBuilder_ipsSrcFileNotParsable;
 

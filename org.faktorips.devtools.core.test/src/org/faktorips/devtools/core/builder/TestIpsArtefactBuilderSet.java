@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -103,15 +103,11 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
         return null;
     }
 
-	public IdentifierResolver getFlIdentifierResolver() {
-		return null;
-	}
-
 	public boolean isSupportFlIdentifierResolver() {
 		return false;
 	}
 
-	public IParameterIdentifierResolver getFlParameterIdentifierResolver() {
+	public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException {
 		return null;
 	}
 

@@ -20,13 +20,14 @@ import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.IdentifierResolver;
 
 /**
  * An IIpsArtefactBuilderSet implementation that is supposed to be used in cases where no builder
@@ -73,8 +74,8 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     /**
      * {@inheritDoc}
      */
-    public IParameterIdentifierResolver getFlParameterIdentifierResolver() {
-        return new AbstractParameterIdentifierResolver() {
+    public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException {
+        return new AbstractParameterIdentifierResolver(formula) {
 
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
                 return ""; //$NON-NLS-1$

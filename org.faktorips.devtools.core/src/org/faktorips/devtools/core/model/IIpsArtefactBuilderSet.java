@@ -22,9 +22,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.IdentifierResolver;
 
 /**
  * Interface for the extension point org.faktorips.plugin.artefactbuilderset of
@@ -98,11 +100,13 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 			CompilationResult[] argResults) throws CoreException;
 
 	/**
-	 * Returns the <code>org.faktorips.devtools.core.model.IParameterIdentifierResolver</code>.
+	 * Returns the <code>IdentifierResolver</code>.
 	 * Returns <code>null</code> if this builder set doesn't support an
 	 * formula language identifier resolver.
+	 * @param formula TODO
+	 * @throws CoreException TODO
 	 */
-	public IParameterIdentifierResolver getFlParameterIdentifierResolver();
+	public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException;
 	
     /**
      * Returns the datatype helper used for the enum type that is defined by a 

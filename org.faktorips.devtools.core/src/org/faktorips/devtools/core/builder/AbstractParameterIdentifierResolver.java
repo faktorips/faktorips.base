@@ -17,10 +17,9 @@
 
 package org.faktorips.devtools.core.builder;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -32,14 +31,17 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
+import org.faktorips.devtools.core.model.product.IFormula;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 
@@ -48,54 +50,45 @@ import org.faktorips.util.message.Message;
  * <code>Parameter</code>s that can be registered via the <code>add()</code>
  * methods.
  */
-public abstract class AbstractParameterIdentifierResolver implements
-		IParameterIdentifierResolver {
+public abstract class AbstractParameterIdentifierResolver implements IdentifierResolver{
 
 	private IIpsProject ipsproject;
+    private IFormula formula;
 
-	private IParameter[] params = new IParameter[0];
-    private HashMap enumDatatypes = new HashMap(0); 
-
+    public AbstractParameterIdentifierResolver(IFormula formula) throws CoreException{
+        ArgumentCheck.notNull(formula, this);
+        this.formula = formula;
+        ipsproject = formula.getIpsProject();
+    }
+    
+    private IParameter[] getParameters() {
+        try {
+            return formula.findFormulaSignature(ipsproject).getParameters();
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        return new IParameter[0];
+    }
+    
+    private IProductCmptType getProductCmptType() throws CoreException{
+        return formula.findProductCmptType(ipsproject);
+    }
+    
 	/**
 	 * Provides the name of the getter method for the provided attribute.
 	 */
 	protected abstract String getParameterAttributGetterName(
 			IAttribute attribute, Datatype datatype);
 
-	public void setIpsProject(IIpsProject ipsProject) {
-		ArgumentCheck.notNull(ipsProject);
-		this.ipsproject = ipsProject;
-	}
-
-    /**
-     * {@inheritDoc}
-     */
-	public void setParameters(IParameter[] parameters) {
-		ArgumentCheck.notNull(parameters);
-		this.params = parameters;
-	}
-    
-    /**
-     * {@inheritDoc}
-     */
-	public void setEnumDatatypes(EnumDatatype[] enumtypes) {
-	    if (enumtypes==null) {
-	        enumDatatypes.clear();
-            return;
-        }
-        enumDatatypes = new HashMap(enumtypes.length);
+    private Map createEnumMap() throws CoreException{
+        EnumDatatype[] enumtypes = formula.getEnumDatatypesAllowedInFormula();
+        Map enumDatatypes = new HashMap(enumtypes.length);
         for (int i = 0; i < enumtypes.length; i++) {
             enumDatatypes.put(enumtypes[i].getName(), enumtypes[i]);
         }
+        return enumDatatypes;
     }
     
-	/**
-     * {@inheritDoc}
-	 */
-	public EnumDatatype[] getEnumDatatypes() {
-        return (EnumDatatype[])enumDatatypes.values().toArray(new EnumDatatype[enumDatatypes.size()]);
-    }
-
     /**
      * {@inheritDoc}
 	 */
@@ -116,13 +109,20 @@ public abstract class AbstractParameterIdentifierResolver implements
 			paramName = identifier.substring(0, pos);
 			attributeName = identifier.substring(pos + 1);
 		}
+        IParameter[] params = getParameters();
 		for (int i = 0; i < params.length; i++) {
 			if (params[i].getName().equals(paramName)) {
 				return compile(params[i], attributeName, locale);
 			}
 		}
 		
-		CompilationResult result = compileEnumDatatypeValueIdentifier(paramName, attributeName, locale);
+        //assuming that the identifier is an attribute of the product component type
+        //where the formula method is defined.
+        CompilationResult result = compileThis(identifier);
+        if(result != null){
+            return result;
+        }
+		result = compileEnumDatatypeValueIdentifier(paramName, attributeName, locale);
 		if(result != null){
 			return result;
 		}
@@ -130,6 +130,29 @@ public abstract class AbstractParameterIdentifierResolver implements
 				identifier);
 	}
 
+    private CompilationResult compileThis(String identifier){
+        IProductCmptType productCmptType = null;
+        try {
+            productCmptType = getProductCmptType();
+            IAttribute[] attributes = productCmptType.findAllAttributes();
+            for (int i = 0; i < attributes.length; i++) {
+                if(attributes[i].getName().equals(identifier)){
+                    Datatype attrDatatype = attributes[i].findDatatype(ipsproject);
+                    if(attrDatatype == null){
+                        String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgNoDatatypeForProductCmptTypeAttribute, attributes[i].getName(), productCmptType.getQualifiedName());
+                        return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+                    }
+                    return new CompilationResultImpl(identifier, attrDatatype);
+                }
+            }
+        } catch (CoreException e) {
+            String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgExceptionWhileResolvingIdentifierAtThis, identifier, productCmptType.getQualifiedName());
+            IpsPlugin.log(new IpsStatus(text, e));
+            return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+        }
+        return null;
+    }
+    
 	private CompilationResult compile(IParameter param, String attributeName, Locale locale) {
         Datatype datatype;
         try {
@@ -159,6 +182,7 @@ public abstract class AbstractParameterIdentifierResolver implements
 			String enumTypeName, String valueName, Locale locale) {
 		
 		try {
+            Map enumDatatypes = createEnumMap();
             EnumDatatype enumType = (EnumDatatype)enumDatatypes.get(enumTypeName);
             if(enumType == null){
                 return null;
@@ -175,8 +199,7 @@ public abstract class AbstractParameterIdentifierResolver implements
             }
 		} catch (Exception e) {
 			IpsPlugin.log(e);
-			String text = Messages.AbstractParameterIdentifierResolver_msgErrorDuringEnumDatatypeResolving
-					+ enumTypeName;
+			String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorDuringEnumDatatypeResolving, enumTypeName);
 			return new CompilationResultImpl(Message.newError(
 					ExprCompiler.INTERNAL_ERROR, text));
 		}
@@ -223,27 +246,4 @@ public abstract class AbstractParameterIdentifierResolver implements
 					ExprCompiler.INTERNAL_ERROR, text));
 		}
 	}
-
-    /**
-     * Removes from the provided identifiers the ones which this IdentifierResolver recognizes as EnumDatatypes.
-     * It leaves the provided string array untouched and returns a new string array. 
-     */
-    public String[] removeIdentifieresOfEnumDatatypes(String[] allIdentifiersUsedInFormula){
-        ArgumentCheck.notNull(allIdentifiersUsedInFormula);
-        List filteredIdentifiers = new ArrayList(allIdentifiersUsedInFormula.length);
-        for (int i = 0; i < allIdentifiersUsedInFormula.length; i++) {
-            if(allIdentifiersUsedInFormula[i] != null){
-                if(allIdentifiersUsedInFormula[i].indexOf('.') != -1){
-                    String identifierRoot = allIdentifiersUsedInFormula[i].substring(0, allIdentifiersUsedInFormula[i].indexOf('.'));
-                    if(!enumDatatypes.containsKey(identifierRoot)){
-                        filteredIdentifiers.add(allIdentifiersUsedInFormula[i]);
-                    }
-                    continue;
-                }
-                filteredIdentifiers.add(allIdentifiersUsedInFormula[i]);
-            }
-        }
-        return (String[])filteredIdentifiers.toArray(new String[filteredIdentifiers.size()]);
-    }
-    
 }

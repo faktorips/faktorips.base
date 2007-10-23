@@ -29,9 +29,9 @@ import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapt
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
@@ -56,6 +56,7 @@ import org.faktorips.devtools.stdbuilder.testcase.TestCaseBuilder;
 import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.runtime.TableFunctionExecution;
 import org.faktorips.runtime.internal.MethodNames;
 
@@ -137,8 +138,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return result;
     }
     
-    public IParameterIdentifierResolver getFlParameterIdentifierResolver() {
-        return new AbstractParameterIdentifierResolver(){
+    public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException {
+        return new AbstractParameterIdentifierResolver(formula){
 
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
                 if(datatype instanceof IPolicyCmptType){

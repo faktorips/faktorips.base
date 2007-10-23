@@ -21,16 +21,19 @@ import java.util.Locale;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.product.IFormula;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
@@ -38,12 +41,14 @@ import org.faktorips.fl.ExprCompiler;
 /**
  * 
  */
-public class ParameterIdentifierResolverTest extends AbstractIpsPluginTest {
+public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTest {
 
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
+    private IFormula formula;
+    private IProductCmptTypeMethod method;
     private IPolicyCmptTypeAttribute attribute;
-    private IParameterIdentifierResolver resolver;
+    private AbstractParameterIdentifierResolver resolver;
     private IIpsProject ipsProject;
 
     protected void setUp() throws Exception {
@@ -59,8 +64,15 @@ public class ParameterIdentifierResolverTest extends AbstractIpsPluginTest {
         attribute.setName("tax");
         attribute.setDatatype(Datatype.DECIMAL.getQualifiedName());
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
-        resolver = ipsProject.getIpsArtefactBuilderSet().getFlParameterIdentifierResolver();
-        resolver.setIpsProject(ipsProject);
+        method = productCmptType.newFormulaSignature("formula");
+        method.setDatatype(Datatype.INTEGER.getName());
+        method.setFormulaSignatureDefinition(true);
+        
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "aConfig");
+        IProductCmptGeneration productCmptGeneration = (IProductCmptGeneration)productCmpt.newGeneration();
+        formula = productCmptGeneration.newFormula();
+        formula.setFormulaSignature(method.getFormulaName());
+        resolver = (AbstractParameterIdentifierResolver)ipsProject.getIpsArtefactBuilderSet().createFlIdentifierResolver(formula);
     }
 
     private PolicyCmptInterfaceBuilder getPolicyCmptInterfaceBuilder() throws Exception {
@@ -82,10 +94,8 @@ public class ParameterIdentifierResolverTest extends AbstractIpsPluginTest {
         assertEquals(1, result.getMessages().getNoOfMessages());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
-        IMethod method = productCmptType.newMethod(); //needed as parameter factory
         // parameter with a value datatype
-        IParameter p1 = method.newParameter(Datatype.MONEY.getQualifiedName(), "rate");
-        resolver.setParameters(new IParameter[] { p1 });
+        method.newParameter(Datatype.MONEY.getQualifiedName(), "rate");
         result = resolver.compile("rate", locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.MONEY, result.getDatatype());
@@ -94,8 +104,8 @@ public class ParameterIdentifierResolverTest extends AbstractIpsPluginTest {
         // parameter with the datatype being a policy component type
         // => resolver can resolve identifiers with form paramName.attributeName
         // with attributeName is the name of one of the type's attributes
-        IParameter p2 = method.newParameter(policyCmptType.getQualifiedName(), "policy");
-        resolver.setParameters(new IParameter[] { p2 });
+        method.newParameter(policyCmptType.getQualifiedName(), "policy");
+
         result = resolver.compile("policy.tax", locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.DECIMAL, result.getDatatype());
@@ -110,8 +120,7 @@ public class ParameterIdentifierResolverTest extends AbstractIpsPluginTest {
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
         // parameter with unkown datatype
-        IParameter p3 = method.newParameter("UnknownDatatye", "p3");
-        resolver.setParameters(new IParameter[] { p3 });
+        method.newParameter("UnknownDatatye", "p3");
         result = resolver.compile("p3", locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().getNoOfMessages());
@@ -141,6 +150,13 @@ public class ParameterIdentifierResolverTest extends AbstractIpsPluginTest {
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().getNoOfMessages());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
+        
+        //attribute of the product component type can be accessed without specifing the product component type
+        IAttribute attribute = productCmptType.newAttribute();
+        attribute.setName("a");
+        attribute.setDatatype(Datatype.INTEGER.getName());
+        result = resolver.compile("a", locale);
+        
     }
 
 }

@@ -23,6 +23,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.product.IPropertyValue;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.fl.ExprCompiler;
 
@@ -96,6 +97,13 @@ public interface IFormula extends IIpsObjectPart, IPropertyValue {
      * @throws CoreException if an error occurs while searching.
      */
     public IProductCmptTypeMethod findFormulaSignature(IIpsProject ipsProject) throws CoreException;
+    
+    /**
+     * Returns the product component type of the product component this formula belongs to.
+     * 
+     * @throws CoreException if an error occurs while searching
+     */
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns the value datatypes the results of this formula expression are instances of.

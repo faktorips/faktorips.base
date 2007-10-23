@@ -17,7 +17,10 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -31,11 +34,10 @@ import org.faktorips.devtools.core.internal.model.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.product.IFormula;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
@@ -52,6 +54,7 @@ import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExcelFunctionsResolver;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -131,6 +134,9 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         return (IProductCmptGeneration)getParent();
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
         return getProductCmptGeneration().getProductCmpt().findProductCmptType(ipsProject);
     }
@@ -211,14 +217,12 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         if (method == null) {
             return compiler;
         }
-        IParameterIdentifierResolver resolver = builderSet.getFlParameterIdentifierResolver();
+        IdentifierResolver resolver = builderSet.createFlIdentifierResolver(this);
         if (resolver == null) {
             return compiler;
         }
-        resolver.setIpsProject(getIpsProject());
-        resolver.setParameters(method.getParameters());
-        resolver.setEnumDatatypes(getEnumDatatypesAllowedInFormula());
         compiler.setIdentifierResolver(resolver);
+        
         return compiler;
     }
 
@@ -234,12 +238,16 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
      */
     public EnumDatatype[] getEnumDatatypesAllowedInFormula() throws CoreException {
         HashMap enumtypes = new HashMap();
-        collectEnumTypesFromMethod(enumtypes);
-        collectEnumTypesFromUsedTableStructures(enumtypes);
+        collectEnumsAllowedInFormula(enumtypes);
         return (EnumDatatype[])enumtypes.values().toArray(new EnumDatatype[enumtypes.size()]);
     }
     
-    private void collectEnumTypesFromMethod(HashMap enumtypes) throws CoreException {
+    private void collectEnumsAllowedInFormula(Map nameToTypeMap) throws CoreException{
+        collectEnumTypesFromMethod(nameToTypeMap);
+        collectEnumTypesFromUsedTableStructures(nameToTypeMap);
+    }
+    
+    private void collectEnumTypesFromMethod(Map enumtypes) throws CoreException {
         IIpsProject ipsProject = getIpsProject();
         IMethod method = findFormulaSignature(getIpsProject());
         if (method == null) {
@@ -268,7 +276,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         }
     }
     
-    private void collectEnumTypesFromUsedTableStructures(HashMap enumtypes) throws CoreException {
+    private void collectEnumTypesFromUsedTableStructures(Map enumtypes) throws CoreException {
         IProductCmptType type = getProductCmptGeneration().getProductCmpt().findProductCmptType(getIpsProject());
         if (type==null) {
             return;
@@ -286,14 +294,14 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         }
     }
     
-    private void collectEnumTypesFromTable(ITableStructure table, IIpsProject project, HashMap types) throws CoreException {
+    private void collectEnumTypesFromTable(ITableStructure table, IIpsProject project, Map types) throws CoreException {
         IColumn[] columns = table.getColumns();
         for (int i = 0; i < columns.length; i++) {
             searchAndAdd(project, columns[i].getDatatype(), types);
         }
     }
     
-    private void searchAndAdd(IIpsProject ipsProject, String datatypeName, HashMap types) throws CoreException {
+    private void searchAndAdd(IIpsProject ipsProject, String datatypeName, Map types) throws CoreException {
         if (types.containsKey(datatypeName)) {
             return;
         }
@@ -318,8 +326,16 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         CompilationResult compilationResult = compiler.compile(expression);
         
         // store the resolved identifiers in the cache
-        IParameterIdentifierResolver resolver = (IParameterIdentifierResolver)compiler.getIdentifierResolver();
-        return resolver.removeIdentifieresOfEnumDatatypes(compilationResult.getResolvedIdentifiers());
+        String[] resolvedIdentifiers = compilationResult.getResolvedIdentifiers();
+        Map enumNamesToTypes = new HashMap();
+        List parametersInFormula = new ArrayList();
+        collectEnumsAllowedInFormula(enumNamesToTypes);
+        for (int i = 0; i < resolvedIdentifiers.length; i++) {
+            if(enumNamesToTypes.get(resolvedIdentifiers[i]) != null){
+                parametersInFormula.add(resolvedIdentifiers[i]);
+            }
+        }
+        return (String[])parametersInFormula.toArray(new String[parametersInFormula.size()]);
     }
     
     /**
@@ -425,9 +441,9 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
     class EnumDatatypesCollector extends PolicyCmptTypeHierarchyVisitor {
         
         private IIpsProject project;
-        private HashMap enumtypes;
+        private Map enumtypes;
         
-        public EnumDatatypesCollector(IIpsProject project, HashMap enumtypes) {
+        public EnumDatatypesCollector(IIpsProject project, Map enumtypes) {
             super();
             this.project = project;
             this.enumtypes = enumtypes;
