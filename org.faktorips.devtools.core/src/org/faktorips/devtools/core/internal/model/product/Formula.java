@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
@@ -67,11 +68,11 @@ import org.w3c.dom.Element;
  */
 public class Formula extends BaseIpsObjectPart implements IFormula {
 
-    final static String TAG_NAME = "Formula";
-    private final static String TAG_NAME_FOR_EXPRESSION = "Expression";
+    final static String TAG_NAME = "Formula"; //$NON-NLS-1$
+    private final static String TAG_NAME_FOR_EXPRESSION = "Expression"; //$NON-NLS-1$
 
-    private String formulaSignature = "";
-    private String expression = "";
+    private String formulaSignature = ""; //$NON-NLS-1$
+    private String expression = ""; //$NON-NLS-1$
     private IpsObjectPartCollection testcases = new IpsObjectPartCollection(this, FormulaTestCase.class, IFormulaTestCase.class, FormulaTestCase.TAG_NAME);
     
     public Formula(IIpsObjectPart parent, int id) {
@@ -328,15 +329,27 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         // store the resolved identifiers in the cache
         String[] resolvedIdentifiers = compilationResult.getResolvedIdentifiers();
         Map enumNamesToTypes = new HashMap();
-        List parametersInFormula = new ArrayList();
         collectEnumsAllowedInFormula(enumNamesToTypes);
-        for (int i = 0; i < resolvedIdentifiers.length; i++) {
-            if(enumNamesToTypes.get(resolvedIdentifiers[i]) != null){
-                parametersInFormula.add(resolvedIdentifiers[i]);
+        return removeIdentifieresOfEnumDatatypes(enumNamesToTypes, resolvedIdentifiers);
+    }
+    
+    private String[] removeIdentifieresOfEnumDatatypes(Map enumDatatypes, String[] allIdentifiersUsedInFormula){
+        List filteredIdentifiers = new ArrayList(allIdentifiersUsedInFormula.length);
+        for (int i = 0; i < allIdentifiersUsedInFormula.length; i++) {
+            if(allIdentifiersUsedInFormula[i] != null){
+                if(allIdentifiersUsedInFormula[i].indexOf('.') != -1){
+                    String identifierRoot = allIdentifiersUsedInFormula[i].substring(0, allIdentifiersUsedInFormula[i].indexOf('.'));
+                    if(!enumDatatypes.containsKey(identifierRoot)){
+                        filteredIdentifiers.add(allIdentifiersUsedInFormula[i]);
+                    }
+                    continue;
+                }
+                filteredIdentifiers.add(allIdentifiersUsedInFormula[i]);
             }
         }
-        return (String[])parametersInFormula.toArray(new String[parametersInFormula.size()]);
+        return (String[])filteredIdentifiers.toArray(new String[filteredIdentifiers.size()]);
     }
+
     
     /**
      * {@inheritDoc}
@@ -398,7 +411,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         super.validateThis(list);
         IIpsProject ipsProject = getIpsProject();
         if (StringUtils.isEmpty(expression)) {
-            String text = "Expression is missing for formula " + formulaSignature;
+            String text = NLS.bind(Messages.Formula_msgExpressionMissing, formulaSignature);
             list.add(new Message(MSGCODE_EXPRESSION_IS_EMPTY, text, Message.ERROR, this, PROPERTY_EXPRESSION));
             return;
         }
@@ -415,7 +428,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         }
         IMethod method = findFormulaSignature(ipsProject);
         if (method==null) {
-            String text = "The formula's signature can't be found.";
+            String text = Messages.Formula_msgFormulaSignatureMissing;
             list.add(new Message(MSGCODE_SIGNATURE_CANT_BE_FOUND, text, Message.ERROR, this, PROPERTY_EXPRESSION));
             return;
         }
@@ -432,8 +445,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
                 result.getDatatype(), signatureDatatype)) {
             return;
         }
-        // String text = NLS.bind(Messages.ConfigElement_msgReturnTypeMissmatch, attributeDatatype.getName(), result.getDatatype().getName());
-        String text = "Formula should return {0} but returns a {1}. A conversion is not possible.";
+        String text = NLS.bind(Messages.Formula_msgWrongReturntype, signatureDatatype, result.getDatatype().getName());
         list.add(new Message(MSGCODE_WRONG_FORMULA_DATATYPE, text, Message.ERROR, this, PROPERTY_EXPRESSION));
     }
 

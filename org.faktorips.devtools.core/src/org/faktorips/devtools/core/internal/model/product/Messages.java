@@ -42,6 +42,12 @@ public class Messages extends NLS {
 
     public static String ConfigElement_valueSetIsNotASubset;
 
+    public static String Formula_msgExpressionMissing;
+
+    public static String Formula_msgFormulaSignatureMissing;
+
+    public static String Formula_msgWrongReturntype;
+
     public static String FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_AttributeNotFound;
 
     public static String FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_DatatypeOfParameterNotFound;
