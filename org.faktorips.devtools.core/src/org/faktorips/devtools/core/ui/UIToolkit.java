@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
+import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
 import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
@@ -465,6 +466,14 @@ public class UIToolkit {
 			Composite parent) {
 		return new PcTypeRefControl(project, parent, this);
 	}
+
+    /**
+     * Creates a new ProductCmptTypeRefControl.
+     */
+    public ProductCmptType2RefControl createProductCmptTypeRefControl(IIpsProject project,
+            Composite parent, boolean excludeAbstractTypes) {
+        return new ProductCmptType2RefControl(project, parent, this, excludeAbstractTypes);
+    }
 
 	/**
 	 * Creates a new PcTypeRefControl.

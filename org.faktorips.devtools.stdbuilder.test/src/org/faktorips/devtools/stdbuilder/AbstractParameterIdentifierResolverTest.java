@@ -156,6 +156,8 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
         attribute.setName("a");
         attribute.setDatatype(Datatype.INTEGER.getName());
         result = resolver.compile("a", locale);
+        assertTrue(result.successfull());
+        assertEquals("getA()", result.getCodeFragment().getSourcecode());
         
     }
 

@@ -56,4 +56,6 @@ public interface IProductCmptTypeMethod extends IMethod, IProdDefProperty {
     public void setFormulaName(String newName);
     
     public String getDefaultMethodName();
+    
+    public IProductCmptType getProductCmptType();
 }

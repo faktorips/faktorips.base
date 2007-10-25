@@ -15,24 +15,31 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.policycmpttype;
+package org.faktorips.devtools.core.ui.wizards.productcmpttype;
 
-import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.INewWizard;
+import org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction;
+
 
 /**
- * @author Thorsten Guenther
+ *
  */
-public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.policycmpttype.messages"; //$NON-NLS-1$
+public class OpenNewPcTypeWizardAction extends OpenNewWizardAction {
 
-	private Messages() {
-	}
+    /** 
+     * Overridden method.
+     * @see org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction#createWizard()
+     */
+    public INewWizard createWizard() {
+        return new NewProductCmptTypeWizard();
+    }
 
-	static {
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
-
-	public static String PcTypePage_title;
+    /** 
+     * Overridden method.
+     * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
+     */
+    public void dispose() {
+        // nothing to do
+    }
 
 }

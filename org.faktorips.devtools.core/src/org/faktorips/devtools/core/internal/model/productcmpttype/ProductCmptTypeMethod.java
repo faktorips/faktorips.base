@@ -140,6 +140,13 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     public String getPropertyDatatype() {
         return getDatatype();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IProductCmptType getProductCmptType() {
+        return (IProductCmptType)getParent();
+    }
     
     
 }

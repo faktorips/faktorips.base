@@ -24,10 +24,8 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.PdObjectSelectionDialog;
@@ -38,7 +36,7 @@ import org.faktorips.util.StringUtil;
  * Control to edit a reference to an ips source file in a text control with an associated browse
  * button that allows to browse the available objects.
  */
-abstract class IpsObjectRefControl extends TextButtonControl {
+public abstract class IpsObjectRefControl extends TextButtonControl {
     
     private IIpsProject ipsProject;
     

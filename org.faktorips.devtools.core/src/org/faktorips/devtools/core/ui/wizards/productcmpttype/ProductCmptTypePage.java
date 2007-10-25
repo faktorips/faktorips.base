@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.policycmpttype;
+package org.faktorips.devtools.core.ui.wizards.productcmpttype;
 
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -28,18 +28,18 @@ import org.faktorips.devtools.core.ui.wizards.type.TypePage;
 /**
  *
  */
-public class PcTypePage extends TypePage {
+public class ProductCmptTypePage extends TypePage {
     
     /**
      * @param pageName
      * @param selection
      * @throws JavaModelException
      */
-    public PcTypePage(IStructuredSelection selection) throws JavaModelException {
-        super(selection, Messages.PcTypePage_title);
+    public ProductCmptTypePage(IStructuredSelection selection) throws JavaModelException {
+        super(selection, "New Product Component Type");
     }
 
     protected IpsObjectRefControl createSupertypeControl(Composite container, UIToolkit toolkit) {
-        return toolkit.createPcTypeRefControl(null, container);
+        return toolkit.createProductCmptTypeRefControl(null, container, false);
     }
 }

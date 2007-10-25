@@ -19,8 +19,11 @@ package org.faktorips.devtools.core.internal.model.product;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -50,6 +53,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.fl.CompilationResult;
@@ -319,7 +323,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         if (StringUtils.isEmpty(expression)){
             return new String[0];
         }
-        IMethod signature = findFormulaSignature(ipsProject);
+        IProductCmptTypeMethod signature = findFormulaSignature(ipsProject);
         if (signature == null){
             return new String[0];
         }
@@ -328,12 +332,29 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         
         // store the resolved identifiers in the cache
         String[] resolvedIdentifiers = compilationResult.getResolvedIdentifiers();
+        if(resolvedIdentifiers.length == 0){
+            return resolvedIdentifiers;
+        }
         Map enumNamesToTypes = new HashMap();
         collectEnumsAllowedInFormula(enumNamesToTypes);
-        return removeIdentifieresOfEnumDatatypes(enumNamesToTypes, resolvedIdentifiers);
+        List filteredIdentifieres = removeIdentifieresOfEnumDatatypes(enumNamesToTypes, resolvedIdentifiers);
+        
+        IAttribute[] attributes = signature.getProductCmptType().findAllAttributes();
+        Set attributeNames = new HashSet(attributes.length);
+        for (int i = 0; i < attributes.length; i++) {
+            attributeNames.add(attributes[i].getName());
+        }
+        
+        for (Iterator it = filteredIdentifieres.iterator(); it.hasNext();) {
+            String idendtifier = (String)it.next();
+            if(attributeNames.contains(idendtifier)){
+                it.remove();
+            }
+        }
+        return (String[])filteredIdentifieres.toArray(new String[filteredIdentifieres.size()]);
     }
     
-    private String[] removeIdentifieresOfEnumDatatypes(Map enumDatatypes, String[] allIdentifiersUsedInFormula){
+    private List removeIdentifieresOfEnumDatatypes(Map enumDatatypes, String[] allIdentifiersUsedInFormula){
         List filteredIdentifiers = new ArrayList(allIdentifiersUsedInFormula.length);
         for (int i = 0; i < allIdentifiersUsedInFormula.length; i++) {
             if(allIdentifiersUsedInFormula[i] != null){
@@ -347,7 +368,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
                 filteredIdentifiers.add(allIdentifiersUsedInFormula[i]);
             }
         }
-        return (String[])filteredIdentifiers.toArray(new String[filteredIdentifiers.size()]);
+        return filteredIdentifiers;
     }
 
     

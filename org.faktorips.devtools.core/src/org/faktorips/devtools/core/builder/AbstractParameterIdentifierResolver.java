@@ -142,7 +142,8 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                         String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgNoDatatypeForProductCmptTypeAttribute, attributes[i].getName(), productCmptType.getQualifiedName());
                         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
                     }
-                    return new CompilationResultImpl(identifier, attrDatatype);
+                    String code = getParameterAttributGetterName(attributes[i], productCmptType) + "()";
+                    return new CompilationResultImpl(code, attrDatatype);
                 }
             }
         } catch (CoreException e) {
@@ -246,4 +247,5 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
 					ExprCompiler.INTERNAL_ERROR, text));
 		}
 	}
+    
 }

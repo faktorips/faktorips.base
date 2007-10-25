@@ -43,7 +43,9 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -343,6 +345,19 @@ public class FormulaTest extends AbstractIpsPluginTest  {
         identifierInFormula = Arrays.asList(formula.getParameterIdentifiersUsedInFormula(ipsProject));
         assertEquals(1, identifierInFormula.size());   
         assertTrue(identifierInFormula.contains("testParam"));
+        
+        //attributes of the product component type can be used within the formula withinout specifing them
+        //as an parameter and the shouldn't appear in the identifier list of the formula
+        IAttribute attr = productCmptType.newAttribute();
+        attr.setName("hello");
+        attr.setDatatype(Datatype.INTEGER.getName());
+        formula.setExpression("hello");
+        ExprCompiler compiler = formula.newExprCompiler(ipsProject);
+        CompilationResult result = compiler.compile(formula.getExpression());
+        assertTrue(result.successfull());
+        identifierInFormula = Arrays.asList(formula.getParameterIdentifiersUsedInFormula(ipsProject));
+        assertEquals(0, identifierInFormula.size());
+        
     }
     
     public void testMoveFormulaTestCases(){

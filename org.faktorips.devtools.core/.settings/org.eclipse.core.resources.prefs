@@ -1,8 +1,9 @@
-#Wed Aug 01 09:59:47 CEST 2007
+#Thu Oct 25 16:16:51 CEST 2007
 eclipse.preferences.version=1
 encoding//src/org/faktorips/devtools/core/model/pctype/messages.properties=8859_1
 encoding//src/org/faktorips/devtools/core/ui/controlfactories/messages.properties=8859_1
 encoding//src/org/faktorips/devtools/core/ui/controller/messages.properties=8859_1
 encoding//src/org/faktorips/devtools/core/ui/views/modeldescription/messages.properties=8859_1
+encoding//src/org/faktorips/devtools/core/ui/wizards/type/messages.properties=8859_1
 encoding//src/org/faktorips/devtools/extsystems/messages.properties=8859_1
 encoding/<project>=UTF-8
