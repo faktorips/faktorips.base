@@ -44,6 +44,13 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     /**
      * {@inheritDoc}
      */
+    public IProductCmptType getProductCmptType() {
+        return (IProductCmptType)getParent();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public ImplementationType getImplementationType() {
         return formulaSignatureDefinition ? ImplementationType.IN_PRODUCT_CMPT_GENERATION : ImplementationType.IN_TYPE;
     }
@@ -139,13 +146,6 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
      */
     public String getPropertyDatatype() {
         return getDatatype();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IProductCmptType getProductCmptType() {
-        return (IProductCmptType)getParent();
     }
     
     

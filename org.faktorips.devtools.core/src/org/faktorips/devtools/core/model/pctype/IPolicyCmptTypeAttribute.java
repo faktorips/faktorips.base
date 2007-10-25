@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 public interface IPolicyCmptTypeAttribute extends org.faktorips.devtools.core.model.type.IAttribute, IMember, IValueSetOwner, IProdDefProperty {
 
     // property names
+    public final static String PROPERTY_COMPUTATION_METHOD_SIGNATURE = "computationMethodSignature"; //$NON-NLS-1$
     public final static String PROPERTY_ATTRIBUTE_TYPE = "attributeType"; //$NON-NLS-1$
     public final static String PROPERTY_PRODUCT_RELEVANT = "productRelevant"; //$NON-NLS-1$
     
@@ -70,6 +71,11 @@ public interface IPolicyCmptTypeAttribute extends org.faktorips.devtools.core.mo
 	public final static String MSGCODE_NAME_COLLISION_LOCAL = MSGCODE_PREFIX
 			+ "NameCollsionLocal"; //$NON-NLS-1$
 
+    /**
+     * Returns the policy component type this attribute belongs to.
+     */
+    public IPolicyCmptType getPolicyCmptType();
+    
     /**
      * Returns the attribute's value datatype or <code>null</code> if the datatype name
      * can't be resolved.
@@ -130,16 +136,6 @@ public interface IPolicyCmptTypeAttribute extends org.faktorips.devtools.core.mo
     public boolean isDerived();
     
     /**
-     * If this is a derived attribute which value is derived by a method defined in the
-     * product component type, this method is search and returned.
-     * 
-     * @param ipsProject The project which ips object path is used to search.
-     * 
-     * @throws CoreException if an error occurs while searching.
-     */
-    public IProductCmptTypeMethod findMethodCalculationTheAttributesValues(IIpsProject ipsProject) throws CoreException;
-    
-    /**
      * Returns the type of the product configuration element this attribute
      * defines. Returns <code>null</code> if this attribute is not product
      * relevant.
@@ -162,7 +158,23 @@ public interface IPolicyCmptTypeAttribute extends org.faktorips.devtools.core.mo
      * must be a derived one, that is computed on the fly. The method returns an empty
      * String if this is not the case. 
      */
-    public String getComputationMethodName();
+    public String getComputationMethodSignature();
+    
+    /**
+     * Sets the name of the method computing this attribute.
+     */
+    public void setComputationMethodSignature(String newMethodName);
+    
+    /**
+     * If this is a derived attribute which value is derived by a method defined in the
+     * product component type, this method is search and returned.
+     * 
+     * @param ipsProject The project which ips object path is used to search.
+     * 
+     * @throws CoreException if an error occurs while searching.
+     */
+    public IProductCmptTypeMethod findComputationMethod(IIpsProject ipsProject) throws CoreException;
+    
     
     /**
      * Returns the set of allowed values.

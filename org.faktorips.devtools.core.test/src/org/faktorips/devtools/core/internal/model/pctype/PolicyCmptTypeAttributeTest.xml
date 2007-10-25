@@ -5,7 +5,7 @@
 -->
 <testcases>
 
-	<Attribute id="42" name="premium" datatype="money" productRelevant="false" attributeType="computed">
+	<Attribute id="42" name="premium" datatype="money" productRelevant="false" attributeType="computed" computationMethodSignature="computePremium">
 		<DefaultValue isNull="false"><![CDATA[42EUR]]></DefaultValue>
 		<ValueSet>
 			<Range upperBound="222" lowerBound="444"/>

@@ -111,4 +111,9 @@ public interface IMethod extends IParameterContainer {
      * @throws CoreException if an error occurs while searching.
      */
     public IMethod findOverridingMethod(IType typeToSearchFrom, IIpsProject ipsProject) throws CoreException;
+    
+    /**
+     * Returns the method's signature in String format, e.g. computePremium(base.Coverage, base.Contract, Integer)
+     */
+    public String getSignatureString();
 }

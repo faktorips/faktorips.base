@@ -34,6 +34,11 @@ public interface IProductCmptTypeMethod extends IMethod, IProdDefProperty {
     public final static String PROPERTY_IMPLEMENTATION_TYPE= "implementationType";
     
     /**
+     * Returns the product component type this method belongs to.
+     */
+    public IProductCmptType getProductCmptType();
+    
+    /**
      * Returns the implementation type. This method never returns null.
      */
     public ImplementationType getImplementationType();
@@ -55,7 +60,9 @@ public interface IProductCmptTypeMethod extends IMethod, IProdDefProperty {
     
     public void setFormulaName(String newName);
     
+    /**
+     * Returns a default name for the method based on the formula name. E.g. if the formula name is
+     * 'Premium' the method  meight return 'computePremium'.
+     */
     public String getDefaultMethodName();
-    
-    public IProductCmptType getProductCmptType();
 }

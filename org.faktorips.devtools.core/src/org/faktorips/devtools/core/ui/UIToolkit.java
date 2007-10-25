@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -30,6 +31,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
@@ -332,13 +334,13 @@ public class UIToolkit {
 		if (formToolkit != null) {
 			newLink = formToolkit.createHyperlink(parent, text, SWT.NONE);
 		} else {
-			throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
+			throw new RuntimeException("Hyperlinks are only available for forms, use createLinks or createLinkOrHyperlink instead.");
 		}
 		newLink.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.VERTICAL_ALIGN_END));
 		return newLink;
 	}
-
+    
 	public Text createText(Composite parent, int style) {
 		Text newText;
 		if (formToolkit != null) {
@@ -467,7 +469,7 @@ public class UIToolkit {
 		return new PcTypeRefControl(project, parent, this);
 	}
 
-    /**
+	/**
      * Creates a new ProductCmptTypeRefControl.
      */
     public ProductCmptType2RefControl createProductCmptTypeRefControl(IIpsProject project,

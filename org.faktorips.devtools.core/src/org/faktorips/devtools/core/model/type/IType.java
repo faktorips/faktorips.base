@@ -252,6 +252,50 @@ public interface IType extends IIpsObject, Datatype {
     public IMethod[] getMethods();
     
     /**
+     * Returns the first method with the given name and the given parameters in this type. This method does not search
+     * the supertype hierarchy. Returns <code>null</code> if no such method exists.
+     * 
+     * @param name          The method's name.
+     * @param datatypes     The datatypes of the method's parameters.
+     */
+    public IMethod getMethod(String methodName, String[] datatypes);
+    
+    /**
+     * Returns the first method with the given signature. This method does not search
+     * the supertype hierarchy. Returns <code>null</code> if no such method exists.
+     * 
+     * @param signature     The method's signature, e.g. calcPremium(base.Vertrag, Integer)
+     */
+    public IMethod getMethod(String signature);
+    
+    /**
+     * Searches a method with the given signature in the type and its supertype hierarchy and returns it. 
+     * Returns <code>null</code> if no such method exists.
+     * 
+     * @param name          The method's sigature as string, e.g. computePremium(base.Contract, base.Coverage)
+     * @param ipsProject    The project which ips object path is used for the searched.
+     *                      This is not neccessarily the project this type is part of. 
+     * 
+     * @throws NullPointerException if project is <code>null</code>.
+     * @throws CoreException if an error occurs while searching.
+     */
+    public IMethod findMethod(String signature, IIpsProject ipsProject) throws CoreException;
+    
+    /**
+     * Searches a method with the given name and the given parameters in the type and its supertype hierarchy and returns it. 
+     * Returns <code>null</code> if no such method exists.
+     * 
+     * @param name          The method's name.
+     * @param datatypes     The datatypes of the method's parameters.
+     * @param ipsProject    The project which ips object path is used for the searched.
+     *                      This is not neccessarily the project this type is part of. 
+     * 
+     * @throws NullPointerException if project is <code>null</code>.
+     * @throws CoreException if an error occurs while searching.
+     */
+    public IMethod findMethod(String name, String datatypes[], IIpsProject ipsProject) throws CoreException;
+    
+    /**
      * Creates a new method and returns it.
      */
     public IMethod newMethod();

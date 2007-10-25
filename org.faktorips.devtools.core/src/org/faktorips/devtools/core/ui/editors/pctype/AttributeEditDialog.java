@@ -20,7 +20,11 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -32,6 +36,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -42,13 +47,17 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.model.pctype.Modifier;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
@@ -64,6 +73,9 @@ import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.TableElementValidator;
 import org.faktorips.devtools.core.ui.controls.ValueSetEditControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.core.ui.editors.productcmpttype.ProductCmptTypeMethodEditDialog;
+import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -90,6 +102,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
     private Label labelDefaultValue;
     
     private ExtensionPropertyControlFactory extFactory;
+    
+    private Group configGroup;
     
     private Checkbox validationRuleAdded;
     
@@ -140,6 +154,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
     
     private ValueDatatype currentDatatype;
     
+    private AttributeType currentAttributeType;
+    
     // placeholder for the default edit field, the edit field for the default value depends on
     // the attributes datatype
     private Composite defaultEditFieldPlaceholder;
@@ -160,6 +176,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
             IpsPlugin.log(e);
         }
         currentValueSetType = attribute.getValueSet().getValueSetType();
+        currentAttributeType = attribute.getAttributeType();
         extFactory = new ExtensionPropertyControlFactory(attribute.getClass());
     }
     
@@ -254,6 +271,15 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
     private Control createGeneralPage(TabFolder folder) {
 
         Composite c = createTabItemComposite(folder, 1, false);
+        Group generelGroup = uiToolkit.createGroup(c, "Generel");
+        createGenerelGroupContent(generelGroup);
+        configGroup = uiToolkit.createGroup(c, "Configuration");
+        createConfigGroupContent(configGroup);
+        
+        return c;
+    }
+
+    private void createGenerelGroupContent(Composite c) {
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         extFactory.createControls(workArea, uiToolkit, attribute, IExtensionPropertyDefinition.POSITION_TOP);
 
@@ -301,16 +327,148 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         Combo typeCombo = uiToolkit.createCombo(workArea, AttributeType.getEnumType());
         bindingContext.bindContent(typeCombo, attribute, IPolicyCmptTypeAttribute.PROPERTY_ATTRIBUTE_TYPE, AttributeType.getEnumType());
         
-        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelProdRelevant);
-        Checkbox checkbox = uiToolkit.createCheckbox(workArea);
-        bindingContext.bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
-        
         extFactory.createControls(workArea, uiToolkit, attribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
         extFactory.bind(bindingContext);
-        
-        return c;
     }
+    
+    private void createConfigGroupContent(Group group) {
+        
+        Composite area = uiToolkit.createGridComposite(group, 1, true, false);
+        
+        if (attribute.isDerived()) {
+            String productCmptType = QNameUtil.getUnqualifiedName(attribute.getPolicyCmptType().getProductCmptType());
+            String checkboxText = NLS.bind("The attribute''s value is computed by a method of type ''{0}''", productCmptType);
+            Checkbox checkbox = uiToolkit.createCheckbox(area, checkboxText);
+            bindingContext.bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
+            uiToolkit.createLabel(area, "Note: The method can either be implemented in Java or defined through a formula.\nIn the latter case, a formula is defined per product component.");
+            
+            Composite temp = uiToolkit.createLabelEditColumnComposite(area);
+            Link label = new Link(temp, SWT.NONE);
+            label.setText("<a>Computation method</a>: ");
+            label.addSelectionListener(new SelectionListener() {
 
+                public void widgetDefaultSelected(SelectionEvent e) {
+                    widgetSelected(e);
+                }
+
+                public void widgetSelected(SelectionEvent e) {
+                    editMethodInDialog();
+                }
+            });
+            Text compuationMethodText = uiToolkit.createText(temp);
+            bindingContext.bindContent(compuationMethodText, attribute, IPolicyCmptTypeAttribute.PROPERTY_COMPUTATION_METHOD_SIGNATURE);
+            
+            Link link = new Link(area, SWT.NONE);
+            link.setText("To create a new method/formula signature that computes this attribute <a>click here</a>.");
+            link.addSelectionListener(new SelectionListener() {
+
+                public void widgetDefaultSelected(SelectionEvent e) {
+                    widgetSelected(e);
+                }
+
+                public void widgetSelected(SelectionEvent e) {
+                    createMethodAndOpenDialog();
+                }
+                
+            });
+        } 
+
+        if (attribute.isChangeable()) {
+            uiToolkit.createCheckbox(area, "The default value and the set of allowed values are defined in the product configuration.");
+            // bindingContext.bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
+        } 
+        
+        if (attribute.getAttributeType()==AttributeType.CONSTANT) {
+            uiToolkit.createFormLabel(area, "Constant attributes can't be configured.");
+        } 
+    }
+    
+    private void createMethodAndOpenDialog() {
+        IProductCmptType productCmptType = findProductCmptTypeAndInformUserIfNotExists();
+        if (productCmptType==null) {
+            return;
+        }
+        Memento productCmptTypeMemento = productCmptType.newMemento();
+        Memento policyCmptTypeMemento = attribute.getPolicyCmptType().newMemento();
+        IProductCmptTypeMethod newMethod = productCmptType.newFormulaSignature(attribute.getName());
+        String qName = attribute.getPolicyCmptType().getQualifiedName();
+        newMethod.newParameter(qName, StringUtils.uncapitalise(QNameUtil.getUnqualifiedName(qName)));
+        attribute.setComputationMethodSignature(newMethod.getName());
+        int rc = openEditMethodDialog(newMethod, productCmptTypeMemento);
+        if (rc==Window.CANCEL) {
+            attribute.getPolicyCmptType().setState(policyCmptTypeMemento);
+        } else {
+            attribute.setComputationMethodSignature(newMethod.getName());
+        }
+    }
+    
+    private void editMethodInDialog() {
+        IProductCmptType productCmptType = findProductCmptTypeAndInformUserIfNotExists();
+        if (productCmptType==null) {
+            return;
+        }
+        IProductCmptTypeMethod method = null;
+        try {
+            method = attribute.findComputationMethod(ipsProject);
+            if (method==null) {
+                String methodName = attribute.getComputationMethodSignature();
+                if (StringUtils.isEmpty(methodName)) {
+                    methodName = "[EmptyString]";
+                }
+                String text = NLS.bind("No method named ''{0}'' found in product component type ''{1}''.", method, productCmptType.getQualifiedName());
+                MessageDialog.openInformation(getShell(), "Info", text);
+                return;
+            }
+        }
+        catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            return;
+        }
+        Memento memento = productCmptType.newMemento();
+        openEditMethodDialog(method, memento);
+    }
+    
+    private int openEditMethodDialog(IProductCmptTypeMethod newMethod, Memento memento) {
+        IProductCmptType productCmptType = newMethod.getProductCmptType();
+        IIpsSrcFile file = productCmptType.getIpsSrcFile();
+        boolean dirty = file.isDirty();
+        ProductCmptTypeMethodEditDialog dialog = new ProductCmptTypeMethodEditDialog(newMethod, getShell());
+        dialog.open();
+        if (dialog.getReturnCode()==Window.CANCEL) {
+            productCmptType.setState(memento);
+            if (!dirty) {
+                file.markAsClean();
+            }
+        } else {
+            if (!dirty) {
+                try {
+                    file.save(true, null);
+                }
+                catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+            }
+        }
+        return dialog.getReturnCode();
+    }
+    
+    private IProductCmptType findProductCmptTypeAndInformUserIfNotExists() {
+        IPolicyCmptType policyCmptType = attribute.getPolicyCmptType();
+        IProductCmptType productCmptType = null;
+        try {
+            productCmptType = policyCmptType.findProductCmptType(ipsProject);
+            if (productCmptType==null) {
+                String text = NLS.bind("The product component type ''{0}'' can't be found!", policyCmptType.getProductCmptType());
+                MessageDialog.openInformation(getShell(), "Info", text);
+            }
+        }
+        catch (CoreException e) {
+            String text = NLS.bind("An error occured while searching for the product component type ''{0}''.", policyCmptType.getProductCmptType());
+            MessageDialog.openInformation(getShell(), "Info", text);
+        }
+        return productCmptType;
+    }
+    
     private Control createValueSetPage(TabFolder folder) {
         Composite pageControl = createTabItemComposite(folder, 1, false);
 
@@ -361,7 +519,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         ValueDatatypeControlFactory datatypeCtrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(currentDatatype);
         defaultValueField = datatypeCtrlFactory.createEditField(uiToolkit, defaultEditFieldPlaceholder, currentDatatype, null);
         defaultValueField.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
-//        adjustLabelWidth();
+        adjustLabelWidth();
 
         defaultEditFieldPlaceholder.layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout();
@@ -370,6 +528,16 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
 
     public void contentsChanged(ContentChangeEvent event) {
         super.contentsChanged(event);
+        if (attribute.getAttributeType()!=currentAttributeType) {
+            currentAttributeType = attribute.getAttributeType();
+            if (configGroup!=null) {
+                Control[] children = configGroup.getChildren();
+                for (int i = 0; i < children.length; i++) {
+                    children[i].dispose();                }
+                createConfigGroupContent(configGroup);
+                configGroup.layout();
+            }
+        }
         ValueDatatype newDatatype = null;
         try {
             newDatatype  = attribute.findDatatype(ipsProject);

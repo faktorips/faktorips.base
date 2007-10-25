@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.type;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.Modifier;
@@ -43,6 +44,51 @@ public class MethodTest extends AbstractIpsPluginTest {
         method = type.newMethod();
     }
     
+    public void testGetSignatureString() {
+        method.setName("calc");
+        assertEquals("calc()", method.getSignatureString());
+        
+        method.newParameter("base.Vertrag", "vertrag");
+        assertEquals("calc(base.Vertrag)", method.getSignatureString());
+        
+        method.newParameter("Integer", "zahlweise");
+        assertEquals("calc(base.Vertrag, Integer)", method.getSignatureString());
+    }
+    
+    public void testGetMethodBySignature() {
+        assertNull(type.getMethod("calc()"));
+
+        method.setName("calc");
+
+        IMethod method2 = type.newMethod();
+        method2.setName("calc");
+        method2.newParameter("base.Vertrag", "vertrag");
+        method2.newParameter("Integer", "i");
+        
+        assertEquals(method, type.getMethod("calc()"));
+        assertEquals(method2, type.getMethod("calc(base.Vertrag, Integer)"));
+        assertNull(type.getMethod("calc(base.Vertrag, String)"));
+        assertNull(type.getMethod("unknown()"));
+    }
+    
+    public void testFindMethodBySignature() throws CoreException {
+        assertNull(type.findMethod("calc()", ipsProject));
+
+        method.setName("calc");
+
+        IType supertype = newProductCmptType(ipsProject, "Supertype");
+        type.setSupertype(supertype.getQualifiedName());
+        IMethod method2 = type.newMethod();
+        method2.setName("calc");
+        method2.newParameter("base.Vertrag", "vertrag");
+        method2.newParameter("Integer", "i");
+        
+        assertEquals(method, type.findMethod("calc()", ipsProject));
+        assertEquals(method2, type.findMethod("calc(base.Vertrag, Integer)", ipsProject));
+        assertNull(type.findMethod("calc(base.Vertrag, String)", ipsProject));
+        assertNull(type.findMethod("unknown()", ipsProject));
+    }
+
     public void testInitFromXml() {
         Element docElement = this.getTestDocument().getDocumentElement();
         

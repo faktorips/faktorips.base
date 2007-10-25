@@ -219,6 +219,24 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         }
         return true;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getSignatureString() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(getName());
+        buffer.append('(');
+        IParameter[] params = getParameters();
+        for (int i = 0; i < params.length; i++) {
+            if (i>0) {
+                buffer.append(", ");
+            }
+            buffer.append(params[i].getDatatype());
+        }
+        buffer.append(')');
+        return buffer.toString();
+    }
 
     /**
      * {@inheritDoc}

@@ -407,6 +407,13 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(tsu, productCmptType.getTableStructureUsages()[0]);
     }
     
+    public void testNewFormulaSignature() {
+        IProductCmptTypeMethod formula = productCmptType.newFormulaSignature("premium");
+        assertEquals("premium", formula.getFormulaName());
+        assertEquals(formula.getDefaultMethodName(), formula.getName());
+        assertTrue(formula.isFormulaSignatureDefinition());
+    }
+    
     public void testFindSupertype() throws CoreException {
         assertEquals(superProductCmptType, productCmptType.findSupertype(ipsProject));
         assertNull(superSuperProductCmptType.findSupertype(ipsProject));
@@ -444,9 +451,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     }
 
     public void testSetPolicyCmptType() {
-        productCmptType.setPolicyCmptType("NewType");
-        assertEquals("NewType", productCmptType.getPolicyCmptType());
-        assertEquals(productCmptType.getIpsSrcFile(), lastEvent.getIpsSrcFile());
+        testPropertyAccessReadWrite(ProductCmptType.class, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE, productCmptType, "NewPolicy");
     }
     
     public void testConfiguresPolicyCmptType() {

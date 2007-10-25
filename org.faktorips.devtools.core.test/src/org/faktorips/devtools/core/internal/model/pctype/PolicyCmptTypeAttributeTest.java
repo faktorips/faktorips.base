@@ -33,6 +33,8 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -49,38 +51,64 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     private IIpsSrcFile ipsSrcFile;
     private PolicyCmptType pcType;
     private IPolicyCmptTypeAttribute attribute;
-    private IIpsProject project;
+    private IIpsProject ipsProject;
     
     protected void setUp() throws Exception {
         super.setUp();
-        project = this.newIpsProject("TestProject");
-        ipsRootFolder = project.getIpsPackageFragmentRoots()[0];
+        ipsProject = this.newIpsProject();
+        ipsRootFolder = ipsProject.getIpsPackageFragmentRoots()[0];
         ipsFolder = ipsRootFolder.createPackageFragment("products.folder", true, null);
         ipsSrcFile = ipsFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
         pcType = (PolicyCmptType)ipsSrcFile.getIpsObject();
         attribute = pcType.newPolicyCmptTypeAttribute();
     }
     
+    public void testFindComputationMethodSignature() throws CoreException {
+        assertNull(attribute.findComputationMethod(ipsProject));
+        
+        attribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
+        attribute.setName("premium");
+        attribute.setComputationMethodSignature("calcPremium(TestPolicy)");
+        
+        IProductCmptType productType = newProductCmptType(ipsProject, "TestProduct");
+        pcType.setConfigurableByProductCmptType(true);
+        pcType.setProductCmptType(productType.getQualifiedName());
+        assertNull(attribute.findComputationMethod(ipsProject));
+        
+        IMethod method = productType.newMethod();
+        method.setName("calcPremium");
+        assertNull(attribute.findComputationMethod(ipsProject));
+        
+        method.newParameter("TestPolicy", "policy");
+        IProductCmptType type2 = ipsProject.findProductCmptType("TestProduct");
+
+        assertEquals(method, attribute.findComputationMethod(ipsProject));
+    }
+    
+    public void testComputationMethodSignature() {
+        testPropertyAccessReadWrite(PolicyCmptTypeAttribute.class, IPolicyCmptTypeAttribute.PROPERTY_COMPUTATION_METHOD_SIGNATURE, attribute, "calcThis");
+    }
+    
     public void testFindOverwrittenAttribute() throws CoreException {
         attribute.setName("a");
-        IPolicyCmptType supertype = newPolicyCmptType(project, "Supertype");
-        IPolicyCmptType supersupertype = newPolicyCmptType(project, "SuperSupertype");
+        IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
+        IPolicyCmptType supersupertype = newPolicyCmptType(ipsProject, "SuperSupertype");
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
         
-        assertNull(attribute.findOverwrittenAttribute(project));
+        assertNull(attribute.findOverwrittenAttribute(ipsProject));
         
         IPolicyCmptTypeAttribute aInSupertype = supersupertype.newPolicyCmptTypeAttribute();
         aInSupertype.setName("a");
         
-        assertEquals(aInSupertype, attribute.findOverwrittenAttribute(project));
+        assertEquals(aInSupertype, attribute.findOverwrittenAttribute(ipsProject));
         
         // cycle in type hierarchy
         supersupertype.setSupertype(pcType.getQualifiedName());
-        assertEquals(aInSupertype, attribute.findOverwrittenAttribute(project));
+        assertEquals(aInSupertype, attribute.findOverwrittenAttribute(ipsProject));
 
         aInSupertype.delete();
-        assertNull(attribute.findOverwrittenAttribute(project)); // this should not return a itself!
+        assertNull(attribute.findOverwrittenAttribute(ipsProject)); // this should not return a itself!
     }
     
     public void testGetConfigElementType() {
@@ -123,6 +151,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.initFromXml((Element)nl.item(0));
         assertEquals(42, attribute.getId());
         assertEquals("premium", attribute.getName());
+        assertEquals("computePremium", attribute.getComputationMethodSignature());
         assertEquals("money", attribute.getDatatype());
         assertFalse(attribute.isProductRelevant());
         assertEquals(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL, attribute.getAttributeType());
@@ -147,6 +176,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute = pcType.newPolicyCmptTypeAttribute();  // => id=1 as this is the type's 2 attribute
         attribute.setName("age");
         attribute.setDatatype("decimal");
+        attribute.setComputationMethodSignature("computePremium");
         attribute.setProductRelevant(true);
         attribute.setAttributeType(AttributeType.CONSTANT);
         attribute.setDefaultValue("18");
@@ -163,6 +193,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertEquals(1, copy.getId());
         assertEquals("age", copy.getName());
         assertEquals("decimal", copy.getDatatype());
+        assertEquals("computePremium", copy.getComputationMethodSignature());
         assertTrue(copy.isProductRelevant());
         assertFalse(copy.getOverwrites());
         assertEquals(AttributeType.CONSTANT, copy.getAttributeType());
@@ -238,7 +269,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     	ml = attribute.validate();
     	assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
     	
-    	IPolicyCmptType supertype = newPolicyCmptType(project, "sup.SuperType");
+    	IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "sup.SuperType");
     	IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute();
     	superAttr.setName("name");
     	pcType.setSupertype(supertype.getQualifiedName());
@@ -248,7 +279,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     public void testValidate_nameCollision() throws Exception {
-    	IPolicyCmptType supertype = newPolicyCmptType(project, "sup.SuperType");
+    	IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "sup.SuperType");
     	IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute();
     	superAttr.setName("name");
     	pcType.setSupertype(supertype.getQualifiedName());    	

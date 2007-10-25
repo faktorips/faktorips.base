@@ -335,6 +335,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         IProductCmptTypeMethod signature = newProductCmptTypeMethod();
         signature.setFormulaSignatureDefinition(true);
         signature.setFormulaName(formulaName);
+        signature.setName(signature.getDefaultMethodName());
         return signature;
     }
 

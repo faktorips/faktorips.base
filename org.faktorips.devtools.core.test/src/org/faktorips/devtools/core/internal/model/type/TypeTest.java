@@ -48,6 +48,61 @@ public class TypeTest extends AbstractIpsPluginTest {
         type = newProductCmptType(ipsProject, "MotorProduct");
     }
     
+    public void testGetMethod()  {
+        assertNull(type.getMethod("SomeName", new String[0]));
+        
+        IMethod method1 = type.newMethod();
+        method1.setName("calc");
+        
+        IMethod method2 = type.newMethod();
+        method2.setName("calc");
+        method2.newParameter("Integer", "i");
+        method2.newParameter("String", "s");
+        
+        IMethod method3 = type.newMethod();
+        method3.setName("calc");
+        method3.newParameter("Integer", "i");
+        method3.newParameter("Decimal", "d");
+        
+        IMethod method4 = type.newMethod();
+        method4.setName("getAge");
+        
+        assertEquals(method1, type.getMethod("calc", new String[0]));
+        assertEquals(method2, type.getMethod("calc", new String[]{"Integer", "String"}));
+        assertEquals(method3, type.getMethod("calc", new String[]{"Integer", "Decimal"}));
+        assertEquals(method4, type.getMethod("getAge", new String[0]));
+        assertNull(type.getMethod("unknown", new String[0]));
+    }
+    
+    public void testFindMethod() throws CoreException  {
+        assertNull(type.findMethod("SomeName", new String[0], ipsProject));
+        
+        IType supertype = newProductCmptType(ipsProject, "Product");
+        type.setSupertype(supertype.getQualifiedName());
+        
+        IMethod method1 = type.newMethod();
+        method1.setName("calc");
+        
+        IMethod method2 = type.newMethod();
+        method2.setName("calc");
+        method2.newParameter("Integer", "i");
+        method2.newParameter("String", "s");
+        
+        IMethod method3 = supertype.newMethod();
+        method3.setName("calc");
+        method3.newParameter("Integer", "i");
+        method3.newParameter("String", "d");
+        
+        IMethod method4 = supertype.newMethod();
+        method4.setName("getAge");
+        
+        assertEquals(method1, type.findMethod("calc", new String[0], ipsProject));
+        assertEquals(method2, type.findMethod("calc", new String[]{"Integer", "String"}, ipsProject));
+        assertEquals(method3, supertype.findMethod("calc", new String[]{"Integer", "String"}, ipsProject));
+        assertEquals(method4, type.findMethod("getAge", new String[0], ipsProject));
+        assertNull(type.findMethod("unknown", new String[0], ipsProject));
+    }
+    
     public void testFindAttribute() throws CoreException {
         assertNull(type.findAttribute("unknown", ipsProject));
         

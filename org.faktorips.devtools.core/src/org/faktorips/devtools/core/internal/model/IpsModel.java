@@ -147,7 +147,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private Map classLoaderProviderMap = new HashMap();
 
     // map containing IpsSrcFileContents as values and IpsSrcFiles as keys.
-    private IpsObjectCache ipsObjectsMap = new IpsObjectCache(1000);
+    private HashMap ipsObjectsMap = new HashMap(1000);
     
     // validation result cache
     private ValidationResultCache validationResultCache = new ValidationResultCache();
@@ -1255,7 +1255,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Returns true if the IIpsSrcFileContents of the provided IIpsSrcFile has been cached.
      */
     public boolean isCached(IIpsSrcFile file){
-        return ipsObjectsMap.getObject(file) != null;
+        return ipsObjectsMap.get(file) != null;
     }
     
     /**
@@ -1277,7 +1277,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (enclResource == null || !enclResource.exists()) {
             return null;
         }
-        IpsSrcFileContent content = (IpsSrcFileContent)ipsObjectsMap.getObject(file);
+        IpsSrcFileContent content = (IpsSrcFileContent)ipsObjectsMap.get(file);
         long resourceModStamp = enclResource.getModificationStamp();
 
         // new content
@@ -1350,7 +1350,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (enclResource == null || !enclResource.exists()) {
             return false;
         }
-        IpsSrcFileContent content = (IpsSrcFileContent)ipsObjectsMap.getObject(file);
+        IpsSrcFileContent content = (IpsSrcFileContent)ipsObjectsMap.get(file);
         if (content==null) {
             return true;
         }

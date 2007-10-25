@@ -1,7 +1,7 @@
 Klären:
 =======
-Abhängigkeiten zwischen den Ableitungshierarchien auf Verrtrags & Produktseite. 
-=> Erbt ein
+Abhängigkeiten zwischen den Ableitungshierarchien auf Vertrags & Produktseite. 
+=> Erbt ein 
 Abstrakt Flag & abstrakte Methoden bei ProductCmptTypes / Formulas.
 Aggregation Kind / RelationType
 Modelltype-Editoren: 2 oder 4 Sections verwenden? Preference einführen?

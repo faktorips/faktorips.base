@@ -195,8 +195,12 @@ public interface IProductCmptType extends IIpsObject, IType {
     
     /**
      * Returns a new product component type method that has the role of a formula signature.
+     * The formula name is set to the given formula name and the method name is set to the default
+     * method name.
      * 
      * @param The name of the formula signature.
+     * 
+     * @see IProductCmptTypeMethod#getDefaultMethodName()
      */
     public IProductCmptTypeMethod newFormulaSignature(String formulaName);
     

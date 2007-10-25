@@ -51,7 +51,8 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     private AttributeType attributeType = AttributeType.CHANGEABLE;
     private IValueSet valueSet;
     private boolean overwrites = false;
-
+    private String computationMethodSignature = "";
+    
     /**
      * Creates a new attribute.
      * 
@@ -63,8 +64,11 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         valueSet = new AllValuesValueSet(this, getNextPartId());
     }
 
-    PolicyCmptType getPolicyCmptType() {
-        return (PolicyCmptType)getIpsObject();
+    /**
+     * {@inheritDoc}
+     */
+    public IPolicyCmptType getPolicyCmptType() {
+        return (IPolicyCmptType)getIpsObject();
     }
 
     /**
@@ -168,15 +172,15 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
-    public IProductCmptTypeMethod findMethodCalculationTheAttributesValues(IIpsProject ipsProject) throws CoreException {
-        if (attributeType!=AttributeType.DERIVED_ON_THE_FLY) {
+    public IProductCmptTypeMethod findComputationMethod(IIpsProject ipsProject) throws CoreException {
+        if (StringUtils.isEmpty(computationMethodSignature)) {
             return null;
         }
-        IProductCmptType type = getPolicyCmptType().findProductCmptType(ipsProject);
-        if (type==null) {
+        IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(ipsProject);
+        if (productCmptType==null) {
             return null;
         }
-        return type.getFormulaSignature(name);
+        return (IProductCmptTypeMethod)productCmptType.findMethod(computationMethodSignature, ipsProject);
     }
 
     /**
@@ -251,8 +255,17 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
-    public String getComputationMethodName() {
-        return "compute" + StringUtils.capitalise(getName());
+    public String getComputationMethodSignature() {
+        return computationMethodSignature;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setComputationMethodSignature(String newMethodName) {
+        String oldName = computationMethodSignature;
+        computationMethodSignature = newMethodName;
+        valueChanged(oldName, newMethodName);
     }
 
     /**
@@ -326,6 +339,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         overwrites = Boolean.valueOf(element.getAttribute(PROPERTY_OVERWRITES)).booleanValue();
         productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
         attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
+        computationMethodSignature = element.getAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE);
     }
 
     /**
@@ -336,6 +350,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         element.setAttribute(PROPERTY_OVERWRITES, "" + overwrites); //$NON-NLS-1$
         element.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant); //$NON-NLS-1$
         element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
+        element.setAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE, "" + computationMethodSignature); //$NON-NLS-1$
     }
 
     /**

@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartCollection;
+import org.faktorips.devtools.core.internal.model.IpsSrcFileContent;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -54,9 +55,6 @@ public abstract class Type extends BaseIpsObject implements IType {
     protected IpsObjectPartCollection associations;
     protected IpsObjectPartCollection attributes;
     
-    /**
-     * @param file
-     */
     public Type(IIpsSrcFile file) {
         super(file);
         attributes = createCollectionForAttributes();
@@ -287,6 +285,67 @@ public abstract class Type extends BaseIpsObject implements IType {
      */
     public IMethod[] getMethods() {
         return (IMethod[])methods.toArray(new IMethod[methods.size()]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IMethod getMethod(String methodName, String[] datatypes) {
+        if (datatypes==null) {
+            datatypes = new String[0];
+        }
+        for (Iterator it=methods.iterator(); it.hasNext(); ) {
+            IMethod method = (IMethod)it.next();
+            if (!method.getName().equals(methodName)) {
+                continue;
+            }
+            IParameter[] params = method.getParameters();
+            if (params.length!=datatypes.length) {
+                continue;
+            }
+            boolean paramsOk = true;
+            for (int i = 0; i < params.length; i++) {
+                if (!params[i].getDatatype().equals(datatypes[i])) {
+                    paramsOk = false;
+                    break;
+                }
+            }
+            if (paramsOk) {
+                return method;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IMethod findMethod(String name, String[] datatypes, IIpsProject ipsProject) throws CoreException {
+        MethodFinderByNameAndParamtypes finder = new MethodFinderByNameAndParamtypes(ipsProject, name, datatypes);
+        finder.start(this);
+        return finder.method;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IMethod getMethod(String signature) {
+        for (Iterator it=methods.iterator(); it.hasNext(); ) {
+            IMethod method = (IMethod)it.next();
+            if (method.getSignatureString().equals(signature)) {
+                return method;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IMethod findMethod(String signature, IIpsProject ipsProject) throws CoreException {
+        MethodFinderBySignature finder = new MethodFinderBySignature(ipsProject, signature);
+        finder.start(this);
+        return finder.method;
     }
 
     /**
@@ -590,6 +649,46 @@ public abstract class Type extends BaseIpsObject implements IType {
         protected boolean visit(IType currentType) throws CoreException {
             attribute = currentType.getAttribute(attributeName);
             return attribute==null;
+        }
+    }
+
+    private static class MethodFinderByNameAndParamtypes extends TypeHierarchyVisitor {
+
+        private String methodName;
+        private String[] datatypes;
+        private IMethod method;
+        
+        public MethodFinderByNameAndParamtypes(IIpsProject ipsProject, String methodName, String[] datatypes) {
+            super(ipsProject);
+            this.methodName = methodName;
+            this.datatypes = datatypes;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IType currentType) throws CoreException {
+            method = currentType.getMethod(methodName, datatypes);
+            return method==null;
+        }
+    }
+
+    private static class MethodFinderBySignature extends TypeHierarchyVisitor {
+
+        private String signature;
+        private IMethod method;
+        
+        public MethodFinderBySignature(IIpsProject ipsProject, String signature) {
+            super(ipsProject);
+            this.signature = signature;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IType currentType) throws CoreException {
+            method = currentType.getMethod(signature);
+            return method==null;
         }
     }
 
