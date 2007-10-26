@@ -63,6 +63,47 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute = pcType.newPolicyCmptTypeAttribute();
     }
     
+    public void testValidateComputationMethodNotSpecified() throws CoreException {
+        attribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
+        attribute.setName("premium");
+        attribute.setComputationMethodSignature("");
+        attribute.setProductRelevant(true);
+
+        MessageList result = attribute.validate();
+        assertNotNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED));
+        
+        attribute.setComputationMethodSignature("calc()");
+        result = attribute.validate();
+        assertNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED));
+    }
+    
+    
+    public void testValidateComputationMethodDoesNotExist() throws CoreException {
+        attribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
+        attribute.setName("premium");
+        attribute.setComputationMethodSignature("");
+        attribute.setProductRelevant(true);
+        
+        MessageList result = attribute.validate();
+        assertNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
+        
+        attribute.setComputationMethodSignature("calcPremium(TestPolicy)");
+        result = attribute.validate();
+        assertNotNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
+
+        IProductCmptType productType = newProductCmptType(ipsProject, "TestProduct");
+        pcType.setConfigurableByProductCmptType(true);
+        pcType.setProductCmptType(productType.getQualifiedName());
+        IMethod method = productType.newMethod();
+        method.setName("calcPremium");
+        result = attribute.validate();
+        assertNotNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
+
+        method.newParameter("TestPolicy", "policy");
+        result = attribute.validate();
+        assertNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
+    }
+    
     public void testFindComputationMethodSignature() throws CoreException {
         assertNull(attribute.findComputationMethod(ipsProject));
         

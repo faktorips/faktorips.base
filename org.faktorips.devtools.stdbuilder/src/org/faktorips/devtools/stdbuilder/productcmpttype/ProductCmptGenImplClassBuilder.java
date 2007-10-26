@@ -692,8 +692,6 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.appendClassName(FormulaExecutionException.class);
     }
     
-    
-
     /**
      * {@inheritDoc}
      */

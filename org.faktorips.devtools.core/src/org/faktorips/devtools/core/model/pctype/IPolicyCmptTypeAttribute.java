@@ -72,6 +72,17 @@ public interface IPolicyCmptTypeAttribute extends org.faktorips.devtools.core.mo
 			+ "NameCollsionLocal"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the computation method must be specified but it is not.
+     */
+    public final static String MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED = MSGCODE_PREFIX + "ComputationMethodNotSpecified";
+
+    /**
+     * Validation message code to indicate that the computation method is specified but does
+     * not exist. 
+     */
+    public final static String MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST = MSGCODE_PREFIX + "ComputationMethodDoesNotExist";
+    
+    /**
      * Returns the policy component type this attribute belongs to.
      */
     public IPolicyCmptType getPolicyCmptType();
@@ -174,7 +185,6 @@ public interface IPolicyCmptTypeAttribute extends org.faktorips.devtools.core.mo
      * @throws CoreException if an error occurs while searching.
      */
     public IProductCmptTypeMethod findComputationMethod(IIpsProject ipsProject) throws CoreException;
-    
     
     /**
      * Returns the set of allowed values.

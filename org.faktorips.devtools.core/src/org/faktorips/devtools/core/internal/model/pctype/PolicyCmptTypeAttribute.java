@@ -196,6 +196,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     public void setProductRelevant(boolean newValue) {
         boolean oldValue = productRelevant;
         productRelevant = newValue;
+        if (oldValue!=newValue && !newValue) {
+            computationMethodSignature = "";
+        }
         valueChanged(oldValue, newValue);
     }
 
@@ -287,7 +290,18 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                 result.add(new Message(MSGCODE_NAME_COLLISION_LOCAL, txt, Message.ERROR, this, PROPERTY_NAME));
             }
         }
-
+        if (isDerived() && isProductRelevant()) {
+            if (StringUtils.isEmpty(computationMethodSignature)) {
+                String text = NLS.bind("The reference to the computation method signature is missing for attribute {0}.", getName());
+                result.add(new Message(MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED, text, Message.ERROR, this, PROPERTY_COMPUTATION_METHOD_SIGNATURE));
+            } else {
+                if (findComputationMethod(ipsProject)==null) {
+                    String text = "The specified computation method signature does not exist.";
+                    result.add(new Message(MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST, text, Message.ERROR, this, PROPERTY_COMPUTATION_METHOD_SIGNATURE));
+                }
+            }
+        }
+        
         IPolicyCmptTypeAttribute superAttr = findOverwrittenAttribute(ipsProject);
         if (overwrites) {
             if (superAttr == null) {

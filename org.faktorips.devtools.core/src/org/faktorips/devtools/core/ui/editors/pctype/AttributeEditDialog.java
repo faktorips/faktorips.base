@@ -19,10 +19,12 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -41,6 +43,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -51,6 +54,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
@@ -59,6 +63,10 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
+import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -356,6 +364,10 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
                 }
             });
             Text compuationMethodText = uiToolkit.createText(temp);
+            MethodSignatureCompletionProcessor processor = new MethodSignatureCompletionProcessor(getProductCmptType());
+            CompletionUtil.createContentAssistant(processor);
+            ContentAssistHandler.createHandlerForText(compuationMethodText, CompletionUtil.createContentAssistant(processor));
+            
             bindingContext.bindContent(compuationMethodText, attribute, IPolicyCmptTypeAttribute.PROPERTY_COMPUTATION_METHOD_SIGNATURE);
             
             Link link = new Link(area, SWT.NONE);
@@ -374,13 +386,23 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         } 
 
         if (attribute.isChangeable()) {
-            uiToolkit.createCheckbox(area, "The default value and the set of allowed values are defined in the product configuration.");
-            // bindingContext.bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
+            Checkbox checkbox = uiToolkit.createCheckbox(area, "The default value and the set of allowed values are defined in the product configuration.");
+            bindingContext.bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
         } 
         
         if (attribute.getAttributeType()==AttributeType.CONSTANT) {
             uiToolkit.createFormLabel(area, "Constant attributes can't be configured.");
         } 
+    }
+    
+    private IProductCmptType getProductCmptType() {
+        try {
+            return attribute.getPolicyCmptType().findProductCmptType(ipsProject);
+        }
+        catch (CoreException e) {
+            IpsPlugin.log(e);
+            return null;
+        }
     }
     
     private void createMethodAndOpenDialog() {
@@ -389,16 +411,16 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
             return;
         }
         Memento productCmptTypeMemento = productCmptType.newMemento();
+        boolean productCmptTypeDirty = productCmptType.getIpsSrcFile().isDirty();
         Memento policyCmptTypeMemento = attribute.getPolicyCmptType().newMemento();
         IProductCmptTypeMethod newMethod = productCmptType.newFormulaSignature(attribute.getName());
         String qName = attribute.getPolicyCmptType().getQualifiedName();
         newMethod.newParameter(qName, StringUtils.uncapitalise(QNameUtil.getUnqualifiedName(qName)));
-        attribute.setComputationMethodSignature(newMethod.getName());
-        int rc = openEditMethodDialog(newMethod, productCmptTypeMemento);
+        attribute.setComputationMethodSignature(newMethod.getSignatureString());
+        newMethod.setDatatype(attribute.getDatatype());
+        int rc = openEditMethodDialog(newMethod, productCmptTypeMemento, productCmptTypeDirty);
         if (rc==Window.CANCEL) {
             attribute.getPolicyCmptType().setState(policyCmptTypeMemento);
-        } else {
-            attribute.setComputationMethodSignature(newMethod.getName());
         }
     }
     
@@ -411,12 +433,14 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         try {
             method = attribute.findComputationMethod(ipsProject);
             if (method==null) {
-                String methodName = attribute.getComputationMethodSignature();
-                if (StringUtils.isEmpty(methodName)) {
-                    methodName = "[EmptyString]";
+                String signature = attribute.getComputationMethodSignature();
+                if (StringUtils.isEmpty(signature)) {
+                    signature = "[EmptyString]";
                 }
-                String text = NLS.bind("No method named ''{0}'' found in product component type ''{1}''.", method, productCmptType.getQualifiedName());
-                MessageDialog.openInformation(getShell(), "Info", text);
+                String text = NLS.bind("Product component type ''{0}'' does not contain a method ''{1}''.\n\nDo you want to create it?", productCmptType.getQualifiedName(), signature);
+                if (MessageDialog.openQuestion(getShell(), "Method does not exist", text)) {
+                    createMethodAndOpenDialog();
+                }
                 return;
             }
         }
@@ -425,22 +449,22 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
             return;
         }
         Memento memento = productCmptType.newMemento();
-        openEditMethodDialog(method, memento);
+        openEditMethodDialog(method, memento, method.getIpsSrcFile().isDirty());
     }
     
-    private int openEditMethodDialog(IProductCmptTypeMethod newMethod, Memento memento) {
-        IProductCmptType productCmptType = newMethod.getProductCmptType();
+    private int openEditMethodDialog(IProductCmptTypeMethod method, Memento memento, boolean productCmptTypeDirtyBeforeDialog) {
+        IProductCmptType productCmptType = method.getProductCmptType();
         IIpsSrcFile file = productCmptType.getIpsSrcFile();
-        boolean dirty = file.isDirty();
-        ProductCmptTypeMethodEditDialog dialog = new ProductCmptTypeMethodEditDialog(newMethod, getShell());
+        ProductCmptTypeMethodEditDialog dialog = new ProductCmptTypeMethodEditDialog(method, getShell());
         dialog.open();
         if (dialog.getReturnCode()==Window.CANCEL) {
             productCmptType.setState(memento);
-            if (!dirty) {
+            if (!productCmptTypeDirtyBeforeDialog) {
                 file.markAsClean();
             }
         } else {
-            if (!dirty) {
+            attribute.setComputationMethodSignature(method.getSignatureString());
+            if (!productCmptTypeDirtyBeforeDialog) {
                 try {
                     file.save(true, null);
                 }
@@ -706,4 +730,38 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         }
     }
     
+    class MethodSignatureCompletionProcessor extends AbstractCompletionProcessor {
+
+        private IType type;
+        
+        public MethodSignatureCompletionProcessor(IType type) {
+            super(type==null ? null : type.getIpsProject());
+            this.type = type;
+            setComputeProposalForEmptyPrefix(true);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
+            if (type==null) {
+                return;
+            }
+            IMethod[] methods = type.getMethods();
+            for (int i = 0; i < methods.length; i++) {
+                if (methods[i].getSignatureString().startsWith(prefix)) {
+                    addToResult(result, methods[i], documentOffset);
+                }
+            }
+        }
+        
+        private void addToResult(List result, IMethod method, int documentOffset) {
+            String name = method.getSignatureString();
+            CompletionProposal proposal = new CompletionProposal(
+                    name, 0, documentOffset, name.length(),  
+                    method.getImage(), name, null, method.getDescription());
+            result.add(proposal);
+        }
+        
+    }
 }

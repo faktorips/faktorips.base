@@ -122,6 +122,14 @@ public class IpsSrcFileContent {
     }
 
     /**
+     * Returns <code>true</code> ips object was initialized with the ips source file content.
+     * Returns <code>false</code> if the content wasn't read from the source file.
+     */
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    /**
      * @return Returns the modified.
      */
     public boolean isModified() {
@@ -273,14 +281,6 @@ public class IpsSrcFileContent {
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
-    }
-    
-    /**
-     * Returns <code>true</code> ips object was initialized with the ips source file content.
-     * Returns <code>false</code> if the content wasn't read from the source file.
-     */
-    public boolean isInitialized() {
-        return initialized;
     }
     
     /**
