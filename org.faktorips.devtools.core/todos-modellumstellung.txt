@@ -34,3 +34,4 @@ Modellexplorer: Filter auf Vertrags / Produktklassen
 New PolicyCmptTypeWizard muss optional auch einen neuen ProductCmptType anlegen können.
 Bisherigen RelationWizard umbauen, dass man die Beziehung auf Produktseite mitanlegen kann, wenn beide PolicyCmptTypes konfigurierbar sind.
 Lokalisierung
+...
