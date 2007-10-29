@@ -30,6 +30,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -187,8 +188,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         currentAttributeType = attribute.getAttributeType();
         extFactory = new ExtensionPropertyControlFactory(attribute.getClass());
     }
-    
-	/**
+
+    /**
 	 * {@inheritDoc}
 	 */
     protected Composite createWorkArea(Composite parent) throws CoreException {
@@ -281,8 +282,10 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         Composite c = createTabItemComposite(folder, 1, false);
         Group generelGroup = uiToolkit.createGroup(c, "Generel");
         createGenerelGroupContent(generelGroup);
-        configGroup = uiToolkit.createGroup(c, "Configuration");
-        createConfigGroupContent(configGroup);
+        if (attribute.isProductRelevant() || attribute.getPolicyCmptType().isConfigurableByProductCmptType()) {
+            configGroup = uiToolkit.createGroup(c, "Configuration");
+            createConfigGroupContent();
+        }
         
         return c;
     }
@@ -339,60 +342,75 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         extFactory.bind(bindingContext);
     }
     
-    private void createConfigGroupContent(Group group) {
+    private void recreateConfigGroupContent(Group group, AttributeType attrType) {
+        if (configGroup==null) {
+            return;
+        }
+        Control[] children = configGroup.getChildren();
+        for (int i = 0; i < children.length; i++) {
+            children[i].dispose();                
+        }
+        createConfigGroupContent();
+        configGroup.layout();
+    }
+    
+    private void createConfigGroupContent() {
         
-        Composite area = uiToolkit.createGridComposite(group, 1, true, false);
+        Composite area = uiToolkit.createGridComposite(configGroup, 1, true, false);
+        GridData gridData = (GridData)area.getLayoutData();
+        gridData.heightHint = 100;
         
-        if (attribute.isDerived()) {
-            String productCmptType = QNameUtil.getUnqualifiedName(attribute.getPolicyCmptType().getProductCmptType());
-            String checkboxText = NLS.bind("The attribute''s value is computed by a method of type ''{0}''", productCmptType);
-            Checkbox checkbox = uiToolkit.createCheckbox(area, checkboxText);
-            bindingContext.bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
-            uiToolkit.createLabel(area, "Note: The method can either be implemented in Java or defined through a formula.\nIn the latter case, a formula is defined per product component.");
-            
-            Composite temp = uiToolkit.createLabelEditColumnComposite(area);
-            Link label = new Link(temp, SWT.NONE);
-            label.setText("<a>Computation method</a>: ");
-            label.addSelectionListener(new SelectionListener() {
-
-                public void widgetDefaultSelected(SelectionEvent e) {
-                    widgetSelected(e);
-                }
-
-                public void widgetSelected(SelectionEvent e) {
-                    editMethodInDialog();
-                }
-            });
-            Text compuationMethodText = uiToolkit.createText(temp);
-            MethodSignatureCompletionProcessor processor = new MethodSignatureCompletionProcessor(getProductCmptType());
-            CompletionUtil.createContentAssistant(processor);
-            ContentAssistHandler.createHandlerForText(compuationMethodText, CompletionUtil.createContentAssistant(processor));
-            
-            bindingContext.bindContent(compuationMethodText, attribute, IPolicyCmptTypeAttribute.PROPERTY_COMPUTATION_METHOD_SIGNATURE);
-            
-            Link link = new Link(area, SWT.NONE);
-            link.setText("To create a new method/formula signature that computes this attribute <a>click here</a>.");
-            link.addSelectionListener(new SelectionListener() {
-
-                public void widgetDefaultSelected(SelectionEvent e) {
-                    widgetSelected(e);
-                }
-
-                public void widgetSelected(SelectionEvent e) {
-                    createMethodAndOpenDialog();
-                }
-                
-            });
-        } 
-
         if (attribute.isChangeable()) {
             Checkbox checkbox = uiToolkit.createCheckbox(area, "The default value and the set of allowed values are defined in the product configuration.");
             bindingContext.bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
+            return;
         } 
         
         if (attribute.getAttributeType()==AttributeType.CONSTANT) {
             uiToolkit.createFormLabel(area, "Constant attributes can't be configured.");
+            return;
         } 
+        
+        String productCmptType = QNameUtil.getUnqualifiedName(attribute.getPolicyCmptType().getProductCmptType());
+        String checkboxText = NLS.bind("The attribute''s value is computed by a method of type ''{0}''", productCmptType);
+        Checkbox checkbox = uiToolkit.createCheckbox(area, checkboxText);
+        bindingContext.bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
+        uiToolkit.createLabel(area, "Note: The method can either be implemented in Java or defined through a formula.\nIn the latter case, a formula is defined per product component.");
+        
+        Composite temp = uiToolkit.createLabelEditColumnComposite(area);
+        Link label = new Link(temp, SWT.NONE);
+        label.setText("<a>Computation method</a>: ");
+        label.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+                widgetSelected(e);
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                editMethodInDialog();
+            }
+        });
+        Text compuationMethodText = uiToolkit.createText(temp);
+        MethodSignatureCompletionProcessor processor = new MethodSignatureCompletionProcessor(getProductCmptType());
+        CompletionUtil.createContentAssistant(processor);
+        ContentAssistHandler.createHandlerForText(compuationMethodText, CompletionUtil.createContentAssistant(processor));
+        
+        bindingContext.bindContent(compuationMethodText, attribute, IPolicyCmptTypeAttribute.PROPERTY_COMPUTATION_METHOD_SIGNATURE);
+        
+        Link link = new Link(area, SWT.NONE);
+        link.setText("To create a new method/formula signature that computes this attribute <a>click here</a>.");
+        link.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+                widgetSelected(e);
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                createMethodAndOpenDialog();
+            }
+            
+        });
+
     }
     
     private IProductCmptType getProductCmptType() {
@@ -554,13 +572,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         super.contentsChanged(event);
         if (attribute.getAttributeType()!=currentAttributeType) {
             currentAttributeType = attribute.getAttributeType();
-            if (configGroup!=null) {
-                Control[] children = configGroup.getChildren();
-                for (int i = 0; i < children.length; i++) {
-                    children[i].dispose();                }
-                createConfigGroupContent(configGroup);
-                configGroup.layout();
-            }
+            recreateConfigGroupContent(configGroup, currentAttributeType);
         }
         ValueDatatype newDatatype = null;
         try {

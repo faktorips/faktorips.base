@@ -32,7 +32,19 @@ public interface IProductCmptTypeMethod extends IMethod, IProdDefProperty {
     public final static String PROPERTY_FORMULA_NAME = "formulaName";
     
     public final static String PROPERTY_IMPLEMENTATION_TYPE= "implementationType";
+
+    /**
+     * Validation message code to indicate that the datatype of a formula signature definition is
+     * void or a none valuedatatype.
+     */
+    public final static String MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES = MSGCODE_PREFIX + "DatatypeMustBeAValueDatatypeForFormulaSignature"; //$NON-NLS-1$
     
+    /**
+     * Validation message code to indicate that a method is marked as formula signature but 
+     * the formula name is missing.
+     */
+    public final static String MSGCODE_FORMULA_NAME_IS_EMPTY = MSGCODE_PREFIX + "FormulaNameIsEmpty"; //$NON-NLS-1$
+
     /**
      * Returns the product component type this method belongs to.
      */
@@ -65,4 +77,5 @@ public interface IProductCmptTypeMethod extends IMethod, IProdDefProperty {
      * 'Premium' the method  meight return 'computePremium'.
      */
     public String getDefaultMethodName();
+    
 }

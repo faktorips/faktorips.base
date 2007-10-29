@@ -33,6 +33,11 @@ public interface IMethod extends IParameterContainer {
     public final static String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
     public final static String PROPERTY_PARAMETERS = "parameters"; //$NON-NLS-1$
+
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "METHOD-"; //$NON-NLS-1$
     
     /**
      * Returns the type this method belongs to.

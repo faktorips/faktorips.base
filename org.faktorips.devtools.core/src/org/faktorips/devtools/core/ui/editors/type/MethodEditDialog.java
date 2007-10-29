@@ -25,6 +25,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -33,6 +34,7 @@ import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
@@ -47,8 +49,8 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
     
     protected Combo modifierCombo;
     protected Checkbox abstractCheckbox;
-    protected DatatypeRefControl datatypeControl;
     protected Text nameText;
+    protected DatatypeRefControl datatypeControl;
     
     private ParametersEditControl parametersControl;
     
@@ -83,7 +85,8 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
         
         createAdditionalControlsOnGeneralPage(workArea, uiToolkit);
 
-        Composite propertyPane = uiToolkit.createLabelEditColumnComposite(workArea);
+        Group methodSignatureGroup = uiToolkit.createGroup(workArea, "Method Signature");
+        Composite propertyPane = uiToolkit.createLabelEditColumnComposite(methodSignatureGroup);
         
         uiToolkit.createFormLabel(propertyPane, Messages.MethodEditDialog_labelAccesModifier);
         modifierCombo = uiToolkit.createCombo(propertyPane, Modifier.getEnumType());
@@ -105,12 +108,12 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
         bindingContext.bindContent(nameText, method, IMethod.PROPERTY_NAME);
         
         // parameters
-        parametersControl = new ParametersEditControl(workArea, uiToolkit, SWT.NONE, Messages.MethodEditDialog_labelParameters, method.getIpsProject());
+        parametersControl = new ParametersEditControl(methodSignatureGroup, uiToolkit, SWT.NONE, Messages.MethodEditDialog_labelParameters, method.getIpsProject());
         parametersControl.setDataChangeable(isDataChangeable());
         parametersControl.initControl();
         parametersControl.setLayoutData(new GridData(GridData.FILL_BOTH));
         parametersControl.setInput(method);
-        
+
         return c;
     }
     
@@ -119,7 +122,7 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
     }
     
 	protected Point getInitialSize() {
-	    return new Point(800, 600);
+	    return new Point(800, 650);
 	}
 	
     /** 

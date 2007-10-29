@@ -18,12 +18,18 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.type.Method;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.ProgramingLanguage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ImplementationType;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
@@ -108,7 +114,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         }
         return "";
     }
-
+    
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         formulaSignatureDefinition = Boolean.valueOf(element.getAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION)).booleanValue();
@@ -146,6 +152,27 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
      */
     public String getPropertyDatatype() {
         return getDatatype();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void validateThis(MessageList result) throws CoreException {
+        super.validateThis(result);
+        IIpsProject ipsProject = getIpsProject();
+        if (formulaSignatureDefinition) {
+            if (StringUtils.isEmpty(formulaName)) {
+                String text = "The formula name is empty!";
+                result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY, text, Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
+            }
+            Datatype datatype = findDatatype(ipsProject);
+            if (datatype!=null) {
+                if (datatype.isVoid() || !datatype.isValueDatatype()) {
+                    String text = "Formula signature return type must be a value datatype!";
+                    result.add(new Message(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES, text, Message.ERROR, this, IMethod.PROPERTY_DATATYPE));
+                }
+            }
+        }
     }
     
     

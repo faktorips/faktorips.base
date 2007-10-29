@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.Modifier;
@@ -24,6 +25,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 
@@ -40,6 +42,47 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         IIpsProject ipsProject= newIpsProject("TestProject");
         pcType = newProductCmptType(ipsProject, "Type");
         method = pcType.newProductCmptTypeMethod();
+    }
+    
+    public void testValidate_FormulaNameIsMissing() throws CoreException {
+        method.setFormulaSignatureDefinition(false);
+        method.setFormulaName("someName");
+        MessageList result = method.validate();
+        assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY));
+        
+        method.setFormulaSignatureDefinition(true);
+        result = method.validate();
+        assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY));
+        
+        method.setFormulaName("");
+        result = method.validate();
+        assertNotNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY));
+        
+        method.setFormulaSignatureDefinition(false);
+        result = method.validate();
+        assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY));
+    }
+    
+    public void testValidate_DatatypeMustBeAValueDatatypeForFormulaSignature() throws CoreException {
+        method.setDatatype("void");
+        method.setFormulaSignatureDefinition(false);
+        MessageList result = method.validate();
+        assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
+        method.setFormulaSignatureDefinition(true);
+        result = method.validate();
+        assertNotNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
+        
+        method.setFormulaSignatureDefinition(false);
+        method.setDatatype(pcType.getQualifiedName());
+        result = method.validate();
+        assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
+        method.setFormulaSignatureDefinition(true);
+        result = method.validate();
+        assertNotNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
+        
+        method.setDatatype("Integer");
+        result = method.validate();
+        assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
     }
     
     public void testInitFromXml() {

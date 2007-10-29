@@ -478,4 +478,21 @@ public class BindingContext {
             applyControlBindings();
         }
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        StringBuffer sb = new StringBuffer("Ctx[");
+        for (int i=0; i<ipsObjects.size(); i++) {
+            if (i>0) {
+                sb.append(", ");
+            }
+            IIpsObject ipsObject = (IIpsObject)ipsObjects.get(i);
+            sb.append(ipsObject.getName());
+            
+        }
+        sb.append(']');
+        return sb.toString();
+    }
 }

@@ -24,6 +24,7 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -40,6 +41,7 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
      * {@inheritDoc}
      */
     protected Composite createWorkArea(Composite parent) throws CoreException {
+        
         Composite c = super.createWorkArea(parent);
         bindingContext.bindEnabled(abstractCheckbox, method, IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION, false);
         
@@ -51,6 +53,7 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
                 }
             }
         });
+        
         return c;
     }
 
@@ -58,7 +61,7 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
      * {@inheritDoc}
      */
     protected void createAdditionalControlsOnGeneralPage(Composite parent, UIToolkit toolkit) {
-        Composite group = toolkit.createGroup(parent, "Formula Signature Definition");
+        Composite group = toolkit.createGroup(parent, "Formula Specification");
         AbstractCheckbox checkbox = toolkit.createCheckbox(group, "Is formula signature definition");
         bindingContext.bindContent(checkbox, method, IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION);
         
@@ -68,4 +71,12 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
         bindingContext.bindContent(formulaNameText, method, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME);
     }
     
+    public void contentsChanged(ContentChangeEvent event) {
+        super.contentsChanged(event);
+        if (event.getIpsSrcFile().equals(getIpsPart().getIpsSrcFile())) {
+            IProductCmptTypeMethod tMethod = (IProductCmptTypeMethod)method;
+            datatypeControl.setVoidAllowed(!tMethod.isFormulaSignatureDefinition());
+            datatypeControl.setOnlyValueDatatypesAllowed(tMethod.isFormulaSignatureDefinition());
+        }
+    }
 }

@@ -99,7 +99,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         this.datatype = newDatatype;
         valueChanged(oldDatatype, newDatatype);
     }
-
+    
     /** 
      * {@inheritDoc}
      */

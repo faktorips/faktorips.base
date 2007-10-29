@@ -152,6 +152,9 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     	}
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void contentsChanged(ContentChangeEvent event) {
         if (event.getIpsSrcFile().equals(getIpsPart().getIpsSrcFile())) {
             updateTitleInTitleArea();
