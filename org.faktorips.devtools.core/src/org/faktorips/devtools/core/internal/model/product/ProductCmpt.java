@@ -117,7 +117,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         if (productCmptType==null) {
             return null;
         }
-        return productCmptType.findPolicyCmptType(true, getIpsProject());
+        return productCmptType.findPolicyCmptType(getIpsProject());
     }
 
     /**

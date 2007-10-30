@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -58,6 +59,7 @@ import org.w3c.dom.Element;
  */
 public class ProductCmptType extends Type implements IProductCmptType {
 
+    private boolean configurationForPolicyCmptType = true;
     private String policyCmptType = "";
     
     private IpsObjectPartCollection tableStructureUsages = new IpsObjectPartCollection(this, TableStructureUsage.class, ITableStructureUsage.class, "TableStructureUsage");
@@ -100,8 +102,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
         return null;  
     }
-
-
+    
     /**
      * {@inheritDoc}
      */
@@ -129,19 +130,29 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * {@inheritDoc}
      */
     public boolean isConfigurationForPolicyCmptType() {
-        return !StringUtils.isEmpty(policyCmptType);
+        return configurationForPolicyCmptType;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setConfigurationForPolicyCmptType(boolean newValue) {
+        boolean oldValue = configurationForPolicyCmptType;
+        configurationForPolicyCmptType = newValue;
+        if (!newValue && oldValue) {
+            policyCmptType = "";
+        }
+        valueChanged(oldValue, newValue);
     }
 
     /**
      * {@inheritDoc}
      */
-    public IPolicyCmptType findPolicyCmptType(boolean searchSupertypeHierarchy, IIpsProject project) throws CoreException {
-        if (!searchSupertypeHierarchy) {
-            return project.findPolicyCmptType(policyCmptType);
+    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException {
+        if (!configurationForPolicyCmptType) {
+            return null;
         }
-        PolicyCmptTypeFinder finder = new PolicyCmptTypeFinder(project);
-        finder.start(this);
-        return finder.policyCmptType;
+        return ipsProject.findPolicyCmptType(policyCmptType);
     }
     
     /**
@@ -162,7 +173,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     
     /**
      * Returns a  map containing the property names as keys and the properties as values.
-     * This method searched the supertype hierarchy.
+     * This method searches the supertype hierarchy.
      * <p>
      * Note this is a model internal method, it is not part of the published interface.
      * 
@@ -206,7 +217,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if (ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET!=type) {
             throw new RuntimeException("Unknown type " + type);
         }
-        IPolicyCmptType policyCmptType = findPolicyCmptType(true, ipsProject);
+        IPolicyCmptType policyCmptType = findPolicyCmptType(ipsProject);
         return policyCmptType.findAttributeInSupertypeHierarchy(propName);
     }
 
@@ -253,6 +264,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         policyCmptType = element.getAttribute(PROPERTY_POLICY_CMPT_TYPE);
+        configurationForPolicyCmptType = Boolean.valueOf(element.getAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE)).booleanValue();
     }
 
     /**
@@ -260,6 +272,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
+        element.setAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE, "" + configurationForPolicyCmptType);
         element.setAttribute(PROPERTY_POLICY_CMPT_TYPE, policyCmptType);
     }
 
@@ -376,7 +389,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
     
     private void validatePolicyCmptTypeReference(IIpsProject ipsProject, MessageList list) throws CoreException {
-        IPolicyCmptType typeObj = findPolicyCmptType(false, ipsProject);
+        if (!configurationForPolicyCmptType) {
+            return;
+        }
+        IPolicyCmptType typeObj = findPolicyCmptType(ipsProject);
         if (typeObj==null) {
             String text = "The policy component type " + policyCmptType + " does not exist.";
             list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST, text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE));
@@ -425,24 +441,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         
     }
 
-    class PolicyCmptTypeFinder extends ProductCmptTypeHierarchyVisitor {
-
-        private IPolicyCmptType policyCmptType = null;
-        
-        public PolicyCmptTypeFinder(IIpsProject ipsProject) {
-            super(ipsProject);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
-            policyCmptType = ipsProject.findPolicyCmptType(currentType.getPolicyCmptType());
-            return !currentType.isConfigurationForPolicyCmptType();
-        }
-        
-    }
-    
     class FormulaSignatureFinder extends ProductCmptTypeHierarchyVisitor {
 
         private String formulaName;
@@ -474,6 +472,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
         private List myFormulaSignatures = new ArrayList();
         private List myPolicyCmptTypeAttributes = new ArrayList();
         
+        private Set visitedPolicyCmptTypes = new HashSet();
+        
         public ProdDefPropertyCollector(ProdDefPropertyType propertyType, IIpsProject ipsProject) {
             super(ipsProject);
             this.propertyType = propertyType;
@@ -499,11 +499,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 }
             }
             if (propertyType==null || ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(propertyType)) {
-                IPolicyCmptType policyCmptType = currentType.findPolicyCmptType(false, ipsProject);
-                if (policyCmptType==null) {
+                IPolicyCmptType policyCmptType = currentType.findPolicyCmptType(ipsProject);
+                if (policyCmptType==null || visitedPolicyCmptTypes.contains(policyCmptType)) {
                     return true;
                 }
-                org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute[] polAttr = policyCmptType.getPolicyCmptTypeAttributes();
+                visitedPolicyCmptTypes.add(policyCmptType);
+                IPolicyCmptTypeAttribute[] polAttr = policyCmptType.getPolicyCmptTypeAttributes();
                 for (int i = polAttr.length-1; i>=0; i--) {
                     if (polAttr[i].isProductRelevant() && polAttr[i].isChangeable()) {
                         myPolicyCmptTypeAttributes.add(polAttr[i]);

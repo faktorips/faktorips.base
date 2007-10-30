@@ -94,7 +94,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
      * {@inheritDoc}
      */
     public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeRelation(IIpsProject ipsProject) throws CoreException {
-        IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(true, ipsProject);
+        IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(ipsProject);
         if (policyCmptType==null) {
             return null;
         }
@@ -102,7 +102,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         if (targetType==null) {
             return null;
         }
-        IPolicyCmptType targetPolicyCmptType = targetType.findPolicyCmptType(true, ipsProject);
+        IPolicyCmptType targetPolicyCmptType = targetType.findPolicyCmptType(ipsProject);
         if (targetPolicyCmptType==null) {
             return null;
         }

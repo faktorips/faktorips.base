@@ -8,7 +8,7 @@
 	<!-- 
 		Type linked to a policy component type
 	-->
-	<ProductCmptType id="17" policyCmptType="Policy">
+	<ProductCmptType id="17" configurationForPolicyCmptType="true" policyCmptType="Policy">
 		<Attribute id="43" name="productName" datatype="String" modifier="public"/>
 		<Association id="42"
 	          relationType="ass" 

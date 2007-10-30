@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
+import org.faktorips.devtools.core.ui.editors.pctype.Messages;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -86,12 +87,16 @@ public class GeneralInfoSection extends IpsSection {
         bindingContext.bindContent(abstractCheckbox, type, IProductCmptType.PROPERTY_ABSTRACT);
         
         // reference to policy component type
+        toolkit.createFormLabel(composite, "Configures policy component type: ");
+        Checkbox configuratedCheckbox = toolkit.createCheckbox(composite);
+        bindingContext.bindContent(configuratedCheckbox, type, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE);
+        
         link = toolkit.createHyperlink(composite, "Configured policy component type");
         link.addHyperlinkListener(new HyperlinkAdapter() {
     
             public void linkActivated(HyperlinkEvent event) {
                 try {
-                    IPolicyCmptType policyCmptType = type.findPolicyCmptType(false, type.getIpsProject());
+                    IPolicyCmptType policyCmptType = type.findPolicyCmptType(type.getIpsProject());
                     if (policyCmptType!=null) {
                         IpsPlugin.getDefault().openEditor(policyCmptType);
                     }
@@ -105,6 +110,7 @@ public class GeneralInfoSection extends IpsSection {
         
         PcTypeRefControl control = toolkit.createPcTypeRefControl(type.getIpsProject(), composite);
         bindingContext.bindContent(control, type, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE); 
+        bindingContext.bindEnabled(control, type, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE); 
     }
 
     /**

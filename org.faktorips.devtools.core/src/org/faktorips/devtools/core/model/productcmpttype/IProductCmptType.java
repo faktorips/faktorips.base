@@ -53,31 +53,34 @@ public interface IProductCmptType extends IIpsObject, IType {
     public String getPolicyCmptType();
     
     /**
-     * Sets the policy component type this type refers to.
-     */
-    public void setPolicyCmptType(String newType);
-
-    /**
-     * Returns <code>true</code> if this policy component type configures a policy component type
-     * that can be requested via [{@link #getPolicyCmptType()} and {@link #findPolicyCmptType()}.
+     * Returns <code>true</code> if this product component type configures a policy component type.
+     * The configured policy component type can be requested via [{@link #getPolicyCmptType()} and {@link #findPolicyCmptType()}.
      * Note that if this method returns <code>true</code> it does not mean that the policy component type
      * actually exists.
      */
     public boolean isConfigurationForPolicyCmptType();
     
     /**
+     * Sets if this product component type configures a policy component type or not.
+     */
+    public void setConfigurationForPolicyCmptType(boolean newValue);
+    
+    /**
+     * Sets the policy component type this type refers to.
+     */
+    public void setPolicyCmptType(String newType);
+
+    /**
      * Returns the policy component type this product component type refers to. 
      * Returns <code>null</code> if either this product component type does not refer to a policy
      * component type or the policy component type can't be found.
      * 
-     * @param <code>true</code> if the supertype hierarchy is searched if no policy component type is specified
-     * in the type.
      * @param project The project which ips object path is used for the searched.
      * This is not neccessarily the project this type is part of. 
      * 
      * @throws CoreException if an error occurs while searching for the type.
      */
-    public IPolicyCmptType findPolicyCmptType(boolean searchSupertypeHierarchy, IIpsProject project) throws CoreException;
+    public IPolicyCmptType findPolicyCmptType(IIpsProject project) throws CoreException;
     
     /**
      * Returns the type's supertype if the type is based on a supertype and the supertype can be found

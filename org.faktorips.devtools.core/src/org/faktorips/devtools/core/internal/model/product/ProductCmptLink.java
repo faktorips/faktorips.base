@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
@@ -195,7 +196,8 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements
         IIpsProject ipsProject = getIpsProject();
         ValidationUtils.checkIpsObjectReference(target,
                 IpsObjectType.PRODUCT_CMPT, "target", this, PROPERTY_TARGET, MSGCODE_UNKNWON_TARGET, list); //$NON-NLS-1$
-		IProductCmptTypeAssociation associationObj = findAssociation(ipsProject);
+		
+        IProductCmptTypeAssociation associationObj = findAssociation(ipsProject);
 		if (associationObj == null) {
 			String text = NLS.bind(
 					Messages.ProductCmptRelation_msgNoRelationDefined,
@@ -204,7 +206,21 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements
 					Message.ERROR, this, PROPERTY_ASSOCIATION));
             return;
 		} 
-		if (maxCardinality == 0) {
+        IPolicyCmptTypeAssociation polAssociation = associationObj.findMatchingPolicyCmptTypeRelation(ipsProject);
+        if (polAssociation!=null) {
+            validateCardinality(list, polAssociation);
+        }
+
+		IProductCmpt targetObj = findTarget(ipsProject);
+		if (!willBeValid(targetObj, associationObj, ipsProject)) {
+			String msg = NLS.bind(Messages.ProductCmptRelation_msgInvalidTarget, target, associationObj.getTargetRoleSingular());
+			list.add(new Message(MSGCODE_INVALID_TARGET, msg, Message.ERROR, PROPERTY_TARGET));
+		}
+		
+	}
+
+    private void validateCardinality(MessageList list, IPolicyCmptTypeAssociation associationObj) {
+        if (maxCardinality == 0) {
 			String text = Messages.ProductCmptRelation_msgMaxCardinalityIsLessThan1;
 			list.add(new Message(MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1, text,
 					Message.ERROR, this, PROPERTY_MAX_CARDINALITY));
@@ -230,14 +246,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements
 				}
 			}
 		}
-
-		IProductCmpt targetObj = findTarget(ipsProject);
-		if (!willBeValid(targetObj, associationObj, ipsProject)) {
-			String msg = NLS.bind(Messages.ProductCmptRelation_msgInvalidTarget, target, associationObj.getTargetRoleSingular());
-			list.add(new Message(MSGCODE_INVALID_TARGET, msg, Message.ERROR, PROPERTY_TARGET));
-		}
-		
-	}
+    }
 
 	/**
 	 * {@inheritDoc}

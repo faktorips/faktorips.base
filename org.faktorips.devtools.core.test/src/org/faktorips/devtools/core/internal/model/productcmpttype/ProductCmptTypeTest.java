@@ -72,6 +72,11 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         ipsProject.getIpsModel().removeChangeListener(this);
     }
     
+    public void testSetConfigurationForPolicyCmptType() {
+        Boolean newValue = Boolean.valueOf(!productCmptType.isConfigurationForPolicyCmptType());
+        testPropertyAccessReadWrite(IProductCmptType.class, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE, productCmptType, newValue);
+    }
+    
     public void testFindProdDefProperties() throws CoreException {
         IProdDefProperty[] props = productCmptType.findProdDefProperties(ipsProject);
         assertEquals(0, props.length);
@@ -174,6 +179,19 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(policyCmptTypeAttr2, props[11]);
     }
     
+    public void testFindProdDefProperties_TwoProductCmptTypesConfigureSamePolicyCmptType() throws CoreException {
+        IPolicyCmptTypeAttribute policyCmptTypeAttr1 = policyCmptType.newPolicyCmptTypeAttribute();
+        policyCmptTypeAttr1.setProductRelevant(true);
+        IProdDefProperty[] props = productCmptType.findProdDefProperties(ipsProject);
+        assertEquals(1, props.length); // make sure, setup is ok
+        
+        IProductCmptType subtype = newProductCmptType(productCmptType, "Subtype");
+        subtype.setConfigurationForPolicyCmptType(true);
+        subtype.setPolicyCmptType(policyCmptType.getQualifiedName());
+        props = subtype.findProdDefProperties(ipsProject);
+        assertEquals(1, props.length); // attribute  mustn't be inluded twice!!!
+    }
+    
     public void testGetProdDefPropertiesMap() throws CoreException {
         // attributes
         IProductCmptTypeAttribute supertypeAttr  = superProductCmptType.newProductCmptTypeAttribute();
@@ -239,7 +257,14 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(policyCmptSupertypeAttr, propertyMap.get(policyCmptSupertypeAttr.getPropertyName()));
         assertEquals(policyCmptTypeAttr, propertyMap.get(policyCmptTypeAttr.getPropertyName()));
         
-        
+        // test if two product component types configure the same policy component type, that the properties defined by the
+        // policy component type aren't considered twice.
+        IProductCmptType subtype = newProductCmptType(productCmptType, "Subtype");
+        subtype.setPolicyCmptType(policyCmptType.getQualifiedName());
+        propertyMap = ((ProductCmptType)subtype).getProdDefPropertiesMap(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, ipsProject);
+        assertEquals(2, propertyMap.size());
+        assertEquals(policyCmptSupertypeAttr, propertyMap.get(policyCmptSupertypeAttr.getPropertyName()));
+        assertEquals(policyCmptTypeAttr, propertyMap.get(policyCmptTypeAttr.getPropertyName()));
     }
     
     public void testFindProdDefProperty_ByTypeAndName() throws CoreException {
@@ -466,26 +491,18 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     }
 
     public void testFindPolicyCmptType() throws CoreException {
+        productCmptType.setConfigurationForPolicyCmptType(true);
         productCmptType.setPolicyCmptType("");
-        assertNull(productCmptType.findPolicyCmptType(true, ipsProject));
-        assertNull(productCmptType.findPolicyCmptType(false, ipsProject));
+        assertNull(productCmptType.findPolicyCmptType(ipsProject));
         
         productCmptType.setPolicyCmptType("UnknownType");
-        assertNull(productCmptType.findPolicyCmptType(false, ipsProject));
-        assertNull(productCmptType.findPolicyCmptType(true, ipsProject));
+        assertNull(productCmptType.findPolicyCmptType(ipsProject));
 
-        productCmptType.setPolicyCmptType("Policy");
-        assertEquals(policyCmptType, productCmptType.findPolicyCmptType(false, ipsProject));
-        assertEquals(policyCmptType, productCmptType.findPolicyCmptType(true, ipsProject));
-        
-        productCmptType.setPolicyCmptType("");
-        superProductCmptType.setPolicyCmptType("Policy");
-        assertNull(productCmptType.findPolicyCmptType(false, ipsProject));
-        assertEquals(policyCmptType, productCmptType.findPolicyCmptType(true, ipsProject));
-        
-        productCmptType.setPolicyCmptType("Unkown");
-        assertNull(productCmptType.findPolicyCmptType(false, ipsProject));
-        assertNull(productCmptType.findPolicyCmptType(true, ipsProject));
+        productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
+        assertEquals(policyCmptType, productCmptType.findPolicyCmptType(ipsProject));
+
+        productCmptType.setConfigurationForPolicyCmptType(false);
+        assertNull(productCmptType.findPolicyCmptType(ipsProject));
     }
 
     public void testNewAttribute() {
@@ -555,9 +572,11 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     public void testInitFromXml() {
         Element rootEl = getTestDocument().getDocumentElement();
         productCmptType.setPolicyCmptType("Bla");
+        productCmptType.setConfigurationForPolicyCmptType(false);
 
         productCmptType.initFromXml(XmlUtil.getElement(rootEl, 0));
         assertEquals("Policy", productCmptType.getPolicyCmptType());
+        assertTrue(productCmptType.isConfigurationForPolicyCmptType());
         assertEquals(1, productCmptType.getNumOfAttributes());
         assertEquals(1, productCmptType.getNumOfAssociations());
         assertEquals(1, productCmptType.getNumOfTableStructureUsages());
@@ -565,6 +584,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     }
     
     public void testToXml() throws CoreException {
+        productCmptType.setConfigurationForPolicyCmptType(false);
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
         productCmptType.newProductCmptTypeAttribute().setName("attr");
         productCmptType.newProductCmptTypeAssociation().setTargetRoleSingular("role");
@@ -576,6 +596,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         productCmptType.initFromXml(el);
         
         assertEquals(policyCmptType.getQualifiedName(), productCmptType.getPolicyCmptType());
+        assertTrue(productCmptType.isConfigurationForPolicyCmptType());
         assertEquals(1, productCmptType.getNumOfAttributes());
         assertEquals(1, productCmptType.getNumOfAssociations());
         assertEquals(1, productCmptType.getNumOfTableStructureUsages());

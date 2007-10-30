@@ -71,7 +71,7 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
         computeStructureUsagesWithMissingContentUsages(hierarchyVisitor);
         computeContentUsagesWithMissingStructureUsages(hierarchyVisitor);
         computeLinksWithMissingAssociations();
-        policyCmptType = productCmptType.findPolicyCmptType(true, productCmptType.getIpsProject());
+        policyCmptType = productCmptType.findPolicyCmptType(productCmptType.getIpsProject());
         if (policyCmptType==null) {
             return;
         }

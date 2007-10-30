@@ -111,6 +111,7 @@ public class GeneralInfoSection extends IpsSection  {
         });
         ProductCmptType2RefControl productCmptTypeRefControl = new ProductCmptType2RefControl(type.getIpsProject(), c2, toolkit, false);
         bindingContext.bindContent(productCmptTypeRefControl, type, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE);
+        bindingContext.bindEnabled(productCmptTypeRefControl, type, IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
 	
 	    // register controls for focus handling
 	    addFocusControl(supertypeRefControl);

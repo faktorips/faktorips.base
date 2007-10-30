@@ -438,6 +438,19 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      *
      * @throws CoreException
      */
+    protected ProductCmptType newProductCmptType(IProductCmptType supertype, String qualifiedName) throws CoreException {
+        ProductCmptType newType = newProductCmptType(supertype.getIpsProject(), qualifiedName);
+        newType.setSupertype(supertype.getQualifiedName());
+        newType.setConfigurationForPolicyCmptType(supertype.isConfigurationForPolicyCmptType());
+        return newType;
+    }
+
+    /**
+     * Creates a new product component type in the project's first package fragment root.
+     * If the qualifiedName includes a package name, the package is created if it does not already exists.
+     *
+     * @throws CoreException
+     */
     protected ProductCmptType newProductCmptType(IIpsProject project, String qualifiedName) throws CoreException {
         return (ProductCmptType)newIpsObject(project, IpsObjectType.PRODUCT_CMPT_TYPE_V2, qualifiedName);
     }

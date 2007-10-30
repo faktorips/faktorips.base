@@ -89,7 +89,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
     }
 
     protected IPolicyCmptType getPolicyCmptType() throws CoreException {
-        return getProductCmptType().findPolicyCmptType(true, getIpsProject());
+        return getProductCmptType().findPolicyCmptType(getIpsProject());
     }
 
     /**
