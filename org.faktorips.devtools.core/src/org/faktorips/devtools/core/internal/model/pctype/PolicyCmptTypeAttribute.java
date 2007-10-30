@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -292,12 +293,20 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         }
         if (isDerived() && isProductRelevant()) {
             if (StringUtils.isEmpty(computationMethodSignature)) {
-                String text = NLS.bind("The reference to the computation method signature is missing for attribute {0}.", getName());
+                String text = NLS.bind("The reference to the computation method signature is missing for attribute {0}!", getName());
                 result.add(new Message(MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED, text, Message.ERROR, this, PROPERTY_COMPUTATION_METHOD_SIGNATURE));
             } else {
-                if (findComputationMethod(ipsProject)==null) {
-                    String text = "The specified computation method signature does not exist.";
+                IMethod computationMethod = findComputationMethod(ipsProject);
+                if (computationMethod==null) {
+                    String text = "The specified computation method signature does not exist!";
                     result.add(new Message(MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST, text, Message.ERROR, this, PROPERTY_COMPUTATION_METHOD_SIGNATURE));
+                } else {
+                    ValueDatatype attributeDataype = findDatatype(ipsProject);
+                    if (attributeDataype!=null && !attributeDataype.equals(computationMethod.findDatatype(ipsProject))) {
+                        String text = "The computation method has a different datatype!";
+                        result.add(new Message(MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE, text, Message.ERROR, this, 
+                                new String[]{PROPERTY_DATATYPE, PROPERTY_COMPUTATION_METHOD_SIGNATURE}));
+                    }
                 }
             }
         }

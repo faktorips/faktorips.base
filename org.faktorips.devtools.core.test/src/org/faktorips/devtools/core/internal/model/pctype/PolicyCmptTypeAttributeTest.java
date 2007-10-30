@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.RangeValueSet;
@@ -61,6 +62,29 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         ipsSrcFile = ipsFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
         pcType = (PolicyCmptType)ipsSrcFile.getIpsObject();
         attribute = pcType.newPolicyCmptTypeAttribute();
+    }
+    
+    public void testValidateComputationMethodHasDifferentDatatype() throws CoreException {
+        IProductCmptType productType = newProductCmptType(ipsProject, "TestProduct");
+        pcType.setConfigurableByProductCmptType(true);
+        pcType.setProductCmptType(productType.getQualifiedName());
+        IMethod method = productType.newMethod();
+        method.setName("calcPremium");
+
+        attribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
+        attribute.setName("premium");
+        attribute.setComputationMethodSignature(method.getSignatureString());
+        attribute.setProductRelevant(true);
+        
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        method.setDatatype(Datatype.STRING.getQualifiedName());
+        
+        MessageList result = attribute.validate();
+        assertNotNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE));
+        
+        method.setDatatype(attribute.getDatatype());
+        result = attribute.validate();
+        assertNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE));
     }
     
     public void testValidateComputationMethodNotSpecified() throws CoreException {

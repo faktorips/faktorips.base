@@ -1,24 +1,29 @@
-Klären:
-=======
-Abhängigkeiten zwischen den Ableitungshierarchien auf Vertrags & Produktseite. 
-=> Erbt ein 
-Abstrakt Flag & abstrakte Methoden bei ProductCmptTypes / Formulas.
-Aggregation Kind / RelationType
-Modelltype-Editoren: 2 oder 4 Sections verwenden? Preference einführen?
+Klären
+======
+Korrektes Overloading von Attributen beruecksichtigen! Wo überall?
 
 ToDos
 =====
+Abhängigkeiten zwischen den Ableitungshierarchien auf Vertrags & Produktseite. 
+=> Wird pro Productcomponenttype explicit festgelegt.
+
+Aggregation Kind / RelationType
+=> AggregationKind wieder rausschmeissen. 
+
+Modelltype-Editoren: 2 oder 4 Sections verwenden? 
+=> Preference einführen
+
+Abstrakt Flag & abstrakte Methoden bei ProductCmptTypes / Formulas.
+
 Entfernen der "Product-side" aus dem IPolicyCmptTypeAssociation.
 Adapter IPolicyCmptTypeAssociation to IRelation
  Validierung: Einfuerhung IIpsProject Parameter. Wollen wir auch direkt einen localCacheParameter einfuehren
-NewProductCmptType Wizard
 PolicyCmptTypeAttribute
  - um computationMethod erweitern (setter, xml konvertierung, validierung)
  - (Brauchen wir das wirklich?)
  - Dialog umbauen
  - Prüfungen ergänzen: Datatype, Modifier, Product-relevant, AttributeType, bei Überschriebenen Attributen
- Korrektes Overloading von Attributen beruecksichtigen! Wo überall?
-Large Contents: Noch mal die Verwendung der Subtype-Hierarchy überprüfen
+
 Testen: Compare
 Codegenerierung Testen/Erweitern
  - Unabhängige ProductCmptTypes
@@ -31,7 +36,5 @@ XML-Format des Produktbausteins anpassen
   
 Änderung der Sortierreihenfolge als eigener DeltaEntry.
 Modellexplorer: Filter auf Vertrags / Produktklassen
-New PolicyCmptTypeWizard muss optional auch einen neuen ProductCmptType anlegen können.
-Bisherigen RelationWizard umbauen, dass man die Beziehung auf Produktseite mitanlegen kann, wenn beide PolicyCmptTypes konfigurierbar sind.
 Lokalisierung
 ...

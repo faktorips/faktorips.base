@@ -57,6 +57,12 @@ public interface IPolicyCmptTypeAttribute extends org.faktorips.devtools.core.mo
 			+ "NothingToOverwrite"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that the compuation method has a different datatype.
+     */
+    public final static String MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE = MSGCODE_PREFIX
+            + "CompuationMethodHasWrongDatatype"; //$NON-NLS-1$
+
+    /**
 	 * Validation message code to indicate that the attribute has a name equal to 
 	 * a name of an attribute somewhere in the supertype hierarchy but is not marked
 	 * to overwrite it. 
