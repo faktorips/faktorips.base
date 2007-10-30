@@ -47,6 +47,21 @@ public interface IProductCmptType extends IIpsObject, IType {
     public final static String MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST = MSGCODE_PREFIX + "PolicyCmptTypeDoesNotExist"; //$NON-NLS-1$
 
     /**
+     * Validation code to indicate that a type has a different value for the ConfigurationForPolicyCmptType property
+     * than it's supertype. 
+     *
+     * If a type's supertype configures a policy component type, the type must also configures one, even if it
+     * the same. If the supertype doesn't configure a policy component type, also this one doesnt.
+     */
+    public final static String MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE = MSGCODE_PREFIX + "MustHaveSameValueForPolicyCmptType"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that there exists a mismatch between the product component type and the 
+     * policy component type hierarchy.
+     */
+    public final static String MSGCODE_HIERARCHY_MISMATCH = MSGCODE_PREFIX + "HierarchyMismatch"; //$NON-NLS-1$
+
+    /**
      * Returns the policy component type this product component type refers to.
      * Returns <code>null</code> if this type does not refer to a policy component type.
      */
@@ -80,7 +95,7 @@ public interface IProductCmptType extends IIpsObject, IType {
      * 
      * @throws CoreException if an error occurs while searching for the type.
      */
-    public IPolicyCmptType findPolicyCmptType(IIpsProject project) throws CoreException;
+    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns the type's supertype if the type is based on a supertype and the supertype can be found
@@ -92,7 +107,7 @@ public interface IProductCmptType extends IIpsObject, IType {
      *
      * @throws CoreException if an error occurs while searching for the supertype.
      */
-    public IProductCmptType findSuperProductCmptType(IIpsProject project) throws CoreException;
+    public IProductCmptType findSuperProductCmptType(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns the type's attributes.
@@ -113,7 +128,7 @@ public interface IProductCmptType extends IIpsObject, IType {
      * Returns <code>null</code> if no such attribute exists.
      * 
      * @param name          The attribute's name.
-     * @param ipsProject       The project which ips object path is used for the searched.
+     * @param ipsProject    The project which ips object path is used for the searched.
      *                      This is not neccessarily the project this type is part of. 
      * 
      * @throws NullPointerException if project is <code>null</code>.

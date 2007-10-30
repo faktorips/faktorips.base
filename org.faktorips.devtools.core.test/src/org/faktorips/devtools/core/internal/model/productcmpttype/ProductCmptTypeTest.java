@@ -72,6 +72,55 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         ipsProject.getIpsModel().removeChangeListener(this);
     }
     
+//    public void testValidateMustHaveSameValueForConfigurationForPolicyCmptType() throws CoreException {
+//        productCmptType.setConfigurationForPolicyCmptType(true);
+//        superProductCmptType.setConfigurationForPolicyCmptType(true);
+//        MessageList result = productCmptType.validate();
+//        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
+//        
+//        superProductCmptType.setConfigurationForPolicyCmptType(false);
+//        result = productCmptType.validate();
+//        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
+//
+//        productCmptType.setConfigurationForPolicyCmptType(false);
+//        result = productCmptType.validate();
+//        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
+//        
+//        superProductCmptType.setConfigurationForPolicyCmptType(false);
+//        result = productCmptType.validate();
+//        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
+//    }
+//
+    public void testValidateTypeHierarchyMismatch() throws CoreException {
+        IPolicyCmptType superPolicyCmptType = newPolicyCmptType(ipsProject, "SuperPolicy");
+        policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
+
+        superProductCmptType.setConfigurationForPolicyCmptType(true);
+        superProductCmptType.setPolicyCmptType(superPolicyCmptType.getQualifiedName());
+        MessageList result = productCmptType.validate();
+        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_HIERARCHY_MISMATCH));
+        
+        superProductCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
+        superSuperProductCmptType.setConfigurationForPolicyCmptType(true);
+        superSuperProductCmptType.setPolicyCmptType(superPolicyCmptType.getQualifiedName());
+        result = productCmptType.validate();
+        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_HIERARCHY_MISMATCH));
+        
+        // policy component type inherits from a type outside the hierarchy
+        IPolicyCmptType otherType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SomeOtherType");
+        superProductCmptType.setPolicyCmptType(otherType.getQualifiedName());
+        result = productCmptType.validate();
+        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_HIERARCHY_MISMATCH));
+        
+        // an intermediate type exists in the policy hierarchy
+        IPolicyCmptType intermediateType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "IntermediatePolicy");
+        policyCmptType.setSupertype(intermediateType.getQualifiedName());
+        intermediateType.setSupertype(superPolicyCmptType.getQualifiedName());
+        superProductCmptType.setPolicyCmptType(superPolicyCmptType.getQualifiedName());
+        result = productCmptType.validate();
+        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_HIERARCHY_MISMATCH));
+    }
+    
     public void testSetConfigurationForPolicyCmptType() {
         Boolean newValue = Boolean.valueOf(!productCmptType.isConfigurationForPolicyCmptType());
         testPropertyAccessReadWrite(IProductCmptType.class, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE, productCmptType, newValue);
@@ -479,17 +528,6 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         testPropertyAccessReadWrite(ProductCmptType.class, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE, productCmptType, "NewPolicy");
     }
     
-    public void testConfiguresPolicyCmptType() {
-        productCmptType.setPolicyCmptType(null);
-        assertFalse(productCmptType.isConfigurationForPolicyCmptType());
-       
-        productCmptType.setPolicyCmptType("");
-        assertFalse(productCmptType.isConfigurationForPolicyCmptType());
-        
-        productCmptType.setPolicyCmptType("NewType");
-        assertTrue(productCmptType.isConfigurationForPolicyCmptType());
-    }
-
     public void testFindPolicyCmptType() throws CoreException {
         productCmptType.setConfigurationForPolicyCmptType(true);
         productCmptType.setPolicyCmptType("");

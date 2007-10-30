@@ -383,19 +383,38 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
+        IIpsProject ipsProject = getIpsProject();
+        IProductCmptType supertype = findSuperProductCmptType(ipsProject);
         if (isConfigurationForPolicyCmptType()) {
-            validatePolicyCmptTypeReference(getIpsProject(), list);
+            validatePolicyCmptTypeReference(supertype, getIpsProject(), list);
+        } else {
+            if (supertype!=null && !supertype.isConfigurationForPolicyCmptType() && isConfigurationForPolicyCmptType()) {
+                String text = "The type can't configure a poliy component type, if the supertype does not!";
+                list.add(new Message(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE, text, Message.ERROR, this, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE));
+            }
         }
     }
     
-    private void validatePolicyCmptTypeReference(IIpsProject ipsProject, MessageList list) throws CoreException {
-        if (!configurationForPolicyCmptType) {
+    private void validatePolicyCmptTypeReference(IProductCmptType supertype, IIpsProject ipsProject, MessageList list) throws CoreException {
+        if (supertype!=null && supertype.isConfigurationForPolicyCmptType() && !isConfigurationForPolicyCmptType()) {
+            String text = "The type must configure a poliy component type, if the supertype does!";
+            list.add(new Message(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE, text, Message.ERROR, this, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE));
             return;
-        }
-        IPolicyCmptType typeObj = findPolicyCmptType(ipsProject);
-        if (typeObj==null) {
+        } 
+        IPolicyCmptType policyCmptTypeObj = findPolicyCmptType(ipsProject);
+        if (policyCmptTypeObj==null) {
             String text = "The policy component type " + policyCmptType + " does not exist.";
             list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST, text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE));
+            return;
+        }
+        if (supertype==null) {
+            return;
+        }
+        IPolicyCmptType policyCmptTypeOfSupertype = supertype.findPolicyCmptType(ipsProject);
+        if (policyCmptTypeObj!=policyCmptTypeOfSupertype && policyCmptTypeObj.findSupertype(ipsProject)!=policyCmptTypeOfSupertype) {
+            String text = "There is mismatch in the hierarchy between the product and the policy component side of the model.";
+            list.add(new Message(MSGCODE_HIERARCHY_MISMATCH, text, Message.ERROR, this, new String[]{PROPERTY_SUPERTYPE, PROPERTY_POLICY_CMPT_TYPE}));
+            return;
         }
     }
     
