@@ -341,9 +341,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	 *
 	 * @throws CoreException
 	 */
-	protected IIpsObject newIpsObject(IIpsProject project, IpsObjectType type,
+	protected IIpsObject newIpsObject(IIpsProject ipsProject, IpsObjectType type,
 			String qualifiedName) throws CoreException {
-		IIpsPackageFragmentRoot root = project
+		IIpsPackageFragmentRoot root = ipsProject
 				.getSourceIpsPackageFragmentRoots()[0];
 		return newIpsObject(root, type, qualifiedName);
 	}
@@ -417,8 +417,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	 *
 	 * @throws CoreException
 	 */
-	protected PolicyCmptType newPolicyCmptType(IIpsProject project, String qualifiedName) throws CoreException {
-		return (PolicyCmptType)newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, qualifiedName);
+	protected PolicyCmptType newPolicyCmptType(IIpsProject ipsProject, String qualifiedName) throws CoreException {
+		return (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, qualifiedName);
 	}
 
     /**
@@ -428,8 +428,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      *
      * @throws CoreException
      */
-    protected PolicyCmptType newPolicyCmptTypeWithoutProductCmptType(IIpsProject project, String qualifiedName) throws CoreException {
-        return (PolicyCmptType)newIpsObject(project.getIpsPackageFragmentRoots()[0], IpsObjectType.POLICY_CMPT_TYPE, qualifiedName, false);
+    protected PolicyCmptType newPolicyCmptTypeWithoutProductCmptType(IIpsProject ipsProject, String qualifiedName) throws CoreException {
+        return (PolicyCmptType)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.POLICY_CMPT_TYPE, qualifiedName, false);
     }
 
     /**
@@ -451,8 +451,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      *
      * @throws CoreException
      */
-    protected ProductCmptType newProductCmptType(IIpsProject project, String qualifiedName) throws CoreException {
-        return (ProductCmptType)newIpsObject(project, IpsObjectType.PRODUCT_CMPT_TYPE_V2, qualifiedName);
+    protected ProductCmptType newProductCmptType(IIpsProject ipsProject, String qualifiedName) throws CoreException {
+        return (ProductCmptType)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE_V2, qualifiedName);
     }
 
     /**
@@ -471,9 +471,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      *
      * @throws CoreException
      */
-    protected PolicyCmptType newPolicyAndProductCmptType(IIpsProject project, String policyCmptTypeName, String productCmptTypeName) throws CoreException {
-        IPolicyCmptType policyCmptType = (IPolicyCmptType)newIpsObject(project.getIpsPackageFragmentRoots()[0], IpsObjectType.POLICY_CMPT_TYPE, policyCmptTypeName, false);
-        ProductCmptType productCmptType = newProductCmptType(project, productCmptTypeName);
+    protected PolicyCmptType newPolicyAndProductCmptType(IIpsProject ipsProject, String policyCmptTypeName, String productCmptTypeName) throws CoreException {
+        IPolicyCmptType policyCmptType = (IPolicyCmptType)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.POLICY_CMPT_TYPE, policyCmptTypeName, false);
+        ProductCmptType productCmptType = newProductCmptType(ipsProject, productCmptTypeName);
+        productCmptType.setConfigurationForPolicyCmptType(true);
         productCmptType.setPolicyCmptType(policyCmptTypeName);
         policyCmptType.setConfigurableByProductCmptType(true);
         policyCmptType.setProductCmptType(productCmptTypeName);

@@ -202,7 +202,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements
 			String text = NLS.bind(
 					Messages.ProductCmptRelation_msgNoRelationDefined,
 					association, getProductCmpt().getProductCmptType());
-			list.add(new Message(MSGCODE_UNKNWON_RELATIONTYPE, text,
+			list.add(new Message(MSGCODE_UNKNWON_ASSOCIATION, text,
 					Message.ERROR, this, PROPERTY_ASSOCIATION));
             return;
 		} 

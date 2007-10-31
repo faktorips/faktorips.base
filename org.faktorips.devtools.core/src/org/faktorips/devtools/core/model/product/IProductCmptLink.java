@@ -50,9 +50,9 @@ public interface IProductCmptLink extends IIpsObjectPart {
     public final static String MSGCODE_PREFIX = "PRODUCTCMPT_RELATION-"; //$NON-NLS-1$
     
     /**
-     * Validation message code to indicate that the relation type in the model can't be found.
+     * Validation message code to indicate that the asscoation in the model can't be found.
      */
-    public final static String MSGCODE_UNKNWON_RELATIONTYPE = MSGCODE_PREFIX + "UnknownRelationType"; //$NON-NLS-1$
+    public final static String MSGCODE_UNKNWON_ASSOCIATION = MSGCODE_PREFIX + "UnknownAssociation"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the target product component does not exist.

@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
@@ -130,27 +131,40 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 			//nothing to do :-)
 		}
     }
+    
+    public void testValidateUnknownAssociate() throws CoreException {
+        MessageList ml = link.validate();
+        assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_UNKNWON_ASSOCIATION));
+    }
+    
+    public void testValidateUnknownTarget() throws CoreException {
+        link.setTarget("unknown");
+        MessageList ml = link.validate();
+        assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_UNKNWON_TARGET));
+        
+        link.setTarget(productCmpt.getQualifiedName());
+        ml = link.validate();
+        assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_UNKNWON_TARGET));
+    }
  
-    public void testValidate() throws CoreException {
-    	MessageList ml = link.validate();
-    	assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_UNKNWON_RELATIONTYPE));
-    	
-    	IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
-    	association.setTargetRoleSingular("CoverageType");
-
-    	ml = link.validate();
-    	assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_UNKNWON_RELATIONTYPE));
-    	
-    	link.setTarget("unknown");
-    	ml = link.validate();
-    	assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_UNKNWON_TARGET));
-
-    	link.setTarget(productCmpt.getQualifiedName());
-    	ml = link.validate();
-    	assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_UNKNWON_TARGET));
-    	
+    public void testValidateCardinality() throws CoreException {
+        IPolicyCmptType coverageType = newPolicyAndProductCmptType(ipsProject, "TestCoverage", "TestCoverageType");
+        IProductCmptType coverageTypeType = coverageType.findProductCmptType(ipsProject);
+        
+        IProductCmptTypeAssociation productAssociation = productCmptType.newProductCmptTypeAssociation();
+        productAssociation.setTarget(coverageTypeType.getQualifiedName());
+        productAssociation.setTargetRoleSingular("CoverageType");
+        
+        IAssociation policyAssociation = policyCmptType.newAssociation();
+        policyAssociation.setTarget(coverageType.getQualifiedName());
+        policyAssociation.setTargetRoleSingular("Coverage");
+        
+        // test setup
+        assertEquals(policyAssociation, productAssociation.findMatchingPolicyCmptTypeRelation(ipsProject));
+        assertEquals(productAssociation, link.findAssociation(ipsProject));
+        
     	link.setMaxCardinality(0);
-    	ml = link.validate();
+    	MessageList ml = link.validate();
     	assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MISSING_MAX_CARDINALITY));
     	assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1));
 
@@ -166,11 +180,11 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     	ml = link.validate();
     	assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
     	
-    	association.setMaxCardinality(1);
+        policyAssociation.setMaxCardinality(1);
     	ml = link.validate();
     	assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
 
-    	association.setMaxCardinality(3);
+        policyAssociation.setMaxCardinality(3);
     	ml = link.validate();
     	assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
     }
