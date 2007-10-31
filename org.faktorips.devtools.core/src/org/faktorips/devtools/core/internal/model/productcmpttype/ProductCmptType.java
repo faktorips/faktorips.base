@@ -386,18 +386,18 @@ public class ProductCmptType extends Type implements IProductCmptType {
         IIpsProject ipsProject = getIpsProject();
         IProductCmptType supertype = findSuperProductCmptType(ipsProject);
         if (isConfigurationForPolicyCmptType()) {
-            validatePolicyCmptTypeReference(supertype, getIpsProject(), list);
+            validatePolicyCmptTypeReference(supertype, ipsProject, list);
         } else {
-            if (supertype!=null && !supertype.isConfigurationForPolicyCmptType() && isConfigurationForPolicyCmptType()) {
-                String text = "The type can't configure a poliy component type, if the supertype does not!";
+            if (supertype!=null && supertype.isConfigurationForPolicyCmptType()) {
+                String text = "The type must configure a poliy component type, if the supertype does!";
                 list.add(new Message(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE, text, Message.ERROR, this, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE));
             }
         }
     }
     
     private void validatePolicyCmptTypeReference(IProductCmptType supertype, IIpsProject ipsProject, MessageList list) throws CoreException {
-        if (supertype!=null && supertype.isConfigurationForPolicyCmptType() && !isConfigurationForPolicyCmptType()) {
-            String text = "The type must configure a poliy component type, if the supertype does!";
+        if (supertype!=null && !supertype.isConfigurationForPolicyCmptType()) {
+            String text = "The type can't configure a poliy component type, if the supertype does not!";
             list.add(new Message(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE, text, Message.ERROR, this, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE));
             return;
         } 

@@ -72,25 +72,25 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         ipsProject.getIpsModel().removeChangeListener(this);
     }
     
-//    public void testValidateMustHaveSameValueForConfigurationForPolicyCmptType() throws CoreException {
-//        productCmptType.setConfigurationForPolicyCmptType(true);
-//        superProductCmptType.setConfigurationForPolicyCmptType(true);
-//        MessageList result = productCmptType.validate();
-//        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
-//        
-//        superProductCmptType.setConfigurationForPolicyCmptType(false);
-//        result = productCmptType.validate();
-//        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
-//
-//        productCmptType.setConfigurationForPolicyCmptType(false);
-//        result = productCmptType.validate();
-//        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
-//        
-//        superProductCmptType.setConfigurationForPolicyCmptType(false);
-//        result = productCmptType.validate();
-//        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
-//    }
-//
+    public void testValidateMustHaveSameValueForConfigurationForPolicyCmptType() throws CoreException {
+        productCmptType.setConfigurationForPolicyCmptType(true);
+        superProductCmptType.setConfigurationForPolicyCmptType(true);
+        MessageList result = productCmptType.validate();
+        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
+        
+        superProductCmptType.setConfigurationForPolicyCmptType(false);
+        result = productCmptType.validate();
+        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
+
+        productCmptType.setConfigurationForPolicyCmptType(false);
+        result = productCmptType.validate();
+        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
+        
+        superProductCmptType.setConfigurationForPolicyCmptType(false);
+        result = productCmptType.validate();
+        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
+    }
+
     public void testValidateTypeHierarchyMismatch() throws CoreException {
         IPolicyCmptType superPolicyCmptType = newPolicyCmptType(ipsProject, "SuperPolicy");
         policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
@@ -622,7 +622,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     }
     
     public void testToXml() throws CoreException {
-        productCmptType.setConfigurationForPolicyCmptType(false);
+        productCmptType.setConfigurationForPolicyCmptType(true);
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
         productCmptType.newProductCmptTypeAttribute().setName("attr");
         productCmptType.newProductCmptTypeAssociation().setTargetRoleSingular("role");
@@ -631,6 +631,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         
         Element el = productCmptType.toXml(newDocument());
         productCmptType = newProductCmptType(ipsProject, "Copy");
+        productCmptType.setConfigurationForPolicyCmptType(false);
         productCmptType.initFromXml(el);
         
         assertEquals(policyCmptType.getQualifiedName(), productCmptType.getPolicyCmptType());
