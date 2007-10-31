@@ -1,6 +1,9 @@
 Klären
 ======
 Korrektes Overloading von Attributen beruecksichtigen! Wo überall?
+Umbenennen von ProductCmptType in ConfigurationType, ProductCmpt in ConfigurationObject?
+Validierung: Einfuerhung IIpsProject Parameter. Wollen wir auch direkt einen localCacheParameter einfuehren
+
 
 ToDos
 =====
@@ -10,19 +13,10 @@ Abhängigkeiten zwischen den Ableitungshierarchien auf Vertrags & Produktseite.
 Aggregation Kind / RelationType
 => AggregationKind wieder rausschmeissen. 
 
-Modelltype-Editoren: 2 oder 4 Sections verwenden? 
-=> Preference einführen
-
 Abstrakt Flag & abstrakte Methoden bei ProductCmptTypes / Formulas.
 
-Entfernen der "Product-side" aus dem IPolicyCmptTypeAssociation.
 Adapter IPolicyCmptTypeAssociation to IRelation
- Validierung: Einfuerhung IIpsProject Parameter. Wollen wir auch direkt einen localCacheParameter einfuehren
-PolicyCmptTypeAttribute
- - um computationMethod erweitern (setter, xml konvertierung, validierung)
- - (Brauchen wir das wirklich?)
- - Dialog umbauen
- - Prüfungen ergänzen: Datatype, Modifier, Product-relevant, AttributeType, bei Überschriebenen Attributen
+
 
 Testen: Compare
 Codegenerierung Testen/Erweitern
@@ -33,8 +27,14 @@ XML-Format des Produktbausteins anpassen
   - Umbennen von "Relation" in "Link"
   - Umbennen von "pcTypeRelation" in "association"
   => Achtung hier muss auch die Laufzeit angepasst werden!!!
-  
-Änderung der Sortierreihenfolge als eigener DeltaEntry.
+  .
 Modellexplorer: Filter auf Vertrags / Produktklassen
 Lokalisierung
 ...
+
+
+
+
+
+Entfernen der "Product-side" aus dem IPolicyCmptTypeAssociation.
+

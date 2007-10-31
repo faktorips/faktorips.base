@@ -66,7 +66,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     private IIpsPackageFragmentRoot root;
     private IIpsPackageFragment pack;
     private IIpsSrcFile sourceFile;
-    private PolicyCmptType pcType;
+    private PolicyCmptType policyCmptType;
     private ContentChangeEvent lastEvent;
     private IIpsProject ipsProject;
     
@@ -76,22 +76,38 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         root = ipsProject.getIpsPackageFragmentRoots()[0];
         pack = root.createPackageFragment("products.folder", true, null);
         sourceFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
-        pcType = (PolicyCmptType)sourceFile.getIpsObject();
-        pcType.setConfigurableByProductCmptType(false);
+        policyCmptType = (PolicyCmptType)sourceFile.getIpsObject();
+        policyCmptType.setConfigurableByProductCmptType(false);
+    }
+    
+    public void testValidateProductCmptTypeDoesNotConfigureThisType() throws CoreException {
+        IPolicyCmptType polType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
+        IProductCmptType productType = polType.findProductCmptType(ipsProject);
+        
+        MessageList result = polType.validate();
+        assertNull(result.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE));
+        
+        productType.setPolicyCmptType(policyCmptType.getQualifiedName());
+        result = polType.validate();
+        assertNotNull(result.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE));
+        
+        productType.setConfigurationForPolicyCmptType(false);
+        result = polType.validate();
+        assertNotNull(result.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE));
     }
     
     public void testGetOverrideCandidates() throws CoreException {
-        assertEquals(0, pcType.findOverrideMethodCandidates(false, ipsProject).length);
+        assertEquals(0, policyCmptType.findOverrideMethodCandidates(false, ipsProject).length);
         
         // create two more types that act as supertype and supertype's supertype 
         IIpsSrcFile file1 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supertype", true, null);
         IPolicyCmptType supertype = (PolicyCmptType)file1.getIpsObject();
         IIpsSrcFile file2 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supersupertype", true, null);
         IPolicyCmptType supersupertype = (PolicyCmptType)file2.getIpsObject();
-        pcType.setSupertype(supertype.getQualifiedName());
+        policyCmptType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
         
-        IMethod m1 = pcType.newMethod();
+        IMethod m1 = policyCmptType.newMethod();
         m1.setName("calc");
         
         // supertype methods
@@ -111,7 +127,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         m5.setAbstract(true);        
         m5.newParameter("Money", "p1");
         
-        IMethod[] candidates = pcType.findOverrideMethodCandidates(false, ipsProject);
+        IMethod[] candidates = policyCmptType.findOverrideMethodCandidates(false, ipsProject);
         assertEquals(2, candidates.length);
         assertEquals(m3, candidates[0]);
         assertEquals(m5, candidates[1]);
@@ -120,7 +136,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         // m4 is not a candidate because it is overridden by m3 and m3 comes first in the hierarchy
         
         // only not implemented abstract methods
-        candidates = pcType.findOverrideMethodCandidates(true, ipsProject);
+        candidates = policyCmptType.findOverrideMethodCandidates(true, ipsProject);
         assertEquals(1, candidates.length);
         assertEquals(m5, candidates[0]);
         // note: now only m5 is a candidate as it's abstract, m3 is not.
@@ -128,124 +144,124 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         // override the supersupertype method m5 in the supertype
         // => now also m5 is not a candidate any more, if only not implemented abstract methods are requested.
         supertype.overrideMethods(new IMethod[]{m5});
-        candidates = pcType.findOverrideMethodCandidates(true, ipsProject);
+        candidates = policyCmptType.findOverrideMethodCandidates(true, ipsProject);
         assertEquals(0, candidates.length);
     }
     
     public void testFindProductCmptType() throws CoreException {
-        pcType.setProductCmptType("");
-        assertNull(pcType.findProductCmptType(ipsProject));
+        policyCmptType.setProductCmptType("");
+        assertNull(policyCmptType.findProductCmptType(ipsProject));
 
-        pcType.setProductCmptType("MotorProduct");
-        pcType.setConfigurableByProductCmptType(false);
-        assertNull(pcType.findProductCmptType(ipsProject));
+        policyCmptType.setProductCmptType("MotorProduct");
+        policyCmptType.setConfigurableByProductCmptType(false);
+        assertNull(policyCmptType.findProductCmptType(ipsProject));
         
-        pcType.setConfigurableByProductCmptType(true);
-        pcType.setProductCmptType("Unkown");
-        assertNull(pcType.findProductCmptType(ipsProject));
+        policyCmptType.setConfigurableByProductCmptType(true);
+        policyCmptType.setProductCmptType("Unkown");
+        assertNull(policyCmptType.findProductCmptType(ipsProject));
         
-        IProductCmptType productCmptType = newProductCmptType(ipsProject, pcType.getIpsPackageFragment().getName() + ".Product");
-        pcType.setProductCmptType(productCmptType.getQualifiedName());
-        assertSame(productCmptType, pcType.findProductCmptType(ipsProject));
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, policyCmptType.getIpsPackageFragment().getName() + ".Product");
+        policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
+        assertSame(productCmptType, policyCmptType.findProductCmptType(ipsProject));
     }
     
     public void testFindAttributeInSupertypeHierarchy() throws CoreException {
-        assertNull(pcType.findAttributeInSupertypeHierarchy("unkown"));
-        IPolicyCmptTypeAttribute a1 = pcType.newPolicyCmptTypeAttribute();
+        assertNull(policyCmptType.findAttributeInSupertypeHierarchy("unkown"));
+        IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
         a1.setName("a1");
-        assertNull(pcType.findAttributeInSupertypeHierarchy("unkown"));
-        assertEquals(a1, pcType.findAttributeInSupertypeHierarchy("a1"));
+        assertNull(policyCmptType.findAttributeInSupertypeHierarchy("unkown"));
+        assertEquals(a1, policyCmptType.findAttributeInSupertypeHierarchy("a1"));
         
         IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
         IPolicyCmptTypeAttribute a2 = supertype.newPolicyCmptTypeAttribute();
         a2.setName("a2");
-        pcType.setSupertype(supertype.getQualifiedName());
+        policyCmptType.setSupertype(supertype.getQualifiedName());
         
-        assertNull(pcType.findAttributeInSupertypeHierarchy("unkown"));
-        assertEquals(a1, pcType.findAttributeInSupertypeHierarchy("a1"));
-        assertEquals(a2, pcType.findAttributeInSupertypeHierarchy("a2"));
+        assertNull(policyCmptType.findAttributeInSupertypeHierarchy("unkown"));
+        assertEquals(a1, policyCmptType.findAttributeInSupertypeHierarchy("a1"));
+        assertEquals(a2, policyCmptType.findAttributeInSupertypeHierarchy("a2"));
     }
     
     public void testIsSubtype() throws CoreException {
-        assertFalse(pcType.isSubtypeOf(null));
+        assertFalse(policyCmptType.isSubtypeOf(null));
         
         IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
-        assertFalse(pcType.isSubtypeOf(supertype));
-        pcType.setSupertype(supertype.getQualifiedName());
-        assertTrue(pcType.isSubtypeOf(supertype));
+        assertFalse(policyCmptType.isSubtypeOf(supertype));
+        policyCmptType.setSupertype(supertype.getQualifiedName());
+        assertTrue(policyCmptType.isSubtypeOf(supertype));
         
         IPolicyCmptType supersupertype = newPolicyCmptType(ipsProject, "SuperSupertype");
-        assertFalse(pcType.isSubtypeOf(supersupertype));
+        assertFalse(policyCmptType.isSubtypeOf(supersupertype));
         supertype.setSupertype(supersupertype.getQualifiedName());
-        assertTrue(pcType.isSubtypeOf(supersupertype));
+        assertTrue(policyCmptType.isSubtypeOf(supersupertype));
         
-        assertFalse(supertype.isSubtypeOf(pcType));
+        assertFalse(supertype.isSubtypeOf(policyCmptType));
     }
     
     public void testIsSubtypeOrSameType() throws CoreException {
-        assertFalse(pcType.isSubtypeOrSameType(null));
+        assertFalse(policyCmptType.isSubtypeOrSameType(null));
         
-        assertTrue(pcType.isSubtypeOrSameType(pcType));
+        assertTrue(policyCmptType.isSubtypeOrSameType(policyCmptType));
 
         IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
-        assertFalse(pcType.isSubtypeOrSameType(supertype));
-        pcType.setSupertype(supertype.getQualifiedName());
-        assertTrue(pcType.isSubtypeOrSameType(supertype));
+        assertFalse(policyCmptType.isSubtypeOrSameType(supertype));
+        policyCmptType.setSupertype(supertype.getQualifiedName());
+        assertTrue(policyCmptType.isSubtypeOrSameType(supertype));
         
         IPolicyCmptType supersupertype = newPolicyCmptType(ipsProject, "SuperSupertype");
-        assertFalse(pcType.isSubtypeOrSameType(supersupertype));
+        assertFalse(policyCmptType.isSubtypeOrSameType(supersupertype));
         supertype.setSupertype(supersupertype.getQualifiedName());
-        assertTrue(pcType.isSubtypeOrSameType(supersupertype));
+        assertTrue(policyCmptType.isSubtypeOrSameType(supersupertype));
         
-        assertFalse(supertype.isSubtypeOf(pcType));
+        assertFalse(supertype.isSubtypeOf(policyCmptType));
     }
 
     public void testIsExtensionCompilationUnitGenerated() throws CoreException {
-        assertFalse(pcType.isExtensionCompilationUnitGenerated());
+        assertFalse(policyCmptType.isExtensionCompilationUnitGenerated());
         
         // force generation
-        pcType.setForceExtensionCompilationUnitGeneration(true);
-        assertTrue(pcType.isExtensionCompilationUnitGenerated());
+        policyCmptType.setForceExtensionCompilationUnitGeneration(true);
+        assertTrue(policyCmptType.isExtensionCompilationUnitGenerated());
         
         // validation rule
-        pcType.setForceExtensionCompilationUnitGeneration(false);
-        assertFalse(pcType.isExtensionCompilationUnitGenerated());
-        IValidationRule rule = pcType.newRule();
-        assertTrue(pcType.isExtensionCompilationUnitGenerated());
+        policyCmptType.setForceExtensionCompilationUnitGeneration(false);
+        assertFalse(policyCmptType.isExtensionCompilationUnitGenerated());
+        IValidationRule rule = policyCmptType.newRule();
+        assertTrue(policyCmptType.isExtensionCompilationUnitGenerated());
         
         // method
         rule.delete();
-        assertFalse(pcType.isExtensionCompilationUnitGenerated());
-        IMethod method = pcType.newMethod();
-        assertTrue(pcType.isExtensionCompilationUnitGenerated());
+        assertFalse(policyCmptType.isExtensionCompilationUnitGenerated());
+        IMethod method = policyCmptType.newMethod();
+        assertTrue(policyCmptType.isExtensionCompilationUnitGenerated());
         method.setAbstract(true);
-        assertFalse(pcType.isExtensionCompilationUnitGenerated());
+        assertFalse(policyCmptType.isExtensionCompilationUnitGenerated());
         method.delete();
 
         // attribute
-        IPolicyCmptTypeAttribute attribute = pcType.newPolicyCmptTypeAttribute();
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         attribute.setProductRelevant(true);
-        assertFalse(pcType.isExtensionCompilationUnitGenerated());
+        assertFalse(policyCmptType.isExtensionCompilationUnitGenerated());
         attribute.setProductRelevant(false);
-        assertTrue(pcType.isExtensionCompilationUnitGenerated());
+        assertTrue(policyCmptType.isExtensionCompilationUnitGenerated());
         attribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
-        assertTrue(pcType.isExtensionCompilationUnitGenerated());
+        assertTrue(policyCmptType.isExtensionCompilationUnitGenerated());
         attribute.setAttributeType(AttributeType.CHANGEABLE);
-        assertFalse(pcType.isExtensionCompilationUnitGenerated());
+        assertFalse(policyCmptType.isExtensionCompilationUnitGenerated());
         attribute.setAttributeType(AttributeType.CONSTANT);
-        assertFalse(pcType.isExtensionCompilationUnitGenerated());
+        assertFalse(policyCmptType.isExtensionCompilationUnitGenerated());
         
     }
     
     public void testGetChildren() {
-        IPolicyCmptTypeAttribute a1 = pcType.newPolicyCmptTypeAttribute();
-        IMethod m1 = pcType.newMethod();
-        IPolicyCmptTypeAssociation r1 = pcType.newPolicyCmptTypeAssociation();
-        IValidationRule rule1 = pcType.newRule();
-        pcType.setConfigurableByProductCmptType(true);
+        IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
+        IMethod m1 = policyCmptType.newMethod();
+        IPolicyCmptTypeAssociation r1 = policyCmptType.newPolicyCmptTypeAssociation();
+        IValidationRule rule1 = policyCmptType.newRule();
+        policyCmptType.setConfigurableByProductCmptType(true);
         
-        IIpsElement[] elements = pcType.getChildren();
+        IIpsElement[] elements = policyCmptType.getChildren();
         assertEquals(4, elements.length);
         assertEquals(a1, elements[0]);
         assertEquals(m1, elements[1]);
@@ -255,131 +271,131 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
 
     public void testNewAttribute() {
         sourceFile.getIpsModel().addChangeListener(this);
-        IPolicyCmptTypeAttribute a = pcType.newPolicyCmptTypeAttribute();
-        assertSame(pcType, a.getIpsObject());
-        assertEquals(1, pcType.getNumOfAttributes());
+        IPolicyCmptTypeAttribute a = policyCmptType.newPolicyCmptTypeAttribute();
+        assertSame(policyCmptType, a.getIpsObject());
+        assertEquals(1, policyCmptType.getNumOfAttributes());
         assertTrue(sourceFile.isDirty());
         assertEquals(sourceFile, lastEvent.getIpsSrcFile());
         assertEquals(a, lastEvent.getPart());
         assertEquals(ContentChangeEvent.TYPE_PART_ADDED, lastEvent.getEventType());
         assertEquals(0, a.getId());
 
-        IMethod m = pcType.newMethod();
+        IMethod m = policyCmptType.newMethod();
         assertEquals(1, m.getId());
-        IPolicyCmptTypeAttribute a2 = pcType.newPolicyCmptTypeAttribute();
+        IPolicyCmptTypeAttribute a2 = policyCmptType.newPolicyCmptTypeAttribute();
         assertEquals(2, a2.getId());
     }
 
     public void testGetAttributes() {
-        assertEquals(0, pcType.getPolicyCmptTypeAttributes().length);
-        IPolicyCmptTypeAttribute a1 = pcType.newPolicyCmptTypeAttribute();
-        IPolicyCmptTypeAttribute a2 = pcType.newPolicyCmptTypeAttribute();
-        assertSame(a1, pcType.getPolicyCmptTypeAttributes()[0]);
-        assertSame(a2, pcType.getPolicyCmptTypeAttributes()[1]);
+        assertEquals(0, policyCmptType.getPolicyCmptTypeAttributes().length);
+        IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
+        IPolicyCmptTypeAttribute a2 = policyCmptType.newPolicyCmptTypeAttribute();
+        assertSame(a1, policyCmptType.getPolicyCmptTypeAttributes()[0]);
+        assertSame(a2, policyCmptType.getPolicyCmptTypeAttributes()[1]);
         
         // make sure a defensive copy is returned.
-        pcType.getPolicyCmptTypeAttributes()[0] = null;
-        assertNotNull(pcType.getPolicyCmptTypeAttributes()[0]);
+        policyCmptType.getPolicyCmptTypeAttributes()[0] = null;
+        assertNotNull(policyCmptType.getPolicyCmptTypeAttributes()[0]);
     }
     
     public void testGetAttribute() {
-        IPolicyCmptTypeAttribute a1 = pcType.newPolicyCmptTypeAttribute();
+        IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
         a1.setName("a1");
-        IPolicyCmptTypeAttribute a2 = pcType.newPolicyCmptTypeAttribute();
+        IPolicyCmptTypeAttribute a2 = policyCmptType.newPolicyCmptTypeAttribute();
         a2.setName("a2");
-        IPolicyCmptTypeAttribute a3 = pcType.newPolicyCmptTypeAttribute();
+        IPolicyCmptTypeAttribute a3 = policyCmptType.newPolicyCmptTypeAttribute();
         a3.setName("a2"); // same name!
         
-        assertEquals(a1, pcType.getPolicyCmptTypeAttribute("a1"));
-        assertEquals(a2, pcType.getPolicyCmptTypeAttribute("a2"));
-        assertNull(pcType.getPolicyCmptTypeAttribute("b"));
-        assertNull(pcType.getPolicyCmptTypeAttribute(null));
+        assertEquals(a1, policyCmptType.getPolicyCmptTypeAttribute("a1"));
+        assertEquals(a2, policyCmptType.getPolicyCmptTypeAttribute("a2"));
+        assertNull(policyCmptType.getPolicyCmptTypeAttribute("b"));
+        assertNull(policyCmptType.getPolicyCmptTypeAttribute(null));
     }
 
     public void testNewMethod() {
         sourceFile.getIpsModel().addChangeListener(this);
-        IMethod m = pcType.newMethod();
+        IMethod m = policyCmptType.newMethod();
         assertEquals(0, m.getId());
-        assertSame(pcType, m.getIpsObject());
-        assertEquals(1, pcType.getNumOfMethods());
+        assertSame(policyCmptType, m.getIpsObject());
+        assertEquals(1, policyCmptType.getNumOfMethods());
         assertTrue(sourceFile.isDirty());
         assertEquals(sourceFile, lastEvent.getIpsSrcFile());
 
-        IMethod m2 = pcType.newMethod();
+        IMethod m2 = policyCmptType.newMethod();
         assertEquals(1, m2.getId());    
     }
 
     public void testGetMethods() {
-        assertEquals(0, pcType.getMethods().length);
-        IMethod m1 = pcType.newMethod();
-        IMethod m2 = pcType.newMethod();
-        assertSame(m1, pcType.getMethods()[0]);
-        assertSame(m2, pcType.getMethods()[1]);
+        assertEquals(0, policyCmptType.getMethods().length);
+        IMethod m1 = policyCmptType.newMethod();
+        IMethod m2 = policyCmptType.newMethod();
+        assertSame(m1, policyCmptType.getMethods()[0]);
+        assertSame(m2, policyCmptType.getMethods()[1]);
         
         // make sure a defensive copy is returned.
-        pcType.getMethods()[0] = null;
-        assertNotNull(pcType.getMethods()[0]);
+        policyCmptType.getMethods()[0] = null;
+        assertNotNull(policyCmptType.getMethods()[0]);
     }
 
     public void testNewRule() {
         sourceFile.getIpsModel().addChangeListener(this);
-        IValidationRule r = pcType.newRule();
+        IValidationRule r = policyCmptType.newRule();
         assertEquals(0, r.getId());    
-        assertSame(pcType, r.getIpsObject());
-        assertEquals(1, pcType.getNumOfRules());
+        assertSame(policyCmptType, r.getIpsObject());
+        assertEquals(1, policyCmptType.getNumOfRules());
         assertTrue(sourceFile.isDirty());
         assertEquals(sourceFile, lastEvent.getIpsSrcFile());
         
-        IValidationRule r2 = pcType.newRule();
+        IValidationRule r2 = policyCmptType.newRule();
         assertEquals(1, r2.getId());    
     }
 
     public void testGetRules() {
-        assertEquals(0, pcType.getRules().length);
-        IValidationRule r1 = pcType.newRule();
-        IValidationRule r2 = pcType.newRule();
-        assertSame(r1, pcType.getRules()[0]);
-        assertSame(r2, pcType.getRules()[1]);
+        assertEquals(0, policyCmptType.getRules().length);
+        IValidationRule r1 = policyCmptType.newRule();
+        IValidationRule r2 = policyCmptType.newRule();
+        assertSame(r1, policyCmptType.getRules()[0]);
+        assertSame(r2, policyCmptType.getRules()[1]);
         
         // make sure a defensive copy is returned.
-        pcType.getRules()[0] = null;
-        assertNotNull(pcType.getRules()[0]);
+        policyCmptType.getRules()[0] = null;
+        assertNotNull(policyCmptType.getRules()[0]);
     }
 
     public void testNewRelation() {
         sourceFile.getIpsModel().addChangeListener(this);
-        IPolicyCmptTypeAssociation r = pcType.newPolicyCmptTypeAssociation();
+        IPolicyCmptTypeAssociation r = policyCmptType.newPolicyCmptTypeAssociation();
         assertEquals(0, r.getId());    
-        assertSame(pcType, r.getIpsObject());
-        assertEquals(1, pcType.getNumOfAssociations());
+        assertSame(policyCmptType, r.getIpsObject());
+        assertEquals(1, policyCmptType.getNumOfAssociations());
         assertTrue(sourceFile.isDirty());
         assertEquals(sourceFile, lastEvent.getIpsSrcFile());
         
-        IPolicyCmptTypeAssociation r2 = pcType.newPolicyCmptTypeAssociation();
+        IPolicyCmptTypeAssociation r2 = policyCmptType.newPolicyCmptTypeAssociation();
         assertEquals(1, r2.getId());    
     }
 
     public void testGetRelations() {
-        assertEquals(0, pcType.getPolicyCmptTypeAssociations().length);
-        IPolicyCmptTypeAssociation r1 = pcType.newPolicyCmptTypeAssociation();
-        IPolicyCmptTypeAssociation r2 = pcType.newPolicyCmptTypeAssociation();
-        assertSame(r1, pcType.getPolicyCmptTypeAssociations()[0]);
-        assertSame(r2, pcType.getPolicyCmptTypeAssociations()[1]);
+        assertEquals(0, policyCmptType.getPolicyCmptTypeAssociations().length);
+        IPolicyCmptTypeAssociation r1 = policyCmptType.newPolicyCmptTypeAssociation();
+        IPolicyCmptTypeAssociation r2 = policyCmptType.newPolicyCmptTypeAssociation();
+        assertSame(r1, policyCmptType.getPolicyCmptTypeAssociations()[0]);
+        assertSame(r2, policyCmptType.getPolicyCmptTypeAssociations()[1]);
         
         // make sure a defensive copy is returned.
-        pcType.getPolicyCmptTypeAssociations()[0] = null;
-        assertNotNull(pcType.getPolicyCmptTypeAssociations()[0]);
+        policyCmptType.getPolicyCmptTypeAssociations()[0] = null;
+        assertNotNull(policyCmptType.getPolicyCmptTypeAssociations()[0]);
     }
     
     public void testGetRelation() {
-        assertNull(pcType.getRelation("unkown"));
-        IPolicyCmptTypeAssociation r1 = pcType.newPolicyCmptTypeAssociation();
+        assertNull(policyCmptType.getRelation("unkown"));
+        IPolicyCmptTypeAssociation r1 = policyCmptType.newPolicyCmptTypeAssociation();
         r1.setTargetRoleSingular("r1");
-        IPolicyCmptTypeAssociation r2 = pcType.newPolicyCmptTypeAssociation();
+        IPolicyCmptTypeAssociation r2 = policyCmptType.newPolicyCmptTypeAssociation();
         r2.setTargetRoleSingular("r2");
-        IPolicyCmptTypeAssociation r3 = pcType.newPolicyCmptTypeAssociation();
+        IPolicyCmptTypeAssociation r3 = policyCmptType.newPolicyCmptTypeAssociation();
         r3.setTargetRoleSingular("r2");
-        assertEquals(r2, pcType.getRelation("r2"));
+        assertEquals(r2, policyCmptType.getRelation("r2"));
     }
     
     public void testDependsOn() throws Exception {
@@ -435,6 +451,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         row.setValue(1, "female");
         
         IPolicyCmptType a = newPolicyCmptType(root, "A");
+        a.setConfigurableByProductCmptType(false);
         PolicyCmptTypeAttribute aAttr = (PolicyCmptTypeAttribute)a.newPolicyCmptTypeAttribute();
         aAttr.setAttributeType(AttributeType.CHANGEABLE);
         aAttr.setDatatype("TestGender");
@@ -490,68 +507,68 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
     
     public void testGetPdObjectType() {
-        assertEquals(IpsObjectType.POLICY_CMPT_TYPE, pcType.getIpsObjectType());
+        assertEquals(IpsObjectType.POLICY_CMPT_TYPE, policyCmptType.getIpsObjectType());
     }
 
     public void testInitFromXml() {
         Element element = getTestDocument().getDocumentElement();
-        pcType.setConfigurableByProductCmptType(false);
-        pcType.initFromXml(element);
-        assertTrue(pcType.isConfigurableByProductCmptType());
-        assertEquals("Product", pcType.getProductCmptType());
-        assertEquals("SuperType", pcType.getSupertype());
-        assertTrue(pcType.isAbstract());
-        assertEquals("blabla", pcType.getDescription());
+        policyCmptType.setConfigurableByProductCmptType(false);
+        policyCmptType.initFromXml(element);
+        assertTrue(policyCmptType.isConfigurableByProductCmptType());
+        assertEquals("Product", policyCmptType.getProductCmptType());
+        assertEquals("SuperType", policyCmptType.getSupertype());
+        assertTrue(policyCmptType.isAbstract());
+        assertEquals("blabla", policyCmptType.getDescription());
         
-        IPolicyCmptTypeAttribute[] a = pcType.getPolicyCmptTypeAttributes();
+        IPolicyCmptTypeAttribute[] a = policyCmptType.getPolicyCmptTypeAttributes();
         assertEquals(1, a.length);
         
-        IMethod[] m = pcType.getMethods();
+        IMethod[] m = policyCmptType.getMethods();
         assertEquals(1, m.length);
         
-        IValidationRule[] rules = pcType.getRules();
+        IValidationRule[] rules = policyCmptType.getRules();
         assertEquals(1, rules.length);
         
-        IPolicyCmptTypeAssociation[] r = pcType.getPolicyCmptTypeAssociations();
+        IPolicyCmptTypeAssociation[] r = policyCmptType.getPolicyCmptTypeAssociations();
         assertEquals(1, r.length);
         
-        pcType.initFromXml(element);
-        assertEquals(1, pcType.getNumOfAttributes());
-        assertEquals(1, pcType.getNumOfMethods());
-        assertEquals(1, pcType.getNumOfAssociations());
-        assertEquals(1, pcType.getNumOfRules());
+        policyCmptType.initFromXml(element);
+        assertEquals(1, policyCmptType.getNumOfAttributes());
+        assertEquals(1, policyCmptType.getNumOfMethods());
+        assertEquals(1, policyCmptType.getNumOfAssociations());
+        assertEquals(1, policyCmptType.getNumOfRules());
         
         // test if the object references have remained the same
-        assertSame(a[0], pcType.getPolicyCmptTypeAttributes()[0]);
-        assertSame(r[0], pcType.getPolicyCmptTypeAssociations()[0]);
-        assertSame(m[0], pcType.getMethods()[0]);
-        assertSame(rules[0], pcType.getRules()[0]);
+        assertSame(a[0], policyCmptType.getPolicyCmptTypeAttributes()[0]);
+        assertSame(r[0], policyCmptType.getPolicyCmptTypeAssociations()[0]);
+        assertSame(m[0], policyCmptType.getMethods()[0]);
+        assertSame(rules[0], policyCmptType.getRules()[0]);
     }
     
     public void testToXml() throws CoreException {
-    	pcType.setConfigurableByProductCmptType(true);
-    	pcType.setProductCmptType("Product");
-        pcType.setDescription("blabla");
-        pcType.setAbstract(true);
-        pcType.setSupertype("NewSuperType");
-        IPolicyCmptTypeAttribute a1 = pcType.newPolicyCmptTypeAttribute();
+    	policyCmptType.setConfigurableByProductCmptType(true);
+    	policyCmptType.setProductCmptType("Product");
+        policyCmptType.setDescription("blabla");
+        policyCmptType.setAbstract(true);
+        policyCmptType.setSupertype("NewSuperType");
+        IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
         a1.setName("a1");
-        IPolicyCmptTypeAttribute a2 = pcType.newPolicyCmptTypeAttribute();
+        IPolicyCmptTypeAttribute a2 = policyCmptType.newPolicyCmptTypeAttribute();
         a2.setName("a2");
-        IMethod m1 = pcType.newMethod();
+        IMethod m1 = policyCmptType.newMethod();
         m1.setName("m1");
-        IMethod m2 = pcType.newMethod();
+        IMethod m2 = policyCmptType.newMethod();
         m2.setName("m2");
-        IValidationRule rule1 = pcType.newRule();
+        IValidationRule rule1 = policyCmptType.newRule();
         rule1.setName("rule1");
-        IValidationRule rule2 = pcType.newRule();
+        IValidationRule rule2 = policyCmptType.newRule();
         rule2.setName("rule2");
-        IPolicyCmptTypeAssociation r1 = pcType.newPolicyCmptTypeAssociation();
+        IPolicyCmptTypeAssociation r1 = policyCmptType.newPolicyCmptTypeAssociation();
         r1.setTarget("t1");
-        IPolicyCmptTypeAssociation r2 = pcType.newPolicyCmptTypeAssociation();
+        IPolicyCmptTypeAssociation r2 = policyCmptType.newPolicyCmptTypeAssociation();
         r2.setTarget("t2");
         
-        Element element = pcType.toXml(this.newDocument());
+        Element element = policyCmptType.toXml(this.newDocument());
         
         PolicyCmptType copy = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
         copy.setConfigurableByProductCmptType(false);
@@ -577,39 +594,39 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
     
     public void testGetSupertypeHierarchy() throws CoreException {
-        ITypeHierarchy hierarchy = pcType.getSupertypeHierarchy();
+        ITypeHierarchy hierarchy = policyCmptType.getSupertypeHierarchy();
         assertNotNull(hierarchy);
     }
     
     public void testGetSubtypeHierarchy() throws CoreException {
-        ITypeHierarchy hierarchy = pcType.getSubtypeHierarchy();
+        ITypeHierarchy hierarchy = policyCmptType.getSubtypeHierarchy();
         assertNotNull(hierarchy);
     }
         
     public void testValidate_MustOverrideAbstractMethod() throws CoreException {
-        int numOfMsg = pcType.validate().getNoOfMessages();
+        int numOfMsg = policyCmptType.validate().getNoOfMessages();
         
         // a supertype with a method and connect the pctype to it
         IPolicyCmptType superType = this.newPolicyCmptType(root, "Supertype");
         superType.setAbstract(true);
-        pcType.setSupertype(superType.getQualifiedName());
+        policyCmptType.setSupertype(superType.getQualifiedName());
         IMethod superMethod = superType.newMethod();
         superMethod.setName("calc");
 
         // method is not abstract so no error message should be returned.
-        MessageList list = pcType.validate();
+        MessageList list = policyCmptType.validate();
         assertEquals(numOfMsg, list.getNoOfMessages());
 
         // set method to abstract, now the error should be reported
         superMethod.setAbstract(true);
-        list = pcType.validate();
+        list = policyCmptType.validate();
         assertTrue(list.getNoOfMessages() > numOfMsg);
         Message msg = list.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD);
-        assertEquals(pcType, msg.getInvalidObjectProperties()[0].getObject());
+        assertEquals(policyCmptType, msg.getInvalidObjectProperties()[0].getObject());
 
         // "implement" the method in pcType => error should no be reported anymore
-        pcType.overrideMethods(new IMethod[]{superMethod});
-        list = pcType.validate();
+        policyCmptType.overrideMethods(new IMethod[]{superMethod});
+        list = policyCmptType.validate();
         assertEquals(numOfMsg, list.getNoOfMessages());
         
         // create another level in the supertype hierarchy with an abstract method on the new supersupertype.
@@ -620,20 +637,20 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         IMethod supersuperMethod = supersuperType.newMethod();
         supersuperMethod.setName("calc2");
         supersuperMethod.setAbstract(true);
-        list = pcType.validate();
+        list = policyCmptType.validate();
         assertTrue(list.getNoOfMessages()>numOfMsg);
         msg = list.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD);
-        assertEquals(pcType, msg.getInvalidObjectProperties()[0].getObject());
+        assertEquals(policyCmptType, msg.getInvalidObjectProperties()[0].getObject());
         
         // "implement" the method in the supertype => error should no be reported anymore
         superType.overrideMethods(new IMethod[]{supersuperMethod});
-        list = pcType.validate();
+        list = policyCmptType.validate();
         assertEquals(numOfMsg, list.getNoOfMessages());
         
     }
     
     public void testSetProductCmptType() throws CoreException {
-        super.testPropertyAccessReadWrite(IPolicyCmptType.class, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE, pcType, "NewProduct");
+        super.testPropertyAccessReadWrite(IPolicyCmptType.class, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE, policyCmptType, "NewProduct");
     }
     
     /** 
@@ -644,13 +661,13 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
 
     public void testNewPart() {
-		assertTrue(pcType.newPart(IPolicyCmptTypeAttribute.class) instanceof IPolicyCmptTypeAttribute);
-		assertTrue(pcType.newPart(IMethod.class) instanceof IMethod);
-		assertTrue(pcType.newPart(IPolicyCmptTypeAssociation.class) instanceof IPolicyCmptTypeAssociation);
-		assertTrue(pcType.newPart(IValidationRule.class) instanceof IValidationRule);
+		assertTrue(policyCmptType.newPart(IPolicyCmptTypeAttribute.class) instanceof IPolicyCmptTypeAttribute);
+		assertTrue(policyCmptType.newPart(IMethod.class) instanceof IMethod);
+		assertTrue(policyCmptType.newPart(IPolicyCmptTypeAssociation.class) instanceof IPolicyCmptTypeAssociation);
+		assertTrue(policyCmptType.newPart(IValidationRule.class) instanceof IValidationRule);
     		
         try {
-    		pcType.newPart(Object.class);
+    		policyCmptType.newPart(Object.class);
 			fail();
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)
@@ -658,16 +675,16 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
     
     public void testIsAggregateRoot() throws CoreException {
-    	assertTrue(pcType.isAggregateRoot());
+    	assertTrue(policyCmptType.isAggregateRoot());
     	
-    	pcType.newPolicyCmptTypeAssociation().setRelationType(RelationType.ASSOCIATION);
-    	assertTrue(pcType.isAggregateRoot());
+    	policyCmptType.newPolicyCmptTypeAssociation().setRelationType(RelationType.ASSOCIATION);
+    	assertTrue(policyCmptType.isAggregateRoot());
 
-    	pcType.newPolicyCmptTypeAssociation().setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
-    	assertTrue(pcType.isAggregateRoot());
+    	policyCmptType.newPolicyCmptTypeAssociation().setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+    	assertTrue(policyCmptType.isAggregateRoot());
     	
-    	pcType.newPolicyCmptTypeAssociation().setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
-    	assertFalse(pcType.isAggregateRoot());
+    	policyCmptType.newPolicyCmptTypeAssociation().setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
+    	assertFalse(policyCmptType.isAggregateRoot());
     	
     	// create a supertype
     	IPolicyCmptType subtype = newPolicyCmptType(ipsProject, "Subtype");
@@ -688,20 +705,20 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
     
     public void testValidate_ProductCmptTypeNameMissing() throws Exception {
-    	MessageList ml = pcType.validate();
+    	MessageList ml = policyCmptType.validate();
     	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING));
-    	pcType.setConfigurableByProductCmptType(true);
-    	pcType.setProductCmptType("");
-    	ml = pcType.validate();
+    	policyCmptType.setConfigurableByProductCmptType(true);
+    	policyCmptType.setProductCmptType("");
+    	ml = policyCmptType.validate();
     	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING));
     }
 
     public void testValidate_AbstractMissing() throws Exception {
-    	MessageList ml = pcType.validate();
+    	MessageList ml = policyCmptType.validate();
     	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_ABSTRACT_MISSING));
-    	pcType.newMethod().setAbstract(true);
-    	pcType.setAbstract(false);
-    	ml = pcType.validate();
+    	policyCmptType.newMethod().setAbstract(true);
+    	policyCmptType.setAbstract(false);
+    	ml = policyCmptType.validate();
     	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_ABSTRACT_MISSING));
     }
 
@@ -730,45 +747,45 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     public void testValidateMustImplementContainerRelation() throws Exception {
         IPolicyCmptType target = newPolicyCmptType(ipsProject, "TargetType");
         
-        MessageList ml = pcType.validate();
+        MessageList ml = policyCmptType.validate();
         assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
         
-        IPolicyCmptTypeAssociation container = pcType.newPolicyCmptTypeAssociation();
+        IPolicyCmptTypeAssociation container = policyCmptType.newPolicyCmptTypeAssociation();
         container.setDerivedUnion(true);
         container.setTargetRoleSingular("Target");
         container.setTarget(target.getQualifiedName());
         
-        ml = pcType.validate();
+        ml = policyCmptType.validate();
         assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
         
         // test if the rule is not executed when disabled
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setContainerRelationIsImplementedRuleEnabled(false);
         ipsProject.setProperties(props);
-        ml = pcType.validate();
+        ml = policyCmptType.validate();
         assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
         props.setContainerRelationIsImplementedRuleEnabled(true);
         ipsProject.setProperties(props);
 
         // type is valid, if it is abstract
-        pcType.setAbstract(true);
-        ml = pcType.validate();
+        policyCmptType.setAbstract(true);
+        ml = policyCmptType.validate();
         assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
-        pcType.setAbstract(false);
+        policyCmptType.setAbstract(false);
         
         // implement the container relation in the same type
-        IPolicyCmptTypeAssociation relation = pcType.newPolicyCmptTypeAssociation();
+        IPolicyCmptTypeAssociation relation = policyCmptType.newPolicyCmptTypeAssociation();
         relation.setDerivedUnion(false);
         relation.setSubsettedDerivedUnion(container.getName());
         relation.setTarget(target.getQualifiedName());
         
-        ml = pcType.validate();
+        ml = policyCmptType.validate();
         assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
         
         // delete the relation, now same thing for a subtype
         relation.delete();
         IPolicyCmptType subtype = newPolicyCmptType(ipsProject, "Subtype");
-        subtype.setSupertype(pcType.getQualifiedName());
+        subtype.setSupertype(policyCmptType.getQualifiedName());
         ml = subtype.validate();
         assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
         
@@ -804,19 +821,19 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     
     public void testSupertypeNotProductRelevantIfTheTypeIsProductRelevant() throws Exception{
         IPolicyCmptType superPcType = newPolicyCmptType(ipsProject, "Super");
-        pcType.setSupertype(superPcType.getQualifiedName());
+        policyCmptType.setSupertype(superPcType.getQualifiedName());
         
         superPcType.setConfigurableByProductCmptType(false);
-        pcType.setConfigurableByProductCmptType(true);
+        policyCmptType.setConfigurableByProductCmptType(true);
         
         MessageList ml = superPcType.validate();
         assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
         
-        ml = pcType.validate();
+        ml = policyCmptType.validate();
         assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
         
         superPcType.setConfigurableByProductCmptType(true);
-        ml = pcType.validate();
+        ml = policyCmptType.validate();
         assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
     }
         

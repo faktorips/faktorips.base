@@ -93,6 +93,12 @@ public interface IPolicyCmptType extends IType, Datatype {
     	MSGCODE_PREFIX + "ProductCmptTypeNameMissmatch"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that a policy component type defined a product component type as configuring it,
+     * but the referenced product component type configures another policy component type or none at all. 
+     */
+    public final static String MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE = MSGCODE_PREFIX + "ProductCmptTypeDoesNotConfigureThisType"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that at least one abstract method is not implemented, but this
      * policy component type is not marked as abstract.
      */

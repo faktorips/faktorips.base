@@ -382,7 +382,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         super.validateThis(list);
         IIpsProject ipsProject = getIpsProject();
 
-        validateProductSide(list);
+        validateProductSide(list, ipsProject);
 
         if (!isAbstract()) {
             validateIfAllAbstractMethodsAreImplemented(getIpsProject(), list);
@@ -402,7 +402,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
     }
 
-    private void validateProductSide(MessageList list) throws CoreException {
+    private void validateProductSide(MessageList list, IIpsProject ipsProject) throws CoreException {
         if (!isConfigurableByProductCmptType()) {
             return;
         }
@@ -412,10 +412,14 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                     IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
         }
         else {
-            if (!ValidationUtils.checkIpsObjectReference(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE_V2,
+            IProductCmptType productCmptTypeObj = (IProductCmptType)ValidationUtils.checkIpsObjectReference2(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE_V2,
                     "Product component type", this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
-                    IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NOT_FOUND, list)) {
-                return;
+                    IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NOT_FOUND, list, ipsProject);
+            if (productCmptTypeObj!=null) {
+                if (productCmptTypeObj.findPolicyCmptType(ipsProject)!=this) {
+                    String text = NLS.bind("''{0}'' does not configure this type.", productCmptType);
+                    list.add(new Message(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE, text, Message.ERROR, this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
+                }
             }
         }
         IPolicyCmptType superPolicyCmptType = findSupertype();

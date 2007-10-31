@@ -25,8 +25,11 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.message.Message;
@@ -83,6 +86,46 @@ public class ValidationUtils {
         return true;
     }
     
+    /**
+     * Tests if the given qualified name identifies a policy component type.
+     * If not, it adds an error message to the given message list.
+     * 
+     * @param objectName the qualified type name to check.
+     * @param mandatory Is the reference mandatory. If yes, it is checked that
+     * the reference is not an empty string. Otherwise an empty reference is valid.
+     * 
+     * @param objectName The (qualified) name of the object to check.
+     * @param type The type the object to check is of.
+     * @param propertyDisplayName The name used to display the value to the user.
+     * @param part The part the checked reference belongs to (used if a message has to be created).
+     * @param propertyName The (technical) name of the property used if a message has to be created.
+     * @param msgCode The message code to use if a message has to be created.
+     * @param list The list of messages to add a new one.
+     * 
+     * @return true if the reference is valid, otherwise false.
+     */
+    public final static IIpsObject checkIpsObjectReference2(
+            String objectName,
+            IpsObjectType type,
+            String propertyDisplayName,
+            IIpsObjectPartContainer part,
+            String propertyName,
+            String msgCode,
+            MessageList list,
+            IIpsProject ipsProject) throws CoreException {
+        
+        if (!checkStringPropertyNotEmpty(objectName, propertyDisplayName,part, propertyName, msgCode, list)) {
+            return null;
+        }
+        IIpsSrcFile srcFile = ipsProject.findIpsSrcFile(type, objectName);
+        if (srcFile==null) {
+            String text = NLS.bind(Messages.ValidationUtils_msgObjectDoesNotExist, StringUtils.capitalise(propertyDisplayName), objectName);
+            list.add(new Message(msgCode, text, Message.ERROR, part, propertyName));
+            return null;
+        }
+        return srcFile.getIpsObject();
+    }
+
     /**
      * Checks if the given name identifies a datatype.
      * If not, it adds an error message to the given message list.
