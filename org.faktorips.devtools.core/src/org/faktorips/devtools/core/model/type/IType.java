@@ -29,13 +29,13 @@ import org.faktorips.devtools.core.model.IIpsProject;
  */
 public interface IType extends IIpsObject, Datatype {
 
-    public final static String PROPERTY_SUPERTYPE = "supertype";
-    public final static String PROPERTY_ABSTRACT= "abstract";
+    public final static String PROPERTY_SUPERTYPE = "supertype"; //$NON-NLS-1$
+    public final static String PROPERTY_ABSTRACT= "abstract"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "Type-";
+    public final static String MSGCODE_PREFIX = "Type-"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the supertype hierarchy contains a cycle.

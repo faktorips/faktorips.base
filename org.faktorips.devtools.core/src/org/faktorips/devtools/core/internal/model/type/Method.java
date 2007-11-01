@@ -49,7 +49,7 @@ import org.w3c.dom.Element;
  */
 public class Method extends BaseIpsObjectPart implements IMethod {
 
-    public final static String XML_ELEMENT_NAME = "Method";
+    public final static String XML_ELEMENT_NAME = "Method"; //$NON-NLS-1$
     
     private String datatype = "void"; //$NON-NLS-1$
     private Modifier modifier = Modifier.PUBLISHED;
@@ -230,7 +230,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         IParameter[] params = getParameters();
         for (int i = 0; i < params.length; i++) {
             if (i>0) {
-                buffer.append(", ");
+                buffer.append(", "); //$NON-NLS-1$
             }
             buffer.append(params[i].getDatatype());
         }
@@ -292,7 +292,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
                 result.add(new Message("", Messages.Method_msg_InvalidMethodname, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
             }
         }
-        ValidationUtils.checkDatatypeReference(datatype, true, this, PROPERTY_DATATYPE, "", result, ipsProject);
+        ValidationUtils.checkDatatypeReference(datatype, true, this, PROPERTY_DATATYPE, "", result, ipsProject); //$NON-NLS-1$
         if (isAbstract() && !getType().isAbstract()) {
             result.add(new Message("", NLS.bind(Messages.Method_msg_abstractMethodError, getName()), Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
         }
@@ -301,7 +301,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         buffer.append(getType().getQualifiedName());
-        buffer.append(": ");
+        buffer.append(": "); //$NON-NLS-1$
         buffer.append(datatype);
         buffer.append(' ');
         buffer.append(getName());
@@ -309,7 +309,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         IParameter[] params = getParameters();
         for (int i = 0; i < params.length; i++) {
             if (i>0) {
-                buffer.append(", ");
+                buffer.append(", "); //$NON-NLS-1$
             }
             buffer.append(params[i].getDatatype());
             buffer.append(' ');

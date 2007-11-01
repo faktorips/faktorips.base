@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
  */
 public abstract class Type extends BaseIpsObject implements IType {
 
-    private String supertype = "";
+    private String supertype = ""; //$NON-NLS-1$
 
     private boolean abstractFlag;
     
@@ -429,7 +429,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_SUPERTYPE, supertype);
-        element.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag);
+        element.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag); //$NON-NLS-1$
     }
     
     /**
@@ -463,13 +463,13 @@ public abstract class Type extends BaseIpsObject implements IType {
     private void validateSupertype(MessageList list, IIpsProject ipsProject) throws CoreException {
         IType supertypeObj = findSupertype(ipsProject);
         if (supertypeObj==null) {
-            String text = "The supertype " + supertype + " can't be found";
+            String text = NLS.bind(Messages.Type_msg_supertypeNotFound, supertype);
             list.add(new Message(MSGCODE_SUPERTYPE_NOT_FOUND, text, Message.ERROR, this, IType.PROPERTY_SUPERTYPE));
         } else {
             SupertypesCollector collector = new SupertypesCollector(ipsProject);
             collector.start(supertypeObj);
             if (collector.cycleDetected()) {
-                String msg = "Cycle detected in type hierarchy.";
+                String msg = Messages.Type_msg_cycleInTypeHierarchy;
                 list.add(new Message(MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg.toString(), Message.ERROR, this, IType.PROPERTY_SUPERTYPE));
             } else {
                 for (Iterator it=collector.supertypes.iterator(); it.hasNext(); ) {
@@ -477,7 +477,7 @@ public abstract class Type extends BaseIpsObject implements IType {
                     MessageList superResult = supertype.validate();
                     if (!superResult.isEmpty()) {
                         if (superResult.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND)!=null) {
-                            String text = "The type's hierarchy is inconsistent.";
+                            String text = Messages.Type_msg_TypeHierarchyInconsistent;
                             list.add(new Message(MSGCODE_INCONSISTENT_TYPE_HIERARCHY, text, Message.ERROR, this, PROPERTY_SUPERTYPE));
                             return;
                         }

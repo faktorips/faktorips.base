@@ -48,13 +48,13 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
 
     final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
 
-    private String datatype = "";
+    private String datatype = ""; //$NON-NLS-1$
     private Modifier modifier = Modifier.PUBLISHED;
     private String defaultValue = null;
     
     public Attribute(IIpsObject parent, int id) {
         super(parent, id);
-        name = "";
+        name = ""; //$NON-NLS-1$
     }
 
     /**
