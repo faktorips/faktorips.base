@@ -20,9 +20,8 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
-import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -88,6 +87,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         association = productType.newProductCmptTypeAssociation();
         association.initFromXml(el);
         
+        assertEquals(AssociationType.AGGREGATION, association.getAssociationType());
         assertEquals("pack1.CoverageType", association.getTarget());
         assertEquals("CoverageType", association.getTargetRoleSingular());
         assertEquals("CoverageTypes", association.getTargetRolePlural());
@@ -95,7 +95,6 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertEquals(4, association.getMaxCardinality());
         assertTrue(association.isDerivedUnion());
         assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
-        assertEquals(AggregationKind.SHARED, association.getAggregationKind());
     }
 
     /**
@@ -105,7 +104,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         Element docEl = getTestDocument().getDocumentElement();
         Element el = XmlUtil.getElement(docEl, 0);
         association.initFromXml(el);
-        assertEquals(AggregationKind.SHARED, association.getAggregationKind());
+        assertEquals(AssociationType.AGGREGATION, association.getAssociationType());
         assertEquals("pack1.CoverageType", association.getTarget());
         assertEquals("CoverageType", association.getTargetRoleSingular());
         assertEquals("CoverageTypes", association.getTargetRolePlural());

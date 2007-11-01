@@ -6,7 +6,7 @@
 <testcases>
 
 	<Association id="42"
-          associationType="ass" 
+          associationType="aggr" 
           target="pack1.CoverageType" 
           targetRoleSingular="CoverageType" 
           targetRolePlural="CoverageTypes" 

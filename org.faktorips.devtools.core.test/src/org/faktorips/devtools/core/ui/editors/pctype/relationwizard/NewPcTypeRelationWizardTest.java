@@ -33,14 +33,10 @@ public class NewPcTypeRelationWizardTest  extends AbstractIpsPluginTest {
         project = newIpsProject("TestProject");
     }
 
-    public void testGetCorrespondingRelationType() throws Exception {
+    public void testGetCorrespondingAssociationType() throws Exception {
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
         IPolicyCmptTypeAssociation relation = policyCmptType.newPolicyCmptTypeAssociation();
         relation.setTargetRoleSingular("relation");
-        
-        // no relation type specified
-        relation.setAssociationType(null);
-        assertNull(NewPcTypeRelationWizard.getCorrespondingRelationType(relation.getAssociationType()));
         
         // ASSOZIATION => ASSOZIATION
         relation.setAssociationType(AssociationType.ASSOCIATION);

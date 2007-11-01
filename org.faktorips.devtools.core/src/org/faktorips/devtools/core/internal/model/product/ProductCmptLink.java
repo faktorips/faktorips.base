@@ -260,7 +260,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements
 	 */
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
-		association = element.getAttribute("pcTypeRelation");
+		association = element.getAttribute(PROPERTY_ASSOCIATION);
 		target = element.getAttribute(PROPERTY_TARGET);
 		try {
 			minCardinality = Integer.parseInt(element.getAttribute(PROPERTY_MIN_CARDINALITY));
@@ -284,7 +284,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements
 	 */
 	protected void propertiesToXml(Element element) {
 		super.propertiesToXml(element);
-		element.setAttribute("pcTypeRelation", association);
+		element.setAttribute(PROPERTY_ASSOCIATION, association);
 		element.setAttribute(PROPERTY_TARGET, target);
 		element.setAttribute(PROPERTY_MIN_CARDINALITY, "" + minCardinality); //$NON-NLS-1$
 

@@ -4,7 +4,7 @@
  Test data for ProductCmptLink.java
 -->
 <root>
-<Relation id="42" pcTypeRelation="FullCoverage" target="FullCoveragePlus" minCardinality="2" maxCardinality="3">
+<Relation id="42" association="FullCoverage" target="FullCoveragePlus" minCardinality="2" maxCardinality="3">
 </Relation>
-<Relation id="43" pcTypeRelation="FullCoverage" target="FullCoveragePlus" minCardinality="1" maxCardinality="*"/>
+<Relation id="43" association="FullCoverage" target="FullCoveragePlus" minCardinality="1" maxCardinality="*"/>
 </root>

@@ -6,9 +6,6 @@ Umbenennen von ProductCmptType in ConfigurationType, ProductCmpt in Configuratio
 
 ToDos
 =====
-Aggregation Kind / RelationType
-=> AggregationKind wieder rausschmeissen. 
-
 Adapter IPolicyCmptTypeAssociation to IRelation
 
 

@@ -37,11 +37,11 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -49,7 +49,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.util.CollectionUtil;
@@ -62,7 +61,6 @@ import org.w3c.dom.Element;
  */
 public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements ContentsChangeListener {
     
-    private IIpsPackageFragmentRoot root;
     private IIpsPackageFragment pack;
     private IIpsSrcFile sourceFile;
     private PolicyCmptType policyCmptType;
@@ -71,14 +69,28 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     
     protected void setUp() throws Exception {
         super.setUp();
-        ipsProject = this.newIpsProject("TestProject");
-        root = ipsProject.getIpsPackageFragmentRoots()[0];
-        pack = root.createPackageFragment("products.folder", true, null);
-        sourceFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
-        policyCmptType = (PolicyCmptType)sourceFile.getIpsObject();
+        ipsProject = this.newIpsProject();
+        policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TestPolicy");
         policyCmptType.setConfigurableByProductCmptType(false);
+        sourceFile = policyCmptType.getIpsSrcFile();
+        pack=policyCmptType.getIpsPackageFragment();
     }
     
+    public void testGetChildren() {
+        IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
+        IMethod m1 = policyCmptType.newMethod();
+        IPolicyCmptTypeAssociation r1 = policyCmptType.newPolicyCmptTypeAssociation();
+        IValidationRule rule1 = policyCmptType.newRule();
+        policyCmptType.setConfigurableByProductCmptType(true);
+        
+        IIpsElement[] elements = policyCmptType.getChildren();
+        assertEquals(4, elements.length);
+        assertEquals(a1, elements[0]);
+        assertEquals(r1, elements[1]);
+        assertEquals(m1, elements[2]);
+        assertEquals(rule1, elements[3]);
+    }
+
     public void testValidateProductCmptTypeDoesNotConfigureThisType() throws CoreException {
         IPolicyCmptType polType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IProductCmptType productType = polType.findProductCmptType(ipsProject);
@@ -253,21 +265,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         
     }
     
-    public void testGetChildren() {
-        IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
-        IMethod m1 = policyCmptType.newMethod();
-        IPolicyCmptTypeAssociation r1 = policyCmptType.newPolicyCmptTypeAssociation();
-        IValidationRule rule1 = policyCmptType.newRule();
-        policyCmptType.setConfigurableByProductCmptType(true);
-        
-        IIpsElement[] elements = policyCmptType.getChildren();
-        assertEquals(4, elements.length);
-        assertEquals(a1, elements[0]);
-        assertEquals(m1, elements[1]);
-        assertEquals(r1, elements[2]);
-        assertEquals(rule1, elements[3]);
-    }
-
     public void testNewAttribute() {
         sourceFile.getIpsModel().addChangeListener(this);
         IPolicyCmptTypeAttribute a = policyCmptType.newPolicyCmptTypeAttribute();
@@ -398,9 +395,9 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
     
     public void testDependsOn() throws Exception {
-        IPolicyCmptType a = newPolicyCmptType(root, "A");
-        IPolicyCmptType b = newPolicyCmptType(root, "B");
-        IPolicyCmptType c = newPolicyCmptType(root, "C");
+        IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
+        IPolicyCmptType b = newPolicyCmptType(ipsProject, "B");
+        IPolicyCmptType c = newPolicyCmptType(ipsProject, "C");
         c.setSupertype(a.getQualifiedName());
         c.newPolicyCmptTypeAssociation().setTarget(b.getQualifiedName());
         List dependencyList = CollectionUtil.toArrayList(c.dependsOn());
@@ -425,7 +422,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     
     public void testDependsOnTableBasedEnums() throws Exception{
         
-        TableStructure structure = (TableStructure)newIpsObject(root, IpsObjectType.TABLE_STRUCTURE, "TestEnumType");
+        TableStructure structure = (TableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, "TestEnumType");
         structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
         Column idColumn = (Column)structure.newColumn();
         idColumn.setDatatype(Datatype.STRING.getQualifiedName());
@@ -437,7 +434,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         uniqueKey.addKeyItem("id");
         uniqueKey.addKeyItem("name");
         
-        TableContents contents = (TableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "TestGender");
+        TableContents contents = (TableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "TestGender");
         contents.setTableStructure(structure.getQualifiedName());
         contents.newColumn("1");
         contents.newColumn("male");
@@ -449,7 +446,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         row.setValue(0, "2");
         row.setValue(1, "female");
         
-        IPolicyCmptType a = newPolicyCmptType(root, "A");
+        IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
         a.setConfigurableByProductCmptType(false);
         PolicyCmptTypeAttribute aAttr = (PolicyCmptTypeAttribute)a.newPolicyCmptTypeAttribute();
         aAttr.setAttributeType(AttributeType.CHANGEABLE);
@@ -473,10 +470,10 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
     
     public void testDependsOnComposition() throws Exception {
-        IPolicyCmptType a = newPolicyCmptType(root, "AggregateRoot");
-        IPolicyCmptType d1 = newPolicyCmptType(root, "Detail1");
-        IPolicyCmptType d2 = newPolicyCmptType(root, "Detail2");
-        IPolicyCmptType s2 = newPolicyCmptType(root, "SupertypeOfDetail2");
+        IPolicyCmptType a = newPolicyCmptType(ipsProject, "AggregateRoot");
+        IPolicyCmptType d1 = newPolicyCmptType(ipsProject, "Detail1");
+        IPolicyCmptType d2 = newPolicyCmptType(ipsProject, "Detail2");
+        IPolicyCmptType s2 = newPolicyCmptType(ipsProject, "SupertypeOfDetail2");
        
         IPolicyCmptTypeAssociation rel = a.newPolicyCmptTypeAssociation();
         rel.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
