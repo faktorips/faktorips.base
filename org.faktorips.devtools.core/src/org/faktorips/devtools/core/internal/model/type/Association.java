@@ -28,10 +28,13 @@ import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.pctype.Messages;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
+import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -46,6 +49,7 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
 
     final static String TAG_NAME = "Association"; //$NON-NLS-1$
 
+    protected AssociationType type = IAssociation.DEFAULT_RELATION_TYPE;
     protected String target = ""; //$NON-NLS-1$
     protected String targetRoleSingular = ""; //$NON-NLS-1$
     protected String targetRolePlural = ""; //$NON-NLS-1$
@@ -63,6 +67,37 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
      */
     public IType getType() {
         return (IType)getParent();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public AggregationKind getAggregationKind() {
+        return getAssociationType().getAggregationKind();
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public AssociationType getAssociationType() {
+        return type;
+    }
+    
+    /** 
+     * {@inheritDoc}
+     */
+    public void setAssociationType(AssociationType newType) {
+        ArgumentCheck.notNull(newType);
+        AssociationType oldType = type;
+        type = newType;
+        valueChanged(oldType, newType);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isAssoziation() {
+        return type.isAssoziation();
     }
 
     /**
@@ -283,6 +318,10 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
+        type = AssociationType.getRelationType(element.getAttribute(PROPERTY_ASSOCIATION_TYPE));
+        if (type==null) {
+            type = IAssociation.DEFAULT_RELATION_TYPE;
+        }
         target = element.getAttribute(PROPERTY_TARGET);
         targetRoleSingular = element.getAttribute(PROPERTY_TARGET_ROLE_SINGULAR);
         targetRolePlural = element.getAttribute(PROPERTY_TARGET_ROLE_PLURAL);
@@ -310,6 +349,7 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
      */
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
+        newElement.setAttribute(PROPERTY_ASSOCIATION_TYPE, type.getId());
         newElement.setAttribute(PROPERTY_TARGET, target);
         newElement.setAttribute(PROPERTY_TARGET_ROLE_SINGULAR, targetRoleSingular);
         newElement.setAttribute(PROPERTY_TARGET_ROLE_PLURAL, targetRolePlural);

@@ -159,21 +159,25 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
      */
     protected void validateThis(MessageList result) throws CoreException {
         super.validateThis(result);
+        if (!isFormulaSignatureDefinition()) {
+            return;
+        }
         IIpsProject ipsProject = getIpsProject();
-        if (formulaSignatureDefinition) {
-            if (StringUtils.isEmpty(formulaName)) {
-                String text = "The formula name is empty!";
-                result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY, text, Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
-            }
-            Datatype datatype = findDatatype(ipsProject);
-            if (datatype!=null) {
-                if (datatype.isVoid() || !datatype.isValueDatatype()) {
-                    String text = "Formula signature return type must be a value datatype!";
-                    result.add(new Message(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES, text, Message.ERROR, this, IMethod.PROPERTY_DATATYPE));
-                }
+        if (StringUtils.isEmpty(formulaName)) {
+            String text = "The formula name is empty!";
+            result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY, text, Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
+        }
+        Datatype datatype = findDatatype(ipsProject);
+        if (datatype!=null) {
+            if (datatype.isVoid() || !datatype.isValueDatatype()) {
+                String text = "Formula signature return type must be a value datatype!";
+                result.add(new Message(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES, text, Message.ERROR, this, IMethod.PROPERTY_DATATYPE));
             }
         }
+        if (isAbstract()) {
+            String text = "Formula signatures mustn't be marked as abstract! The decision if formulas are executed via overriding this method with compiled Java code or by interpreting the formula, is defined by the code generator.";
+            result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT, text, Message.ERROR, this, IMethod.PROPERTY_ABSTRACT));
+        }
     }
-    
     
 }

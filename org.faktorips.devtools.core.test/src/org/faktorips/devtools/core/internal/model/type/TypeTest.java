@@ -24,6 +24,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -46,6 +47,130 @@ public class TypeTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = newIpsProject();
         type = newProductCmptType(ipsProject, "MotorProduct");
+    }
+    
+    public void testValidate_MustOverrideAbstractMethod() throws CoreException {
+        // a supertype with a method and connect the type to it
+        IType superType = this.newProductCmptType(ipsProject, "Supertype");
+        superType.setAbstract(true);
+        type.setSupertype(superType.getQualifiedName());
+        IMethod superMethod = superType.newMethod();
+        superMethod.setName("calc");
+
+        // method is not abstract so no error message should be returned.
+        MessageList list = type.validate();
+        assertNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
+
+        // set method to abstract, now the error should be reported
+        superMethod.setAbstract(true);
+        list = type.validate();
+        assertNotNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
+
+        // "implement" the method in pcType => error should no be reported anymore
+        type.overrideMethods(new IMethod[]{superMethod});
+        list = type.validate();
+        assertNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
+        
+        // create another level in the supertype hierarchy with an abstract method on the new supersupertype.
+        // an error should be reported
+        IType supersuperType = this.newProductCmptType(ipsProject, "Supersupertype");
+        supersuperType.setAbstract(true);
+        superType.setSupertype(supersuperType.getQualifiedName());
+        IMethod supersuperMethod = supersuperType.newMethod();
+        supersuperMethod.setName("calc2");
+        supersuperMethod.setAbstract(true);
+        list = type.validate();
+        assertNotNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
+        
+        // "implement" the method in the supertype => error should no be reported anymore
+        superType.overrideMethods(new IMethod[]{supersuperMethod});
+        list = type.validate();
+        assertNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
+    }
+    
+    public void testValidateMustImplementContainerRelation() throws Exception {
+        IPolicyCmptType target = newPolicyCmptType(ipsProject, "TargetType");
+        
+        MessageList ml = type.validate();
+        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        
+        IAssociation union = type.newAssociation();
+        union.setDerivedUnion(true);
+        union.setTargetRoleSingular("Target");
+        union.setTarget(target.getQualifiedName());
+        
+        ml = type.validate();
+        assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        
+        // test if the rule is not executed when disabled
+        IIpsProjectProperties props = ipsProject.getProperties();
+        props.setContainerRelationIsImplementedRuleEnabled(false);
+        ipsProject.setProperties(props);
+        ml = type.validate();
+        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        props.setContainerRelationIsImplementedRuleEnabled(true);
+        ipsProject.setProperties(props);
+
+        // type is valid, if it is abstract
+        type.setAbstract(true);
+        ml = type.validate();
+        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        type.setAbstract(false);
+        
+        // implement the derived union in the same type
+        IAssociation association = type.newAssociation();
+        association.setDerivedUnion(false);
+        association.setSubsettedDerivedUnion(union.getName());
+        association.setTarget(target.getQualifiedName());
+        
+        ml = type.validate();
+        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        
+        // delete the relation, now same thing for a subtype
+        association.delete();
+        IType subtype = newProductCmptType(ipsProject, "Subtype");
+        subtype.setSupertype(type.getQualifiedName());
+        ml = subtype.validate();
+        assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        
+        // type is valid, if it is abstract
+        subtype.setAbstract(true);
+        ml = subtype.validate();
+        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        subtype.setAbstract(false);
+
+        association = subtype.newAssociation();
+        association.setDerivedUnion(false);
+        association.setSubsettedDerivedUnion(union.getName());
+        association.setTarget(target.getQualifiedName());
+        
+        ml = subtype.validate();
+        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        
+        // now same thing for subtype of subtype
+        association.delete();
+        IType subsubtype = newProductCmptType(ipsProject, "SubSubtype");
+        subsubtype.setSupertype(subtype.getQualifiedName());
+        ml = subsubtype.validate();
+        assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+
+        association = subtype.newAssociation();
+        association.setDerivedUnion(false);
+        association.setSubsettedDerivedUnion(union.getName());
+        association.setTarget(target.getQualifiedName());
+        
+        ml = subtype.validate();
+        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+    }
+    
+    public void testValidate_AbstractMissing() throws Exception {
+        MessageList ml = type.validate();
+        assertNull(ml.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING));
+        
+        type.newMethod().setAbstract(true);
+        type.setAbstract(false);
+        ml = type.validate();
+        assertNotNull(ml.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING));
     }
     
     public void testGetMethod()  {

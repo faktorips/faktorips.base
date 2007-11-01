@@ -46,7 +46,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -310,10 +310,10 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.C");
         IPolicyCmptTypeAssociation rel = a.newPolicyCmptTypeAssociation();
         rel.setTarget(b.getQualifiedName());
-        rel.setRelationType(RelationType.ASSOCIATION);
+        rel.setAssociationType(AssociationType.ASSOCIATION);
         rel = b.newPolicyCmptTypeAssociation();
         rel.setTarget(c.getQualifiedName());
-        rel.setRelationType(RelationType.ASSOCIATION);
+        rel.setAssociationType(AssociationType.ASSOCIATION);
         
         TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, true);
         //initial build: all ipsobjects will be touched
@@ -338,10 +338,10 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.C");
         IPolicyCmptTypeAssociation rel = a.newPolicyCmptTypeAssociation();
         rel.setTarget(b.getQualifiedName());
-        rel.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        rel.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         rel = b.newPolicyCmptTypeAssociation();
         rel.setTarget(c.getQualifiedName());
-        rel.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        rel.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         
         TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, true);
         //initial build: all ipsobjects will be touched
@@ -368,10 +368,10 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.C");
         IPolicyCmptTypeAssociation rel = a.newPolicyCmptTypeAssociation();
         rel.setTarget(b.getQualifiedName());
-        rel.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
+        rel.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         rel = b.newPolicyCmptTypeAssociation();
         rel.setTarget(c.getQualifiedName());
-        rel.setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
+        rel.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         
         TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, true);
         //initial build: all ipsobjects will be touched

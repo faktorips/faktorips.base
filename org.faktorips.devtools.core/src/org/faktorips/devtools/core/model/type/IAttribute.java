@@ -131,4 +131,8 @@ public interface IAttribute extends IIpsObjectPart {
      */
     public void setDefaultValue(String newValue);
     
+    /**
+     * Returns <code>true</code> if this attribute is a derived one, otherwise <code>false</code>.
+     */
+    public boolean isDerived();
 }

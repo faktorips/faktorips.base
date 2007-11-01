@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.fl.FlFunction;
@@ -113,12 +113,16 @@ public class DefaultLabelProvider extends LabelProvider {
         if (element instanceof IMethod) {
             return getMethodLabel((IMethod)element);
         }
-        if (element instanceof IPolicyCmptTypeAttribute) {
-            IPolicyCmptTypeAttribute a = (IPolicyCmptTypeAttribute)element;
+        if (element instanceof IAttribute) {
+            IAttribute a = (IAttribute)element;
+            StringBuffer sb = new StringBuffer();
             if (a.isDerived()) {
-                return "/" + a.getName(); //$NON-NLS-1$
+                sb.append("/");
             }
-            return a.getName();
+            sb.append(a.getName());
+            sb.append(" : "); //$NON-NLS-1$
+            sb.append(a.getDatatype());
+            return sb.toString();
         }
         return ipsElement.getName();
     }

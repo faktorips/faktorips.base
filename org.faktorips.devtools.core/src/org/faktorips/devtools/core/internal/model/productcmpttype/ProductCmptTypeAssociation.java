@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -46,8 +47,6 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
     final static String TAG_NAME = "Association"; //$NON-NLS-1$
 
-    private AggregationKind aggregationKind = AggregationKind.NONE;
-    
     public ProductCmptTypeAssociation(IIpsObject parent, int id) {
         super(parent, id);
     }
@@ -64,23 +63,6 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
      */
     public boolean isQualified() {
         return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public AggregationKind getAggregationKind() {
-        return aggregationKind;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setAggregationKind(AggregationKind newKind) {
-        ArgumentCheck.notNull(newKind);
-        AggregationKind oldKind = aggregationKind;
-        aggregationKind = newKind;
-        valueChanged(oldKind, newKind);
     }
 
     /**
@@ -153,26 +135,8 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
      * {@inheritDoc}
      */
     public Image getImage() {
-        return aggregationKind.getImage();
+        return getAggregationKind().getImage();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected void initPropertiesFromXml(Element element, Integer id) {
-        super.initPropertiesFromXml(element, id);
-        aggregationKind = AggregationKind.getKind(element.getAttribute(IAssociation.PROPERTY_AGGREGATION_KIND));
-        if (aggregationKind==null) {
-            aggregationKind = AggregationKind.NONE;
-        }
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    protected void propertiesToXml(Element newElement) {
-        super.propertiesToXml(newElement);
-        newElement.setAttribute(IAssociation.PROPERTY_AGGREGATION_KIND, aggregationKind.getId());
-    }
     
 }

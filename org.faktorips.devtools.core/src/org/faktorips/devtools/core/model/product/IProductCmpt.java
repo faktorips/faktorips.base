@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.model.product;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.CycleException;
+import org.faktorips.devtools.core.model.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
@@ -143,16 +143,15 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
     public boolean containsFormulaTest();
     
     /**
-     * Returns the product component structure representing the structure defined by relations. 
-     * The relations are evaluated for the date defined by the user-set working date. The 
-     * structure is rootet at this product.
+     * Returns the product component tree that is defined by this component as root and following
+     * it's links to other components. The links are evaluated for the date defined by the user-set working date. 
      * 
      * @param ipsProject The project which ips object path is used for the searched.
      *                   This is not neccessarily the project this component is part of. 
      * 
-     * @throws CycleException If a circle is detected.
+     * @throws CycleInProductStructureException If a circle is detected.
      */
-    public IProductCmptStructure getStructure(IIpsProject project) throws CycleException;
+    public IProductCmptTreeStructure getStructure(IIpsProject project) throws CycleInProductStructureException;
     
     /**
      * Returns the product component structure representing the structure defined by relations. 
@@ -162,9 +161,9 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
      * @param ipsProject The project which ips object path is used for the searched.
      *                   This is not neccessarily the project this component is part of. 
      *                   
-     * @throws CycleException If a circle is detected.
+     * @throws CycleInProductStructureException If a circle is detected.
      */
-    public IProductCmptStructure getStructure(GregorianCalendar date, IIpsProject project) throws CycleException;
+    public IProductCmptTreeStructure getStructure(GregorianCalendar date, IIpsProject project) throws CycleInProductStructureException;
     
     /**
      * Returns the id this object is identified by at runtime. 

@@ -35,7 +35,7 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -99,11 +99,11 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
      *  in: COMPOSITION => out: REVERSE_COMPOSITION<br>
      *  in: REVERSE_COMPOSITION => out: COMPOSITION<br>
      */
-    public static RelationType getCorrespondingRelationType(RelationType sourceRelType){
+    public static AssociationType getCorrespondingRelationType(AssociationType sourceRelType){
         return sourceRelType == null                ? null :
-               sourceRelType.isAssoziation()        ? RelationType.ASSOCIATION :
-               sourceRelType.isCompositionDetailToMaster() ? RelationType.COMPOSITION_MASTER_TO_DETAIL :
-               sourceRelType.isCompositionMasterToDetail()        ? RelationType.COMPOSITION_DETAIL_TO_MASTER : null;
+               sourceRelType.isAssoziation()        ? AssociationType.ASSOCIATION :
+               sourceRelType.isCompositionDetailToMaster() ? AssociationType.COMPOSITION_MASTER_TO_DETAIL :
+               sourceRelType.isCompositionMasterToDetail()        ? AssociationType.COMPOSITION_DETAIL_TO_MASTER : null;
     }
     
     public NewPcTypeRelationWizard(IPolicyCmptTypeAssociation relation) {
@@ -135,7 +135,7 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 			if (isNewReverseRelation() && reverseRelation != null){
 				reverseRelation.setTarget(relation.getPolicyCmptType().getQualifiedName());
 				reverseRelation.setTargetRoleSingular(relation.getPolicyCmptType().getName());
-				reverseRelation.setRelationType(getCorrespondingRelationType(relation.getRelationType()));
+				reverseRelation.setAssociationType(getCorrespondingRelationType(relation.getAssociationType()));
 				if (reverseRelation.isAssoziation()) {
                     reverseRelation.setDerivedUnion(relation.isDerivedUnion());
                 } else {
@@ -320,7 +320,7 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	 * Set the default values depending on the relation type and read-only container flag.
 	 */
 	void setDefaultsByRelationTypeAndTarget(IPolicyCmptTypeAssociation newRelation){
-		RelationType type = newRelation.getRelationType();
+		AssociationType type = newRelation.getAssociationType();
 		if (type != null) {
             boolean targetIsProductRelevantOrNull = getTargetPolicyCmptType()==null?true:getTargetPolicyCmptType().isConfigurableByProductCmptType();
 			boolean defaultProductRelevant = newRelation.getPolicyCmptType().isConfigurableByProductCmptType() && targetIsProductRelevantOrNull;

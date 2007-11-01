@@ -167,7 +167,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             IPolicyCmptType target,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        if (!relation.getRelationType().isCompositionMasterToDetail()) {
+        if (!relation.getAssociationType().isCompositionMasterToDetail()) {
             return;
         }
         if (target.isAbstract()) {

@@ -30,7 +30,8 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
@@ -103,11 +104,11 @@ public class RelationTargetPage extends AbstractPcTypeRelationWizardPage  {
 		
 		uiToolkit.createFormLabel(workArea,
 				Messages.NewPcTypeRelationWizard_target_labelType);
-		final Combo typeCombo = uiToolkit.createCombo(workArea, RelationType.getEnumType());
+		final Combo typeCombo = uiToolkit.createCombo(workArea, AssociationType.getEnumType());
 		typeCombo.addListener (SWT.Modify, new Listener () {
 			public void handleEvent (Event ev) {
 				// first store the current modified value, because the controller updates the model later
-				wizard.getRelation().setRelationType(RelationType.getRelationType(typeCombo.getSelectionIndex()));
+				wizard.getRelation().setAssociationType(AssociationType.getRelationType(typeCombo.getSelectionIndex()));
 				setDefaults();
 			}
 		});
@@ -129,7 +130,7 @@ public class RelationTargetPage extends AbstractPcTypeRelationWizardPage  {
 
 		// create fields
 		targetField = new TextButtonField(targetControl);
-		typeField = new EnumValueField(typeCombo, RelationType.getEnumType());
+		typeField = new EnumValueField(typeCombo, AssociationType.getEnumType());
 		abstractContainerField = new CheckboxField(abstractContainerCheckbox);
 		descriptionField = new TextField(text);
 	}
@@ -139,7 +140,7 @@ public class RelationTargetPage extends AbstractPcTypeRelationWizardPage  {
 	 */
 	protected void connectToModel() {
 		wizard.addToUiControllerRelation(targetField, IPolicyCmptTypeAssociation.PROPERTY_TARGET);
-		wizard.addToUiControllerRelation(typeField, IPolicyCmptTypeAssociation.PROPERTY_RELATIONTYPE);
+		wizard.addToUiControllerRelation(typeField, IAssociation.PROPERTY_ASSOCIATION_TYPE);
 		wizard.addToUiControllerRelation(abstractContainerField, IPolicyCmptTypeAssociation.PROPERTY_DERIVED_UNION);
 		wizard.addToUiControllerRelation(descriptionField, IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
 	}
@@ -153,7 +154,7 @@ public class RelationTargetPage extends AbstractPcTypeRelationWizardPage  {
 			setDefaults();
 			
 			// set composition type as default
-			typeField.getCombo().setText(RelationType.COMPOSITION_MASTER_TO_DETAIL.getName());
+			typeField.getCombo().setText(AssociationType.COMPOSITION_MASTER_TO_DETAIL.getName());
 			
 			isUiInitialized = true;
 		}
@@ -171,7 +172,7 @@ public class RelationTargetPage extends AbstractPcTypeRelationWizardPage  {
 		wizard.getUiControllerRelation().updateUI();
 		
 		if (wizard.isNewReverseRelation() && wizard.getInverseRelation() != null){
-			wizard.getInverseRelation().setRelationType(NewPcTypeRelationWizard.getCorrespondingRelationType(wizard.getRelation().getRelationType()));
+			wizard.getInverseRelation().setAssociationType(NewPcTypeRelationWizard.getCorrespondingRelationType(wizard.getRelation().getAssociationType()));
             wizard.setDefaultsByRelationTypeAndTarget(wizard.getInverseRelation());
             wizard.getUiControllerReverseRelation().updateUI();
 		}

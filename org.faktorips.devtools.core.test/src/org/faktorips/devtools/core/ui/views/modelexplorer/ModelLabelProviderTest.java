@@ -60,11 +60,14 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         polCmptType= newPolicyCmptType(root, "subpackage.subsubpackage.TestPolicy");
         attr= polCmptType.newPolicyCmptTypeAttribute();
         attr.setDatatype("String");
+        attr.setName("a1");
         attr.setAttributeType(AttributeType.CONSTANT);
         attr2= polCmptType.newPolicyCmptTypeAttribute();
         attr2.setDatatype("int");
+        attr2.setName("a2");
         attr2.setAttributeType(AttributeType.CHANGEABLE);
         attr3= polCmptType.newPolicyCmptTypeAttribute();
+        attr3.setName("a3");
         attr3.setDatatype("float");
         attr3.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
 
@@ -74,6 +77,14 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         subFolder.create(true, false, null);
         file = folder.getFile("test.txt");
         file.create(null, true, null);
+    }
+
+    public void testGetText_Attribute() {
+        assertEquals("a1 : String", flatProvider.getText(attr));
+        assertEquals("a1 : String", hierarchyProvider.getText(attr));
+        
+        assertEquals("/a3 : float", flatProvider.getText(attr3));
+        assertEquals("/a3 : float", hierarchyProvider.getText(attr3));
     }
 
 
@@ -119,14 +130,6 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
      * Test method for 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelLabelProvider.getText(Object)'
      */
     public void testGetText() throws CoreException {
-        // test attribute labels 
-        testAttribute(flatProvider, attr);
-        testAttribute(flatProvider, attr2);
-        testAttribute(flatProvider, attr3);
-        testAttribute(hierarchyProvider, attr);
-        testAttribute(hierarchyProvider, attr2);
-        testAttribute(hierarchyProvider, attr3);
-        
         String fragmentName;
         // packagefragment Labels
         // hierarchical Layout
@@ -200,16 +203,6 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         assertEquals(proj.getName() + " ("+Messages.ModelLabelProvider_noProductDefinitionProjectLabel+")", name);
     }
     
-    // format: "<attributeName><blank>:<blank><dataType>,<blank><attributeType>" 
-    private void testAttribute(ModelLabelProvider provider, IPolicyCmptTypeAttribute a) {
-        String attrLabel= provider.getText(a);
-        assertTrue(attrLabel.startsWith(a.getName()));
-        String dType= attrLabel.substring(attrLabel.indexOf(":")+2, attrLabel.lastIndexOf(",")); // +2 -> ignore following blank
-        assertEquals(a.getDatatype(), dType);
-        String aType= attrLabel.substring(attrLabel.indexOf(",")+2, attrLabel.length());
-        assertEquals(a.getAttributeType().getId().toString(), aType);
-    }
-
     /*
      * Test method for 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelLabelProvider.addListener(ILabelProviderListener)'
      */

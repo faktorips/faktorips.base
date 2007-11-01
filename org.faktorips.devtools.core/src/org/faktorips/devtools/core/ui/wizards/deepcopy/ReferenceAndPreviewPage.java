@@ -46,7 +46,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.product.ProductCmptStructure;
+import org.faktorips.devtools.core.internal.model.product.ProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -54,7 +54,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -79,7 +79,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
     /**
      * Structure to represent
      */
-    private IProductCmptStructure structure;
+    private IProductCmptTreeStructure structure;
 
     /**
      * The viewer to display the products to copy
@@ -142,7 +142,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
      * @throws IllegalArgumentException if the given type is neither
      *             DeepCopyWizard.TYPE_COPY_PRODUCT nor DeepCopyWizard.TYPE_NEW_VERSION.
      */
-    protected ReferenceAndPreviewPage(ProductCmptStructure structure, SourcePage sourcePage, int type) {
+    protected ReferenceAndPreviewPage(ProductCmptTreeStructure structure, SourcePage sourcePage, int type) {
         super(PAGE_ID, getTitle(type), null);
 
         if (type != DeepCopyWizard.TYPE_COPY_PRODUCT && type != DeepCopyWizard.TYPE_NEW_VERSION) {
@@ -664,8 +664,8 @@ public class ReferenceAndPreviewPage extends WizardPage {
         }
 
         public Object[] getElements(Object inputElement) {
-            if (inputElement instanceof IProductCmptStructure) {
-                IProductCmptReference node = ((IProductCmptStructure)inputElement).getRoot();
+            if (inputElement instanceof IProductCmptTreeStructure) {
+                IProductCmptReference node = ((IProductCmptTreeStructure)inputElement).getRoot();
                 if (isChecked(node)) {
                     return new Object[] { node };
                 }

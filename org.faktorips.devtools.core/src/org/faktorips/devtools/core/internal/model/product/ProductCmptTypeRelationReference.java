@@ -17,9 +17,9 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
-import org.faktorips.devtools.core.model.CycleException;
+import org.faktorips.devtools.core.model.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
@@ -37,9 +37,9 @@ public class ProductCmptTypeRelationReference extends
 	/**
 	 * @param structure
 	 * @param parent
-	 * @throws CycleException 
+	 * @throws CycleInProductStructureException 
 	 */
-	public ProductCmptTypeRelationReference(IProductCmptStructure structure, ProductCmptStructureReference parent, IProductCmptTypeAssociation association) throws CycleException {
+	public ProductCmptTypeRelationReference(IProductCmptTreeStructure structure, ProductCmptStructureReference parent, IProductCmptTypeAssociation association) throws CycleInProductStructureException {
 		super(structure, parent);
 		this.association = association;
 	}

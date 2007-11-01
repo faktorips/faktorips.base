@@ -6,8 +6,7 @@
 <testcases>
 
 	<Association id="42"
-		  aggregationKind="shared"
-          relationType="ass" 
+          associationType="ass" 
           target="pack1.CoverageType" 
           targetRoleSingular="CoverageType" 
           targetRolePlural="CoverageTypes" 

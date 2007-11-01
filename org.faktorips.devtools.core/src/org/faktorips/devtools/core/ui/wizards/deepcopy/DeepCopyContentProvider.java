@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.ui.wizards.deepcopy;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
 
 /**
@@ -33,7 +33,7 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
     /**
      * The root-node this content provider starts to evaluate the content.
      */
-    private IProductCmptStructure structure;
+    private IProductCmptTreeStructure structure;
     
     /**
      * Flag to tell the content provider to show (<code>true</code>) or not to show the
@@ -121,12 +121,12 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
      * {@inheritDoc}
      */
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        if (newInput == null || !(newInput instanceof IProductCmptStructure)) {
+        if (newInput == null || !(newInput instanceof IProductCmptTreeStructure)) {
             structure = null;
             return;
         }
         
-        structure = (IProductCmptStructure)newInput;
+        structure = (IProductCmptTreeStructure)newInput;
         root = structure.getRoot();
     }
     

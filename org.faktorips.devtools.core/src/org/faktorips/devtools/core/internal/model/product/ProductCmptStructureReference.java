@@ -19,9 +19,9 @@ package org.faktorips.devtools.core.internal.model.product;
 
 import java.util.ArrayList;
 
-import org.faktorips.devtools.core.model.CycleException;
+import org.faktorips.devtools.core.model.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
@@ -33,14 +33,14 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 public abstract class ProductCmptStructureReference implements
 		IProductCmptStructureReference {
 
-	private IProductCmptStructure structure;
+	private IProductCmptTreeStructure structure;
 
 	private ProductCmptStructureReference parent;
 
 	private ProductCmptStructureReference[] children;
 
-	public ProductCmptStructureReference(IProductCmptStructure structure,
-			ProductCmptStructureReference parent) throws CycleException {
+	public ProductCmptStructureReference(IProductCmptTreeStructure structure,
+			ProductCmptStructureReference parent) throws CycleInProductStructureException {
 		this.structure = structure;
 		this.parent = parent;
 		this.children = new ProductCmptStructureReference[0];
@@ -50,7 +50,7 @@ public abstract class ProductCmptStructureReference implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProductCmptStructure getStructure() {
+	public IProductCmptTreeStructure getStructure() {
 		return structure;
 	}
 
@@ -78,11 +78,11 @@ public abstract class ProductCmptStructureReference implements
 		this.children = children;
 	}
 
-	private void detectCycle(ArrayList seenElements) throws CycleException {
+	private void detectCycle(ArrayList seenElements) throws CycleInProductStructureException {
 		if (!(getWrapped() instanceof IProductCmptTypeAssociation)
 				&& seenElements.contains(getWrapped())) {
 			seenElements.add(getWrapped());
-			throw new CycleException((IIpsElement[]) seenElements
+			throw new CycleInProductStructureException((IIpsElement[]) seenElements
 					.toArray(new IIpsElement[seenElements.size()]));
 		} else {
 			seenElements.add(getWrapped());

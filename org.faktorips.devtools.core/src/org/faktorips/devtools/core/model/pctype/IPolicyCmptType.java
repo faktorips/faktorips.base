@@ -60,18 +60,6 @@ public interface IPolicyCmptType extends IType, Datatype {
     public final static String MSGCODE_PREFIX = "POLICYCMPTTYPE-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that an abstract method exists in the type's supertype
-     * hierarchy that must be overriden in the conrete type.
-     */
-    public final static String MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD = MSGCODE_PREFIX + "MustOverrideAbstractMethod"; //$NON-NLS-1$
-    
-    /**
-     * Validation message code to indicate that a readonly-container relation exists in the type's supertype
-     * hierarchy that must be implemented, or the type must also be abstract.
-     */
-    public final static String MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION = MSGCODE_PREFIX + "MustImplementContainerRelation"; //$NON-NLS-1$
-    
-    /**
      * Validation message code to indicate that this policy component type is defined as configurable by 
      * product, but the product component type name is not set.
      */
@@ -97,13 +85,6 @@ public interface IPolicyCmptType extends IType, Datatype {
      * but the referenced product component type configures another policy component type or none at all. 
      */
     public final static String MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE = MSGCODE_PREFIX + "ProductCmptTypeDoesNotConfigureThisType"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that at least one abstract method is not implemented, but this
-     * policy component type is not marked as abstract.
-     */
-    public final static String MSGCODE_ABSTRACT_MISSING = 
-    	MSGCODE_PREFIX + "AbstractMissing"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that table structures can only be used if the type is product

@@ -18,17 +18,17 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.CycleException;
+import org.faktorips.devtools.core.model.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -40,11 +40,13 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
  */
 public class ProductCmptStructureTest extends AbstractIpsPluginTest {
     
+    private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
+    private IProductCmptGeneration productCmptGen;
     private IProductCmpt productCmptTarget;
     private IProductCmptTypeAssociation association;
     private IIpsProject ipsProject;
-    private IProductCmptStructure structure;
+    private IProductCmptTreeStructure structure;
     
     /*
      * @see PluginTest#setUp()
@@ -53,9 +55,9 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
 
-        // Build policy component types
+        // Build product component types
         IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "dummy1");
-        IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
+        productCmptType = policyCmptType.findProductCmptType(ipsProject);
         ITableStructureUsage tsu1 = productCmptType.newTableStructureUsage();
         tsu1.setRoleName("usage1");
         tsu1.addTableStructure("tableStructure1");
@@ -67,14 +69,14 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         tsu2.addTableStructure("tableStructure2");
         
         association = productCmptType.newProductCmptTypeAssociation();
-        association.setAggregationKind(AggregationKind.SHARED);
+        association.setAssociationType(AssociationType.AGGREGATION);
         association.setTargetRoleSingular("TestRelation");
         association.setTarget(productCmptTypeTarget.getQualifiedName());
         
         // Build product component types
         productCmpt = newProductCmpt(productCmptType, "products.TestProduct");
-        IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(0);
-        ITableContentUsage tcu = generation.newTableContentUsage();
+        productCmptGen = (IProductCmptGeneration)productCmpt.getProductCmptGeneration(0);
+        ITableContentUsage tcu = productCmptGen.newTableContentUsage();
         tcu.setStructureUsage(tsu1.getRoleName());
         tcu.setTableContentName("tableContent1");
         
@@ -84,11 +86,11 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         tcu.setStructureUsage(tsu2.getRoleName());
         tcu.setTableContentName("tableContent2");
         
-        IProductCmptLink cmptRelation = generation.newLink(association.getName());
-        cmptRelation.setTarget(productCmptTarget.getQualifiedName());
+        IProductCmptLink link = productCmptGen.newLink(association.getName());
+        link.setTarget(productCmptTarget.getQualifiedName());
         
-        cmptRelation = generation.newLink(association.getName());
-        cmptRelation.setTarget(productCmptTarget.getQualifiedName());
+        link = productCmptGen.newLink(association.getName());
+        link.setTarget(productCmptTarget.getQualifiedName());
         
         policyCmptType.getIpsSrcFile().save(true, null);
         policyCmptTypeTarget.getIpsSrcFile().save(true, null);
@@ -103,7 +105,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
     	assertSame(productCmpt, root);
     }
     
-    public void testNoGeneration() throws CycleException {
+    public void testNoGeneration() throws CycleInProductStructureException {
     	productCmpt.getGenerations()[0].delete();
     	structure.refresh();
     }
@@ -114,17 +116,16 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         productCmptTarget.getStructure(ipsProject);
     	
     	// create a circle
-        IProductCmptType type = productCmpt.findProductCmptType(ipsProject);
-        association.setTarget(type.getQualifiedName());
-        productCmptTarget.setProductCmptType(type.getQualifiedName());
+        association.setTarget(productCmptType.getQualifiedName());
+        productCmptTarget.setProductCmptType(productCmptType.getQualifiedName());
         IProductCmptGeneration targetGen= (IProductCmptGeneration)productCmptTarget.getGeneration(0);
-        IProductCmptLink rel = targetGen.newLink(association.getName());
-    	rel.setTarget(productCmpt.getQualifiedName());
+        IProductCmptLink link = targetGen.newLink(association.getName());
+    	link.setTarget(productCmpt.getQualifiedName());
     	
     	try {
 			productCmpt.getStructure(ipsProject);
 			fail();
-		} catch (CycleException e) {
+		} catch (CycleInProductStructureException e) {
 			// success
 		} 
     }
@@ -136,7 +137,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         ITableContentUsage tcu = ptsus[0].getTableContentUsage();
         assertEquals("tableContent1", tcu.getTableContentName());
         
-        IProductCmptStructure structureTarget = productCmptTarget.getStructure(ipsProject);
+        IProductCmptTreeStructure structureTarget = productCmptTarget.getStructure(ipsProject);
         ptsus = structure.getChildProductCmptStructureTblUsageReference(structureTarget.getRoot());
         assertEquals(1, ptsus.length);
         tcu = ptsus[0].getTableContentUsage();

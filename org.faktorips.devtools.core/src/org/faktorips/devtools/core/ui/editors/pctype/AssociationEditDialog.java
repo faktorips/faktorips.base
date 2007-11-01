@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -124,8 +124,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         
         // type
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelType);
-        final Combo typeCombo = uiToolkit.createCombo(workArea, RelationType.getEnumType());
-        bindingContext.bindContent(typeCombo, association, IPolicyCmptTypeAssociation.PROPERTY_RELATIONTYPE, RelationType.getEnumType());
+        final Combo typeCombo = uiToolkit.createCombo(workArea, IPolicyCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
+        bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE, AssociationType.getEnumType());
         typeCombo.setFocus();
         
         // role singular

@@ -46,6 +46,12 @@ public interface IProductCmptTypeMethod extends IMethod, IProdDefProperty {
     public final static String MSGCODE_FORMULA_NAME_IS_EMPTY = MSGCODE_PREFIX + "FormulaNameIsEmpty"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that a method is marked as formula signature but 
+     * the formula name is missing.
+     */
+    public final static String MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT = MSGCODE_PREFIX + "FormulaMustntBeAbstract"; //$NON-NLS-1$
+
+    /**
      * Returns the product component type this method belongs to.
      */
     public IProductCmptType getProductCmptType();

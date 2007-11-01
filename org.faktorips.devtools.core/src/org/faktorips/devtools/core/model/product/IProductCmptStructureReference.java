@@ -29,6 +29,6 @@ public interface IProductCmptStructureReference {
 	 * @return The <code>IProductCmptStructure</code> this reference belongs
 	 *         to.
 	 */
-	public IProductCmptStructure getStructure();
+	public IProductCmptTreeStructure getStructure();
 
 }

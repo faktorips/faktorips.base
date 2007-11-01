@@ -537,7 +537,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateCodeForRelationInCommon(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         if(!relation.isDerivedUnion() && 
-           !relation.getRelationType().isCompositionDetailToMaster()){
+           !relation.getAssociationType().isCompositionDetailToMaster()){
             generateFieldGetMaxCardinalityFor(relation, fieldsBuilder);
         }
     }
@@ -548,7 +548,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateCodeFor1To1Relation(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         IPolicyCmptType target = relation.findTarget();
         generateMethodGetRefObject(relation, methodsBuilder);
-        if (!relation.isDerivedUnion() && !relation.getRelationType().isCompositionDetailToMaster()) {
+        if (!relation.isDerivedUnion() && !relation.getAssociationType().isCompositionDetailToMaster()) {
             generateMethodSetObject(relation, methodsBuilder);
             generateNewChildMethodsIfApplicable(relation, target, methodsBuilder);
         }

@@ -32,8 +32,10 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
@@ -111,9 +113,9 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         targetControl.setFocus();
         
         // aggregation kind
-        uiToolkit.createFormLabel(workArea, "Aggregation kind:");
-        Combo typeCombo = uiToolkit.createCombo(workArea, new EnumValue[]{AggregationKind.NONE, AggregationKind.SHARED});
-        bindingContext.bindContent(typeCombo, association, IProductCmptTypeAssociation.PROPERTY_AGGREGATION_KIND, AggregationKind.getEnumType());
+        uiToolkit.createFormLabel(workArea, "Type:");
+        Combo typeCombo = uiToolkit.createCombo(workArea, IProductCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
+        bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE, AssociationType.getEnumType());
         
         // role singular
         uiToolkit.createFormLabel(workArea, "Target role singular:");

@@ -17,11 +17,11 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
-import org.faktorips.devtools.core.model.CycleException;
+import org.faktorips.devtools.core.model.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.IProductCmptTreeStructure;
 
 /**
  * A reference to a <code>IProductCmpt</code>. Used by <code>ProductCmptStructure</code>.
@@ -36,9 +36,9 @@ public class ProductCmptReference extends ProductCmptStructureReference
 	/**
 	 * @param structure
 	 * @param parent
-	 * @throws CycleException 
+	 * @throws CycleInProductStructureException 
 	 */
-	public ProductCmptReference(IProductCmptStructure structure, ProductCmptStructureReference parent, IProductCmpt cmpt) throws CycleException {
+	public ProductCmptReference(IProductCmptTreeStructure structure, ProductCmptStructureReference parent, IProductCmpt cmpt) throws CycleInProductStructureException {
 		super(structure, parent);
 		this.cmpt = cmpt;
 	}

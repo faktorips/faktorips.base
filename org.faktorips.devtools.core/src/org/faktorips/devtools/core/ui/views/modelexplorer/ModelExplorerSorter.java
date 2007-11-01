@@ -39,6 +39,10 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IType;
 
 /**
  * Sorter for the ModelExplorer-TreeViewer. Sorts folders displayed in the ModelExplorer by the sorting number
@@ -61,7 +65,7 @@ public class ModelExplorerSorter extends ViewerSorter{
 			return 0;
 		}
 		// place TableStructures below PolicyComponentTypes
-		if(o1 instanceof IPolicyCmptType && o2 instanceof ITableStructure){
+		if(o1 instanceof IType && o2 instanceof ITableStructure){
 			return -1;
 		}
 		if(o1 instanceof ITableStructure && o2 instanceof IPolicyCmptType){
@@ -111,7 +115,15 @@ public class ModelExplorerSorter extends ViewerSorter{
             IProductCmptGeneration g2 = (IProductCmptGeneration)o2;
             return g1.getValidFrom().after(g2.getValidFrom()) ? -1 : g1.getValidFrom().before(g2.getValidFrom()) ? 1 : 0;
         }
-        
+        int typeMemberOrder1 = getTypeMemberOrder(o1);
+        int typeMemberOrder2 = getTypeMemberOrder(o2);
+        if (typeMemberOrder1>-1) {
+            if (typeMemberOrder1==typeMemberOrder2) {
+                return super.compare(viewer, o1, o2);
+            } else if (typeMemberOrder2>-1) {
+                return typeMemberOrder1 - typeMemberOrder2;
+            }
+        }
         if(o1 instanceof IPolicyCmptTypeAssociation && o2 instanceof IPolicyCmptTypeAttribute){
             return 1;
         }
@@ -164,5 +176,22 @@ public class ModelExplorerSorter extends ViewerSorter{
             return null;
         }
         return ipsObjectType.newObject(ipsSrcFile);
+    }
+    
+    private int getTypeMemberOrder(Object member) {
+        if (member instanceof IAttribute) {
+            return 1;
+        }
+        if (member instanceof IAssociation) {
+            return 2;
+        }
+        if (member instanceof IMethod) {
+            return 3;
+        }
+        if (member instanceof ITableStructure) {
+            return 4;
+        }
+        return -1;
+        
     }
 }

@@ -4,8 +4,8 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dï¿½rfen nur unter den Bedingungen der 
+ * Faktor-Zehn-Community Lizenzvereinbarung ï¿½ Version 0.1 (vor Grï¿½ndung Community) 
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
@@ -17,9 +17,9 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
-import org.faktorips.devtools.core.model.CycleException;
+import org.faktorips.devtools.core.model.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 
@@ -33,8 +33,8 @@ public class ProductCmptStructureTblUsageReference extends ProductCmptStructureR
 
     private ITableContentUsage tableContentUsage;
 
-    public ProductCmptStructureTblUsageReference(IProductCmptStructure structure, ProductCmptStructureReference parent,
-            ITableContentUsage tableContentUsage) throws CycleException {
+    public ProductCmptStructureTblUsageReference(IProductCmptTreeStructure structure, ProductCmptStructureReference parent,
+            ITableContentUsage tableContentUsage) throws CycleInProductStructureException {
         super(structure, parent);
         this.tableContentUsage = tableContentUsage;
     }

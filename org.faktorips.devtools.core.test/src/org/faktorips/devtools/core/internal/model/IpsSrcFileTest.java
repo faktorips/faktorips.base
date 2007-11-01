@@ -78,6 +78,10 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         parsableFile.getIpsModel().removeChangeListener(this);
     }
     
+    public void testGetIpsObjectName() {
+        assertEquals("ParsableFile", parsableFile.getIpsObjecName());
+    }
+    
     public void testSave() throws IOException, CoreException {
         policyCmptType.newPolicyCmptTypeAttribute();
         assertTrue(parsableFile.isDirty());

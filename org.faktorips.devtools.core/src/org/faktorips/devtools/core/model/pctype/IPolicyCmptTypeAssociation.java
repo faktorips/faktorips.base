@@ -37,10 +37,13 @@ import org.faktorips.devtools.core.model.type.IAssociation;
  * @author Jan Ortmann
  */
 public interface IPolicyCmptTypeAssociation extends IAssociation {
+
+    /**
+     * The list of applicable types. For policy component types, aggregations are not supported.
+     */
+    public final static AssociationType[] APPLICABLE_ASSOCIATION_TYPES = new AssociationType[] { 
+        AssociationType.COMPOSITION_MASTER_TO_DETAIL, AssociationType.COMPOSITION_DETAIL_TO_MASTER, AssociationType.ASSOCIATION}; 
     
-    // String constants for the relation class' properties according
-    // to the Java beans standard.
-    public final static String PROPERTY_RELATIONTYPE = "relationType"; //$NON-NLS-1$
     public final static String PROPERTY_PRODUCT_RELEVANT = "productRelevant"; //$NON-NLS-1$
     public final static String PROPERTY_INVERSE_RELATION = "inverseRelation"; //$NON-NLS-1$
     public final static String PROPERTY_INVERSE_RELATION_APPLICABLE = "inverseRelationApplicable"; //$NON-NLS-1$
@@ -51,8 +54,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     public final static String PROPERTY_MIN_CARDINALITY_PRODUCTSIDE = "minCardinalityProductSide"; //$NON-NLS-1$
     public final static String PROPERTY_MAX_CARDINALITY_PRODUCTSIDE = "maxCardinalityProductSide"; //$NON-NLS-1$
 
-    public final static RelationType DEFAULT_RELATION_TYPE = RelationType.ASSOCIATION; 
-    
     /**
      * Prefix for all message codes of this class.
      */
@@ -115,11 +116,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     public IPolicyCmptType getPolicyCmptType();
     
     /**
-     * Returns <code>true</code> if this is an assoziation otherwise <code>false</code>.
-     */
-    public boolean isAssoziation();
-    
-    /**
      * Returns <code>true</code> if this relation is either a master-to-detail or detail-to-master
      * composition, otherwise <code>false</code>.
      */
@@ -155,17 +151,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * container relation. This is the case for associations and master-to-detail composites.
      */
     public boolean isContainerRelationApplicable();
-    
-    /**
-     * Returns the relation's type indication if it's an association or
-     * aggregation. 
-     */
-    public RelationType getRelationType();
-    
-    /**
-     * Sets the relation's type.
-     */
-    public void setRelationType(RelationType newType);
     
     /**
      * Returns the qualified name of the target policy component class.

@@ -43,8 +43,6 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
     protected Composite createWorkArea(Composite parent) throws CoreException {
         
         Composite c = super.createWorkArea(parent);
-        bindingContext.bindEnabled(abstractCheckbox, method, IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION, false);
-        
         
         nameText.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {

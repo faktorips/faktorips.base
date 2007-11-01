@@ -27,19 +27,18 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.CycleException;
+import org.faktorips.devtools.core.model.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureTblUsageReference;
+import org.faktorips.devtools.core.model.product.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.util.ArgumentCheck;
 
@@ -48,7 +47,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Thorsten Guenther
  */
-public class ProductCmptStructure implements IProductCmptStructure {
+public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 	
     private IIpsProject ipsProject;
     private ProductCmptReference root;
@@ -59,10 +58,10 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	 * the user definde working date out of the IpsPreferences.
 	 * 
 	 * @param root The product component to create a structure for.
-	 * @throws CycleException if a cycle is detected.
+	 * @throws CycleInProductStructureException if a cycle is detected.
 	 * @throws NullPointerException if the given product component is <code>null</code>.
 	 */
-	public ProductCmptStructure(IProductCmpt root, IIpsProject project) throws CycleException {
+	public ProductCmptTreeStructure(IProductCmpt root, IIpsProject project) throws CycleInProductStructureException {
 		this(root, IpsPlugin.getDefault().getIpsPreferences().getWorkingDate(), project);
 	}
 	
@@ -79,13 +78,13 @@ public class ProductCmptStructure implements IProductCmptStructure {
      * @param project
      *            The ips project which ips object path is used as search path.
      *            
-	 * @throws CycleException
+	 * @throws CycleInProductStructureException
 	 *             if a cycle is detected.
 	 * @throws NullPointerException
 	 *             if the given product component is <code>null</code> or the
 	 *             given date is <code>null</code>.
 	 */
-	public ProductCmptStructure(IProductCmpt root, GregorianCalendar date, IIpsProject project) throws CycleException {
+	public ProductCmptTreeStructure(IProductCmpt root, GregorianCalendar date, IIpsProject project) throws CycleInProductStructureException {
 		ArgumentCheck.notNull(root);
 		ArgumentCheck.notNull(date);
         ArgumentCheck.notNull(project);
@@ -112,7 +111,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void refresh() throws CycleException {
+	public void refresh() throws CycleInProductStructureException {
 	    this.root = buildNode(root.getProductCmpt(), null);
         this.workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
 	}
@@ -164,9 +163,9 @@ public class ProductCmptStructure implements IProductCmptStructure {
      * 
      * @param element The IpsElement to be wrapped by the new node.
      * @param parent The parent-node for the new one.
-	 * @throws CycleException 
+	 * @throws CycleInProductStructureException 
      */
-    private ProductCmptReference buildNode(IProductCmpt cmpt, ProductCmptStructureReference parent) throws CycleException {
+    private ProductCmptReference buildNode(IProductCmpt cmpt, ProductCmptStructureReference parent) throws CycleInProductStructureException {
     	ProductCmptReference node = new ProductCmptReference(this, parent, cmpt);
     	node.setChildren(buildChildNodes(cmpt, node));
     	return node;
@@ -179,19 +178,19 @@ public class ProductCmptStructure implements IProductCmptStructure {
      * @param links The relations to create nodes for.
      * @param parent The parent for the new nodes
      * @return
-     * @throws CycleException 
+     * @throws CycleInProductStructureException 
      */
     private ProductCmptStructureReference[] buildChildNodes(
             IProductCmptLink[] links, 
             ProductCmptStructureReference parent, 
-            IProductCmptTypeAssociation association) throws CycleException {
+            IProductCmptTypeAssociation association) throws CycleInProductStructureException {
         
 		ArrayList children = new ArrayList();
         for (int i = 0; i < links.length; i ++) {
 			try {
 				IProductCmpt p = ipsProject.findProductCmpt(links[i].getTarget());
 				if (p != null) {
-					if(association.getAggregationKind().equals(AggregationKind.NONE)){
+					if(association.isAssoziation()){
 						children.add(new ProductCmptReference(this, parent, p));
 					} else {
                         children.add(buildNode(p, parent));
@@ -210,9 +209,9 @@ public class ProductCmptStructure implements IProductCmptStructure {
      * 
      * @param element The element the new children can be found in as relation-targets.
      * @param parent The parent node for the new children.
-     * @throws CycleException 
+     * @throws CycleInProductStructureException 
      */
-	private ProductCmptStructureReference[] buildChildNodes(IIpsElement element, ProductCmptStructureReference parent) throws CycleException {
+	private ProductCmptStructureReference[] buildChildNodes(IIpsElement element, ProductCmptStructureReference parent) throws CycleInProductStructureException {
 		ArrayList children = new ArrayList();
 		
 		if (element instanceof IProductCmpt) {
@@ -225,38 +224,35 @@ public class ProductCmptStructure implements IProductCmptStructure {
 				return new ProductCmptStructureReference[0];
 			}
 			
-			IProductCmptLink[] relations = activeGeneration.getLinks();
+			IProductCmptLink[] links = activeGeneration.getLinks();
 			
-			// Sort relations by type
+			// Sort links by association
 			Hashtable mapping = new Hashtable();
-			ArrayList typeList = new ArrayList();
-			for (int i = 0; i < relations.length; i ++) {
+			ArrayList associations = new ArrayList();
+			for (int i = 0; i < links.length; i ++) {
 				try {
-					IProductCmptTypeAssociation relationType = relations[i].findAssociation(ipsProject);
-					if (relationType == null) {
+					IProductCmptTypeAssociation association = links[i].findAssociation(ipsProject);
+					if (association == null) {
 						// no relation type found - inconsinstent model or product definition - ignore it.
 						continue;
 					}
-					
-					ArrayList relationsForType = (ArrayList)mapping.get(relationType.getName());
-					
-					if (relationsForType == null) {
-						relationsForType = new ArrayList();
-						mapping.put(relationType.getName(), relationsForType);
-						typeList.add(relationType);
+					ArrayList linksForAssociation = (ArrayList)mapping.get(association.getName());
+					if (linksForAssociation == null) {
+						linksForAssociation = new ArrayList();
+						mapping.put(association.getName(), linksForAssociation);
+						associations.add(association);
 					}					
-					relationsForType.add(relations[i]);
+					linksForAssociation.add(links[i]);
 				} catch (CoreException e) {
 					IpsPlugin.log(e);
 				}
 			}
 			
-			for (Iterator iter = typeList.iterator(); iter.hasNext();) {
-				IProductCmptTypeAssociation type = (IProductCmptTypeAssociation) iter.next();
-				ProductCmptStructureReference node = new ProductCmptTypeRelationReference(this, parent, type);
-				ArrayList relationsList = (ArrayList)mapping.get(type.getName());
-				IProductCmptLink[] rels = new IProductCmptLink[relationsList.size()];
-				node.setChildren(buildChildNodes((IProductCmptLink[])relationsList.toArray(rels), node, type));
+			for (Iterator iter = associations.iterator(); iter.hasNext();) {
+				IProductCmptTypeAssociation association = (IProductCmptTypeAssociation) iter.next();
+				ProductCmptStructureReference node = new ProductCmptTypeRelationReference(this, parent, association);
+				ArrayList linksList = (ArrayList)mapping.get(association.getName());
+				node.setChildren(buildChildNodes((IProductCmptLink[])linksList.toArray(new IProductCmptLink[linksList.size()]), node, association));
 				children.add(node);
 			}
             

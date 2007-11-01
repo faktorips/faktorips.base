@@ -19,14 +19,11 @@ package org.faktorips.devtools.core.model;
 
 
 /**
- * Thrown when a cycle relation is detected. A cycle relation means
- * that one product or policy component has a relation to itself at least
- * for one way for component follwing the ralation to its target, taking the
- * relations defined on the target and following them to the targets and so on.
+ * Thrown when a cycle is detcted in the product structure and so a structure tree can't be constructed.
  * 
  * @author Thorsten Guenther
  */
-public class CycleException extends Exception {
+public class CycleInProductStructureException extends Exception {
 
 	/**
 	 * Comment for <code>serialVersionUID</code>
@@ -38,7 +35,7 @@ public class CycleException extends Exception {
 	/**
 	 * Creates a new exception with the given path. 
 	 */
-	public CycleException(IIpsElement[] cyclePath) {
+	public CycleInProductStructureException(IIpsElement[] cyclePath) {
 		this.cyclePath = cyclePath;
 	}
 	

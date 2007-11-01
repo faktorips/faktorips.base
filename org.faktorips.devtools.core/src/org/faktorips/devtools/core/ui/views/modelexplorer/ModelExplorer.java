@@ -69,10 +69,14 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
 import org.faktorips.devtools.core.ui.actions.ExpandCollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.FindPolicyReferencesAction;
@@ -303,8 +307,10 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                     IProductCmptGeneration.class,
                     ITableStructure.class,
                     ITableContents.class,
-                    IPolicyCmptTypeAttribute.class, 
-                    IPolicyCmptTypeAssociation.class,
+                    IAttribute.class, 
+                    IAssociation.class,
+                    IMethod.class,
+                    ITableStructureUsage.class,
                     ITestCase.class, 
                     ITestCaseType.class}, 
                 new Class[] { IFolder.class,

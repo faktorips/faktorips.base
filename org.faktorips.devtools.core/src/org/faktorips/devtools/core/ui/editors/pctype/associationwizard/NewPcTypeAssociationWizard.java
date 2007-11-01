@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
@@ -78,7 +78,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     private int reverseRelationManipulation = NEW_REVERSE_RELATION;
     private int previousreverseRelationManipulation = NONE_REVERSE_RELATION;
     private String previousTarget;
-    private RelationType previousTargetRelationType;
+    private AssociationType previousTargetRelationType;
     
     public NewPcTypeAssociationWizard(IPolicyCmptTypeAssociation association) {
         super.setWindowTitle("New association");
@@ -297,9 +297,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
         if (isExistingReverseRelation()
                 && (selectionChanged || !(association.getTarget() == previousTarget && previousTargetRelationType == association
-                        .getRelationType()))) {
+                        .getAssociationType()))) {
             previousTarget = association.getTarget();
-            previousTargetRelationType = association.getRelationType();
+            previousTargetRelationType = association.getAssociationType();
 
             inverseRelationPropertyPage.setDescription("Select an existing association");
             
@@ -349,7 +349,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         IPolicyCmptTypeAssociation newReverseRelation = targetPolicyCmptType.newPolicyCmptTypeAssociation();
         newReverseRelation.setTarget(association.getPolicyCmptType().getQualifiedName());
         newReverseRelation.setTargetRoleSingular(association.getPolicyCmptType().getName());
-        newReverseRelation.setRelationType(NewPcTypeAssociationWizard.getCorrespondingRelationType(association.getRelationType()));
+        newReverseRelation.setAssociationType(NewPcTypeAssociationWizard.getCorrespondingRelationType(association.getAssociationType()));
         IPolicyCmptTypeAssociation containerRelation = (IPolicyCmptTypeAssociation)association.findSubsettedDerivedUnion(ipsProject);
         if (newReverseRelation.isAssoziation() && containerRelation != null){
             newReverseRelation.setSubsettedDerivedUnion(containerRelation.getInverseRelation());
@@ -366,7 +366,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * Set the default values depending on the relation type and read-only container flag.
      */
     void setDefaultsByRelationTypeAndTarget(IPolicyCmptTypeAssociation newRelation){
-        RelationType type = newRelation.getRelationType();
+        AssociationType type = newRelation.getAssociationType();
         if (type != null) {
             boolean targetIsProductRelevantOrNull = targetPolicyCmptType==null?true:targetPolicyCmptType.isConfigurableByProductCmptType();
             boolean defaultProductRelevant = newRelation.getPolicyCmptType().isConfigurableByProductCmptType() && targetIsProductRelevantOrNull;
@@ -397,11 +397,11 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      *  in: COMPOSITION => out: REVERSE_COMPOSITION<br>
      *  in: REVERSE_COMPOSITION => out: COMPOSITION<br>
      */
-    public static RelationType getCorrespondingRelationType(RelationType sourceRelType){
+    public static AssociationType getCorrespondingRelationType(AssociationType sourceRelType){
         return sourceRelType == null                ? null :
-               sourceRelType.isAssoziation()        ? RelationType.ASSOCIATION :
-               sourceRelType.isCompositionDetailToMaster() ? RelationType.COMPOSITION_MASTER_TO_DETAIL :
-               sourceRelType.isCompositionMasterToDetail()        ? RelationType.COMPOSITION_DETAIL_TO_MASTER : null;
+               sourceRelType.isAssoziation()        ? AssociationType.ASSOCIATION :
+               sourceRelType.isCompositionDetailToMaster() ? AssociationType.COMPOSITION_MASTER_TO_DETAIL :
+               sourceRelType.isCompositionMasterToDetail()        ? AssociationType.COMPOSITION_DETAIL_TO_MASTER : null;
     }
     
     /**
@@ -428,8 +428,8 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 // and the type is matching to the source relation
                 if (relations[i].getTarget().equals(
                         sourceRelation.getPolicyCmptType().getQualifiedName())
-                        && relations[i].getRelationType() == NewPcTypeRelationWizard.getCorrespondingRelationType(sourceRelation
-                                .getRelationType())) {
+                        && relations[i].getAssociationType() == NewPcTypeRelationWizard.getCorrespondingRelationType(sourceRelation
+                                .getAssociationType())) {
                     relationsOfTarget.add(relations[i]);
                 }
             }

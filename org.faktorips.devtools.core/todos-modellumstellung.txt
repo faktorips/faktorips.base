@@ -2,33 +2,23 @@ Klären
 ======
 Korrektes Overloading von Attributen beruecksichtigen! Wo überall?
 Umbenennen von ProductCmptType in ConfigurationType, ProductCmpt in ConfigurationObject?
-Validierung: Einfuerhung IIpsProject Parameter. Wollen wir auch direkt einen localCacheParameter einfuehren
 
 
 ToDos
 =====
-Abhängigkeiten zwischen den Ableitungshierarchien auf Vertrags & Produktseite. 
-=> Wird pro Productcomponenttype explicit festgelegt.
-
 Aggregation Kind / RelationType
 => AggregationKind wieder rausschmeissen. 
-
-Abstrakt Flag & abstrakte Methoden bei ProductCmptTypes / Formulas.
 
 Adapter IPolicyCmptTypeAssociation to IRelation
 
 
 Testen: Compare
-Codegenerierung Testen/Erweitern
- - Unabhängige ProductCmptTypes
- - Methoden von ProductCmptTypes
 
-XML-Format des Produktbausteins anpassen
+XML-Format des Produktbausteins anpassen (971)
   - Umbennen von "Relation" in "Link"
   - Umbennen von "pcTypeRelation" in "association"
   => Achtung hier muss auch die Laufzeit angepasst werden!!!
-  .
-Modellexplorer: Filter auf Vertrags / Produktklassen
+
 Lokalisierung
 ...
 

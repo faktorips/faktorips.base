@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -272,7 +272,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.appendln("super." + MethodNames.REMOVE_CHILD_MODEL_OBJECT_INTERNAL + "(" + paramName + ");");
         IPolicyCmptTypeAssociation[] relations = getPcType().getPolicyCmptTypeAssociations();
         for (int i = 0; i < relations.length; i++) {
-            if (relations[i].isValid() && relations[i].getRelationType().isCompositionMasterToDetail() && !relations[i].isDerivedUnion()) {
+            if (relations[i].isValid() && relations[i].getAssociationType().isCompositionMasterToDetail() && !relations[i].isDerivedUnion()) {
                 String fieldName = getFieldNameForRelation(relations[i]);
                 if (relations[i].is1ToMany()) {
                     methodsBuilder.appendln(fieldName + ".remove(" + paramName + ");");
@@ -1347,7 +1347,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         for (int i = 0; i < relations.length; i++) {
             IPolicyCmptTypeAssociation r = relations[i];
             if (!r.validate().containsErrorMsg()) {
-                if (r.getRelationType() == RelationType.COMPOSITION_MASTER_TO_DETAIL
+                if (r.getAssociationType() == AssociationType.COMPOSITION_MASTER_TO_DETAIL
                         && StringUtils.isEmpty(r.getSubsettedDerivedUnion())) {
                     body.appendln();
                     if (r.is1ToMany()) {

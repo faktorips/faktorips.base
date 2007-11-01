@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
 
 /**
@@ -37,6 +38,7 @@ public interface IAssociation extends IIpsObjectPart {
     
     // String constants for the relation class' properties according
     // to the Java beans standard.
+    public final static String PROPERTY_ASSOCIATION_TYPE = "associationType"; //$NON-NLS-1$
     public final static String PROPERTY_AGGREGATION_KIND = "aggregationKind"; //$NON-NLS-1$
     public final static String PROPERTY_TARGET = "target"; //$NON-NLS-1$
     public final static String PROPERTY_TARGET_ROLE_SINGULAR = "targetRoleSingular"; //$NON-NLS-1$
@@ -115,6 +117,7 @@ public interface IAssociation extends IIpsObjectPart {
      * is not a sutype (or the same type) of the derived union's target type.
      */
     public final static String MSGCODE_TARGET_TYPE_NOT_A_SUBTYPE = IPolicyCmptTypeAssociation.MSGCODE_PREFIX + "TargetTypeNotASubtype"; //$NON-NLS-1$
+    public final static AssociationType DEFAULT_RELATION_TYPE = AssociationType.ASSOCIATION;
 
     /**
      * Returns the type this association belongs to. Never returns <code>null</code>.
@@ -122,9 +125,25 @@ public interface IAssociation extends IIpsObjectPart {
     public IType getType();
     
     /**
+     * Returns the association's type. 
+     */
+    public AssociationType getAssociationType();
+    
+    /**
+     * Sets the association's type.
+     * @throws NullPointerException if newType is <code>null</code>.
+     */
+    public void setAssociationType(AssociationType newType);
+    
+    /**
      * Returns the kind of aggregation. The method never returns <code>null</code>.
      */
     public AggregationKind getAggregationKind();
+    
+    /**
+     * Returns <code>true</code> if this is an assoziation (no composition, no aggegration) otherwise <code>false</code>.
+     */
+    public boolean isAssoziation();
     
     /**
      * Returns <code>true</code> if this is a derived association, otherwise <code>false</code>.

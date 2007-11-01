@@ -44,6 +44,26 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         method = pcType.newProductCmptTypeMethod();
     }
     
+    public void testValidate_FormulaMustntBeAbstract() throws CoreException {
+        method.setFormulaSignatureDefinition(true);
+        method.setAbstract(true);
+        MessageList result = method.validate();
+        assertNotNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT));
+        
+        method.setAbstract(false);
+        result = method.validate();
+        assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT));
+        
+        method.setFormulaSignatureDefinition(false);
+        method.setAbstract(true);
+        result = method.validate();
+        assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT));
+        
+        method.setAbstract(false);
+        result = method.validate();
+        assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT));
+    }
+    
     public void testValidate_FormulaNameIsMissing() throws CoreException {
         method.setFormulaSignatureDefinition(false);
         method.setFormulaName("someName");

@@ -53,6 +53,24 @@ public interface IType extends IIpsObject, Datatype {
     public final static String MSGCODE_SUPERTYPE_NOT_FOUND = MSGCODE_PREFIX + "SupertypeNotFound"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that an abstract method exists in the type's supertype
+     * hierarchy that must be overriden in the conrete type.
+     */
+    public final static String MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD = MSGCODE_PREFIX + "MustOverrideAbstractMethod"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that at least one abstract method is defined, but this
+     * type is not marked as abstract.
+     */
+    public final static String MSGCODE_ABSTRACT_MISSING = MSGCODE_PREFIX + "AbstractMissing"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that a readonly-container relation exists in the type's supertype
+     * hierarchy that must be implemented, or the type must also be abstract.
+     */
+    public final static String MSGCODE_MUST_SPECIFY_DERIVED_UNION = MSGCODE_PREFIX + "MustSpecifyDerivedUnion"; //$NON-NLS-1$
+    
+    /**
      * Returns <code>true</code> if this is an abstract type, <code>false</code> otherwise.
      */
     public boolean isAbstract();

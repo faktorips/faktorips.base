@@ -42,7 +42,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -55,7 +55,7 @@ import org.faktorips.util.message.MessageList;
  * @author Thorsten Guenther
  */
 public class SourcePage extends WizardPage implements ICheckStateListener {
-    private IProductCmptStructure structure;
+    private IProductCmptTreeStructure structure;
     private CheckboxTreeViewer tree;
     private CheckStateListener checkStateListener;
     /**
@@ -101,7 +101,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     /**
      * Creates a new page to select the objects to copy.
      */
-    protected SourcePage(IProductCmptStructure structure, int type) {
+    protected SourcePage(IProductCmptTreeStructure structure, int type) {
         super(PAGE_ID, getTitle(type), null);
         this.structure = structure;
         this.type = type;

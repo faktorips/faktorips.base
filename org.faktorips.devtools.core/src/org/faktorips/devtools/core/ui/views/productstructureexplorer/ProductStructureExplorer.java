@@ -63,14 +63,14 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.CycleException;
+import org.faktorips.devtools.core.model.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
@@ -403,7 +403,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         try {
             rootNode.storeProductCmpt(product);
             showTreeInput(product.getStructure(product.getIpsProject()));
-		} catch (CycleException e) {
+		} catch (CycleInProductStructureException e) {
 			handleCircle(e);
 		}
     }
@@ -420,10 +420,10 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                 public void run() {
                     if (!tree.getControl().isDisposed()) {
                         Object input = tree.getInput();
-                        if (input instanceof IProductCmptStructure) {
+                        if (input instanceof IProductCmptTreeStructure) {
                             try {
-                                ((IProductCmptStructure)input).refresh();
-                            } catch (CycleException e) {
+                                ((IProductCmptTreeStructure)input).refresh();
+                            } catch (CycleInProductStructureException e) {
                                 handleCircle(e);
                                 return;
                             }
@@ -450,7 +450,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         return context;
     }
     
-    private void handleCircle(CycleException e) {
+    private void handleCircle(CycleInProductStructureException e) {
 		IpsPlugin.log(e);
 		((GridData)tree.getTree().getLayoutData()).exclude = true;
 		String msg = Messages.ProductStructureExplorer_labelCircleRelation;

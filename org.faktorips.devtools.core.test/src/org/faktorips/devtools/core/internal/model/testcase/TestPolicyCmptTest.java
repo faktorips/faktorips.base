@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -105,7 +105,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAssociation relation = type1.newPolicyCmptTypeAssociation();
         relation.setTargetRoleSingular("relation1");
         relation.setTargetRolePlural("relations1");
-        relation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        relation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         relation.setTarget(type2.getQualifiedName());
         relation.setProductRelevant(false);
         // assoziaotion1: ProductCmptType1 -> ProductCmptType2
@@ -118,7 +118,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAssociation relation2 = type1.newPolicyCmptTypeAssociation();
         relation2.setTargetRoleSingular("relation2");
         relation2.setTargetRolePlural("relations2");
-        relation2.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        relation2.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         relation2.setTarget(type1.getQualifiedName());
         relation2.setProductRelevant(false);
         //  assoziaotion2: ProductCmptType1 -> ProductCmptType1
@@ -576,7 +576,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
             coverages.setTargetRolePlural("Coverages");
             coverages.setTargetRoleSingularProductSide("Coverage");
             coverages.setTargetRolePluralProductSide("Coverages");
-            coverages.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+            coverages.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
             coverages.setProductRelevant(true);
             
             IProductCmptTypeAssociation association = productCmptTypePolicy.newProductCmptTypeAssociation();

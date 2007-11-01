@@ -242,7 +242,7 @@ public interface IIpsProjectProperties {
      * Returns <code>true</code> if the rule is enabled, otherwise <code>false</code>.
      * See the message code for the violation of this rule for further details.
      * 
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION
+     * @see org.faktorips.devtools.core.model.pctype.IType#MSGCODE_MUST_SPECIFY_DERIVED_UNION
      */
     public boolean isContainerRelationIsImplementedRuleEnabled();
     

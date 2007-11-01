@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.internal.model.type.Type;
 import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -40,10 +39,7 @@ import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -381,25 +377,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
         IIpsProject ipsProject = getIpsProject();
-
         validateProductSide(list, ipsProject);
-
-        if (!isAbstract()) {
-            validateIfAllAbstractMethodsAreImplemented(getIpsProject(), list);
-            IIpsProjectProperties props = getIpsProject().getProperties();
-            if (props.isContainerRelationIsImplementedRuleEnabled()) {
-                DerivedUnionsSpecifiedValidator validator = new DerivedUnionsSpecifiedValidator(list, ipsProject);
-                validator.start(this);
-            }
-            IMethod[] methods = getMethods();
-            for (int i = 0; i < methods.length; i++) {
-                if (methods[i].isAbstract()) {
-                    String text = Messages.PolicyCmptType_msgAbstractMissmatch;
-                    list.add(new Message(MSGCODE_ABSTRACT_MISSING, text, Message.ERROR, this,
-                            IPolicyCmptType.PROPERTY_ABSTRACT)); //$NON-NLS-1$
-                }
-            }
-        }
     }
 
     private void validateProductSide(MessageList list, IIpsProject ipsProject) throws CoreException {
@@ -429,20 +407,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 list.add(new Message(MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT, msg,
                         Message.ERROR, this, IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE));
             }
-        }
-    }
-
-    /**
-     * Validation for {@link IPolicyCmptType#MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD}
-     */
-    private void validateIfAllAbstractMethodsAreImplemented(IIpsProject ipsProject, MessageList list)
-            throws CoreException {
-
-        IMethod[] methods = findOverrideMethodCandidates(true, ipsProject);
-        for (int i = 0; i < methods.length; i++) {
-            String text = NLS.bind(Messages.PolicyCmptType_msgMustOverrideAbstractMethod, methods[i].getName(),
-                    methods[i].getType().getQualifiedName());
-            list.add(new Message(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, text, Message.ERROR, this));
         }
     }
 
@@ -589,7 +553,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             IPolicyCmptTypeAssociation[] relations = currentType.getPolicyCmptTypeAssociations();
             for (int i = 0; i < relations.length; i++) {
                 IPolicyCmptTypeAssociation each = relations[i];
-                if (each.getRelationType().isCompositionDetailToMaster()) {
+                if (each.getAssociationType().isCompositionDetailToMaster()) {
                     root = false;
                     return false; // stop the visit, we have the result
                 }
@@ -603,48 +567,5 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     }
 
-    private class DerivedUnionsSpecifiedValidator extends TypeHierarchyVisitor {
-
-        private MessageList msgList;
-        private List candidateSubsets = new ArrayList(0);
-
-        public DerivedUnionsSpecifiedValidator(MessageList msgList, IIpsProject ipsProject) {
-            super(ipsProject);
-            this.msgList = msgList;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        protected boolean visit(IType currentType) throws CoreException {
-            IAssociation[] associations = currentType.getAssociations();
-            for (int i = 0; i < associations.length; i++) {
-                candidateSubsets.add(associations[i]);
-            }
-            for (int i = 0; i < associations.length; i++) {
-                if (associations[i].isDerivedUnion()) {
-                    if (!isSubsetted(associations[i])) {
-                        String text = NLS.bind(Messages.PolicyCmptType_msgMustImplementContainerRelation,
-                                associations[i].getName(), associations[i].getType().getQualifiedName());
-                        msgList.add(new Message(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION, text,
-                                Message.ERROR, this, IType.PROPERTY_ABSTRACT));
-
-                    }
-                }
-            }
-            return true;
-        }
-
-        private boolean isSubsetted(IAssociation derivedUnion) throws CoreException {
-            for (Iterator it = candidateSubsets.iterator(); it.hasNext();) {
-                IAssociation candidate = (IAssociation)it.next();
-                if (derivedUnion == candidate.findSubsettedDerivedUnion(ipsProject)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-    }
 
 }

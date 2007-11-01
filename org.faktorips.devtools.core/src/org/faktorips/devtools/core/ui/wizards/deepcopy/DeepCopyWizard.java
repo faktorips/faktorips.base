@@ -30,8 +30,8 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.product.DeepCopyOperation;
-import org.faktorips.devtools.core.internal.model.product.ProductCmptStructure;
-import org.faktorips.devtools.core.model.CycleException;
+import org.faktorips.devtools.core.internal.model.product.ProductCmptTreeStructure;
+import org.faktorips.devtools.core.model.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
@@ -46,7 +46,7 @@ public class DeepCopyWizard extends ResizableWizard {
 	public static final int TYPE_COPY_PRODUCT = 10;
 	public static final int TYPE_NEW_VERSION = 100;
 
-	private ProductCmptStructure structure;
+	private ProductCmptTreeStructure structure;
 	private SourcePage sourcePage;
 	private ReferenceAndPreviewPage previewPage;
 	private IProductCmpt copiedRoot;
@@ -88,12 +88,12 @@ public class DeepCopyWizard extends ResizableWizard {
 
 				MessageDialog.openInformation(getShell(), title, msg);
 
-				structure = (ProductCmptStructure)product.getStructure(product.getFirstGeneration().getValidFrom(), product.getIpsProject());
+				structure = (ProductCmptTreeStructure)product.getStructure(product.getFirstGeneration().getValidFrom(), product.getIpsProject());
 			} else {
-				structure = (ProductCmptStructure)product.getStructure(product.getIpsProject());
+				structure = (ProductCmptTreeStructure)product.getStructure(product.getIpsProject());
 			}
 
-		} catch (CycleException e) {
+		} catch (CycleInProductStructureException e) {
 			IpsPlugin.log(e);
 		}
 

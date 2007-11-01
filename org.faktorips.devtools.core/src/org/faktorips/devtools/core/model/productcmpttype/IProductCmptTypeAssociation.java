@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model.productcmpttype;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 
 /**
@@ -31,12 +32,16 @@ import org.faktorips.devtools.core.model.type.IAssociation;
  */
 public interface IProductCmptTypeAssociation extends IAssociation {
 
+    /**
+     * The list of applicable types. For product component types only aggregations and associations are supported.
+     */
+    public final static AssociationType[] APPLICABLE_ASSOCIATION_TYPES = new AssociationType[] { 
+        AssociationType.AGGREGATION, AssociationType.ASSOCIATION}; 
+    
     public static final int CARDINALITY_ONE = 1;
     public static final int CARDINALITY_MANY = Integer.MAX_VALUE;
     
-    // String constants for the relation class' properties according
-    // to the Java beans standard.
-    public final static String PROPERTY_AGGREGATION_KIND = "aggregationKind"; //$NON-NLS-1$
+    // String constants for the relation class' properties according to the Java beans standard.
     public final static String PROPERTY_TARGET = "target"; //$NON-NLS-1$
     public final static String PROPERTY_TARGET_ROLE_SINGULAR = "targetRoleSingular"; //$NON-NLS-1$
     public final static String PROPERTY_TARGET_ROLE_PLURAL = "targetRolePlural"; //$NON-NLS-1$
@@ -49,13 +54,6 @@ public interface IProductCmptTypeAssociation extends IAssociation {
      * Returns the product component type this relation belongs to. Never returns <code>null</code>.
      */
     public IProductCmptType getProductCmptType();
-    
-    /**
-     * Sets the kind of aggregation.
-     * 
-     * @throws NullPointerException if newKind is <code>null</code>.
-     */
-    public void setAggregationKind(AggregationKind newKind);
     
     /**
      * Returns the target product component type or <code>null</code> if either this relation hasn't got a target

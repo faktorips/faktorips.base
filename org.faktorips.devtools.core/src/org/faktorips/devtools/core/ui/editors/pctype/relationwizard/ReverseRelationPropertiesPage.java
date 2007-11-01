@@ -34,7 +34,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
@@ -55,7 +56,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 	/* State variables */
 	private String prevSelExistingRelation = ""; //$NON-NLS-1$
 	private String prevTarget = ""; //$NON-NLS-1$
-	private RelationType prevRelType = RelationType.COMPOSITION_MASTER_TO_DETAIL;
+	private AssociationType prevRelType = AssociationType.COMPOSITION_MASTER_TO_DETAIL;
 	private boolean prevIsExisting;
 	private boolean prevIsNew;
 	
@@ -86,8 +87,8 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
                 // and the type is matching to the source relation
                 if (relations[i].getTarget().equals(
                         sourceRelation.getPolicyCmptType().getQualifiedName())
-                        && relations[i].getRelationType() == NewPcTypeRelationWizard.getCorrespondingRelationType(sourceRelation
-                                .getRelationType())) {
+                        && relations[i].getAssociationType() == NewPcTypeRelationWizard.getCorrespondingRelationType(sourceRelation
+                                .getAssociationType())) {
                     relationsOfTarget.add(relations[i]);
                 }
             }
@@ -128,7 +129,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
         targetControl.setText(wizard.getPolicyCmptTypeQualifiedName());
 
         uiToolkit.createFormLabel(workArea, Messages.NewPcTypeRelationWizard_reverseRelationProp_labelType);
-        Combo typeCombo = uiToolkit.createCombo(workArea, RelationType.getEnumType());
+        Combo typeCombo = uiToolkit.createCombo(workArea, AssociationType.getEnumType());
         typeCombo.setEnabled(false);
 
         Label existingRelLabel = uiToolkit.createFormLabel(workArea,
@@ -144,7 +145,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 		
 		existingRelationsField = new ComboField(existingRelCombo);
 		existingRelationsLabel = new LabelField(existingRelLabel);
-		typeField = new EnumValueField(typeCombo, RelationType.getEnumType());
+		typeField = new EnumValueField(typeCombo, AssociationType.getEnumType());
 
 		super.createControls(mainComposite);
 	}
@@ -154,7 +155,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 	 */
 	protected void connectToModel() {
 		wizard.addToUiControllerReverseRelation(typeField,
-				IPolicyCmptTypeAssociation.PROPERTY_RELATIONTYPE);
+				IAssociation.PROPERTY_ASSOCIATION_TYPE);
 
 		wizard.addToUiControllerReverseRelation(minCardinalityField,
 				IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
@@ -213,13 +214,13 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 		if (wizard.isExistingReverseRelation()) {
 			// if selection of target or type changes reinitialize existing relation control
 			if (!(prevTarget.equals(wizard.getRelation().getTarget()) &&
-				  prevRelType.equals(wizard.getRelation().getRelationType()) &&
+				  prevRelType.equals(wizard.getRelation().getAssociationType()) &&
 				  prevIsExisting)){
 
                 prevIsExisting = true;
 				prevIsNew = false;
 				prevTarget = wizard.getRelation().getTarget();
-				prevRelType = wizard.getRelation().getRelationType();
+				prevRelType = wizard.getRelation().getAssociationType();
 				
                 setVisibleExistingRelationDropDown(true);
 
@@ -253,7 +254,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 			if (! prevIsNew ){
                 prevIsExisting = false;
     			prevIsNew = true;
-                prevRelType = wizard.getRelation().getRelationType();
+                prevRelType = wizard.getRelation().getAssociationType();
                 
     			setVisibleExistingRelationDropDown(false);
     			
@@ -272,8 +273,8 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
                 setStatusPropertyFields();
                 
                 connectRelationToUi();
-            } else if (prevRelType != null && ! prevRelType.equals(wizard.getRelation().getRelationType())){
-                prevRelType = wizard.getRelation().getRelationType();
+            } else if (prevRelType != null && ! prevRelType.equals(wizard.getRelation().getAssociationType())){
+                prevRelType = wizard.getRelation().getAssociationType();
                 setStatusPropertyFields();
             }
         } else {
@@ -340,7 +341,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 		IPolicyCmptTypeAssociation newReverseRelation = wizard.getTargetPolicyCmptType().newPolicyCmptTypeAssociation();
 		newReverseRelation.setTarget(wizard.getPolicyCmptTypeQualifiedName());
 		newReverseRelation.setTargetRoleSingular(wizard.getRelation().getPolicyCmptType().getName());
-		newReverseRelation.setRelationType(NewPcTypeRelationWizard.getCorrespondingRelationType(wizard.getRelation().getRelationType()));
+		newReverseRelation.setAssociationType(NewPcTypeRelationWizard.getCorrespondingRelationType(wizard.getRelation().getAssociationType()));
 		IPolicyCmptTypeAssociation containerRelation = (IPolicyCmptTypeAssociation)wizard.getRelation().findSubsettedDerivedUnion(wizard.getRelation().getIpsProject());
 		if (newReverseRelation.isAssoziation() && containerRelation != null){
 			newReverseRelation.setSubsettedDerivedUnion(containerRelation.getInverseRelation());

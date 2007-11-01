@@ -121,6 +121,11 @@ public interface IIpsSrcFile extends IIpsElement {
     public QualifiedNameType getQualifiedNameType();
     
     /**
+     * Returns the name of the ips object stored in the file.
+     */
+    public String getIpsObjecName();
+    
+    /**
      * Returns whether this file is mutable or not.
      */
     public boolean isMutable();

@@ -25,10 +25,14 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartCollection;
+import org.faktorips.devtools.core.internal.model.pctype.Messages;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -57,8 +61,8 @@ public abstract class Type extends BaseIpsObject implements IType {
     public Type(IIpsSrcFile file) {
         super(file);
         attributes = createCollectionForAttributes();
-        methods = createCollectionForMethods();
         associations = createCollectionForAssociations();
+        methods = createCollectionForMethods();
     }
 
     /**
@@ -439,6 +443,24 @@ public abstract class Type extends BaseIpsObject implements IType {
         if (hasSupertype()) {
             validateSupertype(list, ipsProject);
         }
+        if (!isAbstract()) {
+            validateIfAllAbstractMethodsAreImplemented(getIpsProject(), list);
+            IIpsProjectProperties props = getIpsProject().getProperties();
+            if (props.isContainerRelationIsImplementedRuleEnabled()) {
+                DerivedUnionsSpecifiedValidator validator = new DerivedUnionsSpecifiedValidator(list, ipsProject);
+                validator.start(this);
+            }
+            IMethod[] methods = getMethods();
+            for (int i = 0; i < methods.length; i++) {
+                if (methods[i].isAbstract()) {
+                    String text = Messages.PolicyCmptType_msgAbstractMissmatch;
+                    list.add(new Message(MSGCODE_ABSTRACT_MISSING, text, Message.ERROR, this,
+                            IPolicyCmptType.PROPERTY_ABSTRACT)); //$NON-NLS-1$
+                    break;
+                }
+            }
+        }
+        
     }
 
     private void validateSupertype(MessageList list, IIpsProject ipsProject) throws CoreException {
@@ -468,6 +490,20 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
     }
     
+    /**
+     * Validation for {@link IPolicyCmptType#MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD}
+     */
+    private void validateIfAllAbstractMethodsAreImplemented(IIpsProject ipsProject, MessageList list)
+            throws CoreException {
+
+        IMethod[] methods = findOverrideMethodCandidates(true, ipsProject);
+        for (int i = 0; i < methods.length; i++) {
+            String text = NLS.bind(Messages.PolicyCmptType_msgMustOverrideAbstractMethod, methods[i].getName(),
+                    methods[i].getType().getQualifiedName());
+            list.add(new Message(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, text, Message.ERROR, this));
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -722,4 +758,47 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
     }
 
+    private class DerivedUnionsSpecifiedValidator extends TypeHierarchyVisitor {
+
+        private MessageList msgList;
+        private List candidateSubsets = new ArrayList(0);
+
+        public DerivedUnionsSpecifiedValidator(MessageList msgList, IIpsProject ipsProject) {
+            super(ipsProject);
+            this.msgList = msgList;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IType currentType) throws CoreException {
+            IAssociation[] associations = currentType.getAssociations();
+            for (int i = 0; i < associations.length; i++) {
+                candidateSubsets.add(associations[i]);
+            }
+            for (int i = 0; i < associations.length; i++) {
+                if (associations[i].isDerivedUnion()) {
+                    if (!isSubsetted(associations[i])) {
+                        String text = NLS.bind(Messages.PolicyCmptType_msgMustImplementContainerRelation,
+                                associations[i].getName(), associations[i].getType().getQualifiedName());
+                        msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION, text,
+                                Message.ERROR, this, IType.PROPERTY_ABSTRACT));
+
+                    }
+                }
+            }
+            return true;
+        }
+
+        private boolean isSubsetted(IAssociation derivedUnion) throws CoreException {
+            for (Iterator it = candidateSubsets.iterator(); it.hasNext();) {
+                IAssociation candidate = (IAssociation)it.next();
+                if (derivedUnion == candidate.findSubsettedDerivedUnion(ipsProject)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+    }
 }

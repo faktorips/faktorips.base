@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.IProductCmptTreeStructure;
 
 /**
  * Tests for product component structure.
@@ -150,7 +150,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 //    
     public void testCopyWithNoGeneration() throws Exception {
         product = newProductCmpt(ipsProject, "EmptyProduct");
-        IProductCmptStructure structure = product.getStructure(ipsProject);
+        IProductCmptTreeStructure structure = product.getStructure(ipsProject);
         IProductCmptReference[] toCopy = (IProductCmptReference[])structure.toArray(true);
         
         Hashtable handles = new Hashtable();

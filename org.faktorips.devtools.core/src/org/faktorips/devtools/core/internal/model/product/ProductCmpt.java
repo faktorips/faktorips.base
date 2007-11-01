@@ -29,7 +29,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.TimedIpsObject;
-import org.faktorips.devtools.core.model.CycleException;
+import org.faktorips.devtools.core.model.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptKind;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
@@ -280,15 +280,15 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProductCmptStructure getStructure(IIpsProject ipsProject) throws CycleException {
-		return new ProductCmptStructure(this, ipsProject);
+	public IProductCmptTreeStructure getStructure(IIpsProject ipsProject) throws CycleInProductStructureException {
+		return new ProductCmptTreeStructure(this, ipsProject);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProductCmptStructure getStructure(GregorianCalendar date, IIpsProject ipsProject) throws CycleException {
-		return new ProductCmptStructure(this, date, ipsProject);
+	public IProductCmptTreeStructure getStructure(GregorianCalendar date, IIpsProject ipsProject) throws CycleInProductStructureException {
+		return new ProductCmptTreeStructure(this, date, ipsProject);
 	}
 
 	/**

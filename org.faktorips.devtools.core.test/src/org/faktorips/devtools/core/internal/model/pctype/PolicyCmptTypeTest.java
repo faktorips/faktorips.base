@@ -43,17 +43,16 @@ import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.util.CollectionUtil;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
@@ -480,11 +479,11 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         IPolicyCmptType s2 = newPolicyCmptType(root, "SupertypeOfDetail2");
        
         IPolicyCmptTypeAssociation rel = a.newPolicyCmptTypeAssociation();
-        rel.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        rel.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         rel.setTarget(d1.getQualifiedName());
         
         rel = d1.newPolicyCmptTypeAssociation();
-        rel.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        rel.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         rel.setTarget(d2.getQualifiedName());
         
         d2.setSupertype(s2.getQualifiedName());
@@ -506,7 +505,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertTrue(dependsOn.contains(Dependency.createSubtypeDependency(d2.getQualifiedNameType(), s2.getQualifiedNameType())));
     }
     
-    public void testGetPdObjectType() {
+    public void testGetIpsObjectType() {
         assertEquals(IpsObjectType.POLICY_CMPT_TYPE, policyCmptType.getIpsObjectType());
     }
 
@@ -603,52 +602,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertNotNull(hierarchy);
     }
         
-    public void testValidate_MustOverrideAbstractMethod() throws CoreException {
-        int numOfMsg = policyCmptType.validate().getNoOfMessages();
-        
-        // a supertype with a method and connect the pctype to it
-        IPolicyCmptType superType = this.newPolicyCmptType(root, "Supertype");
-        superType.setAbstract(true);
-        policyCmptType.setSupertype(superType.getQualifiedName());
-        IMethod superMethod = superType.newMethod();
-        superMethod.setName("calc");
-
-        // method is not abstract so no error message should be returned.
-        MessageList list = policyCmptType.validate();
-        assertEquals(numOfMsg, list.getNoOfMessages());
-
-        // set method to abstract, now the error should be reported
-        superMethod.setAbstract(true);
-        list = policyCmptType.validate();
-        assertTrue(list.getNoOfMessages() > numOfMsg);
-        Message msg = list.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD);
-        assertEquals(policyCmptType, msg.getInvalidObjectProperties()[0].getObject());
-
-        // "implement" the method in pcType => error should no be reported anymore
-        policyCmptType.overrideMethods(new IMethod[]{superMethod});
-        list = policyCmptType.validate();
-        assertEquals(numOfMsg, list.getNoOfMessages());
-        
-        // create another level in the supertype hierarchy with an abstract method on the new supersupertype.
-        // an error should be reported
-        IPolicyCmptType supersuperType = this.newPolicyCmptType(root, "Supersupertype");
-        supersuperType.setAbstract(true);
-        superType.setSupertype(supersuperType.getQualifiedName());
-        IMethod supersuperMethod = supersuperType.newMethod();
-        supersuperMethod.setName("calc2");
-        supersuperMethod.setAbstract(true);
-        list = policyCmptType.validate();
-        assertTrue(list.getNoOfMessages()>numOfMsg);
-        msg = list.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD);
-        assertEquals(policyCmptType, msg.getInvalidObjectProperties()[0].getObject());
-        
-        // "implement" the method in the supertype => error should no be reported anymore
-        superType.overrideMethods(new IMethod[]{supersuperMethod});
-        list = policyCmptType.validate();
-        assertEquals(numOfMsg, list.getNoOfMessages());
-        
-    }
-    
     public void testSetProductCmptType() throws CoreException {
         super.testPropertyAccessReadWrite(IPolicyCmptType.class, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE, policyCmptType, "NewProduct");
     }
@@ -677,13 +630,13 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     public void testIsAggregateRoot() throws CoreException {
     	assertTrue(policyCmptType.isAggregateRoot());
     	
-    	policyCmptType.newPolicyCmptTypeAssociation().setRelationType(RelationType.ASSOCIATION);
+    	policyCmptType.newPolicyCmptTypeAssociation().setAssociationType(AssociationType.ASSOCIATION);
     	assertTrue(policyCmptType.isAggregateRoot());
 
-    	policyCmptType.newPolicyCmptTypeAssociation().setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+    	policyCmptType.newPolicyCmptTypeAssociation().setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
     	assertTrue(policyCmptType.isAggregateRoot());
     	
-    	policyCmptType.newPolicyCmptTypeAssociation().setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
+    	policyCmptType.newPolicyCmptTypeAssociation().setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
     	assertFalse(policyCmptType.isAggregateRoot());
     	
     	// create a supertype
@@ -692,11 +645,11 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     	subtype.setSupertype(supertype.getQualifiedName());
     	subtype.getIpsSrcFile().save(true, null);
     	
-    	supertype.newPolicyCmptTypeAssociation().setRelationType(RelationType.ASSOCIATION);
+    	supertype.newPolicyCmptTypeAssociation().setAssociationType(AssociationType.ASSOCIATION);
     	assertTrue(subtype.isAggregateRoot());
-    	supertype.newPolicyCmptTypeAssociation().setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+    	supertype.newPolicyCmptTypeAssociation().setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
     	assertTrue(subtype.isAggregateRoot());
-    	supertype.newPolicyCmptTypeAssociation().setRelationType(RelationType.COMPOSITION_DETAIL_TO_MASTER);
+    	supertype.newPolicyCmptTypeAssociation().setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
     	assertFalse(subtype.isAggregateRoot());
         
         IPolicyCmptType invalidType = newPolicyCmptType(ipsProject, "InvalidType");
@@ -711,112 +664,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     	policyCmptType.setProductCmptType("");
     	ml = policyCmptType.validate();
     	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING));
-    }
-
-    public void testValidate_AbstractMissing() throws Exception {
-    	MessageList ml = policyCmptType.validate();
-    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_ABSTRACT_MISSING));
-    	policyCmptType.newMethod().setAbstract(true);
-    	policyCmptType.setAbstract(false);
-    	ml = policyCmptType.validate();
-    	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_ABSTRACT_MISSING));
-    }
-
-// deactivated because at the moment unimplemented container relations are valid...
-//    public void testValidate_MustImplementeAbstractRelation() throws Exception {
-//    	MessageList ml = pcType.validate();
-//    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION));
-//    	
-//    	PolicyCmptType supertype = newPolicyCmptType(ipsProject, "base.SuperType");
-//    	PolicyCmptType target = newPolicyCmptType(ipsProject, "base.Target");
-//
-//    	pcType.setSupertype(supertype.getQualifiedName());
-//    	
-//    	IRelation rel = supertype.newRelation();
-//    	rel.setTarget(target.getQualifiedName());
-//    	rel.setReadOnlyContainer(true);
-//    	
-//    	ml = pcType.validate();
-//    	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION));
-//    	
-//    	pcType.setAbstract(true);
-//    	ml = pcType.validate();
-//    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION));
-//    }
-
-    public void testValidateMustImplementContainerRelation() throws Exception {
-        IPolicyCmptType target = newPolicyCmptType(ipsProject, "TargetType");
-        
-        MessageList ml = policyCmptType.validate();
-        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
-        
-        IPolicyCmptTypeAssociation container = policyCmptType.newPolicyCmptTypeAssociation();
-        container.setDerivedUnion(true);
-        container.setTargetRoleSingular("Target");
-        container.setTarget(target.getQualifiedName());
-        
-        ml = policyCmptType.validate();
-        assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
-        
-        // test if the rule is not executed when disabled
-        IIpsProjectProperties props = ipsProject.getProperties();
-        props.setContainerRelationIsImplementedRuleEnabled(false);
-        ipsProject.setProperties(props);
-        ml = policyCmptType.validate();
-        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
-        props.setContainerRelationIsImplementedRuleEnabled(true);
-        ipsProject.setProperties(props);
-
-        // type is valid, if it is abstract
-        policyCmptType.setAbstract(true);
-        ml = policyCmptType.validate();
-        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
-        policyCmptType.setAbstract(false);
-        
-        // implement the container relation in the same type
-        IPolicyCmptTypeAssociation relation = policyCmptType.newPolicyCmptTypeAssociation();
-        relation.setDerivedUnion(false);
-        relation.setSubsettedDerivedUnion(container.getName());
-        relation.setTarget(target.getQualifiedName());
-        
-        ml = policyCmptType.validate();
-        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
-        
-        // delete the relation, now same thing for a subtype
-        relation.delete();
-        IPolicyCmptType subtype = newPolicyCmptType(ipsProject, "Subtype");
-        subtype.setSupertype(policyCmptType.getQualifiedName());
-        ml = subtype.validate();
-        assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
-        
-        // type is valid, if it is abstract
-        subtype.setAbstract(true);
-        ml = subtype.validate();
-        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
-        subtype.setAbstract(false);
-
-        relation = subtype.newPolicyCmptTypeAssociation();
-        relation.setDerivedUnion(false);
-        relation.setSubsettedDerivedUnion(container.getName());
-        relation.setTarget(target.getQualifiedName());
-        
-        ml = subtype.validate();
-        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
-        
-        // now same thing for subtype of subtype
-        relation.delete();
-        IPolicyCmptType subsubtype = newPolicyCmptType(ipsProject, "SubSubtype");
-        subsubtype.setSupertype(subtype.getQualifiedName());
-        ml = subsubtype.validate();
-        assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
-
-        relation = subtype.newPolicyCmptTypeAssociation();
-        relation.setDerivedUnion(false);
-        relation.setSubsettedDerivedUnion(container.getName());
-        relation.setTarget(target.getQualifiedName());
-        
-        ml = subtype.validate();
-        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
     }
     
     public void testSupertypeNotProductRelevantIfTheTypeIsProductRelevant() throws Exception{

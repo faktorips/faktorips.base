@@ -59,6 +59,15 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
         return IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name));
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public String getIpsObjecName() {
+        String name = getName();
+        int index = name.lastIndexOf('.');
+        return name.substring(0, index); // index==-1 can never happen for ipssrcfiles, they have a file extension!
+    }
+
     /** 
      * {@inheritDoc}
      */

@@ -168,7 +168,7 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
             bindingContext.bindContent((Text)cardinalityFieldMax.getControl(), association, IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
             bindingContext.updateUI();
             targetText.setText(association.getTarget());
-            typeText.setText(association.getRelationType().getName());
+            typeText.setText(association.getAssociationType().getName());
             
 //            // top extensions
 //            if (topExtensions != null){

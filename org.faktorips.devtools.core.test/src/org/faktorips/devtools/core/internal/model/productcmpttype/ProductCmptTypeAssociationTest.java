@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -60,7 +60,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         productType.setPolicyCmptType(policyType.getQualifiedName());
         
         org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation policyTypeRelation = policyType.newPolicyCmptTypeAssociation();
-        policyTypeRelation.setRelationType(RelationType.COMPOSITION_MASTER_TO_DETAIL);
+        policyTypeRelation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         assertNull(association.findMatchingPolicyCmptTypeRelation(ipsProject));
 
         IPolicyCmptType coverageType = newPolicyCmptType(ipsProject, "Coverage");
@@ -82,7 +82,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         association.setMaxCardinality(4);
         association.setDerivedUnion(true);
         association.setSubsettedDerivedUnion("BaseCoverageType");
-        association.setAggregationKind(AggregationKind.SHARED);
+        association.setAssociationType(AssociationType.AGGREGATION);
         
         Element el = association.toXml(newDocument());
         association = productType.newProductCmptTypeAssociation();

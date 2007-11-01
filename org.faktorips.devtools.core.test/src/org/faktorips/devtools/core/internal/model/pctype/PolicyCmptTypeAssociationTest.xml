@@ -5,7 +5,7 @@
 -->
 <Relation id="42"
           abstract="true" 
-          relationType="ass" 
+          associationType="ass" 
           derivedUnion="true"
           target="MotorPart" 
           targetRoleSingular="PolicyPart" 

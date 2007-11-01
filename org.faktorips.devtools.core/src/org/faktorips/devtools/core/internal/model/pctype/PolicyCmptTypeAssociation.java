@@ -31,8 +31,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
-import org.faktorips.devtools.core.model.pctype.RelationType;
-import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -49,7 +48,6 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     final static String TAG_NAME = "Association"; //$NON-NLS-1$
 
-    private RelationType type = IPolicyCmptTypeAssociation.DEFAULT_RELATION_TYPE;
     private boolean qualified = false;
     private boolean productRelevant = true;
     private String inverseRelation = ""; //$NON-NLS-1$
@@ -69,27 +67,6 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         return (PolicyCmptType)getIpsObject();
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    public AggregationKind getAggregationKind() {
-        return getRelationType().getAggregationKind();
-    }
-
-    /** 
-     * {@inheritDoc}
-     */
-    public RelationType getRelationType() {
-        return type;
-    }
-    
-    /**
-	 * {@inheritDoc}
-	 */
-	public boolean isAssoziation() {
-		return type.isAssoziation();
-	}
-
     /**
      * {@inheritDoc}
      */
@@ -134,10 +111,8 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     /** 
      * {@inheritDoc}
      */
-    public void setRelationType(RelationType newType) {
-        RelationType oldType = type;
-        type = newType;
-        if (newType!= null && newType.isCompositionDetailToMaster()) {
+    public void setAssociationType(AssociationType newType) {
+        if (newType.isCompositionDetailToMaster()) {
             subsettedDerivedUnion = "";
             inverseRelation = "";
             derivedUnion = false;
@@ -148,7 +123,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             targetRoleSingularProductSide = "";
             targetRolePluralProductSide = "";
         }
-        valueChanged(oldType, newType);
+        super.setAssociationType(newType);
     }
     
     /**
@@ -428,9 +403,9 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
      */
     public Image getImage() {
     	String baseImageName = ""; //$NON-NLS-1$
-        if (this.type==RelationType.COMPOSITION_MASTER_TO_DETAIL) {
+        if (this.type==AssociationType.COMPOSITION_MASTER_TO_DETAIL) {
         	baseImageName = "Composition.gif"; //$NON-NLS-1$
-        } else if (this.type==RelationType.COMPOSITION_DETAIL_TO_MASTER) {
+        } else if (this.type==AssociationType.COMPOSITION_DETAIL_TO_MASTER) {
         	baseImageName = "ReverseComposition.gif"; //$NON-NLS-1$
         } else {
         	baseImageName = "Relation.gif"; //$NON-NLS-1$ 
@@ -452,9 +427,9 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);        
         
-        if (maxCardinality != 1 && this.type == RelationType.COMPOSITION_DETAIL_TO_MASTER) {
+        if (maxCardinality != 1 && this.type == AssociationType.COMPOSITION_DETAIL_TO_MASTER) {
         	String text = Messages.Relation_msgRevereseCompositionMustHaveMaxCardinality1;
-        	list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION, text, Message.ERROR, this, new String[] {PROPERTY_MAX_CARDINALITY, PROPERTY_RELATIONTYPE}));
+        	list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION, text, Message.ERROR, this, new String[] {PROPERTY_MAX_CARDINALITY, IAssociation.PROPERTY_ASSOCIATION_TYPE}));
         }
         
         new CheckForDuplicateRoleNameVisitor(list).start(getPolicyCmptType());
@@ -511,8 +486,8 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             String text = Messages.Relation_msgReverseRelationNotSpecified;
             list.add(new Message(MSGCODE_INVERSE_RELATION_MISMATCH, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
         }
-        if  ((!inverseRelationObj.getRelationType().isAssoziation())
-                || (inverseRelationObj.getRelationType().isAssoziation() && !type.isAssoziation())) {
+        if  ((!inverseRelationObj.getAssociationType().isAssoziation())
+                || (inverseRelationObj.getAssociationType().isAssoziation() && !type.isAssoziation())) {
                 String text = Messages.Relation_msgReverseAssociationMissmatch;
                 list.add(new Message(MSGCODE_INVERSE_ASSOCIATION_TYPE_MISSMATCH, text, Message.ERROR, this, new String[]{PROPERTY_INVERSE_RELATION})); //$NON-NLS-1$
                 return;
@@ -536,10 +511,6 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        type = RelationType.getRelationType(element.getAttribute(PROPERTY_RELATIONTYPE));
-        if (type==null) {
-            type = IPolicyCmptTypeAssociation.DEFAULT_RELATION_TYPE;
-        }
         derivedUnion = Boolean.valueOf(element.getAttribute(PROPERTY_DERIVED_UNION)).booleanValue();
         qualified = Boolean.valueOf(element.getAttribute(PROPERTY_QUALIFIED)).booleanValue();
         target = element.getAttribute(PROPERTY_TARGET);
@@ -572,25 +543,6 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         if (isCompositionDetailToMaster()) {
             inverseRelation = ""; //$NON-NLS-1$
         }
-        productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
-        targetRoleSingularProductSide = element.getAttribute(PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE);
-        targetRolePluralProductSide = element.getAttribute(PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE);
-        try {
-            minCardinalityProductSide = Integer.parseInt(element.getAttribute(PROPERTY_MIN_CARDINALITY_PRODUCTSIDE));
-        } catch (NumberFormatException e) {
-        	minCardinalityProductSide = 0;
-        }
-        String maxPS = element.getAttribute(PROPERTY_MAX_CARDINALITY_PRODUCTSIDE);
-        if (maxPS.equals("*")) { //$NON-NLS-1$
-        	maxCardinalityProductSide = CARDINALITY_MANY;
-        }
-        else {
-        	try {
-        		maxCardinalityProductSide = Integer.parseInt(maxPS);
-        	} catch (NumberFormatException e) {
-        		maxCardinalityProductSide = 0;
-        	}
-        }
     }
     
     /**
@@ -598,34 +550,8 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
      */
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
-        newElement.setAttribute(PROPERTY_RELATIONTYPE, type.getId());
-        newElement.setAttribute(PROPERTY_DERIVED_UNION, "" + derivedUnion); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_QUALIFIED, "" + qualified); //$NON-NLS-1$
-        newElement.setAttribute(PROPERTY_TARGET, target);
-        newElement.setAttribute(PROPERTY_TARGET_ROLE_SINGULAR, targetRoleSingular);
-        newElement.setAttribute(PROPERTY_TARGET_ROLE_PLURAL, targetRolePlural);
-        newElement.setAttribute(PROPERTY_MIN_CARDINALITY, "" + minCardinality); //$NON-NLS-1$
-        
-        if (maxCardinality == CARDINALITY_MANY) {
-            newElement.setAttribute(PROPERTY_MAX_CARDINALITY, "*"); //$NON-NLS-1$
-        }
-        else {
-            newElement.setAttribute(PROPERTY_MAX_CARDINALITY, "" + maxCardinality); //$NON-NLS-1$
-        }
-        
-        newElement.setAttribute(PROPERTY_SUBSETTED_DERIVED_UNION, subsettedDerivedUnion);
         newElement.setAttribute(PROPERTY_INVERSE_RELATION, inverseRelation);
-        newElement.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant); //$NON-NLS-1$
-        newElement.setAttribute(PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE, targetRoleSingularProductSide);
-        newElement.setAttribute(PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE, targetRolePluralProductSide);
-        newElement.setAttribute(PROPERTY_MIN_CARDINALITY_PRODUCTSIDE, "" + minCardinalityProductSide); //$NON-NLS-1$
-        
-        if (maxCardinalityProductSide == CARDINALITY_MANY) {
-            newElement.setAttribute(PROPERTY_MAX_CARDINALITY_PRODUCTSIDE, "*"); //$NON-NLS-1$
-        }
-        else {
-            newElement.setAttribute(PROPERTY_MAX_CARDINALITY_PRODUCTSIDE, "" + maxCardinalityProductSide); //$NON-NLS-1$
-        }
     }
     
     private class CheckForDuplicateRoleNameVisitor extends PolicyCmptTypeHierarchyVisitor {

@@ -28,7 +28,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -66,10 +67,10 @@ public class AssociationTargetPage extends WizardPage implements IBlockedValidat
         
         // type
         toolkit.createFormLabel(main, "Type");
-        Combo typeCombo = toolkit.createCombo(main, RelationType.getEnumType());
-        bindingContext.bindContent(typeCombo, association, IPolicyCmptTypeAssociation.PROPERTY_RELATIONTYPE, RelationType.getEnumType());
+        Combo typeCombo = toolkit.createCombo(main, AssociationType.getEnumType());
+        bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE, AssociationType.getEnumType());
         typeCombo.select(0);
-        visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_RELATIONTYPE);
+        visibleProperties.add(IAssociation.PROPERTY_ASSOCIATION_TYPE);
         
         // derived union checkbox
         toolkit.createFormLabel(main, "Derived union");

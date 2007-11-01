@@ -93,6 +93,13 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     public ProdDefPropertyType getProdDefPropertyType() {
         return ProdDefPropertyType.VALUE;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDerived() {
+        return false;
+    }
 
     /**
      * {@inheritDoc}

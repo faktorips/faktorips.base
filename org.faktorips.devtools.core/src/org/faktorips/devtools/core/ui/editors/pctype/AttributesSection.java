@@ -18,7 +18,6 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
@@ -31,10 +30,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IDeleteListener;
@@ -121,10 +119,6 @@ public class AttributesSection extends SimpleIpsPartsSection {
             return (IPolicyCmptType)getIpsObject();
         }
         
-        protected ILabelProvider createLabelProvider() {
-            return new AttributeLabelProvider();
-        }
-        
         protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
             super.createButtons(buttons, toolkit);
             createButtonSpace(buttons, toolkit);
@@ -193,13 +187,5 @@ public class AttributesSection extends SimpleIpsPartsSection {
     		}
     	}
 
-    	private class AttributeLabelProvider extends DefaultLabelProvider {
-    	    
-            public String getText(Object element) {
-                String text = super.getText(element);
-                IPolicyCmptTypeAttribute a = (IPolicyCmptTypeAttribute)element;
-                return text + " : " + a.getDatatype(); //$NON-NLS-1$
-            }
-    	}
     }
 }

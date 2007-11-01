@@ -19,24 +19,24 @@ package org.faktorips.devtools.core.model.product;
 
 import java.util.GregorianCalendar;
 
-import org.faktorips.devtools.core.model.CycleException;
+import org.faktorips.devtools.core.model.CycleInProductStructureException;
 
 /**
- * A product component structure provides navigation between a product component
- * at a given working date, the relations and the targets of these product
- * component relations.
- * 
- * Because a specific product component can be referenced by more than one other
+ * A product component tree structure provides a tree view for product components
+ * starting with a product component used as root. Child nodes are created for
+ * the links to other components.
+ * <p>
+ * Because a specific product components can be referenced by more than one other
  * product component, it is not possible to establis a simple "one parent - many
  * children"-relation based on the product component. This leads to the
  * <code>IProductCmptStructureReference</code> and its subclasses which are
- * references to product components or product component type relations. One
+ * references to product components or product component type associations. One
  * reference wraps one product component, but it is possible that more than one
  * reference wraps the same product component.
  * 
  * @author Thorsten Guenther
  */
-public interface IProductCmptStructure {
+public interface IProductCmptTreeStructure {
 
 	/**
 	 * Returns the reference wrapping the root product component of this
@@ -47,10 +47,10 @@ public interface IProductCmptStructure {
 	/**
 	 * Refreshes the structure to reflect changes to the underlying objects.
 	 * 
-	 * @throws CycleException
+	 * @throws CycleInProductStructureException
 	 *             If a circle is detected.
 	 */
-	public void refresh() throws CycleException;
+	public void refresh() throws CycleInProductStructureException;
 
 	/**
 	 * @return Returns the date this structure was created for. That means, all

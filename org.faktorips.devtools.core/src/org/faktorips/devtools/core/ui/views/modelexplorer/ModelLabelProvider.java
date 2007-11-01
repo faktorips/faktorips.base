@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 
 /**
  * This class provides the ModelExplorer with labels for its tree-elements.
@@ -33,7 +33,10 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
  * @author Stefan Widmaier
  */
 public class ModelLabelProvider implements ILabelProvider {
-	private boolean isFlatLayout = false;
+	
+    private DefaultLabelProvider defaultLabelProvider = new DefaultLabelProvider();
+    
+    private boolean isFlatLayout = false;
 	
     private boolean productDefinitionLabelProvider = false;
     
@@ -111,21 +114,12 @@ public class ModelLabelProvider implements ILabelProvider {
                     }
                     return name.substring(index + 1);
                 }
-            } else if (element instanceof IPolicyCmptTypeAttribute) {
-                IPolicyCmptTypeAttribute attrib = (IPolicyCmptTypeAttribute)element;
-                StringBuffer sb = new StringBuffer();
-                sb.append(attrib.getName());
-                sb.append(" : "); //$NON-NLS-1$
-                sb.append(attrib.getDatatype());
-                sb.append(", "); //$NON-NLS-1$
-                sb.append(attrib.getAttributeType().getId());
-                return sb.toString();
             } else if (productDefinitionLabelProvider && element instanceof IIpsProject && !((IIpsProject)element).isProductDefinitionProject()) {
                 // if this label provider shows product definition aspects then show additional text for no product definition project
                 return ((IIpsProject)element).getName()
                         + NLS.bind(" ({0})", Messages.ModelLabelProvider_noProductDefinitionProjectLabel); //$NON-NLS-1$
             }
-            return ((IIpsElement)element).getName();
+            return defaultLabelProvider.getText(element);
         } else if (element instanceof IProject && ((IProject)element).isOpen()) {
             String labelAddition = productDefinitionLabelProvider ? Messages.ModelLabelProvider_noProductDefinitionProjectLabel
                     : Messages.ModelExplorer_nonIpsProjectLabel;
