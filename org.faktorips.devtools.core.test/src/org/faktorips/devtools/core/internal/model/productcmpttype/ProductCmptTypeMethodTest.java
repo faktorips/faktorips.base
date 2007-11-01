@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.Modifier;
+import org.faktorips.devtools.core.model.Modifier;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IParameter;

@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.Modifier;
+import org.faktorips.devtools.core.model.Modifier;
 
 
 /**

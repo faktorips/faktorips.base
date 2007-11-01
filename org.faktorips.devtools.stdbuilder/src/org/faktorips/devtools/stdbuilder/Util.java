@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import org.faktorips.devtools.core.model.pctype.Modifier;
+import org.faktorips.devtools.core.model.Modifier;
 
 /**
  * Utility class for this ips artefact builder plugin.

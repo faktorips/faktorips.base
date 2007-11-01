@@ -292,7 +292,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        if(org.faktorips.devtools.core.model.pctype.Modifier.PUBLIC.equals(attribute.getModifier())){
+        if(org.faktorips.devtools.core.model.Modifier.PUBLIC.equals(attribute.getModifier())){
             interfaceBuilder.generateFieldConstantForProperty(attribute, datatypeHelper.getDatatype(), constantBuilder);
         }
         super.generateCodeForAttribute(attribute, datatypeHelper, constantBuilder, memberVarsBuilder, methodsBuilder);
@@ -325,7 +325,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder constantBuilder,
             JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
      
-        if (attribute.getModifier() == org.faktorips.devtools.core.model.pctype.Modifier.PUBLISHED) {
+        if (attribute.getModifier() == org.faktorips.devtools.core.model.Modifier.PUBLISHED) {
             return;
         }
         interfaceBuilder.generateFieldConstPropertyValue(attribute, datatypeHelper, constantBuilder);
@@ -342,14 +342,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         DatatypeHelper nonPrimitiveDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsSrcFile().getIpsProject(), datatypeHelper);
 
         if(ValueSetType.RANGE.equals(attribute.getValueSet().getValueSetType())){
-            if(org.faktorips.devtools.core.model.pctype.Modifier.PUBLIC.equals(attribute.getModifier())){
+            if(org.faktorips.devtools.core.model.Modifier.PUBLIC.equals(attribute.getModifier())){
                 interfaceBuilder.generateFieldMaxRangeFor(attribute, nonPrimitiveDatatypeHelper, memberVarsBuilder);
             }
             generateMethodGetRangeFor(attribute, nonPrimitiveDatatypeHelper, methodsBuilder);
         }
         if(ValueSetType.ENUM.equals(attribute.getValueSet().getValueSetType()) ||
                 datatypeHelper.getDatatype() instanceof EnumDatatype){
-            if(org.faktorips.devtools.core.model.pctype.Modifier.PUBLIC.equals(attribute.getModifier())){
+            if(org.faktorips.devtools.core.model.Modifier.PUBLIC.equals(attribute.getModifier())){
                 interfaceBuilder.generateFieldMaxAllowedValuesFor(attribute, nonPrimitiveDatatypeHelper, memberVarsBuilder);
             }
             generateMethodGetAllowedValuesFor(attribute, nonPrimitiveDatatypeHelper, methodsBuilder);
@@ -1882,7 +1882,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeForMethodDefinedInModel(IMethod method, Datatype returnType, Datatype[] paramTypes, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        if (method.getModifier()==org.faktorips.devtools.core.model.pctype.Modifier.PUBLISHED) {
+        if (method.getModifier()==org.faktorips.devtools.core.model.Modifier.PUBLISHED) {
             methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         } else {
             methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);

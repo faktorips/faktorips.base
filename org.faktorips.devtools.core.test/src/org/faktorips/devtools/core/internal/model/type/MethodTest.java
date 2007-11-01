@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.internal.model.type;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.Modifier;
+import org.faktorips.devtools.core.model.Modifier;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
@@ -172,7 +172,7 @@ public class MethodTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.type.Method#setModifier(org.faktorips.devtools.core.model.pctype.Modifier)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.type.Method#setModifier(org.faktorips.devtools.core.model.Modifier)}.
      */
     public void testSetModifier() {
         testPropertyAccessReadWrite(Method.class, IMethod.PROPERTY_MODIFIER, method, Modifier.PUBLIC);

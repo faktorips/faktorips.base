@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.pctype;
+package org.faktorips.devtools.core.model;
 
 import org.eclipse.jdt.core.Flags;
 import org.faktorips.values.DefaultEnumType;

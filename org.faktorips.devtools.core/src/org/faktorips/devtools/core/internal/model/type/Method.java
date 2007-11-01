@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.internal.model.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.pctype.Messages;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.Modifier;
+import org.faktorips.devtools.core.model.Modifier;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
