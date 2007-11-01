@@ -22,10 +22,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.ProgramingLanguage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.productcmpttype.ImplementationType;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.util.message.Message;
@@ -52,20 +50,6 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
      */
     public IProductCmptType getProductCmptType() {
         return (IProductCmptType)getParent();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ImplementationType getImplementationType() {
-        return formulaSignatureDefinition ? ImplementationType.IN_PRODUCT_CMPT_GENERATION : ImplementationType.IN_TYPE;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public ProgramingLanguage getImplementedIn() {
-        return formulaSignatureDefinition ? ProgramingLanguage.FAKTORIPS_FORMULA : ProgramingLanguage.JAVA;
     }
 
     /**

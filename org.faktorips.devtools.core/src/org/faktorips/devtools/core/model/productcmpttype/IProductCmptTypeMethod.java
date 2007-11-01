@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.model.productcmpttype;
 
-import org.faktorips.devtools.core.model.ProgramingLanguage;
 import org.faktorips.devtools.core.model.type.IMethod;
 
 /**
@@ -55,16 +54,6 @@ public interface IProductCmptTypeMethod extends IMethod, IProdDefProperty {
      * Returns the product component type this method belongs to.
      */
     public IProductCmptType getProductCmptType();
-    
-    /**
-     * Returns the implementation type. This method never returns null.
-     */
-    public ImplementationType getImplementationType();
-    
-    /**
-     * Returns the language in that this method is implemented. 
-     */
-    public ProgramingLanguage getImplementedIn();
     
     /**
      * Returns <code>true</code> if this is formula signature definition, <code>false</code> if
