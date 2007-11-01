@@ -27,11 +27,9 @@ import org.faktorips.devtools.core.model.type.IMethod;
  */
 public interface IProductCmptTypeMethod extends IMethod, IProdDefProperty {
 
-    public final static String PROPERTY_FORMULA_SIGNATURE_DEFINITION = "formulaSignatureDefinition";
-    public final static String PROPERTY_FORMULA_NAME = "formulaName";
+    public final static String PROPERTY_FORMULA_SIGNATURE_DEFINITION = "formulaSignatureDefinition"; //$NON-NLS-1$
+    public final static String PROPERTY_FORMULA_NAME = "formulaName"; //$NON-NLS-1$
     
-    public final static String PROPERTY_IMPLEMENTATION_TYPE= "implementationType";
-
     /**
      * Validation message code to indicate that the datatype of a formula signature definition is
      * void or a none valuedatatype.

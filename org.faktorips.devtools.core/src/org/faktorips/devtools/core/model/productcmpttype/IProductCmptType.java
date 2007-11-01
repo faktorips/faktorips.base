@@ -32,14 +32,14 @@ import org.faktorips.devtools.core.model.type.IType;
  */
 public interface IProductCmptType extends IIpsObject, IType {
 
-    public String PROPERTY_POLICY_CMPT_TYPE = "policyCmptType";
+    public String PROPERTY_POLICY_CMPT_TYPE = "policyCmptType"; //$NON-NLS-1$
     
-    public String PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE = "configurationForPolicyCmptType";
+    public String PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE = "configurationForPolicyCmptType"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "ProductCmptType-";
+    public final static String MSGCODE_PREFIX = "ProductCmptType-"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the references policy component type does not exist.
