@@ -80,14 +80,6 @@ public class Messages extends NLS {
 
 	public static String ValidationRule_msgDuplicateEntries;
 
-	public static String Attribute_msgInvalidAttributeName;
-
-	public static String Attribute_msgDefaultNotParsable_UnknownDatatype;
-
-	public static String Attribute_msgValueTypeMismatch;
-
-	public static String Attribute_msgDefaultNotInValueset;
-
 	public static String Attribute_msgNoInputparams;
 
 	public static String Attribute_msgNoParamsNeccessary;
@@ -109,8 +101,6 @@ public class Messages extends NLS {
 	public static String PolicyCmptType_msgMustOverrideAbstractMethod;
 
     public static String PolicyCmptType_msgMustImplementContainerRelation;
-
-    public static String Attribute_msgDefaultValueIsEmptyString;
 
 	public static String Relation_msgRevereseCompositionMustHaveMaxCardinality1;
 

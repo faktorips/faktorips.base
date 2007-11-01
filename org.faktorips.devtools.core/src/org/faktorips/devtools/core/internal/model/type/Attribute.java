@@ -26,7 +26,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.internal.model.pctype.Messages;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IValueSet;
@@ -169,7 +168,7 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         super.validateThis(result);
         IStatus status = JavaConventions.validateFieldName(name);
         if (!status.isOK()) {
-            result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, Messages.Attribute_msgInvalidAttributeName + name
+            result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, Messages.Attribute_msg_InvalidAttributeName + name
                     + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         ValueDatatype datatypeObject = ValidationUtils.checkValueDatatypeReference(getDatatype(), false, this,
@@ -178,7 +177,7 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
             validateDefaultValue(datatypeObject, result);
         } else {
             if (!StringUtils.isEmpty(defaultValue)) {
-                String text = NLS.bind(Messages.Attribute_msgDefaultNotParsable_UnknownDatatype, defaultValue);
+                String text = NLS.bind(Messages.Attribute_msg_DefaultNotParsable_UnknownDatatype, defaultValue);
                 result.add(new Message(MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE, text, Message.WARNING, this,
                         PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
             }
@@ -191,9 +190,9 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
             if (defaultValue == null) {
                 defaultValueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
             } else if (defaultValue.equals("")) { //$NON-NLS-1$
-                defaultValueInMsg = Messages.Attribute_msgDefaultValueIsEmptyString;
+                defaultValueInMsg = Messages.Attribute_msg_DefaultValueIsEmptyString;
             }
-            String text = NLS.bind(Messages.Attribute_msgValueTypeMismatch, defaultValueInMsg, getDatatype());
+            String text = NLS.bind(Messages.Attribute_msg_ValueTypeMismatch, defaultValueInMsg, getDatatype());
             result.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
             return;
         }
@@ -201,7 +200,7 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         if (valueSet != null) {
             if (defaultValue!=null && !valueSet.containsValue(defaultValue)) {
                 result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET, NLS.bind(
-                        Messages.Attribute_msgDefaultNotInValueset, defaultValue), //$NON-NLS-1$
+                        Messages.Attribute_msg_DefaultNotInValueset, defaultValue), //$NON-NLS-1$
                         Message.WARNING, this, PROPERTY_DEFAULT_VALUE));
             }
         }

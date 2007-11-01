@@ -44,9 +44,14 @@ public class Messages extends NLS {
     public static String Association_msg_NotMarkedAsDerivedUnion;
     public static String Association_msg_TargetOfDerivedUnionDoesNotExist;
     public static String Association_msg_TargetNotSubclass;
+
+    public static String Attribute_msg_InvalidAttributeName;
+    public static String Attribute_msg_DefaultNotParsable_UnknownDatatype;
+    public static String Attribute_msg_DefaultValueIsEmptyString;
+    public static String Attribute_msg_ValueTypeMismatch;
+    public static String Attribute_msg_DefaultNotInValueset;
     
 	public static String Parameter_msg_NameEmpty;
-
 	public static String Parameter_msg_InvalidParameterName;
 
 
