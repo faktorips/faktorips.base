@@ -242,14 +242,14 @@ public interface IIpsProjectProperties {
      * Returns <code>true</code> if the rule is enabled, otherwise <code>false</code>.
      * See the message code for the violation of this rule for further details.
      * 
-     * @see org.faktorips.devtools.core.model.pctype.IType#MSGCODE_MUST_SPECIFY_DERIVED_UNION
+     * @see org.faktorips.devtools.core.model.type.IType#MSGCODE_MUST_SPECIFY_DERIVED_UNION
      */
-    public boolean isContainerRelationIsImplementedRuleEnabled();
+    public boolean isDerivedUnionIsImplementedRuleEnabled();
     
     /**
-     * @see #isContainerRelationIsImplementedRuleEnabled()
+     * @see #isDerivedUnionIsImplementedRuleEnabled()
      */
-    public void setContainerRelationIsImplementedRuleEnabled(boolean enabled);
+    public void setDerivedUnionIsImplementedRuleEnabled(boolean enabled);
 	
     /**
      * @return The ids of all required features.

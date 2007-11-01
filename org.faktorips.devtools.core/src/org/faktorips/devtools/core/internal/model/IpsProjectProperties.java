@@ -86,7 +86,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private DynamicValueDatatype[] definedDatatypes = new DynamicValueDatatype[0]; 
     private String runtimeIdPrefix = ""; //$NON-NLS-1$
     private boolean javaProjectContainsClassesForDynamicDatatypes = false;
-    private boolean containerRelationIsImplementedRuleEnabled = true;
+    private boolean derivedUnionIsImplementedRuleEnabled = true;
     private Hashtable requiredFeatures = new Hashtable();
     // hidden resource names in the model and product explorer
     private Set resourcesPathExcludedFromTheProductDefiniton= new HashSet(10);
@@ -330,7 +330,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		projectEl.setAttribute("productDefinitionProject", "" + productDefinitionProject); //$NON-NLS-1$ //$NON-NLS-2$
 		projectEl.setAttribute("runtimeIdPrefix", runtimeIdPrefix); //$NON-NLS-1$
 		projectEl.setAttribute("javaProjectContainsClassesForDynamicDatatypes", "" + javaProjectContainsClassesForDynamicDatatypes); //$NON-NLS-1$ //$NON-NLS-2$
-		projectEl.setAttribute("containerRelationIsImplementedRuleEnabled", "" + containerRelationIsImplementedRuleEnabled); //$NON-NLS-1$ //$NON-NLS-2$
+		projectEl.setAttribute("derivedUnionIsImplementedRuleEnabled", "" + derivedUnionIsImplementedRuleEnabled); //$NON-NLS-1$ //$NON-NLS-2$
         
         // required features
         createRequiredIpsFeaturesComment(projectEl);
@@ -403,7 +403,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         javaProjectContainsClassesForDynamicDatatypes = Boolean.valueOf(element.getAttribute("javaProjectContainsClassesForDynamicDatatypes")).booleanValue();  //$NON-NLS-1$
-        containerRelationIsImplementedRuleEnabled = Boolean.valueOf(element.getAttribute("containerRelationIsImplementedRuleEnabled")).booleanValue();  //$NON-NLS-1$
+        derivedUnionIsImplementedRuleEnabled = Boolean.valueOf(element.getAttribute("derivedUnionIsImplementedRuleEnabled")).booleanValue();  //$NON-NLS-1$
+        if (element.hasAttribute("containerRelationIsImplementedRuleEnabled")) {
+            derivedUnionIsImplementedRuleEnabled = Boolean.valueOf(element.getAttribute("containerRelationIsImplementedRuleEnabled")).booleanValue();  //$NON-NLS-1$
+        }
         Element generatedCodeEl = XmlUtil.getFirstElement(element, GENERATED_CODE_TAG_NAME);
         if (generatedCodeEl!=null) {
     	    javaSrcLanguage = getLocale(generatedCodeEl.getAttribute("docLanguage")); //$NON-NLS-1$
@@ -596,15 +599,15 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * {@inheritDoc}
      */
-    public boolean isContainerRelationIsImplementedRuleEnabled() {
-        return containerRelationIsImplementedRuleEnabled;
+    public boolean isDerivedUnionIsImplementedRuleEnabled() {
+        return derivedUnionIsImplementedRuleEnabled;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setContainerRelationIsImplementedRuleEnabled(boolean enabled) {
-        containerRelationIsImplementedRuleEnabled = enabled;
+    public void setDerivedUnionIsImplementedRuleEnabled(boolean enabled) {
+        derivedUnionIsImplementedRuleEnabled = enabled;
     }
 
     private void createIpsProjectDescriptionComment(Node parentEl) {
@@ -634,7 +637,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "    modelProject                                       True if this project contains the model or part of it." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    runtimeIdPrefix                                    " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    javaProjectContainsClassesForDynamicDatatypes      see discussion above" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-        + "    containerRelationIsImplementedRuleEnabled          True if FaktorIPS checks if all container relations are implemented in none abstract classes." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        + "    derivedUnionIsImplementedRuleEnabled               True if FaktorIPS checks if all derived unions are implemented in none abstract classes." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <IpsArtefactBuilderSet/>                           The generator used. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <GeneratedSourcecode/>                             See details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
         + "    <IpsObjectPath/>                                   The object path to search for model and product definition objects. Details below." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$

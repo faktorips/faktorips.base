@@ -65,7 +65,7 @@ public interface IType extends IIpsObject, Datatype {
     public final static String MSGCODE_ABSTRACT_MISSING = MSGCODE_PREFIX + "AbstractMissing"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that a readonly-container relation exists in the type's supertype
+     * Validation message code to indicate that a derived union exists in the type's supertype
      * hierarchy that must be implemented, or the type must also be abstract.
      */
     public final static String MSGCODE_MUST_SPECIFY_DERIVED_UNION = MSGCODE_PREFIX + "MustSpecifyDerivedUnion"; //$NON-NLS-1$

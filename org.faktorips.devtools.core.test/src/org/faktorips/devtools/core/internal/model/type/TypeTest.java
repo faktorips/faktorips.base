@@ -104,11 +104,11 @@ public class TypeTest extends AbstractIpsPluginTest {
         
         // test if the rule is not executed when disabled
         IIpsProjectProperties props = ipsProject.getProperties();
-        props.setContainerRelationIsImplementedRuleEnabled(false);
+        props.setDerivedUnionIsImplementedRuleEnabled(false);
         ipsProject.setProperties(props);
         ml = type.validate();
         assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
-        props.setContainerRelationIsImplementedRuleEnabled(true);
+        props.setDerivedUnionIsImplementedRuleEnabled(true);
         ipsProject.setProperties(props);
 
         // type is valid, if it is abstract

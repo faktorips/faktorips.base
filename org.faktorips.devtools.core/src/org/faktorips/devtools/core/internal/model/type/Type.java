@@ -28,11 +28,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartCollection;
-import org.faktorips.devtools.core.internal.model.pctype.Messages;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -446,16 +444,15 @@ public abstract class Type extends BaseIpsObject implements IType {
         if (!isAbstract()) {
             validateIfAllAbstractMethodsAreImplemented(getIpsProject(), list);
             IIpsProjectProperties props = getIpsProject().getProperties();
-            if (props.isContainerRelationIsImplementedRuleEnabled()) {
+            if (props.isDerivedUnionIsImplementedRuleEnabled()) {
                 DerivedUnionsSpecifiedValidator validator = new DerivedUnionsSpecifiedValidator(list, ipsProject);
                 validator.start(this);
             }
             IMethod[] methods = getMethods();
             for (int i = 0; i < methods.length; i++) {
                 if (methods[i].isAbstract()) {
-                    String text = Messages.PolicyCmptType_msgAbstractMissmatch;
-                    list.add(new Message(MSGCODE_ABSTRACT_MISSING, text, Message.ERROR, this,
-                            IPolicyCmptType.PROPERTY_ABSTRACT)); //$NON-NLS-1$
+                    String text = Messages.Type_msg_AbstractMissmatch;
+                    list.add(new Message(MSGCODE_ABSTRACT_MISSING, text, Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
                     break;
                 }
             }
@@ -498,9 +495,9 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         IMethod[] methods = findOverrideMethodCandidates(true, ipsProject);
         for (int i = 0; i < methods.length; i++) {
-            String text = NLS.bind(Messages.PolicyCmptType_msgMustOverrideAbstractMethod, methods[i].getName(),
+            String text = NLS.bind(Messages.Type_msg_MustOverrideAbstractMethod, methods[i].getName(),
                     methods[i].getType().getQualifiedName());
-            list.add(new Message(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, text, Message.ERROR, this));
+            list.add(new Message(MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, text, Message.ERROR, this));
         }
     }
 
@@ -779,7 +776,7 @@ public abstract class Type extends BaseIpsObject implements IType {
             for (int i = 0; i < associations.length; i++) {
                 if (associations[i].isDerivedUnion()) {
                     if (!isSubsetted(associations[i])) {
-                        String text = NLS.bind(Messages.PolicyCmptType_msgMustImplementContainerRelation,
+                        String text = NLS.bind(Messages.Type_msg_MustImplementDerivedUnion,
                                 associations[i].getName(), associations[i].getType().getQualifiedName());
                         msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION, text,
                                 Message.ERROR, this, IType.PROPERTY_ABSTRACT));

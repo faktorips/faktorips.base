@@ -86,12 +86,6 @@ public class Messages extends NLS {
 
 	public static String PolicyCmptType_msgNameMissing;
 
-	public static String PolicyCmptType_msgAbstractMissmatch;
-
-	public static String PolicyCmptType_msgMustOverrideAbstractMethod;
-
-    public static String PolicyCmptType_msgMustImplementContainerRelation;
-
 	public static String Relation_msgRevereseCompositionMustHaveMaxCardinality1;
 
 	public static String Relation_msgReverseCompositionCantBeMarkedAsProductRelevant;

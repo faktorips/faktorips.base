@@ -51,6 +51,10 @@ public class Messages extends NLS {
     public static String Attribute_msg_ValueTypeMismatch;
     public static String Attribute_msg_DefaultNotInValueset;
     
+    public static String Type_msg_AbstractMissmatch;
+    public static String Type_msg_MustOverrideAbstractMethod;
+    public static String Type_msg_MustImplementDerivedUnion;
+
     public static String Method_msg_NameEmpty;
     public static String Method_msg_InvalidMethodname;
     public static String Method_msg_abstractMethodError;
