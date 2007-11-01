@@ -47,9 +47,9 @@ public class AggregationKind extends DefaultEnumValue {
     
     static {
         enumType = new DefaultEnumType("AggregationKind", AggregationKind.class); //$NON-NLS-1$
-        NONE = new AggregationKind(enumType, "none", "None", "AggregationKind-None.gif");
-        SHARED = new AggregationKind(enumType, "shared", "Shared", "AggregationKind-Shared.gif");
-        COMPOSITE = new AggregationKind(enumType, "composite", "Composite", "AggregationKind-Composite.gif");
+        NONE = new AggregationKind(enumType, "none", "None", "AggregationKind-None.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        SHARED = new AggregationKind(enumType, "shared", "Shared", "AggregationKind-Shared.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        COMPOSITE = new AggregationKind(enumType, "composite", "Composite", "AggregationKind-Composite.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
     private String image;

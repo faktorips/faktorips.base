@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.Described;
 
 
 /**
- * 
+ * A property of a product component type. 
  * 
  * @author Jan Ortmann
  */

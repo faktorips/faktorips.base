@@ -61,10 +61,23 @@ public interface IProductCmptTypeMethod extends IMethod, IProdDefProperty {
      */
     public boolean isFormulaSignatureDefinition();
 
+    /**
+     * Sets if this method defines a formula signature or not.
+     */
     public void setFormulaSignatureDefinition(boolean newValue);
     
+    /**
+     * Returns the name of the formula signature. Not that this is not equal to the method name.
+     * For example the formula name might be 'Premium' while the method name might be 'calculatePremium'.
+     * The formula name is presented when editing product components.
+     */
     public String getFormulaName();
     
+    /**
+     * Sets the name of the formula signature. 
+     * 
+     * @see #getFormulaName() for more information.
+     */
     public void setFormulaName(String newName);
     
     /**
