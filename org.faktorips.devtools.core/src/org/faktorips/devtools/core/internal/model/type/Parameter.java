@@ -121,15 +121,15 @@ public class Parameter extends AtomicIpsObjectPart implements IParameter {
 		super.validateThis(result);
         IIpsProject ipsProject = getIpsProject();
         if (StringUtils.isEmpty(name)) {
-            result.add(new Message("", Messages.Parameter_NameEmpty, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
+            result.add(new Message("", Messages.Parameter_msg_NameEmpty, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
         } else {
 	        IStatus status = JavaConventions.validateIdentifier(getName());
 	        if (!(status.isOK() && ExprCompiler.isValidIdentifier(getName()))) {
-	            result.add(new Message("", Messages.Parameter_InvalidParameterName, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
+	            result.add(new Message("", Messages.Parameter_msg_InvalidParameterName, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
 	        }
             
         }
-        ValidationUtils.checkDatatypeReference(datatype, false, this, PROPERTY_DATATYPE, "", result, ipsProject);
+        ValidationUtils.checkDatatypeReference(datatype, false, this, PROPERTY_DATATYPE, "", result, ipsProject); //$NON-NLS-1$
 	}
 
 	

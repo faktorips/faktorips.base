@@ -34,9 +34,20 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String Parameter_NameEmpty;
+    public static String Association_msg_MaxCardinalityMustBeAtLeast1;
+    public static String Association_msg_MaxCardinalityForDerivedUnionTooLow;
+    public static String Association_msg_MinCardinalityGreaterThanMaxCardinality;
+    public static String Association_msg_TargetRolePlural;
+    public static String Association_msg_TargetRoleSingular;
+    public static String Association_msg_TargetRoleSingularIlleaglySameAsTargetRolePlural;
+    public static String Association_msg_DerivedUnionDoesNotExist;
+    public static String Association_msg_NotMarkedAsDerivedUnion;
+    public static String Association_msg_TargetOfDerivedUnionDoesNotExist;
+    public static String Association_msg_TargetNotSubclass;
+    
+	public static String Parameter_msg_NameEmpty;
 
-	public static String Parameter_InvalidParameterName;
+	public static String Parameter_msg_InvalidParameterName;
 
 
 

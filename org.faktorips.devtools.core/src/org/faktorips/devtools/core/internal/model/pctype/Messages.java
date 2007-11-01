@@ -34,20 +34,6 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String Relation_msgMaxCardinalityMustBeAtLeast1;
-
-	public static String Relation_msgMaxCardinalityForContainerRelationTooLow;
-
-	public static String Relation_msgMinCardinalityGreaterThanMaxCardinality;
-
-	public static String Relation_msgContainerRelNotInSupertype;
-
-	public static String Relation_msgNotMarkedAsContainerRel;
-
-	public static String Relation_msgNoTarget;
-
-	public static String Relation_msgTargetNotSubclass;
-
 	public static String Relation_msgContainerRelNotReverseRel;
 
 	public static String Relation_msgSamePluralRolename;
@@ -152,8 +138,6 @@ public class Messages extends NLS {
 
 	public static String Relation_msgNoTargetRolePlural;
 
-	public static String Relation_msgTargetRoleSingularIlleaglySameAsTargetRolePlural;
-
 	public static String Relation_msgTargetRoleSingularIlleaglySameAsTargetRolePluralProdSide;
 
 	public static String Attribute_msgNameCollisionLocal;
@@ -162,10 +146,6 @@ public class Messages extends NLS {
 
     public static String ValidationRule_msgValueSetRule;
     
-    public static String Relation_msgTargetRoleSingular;
-    
-    public static String Relation_msgTargetRolePlural;
-
 	public static String Relation_Error_RelationIsNoContainerRelation;
 
 	public static String Relation_msgRelationCanOnlyProdRelIfTargetTypeIsConfByProduct;
