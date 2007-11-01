@@ -29,7 +29,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartCollection;
-import org.faktorips.devtools.core.internal.model.pctype.Messages;
+import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.Modifier;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -283,24 +283,18 @@ public class Method extends BaseIpsObjectPart implements IMethod {
      */
     protected void validateThis(MessageList result) throws CoreException {
         super.validateThis(result);
+        IIpsProject ipsProject = getIpsProject();
         if (StringUtils.isEmpty(name)) {
-            result.add(new Message("", Messages.Method_msgNameEmpty, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
+            result.add(new Message("", Messages.Method_msg_NameEmpty, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
         } else {
             IStatus status = JavaConventions.validateMethodName(name);
             if (!status.isOK()) {
-                result.add(new Message("", Messages.Method_msgInvalidMethodname, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
+                result.add(new Message("", Messages.Method_msg_InvalidMethodname, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
             }
         }
-        if (StringUtils.isEmpty(datatype)) {
-            result.add(new Message("", Messages.Method_msgTypeEmpty, Message.ERROR, this, PROPERTY_DATATYPE)); //$NON-NLS-1$
-        } else {
-            Datatype datatypeObject = getIpsProject().findDatatype(datatype);
-            if (datatypeObject==null) {
-                result.add(new Message("", NLS.bind(Messages.Method_msgDatatypeNotFound, datatype), Message.ERROR, this, PROPERTY_DATATYPE)); //$NON-NLS-1$
-            }
-        }
+        ValidationUtils.checkDatatypeReference(datatype, true, this, PROPERTY_DATATYPE, "", result, ipsProject);
         if (isAbstract() && !getType().isAbstract()) {
-            result.add(new Message("", NLS.bind(Messages.Method_abstractMethodError, getName()), Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
+            result.add(new Message("", NLS.bind(Messages.Method_msg_abstractMethodError, getName()), Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
         }
     }
     

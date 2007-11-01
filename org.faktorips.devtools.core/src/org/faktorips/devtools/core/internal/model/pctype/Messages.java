@@ -50,19 +50,9 @@ public class Messages extends NLS {
 
 	public static String Relation_msgReverseAssociationMissmatch;
 
-	public static String Method_msgInvalidMethodname;
-
-	public static String Method_msgTypeEmpty;
-
-	public static String Method_abstractMethodError;
-
-	public static String Method_msgNameEmpty;
-
 	public static String Method_msgInvalidParameterName;
 
 	public static String Method_msgDatatypeEmpty;
-
-	public static String Method_msgDatatypeNotFound;
 
     public static String TableStructureUsage_msgRoleNameAlreadyInSupertype;
 
