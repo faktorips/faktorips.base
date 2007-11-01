@@ -34,18 +34,10 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String Method_msgInvalidMethodname;
+	public static String Parameter_NameEmpty;
 
-	public static String Method_msgTypeEmpty;
+	public static String Parameter_InvalidParameterName;
 
-	public static String Method_abstractMethodError;
 
-	public static String Method_msgNameEmpty;
-
-	public static String Method_msgInvalidParameterName;
-
-	public static String Method_msgDatatypeEmpty;
-
-	public static String Method_msgDatatypeNotFound;
 
 }

@@ -132,15 +132,15 @@ public class ValidationUtils {
      * If the datatype is found, it is validated and any messages generated
      * by the datatype validation are added to the given message list.
      * 
-     * @param datatypeName the datatype name to check.
-     * @param mandatory Is the reference mandatory. If yes, it is checked that
-     * the reference is not an empty string. Otherwise an empty reference is valid.
-     * @param voidAllowed <code>true</code> to allow void as datatype, <code>false</code>
-     * to prohibit void.
-     * @param part The part the checked reference belongs to (used if a message has to be created).
-     * @param propertyName The (technical) name of the property used if a message has to be created.
-     * @param msgCode The message code to use if a message has to be created.
-     * @param list The list of messages to add a new one.
+     * @param datatypeName  The datatype name to check.
+     * @param mandatory     Is the reference mandatory. If yes, it is checked that
+     *                      the reference is not an empty string. Otherwise an empty reference is valid.
+     * @param voidAllowed   <code>true</code> to allow void as datatype, <code>false</code> to prohibit void.
+     * @param part          The part the checked reference belongs to (used if a message has to be created).
+     * @param propertyName  The (technical) name of the property used if a message has to be created.
+     * @param msgCode       The message code to use if a message has to be created.
+     * @param list          The list of messages to add a new one.
+     * @param ipsProject    The ips project which ips object path is used to search the datatype.
      * 
      * @return the datatype if no error was detected, otherwise null.
      */
@@ -150,13 +150,14 @@ public class ValidationUtils {
             IIpsObjectPart part,
             String propertyName,
             String msgcode,
-            MessageList list) throws CoreException {
+            MessageList list,
+            IIpsProject ipsProject) throws CoreException {
         
     	if (!checkStringPropertyNotEmpty(datatypeName, "Datatype", part, propertyName, msgcode, list)) { //$NON-NLS-1$
     		return null;
     	}
         
-        Datatype datatype = part.getIpsProject().findDatatype(datatypeName);
+        Datatype datatype = ipsProject.findDatatype(datatypeName);
         if (datatype==null) {
             String text = NLS.bind(Messages.ValidationUtils_msgDatatypeDoesNotExist, datatypeName); 
             list.add(new Message("", text, Message.ERROR, part, propertyName)); //$NON-NLS-1$

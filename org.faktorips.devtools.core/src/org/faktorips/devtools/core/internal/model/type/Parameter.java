@@ -21,11 +21,11 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IParameterContainer;
@@ -119,23 +119,17 @@ public class Parameter extends AtomicIpsObjectPart implements IParameter {
 	 */
 	protected void validateThis(MessageList result) throws CoreException {
 		super.validateThis(result);
+        IIpsProject ipsProject = getIpsProject();
         if (StringUtils.isEmpty(name)) {
-            result.add(new Message("", Messages.Method_msgNameEmpty, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
+            result.add(new Message("", Messages.Parameter_NameEmpty, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
         } else {
 	        IStatus status = JavaConventions.validateIdentifier(getName());
 	        if (!(status.isOK() && ExprCompiler.isValidIdentifier(getName()))) {
-	            result.add(new Message("", Messages.Method_msgInvalidParameterName, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
+	            result.add(new Message("", Messages.Parameter_InvalidParameterName, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
 	        }
             
         }
-        if (StringUtils.isEmpty(datatype)) {
-            result.add(new Message("", Messages.Method_msgDatatypeEmpty, Message.ERROR, this, PROPERTY_DATATYPE)); //$NON-NLS-1$
-        } else {
-            Datatype datatypeObject = getIpsProject().findDatatype(datatype);
-            if (datatypeObject==null) {
-                result.add(new Message("", NLS.bind(Messages.Method_msgDatatypeNotFound, datatype), Message.ERROR, this, PROPERTY_DATATYPE)); //$NON-NLS-1$
-            }
-        }
+        ValidationUtils.checkDatatypeReference(datatype, false, this, PROPERTY_DATATYPE, "", result, ipsProject);
 	}
 
 	

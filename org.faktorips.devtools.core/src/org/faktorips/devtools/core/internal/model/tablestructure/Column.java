@@ -27,6 +27,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -95,8 +96,9 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
      */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
+        IIpsProject ipsProject = getIpsProject();
         ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, PROPERTY_NAME, "", list); //$NON-NLS-1$ //$NON-NLS-2$
-        Datatype type = ValidationUtils.checkDatatypeReference(datatype, false, this, PROPERTY_DATATYPE, "", list); //$NON-NLS-1$
+        Datatype type = ValidationUtils.checkDatatypeReference(datatype, false, this, PROPERTY_DATATYPE, "", list, ipsProject); //$NON-NLS-1$
         if (type==null) {
         	return;
         }
