@@ -142,10 +142,14 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
             throws CoreException {
         
         generateGetGenerationMethod(methodsBuilder);
-        if (getPolicyCmptType()!=null && !getPolicyCmptType().isAbstract()) {
-            generateFactoryMethodsForPolicyCmptType(getPolicyCmptType(), methodsBuilder, new HashSet());
-            generateMethodCreatePolicyCmptBase(methodsBuilder);
+        IPolicyCmptType policyCmptType = getPolicyCmptType();
+        if (policyCmptType!=null && !policyCmptType.isAbstract()) {
+            generateFactoryMethodsForPolicyCmptType(policyCmptType, methodsBuilder, new HashSet());
         }
+        if (policyCmptType==null || !policyCmptType.isAbstract()) {
+            // if policy component type is null, must generate to fullfill the contract of IProductComponent. 
+            generateMethodCreatePolicyCmptBase(methodsBuilder); 
+        } 
     }
     
     private void generateFactoryMethodsForPolicyCmptType(
@@ -195,7 +199,12 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         methodsBuilder.signature(Modifier.PUBLIC, IConfigurableModelObject.class.getName(), MethodNames.CREATE_POLICY_COMPONENT, new String[0], new String[0]);
         methodsBuilder.openBracket();
-        methodsBuilder.appendln("return " + interfaceBuilder.getMethodNameCreatePolicyCmpt(getPolicyCmptType()) + "();");
+        methodsBuilder.append("return ");
+        if (getPolicyCmptType()==null) {
+            methodsBuilder.appendln("null;");
+        } else {
+            methodsBuilder.appendln(interfaceBuilder.getMethodNameCreatePolicyCmpt(getPolicyCmptType()) + "();");
+        }
         methodsBuilder.closeBracket();
     }
 

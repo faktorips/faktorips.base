@@ -57,6 +57,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
 
     private ProductCmptInterfaceBuilder productCmptTypeInterfaceBuilder;
     private PolicyCmptImplClassBuilder policyCmptTypeImplBuilder;
+    private ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder;
     
     public ProductCmptGenInterfaceBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(ProductCmptGenInterfaceBuilder.class));
@@ -69,6 +70,10 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     
     public void setPolicyCmptTypeImplBuilder(PolicyCmptImplClassBuilder policyCmptTypeImplBuilder) {
         this.policyCmptTypeImplBuilder = policyCmptTypeImplBuilder;
+    }
+    
+    public void setProductCmptGenImplClassBuilder(ProductCmptGenImplClassBuilder builder) {
+        this.productCmptGenImplClassBuilder = builder;
     }
 
     /**
@@ -486,6 +491,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         if (method.getModifier().isPublished()) {
+            methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
             generateSignatureForModelMethod(method, false, false, methodsBuilder);
             methodsBuilder.append(';');
         }
@@ -503,14 +509,14 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
             boolean parametersFinal,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
         IParameter[] parameters = method.getParameters();
         int modifier = method.getJavaModifier() | (isAbstract ? Modifier.ABSTRACT : 0);
-        String returnClass = StdBuilderHelper.transformDatatypeToJavaClassName(method.getDatatype(), method.getIpsProject(), policyCmptTypeImplBuilder, this);
+        boolean resolveTypesToPublishedInterface = method.getModifier().isPublished();
+        String returnClass = StdBuilderHelper.transformDatatypeToJavaClassName(method.getDatatype(), resolveTypesToPublishedInterface, method.getIpsProject(), policyCmptTypeImplBuilder, productCmptGenImplClassBuilder);
         methodsBuilder.signature(modifier, returnClass, method.getName(), BuilderHelper
                 .extractParameterNames(parameters), StdBuilderHelper
-                .transformParameterTypesToJavaClassNames(parameters, method.getIpsProject(),
-                        policyCmptTypeImplBuilder, this), parametersFinal);
+                .transformParameterTypesToJavaClassNames(parameters, resolveTypesToPublishedInterface, method.getIpsProject(),
+                        policyCmptTypeImplBuilder, productCmptGenImplClassBuilder), parametersFinal);
         
         if (method.isFormulaSignatureDefinition()) {
             methodsBuilder.append(" throws ");

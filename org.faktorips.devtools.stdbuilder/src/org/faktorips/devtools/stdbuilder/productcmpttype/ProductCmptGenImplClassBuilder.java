@@ -95,6 +95,10 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         this.interfaceBuilder = builder;
     }
     
+    public ProductCmptGenInterfaceBuilder getInterfaceBuilder() {
+        return interfaceBuilder;
+    }
+    
     public void setProductCmptTypeImplBuilder(ProductCmptImplClassBuilder builder) {
         ArgumentCheck.notNull(builder);
         productCmptTypeImplCuBuilder = builder;
@@ -678,7 +682,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         Datatype datatype = method.getIpsProject().findDatatype(method.getDatatype());
         if (!datatype.isVoid()) {
             if (datatype.isValueDatatype()) {
-                methodsBuilder.appendln("return " + ((ValueDatatype)datatype).getDefaultValue() + "';'");
+                methodsBuilder.appendln("return " + ((ValueDatatype)datatype).getDefaultValue() + ';');
             } else {
                 methodsBuilder.appendln("return null;");
             }

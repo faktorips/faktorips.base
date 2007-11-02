@@ -24,10 +24,11 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 
 /**
  * 
@@ -37,11 +38,15 @@ public class StdBuilderHelper {
 
     public final static String transformDatatypeToJavaClassName(
             String datatypeName, 
+            boolean resolveToPublishedInterface,
             IIpsProject ipsProject,
             PolicyCmptImplClassBuilder policyCmptImplBuilder,
-            ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder) throws CoreException {
+            ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder) throws CoreException {
         
         Datatype datatype = ipsProject.findDatatype(datatypeName);
+        if (datatype.isVoid()) {
+            return "void";
+        }
         if (datatype instanceof ValueDatatype) {
             DatatypeHelper helper = ipsProject.findDatatypeHelper(datatypeName);
             if (helper!=null) {
@@ -50,22 +55,29 @@ public class StdBuilderHelper {
             throw new RuntimeException("Can't get datatype helper for datatype " + datatypeName);
         }
         if (datatype instanceof PolicyCmptType) {
+            if (resolveToPublishedInterface) {
+                return policyCmptImplBuilder.getInterfaceBuilder().getQualifiedClassName((IIpsObject)datatype);
+            }
             return policyCmptImplBuilder.getQualifiedClassName((IpsObject)datatype);
         } else if(datatype instanceof ProductCmptType){
-            return productCmptGenInterfaceBuilder.getQualifiedClassName((IpsObject)datatype);
+            if (resolveToPublishedInterface) {
+                return productCmptGenImplClassBuilder.getInterfaceBuilder().getQualifiedClassName((IpsObject)datatype);
+            }
+            return productCmptGenImplClassBuilder.getQualifiedClassName((IpsObject)datatype);
         }
         throw new RuntimeException("Can't get Java class name for datatype " + datatypeName);
     }
     
     public final static String[] transformParameterTypesToJavaClassNames(
             IParameter[] params,
+            boolean resolveToPublishedInterface,
             IIpsProject ipsProject,
             PolicyCmptImplClassBuilder policyCmptImplBuilder,
-            ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder) throws CoreException {
+            ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder) throws CoreException {
         
         String[] javaClasses = new String[params.length];
         for (int i=0; i<params.length; i++) {
-            javaClasses[i] = transformDatatypeToJavaClassName(params[i].getDatatype(), ipsProject, policyCmptImplBuilder, productCmptGenInterfaceBuilder);
+            javaClasses[i] = transformDatatypeToJavaClassName(params[i].getDatatype(), resolveToPublishedInterface, ipsProject, policyCmptImplBuilder, productCmptGenImplClassBuilder);
         }
         return javaClasses;
     }

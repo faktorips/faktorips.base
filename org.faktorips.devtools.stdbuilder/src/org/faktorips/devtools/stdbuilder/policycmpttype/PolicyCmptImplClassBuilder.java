@@ -90,7 +90,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         this.interfaceBuilder = policyCmptTypeInterfaceBuilder;
     }
 
-    PolicyCmptInterfaceBuilder getInterfaceBuilder() {
+    public PolicyCmptInterfaceBuilder getInterfaceBuilder() {
         return interfaceBuilder;
     }
 
@@ -431,9 +431,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             builder.appendln(";");
         } else {
             IParameter[] parameters = formulaSignature.getParameters();
+            boolean resolveTypesToPublishedInterface = formulaSignature.getModifier().isPublished();
             String[] paramNames = BuilderHelper.extractParameterNames(parameters);
             String[] paramTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(
-                    parameters, getIpsProject(), this, productCmptGenInterfaceBuilder);
+                    parameters, resolveTypesToPublishedInterface, getIpsProject(), this, productCmptGenImplBuilder);
 
             builder.appendln("// TODO Belegung der Berechnungsparameter implementieren");
             JavaCodeFragment paramFragment = new JavaCodeFragment();
