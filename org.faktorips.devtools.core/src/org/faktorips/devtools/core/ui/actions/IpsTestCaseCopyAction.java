@@ -4,14 +4,14 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
  *
  * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
+ *   Faktor Zehn GmbH - initial API and implementation
  *
  *******************************************************************************/
 
@@ -32,7 +32,7 @@ public class IpsTestCaseCopyAction extends IpsAction {
         super(selectionProvider);
         this.shell = shell;
         setText("Kopiere Testfall");
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("DeepCopyWizard.gif")); //$NON-NLS-1$        
+        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("NewTestCaseCopyWizard.gif")); //$NON-NLS-1$
     }
 
     public void run(IStructuredSelection selection) {

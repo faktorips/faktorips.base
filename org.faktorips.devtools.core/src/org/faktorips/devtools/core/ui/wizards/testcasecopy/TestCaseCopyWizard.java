@@ -4,14 +4,14 @@
  * Alle Rechte vorbehalten.
  *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community)
  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  *   http://www.faktorips.org/legal/cl-v01.html
  * eingesehen werden kann.
  *
  * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
+ *   Faktor Zehn GmbH - initial API and implementation
  *
  *******************************************************************************/
 
@@ -43,7 +43,7 @@ import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
 
 /**
  * Wizard to copy a given test case.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestCaseCopyWizard extends ResizableWizard {
@@ -51,20 +51,20 @@ public class TestCaseCopyWizard extends ResizableWizard {
     private ITestCase targetTestCase;
 
     private UIToolkit toolkit;
-    private TestCaseCopyDesinationPage testCaseCopyDestinationPage; 
+    private TestCaseCopyDesinationPage testCaseCopyDestinationPage;
     private TestCaseStructurePage testCaseStructurePage;
-    
+
     private List packageFrgmtsCreatedByWizard = new ArrayList(5);
-    
+
     public TestCaseCopyWizard(ITestCase sourceTestCase) {
         super("TestCaseCopyWizard", IpsPlugin.getDefault().getDialogSettings(), 600, 800);
-        
+
         this.sourceTestCase = sourceTestCase;
-        
+
         toolkit = new UIToolkit(null);
-        
+
         super.setWindowTitle(Messages.TestCaseCopyWizard_title);
-        super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/DeepCopyWizard.png")); //$NON-NLS-1$
+        super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewTestCaseCopyWizard.png")); //$NON-NLS-1$
     }
 
     /**
@@ -80,7 +80,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
     public void addPages() {
         testCaseCopyDestinationPage  = new TestCaseCopyDesinationPage(toolkit);
         addPage(testCaseCopyDestinationPage);
-        
+
         testCaseStructurePage = new TestCaseStructurePage(toolkit);
         addPage(testCaseStructurePage);
     }
@@ -119,9 +119,9 @@ public class TestCaseCopyWizard extends ResizableWizard {
         } catch (CoreException e1) {
             throw new RuntimeException("Target package fragment couldn't be created!"); //$NON-NLS-1$
         }
-        
+
         try {
-            IIpsSrcFile targetTestCaseSrcFile = targetIpsPackageFragment.createIpsFileFromTemplate(testCaseCopyDestinationPage.getTargetTestCaseName(), 
+            IIpsSrcFile targetTestCaseSrcFile = targetIpsPackageFragment.createIpsFileFromTemplate(testCaseCopyDestinationPage.getTargetTestCaseName(),
                     sourceTestCase, null, true, null);
             targetTestCase = (ITestCase)targetTestCaseSrcFile.getIpsObject();
             // replace product cmpts of root objetcs
@@ -148,7 +148,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
                         // same product cmpt, product cmpt will not changed
                         continue;
                     }
-                    
+
                     // replace all product cmpts
                     // (because the target is a copy of the source we could use the same index: testObjectsTarget[i])
                     replaceAllProductCmpts((ITestPolicyCmpt)testObjectsTarget[i], productCmpt, newProductCmpt);
@@ -167,7 +167,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
         ITestCase testCase = testPolicyCmpt.getTestCase();
         testPolicyCmpt.setProductCmpt(newProductCmpt.getQualifiedName());
         testPolicyCmpt.setName(testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, newProductCmpt.getName()));
-        
+
         String newVersionId = newProductCmpt.getVersionId();
         replaceChildsProductCmpts(testPolicyCmpt, newProductCmpt, newVersionId);
     }
@@ -186,7 +186,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
                 }
                 String kindId = productCmptNamingStrategy.getKindId(productCmptChild.getName());
                 String newProductCmptName = productCmptNamingStrategy.getProductCmptName(kindId, newVersionId);
-                
+
                 ITestPolicyCmptTypeParameter parameter = testPolicyCmptChild.findTestPolicyCmptTypeParameter();
                 IIpsSrcFile[] allowedProductCmpt = parameter.getAllowedProductCmpt(ipsProject, parentProductCmpt);
                 IProductCmpt newProductCmptChild = null;
@@ -206,7 +206,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
             }
         }
     }
-    
+
     private void createIpsPackageFragment(IIpsPackageFragment ipsPackageFragment) throws CoreException {
         if (!ipsPackageFragment.exists()){
             IIpsPackageFragment parentIpsPackageFragment = ipsPackageFragment.getParentIpsPackageFragment();
@@ -223,7 +223,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
         }
         return targetIpsPackageFragment.getName() + "." + testCaseCopyDestinationPage.getTargetTestCaseName(); //$NON-NLS-1$
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -256,12 +256,12 @@ public class TestCaseCopyWizard extends ResizableWizard {
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
-        
+
         IpsPlugin.getDefault().openEditor(targetTestCase);
 
         return super.performFinish();
     }
-    
+
     /**
      * {@inheritDoc}
      */
