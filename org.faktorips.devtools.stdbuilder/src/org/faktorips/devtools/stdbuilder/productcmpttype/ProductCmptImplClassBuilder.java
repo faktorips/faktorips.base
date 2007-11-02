@@ -77,7 +77,7 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
      * {@inheritDoc}
      */
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getJavaNamingConvention().getImplementationClassName(getProductCmptType(ipsSrcFile).getName());
+        return getJavaNamingConvention().getImplementationClassName(ipsSrcFile.getIpsObjecName());
     }
 
     /**

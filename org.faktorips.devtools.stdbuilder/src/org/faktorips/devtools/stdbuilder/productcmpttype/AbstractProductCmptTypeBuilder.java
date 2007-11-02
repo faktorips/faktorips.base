@@ -79,13 +79,6 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
     public IProductCmptType getProductCmptType() {
         return (IProductCmptType)getIpsObject();    }
 
-    /**
-     * Returns the product component type stored in given ips src file.
-     */
-    public IProductCmptType getProductCmptType(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return (IProductCmptType)ipsSrcFile.getIpsObject();
-    }
-
     protected IPolicyCmptType getPolicyCmptType() throws CoreException {
         return getProductCmptType().findPolicyCmptType(getIpsProject());
     }
