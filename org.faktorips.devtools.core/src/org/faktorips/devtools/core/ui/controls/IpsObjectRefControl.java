@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
-import org.faktorips.devtools.core.ui.PdObjectSelectionDialog;
+import org.faktorips.devtools.core.ui.IpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.StringUtil;
 
@@ -86,7 +86,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     }
     
     protected void buttonClicked() {
-        final PdObjectSelectionDialog dialog = new PdObjectSelectionDialog(getShell(), dialogTitle, dialogMessage, labelProvider);
+        final IpsObjectSelectionDialog dialog = new IpsObjectSelectionDialog(getShell(), dialogTitle, dialogMessage, labelProvider);
         BusyIndicator.showWhile(getDisplay(), new Runnable() {
             public void run() {
                 try {

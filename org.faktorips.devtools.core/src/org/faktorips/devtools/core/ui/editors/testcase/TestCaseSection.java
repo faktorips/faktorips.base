@@ -110,7 +110,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
-import org.faktorips.devtools.core.ui.PdObjectSelectionDialog;
+import org.faktorips.devtools.core.ui.IpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -1907,7 +1907,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      */
 	private String[] selectProductCmptsDialog(ITestPolicyCmptTypeParameter testTypeParam, ITestPolicyCmpt testPolicyCmptParent, boolean multiSelectiion) throws CoreException {
 	    IIpsSrcFile[] productCmptSrcFiles = getProductCmptSrcFiles(testTypeParam, testPolicyCmptParent);
-        PdObjectSelectionDialog dialog = new PdObjectSelectionDialog(getShell(), Messages.TestCaseSection_DialogSelectProductCmpt_Title, 
+        IpsObjectSelectionDialog dialog = new IpsObjectSelectionDialog(getShell(), Messages.TestCaseSection_DialogSelectProductCmpt_Title, 
         		Messages.TestCaseSection_DialogSelectProductCmpt_Description);
         dialog.setElements(productCmptSrcFiles);
         dialog.setMultipleSelection(multiSelectiion);

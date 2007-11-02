@@ -249,11 +249,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
      * {@inheritDoc}
      */
     public Image getImage() {
-        Image image = IpsPlugin.getDefault().getImage("MethodPublic.gif"); //$NON-NLS-1$
-        if (!isAbstract()) {
-            return image;
-        }
-        return new AbstractPropertyImageDescriptor(image).createImage();
+        return IpsPlugin.getDefault().getImage("MethodPublic.gif"); //$NON-NLS-1$
     }
     
     /**
@@ -319,34 +315,6 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         return buffer.toString();
     }
     
-    private static class AbstractPropertyImageDescriptor extends CompositeImageDescriptor {
-
-        private final static Point DEFAULT_SIZE = new Point(16, 16);
-        
-        private Image baseImage;
-        private Point size = DEFAULT_SIZE;
-        
-        public AbstractPropertyImageDescriptor(Image image) {
-            ArgumentCheck.notNull(image);
-            baseImage = image;
-        }
-
-        /** 
-         * {@inheritDoc}
-         */
-        protected void drawCompositeImage(int width, int height) {
-            drawImage(baseImage.getImageData(), 0, 0);
-            drawImage(IpsPlugin.getDefault().getImage("AbstractIndicator.gif").getImageData(), 8, 0); //$NON-NLS-1$
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        protected Point getSize() {
-            return size;
-        }
-    }
-
     class OverridingMethodFinder extends TypeHierarchyVisitor {
 
         private IMethod overridingMethod;

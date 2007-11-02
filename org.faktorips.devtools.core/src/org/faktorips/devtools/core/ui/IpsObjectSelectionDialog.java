@@ -31,9 +31,9 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 /**
  *
  */
-public class PdObjectSelectionDialog extends TwoPaneElementSelector {
+public class IpsObjectSelectionDialog extends TwoPaneElementSelector {
 
-    public PdObjectSelectionDialog(Shell parent, String title, String message) {
+    public IpsObjectSelectionDialog(Shell parent, String title, String message) {
         this(parent, title, message, DefaultLabelProvider.createWithIpsSourceFileMapping());
     }
     
@@ -42,7 +42,7 @@ public class PdObjectSelectionDialog extends TwoPaneElementSelector {
      * @param elementRenderer
      * @param qualifierRenderer
      */
-    public PdObjectSelectionDialog(Shell parent, String title, String message, ILabelProvider labelProvider) {
+    public IpsObjectSelectionDialog(Shell parent, String title, String message, ILabelProvider labelProvider) {
         super(parent, labelProvider, new QualifierLabelProvider());
         setTitle(title);
         setMessage(message);

@@ -23,15 +23,11 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 
 
 /**
- *
+ * Dialog to select an ips package fragment.
  */
-public class PdPackageSelectionDialog extends ElementListSelectionDialog {
+public class IpsPackageSelectionDialog extends ElementListSelectionDialog {
 
-    /**
-     * @param parent
-     * @param renderer
-     */
-    public PdPackageSelectionDialog(Shell parent) {
+    public IpsPackageSelectionDialog(Shell parent) {
         super(parent, new DefaultLabelProvider());
         setTitle(Messages.PdPackageSelectionDialog_title);
         setMessage(Messages.PdPackageSelectionDialog_description);

@@ -18,9 +18,11 @@
 package org.faktorips.devtools.core.ui;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -30,7 +32,9 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.fl.FlFunction;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 
 
@@ -40,6 +44,11 @@ import org.faktorips.util.StringUtil;
  * @author Jan Ortmann
  */
 public class DefaultLabelProvider extends LabelProvider {
+
+    private static Image abstractMethodImage = null; 
+    private static Image overloadedMethodImage = null; 
+    private static Image abstractAndOverloadedMethodImage = null; 
+    
     /* indicates the mapping of an ips source files to the their corresponding ips objects */
     private boolean ispSourceFile2IpsObjectMapping = false;
     
@@ -148,21 +157,76 @@ public class DefaultLabelProvider extends LabelProvider {
             if (i>0) {
                 buffer.append(", "); //$NON-NLS-1$
             }
-            buffer.append(params[i].getDatatype());
+            buffer.append(QNameUtil.getUnqualifiedName(params[i].getDatatype()));
         }
-        buffer.append(')');
+        buffer.append(") : ");
+        buffer.append(QNameUtil.getUnqualifiedName(method.getDatatype()));
         return buffer.toString();
     }
     
     private Image getMethodImage(IMethod method) throws CoreException {
-        // TODO v2 - fix default labeler provider for methods.
-        //        IType type = method.getType(); 
-//        IType[] supertypes = type.getSupertypeHierarchy().getAllSupertypes(type);
-//        for (int i=0; i<supertypes.length; i++) {
-//            if (supertypes[i].hasSameMethod(method)) {
-//                return new OverrideImageDescriptor(method.getImage()).createImage();
-//            }
-//        }
+        boolean overloaded = method.findOverridingMethod(method.getType(), method.getIpsProject())!=null;
+        if (method.isAbstract()) {
+            if (overloaded) {
+                return getAbstractOverloadedMethodImage(method);
+            } else {
+                return getAbstractMethodImage(method);
+            }
+        } 
+        if (overloaded) {
+            return getOverloadedMethodImage(method);
+        }
         return method.getImage();
     }
+    
+    private static Image getAbstractMethodImage(IMethod method) {
+        if (abstractMethodImage==null) {
+            abstractMethodImage = new AbstractPropertyImageDescriptor(method.getImage()).createImage();
+        }
+        return abstractMethodImage;
+    }
+    
+    private static Image getOverloadedMethodImage(IMethod method) {
+        if (overloadedMethodImage==null) {
+            overloadedMethodImage = new OverrideImageDescriptor(method.getImage()).createImage();
+        }
+        return overloadedMethodImage;
+    }
+
+    private static Image getAbstractOverloadedMethodImage(IMethod method) {
+        if (abstractAndOverloadedMethodImage==null) {
+            abstractAndOverloadedMethodImage = new OverrideImageDescriptor(getAbstractMethodImage(method)).createImage();
+        }
+        return abstractAndOverloadedMethodImage;
+    }
+
+    private static class AbstractPropertyImageDescriptor extends CompositeImageDescriptor {
+
+        private final static Point DEFAULT_SIZE = new Point(16, 16);
+        
+        private Image baseImage;
+        private Point size = DEFAULT_SIZE;
+        
+        public AbstractPropertyImageDescriptor(Image image) {
+            ArgumentCheck.notNull(image);
+            baseImage = image;
+        }
+
+        /** 
+         * {@inheritDoc}
+         */
+        protected void drawCompositeImage(int width, int height) {
+            drawImage(baseImage.getImageData(), 0, 0);
+            drawImage(IpsPlugin.getDefault().getImage("AbstractIndicator.gif").getImageData(), 8, 0); //$NON-NLS-1$
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected Point getSize() {
+            return size;
+        }
+    }
+
+    
 }

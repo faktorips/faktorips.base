@@ -40,8 +40,7 @@ public class OverrideImageDescriptor extends CompositeImageDescriptor {
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.resource.CompositeImageDescriptor#drawCompositeImage(int, int)
+     * {@inheritDoc}
      */
     protected void drawCompositeImage(int width, int height) {
 		drawImage(baseImage.getImageData(), 0, 0);
@@ -49,8 +48,7 @@ public class OverrideImageDescriptor extends CompositeImageDescriptor {
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.resource.CompositeImageDescriptor#getSize()
+     * {@inheritDoc}
      */
     protected Point getSize() {
         return size;

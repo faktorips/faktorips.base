@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.ui.CompletionUtil;
-import org.faktorips.devtools.core.ui.PdPackageSelectionDialog;
+import org.faktorips.devtools.core.ui.IpsPackageSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 
@@ -77,7 +77,7 @@ public class IpsPckFragmentRefControl extends TextButtonControl {
      */ 
     protected void buttonClicked() {
         try {
-            PdPackageSelectionDialog dialog = new PdPackageSelectionDialog(getShell());
+            IpsPackageSelectionDialog dialog = new IpsPackageSelectionDialog(getShell());
             if (root!=null) {
                 dialog.setElements(root.getIpsPackageFragments());    
             }

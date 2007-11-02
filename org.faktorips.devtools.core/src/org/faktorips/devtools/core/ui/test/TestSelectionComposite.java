@@ -51,8 +51,8 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
-import org.faktorips.devtools.core.ui.PdObjectSelectionDialog;
-import org.faktorips.devtools.core.ui.PdPackageSelectionDialog;
+import org.faktorips.devtools.core.ui.IpsObjectSelectionDialog;
+import org.faktorips.devtools.core.ui.IpsPackageSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.runtime.test.AbstractIpsTestRunner;
@@ -263,7 +263,7 @@ public class TestSelectionComposite extends Composite  {
     }
 
     private void newTest(Composite buttonComposite) {
-        PdObjectSelectionDialog dialog = new PdObjectSelectionDialog(buttonComposite.getShell(),
+        IpsObjectSelectionDialog dialog = new IpsObjectSelectionDialog(buttonComposite.getShell(),
                 Messages.TestSelectionComposite_dialogTitleSelectTestCase,
                 Messages.TestSelectionComposite_dialogTextSelectTestCase);
         dialog.setMultipleSelection(false);
@@ -293,7 +293,7 @@ public class TestSelectionComposite extends Composite  {
 
     protected void newTestSuite(Composite buttons) {
         try {
-            PdPackageSelectionDialog dialog = new PdPackageSelectionDialog(getShell());
+            IpsPackageSelectionDialog dialog = new IpsPackageSelectionDialog(getShell());
             dialog.setMultipleSelection(true);
             dialog.setElements(getPackageFragments());
             if (dialog.open() == Window.OK) {

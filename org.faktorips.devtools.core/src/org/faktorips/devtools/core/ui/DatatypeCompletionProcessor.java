@@ -103,7 +103,7 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
                     image, displayText, null, null);
             result.add(proposal);
 		}
-        
+        labelProvider.dispose();
 	}
 
 }
