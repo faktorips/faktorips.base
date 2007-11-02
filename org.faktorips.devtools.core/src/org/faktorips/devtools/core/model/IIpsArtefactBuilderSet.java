@@ -100,11 +100,8 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 			CompilationResult[] argResults) throws CoreException;
 
 	/**
-	 * Returns the <code>IdentifierResolver</code>.
-	 * Returns <code>null</code> if this builder set doesn't support an
-	 * formula language identifier resolver.
-	 * @param formula TODO
-	 * @throws CoreException TODO
+	 * Creates an<code>IdentifierResolver</code> used to resolve identifiers in the given formula. 
+     * Returns <code>null</code> if this builder set doesn't support an formula language identifier resolver.
 	 */
 	public IdentifierResolver createFlIdentifierResolver(IFormula formula) throws CoreException;
 	

@@ -167,7 +167,7 @@ public class FormulaTest extends AbstractIpsPluginTest  {
 
     public void testGetEnumDatatypesAllowedInFormula() throws CoreException {
         newDefinedEnumDatatype((IpsProject)ipsProject, new Class[]{TestEnumType.class});
-        EnumDatatype testType = ipsProject.findEnumDatatype("TestEnumType");
+        EnumDatatype testType = (EnumDatatype)ipsProject.findDatatype("TestEnumType");
         assertNotNull(testType);
         
         // missing policy component type attribute

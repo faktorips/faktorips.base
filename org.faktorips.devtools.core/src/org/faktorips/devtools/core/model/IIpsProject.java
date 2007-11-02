@@ -551,17 +551,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid, boolean includePrimitives) throws CoreException;
 
     /**
-     * Returns all enumeration datatypes accessible on the project's path.
+     * Returns all enumeration datatypes accessible on the project's ips object path.
+     * 
      * @throws CoreException if an exception occurs while searching for the datatypes.
      */
     public EnumDatatype[] findEnumDatatypes() throws CoreException;
-    
-    /**
-     * Returns the enumeration datatype accessible on the projects's path with the specified qualifiedName. 
-     * If none is found null will be returned.
-     * @throws CoreException if an exception occurs while searching for the datatypes.
-     */
-    public EnumDatatype findEnumDatatype(String qualifiedName) throws CoreException;
     
     /**
      * Returns the first datatype found on the path with the given qualified name.

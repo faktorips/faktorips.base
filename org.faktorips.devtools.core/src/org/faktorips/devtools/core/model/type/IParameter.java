@@ -49,7 +49,8 @@ public interface IParameter extends IIpsObjectPart {
 	/**
 	 * Returns the parameter's datatype or <code>null</code> if the datatype
 	 * can't be found.
-	 * @param ipsProject TODO
+     * 
+	 * @param ipsProject The ips project which ips object path is used to search.
 	 * 
 	 * @throws CoreException if an excpetion occurs while searching for the datatype.
 	 */

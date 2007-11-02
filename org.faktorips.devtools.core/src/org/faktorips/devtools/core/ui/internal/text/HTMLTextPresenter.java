@@ -164,8 +164,6 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
             return trim(buffer, presentation);
 
         } catch (IOException e) {
-
-            // ignore TODO do something else?
             return null;
 
         } finally {

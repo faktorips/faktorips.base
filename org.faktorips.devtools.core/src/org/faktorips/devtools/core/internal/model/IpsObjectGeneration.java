@@ -99,6 +99,9 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         valueChanged(oldValue, validFrom);
     }
     
+    /**
+     * Sets the valid from without triggering a content changed event.
+     */
     protected void setValidFromInternal(GregorianCalendar validFrom) {
         this.validFrom = validFrom;
     }

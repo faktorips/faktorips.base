@@ -1011,19 +1011,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
-    public EnumDatatype findEnumDatatype(String qualifiedName) throws CoreException{
-    	EnumDatatype[] allEnums = findEnumDatatypes();
-    	for (int i = 0; i < allEnums.length; i++) {
-			if(allEnums[i].getQualifiedName().equals(qualifiedName)){
-				return allEnums[i];
-			}
-		}
-    	return null;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
     public Datatype findDatatype(String qualifiedName) throws CoreException {
     	if (qualifiedName.equals(Datatype.VOID.getQualifiedName())) {
     		return Datatype.VOID;

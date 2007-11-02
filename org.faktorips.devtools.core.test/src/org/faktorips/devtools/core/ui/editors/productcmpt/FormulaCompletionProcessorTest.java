@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.faktorips.datatype.Datatype;
@@ -61,7 +60,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
 		ipsProject = (IpsProject)newIpsProject();
 		cmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
 		newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
-        enumDatatype = ipsProject.findEnumDatatype("TestEnumType");
+        enumDatatype = (EnumDatatype)ipsProject.findDatatype("TestEnumType");
         
         productCmptType = cmptType.findProductCmptType(ipsProject);
         formulaSignature = productCmptType.newProductCmptTypeMethod();

@@ -476,8 +476,4 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         }
     }
 
-    public void run(IProgressMonitor monitor) throws CoreException {
-        // TODO Auto-generated method stub
-        
-    }
 }

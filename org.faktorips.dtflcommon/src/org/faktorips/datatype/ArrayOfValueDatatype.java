@@ -139,7 +139,6 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
      * {@inheritDoc}
      */
     public String getDefaultValue() {
-        // TODO Auto-generated method stub
         return null;
     }
 

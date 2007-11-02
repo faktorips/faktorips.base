@@ -177,8 +177,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         	generation.initFromGeneration(source, validFrom);
         }
         else{
-            //TODO event firing has to be suppress here
-            generation.setValidFrom(validFrom);
+            generation.setValidFromInternal(validFrom);
         }
         partWasAdded(generation);
         return generation;

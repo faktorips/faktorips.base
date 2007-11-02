@@ -957,13 +957,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     	
     }
     
-    public void testFindEnumDatatype() throws CoreException{
-    	newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
-    	EnumDatatype dataType = ipsProject.findEnumDatatype("TestEnumType");
-    	assertEquals("TestEnumType", dataType.getQualifiedName());
-    }
-    
-
     public void testGetNonIpsResources() throws CoreException{        
         IProject projectHandle= ipsProject.getProject();
         IFolder nonIpsRoot= projectHandle.getFolder("nonIpsRoot");

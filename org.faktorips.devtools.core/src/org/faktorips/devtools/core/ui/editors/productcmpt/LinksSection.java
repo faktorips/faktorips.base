@@ -249,7 +249,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 				Object selected = selection.getFirstElement();
 				if (selected instanceof IProductCmptLink) {
                     IProductCmptLink relation = (IProductCmptLink)selected;
-                    openRelationEditDialog(relation);
+                    openLinkEditDialog(relation);
 				}
 			}
 		});
@@ -333,24 +333,22 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     }
     
 	/**
-	 * Creates a new relation which connects the currently displayed generation
-	 * with the given target. The new relation is placed before the the given
+	 * Creates a new link which connects the currently displayed generation
+	 * with the given target. The new link is placed before the the given
 	 * one.
 	 */
-	private IProductCmptLink newRelation(String target, String relation,
-			IProductCmptLink insertBefore) {
-        
-        IProductCmptLink prodRelation = null;
+	private IProductCmptLink newLink(String target, String association, IProductCmptLink insertBefore) {
+        IProductCmptLink newLink = null;
         if (insertBefore != null) {
-            prodRelation = generation.newLink(relation, insertBefore);
+            newLink = generation.newLink(association, insertBefore);
         }
         else {
-            prodRelation = generation.newLink(relation);
+            newLink = generation.newLink(association);
         }
-		prodRelation.setTarget(target);
-		prodRelation.setMaxCardinality(1);
-        prodRelation.setMinCardinality(0); // TODO min aus modell ermitteln
-		return prodRelation;
+		newLink.setTarget(target);
+		newLink.setMaxCardinality(1);
+        newLink.setMinCardinality(0);
+		return newLink;
 	}
 
 	/**
@@ -463,14 +461,14 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 						
 						IProductCmpt target = getProductCmpt(file); 
 
-						String relation = null;
-						if (insertAt instanceof String) { // product component type relation
-							relation = (String) insertAt;
+						String association = null;
+						if (insertAt instanceof String) { // product component type association
+							association = (String) insertAt;
 						} else if (insertAt instanceof IProductCmptLink) {
-							relation = ((IProductCmptLink)insertAt).getAssociation();
+							association = ((IProductCmptLink)insertAt).getAssociation();
 						}
 
-						if (generation.canCreateValidLink(target, relation, generation.getIpsProject())) {
+						if (generation.canCreateValidLink(target, association, generation.getIpsProject())) {
 						    accept = true;
                         }
 					} catch (CoreException e) {
@@ -605,18 +603,18 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 		 */
 		private void insert(IProductCmpt cmpt, Object insertAt) {
             String target = cmpt.getQualifiedName();
-            String relationType = null;
+            String association = null;
             IProductCmptLink insertBefore = null;
             try {
                 if (insertAt instanceof String) { // product component type relation
-                    relationType = (String)insertAt;
+                    association = (String)insertAt;
                 }
                 else if (insertAt instanceof IProductCmptLink) {
-                    relationType = ((IProductCmptLink)insertAt).getAssociation();
+                    association = ((IProductCmptLink)insertAt).getAssociation();
                     insertBefore = (IProductCmptLink)insertAt;
                 }
-                if (generation.canCreateValidLink(cmpt, relationType, generation.getIpsProject())) {
-                    newRelation(target, relationType, insertBefore);
+                if (generation.canCreateValidLink(cmpt, association, generation.getIpsProject())) {
+                    newLink(target, association, insertBefore);
                 }
             }
             catch (CoreException e) {
@@ -687,11 +685,11 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 		return targets;
 	}
     
-    private void openRelationEditDialog(IProductCmptLink relation) {
+    private void openLinkEditDialog(IProductCmptLink link) {
         try {
-            IIpsSrcFile file = relation.getIpsObject().getIpsSrcFile();
+            IIpsSrcFile file = link.getIpsObject().getIpsSrcFile();
             IIpsSrcFileMemento memento = file.newMemento();
-            LinkEditDialog dialog = new LinkEditDialog(relation, getShell());
+            LinkEditDialog dialog = new LinkEditDialog(link, getShell());
             if (dialog == null) {
                 return;
             }
@@ -797,7 +795,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             Object selected = selection.getFirstElement();
             if (selected instanceof IProductCmptLink) {
                 IProductCmptLink relation = (IProductCmptLink)selected;
-                openRelationEditDialog(relation);
+                openLinkEditDialog(relation);
             }
         }
         
