@@ -52,7 +52,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
 	private DefaultsAndRangesSection defaultsAndRangesSection;
 
-	private RelationsSection relationsSection;
+	private LinksSection relationsSection;
 
 	/*
 	 * Layout for this page (see pageRoot) - if the content-structure for this
@@ -128,7 +128,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 				GridData.FILL_BOTH);
 		defaultsAndRangesSection = new DefaultsAndRangesSection(generation,
 				right, toolkit);
-		relationsSection = new RelationsSection(generation, right, toolkit,
+		relationsSection = new LinksSection(generation, right, toolkit,
 				getEditorSite());
 
 		productAttributesSection.setFocusSuccessor(formulasSection);

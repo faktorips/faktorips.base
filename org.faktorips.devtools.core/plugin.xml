@@ -55,20 +55,20 @@
                id="org.faktorips.devtools.actions.OpenNewTableStructureWizardAction">
          </action>
          <action
-               label="%org.faktorips.devtools.actions.OpenNewPcTypeWizardAction.label"
-               icon="icons/NewPolicyCmptTypeWizard.gif"
-               tooltip="%org.faktorips.devtools.actions.OpenNewPcTypeWizardAction.tooltip"
-               class="org.faktorips.devtools.core.ui.wizards.policycmpttype.OpenNewPcTypeWizardAction"
-               toolbarPath="org.faktorips.devtools"
-               id="org.faktorips.devtools.actions.OpenNewPcTypeWizardAction">
-         </action>
-         <action
                label="%org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewPcTypeWizardAction.label"
                icon="icons/NewProductCmptTypeWizard.gif"
                tooltip="%org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewPcTypeWizardAction.tooltip"
                class="org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewPcTypeWizardAction"
                toolbarPath="org.faktorips.devtools"
                id="org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewPcTypeWizardAction">
+         </action>
+         <action
+               label="%org.faktorips.devtools.actions.OpenNewPcTypeWizardAction.label"
+               icon="icons/NewPolicyCmptTypeWizard.gif"
+               tooltip="%org.faktorips.devtools.actions.OpenNewPcTypeWizardAction.tooltip"
+               class="org.faktorips.devtools.core.ui.wizards.policycmpttype.OpenNewPcTypeWizardAction"
+               toolbarPath="org.faktorips.devtools"
+               id="org.faktorips.devtools.actions.OpenNewPcTypeWizardAction">
          </action>
          
       </actionSet>

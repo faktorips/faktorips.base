@@ -40,7 +40,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
  * 
  * @author Thorsten Guenther
  */
-public class RelationsContentProvider implements ITreeContentProvider {
+public class LinksContentProvider implements ITreeContentProvider {
 
 	private IProductCmptGeneration generation;
 	

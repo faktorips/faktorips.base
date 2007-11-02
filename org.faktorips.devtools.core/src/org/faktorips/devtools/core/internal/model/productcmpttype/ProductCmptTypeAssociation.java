@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -132,7 +133,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
      * {@inheritDoc}
      */
     public Image getImage() {
-        return getAggregationKind().getImage();
+        return IpsPlugin.getDefault().getImage(getAssociationType().getImageName());
     }
 
     

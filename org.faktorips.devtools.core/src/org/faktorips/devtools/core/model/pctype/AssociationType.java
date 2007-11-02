@@ -39,10 +39,10 @@ public class AssociationType extends DefaultEnumValue {
     
     static {
         enumType = new DefaultEnumType("RelationType", AssociationType.class); //$NON-NLS-1$
-        COMPOSITION_MASTER_TO_DETAIL = new AssociationType(enumType, "comp", "Composition (Master to Detail)"); //$NON-NLS-1$ //$NON-NLS-2$
-        COMPOSITION_DETAIL_TO_MASTER = new AssociationType(enumType, "reverseComp", "Composition (Detail to Master)"); //$NON-NLS-1$ //$NON-NLS-2$
-        ASSOCIATION = new AssociationType(enumType, "ass", "Association"); //$NON-NLS-1$ //$NON-NLS-2$
-        AGGREGATION = new AssociationType(enumType, "aggr", "Aggregation"); //$NON-NLS-1$ //$NON-NLS-2$
+        COMPOSITION_MASTER_TO_DETAIL = new AssociationType(enumType, "comp", "Composition (Master to Detail)", "AssociationType-Composition.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+        COMPOSITION_DETAIL_TO_MASTER = new AssociationType(enumType, "reverseComp", "Composition (Detail to Master)", "AssociationType-CompositionDetailToMaster.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+        ASSOCIATION = new AssociationType(enumType, "ass", "Association", "AssociationType-Association.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+        AGGREGATION = new AssociationType(enumType, "aggr", "Aggregation", "AssociationType-Aggregation.gif"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     public final static EnumType getEnumType() {
@@ -61,6 +61,8 @@ public class AssociationType extends DefaultEnumValue {
         return (AssociationType)enumType.getEnumValue(id);
     }
     
+    private String imageName;
+    
     public boolean isCompositionMasterToDetail() {
         return this==COMPOSITION_MASTER_TO_DETAIL;
     }
@@ -73,6 +75,10 @@ public class AssociationType extends DefaultEnumValue {
         return this==ASSOCIATION;
     }
     
+    public String getImageName() {
+        return imageName;
+    }
+    
     public AggregationKind getAggregationKind() {
         if (isCompositionMasterToDetail() ) {
             return AggregationKind.COMPOSITE;
@@ -82,8 +88,9 @@ public class AssociationType extends DefaultEnumValue {
         return AggregationKind.NONE;
     }
     
-    private AssociationType(DefaultEnumType type, String id, String name) {
+    private AssociationType(DefaultEnumType type, String id, String name, String imageName) {
         super(type, id, name);
+        this.imageName = imageName;
     }
     
 }

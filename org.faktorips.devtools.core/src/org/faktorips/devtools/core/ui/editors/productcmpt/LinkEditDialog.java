@@ -41,7 +41,7 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
 /**
  * A dialog to edit a relation.
  */
-public class RelationEditDialog extends IpsPartEditDialog {
+public class LinkEditDialog extends IpsPartEditDialog {
     
     private IProductCmptLink link;
     
@@ -53,7 +53,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
     private ProductCmptRefControl targetControl;
     private IProductCmpt[] toExclude = new IProductCmpt[0];
     
-    public RelationEditDialog(IProductCmptLink link, Shell parentShell) {
+    public LinkEditDialog(IProductCmptLink link, Shell parentShell) {
         super(link, parentShell, Messages.RelationEditDialog_editRelation, true);
         this.link = link;
     }

@@ -35,12 +35,12 @@ import org.faktorips.util.memento.Memento;
 public class NewProductCmptRelationAction extends IpsAction {
 
 	private Shell shell;
-	private RelationsSection parent;
+	private LinksSection parent;
 	private Memento syncpoint;
 
 	private boolean isDirty = true;
 
-	public NewProductCmptRelationAction(Shell shell, ISelectionProvider selectionProvider, RelationsSection parent) {
+	public NewProductCmptRelationAction(Shell shell, ISelectionProvider selectionProvider, LinksSection parent) {
 		super(selectionProvider);
 		this.shell = shell;
 		this.parent = parent;
@@ -69,7 +69,7 @@ public class NewProductCmptRelationAction extends IpsAction {
             IProductCmptLink relation = parent.newRelation((String)selected);
 			relation.setMaxCardinality(1);
 			relation.setMinCardinality(0); // todo get min from modell
-			RelationEditDialog dialog = new RelationEditDialog(relation, shell);
+			LinkEditDialog dialog = new LinkEditDialog(relation, shell);
 			dialog.setProductCmptsToExclude(parent.getRelationTargetsFor((String)selected));
 			int rc = dialog.open();
             if (rc == Dialog.CANCEL) {

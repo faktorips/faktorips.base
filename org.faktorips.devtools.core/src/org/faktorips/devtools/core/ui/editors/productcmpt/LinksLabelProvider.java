@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.product.IProductCmptLink;
 import org.faktorips.util.StringUtil;
 
@@ -32,7 +33,7 @@ import org.faktorips.util.StringUtil;
  * 
  * @author Thorsten Guenther
  */
-public class RelationsLabelProvider implements ILabelProvider{
+public class LinksLabelProvider implements ILabelProvider{
 	
 	private ArrayList listeners;
 	
@@ -55,7 +56,7 @@ public class RelationsLabelProvider implements ILabelProvider{
             return IpsObjectType.PRODUCT_CMPT.getEnabledImage();
         }
 		if (element instanceof String) {
-			return IpsPlugin.getDefault().getImage("Composition.gif");  //$NON-NLS-1$ 
+			return IpsPlugin.getDefault().getImage(AssociationType.COMPOSITION_MASTER_TO_DETAIL.getImageName());  //$NON-NLS-1$ 
 		}
 		return IpsPlugin.getDefault().getImage(Messages.RelationsLabelProvider_undefined);
 	}

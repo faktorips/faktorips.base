@@ -87,7 +87,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public class RelationsSection extends IpsSection implements ISelectionProviderActivation{
+public class LinksSection extends IpsSection implements ISelectionProviderActivation{
 
 	/**
 	 * the generation the displayed informations are based on.
@@ -154,7 +154,7 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 	 * @param toolkit
 	 *            The ui-toolkit to support drawing.
 	 */
-	public RelationsSection(IProductCmptGeneration generation,
+	public LinksSection(IProductCmptGeneration generation,
 			Composite parent, UIToolkit toolkit, IEditorSite site) {
 		super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL
 				| GridData.FILL_VERTICAL, toolkit);
@@ -174,7 +174,7 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 		Composite relationRootPane = toolkit.createComposite(client);
 		relationRootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
 
-		RelationsContentProvider rcp = new RelationsContentProvider();
+		LinksContentProvider rcp = new LinksContentProvider();
 		
 		if (rcp.getElements(generation).length == 0) {
 			GridLayout layout = (GridLayout) client.getLayout();
@@ -199,12 +199,12 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
 			GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
 			tree.setLayoutData(layoutData);
 	
-			RelationsLabelProvider labelProvider = new RelationsLabelProvider();
+			LinksLabelProvider labelProvider = new LinksLabelProvider();
 	
 			selectionChangedListener = new SelectionChangedListener();
 			
 			treeViewer = new TreeViewer(tree);
-			treeViewer.setContentProvider(new RelationsContentProvider());
+			treeViewer.setContentProvider(new LinksContentProvider());
 			treeViewer.setLabelProvider(new MyMessageCueLabelProvider(
 					labelProvider));
 			treeViewer.setInput(generation);
@@ -691,7 +691,7 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
         try {
             IIpsSrcFile file = relation.getIpsObject().getIpsSrcFile();
             IIpsSrcFileMemento memento = file.newMemento();
-            RelationEditDialog dialog = new RelationEditDialog(relation, getShell());
+            LinkEditDialog dialog = new LinkEditDialog(relation, getShell());
             if (dialog == null) {
                 return;
             }
@@ -866,7 +866,7 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
             //the generationDirty flag is only necessary because of a buggy behaviour when the
             //the generation of the product component editor has changed. The pages a created newly 
             //in this case and I don't exactly what then happens... (pk). It desperately asks for refactoring
-            if (!event.getIpsSrcFile().equals(RelationsSection.this.generation.getIpsObject().getIpsSrcFile())) {
+            if (!event.getIpsSrcFile().equals(LinksSection.this.generation.getIpsObject().getIpsSrcFile())) {
                 return;
             }
             try {
@@ -876,8 +876,8 @@ public class RelationsSection extends IpsSection implements ISelectionProviderAc
                 }
                 
                 IProductCmpt cmpt = (IProductCmpt)obj;
-                IIpsObjectGeneration gen = cmpt.getGenerationByEffectiveDate(RelationsSection.this.generation.getValidFrom());
-                if (RelationsSection.this.generation.equals(gen)) {
+                IIpsObjectGeneration gen = cmpt.getGenerationByEffectiveDate(LinksSection.this.generation.getValidFrom());
+                if (LinksSection.this.generation.equals(gen)) {
                     generationDirty = true;
                 }
             }

@@ -402,14 +402,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
      * {@inheritDoc}
      */
     public Image getImage() {
-    	String baseImageName = ""; //$NON-NLS-1$
-        if (this.type==AssociationType.COMPOSITION_MASTER_TO_DETAIL) {
-        	baseImageName = "Composition.gif"; //$NON-NLS-1$
-        } else if (this.type==AssociationType.COMPOSITION_DETAIL_TO_MASTER) {
-        	baseImageName = "ReverseComposition.gif"; //$NON-NLS-1$
-        } else {
-        	baseImageName = "Relation.gif"; //$NON-NLS-1$ 
-        }
+    	String baseImageName = getAssociationType().getImageName();
         try {
             if (isConstrainedByProductStructure(getIpsProject())) {
             	return IpsPlugin.getDefault().getProductRelevantImage(baseImageName);

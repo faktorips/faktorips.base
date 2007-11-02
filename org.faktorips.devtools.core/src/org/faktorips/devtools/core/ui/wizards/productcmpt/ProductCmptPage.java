@@ -71,7 +71,7 @@ public class ProductCmptPage extends IpsObjectPage {
     private IProductCmpt sourceProductCmpt;
     
     public ProductCmptPage(IStructuredSelection selection) throws JavaModelException {
-        super(IpsObjectType.PRODUCT_CMPT_TYPE_V2, selection, Messages.ProductCmptPage_title);
+        super(IpsObjectType.PRODUCT_CMPT, selection, Messages.ProductCmptPage_title);
         canModifyRuntimeId = IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId();
     }
     
