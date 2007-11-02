@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider, IPropertyValue  {
     
 	public final static String PROPERTY_TYPE = "type"; //$NON-NLS-1$
-    public final static String PROPERTY_PCTYPE_ATTRIBUTE = "pcTypeAttribute"; //$NON-NLS-1$
+    public final static String PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE = "policyCmptTypeAttribute"; //$NON-NLS-1$
     public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$
     
     /**
@@ -107,18 +107,16 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider, 
     public void setType(ConfigElementType newType);
     
     /**
-     * Returns the name of the product component type's attribute
-     * this element is based on.
+     * Returns the name of the product component type's attribute this element is based on.
      */
-    public String getPcTypeAttribute();
+    public String getPolicyCmptTypeAttribute();
     
     /**
-     * Sets the name of the product component type's attribute
-     * this attribute is based on.
+     * Sets the name of the policy component type's attribute this element is based on.
      * 
      * @throws NullPointerException if name is <code>null</code>.
      */
-    public void setPcTypeAttribute(String name);
+    public void setPolicyCmptTypeAttribute(String name);
     
     /**
      * Returns the attribute's value. 

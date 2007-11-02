@@ -42,7 +42,7 @@ public interface IProductCmptLink extends IIpsObjectPart {
     /**
      * The name of the xml-tag used if this object is saved to xml.
      */
-	public final static String TAG_NAME = "Relation"; //$NON-NLS-1$
+	public final static String TAG_NAME = "Link"; //$NON-NLS-1$
     
     /**
      * Prefix for all message codes of this class.

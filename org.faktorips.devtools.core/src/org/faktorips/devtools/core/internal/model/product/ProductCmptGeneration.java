@@ -311,7 +311,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     public IConfigElement getConfigElement(String attributeName) {
         for (Iterator it = configElements.iterator(); it.hasNext();) {
             IConfigElement each = (IConfigElement)it.next();
-            if (each.getPcTypeAttribute().equals(attributeName)) {
+            if (each.getPolicyCmptTypeAttribute().equals(attributeName)) {
                 return each;
             }
         }
@@ -363,7 +363,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (attribute!=null) {
             try {
                 ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
-                e.setPcTypeAttribute(attribute.getName());
+                e.setPolicyCmptTypeAttribute(attribute.getName());
                 e.setValue(attribute.getDefaultValue());
                 e.setValueSetCopy(attribute.getValueSet());
             } finally {
@@ -633,7 +633,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         } else if (xmlTagName.equals(Formula.TAG_NAME)) {
             return newFormulaInternal(id, null);
         }
-        throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
+        throw new RuntimeException("Could not create part for tag " + xmlTagName); //$NON-NLS-1$
     }
 
     /**

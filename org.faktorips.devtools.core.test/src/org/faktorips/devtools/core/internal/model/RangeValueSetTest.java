@@ -66,7 +66,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         generation = (IProductCmptGeneration)cmpt.newGeneration(new GregorianCalendar(20006, 4, 26));
         
         ce = generation.newConfigElement();
-        ce.setPcTypeAttribute("attr");
+        ce.setPolicyCmptTypeAttribute("attr");
         
         IPolicyCmptTypeAttribute attr2 = policyCmptType.newPolicyCmptTypeAttribute();
         attr2.setName("test");
@@ -74,7 +74,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         attr2.setProductRelevant(true);
         
         intEl = generation.newConfigElement();
-        intEl.setPcTypeAttribute("test");
+        intEl.setPolicyCmptTypeAttribute("test");
 	}
 	
 	public void testCreateFromXml() throws CoreException {
@@ -210,7 +210,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         attr.setValueSetType(ValueSetType.RANGE);
         
         IConfigElement el = generation.newConfigElement();
-        el.setPcTypeAttribute("attrX");
+        el.setPolicyCmptTypeAttribute("attrX");
         
         RangeValueSet range = new RangeValueSet(el, 10);
         range.getValueDatatype().getQualifiedName().equals(Datatype.DECIMAL.getQualifiedName());

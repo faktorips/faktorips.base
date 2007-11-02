@@ -62,17 +62,17 @@ public class ConfigElementComparatorTest extends AbstractIpsPluginTest {
         elements[2] = generation.newConfigElement();
         elements[3] = generation.newConfigElement();
         
-        elements[0].setPcTypeAttribute("C");
-        elements[1].setPcTypeAttribute("S2");
-        elements[2].setPcTypeAttribute("S1");
-        elements[3].setPcTypeAttribute("SS");
+        elements[0].setPolicyCmptTypeAttribute("C");
+        elements[1].setPolicyCmptTypeAttribute("S2");
+        elements[2].setPolicyCmptTypeAttribute("S1");
+        elements[3].setPolicyCmptTypeAttribute("SS");
         
         Arrays.sort(elements, comparator);
         
-        assertEquals("SS", elements[0].getPcTypeAttribute());
-        assertEquals("S1", elements[1].getPcTypeAttribute());
-        assertEquals("S2", elements[2].getPcTypeAttribute());
-        assertEquals("C", elements[3].getPcTypeAttribute());
+        assertEquals("SS", elements[0].getPolicyCmptTypeAttribute());
+        assertEquals("S1", elements[1].getPolicyCmptTypeAttribute());
+        assertEquals("S2", elements[2].getPolicyCmptTypeAttribute());
+        assertEquals("C", elements[3].getPolicyCmptTypeAttribute());
     }
     
     

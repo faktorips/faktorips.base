@@ -74,10 +74,10 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
         generation = (IProductCmptGeneration)cmpt.newGeneration(new GregorianCalendar(20006, 4, 26));
 		
 		ce = generation.newConfigElement();
-        ce.setPcTypeAttribute("attr");
+        ce.setPolicyCmptTypeAttribute("attr");
         
         ce2 = generation.newConfigElement();
-        ce2.setPcTypeAttribute("attr2");
+        ce2.setPolicyCmptTypeAttribute("attr2");
 	}
 	
 	public void testCreateFromXml() throws CoreException, SAXException, IOException, ParserConfigurationException {

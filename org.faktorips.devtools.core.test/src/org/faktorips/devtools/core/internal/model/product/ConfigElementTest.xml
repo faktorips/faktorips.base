@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<ConfigElement id="42" pcTypeAttribute="sumInsured">
+<ConfigElement id="42" attribute="sumInsured">
     <Value isNull="false">10</Value>
     <ValueSet id="1"><Description />
         <Range containsNull="false">

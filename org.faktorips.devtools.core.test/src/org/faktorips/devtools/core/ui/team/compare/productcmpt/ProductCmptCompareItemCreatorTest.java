@@ -67,9 +67,9 @@ public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
         generation3 = (IProductCmptGeneration) product.newGeneration(calendar);
 
         configElement1 = generation1.newConfigElement();
-        configElement1.setPcTypeAttribute("configElement1");    // set name to ensure sorting order
+        configElement1.setPolicyCmptTypeAttribute("configElement1");    // set name to ensure sorting order
         configElement2 = generation1.newConfigElement();
-        configElement2.setPcTypeAttribute("configElement2");
+        configElement2.setPolicyCmptTypeAttribute("configElement2");
         relation1 = generation1.newLink(productReferenced.getQualifiedName());
         relation2 = generation1.newLink(productReferenced.getQualifiedName());
         

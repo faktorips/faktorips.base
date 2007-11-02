@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Element;
 
 /**
  * Tests for product component structure.
@@ -128,5 +129,32 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         assertNull(contentUsage.findTableStructureUsage(project));
         contentUsage.setStructureUsage(STRUCTURE_ROLENAME);
         assertEquals(structUsage, contentUsage.findTableStructureUsage(project));
+    }
+    
+    public void testInitFromXml() {
+        Element el = getTestDocument().getDocumentElement();
+        contentUsage.initFromXml(el);
+        
+        assertEquals("rateTable", contentUsage.getStructureUsage());
+        assertEquals("RateTable2007", contentUsage.getTableContentName());
+    }
+    
+    public void testToXml() {
+        contentUsage.setStructureUsage("rateTable");
+        contentUsage.setTableContentName("RateTable2007");
+        Element el = contentUsage.toXml(newDocument());
+        
+        contentUsage.setStructureUsage("");
+        contentUsage.setTableContentName("");
+        contentUsage.initFromXml(el);
+        
+        assertEquals("rateTable", contentUsage.getStructureUsage());
+        assertEquals("RateTable2007", contentUsage.getTableContentName());
+        
+        contentUsage.setTableContentName(null);
+        el = contentUsage.toXml(newDocument());
+        contentUsage.setTableContentName("");
+        contentUsage.initFromXml(el);
+        assertNull(contentUsage.getTableContentName());
     }
 }

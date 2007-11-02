@@ -458,7 +458,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
 
         IProductCmptGeneration generation = (IProductCmptGeneration) product.newGeneration(new GregorianCalendar(1742, 12, 1));
         IConfigElement ce = generation.newConfigElement();
-        ce.setPcTypeAttribute(attr.getName());
+        ce.setPolicyCmptTypeAttribute(attr.getName());
         ce.setValue("attrCoverage_Default_Product");
         
         // create test case type side

@@ -125,7 +125,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         a1.setOverwrites(false);
         
         IConfigElement ce = generation.newConfigElement();
-        ce.setPcTypeAttribute("a2");
+        ce.setPolicyCmptTypeAttribute("a2");
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
         missing = delta.getAttributesWithMissingConfigElements();
         assertEquals(1, missing.length);
@@ -137,9 +137,9 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         assertEquals(0, delta.getConfigElementsWithMissingAttributes().length);
         
         IConfigElement ce1 = generation.newConfigElement();
-        ce1.setPcTypeAttribute("a1");
+        ce1.setPolicyCmptTypeAttribute("a1");
         IConfigElement ce2 = generation.newConfigElement();
-        ce2.setPcTypeAttribute("a2");
+        ce2.setPolicyCmptTypeAttribute("a2");
         
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
         assertFalse(delta.isEmpty());
@@ -179,7 +179,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         valueSet.setUpperBound("20");
         
         IConfigElement ce1 = generation.newConfigElement();
-        ce1.setPcTypeAttribute("a1");
+        ce1.setPolicyCmptTypeAttribute("a1");
         ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
         ce1.setValueSetType(ValueSetType.ENUM);
         
@@ -256,7 +256,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         valueSet.setUpperBound("20");
 
         IConfigElement ce2 = generation.newConfigElement();
-        ce2.setPcTypeAttribute("a2");
+        ce2.setPolicyCmptTypeAttribute("a2");
         ce2.setType(ConfigElementType.POLICY_ATTRIBUTE);
         ce2.setValueSetType(ValueSetType.ENUM);
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);

@@ -387,7 +387,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IProductCmpt product = newProductCmpt(productCmptType, "TestProduct");
         IProductCmptGeneration gen = product.getProductCmptGeneration(0);
         IConfigElement ce1 = gen.newConfigElement();
-        ce1.setPcTypeAttribute("A1");
+        ce1.setPolicyCmptTypeAttribute("A1");
         ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
         
         IPolicyCmptTypeAttribute a2 = testType.newPolicyCmptTypeAttribute();
@@ -397,10 +397,10 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IProductCmpt product2 = newProductCmpt(productCmptType, "TestProduct2");
         gen = product2.getProductCmptGeneration(0);
         ce1 = gen.newConfigElement();
-        ce1.setPcTypeAttribute("A1");
+        ce1.setPolicyCmptTypeAttribute("A1");
         ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
         IConfigElement ce2 = gen.newConfigElement();
-        ce2.setPcTypeAttribute("A2");
+        ce2.setPolicyCmptTypeAttribute("A2");
         ce2.setType(ConfigElementType.POLICY_ATTRIBUTE);
         
         assertEquals(true, product.containsDifferenceToModel());
@@ -424,7 +424,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IProductCmpt product = newProductCmpt(productCmptType, "TestProduct");
         IProductCmptGeneration gen = product.getProductCmptGeneration(0);
         IConfigElement ce1 = gen.newConfigElement();
-        ce1.setPcTypeAttribute("A1");
+        ce1.setPolicyCmptTypeAttribute("A1");
         ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
         
         IPolicyCmptTypeAttribute a2 = testType.newPolicyCmptTypeAttribute();
@@ -434,10 +434,10 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IProductCmpt product2 = newProductCmpt(productCmptType, "TestProduct2");
         gen = product2.getProductCmptGeneration(0);
         ce1 = gen.newConfigElement();
-        ce1.setPcTypeAttribute("A1");
+        ce1.setPolicyCmptTypeAttribute("A1");
         ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
         IConfigElement ce2 = gen.newConfigElement();
-        ce2.setPcTypeAttribute("A2");
+        ce2.setPolicyCmptTypeAttribute("A2");
         ce2.setType(ConfigElementType.POLICY_ATTRIBUTE);
         
         assertEquals(true, product.containsDifferenceToModel());

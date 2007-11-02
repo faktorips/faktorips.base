@@ -79,7 +79,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         generation = (IProductCmptGeneration)cmpt.newGeneration(new GregorianCalendar(20006, 4, 26));
         
         ce = generation.newConfigElement();
-        ce.setPcTypeAttribute("attr");
+        ce.setPolicyCmptTypeAttribute("attr");
     }
 
     public void testContainsValue() {
@@ -158,7 +158,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         policyCmptType.getIpsSrcFile().save(true, null);
         
     	IConfigElement ce2 = generation.newConfigElement();
-        ce2.setPcTypeAttribute("attr2");
+        ce2.setPolicyCmptTypeAttribute("attr2");
         
     	subset = new EnumValueSet(ce2, 50);
     	subset.addValue("2EUR");

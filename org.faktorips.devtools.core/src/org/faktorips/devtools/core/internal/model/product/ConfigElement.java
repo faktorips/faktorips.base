@@ -141,14 +141,14 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     /**
      * {@inheritDoc}
 	 */
-	public String getPcTypeAttribute() {
+	public String getPolicyCmptTypeAttribute() {
 		return pcTypeAttribute;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setPcTypeAttribute(String newName) {
+	public void setPolicyCmptTypeAttribute(String newName) {
 		String oldName = pcTypeAttribute;
 		pcTypeAttribute = newName;
 		name = pcTypeAttribute;
@@ -385,7 +385,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		
 		value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
 		
-		pcTypeAttribute = element.getAttribute(PROPERTY_PCTYPE_ATTRIBUTE);
+		pcTypeAttribute = element.getAttribute("attribute");
 		name = pcTypeAttribute;
 	}
 
@@ -395,7 +395,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	protected void propertiesToXml(Element element) {
 		super.propertiesToXml(element);
 		element.setAttribute(PROPERTY_TYPE, type.getId());
-		element.setAttribute(PROPERTY_PCTYPE_ATTRIBUTE, pcTypeAttribute);
+		element.setAttribute("attribute", pcTypeAttribute);
 		ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
 	}
 

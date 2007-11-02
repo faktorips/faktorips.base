@@ -82,16 +82,16 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         
         generation = productCmpt.getProductCmptGeneration(0);
         IConfigElement ce = generation.newConfigElement();
-        ce.setPcTypeAttribute("a1");
+        ce.setPolicyCmptTypeAttribute("a1");
         assertEquals(a1, ce.findPcTypeAttribute());
-        ce.setPcTypeAttribute("a2");
+        ce.setPolicyCmptTypeAttribute("a2");
         assertEquals(a2, ce.findPcTypeAttribute());
-        ce.setPcTypeAttribute("unkown");
+        ce.setPolicyCmptTypeAttribute("unkown");
         assertNull(ce.findPcTypeAttribute());
     }
     
     public void testValidate_UnknownAttribute() throws CoreException {
-    	configElement.setPcTypeAttribute("a");
+    	configElement.setPolicyCmptTypeAttribute("a");
     	MessageList ml = configElement.validate();
     	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
     	
@@ -106,7 +106,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	IConfigElement ce = generation.newConfigElement();
     	ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
     	ce.setValue("1");
-    	ce.setPcTypeAttribute("valueTest");
+    	ce.setPolicyCmptTypeAttribute("valueTest");
     	IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
     	attr.setName("valueTest");
     	attr.setAttributeType(AttributeType.CHANGEABLE);
@@ -126,7 +126,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	IConfigElement ce = generation.newConfigElement();
     	ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
     	ce.setValue("1");
-    	ce.setPcTypeAttribute("valueTest");
+    	ce.setPolicyCmptTypeAttribute("valueTest");
     	IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
     	attr.setName("valueTest");
     	attr.setAttributeType(AttributeType.CHANGEABLE);
@@ -158,7 +158,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	IConfigElement ce = generation.newConfigElement();
     	ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
     	ce.setValue("1");
-    	ce.setPcTypeAttribute("valueTest");
+    	ce.setPolicyCmptTypeAttribute("valueTest");
     	ce.setValueSetCopy(valueSet);
     	
 
@@ -206,7 +206,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	((IpsModel)project.getIpsModel()).addDatatypeHelper(idh);
 
     	IConfigElement ce = generation.newConfigElement();
-    	ce.setPcTypeAttribute("test");
+    	ce.setPolicyCmptTypeAttribute("test");
     	MessageList ml = ce.validate();
     	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_INVALID_DATATYPE));
     }
@@ -215,7 +215,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	IConfigElement ce = generation.newConfigElement();
     	ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
     	ce.setValue("1");
-    	ce.setPcTypeAttribute("valueTest");
+    	ce.setPolicyCmptTypeAttribute("valueTest");
     	ce.setValueSetType(ValueSetType.RANGE);
     	IRangeValueSet valueSet = (IRangeValueSet)ce.getValueSet();
     	valueSet.setLowerBound("10");
@@ -256,7 +256,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	IConfigElement ce = generation.newConfigElement();
     	ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
     	ce.setValue("12");
-    	ce.setPcTypeAttribute("valueTest");
+    	ce.setPolicyCmptTypeAttribute("valueTest");
     	ce.setValueSetCopy(valueSet);
     	IRangeValueSet valueSet2 = (IRangeValueSet)ce.getValueSet();
     	valueSet2.setUpperBound("20");
@@ -323,7 +323,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         Document doc = this.getTestDocument();
         configElement.initFromXml((Element)doc.getDocumentElement());
         assertEquals(42, configElement.getId());
-        assertEquals("sumInsured", configElement.getPcTypeAttribute());
+        assertEquals("sumInsured", configElement.getPolicyCmptTypeAttribute());
         assertEquals("10", configElement.getValue());
         IRangeValueSet range = (IRangeValueSet)configElement.getValueSet();
         assertEquals("22", range.getLowerBound());

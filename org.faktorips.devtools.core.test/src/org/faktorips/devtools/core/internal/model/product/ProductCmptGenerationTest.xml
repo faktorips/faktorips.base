@@ -16,5 +16,5 @@
         </ValueSet>
     </ConfigElement>
     <Formula id="2" formulaSignature="PremiumCalculation"/>
-    <Relation id="3" pcTypeRelation="coverage" target="CollisionCoverage" minCardinality="2" maxCardinality="3"/>
+    <Link id="3" association="coverage" target="CollisionCoverage" minCardinality="2" maxCardinality="3"/>
 </Generation>

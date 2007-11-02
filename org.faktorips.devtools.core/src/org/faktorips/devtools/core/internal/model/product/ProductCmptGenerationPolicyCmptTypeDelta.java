@@ -125,7 +125,7 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
         List missing = new ArrayList();
         IConfigElement[] elements = generation.getConfigElements();
         for (int i=0; i<elements.length; i++) {
-            IPolicyCmptTypeAttribute attribute = hierarchy.findAttribute(policyCmptType, elements[i].getPcTypeAttribute());
+            IPolicyCmptTypeAttribute attribute = hierarchy.findAttribute(policyCmptType, elements[i].getPolicyCmptTypeAttribute());
             if (attribute==null || !attribute.isProductRelevant()) {
                 missing.add(elements[i]);
             }
@@ -138,7 +138,7 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
         List valueSetMismatchs = new ArrayList();
         IConfigElement[] elements = generation.getConfigElements();
         for (int i=0; i<elements.length; i++) {
-            IPolicyCmptTypeAttribute attribute =hierarchy.findAttribute(policyCmptType, elements[i].getPcTypeAttribute()); 
+            IPolicyCmptTypeAttribute attribute =hierarchy.findAttribute(policyCmptType, elements[i].getPolicyCmptTypeAttribute()); 
             if (attribute != null && attribute.isProductRelevant()) {
                 if (attribute.getConfigElementType() != elements[i].getType()) {
                     typeMismatchs.add(elements[i]);

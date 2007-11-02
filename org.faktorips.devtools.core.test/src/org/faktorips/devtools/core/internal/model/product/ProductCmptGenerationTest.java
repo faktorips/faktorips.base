@@ -125,7 +125,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         ITableContentUsage contentUsage = generation.newTableContentUsage();
         contentUsage.setStructureUsage("RateTable");
         IConfigElement element = generation.newConfigElement();
-        element.setPcTypeAttribute("policyAttribute");
+        element.setPolicyCmptTypeAttribute("policyAttribute");
         
         assertEquals(value, generation.getPropertyValue(attribute));
         assertEquals(formula, generation.getPropertyValue(signature));
@@ -176,7 +176,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         range.setUpperBound("42");
         
         IConfigElement el = generation.newConfigElement(attribute);
-        assertEquals("a1", el.getPcTypeAttribute());
+        assertEquals("a1", el.getPolicyCmptTypeAttribute());
         assertEquals("10", el.getValue());
         range = (IRangeValueSet)el.getValueSet();
         assertEquals("1", range.getLowerBound());
@@ -398,7 +398,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void testGetConfigElement_AttributeName() {
         generation.newConfigElement();
         IConfigElement ce2 = generation.newConfigElement();
-        ce2.setPcTypeAttribute("a2");
+        ce2.setPolicyCmptTypeAttribute("a2");
         
         assertEquals(ce2, generation.getConfigElement("a2"));
         assertNull(generation.getConfigElement("unkown"));
