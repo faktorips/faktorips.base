@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 
-public class InverseRelationPropertyPage extends WizardPage implements IBlockedValidationWizardPage {
+public class InverseRelationPropertyPage extends WizardPage implements IBlockedValidationWizardPage, IHiddenWizardPage {
     
     private NewPcTypeAssociationWizard wizard;
     private UIToolkit toolkit;
@@ -290,5 +290,15 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
         }
         
         return valid;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setVisible(boolean visible) {
+        if (visible){
+            wizard.handleInverseAssociationSelectionState();
+        }
+        super.setVisible(visible);
     }
 }

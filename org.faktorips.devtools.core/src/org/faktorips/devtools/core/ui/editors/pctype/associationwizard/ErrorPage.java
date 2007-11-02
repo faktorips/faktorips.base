@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
-public class ErrorPage extends WizardPage {
+public class ErrorPage extends WizardPage implements IHiddenWizardPage{
     private static final String PAGE_ID = "Error"; //$NON-NLS-1$
     
     private Label details;
@@ -67,5 +67,9 @@ public class ErrorPage extends WizardPage {
     public void storeErrorDetails(String errorDetails) {
         details.setText(errorDetails);
         details.pack();
+    }
+
+    public boolean isPageVisible() {
+        return false;
     }
 }

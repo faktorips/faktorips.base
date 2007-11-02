@@ -43,7 +43,7 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.type.DerivedUnionCompletionProcessor;
 import org.faktorips.values.EnumValue;
 
-public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlockedValidationWizardPage {
+public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlockedValidationWizardPage, IHiddenWizardPage {
 
     private NewPcTypeAssociationWizard wizard;
     private IProductCmptTypeAssociation association;
@@ -205,7 +205,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     /**
      * @return <code>true</code> if the product cmpt type is available.
      */
-    boolean isPageVisible(){
+    public boolean isPageVisible(){
         boolean visible = wizard.isProductCmptTypeAvailable() && wizard.isConfigureProductCmptType();
 //        if (visible){
 //            if (!displayedBefore){
@@ -280,5 +280,15 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     public void updateDefaults() {
         updateDefaultTargetRoleSingular();
         updateDefaultTargetRolePlural();
-    }    
+    }   
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setVisible(boolean visible) {
+        if (visible){
+            wizard.handleConfProdCmptTypeSelectionState();
+        }
+        super.setVisible(visible);
+    }
 }

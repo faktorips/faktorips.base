@@ -54,17 +54,20 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 public class NewPcTypeAssociationWizard extends Wizard implements ContentsChangeListener {
-    private final static int NEW_REVERSE_RELATION = 0;
-    private final static int USE_EXISTING_REVERSE_RELATION = 1;
-    private final static int NONE_REVERSE_RELATION = 2;
+    final static int NEW_REVERSE_RELATION = 0;
+    final static int USE_EXISTING_REVERSE_RELATION = 1;
+    final static int NONE_REVERSE_RELATION = 2;
     
+    private UIToolkit toolkit = new UIToolkit(null);
+
+    // indicates that there was an error
     private boolean isError;
     
     protected BindingContext bindingContext = new BindingContext();;
-    private UIToolkit toolkit = new UIToolkit(null);
     private ExtensionPropertyControlFactory extFactoryAssociation;
     private ExtensionPropertyControlFactory extFactoryInverseAssociation;
     
+    // model objects
     private IIpsProject ipsProject;
     private IPolicyCmptTypeAssociation association;
     private PmoAssociation pmoAssociation;
@@ -72,31 +75,32 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     private IAssociation productCmptTypeAssociation;
     private IPolicyCmptType targetPolicyCmptType;
 
-    // states of changes ips objects
+    // model objects states
     private Memento mementoTargetBeforeNewRelation;
     private Memento mementoProductCmptTypeBeforeRelation;
     private boolean targetIsDirty;
     private boolean productCmptTypeIsDirty;
 
+    // wizard pages
     private List pages = new ArrayList();
     private DerivedUnionPage derivedUnionPage;
     private PropertyPage propertyPage;
+    private InverseRelationPage inverseRelationPage;
     private InverseRelationPropertyPage inverseRelationPropertyPage;
+    private ConfigureProductCmptTypePage configureProductCmptTypePage;
     private ConfProdCmptTypePropertyPage confProdCmptTypePropertyPage;
     private ErrorPage errorPage;
 
-    private int reverseRelationManipulation = NONE_REVERSE_RELATION;
+    // stores page selections
+    private int inverseAssociationManipulation = NONE_REVERSE_RELATION;
     private int previousreverseRelationManipulation = NONE_REVERSE_RELATION;
+    private boolean configureProductCmptType;
+    private boolean prevConfigureProductCmptType = false;
     private String previousTarget;
     private AssociationType previousTargetRelationType;
 
-    private boolean configureProductCmptType;
-    private boolean prevConfigureProductCmptType = false;
-    private InverseRelationPage inverseRelationPage;
-    private ConfigureProductCmptTypePage configureProductCmptTypePage;
-
     // pages which will be hidden if the type of the association is detail to master
-    List detailToMasterHiddenPages = new ArrayList(10);
+    private List detailToMasterHiddenPages = new ArrayList(10);
     
     public NewPcTypeAssociationWizard(IPolicyCmptTypeAssociation association) {
         super.setWindowTitle("New association");
@@ -172,6 +176,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         contentsChanged(currentPage);
     }
 
+    /**
+     * Indicates that there was a change on the given page
+     */
     public void contentsChanged(IWizardPage currentPage){
         if (!association.getTarget().equals(previousTarget)){
             previousTarget = association.getTarget();
@@ -188,6 +195,11 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         if (currentPage instanceof IBlockedValidationWizardPage) {
             isValidPage((IBlockedValidationWizardPage)currentPage, true);
         }
+        IWizardPage nextPage = getNextWizardPage(currentPage);
+        if (nextPage instanceof IBlockedValidationWizardPage) {
+            isValidPage((IBlockedValidationWizardPage)nextPage, true);
+        }
+        
         getContainer().updateButtons();
     }
 
@@ -196,38 +208,22 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      */
     public boolean isValidPage(IBlockedValidationWizardPage page, boolean updatePageState) {
         boolean valid = true;
-        Validatable association = null;
-        if (page instanceof InverseRelationPropertyPage){
-            association = inverseAssociation;
-        } else if (page instanceof PropertyPage || page instanceof AssociationTargetPage){
-            association = this.association;
-        } else if (page instanceof ConfProdCmptTypePropertyPage){
-            association  = this.productCmptTypeAssociation;
-        }
+        Validatable association = getAssociationFor(page);
         if (association == null){
             return true;
         }
         
-        MessageList list;
-        try {
-            list = association.validate();
-        } catch (CoreException e) {
-            showAndLogError(e);
-            return false;
-        }
-        for (Iterator iter = page.getProperties().iterator(); iter.hasNext();) {
-            String prop = (String)iter.next();
-            MessageList messagesFor = list.getMessagesFor(association, prop);
-            if (messagesFor.containsErrorMsg()) {
-                page.setErrorMessage(messagesFor.getFirstMessage(Message.ERROR).getText());
-                valid = false;
-                break;
+        if (!isValidationDisabledFor(page)){
+            MessageList list;
+            try {
+                list = association.validate();
+            } catch (CoreException e) {
+                showAndLogError(e);
+                return false;
             }
-        }
-        if (valid && productCmptTypeAssociation != null){
             for (Iterator iter = page.getProperties().iterator(); iter.hasNext();) {
                 String prop = (String)iter.next();
-                MessageList messagesFor = list.getMessagesFor(productCmptTypeAssociation, prop);
+                MessageList messagesFor = list.getMessagesFor(association, prop);
                 if (messagesFor.containsErrorMsg()) {
                     page.setErrorMessage(messagesFor.getFirstMessage(Message.ERROR).getText());
                     valid = false;
@@ -235,10 +231,34 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 }
             }
         }
+        
         if (updatePageState){
             page.setPageComplete(valid);
         }
         return valid;
+    }
+
+    /*
+     * Check if the validation for the given page is disabled.
+     */
+    private boolean isValidationDisabledFor(IBlockedValidationWizardPage page) {
+        if (page instanceof ConfProdCmptTypePropertyPage && !configureProductCmptType){
+            return true;
+        } else if (page instanceof InverseRelationPropertyPage && inverseAssociationManipulation == NONE_REVERSE_RELATION){
+            return true;
+        }
+        return false;
+    }
+
+    private Validatable getAssociationFor(IBlockedValidationWizardPage page) {
+        if (page instanceof InverseRelationPropertyPage){
+            return inverseAssociation;
+        } else if (page instanceof PropertyPage || page instanceof AssociationTargetPage){
+            return association;
+        } else if (page instanceof ConfProdCmptTypePropertyPage){
+            return productCmptTypeAssociation;
+        }
+        return null;
     }
 
     /**
@@ -250,15 +270,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             return null;
         }
 
-        if (page == inverseRelationPropertyPage){
-            updateInverseAssociationSelectionState();
-            if (!isValidPage((IBlockedValidationWizardPage)page, false)){
-                return null;
-            }
-        }
-        
-        if (page == confProdCmptTypePropertyPage){
-            updateConfProdCmptTypePropertyState();
+        if (page instanceof IBlockedValidationWizardPage){
             if (!isValidPage((IBlockedValidationWizardPage)page, false)){
                 return null;
             }
@@ -272,6 +284,12 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
         IWizardPage nextPage = (IWizardPage)pages.get(index + 1);
         while (!isPageVisible(nextPage)) {
+            
+            // if page is not visible set page complete to enable finishing of the wizard
+            if (nextPage instanceof IBlockedValidationWizardPage) {
+                ((IBlockedValidationWizardPage)nextPage).setPageComplete(true);
+            }
+            
             index++;
             if (index == pages.size() - 1) {
                 // last page
@@ -281,39 +299,48 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         }
         return (IWizardPage) nextPage;
     }
+    
+    private IWizardPage getNextWizardPage(IWizardPage page){
+        int index = pages.indexOf(page);
+        if (index == pages.size() - 1 || index == -1) {
+            // last page or page not found
+            return null;
+        }
+        return (IWizardPage)pages.get(index + 1);
+    }
 
-    /**
+    /*
      * Returns the visibility of the given page.
      * 
      * @param page the page to check the visibility
+     * 
      * @return <code>true</code> if the given page is visible, <code>false</code> if the page should be hidden
      */
     private boolean isPageVisible(IWizardPage page) {
         boolean visible = false;
-        
-        if (isDetailToMasterAssociation() && detailToMasterHiddenPages.contains(page)){
+
+        if (isDetailToMasterAssociation() && detailToMasterHiddenPages.contains(page)) {
+            // hide page if detail to master association should be created and page is only for master detail associations
             visible = false;
         } else {
-            if (page instanceof DerivedUnionPage) {
-                visible = ((DerivedUnionPage)page).isPageVisible();
-            } if (page instanceof ConfProdCmptTypePropertyPage) {
-                visible = ((ConfProdCmptTypePropertyPage)page).isPageVisible();
-            } else if (page instanceof ErrorPage) {
-                visible = false;
-            } else if (page instanceof InverseRelationPropertyPage) {
-                ((WizardPage)getContainer().getCurrentPage()).setMessage(null);
-                visible = ((InverseRelationPropertyPage)page).isPageVisible();
-                if (!visible && isExistingReverseRelation()){
-                    ((WizardPage)getContainer().getCurrentPage()).setMessage("No relation wich could be used as inverse releation found on target policy component.");
-                }
+            // hide hidden pages
+            if (page instanceof IHiddenWizardPage) {
+                visible = ((IHiddenWizardPage)page).isPageVisible();
             } else {
                 visible = true;
             }
         }
-        // if page is not visible set page complete to enable finishing of the wizard
-        if (!visible && page instanceof IBlockedValidationWizardPage) {
-            ((IBlockedValidationWizardPage)page).setPageComplete(true);
+        
+        // display information in special case
+        //   if an existing inverse relation should be used but no association exists
+        if (page instanceof InverseRelationPropertyPage) {
+            ((WizardPage)getContainer().getCurrentPage()).setMessage(null);
+            if (!visible && isExistingReverseRelation()) {
+                ((WizardPage)getContainer().getCurrentPage())
+                        .setMessage("No relation wich could be used as inverse releation found on target policy component.");
+            }
         }
+        
         return visible;
     }
 
@@ -324,25 +351,33 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         return targetPolicyCmptType;
     }
     
-    private void updateConfProdCmptTypePropertyState() {
+    /**
+     * Check if the selection of the configure product cmpt type (yes/no) has changes and
+     * reset the state and optional create the product cmpt type association. 
+     */
+    void handleConfProdCmptTypeSelectionState() {
         if (prevConfigureProductCmptType != configureProductCmptType){
             prevConfigureProductCmptType = configureProductCmptType;
             restoreMementoProductCmptTypeBeforeChange();
             if (configureProductCmptType){
                 storeMementoProductCmptTypeBeforeChange();
-                newProductCmptTypeAssociation();
+                createNewProductCmptTypeAssociation();
             }
         }
     }
     
-    private void updateInverseAssociationSelectionState() {
+    /**
+     * Check if the selection of the inverse association (none/use existing/create new) has changes and
+     * reset the state and optional create a new inverse association. 
+     */
+    void handleInverseAssociationSelectionState() {
         // show the existing relation drop down only if the existing relation
         // radio button was chosen on the previous page
         boolean selectionChanged = false;
 
         // if selection changed restore last state
-        if (previousreverseRelationManipulation != reverseRelationManipulation){
-            previousreverseRelationManipulation = reverseRelationManipulation;
+        if (previousreverseRelationManipulation != inverseAssociationManipulation){
+            previousreverseRelationManipulation = inverseAssociationManipulation;
             restoreMementoTargetBeforeChange();
             storeMementoTargetBeforeChange();
             storeInverseRelation(null);
@@ -388,7 +423,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             }
             inverseRelationPropertyPage.refreshControls();
         } 
-        previousreverseRelationManipulation = reverseRelationManipulation;
+        previousreverseRelationManipulation = inverseAssociationManipulation;
     }
 
     /*
@@ -416,6 +451,26 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         storeInverseRelation(newReverseRelation);
     }
 
+    /*
+     * Creates a new association on the product cmpt type.
+     */
+    private void createNewProductCmptTypeAssociation() {
+        IProductCmptType  productCmptType = findProductCmptType();
+        if (productCmptType == null){
+            return;
+        }
+        productCmptTypeIsDirty = productCmptType.getIpsSrcFile().isDirty();
+        productCmptTypeAssociation = productCmptType.newAssociation();
+        IProductCmptType productCmptTypeTarget;
+        try {
+            productCmptTypeTarget = targetPolicyCmptType.findProductCmptType(ipsProject);
+            productCmptTypeAssociation.setTarget(productCmptTypeTarget.getQualifiedName());
+            confProdCmptTypePropertyPage.setProductCmptTypeAssociation((IProductCmptTypeAssociation)productCmptTypeAssociation);
+        } catch (Exception e) {
+            showAndLogError(e);
+        }
+    }
+    
     /**
      * Set the default values depending on the relation type and read-only container flag.
      */
@@ -511,7 +566,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      */
     public boolean performFinish() {
         try {
-            updateInverseAssociationSelectionState();
+            // check and perform the last state change of the radio selection pages
+            handleInverseAssociationSelectionState();
+            handleConfProdCmptTypeSelectionState();
             
             boolean saveTargetAutomatically = false;
             if (targetPolicyCmptType != null && 
@@ -670,43 +727,29 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * Returns true if the reverse relation is an existing relation on the target.
      */
     boolean isExistingReverseRelation() {
-        return reverseRelationManipulation == USE_EXISTING_REVERSE_RELATION;
+        return inverseAssociationManipulation == USE_EXISTING_REVERSE_RELATION;
     }   
     
     /**
      * Returns true if the reverse relation is new relation on the target.
      */
     boolean isNewReverseRelation() {
-        return reverseRelationManipulation == NEW_REVERSE_RELATION;
+        return inverseAssociationManipulation == NEW_REVERSE_RELATION;
     }
 
     /**
      * Returns true if none reverse relation should be defined.
      */
     boolean isNoneReverseRelation() {
-        return reverseRelationManipulation == NONE_REVERSE_RELATION;
+        return inverseAssociationManipulation == NONE_REVERSE_RELATION;
     }
     
     /**
      * Sets that the revese relation is an existing relation on the target.
      */
-    void setExistingReverseRelation() {
-        reverseRelationManipulation = USE_EXISTING_REVERSE_RELATION;
-    }   
-    
-    /**
-     * Sets that the revese relation is a new relation on the target.
-     */
-    void setNewReverseRelation() {
-        reverseRelationManipulation = NEW_REVERSE_RELATION;
-    }   
-    
-    /**
-     * Sets that the revese relation will not defined by using this wizard.
-     */
-    void setNoneReverseRelation() {
-        reverseRelationManipulation = NONE_REVERSE_RELATION;
-    }   
+    void setInverseAssociationManipulation(int type) {
+        inverseAssociationManipulation = type;
+    }
 
     public void pageHasChanged() {
         contentsChanged(getContainer().getCurrentPage());
@@ -733,26 +776,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         return false;
     }
     
-    /**
-     * Creates a new association in the product cmpt type.
-     */
-    public void newProductCmptTypeAssociation() {
-        IProductCmptType  productCmptType = findProductCmptType();
-        if (productCmptType == null){
-            return;
-        }
-        productCmptTypeIsDirty = productCmptType.getIpsSrcFile().isDirty();
-        productCmptTypeAssociation = productCmptType.newAssociation();
-        IProductCmptType productCmptTypeTarget;
-        try {
-            productCmptTypeTarget = targetPolicyCmptType.findProductCmptType(ipsProject);
-            productCmptTypeAssociation.setTarget(productCmptTypeTarget.getQualifiedName());
-            confProdCmptTypePropertyPage.setProductCmptTypeAssociation((IProductCmptTypeAssociation)productCmptTypeAssociation);
-        } catch (Exception e) {
-            showAndLogError(e);
-        }
-    }
-
     /**
      * Swith to the error page and log the given exception.
      */

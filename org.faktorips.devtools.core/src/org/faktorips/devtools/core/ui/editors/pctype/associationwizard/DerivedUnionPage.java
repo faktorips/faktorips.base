@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 
-public class DerivedUnionPage extends WizardPage {
+public class DerivedUnionPage extends WizardPage implements IHiddenWizardPage {
     private NewPcTypeAssociationWizard wizard;
     private IPolicyCmptTypeAssociation association;
     private UIToolkit toolkit;
@@ -70,7 +70,7 @@ public class DerivedUnionPage extends WizardPage {
      * @return <code>true</code> if at least one derived union candidates exists and the
      *         association is no derived union association and the target exits.
      */
-    boolean isPageVisible(){
+    public boolean isPageVisible(){
         IIpsProject ipsProject = association.getIpsProject();
         try {
             if (association.findTarget(ipsProject) != null

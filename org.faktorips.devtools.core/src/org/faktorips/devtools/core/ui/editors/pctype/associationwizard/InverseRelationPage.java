@@ -80,26 +80,18 @@ public class InverseRelationPage extends WizardPage {
             if (prevSelection != e.getSource()){
                 prevSelection = (Button) e.getSource();
                 if (e.getSource() == useExistingRelation) {
-                    wizard.setExistingReverseRelation();
+                    wizard.setInverseAssociationManipulation(NewPcTypeAssociationWizard.USE_EXISTING_REVERSE_RELATION);
                 }else if(e.getSource() == newReverseRelation){
-                    wizard.setNewReverseRelation();
+                    wizard.setInverseAssociationManipulation(NewPcTypeAssociationWizard.NEW_REVERSE_RELATION);
                 }else if(e.getSource() == noReverseRelation){
-                    wizard.setNoneReverseRelation();
+                    wizard.setInverseAssociationManipulation(NewPcTypeAssociationWizard.NONE_REVERSE_RELATION);
                 }
                 
-                // informs the property page of the reverse relation about the change
                 wizard.pageHasChanged();
             }
         }
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
         }
-    }
-    
-    public void setEnableStateModifyInverseControls(boolean enabled){
-        toolkit.setDataChangeable(newReverseRelation, enabled);
-        toolkit.setDataChangeable(useExistingRelation, enabled);
-        noReverseRelation.setSelection(true);
-        wizard.setNoneReverseRelation();
     }
 }
