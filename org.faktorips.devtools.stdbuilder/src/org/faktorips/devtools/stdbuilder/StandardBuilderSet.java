@@ -253,17 +253,18 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         productCmptImplClassBuilder.setPolicyCmptImplClassBuilder(policyCmptImplClassBuilder);
         
         productCmptGenInterfaceBuilder.setProductCmptTypeInterfaceBuilder(productCmptInterfaceBuilder);
-
+        productCmptGenInterfaceBuilder.setPolicyCmptTypeImplBuilder(policyCmptImplClassBuilder);
+        
         productCmptGenImplClassBuilder.setInterfaceBuilder(productCmptGenInterfaceBuilder);
         productCmptGenImplClassBuilder.setProductCmptTypeImplBuilder(productCmptImplClassBuilder);
         productCmptGenImplClassBuilder.setProductCmptTypeInterfaceBuilder(productCmptInterfaceBuilder);
-        productCmptGenImplClassBuilder.setPolicyCmptTypeImplBuilder(policyCmptImplClassBuilder);
         productCmptGenImplClassBuilder.setProductCmptGenInterfaceBuilder(productCmptGenInterfaceBuilder);
         productCmptGenImplClassBuilder.setTableImplBuilder(tableImplBuilder);
         
         // product component builders.
         productCmptGenerationImplBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
         productCmptGenerationImplBuilder.setProductCmptGenImplBuilder(productCmptGenImplClassBuilder);
+        productCmptGenerationImplBuilder.setProductCmptGenInterfaceBuilder(productCmptGenInterfaceBuilder);
         
         // test case builder
         testCaseBuilder.setJavaSourceFileBuilder(policyCmptImplClassBuilder);

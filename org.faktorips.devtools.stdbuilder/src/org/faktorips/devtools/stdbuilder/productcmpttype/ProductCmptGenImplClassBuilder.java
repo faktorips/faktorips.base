@@ -33,15 +33,14 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -50,12 +49,8 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
-import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.internal.EnumValues;
@@ -86,7 +81,6 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     private ProductCmptGenInterfaceBuilder interfaceBuilder;
     private ProductCmptImplClassBuilder productCmptTypeImplCuBuilder;
     private ProductCmptInterfaceBuilder productCmptTypeInterfaceBuilder;
-    private PolicyCmptImplClassBuilder policyCmptTypeImplBuilder;
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     
     private TableImplBuilder tableImplBuilder;
@@ -104,10 +98,6 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     public void setProductCmptTypeImplBuilder(ProductCmptImplClassBuilder builder) {
         ArgumentCheck.notNull(builder);
         productCmptTypeImplCuBuilder = builder;
-    }
-    
-    public void setPolicyCmptTypeImplBuilder(PolicyCmptImplClassBuilder builder) {
-        this.policyCmptTypeImplBuilder = builder;
     }
     
     public void setProductCmptTypeInterfaceBuilder(ProductCmptInterfaceBuilder builder) {
@@ -656,40 +646,44 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         return getJavaNamingConvention().getMemberVarName(interfaceBuilder.getPropertyNameValue(a));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected void generateCodeForFormulaSignatureDefinition(IProductCmptTypeMethod method, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
-        generateSignatureForFormula(method, datatypeHelper,Modifier.ABSTRACT | Modifier.PUBLIC, false, methodsBuilder);
-        methodsBuilder.appendln(";");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected void generateCodeForMethod(IMethod method, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        // TODO v2 - support for none formula methods implementieren
-    }
-
+    
     /**
      * Code sample:
      * <pre>
      * public abstract Money computePremium(Policy policy, Integer age) throws FormulaException
      * </pre>
      */
-    public void generateSignatureForFormula(IProductCmptTypeMethod formulaSignature,
-            DatatypeHelper datatypeHelper,
-            int modifier,
-            boolean withFinalParameters,
+    public void generateCodeForModelMethod(
+            IProductCmptTypeMethod method,
+            JavaCodeFragmentBuilder fieldsBuilder, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        IParameter[] parameters = formulaSignature.getParameters();
-        methodsBuilder.signature(modifier, datatypeHelper.getJavaClassName(), formulaSignature.getName(), BuilderHelper
-                .extractParameterNames(parameters), StdBuilderHelper
-                .transformParameterTypesToJavaClassNames(parameters, formulaSignature.getIpsProject(),
-                        policyCmptTypeImplBuilder, productCmptGenInterfaceBuilder), withFinalParameters);
-        methodsBuilder.append(" throws ");
-        methodsBuilder.appendClassName(FormulaExecutionException.class);
+        
+        if (method.isFormulaSignatureDefinition()) {
+            if (method.getModifier().isPublished()) {
+                return; // nothing to do, signature is generated by the interface builder, implementation by the product component builder.
+            } else {
+                productCmptGenInterfaceBuilder.generateSignatureForModelMethod(method, true, false, methodsBuilder);
+                methodsBuilder.append(';');
+                return;
+            }
+        }
+        if (method.getModifier().isPublished()) {
+            methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        } else {
+            methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
+        }
+        productCmptGenInterfaceBuilder.generateSignatureForModelMethod(method, method.isAbstract(), false, methodsBuilder);
+        methodsBuilder.openBracket();
+        methodsBuilder.appendln("// TODO implement method!");
+        Datatype datatype = method.getIpsProject().findDatatype(method.getDatatype());
+        if (!datatype.isVoid()) {
+            if (datatype.isValueDatatype()) {
+                methodsBuilder.appendln("return " + ((ValueDatatype)datatype).getDefaultValue() + "';'");
+            } else {
+                methodsBuilder.appendln("return null;");
+            }
+        }
+        methodsBuilder.closeBracket();
     }
     
     /**

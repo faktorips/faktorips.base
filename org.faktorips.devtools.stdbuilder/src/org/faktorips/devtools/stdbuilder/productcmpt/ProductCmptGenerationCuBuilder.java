@@ -23,7 +23,6 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.ConversionCodeGenerator;
-import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
@@ -38,6 +37,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
@@ -65,6 +65,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     // builders needed
     private ProductCmptImplClassBuilder productCmptImplBuilder;
     private ProductCmptGenImplClassBuilder productCmptGenImplBuilder;
+    private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     
     /**
      * Constructs a new builder.
@@ -89,6 +90,10 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         this.productCmptGenImplBuilder = builder;
     }
     
+    public void setProductCmptGenInterfaceBuilder(ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder) {
+        this.productCmptGenInterfaceBuilder = productCmptGenInterfaceBuilder;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -160,12 +165,9 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         if(method.validate().containsErrorMsg()){
             return;   
         }
-        ValueDatatype datatype = (ValueDatatype)method.findDatatype(getIpsProject());
-        DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
-
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         
-        productCmptGenImplBuilder.generateSignatureForFormula(method, datatypeHelper, Modifier.PUBLIC, true, builder);
+        productCmptGenInterfaceBuilder.generateSignatureForModelMethod(method, false, true, builder);
         builder.openBracket();
         builder.append("try {"); //$NON-NLS-1$
         builder.append("return "); //$NON-NLS-1$

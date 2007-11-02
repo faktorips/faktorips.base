@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
@@ -38,15 +37,14 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -237,13 +235,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
                 if (!methods[i].isValid()) {
                     continue;
                 }
-                if (methods[i].isFormulaSignatureDefinition()) {
-                    ValueDatatype datatype = (ValueDatatype)methods[i].findDatatype(getIpsProject());
-                    DatatypeHelper helper = getIpsProject().findDatatypeHelper(datatype.getQualifiedName());
-                    generateCodeForFormulaSignatureDefinition(methods[i], helper, fieldsBuilder, methodsBuilder);
-                } else {
-                    generateCodeForMethod(methods[i], fieldsBuilder, methodsBuilder);
-                }
+                generateCodeForModelMethod(methods[i], fieldsBuilder, methodsBuilder);
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus(IStatus.ERROR,
                         "Error building method " + methods[i].getName() + " of "
@@ -298,50 +290,14 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
             JavaCodeFragmentBuilder methodsBuilder, 
             JavaCodeFragmentBuilder constantBuilder) throws CoreException;
     
-    protected abstract void generateCodeForMethod(
-            IMethod method, 
-            JavaCodeFragmentBuilder fieldsBuilder, 
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-
-    protected abstract void generateCodeForFormulaSignatureDefinition (
-            IProductCmptTypeMethod method, 
-            DatatypeHelper datatypeHelper, 
-            JavaCodeFragmentBuilder fieldsBuilder, 
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-
-    /**^
-     * Code samples:
-     * <pre>
-     * public void calculatePremium(IPolicy policy)
-     * public ICoverage getCoverageWithHighestSumInsured()
-     * </pre>
+    /**
+     * Generates the code for a method defined in the model. This includes formula signature definitions.
      */
-    public void generateSignatureForMethodDefinedInModel(
-        IMethod method,
-        int javaModifier,
-        Datatype returnType,
-        Datatype[] paramTypes,
-        JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
-        String[] paramClassNames = new String[paramTypes.length];
-        for (int i = 0; i < paramClassNames.length; i++) {
-            if (paramTypes[i] instanceof IPolicyCmptType) {
-                paramClassNames[i] = getQualifiedClassName((IPolicyCmptType)paramTypes[i]);
-            } else {
-                paramClassNames[i] = paramTypes[i].getJavaClassName();
-            }
-        }
-        String returnClassName;
-        if  (returnType instanceof IPolicyCmptType) {
-            returnClassName = getQualifiedClassName((IPolicyCmptType)returnType);
-        } else {
-            returnClassName = returnType.getJavaClassName();
-        }
-        methodsBuilder.signature(javaModifier, returnClassName, method.getName(), 
-                method.getParameterNames(), paramClassNames);
-    }
-    
-    
+    protected abstract void generateCodeForModelMethod (
+            IProductCmptTypeMethod method,  
+            JavaCodeFragmentBuilder fieldsBuilder, 
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
+
     protected abstract void generateCodeForTableUsage(ITableStructureUsage tsu,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;

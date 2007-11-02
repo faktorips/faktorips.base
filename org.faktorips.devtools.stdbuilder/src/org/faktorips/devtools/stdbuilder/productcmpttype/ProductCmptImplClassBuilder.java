@@ -29,14 +29,13 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -240,20 +239,6 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForFormulaSignatureDefinition(IProductCmptTypeMethod method, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        // nothing to do
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected void generateCodeForMethod(IMethod method, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        // nothing to do
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     protected void generateCodeForNoneContainerRelation(IProductCmptTypeAssociation association,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
@@ -283,4 +268,13 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         // nothing to do
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForModelMethod(IProductCmptTypeMethod method, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        // nothing to do
+    }
+    
+    
 }

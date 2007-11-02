@@ -35,6 +35,28 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterface
  */
 public class StdBuilderHelper {
 
+    public final static String transformDatatypeToJavaClassName(
+            String datatypeName, 
+            IIpsProject ipsProject,
+            PolicyCmptImplClassBuilder policyCmptImplBuilder,
+            ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder) throws CoreException {
+        
+        Datatype datatype = ipsProject.findDatatype(datatypeName);
+        if (datatype instanceof ValueDatatype) {
+            DatatypeHelper helper = ipsProject.findDatatypeHelper(datatypeName);
+            if (helper!=null) {
+                return helper.getJavaClassName();
+            }
+            throw new RuntimeException("Can't get datatype helper for datatype " + datatypeName);
+        }
+        if (datatype instanceof PolicyCmptType) {
+            return policyCmptImplBuilder.getQualifiedClassName((IpsObject)datatype);
+        } else if(datatype instanceof ProductCmptType){
+            return productCmptGenInterfaceBuilder.getQualifiedClassName((IpsObject)datatype);
+        }
+        throw new RuntimeException("Can't get Java class name for datatype " + datatypeName);
+    }
+    
     public final static String[] transformParameterTypesToJavaClassNames(
             IParameter[] params,
             IIpsProject ipsProject,
@@ -43,15 +65,7 @@ public class StdBuilderHelper {
         
         String[] javaClasses = new String[params.length];
         for (int i=0; i<params.length; i++) {
-            Datatype paramDatatype = ipsProject.findDatatype(params[i].getDatatype());
-            if (paramDatatype instanceof PolicyCmptType) {
-                javaClasses[i] = policyCmptImplBuilder.getQualifiedClassName((IpsObject)paramDatatype);
-            } else if(paramDatatype instanceof ProductCmptType){
-                javaClasses[i] = productCmptGenInterfaceBuilder.getQualifiedClassName((IpsObject)paramDatatype);
-            }
-            else {
-                javaClasses[i] = paramDatatype.getJavaClassName();
-            }
+            javaClasses[i] = transformDatatypeToJavaClassName(params[i].getDatatype(), ipsProject, policyCmptImplBuilder, productCmptGenInterfaceBuilder);
         }
         return javaClasses;
     }

@@ -71,6 +71,14 @@ public class Modifier extends DefaultEnumValue {
     	return javaModifier;
     }
     
+    public boolean isPublished() {
+        return this==PUBLISHED;
+    }
+    
+    public boolean isPublic() {
+        return this==PUBLIC;
+    }
+
     private Modifier(DefaultEnumType type, String id, int jdtFlags, int javaModifier) {
         super(type, id);
         this.jdtFlags = jdtFlags;
