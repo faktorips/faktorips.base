@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
+import java.util.GregorianCalendar;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -27,7 +29,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -52,7 +56,7 @@ public class TableContentsPage extends IpsObjectPage {
      * @throws JavaModelException
      */
     public TableContentsPage(IStructuredSelection selection) throws JavaModelException {
-        super(selection, Messages.TableContentsPage_title);
+        super(IpsObjectType.TABLE_CONTENTS, selection, Messages.TableContentsPage_title);
     }
     
     String getTableStructure() {
@@ -68,7 +72,7 @@ public class TableContentsPage extends IpsObjectPage {
 
         structureField = new TextButtonField(structureControl);
         structureField.addChangeListener(this);
-        name = addNameLabelField(toolkit);
+        name = addNameLabelField(toolkit, nameComposite);
         name.addFocusListener(new FocusListener() {
             public void focusGained(FocusEvent e) {
                 setDefaultName();
@@ -117,8 +121,7 @@ public class TableContentsPage extends IpsObjectPage {
         }
     }
     
-    protected void validatePage() throws CoreException {
-        super.validatePage();
+    protected void validatePageExtension() throws CoreException {
         if (getErrorMessage()!=null) {
             return;
         }
@@ -130,13 +133,32 @@ public class TableContentsPage extends IpsObjectPage {
                 setErrorMessage(Messages.TableContentsPage_tableStructureHasntGotAnyColumns);
             }
         }
-        updatePageComplete();
     }
     
     private void setDefaultName() {
         if (getIpsObjectName().equals("")) { //$NON-NLS-1$
             String structureName = structureField.getText();
             setIpsObjectName(StringUtil.unqualifiedName(structureName));
+        }
+    }
+    
+    /** 
+     * {@inheritDoc}
+     */
+    protected void finishIpsObject(IIpsObject pdObject) throws CoreException {
+        ITableContents table = (ITableContents)pdObject;
+        table.setTableStructure(getTableStructure());
+        GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
+        if (date==null) {
+            return;
+        }
+        IIpsObjectGeneration generation = table.newGeneration();
+        generation.setValidFrom(date);
+        ITableStructure structure = (ITableStructure)table.getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, table.getTableStructure());
+        if (structure!=null) {
+            for (int i=0; i<structure.getNumOfColumns(); i++) {
+                table.newColumn(""); //$NON-NLS-1$
+            }
         }
     }
 }

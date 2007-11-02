@@ -21,8 +21,8 @@ import java.util.ArrayList;
 
 import org.faktorips.devtools.core.model.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.product.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
+import org.faktorips.devtools.core.model.product.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**

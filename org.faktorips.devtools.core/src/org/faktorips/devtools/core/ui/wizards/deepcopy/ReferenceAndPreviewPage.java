@@ -54,8 +54,8 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
-import org.faktorips.devtools.core.model.product.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
+import org.faktorips.devtools.core.model.product.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.ui.UIToolkit;
 

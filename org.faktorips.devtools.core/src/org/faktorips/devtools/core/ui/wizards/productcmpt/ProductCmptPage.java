@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
+import java.util.GregorianCalendar;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -38,8 +40,10 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -67,7 +71,7 @@ public class ProductCmptPage extends IpsObjectPage {
     private IProductCmpt sourceProductCmpt;
     
     public ProductCmptPage(IStructuredSelection selection) throws JavaModelException {
-        super(selection, Messages.ProductCmptPage_title);
+        super(IpsObjectType.PRODUCT_CMPT_TYPE_V2, selection, Messages.ProductCmptPage_title);
         canModifyRuntimeId = IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId();
     }
     
@@ -120,7 +124,7 @@ public class ProductCmptPage extends IpsObjectPage {
         }
         toolkit.createFormLabel(nameComposite, Messages.ProductCmptPage_labelFullName); 
         
-        fullName = addNameField(toolkit);
+        fullName = addNameField(toolkit, nameComposite);
 
         updateEnableState();
         
@@ -219,21 +223,20 @@ public class ProductCmptPage extends IpsObjectPage {
         updateEnableState();
     }
     
-    protected void validatePage() throws CoreException {
-        super.validatePage();
+    
+    protected void validatePageExtension() throws CoreException {
         if (getErrorMessage()!=null) {
             return;
         }
-	    if (typeRefControl.findProductCmptType()==null) {
-	        setErrorMessage(NLS.bind(Messages.ProductCmptPage_msgTemplateDoesNotExist, typeRefControl.getText()));
+        if (typeRefControl.findProductCmptType()==null) {
+            setErrorMessage(NLS.bind(Messages.ProductCmptPage_msgTemplateDoesNotExist, typeRefControl.getText()));
             return;
-	    }
+        }
         String runtimeIdErrorMsg = validateRuntimeId();
         if (StringUtils.isNotEmpty(runtimeIdErrorMsg)){
             setErrorMessage(runtimeIdErrorMsg);
             return;
         }
-        updatePageComplete();
     }
 
     private String validateRuntimeId() throws CoreException {
@@ -371,5 +374,21 @@ public class ProductCmptPage extends IpsObjectPage {
             constName.setFocus();
             constName.setSelection(constName.getTextLimit());
         }
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    protected void finishIpsObject(IIpsObject pdObject) throws CoreException {
+        IProductCmpt productCmpt = (IProductCmpt)pdObject;
+        productCmpt.setProductCmptType(getProductCmptType());
+        GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
+        if (date==null) {
+            return;
+        }
+        productCmpt.setRuntimeId(getRuntimeId());
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
+        generation.setValidFrom(date);
+        productCmpt.fixAllDifferencesToModel();
     }
 }

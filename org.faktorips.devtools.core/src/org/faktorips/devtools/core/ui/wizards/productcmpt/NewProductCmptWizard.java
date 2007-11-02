@@ -17,16 +17,9 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
-import java.util.GregorianCalendar;
-
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
 
@@ -39,7 +32,6 @@ public class NewProductCmptWizard extends NewIpsObjectWizard {
     private ProductCmptPage productCmptPage;
     
     public NewProductCmptWizard() {
-        super(IpsObjectType.PRODUCT_CMPT);
         this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewProductCmptWizard.png")); //$NON-NLS-1$
     }
     
@@ -50,27 +42,4 @@ public class NewProductCmptWizard extends NewIpsObjectWizard {
         productCmptPage = new ProductCmptPage(selection);
         return productCmptPage;
     }
-
-    /** 
-     * {@inheritDoc}
-     */
-    protected void createAdditionalPages() {
-    }
-    
-    /** 
-     * {@inheritDoc}
-     */
-    protected void finishIpsObject(IIpsObject pdObject) throws CoreException {
-        IProductCmpt productCmpt = (IProductCmpt)pdObject;
-        productCmpt.setProductCmptType(productCmptPage.getProductCmptType());
-        GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-        if (date==null) {
-            return;
-        }
-        productCmpt.setRuntimeId(productCmptPage.getRuntimeId());
-        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
-        generation.setValidFrom(date);
-        productCmpt.fixAllDifferencesToModel();
-    }
-
 }

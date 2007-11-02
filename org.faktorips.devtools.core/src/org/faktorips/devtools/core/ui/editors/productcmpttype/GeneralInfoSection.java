@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
-import org.faktorips.devtools.core.ui.editors.pctype.Messages;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**

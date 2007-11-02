@@ -17,9 +17,10 @@
 
 package org.faktorips.devtools.core.ui.wizards;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.DialogPage;
@@ -31,6 +32,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -50,13 +52,18 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 
 /**
- * Firist page of a wizards to create a new ips object. Allows the user to specify the ipssourcefolder, 
- * the ips package and the object's name. 
+ * A page that provides basic functionality for creating ips objects. Allows the user to specify the
+ * ipssourcefolder, the ips package and the object's name.
+ * Subclasses can specify an image for the page by setting it with the <code>setImageDescriptor()</code>
+ * method within the subclass constructor. Alteratively the image can also be set in the constructor of
+ * the wizard if the wizard contains only one page or if the image doesn't change when the page within
+ * the wizard changes. 
  */
 public abstract class IpsObjectPage extends WizardPage implements ValueChangeListener {
 
@@ -82,14 +89,20 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     // subclasses can add their own controls.
     private Composite nameComposite;
     
+    private IpsObjectType ipsObjectType;
+    
     /**
      * @param pageName
      * @param selection
      * @throws JavaModelException
      */
-    public IpsObjectPage(IStructuredSelection selection, String pageName) throws JavaModelException {
+    public IpsObjectPage(IpsObjectType ipsObjectType, IStructuredSelection selection, String pageName) throws JavaModelException {
         super(pageName);
+        ArgumentCheck.notNull(ipsObjectType, this);
+        ArgumentCheck.notNull(pageName, this);
+        this.ipsObjectType = ipsObjectType;
         selectedResource = getSelectedResourceFromSelection(selection);
+        setTitle(Messages.NewIpsObjectWizard_title + ipsObjectType.getName());
     }
     
     private IResource getSelectedResourceFromSelection(IStructuredSelection selection) {
@@ -115,15 +128,12 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         return null;
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    public final void createControl(Composite parent) {
+    protected Control createControlInternal(Composite parent){
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
         setTitle(getIpsObjectType().getName());
         setMessage(NLS.bind(Messages.IpsObjectPage_msgNew, getIpsObjectType().getName())); 
-
+        
         // dont set the layout of the parent composite - this will lead to 
         // layout-problems when this wizard-page is opened within allready open dialogs
         // (for example when the user wants a new policy class and starts the wizard using
@@ -137,7 +147,6 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         GridLayout pageLayout = new GridLayout(1, false);
         pageLayout.verticalSpacing = 20;
         pageControl.setLayout(pageLayout);
-        setControl(pageControl);
         
         Composite locationComposite  = toolkit.createLabelEditColumnComposite(pageControl);
         toolkit.createFormLabel(locationComposite, Messages.IpsObjectPage_labelSrcFolder);
@@ -156,12 +165,20 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         nameComposite = toolkit.createLabelEditColumnComposite(pageControl);        
         fillNameComposite(nameComposite, toolkit);
         try {
-			setDefaults(selectedResource);
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
-		}
+            setDefaults(selectedResource);
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
 
         validateInput = true;
+        return pageControl;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void createControl(Composite parent) {
+        setControl(createControlInternal(parent));
     }
     
     /**
@@ -203,17 +220,17 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     }
     
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
-        Text nameText = addNameLabelField(toolkit);
+        Text nameText = addNameLabelField(toolkit, nameComposite);
         nameText.setFocus();
     }
     
-    protected Text addNameLabelField(UIToolkit toolkit) {
-        toolkit.createFormLabel(nameComposite, Messages.IpsObjectPage_labelName); 
-        return addNameField(toolkit);
+    protected Text addNameLabelField(UIToolkit toolkit, Composite parent) {
+        toolkit.createFormLabel(parent, Messages.IpsObjectPage_labelName); 
+        return addNameField(toolkit, parent);
     }
     
-    protected Text addNameField(UIToolkit toolkit) {
-        Text nameText = toolkit.createText(nameComposite);
+    protected Text addNameField(UIToolkit toolkit, Composite parent) {
+        Text nameText = toolkit.createText(parent);
         nameText.setFocus();
         nameField = new TextField(nameText);
         nameField.addChangeListener(this);
@@ -232,8 +249,16 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         return packageField.getText();
     }
     
+    public void setPackage(String packageName){
+        packageField.setText(packageName);
+    }
+    
     public String getSourceFolder() {
         return sourceFolderField.getText();
+    }
+
+    public void setSourceFolder(String sourceFolder) {
+        sourceFolderField.setText(sourceFolder);
     }
     
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
@@ -293,9 +318,18 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     }
     
     protected IpsObjectType getIpsObjectType() {
-        return ((INewIpsObjectWizard)getWizard()).getIpsObjectType();
+        if(ipsObjectType == null){
+            return ((INewIpsObjectWizard)getWizard()).getIpsObjectType();
+        }
+        return ipsObjectType;
     }
     
+
+    public void setIpsObjectType(IpsObjectType ipsObjectType) {
+        this.ipsObjectType = ipsObjectType;
+    }
+
+
     protected Composite getNameComposite() {
         return nameComposite;
     }
@@ -322,10 +356,12 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     }
     
     /**
-     * Validates the page and generates error messages if needed. 
-     * Can be overridden in subclasses to add specific validation logic.s 
+     * Validates the page and generates error messages that are displayed in the message area of the wizard container.
+     * If subclasses what to add further validations they can override the validatePageExtension() Method. The 
+     * validationPageExtension() Method is called by this method before the page get updated. This method is protected
+     * because subclasses might need to call within event szenarios implemented within the subclass. 
      */
-    protected void validatePage() throws CoreException {
+    protected final void validatePage() throws CoreException {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
 		setErrorMessage(null);
         validateSourceRoot();
@@ -337,12 +373,23 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
             return;
         }
         validateName();
+        validatePageExtension();
         updatePageComplete();
     }
     
+    /**
+     * This method is empty by default. Subclasses might override it to add specific validations.
+     * This method is called by the validatePage() method before the page will be updated.
+     * 
+     * @throws CoreException if these exceptions are thrown by subclasses they will be logged and
+     *             displayed in an error dialog
+     */
+    protected void validatePageExtension() throws CoreException {
+    }
+    
 	/**
-	 * The method validates the package.
-	 */
+     * The method validates the package.
+     */
 	private void validateSourceRoot() {
 	    IIpsPackageFragmentRoot root = sourceFolderControl.getPdPckFragmentRoot(); 
         if (root!=null) {
@@ -377,8 +424,9 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
 	 * <p>
 	 * Subclasses may extend this method to perform their own validation.
 	 * </p>
+	 * @throws CoreException 
 	 */
-	protected void validateName() {
+	protected void validateName() throws CoreException {
         if(getIpsProject() == null){
             return;
         }
@@ -407,16 +455,24 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
             IpsPlugin.logAndShowErrorDialog(e);
         }
 		
-        // validate to indicate that the object not exists
-		IIpsPackageFragment pack = packageControl.getIpsPackageFragment();
-		if (pack!=null) {
-		    IFolder folder = (IFolder)pack.getCorrespondingResource();
-		    String filename = getIpsObjectType().getFileName(name);
-		    if (folder.getFile(filename).exists()) {
-		        setErrorMessage(Messages.IpsObjectPage_msgObjectAllreadyExists);
-		        return;
-		    }
-		}
+        // check if an ipsobject already exists that has the same name and generates a java class
+        // to avoid conflicts with java classes that have the same name 
+        IIpsSrcFile file = getIpsProject().findIpsSrcFile(IpsObjectType.POLICY_CMPT_TYPE, getIpsObjectName());
+        if(file != null){
+            setErrorMessage(Messages.IpsObjectPage_msgObjectAllreadyExists);
+        }
+        file = getIpsProject().findIpsSrcFile(IpsObjectType.PRODUCT_CMPT_TYPE_V2, getIpsObjectName());
+        if(file != null){
+            setErrorMessage(Messages.IpsObjectPage_msgObjectAllreadyExists);
+        }
+        file = getIpsProject().findIpsSrcFile(IpsObjectType.TABLE_STRUCTURE, getIpsObjectName());
+        if(file != null){
+            setErrorMessage(Messages.IpsObjectPage_msgObjectAllreadyExists);
+        }
+        file = getIpsProject().findIpsSrcFile(IpsObjectType.TEST_CASE_TYPE, getIpsObjectName());
+        if(file != null){
+            setErrorMessage(Messages.IpsObjectPage_msgObjectAllreadyExists);
+        }
 	}
     
     protected void updatePageComplete() {
@@ -428,5 +484,43 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         	&& !"".equals(nameField.getText()); //$NON-NLS-1$
         setPageComplete(complete);
     }
-
+    
+    public boolean canCreateIpsSrcFile(){
+        return true;
+    }
+    
+    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException{
+        IIpsSrcFile srcFile = getIpsPackageFragment().createIpsFile(getIpsObjectType(), getIpsObjectName(), true, new SubProgressMonitor(monitor, 1));
+        finishIpsObject(srcFile.getIpsObject());
+        return srcFile;
+    }
+    
+    /**
+     * Returns <code>false</code> by default. Subclasses can override this method to indicate that the Wizard 
+     * can finish without stepping to the next page. It only makes sense to use this method if this page is added to a
+     * NewIpsObjectWizard.
+     */
+    public boolean finishWhenThisPageIsComplete(){
+        return false;
+    }
+    
+    /**
+     * This method is empty by default and can be overridden by sub classes when they want
+     * to change the new created IpsObject before it will be saved.
+     * 
+     * @param ipsObject
+     * @throws CoreException
+     */
+    protected void finishIpsObject(IIpsObject ipsObject) throws CoreException{
+        
+    }
+    
+    /**
+     * This method is called when the page is entered. By default the implementation of this method is empty.
+     * 
+     * @throws CoreException
+     */
+    public void pageEntered() throws CoreException {
+        
+    }
 }

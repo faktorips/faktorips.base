@@ -17,10 +17,16 @@
 
 package org.faktorips.devtools.core.ui.wizards.type;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -34,14 +40,16 @@ public abstract class TypePage extends IpsObjectPage {
     
     private IpsObjectRefControl superTypeControl;
     private Checkbox overrideCheckbox;
+    protected TypePage pageOfAssociatedType;
     
     /**
      * @param pageName
      * @param selection
      * @throws JavaModelException
      */
-    public TypePage(IStructuredSelection selection, String title) throws JavaModelException {
-        super(selection, title);
+    public TypePage(IpsObjectType ipsObjectType, IStructuredSelection selection, String pageName) throws JavaModelException {
+        super(ipsObjectType, selection, pageName);
+        setTitle(pageName);
     }
     
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
@@ -58,6 +66,16 @@ public abstract class TypePage extends IpsObjectPage {
     }
     
     protected abstract IpsObjectRefControl createSupertypeControl(Composite container, UIToolkit toolkit);
+    
+    public String getQualifiedIpsObjectName(){
+        StringBuffer buf = new StringBuffer();
+        if(!StringUtils.isEmpty(getPackage())){
+            buf.append(getPackage());
+            buf.append('.');
+        }
+        buf.append(getIpsObjectName());
+        return buf.toString();
+    }
     
     /** 
      * {@inheritDoc}
@@ -79,4 +97,31 @@ public abstract class TypePage extends IpsObjectPage {
     public boolean overrideAbstractMethods() {
         return overrideCheckbox.isChecked();
     }
+    
+    /** 
+     * {@inheritDoc}
+     */
+    protected void finishIpsObject(IIpsObject ipsObject) throws CoreException {
+        IType type = (IType)ipsObject;
+        String supertypeName = getSuperType(); 
+        type.setSupertype(supertypeName);
+        if (overrideAbstractMethods()) {
+            IMethod[] abstractMethods = type.findOverrideMethodCandidates(true, ipsObject.getIpsProject());
+            type.overrideMethods(abstractMethods);
+        }
+    }
+    
+    
+    protected void validatePageExtension() throws CoreException {
+        //check for name conflicts of the product and policy component type name
+        if (pageOfAssociatedType != null && getIpsObjectName() != null && pageOfAssociatedType.getIpsObjectName() != null
+                && getIpsObjectName().equals(pageOfAssociatedType.getIpsObjectName())) {
+            setErrorMessage("The name of the policy component type conflicts with the name of the product component type");
+        }
+    }
+    
+    public void pageEntered() throws CoreException{
+        validatePage();
+    }
+
 }

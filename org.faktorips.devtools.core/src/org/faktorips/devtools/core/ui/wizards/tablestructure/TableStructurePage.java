@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.ui.wizards.tablestructure;
 
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 
 
@@ -33,6 +34,6 @@ public class TableStructurePage extends IpsObjectPage {
      * @throws JavaModelException
      */
     public TableStructurePage(IStructuredSelection selection) throws JavaModelException {
-        super(selection, Messages.TableStructurePage_title);
+        super(IpsObjectType.TABLE_STRUCTURE, selection, Messages.TableStructurePage_title);
     }
 }

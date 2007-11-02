@@ -20,9 +20,7 @@ package org.faktorips.devtools.core.ui.wizards.productcmpttype;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
@@ -36,23 +34,12 @@ public class NewProductCmptTypeWizard extends NewIpsObjectWizard {
     
     private ProductCmptTypePage typePage;
     
-    public NewProductCmptTypeWizard() {
-        super(IpsObjectType.PRODUCT_CMPT_TYPE_V2);
-        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewProductCmptTypeWizard.png")); //$NON-NLS-1$
-    }
-    
     /** 
      * {@inheritDoc}
      */
     protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws JavaModelException {
-        typePage = new ProductCmptTypePage(selection);
+        typePage = new ProductCmptTypePage(selection, null);
         return typePage;
-    }
-
-    /** 
-     * {@inheritDoc}
-     */
-    protected void createAdditionalPages() {
     }
 
     /** 

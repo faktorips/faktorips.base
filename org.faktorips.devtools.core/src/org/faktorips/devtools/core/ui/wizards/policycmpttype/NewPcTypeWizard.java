@@ -17,63 +17,38 @@
 
 package org.faktorips.devtools.core.ui.wizards.policycmpttype;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.dialogs.IPageChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.type.IMethod;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
+import org.faktorips.devtools.core.ui.wizards.productcmpttype.ProductCmptTypePage;
 
 
 /**
  *
  */
-public class NewPcTypeWizard extends NewIpsObjectWizard {
+public class NewPcTypeWizard extends NewIpsObjectWizard implements IPageChangedListener{
     
-    private PcTypePage typePage;
-    
-    public NewPcTypeWizard() {
-        super(IpsObjectType.POLICY_CMPT_TYPE);
-        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewPolicyCmptTypeWizard.png")); //$NON-NLS-1$
-    }
+    private PcTypePage pctypePage;
     
     /** 
      * {@inheritDoc}
      */
     protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws JavaModelException {
-        typePage = new PcTypePage(selection);
-        return typePage;
+        pctypePage = new PcTypePage(selection);
+        return pctypePage;
     }
 
     /** 
      * {@inheritDoc}
+     * @throws CoreException 
      */
-    protected void createAdditionalPages() {
+    protected IWizardPage[] createAdditionalPages(IStructuredSelection selection) throws CoreException {
+        ProductCmptTypePage page = new ProductCmptTypePage(selection, pctypePage);
+        pctypePage.setProductCmptTypePage(page);
+        return new IWizardPage[]{page};
     }
-
-    /** 
-     * {@inheritDoc}
-     */
-    protected void finishIpsObject(IIpsObject ipsObject) throws CoreException {
-        IPolicyCmptType type = (IPolicyCmptType)ipsObject;
-        String supertypeName = typePage.getSuperType(); 
-        type.setSupertype(supertypeName);
-        String postfix = IpsPlugin.getDefault().getIpsPreferences().getDefaultProductCmptTypePostfix();
-        if (StringUtils.isNotEmpty(postfix)) {
-        	type.setConfigurableByProductCmptType(true);
-        	type.setProductCmptType(type.getQualifiedName() + postfix);
-        } else {
-        	type.setConfigurableByProductCmptType(false);
-        }
-        if (typePage.overrideAbstractMethods()) {
-            IMethod[] abstractMethods = type.findOverrideMethodCandidates(true, ipsObject.getIpsProject());
-            type.overrideMethods(abstractMethods);
-        }
-    }
-
 }
