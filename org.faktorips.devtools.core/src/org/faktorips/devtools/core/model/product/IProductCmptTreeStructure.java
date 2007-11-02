@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.model.product;
 
 import java.util.GregorianCalendar;
 
-import org.faktorips.devtools.core.model.CycleInProductStructureException;
 
 /**
  * A product component tree structure provides a tree view for product components

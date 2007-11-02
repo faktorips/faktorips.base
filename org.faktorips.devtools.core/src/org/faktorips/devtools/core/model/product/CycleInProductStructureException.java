@@ -15,7 +15,9 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model;
+package org.faktorips.devtools.core.model.product;
+
+import org.faktorips.devtools.core.model.IIpsElement;
 
 
 /**

@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.product.DeepCopyOperation;
 import org.faktorips.devtools.core.internal.model.product.ProductCmptTreeStructure;
-import org.faktorips.devtools.core.model.CycleInProductStructureException;
+import org.faktorips.devtools.core.model.product.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
