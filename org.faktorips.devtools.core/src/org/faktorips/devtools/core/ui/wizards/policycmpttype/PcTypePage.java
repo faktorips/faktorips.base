@@ -61,7 +61,7 @@ public class PcTypePage extends TypePage {
         super.fillNameComposite(nameComposite, toolkit);
         
         toolkit.createLabel(nameComposite, "");
-        configurableField = new CheckboxField(toolkit.createCheckbox(nameComposite, "configure by product component type")); 
+        configurableField = new CheckboxField(toolkit.createCheckbox(nameComposite, "Configured by product component type")); 
         configurableField.setValue(Boolean.FALSE);
         configurableField.addChangeListener(this);
     }
