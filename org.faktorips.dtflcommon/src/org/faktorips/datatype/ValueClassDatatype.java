@@ -30,7 +30,6 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
 	
 	private Class clazz;
 	private String name;
-    private boolean isNullObject = false;
 
 	public ValueClassDatatype(Class clazz) {
 		this(clazz, StringUtil.unqualifiedName(clazz.getName()));	
@@ -39,13 +38,6 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
 	public ValueClassDatatype(Class clazz, String name) {
 	    this.clazz = clazz;
 		this.name = name;
-        Class[] interfaces = clazz.getInterfaces();
-        for (int i = 0; i < interfaces.length; i++) {
-            if (interfaces[i].equals(NullObjectSupport.class)) {
-                isNullObject = true;
-                break;
-            }
-        }
 	}
 
 	/**
@@ -119,9 +111,6 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
             return false; // => value can't be parsed, so it's also not null
         }
         if (value==null) {
-            if (isNullObject) {
-//                TODO: What's this? throw new RuntimeException("Class " + clazz + " implements NullObject, so the value must not be null.");
-            }
             return true;
         }
         
