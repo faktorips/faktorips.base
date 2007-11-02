@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
-import org.faktorips.devtools.core.model.product.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 
 public class ProductEditorDeleteAction extends IpsAction {

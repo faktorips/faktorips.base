@@ -59,7 +59,7 @@ import org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectPath;
-import org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNamingStrategy;
+import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.ui.UIToolkit;

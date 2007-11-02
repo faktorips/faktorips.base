@@ -19,9 +19,9 @@ package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 
 import java.util.Comparator;
 
-import org.faktorips.devtools.core.internal.model.product.IPropertyValue;
+import org.faktorips.devtools.core.internal.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 
 /**
  * Comparator for <code>ProductCmptCompareItem</code>s. Compares the actual

@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
-import org.faktorips.devtools.core.model.product.IFormula;
+import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.fl.IdentifierResolver;
 

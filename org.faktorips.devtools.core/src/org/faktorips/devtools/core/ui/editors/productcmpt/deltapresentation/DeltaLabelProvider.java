@@ -19,8 +19,8 @@ package org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.model.product.DeltaType;
-import org.faktorips.devtools.core.model.product.IDeltaEntry;
+import org.faktorips.devtools.core.model.productcmpt.DeltaType;
+import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 
 /**
  * 

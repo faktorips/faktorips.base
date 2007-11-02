@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.ui.search;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 
 /**
  * @author Thorsten Guenther

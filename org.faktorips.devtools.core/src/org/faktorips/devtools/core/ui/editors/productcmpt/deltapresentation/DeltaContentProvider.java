@@ -22,9 +22,9 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.model.product.DeltaType;
-import org.faktorips.devtools.core.model.product.IDeltaEntry;
-import org.faktorips.devtools.core.model.product.IGenerationToTypeDelta;
+import org.faktorips.devtools.core.model.productcmpt.DeltaType;
+import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
+import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
 
 /**
  * 

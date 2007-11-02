@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.values.DateUtil;
 
 public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {

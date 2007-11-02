@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.model.testcase;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 
 /**

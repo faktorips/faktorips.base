@@ -19,9 +19,9 @@ package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.model.product.IProductCmptReference;
-import org.faktorips.devtools.core.model.product.IProductCmptStructureReference;
-import org.faktorips.devtools.core.model.product.IProductCmptTreeStructure;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 
 /**
  * Provides the elements of the FaktorIps-Model for the department.

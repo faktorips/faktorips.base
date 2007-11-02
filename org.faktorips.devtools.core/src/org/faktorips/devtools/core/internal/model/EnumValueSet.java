@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.Messages;
 import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;

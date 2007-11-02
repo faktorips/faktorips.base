@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 
 /**
  * Comparator for comparing <code>IConfigElement</code>s. A config element is considered to 
