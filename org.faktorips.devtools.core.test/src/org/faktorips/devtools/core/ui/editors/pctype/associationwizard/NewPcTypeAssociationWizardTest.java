@@ -15,17 +15,17 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.pctype.relationwizard;
+package org.faktorips.devtools.core.ui.editors.pctype.associationwizard;
 
 import java.util.List;
 
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.AssociationType;
 
-public class NewPcTypeRelationWizardTest  extends AbstractIpsPluginTest {
+public class NewPcTypeAssociationWizardTest  extends AbstractIpsPluginTest {
     private IIpsProject project;
     
     public void setUp() throws Exception{
@@ -40,15 +40,15 @@ public class NewPcTypeRelationWizardTest  extends AbstractIpsPluginTest {
         
         // ASSOZIATION => ASSOZIATION
         relation.setAssociationType(AssociationType.ASSOCIATION);
-        assertEquals(AssociationType.ASSOCIATION, NewPcTypeRelationWizard.getCorrespondingRelationType(relation.getAssociationType()));
+        assertEquals(AssociationType.ASSOCIATION, NewPcTypeAssociationWizard.getCorrespondingRelationType(relation.getAssociationType()));
         
         // COMPOSITION => REVERSE_COMPOSITION
         relation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        assertEquals(AssociationType.COMPOSITION_DETAIL_TO_MASTER, NewPcTypeRelationWizard.getCorrespondingRelationType(relation.getAssociationType()));
+        assertEquals(AssociationType.COMPOSITION_DETAIL_TO_MASTER, NewPcTypeAssociationWizard.getCorrespondingRelationType(relation.getAssociationType()));
         
         // REVERSE_COMPOSITION => COMPOSITION 
         relation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        assertEquals(AssociationType.COMPOSITION_MASTER_TO_DETAIL, NewPcTypeRelationWizard.getCorrespondingRelationType(relation.getAssociationType()));
+        assertEquals(AssociationType.COMPOSITION_MASTER_TO_DETAIL, NewPcTypeAssociationWizard.getCorrespondingRelationType(relation.getAssociationType()));
     }
     
     public void testGetCorrespondingTargetRelations() throws Exception{
@@ -69,32 +69,32 @@ public class NewPcTypeRelationWizardTest  extends AbstractIpsPluginTest {
         relation21.setAssociationType(AssociationType.ASSOCIATION);
         
         // don't find any relations because no relation on policyCmptType1 have policyCmptType2 as target
-        List result = ReverseRelationPropertiesPage.getCorrespondingTargetRelations(relation21, policyCmptType1);
+        List result = NewPcTypeAssociationWizard.getCorrespondingTargetRelations(relation21, policyCmptType1);
         assertEquals(0, result.size());
         
         superRelation.setTarget(policyCmptType2.getName());
-        result = ReverseRelationPropertiesPage.getCorrespondingTargetRelations(relation21, policyCmptType1);
+        result = NewPcTypeAssociationWizard.getCorrespondingTargetRelations(relation21, policyCmptType1);
         assertEquals(1, result.size());
         assertTrue(result.contains(superRelation));
         
         relation12.setTarget(policyCmptType2.getName());
-        result = ReverseRelationPropertiesPage.getCorrespondingTargetRelations(relation21, policyCmptType1);
+        result = NewPcTypeAssociationWizard.getCorrespondingTargetRelations(relation21, policyCmptType1);
         assertEquals(2, result.size());
         assertTrue(result.contains(superRelation));
         assertTrue(result.contains(relation12));
         
         superRelation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         relation12.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        result = ReverseRelationPropertiesPage.getCorrespondingTargetRelations(relation21, policyCmptType1);
+        result = NewPcTypeAssociationWizard.getCorrespondingTargetRelations(relation21, policyCmptType1);
         assertEquals(0, result.size());
         
         relation21.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        result = ReverseRelationPropertiesPage.getCorrespondingTargetRelations(relation21, policyCmptType1);
+        result = NewPcTypeAssociationWizard.getCorrespondingTargetRelations(relation21, policyCmptType1);
         assertEquals(1, result.size());
         assertTrue(result.contains(relation12));
         
         relation21.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        result = ReverseRelationPropertiesPage.getCorrespondingTargetRelations(relation21, policyCmptType1);
+        result = NewPcTypeAssociationWizard.getCorrespondingTargetRelations(relation21, policyCmptType1);
         assertEquals(1, result.size());
         assertTrue(result.contains(superRelation));
     }

@@ -21,11 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -77,13 +75,10 @@ public class AssociationTargetPage extends WizardPage implements IBlockedValidat
         final Checkbox derivedUnionCheckbox = toolkit.createCheckbox(main);        
         bindingContext.bindContent(derivedUnionCheckbox, association, IPolicyCmptTypeAssociation.PROPERTY_DERIVED_UNION);
         visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_DERIVED_UNION);
+        bindingContext.bindEnabled(derivedUnionCheckbox, association, IPolicyCmptTypeAssociation.PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE);
         
         // description
-        Label label = toolkit.createFormLabel(main, "Description");
-        GridData gd = (GridData)label.getParent().getLayoutData();
-        gd.verticalAlignment = SWT.TOP;
-        label.setLayoutData(gd);
-        Text text = toolkit.createMultilineText(main);
+        Text text = wizard.createDescriptionText(main);
         bindingContext.bindContent(text, association, IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
         visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
         

@@ -25,47 +25,43 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
-public class InverseRelationPage extends WizardPage {
-
+public class ConfigureProductCmptTypePage extends WizardPage {
+    
     private NewPcTypeAssociationWizard wizard;
     private UIToolkit toolkit;
 
-    private Button newReverseRelation;
-    private Button useExistingRelation;
-    private Button noReverseRelation;
+    private Button noAssociationOnProductCmptType;
+    private Button newAssociationOnProductCmptType;
     private Button prevSelection;
 
-    public InverseRelationPage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit) {
+    public ConfigureProductCmptTypePage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit) {
         super("InverseRelationPage", "Inverse relation", null);
-        setDescription("Define inverse relation");
+        setDescription("Define association on product component type");
         this.wizard = wizard;
         this.toolkit = toolkit;
         
         setPageComplete(true);
     }
-
+    
     public void createControl(Composite parent) {
         Composite c = toolkit.createGridComposite(parent, 1, false, true);
         ((GridLayout)c.getLayout()).marginHeight = 12;
         
         InverseRelationSelectionListener listener = new InverseRelationSelectionListener();
-
-        noReverseRelation = toolkit.createRadioButton(c, "No inverse relation");
-        noReverseRelation.addSelectionListener(listener);
+        
+        noAssociationOnProductCmptType = toolkit.createRadioButton(c, "Do not create association on product cmpt type");
+        noAssociationOnProductCmptType.addSelectionListener(listener);
         
         toolkit.createVerticalSpacer(c, 1);
 
-        useExistingRelation = toolkit.createRadioButton(c, "Use existing relation as inverse");
-        useExistingRelation.addSelectionListener(listener);
+        newAssociationOnProductCmptType = toolkit.createRadioButton(c, "Create product cmpt type association");
+        newAssociationOnProductCmptType.addSelectionListener(listener);
         
         toolkit.createVerticalSpacer(c, 1);
-
-        newReverseRelation = toolkit.createRadioButton(c, "New inverse relation");
-        newReverseRelation.addSelectionListener(listener);
         
-        // set the default selection: no inverse
-        noReverseRelation.setSelection(true);
-        prevSelection = noReverseRelation;
+        // set the default selection
+        noAssociationOnProductCmptType.setSelection(true);
+        prevSelection = noAssociationOnProductCmptType;
         
         setControl(c);
     }
@@ -79,27 +75,16 @@ public class InverseRelationPage extends WizardPage {
             // otherwise enable next wizard page
             if (prevSelection != e.getSource()){
                 prevSelection = (Button) e.getSource();
-                if (e.getSource() == useExistingRelation) {
-                    wizard.setExistingReverseRelation();
-                }else if(e.getSource() == newReverseRelation){
-                    wizard.setNewReverseRelation();
-                }else if(e.getSource() == noReverseRelation){
-                    wizard.setNoneReverseRelation();
+                if (e.getSource() == newAssociationOnProductCmptType) {
+                    wizard.setConfigureProductCmptType(true);
+                }else if(e.getSource() == noAssociationOnProductCmptType){
+                    wizard.setConfigureProductCmptType(false);
                 }
-                
-                // informs the property page of the reverse relation about the change
                 wizard.pageHasChanged();
             }
         }
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
         }
-    }
-    
-    public void setEnableStateModifyInverseControls(boolean enabled){
-        toolkit.setDataChangeable(newReverseRelation, enabled);
-        toolkit.setDataChangeable(useExistingRelation, enabled);
-        noReverseRelation.setSelection(true);
-        wizard.setNoneReverseRelation();
     }
 }

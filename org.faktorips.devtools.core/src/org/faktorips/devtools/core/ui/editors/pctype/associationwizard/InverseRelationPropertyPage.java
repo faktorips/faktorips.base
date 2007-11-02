@@ -57,6 +57,8 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
     private Label existingRelLabel;
 
     private String prevSelExistingRelation;
+    private boolean displayedBefore;
+    private Text description;
     
 //    private Composite compositeTopExtensions;
 //    private Composite compositeBottomExtensions;
@@ -69,6 +71,8 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
         this.wizard = wizard;
         this.toolkit = toolkit;
         this.bindingContext = bindingContext;
+        
+        setPageComplete(true);
     }
 
     public void createControl(Composite parent) {
@@ -150,6 +154,9 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
         
 //        // bottom extensions
 //        compositeBottomExtensions = toolkit.createLabelEditColumnComposite(workArea);
+        
+        description = wizard.createDescriptionText(parent);
+        visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
     }
 
     public void setAssociation(IPolicyCmptTypeAssociation association) {
@@ -159,6 +166,8 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
         bindingContext.removeBindings(targetRolePluralText);
         bindingContext.removeBindings(cardinalityFieldMin.getControl());
         bindingContext.removeBindings(cardinalityFieldMax.getControl());
+        bindingContext.removeBindings(description);
+        
 //        wizard.getExtFactoryAssociation().removeBinding(bindingContext);
         
         if (association != null){
@@ -166,9 +175,12 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
             bindingContext.bindContent(targetRolePluralText, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
             bindingContext.bindContent((Text)cardinalityFieldMin.getControl(), association, IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
             bindingContext.bindContent((Text)cardinalityFieldMax.getControl(), association, IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
+            bindingContext.bindContent(description, association, IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
             bindingContext.updateUI();
             targetText.setText(association.getTarget());
             typeText.setText(association.getAssociationType().getName());
+            
+            bindingContext.updateUI();
             
 //            // top extensions
 //            if (topExtensions != null){
@@ -192,23 +204,10 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
             cardinalityFieldMax.setText("");
             targetText.setText("");
             typeText.setText("");
+            description.setText("");
         }
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    public boolean canFlipToNextPage() {
-        setErrorMessage(null);
-        boolean valid = wizard.isValidPage(this, false);
-        
-        if (getNextPage() == null){
-            return false;
-        }
-        
-        return valid;
-    }
-
     public List getProperties() {
         return visibleProperties;
     }
@@ -252,23 +251,44 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
      * @return <code>false</code> if no inverse association should be created or no existing
      *         relation exists otherwise <code>true</code>.
      */
-    public boolean isPageVisible(){
-        
+    public boolean isPageVisible() {
+        boolean visible = false;
         if (wizard.isNoneReverseRelation()) {
             return false;
         } else if (wizard.isExistingReverseRelation()) {
             try {
-                if (NewPcTypeAssociationWizard.getCorrespondingTargetRelations(association, wizard.getTargetPolicyCmptType()).size() == 0) {
-                    return false;
+                if (NewPcTypeAssociationWizard.getCorrespondingTargetRelations(wizard.getAssociation(),
+                        wizard.getTargetPolicyCmptType()).size() == 0) {
+                    visible = false;
                 } else {
-                    return true;
+                    visible = true;
                 }
             } catch (CoreException e) {
                 wizard.showAndLogError(e);
             }
         } else {
-            return true;
-        }        
-        return false;
+            visible = true;
+        }
+        if (visible) {
+            if (!displayedBefore) {
+                displayedBefore = true;
+                setPageComplete(false);
+            }
+        }
+        return visible;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean canFlipToNextPage() {
+        setErrorMessage(null);
+        boolean valid = wizard.isValidPage(this, false);
+        
+        if (getNextPage() == null){
+            return false;
+        }
+        
+        return valid;
     }
 }

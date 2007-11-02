@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
-import org.faktorips.devtools.core.ui.editors.pctype.relationwizard.NewPcTypeRelationWizard;
+import org.faktorips.devtools.core.ui.editors.pctype.associationwizard.NewPcTypeAssociationWizard;
 import org.faktorips.util.memento.Memento;
 
 /**
@@ -148,26 +148,26 @@ public class RelationsSection extends SimpleIpsPartsSection {
     			}
     		});
         }
-        
+		
         /**
-		 * Open the new-relation-wizard
-		 */
-		private void newWizardClicked() {
-			IIpsSrcFile file = getIpsObject().getIpsSrcFile();
-			boolean dirty = file.isDirty();
-			Memento memento = getIpsObject().newMemento();
-			IIpsObjectPart newRelation = newIpsPart();
-			WizardDialog dialog = new WizardDialog(getShell(), new NewPcTypeRelationWizard((IPolicyCmptTypeAssociation)newRelation));
-	        dialog.open();
+         * Open the new-association-wizard
+         */
+        private void newWizardClicked() {
+            IIpsSrcFile file = getIpsObject().getIpsSrcFile();
+            boolean dirty = file.isDirty();
+            Memento memento = getIpsObject().newMemento();
+            IIpsObjectPart newRelation = newIpsPart();
+            WizardDialog dialog = new WizardDialog(getShell(), new NewPcTypeAssociationWizard((IPolicyCmptTypeAssociation)newRelation));
+            dialog.open();
             if (dialog.getReturnCode()==Window.CANCEL) {
-            	getIpsObject().setState(memento);
+                getIpsObject().setState(memento);
                 if (!dirty) {
                     file.markAsClean();
                 }
             }
             refresh();
-		}
-		
+        }
+        
         private class RelationContentProvider implements IStructuredContentProvider {
     		public Object[] getElements(Object inputElement) {
     			 return getPcType().getPolicyCmptTypeAssociations();
