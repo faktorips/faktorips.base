@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.model.testcase;
 
-import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
  *  Specification of a test object.

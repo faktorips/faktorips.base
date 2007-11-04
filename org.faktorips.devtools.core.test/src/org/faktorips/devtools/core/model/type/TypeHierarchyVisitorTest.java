@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.model.type;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * 

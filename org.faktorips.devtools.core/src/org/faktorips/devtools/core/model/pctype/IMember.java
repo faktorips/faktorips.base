@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.faktorips.devtools.core.model.Described;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 
 /**

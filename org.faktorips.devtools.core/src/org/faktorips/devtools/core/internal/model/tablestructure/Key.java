@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
@@ -170,7 +170,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     /**
      * Overridden IMethod.
      *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
+     * @see org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -186,7 +186,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     /**
      * Overridden IMethod.
      *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
+     * @see org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);

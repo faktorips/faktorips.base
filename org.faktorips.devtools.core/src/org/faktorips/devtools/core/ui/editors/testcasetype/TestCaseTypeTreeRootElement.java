@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 
 /**

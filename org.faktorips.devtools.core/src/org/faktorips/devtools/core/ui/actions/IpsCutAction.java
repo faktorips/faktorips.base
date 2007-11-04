@@ -25,8 +25,8 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.internal.model.IpsObjectPartState;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartState;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
  * An action to cut IpsObjectPartContainer-objects out of the model into the clipboard.

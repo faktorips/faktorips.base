@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.core.model;
 
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+
 import junit.framework.TestCase;
 
 

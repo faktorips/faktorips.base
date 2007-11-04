@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.IEnumValueSet;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.util.ArgumentCheck;
 
 /**

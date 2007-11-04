@@ -27,12 +27,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsPackageFragmentArbitrarySortDefinition;
-import org.faktorips.devtools.core.internal.model.IpsPackageNameComparator;
-import org.faktorips.devtools.core.model.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.IIpsPackageFragmentSortDefinition;
-import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragmentArbitrarySortDefinition;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageNameComparator;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentSortDefinition;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.util.QNameUtil;
 
 /**

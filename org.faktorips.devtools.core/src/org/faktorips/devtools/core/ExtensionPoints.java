@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.util.ArgumentCheck;
 
 /**

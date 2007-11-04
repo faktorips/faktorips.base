@@ -24,8 +24,8 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.TwoPaneElementSelector;
-import org.faktorips.devtools.core.internal.model.IpsSrcFile;
-import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
 
 /**

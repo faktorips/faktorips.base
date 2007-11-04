@@ -29,10 +29,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
-import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 
@@ -106,7 +106,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
     /**
      * Overridden IMethod.
      * 
-     * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#delete(org.faktorips.devtools.core.model.IIpsSrcFile)
+     * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#delete(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile)
      */
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
         IFile file = getXmlContentFile(ipsSrcFile);
@@ -119,7 +119,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
      * Returs true if the provided IpsObject is of the same type as the IpsObjectType this builder
      * is initialized with.
      * 
-     * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#isBuilderFor(IIpsObject)
+     * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#isBuilderFor(IIpsObject)
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return ipsObjectType.equals(ipsSrcFile.getIpsObjectType());

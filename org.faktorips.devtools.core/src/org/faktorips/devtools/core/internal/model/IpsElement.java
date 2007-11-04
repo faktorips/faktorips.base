@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 
 
@@ -45,7 +45,7 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
     /**
      * Constructor for testing purposes.
      */
-    IpsElement() {
+    public IpsElement() {
     }
 
     /**

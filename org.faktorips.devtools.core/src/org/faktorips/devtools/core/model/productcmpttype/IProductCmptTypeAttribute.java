@@ -17,9 +17,9 @@
 
 package org.faktorips.devtools.core.model.productcmpttype;
 
-import org.faktorips.devtools.core.model.IValueSet;
-import org.faktorips.devtools.core.model.IValueSetOwner;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 
 /**
  * An attribute of a product component type.

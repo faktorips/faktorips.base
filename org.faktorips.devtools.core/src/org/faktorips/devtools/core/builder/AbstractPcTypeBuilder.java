@@ -27,11 +27,11 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -79,7 +79,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
      * @param element An ips element needed to access the ipsproject where the neccessary configuration
      * information is stored.
      * 
-     * @see org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention
+     * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
      */
     public String getAbbreviationForGenerationConcept(IIpsElement element) {
         return getChangesInTimeNamingConvention(element).
@@ -92,7 +92,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
      * @param element An ips element needed to access the ipsproject where the neccessary configuration
      * information is stored.
      * 
-     * @see org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention
+     * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
      */
     public String getNameForGenerationConcept(IIpsElement element) {
         return getChangesInTimeNamingConvention(element).

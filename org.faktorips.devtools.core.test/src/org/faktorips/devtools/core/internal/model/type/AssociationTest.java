@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.TestIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
@@ -292,7 +292,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
     
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#toXml(org.w3c.dom.Document)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer#toXml(org.w3c.dom.Document)}.
      */
     public void testToXml() {
         association.setAssociationType(AssociationType.AGGREGATION);
@@ -319,7 +319,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initFromXml(org.w3c.dom.Element)}.
+     * Test method for {@link org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer#initFromXml(org.w3c.dom.Element)}.
      */
     public void testInitFromXmlElement() {
         Element docEl = getTestDocument().getDocumentElement();

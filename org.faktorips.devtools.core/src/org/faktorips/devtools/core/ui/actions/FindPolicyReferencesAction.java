@@ -3,7 +3,7 @@ package org.faktorips.devtools.core.ui.actions;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.search.ui.NewSearchUI;
-import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.search.ReferencesToPolicySearchQuery;
 

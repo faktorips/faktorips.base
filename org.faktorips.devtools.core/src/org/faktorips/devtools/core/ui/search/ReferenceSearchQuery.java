@@ -10,7 +10,7 @@ import org.eclipse.search.ui.text.Match;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 /**
  * Abstract class for ReferenceSearches in the FaktorIPS object model. 
  * Subclasses are used with the eclipse search ui:

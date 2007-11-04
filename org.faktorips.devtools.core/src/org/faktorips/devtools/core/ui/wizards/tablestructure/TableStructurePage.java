@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.ui.wizards.tablestructure;
 
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 
 

@@ -20,9 +20,9 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
-import org.faktorips.devtools.core.model.ITimedIpsObject;
-import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.values.DateUtil;
 import org.xml.sax.Attributes;

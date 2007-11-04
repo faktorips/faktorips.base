@@ -21,7 +21,7 @@ import org.faktorips.datatype.DefaultGenericEnumDatatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.w3c.dom.Element;
 
 /**

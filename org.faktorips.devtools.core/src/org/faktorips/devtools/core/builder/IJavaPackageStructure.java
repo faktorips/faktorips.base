@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.builder;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
 /**
  * A <code>JavaSourceFileBuilder</code> needs an implementation of this interface. It provides the

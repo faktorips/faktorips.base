@@ -25,7 +25,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IFixDifferencesToModelSupport;
+import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 
 /**
  * 

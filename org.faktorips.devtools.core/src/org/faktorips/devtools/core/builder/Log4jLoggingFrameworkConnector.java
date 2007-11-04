@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
+import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 
 /**
  * An implementation of the <code>IIpsLoggingFrameworkConnector</code> interface that connects

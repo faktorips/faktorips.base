@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
-import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
  * Represents a validation rule. Instances of this interface just say that a

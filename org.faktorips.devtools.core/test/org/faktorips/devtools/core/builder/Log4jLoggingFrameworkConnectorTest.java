@@ -26,7 +26,7 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
-import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
+import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 
 public class Log4jLoggingFrameworkConnectorTest extends TestCase {
 

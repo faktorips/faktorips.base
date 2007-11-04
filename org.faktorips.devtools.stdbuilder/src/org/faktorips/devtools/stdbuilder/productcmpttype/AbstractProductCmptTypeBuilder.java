@@ -31,12 +31,12 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.ProductCmptTypeHierarchyCodeGenerator;
-import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
-import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -99,7 +99,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
      * @param element An ips element needed to access the ipsproject where the neccessary configuration
      * information is stored.
      * 
-     * @see org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention
+     * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
      */
     public String getAbbreviationForGenerationConcept(IIpsElement element) {
         return getChangesInTimeNamingConvention(element).

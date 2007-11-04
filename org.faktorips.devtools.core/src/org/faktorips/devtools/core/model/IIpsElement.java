@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.model;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * Common protocol for all elements provided by the IPS model.

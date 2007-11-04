@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
-import org.faktorips.devtools.core.model.Modifier;
+import org.faktorips.devtools.core.model.ipsobject.Modifier;
 
 import junit.framework.TestCase;
 

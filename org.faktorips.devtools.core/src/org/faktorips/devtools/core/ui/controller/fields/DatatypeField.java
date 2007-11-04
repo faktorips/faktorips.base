@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 
 

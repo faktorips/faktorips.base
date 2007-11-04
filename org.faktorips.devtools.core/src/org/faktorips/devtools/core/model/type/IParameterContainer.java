@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.model.type;
 
-import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
  * A container containing parameters.

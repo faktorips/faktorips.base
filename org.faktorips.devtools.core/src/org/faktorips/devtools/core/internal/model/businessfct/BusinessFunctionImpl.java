@@ -17,12 +17,12 @@
 
 package org.faktorips.devtools.core.internal.model.businessfct;
 
-import org.faktorips.devtools.core.internal.model.IpsObject;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.businessfct.BusinessFunction;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.w3c.dom.Element;
 
 
@@ -75,7 +75,7 @@ public class BusinessFunctionImpl extends IpsObject implements
      * 
      * @throws RuntimeException if the method is called.
      *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#newPart(java.lang.String, int)
+     * @see org.faktorips.devtools.core.internal.model.ipsobject.IpsObject#newPart(java.lang.String, int)
      */
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
         throw new RuntimeException("newPart() not supported."); //$NON-NLS-1$

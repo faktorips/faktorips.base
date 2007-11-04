@@ -20,9 +20,9 @@ package org.faktorips.devtools.core.model.productcmpt;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.IFixDifferencesToModelSupport;
-import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.ITimedIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
+import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;

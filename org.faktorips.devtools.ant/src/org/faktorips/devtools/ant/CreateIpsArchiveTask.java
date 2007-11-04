@@ -17,8 +17,8 @@ import java.util.List;
 import org.apache.tools.ant.BuildException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
-import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * This is an ant task that can only be used with the eclipse ant runner with an eclipse installation that

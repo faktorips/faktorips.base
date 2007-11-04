@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.ui.controller;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.faktorips.devtools.core.model.IExtensionPropertyAccess;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 
 
 public class FieldExtensionPropertyMapping implements FieldPropertyMapping {

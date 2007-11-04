@@ -18,8 +18,8 @@
 package org.faktorips.devtools.core.model.tablecontents;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.XmlSaxSupport;
+import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
 

@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.model.testcasetype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestRuleParameter;
-import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 
 /**

@@ -15,7 +15,7 @@
 package org.faktorips.devtools.core.model.versionmanager;
 
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
-import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
 
 /**

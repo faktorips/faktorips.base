@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
@@ -219,7 +219,7 @@ public class ForeignKey extends Key implements IForeignKey {
     /**
      * Overridden IMethod.
      *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#createElement(org.w3c.dom.Document)
+     * @see org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer#createElement(org.w3c.dom.Document)
      */
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
@@ -228,7 +228,7 @@ public class ForeignKey extends Key implements IForeignKey {
     /**
      * Overridden IMethod.
      *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
+     * @see org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -239,7 +239,7 @@ public class ForeignKey extends Key implements IForeignKey {
     /**
      * Overridden IMethod.
      *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
+     * @see org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);

@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.model;
 
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
+
 import junit.framework.TestCase;
 
 /**

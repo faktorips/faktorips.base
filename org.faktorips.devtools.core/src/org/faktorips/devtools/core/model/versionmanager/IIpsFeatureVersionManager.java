@@ -15,7 +15,7 @@
 package org.faktorips.devtools.core.model.versionmanager;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * A manager for version-related topics in FaktorIps.

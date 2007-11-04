@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.TestEnumType;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 
 /**
  * 

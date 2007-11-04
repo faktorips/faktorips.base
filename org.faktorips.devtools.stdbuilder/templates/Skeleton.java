@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.JetJavaContentGenerator;
 

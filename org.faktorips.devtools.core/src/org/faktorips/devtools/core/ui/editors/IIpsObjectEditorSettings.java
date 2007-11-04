@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
-import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
 /**
  * An interface to a storage mechanism for making ips object editor settings persistent until

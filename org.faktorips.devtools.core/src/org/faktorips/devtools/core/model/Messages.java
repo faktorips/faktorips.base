@@ -34,30 +34,6 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String EnumValueSet_msgValueNotInEnumeration;
-
-	public static String EnumValueSet_msgNotAnEnumValueset;
-
-	public static String EnumValueSet_msgValueNotParsable;
-
-	public static String EnumValueSet_msgDuplicateValue;
-
-	public static String Range_msgValueNotInRange;
-
-	public static String Range_msgTypeOfValuesetNotMatching;
-
-	public static String Range_msgNoStepDefinedInSubset;
-
-	public static String Range_msgLowerBoundViolation;
-
-	public static String Range_msgUpperBoundViolation;
-
-	public static String Range_msgUnknownDatatype;
-
-	public static String Range_msgLowerboundGreaterUpperbound;
-
-	public static String Range_msgPropertyValueNotParsable;
-
 	public static String IpsObjectType_nameBusinessFunction;
 
 	public static String IpsObjectType_namePolicyClass;
@@ -69,58 +45,6 @@ public class Messages extends NLS {
 	public static String IpsObjectType_nameProductComponent;
 
 	public static String IpsObjectType_nameTableContents;
-
-    public static String RangeValueSet_0;
-
-	public static String ValueSetType__allValues;
-
-	public static String ValueSetType_range;
-
-	public static String ValueSetType_enumeration;
-
-	public static String EnumValueSet__msgDatatypeUnknown;
-
-	public static String EnumValueSet_msgDatatypeMissmatch;
-
-	public static String EnumValueSet_msgNullNotSupported;
-
-	public static String RangeValueSet_msgDatatypeUnknown;
-
-	public static String RangeValueSet_msgNullNotContained;
-
-	public static String RangeValueSet_msgNullNotSupported;
-
-	public static String AllValuesValueSet_msgUnknownDatatype;
-
-	public static String AllValuesValueSet_msgValueNotParsable;
-
-	public static String AllValuesValueSet_msgValueNotContained;
-
-	public static String AllValuesValueSet_msgUnknowndDatatype;
-
-	public static String AllValuesValueSet_msgNoSubset;
-
-	public static String RangeValueSet_msgDatatypeNotComparable;
-
-	public static String RangeValueSet_msgStepViolation;
-
-	public static String RangeValueSet_msgStepMismatch;
-
-	public static String RangeValueSet_msgLowerboundMismatch;
-
-	public static String RangeValueSet_msgUpperboundMismatch;
-
-	public static String RangeValueSet_msgStepRangeMismatch;
-
-	public static String RangeValueSet_msgDatatypeNotNumeric;
-
-    public static String RangeValueSet_msgStepNotParsable;
-
-    public static String RangeValueSet_msgLowerboundViolation;
-
-    public static String RangeValueSet_msgUpperboundViolation;
-
-    public static String EnumValueSet_msgNotSubset;
 
 	public static String IpsObjectType_nameTestCaseType;
 

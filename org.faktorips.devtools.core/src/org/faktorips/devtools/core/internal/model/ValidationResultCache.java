@@ -19,8 +19,8 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.util.HashMap;
 
-import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.message.MessageList;
 
 /**

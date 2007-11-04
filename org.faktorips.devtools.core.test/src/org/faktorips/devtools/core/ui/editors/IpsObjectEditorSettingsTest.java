@@ -22,8 +22,8 @@ import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * 
@@ -43,7 +43,7 @@ public class IpsObjectEditorSettingsTest extends AbstractIpsPluginTest {
     }
     
     /**
-     * Test method for {@link org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings#put(org.faktorips.devtools.core.model.IIpsSrcFile, java.lang.String, java.lang.String)}.
+     * Test method for {@link org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings#put(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile, java.lang.String, java.lang.String)}.
      * @throws CoreException 
      */
     public void testPut() throws CoreException {
@@ -80,7 +80,7 @@ public class IpsObjectEditorSettingsTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings#get(org.faktorips.devtools.core.model.IIpsSrcFile, java.lang.String)}.
+     * Test method for {@link org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings#get(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile, java.lang.String)}.
      */
     public void testGet() {
         assertNull(settings.get(srcFile, "KEY1"));
@@ -89,7 +89,7 @@ public class IpsObjectEditorSettingsTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings#get(org.faktorips.devtools.core.model.IIpsSrcFile, java.lang.String)}.
+     * Test method for {@link org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings#get(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile, java.lang.String)}.
      */
     public void testGetBoolean() {
         assertFalse(settings.getBoolean(srcFile, "KEY1"));
@@ -98,7 +98,7 @@ public class IpsObjectEditorSettingsTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings#remove(org.faktorips.devtools.core.model.IIpsSrcFile)}.
+     * Test method for {@link org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings#remove(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile)}.
      */
     public void testRemoveIIpsSrcFile() {
         settings.remove(srcFile);
@@ -112,7 +112,7 @@ public class IpsObjectEditorSettingsTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings#remove(org.faktorips.devtools.core.model.IIpsSrcFile, java.lang.String)}.
+     * Test method for {@link org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings#remove(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile, java.lang.String)}.
      */
     public void testRemoveIIpsSrcFileString() {
         settings.remove(srcFile, "KEY1");

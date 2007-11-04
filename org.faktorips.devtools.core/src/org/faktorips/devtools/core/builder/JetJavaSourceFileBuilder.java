@@ -18,9 +18,9 @@
 package org.faktorips.devtools.core.builder;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -100,7 +100,7 @@ public class JetJavaSourceFileBuilder extends JavaSourceFileBuilder {
     /**
      * Overridden IMethod.
      *
-     * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#isBuilderFor(org.faktorips.devtools.core.model.IIpsSrcFile)
+     * @see org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder#isBuilderFor(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile)
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return ipsObjectType.equals(ipsSrcFile.getIpsObjectType());
@@ -110,7 +110,7 @@ public class JetJavaSourceFileBuilder extends JavaSourceFileBuilder {
      * 
      * Overridden IMethod.
      * 
-     * @see org.faktorips.devtools.core.builder.JavaSourceFileBuilder#getUnqualifiedClassName(org.faktorips.devtools.core.model.IIpsSrcFile)
+     * @see org.faktorips.devtools.core.builder.JavaSourceFileBuilder#getUnqualifiedClassName(org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile)
      */
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) {
         StringBuffer buf = new StringBuffer();

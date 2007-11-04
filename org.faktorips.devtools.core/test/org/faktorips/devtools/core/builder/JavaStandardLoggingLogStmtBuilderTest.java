@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
-import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
+import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 
 public class JavaStandardLoggingLogStmtBuilderTest extends TestCase {
 

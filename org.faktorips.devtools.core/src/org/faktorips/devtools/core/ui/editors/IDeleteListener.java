@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
-import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
  * Interface for listeners which want to be notified on ips object part deletion.

@@ -22,11 +22,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.IpsObject;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
@@ -381,7 +381,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     
     /** 
      * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObject#getIpsObjectType()
+     * @see org.faktorips.devtools.core.model.ipsobject.IIpsObject#getIpsObjectType()
      */
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.TABLE_STRUCTURE;
@@ -461,7 +461,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * Overridden IMethod.
      *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#propertiesToXml(org.w3c.dom.Element)
+     * @see org.faktorips.devtools.core.internal.model.ipsobject.IpsObject#propertiesToXml(org.w3c.dom.Element)
      */
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
@@ -471,7 +471,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * Overridden IMethod.
      *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#initPropertiesFromXml(org.w3c.dom.Element)
+     * @see org.faktorips.devtools.core.internal.model.ipsobject.IpsObject#initPropertiesFromXml(org.w3c.dom.Element)
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -496,7 +496,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * Overridden IMethod.
      *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#reinitPartCollections()
+     * @see org.faktorips.devtools.core.internal.model.ipsobject.IpsObject#reinitPartCollections()
      */
     protected void reinitPartCollections() {
         columns.clear();

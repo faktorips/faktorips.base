@@ -47,7 +47,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.faktorips.devtools.core.model.IpsObjectType"/>
+                  <meta.attribute kind="java" basedOn="org.faktorips.devtools.core.model.ipsobject.IpsObjectType"/>
                </appInfo>
             </annotation>
          </attribute>

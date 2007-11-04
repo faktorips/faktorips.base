@@ -17,8 +17,8 @@
 
 package org.faktorips.devtools.core.builder;
 
-import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.IIpsLoggingFrameworkConnector;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 
 /**
  * Abstract implementation that can be used as a base class for real builder sets. 

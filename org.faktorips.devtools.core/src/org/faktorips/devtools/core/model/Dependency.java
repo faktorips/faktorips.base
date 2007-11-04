@@ -11,6 +11,7 @@ package org.faktorips.devtools.core.model;
 
 import java.io.Serializable;
 
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.util.ArgumentCheck;
 
 /**

@@ -23,7 +23,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileContent;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
 /**
  * Memory sensitive cache for the contents of ips source files.
@@ -98,10 +99,7 @@ public class IpsSrcFileContentsCache {
         if(IpsModel.TRACE_MODEL_MANAGEMENT){
             System.out.println("IpsObjectCache.processQueue() - start");
         }
-        SoftIpsObjectReference ref;
-        while ((ref = (SoftIpsObjectReference)queue.poll()) != null){
-            remove(ref.getIpsSrcFile());
-        }
+        // to be done
         if(IpsModel.TRACE_MODEL_MANAGEMENT){
             System.out.println("IpsObjectCache.processQueue() - finished");
         }

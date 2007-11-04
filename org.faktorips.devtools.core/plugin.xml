@@ -391,7 +391,7 @@
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="org.faktorips.devtools.core.internal.model.IpsProject">
+               class="org.faktorips.devtools.core.internal.model.ipsproject.IpsProject">
             <parameter
                   name="installBuilder"
                   value="true">

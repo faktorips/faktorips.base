@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.model;
 
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+
 /**
  * An event that signals the change of an ips source file's modification status from
  * modifier to unmodified or vice versa.
