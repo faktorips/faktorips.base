@@ -132,7 +132,7 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
                 try {
                     os.close();
                 } catch (IOException e1) {
-                    throw new CoreException(new IpsStatus("Unable to close outputstream for dependency graph file "
+                    IpsPlugin.log(new IpsStatus("Unable to close outputstream for dependency graph file "
                             + file.getAbsolutePath()));
                 }
             }
