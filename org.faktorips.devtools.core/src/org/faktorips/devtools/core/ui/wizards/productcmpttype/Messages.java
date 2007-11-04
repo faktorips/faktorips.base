@@ -15,16 +15,13 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.type;
+package org.faktorips.devtools.core.ui.wizards.productcmpttype;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.type.messages"; //$NON-NLS-1$
-    public static String TypePage_msgNameConflicts;
-    public static String TypePage_option;
-    public static String TypePage_overrideAbstractMethods;
-    public static String TypePage_superclass;
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.productcmpttype.messages"; //$NON-NLS-1$
+    public static String ProductCmptTypePage_title;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

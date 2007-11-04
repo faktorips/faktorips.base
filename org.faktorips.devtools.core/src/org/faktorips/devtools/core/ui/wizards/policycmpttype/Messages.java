@@ -33,6 +33,7 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String PcTypePage_title;
+	public static String PcTypePage_configuredByProductCmptType;
+    public static String PcTypePage_title;
 
 }

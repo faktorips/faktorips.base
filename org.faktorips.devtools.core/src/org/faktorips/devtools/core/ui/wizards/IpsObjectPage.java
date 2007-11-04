@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.ui.wizards;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -169,7 +170,6 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
-
         validateInput = true;
         return pageControl;
     }
@@ -182,6 +182,19 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     }
     
     /**
+     * Returns qualified name of the IpsObject that is about to be created by means of this page.
+     */
+    public String getQualifiedIpsObjectName(){
+        StringBuffer buf = new StringBuffer();
+        if(!StringUtils.isEmpty(getPackage())){
+            buf.append(getPackage());
+            buf.append('.');
+        }
+        buf.append(getIpsObjectName());
+        return buf.toString();
+    }
+
+    /**
      * Derives the default values for source folder and package from
      * the selected resource.
      * 
@@ -191,7 +204,6 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     protected void setDefaults(IResource selectedResource) throws CoreException {
         if (selectedResource==null) {
             setIpsPackageFragmentRoot(null);
-            sourceFolderControl.setFocus();
             return;
         }
         IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
@@ -231,7 +243,6 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     
     protected Text addNameField(UIToolkit toolkit, Composite parent) {
         Text nameText = toolkit.createText(parent);
-        nameText.setFocus();
         nameField = new TextField(nameText);
         nameField.addChangeListener(this);
         return nameText;
@@ -334,7 +345,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         return nameComposite;
     }
 
-    public void valueChanged(FieldValueChangedEvent e) {
+    public final void valueChanged(FieldValueChangedEvent e) {
         if (e.field==sourceFolderField) {
             sourceFolderChanged();
         }
@@ -344,6 +355,12 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         if (e.field==nameField) {
             nameChanged();
         }
+        try {
+            valueChangedExtension(e);
+        } catch (CoreException exception) {
+            IpsPlugin.log(exception);
+        }
+        
         if (validateInput) { // don't validate during control creating!
             try {
                 validatePage();    
@@ -353,6 +370,17 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
             
         }
         updatePageComplete();
+    }
+    
+    /**
+     * This method is empty by default. Subclasses can override it when they register a subclass specific
+     * <code>org.faktorips.devtools.core.ui.controller.EditField</code>s with the this page's
+     * value change lister to take appropriate action if the control's value has changed.
+     * 
+     * @param e
+     */
+    protected void valueChangedExtension(FieldValueChangedEvent e) throws CoreException {
+
     }
     
     /**
@@ -515,12 +543,19 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         
     }
     
+    protected void setDefaultFocus(){
+        if(StringUtils.isEmpty(sourceFolderField.getText())){
+            sourceFolderField.getControl().setFocus();
+            return;
+        }
+        nameField.getControl().setFocus();
+    }
     /**
-     * This method is called when the page is entered. By default the implementation of this method is empty.
+     * This method is called when the page is entered. By default it calls the setDefaultFocus() method.
      * 
      * @throws CoreException
      */
     public void pageEntered() throws CoreException {
-        
+        setDefaultFocus();
     }
 }

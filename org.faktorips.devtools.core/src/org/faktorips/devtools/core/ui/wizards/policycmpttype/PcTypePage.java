@@ -27,13 +27,14 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
+import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.productcmpttype.ProductCmptTypePage;
 import org.faktorips.devtools.core.ui.wizards.type.TypePage;
 
 
 /**
- *
+ * An IpsObjectPage for the IpsObjectType PolicyCmptType. 
  */
 public class PcTypePage extends TypePage {
     
@@ -46,38 +47,75 @@ public class PcTypePage extends TypePage {
      */
     public PcTypePage(IStructuredSelection selection) throws JavaModelException {
         super(IpsObjectType.POLICY_CMPT_TYPE, selection, Messages.PcTypePage_title);
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewPolicyCmptTypeWizard.png"));
+        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewPolicyCmptTypeWizard.png")); //$NON-NLS-1$
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected IpsObjectRefControl createSupertypeControl(Composite container, UIToolkit toolkit) {
         return toolkit.createPcTypeRefControl(null, container);
     }
-    
+
+    /**
+     * Associates the product component type page
+     */
     public void setProductCmptTypePage(ProductCmptTypePage page){
         this.pageOfAssociatedType = page;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         super.fillNameComposite(nameComposite, toolkit);
         
-        toolkit.createLabel(nameComposite, "");
-        configurableField = new CheckboxField(toolkit.createCheckbox(nameComposite, "Configured by product component type")); 
+        toolkit.createLabel(nameComposite, ""); //$NON-NLS-1$
+        configurableField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.PcTypePage_configuredByProductCmptType)); 
         configurableField.setValue(Boolean.FALSE);
         configurableField.addChangeListener(this);
     }
-    
+
+    /**
+     * Returns true if the page is complete and the policy component type is configurable.
+     */
     public boolean canFlipToNextPage() {
         return isPageComplete() && isPolicyCmptTypeConfigurable();
     }
     
+    /**
+     * Returns the value of the configurable field.
+     */
     public boolean isPolicyCmptTypeConfigurable(){
         return Boolean.TRUE.equals(configurableField.getValue());
     }
-    
+
+    /**
+     * Returns true if the page is complete and the policy component type is not configurable.
+     */
     public boolean finishWhenThisPageIsComplete() {
         return isPageComplete() && !isPolicyCmptTypeConfigurable();
     }
 
+    /**
+     * Sets the configurable property to true if the supertype is also configurable and disables it.
+     */
+    protected void supertypeChanged(TextButtonField supertypeField) throws CoreException{
+        String qualifiedName = (String)supertypeField.getValue();
+        IPolicyCmptType superPcType = getIpsProject().findPolicyCmptType(qualifiedName);
+        if(superPcType != null){
+            if(superPcType.isConfigurableByProductCmptType()){
+                configurableField.setValue(Boolean.TRUE);
+                configurableField.getCheckbox().setEnabled(false);
+            }
+        } else {
+            configurableField.getCheckbox().setEnabled(true);
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     protected void validatePageExtension() throws CoreException {
         if(isPolicyCmptTypeConfigurable()){
             super.validatePageExtension();
