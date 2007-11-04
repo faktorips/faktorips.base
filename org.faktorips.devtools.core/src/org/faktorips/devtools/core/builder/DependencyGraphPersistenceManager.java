@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -61,17 +61,15 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
             graph.setIpsProject(project);
             return graph;
         } catch (Exception e) {
-            throw new CoreException(new IpsStatus(
-                    "An Exception occured while trying to establish the last state of the dependency graph for the project "
-                            + project.getName(), e));
+            IpsPlugin.log(new IpsStatus("An Exception occured while trying to establish the last state of the dependency graph for the project " + project.getName(), e));
+            return new DependencyGraph(project);
         } finally {
             if (ois != null) {
                 try {
                     ois.close();
                 } catch (IOException e1) {
-                    throw new CoreException(new IpsStatus(
-                            "Unable to close the input stream while of the dependency graph file "
-                                    + file.getAbsolutePath()));
+                    IpsPlugin.log(new IpsStatus("Unable to close the input stream while of the dependency graph file " + file.getAbsolutePath(), e1));
+                    return new DependencyGraph(project);
                 }
             }
         }
