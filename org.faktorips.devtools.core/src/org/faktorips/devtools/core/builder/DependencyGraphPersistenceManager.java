@@ -126,7 +126,7 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
             os.flush();
             os.close();
         } catch (Exception e) {
-            throw new CoreException(new IpsStatus("Unable to save dependency graph file " + file.getAbsolutePath(), e));
+            IpsPlugin.log(new IpsStatus("Unable to save dependency graph file " + file.getAbsolutePath(), e));
         } finally {
             if (os != null) {
                 try {
