@@ -118,5 +118,18 @@ public class ExtensionPropertyControlFactory {
             }
         }
     }
+
+    /**
+     * Removes all bindings of the edit fields created by this factory from the given context.
+     * 
+     * @throws NullPointerException if context is <code>null</code>.
+     */
+    public void removeBinding(BindingContext context) {
+        for (int i = 0; i < extensionEditFields.length; i++) {
+            if (extensionEditFields[i] != null) {
+                context.removeBindings(extensionEditFields[i].getControl());
+            }
+        }        
+    }
     
 }
