@@ -90,7 +90,7 @@ public class AssociationTargetPage extends WizardPage implements IBlockedValidat
      */
     public boolean canFlipToNextPage() {
         setErrorMessage(null);
-        boolean valid = wizard.isValidPage(this, false);
+        boolean valid = wizard.validatePage(this, false);
         
         if (getNextPage() == null){
             return false;

@@ -66,6 +66,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     protected BindingContext bindingContext = new BindingContext();;
     private ExtensionPropertyControlFactory extFactoryAssociation;
     private ExtensionPropertyControlFactory extFactoryInverseAssociation;
+    private ExtensionPropertyControlFactory extFactoryProductCmptTypeAssociation;
     
     // model objects
     private IIpsProject ipsProject;
@@ -110,6 +111,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         
         this.extFactoryAssociation = new ExtensionPropertyControlFactory(association.getClass());
         this.extFactoryInverseAssociation = new ExtensionPropertyControlFactory(association.getClass());
+        this.extFactoryProductCmptTypeAssociation = new ExtensionPropertyControlFactory(association.getClass());
 
         pmoAssociation = new PmoAssociation(association);
         
@@ -141,7 +143,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         detailToMasterHiddenPages.add(inverseRelationPropertyPage);
         detailToMasterHiddenPages.add(configureProductCmptTypePage);
         detailToMasterHiddenPages.add(confProdCmptTypePropertyPage);
-        
     }
 
     /**
@@ -181,6 +182,8 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      */
     public void contentsChanged(IWizardPage currentPage){
         if (!association.getTarget().equals(previousTarget)){
+            // target has changed
+            // find new derived union candidates
             previousTarget = association.getTarget();
             try {
                 storeTargetPolicyCmptType((IPolicyCmptType)association.findTarget(ipsProject));
@@ -192,21 +195,25 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 return;
             }
         }
+        
+        // validate current page
         if (currentPage instanceof IBlockedValidationWizardPage) {
-            isValidPage((IBlockedValidationWizardPage)currentPage, true);
+            validatePage((IBlockedValidationWizardPage)currentPage, true);
         }
+        
+        // validate next page
         IWizardPage nextPage = getNextWizardPage(currentPage);
         if (nextPage instanceof IBlockedValidationWizardPage) {
-            isValidPage((IBlockedValidationWizardPage)nextPage, true);
+            validatePage((IBlockedValidationWizardPage)nextPage, true);
         }
         
         getContainer().updateButtons();
     }
 
-    /*
-     * Evaluates the valifation state of the given page
+    /**
+     * Validate the given page
      */
-    public boolean isValidPage(IBlockedValidationWizardPage page, boolean updatePageState) {
+    public boolean validatePage(IBlockedValidationWizardPage page, boolean updatePageCompleteState) {
         boolean valid = true;
         Validatable association = getAssociationFor(page);
         if (association == null){
@@ -232,7 +239,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             }
         }
         
-        if (updatePageState){
+        if (updatePageCompleteState){
             page.setPageComplete(valid);
         }
         return valid;
@@ -250,6 +257,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         return false;
     }
 
+    /*
+     * Returns the association which could be edit by the give page
+     */
     private Validatable getAssociationFor(IBlockedValidationWizardPage page) {
         if (page instanceof InverseRelationPropertyPage){
             return inverseAssociation;
@@ -271,7 +281,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         }
 
         if (page instanceof IBlockedValidationWizardPage){
-            if (!isValidPage((IBlockedValidationWizardPage)page, false)){
+            if (!validatePage((IBlockedValidationWizardPage)page, false)){
                 return null;
             }
         }
@@ -295,8 +305,20 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 // last page
                 return null;
             }
+            
+            // display information in special case
+            //   if an existing inverse relation should be used but no association exists
+            if (nextPage instanceof InverseRelationPropertyPage) {
+                ((WizardPage)getContainer().getCurrentPage()).setMessage(null);
+                if (isExistingReverseRelation()) {
+                    ((WizardPage)getContainer().getCurrentPage())
+                            .setMessage("No relation wich could be used as inverse releation found on target policy component.");
+                }
+            }
+            
             nextPage = (IWizardPage) pages.get(index + 1);
         }
+        
         return (IWizardPage) nextPage;
     }
     
@@ -330,17 +352,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 visible = true;
             }
         }
-        
-        // display information in special case
-        //   if an existing inverse relation should be used but no association exists
-        if (page instanceof InverseRelationPropertyPage) {
-            ((WizardPage)getContainer().getCurrentPage()).setMessage(null);
-            if (!visible && isExistingReverseRelation()) {
-                ((WizardPage)getContainer().getCurrentPage())
-                        .setMessage("No relation wich could be used as inverse releation found on target policy component.");
-            }
-        }
-        
+
         return visible;
     }
 
@@ -437,7 +449,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         
         IPolicyCmptTypeAssociation newReverseRelation = targetPolicyCmptType.newPolicyCmptTypeAssociation();
         newReverseRelation.setTarget(association.getPolicyCmptType().getQualifiedName());
-        newReverseRelation.setTargetRoleSingular(association.getPolicyCmptType().getName());
         newReverseRelation.setAssociationType(NewPcTypeAssociationWizard.getCorrespondingRelationType(association.getAssociationType()));
         IPolicyCmptTypeAssociation containerRelation = (IPolicyCmptTypeAssociation)association.findSubsettedDerivedUnion(ipsProject);
         if (newReverseRelation.isAssoziation() && containerRelation != null){
@@ -465,7 +476,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         try {
             productCmptTypeTarget = targetPolicyCmptType.findProductCmptType(ipsProject);
             productCmptTypeAssociation.setTarget(productCmptTypeTarget.getQualifiedName());
-            confProdCmptTypePropertyPage.setProductCmptTypeAssociation((IProductCmptTypeAssociation)productCmptTypeAssociation);
+            confProdCmptTypePropertyPage.setProductCmptTypeAssociationAndUpdatePage((IProductCmptTypeAssociation)productCmptTypeAssociation);
         } catch (Exception e) {
             showAndLogError(e);
         }
@@ -477,17 +488,11 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     void setDefaultsByRelationTypeAndTarget(IPolicyCmptTypeAssociation newRelation){
         AssociationType type = newRelation.getAssociationType();
         if (type != null) {
-            boolean targetIsProductRelevantOrNull = targetPolicyCmptType==null?true:targetPolicyCmptType.isConfigurableByProductCmptType();
-            boolean defaultProductRelevant = newRelation.getPolicyCmptType().isConfigurableByProductCmptType() && targetIsProductRelevantOrNull;
             if (type.isCompositionMasterToDetail()) {
                 newRelation.setMaxCardinality(Integer.MAX_VALUE);
-                newRelation.setProductRelevant(defaultProductRelevant);
             } else if (type.isCompositionDetailToMaster()) {
                 newRelation.setMinCardinality(1);
                 newRelation.setMaxCardinality(1);
-                newRelation.setTargetRolePluralProductSide(""); //$NON-NLS-1$
-                newRelation.setTargetRoleSingularProductSide(""); //$NON-NLS-1$
-                newRelation.setProductRelevant(false);
                 newRelation.setDerivedUnion(false);
             } else if (type.isAssoziation()) {
                 newRelation.setSubsettedDerivedUnion(""); //$NON-NLS-1$
@@ -495,7 +500,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 if (newRelation.isDerivedUnion()){
                     newRelation.setMaxCardinality(Integer.MAX_VALUE);
                 }
-                newRelation.setProductRelevant(defaultProductRelevant);
             }
         }
     }
@@ -561,6 +565,13 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         return extFactoryInverseAssociation;
     }
 
+    /**
+     * @return Returns the extFactoryInverseAssociation.
+     */
+    public ExtensionPropertyControlFactory getExtFactoryProductCmptTypeAssociation() {
+        return extFactoryProductCmptTypeAssociation;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -651,7 +662,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         }else{
             association.setInverseRelation(""); //$NON-NLS-1$
         }        
-        inverseRelationPropertyPage.setAssociation(inverseAssociation);
+        inverseRelationPropertyPage.setAssociationAndUpdatePage(inverseAssociation);
     }
 
     public void storeExistingInverseRelation(String inverseAssociation) {

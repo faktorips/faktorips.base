@@ -156,7 +156,7 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
      */
     public boolean canFlipToNextPage() {
         setErrorMessage(null);
-        boolean valid = wizard.isValidPage(this, false);
+        boolean valid = wizard.validatePage(this, false);
         
         if (getNextPage() == null){
             return false;
@@ -186,8 +186,6 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
     public void setVisible(boolean visible) {
         if (visible && !visibleBefore){
             visibleBefore = true;
-            updateDefaultTargetRoleSingular();
-            updateDefaultTargetRolePlural();
         }
         super.setVisible(visible);
     }
