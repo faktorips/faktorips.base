@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
 public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMethod {
 
     private boolean formulaSignatureDefinition = true;
-    private String formulaName = "";
+    private String formulaName = ""; //$NON-NLS-1$
     
     
     public ProductCmptTypeMethod(IProductCmptType parent, int id) {
@@ -82,7 +82,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         boolean oldValue = formulaSignatureDefinition;
         formulaSignatureDefinition = newValue;
         if (!formulaSignatureDefinition) {
-            formulaName = "";
+            formulaName = ""; //$NON-NLS-1$
         } else {
             setAbstract(false);
         }
@@ -94,9 +94,9 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
      */
     public String getDefaultMethodName() {
         if (isFormulaSignatureDefinition()) {
-            return "compute" + StringUtils.capitalise(getFormulaName());
+            return "compute" + StringUtils.capitalise(getFormulaName()); //$NON-NLS-1$
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
     
     protected void initPropertiesFromXml(Element element, Integer id) {
@@ -119,7 +119,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         if (formulaSignatureDefinition) {
             return formulaName;
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**
@@ -148,18 +148,18 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         }
         IIpsProject ipsProject = getIpsProject();
         if (StringUtils.isEmpty(formulaName)) {
-            String text = "The formula name is empty!";
+            String text = Messages.ProductCmptTypeMethod_FormulaNameIsMissing;
             result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY, text, Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
         }
         Datatype datatype = findDatatype(ipsProject);
         if (datatype!=null) {
             if (datatype.isVoid() || !datatype.isValueDatatype()) {
-                String text = "Formula signature return type must be a value datatype!";
+                String text = Messages.ProductCmptTypeMethod_FormulaSignatureDatatypeMustBeAValueDatatype;
                 result.add(new Message(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES, text, Message.ERROR, this, IMethod.PROPERTY_DATATYPE));
             }
         }
         if (isAbstract()) {
-            String text = "Formula signatures mustn't be marked as abstract! The decision if formulas are executed via overriding this method with compiled Java code or by interpreting the formula, is defined by the code generator.";
+            String text = Messages.ProductCmptTypeMethod_FormulaSignatureMustntBeAbstract;
             result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT, text, Message.ERROR, this, IMethod.PROPERTY_ABSTRACT));
         }
     }

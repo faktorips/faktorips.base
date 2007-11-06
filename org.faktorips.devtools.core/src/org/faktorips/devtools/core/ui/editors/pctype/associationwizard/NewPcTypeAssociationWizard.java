@@ -452,7 +452,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         newReverseRelation.setAssociationType(NewPcTypeAssociationWizard.getCorrespondingRelationType(association.getAssociationType()));
         IPolicyCmptTypeAssociation containerRelation = (IPolicyCmptTypeAssociation)association.findSubsettedDerivedUnion(ipsProject);
         if (newReverseRelation.isAssoziation() && containerRelation != null){
-            newReverseRelation.setSubsettedDerivedUnion(containerRelation.getInverseRelation());
+            newReverseRelation.setSubsettedDerivedUnion(containerRelation.getInverseAssociation());
         }
         if (association.isAssoziation() && association.isDerivedUnion()){
             newReverseRelation.setDerivedUnion(true);
@@ -657,10 +657,10 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     public void storeInverseRelation(IPolicyCmptTypeAssociation inverseAssociation) {
         this.inverseAssociation = inverseAssociation;
         if (inverseAssociation != null && inverseAssociation.isAssoziation()){
-            association.setInverseRelation(inverseAssociation.getTargetRoleSingular());
-            inverseAssociation.setInverseRelation(association.getTargetRoleSingular());
+            association.setInverseAssociation(inverseAssociation.getTargetRoleSingular());
+            inverseAssociation.setInverseAssociation(association.getTargetRoleSingular());
         }else{
-            association.setInverseRelation(""); //$NON-NLS-1$
+            association.setInverseAssociation(""); //$NON-NLS-1$
         }        
         inverseRelationPropertyPage.setAssociationAndUpdatePage(inverseAssociation);
     }

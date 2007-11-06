@@ -119,7 +119,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
                 return index;
             }
         }
-        throw new RuntimeException("Can't get index of association " + this);
+        throw new RuntimeException("Can't get index of association " + this); //$NON-NLS-1$
     }
 
     /**

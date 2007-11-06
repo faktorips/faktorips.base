@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.type.Type;
 import org.faktorips.devtools.core.model.Dependency;
@@ -60,9 +61,9 @@ import org.w3c.dom.Element;
 public class ProductCmptType extends Type implements IProductCmptType {
 
     private boolean configurationForPolicyCmptType = true;
-    private String policyCmptType = "";
+    private String policyCmptType = ""; //$NON-NLS-1$
     
-    private IpsObjectPartCollection tableStructureUsages = new IpsObjectPartCollection(this, TableStructureUsage.class, ITableStructureUsage.class, "TableStructureUsage");
+    private IpsObjectPartCollection tableStructureUsages = new IpsObjectPartCollection(this, TableStructureUsage.class, ITableStructureUsage.class, "TableStructureUsage"); //$NON-NLS-1$
     
     public ProductCmptType(IIpsSrcFile file) {
         super(file);
@@ -79,14 +80,14 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * {@inheritDoc}
      */
     protected IpsObjectPartCollection createCollectionForMethods() {
-        return new IpsObjectPartCollection(this, ProductCmptTypeMethod.class, IProductCmptTypeMethod.class, "Method");
+        return new IpsObjectPartCollection(this, ProductCmptTypeMethod.class, IProductCmptTypeMethod.class, "Method"); //$NON-NLS-1$
     }
     
     /**
      * {@inheritDoc}
      */
     protected IpsObjectPartCollection createCollectionForAssociations() {
-        return new IpsObjectPartCollection(this, ProductCmptTypeAssociation.class, IProductCmptTypeAssociation.class, "Association");
+        return new IpsObjectPartCollection(this, ProductCmptTypeAssociation.class, IProductCmptTypeAssociation.class, "Association"); //$NON-NLS-1$
     }
 
     /**
@@ -140,7 +141,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         boolean oldValue = configurationForPolicyCmptType;
         configurationForPolicyCmptType = newValue;
         if (!newValue && oldValue) {
-            policyCmptType = "";
+            policyCmptType = ""; //$NON-NLS-1$
         }
         valueChanged(oldValue, newValue);
     }
@@ -215,7 +216,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             return findTableStructureUsage(propName, ipsProject);
         }
         if (ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET!=type) {
-            throw new RuntimeException("Unknown type " + type);
+            throw new RuntimeException("Unknown type " + type); //$NON-NLS-1$
         }
         IPolicyCmptType policyCmptType = findPolicyCmptType(ipsProject);
         return policyCmptType.findAttributeInSupertypeHierarchy(propName);
@@ -272,7 +273,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE, "" + configurationForPolicyCmptType);
+        element.setAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE, "" + configurationForPolicyCmptType); //$NON-NLS-1$
         element.setAttribute(PROPERTY_POLICY_CMPT_TYPE, policyCmptType);
     }
 
@@ -389,7 +390,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             validatePolicyCmptTypeReference(supertype, ipsProject, list);
         } else {
             if (supertype!=null && supertype.isConfigurationForPolicyCmptType()) {
-                String text = "The type must configure a poliy component type, if the supertype does!";
+                String text = Messages.ProductCmptType_TypeMustConfigureAPolicyCmptTypeIfSupertypeDoes;
                 list.add(new Message(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE, text, Message.ERROR, this, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE));
             }
         }
@@ -397,13 +398,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
     
     private void validatePolicyCmptTypeReference(IProductCmptType supertype, IIpsProject ipsProject, MessageList list) throws CoreException {
         if (supertype!=null && !supertype.isConfigurationForPolicyCmptType()) {
-            String text = "The type can't configure a poliy component type, if the supertype does not!";
+            String text = Messages.ProductCmptType_TypeCantConfigureAPolicyCmptTypeIfSupertypeDoesNot;
             list.add(new Message(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE, text, Message.ERROR, this, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE));
             return;
         } 
         IPolicyCmptType policyCmptTypeObj = findPolicyCmptType(ipsProject);
         if (policyCmptTypeObj==null) {
-            String text = "The policy component type " + policyCmptType + " does not exist.";
+            String text = NLS.bind(Messages.ProductCmptType_PolicyCmptTypeDoesNotExist, policyCmptType);
             list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST, text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE));
             return;
         }
@@ -412,7 +413,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
         IPolicyCmptType policyCmptTypeOfSupertype = supertype.findPolicyCmptType(ipsProject);
         if (policyCmptTypeObj!=policyCmptTypeOfSupertype && policyCmptTypeObj.findSupertype(ipsProject)!=policyCmptTypeOfSupertype) {
-            String text = "There is mismatch in the hierarchy between the product and the policy component side of the model.";
+            String text = Messages.ProductCmptType_InconsistentTypeHierarchies;
             list.add(new Message(MSGCODE_HIERARCHY_MISMATCH, text, Message.ERROR, this, new String[]{PROPERTY_SUPERTYPE, PROPERTY_POLICY_CMPT_TYPE}));
             return;
         }

@@ -52,7 +52,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     private AttributeType attributeType = AttributeType.CHANGEABLE;
     private IValueSet valueSet;
     private boolean overwrites = false;
-    private String computationMethodSignature = "";
+    private String computationMethodSignature = ""; //$NON-NLS-1$
     
     /**
      * Creates a new attribute.
@@ -198,7 +198,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         boolean oldValue = productRelevant;
         productRelevant = newValue;
         if (oldValue!=newValue && !newValue) {
-            computationMethodSignature = "";
+            computationMethodSignature = ""; //$NON-NLS-1$
         }
         valueChanged(oldValue, newValue);
     }
@@ -293,17 +293,17 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         }
         if (isDerived() && isProductRelevant()) {
             if (StringUtils.isEmpty(computationMethodSignature)) {
-                String text = NLS.bind("The reference to the computation method signature is missing for attribute {0}!", getName());
+                String text = NLS.bind(Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureIsMissing, getName());
                 result.add(new Message(MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED, text, Message.ERROR, this, PROPERTY_COMPUTATION_METHOD_SIGNATURE));
             } else {
                 IMethod computationMethod = findComputationMethod(ipsProject);
                 if (computationMethod==null) {
-                    String text = "The specified computation method signature does not exist!";
+                    String text = Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureDoesNotExists;
                     result.add(new Message(MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST, text, Message.ERROR, this, PROPERTY_COMPUTATION_METHOD_SIGNATURE));
                 } else {
                     ValueDatatype attributeDataype = findDatatype(ipsProject);
                     if (attributeDataype!=null && !attributeDataype.equals(computationMethod.findDatatype(ipsProject))) {
-                        String text = "The computation method has a different datatype!";
+                        String text = Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureHasADifferentDatatype;
                         result.add(new Message(MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE, text, Message.ERROR, this, 
                                 new String[]{PROPERTY_DATATYPE, PROPERTY_COMPUTATION_METHOD_SIGNATURE}));
                     }
@@ -489,7 +489,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         if (productRelevant) {
             return name;
         }
-        return "";
+        return "";  //$NON-NLS-1$
     }
 
     /**

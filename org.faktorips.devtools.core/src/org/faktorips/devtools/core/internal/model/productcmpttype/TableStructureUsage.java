@@ -161,7 +161,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_ROLENAME, name);
-        element.setAttribute(PROPERTY_MANDATORY_TABLE_CONTENT, "" + mandatoryTableContent);
+        element.setAttribute(PROPERTY_MANDATORY_TABLE_CONTENT, "" + mandatoryTableContent); //$NON-NLS-1$
     }
 
     /**
@@ -430,7 +430,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
      * Implementation of IProdDefProperty.
      */
     public String getPropertyDatatype() {
-        return "";
+        return ""; //$NON-NLS-1$
     }
     
 }

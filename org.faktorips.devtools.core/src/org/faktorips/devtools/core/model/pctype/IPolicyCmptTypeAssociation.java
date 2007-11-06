@@ -45,8 +45,8 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
         AssociationType.COMPOSITION_MASTER_TO_DETAIL, AssociationType.COMPOSITION_DETAIL_TO_MASTER, AssociationType.ASSOCIATION}; 
     
     public final static String PROPERTY_PRODUCT_RELEVANT = "productRelevant"; //$NON-NLS-1$
-    public final static String PROPERTY_INVERSE_RELATION = "inverseRelation"; //$NON-NLS-1$
-    public final static String PROPERTY_INVERSE_RELATION_APPLICABLE = "inverseRelationApplicable"; //$NON-NLS-1$
+    public final static String PROPERTY_INVERSE_ASSOCIATION = "inverseAssociation"; //$NON-NLS-1$
+    public final static String PROPERTY_INVERSE_ASSOCIATION_APPLICABLE = "inverseAssociationApplicable"; //$NON-NLS-1$
     public final static String PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE = "containerRelationApplicable"; //$NON-NLS-1$
     
     public final static String PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE = "targetRoleSingularProductSide"; //$NON-NLS-1$
@@ -68,7 +68,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * Validation message code to indicate the inverse relation definition is inkonsistent with the container
      * relation.
      */
-    public final static String MSGCODE_INVERSE_RELATION_INCONSTENT_WITH_DEFINITION_CONTAINER_RELATION = MSGCODE_PREFIX + "InverseRelationConsistentWithDefinitionContainerRelation"; //$NON-NLS-1$
+    public final static String MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION = MSGCODE_PREFIX + "InverseAssociationInconsistentWithDerivedUnion"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the relation has same plural rolename like another relation in supertype hirarchy.
@@ -259,17 +259,17 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     /**
      * Returns the name of the reverse relation.
      */
-    public String getInverseRelation();
+    public String getInverseAssociation();
     
     /**
      * Returns <code>true</code> if this relation has a reverse relation otherwise <code>false</code>.
      */
-    public boolean hasInverseRelation();
+    public boolean hasInverseAssociation();
     
     /**
      * Sets the name of the inverse relation.
      */
-    public void setInverseRelation(String relation);
+    public void setInverseAssociation(String relation);
     
     /**
      * Searches the inverse relation and returns it, if it exists. Returns <code>null</code> if the inverse
@@ -278,7 +278,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @throws CoreException if an error occurs while searching.
      */
-    public IPolicyCmptTypeAssociation findInverseRelation() throws CoreException;
+    public IPolicyCmptTypeAssociation findInverseAssociation() throws CoreException;
 
     /**
      * Returns the role of the target in this relation on the product side.

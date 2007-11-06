@@ -107,7 +107,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         boolean oldValue = configurableByProductCmptType;
         configurableByProductCmptType = newValue;
         if (!configurableByProductCmptType) {
-            setProductCmptType("");
+            setProductCmptType(""); //$NON-NLS-1$
         }
         valueChanged(oldValue, newValue);
     }
@@ -385,17 +385,17 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             return;
         }
         if (StringUtils.isEmpty(this.productCmptType)) {
-            String text = Messages.PolicyCmptType_msgNameMissing;
+            String text = Messages.PolicyCmptType_msg_ProductCmptTypeNameMissing;
             list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING, text, Message.ERROR, this,
                     IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
         }
         else {
             IProductCmptType productCmptTypeObj = (IProductCmptType)ValidationUtils.checkIpsObjectReference2(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE_V2,
-                    "Product component type", this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
+                    Messages.PolicyCmptType_productCmptType, this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
                     IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NOT_FOUND, list, ipsProject);
             if (productCmptTypeObj!=null) {
                 if (productCmptTypeObj.findPolicyCmptType(ipsProject)!=this) {
-                    String text = NLS.bind("''{0}'' does not configure this type.", productCmptType);
+                    String text = NLS.bind(Messages.PolicyCmptType_TheTypeDoesNotConfigureThisType, productCmptType);
                     list.add(new Message(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE, text, Message.ERROR, this, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
                 }
             }
@@ -403,7 +403,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         IPolicyCmptType superPolicyCmptType = findSupertype();
         if (superPolicyCmptType != null) {
             if (!superPolicyCmptType.isConfigurableByProductCmptType()) {
-                String msg = Messages.PolicyCmptType_msgSuperTypeNotProdRelevantIfProductRelevant;
+                String msg = Messages.PolicyCmptType_msg_IfTheSupertypeIsNotConfigurableTheTypeCanBeConfigurable;
                 list.add(new Message(MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT, msg,
                         Message.ERROR, this, IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE));
             }

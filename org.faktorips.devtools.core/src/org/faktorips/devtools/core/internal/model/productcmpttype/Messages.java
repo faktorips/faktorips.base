@@ -34,16 +34,28 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-    public static String TableStructureUsage_msgTableStructureNotExists;
+    public static String ProductCmptType_InconsistentTypeHierarchies;
+
+    public static String ProductCmptType_PolicyCmptTypeDoesNotExist;
+
+    public static String ProductCmptType_TypeCantConfigureAPolicyCmptTypeIfSupertypeDoesNot;
+
+    public static String ProductCmptType_TypeMustConfigureAPolicyCmptTypeIfSupertypeDoes;
+
+    public static String ProductCmptTypeMethod_FormulaNameIsMissing;
+
+    public static String ProductCmptTypeMethod_FormulaSignatureDatatypeMustBeAValueDatatype;
+
+    public static String ProductCmptTypeMethod_FormulaSignatureMustntBeAbstract;
+
+    public static String TableStructureUsage_msgAtLeastOneStructureMustBeReferenced;
+
+    public static String TableStructureUsage_msgInvalidRoleName;
 
     public static String TableStructureUsage_msgRoleNameAlreadyInSupertype;
 
     public static String TableStructureUsage_msgSameRoleName;
 
-    public static String TableStructureUsage_msgInvalidRoleName;
-
-    public static String TableStructureUsage_msgAtLeastOneStructureMustBeReferenced;
-
-
+    public static String TableStructureUsage_msgTableStructureNotExists;
 
 }

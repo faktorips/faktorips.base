@@ -170,8 +170,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         // inverse relation
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelReverseRel);
         Text reverseRelationText = uiToolkit.createText(workArea);
-        bindingContext.bindContent(reverseRelationText, association, IPolicyCmptTypeAssociation.PROPERTY_INVERSE_RELATION);
-        bindingContext.bindEnabled(reverseRelationText, association, IPolicyCmptTypeAssociation.PROPERTY_INVERSE_RELATION_APPLICABLE);
+        bindingContext.bindContent(reverseRelationText, association, IPolicyCmptTypeAssociation.PROPERTY_INVERSE_ASSOCIATION);
+        bindingContext.bindEnabled(reverseRelationText, association, IPolicyCmptTypeAssociation.PROPERTY_INVERSE_ASSOCIATION_APPLICABLE);
         ReverseRelationCompletionProcessor reverseRelationCompletionProcessor = new ReverseRelationCompletionProcessor(association);
         reverseRelationCompletionProcessor.setComputeProposalForEmptyPrefix(true);
         ContentAssistHandler.createHandlerForText(reverseRelationText, CompletionUtil.createContentAssistant(reverseRelationCompletionProcessor));

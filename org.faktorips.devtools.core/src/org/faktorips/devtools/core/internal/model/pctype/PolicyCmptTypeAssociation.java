@@ -50,7 +50,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     private boolean qualified = false;
     private boolean productRelevant = true;
-    private String inverseRelation = ""; //$NON-NLS-1$
+    private String inverseAssociation = ""; //$NON-NLS-1$
     private String targetRoleSingularProductSide = ""; //$NON-NLS-1$
     private String targetRolePluralProductSide = ""; //$NON-NLS-1$
     private int minCardinalityProductSide = 0;
@@ -113,15 +113,15 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
      */
     public void setAssociationType(AssociationType newType) {
         if (newType.isCompositionDetailToMaster()) {
-            subsettedDerivedUnion = "";
-            inverseRelation = "";
+            subsettedDerivedUnion = ""; //$NON-NLS-1$
+            inverseAssociation = ""; //$NON-NLS-1$
             derivedUnion = false;
             qualified = false;
             minCardinality = 0;
             maxCardinality = 1;
             productRelevant = false;
-            targetRoleSingularProductSide = "";
-            targetRolePluralProductSide = "";
+            targetRoleSingularProductSide = ""; //$NON-NLS-1$
+            targetRolePluralProductSide = ""; //$NON-NLS-1$
         }
         super.setAssociationType(newType);
     }
@@ -184,7 +184,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
                 return index;
             }
         }
-        throw new RuntimeException("Can't get index of association " + this);
+        throw new RuntimeException("Can't get index of association " + this); //$NON-NLS-1$
     }
 
     /** 
@@ -239,7 +239,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     public String findQualifierCandidate(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptType targetType = findTargetPolicyCmptType(ipsProject);
         if (targetType==null || !targetType.isConfigurableByProductCmptType()) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         return targetType.getProductCmptType();
     }
@@ -355,31 +355,31 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     /**
      * {@inheritDoc}
      */
-    public String getInverseRelation() {
-        return inverseRelation;
+    public String getInverseAssociation() {
+        return inverseAssociation;
     }
     
     /**
      * {@inheritDoc}
      */
-    public boolean hasInverseRelation() {
-        return StringUtils.isNotEmpty(inverseRelation);
+    public boolean hasInverseAssociation() {
+        return StringUtils.isNotEmpty(inverseAssociation);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setInverseRelation(String newRelation) {
-        String oldValue = this.inverseRelation;
-        this.inverseRelation = newRelation;
+    public void setInverseAssociation(String newRelation) {
+        String oldValue = this.inverseAssociation;
+        this.inverseAssociation = newRelation;
         valueChanged(oldValue, newRelation);
     }
     
 	/**
 	 * {@inheritDoc}
 	 */
-    public IPolicyCmptTypeAssociation findInverseRelation() throws CoreException {
-        if (StringUtils.isEmpty(inverseRelation)) {
+    public IPolicyCmptTypeAssociation findInverseAssociation() throws CoreException {
+        if (StringUtils.isEmpty(inverseAssociation)) {
             return null;
         }
         if (type.isCompositionDetailToMaster()) {
@@ -391,7 +391,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         }
         IPolicyCmptTypeAssociation[] relations = target.getPolicyCmptTypeAssociations();
         for (int i=0; i<relations.length; i++) {
-            if (relations[i].getName().equals(inverseRelation)) {
+            if (relations[i].getName().equals(inverseAssociation)) {
                 return relations[i];
             }
         }
@@ -421,73 +421,73 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         super.validateThis(list);        
         
         if (maxCardinality != 1 && this.type == AssociationType.COMPOSITION_DETAIL_TO_MASTER) {
-        	String text = Messages.Relation_msgRevereseCompositionMustHaveMaxCardinality1;
+        	String text = Messages.Association_msg_DetailToMasterAssociationMustHaveMaxCardinality1;
         	list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION, text, Message.ERROR, this, new String[] {PROPERTY_MAX_CARDINALITY, IAssociation.PROPERTY_ASSOCIATION_TYPE}));
         }
-        
+        // TODO v2 - das muss in type implementiert werden!!!
         new CheckForDuplicateRoleNameVisitor(list).start(getPolicyCmptType());
-        validateContainerRelation(list, getIpsProject());
+        validateDerivedUnion(list, getIpsProject());
         validateInverseRelation(list);
     }
     
-    private void validateContainerRelation(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateDerivedUnion(MessageList list, IIpsProject ipsProject) throws CoreException {
         IAssociation unionAss = findSubsettedDerivedUnion(ipsProject);
         if (unionAss instanceof IPolicyCmptTypeAssociation) {
-            checkForContainerRelationReverseRelationMismatch((IPolicyCmptTypeAssociation)unionAss, list, ipsProject);
+            checkForDerivedUnionInverseAssociationMismatch((IPolicyCmptTypeAssociation)unionAss, list, ipsProject);
         }
     }
     
     /**
      * Performs the check for the rule with message code
-     * @see IPolicyCmptTypeAssociation#MSGCODE_INVERSE_RELATION_INCONSTENT_WITH_DEFINITION_CONTAINER_RELATION
+     * @see IPolicyCmptTypeAssociation#MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION
      */
-    private void checkForContainerRelationReverseRelationMismatch(IPolicyCmptTypeAssociation derivedUnion, MessageList list, IIpsProject ipsProject) throws CoreException {
-        IPolicyCmptTypeAssociation inverseRel = findInverseRelation();
-        if (inverseRel==null) {
+    private void checkForDerivedUnionInverseAssociationMismatch(IPolicyCmptTypeAssociation derivedUnion, MessageList list, IIpsProject ipsProject) throws CoreException {
+        IPolicyCmptTypeAssociation inverseAss = findInverseAssociation();
+        if (inverseAss==null) {
             return; // not found => error will be reported in validateInverseRelation
         }
-        if (isComposition() || inverseRel.isComposition()) {
+        if (isComposition() || inverseAss.isComposition()) {
             return;
         }
-        IPolicyCmptTypeAssociation inverseRelationOfContainerRel = derivedUnion.findInverseRelation();
+        IPolicyCmptTypeAssociation inverseRelationOfContainerRel = derivedUnion.findInverseAssociation();
         if (inverseRelationOfContainerRel==null) {
             return; // not found => error will be reported in validateReverseRelation
         }
-        IAssociation derivedUnionOfInverseRel = inverseRel.findSubsettedDerivedUnion(ipsProject);
+        IAssociation derivedUnionOfInverseRel = inverseAss.findSubsettedDerivedUnion(ipsProject);
         if (derivedUnionOfInverseRel==null || derivedUnionOfInverseRel!=inverseRelationOfContainerRel) {
-            String text = Messages.Relation_msgContainerRelNotReverseRel;
-            list.add(new Message(MSGCODE_INVERSE_RELATION_INCONSTENT_WITH_DEFINITION_CONTAINER_RELATION, text, Message.ERROR, this, PROPERTY_SUBSETTED_DERIVED_UNION)); //$NON-NLS-1$
+            String text = NLS.bind(Messages.Association_msg_InverseAssociationInconsistentWithDerivedUnion, derivedUnion);
+            list.add(new Message(MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION, text, Message.ERROR, this, PROPERTY_SUBSETTED_DERIVED_UNION)); //$NON-NLS-1$
         }
     }
     
     private void validateInverseRelation(MessageList list) throws CoreException {
-        if (StringUtils.isEmpty(inverseRelation)) {
+        if (StringUtils.isEmpty(inverseAssociation)) {
             return;
         }
         if (isComposition()) {
-            String text = Messages.Relation_noReverseRelationNeededForDetailToMasterRelations;
-            list.add(new Message(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_INFO_NOT_NEEDED, text, Message.WARNING, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
+            String text = Messages.Association_msg_ForDetailToMasterAssociationsNeedNotSpecifyInverse;
+            list.add(new Message(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_INFO_NOT_NEEDED, text, Message.WARNING, this, PROPERTY_INVERSE_ASSOCIATION)); //$NON-NLS-1$
             return;
         }
-        IPolicyCmptTypeAssociation inverseRelationObj = findInverseRelation();
-        if (inverseRelationObj==null) {
-            String text = NLS.bind(Messages.Relation_msgRelationNotInTarget, inverseRelation, target);
-            list.add(new Message(MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
+        IPolicyCmptTypeAssociation inverseAss = findInverseAssociation();
+        if (inverseAss==null) {
+            String text = NLS.bind(Messages.Association_msg_AssociationNotFoundInTarget, inverseAssociation, target);
+            list.add(new Message(MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET, text, Message.ERROR, this, PROPERTY_INVERSE_ASSOCIATION)); //$NON-NLS-1$
             return;
         }
-        if (!inverseRelationObj.getInverseRelation().equals(targetRoleSingular)) {
-            String text = Messages.Relation_msgReverseRelationNotSpecified;
-            list.add(new Message(MSGCODE_INVERSE_RELATION_MISMATCH, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
+        if (!inverseAss.getInverseAssociation().equals(targetRoleSingular)) {
+            String text = Messages.Association_msg_InverseAssociationMismatch;
+            list.add(new Message(MSGCODE_INVERSE_RELATION_MISMATCH, text, Message.ERROR, this, PROPERTY_INVERSE_ASSOCIATION)); //$NON-NLS-1$
         }
-        if  ((!inverseRelationObj.getAssociationType().isAssoziation())
-                || (inverseRelationObj.getAssociationType().isAssoziation() && !type.isAssoziation())) {
-                String text = Messages.Relation_msgReverseAssociationMissmatch;
-                list.add(new Message(MSGCODE_INVERSE_ASSOCIATION_TYPE_MISSMATCH, text, Message.ERROR, this, new String[]{PROPERTY_INVERSE_RELATION})); //$NON-NLS-1$
+        if  ((!inverseAss.getAssociationType().isAssoziation())
+                || (inverseAss.getAssociationType().isAssoziation() && !type.isAssoziation())) {
+                String text = Messages.Association_msg_InverseAssociationMustBeOfTypeAssociation;
+                list.add(new Message(MSGCODE_INVERSE_ASSOCIATION_TYPE_MISSMATCH, text, Message.ERROR, this, new String[]{PROPERTY_INVERSE_ASSOCIATION})); //$NON-NLS-1$
                 return;
         } else {
-            if (isDerivedUnion()!=inverseRelationObj.isDerivedUnion()) {
-                String text = Messages.Relation_msgReverseRelOfContainerRelMustBeContainerRelToo;
-                list.add(new Message(MSGCODE_INVERSE_ASSOCIATIONS_MUST_BOTH_BE_MARKED_AS_CONTAINER, text, Message.ERROR, this, PROPERTY_INVERSE_RELATION)); //$NON-NLS-1$
+            if (isDerivedUnion()!=inverseAss.isDerivedUnion()) {
+                String text = Messages.Association_msg_InverseAssociationMustBeMarkedAsDerivedUnionToo;
+                list.add(new Message(MSGCODE_INVERSE_ASSOCIATIONS_MUST_BOTH_BE_MARKED_AS_CONTAINER, text, Message.ERROR, this, PROPERTY_INVERSE_ASSOCIATION)); //$NON-NLS-1$
             }
         }
     }
@@ -526,15 +526,9 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         	}
         }
         subsettedDerivedUnion = element.getAttribute(PROPERTY_SUBSETTED_DERIVED_UNION);
-        if (element.hasAttribute(PROPERTY_INVERSE_RELATION)) {
-            inverseRelation = element.getAttribute(PROPERTY_INVERSE_RELATION);
-        } else {
-            // prior to version 1.0.4 the inverse relation was named reverse relation
-            // this code does a one-the-fly migration for old xml.
-            inverseRelation = element.getAttribute("reverseRelation");
-        }
+        inverseAssociation = element.getAttribute(PROPERTY_INVERSE_ASSOCIATION);
         if (isCompositionDetailToMaster()) {
-            inverseRelation = ""; //$NON-NLS-1$
+            inverseAssociation = ""; //$NON-NLS-1$
         }
     }
     
@@ -544,7 +538,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_QUALIFIED, "" + qualified); //$NON-NLS-1$
-        newElement.setAttribute(PROPERTY_INVERSE_RELATION, inverseRelation);
+        newElement.setAttribute(PROPERTY_INVERSE_ASSOCIATION, inverseAssociation);
     }
     
     private class CheckForDuplicateRoleNameVisitor extends PolicyCmptTypeHierarchyVisitor {

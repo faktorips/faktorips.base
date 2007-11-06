@@ -40,89 +40,89 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private IPolicyCmptType pcType;
     private IPolicyCmptType targetType;
-    private IPolicyCmptTypeAssociation relation;
-    private IPolicyCmptTypeAssociation implementationRelation;
+    private IPolicyCmptTypeAssociation association;
+    private IPolicyCmptTypeAssociation implementationAssociation;
     
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         pcType = newPolicyCmptType(ipsProject, "Policy");
-        relation = pcType.newPolicyCmptTypeAssociation();
-        relation.setTargetRoleSingular("Coverage");
+        association = pcType.newPolicyCmptTypeAssociation();
+        association.setTargetRoleSingular("Coverage");
         targetType = newPolicyCmptType(ipsProject, "Coverage");
-        relation.setTarget(targetType.getQualifiedName());
+        association.setTarget(targetType.getQualifiedName());
         
         IPolicyCmptType motorPolicyType = newPolicyCmptType(ipsProject, "MotorPolicy");
         motorPolicyType.setSupertype(pcType.getQualifiedName());
         IPolicyCmptType collisionCoverageType = newPolicyCmptType(ipsProject, "CollisionCoverage");
         collisionCoverageType.setSupertype(targetType.getQualifiedName());
-        implementationRelation = motorPolicyType.newPolicyCmptTypeAssociation();
-        implementationRelation.setTargetRoleSingular("CollisionCoverage");
-        implementationRelation.setTarget(collisionCoverageType.getQualifiedName());
+        implementationAssociation = motorPolicyType.newPolicyCmptTypeAssociation();
+        implementationAssociation.setTargetRoleSingular("CollisionCoverage");
+        implementationAssociation.setTarget(collisionCoverageType.getQualifiedName());
     }
     
     public void testIsQualificationPossible() throws CoreException {
-        relation.setTarget("UnknownTarget");
-        assertFalse(relation.isQualificationPossible(ipsProject));
+        association.setTarget("UnknownTarget");
+        assertFalse(association.isQualificationPossible(ipsProject));
         
-        relation.setTarget(targetType.getQualifiedName());
+        association.setTarget(targetType.getQualifiedName());
         targetType.setConfigurableByProductCmptType(false);
-        assertFalse(relation.isQualificationPossible(ipsProject));
+        assertFalse(association.isQualificationPossible(ipsProject));
 
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "producttypes.CoverageType");
         targetType.setProductCmptType(productCmptType.getQualifiedName());
         targetType.setConfigurableByProductCmptType(true);
-        relation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        assertFalse(relation.isQualificationPossible(ipsProject));
+        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        assertFalse(association.isQualificationPossible(ipsProject));
 
-        relation.setAssociationType(AssociationType.ASSOCIATION);
-        assertFalse(relation.isQualificationPossible(ipsProject));
+        association.setAssociationType(AssociationType.ASSOCIATION);
+        assertFalse(association.isQualificationPossible(ipsProject));
         
-        relation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        assertTrue(relation.isQualificationPossible(ipsProject));
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        assertTrue(association.isQualificationPossible(ipsProject));
     }
     
     public void testFindQualifierCandidate() throws CoreException {
-        relation.setQualified(false);
-        relation.setTarget("UnknownTarget");
-        assertEquals("", relation.findQualifierCandidate(ipsProject));
+        association.setQualified(false);
+        association.setTarget("UnknownTarget");
+        assertEquals("", association.findQualifierCandidate(ipsProject));
         
-        relation.setTarget(targetType.getQualifiedName());
+        association.setTarget(targetType.getQualifiedName());
         targetType.setConfigurableByProductCmptType(false);
-        assertEquals("", relation.findQualifierCandidate(ipsProject));
+        assertEquals("", association.findQualifierCandidate(ipsProject));
         
         targetType.setConfigurableByProductCmptType(true);
         targetType.setProductCmptType("UnkownType");
-        assertEquals("UnkownType", relation.findQualifierCandidate(ipsProject));
+        assertEquals("UnkownType", association.findQualifierCandidate(ipsProject));
         
-        relation.setQualified(true);
-        assertEquals("UnkownType", relation.findQualifierCandidate(ipsProject));
+        association.setQualified(true);
+        assertEquals("UnkownType", association.findQualifierCandidate(ipsProject));
     }
     
     public void testFindQualifier() throws CoreException {
-        relation.setQualified(false);
-        assertNull(relation.findQualifier(ipsProject));
+        association.setQualified(false);
+        assertNull(association.findQualifier(ipsProject));
 
-        relation.setQualified(true);
-        relation.setTarget("UnknownTarget");
-        assertNull(relation.findQualifier(ipsProject));
+        association.setQualified(true);
+        association.setTarget("UnknownTarget");
+        assertNull(association.findQualifier(ipsProject));
         
-        relation.setTarget(targetType.getQualifiedName());
+        association.setTarget(targetType.getQualifiedName());
         targetType.setConfigurableByProductCmptType(false);
-        assertNull(relation.findQualifier(ipsProject));
+        assertNull(association.findQualifier(ipsProject));
         
         targetType.setConfigurableByProductCmptType(true);
         targetType.setProductCmptType("UnkownType");
-        assertNull(relation.findQualifier(ipsProject));
+        assertNull(association.findQualifier(ipsProject));
         
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "producttypes.CoverageType");
         targetType.setProductCmptType(productCmptType.getQualifiedName());
         
-        assertEquals(productCmptType, relation.findQualifier(ipsProject));
+        assertEquals(productCmptType, association.findQualifier(ipsProject));
     }
     
     public void testSetQualified() {
-        testPropertyAccessReadWrite(PolicyCmptTypeAssociation.class, IPolicyCmptTypeAssociation.PROPERTY_QUALIFIED, relation, Boolean.TRUE);
+        testPropertyAccessReadWrite(PolicyCmptTypeAssociation.class, IPolicyCmptTypeAssociation.PROPERTY_QUALIFIED, association, Boolean.TRUE);
     }
     
     public void testValidateContainerRelation_ReverseRelation_Mismtach() throws CoreException {
@@ -138,7 +138,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         policyToCoverage.setTarget(coverageType.getQualifiedName());
         policyToCoverage.setTargetRoleSingular("Coverage");
         policyToCoverage.setTargetRolePlural("Coverages");
-        policyToCoverage.setInverseRelation("Policy");
+        policyToCoverage.setInverseAssociation("Policy");
         
         IPolicyCmptTypeAssociation coverageToPolicy = coverageType.newPolicyCmptTypeAssociation();
         coverageToPolicy.setAssociationType(AssociationType.ASSOCIATION);
@@ -149,7 +149,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         coverageToPolicy.setTarget(policyType.getQualifiedName());
         coverageToPolicy.setTargetRoleSingular("Policy");
         coverageToPolicy.setTargetRolePlural("Policies");
-        coverageToPolicy.setInverseRelation("Coverage");
+        coverageToPolicy.setInverseAssociation("Coverage");
         
         IPolicyCmptType homePolicyType = newPolicyCmptType(ipsProject, "HomePolicy");
         homePolicyType.setSupertype(policyType.getQualifiedName());
@@ -166,7 +166,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         homePolicyToCoverage.setTargetRoleSingular("HomeCoverage");
         homePolicyToCoverage.setTargetRolePlural("HomeCoverages");
         homePolicyToCoverage.setSubsettedDerivedUnion(policyToCoverage.getName());
-        homePolicyToCoverage.setInverseRelation("HomePolicy");
+        homePolicyToCoverage.setInverseAssociation("HomePolicy");
         
         IPolicyCmptTypeAssociation homeCoverageToPolicy = homeCoverageType.newPolicyCmptTypeAssociation();
         homeCoverageToPolicy.setAssociationType(AssociationType.ASSOCIATION);
@@ -178,23 +178,23 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         homeCoverageToPolicy.setTarget(homePolicyType.getQualifiedName());
         homeCoverageToPolicy.setTargetRoleSingular("HomePolicy");
         homeCoverageToPolicy.setTargetRolePlural("HomePolicies");
-        homeCoverageToPolicy.setInverseRelation("HomeCoverage");
+        homeCoverageToPolicy.setInverseAssociation("HomeCoverage");
         
         MessageList ml = homePolicyToCoverage.validate();
-        assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_INCONSTENT_WITH_DEFINITION_CONTAINER_RELATION));
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION));
         
         // implementing revsere relation does not specify a container relation 
         homeCoverageToPolicy.setSubsettedDerivedUnion("");
         ml = homePolicyToCoverage.validate();
-        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_INCONSTENT_WITH_DEFINITION_CONTAINER_RELATION));
+        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION));
         homeCoverageToPolicy.setSubsettedDerivedUnion(coverageToPolicy.getName());
         ml = homePolicyToCoverage.validate();
-        assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_INCONSTENT_WITH_DEFINITION_CONTAINER_RELATION));
+        assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION));
                 
         // implementing revsere relation does specify a different container reverse relation (but container does)
         homeCoverageToPolicy.setSubsettedDerivedUnion("someContainerRel");
         ml = homePolicyToCoverage.validate();
-        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_INCONSTENT_WITH_DEFINITION_CONTAINER_RELATION));
+        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION));
     }
     
     public void testValidateInverseRelationMismatch() throws Exception {
@@ -216,19 +216,19 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         relationBtoA.setTargetRolePlural("roleAs");
 
         // mismatch: B does does refer to A
-        relationAtoB.setInverseRelation("roleA");
-        relationBtoA.setInverseRelation("somethingElse");
+        relationAtoB.setInverseAssociation("roleA");
+        relationBtoA.setInverseAssociation("somethingElse");
         MessageList ml = relationAtoB.validate();
         assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH)); 
 
         // now it fits
-        relationBtoA.setInverseRelation("roleB");
+        relationBtoA.setInverseAssociation("roleB");
         ml = relationAtoB.validate();
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH)); 
 
         // rule applies only to assoziations.
         relationAtoB.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        relationBtoA.setInverseRelation("somethingElse"); // 
+        relationBtoA.setInverseAssociation("somethingElse"); // 
         ml = relationAtoB.validate();
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH));
         
@@ -251,7 +251,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         MessageList ml = relationAtoB.validate();
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET));
         
-        relationAtoB.setInverseRelation("roleB");
+        relationAtoB.setInverseAssociation("roleB");
         ml = relationAtoB.validate();
         assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET));
 
@@ -270,91 +270,91 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     }    
 
     public void testIsInverseRelationApplicable() throws CoreException {
-        relation = pcType.newPolicyCmptTypeAssociation();
+        association = pcType.newPolicyCmptTypeAssociation();
 
-        relation.setAssociationType(AssociationType.ASSOCIATION);
-        assertTrue(relation.isInverseRelationApplicable());
+        association.setAssociationType(AssociationType.ASSOCIATION);
+        assertTrue(association.isInverseRelationApplicable());
         
-        relation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        assertFalse(relation.isInverseRelationApplicable());
+        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        assertFalse(association.isInverseRelationApplicable());
 
         TestIpsArtefactBuilderSet builderset = new TestIpsArtefactBuilderSet();
         setArtefactBuildset(pcType.getIpsProject(), builderset);
         
-        relation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         builderset.setInverseRelationLinkRequiredFor2WayCompositions(false);
-        assertFalse(relation.isInverseRelationApplicable()); 
+        assertFalse(association.isInverseRelationApplicable()); 
 
         builderset.setInverseRelationLinkRequiredFor2WayCompositions(true);
-        assertTrue(relation.isInverseRelationApplicable()); 
+        assertTrue(association.isInverseRelationApplicable()); 
     }
     
     public void testValidateInverseRelationNotNeeded() throws Exception {
-        relation.setAssociationType(AssociationType.ASSOCIATION);
-        relation.setInverseRelation("something");
+        association.setAssociationType(AssociationType.ASSOCIATION);
+        association.setInverseAssociation("something");
         
-        MessageList ml = relation.validate();
+        MessageList ml = association.validate();
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_INFO_NOT_NEEDED));
         
-        relation.setInverseRelation("");
+        association.setInverseAssociation("");
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_INFO_NOT_NEEDED));
 
-        relation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        relation.setInverseRelation("something");
-        ml = relation.validate();
+        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        association.setInverseAssociation("something");
+        ml = association.validate();
         assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_INFO_NOT_NEEDED));
         
-        relation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        ml = relation.validate();
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        ml = association.validate();
         assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_INFO_NOT_NEEDED));
     }
     
     public void testRemove() {
         assertEquals(1, pcType.getPolicyCmptTypeAssociations().length);
-        relation.delete();
+        association.delete();
         assertEquals(0, pcType.getPolicyCmptTypeAssociations().length);
-        assertTrue(relation.getIpsObject().getIpsSrcFile().isDirty());
+        assertTrue(association.getIpsObject().getIpsSrcFile().isDirty());
     }
     
     public void testSetType() {
-        relation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        relation.setAssociationType(AssociationType.ASSOCIATION);
-        assertEquals(AssociationType.ASSOCIATION, relation.getAssociationType());
-        assertTrue(relation.getIpsObject().getIpsSrcFile().isDirty());
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        association.setAssociationType(AssociationType.ASSOCIATION);
+        assertEquals(AssociationType.ASSOCIATION, association.getAssociationType());
+        assertTrue(association.getIpsObject().getIpsSrcFile().isDirty());
     }
     
     public void testInitFromXml() {
         Document doc = this.getTestDocument();
-        relation.initFromXml((Element)doc.getDocumentElement());
-        assertEquals(42, relation.getId());
-        assertEquals(AssociationType.ASSOCIATION, relation.getAssociationType());
-        assertTrue(relation.isDerivedUnion());
-        assertTrue(relation.isQualified());
-        assertEquals("MotorPart", relation.getTarget());
-        assertEquals("blabla", relation.getDescription());
-        assertEquals("PolicyPart", relation.getTargetRoleSingular());
-        assertEquals("PolicyParts", relation.getTargetRolePlural());
-        assertEquals(1, relation.getMinCardinality());
-        assertEquals(Integer.MAX_VALUE, relation.getMaxCardinality());
-        assertEquals("Policy.Parts", relation.getSubsettedDerivedUnion());
-        assertEquals("Part.Policy", relation.getInverseRelation());
+        association.initFromXml((Element)doc.getDocumentElement());
+        assertEquals(42, association.getId());
+        assertEquals(AssociationType.ASSOCIATION, association.getAssociationType());
+        assertTrue(association.isDerivedUnion());
+        assertTrue(association.isQualified());
+        assertEquals("MotorPart", association.getTarget());
+        assertEquals("blabla", association.getDescription());
+        assertEquals("PolicyPart", association.getTargetRoleSingular());
+        assertEquals("PolicyParts", association.getTargetRolePlural());
+        assertEquals(1, association.getMinCardinality());
+        assertEquals(Integer.MAX_VALUE, association.getMaxCardinality());
+        assertEquals("Parts", association.getSubsettedDerivedUnion());
+        assertEquals("Policy", association.getInverseAssociation());
     }
 
     public void testToXml() {
-        relation = pcType.newPolicyCmptTypeAssociation(); 
-        relation.setAssociationType(AssociationType.ASSOCIATION);
-        relation.setDerivedUnion(true);
-        relation.setQualified(true);
-        relation.setTarget("target");
-        relation.setTargetRoleSingular("targetRoleSingular");
-        relation.setTargetRolePlural("targetRolePlural");
-        relation.setSubsettedDerivedUnion("super");
-        relation.setInverseRelation("reverse");
-        relation.setMinCardinality(2);
-        relation.setMaxCardinality(3);
-        relation.setDescription("blabla");
+        association = pcType.newPolicyCmptTypeAssociation(); 
+        association.setAssociationType(AssociationType.ASSOCIATION);
+        association.setDerivedUnion(true);
+        association.setQualified(true);
+        association.setTarget("target");
+        association.setTargetRoleSingular("targetRoleSingular");
+        association.setTargetRolePlural("targetRolePlural");
+        association.setSubsettedDerivedUnion("super");
+        association.setInverseAssociation("reverse");
+        association.setMinCardinality(2);
+        association.setMaxCardinality(3);
+        association.setDescription("blabla");
         
-        Element element = relation.toXml(this.newDocument());
+        Element element = association.toXml(this.newDocument());
         
         IPolicyCmptTypeAssociation copy = pcType.newPolicyCmptTypeAssociation();
         copy.initFromXml(element);
@@ -365,7 +365,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertEquals("targetRoleSingular", copy.getTargetRoleSingular());
         assertEquals("targetRolePlural", copy.getTargetRolePlural());
         assertEquals("super", copy.getSubsettedDerivedUnion());
-        assertEquals("reverse", copy.getInverseRelation());
+        assertEquals("reverse", copy.getInverseAssociation());
         assertEquals(2, copy.getMinCardinality());
         assertEquals(3, copy.getMaxCardinality());
         assertEquals("blabla", copy.getDescription());
@@ -376,7 +376,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
      */
     public void testNewPart() {
     	try {
-			relation.newPart(IPolicyCmptTypeAttribute.class);
+			association.newPart(IPolicyCmptTypeAttribute.class);
 			fail();
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)
@@ -470,87 +470,87 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     public void testValidateMaxCardinalityForReverseComposition() throws Exception {
     	MessageList ml = new MessageList();
     	
-    	relation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        relation.setMaxCardinality(2);
+    	association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        association.setMaxCardinality(2);
     	
-    	ml = relation.validate();
+    	ml = association.validate();
     	assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION));
     	
-    	relation.setMaxCardinality(1);
-    	ml = relation.validate();
+    	association.setMaxCardinality(1);
+    	ml = association.validate();
     	assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION));
     }
     
 	public void testValidateSamePluralRolename() throws Exception {
 		MessageList ml = new MessageList();
-		relation.setDerivedUnion(true);
-		implementationRelation.setTargetRolePlural("MotorCoverages");
+		association.setDerivedUnion(true);
+		implementationAssociation.setTargetRolePlural("MotorCoverages");
 
-		ml = implementationRelation.validate();
+		ml = implementationAssociation.validate();
 		assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SAME_PLURAL_ROLENAME));
 		
-		relation.setTargetRolePlural(implementationRelation.getTargetRolePlural());
-		ml = implementationRelation.validate();
+		association.setTargetRolePlural(implementationAssociation.getTargetRolePlural());
+		ml = implementationAssociation.validate();
 		assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SAME_PLURAL_ROLENAME));
 	}
 
 	public void testValidateSameSingularRolename() throws Exception {
 		MessageList ml = new MessageList();
 
-		ml = implementationRelation.validate();
+		ml = implementationAssociation.validate();
 		assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SAME_SINGULAR_ROLENAME));
 		
-		implementationRelation.setTargetRoleSingular(relation.getTargetRoleSingular());
-		ml = implementationRelation.validate();
+		implementationAssociation.setTargetRoleSingular(association.getTargetRoleSingular());
+		ml = implementationAssociation.validate();
 		assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SAME_SINGULAR_ROLENAME));
 	}
 	
 	public void testValidateReverseRelationOfContainerRelationHasToBeContainerRelationToo() throws Exception {
-		relation.setAssociationType(AssociationType.ASSOCIATION);
+		association.setAssociationType(AssociationType.ASSOCIATION);
         IPolicyCmptTypeAssociation rel2 = targetType.newPolicyCmptTypeAssociation();
         rel2.setAssociationType(AssociationType.ASSOCIATION);
 		rel2.setTargetRoleSingular("test");
-		rel2.setInverseRelation(relation.getTargetRoleSingular());
-		relation.setInverseRelation("test");
-		relation.setDerivedUnion(true);
-		MessageList ml = relation.validate();
+		rel2.setInverseAssociation(association.getTargetRoleSingular());
+		association.setInverseAssociation("test");
+		association.setDerivedUnion(true);
+		MessageList ml = association.validate();
 		assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATIONS_MUST_BOTH_BE_MARKED_AS_CONTAINER));
 		rel2.setDerivedUnion(true);
-		ml = relation.validate();
+		ml = association.validate();
 		assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATIONS_MUST_BOTH_BE_MARKED_AS_CONTAINER));
 	}
 
 	public void testValidateInvesreAssociationTypeMissmatch() throws Exception {
 		IPolicyCmptTypeAssociation rel2 = targetType.newPolicyCmptTypeAssociation();
 		rel2.setTargetRoleSingular("test");
-		rel2.setInverseRelation(relation.getTargetRoleSingular());
+		rel2.setInverseAssociation(association.getTargetRoleSingular());
 		rel2.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-		relation.setInverseRelation("test");
-		relation.setAssociationType(AssociationType.ASSOCIATION);
-		MessageList ml = relation.validate();
+		association.setInverseAssociation("test");
+		association.setAssociationType(AssociationType.ASSOCIATION);
+		MessageList ml = association.validate();
 		assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATION_TYPE_MISSMATCH));
 		rel2.setAssociationType(AssociationType.ASSOCIATION);
-		ml = relation.validate();
+		ml = association.validate();
 		assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATION_TYPE_MISSMATCH));
     }
 	
-    public void testFindInverseRelation() throws CoreException {
-        relation.setInverseRelation("");
-        assertNull(relation.findInverseRelation());
+    public void testFindInverseAssociation() throws CoreException {
+        association.setInverseAssociation("");
+        assertNull(association.findInverseAssociation());
 
-        relation.setInverseRelation("reverseRelation");
-        assertNull(relation.findInverseRelation());
+        association.setInverseAssociation("reverseRelation");
+        assertNull(association.findInverseAssociation());
         
         IPolicyCmptType targetType = (IPolicyCmptType)newIpsObject(this.pcType.getIpsProject(), IpsObjectType.POLICY_CMPT_TYPE, "pack2.MotorPolicy");
-        relation.setTarget(targetType.getQualifiedName());
-        assertNull(relation.findInverseRelation());
+        association.setTarget(targetType.getQualifiedName());
+        assertNull(association.findInverseAssociation());
         
         IPolicyCmptTypeAssociation relation2 = targetType.newPolicyCmptTypeAssociation();
         relation2.setTargetRoleSingular("reverseRelation");
-        assertEquals(relation2, relation.findInverseRelation());
+        assertEquals(relation2, association.findInverseAssociation());
         
-        relation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        assertNull(relation.findInverseRelation());
+        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        assertNull(association.findInverseAssociation());
     }
     
 

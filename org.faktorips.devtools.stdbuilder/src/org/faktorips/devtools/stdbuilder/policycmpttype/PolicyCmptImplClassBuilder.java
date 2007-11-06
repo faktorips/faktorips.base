@@ -985,7 +985,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         interfaceBuilder.generateSignatureAddObject(relation, methodsBuilder);
         String fieldname = getFieldNameForRelation(relation);
         String paramName = interfaceBuilder.getParamNameForAddObject(relation);
-        IPolicyCmptTypeAssociation reverseRelation = relation.findInverseRelation();
+        IPolicyCmptTypeAssociation reverseRelation = relation.findInverseAssociation();
         methodsBuilder.openBracket();
         methodsBuilder.append("if (" + paramName + " == null) {");
         methodsBuilder.append("throw new ");
@@ -1068,7 +1068,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         String fieldname = getFieldNameForRelation(relation);
         String paramName = interfaceBuilder.getParamNameForRemoveObject(relation);
-        IPolicyCmptTypeAssociation reverseRelation = relation.findInverseRelation();
+        IPolicyCmptTypeAssociation reverseRelation = relation.findInverseAssociation();
         IPolicyCmptType target = relation.findTarget();
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
@@ -1174,7 +1174,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         String fieldname = getFieldNameForRelation(relation);
         String paramName = interfaceBuilder.getParamNameForSetObject(relation);
         IPolicyCmptType target = relation.findTarget();
-        IPolicyCmptTypeAssociation reverseRelation = relation.findInverseRelation();
+        IPolicyCmptTypeAssociation reverseRelation = relation.findInverseAssociation();
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureSetObject(relation, methodsBuilder);
