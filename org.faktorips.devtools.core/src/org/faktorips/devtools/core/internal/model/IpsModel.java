@@ -1566,7 +1566,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
          if (sortDef != null) {
            // sortdefinition cached, check modification
-           IFile file = ((IpsPackageFragment) fragment).getCorrespondingSortOrderFile();
+           IFile file = ((IpsPackageFragment) fragment).getSortOrderFile();
 
             if (file.exists()) {
                 Long lastModification = (Long) lastIpSortOrderModifications.get(sortDef);
@@ -1588,7 +1588,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
         if (sortDef == null) {
             // add new or updated sort order
-            IFile file = ((IpsPackageFragment) fragment).getCorrespondingSortOrderFile();
+            IFile file = ((IpsPackageFragment) fragment).getSortOrderFile();
             Long lastModification;
 
             try {

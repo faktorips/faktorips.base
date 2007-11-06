@@ -118,7 +118,7 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
      * {@inheritDoc}
      */
     public IIpsPackageFragment[] getSortedIpsPackageFragments() throws CoreException {
-        // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE
+        // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE_NAME
 
         List sortedPacks = getIpsPackageFragmentsAsList();
 

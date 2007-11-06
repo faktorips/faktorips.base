@@ -39,8 +39,6 @@ import org.faktorips.util.StringUtil;
  */
 public abstract class AbstractIpsPackageFragment extends IpsElement implements IIpsPackageFragment {
 
-    public static final String SORT_ORDER_FILE = ".packageOrder"; //$NON-NLS-1$
-
     public AbstractIpsPackageFragment(IIpsElement parent, String name) {
         super(parent, name);
     }

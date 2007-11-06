@@ -345,13 +345,13 @@ public class ModelContentProvider implements ITreeContentProvider {
                 }
             } else if (elements[i] instanceof IResource) {
 
-                // filter out hidden files and folders, except the ".ipsproject"-file and ".packageOrder"-file
+                // filter out hidden files and folders, except the ".ipsproject"-file and ".sortorder"-file
                 if (elements[i] instanceof IFile | elements[i] instanceof IFolder) {
                     if (((IResource)elements[i]).getName().indexOf(".") == 0) { //$NON-NLS-1$
                         IIpsProject project= IpsPlugin.getDefault().getIpsModel().getIpsProject(((IResource)elements[i]).getProject());
 
                         if((!elements[i].equals(project.getIpsProjectPropertiesFile()))
-                            && ((IResource)elements[i]).getName().compareTo(".packageOrder") != 0 ){ //$NON-NLS-1$
+                            && ((IResource)elements[i]).getName().compareTo(IIpsPackageFragment.SORT_ORDER_FILE_NAME) != 0 ){ //$NON-NLS-1$
                             continue;
                         }
                     }

@@ -99,15 +99,15 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
     }
 
     /**
-     * Read the sort definition from the <code>SORT_ORDER_FILE</code>.
-     * Returns a {@link IpsPackageFragmentDefaultSortDefinition} if no <code>SORT_ORDER_FILE</code> is found.
+     * Read the sort definition from the <code>SORT_ORDER_FILE_NAME</code>.
+     * Returns a {@link IpsPackageFragmentDefaultSortDefinition} if no <code>SORT_ORDER_FILE_NAME</code> is found.
      *
      * @return Sort definition.
      * @throws CoreException
      */
     public IIpsPackageFragmentSortDefinition loadSortDefinition() throws CoreException {
 
-        IFile file = getCorrespondingSortOrderFile();
+        IFile file = getSortOrderFile();
 
         if (file.exists()) {
 
@@ -128,7 +128,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
     /**
      * @return Handle to a sort order file. The folder/file doesn't need to exist!
      */
-    public IFile getCorrespondingSortOrderFile() {
+    public IFile getSortOrderFile() {
         IFolder folder = null;
 
         if (this.isDefaultPackage()) {
@@ -137,7 +137,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             folder = (IFolder) this.getParentIpsPackageFragment().getCorrespondingResource();
         }
 
-        return folder.getFile(new Path(SORT_ORDER_FILE));
+        return folder.getFile(new Path(IIpsPackageFragment.SORT_ORDER_FILE_NAME));
     }
 
     /**
@@ -187,7 +187,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
             System.out.println("IpsPackageFragment.setSortDefinition: pack=" + this); //$NON-NLS-1$
         }
 
-        IFile file = getCorrespondingSortOrderFile();
+        IFile file = getSortOrderFile();
 
         if (newDefinition == null) {
             if (file.exists()) {

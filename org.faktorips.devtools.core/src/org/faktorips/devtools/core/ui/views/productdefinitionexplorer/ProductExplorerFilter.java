@@ -23,9 +23,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
@@ -64,7 +64,7 @@ public class ProductExplorerFilter extends ViewerFilter {
 
         if(element instanceof IFile){
             // filter out rest of hidden files (e.g. ".ipsproject")
-            if(((IFile)element).getName().equals(IpsPackageFragment.SORT_ORDER_FILE)){ //$NON-NLS-1$
+            if(((IFile)element).getName().equals(IIpsPackageFragment.SORT_ORDER_FILE_NAME)){ //$NON-NLS-1$
                 return true;
             }
 

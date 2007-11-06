@@ -235,7 +235,7 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
             folder = (IFolder) fragment.getParentIpsPackageFragment().getCorrespondingResource();
         }
 
-        IFile file = folder.getFile(new Path(IpsPackageFragment.SORT_ORDER_FILE));
+        IFile file = folder.getFile(new Path(IIpsPackageFragment.SORT_ORDER_FILE_NAME));
         String content;
 
         try {

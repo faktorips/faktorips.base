@@ -32,7 +32,7 @@ package org.faktorips.devtools.core.model.ipsproject;
  * </pre></blockquote>
  * <p>
  * <blockquote><pre>
- * product/home/SORT_ORDER_FILE:
+ * product/home/SORT_ORDER_FILE_NAME:
  * # comment
  * coverage
  * tables

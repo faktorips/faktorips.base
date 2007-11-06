@@ -155,6 +155,27 @@ public class ProductCmptTypePage extends TypePage {
                 }
             }
         }
+        if (pageOfAssociatedType != null) {
+            if(!StringUtils.isEmpty(getSuperType())) {
+                IProductCmptType superType = getIpsProject().findProductCmptType(getSuperType());
+                if(superType != null && superType.isConfigurationForPolicyCmptType()){
+                    String msg = NLS.bind(Messages.ProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX, superType.getPolicyCmptType());
+                    if(StringUtils.isEmpty(pageOfAssociatedType.getSuperType())){
+                        setErrorMessage(msg);
+                        return;
+                    }
+                    IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(pageOfAssociatedType.getSuperType());
+                    if(policyCmptType == null){
+                        setErrorMessage(msg);
+                        return;
+                    }
+                    if(!superType.getPolicyCmptType().equals(policyCmptType.getQualifiedName())){
+                        setErrorMessage(msg);
+                        return;
+                    }
+                }
+            }
+        }
         
         if(pageOfAssociatedType == null && 
            !StringUtils.isEmpty((String)pcTypeField.getValue())){
@@ -181,27 +202,6 @@ public class ProductCmptTypePage extends TypePage {
             }
         }
         
-        if (pageOfAssociatedType != null) {
-            if(!StringUtils.isEmpty(getSuperType())) {
-                IProductCmptType superType = getIpsProject().findProductCmptType(getSuperType());
-                if(superType != null && superType.isConfigurationForPolicyCmptType()){
-                    String msg = NLS.bind(Messages.ProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX, superType.getPolicyCmptType());
-                    if(StringUtils.isEmpty(pageOfAssociatedType.getSuperType())){
-                        setErrorMessage(msg);
-                        return;
-                    }
-                    IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(pageOfAssociatedType.getSuperType());
-                    if(policyCmptType == null){
-                        setErrorMessage(msg);
-                        return;
-                    }
-                    if(!superType.getPolicyCmptType().equals(policyCmptType.getQualifiedName())){
-                        setErrorMessage(msg);
-                        return;
-                    }
-                }
-            }
-        }
     }
 
     private void validateSupertype(final IProductCmptType superType,

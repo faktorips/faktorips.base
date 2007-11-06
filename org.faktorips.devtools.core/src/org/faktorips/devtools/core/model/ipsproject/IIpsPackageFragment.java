@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.model.ipsproject;
 import java.io.InputStream;
 import java.util.GregorianCalendar;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -38,6 +39,11 @@ public interface IIpsPackageFragment extends IIpsElement {
      * The char used as separator for subpackages.
      */
     public final static char SEPARATOR = '.';
+
+    /**
+     * The name of the sort order file.
+     */
+    public static final String SORT_ORDER_FILE_NAME = ".sortorder"; //$NON-NLS-1$
 
     /**
      * Returns all ips source files in the package. Returns an empty array if the package is empty.
@@ -251,5 +257,11 @@ public interface IIpsPackageFragment extends IIpsElement {
      * @throws CoreException
      */
     public boolean hasChildIpsPackageFragments() throws CoreException;
+    
+    /**
+     * Returns a handle to the sort order file of this IpsPackageFragment.
+     */
+    public IFile getSortOrderFile();
+
 
 }

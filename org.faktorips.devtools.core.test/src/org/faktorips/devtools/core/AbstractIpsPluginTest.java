@@ -704,7 +704,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      */
     protected void createPackageOrderFile(IFolder folder, List strings) throws IOException, CoreException {
 
-        IFile file = folder.getFile(IpsPackageFragment.SORT_ORDER_FILE);
+        IFile file = folder.getFile(IIpsPackageFragment.SORT_ORDER_FILE_NAME);
 
         if (file.exists()) {
             file.delete(true, null);

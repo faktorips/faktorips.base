@@ -426,9 +426,9 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
         root.createPackageFragment("products.hausrat", true, null);
         IIpsPackageFragment unfall = root.createPackageFragment("products.unfall", true, null);
-        IIpsPackageFragment leistungsarten = root.createPackageFragment("products.unfall.leistungsarten", true, null);
+        IpsPackageFragment leistungsarten = (IpsPackageFragment)root.createPackageFragment("products.unfall.leistungsarten", true, null);
         root.createPackageFragment("products.unfall.leistungsartgruppen", true, null);
-        IIpsPackageFragment kranken = root.createPackageFragment("products.kranken", true, null);
+        IpsPackageFragment kranken = (IpsPackageFragment)root.createPackageFragment("products.kranken", true, null);
 
         IIpsPackageFragment products = root.getIpsPackageFragment("products");
 
@@ -456,7 +456,8 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertTrue(sortDef instanceof IIpsPackageFragmentArbitrarySortDefinition);
 
         // test later
-        IFile file = getCorrespondingSortOrderFile(leistungsarten);
+        
+        IFile file = leistungsarten.getSortOrderFile();
         file.delete(true, null);
 
         IIpsPackageFragmentSortDefinition sortDefKranken = model.getSortDefinition(kranken);
@@ -474,7 +475,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals(sortDefKranken, sortDefKranken2);
 
         // test later
-        file = getCorrespondingSortOrderFile(kranken);
+        file = kranken.getSortOrderFile();
         file.touch(null);
 
         // test deleted sort order
@@ -493,18 +494,6 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals("kranken", fragments[0]);
         assertEquals("unfall", fragments[1]);
         assertEquals("hausrat", fragments[2]);
-    }
-
-    private IFile getCorrespondingSortOrderFile(IIpsPackageFragment fragment) {
-        IFolder folder = null;
-
-        if (fragment.isDefaultPackage()) {
-            folder = (IFolder) fragment.getRoot().getCorrespondingResource();
-        } else {
-            folder = (IFolder) fragment.getParentIpsPackageFragment().getCorrespondingResource();
-        }
-
-        return folder.getFile(new Path(IpsPackageFragment.SORT_ORDER_FILE));
     }
 
     public void testClearIpsSrcFileContentsCacheWhenFileDeleted() throws Exception {

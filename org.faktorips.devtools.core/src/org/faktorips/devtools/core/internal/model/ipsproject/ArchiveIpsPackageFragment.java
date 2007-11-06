@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -244,7 +245,7 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
      */
     public IIpsPackageFragment[] getSortedChildIpsPackageFragments() throws CoreException {
 
-        // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE
+        // TODO Sort IpsPackageFragments by IpsPackageFragment.SORT_ORDER_FILE_NAME
         List sortedPacks = getChildIpsPackageFragmentsAsList();
 
         return (IIpsPackageFragment[])sortedPacks.toArray(new IIpsPackageFragment[sortedPacks.size()]);
@@ -272,10 +273,17 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
     }
 
     /**
-     * {@inheritDoc}
+     * This method is not supported for archives and throws a {@link RuntimeException} if called. 
      */
     public void setSortDefinition(IIpsPackageFragmentSortDefinition newDefinition) throws CoreException {
-        throw new CoreException(new IpsStatus("Can't set the sort definition in archives!"));
+        throw new RuntimeException("Can't set the sort definition in archives!");
+    }
+
+    /**
+     * This method is not supported for archives and throws a {@link RuntimeException} if called. 
+     */
+    public IFile getSortOrderFile() {
+        throw new RuntimeException("This method is not supported for archives.");
     }
 
     /**
@@ -285,7 +293,7 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
     private String getSortDefinitionContent() throws CoreException {
         ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
         IIpsArchive archive = root.getIpsArchive();
-        QualifiedNameType qnt = QualifiedNameType.newQualifedNameType(this.getName().concat( StringUtil.getSystemLineSeparator()  + IpsPackageFragment.SORT_ORDER_FILE) );
+        QualifiedNameType qnt = QualifiedNameType.newQualifedNameType(this.getName().concat( StringUtil.getSystemLineSeparator()  + IIpsPackageFragment.SORT_ORDER_FILE_NAME) );
 
         return archive.getContent(qnt, this.getRoot().getIpsProject().getPlainTextFileCharset() );
     }
@@ -299,4 +307,5 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
 
         return (packNames.size() > 0 ? true : false);
     }
+
 }

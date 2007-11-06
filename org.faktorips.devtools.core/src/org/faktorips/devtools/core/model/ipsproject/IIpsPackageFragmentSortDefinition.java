@@ -33,7 +33,7 @@ import org.eclipse.core.runtime.CoreException;
  * For saving the IpsPackageFragmentSortDefinition call <code>initPersistenceConent</code> and write the result to a file or database:
  * <blockquote><pre>
  * String content = sortDef.toPersistenceContent();
- * IFile file = folder.getFile(SORT_ORDER_FILE);
+ * IFile file = folder.getFile(SORT_ORDER_FILE_NAME);
  * byte[] bytes = content.getBytes();
  * ByteArrayInputStream is= new ByteArrayInputStream(bytes);
  * file.create(is, false, null);

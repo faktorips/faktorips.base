@@ -138,7 +138,6 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
      * selected IpsProject.
      *
      * @note IpsArchives are ignored!
-     *
      * @return IpsDefaultPackageFragments of the selected IpsProject.
      * @throws CoreException
      */
@@ -148,7 +147,6 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
         IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
         List filtered = new ArrayList(roots.length);
 
-        // TODO Don't ignore ipsArchives.
         for (int i = 0; i < roots.length; i++) {
             if (roots[i].isBasedOnSourceFolder()) {
                 filtered.add(roots[i].getDefaultIpsPackageFragment());
@@ -311,7 +309,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
 
     /**
      * @throws CoreException
-     *
+     * @note IpsArchives are ignored
      */
     public void saveSortDefDelta() throws CoreException {
         List packagesList = new ArrayList();
@@ -320,7 +318,6 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
         IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
 
         for (int i = 0; i < roots.length; i++) {
-            // TODO Don't ignore ipsArchives.
             if (roots[i].isBasedOnSourceFolder()) {
                 IIpsPackageFragment currentPack = roots[i].getDefaultIpsPackageFragment();
 
