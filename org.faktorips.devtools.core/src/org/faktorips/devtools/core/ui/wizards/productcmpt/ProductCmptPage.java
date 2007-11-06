@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
@@ -379,7 +380,7 @@ public class ProductCmptPage extends IpsObjectPage {
     /** 
      * {@inheritDoc}
      */
-    protected void finishIpsObject(IIpsObject pdObject) throws CoreException {
+    protected void finishIpsObjects(IIpsObject pdObject, List modifiedIpsObjects) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)pdObject;
         productCmpt.setProductCmptType(getProductCmptType());
         GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();

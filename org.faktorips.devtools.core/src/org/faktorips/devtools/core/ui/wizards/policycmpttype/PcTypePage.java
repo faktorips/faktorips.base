@@ -17,16 +17,22 @@
 
 package org.faktorips.devtools.core.ui.wizards.policycmpttype;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
+import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.productcmpttype.ProductCmptTypePage;
@@ -71,8 +77,8 @@ public class PcTypePage extends TypePage {
         super.fillNameComposite(nameComposite, toolkit);
         
         toolkit.createLabel(nameComposite, ""); //$NON-NLS-1$
-        configurableField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.PcTypePage_configuredByProductCmptType)); 
-        configurableField.setValue(Boolean.FALSE);
+        configurableField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.PcTypePage_configuredByProductCmptType));
+        configurableField.setValue(Boolean.valueOf(getSettings().getBoolean(IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE)));
         configurableField.addChangeListener(this);
     }
 
@@ -80,7 +86,8 @@ public class PcTypePage extends TypePage {
      * Returns true if the page is complete and the policy component type is configurable.
      */
     public boolean canFlipToNextPage() {
-        return isPageComplete() && isPolicyCmptTypeConfigurable();
+//        isPageComplete() && 
+        return isPolicyCmptTypeConfigurable();
     }
     
     /**
@@ -95,6 +102,22 @@ public class PcTypePage extends TypePage {
      */
     public boolean finishWhenThisPageIsComplete() {
         return isPageComplete() && !isPolicyCmptTypeConfigurable();
+    }
+
+    private IDialogSettings getSettings(){
+        IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings().getSection("NewPcTypeWizard.PcTypePage");
+        if(settings == null){
+            return IpsPlugin.getDefault().getDialogSettings().addNewSection("NewPcTypeWizard.PcTypePage");
+        }
+        return settings;
+    }
+    
+    protected void valueChangedExtension(FieldValueChangedEvent e) throws CoreException {
+        super.valueChangedExtension(e);
+        if(e.field == configurableField){
+            IDialogSettings settings = getSettings();
+            settings.put(IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE, ((Boolean)configurableField.getValue()).booleanValue());
+        }
     }
 
     /**
@@ -119,16 +142,22 @@ public class PcTypePage extends TypePage {
     protected void validatePageExtension() throws CoreException {
         if(isPolicyCmptTypeConfigurable()){
             super.validatePageExtension();
+            if(getErrorMessage() == null && pageOfAssociatedType != null && pageOfAssociatedType.isAlreadyBeenEntered()){
+                pageOfAssociatedType.validatePage();
+                if(!StringUtils.isEmpty(pageOfAssociatedType.getErrorMessage())){
+                    setErrorMessage(pageOfAssociatedType.getErrorMessage());
+                }
+            }
         }
     }
 
     /** 
      * {@inheritDoc}
      */
-    protected void finishIpsObject(IIpsObject ipsObject) throws CoreException {
-        super.finishIpsObject(ipsObject);
+    protected void finishIpsObjects(IIpsObject newIpsObject, List modifiedIpsObjects) throws CoreException {
+        super.finishIpsObjects(newIpsObject, modifiedIpsObjects);
         if(isPolicyCmptTypeConfigurable()){
-            IPolicyCmptType type = (IPolicyCmptType)ipsObject;
+            IPolicyCmptType type = (IPolicyCmptType)newIpsObject;
             type.setConfigurableByProductCmptType(true);
             type.setProductCmptType(pageOfAssociatedType.getQualifiedIpsObjectName());
         }

@@ -22,7 +22,6 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
 
@@ -49,10 +48,6 @@ public class NewProductCmptTypeWizard extends NewIpsObjectWizard {
         IProductCmptType type = (IProductCmptType)ipsObject;
         String supertypeName = typePage.getSuperType(); 
         type.setSupertype(supertypeName);
-        if (typePage.overrideAbstractMethods()) {
-            IMethod[] abstractMethods = type.findOverrideMethodCandidates(true, ipsObject.getIpsProject());
-            type.overrideMethods(abstractMethods);
-        }
     }
 
 }

@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.testcase;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
@@ -123,11 +125,11 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
     /**
      * {@inheritDoc}
      */
-    protected void finishIpsObject(IIpsObject ipsObject) throws CoreException {
+    protected void finishIpsObjects(IIpsObject newIpsObject, List modifiedIpsObjects) throws CoreException {
         // fill the default content of the test case bases on the test case type
-        ITestCase testCase = (ITestCase)ipsObject;
+        ITestCase testCase = (ITestCase)newIpsObject;
         testCase.setTestCaseType(getSuperType());
-        ITestCaseType testCaseType = testCase.findTestCaseType(ipsObject.getIpsProject());
+        ITestCaseType testCaseType = testCase.findTestCaseType(newIpsObject.getIpsProject());
         generateDefaultContent(testCaseType.getTestParameters(), testCase);
         if (testCaseType == null){
             throw new CoreException(new IpsStatus(

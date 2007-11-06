@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
@@ -145,7 +146,7 @@ public class TableContentsPage extends IpsObjectPage {
     /** 
      * {@inheritDoc}
      */
-    protected void finishIpsObject(IIpsObject pdObject) throws CoreException {
+    protected void finishIpsObjects(IIpsObject pdObject, List modifiedIpsObjects) throws CoreException {
         ITableContents table = (ITableContents)pdObject;
         table.setTableStructure(getTableStructure());
         GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();

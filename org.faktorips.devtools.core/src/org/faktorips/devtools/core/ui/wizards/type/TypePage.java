@@ -17,19 +17,21 @@
 
 package org.faktorips.devtools.core.ui.wizards.type;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
-import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 
@@ -39,8 +41,8 @@ import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 public abstract class TypePage extends IpsObjectPage {
     
     private TextButtonField supertypeField;
-    private Checkbox overrideCheckbox;
     protected TypePage pageOfAssociatedType;
+    private boolean alreadyBeenEntered = false;
     
     /**
      * @param pageName
@@ -61,11 +63,6 @@ public abstract class TypePage extends IpsObjectPage {
         IpsObjectRefControl superTypeControl = createSupertypeControl(nameComposite, toolkit);
         supertypeField = new TextButtonField(superTypeControl);
         supertypeField.addChangeListener(this);
-        
-        // Composite options = toolkit.createGridComposite(nameComposite.getParent(), 1, false, false);
-        toolkit.createLabel(nameComposite, Messages.TypePage_option);
-        overrideCheckbox = toolkit.createCheckbox(nameComposite, Messages.TypePage_overrideAbstractMethods);
-        overrideCheckbox.setChecked(true);
     }
 
     /**
@@ -116,25 +113,14 @@ public abstract class TypePage extends IpsObjectPage {
     public void setSuperType(String superTypeQualifiedName){
         supertypeField.setValue(superTypeQualifiedName);
     }
-
-    /**
-     * Returns the value of the override field.
-     */
-    public boolean overrideAbstractMethods() {
-        return overrideCheckbox.isChecked();
-    }
     
     /** 
      * {@inheritDoc}
      */
-    protected void finishIpsObject(IIpsObject ipsObject) throws CoreException {
-        IType type = (IType)ipsObject;
+    protected void finishIpsObjects(IIpsObject newIpsObject, List modifiedIpsObjects) throws CoreException {
+        IType type = (IType)newIpsObject;
         String supertypeName = getSuperType(); 
         type.setSupertype(supertypeName);
-        if (overrideAbstractMethods()) {
-            IMethod[] abstractMethods = type.findOverrideMethodCandidates(true, ipsObject.getIpsProject());
-            type.overrideMethods(abstractMethods);
-        }
     }
     
     /**
@@ -144,9 +130,20 @@ public abstract class TypePage extends IpsObjectPage {
      */
     protected void validatePageExtension() throws CoreException {
         //check for name conflicts of the product and policy component type name
-        if (pageOfAssociatedType != null && getIpsObjectName() != null && pageOfAssociatedType.getIpsObjectName() != null
-                && getIpsObjectName().equals(pageOfAssociatedType.getIpsObjectName())) {
-            setErrorMessage(Messages.TypePage_msgNameConflicts);
+        if (pageOfAssociatedType != null && 
+            getIpsObjectName() != null && 
+            pageOfAssociatedType.getIpsObjectName() != null && 
+            !StringUtils.isEmpty(getIpsObjectName()) && 
+            !StringUtils.isEmpty(pageOfAssociatedType.getIpsObjectName()) && 
+            getIpsObjectName().equals(pageOfAssociatedType.getIpsObjectName())) {
+                setErrorMessage(Messages.TypePage_msgNameConflicts);
+        }
+        //check if selected super type exists
+        if(!StringUtils.isEmpty(getSuperType())){
+            IIpsSrcFile ipsSrcFile = getIpsProject().findIpsSrcFile(getIpsObjectType(), getSuperType());
+            if(ipsSrcFile == null){
+                setErrorMessage(Messages.TypePage_msgSupertypeDoesNotExist);
+            }
         }
     }
     
@@ -156,6 +153,11 @@ public abstract class TypePage extends IpsObjectPage {
     public void pageEntered() throws CoreException{
         super.pageEntered();
         validatePage();
+        alreadyBeenEntered = true;
+    }
+
+    public boolean isAlreadyBeenEntered() {
+        return alreadyBeenEntered;
     }
 
 }

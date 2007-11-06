@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.wizards;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -389,7 +391,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
      * validationPageExtension() Method is called by this method before the page get updated. This method is protected
      * because subclasses might need to call within event szenarios implemented within the subclass. 
      */
-    protected final void validatePage() throws CoreException {
+    public final void validatePage() throws CoreException {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
 		setErrorMessage(null);
         validateSourceRoot();
@@ -518,9 +520,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     }
     
     protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException{
-        IIpsSrcFile srcFile = getIpsPackageFragment().createIpsFile(getIpsObjectType(), getIpsObjectName(), true, new SubProgressMonitor(monitor, 1));
-        finishIpsObject(srcFile.getIpsObject());
-        return srcFile;
+        return getIpsPackageFragment().createIpsFile(getIpsObjectType(), getIpsObjectName(), true, new SubProgressMonitor(monitor, 1));
     }
     
     /**
@@ -535,14 +535,14 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     /**
      * This method is empty by default and can be overridden by sub classes when they want
      * to change the new created IpsObject before it will be saved.
-     * 
-     * @param ipsObject
-     * @throws CoreException
      */
-    protected void finishIpsObject(IIpsObject ipsObject) throws CoreException{
+    protected void finishIpsObjects(IIpsObject newIpsObject, List modifiedIpsObjects) throws CoreException{
         
     }
     
+    /**
+     * Sets the focus to the source folder control if empty if not to the name control. 
+     */
     protected void setDefaultFocus(){
         if(StringUtils.isEmpty(sourceFolderField.getText())){
             sourceFolderField.getControl().setFocus();

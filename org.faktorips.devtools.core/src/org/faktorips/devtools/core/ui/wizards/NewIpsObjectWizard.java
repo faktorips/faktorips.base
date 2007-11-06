@@ -18,6 +18,8 @@
 package org.faktorips.devtools.core.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -38,6 +40,7 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -126,18 +129,24 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
             public void run(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
                 IWizardPage[] pages = getPages();
                 if(pages.length > 1){
-                    monitor.beginTask("Creating objects", pages.length * 3); //$NON-NLS-1$
+                    monitor.beginTask("Creating objects", pages.length * 4); //$NON-NLS-1$
                 } else{
-                    monitor.beginTask("Creating object", 3); //$NON-NLS-1$
+                    monitor.beginTask("Creating object", 4); //$NON-NLS-1$
                 }
                 for (int i = 0; i < pages.length; i++) {
                     if(pages[i] instanceof IpsObjectPage){
                         IpsObjectPage page = (IpsObjectPage)pages[i];
                         if(page.canCreateIpsSrcFile()){
                             IIpsSrcFile srcFile = page.createIpsSrcFile(new SubProgressMonitor(monitor, 2));
-                            srcFile.save(true, null);
+                            ArrayList modifiedIpsObjects = new ArrayList(0);
+                            page.finishIpsObjects(srcFile.getIpsObject(), modifiedIpsObjects);
+                            srcFile.save(true, new SubProgressMonitor(monitor, 1));
+                            SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+                            for (Iterator it = modifiedIpsObjects.iterator(); it.hasNext();) {
+                                IIpsObject modifiedIpsObject = (IIpsObject)it.next();
+                                modifiedIpsObject.getIpsSrcFile().save(true, subMonitor);
+                            }
                         }
-                        monitor.worked(1);
                     }
                 }
                 monitor.done();

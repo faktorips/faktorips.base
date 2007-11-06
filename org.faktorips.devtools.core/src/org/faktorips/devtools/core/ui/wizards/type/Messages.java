@@ -22,6 +22,7 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.type.messages"; //$NON-NLS-1$
     public static String TypePage_msgNameConflicts;
+    public static String TypePage_msgSupertypeDoesNotExist;
     public static String TypePage_option;
     public static String TypePage_overrideAbstractMethods;
     public static String TypePage_superclass;
