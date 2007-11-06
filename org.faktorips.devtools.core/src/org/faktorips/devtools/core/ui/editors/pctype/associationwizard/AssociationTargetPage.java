@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -55,6 +56,7 @@ public class AssociationTargetPage extends WizardPage implements IBlockedValidat
 
     public void createControl(Composite parent) {
         Composite main = toolkit.createLabelEditColumnComposite(parent);
+        ((GridLayout)main.getLayout()).marginHeight = 12;
         main.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         // target

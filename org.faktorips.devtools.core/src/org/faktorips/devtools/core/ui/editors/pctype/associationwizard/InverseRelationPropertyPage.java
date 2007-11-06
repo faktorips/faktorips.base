@@ -27,6 +27,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -77,6 +78,7 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
     public void createControl(Composite parent) {
         mainComposite = toolkit.createLabelEditColumnComposite(parent);
         mainComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        ((GridLayout)mainComposite.getLayout()).marginHeight = 12;
         
         // target
         toolkit.createFormLabel(mainComposite, "Target");

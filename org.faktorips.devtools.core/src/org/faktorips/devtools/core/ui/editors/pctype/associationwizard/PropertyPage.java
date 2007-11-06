@@ -70,6 +70,7 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
     public void createControl(Composite parent) {
         Composite workArea = toolkit.createComposite(parent);
         GridLayout layout = new GridLayout(1, false);
+        layout.marginHeight = 12;
         workArea.setLayout(layout);
         
         Group groupGeneral = toolkit.createGroup(workArea, "Properties");

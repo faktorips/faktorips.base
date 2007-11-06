@@ -87,6 +87,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         mainComposite = toolkit.createComposite(parent);
         GridLayout layout = new GridLayout(1, false);
         mainComposite.setLayout(layout);
+        ((GridLayout)mainComposite.getLayout()).marginHeight = 12; 
         
         Composite top = toolkit.createLabelEditColumnComposite(mainComposite);
         

@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.editors.pctype.associationwizard;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -47,6 +48,7 @@ public class DerivedUnionPage extends WizardPage implements IHiddenWizardPage {
     public void createControl(Composite parent) {
         Composite workArea = toolkit.createLabelEditColumnComposite(parent);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
+        ((GridLayout)workArea.getLayout()).marginHeight = 12;
         
         toolkit.createFormLabel(workArea, "Derived union");
         derivedUnionCandidatesCombo = toolkit.createCombo(workArea);
