@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import java.io.InputStream;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -136,13 +138,13 @@ public class ArchiveIpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile
     /**
      * {@inheritDoc}
      */
-    public String getContentFromEnclosingResource() throws CoreException {
+    public InputStream getContentFromEnclosingResource() throws CoreException {
         ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getIpsPackageFragment().getRoot();
         IIpsArchive archive = root.getIpsArchive();
         if (archive==null) {
             return null;
         }
-        return archive.getContent(getQualifiedNameType(), getIpsProject().getXmlFileCharset());
+        return archive.getContent(getQualifiedNameType());
     }
 
     /**

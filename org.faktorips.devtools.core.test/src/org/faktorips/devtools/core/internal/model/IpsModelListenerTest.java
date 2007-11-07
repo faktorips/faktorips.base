@@ -148,8 +148,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
     
     public void testChangeCorrespondigResource() throws Exception {
         IFile ioFile = file.getCorrespondingFile();
-        String content = file.getContentFromEnclosingResource();
-        InputStream is = new ByteArrayInputStream(content.getBytes(project.getXmlFileCharset()));
+        InputStream is = file.getContentFromEnclosingResource();
         
         ContentsChangeListener listener = new ContentsChangeListener() {
             

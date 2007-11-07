@@ -216,17 +216,30 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
     }
     
     private void addToArchive(IIpsSrcFile file, JarOutputStream os, Properties ipsObjectsProperties) throws CoreException {
-        String content = file.getContentFromEnclosingResource();
+        InputStream content = file.getContentFromEnclosingResource();
         String entryName = IIpsArchive.IPSOBJECTS_FOLDER + IPath.SEPARATOR + file.getQualifiedNameType().toPath().toString();
         if (isDuplicateEnty(entryName)){
             return;
         }
+        
         JarEntry newEntry = new JarEntry(entryName);
         try {
             os.putNextEntry(newEntry);
-            os.write(content.getBytes(file.getIpsProject().getXmlFileCharset()));
+            int nextByte = content.read();
+            while(nextByte != -1){
+                os.write(nextByte);
+                nextByte = content.read();
+            }
         } catch (IOException e) {
             throw new CoreException(new IpsStatus("Error writing archive entry for ips src file " + file, e)); //$NON-NLS-1$
+        } finally{
+            if(content != null){
+                try {
+                    content.close();
+                } catch (IOException e) {
+                    throw new CoreException(new IpsStatus("Unable to close steam.", e));
+                }
+            }
         }
         String path = file.getQualifiedNameType().toPath().toString();
         String basePackageProperty = path + IIpsArchive.QNT_PROPERTY_POSTFIX_SEPARATOR + IIpsArchive.PROPERTY_POSTFIX_BASE_PACKAGE;

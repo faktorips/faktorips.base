@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
-import org.faktorips.util.StringUtil;
+import org.faktorips.util.StreamUtil;
 
 /**
  * An ips archive is an archive for ips objects. It is physically stored in a jar file.
@@ -182,8 +182,8 @@ public class IpsArchive implements IIpsArchive {
     /**
      * {@inheritDoc}
      */
-    public String getContent(QualifiedNameType qnt, String encoding) throws CoreException {
-        if (qnt==null) {
+    public InputStream getContent(QualifiedNameType qnt) throws CoreException {
+        if (qnt == null) {
             return null;
         }
         readArchiveContentIfNeccessary();
@@ -198,26 +198,21 @@ public class IpsArchive implements IIpsArchive {
         }
         String entryName = IIpsArchive.IPSOBJECTS_FOLDER + IPath.SEPARATOR + qnt.toPath().toString();
         JarEntry entry = archive.getJarEntry(entryName);
-        if (entry==null) {
+        if (entry == null) {
             throw new CoreException(new IpsStatus("Entry not found in archive for " + this)); //$NON-NLS-1$
         }
-        InputStream is = null;
         try {
-            is = archive.getInputStream(entry);
-            return StringUtil.readFromInputStream(is, encoding);
+            return StreamUtil.copy(archive.getInputStream(entry), 1024);
         } catch (IOException e) {
             throw new CoreException(new IpsStatus("Error reading data from archive for " + this, e)); //$NON-NLS-1$
         } finally {
             try {
-                if (is!=null) {
-                    is.close();
-                }
                 archive.close();
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus("Error closing stream or archive for " + this, e)); //$NON-NLS-1$
             }
         }
-        
+
     }
     
     private void readArchiveContentIfNeccessary() throws CoreException {

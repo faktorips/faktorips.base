@@ -225,9 +225,7 @@ public class IpsSrcFileContent {
                 is = file.getCorrespondingFile().getContents(true);
                 ((XmlSaxSupport)ipsObject).initFromInputStream(is);
             }  else {
-                String fileContent = file.getContentFromEnclosingResource();
-                String encoding = file.getIpsProject().getXmlFileCharset();
-                is = new ByteArrayInputStream(fileContent.getBytes(encoding));
+                is = file.getContentFromEnclosingResource();
                 DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
                 Document doc = builder.parse(is);
                 ipsObject.initFromXml(doc.getDocumentElement());

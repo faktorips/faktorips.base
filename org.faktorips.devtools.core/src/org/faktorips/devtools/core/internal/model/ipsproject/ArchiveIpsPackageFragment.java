@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -38,7 +39,6 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentSortDefinition;
-import org.faktorips.util.StringUtil;
 
 /**
  *
@@ -119,7 +119,13 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
      */
     public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor)
             throws CoreException {
-
+        try {
+            if(source != null){
+                source.close();
+            }
+        } catch (IOException e) {
+            throw new CoreException(new IpsStatus("Unable to close contents.", e)); //$NON-NLS-1$
+        }
         throw newCantModifyPackageStoredInArchive();
     }
 
@@ -290,12 +296,13 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
      * @return sort definition as String.
      * @throws CoreException
      */
+    //TODO pk 2007-11-07 this cannot work. We need to provide a method that returns a resource from the IpsArchive or something similar
     private String getSortDefinitionContent() throws CoreException {
-        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
-        IIpsArchive archive = root.getIpsArchive();
-        QualifiedNameType qnt = QualifiedNameType.newQualifedNameType(this.getName().concat( StringUtil.getSystemLineSeparator()  + IIpsPackageFragment.SORT_ORDER_FILE_NAME) );
-
-        return archive.getContent(qnt, this.getRoot().getIpsProject().getPlainTextFileCharset() );
+//        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
+//        IIpsArchive archive = root.getIpsArchive();
+//        QualifiedNameType qnt = QualifiedNameType.newQualifedNameType(this.getName().concat( StringUtil.getSystemLineSeparator()  + IIpsPackageFragment.SORT_ORDER_FILE_NAME) );
+        return ""; //$NON-NLS-1$
+//        return archive.getContent(qnt);
     }
 
     /**

@@ -24,7 +24,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.TwoPaneElementSelector;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
 
@@ -55,11 +55,11 @@ public class IpsObjectSelectionDialog extends TwoPaneElementSelector {
     private static class QualifierLabelProvider extends LabelProvider {
         
         public Image getImage(Object element) {
-            return ((IpsSrcFile)element).getIpsPackageFragment().getImage();
+            return ((IIpsSrcFile)element).getIpsPackageFragment().getImage();
         }
         
         public String getText(Object element) {
-            IIpsPackageFragment pck = ((IpsSrcFile)element).getIpsPackageFragment(); 
+            IIpsPackageFragment pck = ((IIpsSrcFile)element).getIpsPackageFragment(); 
             return pck.getName()
             	+ " - " + pck.getEnclosingResource().getFullPath().toString(); //$NON-NLS-1$
         }

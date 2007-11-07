@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.model.ipsproject;
 
+import java.io.InputStream;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
@@ -97,7 +98,7 @@ public interface IIpsArchive {
      * Returns the content for the qualified name type or <code>null</code> if the archive
      * does not contain the given qualified name type. Returns <code>null</code> if qnt is <code>null</code>. 
      */
-    public String getContent(QualifiedNameType qnt, String encoding) throws CoreException;    
+    public InputStream getContent(QualifiedNameType qnt) throws CoreException;    
 
     /**
      * Returns the name of the base package for the generated Java source files.

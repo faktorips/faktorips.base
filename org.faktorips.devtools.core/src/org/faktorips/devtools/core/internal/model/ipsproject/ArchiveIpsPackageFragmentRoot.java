@@ -216,12 +216,15 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         Set qntSet = archive.getQNameTypes();
         for (Iterator it = qntSet.iterator(); it.hasNext();) {
             QualifiedNameType qnt = (QualifiedNameType)it.next();
+            if(!type.equals(qnt.getIpsObjectType())){
+                continue;
+            }
             IIpsPackageFragment pack = getIpsPackageFragment(qnt.getPackageName());
             if (pack==null) {
                 return;
             }
             IIpsSrcFile file = pack.getIpsSrcFile(qnt.getFileName());
-            if (!file.exists()) {
+            if (file.exists()) {
                 result.add(file);
             }
         }

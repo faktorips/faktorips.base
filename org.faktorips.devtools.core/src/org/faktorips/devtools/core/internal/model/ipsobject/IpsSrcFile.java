@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.core.resources.IFile;
@@ -31,7 +30,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
-import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
 
 
@@ -108,13 +106,8 @@ public class IpsSrcFile extends AbstractIpsSrcFile implements IIpsSrcFile {
     /**
      * {@inheritDoc}
      */
-    public String getContentFromEnclosingResource() throws CoreException {
-    	InputStream is = getCorrespondingFile().getContents(true);
-        try {
-            return StringUtil.readFromInputStream(is, getEncoding());
-        } catch (IOException e) {
-            throw new CoreException(new IpsStatus(e));
-        }
+    public InputStream getContentFromEnclosingResource() throws CoreException {
+    	return getCorrespondingFile().getContents(true);
     }
 
     /** 

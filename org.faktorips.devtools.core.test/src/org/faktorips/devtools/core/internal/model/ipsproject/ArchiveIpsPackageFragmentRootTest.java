@@ -18,16 +18,20 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsproject.ArchiveIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -135,4 +139,25 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertEquals("motor.collision", packs[1].getName());
     }
 
+    public void testFindIpsSourceFiles() throws CoreException{
+        List result = new ArrayList();
+        root.findIpsSourceFiles(IpsObjectType.POLICY_CMPT_TYPE, result);
+        assertEquals(2, result.size());
+        List qualifiedNameTypes = new ArrayList();
+        for (Iterator it = result.iterator(); it.hasNext();) {
+            IIpsSrcFile pcTypeSrcFile = (IIpsSrcFile)it.next();
+            qualifiedNameTypes.add(pcTypeSrcFile.getQualifiedNameType());
+        }
+        assertTrue(qualifiedNameTypes.contains(new QualifiedNameType("motor.Policy", IpsObjectType.POLICY_CMPT_TYPE)));
+        assertTrue(qualifiedNameTypes.contains(new QualifiedNameType("motor.collision.CollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE)));
+        
+        result = new ArrayList();
+        root.findIpsSourceFiles(IpsObjectType.PRODUCT_CMPT_TYPE_V2, result);
+        assertEquals(1, result.size());
+
+        result = new ArrayList();
+        root.findIpsSourceFiles(IpsObjectType.PRODUCT_CMPT, result);
+        assertEquals(1, result.size());
+
+    }
 }

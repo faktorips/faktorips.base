@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.model.ipsobject;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.util.message.MessageList;

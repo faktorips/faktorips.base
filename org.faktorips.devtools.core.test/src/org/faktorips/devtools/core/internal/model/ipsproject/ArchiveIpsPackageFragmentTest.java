@@ -163,16 +163,11 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
     public void testSetSortDefinition() throws Exception {
 
         IpsPackageFragmentArbitrarySortDefinition sortDef = new IpsPackageFragmentArbitrarySortDefinition();
-        boolean ok = false;
-
         try {
             this.pack.setSortDefinition(sortDef);
-        } catch (CoreException e) {
-            ok = true;
+            fail();
+        } catch (Exception e) {
         }
-
-        assertTrue(ok);
-
     }
 
     /**

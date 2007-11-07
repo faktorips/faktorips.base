@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.model.ipsobject;
 
+import java.io.InputStream;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -133,17 +135,11 @@ public interface IIpsSrcFile extends IIpsElement {
     public boolean isMutable();
     
     /**
-     * Reads the content from the enclosing resource and returns it as string 
-     * The bytes read from disk are transformed into a string with the encoding
-     * defined in the ips project.
-     * If this is a source file from an archive, the data is read from the archive,
-     * otherwise it is read from the correspondig file.
+     * Reads the content from the enclosing resource.
      * 
      * @throws CoreException if an error occurs while reading the contents.
-     * 
-     * @see org.faktorips.devtools.core.model.ipsproject.IIpsProject#getXmlFileCharset()
      */
-    public String getContentFromEnclosingResource() throws CoreException;
+    public InputStream getContentFromEnclosingResource() throws CoreException;
     
     /**
      * Returns the name of the base package for the generated Java source files.

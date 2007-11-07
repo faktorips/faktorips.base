@@ -125,7 +125,7 @@ public interface IIpsPackageFragment extends IIpsElement {
     public IIpsSrcFile getIpsSrcFile(String filenameWithoutExtension, IpsObjectType type);
 
     /**
-     * Creates the IpsSrcFile with the indicated name.
+     * Creates the IpsSrcFile with the indicated name. This method tries to close the provided stream.
      *
      * @param name the file name
      * @param source input stream providing the file's content

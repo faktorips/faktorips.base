@@ -17,11 +17,11 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.util.StringUtil;
 
 /**
  * A page to show the contents of an unparsable file.
@@ -47,8 +47,10 @@ public class UnparsableFilePage extends IpsObjectEditorPage {
         toolkit.createLabel(formBody, Messages.UnparsableFilePage_fileContentIsNotParsable);
         Text xmlText = toolkit.createMultilineText(formBody);
         try {
-            xmlText.setText(getIpsObjectEditor().getIpsSrcFile().getContentFromEnclosingResource());
-        } catch (CoreException e) {
+            String charSet = ((IpsObjectEditor)getEditor()).getIpsProject().getXmlFileCharset();
+            String text = StringUtil.readFromInputStream(getIpsObjectEditor().getIpsSrcFile().getContentFromEnclosingResource(), charSet);
+            xmlText.setText(text);
+        } catch (Exception e) {
             IpsPlugin.log(e);
         }
         

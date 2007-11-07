@@ -25,7 +25,6 @@ import java.util.Map;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsStatus;
@@ -102,13 +101,8 @@ public abstract class IpsSrcFileSaxHelper {
         if (!ipsSrcFile.exists()){
             return;
         }
-        IFile file = ipsSrcFile.getCorrespondingFile();
-        if (file == null){
-            return;
-        }
-        InputStream is = null;
+        InputStream is = ipsSrcFile.getContentFromEnclosingResource();
         try {
-            is = file.getContents();
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
             saxParser.parse(new InputSource(is), handler);
         } catch (SAXFinishedException ignored) {

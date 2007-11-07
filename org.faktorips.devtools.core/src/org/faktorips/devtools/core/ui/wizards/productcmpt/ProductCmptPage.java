@@ -83,7 +83,7 @@ public class ProductCmptPage extends IpsObjectPage {
 
         toolkit.createFormLabel(nameComposite, Messages.ProductCmptPage_labelTemplate);
         
-        typeRefControl = new ProductCmptType2RefControl(null, nameComposite, toolkit, true);
+        typeRefControl = toolkit.createProductCmptTypeRefControl(null, nameComposite, true);
         TextButtonField pcTypeField = new TextButtonField(typeRefControl);
         pcTypeField.addChangeListener(this);
 

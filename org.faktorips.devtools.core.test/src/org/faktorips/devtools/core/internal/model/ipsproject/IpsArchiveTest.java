@@ -171,16 +171,16 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     }
     
     public void testGetContent() throws CoreException {
-        assertNull(archive.getContent(null, "UTF-8"));
+        assertNull(archive.getContent(null));
         
         QualifiedNameType qnt = new QualifiedNameType("motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE);
-        assertNotNull(archive.getContent(qnt, project.getXmlFileCharset()));
+        assertNotNull(archive.getContent(qnt));
         
         qnt = new QualifiedNameType("Unknown", IpsObjectType.POLICY_CMPT_TYPE);
-        assertNull(archive.getContent(qnt, project.getXmlFileCharset()));
+        assertNull(archive.getContent(qnt));
         
         qnt = new QualifiedNameType("MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE);
-        assertNull(archive.getContent(qnt, "UTF-8"));
+        assertNull(archive.getContent(qnt));
     }
     
     public void testDuplicateEntryAndTestRefreshInWorkspace() throws Exception{
