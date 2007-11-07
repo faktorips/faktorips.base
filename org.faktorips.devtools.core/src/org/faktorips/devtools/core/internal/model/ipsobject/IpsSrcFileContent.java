@@ -237,12 +237,12 @@ public class IpsSrcFileContent {
             parsable = true;
             initializedFinished();
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                System.out.println("IpsSrcFileContent.initContentFromFile: Content read from disk, durration: " + (System.currentTimeMillis() - startTime) + ", file=" + file //$NON-NLS-1$
+                System.out.println("IpsSrcFileContent.initContentFromFile: Content read from disk, durration: " + (System.currentTimeMillis() - startTime) + ", file=" + file //$NON-NLS-1$ //$NON-NLS-2$
                                 + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
             }
         } catch (Exception e) {
             parsable = false;
-            IpsPlugin.log(new IpsStatus("Error reading file " + file, e));
+            IpsPlugin.log(new IpsStatus("Error reading file " + file, e)); //$NON-NLS-1$
             ipsObject.markAsFromUnparsableFile();
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                 System.out.println("IpsSrcFileContent.initContentFromFile: Error reading content from disk, file=" +  file //$NON-NLS-1$
@@ -310,7 +310,7 @@ public class IpsSrcFileContent {
         try {
             PropertyDescriptor propertyDescriptor = BeanUtil.getPropertyDescriptor(ipsObject.getClass(), propertyName);
             Method readMethod = propertyDescriptor.getReadMethod();
-            return "" + readMethod.invoke(ipsObject, new Object[0]);
+            return "" + readMethod.invoke(ipsObject, new Object[0]); //$NON-NLS-1$
         } catch (Exception e) {
             IpsPlugin.log(e);
         }

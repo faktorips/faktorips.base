@@ -38,7 +38,7 @@ public class ExtensionPoints {
      * 
      * @see IpsObjectType
      */
-    public final static String IPS_OBJECT_TYPE = "ipsobjecttype";
+    public final static String IPS_OBJECT_TYPE = "ipsobjecttype"; //$NON-NLS-1$
     
     /**
      * Returns all extensions defined for the given point. The point id should be one of the
@@ -52,8 +52,8 @@ public class ExtensionPoints {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID, pointId);
         if (point==null) {
-            IpsPlugin.log(new IpsStatus("ExtensionPoint " + pointId + " not found!"));
-            throw new IllegalArgumentException("Unkown extension point " + pointId);
+            IpsPlugin.log(new IpsStatus("ExtensionPoint " + pointId + " not found!")); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IllegalArgumentException("Unkown extension point " + pointId); //$NON-NLS-1$
         }
         return point.getExtensions();
     }

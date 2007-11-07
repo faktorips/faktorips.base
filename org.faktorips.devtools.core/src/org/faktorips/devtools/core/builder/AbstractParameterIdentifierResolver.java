@@ -142,7 +142,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                         String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgNoDatatypeForProductCmptTypeAttribute, attributes[i].getName(), productCmptType.getQualifiedName());
                         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
                     }
-                    String code = getParameterAttributGetterName(attributes[i], productCmptType) + "()";
+                    String code = getParameterAttributGetterName(attributes[i], productCmptType) + "()"; //$NON-NLS-1$
                     return new CompilationResultImpl(code, attrDatatype);
                 }
             }

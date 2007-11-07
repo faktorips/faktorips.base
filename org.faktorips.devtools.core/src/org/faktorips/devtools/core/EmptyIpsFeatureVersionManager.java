@@ -53,14 +53,14 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
      * {@inheritDoc}
      */
     public String getFeatureId() {
-        return "org.faktorips.feature";
+        return "org.faktorips.feature"; //$NON-NLS-1$
     }
 
     /**
      * {@inheritDoc}
      */
     public String getId() {
-        return "EmptyIpsFeatureVersionManager";
+        return "EmptyIpsFeatureVersionManager"; //$NON-NLS-1$
     }
 
     /**
@@ -74,7 +74,7 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
      * {@inheritDoc}
      */
     public String getPredecessorId() {
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**

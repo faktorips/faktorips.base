@@ -186,6 +186,6 @@ public class Dependency implements Serializable{
      * {@inheritDoc}
      */
     public String toString() {
-        return "(" + source.toString() + " -> " + target.toString() + " type: " + dependencyType + ")";
+        return "(" + source.toString() + " -> " + target.toString() + " type: " + dependencyType + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 }

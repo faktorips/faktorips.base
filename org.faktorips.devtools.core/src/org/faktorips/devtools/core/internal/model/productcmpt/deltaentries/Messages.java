@@ -17,34 +17,27 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
-import org.faktorips.devtools.core.internal.model.productcmpt.GenerationToTypeDelta;
-import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public abstract class AbstractDeltaEntry implements IDeltaEntry {
+public class Messages {
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.messages"; //$NON-NLS-1$
 
-    protected IProductCmptGeneration generation;
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
-    public AbstractDeltaEntry(GenerationToTypeDelta delta) {
-        delta.addEntry(this);
-        this.generation = delta.getProductCmptGeneration();
+    private Messages() {
     }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String getDescription() {
-        return getPropertyName();
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String toString() {
-        return getDeltaType() + ": " + getPropertyName() + "(" + getPropertyType().getName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+    public static String getString(String key) {
+        try {
+            return RESOURCE_BUNDLE.getString(key);
+        }
+        catch (MissingResourceException e) {
+            return '!' + key + '!';
+        }
     }
 }

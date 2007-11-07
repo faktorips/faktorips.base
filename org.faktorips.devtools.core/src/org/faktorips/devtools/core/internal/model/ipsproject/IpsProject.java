@@ -711,7 +711,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
-        if (qualifiedName==null || qualifiedName.equals("")) {
+        if (qualifiedName==null || qualifiedName.equals("")) { //$NON-NLS-1$
             return null;
         }
         Set visitedEntries = new HashSet();

@@ -61,14 +61,14 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
             graph.setIpsProject(project);
             return graph;
         } catch (Exception e) {
-            IpsPlugin.log(new IpsStatus("An Exception occured while trying to establish the last state of the dependency graph for the project " + project.getName(), e));
+            IpsPlugin.log(new IpsStatus("An Exception occured while trying to establish the last state of the dependency graph for the project " + project.getName(), e)); //$NON-NLS-1$
             return new DependencyGraph(project);
         } finally {
             if (ois != null) {
                 try {
                     ois.close();
                 } catch (IOException e1) {
-                    IpsPlugin.log(new IpsStatus("Unable to close the input stream while of the dependency graph file " + file.getAbsolutePath(), e1));
+                    IpsPlugin.log(new IpsStatus("Unable to close the input stream while of the dependency graph file " + file.getAbsolutePath(), e1)); //$NON-NLS-1$
                     return new DependencyGraph(project);
                 }
             }
@@ -113,7 +113,7 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
     }
 
     private String getDependencyGraphFileName(IIpsProject project) {
-        return "dependencygraph." + project.getName();
+        return "dependencygraph." + project.getName(); //$NON-NLS-1$
     }
 
     private void save(DependencyGraph graph) throws CoreException {
@@ -126,13 +126,13 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
             os.flush();
             os.close();
         } catch (Exception e) {
-            IpsPlugin.log(new IpsStatus("Unable to save dependency graph file " + file.getAbsolutePath(), e));
+            IpsPlugin.log(new IpsStatus("Unable to save dependency graph file " + file.getAbsolutePath(), e)); //$NON-NLS-1$
         } finally {
             if (os != null) {
                 try {
                     os.close();
                 } catch (IOException e1) {
-                    IpsPlugin.log(new IpsStatus("Unable to close outputstream for dependency graph file "
+                    IpsPlugin.log(new IpsStatus("Unable to close outputstream for dependency graph file " //$NON-NLS-1$
                             + file.getAbsolutePath()));
                 }
             }

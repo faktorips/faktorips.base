@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.productcmpt.GenerationToTypeDelta;
 import org.faktorips.devtools.core.internal.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
@@ -63,8 +64,7 @@ public class PropertyTypeMismatchEntry extends AbstractDeltaEntry {
      * {@inheritDoc}
      */
     public String getDescription() {
-        return getPropertyName() + ": Expected " + property.getProdDefPropertyType().getName() 
-            + ", acual is " + value.getPropertyType().getName(); 
+        return NLS.bind(Messages.getString("PropertyTypeMismatchEntry.description"), new Object[]{getPropertyName(), property.getProdDefPropertyType().getName(), value.getPropertyType().getName()}); //$NON-NLS-1$
     }
     
     /**

@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.productcmpt.GenerationToTypeDelta;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
@@ -70,8 +71,7 @@ public class ValueSetMismatchEntry extends AbstractDeltaEntry {
      * {@inheritDoc}
      */
     public String getDescription() {
-        return getPropertyName() + ": Expected " + attribute.getValueSet().getValueSetType().getName()
-             + ", actual is " + element.getValueSet().getValueSetType().getName();
+        return NLS.bind(Messages.getString("ValueSetMismatchEntry.description"), new Object[]{getPropertyName(), attribute.getValueSet().getValueSetType().getName(), element.getValueSet().getValueSetType().getName()}); //$NON-NLS-1$
     }
 
 }

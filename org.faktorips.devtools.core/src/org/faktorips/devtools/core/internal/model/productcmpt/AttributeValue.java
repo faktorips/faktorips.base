@@ -47,8 +47,8 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     final static String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
     
-    private String attribute = "";
-    private String value = "";
+    private String attribute = ""; //$NON-NLS-1$
+    private String value = ""; //$NON-NLS-1$
     
     public AttributeValue(IIpsObjectPart parent, int id) {
         super(parent, id);
@@ -180,7 +180,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         IIpsProject ipsProject = getIpsProject();
         IProductCmptTypeAttribute attr = findAttribute(ipsProject);
         if (attr==null) {
-            String text = "Attribute " + attribute + " not found in the type " + getProductCmptGeneration().getProductCmpt().getProductCmptType();
+            String text = NLS.bind(Messages.AttributeValue_attributeNotFound, attribute, getProductCmptGeneration().getProductCmpt().getProductCmptType());
             list.add(new Message(MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_ATTRIBUTE));
             return;
         }
@@ -190,15 +190,15 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         if (!attr.getValueSet().containsValue(value)) {
             String text;
             if (attr.getValueSet().getValueSetType()==ValueSetType.RANGE) {
-                text = NLS.bind("Allowed values are {0}", attr.getValueSet().toShortString());
+                text = NLS.bind(Messages.AttributeValue_AllowedValuesAre, value, attr.getValueSet().toShortString());
             } else {
-                text = NLS.bind("{0} is not allowed.", value);
+                text = NLS.bind(Messages.AttributeValue_ValueNotAllowed, value);
             }
             list.add(new Message(MSGCODE_VALUE_NOT_IN_SET, text, Message.ERROR, this, PROPERTY_VALUE));
         }
     }
 
     public String toString() {
-        return attribute + "=" + value;
+        return attribute + "=" + value; //$NON-NLS-1$
     }
 }

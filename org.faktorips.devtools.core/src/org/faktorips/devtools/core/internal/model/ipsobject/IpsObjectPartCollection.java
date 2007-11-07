@@ -94,7 +94,7 @@ public class IpsObjectPartCollection {
                 }
             }
         }
-        throw new RuntimeException(this + ", Part class hasn't got an appropriate constructor.");
+        throw new RuntimeException(this + ", Part class hasn't got an appropriate constructor."); //$NON-NLS-1$
     }
     
     public void clear() {
@@ -197,7 +197,7 @@ public class IpsObjectPartCollection {
             parts.add(newPart);
             return newPart;
         } catch (Exception e) {
-            throw new RuntimeException(this + ", Error creating new instance via constructor " + constructor, e);
+            throw new RuntimeException(this + ", Error creating new instance via constructor " + constructor, e); //$NON-NLS-1$
         }
     }
     
@@ -209,6 +209,6 @@ public class IpsObjectPartCollection {
     }
 
     public String toString() {
-        return "Part collection for " + partsBaseClass.getName();
+        return "Part collection for " + partsBaseClass.getName(); //$NON-NLS-1$
     }
 }

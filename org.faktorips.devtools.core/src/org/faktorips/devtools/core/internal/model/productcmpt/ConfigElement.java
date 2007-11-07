@@ -385,7 +385,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		
 		value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
 		
-		pcTypeAttribute = element.getAttribute("attribute");
+		pcTypeAttribute = element.getAttribute("attribute"); //$NON-NLS-1$
 		name = pcTypeAttribute;
 	}
 
@@ -395,7 +395,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	protected void propertiesToXml(Element element) {
 		super.propertiesToXml(element);
 		element.setAttribute(PROPERTY_TYPE, type.getId());
-		element.setAttribute("attribute", pcTypeAttribute);
+		element.setAttribute("attribute", pcTypeAttribute); //$NON-NLS-1$
 		ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
 	}
 

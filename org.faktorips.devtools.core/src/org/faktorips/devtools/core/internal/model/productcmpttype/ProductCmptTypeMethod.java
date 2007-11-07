@@ -107,7 +107,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
 
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION, "" + formulaSignatureDefinition);
+        element.setAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION, "" + formulaSignatureDefinition); //$NON-NLS-1$
         element.setAttribute(PROPERTY_FORMULA_NAME, formulaName);
     }
 

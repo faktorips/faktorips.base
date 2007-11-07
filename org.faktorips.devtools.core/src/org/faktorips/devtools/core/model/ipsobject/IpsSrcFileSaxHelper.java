@@ -48,7 +48,7 @@ public abstract class IpsSrcFileSaxHelper {
      */
     private static class SAXFinishedException extends SAXException{
         public SAXFinishedException() {
-            super("Parser finished");
+            super("Parser finished"); //$NON-NLS-1$
         }
 
         private static final long serialVersionUID = 1L;

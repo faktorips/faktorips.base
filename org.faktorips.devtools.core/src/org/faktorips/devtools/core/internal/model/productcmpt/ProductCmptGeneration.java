@@ -153,7 +153,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (type.equals(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET)) {
             return getConfigElement(property.getPropertyName());
         }
-        throw new RuntimeException("Unknown property type " + type);
+        throw new RuntimeException("Unknown property type " + type); //$NON-NLS-1$
     }
     
     /**
@@ -197,7 +197,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(type)) {
             return (IPropertyValue[])configElements.toArray(new IPropertyValue[configElements.size()]);
         }
-        throw new RuntimeException("Unknown type " + type);
+        throw new RuntimeException("Unknown type " + type); //$NON-NLS-1$
     }
     
     /**
@@ -217,7 +217,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(type)) {
             return newConfigElement((IPolicyCmptTypeAttribute)property);
         }
-        throw new RuntimeException("Unknown type " + type);
+        throw new RuntimeException("Unknown type " + type); //$NON-NLS-1$
     }
 
     /**
@@ -268,7 +268,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * {@inheritDoc}
      */
     public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute) {
-        return newAttributeValueInternal(getNextPartId(), attribute, attribute==null ? "" : attribute.getDefaultValue());
+        return newAttributeValueInternal(getNextPartId(), attribute, attribute==null ? "" : attribute.getDefaultValue()); //$NON-NLS-1$
     }
 
     /**
@@ -293,7 +293,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * Creates a new attribute value without updating the src file.
      */
     private AttributeValue newAttributeValueInternal(int id, IProductCmptTypeAttribute attr, String value) {
-        AttributeValue av = new AttributeValue(this, id, attr==null ? "" : attr.getName(), value);
+        AttributeValue av = new AttributeValue(this, id, attr==null ? "" : attr.getName(), value); //$NON-NLS-1$
         attributeValues.add(av);
         return av;
     }
@@ -531,7 +531,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     private ITableContentUsage newTableContentUsageInternal(int id, ITableStructureUsage structureUsage) {
-        ITableContentUsage retValue = new TableContentUsage(this, id, structureUsage == null ? "" : structureUsage.getRoleName());
+        ITableContentUsage retValue = new TableContentUsage(this, id, structureUsage == null ? "" : structureUsage.getRoleName()); //$NON-NLS-1$
         tableContentUsages.add(retValue);
         return retValue;
     }
@@ -590,7 +590,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     private IFormula newFormulaInternal(int id, IProductCmptTypeMethod signature) {
-        IFormula newFormula = new Formula(this, id, signature==null ? "" : signature.getFormulaName());
+        IFormula newFormula = new Formula(this, id, signature==null ? "" : signature.getFormulaName()); //$NON-NLS-1$
         formulas.add(newFormula);
         return newFormula;
     }

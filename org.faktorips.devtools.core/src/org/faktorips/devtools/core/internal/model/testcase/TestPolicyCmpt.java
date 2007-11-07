@@ -444,7 +444,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 			
 			ITestPolicyCmpt newTestPolicyCmpt = newTestPcTypeRelation.newTargetTestPolicyCmptChild();
 			newTestPolicyCmpt.setTestPolicyCmptTypeParameter(typeParam.getName());
-			newTestPolicyCmpt.setProductCmpt(StringUtils.isEmpty(productCmpt)?"":productCmpt);
+			newTestPolicyCmpt.setProductCmpt(StringUtils.isEmpty(productCmpt)?"":productCmpt); //$NON-NLS-1$
 			
 			// sets the label for the new child test policy component
 			String name = ""; //$NON-NLS-1$

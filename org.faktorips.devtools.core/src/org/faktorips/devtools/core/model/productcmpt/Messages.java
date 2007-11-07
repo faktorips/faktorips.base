@@ -24,7 +24,7 @@ import org.eclipse.osgi.util.NLS;
  * @author Thorsten Guenther
  */
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.faktorips.devtools.core.model.product.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.faktorips.devtools.core.model.productcmpt.messages"; //$NON-NLS-1$
 
 	private Messages() {
 	}
@@ -39,4 +39,14 @@ public class Messages extends NLS {
 	public static String ConfigElementType_policyAttribute;
 
 	public static String ConfigElementType_formula;
+
+    public static String DeltaType_LinksNotFoundInTheModel;
+
+    public static String DeltaType_missingValue;
+
+    public static String DeltaType_propertiesNotFoundInTheModel;
+
+    public static String DeltaType_propertiesWithTypeMismatch;
+
+    public static String DeltaType_ValueSetMismatches;
 }

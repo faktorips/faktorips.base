@@ -405,9 +405,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         javaProjectContainsClassesForDynamicDatatypes = Boolean.valueOf(element.getAttribute("javaProjectContainsClassesForDynamicDatatypes")).booleanValue();  //$NON-NLS-1$
         derivedUnionIsImplementedRuleEnabled = Boolean.valueOf(element.getAttribute("derivedUnionIsImplementedRuleEnabled")).booleanValue();  //$NON-NLS-1$
-        if (element.hasAttribute("containerRelationIsImplementedRuleEnabled")) {
+        if (element.hasAttribute("containerRelationIsImplementedRuleEnabled")) { //$NON-NLS-1$
+            // migration for 1.0 files
             derivedUnionIsImplementedRuleEnabled = Boolean.valueOf(element.getAttribute("containerRelationIsImplementedRuleEnabled")).booleanValue();  //$NON-NLS-1$
-        }
+        } 
         Element generatedCodeEl = XmlUtil.getFirstElement(element, GENERATED_CODE_TAG_NAME);
         if (generatedCodeEl!=null) {
     	    javaSrcLanguage = getLocale(generatedCodeEl.getAttribute("docLanguage")); //$NON-NLS-1$

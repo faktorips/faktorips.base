@@ -181,7 +181,7 @@ public class IpsPlugin extends AbstractUIPlugin {
         for (int i = 0; i < bundleGroupProviders.length; i++) {
             IBundleGroup[] bundleGroups = bundleGroupProviders[i].getBundleGroups();
             for (int j = 0; j < bundleGroups.length; j++) {
-                if(bundleGroups[i].getIdentifier().equals("org.faktorips.feature")){
+                if(bundleGroups[i].getIdentifier().equals("org.faktorips.feature")){ //$NON-NLS-1$
                     return bundleGroups[i].getVersion();
                 }
             }

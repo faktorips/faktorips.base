@@ -53,7 +53,7 @@ public class IpsPackageFragmentDefaultSortDefinition implements IIpsPackageFragm
      * {@inheritDoc}
      */
     public String toPersistenceContent() {
-        return new String("");
+        return ""; //$NON-NLS-1$
     }
 
 }

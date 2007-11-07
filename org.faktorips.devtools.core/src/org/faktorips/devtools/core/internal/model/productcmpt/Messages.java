@@ -34,7 +34,13 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String ConfigElement_msgTypeMismatch;
+	public static String AttributeValue_AllowedValuesAre;
+
+    public static String AttributeValue_attributeNotFound;
+
+    public static String AttributeValue_ValueNotAllowed;
+
+    public static String ConfigElement_msgTypeMismatch;
 
     public static String ConfigElement_policyCmptTypeNotFound;
 

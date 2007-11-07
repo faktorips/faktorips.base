@@ -261,6 +261,6 @@ public class TestRule extends TestObject implements ITestRule {
      * {@inheritDoc}
      */
     public String getName() {
-        return getTestRuleParameter() + "/" + getValidationRule();
+        return getTestRuleParameter() + "/" + getValidationRule(); //$NON-NLS-1$
     }
 }

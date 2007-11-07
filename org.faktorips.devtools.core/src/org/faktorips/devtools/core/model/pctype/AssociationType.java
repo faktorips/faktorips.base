@@ -39,10 +39,10 @@ public class AssociationType extends DefaultEnumValue {
     
     static {
         enumType = new DefaultEnumType("RelationType", AssociationType.class); //$NON-NLS-1$
-        COMPOSITION_MASTER_TO_DETAIL = new AssociationType(enumType, "comp", "Composition (Master to Detail)", "AssociationType-Composition.gif"); //$NON-NLS-1$ //$NON-NLS-2$
-        COMPOSITION_DETAIL_TO_MASTER = new AssociationType(enumType, "reverseComp", "Composition (Detail to Master)", "AssociationType-CompositionDetailToMaster.gif"); //$NON-NLS-1$ //$NON-NLS-2$
-        ASSOCIATION = new AssociationType(enumType, "ass", "Association", "AssociationType-Association.gif"); //$NON-NLS-1$ //$NON-NLS-2$
-        AGGREGATION = new AssociationType(enumType, "aggr", "Aggregation", "AssociationType-Aggregation.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+        COMPOSITION_MASTER_TO_DETAIL = new AssociationType(enumType, "comp", "Composition (Master to Detail)", "AssociationType-Composition.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        COMPOSITION_DETAIL_TO_MASTER = new AssociationType(enumType, "reverseComp", "Composition (Detail to Master)", "AssociationType-CompositionDetailToMaster.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        ASSOCIATION = new AssociationType(enumType, "ass", "Association", "AssociationType-Association.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        AGGREGATION = new AssociationType(enumType, "aggr", "Aggregation", "AssociationType-Aggregation.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
     public final static EnumType getEnumType() {

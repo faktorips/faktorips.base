@@ -276,14 +276,14 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
      * This method is not supported for archives and throws a {@link RuntimeException} if called. 
      */
     public void setSortDefinition(IIpsPackageFragmentSortDefinition newDefinition) throws CoreException {
-        throw new RuntimeException("Can't set the sort definition in archives!");
+        throw new RuntimeException("Can't set the sort definition in archives!"); //$NON-NLS-1$
     }
 
     /**
      * This method is not supported for archives and throws a {@link RuntimeException} if called. 
      */
     public IFile getSortOrderFile() {
-        throw new RuntimeException("This method is not supported for archives.");
+        throw new RuntimeException("This method is not supported for archives."); //$NON-NLS-1$
     }
 
     /**

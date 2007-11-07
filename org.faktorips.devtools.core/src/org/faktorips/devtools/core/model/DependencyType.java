@@ -31,27 +31,27 @@ public class DependencyType implements Serializable{
     /**
      *  
      */
-    public final static DependencyType INSTANCEOF = new DependencyType("instance of dependency");
+    public final static DependencyType INSTANCEOF = new DependencyType("instance of dependency"); //$NON-NLS-1$
 
     /**
      * 
      */
-    public final static DependencyType SUBTYPE = new DependencyType("subtype dependency");
+    public final static DependencyType SUBTYPE = new DependencyType("subtype dependency"); //$NON-NLS-1$
 
     /**
      * 
      */
-    public final static DependencyType REFERENCE_COMPOSITION_MASTER_DETAIL = new DependencyType("master to detail composition dependency");
+    public final static DependencyType REFERENCE_COMPOSITION_MASTER_DETAIL = new DependencyType("master to detail composition dependency"); //$NON-NLS-1$
 
     /**
      * 
      */
-    public final static DependencyType REFERENCE = new DependencyType("reference dependency");
+    public final static DependencyType REFERENCE = new DependencyType("reference dependency"); //$NON-NLS-1$
 
     /**
      * 
      */
-    public final static DependencyType USES = new DependencyType("uses dependency");
+    public final static DependencyType USES = new DependencyType("uses dependency"); //$NON-NLS-1$
 
     private String name;
     

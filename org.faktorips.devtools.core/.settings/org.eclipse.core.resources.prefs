@@ -1,5 +1,6 @@
-#Thu Oct 25 16:16:51 CEST 2007
+#Wed Nov 07 08:55:40 CET 2007
 eclipse.preferences.version=1
+encoding//src/org/faktorips/devtools/core/internal/model/productcmpt/deltaentries/messages.properties=8859_1
 encoding//src/org/faktorips/devtools/core/model/pctype/messages.properties=8859_1
 encoding//src/org/faktorips/devtools/core/ui/controlfactories/messages.properties=8859_1
 encoding//src/org/faktorips/devtools/core/ui/controller/messages.properties=8859_1

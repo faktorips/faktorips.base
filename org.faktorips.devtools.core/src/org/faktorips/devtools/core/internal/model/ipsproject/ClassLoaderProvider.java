@@ -192,10 +192,10 @@ public class ClassLoaderProvider {
 		String name =  jarFile.getName();
 		File copy;
         if (index==-1) {
-            copy = File.createTempFile(name + "tmp", "jar");
+            copy = File.createTempFile(name + "tmp", "jar"); //$NON-NLS-1$ //$NON-NLS-2$
         } else if (index<3) {
             // File.createTempFile required that the prefix is at least three characters long!
-            copy = File.createTempFile(name.substring(0, index) + "tmp", name.substring(index));
+            copy = File.createTempFile(name.substring(0, index) + "tmp", name.substring(index)); //$NON-NLS-1$
         } else {
             copy = File.createTempFile(name.substring(0, index),name.substring(index));
         }

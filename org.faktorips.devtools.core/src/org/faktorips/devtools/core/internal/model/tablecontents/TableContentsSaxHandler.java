@@ -73,7 +73,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
             columns.clear();
         } else if (VALUE.equals(qName)) {
             insideValueNode = false;
-            columns.add(textBuffer == null && nullValue ? null : textBuffer == null ? new String("") : textBuffer
+            columns.add(textBuffer == null && nullValue ? null : textBuffer == null ? new String("") : textBuffer //$NON-NLS-1$
                     .substring(0));
             textBuffer = null;
         }
@@ -93,7 +93,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
                             .getValue(ATTRIBUTE_VALIDFROM)));
         } else if (VALUE.equals(qName)) {
             insideValueNode = true;
-            nullValue = Boolean.valueOf(attributes.getValue("isNull")).booleanValue();
+            nullValue = Boolean.valueOf(attributes.getValue("isNull")).booleanValue(); //$NON-NLS-1$
         }
     }
     

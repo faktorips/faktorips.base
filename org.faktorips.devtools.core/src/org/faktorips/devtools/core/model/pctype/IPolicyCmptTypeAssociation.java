@@ -89,7 +89,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     /**
      * A reference to an inverse relation isn't needed for composition. 
      */
-    public final static String MSGCODE_INVERSE_RELATION_INFO_NOT_NEEDED = MSGCODE_PREFIX + "InverseRelationNotNeeded";
+    public final static String MSGCODE_INVERSE_RELATION_INFO_NOT_NEEDED = MSGCODE_PREFIX + "InverseRelationNotNeeded"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that given a relation with an inreverse relation,

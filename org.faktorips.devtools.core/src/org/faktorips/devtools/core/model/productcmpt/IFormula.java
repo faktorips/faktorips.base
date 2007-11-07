@@ -33,8 +33,8 @@ import org.faktorips.fl.ExprCompiler;
  */
 public interface IFormula extends IIpsObjectPart, IPropertyValue {
 
-    public final static String PROPERTY_FORMULA_SIGNATURE_NAME = "formulaSignature"; 
-    public final static String PROPERTY_EXPRESSION = "expression"; 
+    public final static String PROPERTY_FORMULA_SIGNATURE_NAME = "formulaSignature";  //$NON-NLS-1$
+    public final static String PROPERTY_EXPRESSION = "expression";  //$NON-NLS-1$
     
     /**
      * Prefix for all message codes of this class.

@@ -462,7 +462,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @param replacements Any objects to replace wildcards in the message text.
      */
     public String getLocalizedToDo(IIpsElement element, String keyPrefix, Object[] replacements) {
-        return "// TODO " + getLocalizedText(element, keyPrefix + "_TODO", replacements);
+        return "// TODO " + getLocalizedText(element, keyPrefix + "_TODO", replacements); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

@@ -133,7 +133,7 @@ public class IpsPackageFragmentArbitrarySortDefinition implements IIpsPackageFra
     private boolean checkLine(String line) {
         if ((line.length() > 0 ) && (line.trim().length() > 0)) {
             // skip comments
-            return !line.startsWith("#");
+            return !line.startsWith("#"); //$NON-NLS-1$
         }
 
         return false;
