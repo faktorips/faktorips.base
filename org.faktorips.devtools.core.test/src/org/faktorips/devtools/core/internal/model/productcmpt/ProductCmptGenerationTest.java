@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.DateUtil;
 import org.w3c.dom.Element;
 
 
@@ -493,5 +494,20 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_INVALID_VALID_FROM));
     }
 
+    public void testValidateIfReferencedProductCmptsHaveFittingGeneration() throws CoreException{
+        generation.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
+        IProductCmptLink link = generation.newLink(association);
+        link.setTarget(target.getQualifiedName());
+        link.setMinCardinality(0);
+        link.setMaxCardinality(1);
+        IProductCmptGeneration targetGeneration = (IProductCmptGeneration)target.newGeneration(DateUtil.parseIsoDateStringToGregorianCalendar("2006-01-01"));
+        MessageList msgList = ((ProductCmptGeneration)generation).validate();
+        assertNotNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
+        
+        targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
+        msgList = ((ProductCmptGeneration)generation).validate();
+        assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
+
+    }
     
 }

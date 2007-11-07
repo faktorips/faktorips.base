@@ -40,6 +40,9 @@ import org.faktorips.devtools.core.model.type.IAssociation;
  * 
  * @author Thorsten Guenther
  */
+// TODO pk 2007-11-07 needs to be refactored. the getElements() method returns display strings
+// instead of the objects that the label provider should provide display strings for. This makes it
+// hard to display error images for ipsobjectparts
 public class LinksContentProvider implements ITreeContentProvider {
 
 	private IProductCmptGeneration generation;

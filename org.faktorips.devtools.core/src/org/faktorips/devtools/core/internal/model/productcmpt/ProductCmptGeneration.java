@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.model.Dependency;
@@ -764,8 +765,27 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
                 }
             }
         }
+        validateIfReferencedProductCmptsHaveFittingGeneration(list, getIpsProject());
     }
 
+    protected void validateIfReferencedProductCmptsHaveFittingGeneration(MessageList msgList, IIpsProject ipsProject)
+            throws CoreException {
+        IProductCmptLink[] links = getLinks();
+        for (int i = 0; i < links.length; i++) {
+            IProductCmpt productCmpt = links[i].findTarget(ipsProject);
+            if (productCmpt != null) {
+                if (getValidFrom() != null && productCmpt.getGenerationByEffectiveDate(getValidFrom()) == null) {
+                    String dateString = IpsPlugin.getDefault().getIpsPreferences().getDateFormat().format(getValidFrom().getTime());
+                    String generationName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
+                    String text = NLS.bind(
+                            Messages.ProductCmptGeneration_msgNoGenerationInLinkedTargetForEffectiveDate,
+                            new Object[]{productCmpt.getQualifiedName(), generationName, dateString});
+                    msgList.add(new Message(MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE, text, Message.ERROR, links[i]));
+                }
+            }
+        }
+    }
+    
     /**
      * {@inheritDoc}
      */

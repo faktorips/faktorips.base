@@ -83,6 +83,12 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public final static String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
 
     /**
+     * Validation message code to identifiy the message that informs about a link to a product component that doesn't have
+     * an effectiv date that is before or equal to the effective date of the referencing product component generation.
+     */
+    public final static String MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE = MSGCODE_PREFIX + "LinksWithWrongEffectivDate"; //$NON-NLS-1$
+
+    /**
      * Returns the product component this generation belongs to.
      */
     public IProductCmpt getProductCmpt();

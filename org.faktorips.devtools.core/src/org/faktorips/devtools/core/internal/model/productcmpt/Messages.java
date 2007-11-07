@@ -62,6 +62,8 @@ public class Messages extends NLS {
 
     public static String ProductCmptGeneration_msgAttributeWithMissingConfigElement;
 
+    public static String ProductCmptGeneration_msgNoGenerationInLinkedTargetForEffectiveDate;
+
     public static String TableAccessFunctionFlFunctionAdapter_msgNoTableAccess;
 
 	public static String TableAccessFunctionFlFunctionAdapter_msgErrorDuringCodeGeneration;
