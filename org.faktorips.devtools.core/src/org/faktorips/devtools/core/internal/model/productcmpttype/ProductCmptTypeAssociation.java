@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -47,6 +48,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
     public ProductCmptTypeAssociation(IIpsObject parent, int id) {
         super(parent, id);
+        type = AssociationType.AGGREGATION;
     }
     
     /**
