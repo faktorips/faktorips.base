@@ -34,15 +34,12 @@ import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarch
 import org.faktorips.devtools.core.model.type.IAssociation;
 
 /**
- * Provides the content for a generation-based relations-tree. The relations-types are
+ * Provides the content for a generation-based association-tree. The assocation names are
  * requested from the given generation and all supertypes the type containing this generation
  * is based on.
  * 
  * @author Thorsten Guenther
  */
-// TODO pk 2007-11-07 needs to be refactored. the getElements() method returns display strings
-// instead of the objects that the label provider should provide display strings for. This makes it
-// hard to display error images for ipsobjectparts
 public class LinksContentProvider implements ITreeContentProvider {
 
 	private IProductCmptGeneration generation;
@@ -59,7 +56,8 @@ public class LinksContentProvider implements ITreeContentProvider {
 			IProductCmpt pc = generation.getProductCmpt();
 			IProductCmptType pcType = pc.findProductCmptType(generation.getIpsProject());
 			if (pcType == null) {
-                // type can't be found, so extract the relation types from the generation
+                // type can't be found, so extract the association name from the links in the generation
+                // this is the reason we return Strings instead of association objects as elements. 
 				return getAssociationNames(generation);
 			} else {
 			    return getAssociationNames(pcType);
@@ -107,7 +105,7 @@ public class LinksContentProvider implements ITreeContentProvider {
      */ 
 	public Object[] getChildren(Object parentElement) {
 		if (!(parentElement instanceof String) || generation == null) {
-            return null;
+            return new Object[0];
 		}
         return generation.getLinks((String)parentElement);
 	}
