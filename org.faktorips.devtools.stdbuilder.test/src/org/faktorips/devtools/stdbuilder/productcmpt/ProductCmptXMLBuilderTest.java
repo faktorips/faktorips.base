@@ -81,6 +81,7 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
         ce.setExpression("42");
         
         IProductCmpt refTarget = newProductCmpt(productCmptType, "RefProduct");
+        refTarget.newGeneration(gen.getValidFrom());
         refTarget.setRuntimeId("RefProductRuntimeId");
         
         IProductCmptLink link = gen.newLink("role");
@@ -89,6 +90,7 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
         productCmpt.getIpsSrcFile().save(true, null);
         refTarget.getIpsSrcFile().save(true, null);
         
+        System.out.println(productCmpt.validate());
         assertFalse(productCmpt.validate().containsErrorMsg());
     }
     
