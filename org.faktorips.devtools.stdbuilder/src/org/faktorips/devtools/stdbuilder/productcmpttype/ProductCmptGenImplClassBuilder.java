@@ -359,7 +359,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                 builder.appendQuoted(ass.getName());
                 builder.appendln(");");
                 builder.append("if (relationElements != null) {");
-                IPolicyCmptTypeAssociation policyCmptTypeRelation = ass.findMatchingPolicyCmptTypeRelation(getIpsProject());
+                IPolicyCmptTypeAssociation policyCmptTypeRelation = ass.findMatchingPolicyCmptTypeAssociation(getIpsProject());
                 String cardinalityFieldName = policyCmptTypeRelation == null ? "" : getFieldNameCardinalityForRelation(ass);
                 if (ass.is1ToMany()) {
                     String fieldName = getFieldNameToManyRelation(ass);
@@ -725,7 +725,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
 //            generateMethodGetCardinalityFor1To1Relation(relation, methodsBuilder);
 //            generateFieldCardinalityFor1To1Relation(relation, memberVarsBuilder);
         }
-        if (relation.findMatchingPolicyCmptTypeRelation(getIpsProject())!=null) {
+        if (relation.findMatchingPolicyCmptTypeAssociation(getIpsProject())!=null) {
             generateMethodGetCardinalityFor1ToManyRelation(relation, methodsBuilder);
             generateFieldCardinalityForRelation(relation, memberVarsBuilder);
         }
@@ -1147,12 +1147,12 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
 
     public String getFieldNameCardinalityForRelation(IProductCmptTypeAssociation relation) throws CoreException{
-        return getLocalizedText(relation, "FIELD_CARDINALITIES_FOR_NAME", relation.findMatchingPolicyCmptTypeRelation(getIpsProject()).getTargetRoleSingular());
+        return getLocalizedText(relation, "FIELD_CARDINALITIES_FOR_NAME", relation.findMatchingPolicyCmptTypeAssociation(getIpsProject()).getTargetRoleSingular());
     }
     
     private void generateFieldCardinalityForRelation(
             IProductCmptTypeAssociation association, JavaCodeFragmentBuilder fieldsBuilder) throws CoreException{
-        appendLocalizedJavaDoc("FIELD_CARDINALITIES_FOR", association.findMatchingPolicyCmptTypeRelation(getIpsProject()).getTargetRoleSingular(), association, fieldsBuilder);
+        appendLocalizedJavaDoc("FIELD_CARDINALITIES_FOR", association.findMatchingPolicyCmptTypeAssociation(getIpsProject()).getTargetRoleSingular(), association, fieldsBuilder);
         JavaCodeFragment expression = new JavaCodeFragment();
         expression.append(" new ");
         expression.appendClassName(HashMap.class);

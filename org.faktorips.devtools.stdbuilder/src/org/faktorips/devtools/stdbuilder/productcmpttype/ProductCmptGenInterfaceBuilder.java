@@ -243,7 +243,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         } else {
             generateMethodGet1RelatedCmpt(relation, methodsBuilder);
         }
-        if (relation.findMatchingPolicyCmptTypeRelation(getIpsProject())!=null) {
+        if (relation.findMatchingPolicyCmptTypeAssociation(getIpsProject())!=null) {
             generateMethodGetCardinalityForRelation(relation, methodsBuilder);
         }
         generateMethodGetNumOfRelatedCmpts(relation, methodsBuilder);
@@ -406,7 +406,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     public String getMethodNameGetCardinalityForRelation(IProductCmptTypeAssociation association) throws CoreException{
         return getJavaNamingConvention().getGetterMethodName(
                 getLocalizedText(association, "METHOD_GET_CARDINALITY_FOR_NAME", 
-                association.findMatchingPolicyCmptTypeRelation(getIpsProject()).getTargetRoleSingular()), IntegerRange.class);
+                association.findMatchingPolicyCmptTypeAssociation(getIpsProject()).getTargetRoleSingular()), IntegerRange.class);
     }
     
     public String[][] getParamGetCardinalityForRelation(IProductCmptTypeAssociation association) throws CoreException{
@@ -423,7 +423,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     }
     
     private void generateMethodGetCardinalityForRelation(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
-        appendLocalizedJavaDoc("METHOD_GET_CARDINALITY_FOR", association.findMatchingPolicyCmptTypeRelation(getIpsProject()).getTargetRoleSingular(), 
+        appendLocalizedJavaDoc("METHOD_GET_CARDINALITY_FOR", association.findMatchingPolicyCmptTypeAssociation(getIpsProject()).getTargetRoleSingular(), 
                 association, methodsBuilder);
         generateSignatureGetCardinalityForRelation(association, methodsBuilder);
         methodsBuilder.append(';');

@@ -162,7 +162,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         policyAssociation.setTargetRoleSingular("Coverage");
         
         // test setup
-        assertEquals(policyAssociation, productAssociation.findMatchingPolicyCmptTypeRelation(ipsProject));
+        assertEquals(policyAssociation, productAssociation.findMatchingPolicyCmptTypeAssociation(ipsProject));
         assertEquals(productAssociation, link.findAssociation(ipsProject));
         
     	link.setMaxCardinality(0);

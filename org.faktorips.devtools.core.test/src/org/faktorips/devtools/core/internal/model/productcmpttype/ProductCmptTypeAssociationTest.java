@@ -50,24 +50,24 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
     }
     
     public void testFindPolicyCmptTypeRelation() throws CoreException {
-        assertNull(association.findMatchingPolicyCmptTypeRelation(ipsProject));
+        assertNull(association.findMatchingPolicyCmptTypeAssociation(ipsProject));
         
         association.setTarget(coverageTypeType.getQualifiedName());
-        assertNull(association.findMatchingPolicyCmptTypeRelation(ipsProject));
+        assertNull(association.findMatchingPolicyCmptTypeAssociation(ipsProject));
         
         IPolicyCmptType policyType = newPolicyCmptType(ipsProject, "Policy");
         productType.setPolicyCmptType(policyType.getQualifiedName());
         
         org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation policyTypeRelation = policyType.newPolicyCmptTypeAssociation();
         policyTypeRelation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        assertNull(association.findMatchingPolicyCmptTypeRelation(ipsProject));
+        assertNull(association.findMatchingPolicyCmptTypeAssociation(ipsProject));
 
         IPolicyCmptType coverageType = newPolicyCmptType(ipsProject, "Coverage");
         policyTypeRelation.setTarget(coverageType.getQualifiedName());
-        assertNull(association.findMatchingPolicyCmptTypeRelation(ipsProject));
+        assertNull(association.findMatchingPolicyCmptTypeAssociation(ipsProject));
 
         coverageTypeType.setPolicyCmptType(coverageType.getQualifiedName());
-        assertEquals(policyTypeRelation, association.findMatchingPolicyCmptTypeRelation(ipsProject));
+        assertEquals(policyTypeRelation, association.findMatchingPolicyCmptTypeAssociation(ipsProject));
     }
     
     /**

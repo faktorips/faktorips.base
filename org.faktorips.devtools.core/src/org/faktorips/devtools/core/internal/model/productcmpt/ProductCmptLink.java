@@ -206,7 +206,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements
 					Message.ERROR, this, PROPERTY_ASSOCIATION));
             return;
 		} 
-        IPolicyCmptTypeAssociation polAssociation = associationObj.findMatchingPolicyCmptTypeRelation(ipsProject);
+        IPolicyCmptTypeAssociation polAssociation = associationObj.findMatchingPolicyCmptTypeAssociation(ipsProject);
         if (polAssociation!=null) {
             validateCardinality(list, polAssociation);
         }

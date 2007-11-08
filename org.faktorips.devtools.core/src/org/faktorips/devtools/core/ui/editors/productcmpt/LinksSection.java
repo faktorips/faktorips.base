@@ -67,9 +67,11 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
@@ -304,10 +306,10 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 	}
 
 	/**
-	 * Creates a new Relation of the given type.
+	 * Creates a new link of the given association.
 	 */
-	public IProductCmptLink newRelation(String relationType) {
-		return generation.newLink(relationType);
+	public IProductCmptLink newLink(String associationName) {
+		return generation.newLink(associationName);
 	}
 
 	/**
@@ -322,7 +324,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
      * The target is either the name itself (the top level nodes of the relation section tree)
      * or instances of IProductCmptRelation. (the nodes below the relation type nodes).
      */
-    String getRelationName(Object target) {
+    String getAssociationName(Object target) {
         if (target instanceof String) {
             return (String)target;
         }
@@ -352,8 +354,8 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 	}
 
 	/**
-	 * Listener for updating the kardinality triggerd by the selection of
-	 * another relation.
+	 * Listener for updating the cardinality triggerd by the selection of
+	 * another link.
 	 */
 	private class SelectionChangedListener implements ISelectionChangedListener {
         IpsObjectUIController uiController;
@@ -362,45 +364,65 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 			Object selected = ((IStructuredSelection) event.getSelection())
 					.getFirstElement();
 			if (selected instanceof IProductCmptLink) {
-				IProductCmptLink rel = (IProductCmptLink) selected;
-
-				if (rel.isDeleted()) {
-					uiController.remove(cardMinField);
-					uiController.remove(cardMaxField);
-					cardinalityPanel.setEnabled(false);
-					return;
-				}
-
-				if (uiController != null) {
-					uiController.remove(cardMinField);
-					uiController.remove(cardMaxField);
-				}
-
-				if (uiController == null
-						|| !uiController.getIpsObjectPartContainer().equals(rel)) {
-					uiController = new IpsObjectUIController(rel);
-				}
-
-				cardMinField = new CardinalityPaneEditField(cardinalityPanel,
-						true);
-				cardMaxField = new CardinalityPaneEditField(cardinalityPanel,
-						false);
-
-				uiController.add(cardMinField, rel, PolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
-                uiController.add(cardMaxField, rel, PolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
-                uiController.updateUI();
-
-				// enable the fields for cardinality only, if this section
-				// is enabled.
-				cardinalityPanel.setEnabled(enabled);
-			} else {
-				cardinalityPanel.setEnabled(false);
-			}
-            
+			    updateCardinalityPanel((IProductCmptLink)selected);
+            } else {
+                deactivateCardinalityPanel();			}
             if (! isDataChangeable()){
-                cardinalityPanel.setEnabled(false);
+                deactivateCardinalityPanel();
             }
 		}
+        
+        void updateCardinalityPanel(IProductCmptLink link) {
+            if (link.isDeleted()) {
+                deactivateCardinalityPanel();
+                return;
+            }
+            
+            try {
+                IIpsProject ipsProject = link.getIpsProject();
+                IProductCmptTypeAssociation association = link.findAssociation(ipsProject);
+                if (!association.constrainsPolicyCmptTypeAssociation(ipsProject)) {
+                    deactivateCardinalityPanel();
+                    return;
+                }
+            }
+            catch (CoreException e) {
+                IpsPlugin.log(e);
+                deactivateCardinalityPanel();
+                return;
+            }
+
+            if (uiController != null) {
+                removeMinMaxFields();
+            }
+            if (uiController == null || !uiController.getIpsObjectPartContainer().equals(link)) {
+                uiController = new IpsObjectUIController(link);
+            }
+            addMinMaxFields(link);
+            uiController.updateUI();
+
+            // enable the fields for cardinality only, if this section is enabled.
+            cardinalityPanel.setEnabled(enabled);
+        }
+        
+        void deactivateCardinalityPanel() {
+            cardinalityPanel.setEnabled(false);
+            removeMinMaxFields();
+        }
+        
+        void removeMinMaxFields() {
+            if (uiController!=null) {
+                uiController.remove(cardMinField);
+                uiController.remove(cardMaxField);
+            }
+        }
+        
+        void addMinMaxFields(IProductCmptLink link ) {
+            cardMinField = new CardinalityPaneEditField(cardinalityPanel, true);
+            cardMaxField = new CardinalityPaneEditField(cardinalityPanel, false);
+            uiController.add(cardMinField, link, PolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
+            uiController.add(cardMaxField, link, PolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
+        }
 	}
 
 	/**

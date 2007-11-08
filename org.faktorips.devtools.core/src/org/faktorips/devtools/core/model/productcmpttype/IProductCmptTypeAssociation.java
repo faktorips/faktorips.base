@@ -67,6 +67,18 @@ public interface IProductCmptTypeAssociation extends IAssociation {
     public IProductCmptType findTargetProductCmptType(IIpsProject project) throws CoreException;
     
     /**
+     * Returns <code>true</code> if this association constrains a policy component type association, otherwise
+     * <code>false</code>. If this method returns <code>true</code>, {@link #findMatchingPolicyCmptTypeAssociation(IIpsProject)}
+     * returns the constrained association, otherwise the finder method returns <code>null</code>.
+     * 
+     * @param ipsProject The project which ips object path is used for the searched.
+     * This is not neccessarily the project this type is part of.
+     * 
+     * @throws CoreException if an error occurs while searching for the matching association.
+     */
+    public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException;
+
+    /**
      * Returns the corresponding policy component type association or <code>null</code> if no
      * such association is found.
      * 
@@ -75,6 +87,7 @@ public interface IProductCmptTypeAssociation extends IAssociation {
      * 
      * @throws CoreException if an error occurs while searching for the matching association.
      */
-    public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeRelation(IIpsProject ipsProject) throws CoreException;
+    public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException;
+    
 
 }

@@ -69,11 +69,18 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     public IProductCmptType findTargetProductCmptType(IIpsProject ipsProject) throws CoreException {
         return (IProductCmptType)ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE_V2, getTarget());
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException {
+        return findMatchingPolicyCmptTypeAssociation(ipsProject)!=null;
+    }
 
     /**
      * {@inheritDoc}
      */
-    public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeRelation(IIpsProject ipsProject) throws CoreException {
+    public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(ipsProject);
         if (policyCmptType==null) {
             return null;
