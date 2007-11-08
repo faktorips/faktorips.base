@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.model.productcmpt.treestructure;
 
 import java.util.GregorianCalendar;
 
-import org.faktorips.devtools.core.model.productcmpt.CycleInProductStructureException;
 
 
 /**

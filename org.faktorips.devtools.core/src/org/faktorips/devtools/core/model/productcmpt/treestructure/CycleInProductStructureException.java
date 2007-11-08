@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.productcmpt;
+package org.faktorips.devtools.core.model.productcmpt.treestructure;
 
 import org.faktorips.devtools.core.model.IIpsElement;
 
