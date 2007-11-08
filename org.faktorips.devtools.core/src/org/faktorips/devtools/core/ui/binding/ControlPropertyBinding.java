@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Control;
  * object.
  * 
  * @author     $Author: ortmann $
- * @version    $Revision: 1.3 $
+ * @version    $Revision: 1.4 $
  */
 public abstract class ControlPropertyBinding {
 
@@ -25,7 +25,7 @@ public abstract class ControlPropertyBinding {
         this.object = object;
         property = BeanUtil.getPropertyDescriptor(object.getClass(), propertyName);
         if (exptectedType!=null && !exptectedType.equals(property.getPropertyType())) {
-            throw new IllegalArgumentException("Das Property " + propertyName + " der Klasse " + object.getClass() + " ist nicht vom Type " + exptectedType);
+            throw new IllegalArgumentException("Property " + propertyName + " of type " + object.getClass() + " is not of type " + exptectedType); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
     
@@ -50,6 +50,6 @@ public abstract class ControlPropertyBinding {
     public abstract void updateUiIfNotDisposed();
     
     public String toString() {
-        return "Binding " + object.toString() + "#" + property.getName() + " to control " + control;
+        return "Binding " + object.toString() + "#" + property.getName() + " to control " + control; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 }

@@ -144,7 +144,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @see IIpsArtefactBuilderSet#isInverseRelationLinkRequiredFor2WayCompositions()
      */
-    public boolean isInverseRelationApplicable();
+    public boolean isInverseAssociationApplicable();
     
     /**
      * Returns <code>true</code> if this relation can be marked as container relation or can implement a

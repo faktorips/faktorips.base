@@ -49,7 +49,7 @@ public class StructurePage extends PctEditorPage {
 		IpsSection attributes = new AttributesSection(getPolicyCmptType(), members, toolkit);
         
         Composite rightComp = createGridComposite(toolkit, members, 1, true, GridData.FILL_BOTH);
-		IpsSection relations = new RelationsSection(getPolicyCmptType(), rightComp, toolkit);
+		IpsSection relations = new AssociationsSection(getPolicyCmptType(), rightComp, toolkit);
         general.setFocusSuccessor(attributes);
         attributes.setFocusSuccessor(relations);
         registerContentsChangeListener();

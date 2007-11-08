@@ -34,7 +34,9 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String MethodsSection_title;
+	public static String DefaultValueAndValueSetTabPage_labelDefaultValue;
+    public static String MethodEditDialog_signatureGroup;
+    public static String MethodsSection_title;
 	public static String MethodsSection_button;
 	public static String MethodEditDialog_title;
 	public static String MethodEditDialog_signatureTitle;

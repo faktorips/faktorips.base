@@ -29,16 +29,16 @@ import org.faktorips.util.ArgumentCheck;
 /**
  *
  */
-public class ReverseRelationCompletionProcessor extends AbstractCompletionProcessor {
+public class InverseAssociationCompletionProcessor extends AbstractCompletionProcessor {
     
     private IPolicyCmptType pcType;
     private IPolicyCmptTypeAssociation relation;
     
-    public ReverseRelationCompletionProcessor() {
+    public InverseAssociationCompletionProcessor() {
         
     }
     
-    public ReverseRelationCompletionProcessor(IPolicyCmptTypeAssociation relation) {
+    public InverseAssociationCompletionProcessor(IPolicyCmptTypeAssociation relation) {
         ArgumentCheck.notNull(relation);
         this.relation = relation;
         this.pcType = (IPolicyCmptType)relation.getIpsObject();

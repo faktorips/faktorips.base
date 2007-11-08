@@ -269,24 +269,26 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET));
     }    
 
-    public void testIsInverseRelationApplicable() throws CoreException {
+    public void testIsInverseAssociationApplicable() throws CoreException {
         association = pcType.newPolicyCmptTypeAssociation();
 
         association.setAssociationType(AssociationType.ASSOCIATION);
-        assertTrue(association.isInverseRelationApplicable());
+        assertTrue(association.isInverseAssociationApplicable());
         
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        assertFalse(association.isInverseRelationApplicable());
+        assertFalse(association.isInverseAssociationApplicable());
 
         TestIpsArtefactBuilderSet builderset = new TestIpsArtefactBuilderSet();
         setArtefactBuildset(pcType.getIpsProject(), builderset);
         
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         builderset.setInverseRelationLinkRequiredFor2WayCompositions(false);
-        assertFalse(association.isInverseRelationApplicable()); 
+        assertFalse(association.isInverseAssociationApplicable()); 
 
         builderset.setInverseRelationLinkRequiredFor2WayCompositions(true);
-        assertTrue(association.isInverseRelationApplicable()); 
+        assertTrue(association.isInverseAssociationApplicable()); 
+        
+        testPropertyAccessReadOnly(PolicyCmptTypeAssociation.class, IPolicyCmptTypeAssociation.PROPERTY_INVERSE_ASSOCIATION_APPLICABLE);
     }
     
     public void testValidateInverseRelationNotNeeded() throws Exception {

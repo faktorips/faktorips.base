@@ -278,10 +278,10 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
     private Control createGeneralPage(TabFolder folder) {
 
         Composite c = createTabItemComposite(folder, 1, false);
-        Group generelGroup = uiToolkit.createGroup(c, "Generel");
+        Group generelGroup = uiToolkit.createGroup(c, Messages.AttributeEditDialog_generalGroup);
         createGenerelGroupContent(generelGroup);
         if (attribute.isProductRelevant() || attribute.getPolicyCmptType().isConfigurableByProductCmptType()) {
-            configGroup = uiToolkit.createGroup(c, "Configuration");
+            configGroup = uiToolkit.createGroup(c, Messages.AttributeEditDialog_ConfigurationGroup);
             createConfigGroupContent();
         }
         
@@ -298,6 +298,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_lableOverwrites);
         final Checkbox cb = new Checkbox(workArea, uiToolkit);
+        cb.setText(Messages.AttributeEditDialog_overwritesNote);
         EditField overwrittenField = bindingContext.bindContent(cb, attribute, IPolicyCmptTypeAttribute.PROPERTY_OVERWRITES);
         overwrittenField.addChangeListener(new ValueChangeListener() {
 
@@ -359,25 +360,25 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         gridData.heightHint = 100;
         
         if (attribute.isChangeable()) {
-            Checkbox checkbox = uiToolkit.createCheckbox(area, "The default value and the set of allowed values are defined in the product configuration.");
+            Checkbox checkbox = uiToolkit.createCheckbox(area, Messages.AttributeEditDialog_defaultValueConfigured);
             bindingContext.bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
             return;
         } 
         
         if (attribute.getAttributeType()==AttributeType.CONSTANT) {
-            uiToolkit.createFormLabel(area, "Constant attributes can't be configured.");
+            uiToolkit.createFormLabel(area, Messages.AttributeEditDialog_ConstantAttributesCantBeConfigured);
             return;
         } 
         
         String productCmptType = QNameUtil.getUnqualifiedName(attribute.getPolicyCmptType().getProductCmptType());
-        String checkboxText = NLS.bind("The attribute''s value is computed by a method of type ''{0}''", productCmptType);
+        String checkboxText = NLS.bind(Messages.AttributeEditDialog_attributeComputed, productCmptType);
         Checkbox checkbox = uiToolkit.createCheckbox(area, checkboxText);
         bindingContext.bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
-        uiToolkit.createLabel(area, "Note: The method can either be implemented in Java or defined through a formula.\nIn the latter case, a formula is defined per product component.");
+        uiToolkit.createLabel(area, Messages.AttributeEditDialog_methodNote);
         
         Composite temp = uiToolkit.createLabelEditColumnComposite(area);
         Link label = new Link(temp, SWT.NONE);
-        label.setText("<a>Computation method</a>: ");
+        label.setText(Messages.AttributeEditDialog_methodLink);
         label.addSelectionListener(new SelectionListener() {
 
             public void widgetDefaultSelected(SelectionEvent e) {
@@ -396,7 +397,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         bindingContext.bindContent(compuationMethodText, attribute, IPolicyCmptTypeAttribute.PROPERTY_COMPUTATION_METHOD_SIGNATURE);
         
         Link link = new Link(area, SWT.NONE);
-        link.setText("To create a new method/formula signature that computes this attribute <a>click here</a>.");
+        link.setText(Messages.AttributeEditDialog_createNewMethod);
         link.addSelectionListener(new SelectionListener() {
 
             public void widgetDefaultSelected(SelectionEvent e) {
@@ -451,10 +452,10 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
             if (method==null) {
                 String signature = attribute.getComputationMethodSignature();
                 if (StringUtils.isEmpty(signature)) {
-                    signature = "[EmptyString]";
+                    signature = Messages.AttributeEditDialog_emptyString;
                 }
-                String text = NLS.bind("Product component type ''{0}'' does not contain a method ''{1}''.\n\nDo you want to create it?", productCmptType.getQualifiedName(), signature);
-                if (MessageDialog.openQuestion(getShell(), "Method does not exist", text)) {
+                String text = NLS.bind(Messages.AttributeEditDialog_questionCreateMethod, productCmptType.getQualifiedName(), signature);
+                if (MessageDialog.openQuestion(getShell(), Messages.AttributeEditDialog_MethodDoesNotExist, text)) {
                     createMethodAndOpenDialog();
                 }
                 return;
@@ -498,13 +499,13 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         try {
             productCmptType = policyCmptType.findProductCmptType(ipsProject);
             if (productCmptType==null) {
-                String text = NLS.bind("The product component type ''{0}'' can't be found!", policyCmptType.getProductCmptType());
-                MessageDialog.openInformation(getShell(), "Info", text);
+                String text = NLS.bind(Messages.AttributeEditDialog_TypeCantBeFound, policyCmptType.getProductCmptType());
+                MessageDialog.openInformation(getShell(), Messages.AttributeEditDialog_Info, text);
             }
         }
         catch (CoreException e) {
-            String text = NLS.bind("An error occured while searching for the product component type ''{0}''.", policyCmptType.getProductCmptType());
-            MessageDialog.openInformation(getShell(), "Info", text);
+            String text = NLS.bind("An error occured while searching for the product component type ''{0}''.", policyCmptType.getProductCmptType()); //$NON-NLS-1$
+            MessageDialog.openInformation(getShell(), Messages.AttributeEditDialog_Info, text);
         }
         return productCmptType;
     }

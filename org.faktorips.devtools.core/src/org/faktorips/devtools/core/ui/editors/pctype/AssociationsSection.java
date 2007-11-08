@@ -44,13 +44,13 @@ import org.faktorips.util.memento.Memento;
 /**
  * A section to display and edit a type's relations.
  */
-public class RelationsSection extends SimpleIpsPartsSection {
+public class AssociationsSection extends SimpleIpsPartsSection {
 
-    public RelationsSection(
+    public AssociationsSection(
             IPolicyCmptType pcType, 
             Composite parent,
             UIToolkit toolkit) {
-        super(pcType, parent, Messages.RelationsSection_title, toolkit);
+        super(pcType, parent, Messages.AssociationsSection_title, toolkit);
     }
     
     public IPolicyCmptType getPcType() {
@@ -89,7 +89,7 @@ public class RelationsSection extends SimpleIpsPartsSection {
          * {@inheritDoc}
          */
         protected ILabelProvider createLabelProvider() {
-            return new RelationLabelProvider();
+            return new AssociationsLabelProvider();
         }
         
         /** 
@@ -134,7 +134,7 @@ public class RelationsSection extends SimpleIpsPartsSection {
          * Creates the "New..." button to initiate the new-relation-wizard.
          */
         private void createNewWizardButton(Composite buttons, UIToolkit toolkit) {
-        	wizardNewButton = toolkit.createButton(buttons, Messages.RelationEditDialog_labelNewRelationWizard);
+        	wizardNewButton = toolkit.createButton(buttons, Messages.AssociationsSection_newButton);
         	wizardNewButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
     		wizardNewButton.addSelectionListener(new SelectionListener() {
     			public void widgetSelected(SelectionEvent e) {

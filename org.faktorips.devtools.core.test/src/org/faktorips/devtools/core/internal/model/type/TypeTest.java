@@ -49,6 +49,14 @@ public class TypeTest extends AbstractIpsPluginTest {
         type = newProductCmptType(ipsProject, "MotorProduct");
     }
     
+    public void testSetAbstract() {
+        testPropertyAccessReadWrite(IType.class, IType.PROPERTY_ABSTRACT, type, Boolean.valueOf(!type.isAbstract()));
+    }
+    
+    public void testSetSupertype() {
+        testPropertyAccessReadWrite(IType.class, IType.PROPERTY_SUPERTYPE, type, "NewSupertype");
+    }
+    
     public void testValidate_MustOverrideAbstractMethod() throws CoreException {
         // a supertype with a method and connect the type to it
         IType superType = this.newProductCmptType(ipsProject, "Supertype");

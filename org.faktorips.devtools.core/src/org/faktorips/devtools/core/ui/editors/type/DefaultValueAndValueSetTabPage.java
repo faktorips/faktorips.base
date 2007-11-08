@@ -38,7 +38,6 @@ import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controls.TableElementValidator;
 import org.faktorips.devtools.core.ui.controls.ValueSetEditControl;
-import org.faktorips.devtools.core.ui.editors.pctype.Messages;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -77,7 +76,7 @@ public class DefaultValueAndValueSetTabPage extends Composite {
         setLayoutData(new GridData(GridData.FILL_BOTH));
         
         Composite workArea = uiToolkit.createLabelEditColumnComposite(this);
-        labelDefaultValue = uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelDefaultValue);
+        labelDefaultValue = uiToolkit.createFormLabel(workArea, Messages.DefaultValueAndValueSetTabPage_labelDefaultValue);
         
         defaultEditFieldPlaceholder = uiToolkit.createComposite(workArea);
         defaultEditFieldPlaceholder.setLayout(uiToolkit.createNoMarginGridLayout(1, true));

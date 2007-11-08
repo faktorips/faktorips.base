@@ -780,8 +780,7 @@ public abstract class Type extends BaseIpsObject implements IType {
                         String text = NLS.bind(Messages.Type_msg_MustImplementDerivedUnion,
                                 associations[i].getName(), associations[i].getType().getQualifiedName());
                         msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION, text,
-                                Message.ERROR, this, IType.PROPERTY_ABSTRACT));
-
+                                Message.ERROR, Type.this, IType.PROPERTY_ABSTRACT));
                     }
                 }
             }

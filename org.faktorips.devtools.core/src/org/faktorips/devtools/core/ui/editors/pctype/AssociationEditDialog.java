@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -70,7 +71,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
      * @param title
      */
     public AssociationEditDialog(IPolicyCmptTypeAssociation relation2, Shell parentShell) {
-        super(relation2, parentShell, Messages.RelationEditDialog_title, true );
+        super(relation2, parentShell, Messages.AssociationEditDialog_title, true );
         this.association = relation2;
         this.ipsProject = association.getIpsProject();
         pmoAssociation = new PmoAssociation(association);
@@ -84,7 +85,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         TabFolder folder = (TabFolder)parent;
         
         TabItem firstPage = new TabItem(folder, SWT.NONE);
-        firstPage.setText(Messages.RelationEditDialog_propertiesTitle);
+        firstPage.setText(Messages.AssociationEditDialog_textFirstPage);
         firstPage.setControl(createFirstPage(folder));
         
         createDescriptionTabItem(folder);
@@ -98,14 +99,14 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         
     	Composite c = createTabItemComposite(folder, 1, false);
         
-        Group groupGeneral = uiToolkit.createGroup(c, Messages.RelationEditDialog_GroupLabel_General);
+        Group groupGeneral = uiToolkit.createGroup(c, Messages.AssociationEditDialog_generalGroup);
     	createGeneralControls(groupGeneral);
         
         uiToolkit.createVerticalSpacer(c, 12);
-        createQualificationGroup(uiToolkit.createGroup(c, "Qualification"));
+        createQualificationGroup(uiToolkit.createGroup(c, Messages.AssociationEditDialog_qualificationGroup));
         
         uiToolkit.createVerticalSpacer(c, 12);
-        createDerivedUnionGroup(uiToolkit.createGroup(c, "Derived union"));
+        createDerivedUnionGroup(uiToolkit.createGroup(c, Messages.AssociationEditDialog_derivedUnionGroup));
         
         return c;
     }
@@ -118,18 +119,18 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         extFactory.createControls(workArea, uiToolkit, association, IExtensionPropertyDefinition.POSITION_TOP); //$NON-NLS-1$
                 
         // target
-        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelTarget);
+        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_targetLabel);
         PcTypeRefControl targetControl = uiToolkit.createPcTypeRefControl(association.getIpsProject(), workArea);
         bindingContext.bindContent(targetControl, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET);
         
         // type
-        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelType);
+        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_associationTypeLabel);
         final Combo typeCombo = uiToolkit.createCombo(workArea, IPolicyCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
         bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE, AssociationType.getEnumType());
         typeCombo.setFocus();
         
         // role singular
-        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelTargetRoleSingular);
+        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_targetRoleSingularLabel);
         final Text targetRoleSingularText = uiToolkit.createText(workArea);
         bindingContext.bindContent(targetRoleSingularText, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
         targetRoleSingularText.addFocusListener(new FocusAdapter() {
@@ -141,7 +142,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         });
         
         // role plural
-        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelTargetRolePlural);
+        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_targetRolePluralLabel);
         final Text targetRolePluralText = uiToolkit.createText(workArea);
         bindingContext.bindContent(targetRolePluralText, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
         targetRolePluralText.addFocusListener(new FocusAdapter() {
@@ -154,25 +155,25 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         });
         
         // min cardinality
-        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelMinCardinality);
+        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_minimumCardinality);
         Text minCardinalityText = uiToolkit.createText(workArea);
         CardinalityField cardinalityField = new CardinalityField(minCardinalityText);
         cardinalityField.setSupportsNull(false);
         bindingContext.bindContent(cardinalityField, association, IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
         
         // max cardinality
-        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelMaxCardinality);
+        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_maximumCardinality);
         Text maxCardinalityText = uiToolkit.createText(workArea);
         cardinalityField = new CardinalityField(maxCardinalityText);
         cardinalityField.setSupportsNull(false);
         bindingContext.bindContent(cardinalityField, association, IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
 
         // inverse relation
-        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelReverseRel);
+        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_inverseAssociationLabel);
         Text reverseRelationText = uiToolkit.createText(workArea);
         bindingContext.bindContent(reverseRelationText, association, IPolicyCmptTypeAssociation.PROPERTY_INVERSE_ASSOCIATION);
         bindingContext.bindEnabled(reverseRelationText, association, IPolicyCmptTypeAssociation.PROPERTY_INVERSE_ASSOCIATION_APPLICABLE);
-        ReverseRelationCompletionProcessor reverseRelationCompletionProcessor = new ReverseRelationCompletionProcessor(association);
+        InverseAssociationCompletionProcessor reverseRelationCompletionProcessor = new InverseAssociationCompletionProcessor(association);
         reverseRelationCompletionProcessor.setComputeProposalForEmptyPrefix(true);
         ContentAssistHandler.createHandlerForText(reverseRelationText, CompletionUtil.createContentAssistant(reverseRelationCompletionProcessor));
         
@@ -188,20 +189,18 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     private void createDerivedUnionGroup(Composite c) {
 
         // derived union checkbox
-        Checkbox containerCheckbox = uiToolkit.createCheckbox(c, "This association is a derived union");
-        // uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelReadOnlyContainer);
+        Checkbox containerCheckbox = uiToolkit.createCheckbox(c, Messages.AssociationEditDialog_associationIsADerivedUnion);
         bindingContext.bindContent(containerCheckbox, association, IAssociation.PROPERTY_DERIVED_UNION);
         bindingContext.bindEnabled(containerCheckbox, association, IPolicyCmptTypeAssociation.PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE);
         
         // is subset checkbox
-        // uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelContainerRel);
-        Checkbox subsetCheckbox = uiToolkit.createCheckbox(c, "This association defines a subset of a derived union");
+        Checkbox subsetCheckbox = uiToolkit.createCheckbox(c, Messages.AssociationEditDialog_associationDefinesSubset);
         bindingContext.bindContent(subsetCheckbox, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
         bindingContext.bindEnabled(subsetCheckbox, association, IPolicyCmptTypeAssociation.PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE);
         
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-        uiToolkit.createFormLabel(workArea, "Derived union:");
+        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_derivedUnionLabel);
         Text derivedUnion = uiToolkit.createText(workArea);
         bindingContext.bindContent(derivedUnion, association, IAssociation.PROPERTY_SUBSETTED_DERIVED_UNION);
         bindingContext.bindEnabled(derivedUnion, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
@@ -217,18 +216,18 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         Checkbox qualifiedCheckbox = uiToolkit.createCheckbox(workArea);
         bindingContext.bindContent(qualifiedCheckbox, association, IAssociation.PROPERTY_QUALIFIED);
         bindingContext.bindEnabled(qualifiedCheckbox, pmoAssociation, PmoAssociation.PROPERTY_QUALIFICATION_POSSIBLE);
-        Label note = uiToolkit.createFormLabel(workArea, StringUtils.rightPad("", 120));
+        Label note = uiToolkit.createFormLabel(workArea, StringUtils.rightPad("", 120)); //$NON-NLS-1$
         bindingContext.bindContent(note, pmoAssociation, PmoAssociation.PROPERTY_QUALIFICATION_NOTE);
         bindingContext.add(new ButtonTextBinding(qualifiedCheckbox, pmoAssociation, PmoAssociation.PROPERTY_QUALIFICATION_LABEL));
     }
 
     public class PmoAssociation extends IpsObjectPartPmo {
 
-        public final static String PROPERTY_SUBSET = "subset";
-        public final static String PROPERTY_QUALIFICATION_LABEL = "qualificationLabel";
-        public final static String PROPERTY_QUALIFICATION_NOTE = "qualificationNote";
-        public final static String PROPERTY_QUALIFICATION_POSSIBLE = "qualificationPossible";
-        public final static String PROPERTY_CONSTRAINED_NOTE = "constrainedNote";
+        public final static String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
+        public final static String PROPERTY_QUALIFICATION_LABEL = "qualificationLabel"; //$NON-NLS-1$
+        public final static String PROPERTY_QUALIFICATION_NOTE = "qualificationNote"; //$NON-NLS-1$
+        public final static String PROPERTY_QUALIFICATION_POSSIBLE = "qualificationPossible"; //$NON-NLS-1$
+        public final static String PROPERTY_CONSTRAINED_NOTE = "constrainedNote"; //$NON-NLS-1$
 
         private boolean subset;
         
@@ -244,17 +243,17 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         public void setSubset(boolean newValue) {
             subset = newValue;
             if (!subset) {
-                association.setSubsettedDerivedUnion("");
+                association.setSubsettedDerivedUnion(""); //$NON-NLS-1$
             }
             notifyListeners();
         }
         
         public String getQualificationLabel() {
-            String label = "This association is qualified";
+            String label = Messages.AssociationEditDialog_associationIsQualified;
             try {
                 String productCmptType = QNameUtil.getUnqualifiedName(association.findQualifierCandidate(ipsProject));
                 if (StringUtils.isNotEmpty(productCmptType)) {
-                    label = label + " by type '" + productCmptType + "'";
+                    label = label + NLS.bind(Messages.AssociationEditDialog_qualifiedByType, productCmptType);
                 }
             }
             catch (CoreException e) {
@@ -264,15 +263,15 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
         public String getQualificationNote() {
-            String note = "Note: ";
+            String note = Messages.AssociationEditDialog_note;
             if (!association.isCompositionMasterToDetail()) {
-                note = note + "Qualification is only applicable for compositions (master to detail).";
+                note = note + Messages.AssociationEditDialog_qualificationOnlyForMasterDetail;
             } else {
                 try {
                     if (!association.isQualificationPossible(ipsProject)) {
-                        note = note + "Qualification is only applicable, if the target type is configurable by a product.";
+                        note = note + Messages.AssociationEditDialog_qualificationOnlyIfTheTargetTypeIsConfigurable;
                     } else {
-                        note = note + "For qualified associations multiplicty is defined per qualified instance.";
+                        note = note + Messages.AssociationEditDialog_multiplicityIsDefineddPerQualifier;
                     }
                 }
                 catch (CoreException e) {
@@ -295,31 +294,29 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         public String getConstrainedNote() {
             try {
                 if (association.isCompositionDetailToMaster()) {
-                    return StringUtils.rightPad("", 120) + StringUtils.rightPad("\n", 120) + StringUtils.right("\n", 120);
+                    return StringUtils.rightPad("", 120) + StringUtils.rightPad("\n", 120) + StringUtils.right("\n", 120); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
                 IProductCmptTypeAssociation matchingAss = association.findMatchingProductCmptTypeAssociation(ipsProject);
                 if (matchingAss!=null) {
                     String type = matchingAss.getProductCmptType().getName();
-                    return "Note: This association is constrained by product structure. " 
-                    +" The matching \nassociation in type '" + type + "' is '" + matchingAss.getTargetRoleSingular() + "' (rolename)."
-                    + StringUtils.rightPad("\n", 120); 
+                    return NLS.bind(Messages.AssociationEditDialog_noteAssociationIsConstrainedByProductStructure, type, matchingAss.getTargetRoleSingular()) 
+                            + StringUtils.rightPad("\n", 120);  //$NON-NLS-1$
                 } else {
-                    String note = "Note: This association is not constrained by product structure."; 
+                    String note = Messages.AssociationEditDialog_noteAssociationNotConstrainedByProductStructure; 
                     IProductCmptType sourceProductType = association.getPolicyCmptType().findProductCmptType(ipsProject);
                     IPolicyCmptType targetType = association.findTargetPolicyCmptType(ipsProject);
                     if (sourceProductType!=null && targetType!=null) {
                         IProductCmptType targetProductType = targetType.findProductCmptType(ipsProject);
                         if (targetProductType!=null) {
-                            return note + "\nTo constrain the association by product structure, create an association between the "
-                                + "\nproduct component types '" + sourceProductType.getName() + "' and '" + targetProductType.getName() + "'.";
+                            return note + NLS.bind(Messages.AssociationEditDialog_toConstraintTheAssociation, sourceProductType.getName(), targetProductType.getName());
                         }
                     }
-                    return note + StringUtils.rightPad("\n", 120) + StringUtils.rightPad("\n", 120) ;
+                    return note + StringUtils.rightPad("\n", 120) + StringUtils.rightPad("\n", 120) ; //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
             catch (CoreException e) {
                 IpsPlugin.log(e);
-                return "";
+                return ""; //$NON-NLS-1$
             }
             
         }

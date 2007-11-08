@@ -27,6 +27,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -82,12 +83,12 @@ public class GeneralInfoSection extends IpsSection  {
 	    });
 	    
 	    PcTypeRefControl supertypeRefControl = toolkit.createPcTypeRefControl(type.getIpsProject(), composite);
-        bindingContext.bindContent(supertypeRefControl, type, IPolicyCmptType.PROPERTY_SUPERTYPE); 
+        bindingContext.bindContent(supertypeRefControl, type, IType.PROPERTY_SUPERTYPE); 
 	    
 	    Composite c2 = toolkit.createLabelEditColumnComposite(client);
 	    toolkit.createFormLabel(c2, Messages.GeneralInfoSection_labelAbstractClass);
 	    Checkbox abstractCheckbox = toolkit.createCheckbox(c2);
-	    bindingContext.bindContent(abstractCheckbox, type, IPolicyCmptType.PROPERTY_ABSTRACT);
+	    bindingContext.bindContent(abstractCheckbox, type, IType.PROPERTY_ABSTRACT);
         
         toolkit.createFormLabel(c2, Messages.GeneralInfoSection_labelProduct);
 	    Checkbox configuratedCheckbox = toolkit.createCheckbox(c2);

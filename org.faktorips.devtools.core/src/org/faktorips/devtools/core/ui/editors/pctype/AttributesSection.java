@@ -122,7 +122,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
         protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
             super.createButtons(buttons, toolkit);
             createButtonSpace(buttons, toolkit);
-    		overrideButton = toolkit.createButton(buttons, Messages.MethodsSection_button);
+    		overrideButton = toolkit.createButton(buttons, Messages.AttributesSection_OverrideButton);
     		overrideButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
     		overrideButton.addSelectionListener(new SelectionListener() {
     			public void widgetSelected(SelectionEvent e) {

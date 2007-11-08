@@ -32,7 +32,7 @@ public final class BeanUtil {
                 return props[i];
             }
         }
-        throw new IllegalArgumentException("Class " + clazz + " hasn't got a property " + propertyName);
+        throw new IllegalArgumentException("Class " + clazz + " hasn't got a property " + propertyName); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     private BeanUtil() {

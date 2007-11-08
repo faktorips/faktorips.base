@@ -84,7 +84,7 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
         
         createAdditionalControlsOnGeneralPage(workArea, uiToolkit);
 
-        Group methodSignatureGroup = uiToolkit.createGroup(workArea, "Method Signature");
+        Group methodSignatureGroup = uiToolkit.createGroup(workArea, Messages.MethodEditDialog_signatureGroup);
         Composite propertyPane = uiToolkit.createLabelEditColumnComposite(methodSignatureGroup);
         
         uiToolkit.createFormLabel(propertyPane, Messages.MethodEditDialog_labelAccesModifier);

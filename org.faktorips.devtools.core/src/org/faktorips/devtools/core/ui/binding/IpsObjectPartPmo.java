@@ -52,7 +52,7 @@ public class IpsObjectPartPmo extends PresentationModelObject implements Content
     }
     
     public String toString() {
-        return "PMO for " + part;
+        return "PMO for " + part; //$NON-NLS-1$
     }
 
     /**

@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 
 
 
-public class RelationLabelProvider extends DefaultLabelProvider {
+public class AssociationsLabelProvider extends DefaultLabelProvider {
     
     /** 
      * {@inheritDoc}

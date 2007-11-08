@@ -53,7 +53,7 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
  */
 public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDialog {
 
-    private static final String IPSOBJECTTYPESFILTER_KEY = "IpsObjectTypesFilter";
+    private static final String IPSOBJECTTYPESFILTER_KEY = "IpsObjectTypesFilter"; //$NON-NLS-1$
 
     private Object[] fElements;
     
@@ -152,7 +152,7 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
     }
     
     private void restoreState() {
-        dialogSettingsSection = getDialogSettingsSection("OpenIpsObjectSelectionDialog");
+        dialogSettingsSection = getDialogSettingsSection("OpenIpsObjectSelectionDialog"); //$NON-NLS-1$
         
         // set size of dialog
         setDialogBoundsSettings(dialogSettingsSection, Dialog.DIALOG_PERSISTSIZE);
@@ -287,7 +287,7 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
         for (int i = 0; i < filters.length; i++) {
             filters[i] = selection[i].getText();
         }
-        dialogSettingsSection.put("IpsObjectTypesFilter", filters);
+        dialogSettingsSection.put("IpsObjectTypesFilter", filters); //$NON-NLS-1$
         return super.close();
     }
 }

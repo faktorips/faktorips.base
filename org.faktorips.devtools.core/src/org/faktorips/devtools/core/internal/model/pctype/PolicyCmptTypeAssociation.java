@@ -91,7 +91,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     /**
      * {@inheritDoc}
      */
-    public boolean isInverseRelationApplicable() {
+    public boolean isInverseAssociationApplicable() {
         if (isAssoziation()) {
             return true;
         }
