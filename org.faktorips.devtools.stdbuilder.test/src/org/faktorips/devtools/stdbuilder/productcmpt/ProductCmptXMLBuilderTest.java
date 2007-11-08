@@ -78,7 +78,7 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
         gen.setValidFrom(new GregorianCalendar(2006, 0, 1));
         IFormula ce= gen.newFormula();
         ce.setFormulaSignature(method.getFormulaName());
-        ce.setExpression("42");
+        ce.setExpression("42"); 
         
         IProductCmpt refTarget = newProductCmpt(productCmptType, "RefProduct");
         refTarget.newGeneration(gen.getValidFrom());
