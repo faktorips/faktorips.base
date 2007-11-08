@@ -60,12 +60,6 @@ public class Messages extends NLS {
 
     public static String RangeValueSet_0;
 
-	public static String ValueSetType__allValues;
-
-	public static String ValueSetType_range;
-
-	public static String ValueSetType_enumeration;
-
 	public static String EnumValueSet__msgDatatypeUnknown;
 
 	public static String EnumValueSet_msgDatatypeMissmatch;
