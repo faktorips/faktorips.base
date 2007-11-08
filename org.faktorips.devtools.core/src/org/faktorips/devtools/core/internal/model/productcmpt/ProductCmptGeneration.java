@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
+import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -712,7 +713,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         IDeltaEntry[] entries = delta.getEntries();
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].getDeltaType()==DeltaType.MISSING_PROPERTY_VALUE) {
-                String text = NLS.bind(Messages.ProductCmptGeneration_msgAttributeWithMissingConfigElement, entries[i].getPropertyName());
+                String text = NLS.bind(Messages.ProductCmptGeneration_msgAttributeWithMissingConfigElement, ((IDeltaEntryForProperty)entries[i]).getPropertyName());
                 list.add(new Message(MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT, text, Message.WARNING, this)); //$NON-NLS-1$
             }
         }

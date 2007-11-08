@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
  * 
  * @author Jan Ortmann
  */
-public class ValueSetMismatchEntry extends AbstractDeltaEntry {
+public class ValueSetMismatchEntry extends AbstractDeltaEntryForProperty {
 
     private IPolicyCmptTypeAttribute attribute;
     private IConfigElement element;

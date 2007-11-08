@@ -15,25 +15,34 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.productcmpt;
+package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.internal.model.productcmpt.GenerationToTypeDelta;
+import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 
 /**
- * Delta entry for a product definition property.
  * 
  * @author Jan Ortmann
  */
-public interface IDeltaEntryForProperty extends IDeltaEntry {
+public abstract class AbstractDeltaEntryForProperty extends AbstractDeltaEntry implements IDeltaEntryForProperty {
+
+    public AbstractDeltaEntryForProperty(GenerationToTypeDelta delta) {
+        super(delta);
+    }
 
     /**
-     * Returns the type of the property this entry refers.
+     * {@inheritDoc}
      */
-    public ProdDefPropertyType getPropertyType();
+    public String getDescription() {
+        return getPropertyName();
+    }
     
     /**
-     * Returns the name of the product definition property this entry relates.
+     * {@inheritDoc}
      */
-    public String getPropertyName();
+    public String toString() {
+        return getDeltaType() + ": " + getPropertyName() + "(" + getPropertyType().getName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
     
+
 }

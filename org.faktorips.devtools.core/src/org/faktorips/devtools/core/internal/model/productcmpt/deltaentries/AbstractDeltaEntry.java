@@ -34,17 +34,4 @@ public abstract class AbstractDeltaEntry implements IDeltaEntry {
         this.generation = delta.getProductCmptGeneration();
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    public String getDescription() {
-        return getPropertyName();
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String toString() {
-        return getDeltaType() + ": " + getPropertyName() + "(" + getPropertyType().getName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    }
 }

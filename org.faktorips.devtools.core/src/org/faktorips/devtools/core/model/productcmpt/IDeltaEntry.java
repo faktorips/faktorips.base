@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 
 /**
  * A delta entry desribes a single difference between a product component generation and the type
@@ -27,18 +26,6 @@ import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
  * @author Jan Ortmann
  */
 public interface IDeltaEntry {
-
-    /**
-     * Returns the type of the property this entry refers to or <code>null</code> if this entry
-     * does no refer to a (single) property.
-     */
-    public ProdDefPropertyType getPropertyType();
-    
-    /**
-     * Returns the name of the product definition property this entry relates to or <code>null</code> if this entry
-     * does no refer to a (single) property.
-     */
-    public String getPropertyName();
 
     /**
      * Returns the entry's type.

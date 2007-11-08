@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
  * 
  * @author Jan Ortmann
  */
-public class ValueWithoutPropertyEntry extends AbstractDeltaEntry {
+public class ValueWithoutPropertyEntry extends AbstractDeltaEntryForProperty {
 
     private IPropertyValue value;
     

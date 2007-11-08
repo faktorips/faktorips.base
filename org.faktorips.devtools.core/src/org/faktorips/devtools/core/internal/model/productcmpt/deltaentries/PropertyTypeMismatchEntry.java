@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
  * 
  * @author Jan Ortmann
  */
-public class PropertyTypeMismatchEntry extends AbstractDeltaEntry {
+public class PropertyTypeMismatchEntry extends AbstractDeltaEntryForProperty {
 
     private IProdDefProperty property;
     private IPropertyValue value;

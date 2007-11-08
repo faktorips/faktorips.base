@@ -17,10 +17,15 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
+import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 
 /**
  * 
@@ -28,6 +33,8 @@ import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
  */
 public class DeltaLabelProvider extends LabelProvider {
 
+    private List images = new ArrayList();
+    
     public DeltaLabelProvider() {
     }
 
@@ -38,18 +45,26 @@ public class DeltaLabelProvider extends LabelProvider {
         if (element instanceof DeltaType) {
             return ((DeltaType)element).getImage();
         }
-        if (element instanceof IDeltaEntry) {
-            IDeltaEntry entry = (IDeltaEntry)element;
+        if (element instanceof IDeltaEntryForProperty) {
+            IDeltaEntryForProperty entry = (IDeltaEntryForProperty)element;
             Image baseImage = entry.getPropertyType().getImage();
             if (entry.getDeltaType()==DeltaType.MISSING_PROPERTY_VALUE) {
-                return DeltaCompositeIcon.createAddImage(baseImage);
+                return rememerImageForDispose(DeltaCompositeIcon.createAddImage(baseImage));
             }
             if (entry.getDeltaType()==DeltaType.VALUE_WITHOUT_PROPERTY) {
-                return DeltaCompositeIcon.createDeleteImage(baseImage);
+                return rememerImageForDispose(DeltaCompositeIcon.createDeleteImage(baseImage));
             }
-            return DeltaCompositeIcon.createModifyImage(baseImage);
+            return rememerImageForDispose(DeltaCompositeIcon.createModifyImage(baseImage));
+        }
+        if (element instanceof IDeltaEntry) {
+            return ((IDeltaEntry)element).getDeltaType().getImage();
         }
         return super.getImage(element);
+    }
+    
+    private Image rememerImageForDispose(Image image) {
+        images.add(image);
+        return image;
     }
 
     /**
@@ -65,5 +80,13 @@ public class DeltaLabelProvider extends LabelProvider {
         return super.getText(element);
     }
 
-    
+    /**
+     * {@inheritDoc}
+     */
+    public void dispose() {
+        for (Iterator it = images.iterator(); it.hasNext();) {
+            Image image = (Image)it.next();
+            image.dispose();
+        }
+    }
 }

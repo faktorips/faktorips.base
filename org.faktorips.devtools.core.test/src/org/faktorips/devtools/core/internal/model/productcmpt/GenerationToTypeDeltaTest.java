@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
+import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -107,10 +108,10 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         IGenerationToTypeDelta delta = generation.computeDeltaToModel();
         IDeltaEntry[] entries = delta.getEntries();
         assertEquals(2, entries.length);
-        assertEquals("a2", entries[0].getPropertyName());
+        assertEquals("a2", ((IDeltaEntryForProperty)entries[0]).getPropertyName());
         assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
-        assertEquals(ProdDefPropertyType.VALUE, entries[0].getPropertyType());
-        assertEquals("a1", entries[1].getPropertyName());
+        assertEquals(ProdDefPropertyType.VALUE, ((IDeltaEntryForProperty)entries[0]).getPropertyType());
+        assertEquals("a1", ((IDeltaEntryForProperty)entries[1]).getPropertyName());
         
         delta.fix();
         delta = generation.computeDeltaToModel();
@@ -126,13 +127,13 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         delta = generation.computeDeltaToModel();
         entries = delta.getEntries();
         assertEquals(3, entries.length);
-        assertEquals("a3", entries[0].getPropertyName());
-        assertEquals("a2", entries[1].getPropertyName());
-        assertEquals("a1", entries[2].getPropertyName());
+        assertEquals("a3", ((IDeltaEntryForProperty)entries[0]).getPropertyName());
+        assertEquals("a2", ((IDeltaEntryForProperty)entries[1]).getPropertyName());
+        assertEquals("a1", ((IDeltaEntryForProperty)entries[2]).getPropertyName());
         assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
         assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[1].getDeltaType());
         assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[2].getDeltaType());
-        assertEquals(ProdDefPropertyType.VALUE, entries[0].getPropertyType());
+        assertEquals(ProdDefPropertyType.VALUE, ((IDeltaEntryForProperty)entries[0]).getPropertyType());
         
         delta.fix();
         delta = generation.computeDeltaToModel();
@@ -153,9 +154,10 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         productCmptType.newFormulaSignature("premium");
         delta = generation.computeDeltaToModel();
         assertEquals(1, delta.getEntries().length);
-        assertEquals("premium", delta.getEntries()[0].getPropertyName());
-        assertEquals(DeltaType.PROPERTY_TYPE_MISMATCH, delta.getEntries()[0].getDeltaType());
-        assertEquals(ProdDefPropertyType.VALUE, delta.getEntries()[0].getPropertyType());
+        IDeltaEntryForProperty entry = (IDeltaEntryForProperty)delta.getEntries()[0];
+        assertEquals("premium", entry.getPropertyName());
+        assertEquals(DeltaType.PROPERTY_TYPE_MISMATCH, entry.getDeltaType());
+        assertEquals(ProdDefPropertyType.VALUE, entry.getPropertyType());
         
         delta.fix();
         assertNull(generation.getAttributeValue("premium"));
@@ -181,8 +183,9 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         attr.setValueSetType(ValueSetType.ENUM);
         delta = generation.computeDeltaToModel();
         assertEquals(1, delta.getEntries().length);
-        assertEquals(DeltaType.VALUE_SET_MISMATCH, delta.getEntries()[0].getDeltaType());
-        assertEquals(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, delta.getEntries()[0].getPropertyType());
+        IDeltaEntryForProperty entry = (IDeltaEntryForProperty)delta.getEntries()[0];
+        assertEquals(DeltaType.VALUE_SET_MISMATCH, entry.getDeltaType());
+        assertEquals(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, entry.getPropertyType());
         delta.fix();
         IValueSet valueSet = generation.getConfigElement("a1").getValueSet();
         assertTrue(valueSet instanceof IEnumValueSet);
