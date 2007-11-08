@@ -706,7 +706,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     private IIpsArtefactBuilderSet registerBuilderSet(IIpsProject project) {
         IpsProjectProperties data = getIpsProjectProperties((IpsProject)project);
-        IIpsArtefactBuilderSet builderSet = createInstanceOfRegisteredArtefactBuilderSet(data.getBuilderSetId(), data.getLoggingFrameworkConnectorId());
+        IIpsArtefactBuilderSet builderSet = createInstanceOfRegisteredArtefactBuilderSet(data.getBuilderSetId(), data.getLoggingFrameworkConnectorId(), project);
         if(!initBuilderSet(builderSet, data)){
             return new EmptyBuilderSet();
         }
@@ -916,9 +916,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * <code>builderSetId</code> at the artefact builder set extension point. Otherwise an
      * <code>EmptyBuilderSet</code> will be returned.
      */
-    private IIpsArtefactBuilderSet createInstanceOfRegisteredArtefactBuilderSet(String builderSetId, String loggingFrameworkConnectorId) {
+    private IIpsArtefactBuilderSet createInstanceOfRegisteredArtefactBuilderSet(String builderSetId, String loggingFrameworkConnectorId, IIpsProject ipsProject) {
         ArgumentCheck.notNull(builderSetId);
-
+        ArgumentCheck.notNull(ipsProject);
+        
         IpsArtefactBuilderSetInfo[] infos = getIpsArtefactBuilderSetInfos();
         for (int i = 0; i < infos.length; i++) {
             try {
@@ -927,6 +928,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     builderSet.setId(infos[i].getBuilderSetId());
                     builderSet.setLabel(infos[i].getBuilderSetLabel());
                     builderSet.setIpsLoggingFrameworkConnector(IpsPlugin.getDefault().getIpsLoggingFrameworkConnector(loggingFrameworkConnectorId));
+                    builderSet.setIpsProject(ipsProject);
                     return builderSet;
                 }
             } catch(ClassCastException e){

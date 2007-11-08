@@ -206,4 +206,14 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
      * dependency scan. <code>false</code> if only builder are contained which need only a dependency scan of depth one. 
      */
     public boolean containsAggregateRootBuilder();
+    
+    /**
+     * The IpsProject for which this builder set is registered.
+     */
+    public void setIpsProject(IIpsProject ipsProject);
+    
+    /**
+     * Returns the IpsProject for which this builder set is registered.
+     */
+    public IIpsProject getIpsProject();
 }

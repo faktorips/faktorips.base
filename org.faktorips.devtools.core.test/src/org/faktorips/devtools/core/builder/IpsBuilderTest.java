@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -727,7 +728,12 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         project2.setIpsObjectPath(newPath);
         
         project2.getProject().build(IncrementalProjectBuilder.CLEAN_BUILD, null);
-
     }
-    
+
+    public void testArtefactBuilderSetIfIpsProjectIsSet() throws CoreException{
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        IIpsArtefactBuilderSet builderSet = ((IpsModel)ipsProject.getIpsModel()).getIpsArtefactBuilderSet(ipsProject, false);
+        assertEquals(ipsProject, builderSet.getIpsProject());
+        
+    }
 }
