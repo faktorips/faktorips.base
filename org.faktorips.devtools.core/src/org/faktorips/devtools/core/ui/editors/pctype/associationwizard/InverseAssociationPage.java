@@ -34,19 +34,19 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * 
  * @author Joerg Ortmann
  */
-public class InverseRelationPage extends WizardPage {
+public class InverseAssociationPage extends WizardPage {
 
     private NewPcTypeAssociationWizard wizard;
     private UIToolkit toolkit;
 
-    private Button newReverseRelation;
-    private Button useExistingRelation;
-    private Button noReverseRelation;
+    private Button newInverseAssociation;
+    private Button useExistingAssociation;
+    private Button noInverseAssociation;
     private Button prevSelection;
 
-    public InverseRelationPage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit) {
-        super("InverseRelationPage", "Inverse relation", null);
-        setDescription("Define inverse relation");
+    public InverseAssociationPage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit) {
+        super("InverseAssociationPage", "Inverse association", null);
+        setDescription("Define inverse association");
         this.wizard = wizard;
         this.toolkit = toolkit;
         
@@ -56,24 +56,24 @@ public class InverseRelationPage extends WizardPage {
     public void createControl(Composite parent) {
         Composite pageComposite = wizard.createPageComposite(parent);
         
-        InverseRelationSelectionListener listener = new InverseRelationSelectionListener();
+        InverseAssociationSelectionListener listener = new InverseAssociationSelectionListener();
 
-        newReverseRelation = toolkit.createRadioButton(pageComposite, "New inverse relation");
-        newReverseRelation.addSelectionListener(listener);
+        newInverseAssociation = toolkit.createRadioButton(pageComposite, "New inverse association");
+        newInverseAssociation.addSelectionListener(listener);
         
         toolkit.createVerticalSpacer(pageComposite, 1);
 
-        useExistingRelation = toolkit.createRadioButton(pageComposite, "Use existing relation as inverse");
-        useExistingRelation.addSelectionListener(listener);
+        useExistingAssociation = toolkit.createRadioButton(pageComposite, "Use existing association as inverse");
+        useExistingAssociation.addSelectionListener(listener);
         
         toolkit.createVerticalSpacer(pageComposite, 1);
 
-        noReverseRelation = toolkit.createRadioButton(pageComposite, "No inverse relation");
-        noReverseRelation.addSelectionListener(listener);
+        noInverseAssociation = toolkit.createRadioButton(pageComposite, "No inverse association");
+        noInverseAssociation.addSelectionListener(listener);
         
         // set the default selection: no inverse
-        newReverseRelation.setSelection(true);
-        prevSelection = noReverseRelation;
+        newInverseAssociation.setSelection(true);
+        prevSelection = noInverseAssociation;
         
         setControl(pageComposite);
     }
@@ -81,16 +81,16 @@ public class InverseRelationPage extends WizardPage {
     /**
      * Listener for the radio buttons.
      */
-    private class InverseRelationSelectionListener implements SelectionListener {
+    private class InverseAssociationSelectionListener implements SelectionListener {
         public void widgetSelected(SelectionEvent e) {
             if (prevSelection != e.getSource()){
                 prevSelection = (Button) e.getSource();
-                if (e.getSource() == useExistingRelation) {
-                    wizard.setInverseAssociationManipulation(NewPcTypeAssociationWizard.USE_EXISTING_REVERSE_RELATION);
-                }else if(e.getSource() == newReverseRelation){
-                    wizard.setInverseAssociationManipulation(NewPcTypeAssociationWizard.NEW_REVERSE_RELATION);
-                }else if(e.getSource() == noReverseRelation){
-                    wizard.setInverseAssociationManipulation(NewPcTypeAssociationWizard.NONE_REVERSE_RELATION);
+                if (e.getSource() == useExistingAssociation) {
+                    wizard.setInverseAssociationManipulation(NewPcTypeAssociationWizard.USE_EXISTING_INVERSE_ASSOCIATION);
+                }else if(e.getSource() == newInverseAssociation){
+                    wizard.setInverseAssociationManipulation(NewPcTypeAssociationWizard.NEW_INVERSE_ASSOCIATION);
+                }else if(e.getSource() == noInverseAssociation){
+                    wizard.setInverseAssociationManipulation(NewPcTypeAssociationWizard.NONE_INVERSE_ASSOCIATION);
                 }
                 
                 wizard.pageHasChanged();

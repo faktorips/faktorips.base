@@ -42,7 +42,7 @@ public class ConfigureProductCmptTypePage extends WizardPage {
     private Button prevSelection;
 
     public ConfigureProductCmptTypePage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit) {
-        super("InverseRelationPage", "Inverse relation", null);
+        super("ProductComponentTypeAssociationPage", "Product component type association", null);
         setDescription("Define association on product component type");
         this.wizard = wizard;
         this.toolkit = toolkit;
@@ -53,7 +53,7 @@ public class ConfigureProductCmptTypePage extends WizardPage {
     public void createControl(Composite parent) {
         Composite pageComposite = wizard.createPageComposite(parent);
         
-        InverseRelationSelectionListener listener = new InverseRelationSelectionListener();
+        ProductComponentTypeAssociationSelectionListener listener = new ProductComponentTypeAssociationSelectionListener();
         
         newAssociationOnProductCmptType = toolkit.createRadioButton(pageComposite, "Create a new product component type association");
         newAssociationOnProductCmptType.addSelectionListener(listener);
@@ -73,7 +73,7 @@ public class ConfigureProductCmptTypePage extends WizardPage {
     /**
      * Listener for the radio buttons.
      */
-    private class InverseRelationSelectionListener implements SelectionListener {
+    private class ProductComponentTypeAssociationSelectionListener implements SelectionListener {
         public void widgetSelected(SelectionEvent e) {
             if (prevSelection != e.getSource()){
                 prevSelection = (Button) e.getSource();

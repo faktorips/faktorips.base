@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
  * 
  * @author Joerg Ortmann
  */
-public class InverseRelationPropertyPage extends WizardPage implements IBlockedValidationWizardPage, IHiddenWizardPage {
+public class InverseAssociationPropertyPage extends WizardPage implements IBlockedValidationWizardPage, IHiddenWizardPage {
     
     private NewPcTypeAssociationWizard wizard;
     private UIToolkit toolkit;
@@ -64,7 +64,7 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
     private Combo existingRelCombo;
     private Label existingRelLabel;
 
-    private String prevSelExistingRelation;
+    private String prevSelExistingAssociation;
     private Text description;
     
     // Composites to dispose an recreate the page content if the inverse association wil be recreated
@@ -72,9 +72,9 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
     private Composite pageComposite;
     private Composite dynamicComposite;
     
-    public InverseRelationPropertyPage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit, BindingContext bindingContext) {
-        super("InverseRelationPropertyPage", "Inverse relation properties", null);
-        setDescription("Define new inverse relation");
+    public InverseAssociationPropertyPage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit, BindingContext bindingContext) {
+        super("InverseAssociationPropertyPage", "Inverse association properties", null);
+        setDescription("Define new inverse association");
         this.wizard = wizard;
         this.toolkit = toolkit;
         this.bindingContext = bindingContext;
@@ -102,7 +102,7 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
         existingRelCombo = toolkit.createCombo(top);
         existingRelCombo.addListener(SWT.Modify, new Listener() {
             public void handleEvent(Event ev) {
-                existingRelationSelectionChanged();
+                existingAssociationSelectionChanged();
             }
         });
     }
@@ -205,7 +205,7 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
     }
 
     private void resetControlsAndBinding(IPolicyCmptTypeAssociation association) {
-        prevSelExistingRelation = association==null?"":association.getName();
+        prevSelExistingAssociation = association==null?"":association.getName();
         bindingContext.removeBindings(targetRoleSingularText);
         bindingContext.removeBindings(targetRolePluralText);
         bindingContext.removeBindings(cardinalityFieldMin.getControl());
@@ -247,7 +247,7 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
      * Set <code>true</code> if the existing association control should be displayed otherwise
      * <code>false</code>.
      */
-    public void setShowExistingRelationDropDown(boolean showExisting) {
+    public void setShowExistingAssociationDropDown(boolean showExisting) {
         existingRelCombo.setVisible(showExisting);
         existingRelLabel.setVisible(showExisting);
     }
@@ -264,7 +264,7 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
      * Refreshs the control changeable state.
      */
     public void refreshControls() {
-        setControlChangeable(!wizard.isExistingReverseRelation());
+        setControlChangeable(!wizard.isExistingInverseAssociation());
     }
     
     private void setControlChangeable(boolean changeable){
@@ -275,14 +275,14 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
     }
     
     /**
-     * Event function to indicate a change of the existing relation.
+     * Event function to indicate a change of the existing association.
      */
-    private void existingRelationSelectionChanged() {
+    private void existingAssociationSelectionChanged() {
         int selIdx = existingRelCombo.getSelectionIndex();
         if (selIdx>=0){
-            String selExistingRelation = existingRelCombo.getItem(selIdx);
-            if (!selExistingRelation.equals(prevSelExistingRelation)){
-                wizard.storeExistingInverseRelation(selExistingRelation);
+            String selExistingAssociation = existingRelCombo.getItem(selIdx);
+            if (!selExistingAssociation.equals(prevSelExistingAssociation)){
+                wizard.storeExistingInverseAssociation(selExistingAssociation);
                 wizard.contentsChanged(this);
             }
         }
@@ -299,15 +299,15 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
      * {@inheritDoc}
      * 
      * @return <code>false</code> if no inverse association should be created or no existing
-     *         relation exists otherwise <code>true</code>.
+     *         association exists otherwise <code>true</code>.
      */
     public boolean isPageVisible() {
-        if (wizard.isNoneReverseRelation()) {
+        if (wizard.isNoneInverseAssociation()) {
             // reset the association separately
             //   because handleInverseAssociationSelectionState will never executed (see this.setVisible)
             association = null;
             return false;
-        } else if (wizard.isExistingReverseRelation()) {
+        } else if (wizard.isExistingInverseAssociation()) {
             return wizard.areExistingAssociationsAvailable();
         }
 

@@ -56,9 +56,9 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 public class NewPcTypeAssociationWizard extends Wizard implements ContentsChangeListener {
-    final static int NEW_REVERSE_RELATION = 0;
-    final static int USE_EXISTING_REVERSE_RELATION = 1;
-    final static int NONE_REVERSE_RELATION = 2;
+    final static int NEW_INVERSE_ASSOCIATION = 0;
+    final static int USE_EXISTING_INVERSE_ASSOCIATION = 1;
+    final static int NONE_INVERSE_ASSOCIATION = 2;
     
     private static final int SUPPRESS_CHANGES_INVERSE_ASSOCIATION = 1;
     private static final int SUPPRESS_CHANGES_PRODUCT_CMPT_TYPE_ASSOCIATION = 2;
@@ -85,8 +85,8 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
 
     // model objects states
-    private Memento mementoTargetBeforeNewRelation;
-    private Memento mementoProductCmptTypeBeforeRelation;
+    private Memento mementoTargetBeforeNewAssociation;
+    private Memento mementoProductCmptTypeBeforeAssociation;
     private boolean targetIsDirty;
     private boolean productCmptTypeIsDirty;
 
@@ -94,15 +94,15 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     private List pages = new ArrayList();
     private AssociationTargetPage associationTargetPage;
     private PropertyPage propertyPage;
-    private InverseRelationPage inverseRelationPage;
-    private InverseRelationPropertyPage inverseRelationPropertyPage;
+    private InverseAssociationPage inverseAssociationPage;
+    private InverseAssociationPropertyPage inverseAssociationPropertyPage;
     private ConfigureProductCmptTypePage configureProductCmptTypePage;
     private ConfProdCmptTypePropertyPage confProdCmptTypePropertyPage;
     private ErrorPage errorPage;
 
     // stores page selections
-    private int inverseAssociationManipulation = NEW_REVERSE_RELATION;
-    private int previousreverseRelationManipulation = NONE_REVERSE_RELATION;
+    private int inverseAssociationManipulation = NEW_INVERSE_ASSOCIATION;
+    private int previousInverseAssociationManipulation = NONE_INVERSE_ASSOCIATION;
     private boolean configureProductCmptType = true;
     private boolean prevConfigureProductCmptType = false;
     private String previousTarget;
@@ -134,22 +134,22 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     public void addPages() {
         associationTargetPage = new AssociationTargetPage(this, association, toolkit, bindingContext);
         propertyPage = new PropertyPage(this, association, toolkit, bindingContext);
-        inverseRelationPage = new InverseRelationPage(this, toolkit);
-        inverseRelationPropertyPage = new InverseRelationPropertyPage(this, toolkit, bindingContext);
+        inverseAssociationPage = new InverseAssociationPage(this, toolkit);
+        inverseAssociationPropertyPage = new InverseAssociationPropertyPage(this, toolkit, bindingContext);
         configureProductCmptTypePage = new ConfigureProductCmptTypePage(this, toolkit);
         confProdCmptTypePropertyPage = new ConfProdCmptTypePropertyPage(this, toolkit, bindingContext);
         errorPage = new ErrorPage(toolkit);
 
         addPage(associationTargetPage);
         addPage(propertyPage);
-        addPage(inverseRelationPage);
-        addPage(inverseRelationPropertyPage);
+        addPage(inverseAssociationPage);
+        addPage(inverseAssociationPropertyPage);
         addPage(configureProductCmptTypePage);
         addPage(confProdCmptTypePropertyPage);
         addPage(errorPage);
         
-        detailToMasterHiddenPages.add(inverseRelationPage);
-        detailToMasterHiddenPages.add(inverseRelationPropertyPage);
+        detailToMasterHiddenPages.add(inverseAssociationPage);
+        detailToMasterHiddenPages.add(inverseAssociationPropertyPage);
         detailToMasterHiddenPages.add(configureProductCmptTypePage);
         detailToMasterHiddenPages.add(confProdCmptTypePropertyPage);
         
@@ -169,7 +169,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     
     private void initSuppressedEventsForPages() {
         suppressedEventForPages.put(associationTargetPage, new Integer(1));
-        suppressedEventForPages.put(inverseRelationPropertyPage, new Integer(SUPPRESS_CHANGES_INVERSE_ASSOCIATION));
+        suppressedEventForPages.put(inverseAssociationPropertyPage, new Integer(SUPPRESS_CHANGES_INVERSE_ASSOCIATION));
         suppressedEventForPages.put(confProdCmptTypePropertyPage, new Integer(SUPPRESS_CHANGES_PRODUCT_CMPT_TYPE_ASSOCIATION));
     }
     
@@ -308,7 +308,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     private boolean isValidationDisabledFor(IBlockedValidationWizardPage page) {
         if (page instanceof ConfProdCmptTypePropertyPage && !configureProductCmptType){
             return true;
-        } else if (page instanceof InverseRelationPropertyPage && inverseAssociationManipulation == NONE_REVERSE_RELATION){
+        } else if (page instanceof InverseAssociationPropertyPage && inverseAssociationManipulation == NONE_INVERSE_ASSOCIATION){
             return true;
         }
         return false;
@@ -318,7 +318,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * Returns the association which could be edit by the give page
      */
     private Validatable getAssociationFor(IBlockedValidationWizardPage page) {
-        if (page instanceof InverseRelationPropertyPage){
+        if (page instanceof InverseAssociationPropertyPage){
             return inverseAssociation;
         } else if (page instanceof PropertyPage || page instanceof AssociationTargetPage){
             return association;
@@ -340,7 +340,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         // indicates that the page was displayed before
         visiblePages.add(page);
         
-        // resets the special case message "no existing inverse relation"
+        // resets the special case message "no existing inverse association"
         ((WizardPage)getContainer().getCurrentPage()).setMessage(null);
         
         // if there is an error on the current page then to no next page could be switched
@@ -372,11 +372,11 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 return null;
             }
             
-            // display information in special case "no existing inverse relation"
-            //   if an existing inverse relation should be used but no corresponding association exists
-            if (nextPage instanceof InverseRelationPropertyPage) {
+            // display information in special case "no existing inverse association"
+            //   if an existing inverse association should be used but no corresponding association exists
+            if (nextPage instanceof InverseAssociationPropertyPage) {
                 ((WizardPage)getContainer().getCurrentPage()).setMessage(null);
-                if (isExistingReverseRelation()) {
+                if (isExistingInverseAssociation()) {
                     if (!areExistingAssociationsAvailable()) {
                         ((WizardPage)getContainer().getCurrentPage())
                                 .setMessage(
@@ -455,67 +455,67 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * reset the state and optional create a new inverse association. 
      */
     void handleInverseAssociationSelectionState() {
-        if (previousreverseRelationManipulation == inverseAssociationManipulation 
+        if (previousInverseAssociationManipulation == inverseAssociationManipulation 
             && previousTarget.equals(targetPolicyCmptType.getQualifiedName()) 
             && previousTargetAssociationType == association.getAssociationType()){
             return;
         }
         
         // if selection changed restore last state
-        previousreverseRelationManipulation = inverseAssociationManipulation;
+        previousInverseAssociationManipulation = inverseAssociationManipulation;
         previousTarget = association.getTarget();
         previousTargetAssociationType = association.getAssociationType();
                 
         restoreMementoTargetBeforeChange();
         storeMementoTargetBeforeChange();
-        storeInverseRelation(null);
+        storeInverseAssociation(null);
 
-        if (isExistingReverseRelation()) {
-            inverseRelationPropertyPage.setDescription("Select an existing association");
-            inverseRelationPropertyPage.setShowExistingRelationDropDown(true);
+        if (isExistingInverseAssociation()) {
+            inverseAssociationPropertyPage.setDescription("Select an existing association");
+            inverseAssociationPropertyPage.setShowExistingAssociationDropDown(true);
             try {
-                // get all existing relations that matches as reverse for the new relation
-                List existingRelations = getCorrespondingTargetAssociations(association, targetPolicyCmptType);
-                if (existingRelations.size() > 0) {
-                    String[] names = new String[existingRelations.size()];
-                    for (int i = 0; i < existingRelations.size(); i++) {
-                        names[i] = (((IPolicyCmptTypeAssociation)existingRelations.get(i)).getName());
+                // get all existing association that matches as inverse for the new association
+                List existingAssociations = getCorrespondingTargetAssociations(association, targetPolicyCmptType);
+                if (existingAssociations.size() > 0) {
+                    String[] names = new String[existingAssociations.size()];
+                    for (int i = 0; i < existingAssociations.size(); i++) {
+                        names[i] = (((IPolicyCmptTypeAssociation)existingAssociations.get(i)).getName());
                     }
-                    inverseRelationPropertyPage.setExistingAssociations(names);
+                    inverseAssociationPropertyPage.setExistingAssociations(names);
                 } else {
-                    inverseRelationPropertyPage.setExistingAssociations(new String[0]);
+                    inverseAssociationPropertyPage.setExistingAssociations(new String[0]);
                 }
             } catch (CoreException e) {
                 showAndLogError(e);
             }
-        } else if (isNewReverseRelation()) {
-            inverseRelationPropertyPage.setDescription("Define new inverse relation");
-            inverseRelationPropertyPage.setShowExistingRelationDropDown(false);
-            // create a new reverse relation
-            storeInverseRelation(null);
+        } else if (isNewInverseAssociation()) {
+            inverseAssociationPropertyPage.setDescription("Define new inverse association");
+            inverseAssociationPropertyPage.setShowExistingAssociationDropDown(false);
+            // create a new inverse association
+            storeInverseAssociation(null);
             try {
-                createNewInverseRelation();
+                createNewInverseAssociation();
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 showAndLogError(e);
             }
         } 
 
-        inverseRelationPropertyPage.refreshControls();
+        inverseAssociationPropertyPage.refreshControls();
     }
 
     /*
-     * Create a new reverse relation, i.e. create a new relation on the target policy component type
+     * Create a new inverse association, i.e. create a new association on the target policy component type
      * object.
      */
-    private void createNewInverseRelation() throws CoreException {
+    private void createNewInverseAssociation() throws CoreException {
         if (targetPolicyCmptType==null){
             return;
         }
         
         IPolicyCmptTypeAssociation newInverseAssociation = association.newInverseAssociation();
-        storeInverseRelation(newInverseAssociation);
-        setDefaultsByRelationTypeAndTarget(newInverseAssociation);
+        storeInverseAssociation(newInverseAssociation);
+        setDefaultsByAssociationTypeAndTarget(newInverseAssociation);
     }
 
     /*
@@ -539,23 +539,23 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     }
     
     /**
-     * Set the default values depending on the relation type and read-only container flag.
+     * Set the default values depending on the association type and read-only container flag.
      * FIXME Joerg: in model aufnehmen?
      */
-    void setDefaultsByRelationTypeAndTarget(IPolicyCmptTypeAssociation newRelation){
-        AssociationType type = newRelation.getAssociationType();
+    void setDefaultsByAssociationTypeAndTarget(IPolicyCmptTypeAssociation newAssociation){
+        AssociationType type = newAssociation.getAssociationType();
         if (type != null) {
             if (type.isCompositionMasterToDetail()) {
-                newRelation.setMaxCardinality(Integer.MAX_VALUE);
+                newAssociation.setMaxCardinality(Integer.MAX_VALUE);
             } else if (type.isCompositionDetailToMaster()) {
-                newRelation.setMinCardinality(1);
-                newRelation.setMaxCardinality(1);
-                newRelation.setDerivedUnion(false);
+                newAssociation.setMinCardinality(1);
+                newAssociation.setMaxCardinality(1);
+                newAssociation.setDerivedUnion(false);
             } else if (type.isAssoziation()) {
-                newRelation.setSubsettedDerivedUnion(""); //$NON-NLS-1$
-                newRelation.setDerivedUnion(false);
-                if (newRelation.isDerivedUnion()){
-                    newRelation.setMaxCardinality(Integer.MAX_VALUE);
+                newAssociation.setSubsettedDerivedUnion(""); //$NON-NLS-1$
+                newAssociation.setDerivedUnion(false);
+                if (newAssociation.isDerivedUnion()){
+                    newAssociation.setMaxCardinality(Integer.MAX_VALUE);
                 }
             }
         }
@@ -564,10 +564,10 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     /**
      * Returns association from the target if:<br>
      * <ul>
-     * <li>the target of the target relation points to the source (policy component type of the given sourceAssociation)
-     * <li>the target association type is the corresponding relation type of the source (Assoziation=Assoziation, Composition=>ReverseComp, ReverseComp=>Compostion)
+     * <li>the target of the target association points to the source (policy component type of the given sourceAssociation)
+     * <li>the target association type is the corresponding association type of the source
      * </ul>
-     * If no relation is found on the target then an empty (not null) ArrayList
+     * If no association is found on the target then an empty (not null) ArrayList
      * is returned.
      * 
      * @throws CoreException
@@ -608,7 +608,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     public boolean performFinish() {
         try {
             // check and perform the last state change of the radio selection pages
-            if (inverseAssociationManipulation == NONE_REVERSE_RELATION){
+            if (inverseAssociationManipulation == NONE_INVERSE_ASSOCIATION){
                 handleInverseAssociationSelectionState();
             }
             if (!configureProductCmptType) {
@@ -618,7 +618,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             boolean saveTargetAutomatically = false;
             if (targetPolicyCmptType != null && 
                     ! targetPolicyCmptType.getIpsSrcFile().equals(association.getIpsObject().getIpsSrcFile())){
-                // there is a target selected and the target is not the object this new relation belongs to
+                // there is a target selected and the target is not the object this new association belongs to
                 if (targetIsDirty){
                     // target policy component type was dirty before editing by the wizard,
                     //   ask to save automatically
@@ -685,10 +685,10 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             return;
         }
         
-        mementoTargetBeforeNewRelation = targetPolicyCmptType.newMemento();
+        mementoTargetBeforeNewAssociation = targetPolicyCmptType.newMemento();
     }
     
-    public void storeInverseRelation(IPolicyCmptTypeAssociation inverseAssociation) {
+    public void storeInverseAssociation(IPolicyCmptTypeAssociation inverseAssociation) {
         this.inverseAssociation = inverseAssociation;
         if (inverseAssociation != null && inverseAssociation.isAssoziation()){
             association.setInverseAssociation(inverseAssociation.getTargetRoleSingular());
@@ -696,14 +696,14 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         }else{
             association.setInverseAssociation(""); //$NON-NLS-1$
         }        
-        inverseRelationPropertyPage.setAssociationAndUpdatePage(inverseAssociation);
+        inverseAssociationPropertyPage.setAssociationAndUpdatePage(inverseAssociation);
     }
 
-    public void storeExistingInverseRelation(String inverseAssociation) {
+    public void storeExistingInverseAssociation(String inverseAssociation) {
         IPolicyCmptTypeAssociation[] policyCmptTypeAssociations = targetPolicyCmptType.getPolicyCmptTypeAssociations();
         for (int i = 0; i < policyCmptTypeAssociations.length; i++) {
             if (policyCmptTypeAssociations[i].getName().equals(inverseAssociation)) {
-                storeInverseRelation(policyCmptTypeAssociations[i]);
+                storeInverseAssociation(policyCmptTypeAssociations[i]);
                 return;
             }
         }
@@ -725,7 +725,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         if (productCmptType == null){
             return;
         }
-        mementoProductCmptTypeBeforeRelation = productCmptType.newMemento();
+        mementoProductCmptTypeBeforeAssociation = productCmptType.newMemento();
     }
 
     public IProductCmptType findProductCmptType() {
@@ -740,57 +740,57 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     
     public void restoreMementoProductCmptTypeBeforeChange() {
         productCmptTypeAssociation = null;
-        if (targetPolicyCmptType==null || mementoProductCmptTypeBeforeRelation == null){
+        if (targetPolicyCmptType==null || mementoProductCmptTypeBeforeAssociation == null){
             return;
         }
         IProductCmptType productCmptType = findProductCmptType();
         if (productCmptType == null){
             return;
         }
-        productCmptType.setState(mementoProductCmptTypeBeforeRelation);
+        productCmptType.setState(mementoProductCmptTypeBeforeAssociation);
         if (!productCmptTypeIsDirty) {
             // if the product component type wasn't dirty before mark as clean
             productCmptType.getIpsSrcFile().markAsClean();
         }
-        mementoProductCmptTypeBeforeRelation = null;
+        mementoProductCmptTypeBeforeAssociation = null;
     }
     
     public void restoreMementoTargetBeforeChange() {
         inverseAssociation = null;
-        if (targetPolicyCmptType==null || mementoTargetBeforeNewRelation == null){
+        if (targetPolicyCmptType==null || mementoTargetBeforeNewAssociation == null){
             return;
         }
-        targetPolicyCmptType.setState(mementoTargetBeforeNewRelation);
+        targetPolicyCmptType.setState(mementoTargetBeforeNewAssociation);
         if (!targetIsDirty) {
             // if the target wasn't dirty before mark as clean
             targetPolicyCmptType.getIpsSrcFile().markAsClean();
         }
-        mementoTargetBeforeNewRelation = null;
+        mementoTargetBeforeNewAssociation = null;
     }
     
     /**
-     * Returns true if the reverse relation is an existing relation on the target.
+     * Returns true if the inverse association is an existing association on the target.
      */
-    boolean isExistingReverseRelation() {
-        return inverseAssociationManipulation == USE_EXISTING_REVERSE_RELATION;
+    boolean isExistingInverseAssociation() {
+        return inverseAssociationManipulation == USE_EXISTING_INVERSE_ASSOCIATION;
     }   
     
     /**
-     * Returns true if the reverse relation is new relation on the target.
+     * Returns true if the inverse association is new association on the target.
      */
-    boolean isNewReverseRelation() {
-        return inverseAssociationManipulation == NEW_REVERSE_RELATION;
+    boolean isNewInverseAssociation() {
+        return inverseAssociationManipulation == NEW_INVERSE_ASSOCIATION;
     }
 
     /**
-     * Returns true if none reverse relation should be defined.
+     * Returns true if none inverse association should be defined.
      */
-    boolean isNoneReverseRelation() {
-        return inverseAssociationManipulation == NONE_REVERSE_RELATION;
+    boolean isNoneInverseAssociation() {
+        return inverseAssociationManipulation == NONE_INVERSE_ASSOCIATION;
     }
     
     /**
-     * Sets that the revese relation is an existing relation on the target.
+     * Sets that the inverse association is an existing association on the target.
      */
     void setInverseAssociationManipulation(int type) {
         inverseAssociationManipulation = type;
@@ -901,7 +901,10 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         if (correspondingAssociations.size() == 0) {
             return false;
         }
-        if (correspondingAssociations.size() == 1 && correspondingAssociations.get(0).equals(inverseAssociation)) {
+        
+        // if one association found and the last operation was create new the this is the created association
+        if (correspondingAssociations.size() == 1 && 
+            previousInverseAssociationManipulation  == NEW_INVERSE_ASSOCIATION ) {
             return false;
         }
         return true;
