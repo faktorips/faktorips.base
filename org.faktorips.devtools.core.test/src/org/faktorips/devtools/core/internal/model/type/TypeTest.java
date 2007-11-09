@@ -26,7 +26,9 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -262,6 +264,45 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertSame(a1, type.findAttribute("a1", ipsProject));
         
         assertNull(type.findAttribute("unknown", ipsProject));
+    }
+    
+    /**
+     * Test find associations by target and association type
+     * 
+     * @throws CoreException 
+     */
+    public void testFindAssociationsForTargetAndAssociationType() throws CoreException{
+        IProductCmptType baseMotor = newProductCmptType(ipsProject, "BaseMotorProduct");
+        IProductCmptType motor = (IProductCmptType)type;
+        IProductCmptType injection = newProductCmptType(ipsProject, "InjectionProduct");
+        
+        IAssociation[] associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(), AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject);
+        assertEquals(0, associations.length);
+        
+        // Association: motor -> injection
+        IAssociation association = motor.newAssociation();
+        association.setTarget(injection.getQualifiedName());
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        
+        // Association: baseMotor -> injection
+        IAssociation associationInBase = motor.newAssociation();
+        associationInBase.setTarget(injection.getQualifiedName());
+        associationInBase.setAssociationType(AssociationType.ASSOCIATION);
+        
+        // result = 1, because super not set 
+        associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(), AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject);
+        assertEquals(1, associations.length);
+        
+        motor.setSupertype(baseMotor.getQualifiedName());
+        
+        // result = 1, because asssociation type of super type association not equal
+        associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(), AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject);
+        assertEquals(1, associations.length);
+        
+        // result = 2
+        associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(), AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject);
+        assertEquals(2, associations.length);
     }
     
     public void testFindAllAttributes() throws Exception{
