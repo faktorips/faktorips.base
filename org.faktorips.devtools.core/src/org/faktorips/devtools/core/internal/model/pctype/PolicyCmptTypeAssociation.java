@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
@@ -255,6 +256,17 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public AssociationType getCorrespondingAssociationType() {
+        return type == null ? null : 
+            type.isAssoziation() ? AssociationType.ASSOCIATION : 
+            type.isCompositionDetailToMaster() ? AssociationType.COMPOSITION_MASTER_TO_DETAIL : 
+            type.isCompositionMasterToDetail() ? AssociationType.COMPOSITION_DETAIL_TO_MASTER : 
+                null;
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public String getTargetRoleSingularProductSide() {
@@ -396,6 +408,39 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             }
         }
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IPolicyCmptTypeAssociation newInverseAssociation() throws CoreException {
+        IPolicyCmptType targetPolicyCmptType = findTargetPolicyCmptType(getIpsProject());
+        if (targetPolicyCmptType == null) {
+            throw new CoreException(new IpsStatus("Target policy component type of association " + getName()
+                    + " not found."));
+        }
+        
+        IPolicyCmptTypeAssociation inverseAssociation = targetPolicyCmptType.newPolicyCmptTypeAssociation();
+        inverseAssociation.setTarget(getPolicyCmptType().getQualifiedName());
+        inverseAssociation.setAssociationType(getCorrespondingAssociationType());
+        
+        if (type == AssociationType.ASSOCIATION){
+            // FIXME Joerg: nur bei association inverse setzen?, wenn ja Test erweitern!
+            setInverseAssociation(inverseAssociation.getName());
+            inverseAssociation.setInverseAssociation(getName());
+        }
+        
+        // FIXME Joerg: richtig so?, wenn ja Test erweitern!
+        IPolicyCmptTypeAssociation derivedUnionAssociation = (IPolicyCmptTypeAssociation)findSubsettedDerivedUnion(getIpsProject());
+        if (inverseAssociation.isAssoziation() && derivedUnionAssociation != null){
+            inverseAssociation.setSubsettedDerivedUnion(derivedUnionAssociation.getInverseAssociation());
+        }
+        
+        if (isAssoziation() && isDerivedUnion()){
+            inverseAssociation.setDerivedUnion(true);
+        }
+        
+        return inverseAssociation;
     }
 
     /** 

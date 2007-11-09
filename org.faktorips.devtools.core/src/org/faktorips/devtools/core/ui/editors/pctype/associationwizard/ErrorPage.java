@@ -23,6 +23,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
+/**
+ * Page shows the error if an exception was thrown.
+ * 
+ * @author Joerg Ortmann
+ */
 public class ErrorPage extends WizardPage implements IHiddenWizardPage{
     private static final String PAGE_ID = "Error"; //$NON-NLS-1$
     
@@ -69,6 +74,9 @@ public class ErrorPage extends WizardPage implements IHiddenWizardPage{
         details.pack();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isPageVisible() {
         return false;
     }

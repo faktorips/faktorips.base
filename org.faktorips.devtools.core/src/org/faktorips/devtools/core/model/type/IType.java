@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 
 /**
  * Common interface for types, policy component type and product component type.
@@ -220,6 +221,16 @@ public interface IType extends IIpsObject, Datatype {
      * @throws CoreException if an error occurs while searching.
      */
     public IAssociation findAssociation(String name, IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Returns all associations that have the indicated target and association type in the current type and
+     * it's supertype hierarchy. Returns an empty array if no such assoiation exists or target or
+     * association type is <code>null</code>.
+     * 
+     * @param target The qualified name of the target type.
+     * @param associationType The association type
+     */
+    public IAssociation[] findAssociationsForTargetAndAssociationType(String target, AssociationType associationType, IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the type's associations.

@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -31,9 +29,14 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
-import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.core.ui.controls.AssociationDerivedUnionGroup;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 
+/**
+ * Page to specify the target, the association type, the derived union option, and the description.
+ * 
+ * @author Joerg Ortmann
+ */
 public class AssociationTargetPage extends WizardPage implements IBlockedValidationWizardPage {
 
     private NewPcTypeAssociationWizard wizard;
@@ -55,53 +58,52 @@ public class AssociationTargetPage extends WizardPage implements IBlockedValidat
     }
 
     public void createControl(Composite parent) {
-        Composite main = toolkit.createLabelEditColumnComposite(parent);
-        ((GridLayout)main.getLayout()).marginHeight = 12;
-        main.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-        // target
-        toolkit.createFormLabel(main, "Target");
-        PcTypeRefControl targetControl = toolkit.createPcTypeRefControl(association.getIpsProject(), main);
-        bindingContext.bindContent(targetControl, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET);
-        visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_TARGET);
+        Composite pageComposite = wizard.createPageComposite(parent);
         
-        // type
-        toolkit.createFormLabel(main, "Type");
-        Combo typeCombo = toolkit.createCombo(main, AssociationType.getEnumType());
-        bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE, AssociationType.getEnumType());
-        typeCombo.select(0);
-        visibleProperties.add(IAssociation.PROPERTY_ASSOCIATION_TYPE);
+        createTargetAndTypeControls(toolkit.createLabelEditColumnComposite(pageComposite));
         
-        // derived union checkbox
-        toolkit.createFormLabel(main, "Derived union");
-        final Checkbox derivedUnionCheckbox = toolkit.createCheckbox(main);        
-        bindingContext.bindContent(derivedUnionCheckbox, association, IPolicyCmptTypeAssociation.PROPERTY_DERIVED_UNION);
-        visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_DERIVED_UNION);
-        bindingContext.bindEnabled(derivedUnionCheckbox, association, IPolicyCmptTypeAssociation.PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE);
+        toolkit.createVerticalSpacer(pageComposite, 10);
         
-        // description
-        Text text = wizard.createDescriptionText(main);
-        bindingContext.bindContent(text, association, IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
-        visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
+        new AssociationDerivedUnionGroup(toolkit, bindingContext, pageComposite, association);
         
-        setControl(main);
+        createDescriptionControl(pageComposite);
+        
+        setControl(pageComposite);
     }
 
+    private void createTargetAndTypeControls(Composite top) {
+        // target
+        toolkit.createFormLabel(top, "Target");
+        PcTypeRefControl targetControl = toolkit.createPcTypeRefControl(association.getIpsProject(), top);
+        bindingContext.bindContent(targetControl, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET);
+        visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_TARGET);
+
+        // type
+        toolkit.createFormLabel(top, "Type");
+        Combo typeCombo = toolkit.createCombo(top, IPolicyCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
+        bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE, AssociationType.getEnumType());
+        typeCombo.select(0);
+
+        visibleProperties.add(IAssociation.PROPERTY_ASSOCIATION_TYPE);
+    }
+    
+    private void createDescriptionControl(Composite pageComposite) {
+        Text text = wizard.createDescriptionText(pageComposite, 2);
+        bindingContext.bindContent(text, association, IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
+        visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public List getProperties() {
+        return visibleProperties;
+    }
+    
     /**
      * {@inheritDoc}
      */
     public boolean canFlipToNextPage() {
-        setErrorMessage(null);
-        boolean valid = wizard.validatePage(this, false);
-        
-        if (getNextPage() == null){
-            return false;
-        }
-        
-        return valid;
-    }
-
-    public List getProperties() {
-        return visibleProperties;
+        return wizard.canPageFlipToNextPage(this);
     }
 }

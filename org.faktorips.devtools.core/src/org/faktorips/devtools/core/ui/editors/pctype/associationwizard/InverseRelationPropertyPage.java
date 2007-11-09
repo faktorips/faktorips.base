@@ -21,13 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -41,6 +39,12 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 
+/**
+ * Page to specify the inverse association, either define properties for a new association, or choose
+ * an existing.
+ * 
+ * @author Joerg Ortmann
+ */
 public class InverseRelationPropertyPage extends WizardPage implements IBlockedValidationWizardPage, IHiddenWizardPage {
     
     private NewPcTypeAssociationWizard wizard;
@@ -48,7 +52,9 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
     private BindingContext bindingContext;
     
     private ArrayList visibleProperties = new ArrayList(10);
+    
     protected IPolicyCmptTypeAssociation association;
+    
     private Text targetRoleSingularText;
     private Text targetRolePluralText;
     private CardinalityField cardinalityFieldMin;
@@ -59,11 +65,12 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
     private Label existingRelLabel;
 
     private String prevSelExistingRelation;
-    private boolean displayedBefore;
     private Text description;
     
+    // Composites to dispose an recreate the page content if the inverse association wil be recreated
+    // e.g. the target or the option from the previous page are changed
+    private Composite pageComposite;
     private Composite dynamicComposite;
-    private Composite mainComposite;
     
     public InverseRelationPropertyPage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit, BindingContext bindingContext) {
         super("InverseRelationPropertyPage", "Inverse relation properties", null);
@@ -76,41 +83,56 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
     }
 
     public void createControl(Composite parent) {
-        mainComposite = toolkit.createLabelEditColumnComposite(parent);
-        mainComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-        ((GridLayout)mainComposite.getLayout()).marginHeight = 12;
+        pageComposite = wizard.createPageComposite(parent);
         
-        // target
-        toolkit.createFormLabel(mainComposite, "Target");
-        targetText = toolkit.createText(mainComposite);
-        targetText.setEnabled(false);
+        createTargetAndTypeControls(toolkit.createLabelEditColumnComposite(pageComposite));
 
-        // type
-        toolkit.createFormLabel(mainComposite, "Type");
-        typeText = toolkit.createText(mainComposite);
-        typeText.setEnabled(false);
+        createExistingAssociationComboControl(pageComposite);
+        
+        toolkit.createVerticalSpacer(pageComposite, 10);
+        
+        dynamicComposite = createGeneralControls(pageComposite);
+        
+        setControl(pageComposite);
+    }
 
-        // existing association
-        existingRelLabel = toolkit.createFormLabel(mainComposite, "Existing association");
-        existingRelCombo = toolkit.createCombo(mainComposite);
+    private void createExistingAssociationComboControl(Composite top) {
+        existingRelLabel = toolkit.createFormLabel(top, "Existing association");
+        existingRelCombo = toolkit.createCombo(top);
         existingRelCombo.addListener(SWT.Modify, new Listener() {
             public void handleEvent(Event ev) {
                 existingRelationSelectionChanged();
             }
         });
-        
-        dynamicComposite = createGeneralControls(mainComposite);
-        setControl(mainComposite);
+    }
+
+    private void createTargetAndTypeControls(Composite top) {
+        // target
+        toolkit.createFormLabel(top, "Target");
+        targetText = toolkit.createText(top);
+        targetText.setEnabled(false);
+
+        // type
+        toolkit.createFormLabel(top, "Type");
+        typeText = toolkit.createText(top);
+        typeText.setEnabled(false);
     }
 
     private Composite createGeneralControls(Composite root) {
-        Composite parent = toolkit.createLabelEditColumnComposite(root);
-        GridData gd = new GridData(GridData.FILL_BOTH);
-        gd.horizontalSpan = 2;
-        parent.setLayoutData(gd);
+        Composite parent = toolkit.createGridComposite(root, 1, false, false);
+        parent.setLayoutData(new GridData(GridData.FILL_BOTH));
         
+        createMainProperties(parent);
+        
+        description = wizard.createDescriptionText(parent, 2);
+        visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
+        
+        return parent;
+    }
+
+    private void createMainProperties(Composite parent) {
         Group group = toolkit.createGroup(parent, "Properties");
-        gd.grabExcessVerticalSpace = false;
+        ((GridData)group.getLayoutData()).grabExcessVerticalSpace = false;
         
         Composite workArea = toolkit.createLabelEditColumnComposite(group);
         workArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false ));
@@ -158,69 +180,88 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
         
         // bottom extensions
         wizard.getExtFactoryInverseAssociation().createControls(workArea, toolkit, association, IExtensionPropertyDefinition.POSITION_BOTTOM);
-        
-        description = wizard.createDescriptionText(parent);
-        visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
-        
-        return parent;
     }
 
-    public void setAssociationAndUpdatePage(IPolicyCmptTypeAssociation association) {
-        this.association = association;
+    /**
+     * Sets or resets the inverers association. 
+     * 
+     * @param inverseAssociation The inverse association which will be edit in this page
+     */
+    public void setAssociationAndUpdatePage(IPolicyCmptTypeAssociation inverseAssociation) {
+        this.association = inverseAssociation;
+        
+        resetControlsAndBinding(inverseAssociation);
+        
+        if (association != null){
+            // recreate the page depending on the given association
+            dynamicComposite.dispose();
+            dynamicComposite = createGeneralControls(pageComposite);
+            
+            bindAllControls(inverseAssociation);
+        }
+        
+        refreshPageConrolLayouts();
+    }
+
+    private void resetControlsAndBinding(IPolicyCmptTypeAssociation association) {
         prevSelExistingRelation = association==null?"":association.getName();
         bindingContext.removeBindings(targetRoleSingularText);
         bindingContext.removeBindings(targetRolePluralText);
         bindingContext.removeBindings(cardinalityFieldMin.getControl());
         bindingContext.removeBindings(cardinalityFieldMax.getControl());
         bindingContext.removeBindings(description);
- 
         wizard.getExtFactoryAssociation().removeBinding(bindingContext);
-        
-        if (association != null){
-            dynamicComposite.dispose();
-            dynamicComposite = createGeneralControls(mainComposite);
-            
-            bindingContext.bindContent(targetRoleSingularText, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
-            bindingContext.bindContent(targetRolePluralText, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
-            bindingContext.bindContent((Text)cardinalityFieldMin.getControl(), association, IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
-            bindingContext.bindContent((Text)cardinalityFieldMax.getControl(), association, IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
-            bindingContext.bindContent(description, association, IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
-            
-            targetText.setText(association.getTarget());
-            typeText.setText(association.getAssociationType().getName());
-            
-            wizard.getExtFactoryInverseAssociation().bind(bindingContext);
-            
-            bindingContext.updateUI();
-            
-            mainComposite.pack(true);
-            mainComposite.getParent().pack(true);
-            mainComposite.getParent().layout();
-        } else {
-            targetRoleSingularText.setText("");
-            targetRolePluralText.setText("");
-            cardinalityFieldMin.setText("");
-            cardinalityFieldMax.setText("");
-            targetText.setText("");
-            typeText.setText("");
-            description.setText("");
-        }
-    }
-    
-    public List getProperties() {
-        return visibleProperties;
+
+        targetRoleSingularText.setText("");
+        targetRolePluralText.setText("");
+        cardinalityFieldMin.setText("");
+        cardinalityFieldMax.setText("");
+        targetText.setText("");
+        typeText.setText("");
+        description.setText("");
     }
 
+    private void bindAllControls(IPolicyCmptTypeAssociation association) {
+        bindingContext.bindContent(targetRoleSingularText, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
+        bindingContext.bindContent(targetRolePluralText, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
+        bindingContext.bindContent((Text)cardinalityFieldMin.getControl(), association, IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
+        bindingContext.bindContent((Text)cardinalityFieldMax.getControl(), association, IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
+        bindingContext.bindContent(description, association, IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
+        
+        targetText.setText(association.getTarget());
+        typeText.setText(association.getAssociationType().getName());
+        
+        wizard.getExtFactoryInverseAssociation().bind(bindingContext);
+        
+        bindingContext.updateUI();
+    }
+
+    private void refreshPageConrolLayouts() {
+        pageComposite.pack(true);
+        pageComposite.getParent().pack(true);
+        pageComposite.getParent().layout(true);
+    }
+    
+    /**
+     * Set <code>true</code> if the existing association control should be displayed otherwise
+     * <code>false</code>.
+     */
     public void setShowExistingRelationDropDown(boolean showExisting) {
         existingRelCombo.setVisible(showExisting);
         existingRelLabel.setVisible(showExisting);
     }
 
+    /**
+     * Stores the given association names as available existing inverse associations.
+     */
     public void setExistingAssociations(String[] associations) {
         existingRelCombo.setItems(associations);
         existingRelCombo.select(0);
     }
 
+    /**
+     * Refreshs the control changeable state.
+     */
     public void refreshControls() {
         setControlChangeable(!wizard.isExistingReverseRelation());
     }
@@ -247,48 +288,32 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
     }
     
     /**
-     * @return <code>false</code> if no inverse association should be created or no existing
-     *         relation exists otherwise <code>true</code>.
+     * {@inheritDoc}
      */
-    public boolean isPageVisible() {
-        boolean visible = false;
-        if (wizard.isNoneReverseRelation()) {
-            return false;
-        } else if (wizard.isExistingReverseRelation()) {
-            try {
-                if (NewPcTypeAssociationWizard.getCorrespondingTargetRelations(wizard.getAssociation(),
-                        wizard.getTargetPolicyCmptType()).size() == 0) {
-                    visible = false;
-                } else {
-                    visible = true;
-                }
-            } catch (CoreException e) {
-                wizard.showAndLogError(e);
-            }
-        } else {
-            visible = true;
-        }
-        if (visible) {
-            if (!displayedBefore) {
-                displayedBefore = true;
-                setPageComplete(false);
-            }
-        }
-        return visible;
+    public List getProperties() {
+        return visibleProperties;
     }
     
     /**
      * {@inheritDoc}
+     * 
+     * @return <code>false</code> if no inverse association should be created or no existing
+     *         relation exists otherwise <code>true</code>.
      */
-    public boolean canFlipToNextPage() {
-        setErrorMessage(null);
-        boolean valid = wizard.validatePage(this, false);
-        
-        if (getNextPage() == null){
+    public boolean isPageVisible() {
+        if (wizard.isNoneReverseRelation()) {
             return false;
+        } else if (wizard.isExistingReverseRelation()) {
+            List correspondingAssociations = wizard.getExistingInverseAssociationCandidates();
+            if (correspondingAssociations.size() == 0) {
+                return false;
+            }
+            if (correspondingAssociations.size() == 1 && correspondingAssociations.get(0).equals(association)) {
+                return false;
+            }
         }
-        
-        return valid;
+
+        return true;
     }
     
     /**
@@ -297,8 +322,15 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
     public void setVisible(boolean visible) {
         if (visible){
             wizard.handleInverseAssociationSelectionState();
-            wizard.validatePage(this, true);
+            setPageComplete(canFlipToNextPage());
         }
         super.setVisible(visible);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean canFlipToNextPage() {
+        return wizard.canPageFlipToNextPage(this);
+    }    
 }

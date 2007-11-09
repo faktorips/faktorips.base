@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollect
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -224,6 +225,18 @@ public abstract class Type extends BaseIpsObject implements IType {
         AssociationFinder finder = new AssociationFinder(project, name);
         finder.start(this);
         return finder.association;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IAssociation[] findAssociationsForTargetAndAssociationType(String target, AssociationType associationType, IIpsProject project) throws CoreException {
+        if (target == null || associationType == null){
+            return new IAssociation[0];
+        }
+        AssociationTargetAndTypeFinder finder = new AssociationTargetAndTypeFinder(project, target, associationType);
+        finder.start(this);
+        return (IAssociation[]) finder.getAssociationsFound().toArray(new IAssociation[finder.getAssociationsFound().size()]);
     }
 
     /**
@@ -663,7 +676,44 @@ public abstract class Type extends BaseIpsObject implements IType {
             association = currentType.getAssociation(associationName);
             return association==null;
         }
+    }
+    
+    /**
+     * Finds all associations with the given target and association type in the type hierarchy.
+     * 
+     * @author Joerg Ortmann
+     */
+    class AssociationTargetAndTypeFinder extends TypeHierarchyVisitor {
+        private String associationTarget;
+        private AssociationType associationType;
+        private List associationsFound = new ArrayList();
         
+        public AssociationTargetAndTypeFinder(IIpsProject project, String associationTarget, AssociationType associationType) {
+            super(project);
+            this.associationTarget = associationTarget;
+            this.associationType = associationType;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IType currentType) {
+            IAssociation[] associations = currentType.getAssociationsForTarget(associationTarget);
+            for (int i = 0; i < associations.length; i++) {
+                if (associations[i].getAssociationType() == associationType){
+                    associationsFound.add(associations[i]);
+                }
+            }
+            // always continue because we search for all matching association
+            return true;
+        }
+
+        /**
+         * @return Returns the associations which matches the given target and association type.
+         */
+        public List getAssociationsFound() {
+            return associationsFound;
+        }
     }
     
     private static class AttributeFinder extends TypeHierarchyVisitor {

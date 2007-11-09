@@ -25,24 +25,23 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.ui.CompletionUtil;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
-import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
+import org.faktorips.devtools.core.ui.controls.AssociationDerivedUnionGroup;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
-import org.faktorips.devtools.core.ui.editors.type.DerivedUnionCompletionProcessor;
-import org.faktorips.values.EnumValue;
 
+/**
+ * Page to specify the product new product component type association.
+ */
 public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlockedValidationWizardPage, IHiddenWizardPage {
 
     private NewPcTypeAssociationWizard wizard;
@@ -59,18 +58,20 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     private Text descriptionText;
     private Text targetText;
     private Combo typeCombo;
-    private org.faktorips.devtools.core.ui.editors.pctype.associationwizard.ConfProdCmptTypePropertyPage.PmoAssociation pmoAssociation;
     private Text unionText;
     private Checkbox derivedUnion;
     private Checkbox subsetCheckbox;
 
+    // Composites to dispose an recreate the page content if the inverse association wil be recreated
+    // e.g. the target or the option from the previous page are changed
+    private Composite pageComposite;
     private Composite groupGeneral;
     private Composite dynamicComposite;
-    private Composite mainComposite;
+    
+    private AssociationDerivedUnionGroup derivedUnionGroup;
 
     protected ConfProdCmptTypePropertyPage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit, BindingContext bindingContext) {
-        
-        super("Product Cmpt Type Association Page", "Product cmpt type association properties", null);
+        super("Product component type association page", "Product component type association properties", null);
         super.setDescription("Define product component type association properties");
         this.wizard = wizard;
         this.toolkit = toolkit;
@@ -79,18 +80,25 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         setPageComplete(true);
     }
     
-    public List getProperties() {
-        return visibleProperties;
+    public void createControl(Composite parent) {
+        pageComposite = wizard.createPageComposite(parent);
+        
+        createSourceAndTargetControls(toolkit.createLabelEditColumnComposite(pageComposite));
+        
+        toolkit.createVerticalSpacer(pageComposite, 10);
+        
+        dynamicComposite = createGeneralControls(pageComposite);
+        
+        derivedUnionGroup = new AssociationDerivedUnionGroup(toolkit, bindingContext, pageComposite, association);
+        
+        // description
+        descriptionText = wizard.createDescriptionText(pageComposite, 2);
+        visibleProperties.add(IProductCmptTypeAssociation.PROPERTY_DESCRIPTION);
+        
+        setControl(pageComposite);
     }
 
-    public void createControl(Composite parent) {
-        mainComposite = toolkit.createComposite(parent);
-        GridLayout layout = new GridLayout(1, false);
-        mainComposite.setLayout(layout);
-        ((GridLayout)mainComposite.getLayout()).marginHeight = 12; 
-        
-        Composite top = toolkit.createLabelEditColumnComposite(mainComposite);
-        
+    private void createSourceAndTargetControls(Composite top) {
         // source 
         toolkit.createFormLabel(top, "Source");
         Text sourceText = toolkit.createText(top);
@@ -104,29 +112,21 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         toolkit.createFormLabel(top, "Target");
         targetText = toolkit.createText(top);
         targetText.setEnabled(false);
-        
-        groupGeneral = toolkit.createGroup(mainComposite, "Properties");
-        dynamicComposite = createGeneralControls(groupGeneral);
-        
-        createDerivedUnionGroup(toolkit.createGroup(mainComposite, "Derived union"));
-        
-        // description
-        descriptionText = wizard.createDescriptionText(mainComposite);
-        visibleProperties.add(IProductCmptTypeAssociation.PROPERTY_DESCRIPTION);
-        
-        setControl(mainComposite);
     }
     
-    private Composite createGeneralControls(Composite c) {
-        Composite workArea = toolkit.createLabelEditColumnComposite(c);
+    private Composite createGeneralControls(Composite parent) {
+        groupGeneral = toolkit.createGroup(parent, "Properties");
+        ((GridData)groupGeneral.getLayoutData()).grabExcessVerticalSpace = false;
+        
+        Composite workArea = toolkit.createLabelEditColumnComposite(groupGeneral);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
         // top extensions
         wizard.getExtFactoryProductCmptTypeAssociation().createControls(workArea, toolkit, association, IExtensionPropertyDefinition.POSITION_TOP);
         
         // aggregation kind
-        toolkit.createFormLabel(workArea, "Aggregation kind:");
-        typeCombo = toolkit.createCombo(workArea, new EnumValue[]{AggregationKind.NONE, AggregationKind.SHARED});
+        toolkit.createFormLabel(workArea, "Type:");
+        typeCombo = toolkit.createCombo(workArea, IProductCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
         
         // role singular
         toolkit.createFormLabel(workArea, "Target role (singular):");
@@ -168,9 +168,34 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         return workArea;
     }
     
+    /**
+     * Sets or resets the product component type association. 
+     * 
+     * @param productCmptAssociation The product component type association which will be edit in this page
+     */
     public void setProductCmptTypeAssociationAndUpdatePage(IProductCmptTypeAssociation productCmptAssociation) {
         association = productCmptAssociation;
         
+        resetControlsAndBinding();
+        
+        if (productCmptAssociation != null){
+            dynamicComposite.dispose();
+            dynamicComposite = createGeneralControls(groupGeneral);
+            
+            bindAllControls(productCmptAssociation);
+        }
+        
+        refreshPageConrolLayouts();
+    }
+
+    private void refreshPageConrolLayouts() {
+        groupGeneral.pack(true);
+        pageComposite.pack(true);
+        pageComposite.getParent().pack(true);
+        pageComposite.getParent().layout();
+    }
+    
+    private void resetControlsAndBinding() {
         bindingContext.removeBindings(targetText);
         bindingContext.removeBindings(typeCombo);
         bindingContext.removeBindings(targetRoleSingularTextProdCmptType);
@@ -184,49 +209,46 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         bindingContext.removeBindings(unionText);
 
         wizard.getExtFactoryAssociation().removeBinding(bindingContext);
+
+        targetRoleSingularTextProdCmptType.setText("");
+        targetRolePluralTextProdCmptType.setText("");
+        cardinalityFieldMinProdCmptType.setText("");
+        cardinalityFieldMaxProdCmptType.setText(""); 
+        descriptionText.setText("");
+    }
+    
+    private void bindAllControls(IProductCmptTypeAssociation productCmptAssociation) {
+        bindingContext.bindContent(targetText, association, IProductCmptTypeAssociation.PROPERTY_TARGET);
+        bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE, AssociationType.getEnumType());
+        bindingContext.bindContent(targetRoleSingularTextProdCmptType, productCmptAssociation, IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
+        bindingContext.bindContent(targetRolePluralTextProdCmptType, productCmptAssociation, IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
+        bindingContext.bindContent(cardinalityFieldMinProdCmptType, productCmptAssociation, IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
+        bindingContext.bindContent(cardinalityFieldMaxProdCmptType, productCmptAssociation, IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
+        bindingContext.bindContent(descriptionText, productCmptAssociation, IProductCmptTypeAssociation.PROPERTY_DESCRIPTION);
+
+        derivedUnionGroup.bindContent(bindingContext, association);
         
-        if (productCmptAssociation != null){
-            this.pmoAssociation = new PmoAssociation(association);
-            
-            dynamicComposite.dispose();
-            dynamicComposite = createGeneralControls(groupGeneral);
-            
-            bindingContext.bindContent(targetText, association, IProductCmptTypeAssociation.PROPERTY_TARGET);
-            bindingContext.bindContent(typeCombo, association, IProductCmptTypeAssociation.PROPERTY_AGGREGATION_KIND, AggregationKind.getEnumType());
-            bindingContext.bindContent(targetRoleSingularTextProdCmptType, productCmptAssociation, IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
-            bindingContext.bindContent(targetRolePluralTextProdCmptType, productCmptAssociation, IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
-            bindingContext.bindContent(cardinalityFieldMinProdCmptType, productCmptAssociation, IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
-            bindingContext.bindContent(cardinalityFieldMaxProdCmptType, productCmptAssociation, IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
-            bindingContext.bindContent(descriptionText, productCmptAssociation, IProductCmptTypeAssociation.PROPERTY_DESCRIPTION);
-
-            bindingContext.bindContent(derivedUnion, association, IProductCmptTypeAssociation.PROPERTY_DERIVED_UNION);        
-            bindingContext.bindContent(subsetCheckbox, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
-            bindingContext.bindContent(unionText, association, IProductCmptTypeAssociation.PROPERTY_SUBSETTED_DERIVED_UNION);
-            bindingContext.bindEnabled(unionText, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
-            
-            DerivedUnionCompletionProcessor completionProcessor = new DerivedUnionCompletionProcessor(association);
-            completionProcessor.setComputeProposalForEmptyPrefix(true);
-            ContentAssistHandler.createHandlerForText(unionText, CompletionUtil.createContentAssistant(completionProcessor));
-            
-            wizard.getExtFactoryProductCmptTypeAssociation().bind(bindingContext);
-            
-            bindingContext.updateUI();
-
-            groupGeneral.pack(true);
-            mainComposite.pack(true);
-            mainComposite.getParent().pack(true);
-            mainComposite.getParent().layout();
-        } else {
-            targetRoleSingularTextProdCmptType.setText("");
-            targetRolePluralTextProdCmptType.setText("");
-            cardinalityFieldMinProdCmptType.setText("");
-            cardinalityFieldMaxProdCmptType.setText(""); 
-            descriptionText.setText("");
+        wizard.getExtFactoryProductCmptTypeAssociation().bind(bindingContext);
+        
+        bindingContext.updateUI();
+    }
+    
+    private void updateDefaultTargetRolePlural() {
+        if (StringUtils.isEmpty(association.getTargetRolePlural()) && association.isTargetRolePluralRequired()) {
+            association.setTargetRolePlural(association.getDefaultTargetRolePlural());
+        }
+    }
+    
+    private void updateDefaultTargetRoleSingular() {
+        if (StringUtils.isEmpty(association.getTargetRoleSingular())) {
+            association.setTargetRoleSingular(association.getDefaultTargetRoleSingular());
         }
     }
     
     /**
-     * @return <code>true</code> if the product cmpt type is available.
+     * {@inheritDoc}
+     * 
+     * @return <code>true</code> if the product component type is available.
      */
     public boolean isPageVisible(){
         return wizard.isProductCmptTypeAvailable() && wizard.isConfigureProductCmptType();
@@ -235,62 +257,8 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     /**
      * {@inheritDoc}
      */
-    public boolean canFlipToNextPage() {
-        setErrorMessage(null);
-        boolean valid = wizard.validatePage(this, false);
-        
-        if (getNextPage() == null){
-            return false;
-        }
-        
-        return valid;
-    }
-    
-    private void createDerivedUnionGroup(Composite workArea) {
-        derivedUnion = toolkit.createCheckbox(workArea, "This association is a derived union");
-        subsetCheckbox = toolkit.createCheckbox(workArea, "This association defines a subset of a derived union");
-
-        Composite temp = toolkit.createLabelEditColumnComposite(workArea);
-        temp.setLayoutData(new GridData(GridData.FILL_BOTH));
-        
-        toolkit.createFormLabel(temp, "Derived union:");
-        unionText = toolkit.createText(temp);
-    }    
-    
-    public class PmoAssociation extends IpsObjectPartPmo {
-        public final static String PROPERTY_SUBSET = "subset";
-
-        private IProductCmptTypeAssociation association;
-        private boolean subset;
-        
-        public PmoAssociation(IProductCmptTypeAssociation association) {
-            super(association);
-            this.association = association;
-            subset = association.isSubsetOfADerivedUnion();
-        }
-        
-        public boolean isSubset() {
-            return subset;
-        }
-        
-        public void setSubset(boolean newValue) {
-            subset = newValue;
-            if (!subset) {
-                association.setSubsettedDerivedUnion("");
-            }
-            notifyListeners();
-        }
-    }  
-    
-    private void updateDefaultTargetRolePlural() {
-        if (StringUtils.isEmpty(association.getTargetRolePlural()) && association.isTargetRolePluralRequired()) {
-            association.setTargetRolePlural(association.getDefaultTargetRolePlural());
-        }
-    }
-    private void updateDefaultTargetRoleSingular() {
-        if (StringUtils.isEmpty(association.getTargetRoleSingular())) {
-            association.setTargetRoleSingular(association.getDefaultTargetRoleSingular());
-        }
+    public List getProperties() {
+        return visibleProperties;
     }
     
     /**
@@ -302,4 +270,11 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         }
         super.setVisible(visible);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean canFlipToNextPage() {
+        return wizard.canPageFlipToNextPage(this);
+    }    
 }

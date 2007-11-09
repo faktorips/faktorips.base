@@ -18,11 +18,12 @@
 package org.faktorips.devtools.core.ui.editors.pctype.associationwizard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
@@ -47,8 +48,6 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
-import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
-import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -70,11 +69,14 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     
     // model objects
     private IIpsProject ipsProject;
+    
     private IPolicyCmptTypeAssociation association;
-    private PmoAssociation pmoAssociation;
     private IPolicyCmptTypeAssociation inverseAssociation;
-    private IAssociation productCmptTypeAssociation;
+
     private IPolicyCmptType targetPolicyCmptType;
+    
+    private IAssociation productCmptTypeAssociation;
+
 
     // model objects states
     private Memento mementoTargetBeforeNewRelation;
@@ -84,7 +86,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
     // wizard pages
     private List pages = new ArrayList();
-    private DerivedUnionPage derivedUnionPage;
     private PropertyPage propertyPage;
     private InverseRelationPage inverseRelationPage;
     private InverseRelationPropertyPage inverseRelationPropertyPage;
@@ -93,12 +94,12 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     private ErrorPage errorPage;
 
     // stores page selections
-    private int inverseAssociationManipulation = NONE_REVERSE_RELATION;
+    private int inverseAssociationManipulation = NEW_REVERSE_RELATION;
     private int previousreverseRelationManipulation = NONE_REVERSE_RELATION;
-    private boolean configureProductCmptType;
+    private boolean configureProductCmptType = true;
     private boolean prevConfigureProductCmptType = false;
     private String previousTarget;
-    private AssociationType previousTargetRelationType;
+    private AssociationType previousTargetAssociationType;
 
     // pages which will be hidden if the type of the association is detail to master
     private List detailToMasterHiddenPages = new ArrayList(10);
@@ -108,13 +109,10 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         
         this.association = association;
         this.ipsProject = association.getIpsProject();
-        
         this.extFactoryAssociation = new ExtensionPropertyControlFactory(association.getClass());
         this.extFactoryInverseAssociation = new ExtensionPropertyControlFactory(association.getClass());
         this.extFactoryProductCmptTypeAssociation = new ExtensionPropertyControlFactory(association.getClass());
 
-        pmoAssociation = new PmoAssociation(association);
-        
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
     }
 
@@ -122,7 +120,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * {@inheritDoc}
      */
     public void addPages() {
-        derivedUnionPage = new DerivedUnionPage(this, association, toolkit, bindingContext);
         propertyPage = new PropertyPage(this, association, toolkit, bindingContext);
         inverseRelationPage = new InverseRelationPage(this, toolkit);
         inverseRelationPropertyPage = new InverseRelationPropertyPage(this, toolkit, bindingContext);
@@ -131,7 +128,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         errorPage = new ErrorPage(toolkit);
 
         addPage(new AssociationTargetPage(this, association, toolkit, bindingContext));
-        addPage(derivedUnionPage);
         addPage(propertyPage);
         addPage(inverseRelationPage);
         addPage(inverseRelationPropertyPage);
@@ -187,33 +183,58 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             previousTarget = association.getTarget();
             try {
                 storeTargetPolicyCmptType((IPolicyCmptType)association.findTarget(ipsProject));
-                if (targetPolicyCmptType != null){
-                    derivedUnionPage.fillComboWithDerivedUnionCandidates(association.findDerivedUnionCandidates(ipsProject));
-                }
             } catch (CoreException e) {
                 showAndLogError(e);
                 return;
             }
         }
         
-        // validate current page
+        // handle validate state of current page
         if (currentPage instanceof IBlockedValidationWizardPage) {
-            validatePage((IBlockedValidationWizardPage)currentPage, true);
+            handleValidationOfPage((IBlockedValidationWizardPage)currentPage);
         }
         
-        // validate next page
+        // handle validate state of next page
         IWizardPage nextPage = getNextWizardPage(currentPage);
         if (nextPage instanceof IBlockedValidationWizardPage) {
-            validatePage((IBlockedValidationWizardPage)nextPage, true);
+            handleValidationOfPage((IBlockedValidationWizardPage)nextPage);
         }
         
         getContainer().updateButtons();
     }
 
-    /**
-     * Validate the given page
+    /*
+     * Validates the given page and updates the message and page complete state. If the given page
+     * contains a validation error then show an error message and sets the page completion to
+     * <code>false</code> .
      */
-    public boolean validatePage(IBlockedValidationWizardPage page, boolean updatePageCompleteState) {
+    private void handleValidationOfPage(IBlockedValidationWizardPage page) {
+        page.setPageComplete(validatePageAndDisplayError(page));
+    }
+
+    /**
+     * Returns <code>true</code> if the page can flip to the next page. Only if the given page is
+     * valid then the user can flip to the next page. If there is no next page then this method
+     * returns always <code>null</code>. If there is a validation error then the error will be
+     * displayed in the message area of the given page.
+     */
+    public boolean canPageFlipToNextPage(IBlockedValidationWizardPage page){
+        page.setErrorMessage(null);
+
+        boolean valid = validatePageAndDisplayError(page);
+
+        if (page.getNextPage() == null){
+            return false;
+        }
+        
+        
+        return valid;
+    }
+    
+    /*
+     * Validates the given page
+     */
+    private boolean validatePageAndDisplayError(IBlockedValidationWizardPage page) {
         boolean valid = true;
         Validatable association = getAssociationFor(page);
         if (association == null){
@@ -239,9 +260,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             }
         }
         
-        if (updatePageCompleteState){
-            page.setPageComplete(valid);
-        }
         return valid;
     }
 
@@ -275,26 +293,34 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * {@inheritDoc}
      */
     public IWizardPage getNextPage(IWizardPage page) {
+        // in case of an error no next page will be displayed
         if (isError) {
-            // in case of an error no next page will be displayed
             return null;
         }
-
+        
+        // resets the special case message "no existing inverse relation"
+        if (page instanceof InverseRelationPage){
+            ((WizardPage)getContainer().getCurrentPage()).setMessage(null);
+        }
+        
+        // if there is an error on the current page then to no next page could be switched
         if (page instanceof IBlockedValidationWizardPage){
-            if (!validatePage((IBlockedValidationWizardPage)page, false)){
+            if (!validatePageAndDisplayError((IBlockedValidationWizardPage)page)){
                 return null;
             }
         }
-        
+
+        // check if this is the last page
         int index = pages.indexOf(page);
-        if (index == pages.size() - 1 || index == -1) {
-            // last page or page not found
+        if (index == -1) {
             return null;
         }
 
+        // get the next page
         IWizardPage nextPage = (IWizardPage)pages.get(index + 1);
+        
+        // if all next next pages are invisible then no next page is available
         while (!isPageVisible(nextPage)) {
-            
             // if page is not visible set page complete to enable finishing of the wizard
             if (nextPage instanceof IBlockedValidationWizardPage) {
                 ((IBlockedValidationWizardPage)nextPage).setPageComplete(true);
@@ -306,13 +332,15 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 return null;
             }
             
-            // display information in special case
-            //   if an existing inverse relation should be used but no association exists
+            // display information in special case "no existing inverse relation"
+            //   if an existing inverse relation should be used but no corresponding association exists
             if (nextPage instanceof InverseRelationPropertyPage) {
                 ((WizardPage)getContainer().getCurrentPage()).setMessage(null);
                 if (isExistingReverseRelation()) {
                     ((WizardPage)getContainer().getCurrentPage())
-                            .setMessage("No relation wich could be used as inverse releation found on target policy component.");
+                            .setMessage(
+                                    "No association wich could be used as inverse releation found. The inverse association property page will be skipped.",
+                                    IMessageProvider.WARNING);
                 }
             }
             
@@ -334,38 +362,40 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     /*
      * Returns the visibility of the given page.
      * 
-     * @param page the page to check the visibility
+     * @param page the page to check the visibility state
      * 
      * @return <code>true</code> if the given page is visible, <code>false</code> if the page should be hidden
      */
     private boolean isPageVisible(IWizardPage page) {
-        boolean visible = false;
-
+        // if a detail to master association should be created then hide all pages which are not necessary
         if (isDetailToMasterAssociation() && detailToMasterHiddenPages.contains(page)) {
-            // hide page if detail to master association should be created and page is only for master detail associations
-            visible = false;
-        } else {
-            // hide hidden pages
-            if (page instanceof IHiddenWizardPage) {
-                visible = ((IHiddenWizardPage)page).isPageVisible();
-            } else {
-                visible = true;
-            }
-        }
-
-        return visible;
-    }
-
-    /**
-     * @return Returns the targetPolicyCmptType.
-     */
-    public IPolicyCmptType getTargetPolicyCmptType() {
-        return targetPolicyCmptType;
+            return false;
+        } 
+        
+        // if the given page supports the visible check then check the visible state of the page
+        if (page instanceof IHiddenWizardPage) {
+            return ((IHiddenWizardPage)page).isPageVisible();
+        } 
+        
+        return true;
     }
     
     /**
-     * Check if the selection of the configure product cmpt type (yes/no) has changes and
-     * reset the state and optional create the product cmpt type association. 
+     * Returns all existing associations on the target which could be used as inverse associaton,
+     * of the association created by this wizard.
+     */
+    public List getExistingInverseAssociationCandidates() {
+        try {
+            return NewPcTypeAssociationWizard.getCorrespondingTargetAssociations(getAssociation(), targetPolicyCmptType);
+        } catch (CoreException e) {
+            showAndLogError(e);
+        };
+        return null;
+    }
+    
+    /**
+     * Check if the selection of the configure product component type (yes/no) has changes and
+     * reset the state and optional create the product component type association. 
      */
     void handleConfProdCmptTypeSelectionState() {
         if (prevConfigureProductCmptType != configureProductCmptType){
@@ -385,7 +415,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     void handleInverseAssociationSelectionState() {
         // show the existing relation drop down only if the existing relation
         // radio button was chosen on the previous page
-        boolean selectionChanged = false;
 
         // if selection changed restore last state
         if (previousreverseRelationManipulation != inverseAssociationManipulation){
@@ -393,21 +422,22 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             restoreMementoTargetBeforeChange();
             storeMementoTargetBeforeChange();
             storeInverseRelation(null);
-            selectionChanged = true;
+        } else {
+            return;
         }
 
         if (isExistingReverseRelation()
-                && (selectionChanged || !(association.getTarget() == previousTarget && previousTargetRelationType == association
+                && (!(association.getTarget() == previousTarget && previousTargetAssociationType == association
                         .getAssociationType()))) {
             previousTarget = association.getTarget();
-            previousTargetRelationType = association.getAssociationType();
+            previousTargetAssociationType = association.getAssociationType();
 
             inverseRelationPropertyPage.setDescription("Select an existing association");
             
             inverseRelationPropertyPage.setShowExistingRelationDropDown(true);
             try {
                 // get all existing relations that matches as reverse for the new relation
-                List existingRelations = getCorrespondingTargetRelations(association, targetPolicyCmptType);
+                List existingRelations = getCorrespondingTargetAssociations(association, targetPolicyCmptType);
                 if (existingRelations.size() > 0) {
                     String[] names = new String[existingRelations.size()];
                     for (int i = 0; i < existingRelations.size(); i++) {
@@ -421,7 +451,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             } catch (CoreException e) {
                 showAndLogError(e);
             }
-        } else if (isNewReverseRelation() && selectionChanged) {
+        } else if (isNewReverseRelation()) {
             inverseRelationPropertyPage.setDescription("Define new inverse relation");
             
             inverseRelationPropertyPage.setShowExistingRelationDropDown(false);
@@ -433,9 +463,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 IpsPlugin.log(e);
                 showAndLogError(e);
             }
-            inverseRelationPropertyPage.refreshControls();
         } 
-        previousreverseRelationManipulation = inverseAssociationManipulation;
+        
+        inverseRelationPropertyPage.refreshControls();
     }
 
     /*
@@ -447,23 +477,13 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             return;
         }
         
-        IPolicyCmptTypeAssociation newReverseRelation = targetPolicyCmptType.newPolicyCmptTypeAssociation();
-        newReverseRelation.setTarget(association.getPolicyCmptType().getQualifiedName());
-        newReverseRelation.setAssociationType(NewPcTypeAssociationWizard.getCorrespondingRelationType(association.getAssociationType()));
-        IPolicyCmptTypeAssociation containerRelation = (IPolicyCmptTypeAssociation)association.findSubsettedDerivedUnion(ipsProject);
-        if (newReverseRelation.isAssoziation() && containerRelation != null){
-            newReverseRelation.setSubsettedDerivedUnion(containerRelation.getInverseAssociation());
-        }
-        if (association.isAssoziation() && association.isDerivedUnion()){
-            newReverseRelation.setDerivedUnion(true);
-        }
-        
-        setDefaultsByRelationTypeAndTarget(newReverseRelation);
-        storeInverseRelation(newReverseRelation);
+        IPolicyCmptTypeAssociation newInverseAssociation = association.newInverseAssociation();
+        storeInverseRelation(newInverseAssociation);
+        setDefaultsByRelationTypeAndTarget(newInverseAssociation);
     }
 
     /*
-     * Creates a new association on the product cmpt type.
+     * Creates a new association on the product component type.
      */
     private void createNewProductCmptTypeAssociation() {
         IProductCmptType  productCmptType = findProductCmptType();
@@ -484,6 +504,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     
     /**
      * Set the default values depending on the relation type and read-only container flag.
+     * FIXME Joerg: in model aufnehmen?
      */
     void setDefaultsByRelationTypeAndTarget(IPolicyCmptTypeAssociation newRelation){
         AssociationType type = newRelation.getAssociationType();
@@ -505,50 +526,23 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     }
 
     /**
-     * Returns the corresponding relation type.<br>
-     *  in: ASSOZIATION => out: ASSOZIATION<br>
-     *  in: COMPOSITION => out: REVERSE_COMPOSITION<br>
-     *  in: REVERSE_COMPOSITION => out: COMPOSITION<br>
-     */
-    public static AssociationType getCorrespondingRelationType(AssociationType sourceRelType){
-        return sourceRelType == null                ? null :
-               sourceRelType.isAssoziation()        ? AssociationType.ASSOCIATION :
-               sourceRelType.isCompositionDetailToMaster() ? AssociationType.COMPOSITION_MASTER_TO_DETAIL :
-               sourceRelType.isCompositionMasterToDetail()        ? AssociationType.COMPOSITION_DETAIL_TO_MASTER : null;
-    }
-    
-    /**
-     * Returns relations from the target if:<br>
+     * Returns association from the target if:<br>
      * <ul>
-     * <li>the target of the target relation points to the source
-     * <li>the target relation type is the corresponding relation type of the
-     * source (Assoziation=Assoziation, Composition=>ReverseComp,
-     * ReverseComp=>Compostion)
+     * <li>the target of the target relation points to the source (policy component type of the given sourceAssociation)
+     * <li>the target association type is the corresponding relation type of the source (Assoziation=Assoziation, Composition=>ReverseComp, ReverseComp=>Compostion)
      * </ul>
      * If no relation is found on the target then an empty (not null) ArrayList
      * is returned.
      * 
      * @throws CoreException
      */
-     public static List getCorrespondingTargetRelations(IPolicyCmptTypeAssociation sourceRelation,
+     public static List getCorrespondingTargetAssociations(IPolicyCmptTypeAssociation sourceAssociation,
             IPolicyCmptType target) throws CoreException {
-        ArrayList relationsOfTarget = new ArrayList();
-        IPolicyCmptType currTargetPolicyCmptType = target;
-        while (currTargetPolicyCmptType != null){
-            IPolicyCmptTypeAssociation[] relations = currTargetPolicyCmptType.getPolicyCmptTypeAssociations();
-            for (int i = 0; i < relations.length; i++) {
-                // add the relation of the target if it points to the source policy cmpt
-                // and the type is matching to the source relation
-                if (relations[i].getTarget().equals(
-                        sourceRelation.getPolicyCmptType().getQualifiedName())
-                        && relations[i].getAssociationType() == NewPcTypeAssociationWizard.getCorrespondingRelationType(sourceRelation
-                                .getAssociationType())) {
-                    relationsOfTarget.add(relations[i]);
-                }
-            }
-            currTargetPolicyCmptType = currTargetPolicyCmptType.findSupertype();
-        }
-        return relationsOfTarget;
+        String source = sourceAssociation.getPolicyCmptType().getQualifiedName();
+        AssociationType correspondingAssociationType = sourceAssociation.getCorrespondingAssociationType();
+        IAssociation[] associations = target.findAssociationsForTargetAndAssociationType(source,
+                correspondingAssociationType, sourceAssociation.getIpsProject());
+        return Arrays.asList(associations);
     }
 
     /**
@@ -644,7 +638,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     }
     
     /**
-     * Stores memento of target policy cmpt before change.
+     * Stores memento of target policy component before change.
      */
     void storeMementoTargetBeforeChange(){
         if (targetPolicyCmptType==null){
@@ -675,12 +669,12 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         }
         // error not found
         IpsStatus errorStatus = new IpsStatus("Error assosiation " + inverseAssociation
-                + " not found in policy cmpt type " + targetPolicyCmptType);
+                + " not found in policy component type " + targetPolicyCmptType);
         showAndLogError(new CoreException(errorStatus));
     }
     
     /**
-     * Stores memento of product cmpt type before change.
+     * Stores memento of product component type before change.
      */
     void storeMementoProductCmptTypeBeforeChange(){
         if (targetPolicyCmptType==null){
@@ -715,7 +709,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         }
         productCmptType.setState(mementoProductCmptTypeBeforeRelation);
         if (!productCmptTypeIsDirty) {
-            // if the product cmpt type wasn't dirty before mark as clean
+            // if the product component type wasn't dirty before mark as clean
             productCmptType.getIpsSrcFile().markAsClean();
         }
         mementoProductCmptTypeBeforeRelation = null;
@@ -767,7 +761,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     }
 
     public boolean isProductCmptTypeAvailable(){
-        IPolicyCmptType targetPolicyCmptType = getTargetPolicyCmptType();
         if (targetPolicyCmptType == null){
             return false;
         }
@@ -820,140 +813,37 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         return association;
     }
     
-    public Text createDescriptionText(Composite parent){
-        toolkit.createVerticalSpacer(parent, 20);
-        Composite composite = toolkit.createGridComposite(parent, 1, true, false);
-        GridData gd = (GridData)composite.getLayoutData();
-        gd.horizontalSpan =  2;
-        composite.setLayoutData(gd);
-        toolkit.createFormLabel(composite, "Description");
-        Composite editComposite = toolkit.createGridComposite(composite, 1, true, false);
-        Text description = toolkit.createMultilineText(editComposite);
-        Composite spacer = new Composite(editComposite, SWT.NONE);
-        spacer.setLayout(new GridLayout());
-        GridData data = new GridData(GridData.FILL_BOTH);
-        spacer.setLayoutData(data);
-        bindingContext.bindContent(description, association, IProductCmptTypeAssociation.PROPERTY_DESCRIPTION);
-        return description;
-    }
-
     public IIpsProject getIpsProject() {
         return association.getIpsProject();
     }
     
-    public class PmoAssociation extends IpsObjectPartPmo {
-
-        public final static String PROPERTY_SUBSET = "subset";
-        public final static String PROPERTY_QUALIFICATION_LABEL = "qualificationLabel";
-        public final static String PROPERTY_QUALIFICATION_NOTE = "qualificationNote";
-        public final static String PROPERTY_QUALIFICATION_POSSIBLE = "qualificationPossible";
-        public final static String PROPERTY_CONSTRAINED_NOTE = "constrainedNote";
-
-        private boolean subset;
+    /**
+     * Creates a descripton control.
+     */
+    public Text createDescriptionText(Composite parent, int span){
+        toolkit.createVerticalSpacer(parent, 20);
         
-        public PmoAssociation(IPolicyCmptTypeAssociation association) {
-            super(association);
-            subset = association.isSubsetOfADerivedUnion();
-        }
+        Composite composite = toolkit.createComposite(parent);
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        gridData.horizontalSpan =  span;
+        composite.setLayoutData(gridData);
+        composite.setLayout(new GridLayout());
         
-        public boolean isSubset() {
-            return subset;
-        }
+        toolkit.createFormLabel(composite, "Description");
+        Text description = toolkit.createMultilineText(composite);
         
-        public void setSubset(boolean newValue) {
-            subset = newValue;
-            if (!subset) {
-                association.setSubsettedDerivedUnion("");
-            }
-            notifyListeners();
-        }
-        
-        public String getQualificationLabel() {
-            String label = "This association is qualified";
-            try {
-                String productCmptType = QNameUtil.getUnqualifiedName(association.findQualifierCandidate(ipsProject));
-                if (StringUtils.isNotEmpty(productCmptType)) {
-                    label = label + " by type '" + productCmptType + "'";
-                }
-            }
-            catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-            return StringUtils.rightPad(label, 80);            
-        }
-
-        public String getQualificationNote() {
-            String note = "Note: ";
-            if (!association.isCompositionMasterToDetail()) {
-                note = note + "Qualification is only applicable for compositions (master to detail).";
-            } else {
-                try {
-                    if (!association.isQualificationPossible(ipsProject)) {
-                        note = note + "Qualification is only applicable, if the target type is configurable by a product.";
-                    } else {
-                        note = note + "For qualified associations multiplicty is defined per qualified instance.";
-                    }
-                }
-                catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
-            }
-            return StringUtils.rightPad(note, 90);
-        }
-        
-        public boolean isQualificationPossible() {
-            try {
-                return association.isQualificationPossible(ipsProject);
-            }
-            catch (CoreException e) {
-                IpsPlugin.log(e);
-                return false;
-            }
-        }
-
-        public String getConstrainedNote() {
-            try {
-                if (association.isCompositionDetailToMaster()) {
-                    return StringUtils.rightPad("", 120) + StringUtils.rightPad("\n", 120) + StringUtils.right("\n", 120);
-                }
-                IProductCmptTypeAssociation matchingAss = association.findMatchingProductCmptTypeAssociation(ipsProject);
-                if (matchingAss!=null) {
-                    String type = matchingAss.getProductCmptType().getName();
-                    return "Note: This association is constrained by product structure. " 
-                    +" The matching \nassociation in type '" + type + "' is '" + matchingAss.getTargetRoleSingular() + "' (rolename)."
-                    + StringUtils.rightPad("\n", 120); 
-                } else {
-                    String note = "Note: This association is not constrained by product structure."; 
-                    IProductCmptType sourceProductType = association.getPolicyCmptType().findProductCmptType(ipsProject);
-                    IPolicyCmptType targetType = association.findTargetPolicyCmptType(ipsProject);
-                    if (sourceProductType!=null && targetType!=null) {
-                        IProductCmptType targetProductType = targetType.findProductCmptType(ipsProject);
-                        if (targetProductType!=null) {
-                            return note + "\nTo constrain the association by product structure, create an association between the "
-                                + "\nproduct component types '" + sourceProductType.getName() + "' and '" + targetProductType.getName() + "'.";
-                        }
-                    }
-                    return note + StringUtils.rightPad("\n", 120) + StringUtils.rightPad("\n", 120) ;
-                }
-            }
-            catch (CoreException e) {
-                IpsPlugin.log(e);
-                return "";
-            }
-            
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        protected void partHasChanged() {
-            if (association.isCompositionDetailToMaster()) {
-                subset = false;
-            }
-        }
+        bindingContext.bindContent(description, association, IProductCmptTypeAssociation.PROPERTY_DESCRIPTION);
+        return description;
     }
-
-    public PmoAssociation getPmoAssociation() {
-        return pmoAssociation;
-    }    
+    
+    /**
+     * Creates a composite for the wizard pages with default margins.
+     */
+    public Composite createPageComposite(Composite parent) {
+        Composite composite = toolkit.createGridComposite(parent, 1, false, true);
+        ((GridLayout)composite.getLayout()).marginHeight = 12;
+        ((GridLayout)composite.getLayout()).marginWidth = 5;
+        composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        return composite;
+    }
 }

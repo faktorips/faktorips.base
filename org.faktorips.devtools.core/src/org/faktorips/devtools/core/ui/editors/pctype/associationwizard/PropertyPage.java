@@ -25,21 +25,22 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
-import org.faktorips.devtools.core.ui.binding.ButtonTextBinding;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
-import org.faktorips.devtools.core.ui.controls.Checkbox;
-import org.faktorips.devtools.core.ui.editors.pctype.associationwizard.NewPcTypeAssociationWizard.PmoAssociation;
+import org.faktorips.devtools.core.ui.controls.AssociationQualificationGroup;
 
+/**
+ * Page to specify the properties of the association.
+ * 
+ * @author Joerg Ortmann
+ */
 public class PropertyPage extends WizardPage implements IBlockedValidationWizardPage {
 
     private NewPcTypeAssociationWizard wizard;
@@ -50,7 +51,8 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
     private ArrayList visibleProperties = new ArrayList(10);
     
     private Text targetRoleSingularText;
-    private boolean visibleBefore;
+    private AssociationQualificationGroup associationQualificationGroup;
+    private Label noteAboutProductStructureConstrained;
     
     protected PropertyPage(NewPcTypeAssociationWizard wizard, IPolicyCmptTypeAssociation association, UIToolkit toolkit, BindingContext bindingContext) {
         super("PropertyPage", "Association properties", null);
@@ -60,7 +62,6 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
         this.toolkit = toolkit;
         this.bindingContext = bindingContext;
         
-        
         setPageComplete(false);
     }
     
@@ -68,41 +69,26 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
      * {@inheritDoc}
      */
     public void createControl(Composite parent) {
-        Composite workArea = toolkit.createComposite(parent);
-        GridLayout layout = new GridLayout(1, false);
-        layout.marginHeight = 12;
-        workArea.setLayout(layout);
+        Composite pageComposite = wizard.createPageComposite(parent);
         
-        Group groupGeneral = toolkit.createGroup(workArea, "Properties");
+        createGeneralControls(pageComposite);
+        
+        associationQualificationGroup = new AssociationQualificationGroup(toolkit, bindingContext, pageComposite, association);
+
+        // bind the special note label
+        associationQualificationGroup.bindLabelAboutConstrainedByProductStructure(noteAboutProductStructureConstrained, bindingContext);
+        
+        targetRoleSingularText.setFocus();
+
+        setControl(pageComposite);
+    }
+    
+    private void createGeneralControls(Composite parent) {
+        Group groupGeneral = toolkit.createGroup(parent, "Properties");
         GridData gd = (GridData)groupGeneral.getLayoutData();
         gd.grabExcessVerticalSpace = false;
         
-        createGeneralControls(groupGeneral);
-        
-        Group groupQualification = toolkit.createGroup(workArea, "Qualification");
-        createQualificationGroup(groupQualification);
-        gd = (GridData)groupQualification.getLayoutData();
-        gd.grabExcessVerticalSpace = false;
-        
-        targetRoleSingularText.setFocus();
-        
-        setControl(workArea);
-    }
-    
-    private void createQualificationGroup(Composite c) {
-        Composite workArea = toolkit.createGridComposite(c, 1, true, true);
-        workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-        
-        Checkbox qualifiedCheckbox = toolkit.createCheckbox(workArea);
-        bindingContext.bindContent(qualifiedCheckbox, association, IAssociation.PROPERTY_QUALIFIED);
-        bindingContext.bindEnabled(qualifiedCheckbox, wizard.getPmoAssociation(), PmoAssociation.PROPERTY_QUALIFICATION_POSSIBLE);
-        Label note = toolkit.createFormLabel(workArea, StringUtils.rightPad("", 120));
-        bindingContext.bindContent(note, wizard.getPmoAssociation(), PmoAssociation.PROPERTY_QUALIFICATION_NOTE);
-        bindingContext.add(new ButtonTextBinding(qualifiedCheckbox, wizard.getPmoAssociation(), PmoAssociation.PROPERTY_QUALIFICATION_LABEL));
-    }
-    
-    private void createGeneralControls(Composite c) {
-        Composite workArea = toolkit.createLabelEditColumnComposite(c);
+        Composite workArea = toolkit.createLabelEditColumnComposite(groupGeneral);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
         // top extensions
@@ -146,30 +132,16 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
         bindingContext.bindContent(cardinalityField, association, IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
         visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
         
+        Composite info = toolkit.createGridComposite(groupGeneral, 1, true, false);
+        
+        // create note about constrained by product structure
+        noteAboutProductStructureConstrained = toolkit.createLabel(info, "");
+
         // bottom extensions
         wizard.getExtFactoryAssociation().createControls(workArea, toolkit, association, IExtensionPropertyDefinition.POSITION_BOTTOM);
         wizard.getExtFactoryAssociation().bind(bindingContext);
     }
     
-    
-    /**
-     * {@inheritDoc}
-     */
-    public boolean canFlipToNextPage() {
-        setErrorMessage(null);
-        boolean valid = wizard.validatePage(this, false);
-        
-        if (getNextPage() == null){
-            return false;
-        }
-        
-        return valid;
-    }
-
-    public List getProperties() {
-        return visibleProperties;
-    }
-
     private void updateDefaultTargetRolePlural() {
         if (StringUtils.isEmpty(association.getTargetRolePlural()) && association.isTargetRolePluralRequired()) {
             association.setTargetRolePlural(association.getDefaultTargetRolePlural());
@@ -184,10 +156,14 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
     /**
      * {@inheritDoc}
      */
-    public void setVisible(boolean visible) {
-        if (visible && !visibleBefore){
-            visibleBefore = true;
-        }
-        super.setVisible(visible);
+    public List getProperties() {
+        return visibleProperties;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean canFlipToNextPage() {
+        return wizard.canPageFlipToNextPage(this);
     }
 }

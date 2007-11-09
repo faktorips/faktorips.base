@@ -20,11 +20,20 @@ package org.faktorips.devtools.core.ui.editors.pctype.associationwizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
+/**
+ * Page to choose on of the following options:
+ * <ul>
+ * <li>create a new inverse association
+ * <li>use an existing inverse association
+ * <li>create or use no inverse association
+ * </ul>
+ * 
+ * @author Joerg Ortmann
+ */
 public class InverseRelationPage extends WizardPage {
 
     private NewPcTypeAssociationWizard wizard;
@@ -45,29 +54,28 @@ public class InverseRelationPage extends WizardPage {
     }
 
     public void createControl(Composite parent) {
-        Composite c = toolkit.createGridComposite(parent, 1, false, true);
-        ((GridLayout)c.getLayout()).marginHeight = 12;
+        Composite pageComposite = wizard.createPageComposite(parent);
         
         InverseRelationSelectionListener listener = new InverseRelationSelectionListener();
 
-        noReverseRelation = toolkit.createRadioButton(c, "No inverse relation");
-        noReverseRelation.addSelectionListener(listener);
-        
-        toolkit.createVerticalSpacer(c, 1);
-
-        useExistingRelation = toolkit.createRadioButton(c, "Use existing relation as inverse");
-        useExistingRelation.addSelectionListener(listener);
-        
-        toolkit.createVerticalSpacer(c, 1);
-
-        newReverseRelation = toolkit.createRadioButton(c, "New inverse relation");
+        newReverseRelation = toolkit.createRadioButton(pageComposite, "New inverse relation");
         newReverseRelation.addSelectionListener(listener);
         
+        toolkit.createVerticalSpacer(pageComposite, 1);
+
+        useExistingRelation = toolkit.createRadioButton(pageComposite, "Use existing relation as inverse");
+        useExistingRelation.addSelectionListener(listener);
+        
+        toolkit.createVerticalSpacer(pageComposite, 1);
+
+        noReverseRelation = toolkit.createRadioButton(pageComposite, "No inverse relation");
+        noReverseRelation.addSelectionListener(listener);
+        
         // set the default selection: no inverse
-        noReverseRelation.setSelection(true);
+        newReverseRelation.setSelection(true);
         prevSelection = noReverseRelation;
         
-        setControl(c);
+        setControl(pageComposite);
     }
 
     /**
@@ -75,8 +83,6 @@ public class InverseRelationPage extends WizardPage {
      */
     private class InverseRelationSelectionListener implements SelectionListener {
         public void widgetSelected(SelectionEvent e) {
-            // if no reverse relation is selected then disable next wizard page
-            // otherwise enable next wizard page
             if (prevSelection != e.getSource()){
                 prevSelection = (Button) e.getSource();
                 if (e.getSource() == useExistingRelation) {

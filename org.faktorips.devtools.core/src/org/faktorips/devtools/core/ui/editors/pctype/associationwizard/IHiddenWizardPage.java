@@ -20,9 +20,13 @@ package org.faktorips.devtools.core.ui.editors.pctype.associationwizard;
 /**
  * An instance of this interface can be used by wizard pages to become invisible if the page is not
  * necessary.
- *  
+ * 
  * @author Joerg Ortmann
  */
 public interface IHiddenWizardPage {
+    
+    /**
+     * Returns <code>true</code> if the given page is visible
+     */
     public boolean isPageVisible();
 }

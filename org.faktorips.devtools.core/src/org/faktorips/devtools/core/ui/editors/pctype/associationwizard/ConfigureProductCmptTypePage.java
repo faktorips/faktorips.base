@@ -20,11 +20,18 @@ package org.faktorips.devtools.core.ui.editors.pctype.associationwizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
+/**
+ * Page to define on of the following option:<ul>
+ * <li>create a new product component type association
+ * <li>don't create a new product component type association
+ * </ul>
+ * 
+ * @author Joerg Ortmann
+ */
 public class ConfigureProductCmptTypePage extends WizardPage {
     
     private NewPcTypeAssociationWizard wizard;
@@ -44,26 +51,23 @@ public class ConfigureProductCmptTypePage extends WizardPage {
     }
     
     public void createControl(Composite parent) {
-        Composite c = toolkit.createGridComposite(parent, 1, false, true);
-        ((GridLayout)c.getLayout()).marginHeight = 12;
+        Composite pageComposite = wizard.createPageComposite(parent);
         
         InverseRelationSelectionListener listener = new InverseRelationSelectionListener();
         
-        noAssociationOnProductCmptType = toolkit.createRadioButton(c, "Do not create association on product cmpt type");
-        noAssociationOnProductCmptType.addSelectionListener(listener);
-        
-        toolkit.createVerticalSpacer(c, 1);
-
-        newAssociationOnProductCmptType = toolkit.createRadioButton(c, "Create product cmpt type association");
+        newAssociationOnProductCmptType = toolkit.createRadioButton(pageComposite, "Create a new product component type association");
         newAssociationOnProductCmptType.addSelectionListener(listener);
         
-        toolkit.createVerticalSpacer(c, 1);
+        toolkit.createVerticalSpacer(pageComposite, 1);
+        
+        noAssociationOnProductCmptType = toolkit.createRadioButton(pageComposite, "Do not create association on product component type");
+        noAssociationOnProductCmptType.addSelectionListener(listener);
         
         // set the default selection
-        noAssociationOnProductCmptType.setSelection(true);
+        newAssociationOnProductCmptType.setSelection(true);
         prevSelection = noAssociationOnProductCmptType;
-        
-        setControl(c);
+
+        setControl(pageComposite);
     }
 
     /**
@@ -71,8 +75,6 @@ public class ConfigureProductCmptTypePage extends WizardPage {
      */
     private class InverseRelationSelectionListener implements SelectionListener {
         public void widgetSelected(SelectionEvent e) {
-            // if no reverse relation is selected then disable next wizard page
-            // otherwise enable next wizard page
             if (prevSelection != e.getSource()){
                 prevSelection = (Button) e.getSource();
                 if (e.getSource() == newAssociationOnProductCmptType) {
