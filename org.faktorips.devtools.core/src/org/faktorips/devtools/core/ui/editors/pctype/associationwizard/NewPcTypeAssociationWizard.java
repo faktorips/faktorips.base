@@ -19,8 +19,11 @@ package org.faktorips.devtools.core.ui.editors.pctype.associationwizard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -57,6 +60,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     final static int USE_EXISTING_REVERSE_RELATION = 1;
     final static int NONE_REVERSE_RELATION = 2;
     
+    private static final int SUPPRESS_CHANGES_INVERSE_ASSOCIATION = 1;
+    private static final int SUPPRESS_CHANGES_PRODUCT_CMPT_TYPE_ASSOCIATION = 2;
+    
     private UIToolkit toolkit = new UIToolkit(null);
 
     // indicates that there was an error
@@ -86,6 +92,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
     // wizard pages
     private List pages = new ArrayList();
+    private AssociationTargetPage associationTargetPage;
     private PropertyPage propertyPage;
     private InverseRelationPage inverseRelationPage;
     private InverseRelationPropertyPage inverseRelationPropertyPage;
@@ -104,6 +111,11 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     // pages which will be hidden if the type of the association is detail to master
     private List detailToMasterHiddenPages = new ArrayList(10);
     
+    // helper fields to suppress error messages
+    private Set displayErrorMessageForPages = new HashSet();
+    private Set visiblePages = new HashSet();
+    HashMap suppressedEventForPages = new HashMap();
+    
     public NewPcTypeAssociationWizard(IPolicyCmptTypeAssociation association) {
         super.setWindowTitle("New association");
         
@@ -120,6 +132,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * {@inheritDoc}
      */
     public void addPages() {
+        associationTargetPage = new AssociationTargetPage(this, association, toolkit, bindingContext);
         propertyPage = new PropertyPage(this, association, toolkit, bindingContext);
         inverseRelationPage = new InverseRelationPage(this, toolkit);
         inverseRelationPropertyPage = new InverseRelationPropertyPage(this, toolkit, bindingContext);
@@ -127,7 +140,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         confProdCmptTypePropertyPage = new ConfProdCmptTypePropertyPage(this, toolkit, bindingContext);
         errorPage = new ErrorPage(toolkit);
 
-        addPage(new AssociationTargetPage(this, association, toolkit, bindingContext));
+        addPage(associationTargetPage);
         addPage(propertyPage);
         addPage(inverseRelationPage);
         addPage(inverseRelationPropertyPage);
@@ -139,8 +152,13 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         detailToMasterHiddenPages.add(inverseRelationPropertyPage);
         detailToMasterHiddenPages.add(configureProductCmptTypePage);
         detailToMasterHiddenPages.add(confProdCmptTypePropertyPage);
+        
+        visiblePages.add(associationTargetPage);
+        visiblePages.add(propertyPage);
+        
+        initSuppressedEventsForPages();
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -148,14 +166,26 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         pages.add(page);
         super.addPage(page);
     }
+    
+    private void initSuppressedEventsForPages() {
+        suppressedEventForPages.put(associationTargetPage, new Integer(1));
+        suppressedEventForPages.put(inverseRelationPropertyPage, new Integer(SUPPRESS_CHANGES_INVERSE_ASSOCIATION));
+        suppressedEventForPages.put(confProdCmptTypePropertyPage, new Integer(SUPPRESS_CHANGES_PRODUCT_CMPT_TYPE_ASSOCIATION));
+    }
+    
+    private boolean isSuppressedEventFor(IWizardPage page){
+        Integer current = (Integer)suppressedEventForPages.get(page);
+        if (current == null){
+            return false;
+        }
+        if (current.intValue() == 0){
+            return false;
+        }
+        
+        int i = current.intValue() - 1;
+        suppressedEventForPages.put(page, new Integer(i));
 
-    /**
-     * {@inheritDoc}
-     */
-    public void dispose() {
-        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
-        bindingContext.dispose();
-        super.dispose();
+        return true;
     }
 
     /**
@@ -200,6 +230,13 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             handleValidationOfPage((IBlockedValidationWizardPage)nextPage);
         }
         
+        // check if the given page is now enabled to display the error messages
+        // used to suppress the error message if the wizard page is displayed the first time
+        boolean suppressed = isSuppressedEventFor(currentPage);
+        if (!suppressed && visiblePages.contains(currentPage)){
+            displayErrorMessageForPages.add(currentPage);
+        }
+
         getContainer().updateButtons();
     }
 
@@ -235,32 +272,34 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * Validates the given page
      */
     private boolean validatePageAndDisplayError(IBlockedValidationWizardPage page) {
-        boolean valid = true;
         Validatable association = getAssociationFor(page);
         if (association == null){
             return true;
         }
         
-        if (!isValidationDisabledFor(page)){
-            MessageList list;
-            try {
-                list = association.validate();
-            } catch (CoreException e) {
-                showAndLogError(e);
-                return false;
-            }
-            for (Iterator iter = page.getProperties().iterator(); iter.hasNext();) {
-                String prop = (String)iter.next();
-                MessageList messagesFor = list.getMessagesFor(association, prop);
-                if (messagesFor.containsErrorMsg()) {
-                    page.setErrorMessage(messagesFor.getFirstMessage(Message.ERROR).getText());
-                    valid = false;
-                    break;
-                }
-            }
+        if (isValidationDisabledFor(page)){
+            return true;
         }
         
-        return valid;
+        MessageList list;
+        try {
+            list = association.validate();
+        } catch (CoreException e) {
+            showAndLogError(e);
+            return false;
+        }
+        
+        for (Iterator iter = page.getProperties().iterator(); iter.hasNext();) {
+            String prop = (String)iter.next();
+            MessageList messagesFor = list.getMessagesFor(association, prop);
+            if (messagesFor.containsErrorMsg()) {
+                if (displayErrorMessageForPages.contains(page)){
+                    page.setErrorMessage(messagesFor.getFirstMessage(Message.ERROR).getText());
+                }
+                return false;
+            }
+        }
+        return true;
     }
 
     /*
@@ -274,7 +313,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         }
         return false;
     }
-
+    
     /*
      * Returns the association which could be edit by the give page
      */
@@ -298,10 +337,11 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             return null;
         }
         
+        // indicates that the page was displayed before
+        visiblePages.add(page);
+        
         // resets the special case message "no existing inverse relation"
-        if (page instanceof InverseRelationPage){
-            ((WizardPage)getContainer().getCurrentPage()).setMessage(null);
-        }
+        ((WizardPage)getContainer().getCurrentPage()).setMessage(null);
         
         // if there is an error on the current page then to no next page could be switched
         if (page instanceof IBlockedValidationWizardPage){
@@ -337,10 +377,12 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             if (nextPage instanceof InverseRelationPropertyPage) {
                 ((WizardPage)getContainer().getCurrentPage()).setMessage(null);
                 if (isExistingReverseRelation()) {
-                    ((WizardPage)getContainer().getCurrentPage())
-                            .setMessage(
-                                    "No association wich could be used as inverse releation found. The inverse association property page will be skipped.",
-                                    IMessageProvider.WARNING);
+                    if (!areExistingAssociationsAvailable()) {
+                        ((WizardPage)getContainer().getCurrentPage())
+                                .setMessage(
+                                        "No association wich could be used as inverse releation found. The inverse association property page will be skipped.",
+                                        IMessageProvider.WARNING);
+                    }
                 }
             }
             
@@ -413,27 +455,23 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * reset the state and optional create a new inverse association. 
      */
     void handleInverseAssociationSelectionState() {
-        // show the existing relation drop down only if the existing relation
-        // radio button was chosen on the previous page
-
-        // if selection changed restore last state
-        if (previousreverseRelationManipulation != inverseAssociationManipulation){
-            previousreverseRelationManipulation = inverseAssociationManipulation;
-            restoreMementoTargetBeforeChange();
-            storeMementoTargetBeforeChange();
-            storeInverseRelation(null);
-        } else {
+        if (previousreverseRelationManipulation == inverseAssociationManipulation 
+            && previousTarget.equals(targetPolicyCmptType.getQualifiedName()) 
+            && previousTargetAssociationType == association.getAssociationType()){
             return;
         }
+        
+        // if selection changed restore last state
+        previousreverseRelationManipulation = inverseAssociationManipulation;
+        previousTarget = association.getTarget();
+        previousTargetAssociationType = association.getAssociationType();
+                
+        restoreMementoTargetBeforeChange();
+        storeMementoTargetBeforeChange();
+        storeInverseRelation(null);
 
-        if (isExistingReverseRelation()
-                && (!(association.getTarget() == previousTarget && previousTargetAssociationType == association
-                        .getAssociationType()))) {
-            previousTarget = association.getTarget();
-            previousTargetAssociationType = association.getAssociationType();
-
+        if (isExistingReverseRelation()) {
             inverseRelationPropertyPage.setDescription("Select an existing association");
-            
             inverseRelationPropertyPage.setShowExistingRelationDropDown(true);
             try {
                 // get all existing relations that matches as reverse for the new relation
@@ -447,13 +485,11 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 } else {
                     inverseRelationPropertyPage.setExistingAssociations(new String[0]);
                 }
-                inverseRelationPropertyPage.refreshControls();
             } catch (CoreException e) {
                 showAndLogError(e);
             }
         } else if (isNewReverseRelation()) {
             inverseRelationPropertyPage.setDescription("Define new inverse relation");
-            
             inverseRelationPropertyPage.setShowExistingRelationDropDown(false);
             // create a new reverse relation
             storeInverseRelation(null);
@@ -464,7 +500,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 showAndLogError(e);
             }
         } 
-        
+
         inverseRelationPropertyPage.refreshControls();
     }
 
@@ -572,8 +608,12 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     public boolean performFinish() {
         try {
             // check and perform the last state change of the radio selection pages
-            handleInverseAssociationSelectionState();
-            handleConfProdCmptTypeSelectionState();
+            if (inverseAssociationManipulation == NONE_REVERSE_RELATION){
+                handleInverseAssociationSelectionState();
+            }
+            if (!configureProductCmptType) {
+                handleConfProdCmptTypeSelectionState();
+            }
             
             boolean saveTargetAutomatically = false;
             if (targetPolicyCmptType != null && 
@@ -845,5 +885,25 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         ((GridLayout)composite.getLayout()).marginWidth = 5;
         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         return composite;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void dispose() {
+        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+        bindingContext.dispose();
+        super.dispose();
+    }
+
+    public boolean areExistingAssociationsAvailable() {
+        List correspondingAssociations = getExistingInverseAssociationCandidates();
+        if (correspondingAssociations.size() == 0) {
+            return false;
+        }
+        if (correspondingAssociations.size() == 1 && correspondingAssociations.get(0).equals(inverseAssociation)) {
+            return false;
+        }
+        return true;
     }
 }

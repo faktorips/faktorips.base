@@ -78,8 +78,6 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
         // bind the special note label
         associationQualificationGroup.bindLabelAboutConstrainedByProductStructure(noteAboutProductStructureConstrained, bindingContext);
         
-        targetRoleSingularText.setFocus();
-
         setControl(pageComposite);
     }
     

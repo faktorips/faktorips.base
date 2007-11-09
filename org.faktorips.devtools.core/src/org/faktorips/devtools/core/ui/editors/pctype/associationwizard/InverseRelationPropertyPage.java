@@ -85,9 +85,10 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
     public void createControl(Composite parent) {
         pageComposite = wizard.createPageComposite(parent);
         
-        createTargetAndTypeControls(toolkit.createLabelEditColumnComposite(pageComposite));
+        Composite labelEditComposite = toolkit.createLabelEditColumnComposite(pageComposite);
+        createTargetAndTypeControls(labelEditComposite);
 
-        createExistingAssociationComboControl(pageComposite);
+        createExistingAssociationComboControl(labelEditComposite);
         
         toolkit.createVerticalSpacer(pageComposite, 10);
         
@@ -302,15 +303,12 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
      */
     public boolean isPageVisible() {
         if (wizard.isNoneReverseRelation()) {
+            // reset the association separately
+            //   because handleInverseAssociationSelectionState will never executed (see this.setVisible)
+            association = null;
             return false;
         } else if (wizard.isExistingReverseRelation()) {
-            List correspondingAssociations = wizard.getExistingInverseAssociationCandidates();
-            if (correspondingAssociations.size() == 0) {
-                return false;
-            }
-            if (correspondingAssociations.size() == 1 && correspondingAssociations.get(0).equals(association)) {
-                return false;
-            }
+            return wizard.areExistingAssociationsAvailable();
         }
 
         return true;
@@ -322,7 +320,6 @@ public class InverseRelationPropertyPage extends WizardPage implements IBlockedV
     public void setVisible(boolean visible) {
         if (visible){
             wizard.handleInverseAssociationSelectionState();
-            setPageComplete(canFlipToNextPage());
         }
         super.setVisible(visible);
     }

@@ -83,7 +83,6 @@ public class AssociationTargetPage extends WizardPage implements IBlockedValidat
         Combo typeCombo = toolkit.createCombo(top, IPolicyCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
         bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE, AssociationType.getEnumType());
         typeCombo.select(0);
-
         visibleProperties.add(IAssociation.PROPERTY_ASSOCIATION_TYPE);
     }
     

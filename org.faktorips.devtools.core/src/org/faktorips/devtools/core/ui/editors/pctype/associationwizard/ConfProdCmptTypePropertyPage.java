@@ -87,7 +87,9 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         
         toolkit.createVerticalSpacer(pageComposite, 10);
         
-        dynamicComposite = createGeneralControls(pageComposite);
+        groupGeneral = toolkit.createGroup(pageComposite, "Properties");
+        ((GridData)groupGeneral.getLayoutData()).grabExcessVerticalSpace = false;
+        dynamicComposite = createGeneralControls(groupGeneral);
         
         derivedUnionGroup = new AssociationDerivedUnionGroup(toolkit, bindingContext, pageComposite, association);
         
@@ -115,10 +117,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     }
     
     private Composite createGeneralControls(Composite parent) {
-        groupGeneral = toolkit.createGroup(parent, "Properties");
-        ((GridData)groupGeneral.getLayoutData()).grabExcessVerticalSpace = false;
-        
-        Composite workArea = toolkit.createLabelEditColumnComposite(groupGeneral);
+        Composite workArea = toolkit.createLabelEditColumnComposite(parent);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
         // top extensions
