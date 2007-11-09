@@ -22,10 +22,10 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.AssociationType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -555,5 +555,38 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertNull(association.findInverseAssociation());
     }
     
+    public void testGetCorrespondingAssociationType() throws Exception {
+        association.setAssociationType(AssociationType.ASSOCIATION);
+        assertEquals(AssociationType.ASSOCIATION, association.getCorrespondingAssociationType());
+        
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        assertEquals(AssociationType.COMPOSITION_DETAIL_TO_MASTER, association.getCorrespondingAssociationType());
+        
+        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        assertEquals(AssociationType.COMPOSITION_MASTER_TO_DETAIL, association.getCorrespondingAssociationType());
+    }
+    
+    public void testNewInverseAssociation() throws CoreException{
+        IPolicyCmptType targetType = newPolicyCmptType(ipsProject, "TargetType");
+        association.setTarget(targetType.getQualifiedName());
+        
+        checkNewInverseAssociation(AssociationType.ASSOCIATION);
+        checkNewInverseAssociation(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        checkNewInverseAssociation(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        
+        association.setTarget("NONE");
+        boolean exceptionThrown = false;
+        try {
+            association.newInverseAssociation();
+        } catch (CoreException e) {
+            exceptionThrown = true;
+        }
+        assertTrue(exceptionThrown);
+    }
 
+    private void checkNewInverseAssociation(AssociationType associationType) throws CoreException {
+        IPolicyCmptTypeAssociation targetAssociation = association.newInverseAssociation();
+        assertEquals(association.getCorrespondingAssociationType(), targetAssociation.getAssociationType());
+        assertEquals(association.getTarget(), targetAssociation.getPolicyCmptType().getQualifiedName());
+    }
 }
