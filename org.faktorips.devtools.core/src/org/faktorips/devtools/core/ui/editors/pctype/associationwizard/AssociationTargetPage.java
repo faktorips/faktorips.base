@@ -47,8 +47,8 @@ public class AssociationTargetPage extends WizardPage implements IBlockedValidat
     private ArrayList visibleProperties = new ArrayList(10);
     
     protected AssociationTargetPage(NewPcTypeAssociationWizard wizard, IPolicyCmptTypeAssociation association, UIToolkit toolkit, BindingContext bindingContext) {
-        super("AssociationTargetPage", "Target", null);
-        super.setDescription("Select the target and the association type");
+        super(Messages.AssociationTargetPage_pageName, Messages.AssociationTargetPage_pageTitle, null);
+        super.setDescription(Messages.AssociationTargetPage_pageDescription);
         this.wizard = wizard;
         this.association = association;
         this.toolkit = toolkit;
@@ -73,13 +73,13 @@ public class AssociationTargetPage extends WizardPage implements IBlockedValidat
 
     private void createTargetAndTypeControls(Composite top) {
         // target
-        toolkit.createFormLabel(top, "Target");
+        toolkit.createFormLabel(top, Messages.AssociationTargetPage_labelTarget);
         PcTypeRefControl targetControl = toolkit.createPcTypeRefControl(association.getIpsProject(), top);
         bindingContext.bindContent(targetControl, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET);
         visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_TARGET);
 
         // type
-        toolkit.createFormLabel(top, "Type");
+        toolkit.createFormLabel(top, Messages.AssociationTargetPage_labelType);
         Combo typeCombo = toolkit.createCombo(top, IPolicyCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
         bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE, AssociationType.getEnumType());
         typeCombo.select(0);

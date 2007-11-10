@@ -71,8 +71,8 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     private AssociationDerivedUnionGroup derivedUnionGroup;
 
     protected ConfProdCmptTypePropertyPage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit, BindingContext bindingContext) {
-        super("Product component type association page", "Product component type association properties", null);
-        super.setDescription("Define product component type association properties");
+        super(Messages.ConfProdCmptTypePropertyPage_pageName, Messages.ConfProdCmptTypePropertyPage_pageTitle, null);
+        super.setDescription(Messages.ConfProdCmptTypePropertyPage_pageDescription);
         this.wizard = wizard;
         this.toolkit = toolkit;
         this.bindingContext = bindingContext;
@@ -87,7 +87,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         
         toolkit.createVerticalSpacer(pageComposite, 10);
         
-        groupGeneral = toolkit.createGroup(pageComposite, "Properties");
+        groupGeneral = toolkit.createGroup(pageComposite, Messages.ConfProdCmptTypePropertyPage_groupProperties);
         ((GridData)groupGeneral.getLayoutData()).grabExcessVerticalSpace = false;
         dynamicComposite = createGeneralControls(groupGeneral);
         
@@ -102,7 +102,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
 
     private void createSourceAndTargetControls(Composite top) {
         // source 
-        toolkit.createFormLabel(top, "Source");
+        toolkit.createFormLabel(top, Messages.ConfProdCmptTypePropertyPage_labelSource);
         Text sourceText = toolkit.createText(top);
         sourceText.setEnabled(false);
         IProductCmptType productCmptType = wizard.findProductCmptType();
@@ -111,7 +111,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         }
         
         // target
-        toolkit.createFormLabel(top, "Target");
+        toolkit.createFormLabel(top, Messages.ConfProdCmptTypePropertyPage_labelTarget);
         targetText = toolkit.createText(top);
         targetText.setEnabled(false);
     }
@@ -124,11 +124,11 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         wizard.getExtFactoryProductCmptTypeAssociation().createControls(workArea, toolkit, association, IExtensionPropertyDefinition.POSITION_TOP);
         
         // aggregation kind
-        toolkit.createFormLabel(workArea, "Type:");
+        toolkit.createFormLabel(workArea, Messages.ConfProdCmptTypePropertyPage_labelType);
         typeCombo = toolkit.createCombo(workArea, IProductCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
         
         // role singular
-        toolkit.createFormLabel(workArea, "Target role (singular):");
+        toolkit.createFormLabel(workArea, Messages.ConfProdCmptTypePropertyPage_labelTargetRoleSingular);
         targetRoleSingularTextProdCmptType = toolkit.createText(workArea);
         visibleProperties.add(IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
         targetRoleSingularTextProdCmptType.addFocusListener(new FocusAdapter() {
@@ -138,7 +138,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         });
 
         // role plural
-        toolkit.createFormLabel(workArea, "Target role (plural):");
+        toolkit.createFormLabel(workArea, Messages.ConfProdCmptTypePropertyPage_labelTargetRolePlural);
         targetRolePluralTextProdCmptType = toolkit.createText(workArea);
         visibleProperties.add(IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
         targetRolePluralTextProdCmptType.addFocusListener(new FocusAdapter() {
@@ -148,14 +148,14 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         });
         
         // min cardinality
-        toolkit.createFormLabel(workArea, "Minimum cardinality:");
+        toolkit.createFormLabel(workArea, Messages.ConfProdCmptTypePropertyPage_labelMinimumCardinality);
         Text minCardinalityText = toolkit.createText(workArea);
         cardinalityFieldMinProdCmptType = new CardinalityField(minCardinalityText);
         cardinalityFieldMinProdCmptType.setSupportsNull(false);
         visibleProperties.add(IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
         
         // max cardinality
-        toolkit.createFormLabel(workArea, "Maximum cardinality:");
+        toolkit.createFormLabel(workArea, Messages.ConfProdCmptTypePropertyPage_labelMaximumCardinality);
         Text maxCardinalityText = toolkit.createText(workArea);
         cardinalityFieldMaxProdCmptType = new CardinalityField(maxCardinalityText);
         cardinalityFieldMaxProdCmptType.setSupportsNull(false);
@@ -209,11 +209,11 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
 
         wizard.getExtFactoryAssociation().removeBinding(bindingContext);
 
-        targetRoleSingularTextProdCmptType.setText("");
-        targetRolePluralTextProdCmptType.setText("");
-        cardinalityFieldMinProdCmptType.setText("");
-        cardinalityFieldMaxProdCmptType.setText(""); 
-        descriptionText.setText("");
+        targetRoleSingularTextProdCmptType.setText(""); //$NON-NLS-1$
+        targetRolePluralTextProdCmptType.setText(""); //$NON-NLS-1$
+        cardinalityFieldMinProdCmptType.setText(""); //$NON-NLS-1$
+        cardinalityFieldMaxProdCmptType.setText("");  //$NON-NLS-1$
+        descriptionText.setText(""); //$NON-NLS-1$
     }
     
     private void bindAllControls(IProductCmptTypeAssociation productCmptAssociation) {

@@ -55,8 +55,8 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
     private Label noteAboutProductStructureConstrained;
     
     protected PropertyPage(NewPcTypeAssociationWizard wizard, IPolicyCmptTypeAssociation association, UIToolkit toolkit, BindingContext bindingContext) {
-        super("PropertyPage", "Association properties", null);
-        super.setDescription("Define association properties");
+        super(Messages.PropertyPage_pageName, Messages.PropertyPage_pageTitle, null);
+        super.setDescription(Messages.PropertyPage_pageDescription);
         this.wizard = wizard;
         this.association = association;
         this.toolkit = toolkit;
@@ -82,7 +82,7 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
     }
     
     private void createGeneralControls(Composite parent) {
-        Group groupGeneral = toolkit.createGroup(parent, "Properties");
+        Group groupGeneral = toolkit.createGroup(parent, Messages.PropertyPage_groupProperties);
         GridData gd = (GridData)groupGeneral.getLayoutData();
         gd.grabExcessVerticalSpace = false;
         
@@ -93,7 +93,7 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
         wizard.getExtFactoryAssociation().createControls(workArea, toolkit, association, IExtensionPropertyDefinition.POSITION_TOP);
         
         // role singular
-        toolkit.createFormLabel(workArea, "Target role (singular):");
+        toolkit.createFormLabel(workArea, Messages.PropertyPage_labelTargetRoleSingular);
         targetRoleSingularText = toolkit.createText(workArea);
         bindingContext.bindContent(targetRoleSingularText, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
         visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
@@ -104,7 +104,7 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
         });
         
         // role plural
-        toolkit.createFormLabel(workArea, "Target role (plural):");
+        toolkit.createFormLabel(workArea, Messages.PropertyPage_labelTargetRolePlural);
         final Text targetRolePluralText = toolkit.createText(workArea);
         bindingContext.bindContent(targetRolePluralText, association, IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
         visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
@@ -115,7 +115,7 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
         });
         
         // min cardinality
-        toolkit.createFormLabel(workArea, "Minimum cardinality:");
+        toolkit.createFormLabel(workArea, Messages.PropertyPage_labelMinimumCardinality);
         Text minCardinalityText = toolkit.createText(workArea);
         CardinalityField cardinalityField = new CardinalityField(minCardinalityText);
         cardinalityField.setSupportsNull(false);
@@ -123,7 +123,7 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
         visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
         
         // max cardinality
-        toolkit.createFormLabel(workArea, "Maximum cardinality:");
+        toolkit.createFormLabel(workArea, Messages.PropertyPage_labelMaximumCardinality);
         Text maxCardinalityText = toolkit.createText(workArea);
         cardinalityField = new CardinalityField(maxCardinalityText);
         cardinalityField.setSupportsNull(false);
@@ -133,7 +133,7 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
         Composite info = toolkit.createGridComposite(groupGeneral, 1, true, false);
         
         // create note about constrained by product structure
-        noteAboutProductStructureConstrained = toolkit.createLabel(info, "");
+        noteAboutProductStructureConstrained = toolkit.createLabel(info, ""); //$NON-NLS-1$
 
         // bottom extensions
         wizard.getExtFactoryAssociation().createControls(workArea, toolkit, association, IExtensionPropertyDefinition.POSITION_BOTTOM);

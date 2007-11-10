@@ -45,8 +45,8 @@ public class InverseAssociationPage extends WizardPage {
     private Button prevSelection;
 
     public InverseAssociationPage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit) {
-        super("InverseAssociationPage", "Inverse association", null);
-        setDescription("Define inverse association");
+        super(Messages.InverseAssociationPage_pageName, Messages.InverseAssociationPage_pageTitle, null);
+        setDescription(Messages.InverseAssociationPage_pageDescription);
         this.wizard = wizard;
         this.toolkit = toolkit;
         
@@ -58,17 +58,17 @@ public class InverseAssociationPage extends WizardPage {
         
         InverseAssociationSelectionListener listener = new InverseAssociationSelectionListener();
 
-        newInverseAssociation = toolkit.createRadioButton(pageComposite, "New inverse association");
+        newInverseAssociation = toolkit.createRadioButton(pageComposite, Messages.InverseAssociationPage_labelNewInverseAssociation);
         newInverseAssociation.addSelectionListener(listener);
         
         toolkit.createVerticalSpacer(pageComposite, 1);
 
-        useExistingAssociation = toolkit.createRadioButton(pageComposite, "Use existing association as inverse");
+        useExistingAssociation = toolkit.createRadioButton(pageComposite, Messages.InverseAssociationPage_labelUseExistiongAssociation);
         useExistingAssociation.addSelectionListener(listener);
         
         toolkit.createVerticalSpacer(pageComposite, 1);
 
-        noInverseAssociation = toolkit.createRadioButton(pageComposite, "No inverse association");
+        noInverseAssociation = toolkit.createRadioButton(pageComposite, Messages.InverseAssociationPage_labelNoInverseAssociation);
         noInverseAssociation.addSelectionListener(listener);
         
         // set the default selection: no inverse

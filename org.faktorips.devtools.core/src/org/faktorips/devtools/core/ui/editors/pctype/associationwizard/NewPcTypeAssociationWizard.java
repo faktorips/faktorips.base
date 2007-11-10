@@ -117,7 +117,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     HashMap suppressedEventForPages = new HashMap();
     
     public NewPcTypeAssociationWizard(IPolicyCmptTypeAssociation association) {
-        super.setWindowTitle("New association");
+        super.setWindowTitle(Messages.NewPcTypeAssociationWizard_wizardTitle);
         
         this.association = association;
         this.ipsProject = association.getIpsProject();
@@ -380,7 +380,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                     if (!areExistingAssociationsAvailable()) {
                         ((WizardPage)getContainer().getCurrentPage())
                                 .setMessage(
-                                        "No association wich could be used as inverse releation found. The inverse association property page will be skipped.",
+                                        Messages.NewPcTypeAssociationWizard_warningNoExistingAssociationFound,
                                         IMessageProvider.WARNING);
                     }
                 }
@@ -471,7 +471,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         storeInverseAssociation(null);
 
         if (isExistingInverseAssociation()) {
-            inverseAssociationPropertyPage.setDescription("Select an existing association");
+            inverseAssociationPropertyPage.setDescription(Messages.NewPcTypeAssociationWizard_descriptionSelectExistingInverseAssociation);
             inverseAssociationPropertyPage.setShowExistingAssociationDropDown(true);
             try {
                 // get all existing association that matches as inverse for the new association
@@ -489,7 +489,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 showAndLogError(e);
             }
         } else if (isNewInverseAssociation()) {
-            inverseAssociationPropertyPage.setDescription("Define new inverse association");
+            inverseAssociationPropertyPage.setDescription(Messages.NewPcTypeAssociationWizard_descriptionDefineNewInverseAssociation);
             inverseAssociationPropertyPage.setShowExistingAssociationDropDown(false);
             // create a new inverse association
             storeInverseAssociation(null);
@@ -621,12 +621,13 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 // there is a target selected and the target is not the object this new association belongs to
                 if (targetIsDirty){
                     // target policy component type was dirty before editing by the wizard,
-                    //   ask to save automatically
-                    String msg = "The chosen target is currently not saved, should the target automatically saved?";
+                    // ask to save automatically
+                    String msg = Messages.NewPcTypeAssociationWizard_dialogMessageTargetIsDirty;
                     saveTargetAutomatically = MessageDialog.openQuestion(getShell(),
-                            "Save target source file", msg);
+                            Messages.NewPcTypeAssociationWizard_dialogTitleTargetIsDirty, msg);
                 }else{
-                    // target policy component type is not dirty, therefore save the changed on the target
+                    // target policy component type is not dirty, therefore save the changed on the
+                    // target
                     saveTargetAutomatically = true;
                 }
             }
@@ -640,9 +641,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 if (productCmptTypeIsDirty) {
                     // target policy component type was dirty before editing by the wizard,
                     // ask to save automatically
-                    String msg = "The corresponding product component type is currently not saved, should the product component type automatically saved?";
+                    String msg = Messages.NewPcTypeAssociationWizard_dialogMessageProductComponentTypeIsDirty;
                     saveProductCmptTypeAutomatically = MessageDialog.openQuestion(getShell(),
-                            "Save product component type source file", msg);
+                            Messages.NewPcTypeAssociationWizard_dialogTitleProductComponentTypeIsDirty, msg);
                 }
                 if (saveProductCmptTypeAutomatically) {
                     productCmptTypeAssociation.getIpsSrcFile().save(true, null);
@@ -708,8 +709,8 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             }
         }
         // error not found
-        IpsStatus errorStatus = new IpsStatus("Error assosiation " + inverseAssociation
-                + " not found in policy component type " + targetPolicyCmptType);
+        IpsStatus errorStatus = new IpsStatus("Error assosiation " + inverseAssociation //$NON-NLS-1$
+                + " not found in policy component type " + targetPolicyCmptType); //$NON-NLS-1$
         showAndLogError(new CoreException(errorStatus));
     }
     
@@ -869,7 +870,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         composite.setLayoutData(gridData);
         composite.setLayout(new GridLayout());
         
-        toolkit.createFormLabel(composite, "Description");
+        toolkit.createFormLabel(composite, Messages.NewPcTypeAssociationWizard_labelDescription);
         Text description = toolkit.createMultilineText(composite);
         
         bindingContext.bindContent(description, association, IProductCmptTypeAssociation.PROPERTY_DESCRIPTION);

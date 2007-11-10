@@ -36,8 +36,8 @@ public class ErrorPage extends WizardPage implements IHiddenWizardPage{
     private UIToolkit toolkit;
     
     public ErrorPage(UIToolkit toolkit) {
-        super(PAGE_ID, "Error", null);
-        setDescription("An internal error occured. See the log file for details.");
+        super(PAGE_ID, Messages.ErrorPage_pageTitle, null);
+        setDescription(Messages.ErrorPage_pageDescription);
         this.toolkit = toolkit;
         setPageComplete(true);
     }

@@ -42,8 +42,8 @@ public class ConfigureProductCmptTypePage extends WizardPage {
     private Button prevSelection;
 
     public ConfigureProductCmptTypePage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit) {
-        super("ProductComponentTypeAssociationPage", "Product component type association", null);
-        setDescription("Define association on product component type");
+        super(Messages.ConfigureProductCmptTypePage_pageName, Messages.ConfigureProductCmptTypePage_pageTitle, null);
+        setDescription(Messages.ConfigureProductCmptTypePage_pageDescription);
         this.wizard = wizard;
         this.toolkit = toolkit;
         
@@ -55,12 +55,12 @@ public class ConfigureProductCmptTypePage extends WizardPage {
         
         ProductComponentTypeAssociationSelectionListener listener = new ProductComponentTypeAssociationSelectionListener();
         
-        newAssociationOnProductCmptType = toolkit.createRadioButton(pageComposite, "Create a new product component type association");
+        newAssociationOnProductCmptType = toolkit.createRadioButton(pageComposite, Messages.ConfigureProductCmptTypePage_labelCreateNew);
         newAssociationOnProductCmptType.addSelectionListener(listener);
         
         toolkit.createVerticalSpacer(pageComposite, 1);
         
-        noAssociationOnProductCmptType = toolkit.createRadioButton(pageComposite, "Do not create association on product component type");
+        noAssociationOnProductCmptType = toolkit.createRadioButton(pageComposite, Messages.ConfigureProductCmptTypePage_labelCreateNone);
         noAssociationOnProductCmptType.addSelectionListener(listener);
         
         // set the default selection

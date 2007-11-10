@@ -73,8 +73,8 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
     private Composite dynamicComposite;
     
     public InverseAssociationPropertyPage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit, BindingContext bindingContext) {
-        super("InverseAssociationPropertyPage", "Inverse association properties", null);
-        setDescription("Define new inverse association");
+        super(Messages.InverseAssociationPropertyPage_pageName, Messages.InverseAssociationPropertyPage_pageTitle, null);
+        setDescription(Messages.InverseAssociationPropertyPage_pageDescription);
         this.wizard = wizard;
         this.toolkit = toolkit;
         this.bindingContext = bindingContext;
@@ -98,7 +98,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
     }
 
     private void createExistingAssociationComboControl(Composite top) {
-        existingRelLabel = toolkit.createFormLabel(top, "Existing association");
+        existingRelLabel = toolkit.createFormLabel(top, Messages.InverseAssociationPropertyPage_labelExistingAssociation);
         existingRelCombo = toolkit.createCombo(top);
         existingRelCombo.addListener(SWT.Modify, new Listener() {
             public void handleEvent(Event ev) {
@@ -109,12 +109,12 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
 
     private void createTargetAndTypeControls(Composite top) {
         // target
-        toolkit.createFormLabel(top, "Target");
+        toolkit.createFormLabel(top, Messages.InverseAssociationPropertyPage_labelTarget);
         targetText = toolkit.createText(top);
         targetText.setEnabled(false);
 
         // type
-        toolkit.createFormLabel(top, "Type");
+        toolkit.createFormLabel(top, Messages.InverseAssociationPropertyPage_labelType);
         typeText = toolkit.createText(top);
         typeText.setEnabled(false);
     }
@@ -132,7 +132,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
     }
 
     private void createMainProperties(Composite parent) {
-        Group group = toolkit.createGroup(parent, "Properties");
+        Group group = toolkit.createGroup(parent, Messages.InverseAssociationPropertyPage_labelProperties);
         ((GridData)group.getLayoutData()).grabExcessVerticalSpace = false;
         
         Composite workArea = toolkit.createLabelEditColumnComposite(group);
@@ -142,7 +142,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         wizard.getExtFactoryInverseAssociation().createControls(workArea, toolkit, association, IExtensionPropertyDefinition.POSITION_TOP);
         
         // role singular
-        toolkit.createFormLabel(workArea, "Target role (singular):");
+        toolkit.createFormLabel(workArea, Messages.InverseAssociationPropertyPage_labelTargetRoleSingular);
         targetRoleSingularText = toolkit.createText(workArea);
         visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
         targetRoleSingularText.addFocusListener(new FocusAdapter() {
@@ -154,7 +154,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         });
         
         // role plural
-        toolkit.createFormLabel(workArea, "Target role (plural):");
+        toolkit.createFormLabel(workArea, Messages.InverseAssociationPropertyPage_labelTargetRolePlural);
         targetRolePluralText = toolkit.createText(workArea);
         visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
         targetRolePluralText.addFocusListener(new FocusAdapter() {
@@ -166,14 +166,14 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         });
         
         // min cardinality
-        toolkit.createFormLabel(workArea, "Minimum cardinality:");
+        toolkit.createFormLabel(workArea, Messages.InverseAssociationPropertyPage_labelMinimumCardinality);
         Text minCardinalityText = toolkit.createText(workArea);
         cardinalityFieldMin = new CardinalityField(minCardinalityText);
         cardinalityFieldMin.setSupportsNull(false);
         visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
         
         // max cardinality
-        toolkit.createFormLabel(workArea, "Maximum cardinality:");
+        toolkit.createFormLabel(workArea, Messages.InverseAssociationPropertyPage_labelMaximumCardinality);
         Text maxCardinalityText = toolkit.createText(workArea);
         cardinalityFieldMax = new CardinalityField(maxCardinalityText);
         cardinalityFieldMax.setSupportsNull(false);
@@ -205,7 +205,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
     }
 
     private void resetControlsAndBinding(IPolicyCmptTypeAssociation association) {
-        prevSelExistingAssociation = association==null?"":association.getName();
+        prevSelExistingAssociation = association==null?"":association.getName(); //$NON-NLS-1$
         bindingContext.removeBindings(targetRoleSingularText);
         bindingContext.removeBindings(targetRolePluralText);
         bindingContext.removeBindings(cardinalityFieldMin.getControl());
@@ -213,13 +213,13 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         bindingContext.removeBindings(description);
         wizard.getExtFactoryAssociation().removeBinding(bindingContext);
 
-        targetRoleSingularText.setText("");
-        targetRolePluralText.setText("");
-        cardinalityFieldMin.setText("");
-        cardinalityFieldMax.setText("");
-        targetText.setText("");
-        typeText.setText("");
-        description.setText("");
+        targetRoleSingularText.setText(""); //$NON-NLS-1$
+        targetRolePluralText.setText(""); //$NON-NLS-1$
+        cardinalityFieldMin.setText(""); //$NON-NLS-1$
+        cardinalityFieldMax.setText(""); //$NON-NLS-1$
+        targetText.setText(""); //$NON-NLS-1$
+        typeText.setText(""); //$NON-NLS-1$
+        description.setText(""); //$NON-NLS-1$
     }
 
     private void bindAllControls(IPolicyCmptTypeAssociation association) {
@@ -303,9 +303,6 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
      */
     public boolean isPageVisible() {
         if (wizard.isNoneInverseAssociation()) {
-            // reset the association separately
-            //   because handleInverseAssociationSelectionState will never executed (see this.setVisible)
-            association = null;
             return false;
         } else if (wizard.isExistingInverseAssociation()) {
             return wizard.areExistingAssociationsAvailable();
