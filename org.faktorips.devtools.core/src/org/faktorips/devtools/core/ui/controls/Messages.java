@@ -34,7 +34,35 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String ParametersEditControl_buttonLabelAdd;
+	public static String AssociationDerivedUnionGroup_groupDerivedUnion;
+
+    public static String AssociationDerivedUnionGroup_labelDefinesSubsetOfDerivedUnion;
+
+    public static String AssociationDerivedUnionGroup_labelIsDerivedUnion;
+
+    public static String AssociationDerivedUnionGroup_labelSubsetTextField;
+
+    public static String AssociationQualificationGroup_groupQualification;
+
+    public static String AssociationQualificationGroup_labelIsQualified;
+
+    public static String AssociationQualificationGroup_labelIsQualifiedByType;
+
+    public static String AssociationQualificationGroup_labelNote;
+
+    public static String AssociationQualificationGroup_labelNoteQualificationOnlyMasterDetail;
+
+    public static String AssociationQualificationGroup_labelNoteQualificationOnlyTargetConfByProduct;
+
+    public static String AssociationQualificationGroup_noteContrainHowTo;
+
+    public static String AssociationQualificationGroup_noteIsConstrained;
+
+    public static String AssociationQualificationGroup_noteIsNotConstrained;
+
+    public static String AssociationQualificationGroup_noteQualifiedMultiplictyPerQualifiedInstance;
+
+    public static String ParametersEditControl_buttonLabelAdd;
 
     public static String ParametersEditControl_buttonLabelMoveDown;
 

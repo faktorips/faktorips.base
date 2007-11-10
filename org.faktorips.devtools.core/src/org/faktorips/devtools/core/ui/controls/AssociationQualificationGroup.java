@@ -62,7 +62,7 @@ public class AssociationQualificationGroup extends Composite {
         
         pmoAssociation = new PmoAssociation((IPolicyCmptTypeAssociation)association);
         
-        Group groupQualification = uiToolkit.createGroup(this, "Qualification");
+        Group groupQualification = uiToolkit.createGroup(this, Messages.AssociationQualificationGroup_groupQualification);
         ((GridData)groupQualification.getLayoutData()).grabExcessVerticalSpace = false;
         createQualificationControls(uiToolkit, bindingContext, groupQualification, association);
     }
@@ -104,11 +104,11 @@ public class AssociationQualificationGroup extends Composite {
         }
         
         public String getQualificationLabel() {
-            String label = "This association is qualified";
+            String label = Messages.AssociationQualificationGroup_labelIsQualified;
             try {
                 String productCmptType = QNameUtil.getUnqualifiedName(association.findQualifierCandidate(ipsProject));
                 if (StringUtils.isNotEmpty(productCmptType)) {
-                    label = label + NLS.bind(" by type \"{0}\"", productCmptType);
+                    label = label + NLS.bind(Messages.AssociationQualificationGroup_labelIsQualifiedByType, productCmptType);
                 }
             }
             catch (CoreException e) {
@@ -118,15 +118,15 @@ public class AssociationQualificationGroup extends Composite {
         }
 
         public String getQualificationNote() {
-            String note = "Note: ";
+            String note = Messages.AssociationQualificationGroup_labelNote;
             if (!association.isCompositionMasterToDetail()) {
-                note = note + "Qualification is only applicable for compositions (master to detail).";
+                note = note + Messages.AssociationQualificationGroup_labelNoteQualificationOnlyMasterDetail;
             } else {
                 try {
                     if (!association.isQualificationPossible(ipsProject)) {
-                        note = note + "Qualification is only applicable, if the target type is configurable by a product.";
+                        note = note + Messages.AssociationQualificationGroup_labelNoteQualificationOnlyTargetConfByProduct;
                     } else {
-                        note = note + "For qualified associations multiplicty is defined per qualified instance.";
+                        note = note + Messages.AssociationQualificationGroup_noteQualifiedMultiplictyPerQualifiedInstance;
                     }
                 }
                 catch (CoreException e) {
@@ -154,16 +154,16 @@ public class AssociationQualificationGroup extends Composite {
                 IProductCmptTypeAssociation matchingAss = association.findMatchingProductCmptTypeAssociation(ipsProject);
                 if (matchingAss!=null) {
                     String type = matchingAss.getProductCmptType().getName();
-                    return NLS.bind("Note: This association is constrained by product structure. The matching \nassociation in type \"{0}\" is \"{1}\" (rolename).", type, matchingAss.getTargetRoleSingular()) 
+                    return NLS.bind(Messages.AssociationQualificationGroup_noteIsConstrained, type, matchingAss.getTargetRoleSingular()) 
                             + StringUtils.rightPad("\n", 120);  //$NON-NLS-1$
                 } else {
-                    String note = "Note: This association is not constrained by product structure."; 
+                    String note = Messages.AssociationQualificationGroup_noteIsNotConstrained; 
                     IProductCmptType sourceProductType = association.getPolicyCmptType().findProductCmptType(ipsProject);
                     IPolicyCmptType targetType = association.findTargetPolicyCmptType(ipsProject);
                     if (sourceProductType!=null && targetType!=null) {
                         IProductCmptType targetProductType = targetType.findProductCmptType(ipsProject);
                         if (targetProductType!=null) {
-                            return note + NLS.bind("\nTo constrain the association by product structure, create an association between the \nproduct component types ''{0}'' and ''{1}''.", sourceProductType.getName(), targetProductType.getName());
+                            return note + NLS.bind(Messages.AssociationQualificationGroup_noteContrainHowTo, sourceProductType.getName(), targetProductType.getName());
                         }
                     }
                     return note + StringUtils.rightPad("\n", 120) + StringUtils.rightPad("\n", 120) ; //$NON-NLS-1$ //$NON-NLS-2$

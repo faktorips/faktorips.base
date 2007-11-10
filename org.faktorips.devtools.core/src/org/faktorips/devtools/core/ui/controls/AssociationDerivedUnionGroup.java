@@ -57,7 +57,7 @@ public class AssociationDerivedUnionGroup extends Composite {
         GridData gridData = new GridData(SWT.FILL, SWT.NONE, true, false);
         this.setLayoutData(gridData);
         
-        Group groupDerived = uiToolkit.createGroup(this, "Derived union");
+        Group groupDerived = uiToolkit.createGroup(this, Messages.AssociationDerivedUnionGroup_groupDerivedUnion);
         ((GridData)groupDerived.getLayoutData()).grabExcessVerticalSpace = false;
         createDerivedUnionControls(uiToolkit, bindingContext, groupDerived, association);
     }
@@ -65,15 +65,15 @@ public class AssociationDerivedUnionGroup extends Composite {
     private void createDerivedUnionControls(UIToolkit uiToolkit, BindingContext bindingContext, Composite parent, IAssociation association) {
 
         // derived union checkbox
-        containerCheckbox = uiToolkit.createCheckbox(parent, "This association is a derived union");
+        containerCheckbox = uiToolkit.createCheckbox(parent, Messages.AssociationDerivedUnionGroup_labelIsDerivedUnion);
         
         // is subset checkbox
-        subsetCheckbox = uiToolkit.createCheckbox(parent, "This association defines a subset of a derived union");
+        subsetCheckbox = uiToolkit.createCheckbox(parent, Messages.AssociationDerivedUnionGroup_labelDefinesSubsetOfDerivedUnion);
         
         // subset text field
         Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-        uiToolkit.createFormLabel(workArea, "Derived union:");
+        uiToolkit.createFormLabel(workArea, Messages.AssociationDerivedUnionGroup_labelSubsetTextField);
         derivedUnionText = uiToolkit.createText(workArea);
 
         bindContent(bindingContext, association);
