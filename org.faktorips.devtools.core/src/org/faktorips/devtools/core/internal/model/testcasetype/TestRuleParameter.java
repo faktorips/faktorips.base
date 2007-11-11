@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
@@ -121,8 +122,8 @@ public class TestRuleParameter extends TestParameter implements ITestRuleParamet
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
 
         // check if the validation rule has the expected result type
         if (!isExpextedResultParameter()) {

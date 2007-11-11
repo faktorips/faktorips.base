@@ -27,6 +27,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
@@ -173,8 +174,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
      * added to the given <code>MessageList</code>.
 	 * {@inheritDoc}
 	 */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         ITableStructure tableStructure = ((TableContents)getTableContents()).findTableStructure();
         if(tableStructure == null){
             return;
@@ -183,7 +184,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         validateThis(list, tableStructure, datatypes);
     }
     
-    MessageList validateThis(ITableStructure tableStructure, ValueDatatype[] datatypes) throws CoreException {
+    MessageList validateThis(ITableStructure tableStructure, ValueDatatype[] datatypes, IIpsProject ipsProject) throws CoreException {
         MessageList result = beforeValidateThis();
         if (result != null){
             return result;
@@ -192,7 +193,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         result = new MessageList();
         validateThis(result, tableStructure, datatypes);
         
-        afterValidateThis(result);
+        afterValidateThis(result, ipsProject);
         
         return result;
     }

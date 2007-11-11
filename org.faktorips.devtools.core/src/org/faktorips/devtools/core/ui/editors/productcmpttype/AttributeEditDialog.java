@@ -209,7 +209,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         public MessageList validate(String element) {
             MessageList list;
             try {
-                list = attribute.validate();
+                list = attribute.validate(attribute.getIpsProject());
                 // update the ui to set the current messages for all registered controls
                 bindingContext.updateUI();
                 return list.getMessagesFor(element);

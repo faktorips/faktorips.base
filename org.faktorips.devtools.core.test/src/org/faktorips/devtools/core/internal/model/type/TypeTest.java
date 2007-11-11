@@ -68,17 +68,17 @@ public class TypeTest extends AbstractIpsPluginTest {
         superMethod.setName("calc");
 
         // method is not abstract so no error message should be returned.
-        MessageList list = type.validate();
+        MessageList list = type.validate(ipsProject);
         assertNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
 
         // set method to abstract, now the error should be reported
         superMethod.setAbstract(true);
-        list = type.validate();
+        list = type.validate(ipsProject);
         assertNotNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
 
         // "implement" the method in pcType => error should no be reported anymore
         type.overrideMethods(new IMethod[]{superMethod});
-        list = type.validate();
+        list = type.validate(ipsProject);
         assertNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
         
         // create another level in the supertype hierarchy with an abstract method on the new supersupertype.
@@ -89,19 +89,19 @@ public class TypeTest extends AbstractIpsPluginTest {
         IMethod supersuperMethod = supersuperType.newMethod();
         supersuperMethod.setName("calc2");
         supersuperMethod.setAbstract(true);
-        list = type.validate();
+        list = type.validate(ipsProject);
         assertNotNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
         
         // "implement" the method in the supertype => error should no be reported anymore
         superType.overrideMethods(new IMethod[]{supersuperMethod});
-        list = type.validate();
+        list = type.validate(ipsProject);
         assertNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
     }
     
     public void testValidateMustImplementContainerRelation() throws Exception {
         IPolicyCmptType target = newPolicyCmptType(ipsProject, "TargetType");
         
-        MessageList ml = type.validate();
+        MessageList ml = type.validate(ipsProject);
         assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
         
         IAssociation union = type.newAssociation();
@@ -109,21 +109,21 @@ public class TypeTest extends AbstractIpsPluginTest {
         union.setTargetRoleSingular("Target");
         union.setTarget(target.getQualifiedName());
         
-        ml = type.validate();
+        ml = type.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
         
         // test if the rule is not executed when disabled
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setDerivedUnionIsImplementedRuleEnabled(false);
         ipsProject.setProperties(props);
-        ml = type.validate();
+        ml = type.validate(ipsProject);
         assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
         props.setDerivedUnionIsImplementedRuleEnabled(true);
         ipsProject.setProperties(props);
 
         // type is valid, if it is abstract
         type.setAbstract(true);
-        ml = type.validate();
+        ml = type.validate(ipsProject);
         assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
         type.setAbstract(false);
         
@@ -133,19 +133,19 @@ public class TypeTest extends AbstractIpsPluginTest {
         association.setSubsettedDerivedUnion(union.getName());
         association.setTarget(target.getQualifiedName());
         
-        ml = type.validate();
+        ml = type.validate(ipsProject);
         assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
         
         // delete the relation, now same thing for a subtype
         association.delete();
         IType subtype = newProductCmptType(ipsProject, "Subtype");
         subtype.setSupertype(type.getQualifiedName());
-        ml = subtype.validate();
+        ml = subtype.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
         
         // type is valid, if it is abstract
         subtype.setAbstract(true);
-        ml = subtype.validate();
+        ml = subtype.validate(ipsProject);
         assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
         subtype.setAbstract(false);
 
@@ -154,14 +154,14 @@ public class TypeTest extends AbstractIpsPluginTest {
         association.setSubsettedDerivedUnion(union.getName());
         association.setTarget(target.getQualifiedName());
         
-        ml = subtype.validate();
+        ml = subtype.validate(ipsProject);
         assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
         
         // now same thing for subtype of subtype
         association.delete();
         IType subsubtype = newProductCmptType(ipsProject, "SubSubtype");
         subsubtype.setSupertype(subtype.getQualifiedName());
-        ml = subsubtype.validate();
+        ml = subsubtype.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
 
         association = subtype.newAssociation();
@@ -169,17 +169,17 @@ public class TypeTest extends AbstractIpsPluginTest {
         association.setSubsettedDerivedUnion(union.getName());
         association.setTarget(target.getQualifiedName());
         
-        ml = subtype.validate();
+        ml = subtype.validate(ipsProject);
         assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
     }
     
     public void testValidate_AbstractMissing() throws Exception {
-        MessageList ml = type.validate();
+        MessageList ml = type.validate(type.getIpsProject());
         assertNull(ml.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING));
         
         type.newMethod().setAbstract(true);
         type.setAbstract(false);
-        ml = type.validate();
+        ml = type.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING));
     }
     
@@ -483,16 +483,16 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
     
     public void testValidate_SupertypeNotFound() throws Exception {
-        MessageList ml = type.validate();
+        MessageList ml = type.validate(ipsProject);
         assertNull(ml.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
 
         type.setSupertype("abc");
-        ml = type.validate();
+        ml = type.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
         
         IType supertype = newProductCmptType(ipsProject, "Product");
         type.setSupertype(supertype.getQualifiedName());
-        ml = type.validate();
+        ml = type.validate(ipsProject);
         assertNull(ml.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
     }
     
@@ -504,13 +504,13 @@ public class TypeTest extends AbstractIpsPluginTest {
         type.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
         
-        MessageList ml = type.validate();
+        MessageList ml = type.validate(type.getIpsProject());
         Message msg = ml.getMessageByCode(IType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY);
         assertNull(msg);
         
         supersupertype.setSupertype(type.getQualifiedName());
         
-        ml = type.validate();
+        ml = type.validate(ipsProject);
         msg = ml.getMessageByCode(IType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY);
         
         assertNotNull(msg);
@@ -519,7 +519,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertEquals(type, msg.getInvalidObjectProperties()[0].getObject());
         
         type.setSupertype(type.getQualifiedName());
-        ml = type.validate();
+        ml = type.validate(ipsProject);
         msg = ml.getMessageByCode(IType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY);
         assertNotNull(msg);
     }
@@ -536,11 +536,11 @@ public class TypeTest extends AbstractIpsPluginTest {
         type.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
         
-        MessageList ml = type.validate();
+        MessageList ml = type.validate(type.getIpsProject());
         assertNull(ml.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
         
         supersupertype.setSupertype("abc");
-        ml = type.validate();
+        ml = type.validate(type.getIpsProject());
         assertNotNull(ml.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
     }
 

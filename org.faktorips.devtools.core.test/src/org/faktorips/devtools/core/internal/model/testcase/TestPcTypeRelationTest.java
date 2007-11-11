@@ -81,22 +81,22 @@ public class TestPcTypeRelationTest extends AbstractIpsPluginTest {
     }
     
     public void testValidateTestCaseTypeParamNotFound() throws Exception{
-        MessageList ml = testPcTypeRelation.validate();
+        MessageList ml = testPcTypeRelation.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
 
         testPcTypeRelation.setTestPolicyCmptTypeParameter("x");
-        ml = testPcTypeRelation.validate();
+        ml = testPcTypeRelation.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
     }
 
     public void testValidateAssoziationTargetNotInTestCase() throws Exception{
         testCase.newTestPolicyCmpt().setName("testPolicyCmptTarget");
         
-        MessageList ml = testPcTypeRelation.validate();
+        MessageList ml = testPcTypeRelation.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE));
 
         testPcTypeRelation.setTarget("x");
-        ml = testPcTypeRelation.validate();
+        ml = testPcTypeRelation.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE));
     }
 
@@ -108,11 +108,11 @@ public class TestPcTypeRelationTest extends AbstractIpsPluginTest {
         ITestPolicyCmptTypeParameter paramChild = testPcTypeRelation.findTestPolicyCmptTypeParameter();
         paramChild.setRelation("modelRelation");
 
-        MessageList ml = testPcTypeRelation.validate();
+        MessageList ml = testPcTypeRelation.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MODEL_RELATION_NOT_FOUND));
 
         paramChild.setRelation("x");
-        ml = testPcTypeRelation.validate();
+        ml = testPcTypeRelation.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MODEL_RELATION_NOT_FOUND));
     }
 }

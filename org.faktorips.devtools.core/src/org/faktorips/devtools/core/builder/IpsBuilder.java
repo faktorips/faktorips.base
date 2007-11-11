@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -141,6 +142,32 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return getProject().getReferencedProjects();
     }
 
+    private boolean beforeBuild(IProject project, IIpsProject ipsProject, IProgressMonitor monitor, MultiStatus buildStatus){
+//        project.deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, 0);
+//        MessageList list = ipsProject.validate();
+//        createMarkersFromMessageList(project, list, IpsPlugin.PROBLEM_MARKER);
+//        monitor.worked(100);
+//        if (!ipsProject.canBeBuild()) {
+//            IMarker marker = project.createMarker(IpsPlugin.PROBLEM_MARKER);
+//            String msg = Messages.IpsBuilder_msgInvalidProperties;
+//            updateMarker(marker, msg, IMarker.SEVERITY_ERROR);
+//            return false;
+//        }
+//        monitor.subTask(Messages.IpsBuilder_preparingBuild);
+//        IIpsArtefactBuilderSet ipsArtefactBuilderSet = getIpsProject().getIpsArtefactBuilderSet();
+//        boolean isFullBuildRequired = isFullBuildRequired(kind);
+//        if (isFullBuildRequired) {
+//            kind = IncrementalProjectBuilder.FULL_BUILD;
+//        }
+//        applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new BeforeBuildProcessCommand(kind), monitor);
+//        monitor.worked(100);
+        return true;
+    }
+    
+    private void afterBuild(){
+        
+    }
+    
     private boolean isFullBuildRequired(int kind) throws CoreException {
         if (kind == FULL_BUILD || kind == CLEAN_BUILD) {
             return true;
@@ -254,7 +281,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 try {
                     IIpsSrcFile ipsSrcFile = (IIpsSrcFile)it.next();
                     monitor.subTask(Messages.IpsBuilder_building + ipsSrcFile.getName());
-                    buildIpsSrcFile(ipsArtefactBuilderSet, ipsSrcFile, buildStatus, monitor);
+                    buildIpsSrcFile(ipsArtefactBuilderSet, getIpsProject(), ipsSrcFile, buildStatus, monitor);
                     monitor.worked(1);
                 } catch (Exception e) {
                     buildStatus.add(new IpsStatus(e));
@@ -373,7 +400,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             for (Iterator it = visitor.changedAndAddedIpsSrcFiles.iterator(); it.hasNext();) {
                 IpsSrcFile ipsSrcFile = (IpsSrcFile)it.next();
                 monitor.subTask(Messages.IpsBuilder_building + ipsSrcFile.getName());
-                buildIpsSrcFile(ipsArtefactBuilderSet, ipsSrcFile, buildStatus, monitor);
+                buildIpsSrcFile(ipsArtefactBuilderSet, getIpsProject(), ipsSrcFile, buildStatus, monitor);
                 updateDependencyGraph(buildStatus, ipsSrcFile);
                 monitor.worked(1);
             }
@@ -398,7 +425,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                         continue;
                     }
                     monitor.subTask(Messages.IpsBuilder_building + dependency);
-                    buildIpsSrcFile(ipsArtefactBuilderSet, ipsObject.getIpsSrcFile(), buildStatus, monitor);
+                    buildIpsSrcFile(ipsArtefactBuilderSet, ipsProject, ipsObject.getIpsSrcFile(), buildStatus, monitor);
                     updateDependencyGraph(buildStatus, ipsObject.getIpsSrcFile());
                     monitor.worked(1);
                 }
@@ -423,7 +450,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
         try {
 
-            MessageList list = object.validate();
+            MessageList list = object.validate(object.getIpsProject());
             createMarkersFromMessageList(resource, list, IpsPlugin.PROBLEM_MARKER);
         } catch (Exception e) {
             buildStatus.add(new IpsStatus("An exception occured during marker updating for " + object, e)); //$NON-NLS-1$
@@ -461,6 +488,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
      * Builds the indicated file and updates its markers.
      */
     private IIpsObject buildIpsSrcFile(IIpsArtefactBuilderSet ipsArtefactBuilderSet,
+            IIpsProject ipsProject,
             IIpsSrcFile file,
             MultiStatus buildStatus,
             IProgressMonitor monitor) throws CoreException {
@@ -474,7 +502,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         MultiStatus newStatus = createInitialMultiStatus();
         applyBuildCommand(ipsArtefactBuilderSet, newStatus, new BuildArtefactBuildCommand(file), monitor);
         if (!newStatus.isOK()) {
-            fillMultiStatusWithMessageList(newStatus, ipsObject.validate());
+            fillMultiStatusWithMessageList(newStatus, ipsObject.validate(ipsProject));
         }
         buildStatus.add(newStatus);
         updateMarkers(buildStatus, ipsObject);

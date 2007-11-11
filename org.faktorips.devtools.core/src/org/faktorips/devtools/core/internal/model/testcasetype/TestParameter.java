@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
@@ -145,8 +146,8 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
     
         // check for duplicate test parameter names
         ITestParameter[] testParameters = null;

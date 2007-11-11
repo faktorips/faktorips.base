@@ -254,7 +254,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
                     MessageCueController.setMessageCue(validationRuleAdded, null);
                     return;
                 }
-                msgList = rule.validate();
+                msgList = rule.validate(rule.getIpsProject());
                 msgList = msgList.getMessagesFor(rule, IValidationRule.PROPERTY_CHECK_AGAINST_VALUE_SET_RULE);
                 MessageCueController.setMessageCue(validationRuleAdded, msgList);
             } catch (CoreException e) {
@@ -730,7 +730,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         public MessageList validate(String element) {
             MessageList list;
             try {
-                list = attribute.validate();
+                list = attribute.validate(attribute.getIpsProject());
                 // update the ui to set the current messages for all registered controls
                 bindingContext.updateUI();
                 return list.getMessagesFor(element);

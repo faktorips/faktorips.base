@@ -26,6 +26,8 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.Validatable;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -40,11 +42,14 @@ import org.faktorips.util.message.MessageList;
 public class MessageCueLabelProvider extends LabelProvider {
     
     private ILabelProvider baseProvider;
-
+    private IIpsProject ipsProject;
     private HashMap cachedProblemImageDescriptors = new HashMap();
     
-    public MessageCueLabelProvider(ILabelProvider baseProvider) {
+    public MessageCueLabelProvider(ILabelProvider baseProvider, IIpsProject ipsProject) {
+        ArgumentCheck.notNull(baseProvider, this);
+        ArgumentCheck.notNull(ipsProject, this);
         this.baseProvider = baseProvider;
+        this.ipsProject = ipsProject;
     }
     
     /** 
@@ -92,7 +97,7 @@ public class MessageCueLabelProvider extends LabelProvider {
      */
     protected MessageList getMessages(Object element) throws CoreException {
         if (element instanceof Validatable) {
-            return ((Validatable)element).validate();    
+            return ((Validatable)element).validate(ipsProject);    
         } else {
             return new MessageList();
         }

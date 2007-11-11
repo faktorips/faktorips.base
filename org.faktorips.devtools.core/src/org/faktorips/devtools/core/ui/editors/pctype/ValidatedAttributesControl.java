@@ -136,7 +136,7 @@ public class ValidatedAttributesControl extends EditTableControl {
 	private MessageList validate(Object element) {
 		try {
 			IndexedValidatedAttributeWrapper wrapper = (IndexedValidatedAttributeWrapper) element;
-			return rule.validate().getMessagesFor(rule,
+			return rule.validate(rule.getIpsProject()).getMessagesFor(rule,
 					IValidationRule.PROPERTY_VALIDATED_ATTRIBUTES,
 					wrapper.index);
 		} catch (CoreException e) {

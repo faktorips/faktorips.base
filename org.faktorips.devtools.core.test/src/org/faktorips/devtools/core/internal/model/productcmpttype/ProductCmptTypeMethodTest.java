@@ -47,61 +47,61 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     public void testValidate_FormulaMustntBeAbstract() throws CoreException {
         method.setFormulaSignatureDefinition(true);
         method.setAbstract(true);
-        MessageList result = method.validate();
+        MessageList result = method.validate(method.getIpsProject());
         assertNotNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT));
         
         method.setAbstract(false);
-        result = method.validate();
+        result = method.validate(method.getIpsProject());
         assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT));
         
         method.setFormulaSignatureDefinition(false);
         method.setAbstract(true);
-        result = method.validate();
+        result = method.validate(method.getIpsProject());
         assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT));
         
         method.setAbstract(false);
-        result = method.validate();
+        result = method.validate(method.getIpsProject());
         assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT));
     }
     
     public void testValidate_FormulaNameIsMissing() throws CoreException {
         method.setFormulaSignatureDefinition(false);
         method.setFormulaName("someName");
-        MessageList result = method.validate();
+        MessageList result = method.validate(method.getIpsProject());
         assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY));
         
         method.setFormulaSignatureDefinition(true);
-        result = method.validate();
+        result = method.validate(method.getIpsProject());
         assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY));
         
         method.setFormulaName("");
-        result = method.validate();
+        result = method.validate(method.getIpsProject());
         assertNotNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY));
         
         method.setFormulaSignatureDefinition(false);
-        result = method.validate();
+        result = method.validate(method.getIpsProject());
         assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY));
     }
     
     public void testValidate_DatatypeMustBeAValueDatatypeForFormulaSignature() throws CoreException {
         method.setDatatype("void");
         method.setFormulaSignatureDefinition(false);
-        MessageList result = method.validate();
+        MessageList result = method.validate(method.getIpsProject());
         assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
         method.setFormulaSignatureDefinition(true);
-        result = method.validate();
+        result = method.validate(method.getIpsProject());
         assertNotNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
         
         method.setFormulaSignatureDefinition(false);
         method.setDatatype(pcType.getQualifiedName());
-        result = method.validate();
+        result = method.validate(method.getIpsProject());
         assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
         method.setFormulaSignatureDefinition(true);
-        result = method.validate();
+        result = method.validate(method.getIpsProject());
         assertNotNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
         
         method.setDatatype("Integer");
-        result = method.validate();
+        result = method.validate(method.getIpsProject());
         assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
     }
     

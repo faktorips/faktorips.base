@@ -307,7 +307,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
         for (int i = 0; i < associations.length; i++) {
             IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)associations[i];
             try {
-                if (associations[i].validate().containsErrorMsg()) {
+                if (associations[i].validate(getIpsProject()).containsErrorMsg()) {
                     continue;
                 }
                 if (associations[i].isDerivedUnion()) {

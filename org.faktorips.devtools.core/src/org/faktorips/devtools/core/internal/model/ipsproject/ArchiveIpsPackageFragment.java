@@ -296,13 +296,12 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
      * @return sort definition as String.
      * @throws CoreException
      */
-    //TODO pk 2007-11-07 this cannot work. We need to provide a method that returns a resource from the IpsArchive or something similar
+    //TODO pk 2007-11-11 intermediate state
     private String getSortDefinitionContent() throws CoreException {
 //        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
 //        IIpsArchive archive = root.getIpsArchive();
-//        QualifiedNameType qnt = QualifiedNameType.newQualifedNameType(this.getName().concat( StringUtil.getSystemLineSeparator()  + IIpsPackageFragment.SORT_ORDER_FILE_NAME) );
-        return ""; //$NON-NLS-1$
-//        return archive.getContent(qnt);
+//        return archive.getSortDefinitionContent(getName());
+        return "";
     }
 
     /**

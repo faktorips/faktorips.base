@@ -17,8 +17,14 @@
 
 package org.faktorips.datatype;
 
-import org.faktorips.datatype.classtypes.*;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.datatype.classtypes.BooleanDatatype;
+import org.faktorips.datatype.classtypes.DecimalDatatype;
+import org.faktorips.datatype.classtypes.DoubleDatatype;
+import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
+import org.faktorips.datatype.classtypes.IntegerDatatype;
+import org.faktorips.datatype.classtypes.LongDatatype;
+import org.faktorips.datatype.classtypes.MoneyDatatype;
+import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
 
@@ -129,18 +135,6 @@ public interface Datatype extends Comparable {
      * Returns the qualified Java class name that values of this datatype are instances of. 
      */
     public abstract String getJavaClassName();
-    
-    /**
-     * Validates the datatype and returns a message list containing appropriate error messages.
-     * If the datatype is valid an empty list is returned.
-     * <p>
-     * Datatypes like the predefined datatypes (defined by the constants in this class) are 
-     * always valid. However new datatypes can be defined as part of a model and these datatypes
-     * might be invalid.
-     * 
-     * @throws Exception if an error occurs while validating the datatype.
-     */
-    public MessageList validate() throws Exception;
     
     /**
      * Returns <code>true</code> if the datatype has a special instance representing <code>null</code>,

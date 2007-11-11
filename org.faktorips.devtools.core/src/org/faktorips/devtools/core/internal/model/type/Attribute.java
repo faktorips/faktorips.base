@@ -164,8 +164,8 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList result) throws CoreException {
-        super.validateThis(result);
+    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(result, ipsProject);
         IStatus status = JavaConventions.validateFieldName(name);
         if (!status.isOK()) {
             result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, Messages.Attribute_msg_InvalidAttributeName + name

@@ -22,6 +22,7 @@ import java.util.Iterator;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.Validatable;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
@@ -103,9 +104,10 @@ public class TestCaseTypeRelation implements Validatable {
 	
 	/**
 	 * Returns the relation object which is related by the test relation type.
+	 * @param ipsProject TODO
 	 */
-	public IPolicyCmptTypeAssociation findRelation() throws CoreException {
-		return testPolicyCmptTypeParameter.findRelation();
+	public IPolicyCmptTypeAssociation findRelation(IIpsProject ipsProject) throws CoreException {
+		return testPolicyCmptTypeParameter.findRelation(ipsProject);
 	}
 
 	/**
@@ -131,9 +133,10 @@ public class TestCaseTypeRelation implements Validatable {
 
 	/**
 	 * Returns the name of the policy component type which is related by the test relation parameter.
+	 * @param ipsProject TODO
 	 */
-	public String getPolicyCmptTypeTarget() throws CoreException {
-		return findRelation().getTarget();
+	public String getPolicyCmptTypeTarget(IIpsProject ipsProject) throws CoreException {
+		return findRelation(ipsProject).getTarget();
 	}
 	
 	/**
@@ -164,9 +167,9 @@ public class TestCaseTypeRelation implements Validatable {
 	/**
 	 * {@inheritDoc}
 	 */
-	public MessageList validate() throws CoreException {
+	public MessageList validate(IIpsProject ipsProject) throws CoreException {
 		MessageList messageList = new MessageList();
-		validate(messageList);
+		validate(messageList, ipsProject);
 		return messageList;
 	}
 
@@ -174,7 +177,7 @@ public class TestCaseTypeRelation implements Validatable {
      * Validate the test policy cmpt relation parameters. And validate the min and max instances of
      * the test policy cmpt type param by validating the parent test policy cmpt
      */
-	private void validate(MessageList list) throws CoreException {
+	private void validate(MessageList list, IIpsProject ipsProject) throws CoreException {
 		if (parentTestPolicyCmpt == null){
 			return;
 		}
@@ -188,7 +191,7 @@ public class TestCaseTypeRelation implements Validatable {
 		    ITestPolicyCmptRelation testPolicyCmptRelation = null;
 			if (relations[i].getTestPolicyCmptTypeParameter().equals(getName())){
                 testPolicyCmptRelation = relations[i];
-                MessageList msgList = testPolicyCmptRelation.validate();
+                MessageList msgList = testPolicyCmptRelation.validate(ipsProject);
                 // add only unique messages
                 for (Iterator iter = msgList.iterator(); iter.hasNext();){
                     Message msg = (Message)iter.next();
@@ -199,7 +202,7 @@ public class TestCaseTypeRelation implements Validatable {
         
         // get the validation messages of the number of instances from the parent test policy cmpt,
         // thus it could be displayed on the relation symbol
-        MessageList ml = parentTestPolicyCmpt.validate();
+        MessageList ml = parentTestPolicyCmpt.validate(null);
         
         MessageList mlMin = ml.getMessagesFor(parentTestPolicyCmpt, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
         for (Iterator iter = mlMin.iterator(); iter.hasNext();) {

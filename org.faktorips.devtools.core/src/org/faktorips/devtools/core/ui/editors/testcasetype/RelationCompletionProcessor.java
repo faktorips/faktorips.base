@@ -70,7 +70,7 @@ public class RelationCompletionProcessor extends AbstractCompletionProcessor {
                     addToResult(result, relations[i], documentOffset);
                 }
             }
-            currentPcType = currentPcType.findSupertype();
+            currentPcType = (IPolicyCmptType)currentPcType.findSupertype(currentPcType.getIpsProject());
         }
     }
     

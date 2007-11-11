@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -164,7 +165,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
             try {
                 ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter();
                 if (param != null){
-                    IPolicyCmptTypeAssociation relation = param.findRelation();
+                    IPolicyCmptTypeAssociation relation = param.findRelation(getIpsProject());
                     if (relation != null){
                         return relation.getImage();
                     }
@@ -284,7 +285,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validateGroup(MessageList messageList) throws CoreException {
+	public void validateGroup(MessageList messageList, IIpsProject ipsProject) throws CoreException {
 		
         // check all messages only once, thus if the same test relation is used more than one
         //  only one message are added to the list of validation errors
@@ -305,7 +306,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		
 		// validate if the model relation exists
         if (messageList.getMessageByCode(MSGCODE_MODEL_RELATION_NOT_FOUND) == null){
-            IPolicyCmptTypeAssociation modelRelation = testCaseTypeParam.findRelation();
+            IPolicyCmptTypeAssociation modelRelation = testCaseTypeParam.findRelation(ipsProject);
             if (modelRelation == null){
     			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_ModelRelationNotFound, testCaseTypeParam.getRelation());
     			Message msg = new Message(MSGCODE_MODEL_RELATION_NOT_FOUND, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
@@ -346,9 +347,9 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
-        validateGroup(list);
+	protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
+        validateGroup(list, ipsProject);
 		validateSingle(list);
 	}
 

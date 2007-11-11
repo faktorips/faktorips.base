@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
@@ -87,8 +88,8 @@ public class UniqueKey extends Key implements IUniqueKey {
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         if (getNumOfKeyItems()==0) {
             String text = Messages.UniqueKey_msgTooLessItems;
             list.add(new Message(IUniqueKey.MSGCODE_TOO_LESS_ITEMS, text, Message.ERROR, this)); //$NON-NLS-1$

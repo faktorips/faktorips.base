@@ -107,7 +107,7 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
     public void testValidateTestPolicyCmptRelation() throws CoreException {
         ITestPolicyCmpt pc = testCase.findTestPolicyCmpt(pathToTestPolicyCmptInput);
         ITestPolicyCmptRelation pcr = (ITestPolicyCmptRelation) pc.getParent();
-        MessageList ml = pcr.validate();
+        MessageList ml = pcr.validate(project);
         assertEquals(1, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
         
@@ -115,25 +115,25 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
         ITestPolicyCmpt pcParent = (ITestPolicyCmpt)pcr.getParent();
         param.setMinInstances(2);
         param.setMaxInstances(3);
-        ml = pcParent.validate();
+        ml = pcParent.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
         
         ITestPolicyCmpt parent = (ITestPolicyCmpt) pcr.getParent();
         parent.addTestPcTypeRelation(param, "", "");
         parent.addTestPcTypeRelation(param, "", "");
         parent.addTestPcTypeRelation(param, "", "");
-        ml = pcParent.validate();
+        ml = pcParent.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
         
         String prevRelation = param.getRelation();
         param.setRelation("none");
-        ml = pcr.validate();
+        ml = pcr.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MODEL_RELATION_NOT_FOUND));
         
         param.setRelation(prevRelation);
         
         pcr.setTestPolicyCmptTypeParameter("none");
-        ml = pcr.validate();
+        ml = pcr.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
     }
 }

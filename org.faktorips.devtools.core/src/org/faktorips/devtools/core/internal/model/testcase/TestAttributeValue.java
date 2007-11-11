@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
@@ -254,8 +255,8 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
     /**
 	 * {@inheritDoc}
 	 */
-	protected void validateThis(MessageList messageList) throws CoreException {
-		super.validateThis(messageList);
+	protected void validateThis(MessageList messageList, IIpsProject ipsProject) throws CoreException {
+		super.validateThis(messageList, ipsProject);
         ITestAttribute testAttr = findTestAttribute();
         if (testAttr == null) {
             String text = NLS.bind(Messages.TestAttributeValue_ValidateError_TestAttributeNotFound, getTestAttribute());

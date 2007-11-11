@@ -72,7 +72,7 @@ public class EnumTypeInterfaceBuilder extends DefaultJavaSourceFileBuilder {
     
     private boolean checkTableColumns(IColumn[] columns) throws CoreException{
         for (int i = 0; i < columns.length; i++) {
-            if(!columns[i].validate().isEmpty()){
+            if(!columns[i].validate(getIpsProject()).isEmpty()){
                 return false;
             }
         }

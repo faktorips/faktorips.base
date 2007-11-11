@@ -90,8 +90,7 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
         productCmpt.getIpsSrcFile().save(true, null);
         refTarget.getIpsSrcFile().save(true, null);
         
-        System.out.println(productCmpt.validate());
-        assertFalse(productCmpt.validate().containsErrorMsg());
+        assertFalse(productCmpt.validate(productCmpt.getIpsProject()).containsErrorMsg());
     }
     
     public void testBuild() throws CoreException {

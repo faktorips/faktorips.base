@@ -139,7 +139,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             try {
                 switch (columnIndex) {
                     case 0:
-                        MessageList msgList = ((IFormulaTestInputValue) element).validate();
+                        MessageList msgList = ((IFormulaTestInputValue) element).validate(ipsProject);
                         return getImageForMsgList(empytImage, msgList);
                 }
             } catch (CoreException e) {
@@ -154,7 +154,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
                     return getTextInNullPresentationIfNull(((IFormulaTestInputValue)element).getIdentifier());
                 } else if (columnIndex == IDX_VALUE_COLUMN){
                         try {
-                            ValueDatatype vd = (ValueDatatype) (((IFormulaTestInputValue)element).findDatatypeOfFormulaParameter(ipsProject));
+                            ValueDatatype vd = (ValueDatatype) ((IFormulaTestInputValue)element).findDatatypeOfFormulaParameter(ipsProject);
                             return IpsPlugin.getDefault().getIpsPreferences().formatValue(vd, ((IFormulaTestInputValue)element).getValue());
                         } catch (CoreException e) {
                             // ignore exception, return the unformated value
@@ -302,7 +302,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         btnCalculate.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true ));
         btnCalculate.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
-                calculateFormulaIfValid();
+                calculateFormulaIfValid(ipsProject);
             }
             public void widgetDefaultSelected(SelectionEvent e) {
             }
@@ -460,7 +460,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
     /*
      * Exceute the formula and displays the result if the formula is valid and all values are given.
      */
-    public Object calculateFormulaIfValid() {
+    public Object calculateFormulaIfValid(IIpsProject ipsProject) {
         if (!canCalculateResult){
             return null;
         }
@@ -481,13 +481,13 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             // don't execute the formula if 
             //   - there is an error on the corresponding config element (e.g. error in formula)
             //   - the current formula test case contains at least one validation message (e.g. no value given)
-            MessageList ml = formulaTestCase.getFormula().validate();
+            MessageList ml = formulaTestCase.getFormula().validate(ipsProject);
             if (ml.getFirstMessage(Message.ERROR) != null){
                 clearResult();
                 return null;
             }
 
-            ml = formulaTestCase.validate();
+            ml = formulaTestCase.validate(null);
             // don't calculate preview if there are messages, e.g. warnings because of missing values
             if (ml.getNoOfMessages() > 0) {
                 showFormulaResult(Messages.FormulaTestInputValuesControl_Result_ObjectIsNotValid);
@@ -613,7 +613,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         MessageList messageList = new MessageList();
         // validate element
         if (element instanceof IIpsObjectPartContainer){
-            messageList.add(((IIpsObjectPartContainer)element).validate());
+            messageList.add(((IIpsObjectPartContainer)element).validate(ipsProject));
         }
         return messageList;
     }

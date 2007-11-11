@@ -238,7 +238,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * Returns the ips project, the builder is currently building for.
      */
     public IIpsProject getIpsProject() {
-        return ipsSrcFile.getIpsProject();
+        return getBuilderSet().getIpsProject();
     }
 
     /**

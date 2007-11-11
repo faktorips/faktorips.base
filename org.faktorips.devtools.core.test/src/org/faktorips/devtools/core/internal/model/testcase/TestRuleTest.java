@@ -133,7 +133,7 @@ public class TestRuleTest extends AbstractIpsPluginTest {
         /** 
          * simple validation 
          */
-        MessageList ml = testRule.validate();
+        MessageList ml = testRule.validate(project);
         testRule.setValidationRule("x");
         assertNotNull(ml.getMessageByCode(ITestRule.MSGCODE_VALIDATION_RULE_NOT_EXISTS));
 
@@ -144,7 +144,7 @@ public class TestRuleTest extends AbstractIpsPluginTest {
         
         // check rule not found because the test parameter doesn't contain the policy cmpt which
         // contains the rule
-        ml = testRule.validate();
+        ml = testRule.validate(project);
         assertNotNull(ml.getMessageByCode(ITestRule.MSGCODE_VALIDATION_RULE_NOT_EXISTS));
 
         // assign the policy cmpt (including the rule) to the corresponding test case type
@@ -153,7 +153,7 @@ public class TestRuleTest extends AbstractIpsPluginTest {
         ITestPolicyCmptTypeParameter param = testCaseType.newInputTestPolicyCmptTypeParameter();
         param.setPolicyCmptType("policyCmptType1");
 
-        ml = testRule.validate();
+        ml = testRule.validate(project);
         assertNull(ml.getMessageByCode(ITestRule.MSGCODE_VALIDATION_RULE_NOT_EXISTS));
         
         /**
@@ -180,19 +180,19 @@ public class TestRuleTest extends AbstractIpsPluginTest {
         ITestRule testRuleNew = testCase.newTestRule();
         testRuleNew.setTestRuleParameter(paramRule.getName());
         testRuleNew.setValidationRule(ruleA.getMessageCode());
-        ml = testRule.validate();
+        ml = testRule.validate(project);
         assertEquals(0, ml.getNoOfMessages());
 
         testRuleNew = testCase.newTestRule();
         testRuleNew.setTestRuleParameter(paramRule.getName());
         testRuleNew.setValidationRule(ruleB.getMessageCode());
-        ml = testRule.validate();
+        ml = testRule.validate(project);
         assertEquals(0, ml.getNoOfMessages());
         
         testRuleNew = testCase.newTestRule();
         testRuleNew.setTestRuleParameter(paramRule.getName());
         testRuleNew.setValidationRule(ruleC.getMessageCode());
-        ml = testRule.validate();
+        ml = testRule.validate(project);
         assertEquals(0, ml.getNoOfMessages());        
     }
 
@@ -201,20 +201,20 @@ public class TestRuleTest extends AbstractIpsPluginTest {
         ITestRule rule2 = testCase.newTestRule();
         rule2.setValidationRule("validationRule2");
 
-        MessageList ml = testRule.validate();
+        MessageList ml = testRule.validate(project);
         assertNull(ml.getMessageByCode(ITestRule.MSGCODE_DUPLICATE_VALIDATION_RULE));
         
         rule2.setValidationRule("validationRule1");
-        ml = testRule.validate();
+        ml = testRule.validate(project);
         assertNotNull(ml.getMessageByCode(ITestRule.MSGCODE_DUPLICATE_VALIDATION_RULE));
     }
 
     public void testValidateTestValueParamNotFound() throws Exception{
-        MessageList ml = testRule.validate();
+        MessageList ml = testRule.validate(project);
         assertNull(ml.getMessageByCode(ITestRule.MSGCODE_TEST_RULE_PARAM_NOT_FOUND));
 
         testRule.setTestRuleParameter("x");
-        ml = testRule.validate();
+        ml = testRule.validate(project);
         assertNotNull(ml.getMessageByCode(ITestRule.MSGCODE_TEST_RULE_PARAM_NOT_FOUND));
     }
 }

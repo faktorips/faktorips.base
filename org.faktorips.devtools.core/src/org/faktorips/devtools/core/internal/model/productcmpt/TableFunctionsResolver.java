@@ -70,7 +70,7 @@ public class TableFunctionsResolver implements FunctionResolver {
     private void addTableAccessFunction(List functions, ITableStructure table, ITableContents tableContents) throws CoreException{
         ITableAccessFunction[] fcts = table.getAccessFunctions();
         for (int j = 0; j < fcts.length; j++) {
-            if (!fcts[j].validate().containsErrorMsg()) {
+            if (!fcts[j].validate(table.getIpsProject()).containsErrorMsg()) {
                 functions.add(new TableAccessFunctionFlFunctionAdapter(tableContents, fcts[j]));
             }
         }

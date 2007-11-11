@@ -274,9 +274,8 @@ public class Method extends BaseIpsObjectPart implements IMethod {
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList result) throws CoreException {
-        super.validateThis(result);
-        IIpsProject ipsProject = getIpsProject();
+    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(result, ipsProject);
         if (StringUtils.isEmpty(name)) {
             result.add(new Message("", Messages.Method_msg_NameEmpty, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
         } else {

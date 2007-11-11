@@ -96,7 +96,7 @@ public class RelationRefControl extends TextButtonControl {
                     relationsToSelect.add(relations[i]);
                 }
             }
-            currPolicyCmptType = currPolicyCmptType.findSupertype();
+            currPolicyCmptType = (IPolicyCmptType)currPolicyCmptType.findSupertype(currPolicyCmptType.getIpsProject());
         }
         return (IPolicyCmptTypeAssociation[]) relationsToSelect.toArray(new IPolicyCmptTypeAssociation[0]);
     }

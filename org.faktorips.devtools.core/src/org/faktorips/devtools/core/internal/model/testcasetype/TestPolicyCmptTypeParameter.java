@@ -218,7 +218,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
     /**
      * {@inheritDoc}
      */
-    public IPolicyCmptTypeAssociation findRelation() throws CoreException {
+    public IPolicyCmptTypeAssociation findRelation(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(relation)) {
             return null;
         }
@@ -238,7 +238,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                     return relations[i];
                 }
             }
-            pcType = pcType.findSupertype();
+            pcType = (IPolicyCmptType)pcType.findSupertype(ipsProject);
         }
         
         return null;
@@ -306,7 +306,8 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         
         if (!isRoot()) {
             try {
-                IPolicyCmptTypeAssociation relation = findRelation();
+                //TODO provide ipsProject as parameter
+                IPolicyCmptTypeAssociation relation = findRelation(getIpsProject());
                 if (relation != null)
                     return relation.getImage();
             } catch (CoreException e) {
@@ -542,7 +543,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
             }            
             return ipsProjectToSearch.findAllProductCmptSrcFiles(productCmptType, true);
         }
-        IPolicyCmptTypeAssociation relation = findRelation();
+        IPolicyCmptTypeAssociation relation = findRelation(ipsProjectToSearch);
         if (relation == null){
             return new IIpsSrcFile[0];
         }
@@ -576,8 +577,8 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         
         // check if the policy component type exists
         IPolicyCmptType policyCmptTypeFound = findPolicyCmptType();
@@ -617,7 +618,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         // check if the relation exists
         //  if the parameter is root, no relation is defined
         if (! isRoot()){
-            IPolicyCmptTypeAssociation relationFound = findRelation();
+            IPolicyCmptTypeAssociation relationFound = findRelation(ipsProject);
             if (relationFound == null) {
                 String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_RelationNotExists, relation);
                 Message msg = new Message(MSGCODE_RELATION_NOT_EXISTS, text, Message.ERROR, this,
@@ -653,7 +654,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                             if (!isTestObject){
                                 // check if the test parameter implements no accosiation
                                 // because we search only for non accosiations
-                                IPolicyCmptTypeAssociation relation = tPCTP.findRelation();
+                                IPolicyCmptTypeAssociation relation = tPCTP.findRelation(ipsProject);
                                 isTestObject =  (relation == null) || ! relation.isAssoziation();
                             }
                             if (isTestObject && tPCTP.getPolicyCmptType().equals(relationFound.getTarget())) {

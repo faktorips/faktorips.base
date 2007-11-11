@@ -92,13 +92,13 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     
     public void testValidate_UnknownAttribute() throws CoreException {
     	configElement.setPolicyCmptTypeAttribute("a");
-    	MessageList ml = configElement.validate();
+    	MessageList ml = configElement.validate(project);
     	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
     	
     	policyCmptType.newPolicyCmptTypeAttribute().setName("a");
         policyCmptType.getIpsSrcFile().save(true, null);
     	
-    	ml = configElement.validate();
+    	ml = configElement.validate(project);
     	assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
     }
     
@@ -111,14 +111,14 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	attr.setName("valueTest");
     	attr.setAttributeType(AttributeType.CHANGEABLE);
     	
-    	MessageList ml = ce.validate();
+    	MessageList ml = ce.validate(project);
     	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_VALUE));
     	
     	attr.setDatatype("Decimal");
     	
     	policyCmptType.getIpsSrcFile().save(true, null);
 
-    	ml = ce.validate();
+    	ml = ce.validate(project);
     	assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_VALUE));
     }
 
@@ -135,13 +135,13 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	policyCmptType.getIpsSrcFile().save(true, null);
     	productCmpt.getIpsSrcFile().save(true, null);
     	
-    	MessageList ml = ce.validate();
+    	MessageList ml = ce.validate(project);
     	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE));
     	
     	attr.setDatatype("Decimal");
     	policyCmptType.getIpsSrcFile().save(true, null);
 
-    	ml = ce.validate();
+    	ml = ce.validate(project);
     	assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE));
     }
     
@@ -165,7 +165,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	policyCmptType.getIpsSrcFile().save(true, null);
     	productCmpt.getIpsSrcFile().save(true, null);
     	
-    	MessageList ml = ce.validate();
+    	MessageList ml = ce.validate(ce.getIpsProject());
     	
     	// no test for specific message codes because the codes are under controll
     	// of the value set.
@@ -182,7 +182,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	policyCmptType.getIpsSrcFile().save(true, null);
     	productCmpt.getIpsSrcFile().save(true, null);
 
-    	ml = ce.validate();
+    	ml = ce.validate(project);
     	assertEquals(0, ml.getNoOfMessages());
     }
     
@@ -207,7 +207,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 
     	IConfigElement ce = generation.newConfigElement();
     	ce.setPolicyCmptTypeAttribute("test");
-    	MessageList ml = ce.validate();
+    	MessageList ml = ce.validate(ce.getIpsProject());
     	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_INVALID_DATATYPE));
     }
     
@@ -234,12 +234,12 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	policyCmptType.getIpsSrcFile().save(true, null);
     	productCmpt.getIpsSrcFile().save(true, null);
     	
-    	MessageList ml = ce.validate();
+    	MessageList ml = ce.validate(project);
     	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET)); 
     	
     	ce.setValue("15");
 
-    	ml = ce.validate();
+    	ml = ce.validate(project);
     	assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET)); 
     }
     
@@ -264,7 +264,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	policyCmptType.getIpsSrcFile().save(true, null);
     	productCmpt.getIpsSrcFile().save(true, null);
     	
-    	MessageList ml = ce.validate();
+    	MessageList ml = ce.validate(project);
     	// no test for specific message codes because the codes are under controll
     	// of the value set.
     	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
@@ -272,7 +272,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	valueSet.setUpperBound("20");
     	policyCmptType.getIpsSrcFile().save(true, null);
 
-    	ml = ce.validate();
+    	ml = ce.validate(project);
     	assertEquals(0, ml.getNoOfMessages());
         
         // check lower unbound values
@@ -280,21 +280,21 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         valueSet.setUpperBound(null);
         valueSet2.setLowerBound(null);
         valueSet2.setUpperBound(null);
-        ml = ce.validate();
+        ml = ce.validate(project);
         assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
         
         valueSet.setLowerBound("10");
         valueSet.setUpperBound(null);
         valueSet2.setLowerBound(null);
         valueSet2.setUpperBound(null);
-        ml = ce.validate();
+        ml = ce.validate(project);
         assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
 
         valueSet.setLowerBound(null);
         valueSet.setUpperBound(null);
         valueSet2.setLowerBound("10");
         valueSet2.setUpperBound(null);
-        ml = ce.validate();
+        ml = ce.validate(project);
         assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
         
         // check upper unbound values
@@ -302,14 +302,14 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         valueSet.setUpperBound("10");
         valueSet2.setLowerBound(null);
         valueSet2.setUpperBound(null);
-        ml = ce.validate();
+        ml = ce.validate(project);
         assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
 
         valueSet.setLowerBound(null);
         valueSet.setUpperBound(null);
         valueSet2.setLowerBound(null);
         valueSet2.setUpperBound("10");
-        ml = ce.validate();
+        ml = ce.validate(project);
         assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
     }
 
@@ -423,7 +423,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 			return null;
 		}
 
-		public MessageList validate() throws Exception {
+		public MessageList checkReadyToUse() {
 			MessageList ml = new MessageList();
 			
 			ml.add(new Message("", "", Message.ERROR));

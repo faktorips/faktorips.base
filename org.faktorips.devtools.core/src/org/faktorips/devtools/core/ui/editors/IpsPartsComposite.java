@@ -201,12 +201,12 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 		viewer = new TableViewer(table);
 		viewer.setContentProvider(createContentProvider());
 		ILabelProvider lp = createLabelProvider();
-		viewer.setLabelProvider(new MessageCueLabelProvider(lp));
+		viewer.setLabelProvider(new MessageCueLabelProvider(lp, ipsObject.getIpsProject()));
 		
 		new TableMessageHoverService(viewer) {
 
             protected MessageList getMessagesFor(Object element) throws CoreException {
-                return ((IIpsObjectPart)element).validate();
+                return ((IIpsObjectPart)element).validate(((IIpsObjectPart)element).getIpsProject());
             }
 		    
 		};

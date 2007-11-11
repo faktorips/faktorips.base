@@ -28,6 +28,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -223,7 +224,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     /**
      * {@inheritDoc}
      */
-    public void validateThis(MessageList list) throws CoreException {
+    public void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
     	ValueDatatype datatype = getValueDatatype();
     	
         int numOfValues = elements.size();

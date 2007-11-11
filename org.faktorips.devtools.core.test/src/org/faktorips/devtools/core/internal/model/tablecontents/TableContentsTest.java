@@ -216,7 +216,7 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         table.newColumn("3");
         
         tableGen.newRow();
-        MessageList msgList = table.validate();
+        MessageList msgList = table.validate(project);
         System.out.println(msgList.toString());
         assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_UNDEFINED_UNIQUEKEY_VALUE));
         
@@ -224,12 +224,12 @@ public class TableContentsTest extends AbstractIpsPluginTest {
         //there was an error in the code of the Row validate method that caused an IndexOutOfBoundsException if a column was removed from the tablecontents
         //but not from the table structure and a UniqueKey was defined which contained an item which index number was equal
         //or greater than the number of table contents columns.
-        msgList = table.validate();
+        msgList = table.validate(project);
         assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_COLUMNCOUNT_MISMATCH));
         
         // test validate with missing table structure
         table.setTableStructure("NONE");
-        msgList = table.validate();
+        msgList = table.validate(project);
         assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_UNKNWON_STRUCTURE));
     }
 }

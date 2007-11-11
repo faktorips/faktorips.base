@@ -382,9 +382,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
-        IIpsProject ipsProject = getIpsProject();
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         IProductCmptType supertype = findSuperProductCmptType(ipsProject);
         if (isConfigurationForPolicyCmptType()) {
             validatePolicyCmptTypeReference(supertype, ipsProject, list);

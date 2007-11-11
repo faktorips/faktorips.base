@@ -377,7 +377,7 @@ public class BindingContext {
      */
     protected MessageList showValidationStatus(IIpsObject ipsObject, List propertyMappings) {
         try {
-            MessageList list = ipsObject.validate();
+            MessageList list = ipsObject.validate(null);
             for (Iterator it=propertyMappings.iterator(); it.hasNext();) {
                 FieldPropertyMapping mapping = (FieldPropertyMapping)it.next();
                 Control c = mapping.getField().getControl();

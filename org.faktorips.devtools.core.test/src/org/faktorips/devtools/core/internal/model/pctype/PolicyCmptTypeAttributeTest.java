@@ -79,11 +79,11 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         method.setDatatype(Datatype.STRING.getQualifiedName());
         
-        MessageList result = attribute.validate();
+        MessageList result = attribute.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE));
         
         method.setDatatype(attribute.getDatatype());
-        result = attribute.validate();
+        result = attribute.validate(ipsProject);
         assertNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE));
     }
     
@@ -93,11 +93,11 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setComputationMethodSignature("");
         attribute.setProductRelevant(true);
 
-        MessageList result = attribute.validate();
+        MessageList result = attribute.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED));
         
         attribute.setComputationMethodSignature("calc()");
-        result = attribute.validate();
+        result = attribute.validate(ipsProject);
         assertNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED));
     }
     
@@ -108,11 +108,11 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setComputationMethodSignature("");
         attribute.setProductRelevant(true);
         
-        MessageList result = attribute.validate();
+        MessageList result = attribute.validate(ipsProject);
         assertNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
         
         attribute.setComputationMethodSignature("calcPremium(TestPolicy)");
-        result = attribute.validate();
+        result = attribute.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
 
         IProductCmptType productType = newProductCmptType(ipsProject, "TestProduct");
@@ -120,11 +120,11 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         pcType.setProductCmptType(productType.getQualifiedName());
         IMethod method = productType.newMethod();
         method.setName("calcPremium");
-        result = attribute.validate();
+        result = attribute.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
 
         method.newParameter("TestPolicy", "policy");
-        result = attribute.validate();
+        result = attribute.validate(ipsProject);
         assertNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
     }
     
@@ -316,22 +316,22 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     	pcType.setConfigurableByProductCmptType(true);
     	attribute.setProductRelevant(true);
     	
-    	MessageList ml = attribute.validate();
+    	MessageList ml = attribute.validate(ipsProject);
     	assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
     	
     	pcType.setConfigurableByProductCmptType(false);
-    	ml = attribute.validate();
+    	ml = attribute.validate(ipsProject);
     	assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
     }
 
     public void testValidate_nothingToOverwrite() throws Exception {
     	attribute.setName("name");
 
-    	MessageList ml = attribute.validate();
+    	MessageList ml = attribute.validate(ipsProject);
     	assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
     	
     	attribute.setOverwrites(true);
-    	ml = attribute.validate();
+    	ml = attribute.validate(ipsProject);
     	assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
     	
     	IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "sup.SuperType");
@@ -339,7 +339,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     	superAttr.setName("name");
     	pcType.setSupertype(supertype.getQualifiedName());
     	
-    	ml = attribute.validate();
+    	ml = attribute.validate(ipsProject);
     	assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
     }
 
@@ -350,11 +350,11 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     	pcType.setSupertype(supertype.getQualifiedName());    	
     	attribute.setName("name");
     	
-    	MessageList ml = attribute.validate();
+    	MessageList ml = attribute.validate(ipsProject);
     	assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NAME_COLLISION));
     	
     	attribute.setName("abc");
-    	ml = attribute.validate();
+    	ml = attribute.validate(ipsProject);
     	assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NAME_COLLISION));
     }
 

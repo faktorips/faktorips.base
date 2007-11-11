@@ -204,8 +204,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void validateThis(MessageList list) throws CoreException {
-		super.validateThis(list);
+	protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+		super.validateThis(list, ipsProject);
 		IPolicyCmptTypeAttribute attribute = findPcTypeAttribute();
 		if (attribute == null) {
             IPolicyCmptType policyCmptType = getProductCmpt().findPolicyCmptType();
@@ -219,12 +219,12 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		} else {
     		if (attribute.getAttributeType() == AttributeType.CHANGEABLE
     				|| attribute.getAttributeType() == AttributeType.CONSTANT) {
-    			validateValue(attribute, list);
+    			validateValue(attribute, ipsProject, list);
     		}
         }
 	}
 
-	private void validateValue(IPolicyCmptTypeAttribute attribute, MessageList list)
+	private void validateValue(IPolicyCmptTypeAttribute attribute, IIpsProject ipsProject, MessageList list)
 			throws CoreException {
 		
 		ValueDatatype valueDatatype = attribute.findDatatype();
@@ -237,7 +237,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 			return;
 		}
 		try {
-			if (valueDatatype.validate().containsErrorMsg()) {
+			if (valueDatatype.checkReadyToUse().containsErrorMsg()) {
 				String text = Messages.ConfigElement_msgInvalidDatatype;
 				list.add(new Message(IConfigElement.MSGCODE_INVALID_DATATYPE, text, Message.ERROR, this,
 						PROPERTY_VALUE));
@@ -260,7 +260,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		}
 		
         IValueSet modelValueSet = attribute.getValueSet();
-        if (modelValueSet.validate().containsErrorMsg()) {
+        if (modelValueSet.validate(ipsProject).containsErrorMsg()) {
             String text = Messages.ConfigElement_msgInvalidAttributeValueset;
             list.add(new Message(IConfigElement.MSGCODE_UNKNWON_VALUESET, text, Message.WARNING, this, PROPERTY_VALUE));
             return;

@@ -462,8 +462,8 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     /** 
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);        
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);        
         
         if (maxCardinality != 1 && this.type == AssociationType.COMPOSITION_DETAIL_TO_MASTER) {
         	String text = Messages.Association_msg_DetailToMasterAssociationMustHaveMaxCardinality1;

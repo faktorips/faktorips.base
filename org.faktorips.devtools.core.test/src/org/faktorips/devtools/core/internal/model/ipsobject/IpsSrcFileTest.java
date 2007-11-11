@@ -106,11 +106,11 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         assertEquals(1, type.getNumOfAttributes());
         assertTrue(file.isDirty());
         type.setSupertype("UnknownType");
-        MessageList list = type.validate();
+        MessageList list = type.validate(ipsProject);
         assertNotNull(list.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_FOUND));
         
         file.discardChanges();
-        list = type.validate();
+        list = type.validate(ipsProject);
         assertNull(list.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_FOUND));
         
         type = (IPolicyCmptType)file.getIpsObject();

@@ -17,6 +17,8 @@
 
 package org.faktorips.datatype;
 
+import org.faktorips.util.message.MessageList;
+
 
 /**
  * A datatype representing values (in contrast to reference objects).
@@ -74,4 +76,14 @@ public interface ValueDatatype extends Datatype {
      * datatype is an Integer, but will not be equal if the datatype is a String.
      */
     public boolean areValuesEqual(String valueA, String valueB);
+    
+    /**
+     * Validates the value datatype and returns a message list containing error messages if the datatype is invalid.
+     * If the datatype is valid an empty list is returned.
+     * <p>
+     * Value datatypes like the predefined datatypes (defined by the constants in this class) are 
+     * always valid. However generic datatypes that implement this interface might be invalid.
+     */
+    public MessageList checkReadyToUse();
+
 }

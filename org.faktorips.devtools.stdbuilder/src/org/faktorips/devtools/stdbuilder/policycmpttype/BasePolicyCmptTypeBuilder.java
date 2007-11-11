@@ -55,7 +55,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
      */
     protected boolean hasValidProductCmptTypeName() throws CoreException{
         IProductCmptType type = getProductCmptType();
-        MessageList msgList = type.validate();
+        MessageList msgList = type.validate(getIpsProject());
         return !msgList.getMessagesFor(type, IProductCmptType.PROPERTY_NAME).containsErrorMsg();
     }
 
@@ -200,7 +200,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         if (!type.isDependantType()) {
             return false;
         }
-        IPolicyCmptType supertype = type.findSupertype();
+        IPolicyCmptType supertype = (IPolicyCmptType)type.findSupertype(getIpsProject());
         if (supertype==null) {
             return true;
         }

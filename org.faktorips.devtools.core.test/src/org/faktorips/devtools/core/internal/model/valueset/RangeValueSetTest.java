@@ -225,28 +225,28 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 	    RangeValueSet range = new RangeValueSet (intEl, 50);
 	    range.setLowerBound("20");
 	    range.setUpperBound("25");
-	    MessageList list = range.validate();
+	    MessageList list = range.validate(ipsProject);
 	    assertTrue(list.isEmpty());
 	    
 	    range.setLowerBound("blabla");
-        list = range.validate();
+        list = range.validate(ipsProject);
 	    assertFalse(list.isEmpty());
 	    
 	    range.setLowerBound("22");
 	    range.setUpperBound("blabla");
 	    list.clear();
-        list = range.validate();
+        list = range.validate(ipsProject);
 	    assertFalse(list.isEmpty());
 	    
 	    range.setUpperBound("12");
 	    list.clear();
-        list = range.validate();
+        list = range.validate(ipsProject);
 	    assertFalse(list.isEmpty());
 
 	    range.setLowerBound(null);
 	    range.setUpperBound(null);
         list.clear();
-        list = range.validate();
+        list = range.validate(ipsProject);
         assertFalse(list.containsErrorMsg());
         
 		ValueDatatype[] vds = ipsProject.getValueDatatypes(false);
@@ -260,11 +260,11 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAttribute attr = intEl.findPcTypeAttribute();
 		attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
 
-        list = range.validate();
+        list = range.validate(ipsProject);
 		assertNull(list.getMessageByCode(IRangeValueSet.MSGCODE_NULL_NOT_SUPPORTED));
 		
 		range.setContainsNull(true);
-        list = range.validate();
+        list = range.validate(ipsProject);
 		assertNotNull(list.getMessageByCode(IRangeValueSet.MSGCODE_NULL_NOT_SUPPORTED));
     }
     

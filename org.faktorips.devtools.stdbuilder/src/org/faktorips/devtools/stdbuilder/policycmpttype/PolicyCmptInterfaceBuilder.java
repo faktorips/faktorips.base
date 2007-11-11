@@ -122,7 +122,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         } else {
             interfaces = new String[1];
         }
-        IPolicyCmptType supertype = type.findSupertype();
+        IPolicyCmptType supertype = (IPolicyCmptType)type.findSupertype(getIpsProject());
         if (supertype != null) {
             interfaces[0] = getQualifiedClassName(supertype);
         } else if (type.isConfigurableByProductCmptType()) {

@@ -81,17 +81,17 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         assertEquals(param, formulaTestInputValue.findFormulaParameter(ipsProject)); // test setup
 
         // ok case
-        MessageList ml = formulaTestInputValue.validate();
+        MessageList ml = formulaTestInputValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IFormulaTestInputValue.MSGCODE_DATATYPE_OF_RELATED_ATTRIBUTE_NOT_FOUND));
         
         // datatype of the referenced attribute wasn't found
         attribute.setDatatype("UnknowDatatype");
-        ml = formulaTestInputValue.validate();
+        ml = formulaTestInputValue.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IFormulaTestInputValue.MSGCODE_DATATYPE_OF_RELATED_ATTRIBUTE_NOT_FOUND));
 
         // related attribute not found (wrong identifier)
         formulaTestInputValue.setIdentifier("policy.unknownAttribute");
-        ml = formulaTestInputValue.validate();
+        ml = formulaTestInputValue.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IFormulaTestInputValue.MSGCODE_RELATED_ATTRIBUTE_NOT_FOUND));
     }    
 
@@ -221,15 +221,15 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
 
         // param1
         formulaTestInputValue.setIdentifier("param1");
-        MessageList ml = formulaTestInputValue.validate();
+        MessageList ml = formulaTestInputValue.validate(formulaTestInputValue.getIpsProject());
         assertNull(ml.getMessageByCode(IFormulaTestInputValue.MSGCODE_FORMULA_PARAMETER_NOT_FOUND));
 
         formulaTestInputValue.setIdentifier("xyz");
-        ml = formulaTestInputValue.validate();
+        ml = formulaTestInputValue.validate(formulaTestInputValue.getIpsProject());
         assertNotNull(ml.getMessageByCode(IFormulaTestInputValue.MSGCODE_FORMULA_PARAMETER_NOT_FOUND));
         
         formulaTestInputValue.setIdentifier("policy123.premium");
-        ml = formulaTestInputValue.validate();
+        ml = formulaTestInputValue.validate(formulaTestInputValue.getIpsProject());
         assertNotNull(ml.getMessageByCode(IFormulaTestInputValue.MSGCODE_FORMULA_PARAMETER_NOT_FOUND));
     }
     

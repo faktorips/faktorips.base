@@ -189,7 +189,7 @@ public class DefaultValueAndValueSetTabPage extends Composite {
         public MessageList validate(String element) {
             MessageList list;
             try {
-                list = ((IpsObjectPartContainer)valueSetOwner).validate();
+                list = ((IpsObjectPartContainer)valueSetOwner).validate(((IpsObjectPartContainer)valueSetOwner).getIpsProject());
                 // update the ui to set the current messages for all registered controls
                 uiController.updateUI();
                 return list.getMessagesFor(element);

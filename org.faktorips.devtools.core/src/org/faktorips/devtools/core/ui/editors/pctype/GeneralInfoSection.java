@@ -70,7 +70,7 @@ public class GeneralInfoSection extends IpsSection  {
 	
 	        public void linkActivated(HyperlinkEvent event) {
 	            try {
-	                IPolicyCmptType supertype = type.findSupertype();
+	                IPolicyCmptType supertype = (IPolicyCmptType)type.findSupertype(type.getIpsProject());
 	                if (supertype!=null) {
                         IpsPlugin.getDefault().openEditor(supertype);
 	                }

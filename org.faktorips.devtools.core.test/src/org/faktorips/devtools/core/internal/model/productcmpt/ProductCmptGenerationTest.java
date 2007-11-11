@@ -277,16 +277,16 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     
     public void testValidateDuplicateRelationTarget() throws Exception {
-        MessageList ml = generation.validate();
+        MessageList ml = generation.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
         
         generation.newLink(association.getName()).setTarget(target.getQualifiedName());
-        ml = generation.validate();
+        ml = generation.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
         
         generation.newLink(association).setTarget(target.getQualifiedName());
         
-        ml = generation.validate();
+        ml = generation.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
     }
     
@@ -294,15 +294,15 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         association.setMinCardinality(1);
         association.setMaxCardinality(2);
 
-        MessageList ml = generation.validate();
+        MessageList ml = generation.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
         
         generation.newLink(association.getTargetRoleSingular());
-        ml = generation.validate();
+        ml = generation.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
         
         generation.newLink(association.getTargetRoleSingular());
-        ml = generation.validate();
+        ml = generation.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
     }
     
@@ -310,28 +310,28 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         association.setMinCardinality(0);
         association.setMaxCardinality(1);
 
-        MessageList ml = generation.validate();
+        MessageList ml = generation.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
         
         generation.newLink(association.getTargetRoleSingular());
-        ml = generation.validate();
+        ml = generation.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
         
         generation.newLink(association.getTargetRoleSingular());
-        ml = generation.validate();
+        ml = generation.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
     }
     
     public void testValidateAttributeWithMissingConfigElement() throws Exception{        
         IProductCmpt product = newProductCmpt(productCmptType, "EmptyTestProduct");
         IProductCmptGeneration gen = product.getProductCmptGeneration(0);
-        MessageList msgList = gen.validate();
+        MessageList msgList = gen.validate(ipsProject);
         assertTrue(msgList.isEmpty());
         
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setProductRelevant(true);
         attribute.setName("test");        
-        msgList = gen.validate();
+        msgList = gen.validate(ipsProject);
         assertFalse(msgList.isEmpty());
         assertNotNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT));
     }
@@ -465,7 +465,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     public void testValidateNoTemplate() throws Exception {
         generation.getProductCmpt().setProductCmptType("");
-        MessageList ml = generation.validate();
+        MessageList ml = generation.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NO_TEMPLATE));
     }
     
@@ -486,26 +486,33 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         generation.getProductCmpt().setValidTo(new GregorianCalendar(2000, 10, 1));
         generation.setValidFrom(new GregorianCalendar(2000, 10, 2));
         
-        MessageList ml = generation.validate();
+        MessageList ml = generation.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_INVALID_VALID_FROM));
         
         generation.setValidFrom(new GregorianCalendar(2000, 9, 1));
-        ml = generation.validate();
+        ml = generation.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_INVALID_VALID_FROM));
     }
 
-    public void testValidateIfReferencedProductCmptsHaveFittingGeneration() throws CoreException{
+    public void testValidateIfReferencedProductCmptsHaveFittingGeneration() throws CoreException, Exception {
         generation.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         IProductCmptLink link = generation.newLink(association);
         link.setTarget(target.getQualifiedName());
         link.setMinCardinality(0);
         link.setMaxCardinality(1);
-        IProductCmptGeneration targetGeneration = (IProductCmptGeneration)target.newGeneration(DateUtil.parseIsoDateStringToGregorianCalendar("2006-01-01"));
-        MessageList msgList = ((ProductCmptGeneration)generation).validate();
-        assertNotNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
+        IProductCmptGeneration targetGeneration = (IProductCmptGeneration)target.newGeneration(DateUtil
+                .parseIsoDateStringToGregorianCalendar("2008-01-01"));
         
+        MessageList msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
+        System.out.println("testValidateIfReferencedProductCmptsHaveFittingGeneration:" + msgList.toString());
+        assertNotNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
+
         targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
-        msgList = ((ProductCmptGeneration)generation).validate();
+        msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
+
+        targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2006-01-01"));
+        msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
         assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
 
     }

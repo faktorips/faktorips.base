@@ -194,7 +194,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         }
         
         public MessageList validate() throws CoreException{
-            return formulaTestCase.validate();
+            return formulaTestCase.validate(formula.getIpsProject());
         }
         
         public Object execute() throws Exception{
@@ -616,7 +616,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                     Object result = ""; //$NON-NLS-1$
                     try {
                         IFormula formula = element.getFormula();
-                        MessageList mlformula = formula.validate();
+                        MessageList mlformula = formula.validate(formula.getIpsProject());
                         if (formula.isValid()) {
                             MessageList ml = element.validate();
                             if (ml.getNoOfMessages() == 0) {
@@ -908,7 +908,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         MessageList messageList = new MessageList();
         // validate element
         if (element instanceof IIpsObjectPartContainer){
-            messageList.add(((IIpsObjectPartContainer)element).validate());
+            messageList.add(((IIpsObjectPartContainer)element).validate(ipsProject));
         }
         return messageList;
     }
@@ -925,7 +925,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     private void calculateAndStoreActualResult(){
         ExtDataForFormulaTestCase tc = getSelectedFormulaTestCase();
         if (tc != null){
-            tc.setActualResult((String)formulaTestInputValuesControl.calculateFormulaIfValid()); //$NON-NLS-1$
+            tc.setActualResult((String)formulaTestInputValuesControl.calculateFormulaIfValid(ipsProject)); //$NON-NLS-1$
         }
     }
 

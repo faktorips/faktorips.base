@@ -34,13 +34,13 @@ import org.w3c.dom.Element;
 public class TestRuleParameterTest extends AbstractIpsPluginTest {
 
     private ITestRuleParameter ruleInput;
-    
+    private IIpsProject project;
     /*
      * @see AbstractIpsPluginTest#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject project = newIpsProject("TestProject");
+        project = newIpsProject("TestProject");
         ITestCaseType type = (ITestCaseType )newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         ruleInput = type.newExpectedResultRuleParameter();
     }
@@ -90,7 +90,7 @@ public class TestRuleParameterTest extends AbstractIpsPluginTest {
     }
     
     public void testValidateWrongType() throws Exception{
-        MessageList ml = ruleInput.validate();
+        MessageList ml = ruleInput.validate(project);
         assertNull(ml.getMessageByCode(ITestRuleParameter.MSGCODE_NOT_EXPECTED_RESULT));
 
         Element docEl = getTestDocument().getDocumentElement();
@@ -100,7 +100,7 @@ public class TestRuleParameterTest extends AbstractIpsPluginTest {
         ruleInput.setName("x");
         ruleInput.setName(name);
         ruleInput.initFromXml(paramEl);
-        ml = ruleInput.validate();
+        ml = ruleInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestRuleParameter.MSGCODE_NOT_EXPECTED_RESULT));
     }
 }

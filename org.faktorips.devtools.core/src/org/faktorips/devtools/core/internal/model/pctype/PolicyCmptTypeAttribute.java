@@ -275,9 +275,8 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList result) throws CoreException {
-        super.validateThis(result);
-        IIpsProject ipsProject = getIpsProject();
+    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(result, ipsProject);
         if (isProductRelevant() && !getPolicyCmptType().isConfigurableByProductCmptType()) {
             String text = Messages.Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;
             result.add(new Message(MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT, text, Message.ERROR,

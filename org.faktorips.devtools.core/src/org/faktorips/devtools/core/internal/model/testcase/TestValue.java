@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
@@ -174,8 +175,8 @@ public class TestValue extends TestObject implements ITestValue {
     /**
 	 * {@inheritDoc}
 	 */
-	protected void validateThis(MessageList list) throws CoreException {
-		super.validateThis(list);
+	protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+		super.validateThis(list, ipsProject);
         ITestValueParameter param = findTestValueParameter();
         if (param == null) {
             String text = NLS.bind(Messages.TestValue_ValidateError_TestValueParamNotFound, getTestValueParameter());

@@ -128,7 +128,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected String getSuperclass() throws CoreException {
-        IPolicyCmptType supertype = getPcType().findSupertype();
+        IPolicyCmptType supertype = (IPolicyCmptType)getPcType().findSupertype(getIpsProject());
         if (supertype != null) {
             return getQualifiedClassName(supertype);
         }
@@ -667,7 +667,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.signature(java.lang.reflect.Modifier.PRIVATE, "int", methodName, new String[]{}, new String[]{});
         methodsBuilder.openBracket();
         methodsBuilder.append("int num = 0;");
-        IPolicyCmptType supertype = getPcType().findSupertype();
+        IPolicyCmptType supertype = (IPolicyCmptType)getPcType().findSupertype(getIpsProject());
         if (supertype!=null && !supertype.isAbstract()) {
             String methodName2 = interfaceBuilder.getMethodNameGetNumOfRefObjects(containerRelation);
             methodsBuilder.appendln("num += super." + methodName2 + "();");
@@ -829,7 +829,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureGetAllRefObjects(relation, methodsBuilder);
-        String classname = interfaceBuilder.getQualifiedClassName(relation.findTarget());
+        String classname = interfaceBuilder.getQualifiedClassName(relation.findTarget(getIpsProject()));
         
         methodsBuilder.openBracket();
         methodsBuilder.appendClassName(classname);
@@ -837,7 +837,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.appendClassName(classname);
         methodsBuilder.append("[" + getMethodNameGetNumOfRefObjectsInternal(relation) + "()];");       
 
-        IPolicyCmptType supertype = getPcType().findSupertype();
+        IPolicyCmptType supertype = (IPolicyCmptType)getPcType().findSupertype(getIpsProject());
         if (supertype!=null && !supertype.isAbstract()) {
             // ICoverage[] superResult = super.getCoverages();
             // System.arraycopy(superResult, 0, result, 0, superResult.length);
@@ -1321,7 +1321,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         IValidationRule[] rules = getPcType().getRules();
         for (int i = 0; i < rules.length; i++) {
             IValidationRule r = rules[i];
-            if(r.validate().containsErrorMsg()){
+            if(r.validate(getIpsProject()).containsErrorMsg()){
                 continue;
            }
             generateMethodExecRule(r, builder);
@@ -1347,7 +1347,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         body.append("(ml, businessFunction);");
         for (int i = 0; i < relations.length; i++) {
             IPolicyCmptTypeAssociation r = relations[i];
-            if (!r.validate().containsErrorMsg()) {
+            if (!r.validate(getIpsProject()).containsErrorMsg()) {
                 if (r.getAssociationType() == AssociationType.COMPOSITION_MASTER_TO_DETAIL
                         && StringUtils.isEmpty(r.getSubsettedDerivedUnion())) {
                     body.appendln();
@@ -1402,7 +1402,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         IValidationRule[] rules = getPcType().getRules();
         for (int i = 0; i < rules.length; i++) {
             IValidationRule r = rules[i];
-            if(r.validate().isEmpty()){
+            if(r.validate(getIpsProject()).isEmpty()){
                 body.append("if(!");
                 body.append(getMethodExpressionExecRule(r, "ml", "businessFunction"));
                 body.append(')');
@@ -1616,7 +1616,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private void generateInitializationForOverrideAttributes(JavaCodeFragmentBuilder builder) throws CoreException{
         IPolicyCmptTypeAttribute[] attributes = getPcType().getPolicyCmptTypeAttributes();
         for (int i = 0; i < attributes.length; i++) {
-            if(attributes[i].isChangeable() && attributes[i].getOverwrites() && attributes[i].validate().isEmpty()){
+            if(attributes[i].isChangeable() && attributes[i].getOverwrites() && attributes[i].validate(getIpsProject()).isEmpty()){
                 DatatypeHelper helper = getPcType().getIpsProject().getDatatypeHelper(attributes[i].getValueDatatype());
                 JavaCodeFragment initialValueExpression = helper.newInstance(attributes[i].getDefaultValue());
                 interfaceBuilder.generateCallToMethodSetPropertyValue(attributes[i], helper, initialValueExpression, builder);
@@ -1640,7 +1640,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         ArrayList selectedValues = new ArrayList();
         for (int i = 0; i < attributes.length; i++) {
             IPolicyCmptTypeAttribute a = attributes[i];
-            if (!a.validate().containsErrorMsg()) {
+            if (!a.validate(getIpsProject()).containsErrorMsg()) {
                 if (a.isProductRelevant() && a.isChangeable() && !a.getOverwrites()) {
                     selectedValues.add(a);
                 }

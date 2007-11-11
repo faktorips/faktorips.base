@@ -65,7 +65,7 @@ public class OverrideAttributeDialog extends OverrideDialog {
 
 		public IIpsObjectPartContainer[] getCandidates(IPolicyCmptType pcType) {
 			try {
-				return pcType.findOverrideAttributeCandidates();
+				return pcType.findOverrideAttributeCandidates(pcType.getIpsProject());
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
 				return new IIpsObjectPartContainer[0];

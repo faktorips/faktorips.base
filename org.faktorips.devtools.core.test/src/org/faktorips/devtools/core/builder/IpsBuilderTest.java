@@ -254,7 +254,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         IPolicyCmptType pcType = newPolicyCmptType(root, "TestPolicy");
         pcType.setSupertype("unknownSupertype");
         pcType.getIpsSrcFile().save(true, null);
-        MessageList msgList = pcType.validate();
+        MessageList msgList = pcType.validate(pcType.getIpsProject());
         int numOfMsg = msgList.getNoOfMessages();
         assertTrue(numOfMsg > 0);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
@@ -267,7 +267,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         // test if marker got's deleted if the problem is fixed.
         pcType.setSupertype("");
         pcType.getIpsSrcFile().save(true, null);
-        msgList = pcType.validate();
+        msgList = pcType.validate(ipsProject);
         assertTrue(msgList.getNoOfMessages() < numOfMsg);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         resource = pcType.getEnclosingResource();

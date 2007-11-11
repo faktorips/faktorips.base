@@ -160,9 +160,8 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
-        IIpsProject ipsProject = getIpsProject();;
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         IProductCmptType type = getProductCmptType(ipsProject);
         if (type == null) {
             list.add(new Message(MSGCODE_NO_TYPE, Messages.TableContentUsage_msgNoType, Message.WARNING, this));

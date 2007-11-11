@@ -75,19 +75,19 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     public void testValidateMustHaveSameValueForConfigurationForPolicyCmptType() throws CoreException {
         productCmptType.setConfigurationForPolicyCmptType(true);
         superProductCmptType.setConfigurationForPolicyCmptType(true);
-        MessageList result = productCmptType.validate();
+        MessageList result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
         
         superProductCmptType.setConfigurationForPolicyCmptType(false);
-        result = productCmptType.validate();
+        result = productCmptType.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
 
         productCmptType.setConfigurationForPolicyCmptType(false);
-        result = productCmptType.validate();
+        result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
         
         superProductCmptType.setConfigurationForPolicyCmptType(false);
-        result = productCmptType.validate();
+        result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE));
     }
 
@@ -97,19 +97,19 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
 
         superProductCmptType.setConfigurationForPolicyCmptType(true);
         superProductCmptType.setPolicyCmptType(superPolicyCmptType.getQualifiedName());
-        MessageList result = productCmptType.validate();
+        MessageList result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_HIERARCHY_MISMATCH));
         
         superProductCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
         superSuperProductCmptType.setConfigurationForPolicyCmptType(true);
         superSuperProductCmptType.setPolicyCmptType(superPolicyCmptType.getQualifiedName());
-        result = productCmptType.validate();
+        result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_HIERARCHY_MISMATCH));
         
         // policy component type inherits from a type outside the hierarchy
         IPolicyCmptType otherType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SomeOtherType");
         superProductCmptType.setPolicyCmptType(otherType.getQualifiedName());
-        result = productCmptType.validate();
+        result = productCmptType.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_HIERARCHY_MISMATCH));
         
         // an intermediate type exists in the policy hierarchy
@@ -117,7 +117,7 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         policyCmptType.setSupertype(intermediateType.getQualifiedName());
         intermediateType.setSupertype(superPolicyCmptType.getQualifiedName());
         superProductCmptType.setPolicyCmptType(superPolicyCmptType.getQualifiedName());
-        result = productCmptType.validate();
+        result = productCmptType.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_HIERARCHY_MISMATCH));
     }
     
@@ -441,15 +441,15 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     }
     
     public void testValidatePolicyCmptType() throws CoreException {
-        MessageList ml = productCmptType.validate();
+        MessageList ml = productCmptType.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST));
         
         productCmptType.setPolicyCmptType("Unknown");
-        ml = productCmptType.validate();
+        ml = productCmptType.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST));
         
         productCmptType.setPolicyCmptType(superProductCmptType.getQualifiedName());
-        ml = productCmptType.validate();
+        ml = productCmptType.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST));
     }
     

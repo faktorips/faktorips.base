@@ -100,6 +100,8 @@ public interface IIpsArchive {
      */
     public InputStream getContent(QualifiedNameType qnt) throws CoreException;    
 
+    public InputStream getSortDefinitionContent(String packName) throws CoreException;
+    
     /**
      * Returns the name of the base package for the generated Java source files.
      * All generated Java types are contained in this package or one of the child packages.

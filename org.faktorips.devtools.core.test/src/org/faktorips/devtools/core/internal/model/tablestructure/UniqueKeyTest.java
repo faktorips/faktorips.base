@@ -246,18 +246,18 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
         range.setFromColumn(c2.getName());
         range.setColumnRangeType(ColumnRangeType.ONE_COLUMN_RANGE_FROM);
         key.setKeyItems(new String[] {"c0", range.getName()});
-        MessageList msgList = key.validate(); 
+        MessageList msgList = key.validate(project); 
         assertTrue(msgList.isEmpty());
         
         key.setKeyItems(new String[] {range.getName(), "c0"});
-        msgList = key.validate();
+        msgList = key.validate(project);
         assertFalse(msgList.isEmpty());
         msgList = msgList.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS);
         assertFalse(msgList.isEmpty());
         
         // test correct index (column) of message
         key.setKeyItems(new String[] {"c0", range.getName(), "c1"});
-        msgList = key.validate();
+        msgList = key.validate(project);
         assertFalse(msgList.isEmpty());
         msgList = msgList.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS, 1);
         assertFalse(msgList.isEmpty());

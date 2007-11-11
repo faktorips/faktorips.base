@@ -428,9 +428,8 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
-        IIpsProject ipsProject = getIpsProject();
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         if (StringUtils.isEmpty(expression)) {
             String text = NLS.bind(Messages.Formula_msgExpressionMissing, formulaSignature);
             list.add(new Message(MSGCODE_EXPRESSION_IS_EMPTY, text, Message.ERROR, this, PROPERTY_EXPRESSION));

@@ -83,11 +83,11 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
     }
     
     public void testValidateTestAttributeNotFound() throws Exception{
-        MessageList ml = testAttributeValue.validate();
+        MessageList ml = testAttributeValue.validate(project);
         assertNull(ml.getMessageByCode(ITestAttributeValue.MSGCODE_TESTATTRIBUTE_NOT_FOUND));
 
         testAttributeValue.setTestAttribute("x"); // the value must be set, otherwise the attribute will be ignored
-        ml = testAttributeValue.validate();
+        ml = testAttributeValue.validate(project);
         assertNotNull(ml.getMessageByCode(ITestAttributeValue.MSGCODE_TESTATTRIBUTE_NOT_FOUND));
     }
 
@@ -100,17 +100,17 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
         param.setPolicyCmptType(pct.getQualifiedName());
 
         testAttribute.setAttribute(attr.getName());
-        MessageList ml = testAttributeValue.validate();
+        MessageList ml = testAttributeValue.validate(project);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
 
         attr.setName("x");
         testAttributeValue.setValue("x");
-        ml = testAttributeValue.validate();
+        ml = testAttributeValue.validate(project);
         assertEquals(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND, ml.getFirstMessage(Message.WARNING).getCode());
     }
     
     public void testValidateWrongType() throws Exception{
-        MessageList ml = testAttributeValue.validate();
+        MessageList ml = testAttributeValue.validate(project);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_WRONG_TYPE));
         
         // remark the test if the message will be set couldn't be tested here because setting
@@ -147,7 +147,7 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
         // check that the attribute will be found by searching via the test attribute value,
         // because the testattributes parent defines the product cmpt, wich uses a sublass, which
         // defines the attribute
-        MessageList ml = testAttributeValue.validate();
+        MessageList ml = testAttributeValue.validate(project);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
         
 
@@ -158,11 +158,11 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
         
         attr.setName("attribute2");
         testAttributeValue.setValue("x"); // the value must be set, otherwise the attribute will be ignored
-        ml = testAttributeValue.validate();
+        ml = testAttributeValue.validate(project);
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
         
         testAttributeValue.setValue(null); // the value is null, thus the attribute will be ignored
-        ml = testAttributeValue.validate();
+        ml = testAttributeValue.validate(project);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
         
         pctSuper.newPolicyCmptTypeAttribute().setName("attributeSuper");

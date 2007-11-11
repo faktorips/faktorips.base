@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -430,7 +431,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	public ITestPolicyCmptRelation addTestPcTypeRelation(ITestPolicyCmptTypeParameter typeParam, String productCmpt, String targetName) throws CoreException {
 		ArgumentCheck.notNull(typeParam);
 		
-		IPolicyCmptTypeAssociation relation = typeParam.findRelation();
+		IPolicyCmptTypeAssociation relation = typeParam.findRelation(typeParam.getIpsProject());
 		if (relation == null){
 			throw new CoreException(new IpsStatus(NLS.bind(Messages.TestPolicyCmpt_Error_RelationNotFound, typeParam.getRelation())));
 		}
@@ -628,8 +629,8 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	/**
 	 * {@inheritDoc}
 	 */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
 		// validate if the test case type param exists
 		ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter();
         IProductCmpt productCmptObj = findProductCmpt();

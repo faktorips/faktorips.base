@@ -95,15 +95,15 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         IPolicyCmptType polType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IProductCmptType productType = polType.findProductCmptType(ipsProject);
         
-        MessageList result = polType.validate();
+        MessageList result = polType.validate(ipsProject);
         assertNull(result.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE));
         
         productType.setPolicyCmptType(policyCmptType.getQualifiedName());
-        result = polType.validate();
+        result = polType.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE));
         
         productType.setConfigurationForPolicyCmptType(false);
-        result = polType.validate();
+        result = polType.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE));
     }
     
@@ -455,7 +455,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         aAttr.setName("aAttr");
         
         //make sure the policy component type is valid
-        assertTrue(a.validate().isEmpty());
+        assertTrue(a.validate(ipsProject).isEmpty());
         
         //make sure datatype is available
         Datatype datatype = contents.getIpsProject().findDatatype("TestGender");
@@ -655,11 +655,11 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
     
     public void testValidate_ProductCmptTypeNameMissing() throws Exception {
-    	MessageList ml = policyCmptType.validate();
+    	MessageList ml = policyCmptType.validate(ipsProject);
     	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING));
     	policyCmptType.setConfigurableByProductCmptType(true);
     	policyCmptType.setProductCmptType("");
-    	ml = policyCmptType.validate();
+    	ml = policyCmptType.validate(ipsProject);
     	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING));
     }
     
@@ -670,14 +670,14 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         superPcType.setConfigurableByProductCmptType(false);
         policyCmptType.setConfigurableByProductCmptType(true);
         
-        MessageList ml = superPcType.validate();
+        MessageList ml = superPcType.validate(superPcType.getIpsProject());
         assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
         
-        ml = policyCmptType.validate();
+        ml = policyCmptType.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
         
         superPcType.setConfigurableByProductCmptType(true);
-        ml = policyCmptType.validate();
+        ml = policyCmptType.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
     }
         

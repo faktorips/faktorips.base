@@ -67,11 +67,11 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
     }
     
     public void testValidateUnknownStructure() throws Exception {
-        MessageList ml = contentUsage.validate();
+        MessageList ml = contentUsage.validate(project);
         assertNotNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_STRUCTURE_USAGE));
         
         contentUsage.setStructureUsage("StructUsageRole");
-        ml = contentUsage.validate();
+        ml = contentUsage.validate(project);
         assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_STRUCTURE_USAGE));
     }
     
@@ -79,28 +79,28 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         structUsage.setMandatoryTableContent(true);
         contentUsage.setStructureUsage("StructUsageRole");
         contentUsage.setTableContentName("unknown");
-        MessageList ml = contentUsage.validate();
+        MessageList ml = contentUsage.validate(project);
         assertNotNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));
         
         contentUsage.setTableContentName(content.getQualifiedName());
-        ml = contentUsage.validate();
+        ml = contentUsage.validate(project);
         assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));
         
         contentUsage.setTableContentName("");
-        ml = contentUsage.validate();
+        ml = contentUsage.validate(project);
         assertNotNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));   
         
         contentUsage.setTableContentName(null);
-        ml = contentUsage.validate();
+        ml = contentUsage.validate(project);
         assertNotNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));
         
         structUsage.setMandatoryTableContent(false);
         contentUsage.setTableContentName("");
-        ml = contentUsage.validate();
+        ml = contentUsage.validate(project);
         assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));   
         
         contentUsage.setTableContentName(null);
-        ml = contentUsage.validate();
+        ml = contentUsage.validate(project);
         assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));        
     }
     
@@ -108,11 +108,11 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         content.setTableStructure("unknown");
         contentUsage.setStructureUsage("StructUsageRole");
         contentUsage.setTableContentName(content.getQualifiedName());
-        MessageList ml = contentUsage.validate();
+        MessageList ml = contentUsage.validate(project);
         assertNotNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_INVALID_TABLE_CONTENT));
         
         content.setTableStructure(structUsage.getTableStructures()[0]);
-        ml = contentUsage.validate();
+        ml = contentUsage.validate(project);
         assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_INVALID_TABLE_CONTENT));
     }
     

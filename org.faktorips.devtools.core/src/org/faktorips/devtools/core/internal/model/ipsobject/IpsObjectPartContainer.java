@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.memento.XmlMemento;
@@ -452,7 +453,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 	/**
      * {@inheritDoc}
      */
-    public MessageList validate() throws CoreException {
+    public MessageList validate(IIpsProject ipsProject) throws CoreException {
         if(isHistoricPartContainer()){
             return new MessageList();
         }
@@ -462,9 +463,9 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         }
         
         result = new MessageList();
-        validateThis(result);
+        validateThis(result, ipsProject);
 
-        afterValidateThis(result);
+        afterValidateThis(result, ipsProject);
         return result;
     }
     
@@ -493,9 +494,9 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * After validation method. Perform operations which will be executed after validation of this
      * object part container.
      */
-    protected void afterValidateThis(MessageList result) throws CoreException {
+    protected void afterValidateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         validateExtensionProperties(result);
-        validateChildren(result);
+        validateChildren(result, ipsProject);
         if (IpsModel.TRACE_VALIDATION) {
             System.out.println("Validation of " + this + ": Finsihed, took " + (System.currentTimeMillis() - validationStartTime) + "ms."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             validationStartTime = -1;
@@ -512,10 +513,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * Validates part container's children.
      */
-    protected void validateChildren(MessageList result) throws CoreException {
+    protected void validateChildren(MessageList result, IIpsProject ipsProject) throws CoreException {
         IIpsElement[] children = getChildren();
         for (int i=0; i<children.length; i++) {
-            MessageList childResult = ((IpsObjectPartContainer)children[i]).validate();
+            MessageList childResult = ((IpsObjectPartContainer)children[i]).validate(ipsProject);
             result.add(childResult);
         }
     }
@@ -544,7 +545,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * 
      * @throws NullPointerException if list is null.
      */
-    protected void validateThis(MessageList list) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         return;
     }
     

@@ -39,13 +39,13 @@ public class TestValueTest extends AbstractIpsPluginTest {
     private ITestValue valueObjectInput2;
     private ITestValue valueObjectExpectedValue;
     private ITestValue valueObjectUnknown;
-    
+    private IIpsProject project;
     /*
      * @see AbstractIpsPluginTest#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject project = newIpsProject("TestProject");
+        project = newIpsProject("TestProject");
         
         ITestCaseType testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         testCaseType.newInputTestValueParameter().setName("testValueParameter1");
@@ -102,28 +102,28 @@ public class TestValueTest extends AbstractIpsPluginTest {
     }
     
     public void testValidateTestValueParamNotFound() throws Exception{
-        MessageList ml = valueObjectInput.validate();
+        MessageList ml = valueObjectInput.validate(project);
         assertNull(ml.getMessageByCode(ITestValue.MSGCODE_TEST_VALUE_PARAM_NOT_FOUND));
 
         valueObjectInput.setTestValueParameter("x");
-        ml = valueObjectInput.validate();
+        ml = valueObjectInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestValue.MSGCODE_TEST_VALUE_PARAM_NOT_FOUND));
     }
     
     public void testValidateValueDatatypeNotFound() throws Exception {
         ITestValueParameter param = valueObjectInput.findTestValueParameter();
         param.setValueDatatype("String");
-        MessageList ml = valueObjectInput.validate();
+        MessageList ml = valueObjectInput.validate(project);
         assertNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND));
 
         // check if the message is a warning, because it will be validated as error in the parameter
         param.setValueDatatype("x");
-        ml = valueObjectInput.validate();
+        ml = valueObjectInput.validate(project);
         assertEquals(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND, ml.getFirstMessage(Message.WARNING).getCode());
     }
     
     public void testValidateWrongType() throws Exception{
-        MessageList ml = valueObjectInput.validate();
+        MessageList ml = valueObjectInput.validate(project);
         assertNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_WRONG_TYPE));
         
         // remark the test if the message will be set couldn't be tested here because setting

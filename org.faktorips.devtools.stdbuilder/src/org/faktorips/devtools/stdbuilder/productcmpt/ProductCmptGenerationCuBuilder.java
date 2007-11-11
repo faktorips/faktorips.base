@@ -123,7 +123,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         IFormula[] formulas = generation.getFormulas();
         for (int i = 0; i < formulas.length; i++) {
             try {
-                if(!formulas[i].validate().containsErrorMsg()){
+                if(!formulas[i].validate(getIpsProject()).containsErrorMsg()){
                     generateMethodForFormula(formulas[i], mainSection.getMethodSectionBuilder());
                 }
             } catch (Exception e) {
@@ -162,7 +162,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
      */
     private void generateMethodForFormula(IFormula formula, JavaCodeFragmentBuilder builder) throws CoreException {
         IProductCmptTypeMethod method = formula.findFormulaSignature(getIpsProject());
-        if(method.validate().containsErrorMsg()){
+        if(method.validate(getIpsProject()).containsErrorMsg()){
             return;   
         }
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);

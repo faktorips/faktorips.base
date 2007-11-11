@@ -202,7 +202,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
         IPolicyCmptTypeAttribute[] attributes = getPcType().getPolicyCmptTypeAttributes();
         for (int i = 0; i < attributes.length; i++) {
             IPolicyCmptTypeAttribute a = attributes[i];
-            if (!a.validate().containsErrorMsg()) {
+            if (!a.validate(getIpsProject()).containsErrorMsg()) {
                 try {
                     Datatype datatype = a.findDatatype();
                     DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(datatype);
@@ -365,7 +365,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
         IIpsProject project = getPcType().getIpsProject();
         for (int i = 0; i < methods.length; i++) {
             IMethod method = methods[i];
-            if (!method.validate().containsErrorMsg()) {
+            if (!method.validate(getIpsProject()).containsErrorMsg()) {
                 try {
                     Datatype returnType = project.findDatatype(method.getDatatype());
                     IParameter[] params = method.getParameters();

@@ -333,7 +333,7 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog{
      */
     protected void updateTitleInTitleArea(){
         try {
-            MessageList ml = tblStructureUsage.validate();
+            MessageList ml = tblStructureUsage.validate(tblStructureUsage.getIpsProject());
             if (ml.getFirstMessage(Message.ERROR) != null){
                 setMessage(ml.getFirstMessage(Message.ERROR).getText(), IMessageProvider.ERROR);
             } else {

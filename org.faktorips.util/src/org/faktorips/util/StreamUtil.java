@@ -62,7 +62,7 @@ public class StreamUtil {
                 absoluteCounter++;
                 if(counter > increments - 1){
                     byte[] current = bytes;
-                    bytes = new byte[counter + increments];
+                    bytes = new byte[bytes.length + increments];
                     System.arraycopy(current, 0, bytes, 0, current.length);
                     counter = 0;
                 }

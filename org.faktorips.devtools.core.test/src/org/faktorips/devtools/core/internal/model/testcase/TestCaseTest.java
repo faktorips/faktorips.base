@@ -332,11 +332,11 @@ public class TestCaseTest extends AbstractIpsPluginTest {
     }
     
     public void testValidateTestCaseTypeNotFound() throws Exception{
-        MessageList ml = testCase.validate();
+        MessageList ml = testCase.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestCase.MSGCODE_TEST_CASE_TYPE_NOT_FOUND));
 
         testCase.setTestCaseType("x");
-        ml = testCase.validate();
+        ml = testCase.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(ITestCase.MSGCODE_TEST_CASE_TYPE_NOT_FOUND));
     }
     
@@ -492,7 +492,7 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         assertEquals("Test2", testAttributeValue.getValue());
         
         // test the correct default values
-        MessageList ml = testCaseX.validate();
+        MessageList ml = testCaseX.validate(ipsProject);
         assertEquals(ml.getNoOfMessages(), 0);
         parameter = testCaseTypeX.newInputTestValueParameter();
         parameter.setName("testBoolean");
@@ -500,7 +500,7 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         
         testCaseX.fixAllDifferencesToModel();
         assertEquals(false, testCaseX.containsDifferenceToModel());
-        ml = testCaseX.validate();
+        ml = testCaseX.validate(ipsProject);
         assertFalse(ml.containsErrorMsg());        
     }
     

@@ -106,7 +106,7 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
             ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter = (ITestPolicyCmptTypeParameter) testParameter;
             IPolicyCmptTypeAssociation relation;
             try {
-                relation = testPolicyCmptTypeParameter.findRelation();
+                relation = testPolicyCmptTypeParameter.findRelation(testPolicyCmptTypeParameter.getIpsProject());
                 if (relation != null && relation.isAssoziation()){
                     editFieldReqProd.getControl().setEnabled(false);
                 }

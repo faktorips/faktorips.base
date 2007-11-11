@@ -69,7 +69,7 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
      */
     private boolean hasRowErrorsAt(IRow row, int columnIndex) {
         try {
-            MessageList messageList = row.validate();
+            MessageList messageList = row.validate(row.getIpsProject());
             messageList= messageList.getMessagesFor(row, IRow.PROPERTY_VALUE, columnIndex);
             return !messageList.isEmpty();
         } catch (CoreException e) {

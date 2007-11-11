@@ -34,13 +34,13 @@ import org.w3c.dom.Element;
 public class TestValueParameterTest extends AbstractIpsPluginTest {
 
     private ITestValueParameter valueParamInput;
-    
+    private IIpsProject project;
     /*
      * @see AbstractIpsPluginTest#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject project = newIpsProject("TestProject");
+        project = newIpsProject("TestProject");
         ITestCaseType type = (ITestCaseType )newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         valueParamInput = type.newInputTestValueParameter();
     }
@@ -80,7 +80,7 @@ public class TestValueParameterTest extends AbstractIpsPluginTest {
     }
 
     public void testValidateWrongType() throws Exception{
-        MessageList ml = valueParamInput.validate();
+        MessageList ml = valueParamInput.validate(project);
         assertNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_WRONG_TYPE));
 
         Element docEl = getTestDocument().getDocumentElement();
@@ -90,17 +90,17 @@ public class TestValueParameterTest extends AbstractIpsPluginTest {
         valueParamInput.setName("x");
         valueParamInput.setName(name);
         valueParamInput.initFromXml(paramEl);
-        ml = valueParamInput.validate();
+        ml = valueParamInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_WRONG_TYPE));
     }
     
     public void testValidateValueDatatypeNotFound() throws Exception {
         valueParamInput.setDatatype("String");
-        MessageList ml = valueParamInput.validate();
+        MessageList ml = valueParamInput.validate(project);
         assertNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND));
 
         valueParamInput.setDatatype("x");
-        ml = valueParamInput.validate();
+        ml = valueParamInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND));
     }
 }

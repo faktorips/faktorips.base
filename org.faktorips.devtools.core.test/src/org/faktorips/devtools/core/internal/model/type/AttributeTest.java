@@ -62,17 +62,17 @@ public class AttributeTest extends AbstractIpsPluginTest {
         range.setUpperBound("10");
         range.setStep("1");
         attributeWithValueSet.setDefaultValue("1");
-        MessageList ml = attributeWithValueSet.validate();
+        MessageList ml = attributeWithValueSet.validate(attributeWithValueSet.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
 
         attributeWithValueSet.setDefaultValue("100");
-        ml = attributeWithValueSet.validate();
+        ml = attributeWithValueSet.validate(attributeWithValueSet.getIpsProject());
         Message msg = ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET);
         assertNotNull(msg);
         assertEquals(Message.WARNING, msg.getSeverity());
         
         attributeWithValueSet.setDefaultValue(null);
-        ml = attributeWithValueSet.validate();
+        ml = attributeWithValueSet.validate(attributeWithValueSet.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
@@ -80,43 +80,43 @@ public class AttributeTest extends AbstractIpsPluginTest {
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         attribute.setDefaultValue("1");
         
-        MessageList ml = attribute.validate();
+        MessageList ml = attribute.validate(attribute.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE));
         
         attribute.setDatatype("a");
-        ml = attribute.validate();
+        ml = attribute.validate(attribute.getIpsProject());
         assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE));
     }
 
     public void testValidate_defaultNotParsableInvalidDatatype() throws Exception {
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
 
-        MessageList ml = attribute.validate();
+        MessageList ml = attribute.validate(attribute.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE));
         
         attribute.setDatatype("abc");
-        ml = attribute.validate();
+        ml = attribute.validate(attribute.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE));
     }
 
     public void testValidate_valueNotParsable() throws Exception {
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         attribute.setDefaultValue("1");
-        MessageList ml = attribute.validate();
+        MessageList ml = attribute.validate(attribute.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
         
         attribute.setDefaultValue("a");
-        ml = attribute.validate();
+        ml = attribute.validate(attribute.getIpsProject());
         assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
     }
 
     public void testValidate_invalidAttributeName() throws Exception {
         attribute.setName("test");
-        MessageList ml = attribute.validate();
+        MessageList ml = attribute.validate(attribute.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_ATTRIBUTE_NAME));
         
         attribute.setName("a.b");
-        ml = attribute.validate();
+        ml = attribute.validate(attribute.getIpsProject());
         assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_ATTRIBUTE_NAME));
     }
 

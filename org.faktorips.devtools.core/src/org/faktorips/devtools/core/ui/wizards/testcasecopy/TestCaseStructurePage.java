@@ -52,6 +52,7 @@ import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -77,16 +78,16 @@ public class TestCaseStructurePage extends WizardPage {
     private ContainerCheckedTreeViewer treeViewer;
     private TableViewer tableViewer;
     private TableColumn[] columns = new TableColumn[2];
-
+    private IIpsProject ipsProject;
     private IIpsSrcFile checkedProductCmpt = null;
     private TestCaseContentProvider testCaseContentProvider;
     
-    public TestCaseStructurePage(UIToolkit toolkit) {
+    public TestCaseStructurePage(UIToolkit toolkit, IIpsProject ipsProject) {
         super("TestCaseStructurePage"); //$NON-NLS-1$
         super.setTitle(Messages.TestCaseStructurePage_Title);
         
         this.toolkit = toolkit;
-        
+        this.ipsProject = ipsProject;
         setPageComplete(false);
     }
 
@@ -118,7 +119,7 @@ public class TestCaseStructurePage extends WizardPage {
         treeViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         hookTreeListeners();
         TestCaseLabelProvider labelProvider = new TestCaseLabelProvider();
-        treeViewer.setLabelProvider(new MessageCueLabelProvider(labelProvider));
+        treeViewer.setLabelProvider(new MessageCueLabelProvider(labelProvider, ipsProject));
         treeViewer.setUseHashlookup(true);
         treeViewer.expandAll();
         
@@ -131,7 +132,7 @@ public class TestCaseStructurePage extends WizardPage {
         new TreeMessageHoverService(treeViewer) {
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 if (element instanceof Validatable) {
-                    return ((Validatable)element).validate();
+                    return ((Validatable)element).validate(ipsProject);
                 } else
                     return null;
             }

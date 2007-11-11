@@ -208,7 +208,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
 		new TableMessageHoverService(itemsViewer) {
 
             protected MessageList getMessagesFor(Object element) throws CoreException {
-                MessageList list = key.validate();
+                MessageList list = key.validate(key.getIpsProject());
                 return list.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS, key.getIndexForKeyItemName((String)element));
             }
 		    
@@ -416,7 +416,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
     
     private void validate(){
         try {
-            MessageList msgList = key.validate();
+            MessageList msgList = key.validate(key.getIpsProject());
             if(msgList.isEmpty()){
                setMessage(null);
                return;
@@ -450,7 +450,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
             }
             MessageList list;
             try {
-                list = key.validate();
+                list = key.validate(key.getIpsProject());
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 return image;

@@ -107,7 +107,7 @@ public class ExcelTableImportOperation implements IWorkspaceRunnable {
         try {
             monitor.beginTask(Messages.ExcelTableImportOperation_labelImportFile + sourceFile, targetGeneration.getNumOfRows() + 3);
             
-            MessageList ml = structure.validate(); 
+            MessageList ml = structure.validate(structure.getIpsProject()); 
             if (ml.containsErrorMsg()) {
                 messageList.add(ml);
                 return;

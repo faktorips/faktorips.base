@@ -23,6 +23,7 @@ import java.util.Iterator;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.Validatable;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
@@ -84,9 +85,9 @@ public class TestCaseTypeRule implements Validatable {
     /**
      * {@inheritDoc}
      */
-    public MessageList validate() throws CoreException {
+    public MessageList validate(IIpsProject ipsProject) throws CoreException {
         MessageList messageList = new MessageList();
-        validate(messageList);
+        validate(messageList, ipsProject);
         return messageList;
     }
 
@@ -94,12 +95,12 @@ public class TestCaseTypeRule implements Validatable {
      * Validate the test policy cmpt relation parameters. And validate the min and max instances of
      * the test policy cmpt type param by validating the parent test policy cmpt
      */
-    private void validate(MessageList list) throws CoreException {
+    private void validate(MessageList list, IIpsProject ipsProject) throws CoreException {
         // delegate the validation to the test rules
         HashMap messages = new HashMap();
         ITestRule[] testRules = testCase.getTestRule(testRuleParameter.getName());
         for (int i = 0; i < testRules.length; i++) {
-            MessageList msgList = testRules[i].validate();
+            MessageList msgList = testRules[i].validate(ipsProject);
             for (Iterator iter = msgList.iterator(); iter.hasNext();) {
                 Message msg = (Message)iter.next();
                 messages.put(msg.getCode(), msg);

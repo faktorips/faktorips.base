@@ -253,7 +253,7 @@ public class ContentPage extends IpsObjectEditorPage {
             new TableMessageHoverService(tableViewer){
                 protected MessageList getMessagesFor(Object element) throws CoreException {
                     if(element!=null){
-                        return ((IRow)element).validate();
+                        return ((IRow)element).validate(((IRow)element).getIpsProject());
                     }
                     return null;
                 }

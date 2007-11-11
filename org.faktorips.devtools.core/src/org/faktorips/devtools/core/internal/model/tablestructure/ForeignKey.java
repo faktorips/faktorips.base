@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
@@ -109,8 +110,8 @@ public class ForeignKey extends Key implements IForeignKey {
         valueChanged(oldValue, refUniqueKey);
     }
 
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         ValidationUtils.checkIpsObjectReference(refTableStructure, 
                 IpsObjectType.TABLE_STRUCTURE, "referenced table",  //$NON-NLS-1$
                 this, PROPERTY_REF_TABLE_STRUCTURE, "", list); //$NON-NLS-1$
@@ -131,17 +132,17 @@ public class ForeignKey extends Key implements IForeignKey {
                     String[] ukItems = uk.getKeyItemNames();
                     String[] fkItems = this.getKeyItemNames();
                     for (int i=0; i<fkItems.length; i++) {
-                       validateKeyItem(fkItems[i], structure, ukItems[i], list); 
+                       validateKeyItem(fkItems[i], structure, ipsProject, ukItems[i], list); 
                     }
                 }
             }
         }
     }
     
-    private void validateKeyItem(String fkItem, ITableStructure refStructure, String refItem, MessageList list) throws CoreException {
+    private void validateKeyItem(String fkItem, ITableStructure refStructure, IIpsProject ipsProject, String refItem, MessageList list) throws CoreException {
         IColumnRange range = getTableStructure().getRange(fkItem);
         if (range!=null) {
-            validateRangeItem(range, refStructure, refItem, list);
+            validateRangeItem(range, refStructure, ipsProject, refItem, list);
             return;
         }
         IColumn column = getTableStructure().getColumn(fkItem);
@@ -154,7 +155,7 @@ public class ForeignKey extends Key implements IForeignKey {
         return;
     }
     
-    private void validateRangeItem(IColumnRange item, ITableStructure refStructure, String refItem, MessageList list) throws CoreException {
+    private void validateRangeItem(IColumnRange item, ITableStructure refStructure, IIpsProject ipsProject, String refItem, MessageList list) throws CoreException {
         IColumn column = refStructure.getColumn(refItem);
         if (column!=null) {
             String text = Messages.ForeignKey_msgKeyItemMissmatch;
@@ -167,7 +168,7 @@ public class ForeignKey extends Key implements IForeignKey {
             list.add(new Message("", text, Message.WARNING, item.getName())); //$NON-NLS-1$
             return;
         }
-        MessageList ml = item.validate();
+        MessageList ml = item.validate(ipsProject);
         if (!ml.isEmpty()) {
         	list.add(ml);
         	return;

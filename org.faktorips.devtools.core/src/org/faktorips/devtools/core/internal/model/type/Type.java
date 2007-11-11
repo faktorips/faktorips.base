@@ -449,9 +449,8 @@ public abstract class Type extends BaseIpsObject implements IType {
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
-        IIpsProject ipsProject = getIpsProject();
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         if (hasSupertype()) {
             validateSupertype(list, ipsProject);
         }
@@ -488,7 +487,7 @@ public abstract class Type extends BaseIpsObject implements IType {
             } else {
                 for (Iterator it=collector.supertypes.iterator(); it.hasNext(); ) {
                     IType supertype = (IType)it.next();
-                    MessageList superResult = supertype.validate();
+                    MessageList superResult = supertype.validate(ipsProject);
                     if (!superResult.isEmpty()) {
                         if (superResult.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND)!=null) {
                             String text = Messages.Type_msg_TypeHierarchyInconsistent;

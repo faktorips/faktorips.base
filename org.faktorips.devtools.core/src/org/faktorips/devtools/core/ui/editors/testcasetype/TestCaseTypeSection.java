@@ -509,7 +509,7 @@ public class TestCaseTypeSection extends IpsSection {
         public Image getColumnImage(Object element, int columnIndex) {
             Image defaultImage = null;
             try {
-                MessageList msgList = ((ITestAttribute) element).validate();
+                MessageList msgList = ((ITestAttribute) element).validate(((ITestAttribute) element).getIpsProject());
                 switch (columnIndex) {
                     case 0:
                         defaultImage = getImageForAttribute(element);
@@ -809,7 +809,7 @@ public class TestCaseTypeSection extends IpsSection {
         treeViewer = new TreeViewer(tree);
         treeViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         labelProvider = new TestCaseTypeLabelProvider();
-        MessageCueLabelProvider msgCueLabelProvider = new MessageCueLabelProvider(labelProvider);
+        MessageCueLabelProvider msgCueLabelProvider = new MessageCueLabelProvider(labelProvider, testCaseType.getIpsProject());
         treeViewer.setLabelProvider(msgCueLabelProvider);
         TestCaseTypeContentProvider contentProvider = new TestCaseTypeContentProvider(testCaseType);
         treeViewer.setContentProvider(contentProvider);
@@ -957,7 +957,7 @@ public class TestCaseTypeSection extends IpsSection {
         
         MessageList msgList = null;
         try {
-            msgList = testParam.validate();
+            msgList = testParam.validate(testParam.getIpsProject());
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
@@ -1267,7 +1267,7 @@ public class TestCaseTypeSection extends IpsSection {
 
     private boolean isAssociation(ITestPolicyCmptTypeParameter testParam) {
         try {
-            IPolicyCmptTypeAssociation relation = ((ITestPolicyCmptTypeParameter)testParam).findRelation();
+            IPolicyCmptTypeAssociation relation = ((ITestPolicyCmptTypeParameter)testParam).findRelation(testParam.getIpsProject());
             if (relation != null){
                 if (relation.isAssoziation()){
                     return true;
@@ -1464,7 +1464,7 @@ public class TestCaseTypeSection extends IpsSection {
         MessageList messageList = new MessageList();
         // validate element
         if (element instanceof IIpsObjectPartContainer){
-            messageList.add(((IIpsObjectPartContainer)element).validate());
+            messageList.add(((IIpsObjectPartContainer)element).validate(((IIpsObjectPartContainer)element).getIpsProject()));
         }
         return messageList;
     }

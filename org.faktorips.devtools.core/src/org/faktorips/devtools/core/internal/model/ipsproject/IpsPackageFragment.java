@@ -303,7 +303,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
 
         // set the new evaluated runtime id for product components
-        if (ipsSrcFile .getIpsObjectType() == IpsObjectType.PRODUCT_CMPT){
+        if (ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT){
             try {
                 model.stopBroadcastingChangesMadeByCurrentThread();
                 IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();

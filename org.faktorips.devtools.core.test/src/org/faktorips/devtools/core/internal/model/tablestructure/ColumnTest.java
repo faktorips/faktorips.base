@@ -108,11 +108,11 @@ public class ColumnTest extends AbstractIpsPluginTest {
     public void testValidateName() throws Exception {
         column.setName("Boolean");
         column.setDatatype(Datatype.STRING.getQualifiedName());
-        MessageList ml = column.validate();
+        MessageList ml = column.validate(ipsSrcFile.getIpsProject());
         assertNotNull(ml.getMessageByCode(IColumn.MSGCODE_INVALID_NAME));
         
         column.setName("integer");
-        ml = column.validate();
+        ml = column.validate(ipsSrcFile.getIpsProject());
         assertNull(ml.getMessageByCode(IColumn.MSGCODE_INVALID_NAME));
     }
     

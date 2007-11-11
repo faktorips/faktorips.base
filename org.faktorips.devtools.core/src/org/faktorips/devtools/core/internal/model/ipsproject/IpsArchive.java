@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.util.StreamUtil;
 
 /**
@@ -179,6 +180,71 @@ public class IpsArchive implements IIpsArchive {
         return packContent;
     }
 
+    public InputStream getSortDefinitionContent(String packName) throws CoreException{
+        if(packName == null){
+            return null;
+        }
+        if(!containsPackage(packName)){
+            return null;
+        }
+        StringBuffer buf = new StringBuffer();
+        buf.append(packName);
+        buf.append('.');
+        buf.append(IIpsPackageFragment.SORT_ORDER_FILE_NAME);
+//      TODO pk 2007-11-11 intermedia state
+//        return getResource(buf.toString());
+        return null;
+    }
+    
+    /*
+     * The specified path to the resource within the jar file needs to be relative to the
+     * IIpsArchive.IPSOBJECTS_FOLDER. Additionally the path doesn't need to start with a path separator.
+     */
+//    TODO pk 2007-11-11 intermedia state
+//    private InputStream getResource(String path) throws CoreException{
+//        if (path == null) {
+//            return null;
+//        }
+//        JarFile archive;
+//        try {
+//            archive = new JarFile(archiveFile.getLocation().toFile());
+//        } catch (IOException e) {
+//            throw new CoreException(new IpsStatus("Error opening jar for " + this, e)); //$NON-NLS-1$
+//        }
+//        JarEntry entry = archive.getJarEntry(IIpsArchive.IPSOBJECTS_FOLDER + IPath.SEPARATOR + path);
+//        if (entry == null) {
+//            return null;
+//        }
+//        try {
+//            return StreamUtil.copy(archive.getInputStream(entry), 1024);
+//        } catch (IOException e) {
+//            throw new CoreException(new IpsStatus("Error reading data from archive for " + this, e)); //$NON-NLS-1$
+//        } finally {
+//            try {
+//                archive.close();
+//            } catch (Exception e) {
+//                throw new CoreException(new IpsStatus("Error closing stream or archive for " + this, e)); //$NON-NLS-1$
+//            }
+//        }
+//    }
+
+//  TODO pk 2007-11-11 intermedia state
+//    public InputStream getContent(QualifiedNameType qnt) throws CoreException {
+//        if (qnt == null) {
+//            return null;
+//        }
+//        readArchiveContentIfNeccessary();
+//        if (!qNameTypes.containsKey(qnt)) {
+//            return null;
+//        }
+//        InputStream is = getResource(qnt.toPath().toString());
+//        if (is == null) {
+//            throw new CoreException(new IpsStatus("Entry not found in archive for " + this)); //$NON-NLS-1$
+//        }
+//        return is;
+//    }
+    
+    
     /**
      * {@inheritDoc}
      */

@@ -32,7 +32,7 @@ public class GenericValueDatatypeTest extends TestCase {
 
     public void testValidate_ClassNotFound() {
         GenericValueDatatype type = new InvalidType();
-        MessageList list = type.validate();
+        MessageList list = type.checkReadyToUse();
         assertEquals(1, list.getNoOfMessages());
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_JAVACLASS_NOT_FOUND));
     }
@@ -42,7 +42,7 @@ public class GenericValueDatatypeTest extends TestCase {
         datatype.setToStringMethodName("unknwonMethod");
         datatype.setValueOfMethodName("unknwonMethod");
         datatype.setNullObjectDefined(false);
-        MessageList list = datatype.validate();
+        MessageList list = datatype.checkReadyToUse();
         assertEquals(3, list.getNoOfMessages());
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_GETVALUE_METHOD_NOT_FOUND));
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_ISPARSABLE_METHOD_NOT_FOUND));
@@ -55,12 +55,12 @@ public class GenericValueDatatypeTest extends TestCase {
         datatype.setValueOfMethodName("getPaymentMode");
         datatype.setNullObjectDefined(true);
         datatype.setNullObjectId("unkownValue");
-        MessageList list = datatype.validate();
+        MessageList list = datatype.checkReadyToUse();
         assertEquals(1, list.getNoOfMessages());
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_SPECIALCASE_NULL_NOT_FOUND));
         
         datatype.setNullObjectId(PaymentMode.ANNUAL.getId());
-        list = datatype.validate();
+        list = datatype.checkReadyToUse();
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_SPECIALCASE_NULL_IS_NOT_NULL));
     }
     

@@ -128,7 +128,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         }
         
         for (int i = 0; i < uniqueKeys.length; i++) {
-            if(!uniqueKeys[i].validate().isEmpty()){
+            if(!uniqueKeys[i].validate(getIpsProject()).isEmpty()){
                 return EnumValueAttributesInfo.INVALID_INFO;
             }
         }
@@ -216,7 +216,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
  
     private boolean checkTableColumns(IColumn[] columns) throws CoreException{
         for (int i = 0; i < columns.length; i++) {
-            if(!columns[i].validate().isEmpty()){
+            if(!columns[i].validate(getIpsProject()).isEmpty()){
                 return false;
             }
         }
@@ -281,7 +281,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         List validRows = new ArrayList();
         IRow[] rows = generation.getRows();
         for (int i = 0; i < rows.length; i++) {
-            MessageList msgList = rows[i].validate();
+            MessageList msgList = rows[i].validate(getIpsProject());
             if(msgList.isEmpty()){
                 validRows.add(rows[i]);
             }

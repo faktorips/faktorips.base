@@ -154,16 +154,15 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
-        IIpsProject ipsProject = getIpsProject();
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         IProductCmptType type = findProductCmptType(ipsProject);
         if (type == null) {
             String text = NLS.bind(Messages.ProductCmpt_msgUnknownTemplate, this.productCmptType);
             list.add(new Message(MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE, text, Message.ERROR, this, PROPERTY_PRODUCT_CMPT_TYPE)); //$NON-NLS-1$
         } else {
         	try {
-				MessageList list3 = type.validate();
+				MessageList list3 = type.validate(ipsProject);
 				if (list3.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY) != null || 
                     list3.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND) != null ||
 				    list3.getMessageByCode(IType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY) != null) {

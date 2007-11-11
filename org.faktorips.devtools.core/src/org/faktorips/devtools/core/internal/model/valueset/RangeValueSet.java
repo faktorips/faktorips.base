@@ -17,6 +17,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -371,7 +372,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     /**
      * {@inheritDoc}
      */
-    public void validateThis(MessageList list) throws CoreException {
+    public void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         ValueDatatype datatype = getValueDatatype();
         if (datatype == null) {
             String text = Messages.Range_msgUnknownDatatype;

@@ -95,7 +95,7 @@ public class IpsObjectUIController extends DefaultUIController {
             return new MessageList();
         }
         try {
-            MessageList list = partContainer.validate();
+            MessageList list = partContainer.validate(partContainer.getIpsProject());
             for (Iterator it=mappings.iterator(); it.hasNext();) {
                 FieldPropertyMapping mapping = (FieldPropertyMapping)it.next();
                 Control c = mapping.getField().getControl();

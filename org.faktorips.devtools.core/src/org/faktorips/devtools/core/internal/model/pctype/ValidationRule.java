@@ -189,8 +189,8 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void validateThis(MessageList list) throws CoreException {
-		super.validateThis(list);
+	protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+		super.validateThis(list, ipsProject);
 		ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, //$NON-NLS-1$
 				PROPERTY_NAME, "", list); //$NON-NLS-1$
 		if (StringUtils.isEmpty(msgCode)) {

@@ -204,16 +204,16 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
     
     public void testValidate_DuplicateName() throws CoreException{
         formulaTestCase.setName("Test");
-        MessageList ml = formulaTestCase.validate();
+        MessageList ml = formulaTestCase.validate(formulaTestCase.getIpsProject());
         assertNull(ml.getMessageByCode(IFormulaTestCase.MSGCODE_DUPLICATE_NAME));
         
         IFormulaTestCase ftc = formula.newFormulaTestCase();
         ftc.setName(formulaTestCase.getName());
-        ml = formulaTestCase.validate();
+        ml = formulaTestCase.validate(null);
         assertNotNull(ml.getMessageByCode(IFormulaTestCase.MSGCODE_DUPLICATE_NAME));
         
         ftc.setName(ftc.generateUniqueNameForFormulaTestCase(formulaTestCase.getName()));
-        ml = formulaTestCase.validate();
+        ml = formulaTestCase.validate(null);
         assertNull(ml.getMessageByCode(IFormulaTestCase.MSGCODE_DUPLICATE_NAME));
     }
     

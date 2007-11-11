@@ -265,7 +265,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private boolean checkUniqueKeyValidity() throws CoreException {
         IUniqueKey[] keys = getTableStructure().getUniqueKeys();
         for (int i = 0; i < keys.length; i++) {
-            if (!keys[i].validate().isEmpty()) {
+            if (!keys[i].validate(getIpsProject()).isEmpty()) {
                 return false;
             }
             // the key is valid
@@ -358,7 +358,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
     private boolean checkColumnsValidity(IColumn[] columns) throws CoreException{
         for (int i = 0; i < columns.length; i++) {
-            if(!columns[i].validate().isEmpty()){
+            if(!columns[i].validate(getIpsProject()).isEmpty()){
                 return false;
             }
         }

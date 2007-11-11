@@ -90,17 +90,17 @@ public class FormulaTest extends AbstractIpsPluginTest  {
     
     public void testValidate_MissingExpression() throws CoreException {
         formula.setExpression("");
-        MessageList ml = formula.validate();
+        MessageList ml = formula.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IFormula.MSGCODE_EXPRESSION_IS_EMPTY));
         
         formula.setExpression("1");
-        ml = formula.validate();
+        ml = formula.validate(ipsProject);
         assertNull(ml.getMessageByCode(IFormula.MSGCODE_EXPRESSION_IS_EMPTY));
     }
 
     public void testValidate_SyntaxErrorInFormula() throws CoreException {
         formula.setExpression("42EUR12"); 
-        MessageList list = formula.validate();
+        MessageList list = formula.validate(ipsProject);
         assertEquals(1, list.getNoOfMessages());
         Message msg = list.getMessage(0);
         assertEquals(ExprCompiler.SYNTAX_ERROR, msg.getCode());
@@ -117,11 +117,11 @@ public class FormulaTest extends AbstractIpsPluginTest  {
         formula.setExpression("1");
         formula.setFormulaSignature("CalcPremium");
         
-        MessageList ml = formula.validate();
+        MessageList ml = formula.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IFormula.MSGCODE_UNKNOWN_DATATYPE_FORMULA));
         
         method.setDatatype(Datatype.INTEGER.getQualifiedName());
-        ml = formula.validate();
+        ml = formula.validate(ipsProject);
         assertNull(ml.getMessageByCode(IFormula.MSGCODE_UNKNOWN_DATATYPE_FORMULA));
     }
     
@@ -134,16 +134,16 @@ public class FormulaTest extends AbstractIpsPluginTest  {
         formula.setExpression("\"abc\"");
         formula.setFormulaSignature("CalcPremium");
         
-        MessageList ml = formula.validate();
+        MessageList ml = formula.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IFormula.MSGCODE_WRONG_FORMULA_DATATYPE));
         
         formula.setExpression("1");
-        ml = formula.validate();
+        ml = formula.validate(ipsProject);
         assertNull(ml.getMessageByCode(IFormula.MSGCODE_WRONG_FORMULA_DATATYPE));
         
         // test implicit conversion
         method.setDatatype(Datatype.DECIMAL.getQualifiedName());
-        ml = formula.validate();
+        ml = formula.validate(ipsProject);
         assertNull(ml.getMessageByCode(IFormula.MSGCODE_WRONG_FORMULA_DATATYPE));
     }
     

@@ -283,7 +283,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         
         MessageList list;
         try {
-            list = association.validate();
+            list = association.validate(ipsProject);
         } catch (CoreException e) {
             showAndLogError(e);
             return false;

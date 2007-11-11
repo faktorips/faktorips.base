@@ -311,7 +311,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     		try {
     			ITestPolicyCmptTypeParameter typeParam = null;
     			typeParam = dummyRelation.getTestPolicyCmptTypeParam();
-    			IPolicyCmptTypeAssociation relation = typeParam.findRelation();
+    			IPolicyCmptTypeAssociation relation = typeParam.findRelation(typeParam.getIpsProject());
     			if (relation == null){
     				return null;
     			}		
@@ -940,7 +940,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         hookTreeListeners();
         treeViewer.setContentProvider(contentProvider);
         labelProvider = new TestCaseLabelProvider();
-        treeViewer.setLabelProvider(new MessageCueLabelProvider(labelProvider));
+        treeViewer.setLabelProvider(new MessageCueLabelProvider(labelProvider, testCase.getIpsProject()));
         treeViewer.setUseHashlookup(true);
         treeViewer.setInput(testCase);
         
@@ -1210,7 +1210,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             try {
                 IPolicyCmptTypeAssociation modelRelation = null;
                 if ( relation != null){
-                    modelRelation = relation.findRelation();
+                    modelRelation = relation.findRelation(relation.getParentTestPolicyCmpt().getIpsProject());
                 }
                 if (modelRelation == null){
                     // failure in test case type definition
@@ -1294,7 +1294,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         new TreeMessageHoverService(treeViewer) {
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 if (element instanceof Validatable) {
-                    return ((Validatable)element).validate();
+                    return ((Validatable)element).validate(testCase.getIpsProject());
                 } else
                     return null;
             }
@@ -1564,7 +1564,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	private void addRelation(final TestCaseTypeRelation relationType) throws CoreException{
 		String[] productCmptQualifiedNames = null;
 		if (relationType.isRequiresProductCmpt()) {
-            IPolicyCmptTypeAssociation relation = relationType.findRelation();
+            IPolicyCmptTypeAssociation relation = relationType.findRelation(relationType.getParentTestPolicyCmpt().getIpsProject());
             if (relation == null){
                 // validation error
                 return;
@@ -1586,7 +1586,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 return;
         }
 		
-		final IPolicyCmptTypeAssociation relation = relationType.findRelation();
+		final IPolicyCmptTypeAssociation relation = relationType.findRelation(relationType.getParentTestPolicyCmpt().getIpsProject());
 		if (relation == null){
 			// relation not found, no add allowed
 			return;
@@ -1871,7 +1871,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     
     private boolean containsErrors() {
         try {
-            if (testCase.validate().containsErrorMsg()) {
+            if (testCase.validate(testCase.getIpsProject()).containsErrorMsg()) {
                 MessageDialog.openWarning(getShell(), Messages.TestCaseSection_MessageDialog_TitleInfoTestNotExecuted,
                         Messages.TestCaseSection_MessageDialog_TextInfoTestNotExecuted);
                 return true;

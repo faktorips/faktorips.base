@@ -170,7 +170,7 @@ public class ParametersEditControl extends Composite implements  IDataChangeable
 	}
 	
 	private MessageList validate(IParameter param) throws CoreException {
-		MessageList result = paramContainer.validate();
+		MessageList result = paramContainer.validate(ipsProject);
 		return result.getMessagesFor(param);
 	}
 	

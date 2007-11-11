@@ -66,7 +66,7 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
         method.setName("age");
         method.setFormulaSignatureDefinition(true);
         method.setFormulaName("AgeCalculation");
-        assertFalse(type.validate().containsErrorMsg());
+        assertFalse(type.validate(project).containsErrorMsg());
         type.getIpsSrcFile().save(true, null);
         
         productCmpt = newProductCmpt(productCmptType, "Product");
@@ -76,7 +76,7 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
         ce.setFormulaSignature(method.getFormulaName());
         ce.setExpression("42");
         productCmpt.getIpsSrcFile().save(true, null);
-        assertFalse(productCmpt.validate().containsErrorMsg());
+        assertFalse(productCmpt.validate(null).containsErrorMsg());
         
         IIpsArtefactBuilder[] builders = project.getIpsArtefactBuilderSet().getArtefactBuilders();
         for (int i = 0; i < builders.length; i++) {

@@ -132,18 +132,11 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
-    public IPolicyCmptType findSupertype() throws CoreException {
-        return getIpsProject().findPolicyCmptType(getSupertype());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public boolean isSubtypeOf(IPolicyCmptType supertypeCandidate) throws CoreException {
         if (supertypeCandidate == null) {
             return false;
         }
-        IPolicyCmptType supertype = findSupertype();
+        IPolicyCmptType supertype = (IPolicyCmptType)findSupertype(supertypeCandidate.getIpsProject());
         if (supertype == null) {
             return false;
         }
@@ -374,9 +367,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
-        IIpsProject ipsProject = getIpsProject();
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         validateProductSide(list, ipsProject);
     }
 
@@ -400,7 +392,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 }
             }
         }
-        IPolicyCmptType superPolicyCmptType = findSupertype();
+        IPolicyCmptType superPolicyCmptType = (IPolicyCmptType)findSupertype(ipsProject);
         if (superPolicyCmptType != null) {
             if (!superPolicyCmptType.isConfigurableByProductCmptType()) {
                 String msg = Messages.PolicyCmptType_msg_IfTheSupertypeIsNotConfigurableTheTypeCanBeConfigurable;
@@ -427,8 +419,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
-    public IPolicyCmptTypeAttribute[] findOverrideAttributeCandidates() throws CoreException {
-        IPolicyCmptType supertype = findSupertype();
+    public IPolicyCmptTypeAttribute[] findOverrideAttributeCandidates(IIpsProject ipsProject) throws CoreException {
+        IPolicyCmptType supertype = (IPolicyCmptType)findSupertype(ipsProject);
 
         if (supertype == null) {
             // no supertype, no candidates :-)

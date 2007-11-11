@@ -56,32 +56,32 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
     
     public void testValidate_UnknownAttribute() throws CoreException {
-        MessageList ml = attrValue.validate();
+        MessageList ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
         
         attrValue.setAttribute("AnotherAttribute");
-        ml = attrValue.validate();
+        ml = attrValue.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
         
         IProductCmptType supertype = newProductCmptType(ipsProject, "SuperProduct");
         productCmptType.setSupertype(supertype.getQualifiedName());
         
         supertype.newProductCmptTypeAttribute().setName("AnotherAttribute");
-        ml = attrValue.validate();
+        ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
     }
     
     public void testValidate_ValueNotParsable() throws CoreException {
-        MessageList ml = attrValue.validate();
+        MessageList ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
         
         attrValue.setValue("abc");
-        ml = attrValue.validate();
+        ml = attrValue.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
     }    
     
     public void testValidate_ValueNotInSet() throws CoreException {
-        MessageList ml = attrValue.validate();
+        MessageList ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
         
         attribute.setValueSetType(ValueSetType.RANGE);
@@ -90,23 +90,23 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         range.setUpperBound("100");
 
         attrValue.setValue("0");
-        ml = attrValue.validate();
+        ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
         
         attrValue.setValue("100");
-        ml = attrValue.validate();
+        ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
         
         attrValue.setValue("42");
-        ml = attrValue.validate();
+        ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
         
         attrValue.setValue("-1");
-        ml = attrValue.validate();
+        ml = attrValue.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
         
         attrValue.setValue("101");
-        ml = attrValue.validate();
+        ml = attrValue.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
         
     }

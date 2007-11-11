@@ -141,12 +141,11 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList result) throws CoreException {
-        super.validateThis(result);
+    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(result, ipsProject);
         if (!isFormulaSignatureDefinition()) {
             return;
         }
-        IIpsProject ipsProject = getIpsProject();
         if (StringUtils.isEmpty(formulaName)) {
             String text = Messages.ProductCmptTypeMethod_FormulaNameIsMissing;
             result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY, text, Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));

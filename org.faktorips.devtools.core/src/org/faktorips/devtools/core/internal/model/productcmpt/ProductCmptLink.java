@@ -188,12 +188,11 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements
 		valueChanged(oldValue, newValue);
 	}
 
-	protected void validateThis(MessageList list) throws CoreException {
+	protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
 		if (isDeleted()) {
 			return;
 		}
-		super.validateThis(list);
-        IIpsProject ipsProject = getIpsProject();
+		super.validateThis(list, ipsProject);
         ValidationUtils.checkIpsObjectReference(target,
                 IpsObjectType.PRODUCT_CMPT, "target", this, PROPERTY_TARGET, MSGCODE_UNKNWON_TARGET, list); //$NON-NLS-1$
 		

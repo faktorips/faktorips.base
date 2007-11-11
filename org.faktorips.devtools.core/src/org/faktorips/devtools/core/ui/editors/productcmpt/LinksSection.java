@@ -208,7 +208,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 			treeViewer = new TreeViewer(tree);
 			treeViewer.setContentProvider(new LinksContentProvider());
 			treeViewer.setLabelProvider(new MyMessageCueLabelProvider(
-					labelProvider));
+					labelProvider, generation.getIpsProject()));
 			treeViewer.setInput(generation);
 			treeViewer
 					.addSelectionChangedListener(selectionChangedListener);
@@ -758,9 +758,9 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 
 	private MessageList validate(Object element) throws CoreException {
 		if (element instanceof IProductCmptLink) {
-			return ((IProductCmptLink) element).validate();
+			return ((IProductCmptLink) element).validate(((IProductCmptLink) element).getIpsProject());
 		} else if (element instanceof String) {
-			MessageList ml = generation.validate();
+			MessageList ml = generation.validate(null);
 			return ml.getMessagesFor(((String) element));
 		}
 		return new MessageList();
@@ -787,8 +787,8 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 	 */
 	private class MyMessageCueLabelProvider extends MessageCueLabelProvider {
 
-		public MyMessageCueLabelProvider(ILabelProvider baseProvider) {
-			super(baseProvider);
+		public MyMessageCueLabelProvider(ILabelProvider baseProvider, IIpsProject ipsProject) {
+			super(baseProvider, ipsProject);
 		}
 
 		/**
@@ -796,7 +796,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 		 */
 		protected MessageList getMessages(Object element) throws CoreException {
 			if (element instanceof String) {
-				return generation.validate().getMessagesFor((String)element);
+				return generation.validate(generation.getIpsProject()).getMessagesFor((String)element);
 			}
 			return super.getMessages(element);
 		}

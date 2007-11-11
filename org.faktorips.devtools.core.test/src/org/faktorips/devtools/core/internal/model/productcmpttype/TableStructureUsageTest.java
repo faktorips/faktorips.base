@@ -131,51 +131,51 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     }
     
     public void testValidate_TableStructureNotFound() throws CoreException{
-        MessageList ml = tableStructureUsage.validate();
+        MessageList ml = tableStructureUsage.validate(project);
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
         
         tableStructureUsage.addTableStructure("test.TableStructureX");
-        ml = tableStructureUsage.validate();
+        ml = tableStructureUsage.validate(project);
         assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
         
         tableStructureUsage.removeTableStructure("test.TableStructureX");
         tableStructureUsage.addTableStructure("test.TableStructure1");
-        ml = tableStructureUsage.validate();
+        ml = tableStructureUsage.validate(project);
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
     }
     
     public void testValidate_InvalidRoleName() throws CoreException{
         tableStructureUsage.setRoleName("role1");
-        MessageList ml = tableStructureUsage.validate();
+        MessageList ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
         
         tableStructureUsage.setRoleName("1role");
-        ml = tableStructureUsage.validate();
+        ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
         assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
         
         tableStructureUsage.setRoleName("role 1");
-        ml = tableStructureUsage.validate();
+        ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
         assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
     }
     
     public void testValidate_MustReferenceAtLeast1TableStructure() throws CoreException{
-        MessageList ml = tableStructureUsage.validate();
+        MessageList ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
         assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE));
         
         tableStructureUsage.addTableStructure("tableStructure1");
-        ml = tableStructureUsage.validate();
+        ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE));
         
     }
 
     public void testValidateDuplicateRoleName() throws CoreException{
         tableStructureUsage.setRoleName("role1");
-        MessageList ml = tableStructureUsage.validate();
+        MessageList ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
 
         tableStructureUsage = pcType.newTableStructureUsage();
         tableStructureUsage.setRoleName("role1");
-        ml = tableStructureUsage.validate();
+        ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
         assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
         
     }
@@ -185,21 +185,21 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         ITableStructureUsage aStructureUsage = a.newTableStructureUsage();
         aStructureUsage.setRoleName("usage");
 
-        MessageList ml = aStructureUsage.validate();
+        MessageList ml = aStructureUsage.validate(aStructureUsage.getIpsProject());
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
 
         IProductCmptType b = newProductCmptType(project, "b");
         a.setSupertype(b.getQualifiedName());
-        ml = aStructureUsage.validate();
+        ml = aStructureUsage.validate(aStructureUsage.getIpsProject());
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
 
         ITableStructureUsage bStructureUsage = b.newTableStructureUsage();
         bStructureUsage.setRoleName("usage");
-        ml = aStructureUsage.validate();
+        ml = aStructureUsage.validate(aStructureUsage.getIpsProject());
         assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
         
         bStructureUsage.setRoleName("otherName");
-        ml = aStructureUsage.validate();
+        ml = aStructureUsage.validate(aStructureUsage.getIpsProject());
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
 
     }

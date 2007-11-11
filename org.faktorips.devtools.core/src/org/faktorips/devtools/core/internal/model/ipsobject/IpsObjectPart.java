@@ -142,7 +142,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
 	 * {@inheritDoc}
 	 */
 	public int getValidationResultSeverity() throws CoreException {
-		return validate().getSeverity();
+		return validate(getIpsProject()).getSeverity();
 	}
 
     /**

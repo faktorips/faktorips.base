@@ -698,9 +698,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
-        IIpsProject ipsProject = getIpsProject();
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         IProductCmptType type = getProductCmpt().findProductCmptType(ipsProject);
         // no type information available, so no further validation possible
         if (type == null) {
@@ -723,7 +722,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             IProductCmptLink[] relations = getLinks(relationTypes[i].getTargetRoleSingular());
 
             // get all messages for the relation types and add them
-            MessageList relMessages = relationTypes[i].validate();
+            MessageList relMessages = relationTypes[i].validate(ipsProject);
             if (!relMessages.isEmpty()) {
                 list.add(relMessages, new ObjectProperty(relationTypes[i].getTargetRoleSingular(), null), true);
             }
@@ -766,7 +765,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
                 }
             }
         }
-        validateIfReferencedProductCmptsHaveFittingGeneration(list, getIpsProject());
+        validateIfReferencedProductCmptsHaveFittingGeneration(list, ipsProject);
     }
 
     protected void validateIfReferencedProductCmptsHaveFittingGeneration(MessageList msgList, IIpsProject ipsProject)
@@ -775,7 +774,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         for (int i = 0; i < links.length; i++) {
             IProductCmpt productCmpt = links[i].findTarget(ipsProject);
             if (productCmpt != null) {
-                if (getValidFrom() != null && productCmpt.getGenerationByEffectiveDate(getValidFrom()) == null) {
+                if (getValidFrom() != null && productCmpt.findGenerationEffectiveOn(getValidFrom()) == null) {
                     String dateString = IpsPlugin.getDefault().getIpsPreferences().getDateFormat().format(getValidFrom().getTime());
                     String generationName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
                     String text = NLS.bind(

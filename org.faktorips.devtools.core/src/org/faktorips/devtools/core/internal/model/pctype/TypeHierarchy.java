@@ -103,7 +103,7 @@ public class TypeHierarchy implements ITypeHierarchy {
                 IIpsObject[] pcTypes = projects[i].findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE);
                 for (int j=0; j<pcTypes.length; j++) {
                     IPolicyCmptType candidate = (IPolicyCmptType)pcTypes[j];
-                    if (!subtypes.contains(candidate) && pcType.equals(candidate.findSupertype()))  {
+                    if (!subtypes.contains(candidate) && pcType.equals(candidate.findSupertype(pcType.getIpsProject())))  {
                         if (hierarchy.contains(candidate)) {
                             hierarchy.containsCycle = true;
                         } else {

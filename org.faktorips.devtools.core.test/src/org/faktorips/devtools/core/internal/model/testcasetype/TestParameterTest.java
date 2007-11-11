@@ -33,60 +33,60 @@ public class TestParameterTest extends AbstractIpsPluginTest {
 
     private ITestCaseType testCaseType;
     private ITestPolicyCmptTypeParameter testParam;
-    
+    private IIpsProject project;
     /*
      * @see AbstractIpsPluginTest#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject project = newIpsProject("TestProject");
+        project = newIpsProject("TestProject");
         testCaseType = (ITestCaseType )newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         testParam = testCaseType.newInputTestPolicyCmptTypeParameter();
         testParam.setName("testPolicyCmptTypeParam");
     }
     
     public void testValidateDuplicateName() throws Exception {
-        MessageList ml = testParam.validate();
+        MessageList ml = testParam.validate(project);
         assertNull(ml.getMessageByCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
         
         testCaseType.newExpectedResultPolicyCmptTypeParameter().setName(testParam.getName());
-        ml = testParam.validate();
+        ml = testParam.validate(project);
         assertNotNull(ml.getMessageByCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
         
         testParam.setName("param1");
-        ml = testParam.validate();
+        ml = testParam.validate(project);
         assertNull(ml.getMessageByCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
         
         ITestPolicyCmptTypeParameter paramChild1 = testParam.newTestPolicyCmptTypeParamChild();
         ITestPolicyCmptTypeParameter paramChild2 = testParam.newTestPolicyCmptTypeParamChild();
         paramChild1.setName("child1");
         paramChild2.setName("child1");
-        ml = paramChild1.validate();
+        ml = paramChild1.validate(project);
         assertNotNull(ml.getMessageByCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
-        ml = paramChild2.validate();
+        ml = paramChild2.validate(project);
         assertNotNull(ml.getMessageByCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
 
         paramChild2.setName("child2");
-        ml = paramChild1.validate();
+        ml = paramChild1.validate(project);
         assertNull(ml.getMessageByCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
-        ml = paramChild2.validate();
+        ml = paramChild2.validate(project);
         assertNull(ml.getMessageByCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
     }
 
     public void testValidateInvalidName() throws Exception {
-        MessageList ml = testParam.validate();
+        MessageList ml = testParam.validate(project);
         assertNull(ml.getMessageByCode(ITestParameter.MSGCODE_INVALID_NAME));
         
         testParam.setName("1");
-        ml = testParam.validate();
+        ml = testParam.validate(project);
         assertNotNull(ml.getMessageByCode(ITestParameter.MSGCODE_INVALID_NAME));
 
         testParam.setName("param 1");
-        ml = testParam.validate();
+        ml = testParam.validate(project);
         assertNotNull(ml.getMessageByCode(ITestParameter.MSGCODE_INVALID_NAME));
 
         testParam.setName("param1");
-        ml = testParam.validate();
+        ml = testParam.validate(project);
         assertNull(ml.getMessageByCode(ITestParameter.MSGCODE_INVALID_NAME));
     }
 }

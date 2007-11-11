@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -232,8 +233,8 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList messageList) throws CoreException {
-        super.validateThis(messageList);
+    protected void validateThis(MessageList messageList, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(messageList, ipsProject);
         
         // check if the name is not empty
         if (StringUtils.isEmpty(getName())){

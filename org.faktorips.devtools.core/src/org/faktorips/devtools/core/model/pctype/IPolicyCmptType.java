@@ -147,10 +147,11 @@ public interface IPolicyCmptType extends IType, Datatype {
      * Returns the type's supertype if the type is based on a supertype and the supertype can be found
      * on the project's ips object path. Returns <code>null</code> if either this type is not based on
      * a supertype or the supertype can't be found on the project's ips object path. 
+     * @param ipsProject TODO
 
      * @throws CoreException if an error occurs while searching for the supertype.
      */
-    public IPolicyCmptType findSupertype() throws CoreException;
+//    public IPolicyCmptType findSupertype(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Sets the type's supertype.
@@ -265,8 +266,9 @@ public interface IPolicyCmptType extends IType, Datatype {
     /**
      * Returns an array of all attributes of all supertypes not yet overwritten by this 
      * policy component type.
+     * @param ipsProject TODO
      */
-    public IPolicyCmptTypeAttribute[] findOverrideAttributeCandidates() throws CoreException;
+    public IPolicyCmptTypeAttribute[] findOverrideAttributeCandidates(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Creates new attributes in this type overriding the given attributes.

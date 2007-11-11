@@ -209,13 +209,13 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         policyCmptTypeParameterInput.setPolicyCmptType("policyCmpt");
         
         child.setRelation("relation1");
-        assertEquals(rel1, child.findRelation());
+        assertEquals(rel1, child.findRelation(project));
         child.setRelation("relation2");
-        assertEquals(rel2, child.findRelation());
+        assertEquals(rel2, child.findRelation(project));
         child.setRelation("relation3");
-        assertEquals(rel3, child.findRelation());
+        assertEquals(rel3, child.findRelation(project));
         child.setRelation("relation4");
-        assertEquals(rel4, child.findRelation());
+        assertEquals(rel4, child.findRelation(project));
     }
     
     public void testValidationWrongPolicyCmptTypeOfRelation() throws CoreException{
@@ -230,63 +230,63 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         relation.setTargetRoleSingular("relation");
         relation.setTarget(targetPolicyCmptTypeSuperSuper.getQualifiedName());
         
-        MessageList ml = policyCmptTypeParameterInput.validate();
+        MessageList ml = policyCmptTypeParameterInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION));
 
         policyCmptTypeParameterInput.setPolicyCmptType(sourcePolicyCmptType.getQualifiedName());
         ITestPolicyCmptTypeParameter child = policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
         // no target candidate of relation set, therefore msg couldn't be throws
         child.setRelation(relation.getName());
-        ml = child.validate();
+        ml = child.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION));
         
         child.setPolicyCmptType(targetPolicyCmptTypeSuperSuper.getQualifiedName());
-        ml = child.validate();
+        ml = child.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION));
         
         child.setPolicyCmptType(targetPolicyCmptTypeSuper.getQualifiedName());
-        ml = child.validate();
+        ml = child.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION));
         
         child.setPolicyCmptType(targetPolicyCmptType.getQualifiedName());
-        ml = child.validate();
+        ml = child.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION));
         
         
         relation.setTarget(targetPolicyCmptTypeSuper.getQualifiedName());
         
         child.setPolicyCmptType(targetPolicyCmptTypeSuperSuper.getQualifiedName());
-        ml = child.validate();
+        ml = child.validate(project);
         // wrong target of relation set 
         //  relation specifies super but as possible target policy cmpt type super super is set
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION));
         
         child.setPolicyCmptType(targetPolicyCmptType.getQualifiedName());
-        ml = child.validate();
+        ml = child.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION));
     }
 
     public void testValidatePolicyCmptTypeNotExists() throws Exception{
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmptSuper");
         policyCmptTypeParameterInput.setPolicyCmptType(policyCmptType.getQualifiedName());
-        MessageList ml = policyCmptTypeParameterInput.validate();
+        MessageList ml = policyCmptTypeParameterInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
 
         policyCmptTypeParameterInput.setPolicyCmptType("x");
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
     }
     
     public void testValidateWrongCountOfInstances() throws Exception{
         policyCmptTypeParameterInput.setMinInstances(0);
         policyCmptTypeParameterInput.setMaxInstances(1);
-        MessageList ml = policyCmptTypeParameterInput.validate();
+        MessageList ml = policyCmptTypeParameterInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_MIN_INSTANCES_IS_GREATER_THAN_MAX));
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_MAX_INSTANCES_IS_LESS_THAN_MIN));
         
         policyCmptTypeParameterInput.setMinInstances(2);
         policyCmptTypeParameterInput.setMaxInstances(1);
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_MIN_INSTANCES_IS_GREATER_THAN_MAX));
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_MAX_INSTANCES_IS_LESS_THAN_MIN));
     }
@@ -295,28 +295,28 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         policyCmptTypeParameterInput.setTestParameterType(TestParameterType.INPUT);
         ITestPolicyCmptTypeParameter paramChild = policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
         paramChild.setTestParameterType(TestParameterType.INPUT);
-        MessageList ml = policyCmptTypeParameterInput.validate();
+        MessageList ml = policyCmptTypeParameterInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
 
         paramChild.setTestParameterType(TestParameterType.EXPECTED_RESULT);
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
         
         policyCmptTypeParameterInput.setTestParameterType(TestParameterType.EXPECTED_RESULT);
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
 
         paramChild.setTestParameterType(TestParameterType.INPUT);
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
         
         policyCmptTypeParameterInput.setTestParameterType(TestParameterType.COMBINED);
         paramChild.setTestParameterType(TestParameterType.EXPECTED_RESULT);
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
 
         paramChild.setTestParameterType(TestParameterType.INPUT);
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
     }
     
@@ -329,11 +329,11 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         ITestPolicyCmptTypeParameter paramChild = policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
         paramChild.setRelation(rel1.getName());
         
-        MessageList ml = policyCmptTypeParameterInput.validate();
+        MessageList ml = policyCmptTypeParameterInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_RELATION_NOT_EXISTS));
         
         paramChild.setRelation("x");
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_RELATION_NOT_EXISTS));
     }
 
@@ -350,16 +350,16 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         paramChild.setRelation(rel1.getName());
         paramChild.setPolicyCmptType(policyCmptTypeTarget.getQualifiedName());
         
-        MessageList ml = policyCmptTypeParameterInput.validate();
+        MessageList ml = policyCmptTypeParameterInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_RELATION_NOT_EXISTS));
         
         rel1.setTarget("x");
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_RELATION_NOT_EXISTS));
     }
     
     public void testValidateMustRequireProdIfRootAndAbstract() throws Exception {
-        MessageList ml = policyCmptTypeParameterInput.validate();
+        MessageList ml = policyCmptTypeParameterInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_MUST_REQUIRE_PROD_IF_ROOT_AND_ABSTRACT));
 
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
@@ -367,21 +367,21 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         
         policyCmptType.setAbstract(false);
         policyCmptTypeParameterInput.setRequiresProductCmpt(true);
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_MUST_REQUIRE_PROD_IF_ROOT_AND_ABSTRACT));  
         
         policyCmptType.setAbstract(true);
         policyCmptTypeParameterInput.setRequiresProductCmpt(false);
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_MUST_REQUIRE_PROD_IF_ROOT_AND_ABSTRACT));
         
         policyCmptTypeParameterInput.setRequiresProductCmpt(true);
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_MUST_REQUIRE_PROD_IF_ROOT_AND_ABSTRACT));
     } 
     
     public void testValidateRequiresProdButPolicyCmptTypeIsNotConfByProd() throws Exception {
-        MessageList ml = policyCmptTypeParameterInput.validate();
+        MessageList ml = policyCmptTypeParameterInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_REQUIRES_PROD_BUT_POLICY_CMPT_TYPE_IS_NOT_CONF_BY_PROD));
 
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
@@ -389,17 +389,17 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         
         policyCmptType.setConfigurableByProductCmptType(false);
         policyCmptTypeParameterInput.setRequiresProductCmpt(true);
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_REQUIRES_PROD_BUT_POLICY_CMPT_TYPE_IS_NOT_CONF_BY_PROD));  
         
         policyCmptType.setConfigurableByProductCmptType(true);
         policyCmptTypeParameterInput.setRequiresProductCmpt(false);
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_REQUIRES_PROD_BUT_POLICY_CMPT_TYPE_IS_NOT_CONF_BY_PROD));  
         
         policyCmptType.setConfigurableByProductCmptType(false);
         policyCmptTypeParameterInput.setRequiresProductCmpt(false);
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_REQUIRES_PROD_BUT_POLICY_CMPT_TYPE_IS_NOT_CONF_BY_PROD));  
     }     
     
@@ -417,7 +417,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         paramChild.setPolicyCmptType(policyCmptTypeTarget.getQualifiedName());
         paramChild.setTestParameterType(TestParameterType.INPUT);
         
-        MessageList ml = policyCmptTypeParameterInput.validate();
+        MessageList ml = policyCmptTypeParameterInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
         assertEquals(ml.getFirstMessage(Message.WARNING).getCode(), ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE);
         
@@ -426,32 +426,32 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         targetOfAss.setTestParameterType(TestParameterType.COMBINED);
         targetOfAss.setName("xyz");
         targetOfAss.setPolicyCmptType(policyCmptTypeTarget.getQualifiedName());
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
         
         paramChild.setTestParameterType(TestParameterType.EXPECTED_RESULT);
         targetOfAss.setTestParameterType(TestParameterType.COMBINED);
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
        
         paramChild.setTestParameterType(TestParameterType.EXPECTED_RESULT);
         targetOfAss.setTestParameterType(TestParameterType.INPUT);
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
         
         paramChild.setTestParameterType(TestParameterType.INPUT);
         targetOfAss.setTestParameterType(TestParameterType.EXPECTED_RESULT);
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
         
         paramChild.setTestParameterType(TestParameterType.COMBINED);
         targetOfAss.setTestParameterType(TestParameterType.EXPECTED_RESULT);
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
         
         paramChild.setTestParameterType(TestParameterType.COMBINED);
         targetOfAss.setTestParameterType(TestParameterType.INPUT);
-        ml = policyCmptTypeParameterInput.validate();
+        ml = policyCmptTypeParameterInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE));
     }
     

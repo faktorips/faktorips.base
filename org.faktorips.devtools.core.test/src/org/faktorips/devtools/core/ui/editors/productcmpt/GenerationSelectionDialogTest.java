@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -194,7 +195,7 @@ public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
     private GenerationSelectionDialog createDialog(String workingDate, boolean canEditRecentGenerations){
         GenerationSelectionDialog dialog = new GenerationSelectionDialog(null, productCmpt, 
                 workingDate, getWorkingDateAsCalender(workingDate), "Generation", "Generations", canEditRecentGenerations, true);
-        dialog.createChoiseControls(Display.getCurrent().getActiveShell());
+        dialog.createChoiseControls(Display.getDefault().getActiveShell());
         return dialog;
     }
     private GregorianCalendar getWorkingDateAsCalender(String workingDate){

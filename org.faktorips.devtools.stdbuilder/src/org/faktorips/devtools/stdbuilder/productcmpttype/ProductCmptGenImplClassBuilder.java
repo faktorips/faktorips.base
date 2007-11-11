@@ -208,7 +208,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         IProductCmptTypeAttribute[] productAttributes = getProductCmptType().getProductCmptTypeAttributes();
         for (int i = 0; i < productAttributes.length; i++) {
             IProductCmptTypeAttribute a = productAttributes[i];
-            if (a.validate().containsErrorMsg()) {
+            if (a.validate(getIpsProject()).containsErrorMsg()) {
                 continue;
             }
             if (attributeFound == false) {
@@ -225,7 +225,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         IPolicyCmptTypeAttribute[] attributes = policyCmptType == null ? new IPolicyCmptTypeAttribute[0] : policyCmptType.getPolicyCmptTypeAttributes();
         for (int i = 0; i < attributes.length; i++) {
             IPolicyCmptTypeAttribute a = attributes[i];
-            if (a.validate().containsErrorMsg()) {
+            if (a.validate(getIpsProject()).containsErrorMsg()) {
                 continue;
             }
             if (!a.isProductRelevant() || !a.isChangeable()) {

@@ -18,29 +18,18 @@
 package org.faktorips.util;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 import junit.framework.TestCase;
 
 public class StreamUtilTest extends TestCase {
 
     public final void testCopy() throws Exception {
-        helper(1, 1);
-        helper(8, 7);
-        helper(8, 8);
-        helper(8, 9);
-        helper(31, 8);
-        helper(32, 8);
-        helper(33, 8);
-    }
-
-    public void helper(int streamSize, int increment) throws IOException {
-        byte[] bytes = new byte[streamSize];
+        byte[] bytes = new byte[8];
         for (int i = 0; i < bytes.length; i++) {
             bytes[i] = 1;
         }
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-        ByteArrayInputStream copiedStream = StreamUtil.copy(bis, increment);
+        ByteArrayInputStream copiedStream = StreamUtil.copy(bis, 100);
         int value = copiedStream.read();
         int counter = 0;
         while (value != -1) {
@@ -48,7 +37,35 @@ public class StreamUtilTest extends TestCase {
             value = copiedStream.read();
             counter++;
         }
-        assertEquals(streamSize, counter);
+        assertEquals(8, counter);
+
+        bytes = new byte[100];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = 1;
+        }
+        bis = new ByteArrayInputStream(bytes);
+        copiedStream = StreamUtil.copy(bis, 9);
+        value = copiedStream.read();
+        counter = 0;
+        while (value != -1) {
+            assertEquals("At postion: " + counter, 1, value);
+            value = copiedStream.read();
+            counter++;
+        }
+        assertEquals(100, counter);
         
+        bytes = new byte[]{1};
+        bis = new ByteArrayInputStream(bytes);
+        copiedStream = StreamUtil.copy(bis, 1);
+        value = copiedStream.read();
+        counter = 0;
+        while (value != -1) {
+            assertEquals("At postion: " + counter, 1, value);
+            value = copiedStream.read();
+            counter++;
+        }
+        assertEquals(1, counter);
+
     }
+
 }

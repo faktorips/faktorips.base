@@ -1035,8 +1035,8 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList messageList) throws CoreException {
-        super.validateThis(messageList);
+    protected void validateThis(MessageList messageList, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(messageList, ipsProject);
         ITestCaseType testCaseTypeFound = findTestCaseType();
         if (testCaseTypeFound == null) {
             String text = NLS.bind(Messages.TestCase_ValidateError_TestCaseTypeNotFound, testCaseType);

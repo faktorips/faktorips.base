@@ -175,9 +175,8 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
-        IIpsProject ipsProject = getIpsProject();
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         IProductCmptTypeAttribute attr = findAttribute(ipsProject);
         if (attr==null) {
             String text = NLS.bind(Messages.AttributeValue_attributeNotFound, attribute, getProductCmptGeneration().getProductCmpt().getProductCmptType());

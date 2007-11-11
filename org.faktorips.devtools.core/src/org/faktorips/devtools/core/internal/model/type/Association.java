@@ -367,9 +367,8 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
-        IIpsProject ipsProject = getIpsProject();
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         ValidationUtils.checkIpsObjectReference(target, getIpsObject().getIpsObjectType(), "target", this,  //$NON-NLS-1$
                 PROPERTY_TARGET, MSGCODE_TARGET_DOES_NOT_EXIST, list); //$NON-NLS-1$
         ValidationUtils.checkStringPropertyNotEmpty(targetRoleSingular, Messages.Association_msg_TargetRoleSingular, this, PROPERTY_TARGET_ROLE_SINGULAR,

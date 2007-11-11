@@ -195,7 +195,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     	rule.addValidatedAttribute("a");
     	
     	//validation is expected to fail because the specified attribute doesn't exist for the PolicyCmptType
-    	MessageList messageList = rule.validate().getMessagesFor(rule, "validatedAttributes");
+    	MessageList messageList = rule.validate(ipsSrcFile.getIpsProject()).getMessagesFor(rule, "validatedAttributes");
     	assertEquals(1, messageList.getNoOfMessages());
     	
     	IPolicyCmptTypeAttribute attr = pcType.newPolicyCmptTypeAttribute();
@@ -203,44 +203,44 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     	attr.setAttributeType(AttributeType.CHANGEABLE);
     	attr.setDatatype("String");
     	
-    	messageList = rule.validate().getMessagesFor(rule, "validatedAttributes");
+    	messageList = rule.validate(ipsSrcFile.getIpsProject()).getMessagesFor(rule, "validatedAttributes");
     	assertEquals(0, messageList.getNoOfMessages());
     	
     	//validation is expected to fail because of duplicate attribute entries
     	rule.addValidatedAttribute("a");
-    	messageList = rule.validate().getMessagesFor(rule, "validatedAttributes");
+    	messageList = rule.validate(ipsSrcFile.getIpsProject()).getMessagesFor(rule, "validatedAttributes");
     	assertEquals(1, messageList.getNoOfMessages());
 
     }
     
     public void testValidateBusinessFunctions() throws CoreException{
         rule.setAppliedForAllBusinessFunctions(true);
-        MessageList msgList = rule.validate();
+        MessageList msgList = rule.validate(ipsSrcFile.getIpsProject());
         msgList = msgList.getMessagesFor(rule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
         assertTrue(msgList.isEmpty());
         
         rule.setAppliedForAllBusinessFunctions(false);
-        msgList = rule.validate();
+        msgList = rule.validate(ipsSrcFile.getIpsProject());
         msgList = msgList.getMessagesFor(rule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
         assertFalse(msgList.isEmpty());
         
         rule.setAppliedForAllBusinessFunctions(false);
         rule.addBusinessFunction("function");
-        msgList = rule.validate();
+        msgList = rule.validate(ipsSrcFile.getIpsProject());
         msgList = msgList.getMessagesFor(rule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
         assertTrue(msgList.isEmpty());
     }
     
     public void testValidateMsgCodeShouldntBeNull() throws CoreException {
         rule.setMessageCode(null);
-        MessageList list = rule.validate();
+        MessageList list = rule.validate(ipsSrcFile.getIpsProject());
         assertNotNull(list.getMessageByCode(IValidationRule.MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY));
         rule.setMessageCode("");
-        list = rule.validate();
+        list = rule.validate(ipsSrcFile.getIpsProject());
         assertNotNull(list.getMessageByCode(IValidationRule.MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY));
         
         rule.setMessageCode("code");
-        list = rule.validate();
+        list = rule.validate(ipsSrcFile.getIpsProject());
         assertNull(list.getMessageByCode(IValidationRule.MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY));
     }
     
@@ -259,11 +259,11 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     
     public void testValidateMessageText() throws Exception {
         rule.setMessageText("Messagetext " + SystemUtils.LINE_SEPARATOR + " bla bla");
-        MessageList ml = rule.validate();
+        MessageList ml = rule.validate(ipsSrcFile.getIpsProject());
         assertNotNull(ml.getMessageByCode(IValidationRule.MSGCODE_NO_NEWLINE));
         
         rule.setMessageText("Messagetext  bla bla");
-        ml = rule.validate();
+        ml = rule.validate(ipsSrcFile.getIpsProject());
         assertNull(ml.getMessageByCode(IValidationRule.MSGCODE_NO_NEWLINE));
     }
     
@@ -272,9 +272,9 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         a.setName("a1");
         a.setAttributeType(AttributeType.CONSTANT);
         rule.addValidatedAttribute("a1");
-        assertNotNull(rule.validate().getMessageByCode(IValidationRule.MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED));
+        assertNotNull(rule.validate(ipsSrcFile.getIpsProject()).getMessageByCode(IValidationRule.MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED));
         
         a.setAttributeType(AttributeType.CHANGEABLE);
-        assertNull(rule.validate().getMessageByCode(IValidationRule.MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED));
+        assertNull(rule.validate(ipsSrcFile.getIpsProject()).getMessageByCode(IValidationRule.MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED));
     }
 }

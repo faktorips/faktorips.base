@@ -189,10 +189,9 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         //TODO pk: seems not to be correct to get the IpsProject like this. Should be provided as parameter
-        IIpsProject ipsProject = getIpsProject();
         IParameter param = findFormulaParameter(ipsProject);
         if (param == null) {
             String text = NLS.bind(Messages.FormulaTestInputValue_ValidationMessage_FormulaParameterNotFound,

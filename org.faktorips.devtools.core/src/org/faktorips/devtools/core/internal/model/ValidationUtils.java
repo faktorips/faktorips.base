@@ -163,14 +163,8 @@ public class ValidationUtils {
             list.add(new Message("", text, Message.ERROR, part, propertyName)); //$NON-NLS-1$
             return null;
         }
-        try {
-            if (datatype instanceof ValueDatatype) {
-                list.add(datatype.validate(), new ObjectProperty(part, propertyName), true);
-            }
-        } catch (CoreException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus(e));
+        if (datatype instanceof ValueDatatype) {
+            list.add(((ValueDatatype)datatype).checkReadyToUse(), new ObjectProperty(part, propertyName), true);
         }
         if (datatype.isVoid() && !voidAllowed) {
             String text = Messages.ValidationUtils_msgVoidNotAllowed;
@@ -215,13 +209,7 @@ public class ValidationUtils {
             list.add(new Message("", text, Message.ERROR, part, propertyName)); //$NON-NLS-1$
             return null;
         }
-        try {
-            list.add(datatype.validate(), new ObjectProperty(part, propertyName), true);
-        } catch (CoreException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus(e));
-        }
+        list.add(datatype.checkReadyToUse(), new ObjectProperty(part, propertyName), true);
         if (datatype.isVoid() && !voidAllowed) {
             String text = Messages.ValidationUtils_msgVoidNotAllowed;
             list.add(new Message("", text, Message.ERROR, part, propertyName)); //$NON-NLS-1$
@@ -260,7 +248,7 @@ public class ValidationUtils {
 			return false;
     	}
     	try {
-    		if (datatype.validate().containsErrorMsg()) {
+    		if (datatype.checkReadyToUse().containsErrorMsg()) {
         		String text = NLS.bind(Messages.ValidationUtils_VALUEDATATYPE_INVALID, datatype.getName()); //$NON-NLS-2$
     			Message msg = new Message(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_IS_INVALID, text, Message.WARNING, part, propertyName); //$NON-NLS-1$
     			list.add(msg);

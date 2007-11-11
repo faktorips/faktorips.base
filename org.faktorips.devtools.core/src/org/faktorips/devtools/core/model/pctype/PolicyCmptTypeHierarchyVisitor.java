@@ -49,7 +49,7 @@ public abstract class PolicyCmptTypeHierarchyVisitor {
         if (!continueVisiting) {
             return;
         }
-        IPolicyCmptType supertype = currentType.findSupertype();
+        IPolicyCmptType supertype = (IPolicyCmptType)currentType.findSupertype(currentType.getIpsProject());
         if (supertype!=null && !typesHandled.contains(supertype)) {
             typesHandled.add(supertype);
             visit(supertype, typesHandled);

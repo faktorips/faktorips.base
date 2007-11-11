@@ -198,7 +198,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
             // In all other cases there is no validation relation between the pages,
             // and if the next page was displayed once then the next button on the prev page is
             // always enable (see above)
-            MessageList messageList = newTestParameter.validate();
+            MessageList messageList = newTestParameter.validate(newTestParameter.getIpsProject());
             MessageList relevantMessages = messageList.getMessagesFor(newTestParameter,
                     ITestParameter.PROPERTY_DATATYPE);
             relevantMessages.add(messageList.getMessagesFor(newTestParameter, ITestParameter.PROPERTY_NAME));

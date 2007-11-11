@@ -81,7 +81,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
         testCaseCopyDestinationPage  = new TestCaseCopyDesinationPage(toolkit);
         addPage(testCaseCopyDestinationPage);
 
-        testCaseStructurePage = new TestCaseStructurePage(toolkit);
+        testCaseStructurePage = new TestCaseStructurePage(toolkit, sourceTestCase.getIpsProject());
         addPage(testCaseStructurePage);
     }
 

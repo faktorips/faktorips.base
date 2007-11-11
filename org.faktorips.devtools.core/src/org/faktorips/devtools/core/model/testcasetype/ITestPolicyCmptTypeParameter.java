@@ -135,10 +135,11 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
 	
     /**
      * Returns the relation or <code>null</code> if the relation does not exists.
+     * @param ipsProject TODO
      * 
      * @throws CoreException if an error occurs while searching for the relation.
      */	
-	public IPolicyCmptTypeAssociation findRelation() throws CoreException;
+	public IPolicyCmptTypeAssociation findRelation(IIpsProject ipsProject) throws CoreException;
 		
     /**
      * Creates a new input test attribute and returns it.

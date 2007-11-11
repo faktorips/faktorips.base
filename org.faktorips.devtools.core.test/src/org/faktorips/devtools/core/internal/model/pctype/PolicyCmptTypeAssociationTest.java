@@ -180,20 +180,20 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         homeCoverageToPolicy.setTargetRolePlural("HomePolicies");
         homeCoverageToPolicy.setInverseAssociation("HomeCoverage");
         
-        MessageList ml = homePolicyToCoverage.validate();
+        MessageList ml = homePolicyToCoverage.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION));
         
         // implementing revsere relation does not specify a container relation 
         homeCoverageToPolicy.setSubsettedDerivedUnion("");
-        ml = homePolicyToCoverage.validate();
+        ml = homePolicyToCoverage.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION));
         homeCoverageToPolicy.setSubsettedDerivedUnion(coverageToPolicy.getName());
-        ml = homePolicyToCoverage.validate();
+        ml = homePolicyToCoverage.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION));
                 
         // implementing revsere relation does specify a different container reverse relation (but container does)
         homeCoverageToPolicy.setSubsettedDerivedUnion("someContainerRel");
-        ml = homePolicyToCoverage.validate();
+        ml = homePolicyToCoverage.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION));
     }
     
@@ -218,22 +218,22 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         // mismatch: B does does refer to A
         relationAtoB.setInverseAssociation("roleA");
         relationBtoA.setInverseAssociation("somethingElse");
-        MessageList ml = relationAtoB.validate();
+        MessageList ml = relationAtoB.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH)); 
 
         // now it fits
         relationBtoA.setInverseAssociation("roleB");
-        ml = relationAtoB.validate();
+        ml = relationAtoB.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH)); 
 
         // rule applies only to assoziations.
         relationAtoB.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         relationBtoA.setInverseAssociation("somethingElse"); // 
-        ml = relationAtoB.validate();
+        ml = relationAtoB.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH));
         
         relationAtoB.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        ml = relationAtoB.validate();
+        ml = relationAtoB.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH));
     }
 
@@ -248,11 +248,11 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         relationAtoB.setTargetRoleSingular("roleB");
         relationAtoB.setTargetRoleSingular("roleBs");
         
-        MessageList ml = relationAtoB.validate();
+        MessageList ml = relationAtoB.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET));
         
         relationAtoB.setInverseAssociation("roleB");
-        ml = relationAtoB.validate();
+        ml = relationAtoB.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET));
 
         IPolicyCmptTypeAssociation relationBtoA = typeB.newPolicyCmptTypeAssociation();
@@ -261,11 +261,11 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         relationBtoA.setTarget("B");
         relationBtoA.setTargetRoleSingular("somethingThatIsNotA");
         relationBtoA.setTargetRoleSingular("somethingThatIsNotAs");
-        ml = relationAtoB.validate();
+        ml = relationAtoB.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET));
         
         relationBtoA.setTargetRoleSingular("roleB");
-        ml = relationAtoB.validate();
+        ml = relationAtoB.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET));
     }    
 
@@ -295,7 +295,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         association.setAssociationType(AssociationType.ASSOCIATION);
         association.setInverseAssociation("something");
         
-        MessageList ml = association.validate();
+        MessageList ml = association.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_INFO_NOT_NEEDED));
         
         association.setInverseAssociation("");
@@ -303,11 +303,11 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
 
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         association.setInverseAssociation("something");
-        ml = association.validate();
+        ml = association.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_INFO_NOT_NEEDED));
         
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        ml = association.validate();
+        ml = association.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_INFO_NOT_NEEDED));
     }
     
@@ -475,11 +475,11 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     	association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         association.setMaxCardinality(2);
     	
-    	ml = association.validate();
+    	ml = association.validate(ipsProject);
     	assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION));
     	
     	association.setMaxCardinality(1);
-    	ml = association.validate();
+    	ml = association.validate(ipsProject);
     	assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION));
     }
     
@@ -488,22 +488,22 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
 		association.setDerivedUnion(true);
 		implementationAssociation.setTargetRolePlural("MotorCoverages");
 
-		ml = implementationAssociation.validate();
+		ml = implementationAssociation.validate(ipsProject);
 		assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SAME_PLURAL_ROLENAME));
 		
 		association.setTargetRolePlural(implementationAssociation.getTargetRolePlural());
-		ml = implementationAssociation.validate();
+		ml = implementationAssociation.validate(ipsProject);
 		assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SAME_PLURAL_ROLENAME));
 	}
 
 	public void testValidateSameSingularRolename() throws Exception {
 		MessageList ml = new MessageList();
 
-		ml = implementationAssociation.validate();
+		ml = implementationAssociation.validate(ipsProject);
 		assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SAME_SINGULAR_ROLENAME));
 		
 		implementationAssociation.setTargetRoleSingular(association.getTargetRoleSingular());
-		ml = implementationAssociation.validate();
+		ml = implementationAssociation.validate(ipsProject);
 		assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SAME_SINGULAR_ROLENAME));
 	}
 	
@@ -515,10 +515,10 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
 		rel2.setInverseAssociation(association.getTargetRoleSingular());
 		association.setInverseAssociation("test");
 		association.setDerivedUnion(true);
-		MessageList ml = association.validate();
+		MessageList ml = association.validate(ipsProject);
 		assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATIONS_MUST_BOTH_BE_MARKED_AS_CONTAINER));
 		rel2.setDerivedUnion(true);
-		ml = association.validate();
+		ml = association.validate(ipsProject);
 		assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATIONS_MUST_BOTH_BE_MARKED_AS_CONTAINER));
 	}
 
@@ -529,10 +529,10 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
 		rel2.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 		association.setInverseAssociation("test");
 		association.setAssociationType(AssociationType.ASSOCIATION);
-		MessageList ml = association.validate();
+		MessageList ml = association.validate(ipsProject);
 		assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATION_TYPE_MISSMATCH));
 		rel2.setAssociationType(AssociationType.ASSOCIATION);
-		ml = association.validate();
+		ml = association.validate(ipsProject);
 		assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATION_TYPE_MISSMATCH));
     }
 	

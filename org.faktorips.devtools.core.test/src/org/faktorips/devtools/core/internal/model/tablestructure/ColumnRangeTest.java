@@ -161,14 +161,14 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
     public void testValidate() {
     	try {
 			// the empty range will signal an error for the missing parameter name
-    		MessageList list = range.validate().getMessagesFor(range, IColumnRange.PROPERTY_PARAMETER_NAME);
+    		MessageList list = range.validate(ipsSrcFile.getIpsProject()).getMessagesFor(range, IColumnRange.PROPERTY_PARAMETER_NAME);
 			if (list.isEmpty() || !list.containsErrorMsg()) {
 				fail();
 			}
 			
 			// an assigned parameter name must not signal an error message for the parameter name property
 			range.setParameterName("test");
-			list = range.validate().getMessagesFor(range, IColumnRange.PROPERTY_PARAMETER_NAME);
+			list = range.validate(ipsSrcFile.getIpsProject()).getMessagesFor(range, IColumnRange.PROPERTY_PARAMETER_NAME);
 			if (list.containsErrorMsg()) {
 				fail();
 			}
@@ -192,28 +192,28 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         
         table.getIpsSrcFile().save(true, null);
         
-        MessageList ml = range.validate();
+        MessageList ml = range.validate(ipsSrcFile.getIpsProject());
         assertTrue(ml.isEmpty());
         
         from.setDatatype(Datatype.BOOLEAN.getName());
         table.getIpsSrcFile().save(true, null);
-        ml = range.validate();
+        ml = range.validate(ipsSrcFile.getIpsProject());
         assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_FROM));
         
         from.setDatatype(Datatype.PRIMITIVE_BOOLEAN.getName());
         table.getIpsSrcFile().save(true, null);
-        ml = range.validate();
+        ml = range.validate(ipsSrcFile.getIpsProject());
         assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_FROM));
 
         from.setDatatype(Datatype.INTEGER.getName());
         to.setDatatype(Datatype.BOOLEAN.getName());
         table.getIpsSrcFile().save(true, null);
-        ml = range.validate();
+        ml = range.validate(ipsSrcFile.getIpsProject());
         assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_TO));
 
         to.setDatatype(Datatype.PRIMITIVE_BOOLEAN.getName());
         table.getIpsSrcFile().save(true, null);
-        ml = range.validate();
+        ml = range.validate(ipsSrcFile.getIpsProject());
         assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_TO));
     }
 }

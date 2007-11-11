@@ -234,33 +234,33 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     public void testValidate() throws Exception {
         EnumValueSet set = new EnumValueSet(ce, 1);
-        MessageList list = set.validate();
+        MessageList list = set.validate(ipsProject);
         assertEquals(0, list.getNoOfMessages());
 
         set.addValue("2EUR");
-        list = set.validate();
+        list = set.validate(ipsProject);
         assertEquals(0, list.getNoOfMessages());
 
         set.addValue("2w");
-        list = set.validate();
+        list = set.validate(ipsProject);
         assertEquals(1, list.getNoOfMessages());
 
         assertFalse(list.getMessagesFor("2w").isEmpty());
         set.removeValue("2w");
         set.addValue("2EUR");
         list.clear();
-        list = set.validate();
+        list = set.validate(ipsProject);
         assertEquals(2, list.getNoOfMessages());
         assertEquals(list.getMessage(0).getCode(), IEnumValueSet.MSGCODE_DUPLICATE_VALUE);
         
         list.clear();
         set.removeValue("2EUR");
         set.addValue(null);
-        list = set.validate();
+        list = set.validate(ipsProject);
         assertEquals(0, list.getNoOfMessages());
         
         set.addValue(null);
-        list = set.validate();
+        list = set.validate(ipsProject);
         assertNotNull(list.getMessageByCode(IEnumValueSet.MSGCODE_DUPLICATE_VALUE));
         
         set.removeValue(null);
@@ -277,7 +277,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         attr.getIpsObject().getIpsSrcFile().save(true, null);
 
         list.clear();
-        list = set.validate();
+        list = set.validate(ipsProject);
         assertNotNull(list.getMessageByCode(IEnumValueSet.MSGCODE_VALUE_NOT_PARSABLE));
         
         set.removeValue(0);
@@ -285,7 +285,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         set.addValue("1");
         set.addValue(null);
         list.clear();
-        list = set.validate();
+        list = set.validate(ipsProject);
         assertNotNull(list.getMessageByCode(IEnumValueSet.MSGCODE_NULL_NOT_SUPPORTED));
         
     }

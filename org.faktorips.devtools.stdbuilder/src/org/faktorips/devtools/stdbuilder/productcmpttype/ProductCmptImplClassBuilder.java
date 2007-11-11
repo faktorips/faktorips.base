@@ -160,7 +160,7 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
         if (returnedTypeInSignature!=null && !returnedTypeInSignature.isAbstract()) {
             generateMethodCreatePolicyCmpt(returnedTypeInSignature, methodsBuilder);
         }
-        IPolicyCmptType supertype = returnedTypeInSignature.findSupertype();
+        IPolicyCmptType supertype = (IPolicyCmptType)returnedTypeInSignature.findSupertype(getIpsProject());
         if (supertype!=null && !supertypesHandledSoFar.contains(supertype)) {
             supertypesHandledSoFar.add(supertype);
             generateFactoryMethodsForPolicyCmptType(supertype, methodsBuilder, supertypesHandledSoFar);

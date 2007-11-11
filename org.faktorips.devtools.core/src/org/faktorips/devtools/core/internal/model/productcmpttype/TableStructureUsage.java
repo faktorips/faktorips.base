@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
@@ -297,8 +298,8 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
                 
         // check the correct name format
         IStatus status = JavaConventions.validateFieldName(name);
@@ -398,8 +399,8 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         /**
          * {@inheritDoc}
          */
-        protected void validateThis(MessageList list) throws CoreException {
-            super.validateThis(list);
+        protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+            super.validateThis(list, ipsProject);
             if (getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, getTableStructure()) == null){
                 String text = NLS.bind(Messages.TableStructureUsage_msgTableStructureNotExists, getTableStructure());
                 Message msg = new Message(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND, text, Message.ERROR, this);

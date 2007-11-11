@@ -39,6 +39,7 @@ import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.controls.EditTableControl;
@@ -161,7 +162,7 @@ public class RuleFunctionsControl extends EditTableControl {
     
     private MessageList validate(Object element) throws CoreException {
         IndexFctNameWrapper wrapper = (IndexFctNameWrapper)element;
-        return rule.validate().getMessagesFor(wrapper.getFctName());
+        return rule.validate(rule.getIpsProject()).getMessagesFor(wrapper.getFctName());
     }
 
     /**

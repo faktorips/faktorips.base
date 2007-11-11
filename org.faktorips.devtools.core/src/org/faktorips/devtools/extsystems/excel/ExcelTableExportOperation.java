@@ -41,6 +41,8 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
+import sun.nio.ch.SocketOpts.IP;
+
 /**
  * Operation to export an ipstablecontents to an excel-file.
  * 
@@ -135,13 +137,13 @@ public class ExcelTableExportOperation implements IWorkspaceRunnable {
         }
         monitor.worked(1);
 
-        messageList.add(contents.validate());
+        messageList.add(contents.validate(contents.getIpsProject()));
         if (messageList.containsErrorMsg()) {
             return;
         }
         monitor.worked(1);
 
-        messageList.add(structure.validate());
+        messageList.add(structure.validate(contents.getIpsProject()));
         if (messageList.containsErrorMsg()) {
             return;
         }

@@ -81,22 +81,22 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         productCmpt.setProductCmptType(type.getQualifiedName());
         
-        MessageList list = productCmpt.validate();
+        MessageList list = productCmpt.validate(ipsProject);
         assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE));
         
         productCmpt.setProductCmptType("UnknownType");
-        list = productCmpt.validate();
+        list = productCmpt.validate(ipsProject);
         assertNotNull(list.getMessageByCode(IProductCmpt.MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE));
         
         productCmpt.setProductCmptType("");
-        list = productCmpt.validate();
+        list = productCmpt.validate(ipsProject);
         assertNotNull(list.getMessageByCode(IProductCmpt.MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE));
 
         // this has once been a bug (NPE in validation of the generation!)
         IFormula ce = ((IProductCmptGeneration)productCmpt.newGeneration()).newFormula();
         ce.setFormulaSignature("SomeFormula");
         ce.setExpression("42");
-        list = productCmpt.validate();
+        list = productCmpt.validate(ipsProject);
         assertNotNull(list.getMessageByCode(IProductCmpt.MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE));
         
     }
@@ -110,30 +110,30 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         supertype.setSupertype(supersupertype.getQualifiedName());
         supersupertype.setSupertype("abc");
 
-        MessageList ml = type.validate();
+        MessageList ml = type.validate(type.getIpsProject());
         assertNotNull(ml.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
         
         ProductCmpt product = super.newProductCmpt(type, "products.Testproduct");
         
-        ml = product.validate();
+        ml = product.validate(type.getIpsProject());
         assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
         
         supersupertype.setSupertype("");
-        ml = type.validate();
+        ml = type.validate(type.getIpsProject());
         assertNull(ml.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
-        ml = product.validate();
+        ml = product.validate(type.getIpsProject());
         assertNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
 
         supersupertype.setSupertype(type.getQualifiedName());
-        ml = type.validate();
+        ml = type.validate(type.getIpsProject());
         assertNotNull(ml.getMessageByCode(IType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY));
-        ml = product.validate();
+        ml = product.validate(type.getIpsProject());
         assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
         
         type.setSupertype("Unkown");
-        ml = type.validate();
+        ml = type.validate(type.getIpsProject());
         assertNotNull(ml.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
-        ml = product.validate();
+        ml = product.validate(type.getIpsProject());
         assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
     }
 

@@ -83,7 +83,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     /**
      * {@inheritDoc}
      */
-    public MessageList validate() {
+    public MessageList checkReadyToUse() {
         MessageList list = new MessageList();
         if (getAdaptedClass()==null) {
             String text = "The Java class represented by the datatype can't be found. (Classname: " + getAdaptedClassName() + "). "

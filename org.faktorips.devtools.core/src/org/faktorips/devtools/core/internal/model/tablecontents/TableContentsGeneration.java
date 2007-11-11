@@ -27,6 +27,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
@@ -231,8 +232,8 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         if(!list.isEmpty()){
             return;
         }
@@ -283,7 +284,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     /**
      * {@inheritDoc}
      */
-    protected void validateChildren(MessageList result) throws CoreException {
+    protected void validateChildren(MessageList result, IIpsProject ipsProject) throws CoreException {
         ITableStructure tableStructure = getTableContents().findTableStructure();
         if  (tableStructure == null){
             return;
@@ -293,7 +294,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         IIpsElement[] children = getChildren();
         for (int i=0; i<children.length; i++) {
             Row row = (Row) children[i];
-            MessageList list = row.validateThis(tableStructure, datatypes);
+            MessageList list = row.validateThis(tableStructure, datatypes, ipsProject);
             result.add(list);
         }
     }

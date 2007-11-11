@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.AbstractDatatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
@@ -120,16 +121,22 @@ public class TableContentsEnumDatatypeAdapter extends AbstractDatatype implement
             return ObjectUtils.equals(valueA, valueB);
         }
     }
-
-    public MessageList validate() throws CoreException {
+//TODO pk 2007-11-08 define error codes for messages
+    public MessageList checkReadyToUse() {
         MessageList msgList = new MessageList();
-        ITableContents currentTableContents = (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, tableContents.getQualifiedName());
-        if(currentTableContents == null){
-            msgList.add(new Message("", Messages.TableContentsEnumDatatypeAdapter_1, Message.ERROR)); //$NON-NLS-1$
+        try{
+            ITableContents currentTableContents = (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, tableContents.getQualifiedName());
+            if(currentTableContents == null){
+                msgList.add(new Message("", Messages.TableContentsEnumDatatypeAdapter_1, Message.ERROR)); //$NON-NLS-1$
+            }
+            MessageList tableContentsMsgList = tableContents.validate(ipsProject);
+            if(!tableContentsMsgList.isEmpty()){
+                msgList.add(new Message("", Messages.TableContentsEnumDatatypeAdapter_3, tableContentsMsgList.getSeverity())); //$NON-NLS-1$
+            }
+            return msgList;
         }
-        MessageList tableContentsMsgList = tableContents.validate();
-        if(!tableContentsMsgList.isEmpty()){
-            msgList.add(new Message("", Messages.TableContentsEnumDatatypeAdapter_3, tableContentsMsgList.getSeverity())); //$NON-NLS-1$
+        catch(CoreException e){
+            IpsPlugin.log(e);
         }
         return msgList;
     }

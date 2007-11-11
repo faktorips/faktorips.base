@@ -440,9 +440,8 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
     /**
      * {@inheritDoc}
      */
-    protected void validateThis(MessageList list) throws CoreException {
-        super.validateThis(list);
-        IIpsProject ipsProject = getIpsProject();
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         IFormula formula = getFormula();
         
         // check for duplicase formula test case names

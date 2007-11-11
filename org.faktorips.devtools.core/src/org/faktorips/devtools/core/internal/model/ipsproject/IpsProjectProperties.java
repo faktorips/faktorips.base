@@ -119,7 +119,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         validateIpsObjectPath(ipsProject, list);
         validateRequiredFeatures(ipsProject, list);
 		for (int i = 0; i < definedDatatypes.length; i++) {
-			list.add(definedDatatypes[i].validate());
+			list.add(definedDatatypes[i].checkReadyToUse());
 		}
 		return list;
 	}
