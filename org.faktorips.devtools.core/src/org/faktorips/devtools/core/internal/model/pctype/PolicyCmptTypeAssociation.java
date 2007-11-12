@@ -233,17 +233,6 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     /**
      * {@inheritDoc}
      */
-    public AssociationType getCorrespondingAssociationType() {
-        return type == null ? null : 
-            type.isAssoziation() ? AssociationType.ASSOCIATION : 
-            type.isCompositionDetailToMaster() ? AssociationType.COMPOSITION_MASTER_TO_DETAIL : 
-            type.isCompositionMasterToDetail() ? AssociationType.COMPOSITION_DETAIL_TO_MASTER : 
-                null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptTypeAssociation findSubsettedDerivedUnion() throws CoreException {
     	if (StringUtils.isEmpty(subsettedDerivedUnion)) {
     		return null;
@@ -319,7 +308,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         
         IPolicyCmptTypeAssociation inverseAssociation = targetPolicyCmptType.newPolicyCmptTypeAssociation();
         inverseAssociation.setTarget(getPolicyCmptType().getQualifiedName());
-        inverseAssociation.setAssociationType(getCorrespondingAssociationType());
+        inverseAssociation.setAssociationType(getAssociationType().getCorrespondingAssociationType());
         
         if (type == AssociationType.ASSOCIATION){
             // FIXME Joerg: nur bei association inverse setzen?, wenn ja Test erweitern!

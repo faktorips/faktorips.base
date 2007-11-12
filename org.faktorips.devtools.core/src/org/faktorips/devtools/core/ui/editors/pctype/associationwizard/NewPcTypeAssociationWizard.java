@@ -584,7 +584,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      public static List getCorrespondingTargetAssociations(IPolicyCmptTypeAssociation sourceAssociation,
             IPolicyCmptType target) throws CoreException {
         String source = sourceAssociation.getPolicyCmptType().getQualifiedName();
-        AssociationType correspondingAssociationType = sourceAssociation.getCorrespondingAssociationType();
+        AssociationType correspondingAssociationType = sourceAssociation.getAssociationType().getCorrespondingAssociationType();
         IAssociation[] associations = target.findAssociationsForTargetAndAssociationType(source,
                 correspondingAssociationType, sourceAssociation.getIpsProject());
         return Arrays.asList(associations);

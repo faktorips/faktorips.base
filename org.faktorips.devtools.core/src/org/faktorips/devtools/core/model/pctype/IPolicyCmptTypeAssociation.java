@@ -308,17 +308,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     public IProductCmptType findQualifier(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the corresponding association type depending on the own association type:<br>
-     * <ul>
-     * <li>iASSOZIATION => out: ASSOZIATION
-     * <li>COMPOSITION_MASTER_TO_DETAIL => out: COMPOSITION_DETAIL_TO_MASTER
-     * <li>COMPOSITION_DETAIL_TO_MASTER => out: COMPOSITION_MASTER_TO_DETAIL
-     * </ul>
-     * Returns <code>null</code> if the association type is <code>null</code> or no corresponding type exists.
-     */
-    public AssociationType getCorrespondingAssociationType();
-    
-    /**
      * Creates a new inverse association. Returns the newly created association.
      * 
      * CoreException if an error occurs while creating the association, e.g. if the target 

@@ -521,17 +521,6 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertNull(association.findInverseAssociation());
     }
     
-    public void testGetCorrespondingAssociationType() throws Exception {
-        association.setAssociationType(AssociationType.ASSOCIATION);
-        assertEquals(AssociationType.ASSOCIATION, association.getCorrespondingAssociationType());
-        
-        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        assertEquals(AssociationType.COMPOSITION_DETAIL_TO_MASTER, association.getCorrespondingAssociationType());
-        
-        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        assertEquals(AssociationType.COMPOSITION_MASTER_TO_DETAIL, association.getCorrespondingAssociationType());
-    }
-    
     public void testNewInverseAssociation() throws CoreException{
         IPolicyCmptType targetType = newPolicyCmptType(ipsProject, "TargetType");
         association.setTarget(targetType.getQualifiedName());
@@ -552,7 +541,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
 
     private void checkNewInverseAssociation(AssociationType associationType) throws CoreException {
         IPolicyCmptTypeAssociation targetAssociation = association.newInverseAssociation();
-        assertEquals(association.getCorrespondingAssociationType(), targetAssociation.getAssociationType());
+        assertEquals(association.getAssociationType().getCorrespondingAssociationType(), targetAssociation.getAssociationType());
         assertEquals(association.getTarget(), targetAssociation.getPolicyCmptType().getQualifiedName());
     }
 }
