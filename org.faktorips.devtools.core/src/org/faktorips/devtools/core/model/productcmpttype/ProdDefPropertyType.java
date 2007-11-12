@@ -45,10 +45,10 @@ public class ProdDefPropertyType extends DefaultEnumValue {
     
     static {
         enumType = new DefaultEnumType("ProdDefPropertyType", ProdDefPropertyType.class); //$NON-NLS-1$
-        VALUE = new ProdDefPropertyType(enumType, "attribute", "Product property", 10, "ProductAttribute.gif");
-        TABLE_CONTENT_USAGE = new ProdDefPropertyType(enumType, "tableContentUsage", "Table usage", 20, "TableContentsUsage.gif");
-        FORMULA = new ProdDefPropertyType(enumType, "formula", "Formula", 30, "Formula.gif");
-        DEFAULT_VALUE_AND_VALUESET = new ProdDefPropertyType(enumType, "config", "Default&ValueSet Configuration", MAX_SORT_ORDER, "PolicyAttribute.gif");
+        VALUE = new ProdDefPropertyType(enumType, "attribute", Messages.ProdDefPropertyType_productAttribute, 10, "ProductAttribute.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+        TABLE_CONTENT_USAGE = new ProdDefPropertyType(enumType, "tableContentUsage", Messages.ProdDefPropertyType_tableUsage, 20, "TableContentsUsage.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+        FORMULA = new ProdDefPropertyType(enumType, "formula", Messages.ProdDefPropertyType_fomula, 30, "Formula.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+        DEFAULT_VALUE_AND_VALUESET = new ProdDefPropertyType(enumType, "config", Messages.ProdDefPropertyType_defaultValueAndValueSet, MAX_SORT_ORDER, "PolicyAttribute.gif"); //$NON-NLS-1$ //$NON-NLS-2$
         
         ALL_TYPES = new ProdDefPropertyType[]{VALUE, TABLE_CONTENT_USAGE, FORMULA, DEFAULT_VALUE_AND_VALUESET};
     }
