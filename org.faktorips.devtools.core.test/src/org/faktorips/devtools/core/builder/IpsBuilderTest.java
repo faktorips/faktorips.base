@@ -43,11 +43,11 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.AssociationType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -211,6 +211,10 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     private static class TestDependencyIpsArtefactBuilder extends AbstractArtefactBuilder {
 
+        private List builtIpsObjects = new ArrayList();
+        private IIpsProject ipsProjectOfBeforeBuildProcess;
+        private IIpsProject ipsProjectOfAfterBuildProcess;
+
         /**
          * @param builderSet
          */
@@ -218,7 +222,16 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             super(new TestIpsArtefactBuilderSet());
         }
 
-        private List builtIpsObjects = new ArrayList();
+        public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+            ipsProjectOfBeforeBuildProcess = project;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+            ipsProjectOfAfterBuildProcess = project;
+        }
 
         public List getBuiltIpsObjects() {
             return builtIpsObjects;
@@ -226,6 +239,8 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
         public void clear() {
             builtIpsObjects.clear();
+            ipsProjectOfBeforeBuildProcess = null;
+            ipsProjectOfAfterBuildProcess = null;
         }
 
         public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
@@ -671,13 +686,19 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         //expect a build of the product components in all the projects
         buildObjects = builderProjectA.getBuiltIpsObjects();
         assertTrue(buildObjects.contains(aProduct));
+        assertEquals(ipsProject, builderProjectA.ipsProjectOfBeforeBuildProcess);
+        assertEquals(ipsProject, builderProjectA.ipsProjectOfAfterBuildProcess);
 
         buildObjectsB = builderProjectB.getBuiltIpsObjects();
         assertTrue(buildObjectsB.contains(bProduct));
+        assertEquals(projectB, builderProjectB.ipsProjectOfBeforeBuildProcess);
+        assertEquals(projectB, builderProjectB.ipsProjectOfAfterBuildProcess);
 
         buildObjectsC = builderProjectC.getBuiltIpsObjects();
         assertTrue(buildObjectsC.contains(cProduct));
-        
+        assertEquals(projectC, builderProjectC.ipsProjectOfBeforeBuildProcess);
+        assertEquals(projectC, builderProjectC.ipsProjectOfAfterBuildProcess);
+
     }
     
     private IIpsProject createSubProject(IIpsProject superProject, String projectName) throws CoreException {
@@ -698,6 +719,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         project.setProperties(props);
         TestDependencyIpsArtefactBuilder builder = new TestDependencyIpsArtefactBuilder();
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
+        builderSet.setIpsProject(project);
         builderSet.setAggregateRootBuilder(isAggregateRootBuilderSet);
         ((IpsModel)project.getIpsModel()).setIpsArtefactBuilderSet(project, builderSet);
         return builder;

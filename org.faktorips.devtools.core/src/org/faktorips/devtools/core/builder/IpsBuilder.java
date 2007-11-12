@@ -103,7 +103,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             if (isFullBuildRequired) {
                 kind = IncrementalProjectBuilder.FULL_BUILD;
             }
-            applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new BeforeBuildProcessCommand(kind), monitor);
+            applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new BeforeBuildProcessCommand(kind, getIpsProject()), monitor);
             monitor.worked(100);
             if (isFullBuildRequired) {
                 kind = IncrementalProjectBuilder.FULL_BUILD;
@@ -114,7 +114,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 incrementalBuild(ipsArtefactBuilderSet, buildStatus, new SubProgressMonitor(monitor, 99700));
             }
             monitor.subTask(Messages.IpsBuilder_finishBuild);
-            applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new AfterBuildProcessCommand(kind), monitor);
+            applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new AfterBuildProcessCommand(kind, getIpsProject()), monitor);
             monitor.worked(100);
             if (buildStatus.getSeverity() == IStatus.OK) {
                 return getProject().getReferencedProjects();
@@ -401,7 +401,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 Set alreadyBuild = new HashSet(dependencySet.size());
                 MultiStatus currentBuildStatus = createInitialMultiStatus();
                 try{
-                    applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus, new BeforeBuildProcessCommand(INCREMENTAL_BUILD), monitor);
+                    applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus, new BeforeBuildProcessCommand(INCREMENTAL_BUILD, ipsProject), monitor);
                     for (Iterator it2 = dependencySet.iterator(); it2.hasNext();) {
                         Dependency dependency = (Dependency)it2.next();
                         QualifiedNameType buildCandidate = dependency.getSource();
@@ -418,7 +418,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                         updateDependencyGraph(currentBuildStatus, ipsObject.getIpsSrcFile());
                         monitor.worked(1);
                     }
-                    applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus, new AfterBuildProcessCommand(INCREMENTAL_BUILD), monitor);
+                    applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus, new AfterBuildProcessCommand(INCREMENTAL_BUILD, ipsProject), monitor);
                 } catch(Exception e){
                     currentBuildStatus.add(new IpsStatus(IStatus.ERROR, NLS.bind(Messages.IpsBuilder_msgExceptionWhileBuildingDependentProjects, ipsProject.getName()), e));
                 }
@@ -744,13 +744,15 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     private class BeforeBuildProcessCommand implements BuildCommand {
 
         private int buildKind;
+        private IIpsProject ipsProject;
 
-        public BeforeBuildProcessCommand(int buildKind) {
+        public BeforeBuildProcessCommand(int buildKind, IIpsProject ipsProject) {
             this.buildKind = buildKind;
+            this.ipsProject = ipsProject;
         }
 
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
-            builder.beforeBuildProcess(getIpsProject(), buildKind);
+            builder.beforeBuildProcess(ipsProject, buildKind);
         }
 
         public String toString() {
@@ -762,13 +764,15 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     private class AfterBuildProcessCommand implements BuildCommand {
 
         private int buildKind;
+        private IIpsProject ipsProject;
 
-        public AfterBuildProcessCommand(int buildKind) {
+        public AfterBuildProcessCommand(int buildKind, IIpsProject ipsProject) {
             this.buildKind = buildKind;
+            this.ipsProject = ipsProject;
         }
 
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
-            builder.afterBuildProcess(getIpsProject(), buildKind);
+            builder.afterBuildProcess(ipsProject, buildKind);
         }
 
         public String toString() {

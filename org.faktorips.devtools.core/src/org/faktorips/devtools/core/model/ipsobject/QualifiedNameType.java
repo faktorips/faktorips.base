@@ -42,7 +42,7 @@ public class QualifiedNameType implements Serializable{
     
     private String qualifiedName;
     private transient IpsObjectType type;
-    private int hashCode;
+    private transient int hashCode;
     
     /**
      * Returns the qualified name type for he given path. 
@@ -187,5 +187,6 @@ public class QualifiedNameType implements Serializable{
         s.defaultReadObject();
         String typeName = (String)s.readObject();
         type = IpsPlugin.getDefault().getIpsModel().getIpsObjectType(typeName);
+        calculateHashCode();
     }
 }
