@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * 
  * @author Joerg Ortmann
  */
-public class ConfigureProductCmptTypePage extends WizardPage {
+public class ConfigureProductCmptTypePage extends WizardPage implements IHiddenWizardPage {
     
     private NewPcTypeAssociationWizard wizard;
     private UIToolkit toolkit;
@@ -88,5 +88,12 @@ public class ConfigureProductCmptTypePage extends WizardPage {
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isPageVisible() {
+        return wizard.isProductCmptTypeAvailable();
     }
 }

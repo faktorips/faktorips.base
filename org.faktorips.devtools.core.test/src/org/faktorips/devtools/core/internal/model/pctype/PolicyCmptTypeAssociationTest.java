@@ -133,7 +133,6 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         policyToCoverage.setAssociationType(AssociationType.ASSOCIATION);
         policyToCoverage.setMinCardinality(1);
         policyToCoverage.setMinCardinality(Integer.MAX_VALUE);
-        policyToCoverage.setProductRelevant(false);
         policyToCoverage.setDerivedUnion(true);
         policyToCoverage.setTarget(coverageType.getQualifiedName());
         policyToCoverage.setTargetRoleSingular("Coverage");
@@ -144,7 +143,6 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         coverageToPolicy.setAssociationType(AssociationType.ASSOCIATION);
         coverageToPolicy.setMinCardinality(1);
         coverageToPolicy.setMinCardinality(1);
-        coverageToPolicy.setProductRelevant(false);
         coverageToPolicy.setDerivedUnion(true);
         coverageToPolicy.setTarget(policyType.getQualifiedName());
         coverageToPolicy.setTargetRoleSingular("Policy");
@@ -160,8 +158,6 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         homePolicyToCoverage.setAssociationType(AssociationType.ASSOCIATION);
         homePolicyToCoverage.setMinCardinality(1);
         homePolicyToCoverage.setMinCardinality(Integer.MAX_VALUE);
-        homePolicyToCoverage.setProductRelevant(false);
-        homePolicyToCoverage.setDerivedUnion(false);
         homePolicyToCoverage.setTarget(homeCoverageType.getQualifiedName());
         homePolicyToCoverage.setTargetRoleSingular("HomeCoverage");
         homePolicyToCoverage.setTargetRolePlural("HomeCoverages");
@@ -172,8 +168,6 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         homeCoverageToPolicy.setAssociationType(AssociationType.ASSOCIATION);
         homeCoverageToPolicy.setMinCardinality(1);
         homeCoverageToPolicy.setMinCardinality(1);
-        homeCoverageToPolicy.setProductRelevant(false);
-        homeCoverageToPolicy.setDerivedUnion(false);
         homeCoverageToPolicy.setSubsettedDerivedUnion(coverageToPolicy.getName());
         homeCoverageToPolicy.setTarget(homePolicyType.getQualifiedName());
         homeCoverageToPolicy.setTargetRoleSingular("HomePolicy");
@@ -203,14 +197,12 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         IPolicyCmptType typeB = newPolicyCmptType(ipsProject, "B");
         IPolicyCmptTypeAssociation relationAtoB = typeA.newPolicyCmptTypeAssociation();
         relationAtoB.setAssociationType(AssociationType.ASSOCIATION);
-        relationAtoB.setProductRelevant(false);
         relationAtoB.setTarget("B");
         relationAtoB.setTargetRoleSingular("roleB");
         relationAtoB.setTargetRolePlural("roleBs");
         
         IPolicyCmptTypeAssociation relationBtoA = typeB.newPolicyCmptTypeAssociation();
         relationBtoA.setAssociationType(AssociationType.ASSOCIATION);
-        relationBtoA.setProductRelevant(false);
         relationBtoA.setTarget("B");
         relationBtoA.setTargetRoleSingular("roleA");
         relationBtoA.setTargetRolePlural("roleAs");
@@ -243,7 +235,6 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         IPolicyCmptType typeB = newPolicyCmptType(ipsProject, "B");
         IPolicyCmptTypeAssociation relationAtoB = typeA.newPolicyCmptTypeAssociation();
         relationAtoB.setAssociationType(AssociationType.ASSOCIATION);
-        relationAtoB.setProductRelevant(false);
         relationAtoB.setTarget("B");
         relationAtoB.setTargetRoleSingular("roleB");
         relationAtoB.setTargetRoleSingular("roleBs");
@@ -257,7 +248,6 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
 
         IPolicyCmptTypeAssociation relationBtoA = typeB.newPolicyCmptTypeAssociation();
         relationBtoA.setAssociationType(AssociationType.ASSOCIATION);
-        relationBtoA.setProductRelevant(false);
         relationBtoA.setTarget("B");
         relationBtoA.setTargetRoleSingular("somethingThatIsNotA");
         relationBtoA.setTargetRoleSingular("somethingThatIsNotAs");

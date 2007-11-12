@@ -287,7 +287,7 @@ public abstract class Association extends AtomicIpsObjectPart implements IAssoci
      */
     public IAssociation[] findDerivedUnionCandidates(IIpsProject ipsProject) throws CoreException {
         IType targetType = findTarget(ipsProject);
-        if (target==null) {
+        if (targetType==null) {
             return new IAssociation[0];
         }
         DerivedUnionCandidatesFinder finder = new DerivedUnionCandidatesFinder(targetType, ipsProject);

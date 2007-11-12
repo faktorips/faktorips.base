@@ -60,9 +60,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     final static int USE_EXISTING_INVERSE_ASSOCIATION = 1;
     final static int NONE_INVERSE_ASSOCIATION = 2;
     
-    private static final int SUPPRESS_CHANGES_INVERSE_ASSOCIATION = 1;
-    private static final int SUPPRESS_CHANGES_PRODUCT_CMPT_TYPE_ASSOCIATION = 2;
-    
     private UIToolkit toolkit = new UIToolkit(null);
 
     // indicates that there was an error
@@ -127,7 +124,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -154,7 +151,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         detailToMasterHiddenPages.add(confProdCmptTypePropertyPage);
         
         visiblePages.add(associationTargetPage);
-        visiblePages.add(propertyPage);
         
         initSuppressedEventsForPages();
     }
@@ -169,11 +165,12 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     
     private void initSuppressedEventsForPages() {
         suppressedEventForPages.put(associationTargetPage, new Integer(1));
-        suppressedEventForPages.put(inverseAssociationPropertyPage, new Integer(SUPPRESS_CHANGES_INVERSE_ASSOCIATION));
-        suppressedEventForPages.put(confProdCmptTypePropertyPage, new Integer(SUPPRESS_CHANGES_PRODUCT_CMPT_TYPE_ASSOCIATION));
+        suppressedEventForPages.put(propertyPage, new Integer(1));
+        suppressedEventForPages.put(inverseAssociationPropertyPage, new Integer(2));
+        suppressedEventForPages.put(confProdCmptTypePropertyPage, new Integer(2));
     }
     
-    private boolean isSuppressedEventFor(IWizardPage page){
+    private boolean isSuppressedEventFor(IWizardPage page, boolean decreaseEvents){
         Integer current = (Integer)suppressedEventForPages.get(page);
         if (current == null){
             return false;
@@ -182,9 +179,11 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             return false;
         }
         
-        int i = current.intValue() - 1;
-        suppressedEventForPages.put(page, new Integer(i));
-
+        if (decreaseEvents){
+            int i = current.intValue() - 1;
+            suppressedEventForPages.put(page, new Integer(i));
+        }
+        
         return true;
     }
 
@@ -232,7 +231,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         
         // check if the given page is now enabled to display the error messages
         // used to suppress the error message if the wizard page is displayed the first time
-        boolean suppressed = isSuppressedEventFor(currentPage);
+        boolean suppressed = isSuppressedEventFor(currentPage, true);
         if (!suppressed && visiblePages.contains(currentPage)){
             displayErrorMessageForPages.add(currentPage);
         }
@@ -331,10 +330,21 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     /**
      * {@inheritDoc}
      */
-    public IWizardPage getNextPage(IWizardPage page) {
+    public IWizardPage getNextPage(final IWizardPage page) {
         // in case of an error no next page will be displayed
         if (isError) {
             return null;
+        }
+        
+        // set default focus
+        if (page instanceof IDefaultFocusPage){
+            if (isSuppressedEventFor((IWizardPage)page, false)){
+                getShell().getDisplay().asyncExec(new Runnable() {
+                    public void run() {
+                        ((IDefaultFocusPage)page).setDefaultFocus();
+                    }
+                });
+            }
         }
         
         // indicates that the page was displayed before
@@ -540,7 +550,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     
     /**
      * Set the default values depending on the association type and read-only container flag.
-     * FIXME Joerg: in model aufnehmen?
      */
     void setDefaultsByAssociationTypeAndTarget(IPolicyCmptTypeAssociation newAssociation){
         AssociationType type = newAssociation.getAssociationType();
@@ -801,24 +810,42 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         contentsChanged(getContainer().getCurrentPage());
     }
 
-    public boolean isProductCmptTypeAvailable(){
-        if (targetPolicyCmptType == null){
+    /**
+     * @see this{@link #isProductCmptTypeAvailable(IIpsProject, IPolicyCmptType, IPolicyCmptTypeAssociation)}
+     */
+    public boolean isProductCmptTypeAvailable() {
+        try {
+            return isProductCmptTypeAvailable(ipsProject, association.getPolicyCmptType(), targetPolicyCmptType);
+        } catch (CoreException e) {
+            showAndLogError(e);
             return false;
         }
-        boolean confByProdCmptTypeEnabled = findProductCmptType() != null;
-        if (confByProdCmptTypeEnabled){
-            IProductCmptType productCmptTypeTarget;
-            try {
-                productCmptTypeTarget = targetPolicyCmptType.findProductCmptType(ipsProject);
-            } catch (CoreException e) {
-                showAndLogError(e);
+    }
+    
+    /**
+     * Returns <code>true</code> if an association could be created for the product component
+     * type. Returns <code>false</code> if no product component type was foud for the source or
+     * for the target of the policy component type association or the source or the target are not
+     * configurable by a product cmp type.
+     */
+    public static boolean isProductCmptTypeAvailable(IIpsProject ipsProject, IPolicyCmptType sourcePolicyCmptType, IPolicyCmptType targetPolicyCmptType) throws CoreException {
+            if (targetPolicyCmptType == null) {
+                // target not set
                 return false;
             }
-            if (productCmptTypeTarget != null){
-                return true;
+            if (!sourcePolicyCmptType.isConfigurableByProductCmptType()
+                    || !targetPolicyCmptType.isConfigurableByProductCmptType()) {
+                return false;
             }
-        }
-        return false;
+            if (sourcePolicyCmptType.findProductCmptType(ipsProject) == null) {
+                // product cmpt type not found
+                return false;
+            }
+            if (targetPolicyCmptType.findProductCmptType(ipsProject) == null) {
+                // targets product cmpt type not found
+                return false;
+            }
+        return true;
     }
     
     /**
@@ -893,7 +920,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      */
     public void dispose() {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+        
         bindingContext.dispose();
+        
         super.dispose();
     }
 

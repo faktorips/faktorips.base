@@ -48,6 +48,7 @@ public class ComboField extends DefaultEditField {
         return combo;
     }
     
+    
     /**
      * {@inheritDoc}
      */
@@ -67,12 +68,13 @@ public class ComboField extends DefaultEditField {
      */
     public String getText() {
         int i = combo.getSelectionIndex();
-        if (i==-1) {
-            return null;
+        if (i == -1) {
+            // if no item is selected then return the text given in the text control of the combo
+            return combo.getText();
         }
         return combo.getItem(i);
     }
-
+    
     /**
      * {@inheritDoc}
      */

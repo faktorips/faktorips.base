@@ -19,7 +19,9 @@ package org.faktorips.devtools.core.ui.editors.pctype.associationwizard;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -88,5 +90,44 @@ public class NewPcTypeAssociationWizardTest  extends AbstractIpsPluginTest {
         result = NewPcTypeAssociationWizard.getCorrespondingTargetAssociations(relation21, policyCmptType1);
         assertEquals(1, result.size());
         assertTrue(result.contains(superRelation));
+    }
+    
+    /**
+     * Test if the last pages for creating the product cmpt type association are available or not.
+     *
+     */
+    public void testIsProductCmptTypeAvailable() throws CoreException{
+        PolicyCmptType sourcePolicyCmptType = newPolicyAndProductCmptType(project, "Policy", "PolicyType");
+        PolicyCmptType targetPolicyCmptType = newPolicyAndProductCmptType(project, "Coverage", "CoverageType");
+        
+        sourcePolicyCmptType.setConfigurableByProductCmptType(false);
+        targetPolicyCmptType.setConfigurableByProductCmptType(false);
+        assertFalse(NewPcTypeAssociationWizard.isProductCmptTypeAvailable(project, sourcePolicyCmptType, targetPolicyCmptType));
+
+        sourcePolicyCmptType.setConfigurableByProductCmptType(true);
+        sourcePolicyCmptType.setProductCmptType("PolicyType");
+        targetPolicyCmptType.setConfigurableByProductCmptType(false);
+        assertFalse(NewPcTypeAssociationWizard.isProductCmptTypeAvailable(project, sourcePolicyCmptType, targetPolicyCmptType));
+
+        sourcePolicyCmptType.setConfigurableByProductCmptType(false);
+        targetPolicyCmptType.setConfigurableByProductCmptType(true);
+        targetPolicyCmptType.setProductCmptType("CoverageType");
+        assertFalse(NewPcTypeAssociationWizard.isProductCmptTypeAvailable(project, sourcePolicyCmptType, targetPolicyCmptType));
+
+        sourcePolicyCmptType.setConfigurableByProductCmptType(true);
+        targetPolicyCmptType.setConfigurableByProductCmptType(true);
+        sourcePolicyCmptType.setProductCmptType("PolicyType");
+        targetPolicyCmptType.setProductCmptType("CoverageType");        
+        assertTrue(NewPcTypeAssociationWizard.isProductCmptTypeAvailable(project, sourcePolicyCmptType, targetPolicyCmptType));
+ 
+        String productCmptType = sourcePolicyCmptType.getProductCmptType();
+        sourcePolicyCmptType.setProductCmptType("NONE");
+        assertFalse(NewPcTypeAssociationWizard.isProductCmptTypeAvailable(project, sourcePolicyCmptType, targetPolicyCmptType));
+
+        sourcePolicyCmptType.setProductCmptType(productCmptType);
+        assertTrue(NewPcTypeAssociationWizard.isProductCmptTypeAvailable(project, sourcePolicyCmptType, targetPolicyCmptType));
+        
+        targetPolicyCmptType.setProductCmptType("NONE");
+        assertFalse(NewPcTypeAssociationWizard.isProductCmptTypeAvailable(project, sourcePolicyCmptType, targetPolicyCmptType));
     }
 }

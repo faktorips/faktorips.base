@@ -15,17 +15,20 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controls;
+package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -37,6 +40,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.ButtonTextBinding;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.util.QNameUtil;
 
 /**
@@ -50,7 +54,7 @@ public class AssociationQualificationGroup extends Composite {
 
     public AssociationQualificationGroup(UIToolkit uiToolkit, BindingContext bindingContext, Composite parent, IAssociation association) {
         super(parent, SWT.NONE);
-        
+
         GridLayout layout = new GridLayout(1, false);
         layout.marginTop = 0;
         layout.marginHeight = 0;
@@ -68,12 +72,27 @@ public class AssociationQualificationGroup extends Composite {
     }
 
     /**
-     * Bind a label (as note) to inform if the association is [not] constrained by product structure.
+     * Bind a text (as note) to inform if the association is [not] constrained by product structure.
      */
-    public void bindLabelAboutConstrainedByProductStructure(Label note, BindingContext bindingContext) {
+    public void bindLabelAboutConstrainedByProductStructure(Text note, BindingContext bindingContext) {
         note.setText(pmoAssociation.getConstrainedNote());
         bindingContext.bindContent(note, pmoAssociation, PmoAssociation.PROPERTY_CONSTRAINED_NOTE);
     }  
+    
+    /**
+     * Creates the note text to inform if the association is [not] constrained by product structure.
+     */
+    public static Text createConstrainedNote(UIToolkit uiToolkit, Composite parent){
+        uiToolkit.createHorizonzalLine(parent);
+        
+        Text noteAboutProductStructureConstrained = new Text(parent, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+        noteAboutProductStructureConstrained.setEditable(false);
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        gridData.heightHint = 60;
+        gridData.widthHint = UIToolkit.DEFAULT_WIDTH;
+        noteAboutProductStructureConstrained.setLayoutData(gridData);
+        return noteAboutProductStructureConstrained;
+    }
     
     private void createQualificationControls(UIToolkit uiToolkit, BindingContext bindingContext, Composite parent, IAssociation association) {
         Composite workArea = uiToolkit.createGridComposite(parent, 1, true, true);
@@ -85,6 +104,19 @@ public class AssociationQualificationGroup extends Composite {
         Label note = uiToolkit.createFormLabel(workArea, StringUtils.rightPad("", 120)); //$NON-NLS-1$
         bindingContext.bindContent(note, pmoAssociation, PmoAssociation.PROPERTY_QUALIFICATION_NOTE);
         bindingContext.add(new ButtonTextBinding(qualifiedCheckbox, pmoAssociation, PmoAssociation.PROPERTY_QUALIFICATION_LABEL));
+
+        GridData gridData = new GridData();
+        GC gc = new GC(getShell());
+        gridData.widthHint = getMaxWidth(gc, gridData.minimumWidth, pmoAssociation.getQualificationNote(false, false));
+        gridData.widthHint = getMaxWidth(gc, gridData.minimumWidth, pmoAssociation.getQualificationNote(false, true));
+        gridData.widthHint = getMaxWidth(gc, gridData.minimumWidth, pmoAssociation.getQualificationNote(true, false));
+        gridData.widthHint = getMaxWidth(gc, gridData.minimumWidth, pmoAssociation.getQualificationNote(true, true));
+        note.setLayoutData(gridData);
+    }
+    
+    private int getMaxWidth(GC gc, int maxWidth, String text){
+        Point e = gc.textExtent(text, SWT.DRAW_DELIMITER | SWT.DRAW_TAB);
+        return Math.max(maxWidth, e.x);
     }
     
     public class PmoAssociation extends IpsObjectPartPmo {
@@ -118,19 +150,25 @@ public class AssociationQualificationGroup extends Composite {
         }
 
         public String getQualificationNote() {
+            try {
+                return getQualificationNote(association.isCompositionMasterToDetail(), association
+                        .isQualificationPossible(ipsProject));
+
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+            return ""; //$NON-NLS-1$
+        }
+        
+        public String getQualificationNote(boolean compositeDetailToMaster, boolean qualificationPossible) {
             String note = Messages.AssociationQualificationGroup_labelNote;
-            if (!association.isCompositionMasterToDetail()) {
+            if (!compositeDetailToMaster) {
                 note = note + Messages.AssociationQualificationGroup_labelNoteQualificationOnlyMasterDetail;
             } else {
-                try {
-                    if (!association.isQualificationPossible(ipsProject)) {
-                        note = note + Messages.AssociationQualificationGroup_labelNoteQualificationOnlyTargetConfByProduct;
-                    } else {
-                        note = note + Messages.AssociationQualificationGroup_noteQualifiedMultiplictyPerQualifiedInstance;
-                    }
-                }
-                catch (CoreException e) {
-                    IpsPlugin.log(e);
+                if (!qualificationPossible) {
+                    note = note + Messages.AssociationQualificationGroup_labelNoteQualificationOnlyTargetConfByProduct;
+                } else {
+                    note = note + Messages.AssociationQualificationGroup_noteQualifiedMultiplictyPerQualifiedInstance;
                 }
             }
             return StringUtils.rightPad(note, 90);

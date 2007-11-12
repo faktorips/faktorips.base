@@ -27,21 +27,20 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
-import org.faktorips.devtools.core.ui.controls.AssociationQualificationGroup;
+import org.faktorips.devtools.core.ui.editors.pctype.AssociationQualificationGroup;
 
 /**
  * Page to specify the properties of the association.
  * 
  * @author Joerg Ortmann
  */
-public class PropertyPage extends WizardPage implements IBlockedValidationWizardPage {
+public class PropertyPage extends WizardPage implements IBlockedValidationWizardPage, IDefaultFocusPage {
 
     private NewPcTypeAssociationWizard wizard;
     private IPolicyCmptTypeAssociation association;
@@ -52,7 +51,7 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
     
     private Text targetRoleSingularText;
     private AssociationQualificationGroup associationQualificationGroup;
-    private Label noteAboutProductStructureConstrained;
+    private Text noteAboutProductStructureConstrained;
     
     protected PropertyPage(NewPcTypeAssociationWizard wizard, IPolicyCmptTypeAssociation association, UIToolkit toolkit, BindingContext bindingContext) {
         super(Messages.PropertyPage_pageName, Messages.PropertyPage_pageTitle, null);
@@ -74,7 +73,7 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
         createGeneralControls(pageComposite);
         
         associationQualificationGroup = new AssociationQualificationGroup(toolkit, bindingContext, pageComposite, association);
-
+        
         // bind the special note label
         associationQualificationGroup.bindLabelAboutConstrainedByProductStructure(noteAboutProductStructureConstrained, bindingContext);
         
@@ -133,8 +132,8 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
         Composite info = toolkit.createGridComposite(groupGeneral, 1, true, false);
         
         // create note about constrained by product structure
-        noteAboutProductStructureConstrained = toolkit.createLabel(info, ""); //$NON-NLS-1$
-
+        noteAboutProductStructureConstrained = AssociationQualificationGroup.createConstrainedNote(toolkit, info);        
+        
         // bottom extensions
         wizard.getExtFactoryAssociation().createControls(workArea, toolkit, association, IExtensionPropertyDefinition.POSITION_BOTTOM);
         wizard.getExtFactoryAssociation().bind(bindingContext);
@@ -163,5 +162,14 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
      */
     public boolean canFlipToNextPage() {
         return wizard.canPageFlipToNextPage(this);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setDefaultFocus() {
+        updateDefaultTargetRoleSingular();
+        targetRoleSingularText.setFocus();
+        targetRoleSingularText.selectAll();
     }
 }

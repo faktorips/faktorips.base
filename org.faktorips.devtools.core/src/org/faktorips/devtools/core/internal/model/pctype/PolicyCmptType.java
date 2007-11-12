@@ -450,27 +450,20 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     /**
      * {@inheritDoc}
-     */
-    public Dependency[] dependsOn() throws CoreException {
-        return dependsOn(false);
-    }
-
-    /**
+     * 
      * Returns the <code>QualifiedNameType</code>s of the <code>IpsObject</code>s this
      * <code>IpsObject</code> depends on. This method is used by the interface method dependsOn()
      * and is public because it is used by the <code>ProductCmptType</code>
      * 
-     * @param excludeNonProductRelations if true only the Relations that are marked as
-     *            productrelevant are considered
      * @throws CoreException delegates rising CoreExceptions
      */
-    public Dependency[] dependsOn(boolean excludeNonProductRelations) throws CoreException {
+    public Dependency[] dependsOn() throws CoreException {
         Set dependencies = new HashSet();
         if (hasSupertype()) {
             dependencies.add(Dependency.createSubtypeDependency(this.getQualifiedNameType(), new QualifiedNameType(
                     getSupertype(), IpsObjectType.POLICY_CMPT_TYPE)));
         }
-        addQualifiedNameTypesForRelationTargets(dependencies, excludeNonProductRelations);
+        addQualifiedNameTypesForRelationTargets(dependencies);
         addQualifiedNameTypesForTableBasedEnums(dependencies);
         return (Dependency[])dependencies.toArray(new Dependency[dependencies.size()]);
     }
@@ -490,13 +483,10 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
     }
 
-    private void addQualifiedNameTypesForRelationTargets(Set dependencies, boolean excludeNonProductRelations)
+    private void addQualifiedNameTypesForRelationTargets(Set dependencies)
             throws CoreException {
         IPolicyCmptTypeAssociation[] relations = getPolicyCmptTypeAssociations();
         for (int i = 0; i < relations.length; i++) {
-            if (excludeNonProductRelations && !relations[i].isProductRelevant()) {
-                continue;
-            }
             String qualifiedName = relations[i].getTarget();
             // an additional condition "&& this.isAggregateRoot()" will _not_ be helpfull, because
             // this

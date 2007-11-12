@@ -36,13 +36,13 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
-import org.faktorips.devtools.core.ui.controls.AssociationDerivedUnionGroup;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.core.ui.editors.pctype.AssociationDerivedUnionGroup;
 
 /**
  * Page to specify the product new product component type association.
  */
-public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlockedValidationWizardPage, IHiddenWizardPage {
+public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlockedValidationWizardPage, IHiddenWizardPage, IDefaultFocusPage {
 
     private NewPcTypeAssociationWizard wizard;
     private IProductCmptTypeAssociation association;
@@ -239,6 +239,10 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     }
     
     private void updateDefaultTargetRoleSingular() {
+        if (association == null){
+            return;
+        }
+        
         if (StringUtils.isEmpty(association.getTargetRoleSingular())) {
             association.setTargetRoleSingular(association.getDefaultTargetRoleSingular());
         }
@@ -275,5 +279,14 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
      */
     public boolean canFlipToNextPage() {
         return wizard.canPageFlipToNextPage(this);
+    }    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setDefaultFocus() {
+        updateDefaultTargetRoleSingular();
+        targetRoleSingularTextProdCmptType.setFocus();
+        targetRoleSingularTextProdCmptType.selectAll();
     }    
 }

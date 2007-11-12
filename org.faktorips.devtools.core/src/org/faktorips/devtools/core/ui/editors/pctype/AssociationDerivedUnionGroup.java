@@ -15,21 +15,26 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controls;
+package org.faktorips.devtools.core.ui.editors.pctype;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
+import org.faktorips.devtools.core.ui.controller.fields.ComboField;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.type.DerivedUnionCompletionProcessor;
 
 /**
@@ -41,9 +46,9 @@ public class AssociationDerivedUnionGroup extends Composite {
 
     private Checkbox containerCheckbox;
     private Checkbox subsetCheckbox;
-    private Text derivedUnionText;
 
     private PmoAssociation pmoAssociation;
+    private Combo derivedUnionCombo;
 
     public AssociationDerivedUnionGroup(UIToolkit uiToolkit, BindingContext bindingContext, Composite parent, IAssociation association) {
         super(parent, SWT.NONE);
@@ -70,12 +75,13 @@ public class AssociationDerivedUnionGroup extends Composite {
         // is subset checkbox
         subsetCheckbox = uiToolkit.createCheckbox(parent, Messages.AssociationDerivedUnionGroup_labelDefinesSubsetOfDerivedUnion);
         
-        // subset text field
+        // subset combo field
         Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         uiToolkit.createFormLabel(workArea, Messages.AssociationDerivedUnionGroup_labelSubsetTextField);
-        derivedUnionText = uiToolkit.createText(workArea);
-
+        derivedUnionCombo = new Combo(workArea ,SWT.DROP_DOWN);
+        derivedUnionCombo.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+        
         bindContent(bindingContext, association);
     }
 
@@ -99,8 +105,8 @@ public class AssociationDerivedUnionGroup extends Composite {
         
         bindingContext.bindContent(subsetCheckbox, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
         
-        bindingContext.bindContent(derivedUnionText, association, IAssociation.PROPERTY_SUBSETTED_DERIVED_UNION);
-        bindingContext.bindEnabled(derivedUnionText, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
+        bindingContext.bindContent(new ComboField(derivedUnionCombo), association, IAssociation.PROPERTY_SUBSETTED_DERIVED_UNION);
+        bindingContext.bindEnabled(derivedUnionCombo, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
         
         // special binding for policy cmpt type associations only
         //   derived union is only enabled if @see IPolicyCmptTypeAssociation.isContainerRelationApplicable()
@@ -110,15 +116,25 @@ public class AssociationDerivedUnionGroup extends Composite {
         }
     }
     
+    /**
+     * Sets the available derived union association in the drop down.
+     */
+    public void setDerivedUnions(String[] derivedUnions){
+        if (! derivedUnionCombo.isDisposed()){
+            derivedUnionCombo.setItems(derivedUnions);
+        }
+    }
+    
     private void addCompletionProcessor(IAssociation association){
         DerivedUnionCompletionProcessor completionProcessor = new DerivedUnionCompletionProcessor(association);
         completionProcessor.setComputeProposalForEmptyPrefix(true);
-        ContentAssistHandler.createHandlerForText(derivedUnionText, CompletionUtil.createContentAssistant(completionProcessor));
+        ContentAssistHandler.createHandlerForCombo(derivedUnionCombo, CompletionUtil.createContentAssistant(completionProcessor));
     }
 
     public class PmoAssociation extends IpsObjectPartPmo {
         public final static String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
-
+        public String previousTarget = ""; //$NON-NLS-1$
+        
         private IAssociation association;
 
         private boolean subset;
@@ -146,9 +162,36 @@ public class AssociationDerivedUnionGroup extends Composite {
          */
         protected void partHasChanged() {
             // special handling of policy component type associations
-            if (association instanceof IPolicyCmptTypeAssociation) {
-                if (! ((IPolicyCmptTypeAssociation)association).isContainerRelationApplicable()) {
-                    subset = false;
+            if (!(association instanceof IPolicyCmptTypeAssociation)) {
+                return;
+            }
+            
+            IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)association;
+
+            // enable subset
+            if (!policyCmptTypeAssociation.isContainerRelationApplicable()) {
+                subset = false;
+            }
+
+            // set derived union candidates
+            String currentTarget = policyCmptTypeAssociation.getTarget();
+            if (StringUtils.isEmpty(currentTarget)) {
+                setDerivedUnions(new String[0]);
+                return;
+            }
+            
+            if (!currentTarget.equals(previousTarget)) {
+                previousTarget = currentTarget;
+                try {
+                    IAssociation[] associations = policyCmptTypeAssociation.findDerivedUnionCandidates(association
+                            .getIpsProject());
+                    String[] derivedUnionCandidates = new String[associations.length];
+                    for (int i = 0; i < associations.length; i++) {
+                        derivedUnionCandidates[i] = associations[i].getName();
+                    }
+                    setDerivedUnions(derivedUnionCandidates);
+                } catch (CoreException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
                 }
             }
         }

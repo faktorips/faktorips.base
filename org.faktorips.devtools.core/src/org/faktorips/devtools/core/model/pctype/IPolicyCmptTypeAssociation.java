@@ -237,16 +237,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     public IProductCmptTypeAssociation findMatchingProductCmptTypeAssociation(IIpsProject ipsProject) throws CoreException;
     
     /**
-     * Returns true if this relation is can be customized during product definition.
-     */
-    public boolean isProductRelevant();
-    
-    /**
-     * Sets if this relation can be customized during product definition.
-     */
-    public void setProductRelevant(boolean newValue);
-    
-    /**
      * Returns the name of the reverse relation.
      */
     public String getInverseAssociation();
@@ -270,82 +260,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      */
     public IPolicyCmptTypeAssociation findInverseAssociation() throws CoreException;
 
-    /**
-     * Returns the role of the target in this relation on the product side.
-     */
-    public String getTargetRoleSingularProductSide();
-    
-    /**
-     * Sets the role of the target in this relation on the product side. The role is specified in singular form, 
-     * e.g. policy and not policies. The distinction is more relevant in other languages than English, where you can't derive the 
-     * plural from the singular form.
-     */
-    public void setTargetRoleSingularProductSide(String newRole);
-    
-    /**
-     * Returns the role of the target in this relation on the product side. The role is specified in plural form.
-     */
-    public String getTargetRolePluralProductSide();
-    
-    /**
-     * Returns if the target role plural for the productsie is required (or not) based on the relation's max cardinality
-     * and the aretfact builderset's information if it needs the plural form for to 1 relations.
-     */
-    public boolean isTargetRolePluralRequiredProductSide();
-    
-    /**
-     * Returns a default role name plural form for the productside.
-     */
-    public String getDefaultTargetRolePluralProductSide();
-
-    /**
-     * Sets the new role in plural form of the target in this relation on the product sided.
-     */
-    public void setTargetRolePluralProductSide(String newRole);
-    
-    /**
-     * Returns the minmum number of product components required in this relation
-     * on the product side.
-     * <p>
-     * Note that the minimum cardinality on the product side needn't be the same as the
-     * one on the policy side. If the min cardinality on the policy side is 0, the
-     * min cardinality on the product side can be 1. It might be optional to include
-     * a coverage in a policy, but if it should be possible for all products than
-     * the minimum cardinality on the product side is 1.
-     */
-    public int getMinCardinalityProductSide();
-    
-    /**
-     * Sets the minmum number of product components in this relation.   
-     */
-    public void setMinCardinalityProductSide(int newValue);
-    
-    /**
-     * Returns the maxmium number of product components allowed in this relation.
-     * If the number is not limited CARDINALITY_MANY is returned. 
-     * <p>
-     * Note that the maximum cardinality on the product side needn't be the same as the
-     * one on the policy side. If the max cardinality on the policy side is 1, the
-     * max cardinality on the product side can be *. In this case the meaning is a kind 
-     * of multi-choice. One of the product components can be used when creating a policy (but only one).
-     * <p>
-     * Example:<p>
-     * A home policy has exactly one glas coverage. However on the product side a basic and a premium
-     * glas coverage type is defined. A concrete home police can either contain a coverage based on the
-     * basic or the premium coverage type. 
-     * <p>
-     * Also the opposite is possible. On the policy side multiple coverages of the same type might by
-     * included but they must all be based on the same coverage type. In this case the max
-     * cardinality on the policy side is * but 1 on the product side.
-     */
-    public int getMaxCardinalityProductSide();
-    
-    /**
-     * Sets the maxmium number of target instances allowed in this relation.
-     * An unlimited number is represented by CARDINALITY_MANY. 
-     */
-    public void setMaxCardinalityProductSide(int newValue);
-    
     /**
      * Sets whether this association is qualified or not.
      */

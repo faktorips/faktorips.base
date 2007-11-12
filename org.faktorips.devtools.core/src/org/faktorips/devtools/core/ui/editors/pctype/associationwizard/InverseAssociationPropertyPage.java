@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
  * 
  * @author Joerg Ortmann
  */
-public class InverseAssociationPropertyPage extends WizardPage implements IBlockedValidationWizardPage, IHiddenWizardPage {
+public class InverseAssociationPropertyPage extends WizardPage implements IBlockedValidationWizardPage, IHiddenWizardPage, IDefaultFocusPage {
     
     private NewPcTypeAssociationWizard wizard;
     private UIToolkit toolkit;
@@ -147,9 +147,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
         targetRoleSingularText.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
-                if (StringUtils.isEmpty(association.getTargetRoleSingular())) {
-                    association.setTargetRoleSingular(association.getDefaultTargetRoleSingular());
-                }
+                updateDefaultTargetRoleSingular();
             }
         });
         
@@ -183,6 +181,12 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         wizard.getExtFactoryInverseAssociation().createControls(workArea, toolkit, association, IExtensionPropertyDefinition.POSITION_BOTTOM);
     }
 
+    private void updateDefaultTargetRoleSingular() {
+        if (StringUtils.isEmpty(association.getTargetRoleSingular())) {
+            association.setTargetRoleSingular(association.getDefaultTargetRoleSingular());
+        }
+    }
+    
     /**
      * Sets or resets the inverers association. 
      * 
@@ -326,5 +330,14 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
      */
     public boolean canFlipToNextPage() {
         return wizard.canPageFlipToNextPage(this);
+    }    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setDefaultFocus() {
+        updateDefaultTargetRoleSingular();
+        targetRoleSingularText.setFocus();
+        targetRoleSingularText.selectAll();
     }    
 }

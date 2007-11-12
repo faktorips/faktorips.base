@@ -49,12 +49,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     final static String TAG_NAME = "Association"; //$NON-NLS-1$
 
     private boolean qualified = false;
-    private boolean productRelevant = true;
     private String inverseAssociation = ""; //$NON-NLS-1$
-    private String targetRoleSingularProductSide = ""; //$NON-NLS-1$
-    private String targetRolePluralProductSide = ""; //$NON-NLS-1$
-    private int minCardinalityProductSide = 0;
-    private int maxCardinalityProductSide = Integer.MAX_VALUE;
 
     public PolicyCmptTypeAssociation(IPolicyCmptType pcType, int id) {
         super(pcType, id);
@@ -119,9 +114,6 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             qualified = false;
             minCardinality = 0;
             maxCardinality = 1;
-            productRelevant = false;
-            targetRoleSingularProductSide = ""; //$NON-NLS-1$
-            targetRolePluralProductSide = ""; //$NON-NLS-1$
         }
         super.setAssociationType(newType);
     }
@@ -187,22 +179,6 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         throw new RuntimeException("Can't get index of association " + this); //$NON-NLS-1$
     }
 
-    /** 
-     * {@inheritDoc}
-     */
-    public boolean isProductRelevant() {
-        return productRelevant;
-    }
-
-    /** 
-     * {@inheritDoc}
-     */
-    public void setProductRelevant(boolean newValue) {
-        boolean oldValue = productRelevant;
-        productRelevant = newValue;
-        valueChanged(oldValue, newValue);
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -264,84 +240,6 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             type.isCompositionMasterToDetail() ? AssociationType.COMPOSITION_DETAIL_TO_MASTER : 
                 null;
     }
-
-    /**
-	 * {@inheritDoc}
-	 */
-	public String getTargetRoleSingularProductSide() {
-		return targetRoleSingularProductSide;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setTargetRoleSingularProductSide(String newRole) {
-        String oldRole = targetRoleSingularProductSide;
-        targetRoleSingularProductSide = newRole;
-        valueChanged(oldRole, newRole);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setTargetRolePluralProductSide(String newRole) {
-        String oldRole = targetRolePluralProductSide;
-        targetRolePluralProductSide = newRole;
-        valueChanged(oldRole, newRole);
-	}
-
-    /**
-	 * {@inheritDoc}
-	 */
-	public String getTargetRolePluralProductSide() {
-		return targetRolePluralProductSide;
-	}
-
-    /**
-     * {@inheritDoc}
-     */
-	public String getDefaultTargetRolePluralProductSide() {
-        return targetRoleSingularProductSide;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isTargetRolePluralRequiredProductSide() {
-        return maxCardinalityProductSide>1 || getIpsProject().getIpsArtefactBuilderSet().isRoleNamePluralRequiredForTo1Relations();
-    }
-
-    /**
-	 * {@inheritDoc}
-	 */
-	public int getMinCardinalityProductSide() {
-		return minCardinalityProductSide;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setMinCardinalityProductSide(int newMin) {
-		int oldMin = minCardinalityProductSide;
-		minCardinalityProductSide = newMin;
-		valueChanged(oldMin, newMin);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getMaxCardinalityProductSide() {
-		return maxCardinalityProductSide;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setMaxCardinalityProductSide(int newMax) {
-		int oldMax = maxCardinalityProductSide;
-		maxCardinalityProductSide = newMax;
-		valueChanged(oldMax, newMax);
-	}
 
     /**
      * {@inheritDoc}
