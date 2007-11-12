@@ -107,7 +107,6 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         relation.setTargetRolePlural("relations1");
         relation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         relation.setTarget(type2.getQualifiedName());
-        relation.setProductRelevant(false);
         // assoziaotion1: ProductCmptType1 -> ProductCmptType2
         IProductCmptTypeAssociation association1 = productCmptType1.newProductCmptTypeAssociation();
         association1.setTarget("ProductCmptType2");
@@ -120,7 +119,6 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         relation2.setTargetRolePlural("relations2");
         relation2.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         relation2.setTarget(type1.getQualifiedName());
-        relation2.setProductRelevant(false);
         //  assoziaotion2: ProductCmptType1 -> ProductCmptType1
         IProductCmptTypeAssociation association2 = productCmptType1.newProductCmptTypeAssociation();
         association2.setTarget("ProductCmptType1");
@@ -571,13 +569,9 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
             
             coverages = policy.newPolicyCmptTypeAssociation();
             coverages.setTarget(coverage.getQualifiedName());
-            coverages.setProductRelevant(true);
             coverages.setTargetRoleSingular("Coverage");
             coverages.setTargetRolePlural("Coverages");
-            coverages.setTargetRoleSingularProductSide("Coverage");
-            coverages.setTargetRolePluralProductSide("Coverages");
             coverages.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-            coverages.setProductRelevant(true);
             
             IProductCmptTypeAssociation association = productCmptTypePolicy.newProductCmptTypeAssociation();
             association.setTarget("CoverageType");
@@ -604,7 +598,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
             childParameter.setRequiresProductCmpt(true);
             
             IProductCmptGeneration generation = (IProductCmptGeneration)policyProduct.newGeneration(new GregorianCalendar());
-            IProductCmptLink productCmptRelation = generation.newLink(coverages.getTargetRoleSingularProductSide());
+            IProductCmptLink productCmptRelation = generation.newLink("CoverageType");
             productCmptRelation.setTarget(coverageProductA.getQualifiedName());
             
         }
