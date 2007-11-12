@@ -49,14 +49,14 @@ public abstract class SimpleIpsPartsSection extends IpsSection {
     }
     
     public SimpleIpsPartsSection(
-            IIpsObject pdObject, 
+            IIpsObject ipsObject, 
             Composite parent,
             int style,
             String title,
             UIToolkit toolkit) {
         super(parent, style, GridData.FILL_BOTH, toolkit);
-        ArgumentCheck.notNull(pdObject);
-        this.ipsObject = pdObject;
+        ArgumentCheck.notNull(ipsObject);
+        this.ipsObject = ipsObject;
         initControls();
         setText(title);
     }
