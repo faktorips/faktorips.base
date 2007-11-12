@@ -29,39 +29,34 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
  * 
  * @author Jan Ortmann
  */
-public class RelationTargetDoesNotExist extends AbstractIpsPluginTest {
+public class AssociationTargetDoesNotExist extends AbstractIpsPluginTest {
 
-    public RelationTargetDoesNotExist() {
+    public AssociationTargetDoesNotExist() {
         super();
     }
 
-    public RelationTargetDoesNotExist(String name) {
+    public AssociationTargetDoesNotExist(String name) {
         super(name);
     }
 
     public void test() throws CoreException {
         IIpsProject project = newIpsProject();
-        IPolicyCmptType sourceType = newPolicyCmptType(project, "Source");
-        IPolicyCmptType targetType = newPolicyCmptType(project, "target");
+        IPolicyCmptType sourceType = newPolicyCmptTypeWithoutProductCmptType(project, "Source");
+        IPolicyCmptType targetType = newPolicyCmptTypeWithoutProductCmptType(project, "target");
         
         IPolicyCmptTypeAssociation fromSourceToTarget = sourceType.newPolicyCmptTypeAssociation();
         fromSourceToTarget.setTarget(targetType.getQualifiedName());
         fromSourceToTarget.setTargetRoleSingular("Target");
         fromSourceToTarget.setTargetRolePlural("Targets");
-        fromSourceToTarget.setTargetRoleSingularProductSide("TargetProduct");
-        fromSourceToTarget.setTargetRolePluralProductSide("TargetProducts");
         
         IPolicyCmptTypeAssociation fromTargetToSource= targetType.newPolicyCmptTypeAssociation();
         fromTargetToSource.setTarget(sourceType.getQualifiedName());
         fromTargetToSource.setTargetRoleSingular("Source");
         fromTargetToSource.setTargetRolePlural("Sources");
-        fromTargetToSource.setTargetRoleSingularProductSide("SourceProduct");
-        fromTargetToSource.setTargetRolePluralProductSide("SourceProducts");
         
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
         
         targetType.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-        
     }
 }
