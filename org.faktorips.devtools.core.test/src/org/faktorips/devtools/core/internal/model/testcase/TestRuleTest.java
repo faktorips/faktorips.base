@@ -149,7 +149,7 @@ public class TestRuleTest extends AbstractIpsPluginTest {
 
         // assign the policy cmpt (including the rule) to the corresponding test case type
         ITestCase testCase = (ITestCase) testRule.getParent();
-        ITestCaseType testCaseType = testCase.findTestCaseType();
+        ITestCaseType testCaseType = testCase.findTestCaseType(project);
         ITestPolicyCmptTypeParameter param = testCaseType.newInputTestPolicyCmptTypeParameter();
         param.setPolicyCmptType("policyCmptType1");
 

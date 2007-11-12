@@ -547,6 +547,10 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         private IPolicyCmptType policy;
         private IPolicyCmptTypeAssociation coverages;
         private IPolicyCmptType coverage;
+        
+        private ProductCmptType productCmptTypePolicy;
+        private ProductCmptType productCmptTypeCoverage;
+
         private IProductCmpt policyProduct;
         private IProductCmpt coverageProductA; // is related in policyProduct
         private IProductCmpt coverageProductB; // is not related in policyProduct
@@ -557,13 +561,13 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         public void init(IIpsProject project) throws CoreException {
             policy = newPolicyCmptType(project, "Policy");
             policy.setConfigurableByProductCmptType(true);
-            ProductCmptType productCmptTypePolicy = newProductCmptType(project, "PolicyType");
+            productCmptTypePolicy = newProductCmptType(project, "PolicyType");
             policy.setProductCmptType(productCmptTypePolicy.getQualifiedName());
             productCmptTypePolicy.setPolicyCmptType(policy.getQualifiedName());
             
             coverage = newPolicyCmptType(project, "Coverage");
             coverage.setConfigurableByProductCmptType(true);
-            ProductCmptType productCmptTypeCoverage = newProductCmptType(project, "CoverageType");
+            productCmptTypeCoverage = newProductCmptType(project, "CoverageType");
             coverage.setProductCmptType(productCmptTypeCoverage.getQualifiedName());
             productCmptTypeCoverage.setPolicyCmptType(coverage.getQualifiedName());
             
@@ -598,9 +602,8 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
             childParameter.setRequiresProductCmpt(true);
             
             IProductCmptGeneration generation = (IProductCmptGeneration)policyProduct.newGeneration(new GregorianCalendar());
-            IProductCmptLink productCmptRelation = generation.newLink("CoverageType");
+            IProductCmptLink productCmptRelation = generation.newLink("Coverage");
             productCmptRelation.setTarget(coverageProductA.getQualifiedName());
-            
         }
     }
     

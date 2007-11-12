@@ -53,7 +53,7 @@ public class TestCaseEditor extends IpsObjectEditor {
     protected void addPagesForParsableSrcFile() throws CoreException {
         IIpsObjectEditorSettings settings = getSettings();
         // open the select template dialog if the templ. is missing and the data is changeable
-        if (getTestCase().findTestCaseType() == null 
+        if (getTestCase().findTestCaseType(getIpsProject()) == null 
                 && couldDataBeChangedIfTestCaseTypeWasntMissing()
                 && !IpsPlugin.getDefault().isTestMode()
                 && !settings.getBoolean(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE)) {            
@@ -110,7 +110,7 @@ public class TestCaseEditor extends IpsObjectEditor {
             datachangeable = false;
         } else {
             try {
-                datachangeable = getTestCase().findTestCaseType() != null;
+                datachangeable = getTestCase().findTestCaseType(getIpsProject()) != null;
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 datachangeable = false;
