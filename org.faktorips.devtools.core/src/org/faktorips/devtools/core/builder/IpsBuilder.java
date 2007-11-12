@@ -33,11 +33,11 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -92,16 +92,11 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             // undetected as the validation result cache gets cleared in a resource change listener.
             // it is not guaranteed that the listener is notified before the build starts!
             getIpsProject().getIpsModel().clearValidationCache();
-            getProject().deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, 0);
-            MessageList list = getIpsProject().validate();
-            createMarkersFromMessageList(getProject(), list, IpsPlugin.PROBLEM_MARKER);
-            monitor.worked(100);
-            if (!getIpsProject().canBeBuild()) {
-                IMarker marker = getProject().createMarker(IpsPlugin.PROBLEM_MARKER);
-                String msg = Messages.IpsBuilder_msgInvalidProperties;
-                updateMarker(marker, msg, IMarker.SEVERITY_ERROR);
-                return getProject().getReferencedProjects();
+            if(!checkIpsProjectBeforeBuild(getProject(), getIpsProject())){
+                monitor.done();
+                return null;
             }
+            monitor.worked(100);
             monitor.subTask(Messages.IpsBuilder_preparingBuild);
             IIpsArtefactBuilderSet ipsArtefactBuilderSet = getIpsProject().getIpsArtefactBuilderSet();
             boolean isFullBuildRequired = isFullBuildRequired(kind);
@@ -142,31 +137,19 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return getProject().getReferencedProjects();
     }
 
-    private boolean beforeBuild(IProject project, IIpsProject ipsProject, IProgressMonitor monitor, MultiStatus buildStatus){
-//        project.deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, 0);
-//        MessageList list = ipsProject.validate();
-//        createMarkersFromMessageList(project, list, IpsPlugin.PROBLEM_MARKER);
-//        monitor.worked(100);
-//        if (!ipsProject.canBeBuild()) {
-//            IMarker marker = project.createMarker(IpsPlugin.PROBLEM_MARKER);
-//            String msg = Messages.IpsBuilder_msgInvalidProperties;
-//            updateMarker(marker, msg, IMarker.SEVERITY_ERROR);
-//            return false;
-//        }
-//        monitor.subTask(Messages.IpsBuilder_preparingBuild);
-//        IIpsArtefactBuilderSet ipsArtefactBuilderSet = getIpsProject().getIpsArtefactBuilderSet();
-//        boolean isFullBuildRequired = isFullBuildRequired(kind);
-//        if (isFullBuildRequired) {
-//            kind = IncrementalProjectBuilder.FULL_BUILD;
-//        }
-//        applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new BeforeBuildProcessCommand(kind), monitor);
-//        monitor.worked(100);
+    private boolean checkIpsProjectBeforeBuild(IProject project, IIpsProject ipsProject) throws CoreException{
+        project.deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, 0);
+        MessageList list = ipsProject.validate();
+        createMarkersFromMessageList(project, list, IpsPlugin.PROBLEM_MARKER);
+        if (!getIpsProject().canBeBuild()) {
+            IMarker marker = getProject().createMarker(IpsPlugin.PROBLEM_MARKER);
+            String msg = Messages.IpsBuilder_msgInvalidProperties;
+            updateMarker(marker, msg, IMarker.SEVERITY_ERROR);
+            return false;
+        }
         return true;
     }
     
-    private void afterBuild(){
-        
-    }
     
     private boolean isFullBuildRequired(int kind) throws CoreException {
         if (kind == FULL_BUILD || kind == CLEAN_BUILD) {
@@ -407,28 +390,42 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 
             for (Iterator it = dependenciesForProjectsMap.keySet().iterator(); it.hasNext();) {
                 IIpsProject ipsProject = (IIpsProject)it.next();
+                if(!checkIpsProjectBeforeBuild(ipsProject.getProject(), ipsProject)){
+                    continue;
+                }
                 Set dependencySet = (Set)dependenciesForProjectsMap.get(ipsProject);
                 
                 //dependent ips object can be located in a different project which can have a differen artefact builder set
                 //therefor the builder set needs to be determined for each project at this point
                 ipsArtefactBuilderSet = ipsProject.getIpsArtefactBuilderSet();
                 Set alreadyBuild = new HashSet(dependencySet.size());
-                for (Iterator it2 = dependencySet.iterator(); it2.hasNext();) {
-                    Dependency dependency = (Dependency)it2.next();
-                    QualifiedNameType buildCandidate = dependency.getSource();
-                    if (alreadyBuild.contains(buildCandidate)) {
-                        continue;
+                MultiStatus currentBuildStatus = createInitialMultiStatus();
+                try{
+                    applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus, new BeforeBuildProcessCommand(INCREMENTAL_BUILD), monitor);
+                    for (Iterator it2 = dependencySet.iterator(); it2.hasNext();) {
+                        Dependency dependency = (Dependency)it2.next();
+                        QualifiedNameType buildCandidate = dependency.getSource();
+                        if (alreadyBuild.contains(buildCandidate)) {
+                            continue;
+                        }
+                        alreadyBuild.add(buildCandidate);
+                        IIpsObject ipsObject = ipsProject.findIpsObject(buildCandidate);
+                        if (ipsObject == null) {
+                            continue;
+                        }
+                        monitor.subTask(Messages.IpsBuilder_building + dependency);
+                        buildIpsSrcFile(ipsArtefactBuilderSet, ipsProject, ipsObject.getIpsSrcFile(), currentBuildStatus, monitor);
+                        updateDependencyGraph(currentBuildStatus, ipsObject.getIpsSrcFile());
+                        monitor.worked(1);
                     }
-                    alreadyBuild.add(buildCandidate);
-                    IIpsObject ipsObject = ipsProject.findIpsObject(buildCandidate);
-                    if (ipsObject == null) {
-                        continue;
-                    }
-                    monitor.subTask(Messages.IpsBuilder_building + dependency);
-                    buildIpsSrcFile(ipsArtefactBuilderSet, ipsProject, ipsObject.getIpsSrcFile(), buildStatus, monitor);
-                    updateDependencyGraph(buildStatus, ipsObject.getIpsSrcFile());
-                    monitor.worked(1);
+                    applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus, new AfterBuildProcessCommand(INCREMENTAL_BUILD), monitor);
+                } catch(Exception e){
+                    currentBuildStatus.add(new IpsStatus(IStatus.ERROR, NLS.bind(Messages.IpsBuilder_msgExceptionWhileBuildingDependentProjects, ipsProject.getName()), e));
                 }
+                if(currentBuildStatus.getSeverity() != MultiStatus.OK){
+                    ipsProject.reinitializeIpsArtefactBuilderSet();
+                }
+                buildStatus.add(currentBuildStatus);
             }
         } catch (Exception e) {
             buildStatus.add(new IpsStatus(e));

@@ -54,6 +54,8 @@ public class Messages extends NLS {
 
     public static String IpsBuilder_ipsSrcFileNotParsable;
 
+    public static String IpsBuilder_msgExceptionWhileBuildingDependentProjects;
+
     public static String IpsBuilder_subTaskMissingDerivedFolders;
 
 	public static String JetJavaSourceFileBuilder_name;
