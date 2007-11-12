@@ -98,7 +98,7 @@ public class QNameUtil {
             return new String[0];
         }
 
-        segments = StringUtils.split(qName, ".");
+        segments = StringUtils.split(qName, "."); //$NON-NLS-1$
 
         return segments;
     }

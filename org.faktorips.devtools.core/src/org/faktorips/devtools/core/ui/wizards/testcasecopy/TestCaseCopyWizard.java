@@ -57,7 +57,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
     private List packageFrgmtsCreatedByWizard = new ArrayList(5);
 
     public TestCaseCopyWizard(ITestCase sourceTestCase) {
-        super("TestCaseCopyWizard", IpsPlugin.getDefault().getDialogSettings(), 600, 800);
+        super("TestCaseCopyWizard", IpsPlugin.getDefault().getDialogSettings(), 600, 800); //$NON-NLS-1$
 
         this.sourceTestCase = sourceTestCase;
 

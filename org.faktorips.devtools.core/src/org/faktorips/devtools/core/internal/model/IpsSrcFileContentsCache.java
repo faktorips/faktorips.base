@@ -97,23 +97,23 @@ public class IpsSrcFileContentsCache {
      */
     private void processQueue() {
         if(IpsModel.TRACE_MODEL_MANAGEMENT){
-            System.out.println("IpsObjectCache.processQueue() - start");
+            System.out.println("IpsObjectCache.processQueue() - start"); //$NON-NLS-1$
         }
         // to be done
         if(IpsModel.TRACE_MODEL_MANAGEMENT){
-            System.out.println("IpsObjectCache.processQueue() - finished");
+            System.out.println("IpsObjectCache.processQueue() - finished"); //$NON-NLS-1$
         }
     }
     
     public void clear() {
         if(IpsModel.TRACE_MODEL_MANAGEMENT){
-            System.out.println("IpsObjectCache.clear() - start");
+            System.out.println("IpsObjectCache.clear() - start"); //$NON-NLS-1$
         }
         hardCache.clear();
         processQueue();
         contentsMap.clear();
         if(IpsModel.TRACE_MODEL_MANAGEMENT){
-            System.out.println("IpsObjectCache.clear() - finished");
+            System.out.println("IpsObjectCache.clear() - finished"); //$NON-NLS-1$
         }
     }
 
@@ -135,7 +135,7 @@ public class IpsSrcFileContentsCache {
             }
         }
         if(IpsModel.TRACE_MODEL_MANAGEMENT){
-            System.out.println("IpsObjectCache.get(): IpsSrcFile=" + ipsSrcFile + ", Returned object=" + contents);
+            System.out.println("IpsObjectCache.get(): IpsSrcFile=" + ipsSrcFile + ", Returned object=" + contents); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return contents;
     }
@@ -146,7 +146,7 @@ public class IpsSrcFileContentsCache {
     public void putContents(IpsSrcFileContent ipsSrcFileContents) {
         IIpsSrcFile ipsSrcFile = ipsSrcFileContents.getIpsSrcFile();
         if(IpsModel.TRACE_MODEL_MANAGEMENT){
-            System.out.println("IpsObjectCache.put(): IpsSrcFile=" + ipsSrcFile);
+            System.out.println("IpsObjectCache.put(): IpsSrcFile=" + ipsSrcFile); //$NON-NLS-1$
         }
         processQueue();
         contentsMap.put(ipsSrcFile, ipsSrcFileContents);
@@ -159,9 +159,9 @@ public class IpsSrcFileContentsCache {
      *         if there was no object for key.
      */
     public Object remove(IIpsSrcFile file){
-        System.out.println("remove " + file);
+        System.out.println("remove " + file); //$NON-NLS-1$
         if(IpsModel.TRACE_MODEL_MANAGEMENT){
-            System.out.println("IpsObjectCache.remove(): IpsSrcFile= " + file);
+            System.out.println("IpsObjectCache.remove(): IpsSrcFile= " + file); //$NON-NLS-1$
         }
         return contentsMap.remove(file);
     }

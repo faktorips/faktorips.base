@@ -56,7 +56,7 @@ public class XmlUtil {
 
     public final static void setAttributeConvertNullToEmptyString(Element el, String attribute, String value) {        
         if (value==null) {
-            el.setAttribute(attribute, "");
+            el.setAttribute(attribute, ""); //$NON-NLS-1$
         } else {
             el.setAttribute(attribute, value);
         }
@@ -64,7 +64,7 @@ public class XmlUtil {
     
     public final static String getAttributeConvertEmptyStringToNull(Element el, String attribute) {        
         String value = el.getAttribute(attribute);
-        if ("".equals(value)) {
+        if ("".equals(value)) { //$NON-NLS-1$
             return null;
         }
         return value;

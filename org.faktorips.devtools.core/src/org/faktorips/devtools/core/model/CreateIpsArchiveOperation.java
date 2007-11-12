@@ -237,7 +237,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
                 try {
                     content.close();
                 } catch (IOException e) {
-                    throw new CoreException(new IpsStatus("Unable to close steam.", e));
+                    throw new CoreException(new IpsStatus("Unable to close steam.", e)); //$NON-NLS-1$
                 }
             }
         }

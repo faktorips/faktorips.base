@@ -126,7 +126,7 @@ public class DefaultLabelProvider extends LabelProvider {
             IAttribute a = (IAttribute)element;
             StringBuffer sb = new StringBuffer();
             if (a.isDerived()) {
-                sb.append("/");
+                sb.append("/"); //$NON-NLS-1$
             }
             sb.append(a.getName());
             sb.append(" : "); //$NON-NLS-1$
@@ -159,7 +159,7 @@ public class DefaultLabelProvider extends LabelProvider {
             }
             buffer.append(QNameUtil.getUnqualifiedName(params[i].getDatatype()));
         }
-        buffer.append(") : ");
+        buffer.append(") : "); //$NON-NLS-1$
         buffer.append(QNameUtil.getUnqualifiedName(method.getDatatype()));
         return buffer.toString();
     }

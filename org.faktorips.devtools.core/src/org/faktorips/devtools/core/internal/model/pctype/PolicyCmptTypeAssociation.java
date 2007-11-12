@@ -416,8 +416,8 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     public IPolicyCmptTypeAssociation newInverseAssociation() throws CoreException {
         IPolicyCmptType targetPolicyCmptType = findTargetPolicyCmptType(getIpsProject());
         if (targetPolicyCmptType == null) {
-            throw new CoreException(new IpsStatus("Target policy component type of association " + getName()
-                    + " not found."));
+            throw new CoreException(new IpsStatus("Target policy component type of association " + getName() //$NON-NLS-1$
+                    + " not found.")); //$NON-NLS-1$
         }
         
         IPolicyCmptTypeAssociation inverseAssociation = targetPolicyCmptType.newPolicyCmptTypeAssociation();

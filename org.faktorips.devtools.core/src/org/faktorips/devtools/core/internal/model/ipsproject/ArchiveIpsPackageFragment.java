@@ -301,7 +301,7 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
 //        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
 //        IIpsArchive archive = root.getIpsArchive();
 //        return archive.getSortDefinitionContent(getName());
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**

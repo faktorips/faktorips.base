@@ -210,7 +210,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IpsObjectType type = null;
         IConfigurationElement[] configElements = extension.getConfigurationElements();
         for (int i = 0; i < configElements.length; i++) {
-            if (!configElements[i].getName().equalsIgnoreCase("ipsobjecttype")) {
+            if (!configElements[i].getName().equalsIgnoreCase("ipsobjecttype")) { //$NON-NLS-1$
                 String text = "Illegal ips object type definition" //$NON-NLS-1$
                         + extension.getUniqueIdentifier() + ". Expected Config Element <ipsobjectytpe> was " //$NON-NLS-1$
                         + configElements[i].getName();
@@ -1317,10 +1317,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IpsSrcFileContent content = new IpsSrcFileContent((IpsObject)file.getIpsObjectType().newObject(file));
 
         if (loadCompleteContent){
-            logTraceMessage("New content created", file);
+            logTraceMessage("New content created", file); //$NON-NLS-1$
             content.initContentFromFile();
         } else {
-            logTraceMessage("New properties read", file);
+            logTraceMessage("New properties read", file); //$NON-NLS-1$
             content.initRootPropertiesFromFile();
         }
         return content;
@@ -1329,20 +1329,20 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private IpsSrcFileContent checkSynchronizedContent(IpsSrcFileContent content, boolean loadCompleteContent) {
         if (loadCompleteContent) {
             if (content.isInitialized()) {
-                logTraceMessage("Content returned from cache", content.getIpsSrcFile());
+                logTraceMessage("Content returned from cache", content.getIpsSrcFile()); //$NON-NLS-1$
                 return content;
             } else {
-                logTraceMessage("Content initialized", content.getIpsSrcFile());
+                logTraceMessage("Content initialized", content.getIpsSrcFile()); //$NON-NLS-1$
                 content.initContentFromFile();
                 return content;
             }
         } else {
             // only properties are needed
             if (content.areRootPropertiesAvailable()) {
-                logTraceMessage("Properties returned from cache", content.getIpsSrcFile());
+                logTraceMessage("Properties returned from cache", content.getIpsSrcFile()); //$NON-NLS-1$
                 return content;
             } else {
-                logTraceMessage("Properties initialized", content.getIpsSrcFile());
+                logTraceMessage("Properties initialized", content.getIpsSrcFile()); //$NON-NLS-1$
                 content.initRootPropertiesFromFile();
                 return content;
             }
@@ -1535,8 +1535,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private static void logTraceMessage(String text, IIpsSrcFile ipsSrcFile) {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             IResource enclosingResource = ipsSrcFile.getEnclosingResource();
-            System.out.println(NLS.bind("IpsModel.getIpsSrcFileContent(): {0}, file={1}, FileModStamp={2}, Thread={3}",
-                    new String[] { text, "" + ipsSrcFile, "" + enclosingResource.getModificationStamp(), Thread.currentThread().getName() }));
+            System.out.println(NLS.bind("IpsModel.getIpsSrcFileContent(): {0}, file={1}, FileModStamp={2}, Thread={3}", //$NON-NLS-1$
+                    new String[] { text, "" + ipsSrcFile, "" + enclosingResource.getModificationStamp(), Thread.currentThread().getName() })); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

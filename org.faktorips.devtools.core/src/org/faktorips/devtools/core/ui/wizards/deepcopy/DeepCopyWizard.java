@@ -65,7 +65,7 @@ public class DeepCopyWizard extends ResizableWizard {
 	 * @throws IllegalArgumentException if the given type is not valid.
 	 */
 	public DeepCopyWizard(IProductCmpt product, int type) throws IllegalArgumentException {
-		super("DeepCopyWizard", IpsPlugin.getDefault().getDialogSettings(), 600, 800);
+		super("DeepCopyWizard", IpsPlugin.getDefault().getDialogSettings(), 600, 800); //$NON-NLS-1$
         setNeedsProgressMonitor(true);
 
 		if (type != TYPE_COPY_PRODUCT && type != TYPE_NEW_VERSION) {

@@ -58,7 +58,7 @@ import org.faktorips.values.EnumValue;
  * A toolkit to create controls with a common look and feel.
  */
 public class UIToolkit {
-	private static final String READONLY_FOREGROUND_COLOR = "READONLY_FOREGROUND_COLOR";
+	private static final String READONLY_FOREGROUND_COLOR = "READONLY_FOREGROUND_COLOR"; //$NON-NLS-1$
 
     private FormToolkit formToolkit;
 	
@@ -332,7 +332,7 @@ public class UIToolkit {
 		if (formToolkit != null) {
 			newLink = formToolkit.createHyperlink(parent, text, SWT.NONE);
 		} else {
-			throw new RuntimeException("Hyperlinks are only available for forms, use createLinks or createLinkOrHyperlink instead.");
+			throw new RuntimeException("Hyperlinks are only available for forms, use createLinks or createLinkOrHyperlink instead."); //$NON-NLS-1$
 		}
 		newLink.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.VERTICAL_ALIGN_END));

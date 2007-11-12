@@ -85,7 +85,7 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
 
         public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
             IIpsProject[] projects = projectSelectionPage.getProjects();
-            monitor.beginTask("Migration", projects.length * 10000);
+            monitor.beginTask("Migration", projects.length * 10000); //$NON-NLS-1$
             try {
                 for (int i = 0; i < projects.length; i++) {
                     IProgressMonitor subMonitor = new SubProgressMonitor(monitor, 10000);

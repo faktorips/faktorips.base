@@ -83,14 +83,14 @@ public class IpsObjectCache {
      */
     private void processQueue() {
         if(IpsModel.TRACE_MODEL_MANAGEMENT){
-            System.out.println("IpsObjectCache.processQueue - start");
+            System.out.println("IpsObjectCache.processQueue - start"); //$NON-NLS-1$
         }
         SoftValue sv;
         while ((sv = (SoftValue)queue.poll()) != null){
             remove(sv.key);
         }
         if(IpsModel.TRACE_MODEL_MANAGEMENT){
-            System.out.println("IpsObjectCache.processQueue - finish");
+            System.out.println("IpsObjectCache.processQueue - finish"); //$NON-NLS-1$
         }
     }
     
@@ -99,13 +99,13 @@ public class IpsObjectCache {
      */
     public void clear() {
         if(IpsModel.TRACE_MODEL_MANAGEMENT){
-            System.out.println("IpsObjectCache.clear - start");
+            System.out.println("IpsObjectCache.clear - start"); //$NON-NLS-1$
         }
         hardCache.clear();
         processQueue();
         hash.clear();
         if(IpsModel.TRACE_MODEL_MANAGEMENT){
-            System.out.println("IpsObjectCache.clear - finished");
+            System.out.println("IpsObjectCache.clear - finished"); //$NON-NLS-1$
         }
     }
 
@@ -149,7 +149,7 @@ public class IpsObjectCache {
      */
     public Object remove(Object key){
         if(IpsModel.TRACE_MODEL_MANAGEMENT){
-            System.out.println("IpsObjectCache.remove " + key);
+            System.out.println("IpsObjectCache.remove " + key); //$NON-NLS-1$
         }
         return hash.remove(key);
     }
