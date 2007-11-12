@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -469,8 +468,6 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         	String text = Messages.Association_msg_DetailToMasterAssociationMustHaveMaxCardinality1;
         	list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION, text, Message.ERROR, this, new String[] {PROPERTY_MAX_CARDINALITY, IAssociation.PROPERTY_ASSOCIATION_TYPE}));
         }
-        // TODO v2 - das muss in type implementiert werden!!!
-        new CheckForDuplicateRoleNameVisitor(list).start(getPolicyCmptType());
         validateDerivedUnion(list, getIpsProject());
         validateInverseRelation(list);
     }
@@ -586,38 +583,4 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         newElement.setAttribute(PROPERTY_INVERSE_ASSOCIATION, inverseAssociation);
     }
     
-    private class CheckForDuplicateRoleNameVisitor extends PolicyCmptTypeHierarchyVisitor {
-
-        private MessageList list;
-
-        public CheckForDuplicateRoleNameVisitor(MessageList list) {
-            super();
-            this.list = list;
-        }
-        
-        /**
-         * {@inheritDoc}
-         */
-        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
-            int numOfMsgs = list.getNoOfMessages();
-            IAssociation[] relations = currentType.getAssociations();
-            for (int j = 0; j < relations.length; j++) {
-                if (relations[j]==PolicyCmptTypeAssociation.this) {
-                    continue;
-                }
-                if (!StringUtils.isEmpty(PolicyCmptTypeAssociation.this.targetRoleSingular) && relations[j].getTargetRoleSingular().equals(targetRoleSingular)) {
-                    String text = Messages.Relation_msgSameSingularRoleName;
-                    list.add(new Message(MSGCODE_SAME_SINGULAR_ROLENAME, text, Message.ERROR, PolicyCmptTypeAssociation.this, PROPERTY_TARGET_ROLE_SINGULAR));
-                }
-                if (!StringUtils.isEmpty(PolicyCmptTypeAssociation.this.targetRolePlural) && relations[j].getTargetRolePlural().equals(targetRolePlural))  {
-                    String text = Messages.Relation_msgSamePluralRolename;
-                    list.add(new Message(MSGCODE_SAME_PLURAL_ROLENAME, text, Message.ERROR, PolicyCmptTypeAssociation.this, PROPERTY_TARGET_ROLE_PLURAL)); //$NON-NLS-1$
-                }
-            }
-            return list.getNoOfMessages()==numOfMsgs; // no new message added, continue visting/validating
-        }
-
-    }
-    
-
 }

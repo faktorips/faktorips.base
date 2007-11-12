@@ -67,7 +67,7 @@ public class PolicyCmptImplClassBuilderTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAttribute bAttr = b.newPolicyCmptTypeAttribute();
         bAttr.setAttributeType(AttributeType.CHANGEABLE);
         bAttr.setDatatype(Datatype.INTEGER.getQualifiedName());
-        bAttr.setOverwrites(true);
+        bAttr.setOverwrite(true);
         bAttr.setName("age");
 
         try{

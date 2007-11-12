@@ -431,7 +431,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         Map toExclude = new HashMap();
         for (Iterator iter = attributes.iterator(); iter.hasNext();) {
             IPolicyCmptTypeAttribute attr = (IPolicyCmptTypeAttribute)iter.next();
-            if (attr.getOverwrites()) {
+            if (attr.isOverwrite()) {
                 toExclude.put(attr.getName(), attr);
             }
         }
@@ -528,7 +528,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 override.setValueSetCopy(attributes[i].getValueSet());
                 override.setDescription(attributes[i].getDescription());
             }
-            override.setOverwrites(true);
+            override.setOverwrite(true);
             newAttributes[i] = override;
         }
         return newAttributes;
@@ -558,6 +558,5 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
 
     }
-
 
 }

@@ -283,13 +283,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                     this, PROPERTY_PRODUCT_RELEVANT));
         }
 
-        IPolicyCmptTypeAttribute[] allAttributes = getPolicyCmptType().getPolicyCmptTypeAttributes();
-        for (int i = 0; i < allAttributes.length; i++) {
-            if (allAttributes[i] != this && collideNames(allAttributes[i].getName(), name)) {
-                String txt = Messages.Attribute_msgNameCollisionLocal;
-                result.add(new Message(MSGCODE_NAME_COLLISION_LOCAL, txt, Message.ERROR, this, PROPERTY_NAME));
-            }
-        }
         if (isDerived() && isProductRelevant()) {
             if (StringUtils.isEmpty(computationMethodSignature)) {
                 String text = NLS.bind(Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureIsMissing, getName());
@@ -319,31 +312,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             } else {
                 superAttr.getValueSet().containsValueSet(valueSet, result, valueSet, null);
             }
-        } else {
-            if (superAttr != null) {
-                IPolicyCmptType type = (IPolicyCmptType)superAttr.getIpsObject();
-                String text = NLS.bind(Messages.Attribute_msgNameCollision, type != null ? type.getQualifiedName()
-                        : Messages.Attribute_msgpartUnknown, superAttr.getName());
-                result.add(new Message(MSGCODE_NAME_COLLISION, text, Message.ERROR, this, new String[] {
-                        PROPERTY_OVERWRITES, PROPERTY_NAME }));
-            }
         }
-    }
-
-    private boolean collideNames(String name1, String name2) {
-        if (name1.equals(name2)) {
-            return true;
-        }
-
-        if (Math.min(name1.length(), name2.length()) > 1) {
-            if ((name1.substring(1).equals(name2.substring(1)) && name1.substring(0, 1).equalsIgnoreCase(
-                    name2.substring(0, 1)))) {
-                return true;
-            }
-        }
-
-        return false;
-
     }
 
     /**
@@ -429,14 +398,14 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
-    public boolean getOverwrites() {
+    public boolean isOverwrite() {
         return overwrites;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setOverwrites(boolean overwrites) {
+    public void setOverwrite(boolean overwrites) {
         boolean old = this.overwrites;
         this.overwrites = overwrites;
         valueChanged(old, overwrites);

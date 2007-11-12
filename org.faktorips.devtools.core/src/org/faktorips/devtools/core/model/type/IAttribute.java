@@ -135,4 +135,11 @@ public interface IAttribute extends IIpsObjectPart {
      * Returns <code>true</code> if this attribute is a derived one, otherwise <code>false</code>.
      */
     public boolean isDerived();
+
+    /**
+     * Returns <code>true</code> if this attribute is marked to overwrite an attribute
+     * with the same name somewhere up the supertype hierarchy, <code>false</code> otherwise. 
+     */
+    public boolean isOverwrite();
+    
 }

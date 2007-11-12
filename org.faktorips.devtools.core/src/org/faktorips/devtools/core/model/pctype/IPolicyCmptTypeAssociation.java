@@ -71,16 +71,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     public final static String MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION = MSGCODE_PREFIX + "InverseAssociationInconsistentWithDerivedUnion"; //$NON-NLS-1$
     
     /**
-     * Validation message code to indicate that the relation has same plural rolename like another relation in supertype hirarchy.
-     */
-    public final static String MSGCODE_SAME_PLURAL_ROLENAME = MSGCODE_PREFIX + "RelationHasSamePluralRolename"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the relation has the same singular rolename like another relation in supertype hirachy.
-     */
-    public final static String MSGCODE_SAME_SINGULAR_ROLENAME = MSGCODE_PREFIX + "RelationHasSameSingularRolename"; //$NON-NLS-1$
-
-    /**
      * Validation message code to indicate that an association and it's inverse assoication must be marked as 
      * container relations (or not).
      */

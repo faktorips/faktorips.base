@@ -291,7 +291,7 @@ public class TypeHierarchy implements ITypeHierarchy {
         	for (int j = 0; j < attrs.length; j++) {
 				if (!overriden.containsKey(attrs[j].getName())) {
 					attributes.add(attrs[j]);
-					if (attrs[j].getOverwrites()) {
+					if (attrs[j].isOverwrite()) {
 						overriden.put(attrs[j].getName(), attrs[j]);
 					}
 				}

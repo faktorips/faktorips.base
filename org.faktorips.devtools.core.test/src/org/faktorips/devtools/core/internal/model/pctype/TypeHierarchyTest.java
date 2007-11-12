@@ -304,7 +304,7 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         
         // a1 overrides a2, a3 not overridden
         a1.setName("b");
-        a1.setOverwrites(true);
+        a1.setOverwrite(true);
 
         attributes = hierarchy.getAllAttributesRespectingOverride(pcType);
         assertEquals(2, attributes.length);
@@ -313,7 +313,7 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
         
         // a1 overrides a2, a2 overrides a3
         a3.setName("b");
-        a2.setOverwrites(true);
+        a2.setOverwrite(true);
 
         attributes = hierarchy.getAllAttributesRespectingOverride(pcType);
         assertEquals(1, attributes.length);
@@ -321,7 +321,7 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
 
         // a2 overrides a3, a1 not overridden nor overriding.
         a1.setName("x");
-        a1.setOverwrites(false);
+        a1.setOverwrite(false);
         
         attributes = hierarchy.getAllAttributesRespectingOverride(pcType);
         assertEquals(2, attributes.length);

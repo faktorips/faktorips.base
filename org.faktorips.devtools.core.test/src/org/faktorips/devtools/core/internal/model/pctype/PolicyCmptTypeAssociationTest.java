@@ -483,30 +483,6 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     	assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION));
     }
     
-	public void testValidateSamePluralRolename() throws Exception {
-		MessageList ml = new MessageList();
-		association.setDerivedUnion(true);
-		implementationAssociation.setTargetRolePlural("MotorCoverages");
-
-		ml = implementationAssociation.validate(ipsProject);
-		assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SAME_PLURAL_ROLENAME));
-		
-		association.setTargetRolePlural(implementationAssociation.getTargetRolePlural());
-		ml = implementationAssociation.validate(ipsProject);
-		assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SAME_PLURAL_ROLENAME));
-	}
-
-	public void testValidateSameSingularRolename() throws Exception {
-		MessageList ml = new MessageList();
-
-		ml = implementationAssociation.validate(ipsProject);
-		assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SAME_SINGULAR_ROLENAME));
-		
-		implementationAssociation.setTargetRoleSingular(association.getTargetRoleSingular());
-		ml = implementationAssociation.validate(ipsProject);
-		assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SAME_SINGULAR_ROLENAME));
-	}
-	
 	public void testValidateReverseRelationOfContainerRelationHasToBeContainerRelationToo() throws Exception {
 		association.setAssociationType(AssociationType.ASSOCIATION);
         IPolicyCmptTypeAssociation rel2 = targetType.newPolicyCmptTypeAssociation();

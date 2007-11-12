@@ -145,7 +145,6 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertNull(attribute.findComputationMethod(ipsProject));
         
         method.newParameter("TestPolicy", "policy");
-        IProductCmptType type2 = ipsProject.findProductCmptType("TestProduct");
 
         assertEquals(method, attribute.findComputationMethod(ipsProject));
     }
@@ -222,7 +221,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertEquals(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL, attribute.getAttributeType());
         assertEquals("42EUR", attribute.getDefaultValue());
         assertNotNull(attribute.getValueSet());
-        assertFalse(attribute.getOverwrites());
+        assertFalse(attribute.isOverwrite());
         
         attribute.initFromXml((Element)nl.item(1));
         assertEquals(2, attribute.getId());
@@ -231,7 +230,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertEquals(EnumValueSet.class,attribute.getValueSet().getClass());
 
         attribute.initFromXml((Element)nl.item(2));
-        assertTrue(attribute.getOverwrites());
+        assertTrue(attribute.isOverwrite());
     }
 
     /*
@@ -245,7 +244,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setProductRelevant(true);
         attribute.setAttributeType(AttributeType.CONSTANT);
         attribute.setDefaultValue("18");
-        attribute.setOverwrites(false);
+        attribute.setOverwrite(false);
         attribute.setValueSetType(ValueSetType.RANGE);
         RangeValueSet set = (RangeValueSet)attribute.getValueSet();
         set.setLowerBound("unten");
@@ -260,7 +259,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertEquals("decimal", copy.getDatatype());
         assertEquals("computePremium", copy.getComputationMethodSignature());
         assertTrue(copy.isProductRelevant());
-        assertFalse(copy.getOverwrites());
+        assertFalse(copy.isOverwrite());
         assertEquals(AttributeType.CONSTANT, copy.getAttributeType());
         assertEquals("18", copy.getDefaultValue());
         assertEquals("unten",((IRangeValueSet)copy.getValueSet()).getLowerBound());
@@ -293,11 +292,11 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertEquals("x", vekt[2]);
         
         // and now an attribute which overwrites
-        attribute.setOverwrites(true);
+        attribute.setOverwrite(true);
         element = attribute.toXml(this.newDocument());
         copy = pcType.newPolicyCmptTypeAttribute();
         copy.initFromXml(element);
-        assertTrue(attribute.getOverwrites());
+        assertTrue(attribute.isOverwrite());
     }
     
     /**
@@ -330,7 +329,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     	MessageList ml = attribute.validate(ipsProject);
     	assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
     	
-    	attribute.setOverwrites(true);
+    	attribute.setOverwrite(true);
     	ml = attribute.validate(ipsProject);
     	assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
     	
@@ -341,21 +340,6 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     	
     	ml = attribute.validate(ipsProject);
     	assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
-    }
-
-    public void testValidate_nameCollision() throws Exception {
-    	IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "sup.SuperType");
-    	IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute();
-    	superAttr.setName("name");
-    	pcType.setSupertype(supertype.getQualifiedName());    	
-    	attribute.setName("name");
-    	
-    	MessageList ml = attribute.validate(ipsProject);
-    	assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NAME_COLLISION));
-    	
-    	attribute.setName("abc");
-    	ml = attribute.validate(ipsProject);
-    	assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NAME_COLLISION));
     }
 
 }

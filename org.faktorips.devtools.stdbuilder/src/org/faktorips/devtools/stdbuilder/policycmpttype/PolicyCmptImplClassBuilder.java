@@ -1616,7 +1616,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private void generateInitializationForOverrideAttributes(JavaCodeFragmentBuilder builder) throws CoreException{
         IPolicyCmptTypeAttribute[] attributes = getPcType().getPolicyCmptTypeAttributes();
         for (int i = 0; i < attributes.length; i++) {
-            if(attributes[i].isChangeable() && attributes[i].getOverwrites() && attributes[i].validate(getIpsProject()).isEmpty()){
+            if(attributes[i].isChangeable() && attributes[i].isOverwrite() && attributes[i].validate(getIpsProject()).isEmpty()){
                 DatatypeHelper helper = getPcType().getIpsProject().getDatatypeHelper(attributes[i].getValueDatatype());
                 JavaCodeFragment initialValueExpression = helper.newInstance(attributes[i].getDefaultValue());
                 interfaceBuilder.generateCallToMethodSetPropertyValue(attributes[i], helper, initialValueExpression, builder);
@@ -1641,7 +1641,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         for (int i = 0; i < attributes.length; i++) {
             IPolicyCmptTypeAttribute a = attributes[i];
             if (!a.validate(getIpsProject()).containsErrorMsg()) {
-                if (a.isProductRelevant() && a.isChangeable() && !a.getOverwrites()) {
+                if (a.isProductRelevant() && a.isChangeable() && !a.isOverwrite()) {
                     selectedValues.add(a);
                 }
             }
@@ -1918,7 +1918,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             IPolicyCmptTypeAttribute a = attributes[i];
             if (a.getAttributeType()==AttributeType.DERIVED_ON_THE_FLY 
                     || a.getAttributeType()==AttributeType.CONSTANT
-                    || a.getOverwrites()
+                    || a.isOverwrite()
                     || !a.isValid()) {
                 continue;
             }

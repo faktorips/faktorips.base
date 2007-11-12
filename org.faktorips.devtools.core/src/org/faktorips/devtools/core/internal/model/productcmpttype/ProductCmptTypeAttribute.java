@@ -70,6 +70,13 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     /**
      * {@inheritDoc}
      */
+    public boolean isOverwrite() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public IIpsElement[] getChildren() {
         if (valueSet != null) {
             return new IIpsElement[] { valueSet };

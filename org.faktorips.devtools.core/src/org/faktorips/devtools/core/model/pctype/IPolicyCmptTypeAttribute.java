@@ -40,7 +40,7 @@ public interface IPolicyCmptTypeAttribute extends org.faktorips.devtools.core.mo
     
     public final static String PROPERTY_FORMULAPARAM_NAME = "param.name"; //$NON-NLS-1$
     public final static String PROPERTY_FORMULAPARAM_DATATYPE = "param.datatype"; //$NON-NLS-1$
-    public final static String PROPERTY_OVERWRITES = "overwrites"; //$NON-NLS-1$
+    public final static String PROPERTY_OVERWRITES = "overwrite"; //$NON-NLS-1$
     
     /**
 	 * Validation message code to indicate that an attribute can't be product
@@ -61,21 +61,6 @@ public interface IPolicyCmptTypeAttribute extends org.faktorips.devtools.core.mo
      */
     public final static String MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE = MSGCODE_PREFIX
             + "CompuationMethodHasWrongDatatype"; //$NON-NLS-1$
-
-    /**
-	 * Validation message code to indicate that the attribute has a name equal to 
-	 * a name of an attribute somewhere in the supertype hierarchy but is not marked
-	 * to overwrite it. 
-	 */
-	public final static String MSGCODE_NAME_COLLISION = MSGCODE_PREFIX
-			+ "NameCollsion"; //$NON-NLS-1$
-    
-    /**
-	 * Validation message code to indicate that the attribute has a name equal to 
-	 * a name of an attribute in the same type. 
-	 */
-	public final static String MSGCODE_NAME_COLLISION_LOCAL = MSGCODE_PREFIX
-			+ "NameCollsionLocal"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the computation method must be specified but it is not.
@@ -209,18 +194,12 @@ public interface IPolicyCmptTypeAttribute extends org.faktorips.devtools.core.mo
 	 */
 	public void setValueSetCopy(IValueSet source);
 
-	/**
-     * Returns <code>true</code> if this attribute is marked to overwrite an attribute
-     * with the same name somewhere up the supertype hierarchy, <code>false</code> otherwise. 
-     */
-    public boolean getOverwrites();
-    
     /**
      * <code>true</code> to indicate that this attribute overwrites an attribute
      * with the same name somewerhe up the supertype hierarchy or <code>false</code>
      * to let this attribute be a new one.
      */
-    public void setOverwrites(boolean overwrites);
+    public void setOverwrite(boolean overwrites);
     
     /**
      * Returns the first attribute found with the same name in the supertypes hierarchy or

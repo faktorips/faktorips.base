@@ -51,6 +51,8 @@ public class Messages extends NLS {
     public static String Attribute_msg_ValueTypeMismatch;
     public static String Attribute_msg_DefaultNotInValueset;
     
+    public static String DuplicatePropertyNameValidator_msg;
+    
     public static String Type_msg_AbstractMissmatch;
     public static String Type_msg_cycleInTypeHierarchy;
     public static String Type_msg_MustOverrideAbstractMethod;

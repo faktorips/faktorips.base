@@ -116,7 +116,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         assertEquals(a2, missing[1]);
         
         a1.setName("a2");
-        a1.setOverwrites(true);
+        a1.setOverwrite(true);
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
         assertFalse(delta.isEmpty());
         missing = delta.getAttributesWithMissingConfigElements();
@@ -124,7 +124,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         assertEquals(a1, missing[0]);
 
         a1.setName("a1");
-        a1.setOverwrites(false);
+        a1.setOverwrite(false);
         
         IConfigElement ce = generation.newConfigElement();
         ce.setPolicyCmptTypeAttribute("a2");

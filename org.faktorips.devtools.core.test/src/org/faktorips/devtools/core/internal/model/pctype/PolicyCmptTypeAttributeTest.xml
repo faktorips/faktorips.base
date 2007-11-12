@@ -23,7 +23,7 @@
 		</ValueSet>
 	</Attribute>
 
-	<Attribute id="99" name="slave" datatype="money" productRelevant="false" attributeType="computed" overwrites="true">
+	<Attribute id="99" name="slave" datatype="money" productRelevant="false" attributeType="computed" overwrite="true">
 		<DefaultValue isNull="true"/>
 		<ValueSet>
 			<Enum>

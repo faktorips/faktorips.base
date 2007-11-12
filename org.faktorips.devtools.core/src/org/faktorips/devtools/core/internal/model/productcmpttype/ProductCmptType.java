@@ -30,6 +30,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.core.internal.model.type.Type;
 import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -88,6 +89,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     protected IpsObjectPartCollection createCollectionForAssociations() {
         return new IpsObjectPartCollection(this, ProductCmptTypeAssociation.class, IProductCmptTypeAssociation.class, "Association"); //$NON-NLS-1$
+    }
+    
+    protected Iterator getIteratorForTableStructureUsages() {
+        return tableStructureUsages.iterator();
     }
 
     /**
@@ -394,7 +399,14 @@ public class ProductCmptType extends Type implements IProductCmptType {
             }
         }
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    protected DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject) {
+        return new MyDuplicatePropertyNameValidator(ipsProject);
+    }
+
     private void validatePolicyCmptTypeReference(IProductCmptType supertype, IIpsProject ipsProject, MessageList list) throws CoreException {
         if (supertype!=null && !supertype.isConfigurationForPolicyCmptType()) {
             String text = Messages.ProductCmptType_TypeCantConfigureAPolicyCmptTypeIfSupertypeDoesNot;
@@ -578,7 +590,31 @@ public class ProductCmptType extends Type implements IProductCmptType {
         private int size() {
             return myAttributes.size() + myTableStructureUsages.size() + myFormulaSignatures.size() + myPolicyCmptTypeAttributes.size();
         }
-        
     }
 
+    class MyDuplicatePropertyNameValidator extends DuplicatePropertyNameValidator {
+
+        public MyDuplicatePropertyNameValidator(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IType currentType) throws CoreException {
+            super.visit(currentType);
+            ProductCmptType productCmptType = (ProductCmptType)currentType;
+            for (Iterator it=productCmptType.getIteratorForMethods(); it.hasNext(); ) {
+                IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
+                if (method.isFormulaSignatureDefinition()) {
+                    add(method.getFormulaName(), IProductCmptTypeMethod.PROPERTY_FORMULA_NAME, method);
+                }
+            }
+            for (Iterator it=productCmptType.getIteratorForTableStructureUsages(); it.hasNext(); ) {
+                ITableStructureUsage tsu = (ITableStructureUsage)it.next();
+                add(tsu.getRoleName(), ITableStructureUsage.PROPERTY_ROLENAME, tsu);
+            }
+            return true;
+        }        
+    }
 }

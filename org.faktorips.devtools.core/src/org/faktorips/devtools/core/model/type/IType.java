@@ -66,11 +66,15 @@ public interface IType extends IIpsObject, Datatype {
     public final static String MSGCODE_ABSTRACT_MISSING = MSGCODE_PREFIX + "AbstractMissing"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that a derived union exists in the type's supertype
-     * hierarchy that must be implemented, or the type must also be abstract.
+     * Validation message code to indicate that at least two properties (attriute, associations) share the same name.
+     */
+    public final static String MSGCODE_DUPLICATE_PROPERTY_NAME = MSGCODE_PREFIX + "DuplicatePropertyName"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that a property name is used at least twice.
      */
     public final static String MSGCODE_MUST_SPECIFY_DERIVED_UNION = MSGCODE_PREFIX + "MustSpecifyDerivedUnion"; //$NON-NLS-1$
-    
+
     /**
      * Returns <code>true</code> if this is an abstract type, <code>false</code> otherwise.
      */

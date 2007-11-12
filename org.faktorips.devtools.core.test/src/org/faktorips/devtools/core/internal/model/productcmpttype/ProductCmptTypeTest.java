@@ -33,7 +33,9 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.MessageList;
@@ -70,6 +72,52 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
     protected void tearDown() throws Exception {
         super.tearDown();
         ipsProject.getIpsModel().removeChangeListener(this);
+    }
+    
+    /**
+     * Additional, product component type specific tests
+     */
+    public void testValidate_DuplicatePropertyName() throws CoreException {
+        IAttribute attr1 = productCmptType.newAttribute();
+        attr1.setName("property");
+
+        // table structure usage in same type
+        ITableStructureUsage tsu1 = productCmptType.newTableStructureUsage();
+        tsu1.setRoleName("property");
+        MessageList result = productCmptType.validate(ipsProject);
+        assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+        
+        tsu1.setRoleName("table1");
+        result = productCmptType.validate(ipsProject);
+        assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+        
+        // table structure usage in supertype
+        ITableStructureUsage tsu2 = superProductCmptType.newTableStructureUsage();
+        tsu2.setRoleName("property");
+        result = productCmptType.validate(ipsProject);
+        assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+        
+        tsu2.setRoleName("table2");
+        result = productCmptType.validate(ipsProject);
+        assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+        
+        // formula in same type
+        IProductCmptTypeMethod formula1 = productCmptType.newFormulaSignature("property");
+        result = productCmptType.validate(ipsProject);
+        assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+
+        formula1.setFormulaName("formula1");
+        result = productCmptType.validate(ipsProject);
+        assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+        
+        // formula in supertype
+        IProductCmptTypeMethod formula2 = superProductCmptType.newFormulaSignature("property");
+        result = productCmptType.validate(ipsProject);
+        assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+
+        formula2.setFormulaName("formula2");
+        result = productCmptType.validate(ipsProject);
+        assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
     }
     
     public void testValidateMustHaveSameValueForConfigurationForPolicyCmptType() throws CoreException {

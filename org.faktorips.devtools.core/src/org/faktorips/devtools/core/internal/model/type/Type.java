@@ -451,6 +451,9 @@ public abstract class Type extends BaseIpsObject implements IType {
      */
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
+        DuplicatePropertyNameValidator duplicateValidator = createDuplicatePropertyNameValidator(ipsProject);
+        duplicateValidator.start(this);
+        duplicateValidator.addMessagesForDuplicates(list);
         if (hasSupertype()) {
             validateSupertype(list, ipsProject);
         }
@@ -470,7 +473,10 @@ public abstract class Type extends BaseIpsObject implements IType {
                 }
             }
         }
-        
+    }
+    
+    protected DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject) {
+        return new DuplicatePropertyNameValidator(ipsProject);
     }
 
     private void validateSupertype(MessageList list, IIpsProject ipsProject) throws CoreException {

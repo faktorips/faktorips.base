@@ -73,7 +73,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         }
         AttributeType type = attribute.getAttributeType();
         if (type == AttributeType.CHANGEABLE) {
-            if (attribute.getOverwrites()) {
+            if (attribute.isOverwrite()) {
                 return;
             }
             generateCodeForChangeableAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
@@ -83,7 +83,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         } else if (type == AttributeType.DERIVED_ON_THE_FLY) {
             generateCodeForDerivedAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
         } else if (type == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL) {
-            if (attribute.getOverwrites()) {
+            if (attribute.isOverwrite()) {
                 return;
             }
             generateCodeForComputedAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);

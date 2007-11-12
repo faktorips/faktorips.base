@@ -395,7 +395,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        if(attribute.getOverwrites()){
+        if(attribute.isOverwrite()){
             return;
         }
         generateMethodGetPropertyValue(attribute, datatypeHelper, methodsBuilder);
@@ -409,7 +409,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        if(attribute.getOverwrites()){
+        if(attribute.isOverwrite()){
             return;
         }
         generateMethodGetPropertyValue(attribute, datatypeHelper, methodsBuilder);
@@ -1000,7 +1000,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     }
     
     public void generateFieldConstantForProperty(IPolicyCmptTypeAttribute a, Datatype datatype, JavaCodeFragmentBuilder membersBuilder){
-        if(a.getOverwrites() || (a.isProductRelevant() && a.getAttributeType()==AttributeType.CONSTANT)) {
+        if(a.isOverwrite() || (a.isProductRelevant() && a.getAttributeType()==AttributeType.CONSTANT)) {
             return;
         }
         appendLocalizedJavaDoc("FIELD_PROPERTY_NAME", a.getName(), a, membersBuilder);

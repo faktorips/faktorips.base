@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.type;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +36,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 
 /**
  * 
@@ -49,6 +51,82 @@ public class TypeTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = newIpsProject();
         type = newProductCmptType(ipsProject, "MotorProduct");
+    }
+    
+    public void testValidate_DuplicatePropertyName() throws CoreException {
+        type = newPolicyCmptType(ipsProject, "Policy");
+        IType supertype = newPolicyCmptType(ipsProject, "Supertype");
+        type.setSupertype(supertype.getQualifiedName());
+        
+        IAttribute attr1 = type.newAttribute();
+        attr1.setName("property");
+        
+        // attribute in same type
+        IAttribute attr2 = type.newAttribute();
+        attr2.setName("property");
+        
+        MessageList result = type.validate(ipsProject);
+        Message msg = result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME);
+        assertNotNull(msg);
+        ObjectProperty[] op = msg.getInvalidObjectProperties();
+        List invalidObjects = new ArrayList();
+        for (int i = 0; i < op.length; i++) {
+            invalidObjects.add(op[i].getObject());
+        }
+        assertEquals(2, invalidObjects.size());
+        assertTrue(invalidObjects.contains(attr1)); // this has once been a bug
+        assertTrue(invalidObjects.contains(attr2));
+        
+        attr2.setName("attr2");
+        result = type.validate(ipsProject);
+        assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+        
+        // attribute in supertype
+        IAttribute attr3 = supertype.newAttribute();
+        attr3.setName("property");
+        result = type.validate(ipsProject);
+        assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+        attr3.setName("attr3");
+        result = type.validate(ipsProject);
+        assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+        
+        // association (singular) in same type
+        IAssociation association1 = type.newAssociation();
+        association1.setTargetRoleSingular("property");
+        association1.setMaxCardinality(1);
+        result = type.validate(ipsProject);
+        assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+        association1.setTargetRoleSingular("role1");
+        result = type.validate(ipsProject);
+        assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+        
+        // association (plural) in same type
+        association1.setTargetRolePlural("property");
+        association1.setMaxCardinality(10);
+        result = type.validate(ipsProject);
+        assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+        association1.setTargetRolePlural("rolePlural");
+        result = type.validate(ipsProject);
+        assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+        
+        // association (singular) in supertype
+        IAssociation association2 = supertype.newAssociation();
+        association2.setTargetRoleSingular("property");
+        association2.setMaxCardinality(1);
+        result = type.validate(ipsProject);
+        assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+        association2.setTargetRoleSingular("role2");
+        result = type.validate(ipsProject);
+        assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+        
+        // association (plural) in supertype
+        association1.setTargetRolePlural("property");
+        association1.setMaxCardinality(10);
+        result = type.validate(ipsProject);
+        assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+        association1.setTargetRolePlural("rolePlural2");
+        result = type.validate(ipsProject);
+        assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
     }
     
     public void testSetAbstract() {
@@ -98,7 +176,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
     }
     
-    public void testValidateMustImplementContainerRelation() throws Exception {
+    public void testValidate_MustImplementDerivedUnion() throws Exception {
         IPolicyCmptType target = newPolicyCmptType(ipsProject, "TargetType");
         
         MessageList ml = type.validate(ipsProject);
