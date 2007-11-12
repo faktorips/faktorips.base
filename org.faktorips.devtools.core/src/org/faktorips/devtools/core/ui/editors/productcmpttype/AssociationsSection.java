@@ -40,7 +40,7 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 public class AssociationsSection extends SimpleIpsPartsSection {
 
     public AssociationsSection(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
-        super(pdObject, parent, "Associations", toolkit);
+        super(pdObject, parent, Messages.AssociationsSection_title, toolkit);
     }
 
     /**

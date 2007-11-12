@@ -59,7 +59,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
      * @param title
      */
     public AssociationEditDialog(IProductCmptTypeAssociation association, Shell parentShell) {
-        super(association, parentShell, "Edit Association", true );
+        super(association, parentShell, Messages.AssociationEditDialog_title, true );
         this.association = association;
         this.pmoAssociation = new PmoAssociation(association);
         extFactory = new ExtensionPropertyControlFactory(association.getClass());
@@ -72,7 +72,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         TabFolder folder = (TabFolder)parent;
         
         TabItem firstPage = new TabItem(folder, SWT.NONE);
-        firstPage.setText("Properties");
+        firstPage.setText(Messages.AssociationEditDialog_properties);
         firstPage.setControl(createFirstPage(folder));
         
         createDescriptionTabItem(folder);
@@ -83,8 +83,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     	Composite panel = createTabItemComposite(folder, 1, false);
 
         createExtensionArea(panel, IExtensionPropertyDefinition.POSITION_TOP);
-        createGenerellGroup(uiToolkit.createGroup(panel, "Generel"));
-        createDerivedUnionGroup(uiToolkit.createGroup(panel, "Derived union"));
+        createGenerellGroup(uiToolkit.createGroup(panel, Messages.AssociationEditDialog_generalGroup));
+        createDerivedUnionGroup(uiToolkit.createGroup(panel, Messages.AssociationEditDialog_derivedUnionGroup));
         createExtensionArea(panel, IExtensionPropertyDefinition.POSITION_BOTTOM);
         
         extFactory.bind(bindingContext);
@@ -105,18 +105,18 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
 
         // target
-        uiToolkit.createFormLabel(workArea, "Target");
+        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_targetLabel);
         ProductCmptType2RefControl targetControl = new ProductCmptType2RefControl(association.getIpsProject(), workArea, uiToolkit, true);
         bindingContext.bindContent(targetControl, association, IProductCmptTypeAssociation.PROPERTY_TARGET);
         targetControl.setFocus();
         
         // aggregation kind
-        uiToolkit.createFormLabel(workArea, "Type:");
+        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_typeLabel);
         Combo typeCombo = uiToolkit.createCombo(workArea, IProductCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
         bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE, AssociationType.getEnumType());
         
         // role singular
-        uiToolkit.createFormLabel(workArea, "Target role singular:");
+        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_roleSingularLabel);
         final Text targetRoleSingularText = uiToolkit.createText(workArea);
         bindingContext.bindContent(targetRoleSingularText, association, IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
         targetRoleSingularText.addFocusListener(new FocusAdapter() {
@@ -128,7 +128,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         });
         
         // role plural
-        uiToolkit.createFormLabel(workArea, "Target role plural:");
+        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_rolePluralLabel);
         final Text targetRolePluralText = uiToolkit.createText(workArea);
         bindingContext.bindContent(targetRolePluralText, association, IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
         targetRolePluralText.addFocusListener(new FocusAdapter() {
@@ -141,14 +141,14 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         });
         
         // min cardinality
-        uiToolkit.createFormLabel(workArea, "Min Cardinality");
+        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_minCardLabel);
         Text minCardinalityText = uiToolkit.createText(workArea);
         CardinalityField cardinalityField = new CardinalityField(minCardinalityText);
         cardinalityField.setSupportsNull(false);
         bindingContext.bindContent(cardinalityField, association, IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
         
         // max cardinality
-        uiToolkit.createFormLabel(workArea, "Max Cardinality");
+        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_maxCardLabel);
         Text maxCardinalityText = uiToolkit.createText(workArea);
         cardinalityField = new CardinalityField(maxCardinalityText);
         cardinalityField.setSupportsNull(false);
@@ -156,16 +156,16 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createDerivedUnionGroup(Composite workArea) {
-        Checkbox derivedUnion = uiToolkit.createCheckbox(workArea, "This association is a derived union");
+        Checkbox derivedUnion = uiToolkit.createCheckbox(workArea, Messages.AssociationEditDialog_derivedUnionCheckbox);
         bindingContext.bindContent(derivedUnion, association, IProductCmptTypeAssociation.PROPERTY_DERIVED_UNION);
         
-        Checkbox subsetCheckbox = uiToolkit.createCheckbox(workArea, "This association defines a subset of a derived union");
+        Checkbox subsetCheckbox = uiToolkit.createCheckbox(workArea, Messages.AssociationEditDialog_subsetCheckbox);
         bindingContext.bindContent(subsetCheckbox, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
 
         Composite temp = uiToolkit.createLabelEditColumnComposite(workArea);
         temp.setLayoutData(new GridData(GridData.FILL_BOTH));
         
-        uiToolkit.createFormLabel(temp, "Derived union:");
+        uiToolkit.createFormLabel(temp, Messages.AssociationEditDialog_derivedUnionLabel);
         Text unionText = uiToolkit.createText(temp);
         bindingContext.bindContent(unionText, association, IProductCmptTypeAssociation.PROPERTY_SUBSETTED_DERIVED_UNION);
         bindingContext.bindEnabled(unionText, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
@@ -177,7 +177,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     
     public class PmoAssociation extends IpsObjectPartPmo {
 
-        public final static String PROPERTY_SUBSET = "subset";
+        public final static String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
 
         private IProductCmptTypeAssociation association;
         private boolean subset;
@@ -195,7 +195,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         public void setSubset(boolean newValue) {
             subset = newValue;
             if (!subset) {
-                association.setSubsettedDerivedUnion("");
+                association.setSubsettedDerivedUnion(""); //$NON-NLS-1$
             }
             notifyListeners();
         }

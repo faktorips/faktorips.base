@@ -78,7 +78,7 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog{
     private Button btnDown;
     
     public TblsStructureUsageEditDialog(ITableStructureUsage tblStructureUsage, Shell parentShell) {
-        super(tblStructureUsage, parentShell, "Edit Table Structure Usage", true );
+        super(tblStructureUsage, parentShell, Messages.TblsStructureUsageEditDialog_title, true );
         this.tblStructureUsage = tblStructureUsage;
     }   
     
@@ -89,7 +89,7 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog{
         TabFolder folder = (TabFolder)parent;
         
         TabItem page = new TabItem(folder, SWT.NONE);
-        page.setText("Properties");
+        page.setText(Messages.TblsStructureUsageEditDialog_propertiesPageTtitle);
         page.setControl(createGeneralPage(folder));
 
         createDescriptionTabItem(folder);
@@ -130,7 +130,7 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog{
         table.setLinesVisible (true);
 
         TableColumn column = new TableColumn(table, SWT.LEFT);
-        column.setText("Table Structure");
+        column.setText(Messages.TblsStructureUsageEditDialog_tableStructure);
         
         // Create the viewer and connect it to the view
         viewer = new TableViewer(table);
@@ -158,10 +158,10 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog{
     private void createButtons(Composite composite) {
         Composite buttonComposite = uiToolkit.createGridComposite(composite, 1, true, false);
         buttonComposite.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
-        btnAdd = uiToolkit.createButton(buttonComposite, "Add");
-        btnRemove = uiToolkit.createButton(buttonComposite, "Remove");
-        btnUp = uiToolkit.createButton(buttonComposite, "Up");
-        btnDown = uiToolkit.createButton(buttonComposite, "Down");
+        btnAdd = uiToolkit.createButton(buttonComposite, Messages.TblsStructureUsageEditDialog_addButton);
+        btnRemove = uiToolkit.createButton(buttonComposite, Messages.TblsStructureUsageEditDialog_removeButton);
+        btnUp = uiToolkit.createButton(buttonComposite, Messages.TblsStructureUsageEditDialog_upButton);
+        btnDown = uiToolkit.createButton(buttonComposite, Messages.TblsStructureUsageEditDialog_downButton);
 
         btnAdd.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         btnRemove.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -278,10 +278,10 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog{
         Composite c = createTabItemComposite(folder, 1, false);
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         
-        uiToolkit.createFormLabel(workArea, "Rolename:");
+        uiToolkit.createFormLabel(workArea, Messages.TblsStructureUsageEditDialog_rolenameLabel);
         Text nameText = uiToolkit.createText(workArea);            
         
-        uiToolkit.createFormLabel(workArea, "Table content required:");
+        uiToolkit.createFormLabel(workArea, Messages.TblsStructureUsageEditDialog_contentRequiredLabel);
         Checkbox mandatoryTableContent = uiToolkit.createCheckbox(workArea);     
         
         nameField = new TextField(nameText);
@@ -289,7 +289,7 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog{
 
         uiToolkit.createVerticalSpacer(c, 10);
         
-        Group grp = uiToolkit.createGridGroup(c, "Table Structures:", 1, true);
+        Group grp = uiToolkit.createGridGroup(c, Messages.TblsStructureUsageEditDialog_tableStructuresGroup, 1, true);
         createTableStructureComposite(grp);
         
         return c;
@@ -308,8 +308,8 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog{
     private ITableStructure selectTableStructureByDialog() throws CoreException {
         ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(),
                 new DefaultLabelProvider());
-        selectDialog.setTitle("Select Table Structure");
-        selectDialog.setMessage("Select a table structure for the usage");
+        selectDialog.setTitle(Messages.TblsStructureUsageEditDialog_selectStructurDialogTitle);
+        selectDialog.setMessage(Messages.TblsStructureUsageEditDialog_selectStructurDialogMessage);
 
         IIpsObject[] tableStructures = tblStructureUsage.getIpsProject().findIpsObjects(IpsObjectType.TABLE_STRUCTURE);
         selectDialog.setElements(tableStructures);

@@ -42,7 +42,6 @@ import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.TableElementValidator;
 import org.faktorips.devtools.core.ui.controls.ValueSetEditControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
-import org.faktorips.devtools.core.ui.editors.pctype.Messages;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -77,7 +76,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
      * @param windowTitle
      */
     public AttributeEditDialog(IProductCmptTypeAttribute a, Shell parentShell) {
-        super(a, parentShell, "Edit Attribute", true);
+        super(a, parentShell, Messages.AttributeEditDialog_title, true);
         this.attribute = a;
         this.ipsProject = attribute.getIpsProject();
         try {
@@ -96,7 +95,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         folder = (TabFolder)parent;
         
         TabItem generalItem = new TabItem(folder, SWT.NONE);
-        generalItem.setText("Generel");
+        generalItem.setText(Messages.AttributeEditDialog_general);
         generalItem.setControl(createGeneralPage(folder));
 
         createDescriptionTabItem(folder);
@@ -109,22 +108,22 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         Composite c = createTabItemComposite(folder, 1, false);
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
 
-        uiToolkit.createFormLabel(workArea, "Name:");
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_nameLabel);
         Text nameText = uiToolkit.createText(workArea);
         nameText.setFocus();
         bindingContext.bindContent(nameText, attribute, IProductCmptTypeAttribute.PROPERTY_NAME);
         
-        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelDatatype);
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_datatypeLabel);
         DatatypeRefControl datatypeControl = uiToolkit.createDatatypeRefEdit(attribute.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
         bindingContext.bindContent(datatypeControl, attribute, IProductCmptTypeAttribute.PROPERTY_DATATYPE);
 
-        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelModifier);
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_modifierLabel);
         Combo modifierCombo = uiToolkit.createCombo(workArea, Modifier.getEnumType());
         bindingContext.bindContent(modifierCombo, attribute, IProductCmptTypeAttribute.PROPERTY_MODIFIER, Modifier.getEnumType());
         
-        uiToolkit.createFormLabel(workArea, "Default value:");
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_defaultvalueLabel);
         defaultEditFieldPlaceholder = uiToolkit.createComposite(workArea);
         defaultEditFieldPlaceholder.setLayout(uiToolkit.createNoMarginGridLayout(1, true));
         defaultEditFieldPlaceholder.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -136,7 +135,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         
         IpsObjectUIController uiController = new IpsObjectUIController(attribute);
         Composite temp = uiToolkit.createGridComposite(c, 1, true, false);
-        uiToolkit.createLabel(temp, "In this section you define the set of allowed values for this attribute. All product components\nthat are instances of this type, must have an attribute value that is part of the set.");
+        uiToolkit.createLabel(temp, Messages.AttributeEditDialog_valueSetSection);
         uiToolkit.createVerticalSpacer(temp, 8);
         valueSetEditControl = new ValueSetEditControl(temp, uiToolkit,  uiController, attribute, new Validator());
         updateValueSetTypes();

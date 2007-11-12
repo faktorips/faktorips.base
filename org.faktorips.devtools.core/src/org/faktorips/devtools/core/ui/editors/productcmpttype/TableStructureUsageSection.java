@@ -47,7 +47,7 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
             IProductCmptType productCmptType,
             Composite parent,
             UIToolkit toolkit) {
-        super(productCmptType, parent, "Table Structure Usages", toolkit);
+        super(productCmptType, parent, Messages.TableStructureUsageSection_title, toolkit);
         this.productCmptType = productCmptType;
     }
 

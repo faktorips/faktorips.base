@@ -170,7 +170,7 @@ abstract public class DefaultModelDescriptionPage extends Page {
 
         excomposite.setClient(client);
 
-        Label spacer = toolkit.createLabel(parent, "");
+        Label spacer = toolkit.createLabel(parent, ""); //$NON-NLS-1$
         TableWrapData layoutData = new TableWrapData();
         layoutData.heightHint = 10;
         spacer.setLayoutData(layoutData);

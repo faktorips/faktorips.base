@@ -59,12 +59,12 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
      * {@inheritDoc}
      */
     protected void createAdditionalControlsOnGeneralPage(Composite parent, UIToolkit toolkit) {
-        Composite group = toolkit.createGroup(parent, "Formula Specification");
-        AbstractCheckbox checkbox = toolkit.createCheckbox(group, "Is formula signature definition");
+        Composite group = toolkit.createGroup(parent, Messages.ProductCmptTypeMethodEditDialog_formulaGroup);
+        AbstractCheckbox checkbox = toolkit.createCheckbox(group, Messages.ProductCmptTypeMethodEditDialog_formulaCheckbox);
         bindingContext.bindContent(checkbox, method, IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION);
         
         Composite area = uiToolkit.createLabelEditColumnComposite(group);
-        toolkit.createLabel(area, "Formula name:");
+        toolkit.createLabel(area, Messages.ProductCmptTypeMethodEditDialog_formulaNameLabel);
         Text formulaNameText = toolkit.createText(area);
         bindingContext.bindContent(formulaNameText, method, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME);
     }

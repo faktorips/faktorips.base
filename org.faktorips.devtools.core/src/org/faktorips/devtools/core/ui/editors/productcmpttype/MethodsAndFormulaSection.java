@@ -33,7 +33,7 @@ public class MethodsAndFormulaSection extends MethodsSection {
 
     public MethodsAndFormulaSection(IProductCmptType type, Composite parent, UIToolkit toolkit) {
         super(type, parent, toolkit);
-        setText("Methods and Formulas");
+        setText(Messages.MethodsAndFormulaSection_title);
     }
     
     protected EditDialog createEditDialog(IMethod method, Shell shell) {

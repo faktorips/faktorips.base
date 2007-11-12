@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 public class AttributesSection extends SimpleIpsPartsSection {
 
     public AttributesSection(IProductCmptType type, Composite parent, UIToolkit toolkit) {
-        super(type, parent, "Attributes", toolkit);
+        super(type, parent, Messages.AttributesSection_title, toolkit);
     }
 
     /**

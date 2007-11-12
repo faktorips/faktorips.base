@@ -273,7 +273,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
                     }
                     formulaTestCase = getTransientFormulaTestCases();
                     if (formulaTestCase == null) {
-                        throw new RuntimeException("Fromula test case couldn't be created!");
+                        throw new RuntimeException("Fomula test case couldn't be created!"); //$NON-NLS-1$
                     }
                     if (formula.isValid()) {
                         if (formulaTestCase.addOrDeleteFormulaTestInputValues(parameterIdentifiers, ipsProject)

@@ -52,7 +52,7 @@ public class GeneralInfoSection extends IpsSection {
         super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
         this.type = type;
         initControls();
-        setText("General Information");
+        setText(Messages.GeneralInfoSection_title);
     }
 
     /**
@@ -63,7 +63,7 @@ public class GeneralInfoSection extends IpsSection {
         Composite composite = toolkit.createLabelEditColumnComposite(client);
 
         // super type
-        Hyperlink link = toolkit.createHyperlink(composite, "Superclass:");
+        Hyperlink link = toolkit.createHyperlink(composite, Messages.GeneralInfoSection_supertypeLabel);
         link.addHyperlinkListener(new HyperlinkAdapter() {
     
             public void linkActivated(HyperlinkEvent event) {
@@ -81,16 +81,16 @@ public class GeneralInfoSection extends IpsSection {
         bindingContext.bindContent(supertypeRefControl, type, IProductCmptType.PROPERTY_SUPERTYPE); 
 
         // abstract flag
-        toolkit.createLabel(composite, "Abstract class");
+        toolkit.createLabel(composite, Messages.GeneralInfoSection_abstractLabel);
         Checkbox abstractCheckbox = toolkit.createCheckbox(composite);
         bindingContext.bindContent(abstractCheckbox, type, IProductCmptType.PROPERTY_ABSTRACT);
         
         // reference to policy component type
-        toolkit.createFormLabel(composite, "Configures policy component type: ");
+        toolkit.createFormLabel(composite, Messages.GeneralInfoSection_configuresLabel);
         Checkbox configuratedCheckbox = toolkit.createCheckbox(composite);
         bindingContext.bindContent(configuratedCheckbox, type, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE);
         
-        link = toolkit.createHyperlink(composite, "Configured policy component type");
+        link = toolkit.createHyperlink(composite, Messages.GeneralInfoSection_configuredTypeLabel);
         link.addHyperlinkListener(new HyperlinkAdapter() {
     
             public void linkActivated(HyperlinkEvent event) {

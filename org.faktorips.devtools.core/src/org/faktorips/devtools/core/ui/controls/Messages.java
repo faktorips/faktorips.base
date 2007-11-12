@@ -62,20 +62,6 @@ public class Messages extends NLS {
 
     public static String AssociationQualificationGroup_noteQualifiedMultiplictyPerQualifiedInstance;
 
-    public static String ParametersEditControl_buttonLabelAdd;
-
-    public static String ParametersEditControl_buttonLabelMoveDown;
-
-    public static String ParametersEditControl_buttonLabelMoveUp;
-
-    public static String ParametersEditControl_buttonLabelRemove;
-
-    public static String ParametersEditControl_columnLabelDatatype;
-
-    public static String ParametersEditControl_columnLabelDefaultValue;
-
-    public static String ParametersEditControl_columnLabelName;
-
     public static String RangeEditControl_titleRange;
 
 	public static String RangeEditControl_labelMinimum;
@@ -154,11 +140,4 @@ public class Messages extends NLS {
 	
 	public static String TestCaseTypeRefControl_description;
 
-    public static String ChangeParametersControl_ButtonLabel_Up;
-
-    public static String ChangeParametersControl_ButtonLabel_Down;
-
-    public static String ChangeParametersControl_ButtonLabel_Add;
-
-    public static String ChangeParametersControl_ButtonLabel_Remove;
 }

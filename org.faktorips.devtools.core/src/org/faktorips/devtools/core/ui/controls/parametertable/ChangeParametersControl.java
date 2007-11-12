@@ -69,7 +69,6 @@ import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DatatypeCompletionProcessor;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controls.Messages;
 import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.util.ArgumentCheck;
@@ -79,7 +78,7 @@ import org.faktorips.util.message.MessageList;
 /**
  * A special control to edit and reorder method parameters.
  * 
- * @author Jan Jan Ortmann
+ * @author Jan Ortmann
  */
 public abstract class ChangeParametersControl extends Composite implements IDataChangeableReadWriteAccess {
 
@@ -459,8 +458,8 @@ public abstract class ChangeParametersControl extends Composite implements IData
 			addSpacer(buttonComposite);
 
 		if (fCanMoveParameters) {
-			fUpButton= createButton(buttonComposite, Messages.ChangeParametersControl_ButtonLabel_Up, true);
-			fDownButton= createButton(buttonComposite, Messages.ChangeParametersControl_ButtonLabel_Down, false);
+			fUpButton= createButton(buttonComposite, Messages.ChangeParametersControl_up, true);
+			fDownButton= createButton(buttonComposite, Messages.ChangeParametersControl_down, false);
 		}
 		updateButtonsEnabledState();
 		if (buttonComposite.getChildren().length==0) {
@@ -517,7 +516,7 @@ public abstract class ChangeParametersControl extends Composite implements IData
 	
 	private Button createAddButton(Composite buttonComposite) {
 		Button button= new Button(buttonComposite, SWT.PUSH);
-		button.setText(Messages.ChangeParametersControl_ButtonLabel_Add);
+		button.setText(Messages.ChangeParametersControl_add);
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -537,7 +536,7 @@ public abstract class ChangeParametersControl extends Composite implements IData
 
 	private Button createRemoveButton(Composite buttonComposite) {
 		final Button button= new Button(buttonComposite, SWT.PUSH);
-		button.setText(Messages.ChangeParametersControl_ButtonLabel_Remove);
+		button.setText(Messages.ChangeParametersControl_remove);
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {

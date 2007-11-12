@@ -37,7 +37,7 @@ public class StructurePage extends IpsObjectEditorPage {
      * @param tabPageName
      */
     public StructurePage(ProductCmptTypeEditor editor) {
-        super(editor, PAGEID, "Structure Page");
+        super(editor, PAGEID, Messages.StructurePage_structurePageTitle);
     }
     
     private IProductCmptType getProductCmptType() {
