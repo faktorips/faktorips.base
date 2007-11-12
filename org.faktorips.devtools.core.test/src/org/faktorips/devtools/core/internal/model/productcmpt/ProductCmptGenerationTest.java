@@ -505,7 +505,6 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2008-01-01"));
         
         MessageList msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
-        System.out.println("testValidateIfReferencedProductCmptsHaveFittingGeneration:" + msgList.toString());
         assertNotNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
 
         targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
