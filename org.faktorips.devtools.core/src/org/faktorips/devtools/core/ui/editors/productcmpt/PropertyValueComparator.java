@@ -41,7 +41,7 @@ public class PropertyValueComparator implements Comparator {
         try {
             type = ipsProject.findProductCmptType(productCmptType); 
         } catch (Exception e) {
-            IpsPlugin.log(new IpsStatus("Error finding type for property comparator, type name = " + productCmptType, e));
+            IpsPlugin.log(new IpsStatus("Error finding type for property comparator, type name = " + productCmptType, e)); //$NON-NLS-1$
         }
         initPropIndexMap(ipsProject);
     }
@@ -61,7 +61,7 @@ public class PropertyValueComparator implements Comparator {
                 }
             }
         } catch (Exception e) {
-            IpsPlugin.log(new IpsStatus("Error initializing property comparator for type " + type, e));
+            IpsPlugin.log(new IpsStatus("Error initializing property comparator for type " + type, e)); //$NON-NLS-1$
         }
     }
     
@@ -88,7 +88,7 @@ public class PropertyValueComparator implements Comparator {
         }
         Integer index = (Integer)propIndexMap.get(prop.getPropertyName());
         if (index==null) {
-            IpsPlugin.log(new IpsStatus("Unknwon property " + prop.getPropertyName() + " in comparator for type " + type));
+            IpsPlugin.log(new IpsStatus("Unknwon property " + prop.getPropertyName() + " in comparator for type " + type)); //$NON-NLS-1$ //$NON-NLS-2$
             return 0;
         } 
         return index.intValue();
