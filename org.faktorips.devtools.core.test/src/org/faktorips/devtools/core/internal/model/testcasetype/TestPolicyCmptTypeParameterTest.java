@@ -481,13 +481,9 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
 
             coverages = policy.newPolicyCmptTypeAssociation();
             coverages.setTarget(coverage.getQualifiedName());
-            coverages.setProductRelevant(true);
             coverages.setTargetRoleSingular("Coverage");
             coverages.setTargetRolePlural("Coverages");
-            coverages.setTargetRoleSingularProductSide("Coverage");
-            coverages.setTargetRolePluralProductSide("Coverages");
             coverages.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-            coverages.setProductRelevant(true);
 
             IProductCmptTypeAssociation association = productCmptTypePolicy.newProductCmptTypeAssociation();
             association.setTarget(productCmptTypeCoverage.getQualifiedName());
@@ -529,7 +525,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         // one relation defined, but without target
         // => child no result
         IProductCmptGeneration generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
-        IProductCmptLink productCmptRelation = generation.newLink(testContent.coverages.getTargetRoleSingularProductSide());
+        IProductCmptLink productCmptRelation = generation.newLink("Coverage");
         allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
         assertEquals(0, allowedProductCmpt.length);
         
@@ -544,7 +540,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         // relation exists twice
         // find product cmpt only once
         generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
-        productCmptRelation = generation.newLink(testContent.coverages.getTargetRoleSingularProductSide());
+        productCmptRelation = generation.newLink("Coverage");
         productCmptRelation.setTarget(testContent.coverageProductA.getQualifiedName());
         allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
         assertEquals(1, allowedProductCmpt.length);
@@ -561,7 +557,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         //   coverageProductA specified in generation 1
         //   coverageProductB specified in generation 2
         generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
-        productCmptRelation = generation.newLink(testContent.coverages.getTargetRoleSingularProductSide());
+        productCmptRelation = generation.newLink("Coverage");
         productCmptRelation.setTarget(testContent.coverageProductB.getQualifiedName());
         allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
         assertEquals(2, allowedProductCmpt.length);
