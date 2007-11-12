@@ -206,7 +206,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 		new TableMessageHoverService(viewer) {
 
             protected MessageList getMessagesFor(Object element) throws CoreException {
-                return ((IIpsObjectPart)element).validate(((IIpsObjectPart)element).getIpsProject());
+                MessageList result = ipsObject.validate(ipsObject.getIpsProject());
+                return result.getMessagesFor(element);
             }
 		    
 		};
