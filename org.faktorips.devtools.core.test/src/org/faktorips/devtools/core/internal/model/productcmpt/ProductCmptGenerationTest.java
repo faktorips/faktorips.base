@@ -68,6 +68,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     
     public void setUp() throws Exception {
         super.setUp();
+        
         ipsProject =  newIpsProject("TestProject");
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
@@ -500,8 +501,8 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         link.setTarget(target.getQualifiedName());
         link.setMinCardinality(0);
         link.setMaxCardinality(1);
-        IProductCmptGeneration targetGeneration = (IProductCmptGeneration)target.newGeneration(DateUtil
-                .parseIsoDateStringToGregorianCalendar("2008-01-01"));
+        IProductCmptGeneration targetGeneration = (IProductCmptGeneration)target.getGeneration(0);
+        targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2008-01-01"));
         
         MessageList msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
         System.out.println("testValidateIfReferencedProductCmptsHaveFittingGeneration:" + msgList.toString());
