@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -109,7 +110,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	    ((IpsModel)IpsPlugin.getDefault().getIpsModel()).stopListeningToResourceChanges();
         IpsPlugin.getDefault().setFeatureVersionManagers(new IIpsFeatureVersionManager[]{new TestIpsFeatureVersionManager()});
         setAutoBuild(false);
-
+        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar());
+        
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
