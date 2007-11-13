@@ -23,9 +23,11 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Comparator for comparing <code>IConfigElement</code>s. A config element is considered to 
@@ -52,13 +54,21 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
  */
 public class ConfigElementComparator implements Comparator {
 
-	/**
+    private IIpsProject ipsProject;
+    
+    
+	public ConfigElementComparator(IIpsProject ipsProject) {
+        this.ipsProject = ipsProject;
+        ArgumentCheck.notNull(ipsProject);
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public int compare(Object o1, Object o2) {
 		try {
-			IPolicyCmptTypeAttribute a1 = ((IConfigElement)o1).findPcTypeAttribute();
-			IPolicyCmptTypeAttribute a2 = ((IConfigElement)o2).findPcTypeAttribute();
+			IPolicyCmptTypeAttribute a1 = ((IConfigElement)o1).findPcTypeAttribute(ipsProject);
+			IPolicyCmptTypeAttribute a2 = ((IConfigElement)o2).findPcTypeAttribute(ipsProject);
 			
 			if (a1 == null || a2 == null) {
 				return 0;

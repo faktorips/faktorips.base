@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -31,7 +32,7 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 /**
  * A policy component type's attribute.
  */
-public interface IPolicyCmptTypeAttribute extends org.faktorips.devtools.core.model.type.IAttribute, IMember, IValueSetOwner, IProdDefProperty {
+public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IProdDefProperty {
 
     // property names
     public final static String PROPERTY_COMPUTATION_METHOD_SIGNATURE = "computationMethodSignature"; //$NON-NLS-1$

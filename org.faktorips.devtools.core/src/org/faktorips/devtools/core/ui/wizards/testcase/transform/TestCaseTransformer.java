@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -79,7 +80,8 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
     IIpsPackageFragment targtePackage; 
     String testCaseTypeName;
     String nameExtension;
-    
+
+    private IIpsProject ipsProject;
 
     public TestCaseTransformer(IStructuredSelection selection, IIpsPackageFragment targtePackage, String testCaseTypeName, String nameExtension) {
         super();
@@ -88,7 +90,8 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
         this.testCaseTypeName = testCaseTypeName;
         this.nameExtension = nameExtension;
         lastException = null;
-        importedTestCase = 0;        
+        importedTestCase = 0;
+        ipsProject = targtePackage.getIpsProject();
     }
 
     /**
@@ -292,7 +295,7 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
                     
                     ITestAttribute attr = null;
                     try {
-                        attr = testAttrValue.findTestAttribute();
+                        attr = testAttrValue.findTestAttribute(ipsProject);
                     }
                     catch (CoreException e) {
                         IpsPlugin.log(e);

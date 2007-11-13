@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.model.testcasetype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 
@@ -101,9 +102,11 @@ public interface ITestAttribute extends IIpsObjectPart {
     /**
      * Returns the model attribute or <code>null</code> if the attribute does not exists.
      * 
+     * @param ipsProject The ips project which object path is used to search.
+     * 
      * @throws CoreException if an error occurs while searching for the attribute.
      */	
-	public IPolicyCmptTypeAttribute findAttribute() throws CoreException;
+	public IPolicyCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException;
 	
 	/**
 	 * Returns <code>true</code> if the test attribute is an input attribute, 
@@ -137,7 +140,9 @@ public interface ITestAttribute extends IIpsObjectPart {
      * If the attribute exists in the supertype hierarchy then return <code>true</code>, otherwise <code>false</code>.
      * Returns <code>true</code> if the attributes type is not product relevant, in this case the attribute is always relevant.
      * 
+     * @param ipsProject The ips project which object path is used to search.
+     * 
      * @throws CoreException if an error occurs 
      */
-    public boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt) throws CoreException;
+    public boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt, IIpsProject ipsProject) throws CoreException;
 }

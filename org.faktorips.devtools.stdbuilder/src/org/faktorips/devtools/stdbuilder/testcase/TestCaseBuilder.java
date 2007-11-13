@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -431,12 +432,13 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         if (testAttrValues == null){
             return;
         }
+        IIpsProject ipsProject = getIpsProject();
         for (int i = 0; i < testAttrValues.length; i++) {
             if (!testAttrValues[i].isValid()){
                 continue;
             }
-            if (testAttrValues[i].isInputAttribute() && isInput || testAttrValues[i].isExpextedResultAttribute() && ! isInput){
-                ITestAttribute testAttribute = testAttrValues[i].findTestAttribute();
+            if (testAttrValues[i].isInputAttribute(ipsProject) && isInput || testAttrValues[i].isExpextedResultAttribute(ipsProject) && ! isInput){
+                ITestAttribute testAttribute = testAttrValues[i].findTestAttribute(ipsProject);
                 if (testAttribute == null) {
                     throw new CoreException(new IpsStatus(NLS.bind(
                             "The test attribute {0} was not found in the test case type definition.", testAttrValues[i]

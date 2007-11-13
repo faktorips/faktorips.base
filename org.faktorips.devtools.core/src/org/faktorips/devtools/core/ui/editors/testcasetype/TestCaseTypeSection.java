@@ -81,6 +81,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -506,10 +507,17 @@ public class TestCaseTypeSection extends IpsSection {
      * Label provider for the attribute table
      */
     private class TestAttributeTblLabelProvider extends DefaultLabelProvider implements ITableLabelProvider{
+
+        private IIpsProject ipsProject;
+        
+        public TestAttributeTblLabelProvider() {
+            ipsProject = testCaseType.getIpsProject();
+        }
+
         public Image getColumnImage(Object element, int columnIndex) {
             Image defaultImage = null;
             try {
-                MessageList msgList = ((ITestAttribute) element).validate(((ITestAttribute) element).getIpsProject());
+                MessageList msgList = ((ITestAttribute) element).validate(ipsProject);
                 switch (columnIndex) {
                     case 0:
                         defaultImage = getImageForAttribute(element);
@@ -546,7 +554,7 @@ public class TestCaseTypeSection extends IpsSection {
                 switch (columnIndex) {
                     case 0:
                         try {
-                            IPolicyCmptTypeAttribute attr = testAttribute.findAttribute();
+                            IPolicyCmptTypeAttribute attr = testAttribute.findAttribute(ipsProject);
                             if (attr != null){
                                 return super.getText(attr);
                             }

@@ -224,7 +224,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             throw new RuntimeException("Unknown type " + type); //$NON-NLS-1$
         }
         IPolicyCmptType policyCmptType = findPolicyCmptType(ipsProject);
-        return policyCmptType.findAttributeInSupertypeHierarchy(propName);
+        return policyCmptType.findPolicyCmptTypeAttribute(propName, ipsProject);
     }
 
     /**

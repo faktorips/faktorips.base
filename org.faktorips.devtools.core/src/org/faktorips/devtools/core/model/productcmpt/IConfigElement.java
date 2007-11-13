@@ -24,6 +24,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.IValueDatatypeProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -149,20 +150,24 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider, 
      * Finds the corresponding attribute in the product component type this
      * product component is an instance of.
      * 
+     * @param ipsProject The ips project which ips object path is used to search.
+     * 
      * @return the corresponding attribute or <code>null</code> if no such
      * attribute exists.
      * 
      * @throws CoreException if an exception occurs while searching for the attribute. 
      */
-    public IPolicyCmptTypeAttribute findPcTypeAttribute() throws CoreException;
+    public IPolicyCmptTypeAttribute findPcTypeAttribute(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the element's value datatype, or <code>null</code> if it can't be found.
      * The config element's datatype is the attribute's datatype the elemet is based on.
      * 
-     * @throws CoreException
+     * @param ipsProject The ips project which ips object path is used to search.
+     * 
+     * @throws CoreException if an error occurs while searching
      */
-    public ValueDatatype findValueDatatype() throws CoreException;
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException;
     
 	/**
 	 * Creates a copy of the given value set and aplies this copy to this config

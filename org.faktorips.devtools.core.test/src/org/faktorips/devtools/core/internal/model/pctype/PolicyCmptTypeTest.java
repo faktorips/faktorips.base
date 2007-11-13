@@ -177,20 +177,20 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
     
     public void testFindAttributeInSupertypeHierarchy() throws CoreException {
-        assertNull(policyCmptType.findAttributeInSupertypeHierarchy("unkown"));
+        assertNull(policyCmptType.findPolicyCmptTypeAttribute("unkown", ipsProject));
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
         a1.setName("a1");
-        assertNull(policyCmptType.findAttributeInSupertypeHierarchy("unkown"));
-        assertEquals(a1, policyCmptType.findAttributeInSupertypeHierarchy("a1"));
+        assertNull(policyCmptType.findPolicyCmptTypeAttribute("unkown", ipsProject));
+        assertEquals(a1, policyCmptType.findPolicyCmptTypeAttribute("a1", ipsProject));
         
         IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
         IPolicyCmptTypeAttribute a2 = supertype.newPolicyCmptTypeAttribute();
         a2.setName("a2");
         policyCmptType.setSupertype(supertype.getQualifiedName());
         
-        assertNull(policyCmptType.findAttributeInSupertypeHierarchy("unkown"));
-        assertEquals(a1, policyCmptType.findAttributeInSupertypeHierarchy("a1"));
-        assertEquals(a2, policyCmptType.findAttributeInSupertypeHierarchy("a2"));
+        assertNull(policyCmptType.findPolicyCmptTypeAttribute("unkown", ipsProject));
+        assertEquals(a1, policyCmptType.findPolicyCmptTypeAttribute("a1", ipsProject));
+        assertEquals(a2, policyCmptType.findPolicyCmptTypeAttribute("a2", ipsProject));
     }
     
     public void testIsSubtype() throws CoreException {

@@ -50,6 +50,10 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
 	public IIpsArtefactBuilderSet getBuilderSet() {
 		return builderSet;
 	}
+    
+    public IIpsProject getIpsProject() {
+        return builderSet.getIpsProject();
+    }
 	
 	/**
 	 * {@inheritDoc}

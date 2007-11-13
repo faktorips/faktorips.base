@@ -101,7 +101,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 	/**
 	 * {@inheritDoc}
 	 */
-	public IPolicyCmptTypeAttribute findAttribute() throws CoreException {
+	public IPolicyCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(attribute)) {
             return null;
         }
@@ -109,7 +109,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         if (pcType == null){
             return null;
         }
-        return pcType.findAttributeInSupertypeHierarchy(attribute);
+        return pcType.findPolicyCmptTypeAttribute(attribute, ipsProject);
     }
     
     /**
@@ -144,7 +144,8 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
      */
     public Image getImage() {
         try {
-            IPolicyCmptTypeAttribute attribute = findAttribute();
+            // TODO v2 - hier koennen wir doch auch ein festes Image nehmen, oder?
+            IPolicyCmptTypeAttribute attribute = findAttribute(getIpsProject());
             if (attribute != null){
                 return attribute.getImage();
             }            
@@ -190,7 +191,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
     /**
      * {@inheritDoc}
      */
-    public boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt) throws CoreException {
+    public boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt, IIpsProject ipsProject) throws CoreException {
         boolean reqProductCmpt = ((ITestPolicyCmptTypeParameter)getParent()).isRequiresProductCmpt();
         if (! reqProductCmpt){
             return true;
@@ -199,7 +200,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
             return false;
         } 
         IPolicyCmptType policyCmptType = productCmpt.findPolicyCmptType();
-        return ! (policyCmptType.findAttributeInSupertypeHierarchy(getAttribute()) == null);
+        return ! (policyCmptType.findPolicyCmptTypeAttribute(getAttribute(), ipsProject) == null);
     }
 
     private IPolicyCmptTypeAttribute findAttributeInSubtypehierarchy() throws CoreException {
@@ -244,7 +245,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         }
         
         // check if the attribute exists
-        IPolicyCmptTypeAttribute modelAttribute = findAttribute();
+        IPolicyCmptTypeAttribute modelAttribute = findAttribute(ipsProject);
         if (modelAttribute == null){
             // special case if the attribute wasn't found in the supertype then
             // search in the subtype hierarchy, the test case type attributes supports attributes of subclasses

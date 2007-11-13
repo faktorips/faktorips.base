@@ -128,7 +128,7 @@ public class DefaultsAndRangesSection extends IpsSection {
 	private void createEditControls() {
 		uiMasterController = new CompositeUIController();
 		IConfigElement[] elements = generation.getConfigElements(ConfigElementType.POLICY_ATTRIBUTE);
-		Arrays.sort(elements, new ConfigElementComparator());
+		Arrays.sort(elements, new ConfigElementComparator(generation.getIpsProject()));
 		if (elements.length == 0) {
 			toolkit.createLabel(rootPane, Messages.PolicyAttributesSection_noDefaultsAndRangesDefined);
 		}
@@ -143,7 +143,7 @@ public class DefaultsAndRangesSection extends IpsSection {
     
     private void createEditControlsForElement(IConfigElement element) {
         try {
-            ValueDatatype datatype = element.findValueDatatype();
+            ValueDatatype datatype = element.findValueDatatype(element.getIpsProject());
             if (datatype == null) {
                 // no datatype found - use string as default
                 datatype = Datatype.STRING;
@@ -165,7 +165,7 @@ public class DefaultsAndRangesSection extends IpsSection {
     private void createEditControlForDefaultValue(IConfigElement element, ValueDatatype dataType, IpsObjectUIController controller) throws CoreException {
         Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalise(element.getName()));
         // use the description of the attribute as tooltip 
-        IPolicyCmptTypeAttribute attribute = element.findPcTypeAttribute();
+        IPolicyCmptTypeAttribute attribute = element.findPcTypeAttribute(element.getIpsProject());
         if (attribute != null) {
             label.setToolTipText(attribute.getDescription());
         }

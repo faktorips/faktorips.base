@@ -272,7 +272,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         properties.setPredefinedDatatypesUsed((ValueDatatype[])vdlist.toArray(new ValueDatatype[vdlist.size()]));
         ipsProject.setProperties(properties);
         
-        IPolicyCmptTypeAttribute attr = ce.findPcTypeAttribute();
+        IPolicyCmptTypeAttribute attr = ce.findPcTypeAttribute(ipsProject);
         attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
         attr.getIpsObject().getIpsSrcFile().save(true, null);
 

@@ -221,8 +221,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
-    public IPolicyCmptTypeAttribute findAttributeInSupertypeHierarchy(String name) throws CoreException {
-        return (IPolicyCmptTypeAttribute)findAttribute(name, getIpsProject());
+    public IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject) throws CoreException {
+        return (IPolicyCmptTypeAttribute)findAttribute(name, ipsProject);
     }
 
     /**

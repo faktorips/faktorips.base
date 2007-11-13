@@ -257,7 +257,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         properties.setPredefinedDatatypesUsed((ValueDatatype[])vdlist.toArray(new ValueDatatype[vdlist.size()]));
         ipsProject.setProperties(properties);
 
-        IPolicyCmptTypeAttribute attr = intEl.findPcTypeAttribute();
+        IPolicyCmptTypeAttribute attr = intEl.findPcTypeAttribute(ipsProject);
 		attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
 
         list = range.validate(ipsProject);

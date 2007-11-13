@@ -104,7 +104,7 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
 	    assertFalse(allValues.containsValue("abc"));
 	    assertTrue(allValues.containsValue("1EUR"));
 
-	    ce.findPcTypeAttribute().setDatatype(Datatype.INTEGER.getQualifiedName());
+	    ce.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
 	    assertFalse(allValues.containsValue("1EUR"));
 	    assertTrue(allValues.containsValue("99"));
  	}

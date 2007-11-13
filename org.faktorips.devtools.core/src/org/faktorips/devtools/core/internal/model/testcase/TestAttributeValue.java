@@ -89,7 +89,7 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITestAttribute findTestAttribute() throws CoreException {
+	public ITestAttribute findTestAttribute(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(testAttribute)) {
             return null;
         }
@@ -151,7 +151,8 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
      */
     public Image getImage() {
         try {
-            ITestAttribute testAttribute = findTestAttribute();
+            // v2 - verwendung fixes image
+            ITestAttribute testAttribute = findTestAttribute(getIpsProject());
             if (testAttribute != null){
                 return testAttribute.getImage();
             }            
@@ -164,33 +165,33 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
     /**
      * {@inheritDoc}
      */
-	public boolean isExpextedResultAttribute() {
-        return (isTypeOrDefault(TestParameterType.EXPECTED_RESULT, DEFAULT_TYPE));
+	public boolean isExpextedResultAttribute(IIpsProject ipsProject) {
+        return isTypeOrDefault(TestParameterType.EXPECTED_RESULT, DEFAULT_TYPE, ipsProject);
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean isInputAttribute() {
-        return (isTypeOrDefault(TestParameterType.INPUT, DEFAULT_TYPE));
+    public boolean isInputAttribute(IIpsProject ipsProject) {
+        return isTypeOrDefault(TestParameterType.INPUT, DEFAULT_TYPE, ipsProject);
     }
     
     /**
-     * Returns <code>true</code> if the given type is the type of the corresponding test
-     * attribute. If the test attribute couldn't determined return <code>true</code> if the given
+     * Returns <code>true</code> if the corresponding test attribute if of the given type. 
+     * If the test attribute can't be found, return <code>true</code> if the given
      * type is the default type otherwise <code>false</code>.<br>
      * Return <code>false</code> if an error occurs.<br>
      */
-    private boolean isTypeOrDefault(TestParameterType type, TestParameterType defaultType) {
+    private boolean isTypeOrDefault(TestParameterType type, TestParameterType defaultType, IIpsProject ipsProject) {
         try {
             TestObject parent = (TestObject) getParent(); 
             ITestCase testCase = (TestCase) parent.getRoot().getParent();
             
-            ITestCaseType testCaseType = testCase.findTestCaseType();
+            ITestCaseType testCaseType = testCase.findTestCaseType(ipsProject);
             if (testCaseType == null)
                 return type.equals(defaultType);
 
-            ITestAttribute testAttribute = findTestAttribute();
+            ITestAttribute testAttribute = findTestAttribute(ipsProject);
             if (testAttribute == null)
                 return type.equals(defaultType);
 
@@ -219,16 +220,19 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
      * Updates the default for the test attribute value. The default will be retrieved from the
      * product cmpt or if no product cmpt is available or the attribute isn't configurated by product 
      * then from the policy cmpt. Don't update the value if not default is specified.
+     * 
+     * @param ipsProject The ips project which object path is used to search.
      */
     void setDefaultTestAttributeValueInternal(IProductCmptGeneration generation) throws CoreException {
-        ITestAttribute testAttribute = findTestAttribute();
+        IIpsProject ipsProject = getIpsProject();
+        ITestAttribute testAttribute = findTestAttribute(ipsProject);
         if (testAttribute == null) {
             // the test attribute wasn't found, do nothing
             // this is an error which will be validated in the validate method
             return;
         }
         
-        IPolicyCmptTypeAttribute modelAttribute = testAttribute.findAttribute();
+        IPolicyCmptTypeAttribute modelAttribute = testAttribute.findAttribute(ipsProject);
         if (modelAttribute != null){
             boolean defaultSet = false;
             // set default as specified in the product cmpt 
@@ -257,17 +261,17 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
 	 */
 	protected void validateThis(MessageList messageList, IIpsProject ipsProject) throws CoreException {
 		super.validateThis(messageList, ipsProject);
-        ITestAttribute testAttr = findTestAttribute();
+        ITestAttribute testAttr = findTestAttribute(ipsProject);
         if (testAttr == null) {
             String text = NLS.bind(Messages.TestAttributeValue_ValidateError_TestAttributeNotFound, getTestAttribute());
             Message msg = new Message(MSGCODE_TESTATTRIBUTE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUE);
             messageList.add(msg);
         } else {
-            IPolicyCmptTypeAttribute attribute = testAttr.findAttribute();
+            IPolicyCmptTypeAttribute attribute = testAttr.findAttribute(ipsProject);
             if (attribute == null){
                 // attribute not found in test case type definition, maybe this is a concrete subclass with additional attributes,
                 // therefore try to find the attribute by using the product cmpt (product cmpt type the product cmpt is based on)
-                attribute = ((ITestPolicyCmpt)getParent()).findProductCmptAttribute(testAttr.getAttribute());
+                attribute = ((ITestPolicyCmpt)getParent()).findProductCmptAttribute(testAttr.getAttribute(), ipsProject);
             }
             // create a warning only if the attribute wasn't found and the value is set,
             // otherwise the attribute value object is disabled (not relevant for the test policy cmpt),

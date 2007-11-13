@@ -227,7 +227,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
             list.add(new Message(IValidationRule.MSGCODE_NO_NEWLINE, Messages.ValidationRule_msgNoNewlineAllowed, Message.ERROR, this, IValidationRule.PROPERTY_MESSAGE_TEXT));
         }
         
-		validateValidatedAttribute(list);
+		validateValidatedAttribute(list, ipsProject);
         validateCheckValueAgainstValueSet(list);
 	}
 
@@ -250,7 +250,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
 		return (PolicyCmptType) getIpsObject();
 	}
 
-	private void validateValidatedAttribute(MessageList list)
+	private void validateValidatedAttribute(MessageList list, IIpsProject ipsProject)
 			throws CoreException {
 
 		IPolicyCmptTypeAttribute[] attributes = getPolicyCmptType().getSupertypeHierarchy()
@@ -266,7 +266,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
 				list.add(new Message(MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED, text, Message.ERROR, //$NON-NLS-1$
 						new ObjectProperty(this, "validatedAttributes", i))); //$NON-NLS-1$
 			} else {
-                IPolicyCmptTypeAttribute attribute = getPolicyCmptType().findAttributeInSupertypeHierarchy(validatedAttribute);
+                IPolicyCmptTypeAttribute attribute = getPolicyCmptType().findPolicyCmptTypeAttribute(validatedAttribute, ipsProject);
                 if (attribute.getAttributeType()==AttributeType.CONSTANT) {
                     list.add(new Message(IValidationRule.MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED, Messages.ValidationRule_ConstantAttributesCantBeValidated, Message.ERROR, 
                             new ObjectProperty(this, "validatedAttributes", i))); //$NON-NLS-1$

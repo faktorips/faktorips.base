@@ -121,6 +121,8 @@ public interface IPolicyCmptType extends IType, Datatype {
      * Returns <code>null</code> if either this type does not refer to a product component type
      * or the product component type can't be found on the project's ips object path.
      *
+     * @param ipsProject The ips project which ips object path is used to search.
+     * 
      * @throws CoreException if an error occurs while searching for the type.
      */
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
@@ -233,7 +235,7 @@ public interface IPolicyCmptType extends IType, Datatype {
      * 
      * @throws CoreException if an error occurs while searching.
      */
-    public IPolicyCmptTypeAttribute findAttributeInSupertypeHierarchy(String name) throws CoreException;
+    public IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject) throws CoreException;
     
     /**
      * Creates a new attribute and returns it.

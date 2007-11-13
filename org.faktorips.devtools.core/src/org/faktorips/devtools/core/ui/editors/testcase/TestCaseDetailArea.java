@@ -42,6 +42,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
@@ -277,15 +278,16 @@ public class TestCaseDetailArea {
 
         // create text edit fields for each attribute
         ITestAttributeValue[] testAttributeValues = testPolicyCmpt.getTestAttributeValues();
-        boolean firstEditField = true;
+        boolean firstEditField = true; 
+        IIpsProject ipsProject = testPolicyCmpt.getIpsProject();
         for (int i = 0; i < testAttributeValues.length; i++) {
             final ITestAttributeValue attributeValue = testAttributeValues[i];
             // Create the edit field only if the content provider provides the type of the test
             // attribute object
             if (testCaseSection.getContentProvider().isCombined()
-                    || (testCaseSection.getContentProvider().isInput() && testAttributeValues[i].isInputAttribute())
+                    || (testCaseSection.getContentProvider().isInput() && testAttributeValues[i].isInputAttribute(ipsProject))
                     || testCaseSection.getContentProvider().isExpectedResult()
-                    && testAttributeValues[i].isExpextedResultAttribute()) {
+                    && testAttributeValues[i].isExpextedResultAttribute(ipsProject)) {
                 EditField editField = createAttributeEditField(testPolicyCmpt, testPolicyCmpt, attributeComposite,
                         attributeValue);
 
@@ -313,16 +315,17 @@ public class TestCaseDetailArea {
         ValueDatatypeControlFactory ctrlFactory = null;
         boolean failure = false;
         try {
-            ITestAttribute testAttr = attributeValue.findTestAttribute();
+            IIpsProject ipsProject = attributeValue.getIpsProject();
+            ITestAttribute testAttr = attributeValue.findTestAttribute(ipsProject);
             
             if (testAttr == null) {
                 // ignore not existing test attributes, will be checked in the vaidate method
                 failure = true;
             } else {
-                IPolicyCmptTypeAttribute attribute = testAttr.findAttribute();
+                IPolicyCmptTypeAttribute attribute = testAttr.findAttribute(ipsProject);
                 if (attribute == null) {
                     // find attribute by using the product cmpt
-                    attribute = testPolicyCmpt.findProductCmptAttribute(testAttr.getAttribute());
+                    attribute = testPolicyCmpt.findProductCmptAttribute(testAttr.getAttribute(), ipsProject);
                     if (attribute == null && StringUtils.isEmpty(attributeValue.getValue())){
                         // attribute not exists in subtypes, hide the edit field
                         //   because the attribute is only relevant for product cmpts which are based on suptypes 
@@ -366,7 +369,7 @@ public class TestCaseDetailArea {
         addSectionSelectionListeners(editField, null, testPolicyCmptForSelection);
 
         // mark as expected result
-        if (attributeValue.isExpextedResultAttribute()) {
+        if (attributeValue.isExpextedResultAttribute(attributeValue.getIpsProject())) {
             markAsExpected(editField);
         }
         // mark as failure

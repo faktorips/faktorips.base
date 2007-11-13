@@ -764,7 +764,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     /**
      * {@inheritDoc}
      */
-    public IPolicyCmptTypeAttribute findProductCmptAttribute(String attribute) throws CoreException {
+    public IPolicyCmptTypeAttribute findProductCmptAttribute(String attribute, IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(getProductCmpt())) {
             // no product cmpt is set, therefore no attribute could be searched, 
             // currently an attributes (from sublcasses) could only be searched if an product cmpt was set
@@ -779,6 +779,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         if (pct==null){
             return null;
         }
-        return pct.findAttributeInSupertypeHierarchy(attribute);
+        return pct.findPolicyCmptTypeAttribute(attribute, ipsProject);
     }
 }

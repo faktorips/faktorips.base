@@ -40,15 +40,15 @@ import org.w3c.dom.Element;
 public class TestAttributeTest extends AbstractIpsPluginTest {
 
     private ITestAttribute testAttribute;
-    private IIpsProject project;
+    private IIpsProject ipsProject;
     
     /*
      * @see AbstractIpsPluginTest#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject("TestProject");
-        ITestCaseType type = (ITestCaseType )newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
+        ipsProject = newIpsProject("TestProject");
+        ITestCaseType type = (ITestCaseType )newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         testAttribute = type.newExpectedResultPolicyCmptTypeParameter().newExpectedResultTestAttribute();
     }
     
@@ -111,12 +111,12 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
     }
     
     public void testFindAttribute() throws Exception{
-        IPolicyCmptType policyCmptTypeSuper = newPolicyCmptType(project, "policyCmptSuper");
+        IPolicyCmptType policyCmptTypeSuper = newPolicyCmptType(ipsProject, "policyCmptSuper");
         IPolicyCmptTypeAttribute attr1 = policyCmptTypeSuper.newPolicyCmptTypeAttribute();
         attr1.setName("attribute1");
         IPolicyCmptTypeAttribute attr2 = policyCmptTypeSuper.newPolicyCmptTypeAttribute();
         attr2.setName("attribute2");
-        IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
+        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "policyCmpt");
         IPolicyCmptTypeAttribute attr3 = policyCmptType.newPolicyCmptTypeAttribute();
         attr3.setName("attribute3");
         IPolicyCmptTypeAttribute attr4 = policyCmptType.newPolicyCmptTypeAttribute();
@@ -125,13 +125,13 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         
         ((ITestPolicyCmptTypeParameter)testAttribute.getParent()).setPolicyCmptType("policyCmpt");
         testAttribute.setAttribute("attribute4");
-        assertEquals(attr4, testAttribute.findAttribute());
+        assertEquals(attr4, testAttribute.findAttribute(ipsProject));
         testAttribute.setAttribute("attribute3");
-        assertEquals(attr3, testAttribute.findAttribute());
+        assertEquals(attr3, testAttribute.findAttribute(ipsProject));
         testAttribute.setAttribute("attribute2");
-        assertEquals(attr2, testAttribute.findAttribute());
+        assertEquals(attr2, testAttribute.findAttribute(ipsProject));
         testAttribute.setAttribute("attribute1");
-        assertEquals(attr1, testAttribute.findAttribute());
+        assertEquals(attr1, testAttribute.findAttribute(ipsProject));
     }
 
     /**
@@ -139,12 +139,12 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
      * test case side, see TestAttributeValue.validateSelf()
      */
     public void testFindAttributeInSubtype() throws Exception{
-        IPolicyCmptType policyCmptTypeSuper = newPolicyCmptType(project, "policyCmptSuper");
+        IPolicyCmptType policyCmptTypeSuper = newPolicyCmptType(ipsProject, "policyCmptSuper");
         IPolicyCmptTypeAttribute attr1 = policyCmptTypeSuper.newPolicyCmptTypeAttribute();
         attr1.setName("attribute1");
         IPolicyCmptTypeAttribute attr2 = policyCmptTypeSuper.newPolicyCmptTypeAttribute();
         attr2.setName("attribute2");
-        IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
+        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "policyCmpt");
         IPolicyCmptTypeAttribute attr3 = policyCmptType.newPolicyCmptTypeAttribute();
         attr3.setName("attribute3");
         IPolicyCmptTypeAttribute attr4 = policyCmptType.newPolicyCmptTypeAttribute();
@@ -157,26 +157,26 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         cmptTypeParameter.setPolicyCmptType(policyCmptTypeSuper.getQualifiedName());
         
         testAttribute.setAttribute("attribute4");
-        assertNull(testAttribute.findAttribute());
+        assertNull(testAttribute.findAttribute(ipsProject));
     }
     
     public void testValidateAttributeNotFound() throws Exception{
-        IPolicyCmptType pct = newPolicyCmptType(project, "policyCmptType");
+        IPolicyCmptType pct = newPolicyCmptType(ipsProject, "policyCmptType");
         IPolicyCmptTypeAttribute attr = pct.newPolicyCmptTypeAttribute();
         attr.setName("attribute1");
         
         ((ITestPolicyCmptTypeParameter)testAttribute.getParent()).setPolicyCmptType(pct.getQualifiedName());
         testAttribute.setAttribute(attr.getName());
-        MessageList ml = testAttribute.validate(project);
+        MessageList ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
 
         attr.setName("x");
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
     }
     
     public void testValidateWrongType() throws Exception{
-        MessageList ml = testAttribute.validate(project);
+        MessageList ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_WRONG_TYPE));
         
         Element docEl = getTestDocument().getDocumentElement();
@@ -186,7 +186,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         String attribute = testAttribute.getAttribute();
         testAttribute.setAttribute(attribute + "_new");
         testAttribute.setAttribute(attribute);
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_WRONG_TYPE));
     }
 
@@ -194,77 +194,77 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter) testAttribute.getParent();
         param.setTestParameterType(TestParameterType.COMBINED);
         testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
-        MessageList ml = testAttribute.validate(project);
+        MessageList ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
         testAttribute.setTestAttributeType(TestParameterType.INPUT);
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
 
         param = (ITestPolicyCmptTypeParameter) testAttribute.getParent();
         param.setTestParameterType(TestParameterType.EXPECTED_RESULT);
         testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
         testAttribute.setTestAttributeType(TestParameterType.INPUT);
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
         
         param = (ITestPolicyCmptTypeParameter) testAttribute.getParent();
         param.setTestParameterType(TestParameterType.INPUT);
         testAttribute.setTestAttributeType(TestParameterType.INPUT);
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
         testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
     }
 
     public void testValidateDuplicateTestAttributeName() throws Exception{
-        MessageList ml = testAttribute.validate(project);
+        MessageList ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME));
 
         ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter) testAttribute.getParent();
         param.newInputTestAttribute().setName(testAttribute.getName());
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME));
 
         testAttribute.setName("newName");
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME));
     }
 
     public void testValidateExpectedOrComputedButNotExpectedRes() throws Exception{
-        IPolicyCmptType pct = newPolicyCmptType(project, "policyCmptType");
+        IPolicyCmptType pct = newPolicyCmptType(ipsProject, "policyCmptType");
         IPolicyCmptTypeAttribute attr = pct.newPolicyCmptTypeAttribute();
         attr.setName("attribute1");
         
         ((ITestPolicyCmptTypeParameter)testAttribute.getParent()).setPolicyCmptType(pct.getQualifiedName());
         testAttribute.setAttribute(attr.getName());
-        MessageList ml = testAttribute.validate(project);
+        MessageList ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
 
         attr.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
         testAttribute.setTestAttributeType(TestParameterType.INPUT);
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
 
         attr.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
         testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
         testAttribute.setTestAttributeType(TestParameterType.INPUT);
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
 
         attr.setAttributeType(AttributeType.CHANGEABLE);
         testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
         testAttribute.setTestAttributeType(TestParameterType.INPUT);
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
     }
     
@@ -277,25 +277,25 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         testAttribute2.setName("b");
         testAttribute2.setAttribute("attribute1");
 
-        MessageList ml = testAttribute.validate(project);
+        MessageList ml = testAttribute.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE));
         
         testAttribute2.setAttribute("attribute2");
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE));
     }    
    
     public void testValidateNameMustNotBeEmpty() throws Exception{
         testAttribute.setName("attribute1");
-        MessageList ml = testAttribute.validate(project);
+        MessageList ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NAME_IS_EMPTY));
         
         testAttribute.setName("");
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NAME_IS_EMPTY));
         
         testAttribute.setName(null);
-        ml = testAttribute.validate(project);
+        ml = testAttribute.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NAME_IS_EMPTY));        
     }    
     
@@ -303,14 +303,14 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter)testAttribute.getParent();
         param.setRequiresProductCmpt(true);
         
-        IPolicyCmptType base = newPolicyAndProductCmptType(project, "Policy", "Product");
-        IPolicyCmptType sub1 = newPolicyAndProductCmptType(project, "SubPolicy1", "SubProduct1");
-        IPolicyCmptType sub2 = newPolicyAndProductCmptType(project, "SubPolicy2", "SubProduct2");
+        IPolicyCmptType base = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
+        IPolicyCmptType sub1 = newPolicyAndProductCmptType(ipsProject, "SubPolicy1", "SubProduct1");
+        IPolicyCmptType sub2 = newPolicyAndProductCmptType(ipsProject, "SubPolicy2", "SubProduct2");
         sub1.setSupertype(base.getQualifiedName());
         sub2.setSupertype(base.getQualifiedName());
         
-        IProductCmpt productCmptSub1 = newProductCmpt(sub1.findProductCmptType(project), "productSub1");
-        IProductCmpt productCmptSub2 = newProductCmpt(sub2.findProductCmptType(project), "productSub2");
+        IProductCmpt productCmptSub1 = newProductCmpt(sub1.findProductCmptType(ipsProject), "productSub1");
+        IProductCmpt productCmptSub2 = newProductCmpt(sub2.findProductCmptType(ipsProject), "productSub2");
         
         IPolicyCmptTypeAttribute attributeSub1 = sub1.newPolicyCmptTypeAttribute();
         attributeSub1.setName("attrSub1");
@@ -324,12 +324,12 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
 
         testAttribute.setName("test");
         testAttribute.setAttribute("attrSub1");
-        assertTrue(testAttribute.isAttributeRelevantByProductCmpt(productCmptSub1));
-        assertFalse(testAttribute.isAttributeRelevantByProductCmpt(productCmptSub2));
+        assertTrue(testAttribute.isAttributeRelevantByProductCmpt(productCmptSub1, ipsProject));
+        assertFalse(testAttribute.isAttributeRelevantByProductCmpt(productCmptSub2, ipsProject));
         
         param.setRequiresProductCmpt(false);
         // the parameter is not product relevant, threrefore there is no product cmpt
         // in this case the attribute is always relevant
-        assertTrue(testAttribute.isAttributeRelevantByProductCmpt(null));
+        assertTrue(testAttribute.isAttributeRelevantByProductCmpt(null, ipsProject));
     }
 }

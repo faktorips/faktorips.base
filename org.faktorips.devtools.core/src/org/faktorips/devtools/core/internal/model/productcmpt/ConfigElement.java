@@ -121,7 +121,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
      * {@inheritDoc}
      */
     public IProdDefProperty findProperty(IIpsProject ipsProject) throws CoreException {
-        return findPcTypeAttribute();
+        return findPcTypeAttribute(ipsProject);
     }
 
     /**
@@ -181,20 +181,19 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	/**
      * {@inheritDoc}
 	 */
-	public IPolicyCmptTypeAttribute findPcTypeAttribute() throws CoreException {
-		IPolicyCmptType pcType = ((IProductCmpt) getIpsObject())
-				.findPolicyCmptType();
+	public IPolicyCmptTypeAttribute findPcTypeAttribute(IIpsProject ipsProject) throws CoreException {
+		IPolicyCmptType pcType = ((IProductCmpt) getIpsObject()).findPolicyCmptType();
 		if (pcType == null) {
 			return null;
 		}
-        return pcType.findAttributeInSupertypeHierarchy(pcTypeAttribute);
+        return pcType.findPolicyCmptTypeAttribute(pcTypeAttribute, ipsProject);
 	}
     
     /**
      * {@inheritDoc}
      */
-	public ValueDatatype findValueDatatype() throws CoreException {
-        IPolicyCmptTypeAttribute a = findPcTypeAttribute();
+	public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
+        IPolicyCmptTypeAttribute a = findPcTypeAttribute(ipsProject);
         if (a!=null) {
             return a.findDatatype();
         }
@@ -206,7 +205,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	 */
 	protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
 		super.validateThis(list, ipsProject);
-		IPolicyCmptTypeAttribute attribute = findPcTypeAttribute();
+		IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(ipsProject);
 		if (attribute == null) {
             IPolicyCmptType policyCmptType = getProductCmpt().findPolicyCmptType();
             if (policyCmptType==null) {
@@ -438,11 +437,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	 */
 	public ValueDatatype getValueDatatype() {
 		try {
-			IPolicyCmptTypeAttribute attr = findPcTypeAttribute();
-			if (attr == null){
-				return null;
-			}
-			return attr.getValueDatatype();
+            // TODO v2 - signature getValueDatatype() is wrong!
+            return findValueDatatype(getIpsProject());
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
 		}

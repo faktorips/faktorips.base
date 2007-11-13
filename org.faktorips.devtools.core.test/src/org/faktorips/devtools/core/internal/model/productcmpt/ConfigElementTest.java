@@ -52,7 +52,7 @@ import org.w3c.dom.Element;
  */
 public class ConfigElementTest extends AbstractIpsPluginTest {
 
-    private IIpsProject project;
+    private IIpsProject ipsProject;
 	private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
@@ -61,18 +61,18 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 
     protected void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject();
-        policyCmptType = newPolicyAndProductCmptType(project, "TestPolicy", "TestProduct");
-        productCmptType = policyCmptType.findProductCmptType(project);
+        ipsProject = newIpsProject();
+        policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
+        productCmptType = policyCmptType.findProductCmptType(ipsProject);
         productCmpt = newProductCmpt(productCmptType, "TestProduct");
         generation = productCmpt.getProductCmptGeneration(0);
         configElement = generation.newConfigElement();
         productCmpt.getIpsSrcFile().save(true, null);
-        newDefinedEnumDatatype((IpsProject)project, new Class[]{TestEnumType.class});
+        newDefinedEnumDatatype((IpsProject)ipsProject, new Class[]{TestEnumType.class});
     }
     
     public void testFindPcTypeAttribute() throws CoreException {
-        IPolicyCmptType policyCmptSupertype = newPolicyCmptType(project, "SuperPolicy");
+        IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
         policyCmptType.setSupertype(policyCmptSupertype.getQualifiedName());
         
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
@@ -83,22 +83,22 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         generation = productCmpt.getProductCmptGeneration(0);
         IConfigElement ce = generation.newConfigElement();
         ce.setPolicyCmptTypeAttribute("a1");
-        assertEquals(a1, ce.findPcTypeAttribute());
+        assertEquals(a1, ce.findPcTypeAttribute(ipsProject));
         ce.setPolicyCmptTypeAttribute("a2");
-        assertEquals(a2, ce.findPcTypeAttribute());
+        assertEquals(a2, ce.findPcTypeAttribute(ipsProject));
         ce.setPolicyCmptTypeAttribute("unkown");
-        assertNull(ce.findPcTypeAttribute());
+        assertNull(ce.findPcTypeAttribute(ipsProject));
     }
     
     public void testValidate_UnknownAttribute() throws CoreException {
     	configElement.setPolicyCmptTypeAttribute("a");
-    	MessageList ml = configElement.validate(project);
+    	MessageList ml = configElement.validate(ipsProject);
     	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
     	
     	policyCmptType.newPolicyCmptTypeAttribute().setName("a");
         policyCmptType.getIpsSrcFile().save(true, null);
     	
-    	ml = configElement.validate(project);
+    	ml = configElement.validate(ipsProject);
     	assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
     }
     
@@ -111,14 +111,14 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	attr.setName("valueTest");
     	attr.setAttributeType(AttributeType.CHANGEABLE);
     	
-    	MessageList ml = ce.validate(project);
+    	MessageList ml = ce.validate(ipsProject);
     	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_VALUE));
     	
     	attr.setDatatype("Decimal");
     	
     	policyCmptType.getIpsSrcFile().save(true, null);
 
-    	ml = ce.validate(project);
+    	ml = ce.validate(ipsProject);
     	assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_VALUE));
     }
 
@@ -135,13 +135,13 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	policyCmptType.getIpsSrcFile().save(true, null);
     	productCmpt.getIpsSrcFile().save(true, null);
     	
-    	MessageList ml = ce.validate(project);
+    	MessageList ml = ce.validate(ipsProject);
     	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE));
     	
     	attr.setDatatype("Decimal");
     	policyCmptType.getIpsSrcFile().save(true, null);
 
-    	ml = ce.validate(project);
+    	ml = ce.validate(ipsProject);
     	assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE));
     }
     
@@ -182,7 +182,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	policyCmptType.getIpsSrcFile().save(true, null);
     	productCmpt.getIpsSrcFile().save(true, null);
 
-    	ml = ce.validate(project);
+    	ml = ce.validate(ipsProject);
     	assertEquals(0, ml.getNoOfMessages());
     }
     
@@ -192,18 +192,18 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	InvalidDatatype datatype = new InvalidDatatype();
     	attr.setDatatype(datatype.getQualifiedName());
 
-		ValueDatatype[] vds = project.getValueDatatypes(false);
+		ValueDatatype[] vds = ipsProject.getValueDatatypes(false);
 		ArrayList vdlist = new ArrayList();
 		vdlist.addAll(Arrays.asList(vds));
 		vdlist.add(datatype);
 
-        IIpsProjectProperties properties = project.getProperties();
+        IIpsProjectProperties properties = ipsProject.getProperties();
         properties.setPredefinedDatatypesUsed((ValueDatatype[])vdlist.toArray(new ValueDatatype[vdlist.size()]));
-        project.setProperties(properties);
+        ipsProject.setProperties(properties);
 		
 		InvalidDatatypeHelper idh = new InvalidDatatypeHelper();
     	idh.setDatatype(datatype);
-    	((IpsModel)project.getIpsModel()).addDatatypeHelper(idh);
+    	((IpsModel)ipsProject.getIpsModel()).addDatatypeHelper(idh);
 
     	IConfigElement ce = generation.newConfigElement();
     	ce.setPolicyCmptTypeAttribute("test");
@@ -234,12 +234,12 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	policyCmptType.getIpsSrcFile().save(true, null);
     	productCmpt.getIpsSrcFile().save(true, null);
     	
-    	MessageList ml = ce.validate(project);
+    	MessageList ml = ce.validate(ipsProject);
     	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET)); 
     	
     	ce.setValue("15");
 
-    	ml = ce.validate(project);
+    	ml = ce.validate(ipsProject);
     	assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET)); 
     }
     
@@ -264,7 +264,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	policyCmptType.getIpsSrcFile().save(true, null);
     	productCmpt.getIpsSrcFile().save(true, null);
     	
-    	MessageList ml = ce.validate(project);
+    	MessageList ml = ce.validate(ipsProject);
     	// no test for specific message codes because the codes are under controll
     	// of the value set.
     	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
@@ -272,7 +272,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	valueSet.setUpperBound("20");
     	policyCmptType.getIpsSrcFile().save(true, null);
 
-    	ml = ce.validate(project);
+    	ml = ce.validate(ipsProject);
     	assertEquals(0, ml.getNoOfMessages());
         
         // check lower unbound values
@@ -280,21 +280,21 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         valueSet.setUpperBound(null);
         valueSet2.setLowerBound(null);
         valueSet2.setUpperBound(null);
-        ml = ce.validate(project);
+        ml = ce.validate(ipsProject);
         assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
         
         valueSet.setLowerBound("10");
         valueSet.setUpperBound(null);
         valueSet2.setLowerBound(null);
         valueSet2.setUpperBound(null);
-        ml = ce.validate(project);
+        ml = ce.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
 
         valueSet.setLowerBound(null);
         valueSet.setUpperBound(null);
         valueSet2.setLowerBound("10");
         valueSet2.setUpperBound(null);
-        ml = ce.validate(project);
+        ml = ce.validate(ipsProject);
         assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
         
         // check upper unbound values
@@ -302,14 +302,14 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         valueSet.setUpperBound("10");
         valueSet2.setLowerBound(null);
         valueSet2.setUpperBound(null);
-        ml = ce.validate(project);
+        ml = ce.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
 
         valueSet.setLowerBound(null);
         valueSet.setUpperBound(null);
         valueSet2.setLowerBound(null);
         valueSet2.setUpperBound("10");
-        ml = ce.validate(project);
+        ml = ce.validate(ipsProject);
         assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET)); 
     }
 

@@ -317,7 +317,7 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         for (int i = 0; i < testAttrValues.length; i++) {
             // ignore if the test attribute wasn't found, this was already checked on the test case
             // side
-            ITestAttribute testAttr = testAttrValues[i].findTestAttribute();
+            ITestAttribute testAttr = testAttrValues[i].findTestAttribute(testCase.getIpsProject());
             if (testAttr != null) {
                 testAttributes.remove(testAttr);
             }
@@ -522,7 +522,7 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
             List missingTestAttributeValue) throws CoreException {
         ITestAttributeValue testAttributeValues[] = cmpt.getTestAttributeValues();
         for (int i = 0; i < testAttributeValues.length; i++) {
-            ITestAttribute testAttribute = testAttributeValues[i].findTestAttribute();
+            ITestAttribute testAttribute = testAttributeValues[i].findTestAttribute(testCase.getIpsProject());
             if (testAttribute == null){
                 missingTestAttributeValue.add(testAttributeValues[i]);
                 // indicate a different sort oder of the test attributes

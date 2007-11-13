@@ -82,7 +82,7 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
      * {@inheritDoc}
      */
     protected Composite createWorkArea(Composite parent) throws CoreException {
-        attribute = configElement.findPcTypeAttribute();
+        attribute = configElement.findPcTypeAttribute(configElement.getIpsProject());
         TabFolder folder = (TabFolder)parent;
         TabItem firstPage = new TabItem(folder, SWT.NONE);
         firstPage.setText(Messages.PolicyAttributeEditDialog_properties);
@@ -133,7 +133,7 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
         try {
             IValueSet valueSet = configElement.getValueSet();
             IValueSet attrValueSet = null;
-            IPolicyCmptTypeAttribute attribute = configElement.findPcTypeAttribute();
+            IPolicyCmptTypeAttribute attribute = configElement.findPcTypeAttribute(configElement.getIpsProject());
             if (attribute != null) {
                 attrValueSet = attribute.getValueSet();
                 if (attrValueSet.getValueSetType() == ValueSetType.ALL_VALUES) {

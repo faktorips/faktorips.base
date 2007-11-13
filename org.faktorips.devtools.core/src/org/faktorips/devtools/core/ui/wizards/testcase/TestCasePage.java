@@ -166,7 +166,7 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
                     attrValue.setTestAttribute(attribute.getName());
                     // set the default value if the test attribute is an input test attribute
                     if (attribute.isInputAttribute()) {
-                        IPolicyCmptTypeAttribute modelAttribute = attribute.findAttribute();
+                        IPolicyCmptTypeAttribute modelAttribute = attribute.findAttribute(getIpsProject());
                         if (modelAttribute != null) {
                             attrValue.setValue(modelAttribute.getDefaultValue());
                         }

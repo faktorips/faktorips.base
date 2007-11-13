@@ -30,6 +30,7 @@ public class AssociationTypeTest extends AbstractIpsPluginTest {
      * {@inheritDoc}
      */
     protected void setUp() throws Exception {
+        super.setUp();
         IIpsProject project = newIpsProject();
         PolicyCmptType policyCmptType = newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
         association = policyCmptType.newAssociation();

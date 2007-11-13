@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.model.testcase;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 
 /**
@@ -56,9 +57,11 @@ public interface ITestAttributeValue extends IIpsObjectPart{
     /**
      * Returns the test attribute or <code>null</code> if the test attribute does not exists.
      * 
+     * @param ipsProject The ips project which object path is used to search.
+     * 
      * @throws CoreException if an error occurs while searching for the test attribute.
      */		
-	public ITestAttribute findTestAttribute() throws CoreException;
+	public ITestAttribute findTestAttribute(IIpsProject ipsProject) throws CoreException;
 	
 	/**
 	 * Returns value of the attribute.
@@ -73,14 +76,18 @@ public interface ITestAttributeValue extends IIpsObjectPart{
     /**
      * Returns <code>true</code> if the test attribute value is an input attribute, 
      * otherwise <code>false</code>.
+     * 
+     * @param ipsProject The ips project which object path is used to search the attribute.
      */
-    public boolean isInputAttribute();
+    public boolean isInputAttribute(IIpsProject ipsProject);
     
     /**
      * Returns <code>true</code> if the test attribute value is an expected result attribute, 
      * otherwise <code>false</code>.
+     * 
+     * @param ipsProject The ips project which object path is used to search the attribute.
      */
-    public boolean isExpextedResultAttribute();
+    public boolean isExpextedResultAttribute(IIpsProject ipsProject);
     
     /**
      * Updates the default for the test attribute value. The default will be retrieved from the

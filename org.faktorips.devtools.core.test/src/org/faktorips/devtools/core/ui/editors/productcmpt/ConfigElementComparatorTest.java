@@ -30,16 +30,17 @@ public class ConfigElementComparatorTest extends AbstractIpsPluginTest {
 
     private IProductCmptGeneration generation;
     private ConfigElementComparator comparator;
+    private IIpsProject ipsProject;
     
     /**
      * {@inheritDoc}
      */
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject prj = super.newIpsProject("TestProject");
-        IPolicyCmptType superSuperType = newPolicyAndProductCmptType(prj, "SuperSuperPolicy", "SuperSuperProduct");
-        IPolicyCmptType superType = newPolicyAndProductCmptType(prj, "SuperPolicy", "SuperProduct");
-        IPolicyCmptType childType = newPolicyAndProductCmptType(prj, "Policy", "Product");
+        ipsProject = newIpsProject();
+        IPolicyCmptType superSuperType = newPolicyAndProductCmptType(ipsProject, "SuperSuperPolicy", "SuperSuperProduct");
+        IPolicyCmptType superType = newPolicyAndProductCmptType(ipsProject, "SuperPolicy", "SuperProduct");
+        IPolicyCmptType childType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         
         childType.setSupertype(superType.getQualifiedName());
         superType.setSupertype(superSuperType.getQualifiedName());
@@ -49,10 +50,10 @@ public class ConfigElementComparatorTest extends AbstractIpsPluginTest {
         superType.newPolicyCmptTypeAttribute().setName("S2");
         childType.newPolicyCmptTypeAttribute().setName("C");
         
-        IProductCmpt product = newProductCmpt(childType.findProductCmptType(prj), "Product");
+        IProductCmpt product = newProductCmpt(childType.findProductCmptType(ipsProject), "Product");
         generation = product.getProductCmptGeneration(0);
         
-        comparator = new ConfigElementComparator();
+        comparator = new ConfigElementComparator(ipsProject);
     }
 
     public void testCompare() {

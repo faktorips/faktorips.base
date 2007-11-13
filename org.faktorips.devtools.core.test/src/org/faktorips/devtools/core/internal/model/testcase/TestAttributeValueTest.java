@@ -22,8 +22,8 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -42,20 +42,20 @@ import org.w3c.dom.Element;
 public class TestAttributeValueTest  extends AbstractIpsPluginTest {
 
     private ITestAttributeValue testAttributeValue;
-    private IIpsProject project;
+    private IIpsProject ipsProject;
     
     /*
      * @see AbstractIpsPluginTest#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject("TestProject");
-        ITestCaseType testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
+        ipsProject = newIpsProject("TestProject");
+        ITestCaseType testCaseType = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         ITestPolicyCmptTypeParameter param1 = testCaseType.newInputTestPolicyCmptTypeParameter();
         param1.setName("inputTestPcCmptParam1");
         param1.newInputTestAttribute().setName("inputAttribute1");
         
-        ITestCase testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "PremiumCalculation");
+        ITestCase testCase = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "PremiumCalculation");
         testCase.setTestCaseType(testCaseType.getName());
         ITestPolicyCmpt tpc = testCase.newTestPolicyCmpt();
         tpc.setTestPolicyCmptTypeParameter("inputTestPcCmptParam1");
@@ -83,34 +83,34 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
     }
     
     public void testValidateTestAttributeNotFound() throws Exception{
-        MessageList ml = testAttributeValue.validate(project);
+        MessageList ml = testAttributeValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttributeValue.MSGCODE_TESTATTRIBUTE_NOT_FOUND));
 
         testAttributeValue.setTestAttribute("x"); // the value must be set, otherwise the attribute will be ignored
-        ml = testAttributeValue.validate(project);
+        ml = testAttributeValue.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(ITestAttributeValue.MSGCODE_TESTATTRIBUTE_NOT_FOUND));
     }
 
     public void testValidateAttributeNotFound() throws Exception{
-        IPolicyCmptType pct = newPolicyCmptType(project, "policyCmptType");
+        IPolicyCmptType pct = newPolicyCmptType(ipsProject, "policyCmptType");
         IPolicyCmptTypeAttribute attr = pct.newPolicyCmptTypeAttribute();
         attr.setName("attribute1");
-        ITestAttribute testAttribute = testAttributeValue.findTestAttribute();
+        ITestAttribute testAttribute = testAttributeValue.findTestAttribute(ipsProject);
         ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter) testAttribute.getParent();
         param.setPolicyCmptType(pct.getQualifiedName());
 
         testAttribute.setAttribute(attr.getName());
-        MessageList ml = testAttributeValue.validate(project);
+        MessageList ml = testAttributeValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
 
         attr.setName("x");
         testAttributeValue.setValue("x");
-        ml = testAttributeValue.validate(project);
+        ml = testAttributeValue.validate(ipsProject);
         assertEquals(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND, ml.getFirstMessage(Message.WARNING).getCode());
     }
     
     public void testValidateWrongType() throws Exception{
-        MessageList ml = testAttributeValue.validate(project);
+        MessageList ml = testAttributeValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_WRONG_TYPE));
         
         // remark the test if the message will be set couldn't be tested here because setting
@@ -124,15 +124,15 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
      * This feature is implemented on test test case side see TestPolicyCmpt.findProductCmptAttribute()
      */
     public void testValidateAttributeInSuperType() throws CoreException{
-        IPolicyCmptType pctSuper = newPolicyAndProductCmptType(project, "Policy", "Product");
-        IPolicyCmptType pct = newPolicyAndProductCmptType(project, "MotorPolicy", "MotorProduct");
+        IPolicyCmptType pctSuper = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
+        IPolicyCmptType pct = newPolicyAndProductCmptType(ipsProject, "MotorPolicy", "MotorProduct");
         pct.setSupertype(pctSuper.getQualifiedName());
         IPolicyCmptTypeAttribute attr = pct.newPolicyCmptTypeAttribute();
         attr.setName("attribute1");
         
-        ProductCmpt pc = newProductCmpt(pct.findProductCmptType(project), "productA");
+        ProductCmpt pc = newProductCmpt(pct.findProductCmptType(ipsProject), "productA");
         
-        ITestAttribute testAttribute = testAttributeValue.findTestAttribute();
+        ITestAttribute testAttribute = testAttributeValue.findTestAttribute(ipsProject);
         ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter) testAttribute.getParent();
         param.setPolicyCmptType(pctSuper.getQualifiedName());
         
@@ -142,31 +142,31 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
         // assert that the attribute will not be found by searching via the test attribute
         // because the test attribute has no information about the usage of the subclass in the 
         // test case
-        assertNull(testAttribute.findAttribute());
+        assertNull(testAttribute.findAttribute(ipsProject));
         
         // check that the attribute will be found by searching via the test attribute value,
         // because the testattributes parent defines the product cmpt, wich uses a sublass, which
         // defines the attribute
-        MessageList ml = testAttributeValue.validate(project);
+        MessageList ml = testAttributeValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
         
 
-        assertNotNull(((ITestPolicyCmpt)testAttributeValue.getParent()).findProductCmptAttribute(testAttribute.getAttribute()));
+        assertNotNull(((ITestPolicyCmpt)testAttributeValue.getParent()).findProductCmptAttribute(testAttribute.getAttribute(), ipsProject));
         
         
         // negative test 
         
         attr.setName("attribute2");
         testAttributeValue.setValue("x"); // the value must be set, otherwise the attribute will be ignored
-        ml = testAttributeValue.validate(project);
+        ml = testAttributeValue.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
         
         testAttributeValue.setValue(null); // the value is null, thus the attribute will be ignored
-        ml = testAttributeValue.validate(project);
+        ml = testAttributeValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
         
         pctSuper.newPolicyCmptTypeAttribute().setName("attributeSuper");
         testAttribute.setAttribute("attributeSuper");
-        assertNotNull(testAttribute.findAttribute());
+        assertNotNull(testAttribute.findAttribute(ipsProject));
     }
 }
