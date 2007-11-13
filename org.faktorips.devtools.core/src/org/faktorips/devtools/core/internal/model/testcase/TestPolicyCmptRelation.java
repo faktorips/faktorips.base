@@ -82,11 +82,11 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter() throws CoreException {
+	public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(testPolicyCmptTypeParameter)) {
             return null;
 		}
-		return ((TestCase)getTestCase()).findTestPolicyCmptTypeParameter(this);
+		return ((TestCase)getTestCase()).findTestPolicyCmptTypeParameter(this, ipsProject);
 	}
 
 	/**
@@ -149,6 +149,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	 * {@inheritDoc}
 	 */
 	public Image getImage() {
+        // TODO: v2 - fixed Image verwenden.
         if (isAccoziation()){
             // return the linked product cmpt image if the target relates a product cmpt,
             // or return the linked policy cmpt if target not found or no product cmpt is related
@@ -163,7 +164,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
             return IpsPlugin.getDefault().getImage("LinkedPolicyCmptType.gif"); //$NON-NLS-1$
         } else {
             try {
-                ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter();
+                ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter(getIpsProject());
                 if (param != null){
                     IPolicyCmptTypeAssociation relation = param.findRelation(getIpsProject());
                     if (relation != null){
@@ -291,7 +292,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
         //  only one message are added to the list of validation errors
         
 		// validate if the test policy component type parameter exists
-        ITestPolicyCmptTypeParameter testCaseTypeParam = findTestPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter testCaseTypeParam = findTestPolicyCmptTypeParameter(ipsProject);
         if (messageList.getMessageByCode(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND) == null){
     		if (testCaseTypeParam == null){
     			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_TestCaseTypeParamNotFound, getName());
@@ -318,11 +319,11 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void validateSingle(MessageList messageList) throws CoreException {
+	public void validateSingle(MessageList messageList, IIpsProject ipsProject) throws CoreException {
 		// validate if the test case type param exists
 		ITestPolicyCmptTypeParameter param = null;
 		try {
-			param = findTestPolicyCmptTypeParameter();
+			param = findTestPolicyCmptTypeParameter(ipsProject);
 		} catch (CoreException e) {
 			//	ignore exception, the param will be used to indicate errors
 		}
@@ -350,7 +351,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         validateGroup(list, ipsProject);
-		validateSingle(list);
+		validateSingle(list, ipsProject);
 	}
 
     /**

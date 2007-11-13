@@ -132,12 +132,12 @@ public class TestValue extends TestObject implements ITestValue {
     /**
      * {@inheritDoc}
      */
-    public ITestValueParameter findTestValueParameter() throws CoreException {
+    public ITestValueParameter findTestValueParameter(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(testValueParameter)) {
             return null;
         }
 
-        ITestCaseType testCaseType = ((ITestCase)getParent()).findTestCaseType();
+        ITestCaseType testCaseType = ((ITestCase)getParent()).findTestCaseType(ipsProject);
         if (testCaseType == null){
             return null;
         }
@@ -177,7 +177,7 @@ public class TestValue extends TestObject implements ITestValue {
 	 */
 	protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
 		super.validateThis(list, ipsProject);
-        ITestValueParameter param = findTestValueParameter();
+        ITestValueParameter param = findTestValueParameter(ipsProject);
         if (param == null) {
             String text = NLS.bind(Messages.TestValue_ValidateError_TestValueParamNotFound, getTestValueParameter());
             Message msg = new Message(MSGCODE_TEST_VALUE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUE);
@@ -186,7 +186,7 @@ public class TestValue extends TestObject implements ITestValue {
             // validate test parameter aspects will be severity warning
             
             // validate the test datatype value
-            ValueDatatype datatype = param.findValueDatatype();
+            ValueDatatype datatype = param.findValueDatatype(ipsProject);
             if (datatype == null) {
                 String text = NLS.bind(Messages.TestValue_ValidateError_DatatypeNotFound, param.getValueDatatype());
                 Message msg = new Message(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND, text, Message.WARNING,

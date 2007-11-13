@@ -111,7 +111,7 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
         assertEquals(1, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
         
-        ITestPolicyCmptTypeParameter param = pcr.findTestPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter param = pcr.findTestPolicyCmptTypeParameter(project);
         ITestPolicyCmpt pcParent = (ITestPolicyCmpt)pcr.getParent();
         param.setMinInstances(2);
         param.setMaxInstances(3);

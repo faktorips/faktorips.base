@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.dialogs.SelectionStatusDialog;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
@@ -67,16 +68,19 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
     private ViewerFilter filter;
 
     private Label messageLabel;
+
+    private IIpsProject ipsProject;
     
 	public TestPolicyCmptSelectionDialog(Shell parentShell, UIToolkit toolkit, ITestCase testCase, int contentType, String policyCmptType) {
 		super(parentShell);
 		
 		this.toolkit = toolkit;
 		this.testCase = testCase;
+        this.ipsProject = testCase.getIpsProject();
 		this.filteredPolicyCmptType = policyCmptType;
 		
 		this.contentProvider = new TestCaseContentProvider(contentType, testCase);
-		this.labelProvider = new TestCaseLabelProvider();
+		this.labelProvider = new TestCaseLabelProvider(ipsProject);
 		this.filter = new TestPolicyCmptFilter();
 		
         setTitle(Messages.TestPolicyCmptSelectionDialog_Title);
@@ -167,7 +171,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
         
         if (newSelection.getFirstElement() instanceof ITestPolicyCmpt){
         	try {
-				ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter) ((ITestPolicyCmpt)newSelection.getFirstElement()).findTestPolicyCmptTypeParameter();
+				ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter) ((ITestPolicyCmpt)newSelection.getFirstElement()).findTestPolicyCmptTypeParameter(ipsProject);
 				if (param.getPolicyCmptType().equals(filteredPolicyCmptType)){
 					messageLabel.setText(""); //$NON-NLS-1$
 					getOkButton().setEnabled(true);
@@ -303,7 +307,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
 		}
 		ITestPolicyCmptTypeParameter param = null;
 		try {
-			param = (ITestPolicyCmptTypeParameter) testPolicyCmpt.findTestPolicyCmptTypeParameter();
+			param = (ITestPolicyCmptTypeParameter) testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
 			if (param.getPolicyCmptType().equals(filteredPolicyCmptType))
 				found = true;
 		} catch (CoreException e) {

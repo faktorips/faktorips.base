@@ -176,7 +176,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
                 continue;
             }
             try {
-                Datatype datatype = a.findDatatype();
+                Datatype datatype = a.findDatatype(getIpsProject());
                 DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(datatype);
                 if (helper == null) {
                     throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));            

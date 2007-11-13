@@ -166,11 +166,11 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter() throws CoreException {
+	public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(testPolicyCmptType)) {
             return null;
         }
-        return ((TestCase)getTestCase()).findTestPolicyCmptTypeParameter(this);
+        return ((TestCase)getTestCase()).findTestPolicyCmptTypeParameter(this, ipsProject);
 	}
 
     /**
@@ -561,11 +561,12 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
      */
     void fixDifferentChildSortOrder() throws CoreException {
         List oldRelations = testPolicyCmptRelations;
+        IIpsProject ipsProject = getIpsProject();
         // fill temp. storage of the relations for a test parameter
         HashMap param2Relations = new HashMap(oldRelations.size());
         for (Iterator iter = oldRelations.iterator(); iter.hasNext();) {
             ITestPolicyCmptRelation testPolicyCmptRelation = (ITestPolicyCmptRelation)iter.next();
-            ITestPolicyCmptTypeParameter paramOfRelation = testPolicyCmptRelation.findTestPolicyCmptTypeParameter();
+            ITestPolicyCmptTypeParameter paramOfRelation = testPolicyCmptRelation.findTestPolicyCmptTypeParameter(ipsProject);
             List relationList = (List)param2Relations.get(paramOfRelation);
             if (relationList == null) {
                 relationList = new ArrayList();
@@ -576,9 +577,10 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         
         // sort the list of relations for each parameter in order of their parameter
         List newChildList = new ArrayList();
-        ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter();
-        if (param == null)
+        ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter(getIpsProject());
+        if (param == null) {
             throw new RuntimeException("Test parameter not found: " + testPolicyCmptType + "!"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
         ITestPolicyCmptTypeParameter[] paramChild = param.getTestPolicyCmptTypeParamChilds();
         // iterate over all relations in the corresponding parameter and add the relation lists to
         // the new whole relation list
@@ -603,7 +605,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     void fixDifferentTestAttrValueSortOrder() throws CoreException {
         List newTestAttrValueList = new ArrayList();
-        ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter(getIpsProject());
         ITestAttribute[] testAttr = param.getTestAttributes();
         for (int i = 0; i < testAttr.length; i++) {
             ITestAttributeValue testAttrValue = getTestAttributeValue(testAttr[i].getName());
@@ -632,7 +634,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 		// validate if the test case type param exists
-		ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter();
+		ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter(ipsProject);
         IProductCmpt productCmptObj = findProductCmpt();
         
 		if (param == null){
@@ -775,7 +777,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             return null;
         }
         // TODO v2 - Joerg: search attribute using product cmpt type
-        IPolicyCmptType pct = productCmptObj.findPolicyCmptType();
+        IPolicyCmptType pct = productCmptObj.findPolicyCmptType(ipsProject);
         if (pct==null){
             return null;
         }

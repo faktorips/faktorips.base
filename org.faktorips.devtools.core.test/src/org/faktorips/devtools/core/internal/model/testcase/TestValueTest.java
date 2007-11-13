@@ -111,7 +111,7 @@ public class TestValueTest extends AbstractIpsPluginTest {
     }
     
     public void testValidateValueDatatypeNotFound() throws Exception {
-        ITestValueParameter param = valueObjectInput.findTestValueParameter();
+        ITestValueParameter param = valueObjectInput.findTestValueParameter(project);
         param.setValueDatatype("String");
         MessageList ml = valueObjectInput.validate(project);
         assertNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND));

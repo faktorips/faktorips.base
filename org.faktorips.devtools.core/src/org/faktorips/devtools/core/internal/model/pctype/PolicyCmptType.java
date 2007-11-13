@@ -471,7 +471,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     private void addQualifiedNameTypesForTableBasedEnums(Set qualifedNameTypes) throws CoreException {
         IPolicyCmptTypeAttribute[] attributes = getPolicyCmptTypeAttributes();
         for (int i = 0; i < attributes.length; i++) {
-            Datatype datatype = attributes[i].findDatatype();
+            // TODO Mit Peter klaeren
+            Datatype datatype = attributes[i].findDatatype(getIpsProject());
             if (datatype instanceof TableContentsEnumDatatypeAdapter) {
                 TableContentsEnumDatatypeAdapter enumDatatype = (TableContentsEnumDatatypeAdapter)datatype;
                 qualifedNameTypes.add(Dependency.createReferenceDependency(this.getQualifiedNameType(), enumDatatype

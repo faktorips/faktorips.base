@@ -363,7 +363,7 @@ public class ProductCmptPage extends IpsObjectPage {
             } else {
                 constName.setText(sourceProductCmpt.getName());
             }
-            IPolicyCmptType pct = sourceProductCmpt.findPolicyCmptType();
+            IPolicyCmptType pct = sourceProductCmpt.findPolicyCmptType(getIpsProject());
             if (pct != null){
                 typeRefControl.setText(pct.getProductCmptType());
                 // because the new product cmpt is based on an existing product cmpt,

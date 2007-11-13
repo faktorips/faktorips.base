@@ -235,7 +235,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                 generateDefineLocalVariablesForXmlExtraction(builder);
                 attributeFound = true;
             }
-            ValueDatatype datatype = a.findDatatype();
+            ValueDatatype datatype = a.findDatatype(getIpsProject());
             DatatypeHelper helper = getProductCmptType().getIpsProject().getDatatypeHelper(datatype);
             generateGetElementFromConfigMapAndIfStatement(a.getName(), builder);
             generateExtractValueFromXml(getFieldNameDefaulValue(a), helper, builder);

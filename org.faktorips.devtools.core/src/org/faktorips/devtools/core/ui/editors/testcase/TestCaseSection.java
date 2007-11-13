@@ -222,6 +222,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private boolean hasNewDialogSettings;
 
     private IEditorSite site;
+    
+    // ips project used to search
+    private IIpsProject ipsProject;
 
     /*
      * State class contains the enable state of all actions (for buttons and context menu)
@@ -826,7 +829,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         IpsPlugin.getDefault().openEditor(cmpt);
                         return;
                     } else {
-                        ITestPolicyCmptTypeParameter parameter = tpct.findTestPolicyCmptTypeParameter();
+                        ITestPolicyCmptTypeParameter parameter = tpct.findTestPolicyCmptTypeParameter(ipsProject);
                         if (parameter != null){
                             IPolicyCmptType type = parameter.findPolicyCmptType();
                             IpsPlugin.getDefault().openEditor(type);
@@ -842,9 +845,16 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
     }
     
-    public TestCaseSection(Composite parent, TestCaseEditor editor, UIToolkit toolkit,
-            TestCaseContentProvider contentProvider, final String title, String detailTitle, ScrolledForm form,
+    public TestCaseSection(
+            Composite parent, 
+            TestCaseEditor editor, 
+            UIToolkit toolkit,
+            TestCaseContentProvider contentProvider, 
+            final String title, 
+            String detailTitle, 
+            ScrolledForm form,
             IEditorSite site) {
+        
         super(parent, Section.NO_TITLE, GridData.FILL_BOTH, toolkit);
 
         this.editor = editor;
@@ -853,6 +863,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         this.sectionTreeStructureTitle = title;
         this.sectionDetailTitle = detailTitle;
         this.site = site;
+        this.testCase = contentProvider.getTestCase();
+        this.ipsProject = testCase.getIpsProject();
         
         initControls();
         setText(title);
@@ -911,7 +923,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 */
 	protected void initClientComposite(Composite client, UIToolkit toolkit) {
 		this.toolkit = toolkit;
-		this.testCase = contentProvider.getTestCase();
 		
 		configureToolBar();
 		
@@ -939,7 +950,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         treeViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         hookTreeListeners();
         treeViewer.setContentProvider(contentProvider);
-        labelProvider = new TestCaseLabelProvider();
+        labelProvider = new TestCaseLabelProvider(ipsProject);
         treeViewer.setLabelProvider(new MessageCueLabelProvider(labelProvider, testCase.getIpsProject()));
         treeViewer.setUseHashlookup(true);
         treeViewer.setInput(testCase);
@@ -1229,7 +1240,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }else if (selection instanceof ITestPolicyCmpt){
             ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) selection;
             try {
-                ITestPolicyCmptTypeParameter param = testPolicyCmpt.findTestPolicyCmptTypeParameter();
+                ITestPolicyCmptTypeParameter param = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
                 // root elements couldn't be deleted
                 actionEnableState.removeEnable = !((ITestPolicyCmpt)selection).isRoot();
                 // root elements couldn't be deleted
@@ -1416,7 +1427,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         if ( selected instanceof ITestRule){
             ITestRule rule = (ITestRule)selected;
             try {
-                IValidationRule validationRule = rule.findValidationRule();
+                IValidationRule validationRule = rule.findValidationRule(ipsProject);
                 uniquePath = validationRule==null?null:validationRule.getMessageCode();
             } catch (CoreException e1) {
                 // ignore exception while seraching the validation rule object
@@ -1745,7 +1756,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) selectedObj;
 				ITestPolicyCmptTypeParameter testTypeParam;
 				try {
-					testTypeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter();
+					testTypeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
 				} catch (CoreException e) {
 					// ignored, the validation shows the unknown type failure message
 					return;
@@ -2170,7 +2181,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		selectDialog.setTitle(Messages.TestCaseSection_DialogSelectTestRelation_Title);
 		selectDialog.setMessage(Messages.TestCaseSection_DialogSelectTestRelation_Description);
 		
-		ITestPolicyCmptTypeParameter param = parentTestPolicyCmpt.findTestPolicyCmptTypeParameter();
+		ITestPolicyCmptTypeParameter param = parentTestPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
 		TestCaseTypeRelation[] dummyRelations = new TestCaseTypeRelation[param.getTestPolicyCmptTypeParamChilds().length];
         ITestPolicyCmptTypeParameter[] childParams = param.getTestPolicyCmptTypeParamChilds();
         for (int i = 0; i < childParams.length; i++) {
@@ -2202,7 +2213,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         selectDialog.setMessage(Messages.TestCaseSection_SelectDialogValidationRule_Decription);
         
         try {
-            IValidationRule[] rules = testCase.getTestRuleCandidates();
+            IValidationRule[] rules = testCase.getTestRuleCandidates(ipsProject);
             selectDialog.setElements(rules);
             if (selectDialog.open() == Window.OK) {
                 if (selectDialog.getResult().length > 0) {

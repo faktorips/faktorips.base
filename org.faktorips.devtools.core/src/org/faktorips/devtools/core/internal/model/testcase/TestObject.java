@@ -63,9 +63,9 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
         try {
             ITestParameter param = null;
             if (this instanceof ITestPolicyCmpt){
-                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmpt)this);
+                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmpt)this, getIpsProject());
             }else if (this instanceof ITestPolicyCmptRelation){
-                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptRelation)this);
+                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptRelation)this, getIpsProject());
             }
             if (param != null){
                 return testCase.isTypeOrDefault(param, TestParameterType.INPUT, DEFAULT_TYPE);
@@ -81,14 +81,15 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
      * {@inheritDoc}
      */
     public boolean isExpectedResult() {
+        // TODO: mit Joerg klaeren
         TestObject root = (TestObject) getRoot();
         TestCase testCase = (TestCase) root.getParent();
         try {
             ITestParameter param = null;
             if (this instanceof ITestPolicyCmpt)
-                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmpt)this);
+                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmpt)this, getIpsProject());
             else if (this instanceof ITestPolicyCmptRelation)
-                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptRelation)this);
+                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptRelation)this, getIpsProject());
             
             if (param != null)
                 return testCase.isTypeOrDefault(param, TestParameterType.EXPECTED_RESULT, DEFAULT_TYPE);
@@ -108,9 +109,9 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
         try {
             ITestParameter param = null;
             if (this instanceof ITestPolicyCmpt)
-                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmpt)this);
+                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmpt)this, getIpsProject());
             else if (this instanceof ITestPolicyCmptRelation)
-                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptRelation)this);
+                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptRelation)this, getIpsProject());
             
             if (param != null)
                 return testCase.isTypeOrDefault(param, TestParameterType.COMBINED, DEFAULT_TYPE);

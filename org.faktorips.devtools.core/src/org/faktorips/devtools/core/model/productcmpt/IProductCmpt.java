@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -83,14 +82,15 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
     public String getVersionId() throws CoreException;
     
     /**
-     * Searches the policy component type this product component is based on.
+     * Searches the policy component type that is configured by this product component.
      *  
-     * @return The policy component type this product component is based on 
-     * or <code>null</code> if the policy component type can't be found.
+     * @return The policy component type this product component configures
+     * or <code>null</code> if the policy component type can't be found or this product
+     * component does not configure a product component.
      *  
      * @throws CoreException if an exception occurs while searching for the type.
      */
-    public IPolicyCmptType findPolicyCmptType() throws CoreException;
+    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns the qualified name of the product component type this product component
@@ -118,18 +118,6 @@ public interface IProductCmpt extends ITimedIpsObject, IFixDifferencesToModelSup
      * @throws CoreException if an exception occurs while searching for the type.
      */
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
-
-    /**
-     * Searches the relation with the given name in the policy component type 
-     * this product component is based on.
-     *  
-     * @return The relation with the given name in the policy component type this 
-     * product component is based on or <code>null</code> if either the policy component type 
-     * or a relation with the given name can't be found. 
-     *  
-     * @throws CoreException if an exception occurs while searching for the type.
-     */
-    public IPolicyCmptTypeAssociation findPcTypeRelation(String relationName) throws CoreException;
     
     /**
      * Returns <code>true</code> if any of the generations contain at least one formula.

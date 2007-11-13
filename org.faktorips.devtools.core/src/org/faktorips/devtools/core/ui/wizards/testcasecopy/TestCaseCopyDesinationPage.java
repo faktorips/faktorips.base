@@ -367,7 +367,7 @@ public class TestCaseCopyDesinationPage extends WizardPage {
 
         for (Iterator iter = testObjects.iterator(); iter.hasNext();) {
             ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)iter.next();
-            ITestPolicyCmptTypeParameter parameter = testPolicyCmpt.findTestPolicyCmptTypeParameter();
+            ITestPolicyCmptTypeParameter parameter = testPolicyCmpt.findTestPolicyCmptTypeParameter(testPolicyCmpt.getIpsProject());
             if (parameter == null || !parameter.isRequiresProductCmpt()){
                 cellEditors.add(null);
                 continue;

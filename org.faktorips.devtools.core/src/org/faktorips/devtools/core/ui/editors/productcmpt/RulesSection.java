@@ -148,9 +148,10 @@ public class RulesSection extends SimpleIpsPartsSection {
     	
     	
     	private class ContentProvider implements IStructuredContentProvider {
-    		public Object[] getElements(Object inputElement) {
+    		
+            public Object[] getElements(Object inputElement) {
     			try {
-					IPolicyCmptType type = page.getProductCmpt().findPolicyCmptType();
+					IPolicyCmptType type = page.getProductCmpt().findPolicyCmptType(page.getProductCmpt().getIpsProject());
                     if (type==null) {
                         return new Object[0];
                     }

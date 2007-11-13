@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model.testcase;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 
@@ -70,9 +71,11 @@ public interface ITestRule extends ITestObject {
     /**
      * Returns the test rule parameter or <code>null</code> if the object does not exists.
      * 
+     * @param ipsProject The ips project which object path is used to search.
+     * 
      * @throws CoreException if an error occurs while searching for the test rule parameter.
      */         
-    public ITestRuleParameter findTestRuleParameter() throws CoreException;
+    public ITestRuleParameter findTestRuleParameter(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns the validation rule.
@@ -87,9 +90,11 @@ public interface ITestRule extends ITestObject {
     /**
      * Returns the validation rule or <code>null</code> if the object does not exists.
      * 
+     * @param ipsProject The ips project which object path is used to search.
+     * 
      * @throws CoreException if an error occurs while searching for the validation rule.
      */         
-    public IValidationRule findValidationRule() throws CoreException;
+    public IValidationRule findValidationRule(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns the violation type.

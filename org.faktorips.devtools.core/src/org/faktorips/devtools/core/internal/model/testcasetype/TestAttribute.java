@@ -199,7 +199,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         if (productCmpt == null){
             return false;
         } 
-        IPolicyCmptType policyCmptType = productCmpt.findPolicyCmptType();
+        IPolicyCmptType policyCmptType = productCmpt.findPolicyCmptType(ipsProject);
         return ! (policyCmptType.findPolicyCmptTypeAttribute(getAttribute(), ipsProject) == null);
     }
 

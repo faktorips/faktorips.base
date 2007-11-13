@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.internal.model.testcasetype;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
@@ -108,15 +107,12 @@ public class TestValueParameter extends TestParameter implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public ValueDatatype findValueDatatype() throws CoreException {
-        if (StringUtils.isEmpty(datatype)) {
-            return null;
-        }
-		return getIpsProject().findValueDatatype(datatype);
+	public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
+		return ipsProject.findValueDatatype(datatype);
 	}
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
@@ -166,7 +162,7 @@ public class TestValueParameter extends TestParameter implements
      */
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        ValueDatatype datatype = findValueDatatype();
+        ValueDatatype datatype = findValueDatatype(ipsProject);
         if (datatype==null) {
             String text = NLS.bind(Messages.TestValueParameter_ValidateError_ValueDatatypeNotFound, getDatatype());
             Message msg = new Message(MSGCODE_VALUEDATATYPE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUEDATATYPE);

@@ -104,7 +104,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * 
      * @throws CoreException if an error occurs while searching for the policy component type.
      */	
-	public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter() throws CoreException;
+	public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) throws CoreException;
 	
     /**
      * Returns the qualified name of the product componet.

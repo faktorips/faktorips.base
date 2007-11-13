@@ -18,7 +18,6 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
@@ -80,18 +79,10 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
     public IPolicyCmptType getPolicyCmptType();
     
     /**
-     * Returns the attribute's value datatype or <code>null</code> if the datatype name
-     * can't be resolved.
-     * 
-     * @throws CoreException if an error occurs while searching for the datatype.
-     */
-    public ValueDatatype findDatatype() throws CoreException;
-    
-    /**
      * If this Attribute has a rule that checks against its value set, it is
      * returned by this method otherwise <code>null</code> will be returned.
      */
-    public IValidationRule findValueSetRule();
+    public IValidationRule findValueSetRule(IIpsProject ipsProject);
     
     /**
      * Returns a proposal for the name of the rule checking the value against the value set.

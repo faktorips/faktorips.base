@@ -121,16 +121,6 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     /**
      * {@inheritDoc}
      */
-    public IPolicyCmptType findTarget() throws CoreException {
-        if (StringUtils.isEmpty(target)) {
-            return null;
-        }
-        return getIpsProject().findPolicyCmptType(target);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public IPolicyCmptType findTargetPolicyCmptType(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findPolicyCmptType(target);
     }
@@ -150,7 +140,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         if (productCmptType==null) {
             return null;
         }
-        IPolicyCmptType targetType = findTarget();
+        IPolicyCmptType targetType = findTargetPolicyCmptType(ipsProject);
         if (targetType==null) {
             return null;
         }
@@ -276,14 +266,14 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 	/**
 	 * {@inheritDoc}
 	 */
-    public IPolicyCmptTypeAssociation findInverseAssociation() throws CoreException {
+    public IPolicyCmptTypeAssociation findInverseAssociation(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(inverseAssociation)) {
             return null;
         }
         if (type.isCompositionDetailToMaster()) {
             return null;
         }
-        IPolicyCmptType target = findTarget();
+        IPolicyCmptType target = findTargetPolicyCmptType(ipsProject);
         if (target==null) {
             return null;
         }
@@ -350,13 +340,12 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
      */
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);        
-        
         if (maxCardinality != 1 && this.type == AssociationType.COMPOSITION_DETAIL_TO_MASTER) {
         	String text = Messages.Association_msg_DetailToMasterAssociationMustHaveMaxCardinality1;
         	list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION, text, Message.ERROR, this, new String[] {PROPERTY_MAX_CARDINALITY, IAssociation.PROPERTY_ASSOCIATION_TYPE}));
         }
-        validateDerivedUnion(list, getIpsProject());
-        validateInverseRelation(list);
+        validateDerivedUnion(list, ipsProject);
+        validateInverseRelation(list, ipsProject);
     }
     
     private void validateDerivedUnion(MessageList list, IIpsProject ipsProject) throws CoreException {
@@ -368,17 +357,18 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     
     /**
      * Performs the check for the rule with message code
+     * 
      * @see IPolicyCmptTypeAssociation#MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION
      */
     private void checkForDerivedUnionInverseAssociationMismatch(IPolicyCmptTypeAssociation derivedUnion, MessageList list, IIpsProject ipsProject) throws CoreException {
-        IPolicyCmptTypeAssociation inverseAss = findInverseAssociation();
+        IPolicyCmptTypeAssociation inverseAss = findInverseAssociation(ipsProject);
         if (inverseAss==null) {
             return; // not found => error will be reported in validateInverseRelation
         }
         if (isComposition() || inverseAss.isComposition()) {
             return;
         }
-        IPolicyCmptTypeAssociation inverseRelationOfContainerRel = derivedUnion.findInverseAssociation();
+        IPolicyCmptTypeAssociation inverseRelationOfContainerRel = derivedUnion.findInverseAssociation(ipsProject);
         if (inverseRelationOfContainerRel==null) {
             return; // not found => error will be reported in validateReverseRelation
         }
@@ -389,7 +379,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         }
     }
     
-    private void validateInverseRelation(MessageList list) throws CoreException {
+    private void validateInverseRelation(MessageList list, IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(inverseAssociation)) {
             return;
         }
@@ -398,7 +388,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             list.add(new Message(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_INFO_NOT_NEEDED, text, Message.WARNING, this, PROPERTY_INVERSE_ASSOCIATION)); //$NON-NLS-1$
             return;
         }
-        IPolicyCmptTypeAssociation inverseAss = findInverseAssociation();
+        IPolicyCmptTypeAssociation inverseAss = findInverseAssociation(ipsProject);
         if (inverseAss==null) {
             String text = NLS.bind(Messages.Association_msg_AssociationNotFoundInTarget, inverseAssociation, target);
             list.add(new Message(MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET, text, Message.ERROR, this, PROPERTY_INVERSE_ASSOCIATION)); //$NON-NLS-1$

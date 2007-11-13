@@ -504,21 +504,21 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
 	
     public void testFindInverseAssociation() throws CoreException {
         association.setInverseAssociation("");
-        assertNull(association.findInverseAssociation());
+        assertNull(association.findInverseAssociation(ipsProject));
 
         association.setInverseAssociation("reverseRelation");
-        assertNull(association.findInverseAssociation());
+        assertNull(association.findInverseAssociation(ipsProject));
         
         IPolicyCmptType targetType = (IPolicyCmptType)newIpsObject(this.pcType.getIpsProject(), IpsObjectType.POLICY_CMPT_TYPE, "pack2.MotorPolicy");
         association.setTarget(targetType.getQualifiedName());
-        assertNull(association.findInverseAssociation());
+        assertNull(association.findInverseAssociation(ipsProject));
         
         IPolicyCmptTypeAssociation relation2 = targetType.newPolicyCmptTypeAssociation();
         relation2.setTargetRoleSingular("reverseRelation");
-        assertEquals(relation2, association.findInverseAssociation());
+        assertEquals(relation2, association.findInverseAssociation(ipsProject));
         
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        assertNull(association.findInverseAssociation());
+        assertNull(association.findInverseAssociation(ipsProject));
     }
     
     public void testNewInverseAssociation() throws CoreException{

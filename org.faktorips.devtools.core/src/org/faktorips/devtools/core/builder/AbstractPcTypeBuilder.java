@@ -204,7 +204,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
             IPolicyCmptTypeAttribute a = attributes[i];
             if (!a.validate(getIpsProject()).containsErrorMsg()) {
                 try {
-                    Datatype datatype = a.findDatatype();
+                    Datatype datatype = a.findDatatype(getIpsProject());
                     DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(datatype);
                     if (helper == null) {
                         throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));             //$NON-NLS-1$

@@ -46,12 +46,11 @@ public class InverseAssociationCompletionProcessor extends AbstractCompletionPro
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.AbstractCompletionProcessor#doComputeCompletionProposals(java.lang.String, java.util.List)
+     * {@inheritDoc}
      */
     protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
         prefix = prefix.toLowerCase();
-        IPolicyCmptType target = relation.findTarget();
+        IPolicyCmptType target = relation.findTargetPolicyCmptType(ipsProject);
         if (target==null) {
             return;
         }

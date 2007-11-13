@@ -139,7 +139,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
             if (relation == null)
                 return;
 
-            relTargetRefControl.setPolicyCmptTypeTarget(relation.findTarget());
+            relTargetRefControl.setPolicyCmptTypeTarget(relation.findTargetPolicyCmptType(relation.getIpsProject()));
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }

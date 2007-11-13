@@ -142,7 +142,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
         try {
             IPolicyCmptTypeAssociation modelRelation = newTestParameter.findRelation(testCaseType.getIpsProject());
             if (modelRelation != null){
-                IPolicyCmptType pcType = modelRelation.findTarget();
+                IPolicyCmptType pcType = modelRelation.findTargetPolicyCmptType(parentTestPolicyCmptTypeParameter.getIpsProject());
                 if (pcType != null){
                     newTestParameter.setPolicyCmptType(pcType.getQualifiedName());
                 }

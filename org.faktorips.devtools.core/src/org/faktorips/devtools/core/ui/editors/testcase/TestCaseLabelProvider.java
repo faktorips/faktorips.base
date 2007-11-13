@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -38,8 +39,15 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
  * @author Joerg Ortmann
  */
 public class TestCaseLabelProvider implements ILabelProvider {
-	
-	/**
+
+    private IIpsProject ipsProject;
+    
+	public TestCaseLabelProvider(IIpsProject ipsProject) {
+        super();
+        this.ipsProject = ipsProject;
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public Image getImage(Object element) {
@@ -76,8 +84,7 @@ public class TestCaseLabelProvider implements ILabelProvider {
 			String text = ""; //$NON-NLS-1$
 			try {
 				text = TestCaseHierarchyPath.unqualifiedName(testPcTypeRelation.getTestPolicyCmptTypeParameter());
-				
-				ITestPolicyCmptTypeParameter typeParam = testPcTypeRelation.findTestPolicyCmptTypeParameter();
+				ITestPolicyCmptTypeParameter typeParam = testPcTypeRelation.findTestPolicyCmptTypeParameter(ipsProject);
 				if (typeParam != null && typeParam.isRequiresProductCmpt())
 					text += Messages.TestCaseLabelProvider_LabelSuffix_RequiresProductCmpt;
 			} catch (CoreException e) {
@@ -114,7 +121,7 @@ public class TestCaseLabelProvider implements ILabelProvider {
         String extForPolicyCmptForValidationRule = ""; //$NON-NLS-1$
         IValidationRule validationRule;
         try {
-            validationRule = testRule.findValidationRule();
+            validationRule = testRule.findValidationRule(ipsProject);
             if (validationRule != null) {
                 extForPolicyCmptForValidationRule = " - " + ((PolicyCmptType)validationRule.getParent()).getName(); //$NON-NLS-1$
             }

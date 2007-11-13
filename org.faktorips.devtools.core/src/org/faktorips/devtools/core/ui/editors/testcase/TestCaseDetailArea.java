@@ -69,10 +69,12 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 public class TestCaseDetailArea {
     // UI toolkit for creating the controls
     private UIToolkit toolkit;
-
+    
     // Contains the content provider of the test policy component object
     private TestCaseContentProvider contentProvider;
 
+    private IIpsProject ipsProject;
+    
     // Contains all edit sections the key is the name of the correspondin test parameter
     private HashMap sectionControls = new HashMap();
 
@@ -151,6 +153,7 @@ public class TestCaseDetailArea {
             TestCaseSection testCaseSection) {
         this.toolkit = toolkit;
         this.contentProvider = contentProvider;
+        this.ipsProject = contentProvider.getTestCase().getIpsProject();
         this.testCaseSection = testCaseSection;
     }
 
@@ -259,7 +262,7 @@ public class TestCaseDetailArea {
                 .getContentProvider().isInput() && testPolicyCmpt.isInput()))) {
             // check if the parameter wasn't found
             // if the parameter not exists then the type couldn't be determined, therefore display the content in any case
-            if (testPolicyCmpt.findTestPolicyCmptTypeParameter() != null){
+            if (testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject) != null){
                 return;
             }
         }
@@ -279,7 +282,6 @@ public class TestCaseDetailArea {
         // create text edit fields for each attribute
         ITestAttributeValue[] testAttributeValues = testPolicyCmpt.getTestAttributeValues();
         boolean firstEditField = true; 
-        IIpsProject ipsProject = testPolicyCmpt.getIpsProject();
         for (int i = 0; i < testAttributeValues.length; i++) {
             final ITestAttributeValue attributeValue = testAttributeValues[i];
             // Create the edit field only if the content provider provides the type of the test
@@ -315,9 +317,7 @@ public class TestCaseDetailArea {
         ValueDatatypeControlFactory ctrlFactory = null;
         boolean failure = false;
         try {
-            IIpsProject ipsProject = attributeValue.getIpsProject();
             ITestAttribute testAttr = attributeValue.findTestAttribute(ipsProject);
-            
             if (testAttr == null) {
                 // ignore not existing test attributes, will be checked in the vaidate method
                 failure = true;
@@ -337,7 +337,7 @@ public class TestCaseDetailArea {
                     failure = true;
                 } 
                 if (attribute != null){
-                    datatype = attribute.findDatatype();
+                    datatype = attribute.findDatatype(ipsProject);
                     ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(datatype);
                 }
             }
@@ -369,7 +369,7 @@ public class TestCaseDetailArea {
         addSectionSelectionListeners(editField, null, testPolicyCmptForSelection);
 
         // mark as expected result
-        if (attributeValue.isExpextedResultAttribute(attributeValue.getIpsProject())) {
+        if (attributeValue.isExpextedResultAttribute(ipsProject)) {
             markAsExpected(editField);
         }
         // mark as failure
@@ -525,9 +525,9 @@ public class TestCaseDetailArea {
         ValueDatatype datatype = null;
         ValueDatatypeControlFactory ctrlFactory = null;
         try {
-            ITestValueParameter param = testValue.findTestValueParameter();
+            ITestValueParameter param = testValue.findTestValueParameter(ipsProject);
             if (param != null) {
-                datatype = param.findValueDatatype();
+                datatype = param.findValueDatatype(ipsProject);
                 ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(datatype);
             } else {
                 ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(new StringDatatype());

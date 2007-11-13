@@ -430,7 +430,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      * Creates a toc entry for the given test case.
      */
     public TocEntryObject createTocEntry(ITestCase testCase) throws CoreException {
-        ITestCaseType type = testCase.findTestCaseType();
+        ITestCaseType type = testCase.findTestCaseType(getIpsProject());
         if (type == null) {
             return null;
         }

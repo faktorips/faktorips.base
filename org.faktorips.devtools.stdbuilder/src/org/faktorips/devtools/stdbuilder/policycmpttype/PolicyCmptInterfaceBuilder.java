@@ -546,7 +546,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeFor1To1Relation(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        IPolicyCmptType target = relation.findTarget();
+        IPolicyCmptType target = relation.findTargetPolicyCmptType(getIpsProject());
         generateMethodGetRefObject(relation, methodsBuilder);
         if (!relation.isDerivedUnion() && !relation.getAssociationType().isCompositionDetailToMaster()) {
             generateMethodSetObject(relation, methodsBuilder);
@@ -558,7 +558,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeFor1ToManyRelation(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        IPolicyCmptType target = relation.findTarget();
+        IPolicyCmptType target = relation.findTargetPolicyCmptType(getIpsProject());
         generateMethodGetNumOfRefObjects(relation, methodsBuilder);
         generateMethodGetAllRefObjects(relation, methodsBuilder);
         generateMethodContainsObject(relation, methodsBuilder);
@@ -635,7 +635,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         String methodName = getMethodNameGetAllRefObjects(relation);
-        String returnType = getQualifiedClassName(relation.findTarget()) + "[]";
+        String returnType = getQualifiedClassName(relation.findTarget(getIpsProject())) + "[]";
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName, new String[]{}, new String[]{});
     }
     
@@ -674,7 +674,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         String methodName = getMethodNameGetRefObject(relation);
-        String returnType = getQualifiedClassName(relation.findTarget());
+        String returnType = getQualifiedClassName(relation.findTarget(getIpsProject()));
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName, new String[]{}, new String[]{});
     }
     
@@ -713,7 +713,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         String methodName = getMethodNameAddObject(relation);
-        String className = getQualifiedClassName(relation.findTarget());
+        String className = getQualifiedClassName(relation.findTarget(getIpsProject()));
         String paramName = getParamNameForAddObject(relation);
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, new String[]{paramName}, new String[]{className});
     }
@@ -783,7 +783,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder builder) throws CoreException {
         
         String methodName = getMethodNameNewChild(relation);
-        String returnType = getQualifiedClassName(relation.findTarget());
+        String returnType = getQualifiedClassName(relation.findTarget(getIpsProject()));
         String[] argNames, argTypes;
         if (inclProductCmptArg) {
             IProductCmptType productCmptType = target.findProductCmptType(getIpsProject());
@@ -838,7 +838,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         String methodName = getMethodNameRemoveObject(relation);
-        String className = getQualifiedClassName(relation.findTarget());
+        String className = getQualifiedClassName(relation.findTarget(getIpsProject()));
         String paramName = getParamNameForRemoveObject(relation);
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, new String[]{paramName}, new String[]{className});
     }
@@ -886,7 +886,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         String methodName = getMethodNameContainsObject(relation);
-        String paramClass = getQualifiedClassName(relation.findTarget());
+        String paramClass = getQualifiedClassName(relation.findTarget(getIpsProject()));
         String paramName = getParamNameForContainsObject(relation);
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "boolean", methodName, new String[]{paramName}, new String[]{paramClass});
     }
@@ -934,7 +934,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         String methodName = getMethodNameSetObject(relation);
-        String paramClass = getQualifiedClassName(relation.findTarget());
+        String paramClass = getQualifiedClassName(relation.findTarget(getIpsProject()));
         String paramName = getParamNameForSetObject(relation);
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, new String[]{paramName}, new String[]{paramClass});
     }
@@ -1137,7 +1137,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     public void generateSignatureGetRefObjectAtIndex(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
         appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT_BY_INDEX", relation.getTargetRoleSingular(), relation, methodBuilder);
-        methodBuilder.signature(java.lang.reflect.Modifier.PUBLIC, getQualifiedClassName(relation.findTarget()), 
+        methodBuilder.signature(java.lang.reflect.Modifier.PUBLIC, getQualifiedClassName(relation.findTarget(getIpsProject())), 
                     getMethodNameGetRefObjectAtIndex(relation), 
                     new String[]{"index"}, new String[]{Integer.TYPE.getName()});
     }

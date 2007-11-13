@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model.testcase;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 
 /**
@@ -55,9 +56,11 @@ public interface ITestValue extends ITestObject {
     /**
      * Returns the test value or <code>null</code> if the object does not exists.
      * 
+     * @param ipsProject The ips project which object path is used to search.
+     * 
      * @throws CoreException if an error occurs while searching for the test value.
      */		
-	public ITestValueParameter findTestValueParameter() throws CoreException;
+	public ITestValueParameter findTestValueParameter(IIpsProject ipsProject) throws CoreException;
 	
 	/**
 	 * Returns the value.

@@ -286,7 +286,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         MessageList ml = testPolicyCmptObjectInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
         
-        ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter(project);
         param.setRequiresProductCmpt(true);
         ml = testPolicyCmptObjectInput.validate(project);
         assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
@@ -298,7 +298,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     
     public void testValidatePolicyCmptTypeNotExists() throws Exception {
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmptType");
-        ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter(project);
         param.setPolicyCmptType(policyCmptType.getQualifiedName());
 
         MessageList ml = testPolicyCmptObjectInput.validate(project);
@@ -311,7 +311,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     }    
     
     public void testValidateMinInstancesNotReached() throws Exception{
-        ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter(project);
         param.setMinInstances(0);
         
         MessageList ml = testPolicyCmptObjectInput.validate(project);
@@ -333,7 +333,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     }
     
     public void testValidateMaxInstancesNotReached() throws Exception{
-        ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter(project);
         
         MessageList ml = testPolicyCmptObjectInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
@@ -375,7 +375,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         MessageList ml = testPolicyCmptObjectInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED));
         
-        ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter(project);
         param.setRequiresProductCmpt(false);
         testPolicyCmptObjectInput.setProductCmpt("x");
         ml = testPolicyCmptObjectInput.validate(project);
@@ -460,7 +460,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         ce.setValue("attrCoverage_Default_Product");
         
         // create test case type side
-        ITestPolicyCmptTypeParameter tp = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter tp = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter(project);
         // clean the default test data, because we use two new policy cmpts
         ITestPolicyCmptTypeParameter[] childs = tp.getTestPolicyCmptTypeParamChilds();
         for (int i = 0; i < childs.length; i++) {

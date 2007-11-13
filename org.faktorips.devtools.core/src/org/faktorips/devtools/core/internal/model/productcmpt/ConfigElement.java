@@ -182,7 +182,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
      * {@inheritDoc}
 	 */
 	public IPolicyCmptTypeAttribute findPcTypeAttribute(IIpsProject ipsProject) throws CoreException {
-		IPolicyCmptType pcType = ((IProductCmpt) getIpsObject()).findPolicyCmptType();
+		IPolicyCmptType pcType = getProductCmpt().findPolicyCmptType(ipsProject);
 		if (pcType == null) {
 			return null;
 		}
@@ -195,7 +195,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptTypeAttribute a = findPcTypeAttribute(ipsProject);
         if (a!=null) {
-            return a.findDatatype();
+            return a.findDatatype(ipsProject);
         }
         return null;
     }
@@ -207,7 +207,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		super.validateThis(list, ipsProject);
 		IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(ipsProject);
 		if (attribute == null) {
-            IPolicyCmptType policyCmptType = getProductCmpt().findPolicyCmptType();
+            IPolicyCmptType policyCmptType = getProductCmpt().findPolicyCmptType(ipsProject);
             if (policyCmptType==null) {
                 String text = NLS.bind(Messages.ConfigElement_policyCmptTypeNotFound, pcTypeAttribute);
                 list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_VALUE));
@@ -226,7 +226,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	private void validateValue(IPolicyCmptTypeAttribute attribute, IIpsProject ipsProject, MessageList list)
 			throws CoreException {
 		
-		ValueDatatype valueDatatype = attribute.findDatatype();
+		ValueDatatype valueDatatype = attribute.findDatatype(ipsProject);
 		if (valueDatatype == null) {
 			if (!StringUtils.isEmpty(value)) {
 				String text = Messages.ConfigElement_msgUndknownDatatype;

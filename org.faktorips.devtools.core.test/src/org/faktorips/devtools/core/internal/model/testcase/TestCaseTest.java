@@ -388,7 +388,7 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         tpcC.setTestPolicyCmptTypeParameter(paramA2.getName());
         tpcC.setProductCmpt(productCmptC.getQualifiedName());
         
-        IValidationRule[] testRuleParameters = testCase.getTestRuleCandidates();
+        IValidationRule[] testRuleParameters = testCase.getTestRuleCandidates(ipsProject);
         assertEquals(3, testRuleParameters.length);
         List testRuleParametersList = Arrays.asList(testRuleParameters);
         assertTrue(testRuleParametersList.contains(ruleA));
@@ -397,7 +397,7 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         
         testCase.removeTestObject(tpcC);
         assertEquals(1, testCase.getAllTestPolicyCmpt().length);
-        testRuleParameters = testCase.getTestRuleCandidates();
+        testRuleParameters = testCase.getTestRuleCandidates(ipsProject);
         assertEquals(2, testRuleParameters.length);
         testRuleParametersList = Arrays.asList(testRuleParameters);
         assertTrue(testRuleParametersList.contains(ruleA));
@@ -407,7 +407,7 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         tpcD.setTestPolicyCmptTypeParameter(paramA3.getName());
         tpcD.setProductCmpt(productCmptD.getQualifiedName());
         
-        testRuleParameters = testCase.getTestRuleCandidates();
+        testRuleParameters = testCase.getTestRuleCandidates(ipsProject);
         assertEquals(4, testRuleParameters.length);
         testRuleParametersList = Arrays.asList(testRuleParameters);
         assertTrue(testRuleParametersList.contains(ruleA));

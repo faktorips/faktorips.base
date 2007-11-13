@@ -148,7 +148,7 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
             if (parameter[i] instanceof ITestValueParameter) {
                 ITestValue testValue = testCase.newTestValue();
                 testValue.setTestValueParameter(parameter[i].getName());
-                ValueDatatype valueDatatype = ((TestValueParameter)parameter[i]).findValueDatatype();
+                ValueDatatype valueDatatype = ((TestValueParameter)parameter[i]).findValueDatatype(getIpsProject());
                 if (valueDatatype != null){
                     testValue.setValue(valueDatatype.getDefaultValue());
                 }

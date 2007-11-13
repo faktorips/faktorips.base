@@ -64,16 +64,6 @@ public interface ITestCase extends IIpsObject, IFixDifferencesToModelSupport {
     public void setTestCaseType(String testCaseType);
 
     /**
-     * Search and return the test case type object in the model. Returns <code>null</code> if the
-     * test case type not found.
-     * 
-     * @deprecated use {@link #findTestCaseType(IIpsProject)}
-     * 
-     * @throws CoreException if an error occurs while searching for the test case type.
-     */
-    public ITestCaseType findTestCaseType() throws CoreException;
-    
-    /**
      * Search and return the test case type object in the model.
      * 
      * @param ipsProject The project which ips object path is used for the searched.
@@ -223,9 +213,11 @@ public interface ITestCase extends IIpsObject, IFixDifferencesToModelSupport {
      * an abstract policy cmpt type (A) and the test case includes a concrete instance of this
      * abstract policy cmpt type (B) then the validation rules af A and B will be returned.
      * 
+     * @param ipsProject The ips project which object path is used to search.
+     * 
      * @throws CoreException if an error occurs
      */
-    public IValidationRule[] getTestRuleCandidates() throws CoreException;
+    public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Searchs and returns the validation rule with the given name which is inside the test case.
@@ -233,11 +225,11 @@ public interface ITestCase extends IIpsObject, IFixDifferencesToModelSupport {
      * 
      * @see ITestCase#getTestRuleCandidates()
      */
-    public IValidationRule findValidationRule(String validationRuleName) throws CoreException;
+    public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Retruns all referenced product cmpts qualified name. Returns an empty string if no product cmpts
-     * are related.
+     * Returns the qualified names of all referenced product cmpts. Returns an empty arrax if no product cmpts
+     * are referenced.
      */
     public String[] getReferencedProductCmpts() throws CoreException;    
 }

@@ -278,15 +278,6 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * {@inheritDoc}
      */
-    public ITestCaseType findTestCaseType() throws CoreException {
-        if (StringUtils.isEmpty(testCaseType))
-            return null;
-        return (ITestCaseType)getIpsProject().findIpsObject(IpsObjectType.TEST_CASE_TYPE, testCaseType);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
     public ITestCaseType findTestCaseType(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(testCaseType))
             return null;
@@ -297,7 +288,7 @@ public class TestCase extends IpsObject implements ITestCase {
      * {@inheritDoc}
      */
     public ITestCaseTestCaseTypeDelta computeDeltaToTestCaseType() throws CoreException {
-        ITestCaseType testCaseTypeFound = findTestCaseType();
+        ITestCaseType testCaseTypeFound = findTestCaseType(getIpsProject());
         if (testCaseTypeFound != null) {
             return new TestCaseTestCaseTypeDelta(this, testCaseTypeFound);
         }
@@ -309,6 +300,7 @@ public class TestCase extends IpsObject implements ITestCase {
      * {@inheritDoc}
      */
     public void fixDifferences(ITestCaseTestCaseTypeDelta delta) throws CoreException {
+        // TODO Joerg, Methodenlaenge
         // Test case side
         ITestValue[] testValuesWithMissingTestValueParam = delta.getTestValuesWithMissingTestValueParam();
         ITestPolicyCmpt[] testPolicyCmptsWithMissingTypeParam = delta.getTestPolicyCmptsWithMissingTypeParam();
@@ -351,7 +343,7 @@ public class TestCase extends IpsObject implements ITestCase {
             ITestValue testValue = newTestValue();
             testValue.setTestValueParameter(testValueParametersWithMissingTestValue[i].getName());
             // set default value to default
-            ValueDatatype valueDatatype = ((TestValueParameter)testValueParametersWithMissingTestValue[i]).findValueDatatype();
+            ValueDatatype valueDatatype = ((TestValueParameter)testValueParametersWithMissingTestValue[i]).findValueDatatype(getIpsProject());
             if (valueDatatype != null){
                 testValue.setValue(valueDatatype.getDefaultValue());
             }            
@@ -414,7 +406,7 @@ public class TestCase extends IpsObject implements ITestCase {
      * {@inheritDoc}
      */
     public void sortTestObjects() throws CoreException {
-        List orderedTestObject = getCorrectSortOrderOfRootObjects();
+        List orderedTestObject = getCorrectSortOrderOfRootObjects(getIpsProject());
         if (orderedTestObject != null){
             testObjects = orderedTestObject;
             objectHasChanged();
@@ -425,7 +417,7 @@ public class TestCase extends IpsObject implements ITestCase {
      * Returns all root objects in the correct sort order compared to the test case type parameters.
      * If the test parameter doesn't exist order the test object to the end of the test object list.
      */
-    private List getCorrectSortOrderOfRootObjects() throws CoreException {
+    private List getCorrectSortOrderOfRootObjects(IIpsProject ipsProject) throws CoreException {
         List newTestObjectOrder = new ArrayList(testObjects.size());
         HashMap oldTestObject = new HashMap(testObjects.size());
         for (Iterator iter = testObjects.iterator(); iter.hasNext();) {
@@ -434,13 +426,13 @@ public class TestCase extends IpsObject implements ITestCase {
             ITestParameter testParameter = null;
             if (testObject instanceof ITestPolicyCmpt){
                 testParameterName = ((ITestPolicyCmpt)testObject).getTestPolicyCmptTypeParameter();
-                testParameter = ((ITestPolicyCmpt)testObject).findTestPolicyCmptTypeParameter();
+                testParameter = ((ITestPolicyCmpt)testObject).findTestPolicyCmptTypeParameter(ipsProject);
             } else if (testObject instanceof ITestValue){
                 testParameterName = ((ITestValue)testObject).getTestValueParameter();
-                testParameter = ((ITestValue)testObject).findTestValueParameter();
+                testParameter = ((ITestValue)testObject).findTestValueParameter(ipsProject);
             } else if (testObject instanceof ITestRule){
                 testParameterName = ((ITestRule)testObject).getTestRuleParameter();
-                testParameter = ((ITestRule)testObject).findTestRuleParameter();
+                testParameter = ((ITestRule)testObject).findTestRuleParameter(ipsProject);
             } else {
                 throw new RuntimeException("Unsupported test object type: " + testObject.getClass()); //$NON-NLS-1$
             }
@@ -457,7 +449,7 @@ public class TestCase extends IpsObject implements ITestCase {
             oldTestObject.put(testParameter, oldObjectsToTestParam);
         }
         
-        ITestCaseType testCaseType = findTestCaseType();
+        ITestCaseType testCaseType = findTestCaseType(ipsProject);
         ITestParameter[] testParameters = testCaseType.getTestParameters();
         for (int i = 0; i < testParameters.length; i++) {
             List oldObjectsToTestParam = (List) oldTestObject.get(testParameters[i]);
@@ -634,16 +626,17 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * {@inheritDoc}
      */
-    public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmpt testPolicyCmpt)
+    public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmpt testPolicyCmpt, IIpsProject ipsProject)
             throws CoreException {
-        return findTestPolicyCmptTypeParameter(testPolicyCmpt, null);
+        
+        return findTestPolicyCmptTypeParameter(testPolicyCmpt, null, ipsProject);
     }
 
      /**
      * {@inheritDoc}
      */
-     public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmptRelation relation) throws CoreException {
-         return findTestPolicyCmptTypeParameter(null, relation);
+     public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmptRelation relation, IIpsProject ipsProject) throws CoreException {
+         return findTestPolicyCmptTypeParameter(null, relation, ipsProject);
      }
 
     /**
@@ -657,12 +650,15 @@ public class TestCase extends IpsObject implements ITestCase {
      * 
      * @throws CoreException if an error occurs while searching for the object.
      */
-    private ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmpt testPolicyCmptBase,
-            ITestPolicyCmptRelation relation) throws CoreException {
+    private ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(
+            ITestPolicyCmpt testPolicyCmptBase,
+            ITestPolicyCmptRelation relation,
+            IIpsProject ipsProject) throws CoreException {
+        
         ArgumentCheck.isTrue(testPolicyCmptBase != null || relation != null);
         ArgumentCheck.isTrue(!(testPolicyCmptBase != null && relation != null));
 
-        ITestCaseType testCaseTypeFound = findTestCaseType();
+        ITestCaseType testCaseTypeFound = findTestCaseType(ipsProject);
         if (testCaseTypeFound == null) {
             return null;
         }
@@ -847,12 +843,12 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * {@inheritDoc}
      */
-    public IValidationRule[] getTestRuleCandidates() throws CoreException {
+    public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreException {
         Set result = new HashSet();
-        ITestCaseType testCaseTypeFound = findTestCaseType();
+        ITestCaseType testCaseTypeFound = findTestCaseType(ipsProject);
         if (testCaseTypeFound != null){
             result.addAll(Arrays.asList(testCaseTypeFound.getTestRuleCandidates()));
-            result.addAll(getTestCaseTestRuleCandidates());
+            result.addAll(getTestCaseTestRuleCandidates(ipsProject));
         }
         return (IValidationRule[]) result.toArray(new IValidationRule[result.size()]);
     }
@@ -860,8 +856,8 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * {@inheritDoc}
      */
-    public IValidationRule findValidationRule(String validationRuleName) throws CoreException {
-        IValidationRule[] validationRules = getTestRuleCandidates();
+    public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws CoreException {
+        IValidationRule[] validationRules = getTestRuleCandidates(ipsProject);
         for (int i = 0; i < validationRules.length; i++) {
             if (validationRules[i].getName().equals(validationRuleName)){
                 return validationRules[i];
@@ -874,25 +870,29 @@ public class TestCase extends IpsObject implements ITestCase {
      * Returns all validation rules of the policy cmpt types of the product cmpt inside this test
      * case.
      */
-    private Collection getTestCaseTestRuleCandidates() throws CoreException {
+    private Collection getTestCaseTestRuleCandidates(IIpsProject ipsProject) throws CoreException {
         List result = new ArrayList();
-        getValidationRules(getTestPolicyCmpts(), result);
+        getValidationRules(getTestPolicyCmpts(), result, ipsProject);
         return result;
     }
 
     /*
      * Adds all validation rules - of policy cmpts related by the given test policy cmpts - to the given list
      */
-    private void getValidationRules(ITestPolicyCmpt[] testPolicyCmpts, List validationRules) throws CoreException {
+    private void getValidationRules(ITestPolicyCmpt[] testPolicyCmpts, List validationRules, IIpsProject ipsProject) throws CoreException {
         for (int i = 0; i < testPolicyCmpts.length; i++) {
-            getValidationRules(testPolicyCmpts[i], validationRules);
+            getValidationRules(testPolicyCmpts[i], validationRules, ipsProject);
         }
     }
 
     /*
      * Add all validaton rules of the corresponding policy cmpt and childs
      */
-    private void getValidationRules(ITestPolicyCmpt testPolicyCmpt, List validationRules) throws CoreException {
+    private void getValidationRules(
+            ITestPolicyCmpt testPolicyCmpt, 
+            List validationRules,
+            IIpsProject ipsProject) throws CoreException {
+        
         // add rules of childs, ignore if the corresponding objects are not found (validation errors)
         ITestPolicyCmptRelation[] rs = testPolicyCmpt.getTestPolicyCmptRelations();
         for (int i = 0; i < rs.length; i++) {
@@ -900,9 +900,9 @@ public class TestCase extends IpsObject implements ITestCase {
             if (tpc == null){
                 continue;
             }
-            getValidationRules(tpc, validationRules);
+            getValidationRules(tpc, validationRules, ipsProject);
         }
-        ITestPolicyCmptTypeParameter typeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter typeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
         if (typeParam == null){
             return;
         }
@@ -915,7 +915,7 @@ public class TestCase extends IpsObject implements ITestCase {
         if (pc == null){
             return;
         }
-        IPolicyCmptType pctOfPc = pc.findPolicyCmptType();
+        IPolicyCmptType pctOfPc = pc.findPolicyCmptType(ipsProject);
         if (pctOfPc == null){
             return;
         }
@@ -991,21 +991,26 @@ public class TestCase extends IpsObject implements ITestCase {
      * Return <code>false</code> if an error occurs.<br>
      * (Packageprivate helper method.)
      */
-    boolean isTypeOrDefault(String testParameterName, TestParameterType type, TestParameterType defaultType) {
-            try {
-                ITestCaseType testCaseTypeFound = findTestCaseType();
-                if (testCaseTypeFound == null)
-                    return type.equals(defaultType);
+    boolean isTypeOrDefault(
+            String testParameterName, 
+            TestParameterType type, 
+            TestParameterType defaultType) {
+            
+        
+        try {
+            ITestCaseType testCaseTypeFound = findTestCaseType(getIpsProject());
+            if (testCaseTypeFound == null)
+                return type.equals(defaultType);
 
-                ITestParameter testParameter = testCaseTypeFound.getTestParameterByName(testParameterName);
-                if (testParameter == null){
-                    return type.equals(defaultType);
-                }
-                return isTypeOrDefault(testParameter, type, defaultType);
-            } catch (CoreException e) {
-                // ignore exceptions
+            ITestParameter testParameter = testCaseTypeFound.getTestParameterByName(testParameterName);
+            if (testParameter == null){
+                return type.equals(defaultType);
             }
-            return false;
+            return isTypeOrDefault(testParameter, type, defaultType);
+        } catch (CoreException e) {
+            // ignore exceptions
+        }
+        return false;
     }
 
     /**
@@ -1037,7 +1042,7 @@ public class TestCase extends IpsObject implements ITestCase {
      */
     protected void validateThis(MessageList messageList, IIpsProject ipsProject) throws CoreException {
         super.validateThis(messageList, ipsProject);
-        ITestCaseType testCaseTypeFound = findTestCaseType();
+        ITestCaseType testCaseTypeFound = findTestCaseType(ipsProject);
         if (testCaseTypeFound == null) {
             String text = NLS.bind(Messages.TestCase_ValidateError_TestCaseTypeNotFound, testCaseType);
             Message msg = new Message(MSGCODE_TEST_CASE_TYPE_NOT_FOUND, text, Message.ERROR, this,

@@ -90,13 +90,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
-    public ValueDatatype findDatatype() throws CoreException {
-        return getIpsProject().findValueDatatype(getDatatype());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public void setAttributeType(AttributeType newType) {
         AttributeType oldType = attributeType;
         attributeType = newType;
@@ -106,7 +99,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     /**
      * {@inheritDoc}
      */
-    public IValidationRule findValueSetRule() {
+    public IValidationRule findValueSetRule(IIpsProject ipsProject) {
         IValidationRule[] rules = getPolicyCmptType().getRules();
         
         for (int i = 0; i < rules.length; i++) {
@@ -125,7 +118,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      * {@inheritDoc}
      */
     public IValidationRule createValueSetRule(){
-        IValidationRule rule = findValueSetRule();
+        IValidationRule rule = findValueSetRule(getIpsProject());
         if(rule != null){
             return rule;
         }
@@ -143,7 +136,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      * {@inheritDoc}
      */
     public void deleteValueSetRule(){
-        IValidationRule rule = findValueSetRule();
+        IValidationRule rule = findValueSetRule(getIpsProject());
         if(rule != null){
             rule.delete();
         }
@@ -385,7 +378,8 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      */
     public ValueDatatype getValueDatatype() {
         try {
-            Datatype type = findDatatype();
+            // TODO v2 - signature getValueDatatype() is wrong
+            Datatype type = findDatatype(getIpsProject());
             if (type instanceof ValueDatatype) {
                 return (ValueDatatype)type;
             }

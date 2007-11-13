@@ -118,7 +118,7 @@ public class TestCaseStructurePage extends WizardPage {
         
         treeViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         hookTreeListeners();
-        TestCaseLabelProvider labelProvider = new TestCaseLabelProvider();
+        TestCaseLabelProvider labelProvider = new TestCaseLabelProvider(ipsProject);
         treeViewer.setLabelProvider(new MessageCueLabelProvider(labelProvider, ipsProject));
         treeViewer.setUseHashlookup(true);
         treeViewer.expandAll();
@@ -258,7 +258,7 @@ public class TestCaseStructurePage extends WizardPage {
                         return;
                     }
                     ITestPolicyCmpt parentPolicyCmpt = testPolicyCmpt.getParentPolicyCmpt();
-                    changeCandidatesInTable(testPolicyCmpt.findProductCmpt(), testPolicyCmpt.findTestPolicyCmptTypeParameter(),parentPolicyCmpt==null?null:parentPolicyCmpt.findProductCmpt());
+                    changeCandidatesInTable(testPolicyCmpt.findProductCmpt(), testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject), parentPolicyCmpt==null?null:parentPolicyCmpt.findProductCmpt());
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }

@@ -175,7 +175,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 implements ContentsC
         super(attribute, parentShell, Messages.AttributeEditDialog_title, true);
         this.attribute = attribute;
         this.ipsProject = attribute.getIpsProject();
-        this.rule = attribute.findValueSetRule();
+        this.rule = attribute.findValueSetRule(ipsProject);
         try {
             currentDatatype = attribute.findDatatype(ipsProject);
         }

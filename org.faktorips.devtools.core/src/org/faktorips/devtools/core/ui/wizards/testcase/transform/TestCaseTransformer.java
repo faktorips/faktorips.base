@@ -157,6 +157,7 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
     }
     
     private void initTestPolicyCmpts(Element parent, ITestCase testCase, boolean isInput) throws CoreException {
+        // TODO Joerg: Methodenkomplexitaet
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
@@ -180,7 +181,7 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
                         parseTestPolicyCmpt(elem, testCase.newTestPolicyCmpt(), isInput);
                     } else {
                         // the element was already parsed, e.g. this could be the expecpected result attribute for an already imported test policy cmpt
-                        ITestPolicyCmptTypeParameter param = testPolicyCmpt.findTestPolicyCmptTypeParameter();
+                        ITestPolicyCmptTypeParameter param = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
                         if (param != null){
                             if (isInput && param.getTestParameterType().equals(TestParameterType.INPUT) && 
                                     (!isInput && param.isInputParameter() || (isInput && param
@@ -249,7 +250,7 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
     private String getTestAttributeName(ITestPolicyCmpt testPolicyCmpt, String attributeName, boolean isInput)
             throws CoreException {
         // try to find the name of attribute in the test case type
-        ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
         if (testPolicyCmptTypeParam != null){
             ITestAttribute[] testAttributes = testPolicyCmptTypeParam.getTestAttributes();
             for (int j = 0; j < testAttributes.length; j++) {
@@ -269,6 +270,7 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
     }
     
     private void parseTestPolicyCmptChilds(Element element, ITestPolicyCmpt testPolicyCmpt, boolean isInput) throws CoreException {
+        // TODO: Joerg; Methodenkomplexitaet
         // read childs
         NodeList nl = element.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {

@@ -29,6 +29,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -53,7 +54,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	public static final int COMBINED = 0;
 	public static final int INPUT = 1;
 	public static final int EXPECTED_RESULT = 2;
-	public static final int UNKNOWN = -1;
+	public static final int UNKNOWN = -1; // TODO Joerg: kann es das geben?
 	private int contentType = UNKNOWN;
 	
 	/** Sort functions */
@@ -70,11 +71,15 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     // This kind of objects are only used in the ui to adapt the model objects to the correct
     // content in the tree view
     private HashMap dummyObjects = new HashMap();
+
+    // ips project used to search
+    private IIpsProject ipsProject;
     
 	public TestCaseContentProvider(int contentType, ITestCase testCase){
 		ArgumentCheck.notNull(testCase);
 		this.contentType = contentType;
 		this.testCase = testCase;
+        this.ipsProject = testCase.getIpsProject();
 	}
 	
 	/**
@@ -243,7 +248,8 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	 * {@inheritDoc}
 	 */
 	public Object[] getElements(Object inputElement) {
-		List elements = new ArrayList();
+		// TODO Joerg: Methodenlaenge
+        List elements = new ArrayList();
         if (inputElement instanceof ITestCase){
 			ITestCase testCase = (ITestCase) inputElement;
 			if (isCombined()){
@@ -276,7 +282,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         // furthermore show the test rule objects as childs of a dummy test rule parameter node 
         ITestCaseType testCaseType = null;
         try {
-            testCaseType = testCase.findTestCaseType(testCase.getIpsProject());
+            testCaseType = testCase.findTestCaseType(ipsProject);
         } catch (CoreException e) {
             // ignore exception while retrieving the test rule parameter
         }
@@ -391,7 +397,8 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	 * Returns childs of the test policy component.
 	 */
 	private Object[] getChildsForTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) {
-		ITestPolicyCmptRelation[] relations = testPolicyCmpt.getTestPolicyCmptRelations();
+	    // TODO Joerg: Methodenlaenge
+        ITestPolicyCmptRelation[] relations = testPolicyCmpt.getTestPolicyCmptRelations();
 		if (withoutRelations){
 			// show childs without relation layer
 			List childTestPolicyCmpt = new ArrayList(relations.length);
@@ -418,7 +425,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 			ArrayList childNames = new ArrayList();
 			try {
 				// get all childs from the test case type definition
-				ITestPolicyCmptTypeParameter typeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter();
+				ITestPolicyCmptTypeParameter typeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
 				if (typeParam != null){
 					ITestPolicyCmptTypeParameter[] children = typeParam.getTestPolicyCmptTypeParamChilds();
 					for (int i = 0; i < children.length; i++) {

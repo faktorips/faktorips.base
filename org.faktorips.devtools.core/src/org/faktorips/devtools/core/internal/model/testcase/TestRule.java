@@ -133,12 +133,12 @@ public class TestRule extends TestObject implements ITestRule {
     /**
      * {@inheritDoc}
      */
-    public ITestRuleParameter findTestRuleParameter() throws CoreException {
+    public ITestRuleParameter findTestRuleParameter(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(testRuleParameter)) {
             return null;
         }
 
-        ITestCaseType testCaseType = ((ITestCase)getParent()).findTestCaseType();
+        ITestCaseType testCaseType = ((ITestCase)getParent()).findTestCaseType(ipsProject);
         if (testCaseType == null){
             return null;
         }
@@ -168,9 +168,9 @@ public class TestRule extends TestObject implements ITestRule {
     /**
      * {@inheritDoc}
      */
-    public IValidationRule findValidationRule() throws CoreException {
+    public IValidationRule findValidationRule(IIpsProject ipsProject) throws CoreException {
         ITestCase testCase = (ITestCase) getParent();
-       return testCase.findValidationRule(validationRule);
+       return testCase.findValidationRule(validationRule, ipsProject);
     }
 
     /**
@@ -197,7 +197,7 @@ public class TestRule extends TestObject implements ITestRule {
 
         // check if the validation rule is inside the test case type structure (one rule of the test
         // policy cmpt type parameter)
-        if (findValidationRule() == null) {
+        if (findValidationRule(ipsProject) == null) {
             String text = NLS.bind(Messages.TestRule_ValidationError_ValidationRuleNotAvailable, validationRule);
             Message msg = new Message(MSGCODE_VALIDATION_RULE_NOT_EXISTS, text, Message.ERROR, this, PROPERTY_VALIDATIONRULE);
             list.add(msg);
@@ -216,7 +216,7 @@ public class TestRule extends TestObject implements ITestRule {
         }
         
         // check if the test rule parameter exists
-        ITestParameter param = findTestRuleParameter();
+        ITestParameter param = findTestRuleParameter(ipsProject);
         if (param == null){
             String text = NLS.bind(Messages.TestRule_ValidationError_TestRuleParameterNotFound, getTestRuleParameter());
             Message msg = new Message(MSGCODE_TEST_RULE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_TEST_RULE_PARAMETER);

@@ -151,16 +151,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * Returns the target policy component type or <code>null</code> if either this relation hasn't got a target
      * or the target does not exists.
      * 
-     * @throws CoreException if an error occurs while searching for the target.
-     * 
-     * @deprecated use {@link #findTargetPolicyCmptType(IIpsProject)}
-     */
-    public IPolicyCmptType findTarget() throws CoreException;
-    
-    /**
-     * Returns the target policy component type or <code>null</code> if either this relation hasn't got a target
-     * or the target does not exists.
-     * 
      * @param ipsProject The ips project which ips object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching for the target.
@@ -255,10 +245,12 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * Searches the inverse relation and returns it, if it exists. Returns <code>null</code> if the inverse
      * relation exists. For detail-to-master relations the method always(!) returns <code>null</code>
      * as severall master-to-detail relations can have the same detail-to-master relation.
+     *
+     * @param ipsProject The ips project which ips object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching.
      */
-    public IPolicyCmptTypeAssociation findInverseAssociation() throws CoreException;
+    public IPolicyCmptTypeAssociation findInverseAssociation(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Sets whether this association is qualified or not.

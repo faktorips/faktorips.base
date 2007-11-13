@@ -130,7 +130,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
             for (int i = 0; i < testObjects.length; i++) {
                 if (testObjects[i] instanceof ITestPolicyCmpt){
                     ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)testObjects[i];
-                    ITestPolicyCmptTypeParameter parameter = testPolicyCmpt.findTestPolicyCmptTypeParameter();
+                    ITestPolicyCmptTypeParameter parameter = testPolicyCmpt.findTestPolicyCmptTypeParameter(testPolicyCmpt.getIpsProject());
                     if (parameter == null || !parameter.isRequiresProductCmpt()){
                         continue;
                     }
@@ -187,7 +187,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
                 String kindId = productCmptNamingStrategy.getKindId(productCmptChild.getName());
                 String newProductCmptName = productCmptNamingStrategy.getProductCmptName(kindId, newVersionId);
 
-                ITestPolicyCmptTypeParameter parameter = testPolicyCmptChild.findTestPolicyCmptTypeParameter();
+                ITestPolicyCmptTypeParameter parameter = testPolicyCmptChild.findTestPolicyCmptTypeParameter(testPolicyCmptChild.getIpsProject());
                 IIpsSrcFile[] allowedProductCmpt = parameter.getAllowedProductCmpt(ipsProject, parentProductCmpt);
                 IProductCmpt newProductCmptChild = null;
                 for (int j = 0; j < allowedProductCmpt.length; j++) {

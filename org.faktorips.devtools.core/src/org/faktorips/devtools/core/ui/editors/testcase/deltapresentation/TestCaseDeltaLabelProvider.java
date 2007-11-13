@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
@@ -40,8 +41,8 @@ final class TestCaseDeltaLabelProvider implements ILabelProvider {
     
     private ArrayList listeners = new ArrayList();
 
-    public TestCaseDeltaLabelProvider(){
-        this.testCaseLabelProvider = new TestCaseLabelProvider();
+    public TestCaseDeltaLabelProvider(IIpsProject ipsProject){
+        this.testCaseLabelProvider = new TestCaseLabelProvider(ipsProject);
     }
     
 	/**

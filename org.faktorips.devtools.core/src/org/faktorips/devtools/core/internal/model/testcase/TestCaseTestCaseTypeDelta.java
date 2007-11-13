@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
@@ -45,6 +46,7 @@ import org.faktorips.util.ArgumentCheck;
  * @author Joerg Ortmann
  */
 public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
+    
     private ITestCase testCase;
     private ITestCaseType testCaseType;
 
@@ -77,13 +79,17 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     private List testCaseSideObjects;
     private boolean errorInTestCaseType;
     
+    // ipsproject used to search
+    private IIpsProject ipsProject;
+    
     public TestCaseTestCaseTypeDelta(ITestCase testCase, ITestCaseType testCaseType) throws CoreException {
         ArgumentCheck.notNull(testCase);
         ArgumentCheck.notNull(testCaseType);
         this.testCase = testCase;
         this.testCaseType = testCaseType;
+        this.ipsProject = testCase.getIpsProject();
 
-        if (testCaseType.validate(testCase.getIpsProject()).containsErrorMsg()){
+        if (testCaseType.validate(ipsProject).containsErrorMsg()){
             errorInTestCaseType = true;
             return;
         }
@@ -273,7 +279,7 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         for (Iterator iter = testCaseSideObjects.iterator(); iter.hasNext();) {
             IIpsObjectPart element = (IIpsObjectPart)iter.next();
             if (element instanceof ITestPolicyCmpt){
-                ITestPolicyCmptTypeParameter param = ((ITestPolicyCmpt)element).findTestPolicyCmptTypeParameter();
+                ITestPolicyCmptTypeParameter param = ((ITestPolicyCmpt)element).findTestPolicyCmptTypeParameter(ipsProject);
                 // ignore if the test parameter wasn't found, this was already checked on the test case side 
                 if (param != null){
                     missingTestPolicyCmptTypeParameter.remove(param);
@@ -414,12 +420,14 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     /*
      * Computes all missing test case type side objects, starting with given test policy cmpt.
      */
-    private void computeTestPolicyCmptStructWithMissingTestParameter(ITestPolicyCmpt cmpt,
+    private void computeTestPolicyCmptStructWithMissingTestParameter(
+            ITestPolicyCmpt cmpt,
             List missingTestPolicyCmpts,
             List missingTestPolicyCmptRelations,
             List missingTestAttributeValues,
             List allTestPolicyCmpt) throws CoreException {
-        ITestPolicyCmptTypeParameter param = cmpt.findTestPolicyCmptTypeParameter();
+        
+        ITestPolicyCmptTypeParameter param = cmpt.findTestPolicyCmptTypeParameter(ipsProject);
         if (param == null) {
             missingTestPolicyCmpts.add(cmpt);
         } else {
@@ -462,12 +470,14 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
             List missingTestPolicyCmptRelation,
             List missingTestAttributeValue, 
             List allTestPolicyCmpt) throws CoreException {
+
+        // TODO mit Joerg besprechen: Wieso reichen wir die ganzen Listen durch die Gegend.
         List objects = new ArrayList();
         
         ITestPolicyCmptTypeParameter prevParam = null;
         for (int i = 0; i < testPolicyCmptRelations.length; i++) {
             objects.add(testPolicyCmptRelations[i]);
-            ITestPolicyCmptTypeParameter param = testPolicyCmptRelations[i].findTestPolicyCmptTypeParameter();
+            ITestPolicyCmptTypeParameter param = testPolicyCmptRelations[i].findTestPolicyCmptTypeParameter(ipsProject);
             if (param == null) {
                 missingTestPolicyCmptRelation.add(testPolicyCmptRelations[i]);
             } else {

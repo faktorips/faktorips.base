@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.model.testcasetype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  *  Specification of a test value parameter.
@@ -58,7 +59,9 @@ public interface ITestValueParameter extends ITestParameter {
     /**
      * Returns the datatype or <code>null</code> if the object does not exists.
      * 
+     * @param ipsProject The ips project which object path is used to search.
+     * 
      * @throws CoreException if an error occurs while searching for the datatype.
      */			
-	public ValueDatatype findValueDatatype() throws CoreException;
+	public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException;
 }

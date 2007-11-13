@@ -82,7 +82,7 @@ public class TestCaseDeltaDialog extends TitleAreaDialog {
         TestCaseDeltaContentProvider contentProvider = new TestCaseDeltaContentProvider(delta.getTestCase());
         contentProvider.enableTestCaseDeltaViewerFilter(tree);
         tree.setContentProvider(contentProvider);
-		tree.setLabelProvider(new TestCaseDeltaLabelProvider());
+		tree.setLabelProvider(new TestCaseDeltaLabelProvider(delta.getTestCase().getIpsProject()));
 		tree.setInput(delta);
 		
         updateDeltaView();

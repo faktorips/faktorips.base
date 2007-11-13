@@ -94,7 +94,7 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
             return null;
         }
         ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) getParent();
-        ITestPolicyCmptTypeParameter typeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter typeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
         if (typeParam == null){
         	return null;
         }

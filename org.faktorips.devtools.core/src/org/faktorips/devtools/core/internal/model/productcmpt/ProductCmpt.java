@@ -113,12 +113,12 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /** 
      * {@inheritDoc}
      */
-    public IPolicyCmptType findPolicyCmptType() throws CoreException {
-        IProductCmptType productCmptType = findProductCmptType(getIpsProject());
+    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException {
+        IProductCmptType productCmptType = findProductCmptType(ipsProject);
         if (productCmptType==null) {
             return null;
         }
-        return productCmptType.findPolicyCmptType(getIpsProject());
+        return productCmptType.findPolicyCmptType(ipsProject);
     }
 
     /**
@@ -191,17 +191,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         list.add(list2);
     }
     
-    /** 
-     * {@inheritDoc}
-     */
-    public IPolicyCmptTypeAssociation findPcTypeRelation(String relationName) throws CoreException {
-        IPolicyCmptType pcType = findPolicyCmptType();
-        if (pcType==null) {
-            return null;
-        }
-        return pcType.getRelation(relationName);
-    }
-
     /**
      * {@inheritDoc}
      */

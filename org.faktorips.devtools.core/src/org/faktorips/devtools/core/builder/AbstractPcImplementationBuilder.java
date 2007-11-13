@@ -50,7 +50,7 @@ public abstract class AbstractPcImplementationBuilder extends
 
 	protected void generateCodeForRelation(IPolicyCmptTypeAssociation relation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 	
-		IPolicyCmptType targetType = relation.findTarget();
+		IPolicyCmptType targetType = relation.findTargetPolicyCmptType(getIpsProject());
 		if (targetType == null) {
 			throw new CoreException(new IpsStatus("Target not found: " + relation.getTarget())); //$NON-NLS-1$
 		}

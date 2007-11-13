@@ -103,9 +103,9 @@ public class TestPcTypeRelationTest extends AbstractIpsPluginTest {
     public void testValidateModelRelationNotFound() throws Exception{
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmptType");
         policyCmptType.newPolicyCmptTypeAssociation().setTargetRoleSingular("modelRelation");
-        ITestPolicyCmptTypeParameter param = ((ITestPolicyCmpt)testPcTypeRelation.getParent()).findTestPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter param = ((ITestPolicyCmpt)testPcTypeRelation.getParent()).findTestPolicyCmptTypeParameter(project);
         param.setPolicyCmptType("policyCmptType");
-        ITestPolicyCmptTypeParameter paramChild = testPcTypeRelation.findTestPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter paramChild = testPcTypeRelation.findTestPolicyCmptTypeParameter(project);
         paramChild.setRelation("modelRelation");
 
         MessageList ml = testPcTypeRelation.validate(project);

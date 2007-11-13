@@ -292,7 +292,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             if (!testRules[i].isValid()){
                 continue;
             }
-            IValidationRule validationRule = testRules[i].findValidationRule();
+            IValidationRule validationRule = testRules[i].findValidationRule(getIpsProject());
             if (validationRule == null){
                 // validation rule not found ignore element
                 continue;
@@ -314,6 +314,8 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             ITestPolicyCmptRelation relation,
             boolean isInput,
             ObjectId objectId) throws CoreException {
+
+        // TODO Joerg: Methodenkomplexitaet
         if (testPolicyCmpt == null) {
             return;
         }
@@ -323,7 +325,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             }
             Element testPolicyCmptElem = null;
             if (relation != null) {
-                ITestPolicyCmptTypeParameter parameter = relation.findTestPolicyCmptTypeParameter();
+                ITestPolicyCmptTypeParameter parameter = relation.findTestPolicyCmptTypeParameter(getIpsProject());
                 if (parameter == null){
                     throw new CoreException(new IpsStatus(NLS.bind(
                             "The test policy component type parameter {0} was not found.", relation.getTestPolicyCmptTypeParameter())));
@@ -359,7 +361,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                 policyCmptTypeSrcFile = testPolicyCmpt[i].getIpsProject().findIpsSrcFile(IpsObjectType.POLICY_CMPT_TYPE, policyCmptTypeQName);
             } else {
                 // the test policy cmpt type parameter is not product relevant
-                ITestPolicyCmptTypeParameter parameter = testPolicyCmpt[i].findTestPolicyCmptTypeParameter();
+                ITestPolicyCmptTypeParameter parameter = testPolicyCmpt[i].findTestPolicyCmptTypeParameter(getIpsProject());
                 if (parameter == null) {
                     throw new CoreException(new IpsStatus(NLS.bind(
                             "The test policy component type parameter {0} was not found.", relation
@@ -418,7 +420,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     }
     
     private boolean relationsParentSameType(ITestPolicyCmptRelation relation, boolean isInput) throws CoreException {
-        ITestPolicyCmptTypeParameter param = relation.findTestPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter param = relation.findTestPolicyCmptTypeParameter(getIpsProject());
         if (param == null){
             return false;
         }
