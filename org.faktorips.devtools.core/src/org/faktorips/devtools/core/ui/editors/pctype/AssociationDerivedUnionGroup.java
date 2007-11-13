@@ -183,6 +183,7 @@ public class AssociationDerivedUnionGroup extends Composite {
             if (!currentTarget.equals(previousTarget)) {
                 previousTarget = currentTarget;
                 try {
+                    // init drop down with available candidates
                     IAssociation[] associations = policyCmptTypeAssociation.findDerivedUnionCandidates(association
                             .getIpsProject());
                     String[] derivedUnionCandidates = new String[associations.length];
@@ -190,6 +191,13 @@ public class AssociationDerivedUnionGroup extends Composite {
                         derivedUnionCandidates[i] = associations[i].getName();
                     }
                     setDerivedUnions(derivedUnionCandidates);
+                    
+                    // if at least one derived union candidate is available
+                    // then set the first derived union as default
+                    if (associations.length > 0){
+                        subset = true;
+                        association.setSubsettedDerivedUnion(associations[0].getName());
+                    }
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }

@@ -19,15 +19,10 @@ package org.faktorips.devtools.core.ui.editors.type;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.util.ArgumentCheck;
-
 
 /**
  * A completion processor that searchs for derived unions for a given associations.
@@ -35,53 +30,34 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class DerivedUnionCompletionProcessor extends AbstractCompletionProcessor {
     
-    private IType type;
+    private IAssociation association;
     
     public DerivedUnionCompletionProcessor(IAssociation association) {
         ArgumentCheck.notNull(association);
-        this.type = association.getType();
-        setIpsProject(type.getIpsProject());
+        
+        this.association = association;
+        
+        setIpsProject(association.getIpsProject());
     }
 
     /** 
      * {@inheritDoc}
      */
     protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
-        DerivedUnionCollector collector = new DerivedUnionCollector(ipsProject, prefix.toLowerCase(), documentOffset, result);
-        collector.start(type);
+        IAssociation[] derivedUnionCandidates = association.findDerivedUnionCandidates(association.getIpsProject());
+        for (int i = 0; i < derivedUnionCandidates.length; i++) {
+            if (derivedUnionCandidates[i].getName().toLowerCase().startsWith(prefix)){
+                addToResult(result, derivedUnionCandidates[i], documentOffset);
+            }
+        }
     }
     
-    class DerivedUnionCollector extends TypeHierarchyVisitor {
-
-        private String prefix;
-        private int offset;
-        private List result;
-        
-        public DerivedUnionCollector(IIpsProject ipsProject, String prefix, int offset, List result) {
-            super(ipsProject);
-            this.prefix = prefix;
-            this.offset = offset;
-            this.result = result;
-        }
-
-        protected boolean visit(IType currentType) throws CoreException {
-            IAssociation[] associations = currentType.getAssociations();
-            for (int j=0; j<associations.length; j++) {
-                if (associations[j].isDerivedUnion() && associations[j].getName().toLowerCase().startsWith(prefix)) {
-                    addToResult(result, associations[j], offset);
-                }
-            }
-            return true;
-        }
-        
-        private void addToResult(List result, IAssociation relation, int documentOffset) {
-            String name = relation.getName();
-            String displayText = name + " - " + relation.getParent().getName(); //$NON-NLS-1$
-            CompletionProposal proposal = new CompletionProposal(
-                    name, 0, documentOffset, name.length(),  
-                    relation.getImage(), displayText, null, relation.getDescription());
-            result.add(proposal);
-        }
-
+    private void addToResult(List result, IAssociation relation, int documentOffset) {
+        String name = relation.getName();
+        String displayText = name + " - " + relation.getParent().getName(); //$NON-NLS-1$
+        CompletionProposal proposal = new CompletionProposal(
+                name, 0, documentOffset, name.length(),  
+                relation.getImage(), displayText, null, relation.getDescription());
+        result.add(proposal);
     }
 }

@@ -525,7 +525,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         
         IPolicyCmptTypeAssociation newInverseAssociation = association.newInverseAssociation();
         storeInverseAssociation(newInverseAssociation);
-        setDefaultsByAssociationTypeAndTarget(newInverseAssociation);
     }
 
     /*
@@ -545,28 +544,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             confProdCmptTypePropertyPage.setProductCmptTypeAssociationAndUpdatePage((IProductCmptTypeAssociation)productCmptTypeAssociation);
         } catch (Exception e) {
             showAndLogError(e);
-        }
-    }
-    
-    /**
-     * Set the default values depending on the association type and read-only container flag.
-     */
-    void setDefaultsByAssociationTypeAndTarget(IPolicyCmptTypeAssociation newAssociation){
-        AssociationType type = newAssociation.getAssociationType();
-        if (type != null) {
-            if (type.isCompositionMasterToDetail()) {
-                newAssociation.setMaxCardinality(Integer.MAX_VALUE);
-            } else if (type.isCompositionDetailToMaster()) {
-                newAssociation.setMinCardinality(1);
-                newAssociation.setMaxCardinality(1);
-                newAssociation.setDerivedUnion(false);
-            } else if (type.isAssoziation()) {
-                newAssociation.setSubsettedDerivedUnion(""); //$NON-NLS-1$
-                newAssociation.setDerivedUnion(false);
-                if (newAssociation.isDerivedUnion()){
-                    newAssociation.setMaxCardinality(Integer.MAX_VALUE);
-                }
-            }
         }
     }
 
