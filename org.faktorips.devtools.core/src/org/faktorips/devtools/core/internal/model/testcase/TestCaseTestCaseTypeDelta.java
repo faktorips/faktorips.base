@@ -83,7 +83,7 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         this.testCase = testCase;
         this.testCaseType = testCaseType;
 
-        if (testCaseType.validate(null).containsErrorMsg()){
+        if (testCaseType.validate(testCase.getIpsProject()).containsErrorMsg()){
             errorInTestCaseType = true;
             return;
         }
