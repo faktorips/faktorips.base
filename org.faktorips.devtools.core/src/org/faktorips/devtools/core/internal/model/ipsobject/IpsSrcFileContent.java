@@ -222,7 +222,7 @@ public class IpsSrcFileContent {
             }
             IpsObject ipsObject = getIpsObject();
             if (ipsObject instanceof XmlSaxSupport) {
-                is = file.getCorrespondingFile().getContents(true);
+                is = file.getContentFromEnclosingResource();
                 ((XmlSaxSupport)ipsObject).initFromInputStream(is);
             }  else {
                 is = file.getContentFromEnclosingResource();
