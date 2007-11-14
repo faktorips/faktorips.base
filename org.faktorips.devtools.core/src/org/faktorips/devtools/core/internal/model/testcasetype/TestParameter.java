@@ -114,6 +114,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
      * {@inheritDoc}
      */
     public boolean isInputParameter() {
+        // TODO Joerg: sollte nur bei TestParameterInput true zurueckgeben, oder in isInputOrCombined() umbenennen.
         return type.equals(TestParameterType.INPUT) || type.equals(TestParameterType.COMBINED);
     }
 

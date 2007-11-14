@@ -157,7 +157,6 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
     }
     
     private void initTestPolicyCmpts(Element parent, ITestCase testCase, boolean isInput) throws CoreException {
-        // TODO Joerg: Methodenkomplexitaet
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {

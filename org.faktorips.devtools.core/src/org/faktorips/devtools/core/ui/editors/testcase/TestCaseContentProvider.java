@@ -54,8 +54,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	public static final int COMBINED = 0;
 	public static final int INPUT = 1;
 	public static final int EXPECTED_RESULT = 2;
-	public static final int UNKNOWN = -1; // TODO Joerg: kann es das geben?
-	private int contentType = UNKNOWN;
+	private int contentType = COMBINED;
 	
 	/** Sort functions */
 	public static TestPolicyCmptSorter TESTPOLICYCMPT_SORTER = new TestPolicyCmptSorter();
