@@ -224,6 +224,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
             throw new RuntimeException("Unknown type " + type); //$NON-NLS-1$
         }
         IPolicyCmptType policyCmptType = findPolicyCmptType(ipsProject);
+        if(policyCmptType == null){
+            return null;
+        }
         return policyCmptType.findPolicyCmptTypeAttribute(propName, ipsProject);
     }
 
@@ -435,7 +438,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     public IDependency[] dependsOn() throws CoreException {
         Set dependencies = new HashSet();
-        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE)));
+        if(StringUtils.isEmpty(getPolicyCmptType())){
+            dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE)));
+        }
         dependsOn(dependencies);
         return (IDependency[])dependencies.toArray(new IDependency[dependencies.size()]);
     }

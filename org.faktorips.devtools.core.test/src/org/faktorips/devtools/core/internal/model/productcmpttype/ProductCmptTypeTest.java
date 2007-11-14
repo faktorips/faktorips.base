@@ -411,6 +411,9 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         assertEquals(policyCmptTypeAttr, productCmptType.findProdDefProperty(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, policyCmptTypeAttr.getName(), ipsProject));
         assertEquals(policyCmptSupertypeAttr, productCmptType.findProdDefProperty(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, policyCmptSupertypeAttr.getName(), ipsProject));
         assertNull(productCmptType.findProdDefProperty(ProdDefPropertyType.VALUE, policyCmptTypeAttr.getName(), ipsProject));
+        
+        productCmptType.setPolicyCmptType("");
+        assertNull(productCmptType.findProdDefProperty(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, policyCmptTypeAttr.getName(), ipsProject));
     }
     
     public void testFindProdDefProperty_ByName() throws CoreException {

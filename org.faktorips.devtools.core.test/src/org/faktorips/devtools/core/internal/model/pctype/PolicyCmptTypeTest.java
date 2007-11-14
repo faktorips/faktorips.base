@@ -398,9 +398,9 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
     
     public void testDependsOnAssociation() throws CoreException{
-        IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
-        IPolicyCmptType b = newPolicyCmptType(ipsProject, "B");
-        IPolicyCmptType c = newPolicyCmptType(ipsProject, "C");
+        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
+        IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+        IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "C");
         
         IAssociation aToB = a.newAssociation();
         aToB.setAssociationType(AssociationType.ASSOCIATION);
@@ -416,14 +416,15 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
 
     public void testDependsOnMethodParameterDatatypes() throws CoreException{
-        IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
-        IPolicyCmptType b = newPolicyCmptType(ipsProject, "B");
-        IPolicyCmptType c = newPolicyCmptType(ipsProject, "C");
+        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
+        IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+        IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "C");
         
         IMethod aMethod = a.newMethod();
         aMethod.setDatatype(b.getQualifiedName());
         aMethod.setModifier(Modifier.PUBLIC);
         aMethod.setName("aMethod");
+        aMethod.newParameter(c.getQualifiedName(), "cP");
         
         List dependencyList = CollectionUtil.toArrayList(a.dependsOn());
         assertEquals(2, dependencyList.size());
@@ -432,9 +433,9 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
     
     public void testDependsOn() throws Exception {
-        IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
-        IPolicyCmptType b = newPolicyCmptType(ipsProject, "B");
-        IPolicyCmptType c = newPolicyCmptType(ipsProject, "C");
+        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
+        IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+        IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "C");
         c.setSupertype(a.getQualifiedName());
         c.newPolicyCmptTypeAssociation().setTarget(b.getQualifiedName());
         List dependencyList = CollectionUtil.toArrayList(c.dependsOn());
@@ -506,10 +507,10 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
     
     public void testDependsOnComposition() throws Exception {
-        IPolicyCmptType a = newPolicyCmptType(ipsProject, "AggregateRoot");
-        IPolicyCmptType d1 = newPolicyCmptType(ipsProject, "Detail1");
-        IPolicyCmptType d2 = newPolicyCmptType(ipsProject, "Detail2");
-        IPolicyCmptType s2 = newPolicyCmptType(ipsProject, "SupertypeOfDetail2");
+        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "AggregateRoot");
+        IPolicyCmptType d1 = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Detail1");
+        IPolicyCmptType d2 = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Detail2");
+        IPolicyCmptType s2 = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SupertypeOfDetail2");
        
         IPolicyCmptTypeAssociation rel = a.newPolicyCmptTypeAssociation();
         rel.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
