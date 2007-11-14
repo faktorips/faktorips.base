@@ -463,7 +463,11 @@ public class IpsTestRunner implements IIpsTestRunner {
      */
     private ILaunchConfigurationType getLaunchConfigType() {
         ILaunchManager lm = DebugPlugin.getDefault().getLaunchManager();
-        return lm.getLaunchConfigurationType(IpsTestRunnerDelegate.ID_IPSTEST_LAUNCH_CONFIGURATION_TYPE);
+        ILaunchConfigurationType launchConfigurationType = lm.getLaunchConfigurationType(IpsTestRunnerDelegate.ID_IPSTEST_LAUNCH_CONFIGURATION_TYPE);
+        if (launchConfigurationType == null){
+            throw new RuntimeException("Lauch configuration type not found: " + IpsTestRunnerDelegate.ID_IPSTEST_LAUNCH_CONFIGURATION_TYPE);
+        }
+        return launchConfigurationType;
     }
 
     /*

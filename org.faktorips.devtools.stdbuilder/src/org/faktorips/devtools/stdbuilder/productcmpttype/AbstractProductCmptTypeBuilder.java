@@ -330,7 +330,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
                         + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }
-        CodeGeneratorForContainerAssociationImplementation generator = new CodeGeneratorForContainerAssociationImplementation(
+        CodeGeneratorForContainerAssosImpl generator = new CodeGeneratorForContainerAssosImpl(
                 getIpsProject(), containerRelations, fieldsBuilder, methodsBuilder);
         generator.start(getProductCmptType());
     }
@@ -399,11 +399,11 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
         return StringUtils.uncapitalise(conceptName);
     }
     
-    class CodeGeneratorForContainerAssociationImplementation extends ProductCmptTypeHierarchyCodeGenerator {
+    class CodeGeneratorForContainerAssosImpl extends ProductCmptTypeHierarchyCodeGenerator {
 
         private HashMap containerImplMap; 
 
-        public CodeGeneratorForContainerAssociationImplementation(
+        public CodeGeneratorForContainerAssosImpl(
                 IIpsProject ipsProject,
                 HashMap containerImplMap,
                 JavaCodeFragmentBuilder fieldsBuilder, 
