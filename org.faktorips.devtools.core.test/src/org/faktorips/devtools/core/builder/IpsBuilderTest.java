@@ -21,6 +21,8 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -48,10 +50,15 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -316,8 +323,69 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertTrue(builtIpsObjects.contains(a));
         assertTrue(builtIpsObjects.contains(b));
         assertTrue(builtIpsObjects.contains(aProduct));
-
     }
+
+    public void testDependencyGraphDatatypeAndInstanceOfDependency() throws Exception{
+        IPolicyCmptType a = newPolicyAndProductCmptType(ipsProject, "A", "AConfigType");
+        IAttribute aAttr = a.newAttribute();
+        aAttr.setName("aAttr");
+        aAttr.setDatatype("Integer");
+        aAttr.setModifier(Modifier.PUBLIC);
+        
+        IProductCmptType aConfigType = a.findProductCmptType(ipsProject);
+        IProductCmptTypeMethod formula = aConfigType.newFormulaSignature("formula");
+        formula.setDatatype("Integer");
+        formula.setModifier(Modifier.PUBLIC);
+        formula.setName("calculateValue");
+        
+        IParameter pA = formula.newParameter(a.getQualifiedName(), "pA");
+        
+        IProductCmpt aProduct = newProductCmpt(aConfigType, "AProduct");
+        IProductCmptGeneration aProductGeneration = (IProductCmptGeneration)aProduct.getFirstGeneration();
+        IFormula productFormula = aProductGeneration.newFormula(formula);
+        productFormula.setExpression("pA.aAttr");
+        
+        a.getIpsSrcFile().save(true, null);
+        aConfigType.getIpsSrcFile().save(true, null);
+        aProduct.getIpsSrcFile().save(true, null);
+        
+        final TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, false);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        
+        List builtIpsObjects = builder.getBuiltIpsObjects();
+        assertTrue(builtIpsObjects.contains(a));
+        assertTrue(builtIpsObjects.contains(aConfigType));
+        assertTrue(builtIpsObjects.contains(aProduct));
+        
+        builtIpsObjects.clear();
+        assertTrue(builtIpsObjects.isEmpty());
+
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+        assertTrue(builtIpsObjects.isEmpty());
+
+        aAttr.setDatatype("String");
+        final IPolicyCmptType aFinal = a;
+        final IProductCmptType aConfigTypeFinal = aConfigType;
+        final IProductCmpt aProductFinal = aProduct;
+        
+        //to ensure that the build has finished before the results are checked the assertions are 
+        //done within this resource change listener. The listener is registered for post build events
+        //it is necessary to remove the listener after assertion sind the workspace will be the
+        //same for all test cases that are executed in one test suite
+        IResourceChangeListener listener = new IResourceChangeListener(){
+            public void resourceChanged(IResourceChangeEvent event) {
+                getIpsModel().getWorkspace().removeResourceChangeListener(this);
+                    List builtIpsObjects = builder.getBuiltIpsObjects();
+                    assertTrue(builtIpsObjects.contains(aFinal));
+                    assertTrue(builtIpsObjects.contains(aConfigTypeFinal));
+                    assertTrue(builtIpsObjects.contains(aProductFinal));
+            }
+        };
+        getIpsModel().getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_BUILD);
+        a.getIpsSrcFile().save(true, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+    }
+    
     
     public void testDependencyGraphWithAggregateRootBuilderNoComposits() throws Exception{
 

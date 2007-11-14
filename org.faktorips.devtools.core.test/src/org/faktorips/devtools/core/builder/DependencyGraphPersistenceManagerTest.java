@@ -23,7 +23,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.Dependency;
+import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -43,7 +43,7 @@ public class DependencyGraphPersistenceManagerTest extends AbstractIpsPluginTest
         persistenceManager.saving(new TestSaveContext());
         DependencyGraph graph = persistenceManager.getDependencyGraph(ipsProject);
         assertNotNull(graph);
-        Dependency[] dependencies = graph.getDependants(a.getQualifiedNameType());
+        IDependency[] dependencies = graph.getDependants(a.getQualifiedNameType());
         assertEquals(1, dependencies.length);
         assertEquals(b.getQualifiedNameType(), dependencies[0].getSource());
     }

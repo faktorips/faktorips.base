@@ -22,7 +22,8 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.Dependency;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -56,12 +57,12 @@ public class TableContentsTest extends AbstractIpsPluginTest {
      */
     public void testDependsOn() throws Exception {
         ITableStructure structure = (ITableStructure)newIpsObject(project,  IpsObjectType.TABLE_STRUCTURE, "Ts");
-        Dependency[] dependsOn = table.dependsOn();
+        IDependency[] dependsOn = table.dependsOn();
         assertEquals(0, dependsOn.length);
         
         table.setTableStructure(structure.getQualifiedName());
         List dependsOnAsList = CollectionUtil.toArrayList(table.dependsOn());
-        assertTrue(dependsOnAsList.contains(Dependency.createInstanceOfDependency(table.getQualifiedNameType(), structure.getQualifiedNameType())));
+        assertTrue(dependsOnAsList.contains(IpsObjectDependency.createInstanceOfDependency(table.getQualifiedNameType(), structure.getQualifiedNameType())));
     }
 
     public void testNewColumn() {
