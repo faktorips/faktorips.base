@@ -15,17 +15,11 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This class describes a dependency of a source and a target IpsObject more precisely that the
- * source object dependents on the target object. The source and target IpsObjects are identified by
- * their qualified name types. The dependency type descibes the kind of the dependency. It is up to
- * the IpsBuilder how to interpret this type. Dependency instances are created by the dependsOn()
- * methods of IpsObjects to indicate the dependency to other IpsObjects. The DependencyGraph which
- * is used by the IpsBuilder to determine the dependent IpsObjects during an incremental build cycle
- * utilizes the dependsOn() method to determine its state.
- * 
+ * An implementation of the {@link IDependency} interface that describes a dependency between two IpsObjects.
+ *  
  * @author Peter Erzberger
  */
-public class Dependency implements Serializable{
+public class IpsObjectDependency implements IDependency, Serializable{
 
     private static final long serialVersionUID = -4763466997240470890L;
 
@@ -34,7 +28,7 @@ public class Dependency implements Serializable{
     private int hashCode;
     private DependencyType dependencyType;
 
-    private Dependency(QualifiedNameType source, QualifiedNameType target, DependencyType dependencyType) {
+    private IpsObjectDependency(QualifiedNameType source, QualifiedNameType target, DependencyType dependencyType) {
         super();
         ArgumentCheck.notNull(source, this);
         ArgumentCheck.notNull(target, this);
@@ -49,10 +43,10 @@ public class Dependency implements Serializable{
      * Creates a new Dependency between the specified source and target objects and defines if it is
      * a transitive dependency.
      */
-    public final static Dependency create(QualifiedNameType source,
+    public final static IpsObjectDependency create(QualifiedNameType source,
             QualifiedNameType target,
             DependencyType dependencyType) {
-        return new Dependency(source, target, dependencyType);
+        return new IpsObjectDependency(source, target, dependencyType);
     }
 
     /**
@@ -60,8 +54,8 @@ public class Dependency implements Serializable{
      * source and target objects. A Dependency instance indicates that the source is subtype of the
      * target and hence the source depends on the target.
      */
-    public final static Dependency createSubtypeDependency(QualifiedNameType source, QualifiedNameType target) {
-        return new Dependency(source, target, DependencyType.SUBTYPE);
+    public final static IpsObjectDependency createSubtypeDependency(QualifiedNameType source, QualifiedNameType target) {
+        return new IpsObjectDependency(source, target, DependencyType.SUBTYPE);
     }
 
     /**
@@ -69,8 +63,8 @@ public class Dependency implements Serializable{
      * source and target objects. A Dependency instance indicates that the source references the
      * target and hence the source depends on the target.
      */
-    public final static Dependency createReferenceDependency(QualifiedNameType source, QualifiedNameType target) {
-        return new Dependency(source, target, DependencyType.REFERENCE);
+    public final static IpsObjectDependency createReferenceDependency(QualifiedNameType source, QualifiedNameType target) {
+        return new IpsObjectDependency(source, target, DependencyType.REFERENCE);
     }
 
     /**
@@ -79,18 +73,9 @@ public class Dependency implements Serializable{
      * instance indicates that the source references the target and hence the source depends on the
      * target.
      */
-    public final static Dependency createCompostionMasterDetailDependency(QualifiedNameType source,
+    public final static IpsObjectDependency createCompostionMasterDetailDependency(QualifiedNameType source,
             QualifiedNameType target) {
-        return new Dependency(source, target, DependencyType.REFERENCE_COMPOSITION_MASTER_DETAIL);
-    }
-
-    /**
-     * Creates a new Dependency instance indicating an instance of dependency between the specified
-     * source and target objects. A Dependency instance indicates that the source uses the target
-     * and hence the source depends on the target.
-     */
-    public final static Dependency createUsesDependency(QualifiedNameType source, QualifiedNameType target) {
-        return new Dependency(source, target, DependencyType.USES);
+        return new IpsObjectDependency(source, target, DependencyType.REFERENCE_COMPOSITION_MASTER_DETAIL);
     }
 
     /**
@@ -98,8 +83,8 @@ public class Dependency implements Serializable{
      * source and target objects. A Dependency instance indicates that the source is an instance of
      * the target and hence the source depends on the target.
      */
-    public final static Dependency createInstanceOfDependency(QualifiedNameType source, QualifiedNameType target) {
-        return new Dependency(source, target, DependencyType.INSTANCEOF);
+    public final static IpsObjectDependency createInstanceOfDependency(QualifiedNameType source, QualifiedNameType target) {
+        return new IpsObjectDependency(source, target, DependencyType.INSTANCEOF);
     }
 
     /**
@@ -112,57 +97,32 @@ public class Dependency implements Serializable{
     /**
      * The target object
      */
-    public QualifiedNameType getTarget() {
+    public QualifiedNameType getTargetAsQNameType() {
         return target;
     }
 
+    /**
+     * The target object
+     */
+    public Object getTarget() {
+        return target;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public DependencyType getType() {
         return dependencyType;
-    }
-
-    /**
-     * Returns true if this is a referencing dependency.
-     */
-    public boolean isReference() {
-        return dependencyType == DependencyType.REFERENCE;
-    }
-
-    /**
-     * Returns true if this is a composition master to detail dependency.
-     */
-    public boolean isCompositionMasterDetail() {
-        return dependencyType == DependencyType.REFERENCE_COMPOSITION_MASTER_DETAIL;
-    }
-
-    /**
-     * Returns true if this is an instance of dependency.
-     */
-    public boolean isInstanceOf() {
-        return dependencyType == DependencyType.INSTANCEOF;
-    }
-
-    /**
-     * Returns true if this is a subtype dependency.
-     */
-    public boolean isSubtype() {
-        return dependencyType == DependencyType.SUBTYPE;
-    }
-
-    /**
-     * Returns true if this is an uses dependency.
-     */
-    public boolean isUses() {
-        return dependencyType == DependencyType.USES;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean equals(Object o) {
-        if (o instanceof Dependency) {
-            Dependency other = (Dependency)o;
-            return this.dependencyType.equals(other.dependencyType) && this.target.equals(other.target)
-                    && this.source.equals(other.source);
+        if (o instanceof IDependency) {
+            IDependency other = (IDependency)o;
+            return this.dependencyType.equals(other.getType()) && this.target.equals(other.getTarget())
+                    && this.source.equals(other.getSource());
         }
         return false;
     }

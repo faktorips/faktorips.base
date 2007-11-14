@@ -30,8 +30,9 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestValueParameter;
-import org.faktorips.devtools.core.model.Dependency;
+import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -168,11 +169,11 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * {@inheritDoc}
      */
-    public Dependency[] dependsOn() throws CoreException {
+    public IDependency[] dependsOn() throws CoreException {
         Set dependencies = new HashSet();
         // the test case depends on the test case type
         if (StringUtils.isNotEmpty(testCaseType)) {
-            dependencies.add(Dependency.createInstanceOfDependency(this.getQualifiedNameType(), new QualifiedNameType(testCaseType,
+            dependencies.add(IpsObjectDependency.createInstanceOfDependency(this.getQualifiedNameType(), new QualifiedNameType(testCaseType,
                     IpsObjectType.TEST_CASE_TYPE)));
         }
         // add dependency to product cmpts
@@ -180,7 +181,7 @@ public class TestCase extends IpsObject implements ITestCase {
         for (int i = 0; i < testCmpts.length; i++) {
             addQualifiedNameTypesForTestPolicyCmpt(dependencies, testCmpts[i]);
         }
-        return (Dependency[])dependencies.toArray(new Dependency[0]);
+        return (IDependency[])dependencies.toArray(new IDependency[dependencies.size()]);
     }
 
     /*
@@ -191,7 +192,7 @@ public class TestCase extends IpsObject implements ITestCase {
             return;
         }
         if (StringUtils.isNotEmpty(cmpt.getProductCmpt())) {
-            dependencies.add(Dependency.createReferenceDependency(this.getQualifiedNameType(), new QualifiedNameType(
+            dependencies.add(IpsObjectDependency.createReferenceDependency(this.getQualifiedNameType(), new QualifiedNameType(
                     cmpt.getProductCmpt(), IpsObjectType.PRODUCT_CMPT)));
         }
         ITestPolicyCmptRelation[] testRelations = cmpt.getTestPolicyCmptRelations();

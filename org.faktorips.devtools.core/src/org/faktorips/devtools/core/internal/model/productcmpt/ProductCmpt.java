@@ -30,7 +30,8 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
-import org.faktorips.devtools.core.model.Dependency;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -38,7 +39,6 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -226,12 +226,12 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
-    public Dependency[] dependsOn() throws CoreException {
+    public IDependency[] dependsOn() throws CoreException {
 
         Set dependencySet = new HashSet();
 
         if (!StringUtils.isEmpty(productCmptType)) {
-            dependencySet.add(Dependency.createInstanceOfDependency(this.getQualifiedNameType(), new QualifiedNameType(
+            dependencySet.add(IpsObjectDependency.createInstanceOfDependency(this.getQualifiedNameType(), new QualifiedNameType(
                     productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
         }
 
@@ -241,7 +241,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             ((ProductCmptGeneration)generations[i]).dependsOn(dependencySet);
         }
 
-        return (Dependency[])dependencySet.toArray(new Dependency[dependencySet.size()]);
+        return (IDependency[])dependencySet.toArray(new IDependency[dependencySet.size()]);
     }
     
     /**

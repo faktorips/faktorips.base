@@ -23,7 +23,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.Dependency;
+import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -188,8 +188,8 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     /**
      * {@inheritDoc}
      */
-    public Dependency[] dependsOn() throws CoreException {
-        return new Dependency[0];
+    public IDependency[] dependsOn() throws CoreException {
+        return new IDependency[0];
     }
     
     /**

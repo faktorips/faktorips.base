@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.core.internal.model.type;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -28,6 +31,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -310,6 +314,15 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         buffer.append(')');
         return buffer.toString();
     }
+    
+    public void dependsOn(Set dependencies){
+        dependencies.add(new DatatypeDependency(getType().getQualifiedNameType(), getDatatype()));
+        for (Iterator it = parameters.iterator(); it.hasNext();) {
+            IParameter parameter = (IParameter)it.next();
+            dependencies.add(new DatatypeDependency(getType().getQualifiedNameType(), parameter.getDatatype()));
+        }
+    }
+    
     
     class OverridingMethodFinder extends TypeHierarchyVisitor {
 

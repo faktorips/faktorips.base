@@ -30,7 +30,8 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
-import org.faktorips.devtools.core.model.Dependency;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -162,11 +163,11 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     /**
      * {@inheritDoc}
      */
-    public Dependency[] dependsOn() throws CoreException {
+    public IDependency[] dependsOn() throws CoreException {
         if (StringUtils.isEmpty(getTableStructure())) {
-            return new Dependency[0];
+            return new IDependency[0];
         }
-        return new Dependency[] { Dependency.createInstanceOfDependency(this.getQualifiedNameType(), new QualifiedNameType(
+        return new IDependency[] { IpsObjectDependency.createInstanceOfDependency(this.getQualifiedNameType(), new QualifiedNameType(
                 getTableStructure(), IpsObjectType.TABLE_STRUCTURE)) };
     }
     

@@ -20,13 +20,12 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.TableContentsEnumDatatypeAdapter;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.internal.model.type.Type;
-import org.faktorips.devtools.core.model.Dependency;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -450,62 +449,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     /**
      * {@inheritDoc}
-     * 
-     * Returns the <code>QualifiedNameType</code>s of the <code>IpsObject</code>s this
-     * <code>IpsObject</code> depends on. This method is used by the interface method dependsOn()
-     * and is public because it is used by the <code>ProductCmptType</code>
-     * 
-     * @throws CoreException delegates rising CoreExceptions
-     */
-    public Dependency[] dependsOn() throws CoreException {
-        Set dependencies = new HashSet();
-        if (hasSupertype()) {
-            dependencies.add(Dependency.createSubtypeDependency(this.getQualifiedNameType(), new QualifiedNameType(
-                    getSupertype(), IpsObjectType.POLICY_CMPT_TYPE)));
-        }
-        addQualifiedNameTypesForRelationTargets(dependencies);
-        addQualifiedNameTypesForTableBasedEnums(dependencies);
-        return (Dependency[])dependencies.toArray(new Dependency[dependencies.size()]);
-    }
-
-    private void addQualifiedNameTypesForTableBasedEnums(Set qualifedNameTypes) throws CoreException {
-        IPolicyCmptTypeAttribute[] attributes = getPolicyCmptTypeAttributes();
-        for (int i = 0; i < attributes.length; i++) {
-            // TODO Mit Peter klaeren
-            Datatype datatype = attributes[i].findDatatype(getIpsProject());
-            if (datatype instanceof TableContentsEnumDatatypeAdapter) {
-                TableContentsEnumDatatypeAdapter enumDatatype = (TableContentsEnumDatatypeAdapter)datatype;
-                qualifedNameTypes.add(Dependency.createReferenceDependency(this.getQualifiedNameType(), enumDatatype
-                        .getTableContents().getQualifiedNameType()));
-                qualifedNameTypes.add(Dependency.createReferenceDependency(this.getQualifiedNameType(),
-                        new QualifiedNameType(enumDatatype.getTableContents().getTableStructure(),
-                                IpsObjectType.TABLE_STRUCTURE)));
-            }
-        }
-    }
-
-    private void addQualifiedNameTypesForRelationTargets(Set dependencies)
-            throws CoreException {
-        IPolicyCmptTypeAssociation[] relations = getPolicyCmptTypeAssociations();
-        for (int i = 0; i < relations.length; i++) {
-            String qualifiedName = relations[i].getTarget();
-            // an additional condition "&& this.isAggregateRoot()" will _not_ be helpfull, because
-            // this
-            // method is called recursively for the detail and so on. But this detail is not an
-            // aggregate root and the recursion will terminate to early.
-            if (relations[i].isCompositionMasterToDetail()) {
-                dependencies.add(Dependency.createCompostionMasterDetailDependency(this.getQualifiedNameType(),
-                        new QualifiedNameType(qualifiedName, IpsObjectType.POLICY_CMPT_TYPE)));
-            }
-            else {
-                dependencies.add(Dependency.createReferenceDependency(this.getQualifiedNameType(),
-                        new QualifiedNameType(qualifiedName, IpsObjectType.POLICY_CMPT_TYPE)));
-            }
-        }
-    }
-
-    /**
-     * {@inheritDoc}
      */
     public IPolicyCmptTypeAttribute[] overrideAttributes(IPolicyCmptTypeAttribute[] attributes) {
         IPolicyCmptTypeAttribute[] newAttributes = new IPolicyCmptTypeAttribute[attributes.length];
@@ -525,6 +468,17 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return newAttributes;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public IDependency[] dependsOn() throws CoreException {
+        Set dependencies = new HashSet();
+        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(getProductCmptType(), IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
+        dependsOn(dependencies);
+        return (IDependency[])dependencies.toArray(new IDependency[dependencies.size()]);
+    }
+
+    
     private static class IsAggregrateRootVisitor extends PolicyCmptTypeHierarchyVisitor {
 
         private boolean root = true;

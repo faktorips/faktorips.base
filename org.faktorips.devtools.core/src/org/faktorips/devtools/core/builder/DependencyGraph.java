@@ -26,8 +26,9 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
-import org.faktorips.devtools.core.model.Dependency;
+import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.util.CollectionUtil;
@@ -94,7 +95,7 @@ public class DependencyGraph implements Serializable {
         }
         for (Iterator it = allIpsObjects.iterator(); it.hasNext();) {
             IIpsObject ipsObject = (IIpsObject)it.next();
-            Dependency[] dependsOn = ipsObject.dependsOn();
+            IDependency[] dependsOn = ipsObject.dependsOn();
             if(dependsOn == null || dependsOn.length == 0){
                 continue;
             }
@@ -103,12 +104,12 @@ public class DependencyGraph implements Serializable {
         }
     }
 
-    private void addEntriesToDependsOnMap(Dependency[] dependsOn,
+    private void addEntriesToDependsOnMap(IDependency[] dependsOn,
             QualifiedNameType requestedNameType) {
         dependsOnMap.put(requestedNameType, CollectionUtil.toArrayList(dependsOn));
     }
 
-    private void addEntryToDependantsForMap(Dependency[] dependsOn) {
+    private void addEntryToDependantsForMap(IDependency[] dependsOn) {
         for (int i = 0; i < dependsOn.length; i++) {
             List dependants = getDependantsAsList(dependsOn[i].getTarget());
             if (dependants == null) {
@@ -123,21 +124,33 @@ public class DependencyGraph implements Serializable {
      * Returns the qualified names of the ips objects that depend on the object identified by the
      * given qualified name.
      * 
-     * @param qName the fully qualified name type of the ips object for which the dependant objects
-     *            should be returned.
+     * @param identifier the identifier for an ips object or datatype for which the dependant objects
+     *            should be returned. Identifier for IpsObjects are QualifiedNameType instances for
+     *            Datatypes qualified name strings.
      */
-    public Dependency[] getDependants(QualifiedNameType qName) {
-        List qualfiedNameTypes = getDependantsAsList(qName);
+    public IDependency[] getDependants(QualifiedNameType id) {
+        List qualfiedNameTypes = getDependantsAsList(id);
+        if(id.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE) ||
+                id.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE_V2) ||
+                id.getIpsObjectType().equals(IpsObjectType.TABLE_STRUCTURE) || 
+                id.getIpsObjectType().equals(IpsObjectType.TABLE_CONTENTS)){
+            List additionalNameTypes = getDependantsAsList(id.getName());
+            if(qualfiedNameTypes == null){
+                qualfiedNameTypes = additionalNameTypes; 
+            } else if(additionalNameTypes != null) {
+                qualfiedNameTypes.addAll(additionalNameTypes);
+            }
+        }
 
         if (qualfiedNameTypes == null) {
-            return new Dependency[0];
+            return new IDependency[0];
         }
-        return (Dependency[])qualfiedNameTypes
-                .toArray(new Dependency[qualfiedNameTypes.size()]);
+        return (IDependency[])qualfiedNameTypes
+                .toArray(new IDependency[qualfiedNameTypes.size()]);
     }
 
-    private List getDependantsAsList(QualifiedNameType nameType) {
-        return (List)dependantsForMap.get(nameType);
+    private List getDependantsAsList(Object target) {
+        return (List)dependantsForMap.get(target);
     }
 
     /**
@@ -164,7 +177,7 @@ public class DependencyGraph implements Serializable {
         removeDependency(qName);
         IIpsObject ipsObject = ipsProject.findIpsObject(qName);
         if (ipsObject != null) {
-            Dependency[] newDependOnNameTypes = ipsObject.dependsOn();
+            IDependency[] newDependOnNameTypes = ipsObject.dependsOn();
             addEntriesToDependsOnMap(newDependOnNameTypes, qName);
             addEntryToDependantsForMap(newDependOnNameTypes);
         }
@@ -175,11 +188,11 @@ public class DependencyGraph implements Serializable {
         if (dependsOnList != null && !dependsOnList.isEmpty()) {
             
             for (Iterator it = dependsOnList.iterator(); it.hasNext();) {
-                Dependency dependency = (Dependency)it.next();
+                IDependency dependency = (IDependency)it.next();
                 List dependants = getDependantsAsList(dependency.getTarget());
                 if (dependants != null) {
                     for (Iterator itDependants = dependants.iterator(); itDependants.hasNext();) {
-                        Dependency dependency2 = (Dependency)itDependants.next();
+                        IDependency dependency2 = (IDependency)itDependants.next();
                         if(dependency2.getSource().equals(qName)){
                             itDependants.remove();
                         }

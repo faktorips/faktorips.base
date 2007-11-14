@@ -32,7 +32,8 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.core.internal.model.type.Type;
-import org.faktorips.devtools.core.model.Dependency;
+import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -47,7 +48,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -429,30 +429,19 @@ public class ProductCmptType extends Type implements IProductCmptType {
             return;
         }
     }
-    
-    public Dependency[] dependsOn() throws CoreException {
+  
+    /**
+     * {@inheritDoc}
+     */
+    public IDependency[] dependsOn() throws CoreException {
         Set dependencies = new HashSet();
-        dependencies.clear();
-        super.dependsOn(dependencies);
-        if (hasSupertype()) {
-            dependencies.add(Dependency.createSubtypeDependency(this.getQualifiedNameType(), new QualifiedNameType(getSupertype(),
-                    IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
-        }
-        addQualifiedNameTypesForRelationTargets(dependencies);
-        return (Dependency[])dependencies.toArray(new Dependency[dependencies.size()]);
+        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE)));
+        dependsOn(dependencies);
+        return (IDependency[])dependencies.toArray(new IDependency[dependencies.size()]);
     }
+    
 
-    private void addQualifiedNameTypesForRelationTargets(Set dependencies) throws CoreException {
-        IAssociation[] associations = getAssociations();
-        for (int i = 0; i < associations.length; i++) {
-            String qualifiedName = associations[i].getTarget();
-            dependencies.add(Dependency.createReferenceDependency(this.getQualifiedNameType(), new QualifiedNameType(qualifiedName,
-                    IpsObjectType.PRODUCT_CMPT_TYPE_V2)));
-        }
-    }
-
-
-    class TableStructureUsageFinder extends ProductCmptTypeHierarchyVisitor {
+    private static class TableStructureUsageFinder extends ProductCmptTypeHierarchyVisitor {
 
         private String tsuName;
         private ITableStructureUsage tsu = null;
@@ -472,7 +461,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         
     }
 
-    class FormulaSignatureFinder extends ProductCmptTypeHierarchyVisitor {
+    private static class FormulaSignatureFinder extends ProductCmptTypeHierarchyVisitor {
 
         private String formulaName;
         private IProductCmptTypeMethod method;
@@ -492,7 +481,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         
     }
 
-    class ProdDefPropertyCollector extends ProductCmptTypeHierarchyVisitor {
+    private static class ProdDefPropertyCollector extends ProductCmptTypeHierarchyVisitor {
 
         // if set, indicates the type of properties that are collected
         // if null, all properties are collected
@@ -592,7 +581,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
     }
 
-    class MyDuplicatePropertyNameValidator extends DuplicatePropertyNameValidator {
+    private static class MyDuplicatePropertyNameValidator extends DuplicatePropertyNameValidator {
 
         public MyDuplicatePropertyNameValidator(IIpsProject ipsProject) {
             super(ipsProject);

@@ -28,7 +28,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.model.DatatypeDependency;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
@@ -568,35 +571,52 @@ public abstract class Type extends BaseIpsObject implements IType {
         return false;
     }
 
-    public void dependsOn(Set result) throws CoreException {
-        // TODO v2 - dependeny - add dependencies for method parameters
-//      private void addQualifiedNameTypesForFormulaParameters(Set qualifiedNameTypes) throws CoreException {
-//          IAttribute[] attributes = getAttributes();
-//          IIpsProject ipsProject = getIpsProject();
-//          for (int i = 0; i < attributes.length; i++) {
-//              if (ConfigElementType.FORMULA.equals(attributes[i].getConfigElementType())) {
-//                  Parameter[] parameters = attributes[i].getFormulaParameters();
-//                  for (int j = 0; j < parameters.length; j++) {
-//                      String datatypeId = parameters[j].getDatatype();
-//                      Datatype datatype = ipsProject.findDatatype(datatypeId);
-//                      if (datatype instanceof ValueDatatype) {
-//                          // no dependency
-//                      } else if (datatype instanceof IIpsObject) {
-//                          IIpsObject ipsObject = (IIpsObject)datatype;
-//                          qualifiedNameTypes.add(ipsObject.getQualifiedNameType());
-//                      } else {
-//                          for (int k = 0; k < IpsObjectType.ALL_TYPES.length; k++) {
-//                              if (IpsObjectType.ALL_TYPES[k].isDatatype()) {
-//                                  qualifiedNameTypes.add(new QualifiedNameType(datatypeId, IpsObjectType.ALL_TYPES[k]));
-//                              }
-//                          }
-//                      }
-//                  }
-//              }
-//          }
-//      }
-        
+    /**
+     * Collects the dependencies of this type. Subclasses need to call this method in their dependsOn() methods.
+     * The provided parameter must not be <code>null</code>.
+     */
+    protected void dependsOn(Set dependencies) throws CoreException {
+        if (hasSupertype()) {
+            dependencies.add(IpsObjectDependency.createSubtypeDependency(this.getQualifiedNameType(),
+                    new QualifiedNameType(getSupertype(), getIpsObjectType())));
+        }
+        addQualifiedNameTypesForRelationTargets(dependencies);
+        addAttributeDatatypeDependencies(dependencies);
+        addMethodDatatypeDependencies(dependencies);
     }
+    
+    private void addMethodDatatypeDependencies(Set dependencies){
+        for (Iterator it = methods.iterator(); it.hasNext();) {
+            Method method = (Method)it.next();
+            method.dependsOn(dependencies);
+        }
+    }
+    
+    private void addAttributeDatatypeDependencies(Set qualifiedNameTypes) throws CoreException {
+        IAttribute[] attributes = getAttributes();
+        for (int i = 0; i < attributes.length; i++) {
+            String datatype = attributes[i].getDatatype();
+            qualifiedNameTypes.add(new DatatypeDependency(this.getQualifiedNameType(), datatype));
+        }
+    }
+    
+    private void addQualifiedNameTypesForRelationTargets(Set dependencies) throws CoreException {
+        IAssociation[] relations = getAssociations();
+        for (int i = 0; i < relations.length; i++) {
+            String targetQName = relations[i].getTarget();
+            // an additional condition "&& this.isAggregateRoot()" will _not_ be helpfull, because
+            // this method is called recursively for the detail and so on. But this detail is not an
+            // aggregate root and the recursion will terminate to early.
+            if (relations[i].getAssociationType().equals(AssociationType.COMPOSITION_MASTER_TO_DETAIL)) {
+                dependencies.add(IpsObjectDependency.createCompostionMasterDetailDependency(this.getQualifiedNameType(),
+                        new QualifiedNameType(targetQName, getIpsObjectType())));
+            } else {
+                dependencies.add(IpsObjectDependency.createReferenceDependency(this.getQualifiedNameType(),
+                        new QualifiedNameType(targetQName, getIpsObjectType())));
+            }
+        }
+    }
+
     
     class SupertypesCollector extends TypeHierarchyVisitor {
 

@@ -22,8 +22,8 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
-import org.faktorips.devtools.core.model.Dependency;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -118,7 +118,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     private void addRelatedTableContentsQualifiedNameTypes(Set qaTypes) {
         ITableContentUsage[] tableContentUsages = getTableContentUsages();
         for (int i = 0; i < tableContentUsages.length; i++) {
-            qaTypes.add(Dependency.createReferenceDependency(getIpsObject().getQualifiedNameType(),
+            qaTypes.add(IpsObjectDependency.createReferenceDependency(getIpsObject().getQualifiedNameType(),
                     new QualifiedNameType(tableContentUsages[i].getTableContentName(), IpsObjectType.TABLE_CONTENTS)));
         }
     }
@@ -129,7 +129,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     private void addRelatedProductCmptQualifiedNameTypes(Set qaTypes) {
         IProductCmptLink[] relations = getLinks();
         for (int j = 0; j < relations.length; j++) {
-            qaTypes.add(Dependency.createReferenceDependency(getIpsObject().getQualifiedNameType(),
+            qaTypes.add(IpsObjectDependency.createReferenceDependency(getIpsObject().getQualifiedNameType(),
                     new QualifiedNameType(relations[j].getTarget(), IpsObjectType.PRODUCT_CMPT)));
         }
     }

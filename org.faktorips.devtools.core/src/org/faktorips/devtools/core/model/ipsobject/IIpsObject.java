@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.model.ipsobject;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.Dependency;
+import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
 
@@ -79,6 +79,6 @@ public interface IIpsObject extends IIpsObjectPartContainer {
      * 
      * @throws CoreException
      */
-    public Dependency[] dependsOn() throws CoreException;
+    public IDependency[] dependsOn() throws CoreException;
     
 }

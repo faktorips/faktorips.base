@@ -26,8 +26,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
-import org.faktorips.devtools.core.model.Dependency;
+import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -126,11 +127,11 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     /**
      * {@inheritDoc}
      */
-    public Dependency[] dependsOn() throws CoreException {
+    public IDependency[] dependsOn() throws CoreException {
         Set dependencies = new HashSet();
         addQualifiedNameTypesForTestPolicyCmptTypeParams(dependencies, getTestPolicyCmptTypeParameters());
-        return (Dependency[]) dependencies
-                .toArray(new Dependency[dependencies.size()]);
+        return (IDependency[]) dependencies
+                .toArray(new IDependency[dependencies.size()]);
 
     }
 
@@ -142,8 +143,9 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             ITestPolicyCmptTypeParameter[] parameters) {
         for (int i = 0; i < parameters.length; i++) {
             if (StringUtils.isNotEmpty(parameters[i].getPolicyCmptType())) {
-                qualifiedNameTypes.add(Dependency.createReferenceDependency(this.getQualifiedNameType(), new QualifiedNameType(
-                        parameters[i].getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE)));
+                qualifiedNameTypes.add(IpsObjectDependency.createReferenceDependency(this
+                        .getQualifiedNameType(), new QualifiedNameType(parameters[i].getPolicyCmptType(),
+                        IpsObjectType.POLICY_CMPT_TYPE)));
             }
             addQualifiedNameTypesForTestPolicyCmptTypeParams(qualifiedNameTypes, parameters[i]
                     .getTestPolicyCmptTypeParamChilds());
