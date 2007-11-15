@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.ui.PdSourceRootSelectionDialog;
+import org.faktorips.devtools.core.ui.IpsPackageFragmentRootSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 
@@ -79,7 +79,7 @@ public class IpsPckFragmentRootRefControl extends TextButtonControl {
      */ 
     protected void buttonClicked() {
         try {
-            PdSourceRootSelectionDialog dialog = new PdSourceRootSelectionDialog(getShell(), onlySourceRoots);
+            IpsPackageFragmentRootSelectionDialog dialog = new IpsPackageFragmentRootSelectionDialog(getShell(), onlySourceRoots);
             if (dialog.open()==Window.OK) {
                 IIpsPackageFragmentRoot root = dialog.getSelectedRoot();
                 setPdPckFragmentRoot(root);

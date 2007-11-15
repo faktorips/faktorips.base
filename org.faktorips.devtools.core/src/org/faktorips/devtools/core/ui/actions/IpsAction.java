@@ -163,7 +163,10 @@ public abstract class IpsAction extends Action {
     protected IIpsSrcFile[] getIpsSrcFilesForSelection(IStructuredSelection selection) {
         List ipsSrcFiles = new ArrayList();
         for (Iterator i = selection.iterator(); i.hasNext();) {
-            ipsSrcFiles.add(getIpsSrcFileForSelection(i.next()));
+            IIpsSrcFile ipsSrcFile = getIpsSrcFileForSelection(i.next());
+            if(ipsSrcFile != null){
+                ipsSrcFiles.add(ipsSrcFile);
+            }
         }
         return (IIpsSrcFile[]) ipsSrcFiles.toArray(new IIpsSrcFile[ipsSrcFiles.size()]);
     }

@@ -31,13 +31,13 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 /**
  *
  */
-public class PdSourceRootSelectionDialog extends ElementTreeSelectionDialog {
+public class IpsPackageFragmentRootSelectionDialog extends ElementTreeSelectionDialog {
 
     /**
      * @param parent
      * @param renderer
      */
-    public PdSourceRootSelectionDialog(Shell parent, boolean onlySourceRoots) {
+    public IpsPackageFragmentRootSelectionDialog(Shell parent, boolean onlySourceRoots) {
         super(parent, new DefaultLabelProvider(), new ContentProvider(onlySourceRoots));
         setTitle(Messages.PdSourceRootSelectionDialog_title);
         setMessage(Messages.PdSourceRootSelectionDialog_description);
