@@ -486,20 +486,20 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         }
 		
         // check if an ipsobject already exists that has the same name and generates a java class
-        // to avoid conflicts with java classes that have the same name 
-        IIpsSrcFile file = getIpsProject().findIpsSrcFile(IpsObjectType.POLICY_CMPT_TYPE, getIpsObjectName());
+        // to avoid conflicts with java classes that have the same name
+        IIpsSrcFile file = getIpsProject().findIpsSrcFile(IpsObjectType.POLICY_CMPT_TYPE, getQualifiedIpsObjectName());
         if(file != null){
             setErrorMessage(Messages.IpsObjectPage_msgObjectAllreadyExists);
         }
-        file = getIpsProject().findIpsSrcFile(IpsObjectType.PRODUCT_CMPT_TYPE_V2, getIpsObjectName());
+        file = getIpsProject().findIpsSrcFile(IpsObjectType.PRODUCT_CMPT_TYPE_V2, getQualifiedIpsObjectName());
         if(file != null){
             setErrorMessage(Messages.IpsObjectPage_msgObjectAllreadyExists);
         }
-        file = getIpsProject().findIpsSrcFile(IpsObjectType.TABLE_STRUCTURE, getIpsObjectName());
+        file = getIpsProject().findIpsSrcFile(IpsObjectType.TABLE_STRUCTURE, getQualifiedIpsObjectName());
         if(file != null){
             setErrorMessage(Messages.IpsObjectPage_msgObjectAllreadyExists);
         }
-        file = getIpsProject().findIpsSrcFile(IpsObjectType.TEST_CASE_TYPE, getIpsObjectName());
+        file = getIpsProject().findIpsSrcFile(IpsObjectType.TEST_CASE_TYPE, getQualifiedIpsObjectName());
         if(file != null){
             setErrorMessage(Messages.IpsObjectPage_msgObjectAllreadyExists);
         }
