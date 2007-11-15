@@ -454,10 +454,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 	 * {@inheritDoc}
 	 */
 	public IPage createModelDescriptionPage() throws CoreException {
-
-        ProductCmptModelDescriptionPage fModelDescriptionPage = new ProductCmptModelDescriptionPage(this);
-
-		return fModelDescriptionPage;
+		return new ProductCmptModelDescriptionPage(this);
 	}
 
     /**

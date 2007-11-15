@@ -760,7 +760,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 		if (element instanceof IProductCmptLink) {
 			return ((IProductCmptLink) element).validate(((IProductCmptLink) element).getIpsProject());
 		} else if (element instanceof String) {
-			MessageList ml = generation.validate(null);
+			MessageList ml = generation.validate(generation.getIpsProject());
 			return ml.getMessagesFor(((String) element));
 		}
 		return new MessageList();
