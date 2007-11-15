@@ -207,7 +207,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 			
 			treeViewer = new TreeViewer(tree);
 			treeViewer.setContentProvider(new LinksContentProvider());
-			treeViewer.setLabelProvider(new MyMessageCueLabelProvider(
+			treeViewer.setLabelProvider(new LinkSectionMessageCueLabelProvider(
 					labelProvider, generation.getIpsProject()));
 			treeViewer.setInput(generation);
 			treeViewer
@@ -785,16 +785,16 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 	 * 
 	 * @author Thorsten Guenther
 	 */
-	private class MyMessageCueLabelProvider extends MessageCueLabelProvider {
+	private class LinkSectionMessageCueLabelProvider extends MessageCueLabelProvider {
 
-		public MyMessageCueLabelProvider(ILabelProvider baseProvider, IIpsProject ipsProject) {
+		public LinkSectionMessageCueLabelProvider(ILabelProvider baseProvider, IIpsProject ipsProject) {
 			super(baseProvider, ipsProject);
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		protected MessageList getMessages(Object element) throws CoreException {
+		public MessageList getMessages(Object element) throws CoreException {
 			if (element instanceof String) {
 				return generation.validate(generation.getIpsProject()).getMessagesFor((String)element);
 			}
