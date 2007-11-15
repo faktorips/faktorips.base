@@ -106,16 +106,19 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             }
             applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new BeforeBuildProcessCommand(kind, getIpsProject()), monitor);
             monitor.worked(100);
-            if (isFullBuildRequired) {
-                kind = IncrementalProjectBuilder.FULL_BUILD;
-                monitor.subTask(Messages.IpsBuilder_startFullBuild);
-                fullBuild(ipsArtefactBuilderSet, buildStatus, new SubProgressMonitor(monitor, 99700));
-            } else {
-                monitor.subTask(Messages.IpsBuilder_startIncrementalBuild);
-                incrementalBuild(ipsArtefactBuilderSet, buildStatus, new SubProgressMonitor(monitor, 99700));
+            try{
+                if (isFullBuildRequired) {
+                    kind = IncrementalProjectBuilder.FULL_BUILD;
+                    monitor.subTask(Messages.IpsBuilder_startFullBuild);
+                    fullBuild(ipsArtefactBuilderSet, buildStatus, new SubProgressMonitor(monitor, 99700));
+                } else {
+                    monitor.subTask(Messages.IpsBuilder_startIncrementalBuild);
+                    incrementalBuild(ipsArtefactBuilderSet, buildStatus, new SubProgressMonitor(monitor, 99700));
+                }
+            } finally {
+                monitor.subTask(Messages.IpsBuilder_finishBuild);
+                applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new AfterBuildProcessCommand(kind, getIpsProject()), monitor);
             }
-            monitor.subTask(Messages.IpsBuilder_finishBuild);
-            applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new AfterBuildProcessCommand(kind, getIpsProject()), monitor);
             monitor.worked(100);
             if (buildStatus.getSeverity() == IStatus.OK) {
                 return getProject().getReferencedProjects();
@@ -391,8 +394,11 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 
             for (Iterator it = dependenciesForProjectsMap.keySet().iterator(); it.hasNext();) {
                 IIpsProject ipsProject = (IIpsProject)it.next();
-                if (!checkIpsProjectBeforeBuild(ipsProject.getProject(), ipsProject)) {
-                    continue;
+                
+                if(!ipsProject.equals(getIpsProject())){
+                    if (!checkIpsProjectBeforeBuild(ipsProject.getProject(), ipsProject)) {
+                        continue;
+                    }
                 }
                 Set dependencySet = (Set)dependenciesForProjectsMap.get(ipsProject);
 
@@ -403,8 +409,10 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 Set alreadyBuild = new HashSet(dependencySet.size());
                 MultiStatus currentBuildStatus = createInitialMultiStatus();
                 try {
-                    applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus, new BeforeBuildProcessCommand(
-                            INCREMENTAL_BUILD, ipsProject), monitor);
+                    if(!ipsProject.equals(getIpsProject())){
+                        applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus, new BeforeBuildProcessCommand(
+                                INCREMENTAL_BUILD, ipsProject), monitor);
+                    }                    
                     for (Iterator it2 = dependencySet.iterator(); it2.hasNext();) {
                         IDependency dependency = (IDependency)it2.next();
                         Object buildCandidateId = dependency.getSource();
@@ -422,14 +430,17 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                         updateDependencyGraph(currentBuildStatus, ipsObject.getIpsSrcFile());
                         monitor.worked(1);
                     }
-                    applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus, new AfterBuildProcessCommand(
-                            INCREMENTAL_BUILD, ipsProject), monitor);
                 } catch (Exception e) {
                     currentBuildStatus.add(new IpsStatus(IStatus.ERROR, NLS.bind(
                             Messages.IpsBuilder_msgExceptionWhileBuildingDependentProjects, ipsProject.getName()), e));
-                }
-                if (currentBuildStatus.getSeverity() != MultiStatus.OK) {
-                    ipsProject.reinitializeIpsArtefactBuilderSet();
+                } finally {
+                    if(!ipsProject.equals(getIpsProject())){
+                        applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus, new AfterBuildProcessCommand(
+                                INCREMENTAL_BUILD, ipsProject), monitor);
+                        if (currentBuildStatus.getSeverity() != MultiStatus.OK) {
+                            ipsProject.reinitializeIpsArtefactBuilderSet();
+                        }
+                    }                    
                 }
                 buildStatus.add(currentBuildStatus);
             }
@@ -761,6 +772,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
 
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
+            if(TRACE_BUILDER_TRACE){
+                System.out.println("BeforeBuildProcessCommand, BuilderName: " + (builder != null ? builder.getName() : null) + " ,BuilderObjectId: " + System.identityHashCode(builder) + ", Project name: " + (ipsProject != null ? ipsProject.getName() : null));
+            }
             builder.beforeBuildProcess(ipsProject, buildKind);
         }
 
@@ -781,6 +795,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
 
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
+            if(TRACE_BUILDER_TRACE){
+                System.out.println("AfterBuildProcessCommand, BuilderName: " + (builder != null ? builder.getName() : null) + " ,BuilderObjectId: " + System.identityHashCode(builder) + ", Project name: " + (ipsProject != null ? ipsProject.getName() : null));
+            }
             builder.afterBuildProcess(ipsProject, buildKind);
         }
 
