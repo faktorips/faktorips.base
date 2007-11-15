@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
@@ -95,13 +96,25 @@ public class MessageCueLabelProvider extends LabelProvider {
      * 
      * @throws CoreException if an error occurs during the creation of the message list.
      */
-    protected MessageList getMessages(Object element) throws CoreException {
+    public MessageList getMessages(Object element) throws CoreException {
+        MessageList result = new MessageList();
         if (element instanceof IIpsObjectPartContainer) {
             IIpsObjectPartContainer part = (IIpsObjectPartContainer)element;
-            MessageList result = part.getIpsObject().validate(ipsProject);
-            return result.getMessagesFor(element);
-        } else {
-            return new MessageList();
+            MessageList msgList = part.getIpsObject().validate(ipsProject);
+            collectMessagesForIpsObjectPartContainer(result, msgList, part);
+        }
+        return result;
+    }
+    
+    private void collectMessagesForIpsObjectPartContainer(MessageList result,
+            MessageList msgList,
+            IIpsObjectPartContainer container) throws CoreException {
+        result.add(msgList.getMessagesFor(container));
+        IIpsElement[] childs = container.getChildren();
+        for (int i = 0; i < childs.length; i++) {
+            if (childs[i] instanceof IIpsObjectPartContainer) {
+                collectMessagesForIpsObjectPartContainer(result, msgList, (IIpsObjectPartContainer)childs[i]);
+            }
         }
     }
     
