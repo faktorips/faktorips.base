@@ -12,7 +12,7 @@
 
    <element name="extension">
       <complexType>
-         <sequence>
+         <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="externalValueConverter" minOccurs="1" maxOccurs="unbounded"/>
             <element ref="externalTableFormat" minOccurs="1" maxOccurs="unbounded"/>
          </sequence>
@@ -132,7 +132,7 @@ genutzt werden, die Bestandteil der Auslieferung ist und auch unter
 eingesehen werden kann.
 
 Mitwirkende:
-  Faktor Zehn GmbH - initial API and implementation 
+  Faktor Zehn GmbH - initial API and implementation
       </documentation>
    </annotation>
 
