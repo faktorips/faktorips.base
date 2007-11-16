@@ -61,22 +61,21 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
         for (Iterator it=currType.getIteratorForAttributes(); it.hasNext(); ) {
             IAttribute attr = (IAttribute)it.next();
             if (!attr.isOverwrite()) {
-                add(attr.getName(), IAttribute.PROPERTY_NAME, attr);
+                add(attr.getName(), new ObjectProperty(attr, IAttribute.PROPERTY_NAME));
             }
         }
         for (Iterator it=currType.getIteratorForAssociations(); it.hasNext(); ) {
             IAssociation ass = (IAssociation)it.next();
             if (ass.is1ToMany()) {
-                add(ass.getTargetRolePlural(), IAssociation.PROPERTY_TARGET_ROLE_PLURAL, ass);
+                add(ass.getTargetRolePlural(), new ObjectProperty(ass, IAssociation.PROPERTY_TARGET_ROLE_PLURAL));
             } else {
-                add(ass.getTargetRoleSingular(), IAssociation.PROPERTY_TARGET_ROLE_SINGULAR, ass);
+                add(ass.getTargetRoleSingular(), new ObjectProperty(ass, IAssociation.PROPERTY_TARGET_ROLE_SINGULAR));
             }
         }
         return true;
     }
     
-    protected void add(String propertyName, String metaModelPropertyName, Object object) {
-        ObjectProperty wrapper = new ObjectProperty(object, metaModelPropertyName);
+    protected void add(String propertyName, ObjectProperty wrapper) {
         Object objInMap = properties.get(propertyName);
         if (objInMap==null) {
             properties.put(propertyName, wrapper);

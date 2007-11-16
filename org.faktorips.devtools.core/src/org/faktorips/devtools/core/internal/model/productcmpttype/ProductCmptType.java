@@ -49,8 +49,10 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.faktorips.values.EnumValue;
 import org.w3c.dom.Element;
 
@@ -401,6 +403,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 list.add(new Message(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE, text, Message.ERROR, this, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE));
             }
         }
+        DuplicateFormulaNameValidator validator = new DuplicateFormulaNameValidator(ipsProject);
+        validator.start(this);
+        validator.addMessagesForDuplicates(list);
     }
 
     /**
@@ -423,12 +428,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
             return;
         }
         if (!policyCmptTypeObj.isConfigurableByProductCmptType()) {
-            String text = NLS.bind("{0} is not marked as configurable.", policyCmptType);
+            String text = NLS.bind(Messages.ProductCmptType_notMarkedAsConfigurable, policyCmptType);
             list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE, text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE));
             return;
         }
         if (!this.isSubtypeOrSameType(policyCmptTypeObj.findProductCmptType(ipsProject), ipsProject)) {
-            String text = NLS.bind("{0} does not specify this type or one its supertypes as configuration type.", policyCmptType);
+            String text = NLS.bind(Messages.ProductCmptType_policyCmptTypeDoesNotSpecifyThisType, policyCmptType);
             list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE, text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE));
             return;
         }
@@ -610,11 +615,64 @@ public class ProductCmptType extends Type implements IProductCmptType {
             ProductCmptType productCmptType = (ProductCmptType)currentType;
             for (Iterator it=productCmptType.getIteratorForTableStructureUsages(); it.hasNext(); ) {
                 ITableStructureUsage tsu = (ITableStructureUsage)it.next();
-                add(tsu.getRoleName(), ITableStructureUsage.PROPERTY_ROLENAME, tsu);
+                add(tsu.getRoleName(), new ObjectProperty(tsu, ITableStructureUsage.PROPERTY_ROLENAME));
             }
             // note: formula names arent compared as their name is often similiar to the policy component type attribute 
             // they calculate the value for
             return true;
         }        
+    }
+    
+    private static class DuplicateFormulaNameValidator extends TypeHierarchyVisitor {
+
+        private Map formulaNames = new HashMap();
+        private List duplicateFormulaNames = new ArrayList();
+        
+        public DuplicateFormulaNameValidator(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+        
+        public void addMessagesForDuplicates(MessageList messages) {
+            for (Iterator it=duplicateFormulaNames.iterator(); it.hasNext(); ) {
+                String formulaName = (String)it.next();
+                List ops = (List)formulaNames.get(formulaName);
+                ObjectProperty[] invalidObjProperties = (ObjectProperty[])ops.toArray(new ObjectProperty[ops.size()]);
+                String text = NLS.bind(Messages.ProductCmptType_DuplicateFormulaName, formulaName);
+                messages.add(new Message(MSGCODE_DUPLICATE_FORMULA_NAME, text, Message.ERROR, invalidObjProperties));
+            }
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IType currentType) throws CoreException {
+            Type currType = (Type)currentType;
+            for (Iterator it=currType.getIteratorForMethods(); it.hasNext(); ) {
+                IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
+                if (method.isFormulaSignatureDefinition() && StringUtils.isNotEmpty(method.getFormulaName())) {
+                    add(method);
+                }
+            }
+            return true;
+        }
+        
+        protected void add(IProductCmptTypeMethod formulaSignature) {
+            ObjectProperty wrapper = new ObjectProperty(formulaSignature, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME);
+            String formulaName = formulaSignature.getFormulaName();
+            Object objInMap = formulaNames.get(formulaName);
+            if (objInMap==null) {
+                formulaNames.put(formulaName, wrapper);
+                return;
+            }
+            if (objInMap instanceof List) {
+                ((List)objInMap).add(wrapper);
+                return;
+            }
+            List objects = new ArrayList(2);
+            objects.add(objInMap);
+            objects.add(wrapper);
+            formulaNames.put(formulaName, objects);
+            duplicateFormulaNames.add(formulaName);
+        }
     }
 }

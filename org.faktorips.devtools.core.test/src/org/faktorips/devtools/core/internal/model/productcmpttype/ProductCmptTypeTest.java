@@ -73,6 +73,28 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         super.tearDown();
         ipsProject.getIpsModel().removeChangeListener(this);
     }
+
+    public void testValidateDuplicateFormulaName() throws CoreException {
+        productCmptType.newFormulaSignature("formula");
+        
+        // formula in same type
+        IProductCmptTypeMethod formula1 = productCmptType.newFormulaSignature("formula");
+        MessageList result = productCmptType.validate(ipsProject);
+        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULA_NAME));
+
+        formula1.setFormulaName("formula1");
+        result = productCmptType.validate(ipsProject);
+        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULA_NAME));
+        
+        // formula in supertype
+        IProductCmptTypeMethod formula2 = superProductCmptType.newFormulaSignature("formula");
+        result = productCmptType.validate(ipsProject);
+        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULA_NAME));
+
+        formula2.setFormulaName("formula2");
+        result = productCmptType.validate(ipsProject);
+        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULA_NAME));
+    }
     
     public void testValidate_PolicyCmptTypeDoesNotSpecifyThisOneAsConfigurationType() throws CoreException {
         MessageList result = productCmptType.validate(ipsProject);

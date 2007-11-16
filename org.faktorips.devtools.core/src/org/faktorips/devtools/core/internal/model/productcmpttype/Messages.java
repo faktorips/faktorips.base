@@ -34,9 +34,15 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
+    public static String ProductCmptType_DuplicateFormulaName;
+
     public static String ProductCmptType_InconsistentTypeHierarchies;
 
+    public static String ProductCmptType_notMarkedAsConfigurable;
+
     public static String ProductCmptType_PolicyCmptTypeDoesNotExist;
+
+    public static String ProductCmptType_policyCmptTypeDoesNotSpecifyThisType;
 
     public static String ProductCmptType_TypeCantConfigureAPolicyCmptTypeIfSupertypeDoesNot;
 

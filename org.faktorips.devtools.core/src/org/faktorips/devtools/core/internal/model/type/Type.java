@@ -84,15 +84,15 @@ public abstract class Type extends BaseIpsObject implements IType {
      */
     protected abstract IpsObjectPartCollection createCollectionForAttributes();
 
-    protected Iterator getIteratorForMethods(){
+    public Iterator getIteratorForMethods(){
         return methods.iterator();
     }
     
-    protected Iterator getIteratorForAssociations(){
+    public Iterator getIteratorForAssociations(){
         return associations.iterator();
     }
 
-    protected Iterator getIteratorForAttributes(){
+    public Iterator getIteratorForAttributes(){
         return attributes.iterator();
     }
 
