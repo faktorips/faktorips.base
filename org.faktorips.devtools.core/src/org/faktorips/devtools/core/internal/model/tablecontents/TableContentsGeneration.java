@@ -237,13 +237,13 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         if(!list.isEmpty()){
             return;
         }
-        ITableStructure structure = getTableContents().findTableStructure();
+        ITableStructure structure = getTableContents().findTableStructure(ipsProject);
         if (structure == null){
             return;
         }
         if(structure.isModelEnumType()){
-            IColumn column = getTableContents().findTableStructure().getColumn(0);
-            ValueDatatype idDatatype = column.findValueDatatype();
+            IColumn column = getTableContents().findTableStructure(ipsProject).getColumn(0);
+            ValueDatatype idDatatype = column.findValueDatatype(ipsProject);
             IRow[] rows = getRows();
             for (int i = 0; i < rows.length; i++) {
                 for (int j = i + 1; j < rows.length; j++) {
@@ -285,11 +285,11 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
      * {@inheritDoc}
      */
     protected void validateChildren(MessageList result, IIpsProject ipsProject) throws CoreException {
-        ITableStructure tableStructure = getTableContents().findTableStructure();
+        ITableStructure tableStructure = getTableContents().findTableStructure(ipsProject);
         if  (tableStructure == null){
             return;
         }
-        ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypes(tableStructure);
+        ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypes(tableStructure, ipsProject);
 
         IIpsElement[] children = getChildren();
         for (int i=0; i<children.length; i++) {

@@ -139,7 +139,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
                     // and then update the ui.
                     ((IForeignKey)key).setReferencedTableStructure(tableStructureRefField.getText());
                     try {
-                        ITableStructure structure = ((IForeignKey)key).findReferencedTableStructure();
+                        ITableStructure structure = ((IForeignKey)key).findReferencedTableStructure(key.getIpsProject());
                         completionProcessor.setTableStructure(structure);
                         if (structure!=null) {
                             IUniqueKey[] keys = structure.getUniqueKeys();

@@ -176,11 +176,11 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 	 */
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        ITableStructure tableStructure = ((TableContents)getTableContents()).findTableStructure();
+        ITableStructure tableStructure = ((TableContents)getTableContents()).findTableStructure(ipsProject);
         if(tableStructure == null){
             return;
         }
-        ValueDatatype[] datatypes= ((TableContents)getTableContents()).findColumnDatatypes(tableStructure);
+        ValueDatatype[] datatypes= ((TableContents)getTableContents()).findColumnDatatypes(tableStructure, ipsProject);
         validateThis(list, tableStructure, datatypes);
     }
     

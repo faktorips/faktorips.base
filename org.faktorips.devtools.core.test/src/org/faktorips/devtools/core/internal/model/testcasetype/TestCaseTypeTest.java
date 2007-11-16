@@ -223,7 +223,7 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
     }
     
     public void testGetTestRuleCandidates() throws CoreException{
-        IValidationRule[] testRuleParameters = type.getTestRuleCandidates();
+        IValidationRule[] testRuleParameters = type.getTestRuleCandidates(ipsProject);
         assertEquals(0, testRuleParameters.length);
         
         // create policy cmpts with validation rules 
@@ -249,7 +249,7 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
         childParam1.setPolicyCmptType(policyCmptType2.getQualifiedName());
         childParam1.setRelation("Relation1");
         childParam1.setName("ChildPolicyCmpt2");
-        testRuleParameters = type.getTestRuleCandidates();
+        testRuleParameters = type.getTestRuleCandidates(ipsProject);
         assertEquals(3, testRuleParameters.length);
         List testRuleParametersList = Arrays.asList(testRuleParameters);
         assertTrue(testRuleParametersList.contains(rule1));

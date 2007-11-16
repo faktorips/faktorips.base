@@ -372,12 +372,14 @@ public class TestCase extends IpsObject implements ITestCase {
         
         // add missing test attributes
         for (int i = 0; i < testAttributesWithMissingTestAttributeValue.length; i++) {
-            ITestPolicyCmpt[] testPolicyCmpts = delta.getTestPolicyCmptForMissingTestAttribute(testAttributesWithMissingTestAttributeValue[i]);
+            ITestPolicyCmpt[] testPolicyCmpts = delta
+                    .getTestPolicyCmptForMissingTestAttribute(testAttributesWithMissingTestAttributeValue[i]);
             for (int j = 0; j < testPolicyCmpts.length; j++) {
                 ITestAttributeValue testAttributeValue = testPolicyCmpts[j].newTestAttributeValue();
                 testAttributeValue.setTestAttribute(testAttributesWithMissingTestAttributeValue[i].getName());
                 // set default for the new added test attribute value only
-                IProductCmptGeneration generation = ((TestPolicyCmpt)testPolicyCmpts[j]).findProductCmpsCurrentGeneration();
+                IProductCmptGeneration generation = ((TestPolicyCmpt)testPolicyCmpts[j])
+                        .findProductCmpsCurrentGeneration(testPolicyCmpts[j].getIpsProject());
                 ((TestAttributeValue)testAttributeValue).setDefaultTestAttributeValueInternal(generation);
             }
         }
@@ -848,7 +850,7 @@ public class TestCase extends IpsObject implements ITestCase {
         Set result = new HashSet();
         ITestCaseType testCaseTypeFound = findTestCaseType(ipsProject);
         if (testCaseTypeFound != null){
-            result.addAll(Arrays.asList(testCaseTypeFound.getTestRuleCandidates()));
+            result.addAll(Arrays.asList(testCaseTypeFound.getTestRuleCandidates(ipsProject)));
             result.addAll(getTestCaseTestRuleCandidates(ipsProject));
         }
         return (IValidationRule[]) result.toArray(new IValidationRule[result.size()]);
@@ -907,12 +909,12 @@ public class TestCase extends IpsObject implements ITestCase {
         if (typeParam == null){
             return;
         }
-        IPolicyCmptType pct = typeParam.findPolicyCmptType();
+        IPolicyCmptType pct = typeParam.findPolicyCmptType(ipsProject);
         if (pct == null){
             return;
         }
         validationRules.addAll(Arrays.asList(pct.getRules()));
-        IProductCmpt pc = testPolicyCmpt.findProductCmpt();
+        IProductCmpt pc = testPolicyCmpt.findProductCmpt(ipsProject);
         if (pc == null){
             return;
         }
@@ -1057,7 +1059,7 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * {@inheritDoc}
      */
-    public boolean containsDifferenceToModel() throws CoreException {
+    public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
         ITestCaseTestCaseTypeDelta delta = computeDeltaToTestCaseType();
         if (delta != null && !delta.isEmpty()) {
             return true;
@@ -1068,7 +1070,7 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * {@inheritDoc}
      */
-    public void fixAllDifferencesToModel() throws CoreException {
+    public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
         fixDifferences(computeDeltaToTestCaseType());
     }
 }

@@ -70,7 +70,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     protected String generate() throws CoreException{
-        ITableStructure tableStructure = getTableContents().findTableStructure();
+        ITableStructure tableStructure = getTableContents().findTableStructure(getIpsProject());
         if(tableStructure != null && !tableStructure.isModelEnumType()){
             return null;
         }
@@ -81,7 +81,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeForJavatype() throws CoreException {
-        ITableStructure tableStructure = getTableContents().findTableStructure();
+        ITableStructure tableStructure = getTableContents().findTableStructure(getIpsProject());
         if(tableStructure == null){
             return;
         }
@@ -116,7 +116,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
     }
     
     private EnumValueAttributesInfo createEnumValueAttributesInfo(ITableContents tableContents) throws CoreException{
-        ITableStructure tableStructure = tableContents.findTableStructure();
+        ITableStructure tableStructure = tableContents.findTableStructure(getIpsProject());
         if(tableStructure == null){
             return EnumValueAttributesInfo.INVALID_INFO;
         }
@@ -169,7 +169,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
             JavaCodeFragmentBuilder methodBuilder, ITableStructure structure) throws CoreException{
         IColumn[] columns = structure.getColumns();
         for (int i = 0; i < columns.length; i++) {
-            Datatype datatype = columns[i].findValueDatatype();
+            Datatype datatype = columns[i].findValueDatatype(getIpsProject());
             if (datatype == null){
                 continue;
             }
@@ -242,7 +242,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         }
         List columnsDatatypes = new ArrayList();
         for (int i = 0; i < columns.length; i++) {
-            Datatype datatype = columns[i].findValueDatatype();
+            Datatype datatype = columns[i].findValueDatatype(getIpsProject());
             columnsDatatypes.add(datatype);
         }
         Datatype[] datatypes = (Datatype[])columnsDatatypes.toArray(new Datatype[columnsDatatypes.size()]);
@@ -309,7 +309,7 @@ public class EnumClassesBuilder extends DefaultJavaSourceFileBuilder {
         int numberOfColumns = Math.min(getTableContents().getNumOfColumns(), columns.length);
         List datatypHelpers = new ArrayList();
         for (int i = 0; i < numberOfColumns; i++) {
-            Datatype datatype = columns[i].findValueDatatype();
+            Datatype datatype = columns[i].findValueDatatype(getIpsProject());
             IIpsProject project = getIpsObject().getIpsProject();
             datatypHelpers.add(project.findDatatypeHelper(datatype.getName()));
         }

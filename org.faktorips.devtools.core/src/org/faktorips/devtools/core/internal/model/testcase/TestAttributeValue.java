@@ -212,7 +212,7 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
      * {@inheritDoc}
      */
     public void updateDefaultTestAttributeValue() throws CoreException {
-        IProductCmptGeneration generation = ((TestPolicyCmpt)getParent()).findProductCmpsCurrentGeneration();
+        IProductCmptGeneration generation = ((TestPolicyCmpt)getParent()).findProductCmpsCurrentGeneration(getParent().getIpsProject());
         setDefaultTestAttributeValueInternal(generation);
     }
 

@@ -134,7 +134,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         IProductCmptType productCmptType = null;
         try {
             productCmptType = getProductCmptType();
-            IAttribute[] attributes = productCmptType.findAllAttributes();
+            IAttribute[] attributes = productCmptType.findAllAttributes(ipsproject);
             for (int i = 0; i < attributes.length; i++) {
                 if(attributes[i].getName().equals(identifier)){
                     Datatype attrDatatype = attributes[i].findDatatype(ipsproject);

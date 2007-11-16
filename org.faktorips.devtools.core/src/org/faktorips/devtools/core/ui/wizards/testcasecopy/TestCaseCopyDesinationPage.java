@@ -334,7 +334,7 @@ public class TestCaseCopyDesinationPage extends WizardPage {
         ITestPolicyCmpt[] testPolicyCmpts = getTestCaseCopyWizard().getSourceTestCase().getTestPolicyCmpts();
         List result = new ArrayList(testPolicyCmpts.length);
         for (int i = 0; i < testPolicyCmpts.length; i++) {
-            IProductCmpt productCmpt = testPolicyCmpts[i].findProductCmpt();
+            IProductCmpt productCmpt = testPolicyCmpts[i].findProductCmpt(testPolicyCmpts[i].getIpsProject());
             if (productCmpt != null && StringUtils.isNotEmpty(testPolicyCmpts[i].getProductCmpt())) {
                 result.add(testPolicyCmpts[i]);
             }
@@ -345,7 +345,7 @@ public class TestCaseCopyDesinationPage extends WizardPage {
     private void setInfoMessageVersionIdChange(ITestPolicyCmpt testPolicyCmpt) {
         try {
             IProductCmptNamingStrategy productCmptNamingStrategy = testPolicyCmpt.getIpsProject().getProductCmptNamingStrategy();
-            IProductCmpt productCmpt = testPolicyCmpt.findProductCmpt();
+            IProductCmpt productCmpt = testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject());
             IIpsSrcFile productCmptToReplaceSrcFile = getProductCmptToReplace(testPolicyCmpt);
             IProductCmpt productCmptToReplace = (IProductCmpt)productCmptToReplaceSrcFile.getIpsObject();
             
@@ -372,7 +372,7 @@ public class TestCaseCopyDesinationPage extends WizardPage {
                 cellEditors.add(null);
                 continue;
             }
-            IProductCmpt productCmpt = testPolicyCmpt.findProductCmpt();
+            IProductCmpt productCmpt = testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject());
             if (productCmpt != null){
                 // add only candidates with same kind id
                 String kindId = productCmptNamingStrategy.getKindId(productCmpt.getName());

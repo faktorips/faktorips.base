@@ -78,7 +78,7 @@ public class TableContentsEnumDatatypeAdapterTest extends AbstractIpsPluginTest 
         row.setValue(0, "4");
         row.setValue(1, "monthly");
         
-        adapter = new TableContentsEnumDatatypeAdapter(contents);
+        adapter = new TableContentsEnumDatatypeAdapter(contents, project);
     }
 
     public final void testGetAllValueIds() {

@@ -86,10 +86,10 @@ public class ForeignKey extends Key implements IForeignKey {
     
     /**
      * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablestructure.IForeignKey#findReferencedTableStructure()
+     * @see org.faktorips.devtools.core.model.tablestructure.IForeignKey#findReferencedTableStructure(IIpsProject)
      */
-    public ITableStructure findReferencedTableStructure() throws CoreException {
-        return (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, refTableStructure);
+    public ITableStructure findReferencedTableStructure(IIpsProject ipsProject) throws CoreException {
+        return (ITableStructure)ipsProject.findIpsObject(IpsObjectType.TABLE_STRUCTURE, refTableStructure);
     }
     
     /** 

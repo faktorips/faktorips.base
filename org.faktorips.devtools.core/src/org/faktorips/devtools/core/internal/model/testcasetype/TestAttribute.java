@@ -105,7 +105,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         if (StringUtils.isEmpty(attribute)) {
             return null;
         }
-        IPolicyCmptType pcType = ((TestPolicyCmptTypeParameter)getParent()).findPolicyCmptType();
+        IPolicyCmptType pcType = ((TestPolicyCmptTypeParameter)getParent()).findPolicyCmptType(ipsProject);
         if (pcType == null){
             return null;
         }
@@ -203,11 +203,11 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         return ! (policyCmptType.findPolicyCmptTypeAttribute(getAttribute(), ipsProject) == null);
     }
 
-    private IPolicyCmptTypeAttribute findAttributeInSubtypehierarchy() throws CoreException {
+    private IPolicyCmptTypeAttribute findAttributeInSubtypehierarchy(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(attribute)) {
             return null;
         }
-        IPolicyCmptType pcType = ((TestPolicyCmptTypeParameter)getParent()).findPolicyCmptType();
+        IPolicyCmptType pcType = ((TestPolicyCmptTypeParameter)getParent()).findPolicyCmptType(ipsProject);
 
         if (pcType != null) {
             IPolicyCmptTypeAttribute[] attributes;
@@ -251,7 +251,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
             // search in the subtype hierarchy, the test case type attributes supports attributes of subclasses
             // therefore this special validation must be performed for such types of attributes only
             // Note: that this find method has a bad performance, therefore this should not the normal case
-            modelAttribute = findAttributeInSubtypehierarchy();
+            modelAttribute = findAttributeInSubtypehierarchy(ipsProject);
         }
         if (modelAttribute == null){
             String text = NLS.bind(Messages.TestAttribute_Error_AttributeNotFound, getAttribute());

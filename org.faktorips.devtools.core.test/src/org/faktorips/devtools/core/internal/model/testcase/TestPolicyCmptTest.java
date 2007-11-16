@@ -430,7 +430,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         testPolicyCmptObjectInput.addTestPcTypeRelation(testPolicyCmptTypeParamChilds[0], "ProductCmpt3", null);
         
         assertFalse(testCase.validate(project).containsErrorMsg());
-        assertFalse(testCase.containsDifferenceToModel());
+        assertFalse(testCase.containsDifferenceToModel(project));
     }
     
     public void testUpdateDefaultTestAttributeValues() throws CoreException{
@@ -536,10 +536,10 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         // in this case the find method should return null
         IProductCmptGeneration generation = null;
         testPolicyCmptObjectInput.setProductCmpt(null);
-        generation = ((TestPolicyCmpt)testPolicyCmptObjectInput).findProductCmpsCurrentGeneration();
+        generation = ((TestPolicyCmpt)testPolicyCmptObjectInput).findProductCmpsCurrentGeneration(project);
         assertNull(generation);
         testPolicyCmptObjectInput.setProductCmpt("");
-        generation = ((TestPolicyCmpt)testPolicyCmptObjectInput).findProductCmpsCurrentGeneration();
+        generation = ((TestPolicyCmpt)testPolicyCmptObjectInput).findProductCmpsCurrentGeneration(project);
         assertNull(generation);
     }
     

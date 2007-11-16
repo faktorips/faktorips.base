@@ -153,8 +153,8 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     /**
      * {@inheritDoc}
      */
-    public ITableContents findTableContents() throws CoreException {
-        return (ITableContents)getIpsProject().findIpsObject(IpsObjectType.TABLE_CONTENTS, tableContentName);
+    public ITableContents findTableContents(IIpsProject ipsProject) throws CoreException {
+        return (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, tableContentName);
     }
 
     /**
@@ -177,7 +177,7 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         
         ITableContents content = null;
         if (tableContentName != null) {
-            content = findTableContents();
+            content = findTableContents(ipsProject);
         }
         if (content==null) {
             if (StringUtils.isNotEmpty(tableContentName) || (tsu.isMandatoryTableContent())) {

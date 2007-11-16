@@ -38,7 +38,6 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Peter Erzberger
  */
-//TODO write test case
 public class TableContentsEnumDatatypeAdapter extends AbstractDatatype implements EnumDatatype {
 
     private ITableContents tableContents;
@@ -49,13 +48,14 @@ public class TableContentsEnumDatatypeAdapter extends AbstractDatatype implement
      * @param tableContents
      * @throws CoreException 
      */
-    public TableContentsEnumDatatypeAdapter(ITableContents tableContents) throws CoreException {
+    public TableContentsEnumDatatypeAdapter(ITableContents tableContents, IIpsProject ipsProject) throws CoreException {
         super();
         ArgumentCheck.notNull(tableContents, this);
+        ArgumentCheck.notNull(ipsProject, this);
         this.tableContents = tableContents;
         generation = (ITableContentsGeneration)tableContents.getFirstGeneration();
         ArgumentCheck.notNull(generation, this);
-        ipsProject = tableContents.getIpsProject();
+        this.ipsProject = ipsProject;
     }
 
     public ITableContents getTableContents(){
@@ -100,7 +100,7 @@ public class TableContentsEnumDatatypeAdapter extends AbstractDatatype implement
         //TODO possible bottle neck if called often
         ITableStructure structure;
         try {
-            structure = tableContents.findTableStructure();
+            structure = tableContents.findTableStructure(ipsProject);
             if(structure == null){
                 return ObjectUtils.equals(valueA, valueB);
             }

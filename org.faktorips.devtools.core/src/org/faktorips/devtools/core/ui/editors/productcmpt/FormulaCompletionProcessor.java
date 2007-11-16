@@ -195,7 +195,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         if(!(datatype instanceof IType)){
             return;
         }
-        IAttribute[] attributes = ((IType)datatype).findAllAttributes();
+        IAttribute[] attributes = ((IType)datatype).findAllAttributes(ipsProject);
         List attributeNames = new ArrayList();
         for (int i=0; i<attributes.length; i++) {
             if (attributes[i].getName().startsWith(attributePrefix)) {

@@ -46,7 +46,7 @@ public class TableModelDescriptionPage extends DefaultModelDescriptionPage {
     	columnsList = new ArrayList();
     	this.tableName = tableContents.getName();
 
-    	ITableStructure tableStructure = tableContents.findTableStructure();
+    	ITableStructure tableStructure = tableContents.findTableStructure(tableContents.getIpsProject());
 
     	IColumn[] columns = tableStructure.getColumns();
 

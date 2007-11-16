@@ -237,7 +237,7 @@ public class ContentPage extends IpsObjectEditorPage {
                 // use the number of columns in the contents as only those can be edited.
                 CellEditor[] editors= new CellEditor[getTableContents().getNumOfColumns()];
                 for (int i = 0; i < getTableContents().getNumOfColumns(); i++) {
-                    ValueDatatype dataType = tableStructure.getColumn(i).findValueDatatype();
+                    ValueDatatype dataType = tableStructure.getColumn(i).findValueDatatype(tableStructure.getIpsProject());
                     ValueDatatypeControlFactory factory= IpsPlugin.getDefault().getValueDatatypeControlFactory(dataType);
                     TableCellEditor cellEditor= factory.createCellEditor(toolkit, dataType, null, tableViewer, i);
                     cellEditor.setRowCreating(true);
@@ -482,7 +482,7 @@ public class ContentPage extends IpsObjectEditorPage {
     }
 
     private ITableStructure getTableStructure() throws CoreException {
-        return getTableContents().findTableStructure();
+        return getTableContents().findTableStructure(getTableContents().getIpsProject());
     }
     
     private ITableContentsGeneration getActiveGeneration(){

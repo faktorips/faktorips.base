@@ -249,16 +249,18 @@ public class TestCaseStructurePage extends WizardPage {
     }
     
     private void hookTreeListeners() {
-        treeViewer.addSelectionChangedListener(new ISelectionChangedListener(){
+        treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                 try {
                     ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmptFromSelection(event.getSelection());
-                    if (testPolicyCmpt == null){
+                    if (testPolicyCmpt == null) {
                         clearCandidatesInTable();
                         return;
                     }
                     ITestPolicyCmpt parentPolicyCmpt = testPolicyCmpt.getParentPolicyCmpt();
-                    changeCandidatesInTable(testPolicyCmpt.findProductCmpt(), testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject), parentPolicyCmpt==null?null:parentPolicyCmpt.findProductCmpt());
+                    changeCandidatesInTable(testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject()),
+                            testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject), parentPolicyCmpt == null ? null
+                                    : parentPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject()));
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }

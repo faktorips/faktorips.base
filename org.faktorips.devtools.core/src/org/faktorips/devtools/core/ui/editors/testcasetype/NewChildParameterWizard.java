@@ -105,7 +105,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
      */
     public IPolicyCmptType getParentPolicyCmptType() {
         try {
-            return parentTestPolicyCmptTypeParameter.findPolicyCmptType();
+            return parentTestPolicyCmptTypeParameter.findPolicyCmptType(testCaseType.getIpsProject());
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return null;

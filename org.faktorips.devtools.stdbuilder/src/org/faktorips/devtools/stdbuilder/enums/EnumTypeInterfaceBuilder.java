@@ -85,7 +85,7 @@ public class EnumTypeInterfaceBuilder extends DefaultJavaSourceFileBuilder {
             return;
         }
         for (int i = 0; i < columns.length; i++) {
-            Datatype datatype = columns[i].findValueDatatype();
+            Datatype datatype = columns[i].findValueDatatype(getIpsProject());
             if(datatype == null){
                 continue;
             }

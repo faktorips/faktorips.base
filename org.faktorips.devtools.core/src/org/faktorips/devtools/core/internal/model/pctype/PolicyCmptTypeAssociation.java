@@ -219,26 +219,6 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         }
         return ipsProject.findProductCmptType(findQualifierCandidate(ipsProject));
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IPolicyCmptTypeAssociation findSubsettedDerivedUnion() throws CoreException {
-    	if (StringUtils.isEmpty(subsettedDerivedUnion)) {
-    		return null;
-    	}
-        IPolicyCmptType type = (IPolicyCmptType)getIpsObject();
-        IPolicyCmptType[] supertypes = type.getSupertypeHierarchy().getAllSupertypesInclSelf(type);
-        for (int i=0; i<supertypes.length; i++) {
-            IPolicyCmptTypeAssociation[] relations = supertypes[i].getPolicyCmptTypeAssociations();
-            for (int j=0; j<relations.length; j++) {
-                if (subsettedDerivedUnion.equals(relations[j].getTargetRoleSingular())) {
-                    return relations[j];
-                }
-            }
-        }
-        return null;
-    }
     
     /**
      * {@inheritDoc}

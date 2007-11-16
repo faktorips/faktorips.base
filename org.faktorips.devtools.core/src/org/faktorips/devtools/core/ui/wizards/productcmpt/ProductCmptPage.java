@@ -380,8 +380,8 @@ public class ProductCmptPage extends IpsObjectPage {
     /** 
      * {@inheritDoc}
      */
-    protected void finishIpsObjects(IIpsObject pdObject, List modifiedIpsObjects) throws CoreException {
-        IProductCmpt productCmpt = (IProductCmpt)pdObject;
+    protected void finishIpsObjects(IIpsObject ipsObject, List modifiedIpsObjects) throws CoreException {
+        IProductCmpt productCmpt = (IProductCmpt)ipsObject;
         productCmpt.setProductCmptType(getProductCmptType());
         GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
         if (date==null) {
@@ -390,6 +390,6 @@ public class ProductCmptPage extends IpsObjectPage {
         productCmpt.setRuntimeId(getRuntimeId());
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
         generation.setValidFrom(date);
-        productCmpt.fixAllDifferencesToModel();
+        productCmpt.fixAllDifferencesToModel(productCmpt.getIpsProject());
     }
 }

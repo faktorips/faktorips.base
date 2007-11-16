@@ -317,7 +317,7 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
                             
                             for (int j = 0; j < relations.length; j++) {
                                 // the name is equal compare the product cmpt
-                                IProductCmpt pc = relations[j].findTarget().findProductCmpt();
+                                IProductCmpt pc = relations[j].findTarget().findProductCmpt(ipsProject);
                                 if (pc != null && StringUtils.isNotEmpty(productCmpt)){
                                     if (productCmpt.equals(pc.getRuntimeId())){
                                         currRelation = relations[j];

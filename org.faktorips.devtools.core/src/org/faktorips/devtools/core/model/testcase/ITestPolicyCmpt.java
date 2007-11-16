@@ -121,7 +121,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * 
      * @throws CoreException if an error occurs while searching for the product component.
      */	
-	public IProductCmpt findProductCmpt() throws CoreException;
+	public IProductCmpt findProductCmpt(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns <code>true</code> if the given test policy cmpt is product relevant,

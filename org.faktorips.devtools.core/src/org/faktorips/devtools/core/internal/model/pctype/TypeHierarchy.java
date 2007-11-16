@@ -26,7 +26,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -100,10 +100,10 @@ public class TypeHierarchy implements ITypeHierarchy {
                 continue;
             }
             if (projects[i].equals(project) || projects[i].dependsOn(project)) {
-                IIpsObject[] pcTypes = projects[i].findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE);
-                for (int j=0; j<pcTypes.length; j++) {
-                    IPolicyCmptType candidate = (IPolicyCmptType)pcTypes[j];
-                    if (!subtypes.contains(candidate) && pcType.equals(candidate.findSupertype(pcType.getIpsProject())))  {
+                IIpsSrcFile[] pcTypeSrcFiles = projects[i].findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
+                for (int j=0; j<pcTypeSrcFiles.length; j++) {
+                    IPolicyCmptType candidate = (IPolicyCmptType)pcTypeSrcFiles[j].getIpsObject();
+                    if (!subtypes.contains(candidate) && pcType.equals(candidate.findSupertype(projects[i])))  {
                         if (hierarchy.contains(candidate)) {
                             hierarchy.containsCycle = true;
                         } else {

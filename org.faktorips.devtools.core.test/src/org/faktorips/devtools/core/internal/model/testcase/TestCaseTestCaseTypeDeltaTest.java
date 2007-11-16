@@ -147,7 +147,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         cmpt.newTestAttributeValue().setTestAttribute("Attribute1");
         cmpt.newTestAttributeValue().setTestAttribute("Attribute2");
 
-        IPolicyCmptType type = param.findPolicyCmptType();
+        IPolicyCmptType type = param.findPolicyCmptType(ipsProject);
         type.newPolicyCmptTypeAttribute().setName("Attribute1");
         type.newPolicyCmptTypeAttribute().setName("Attribute2");
 
@@ -190,7 +190,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         testAttribute2.setName("TestAttribute2");
         testAttribute2.setAttribute("TestAttribute2");
         
-        IPolicyCmptType policyCmptType = param.findPolicyCmptType();
+        IPolicyCmptType policyCmptType = param.findPolicyCmptType(ipsProject);
         policyCmptType.newPolicyCmptTypeAttribute().setName("TestAttribute1");
         policyCmptType.newPolicyCmptTypeAttribute().setName("TestAttribute2");
         
@@ -216,7 +216,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         testAttr.setName("Attribute2");
         testAttr.setAttribute("Attribute2");
         
-        IPolicyCmptType policyCmptType = param.findPolicyCmptType();
+        IPolicyCmptType policyCmptType = param.findPolicyCmptType(ipsProject);
         policyCmptType.newPolicyCmptTypeAttribute().setName("Attribute1");
         policyCmptType.newPolicyCmptTypeAttribute().setName("Attribute2");
         
@@ -245,7 +245,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         testAttribute.setName("InputAttribute1");
         testAttribute.setAttribute("InputAttribute1");
         
-        IPolicyCmptType policyCmptType = param2.findPolicyCmptType();
+        IPolicyCmptType policyCmptType = param2.findPolicyCmptType(ipsProject);
         policyCmptType.newPolicyCmptTypeAttribute().setName("InputAttribute1");
         
         assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 2, 0);
@@ -259,7 +259,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         childParam.setName("TestParamChild1");
         childParam.setPolicyCmptType(childPolicyCmptType.getQualifiedName());
         
-        policyCmptType = param1.findPolicyCmptType();
+        policyCmptType = param1.findPolicyCmptType(ipsProject);
         IPolicyCmptTypeAssociation relation = policyCmptType.newPolicyCmptTypeAssociation();
         relation.setTargetRoleSingular("Relation1");
         relation.setTarget(childPolicyCmptType.getQualifiedName());
@@ -274,7 +274,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         testAttribute4.setName("ExpResultAttribute1");
         testAttribute4.setAttribute("ExpResultAttribute1");
         
-        IPolicyCmptType policyCmptType2 = childParam.findPolicyCmptType();
+        IPolicyCmptType policyCmptType2 = childParam.findPolicyCmptType(ipsProject);
         policyCmptType2.newPolicyCmptTypeAttribute().setName("InputAttribute1");
         policyCmptType2.newPolicyCmptTypeAttribute().setName("InputAttribute2");
         policyCmptType2.newPolicyCmptTypeAttribute().setName("ExpResultAttribute1");
@@ -452,7 +452,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     public void testEqualSortOrderChilds() throws CoreException{
         ITestPolicyCmptTypeParameter param1 = addNewPolicyCmptTypeParameter("Param1");
         param1.setTestParameterType(TestParameterType.COMBINED);
-        IPolicyCmptType policyCmptType = param1.findPolicyCmptType();
+        IPolicyCmptType policyCmptType = param1.findPolicyCmptType(ipsProject);
         IPolicyCmptType childPolicyCmpt1 = newPolicyCmptType(ipsProject, "Child1");
         IPolicyCmptType childPolicyCmpt2 = newPolicyCmptType(ipsProject, "Child2");
         IPolicyCmptType childPolicyCmpt3 = newPolicyCmptType(ipsProject, "Child3");
@@ -499,7 +499,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     public void testDifferentSortOrderChilds() throws CoreException{
         ITestPolicyCmptTypeParameter param1 = addNewPolicyCmptTypeParameter("Param1");
         param1.setTestParameterType(TestParameterType.COMBINED);
-        IPolicyCmptType policyCmptType = param1.findPolicyCmptType();
+        IPolicyCmptType policyCmptType = param1.findPolicyCmptType(ipsProject);
         IPolicyCmptType childPolicyCmpt1 = newPolicyCmptType(ipsProject, "Child1");
         IPolicyCmptType childPolicyCmpt2 = newPolicyCmptType(ipsProject, "Child2");
         IPolicyCmptType childPolicyCmpt3 = newPolicyCmptType(ipsProject, "Child3");
@@ -550,7 +550,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         IPolicyCmptType childPcType1 = newPolicyCmptType(ipsProject, "Child1");
         IPolicyCmptType childPcType2 = newPolicyCmptType(ipsProject, "Child2");
         
-        IPolicyCmptType policyCmptType = param1.findPolicyCmptType();
+        IPolicyCmptType policyCmptType = param1.findPolicyCmptType(ipsProject);
         IPolicyCmptTypeAssociation rela1 = policyCmptType.newPolicyCmptTypeAssociation();
         rela1.setTarget(childPcType1.getQualifiedName());
         rela1.setTargetRoleSingular("Child1");
@@ -643,7 +643,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         childPolicyCmptType.newPolicyCmptTypeAttribute().setName("TestAttribute2");
         ITestPolicyCmptTypeParameter param = addNewPolicyCmptTypeParameter("Param");
         param.setTestParameterType(TestParameterType.COMBINED);
-        IPolicyCmptType policyCmptType = param.findPolicyCmptType();
+        IPolicyCmptType policyCmptType = param.findPolicyCmptType(ipsProject);
         IPolicyCmptTypeAssociation relation = policyCmptType.newPolicyCmptTypeAssociation();
         relation.setTarget(childPolicyCmptType.getQualifiedName());
         relation.setTargetRoleSingular("relation");
@@ -764,7 +764,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         attribute3.setAttribute("a3");
         attribute3.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
         
-        IPolicyCmptType policyCmptType = param1.findPolicyCmptType();
+        IPolicyCmptType policyCmptType = param1.findPolicyCmptType(ipsProject);
         policyCmptType.newPolicyCmptTypeAttribute().setName("a1");
         policyCmptType.newPolicyCmptTypeAttribute().setName("a2");
         policyCmptType.newPolicyCmptTypeAttribute().setName("a3");

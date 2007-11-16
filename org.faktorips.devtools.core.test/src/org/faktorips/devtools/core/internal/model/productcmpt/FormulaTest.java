@@ -227,7 +227,7 @@ public class FormulaTest extends AbstractIpsPluginTest  {
         
         ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
         structureUsage.addTableStructure(tableStructure.getQualifiedName());
-        productCmpt.fixAllDifferencesToModel();
+        productCmpt.fixAllDifferencesToModel(ipsProject);
         
         enumtypes = formula.getEnumDatatypesAllowedInFormula();
         assertEquals(0, enumtypes.length); // 0 because table structure hasn't got a column with an enum type so far
@@ -331,7 +331,7 @@ public class FormulaTest extends AbstractIpsPluginTest  {
         ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
         structureUsage.setRoleName("Table");
         structureUsage.addTableStructure(tableStructure.getQualifiedName());
-        productCmpt.fixAllDifferencesToModel();
+        productCmpt.fixAllDifferencesToModel(ipsProject);
         
         ITableContentUsage tableContentUsage = ((IProductCmptGeneration)formula.getParent()).newTableContentUsage();
         tableContentUsage.setStructureUsage("Table");

@@ -339,7 +339,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         collectEnumsAllowedInFormula(enumNamesToTypes);
         List filteredIdentifieres = removeIdentifieresOfEnumDatatypes(enumNamesToTypes, resolvedIdentifiers);
         
-        IAttribute[] attributes = signature.getProductCmptType().findAllAttributes();
+        IAttribute[] attributes = signature.getProductCmptType().findAllAttributes(ipsProject);
         Set attributeNames = new HashSet(attributes.length);
         for (int i = 0; i < attributes.length; i++) {
             attributeNames.add(attributes[i].getName());

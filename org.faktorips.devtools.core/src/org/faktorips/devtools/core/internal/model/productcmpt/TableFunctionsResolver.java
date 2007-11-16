@@ -53,7 +53,7 @@ public class TableFunctionsResolver implements FunctionResolver {
             for(int t = 0; t < tableContentses.length; t++){
             	
             	ITableContents tableContents = (ITableContents)tableContentses[t];
-	            ITableStructure table = tableContents.findTableStructure();
+	            ITableStructure table = tableContents.findTableStructure(project);
 	            if (table != null) {
 	            	// only add the access-function if the content has a structure...
 	            	addTableAccessFunction(functions, table, tableContents);

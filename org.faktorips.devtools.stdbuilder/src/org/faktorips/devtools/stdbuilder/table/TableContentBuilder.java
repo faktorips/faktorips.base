@@ -34,7 +34,7 @@ public class TableContentBuilder extends XmlContentFileCopyBuilder {
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         
         ITableContents contents = (ITableContents)ipsSrcFile.getIpsObject();
-        ITableStructure structure = contents.findTableStructure();
+        ITableStructure structure = contents.findTableStructure(getIpsProject());
         if(structure == null || structure.isModelEnumType()){
             return;
         }

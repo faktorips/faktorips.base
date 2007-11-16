@@ -376,7 +376,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
     
     /**
-     * Test method for {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#containsDifferenceToModel()}.
+     * Test method for {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#containsDifferenceToModel(IIpsProject)}.
      * @throws CoreException 
      */
     public void testContainsDifferenceToModel() throws CoreException {
@@ -405,15 +405,15 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         ce2.setPolicyCmptTypeAttribute("A2");
         ce2.setType(ConfigElementType.POLICY_ATTRIBUTE);
         
-        assertEquals(true, product.containsDifferenceToModel());
-        assertEquals(false, product2.containsDifferenceToModel());
+        assertEquals(true, product.containsDifferenceToModel(ipsProject));
+        assertEquals(false, product2.containsDifferenceToModel(ipsProject));
         testType.getPolicyCmptTypeAttribute("A2").delete();
-        assertEquals(false, product.containsDifferenceToModel());
-        assertEquals(true, product2.containsDifferenceToModel());       
+        assertEquals(false, product.containsDifferenceToModel(ipsProject));
+        assertEquals(true, product2.containsDifferenceToModel(ipsProject));       
     }
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#fixAllDifferencesToModel()}.
+     * Test method for {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#fixAllDifferencesToModel(IIpsProject)}.
      * @throws CoreException 
      */
     public void testFixAllDifferencesToModel() throws CoreException {
@@ -442,13 +442,13 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         ce2.setPolicyCmptTypeAttribute("A2");
         ce2.setType(ConfigElementType.POLICY_ATTRIBUTE);
         
-        assertEquals(true, product.containsDifferenceToModel());
-        product.fixAllDifferencesToModel();
-        assertEquals(false, product.containsDifferenceToModel());
+        assertEquals(true, product.containsDifferenceToModel(ipsProject));
+        product.fixAllDifferencesToModel(ipsProject);
+        assertEquals(false, product.containsDifferenceToModel(ipsProject));
         
-        assertEquals(false, product2.containsDifferenceToModel());
-        product2.fixAllDifferencesToModel();
-        assertEquals(false, product2.containsDifferenceToModel());
+        assertEquals(false, product2.containsDifferenceToModel(ipsProject));
+        product2.fixAllDifferencesToModel(ipsProject);
+        assertEquals(false, product2.containsDifferenceToModel(ipsProject));
     }
     
     public void testSetValidTo(){

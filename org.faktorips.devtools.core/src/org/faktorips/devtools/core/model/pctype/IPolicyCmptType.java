@@ -378,11 +378,15 @@ public interface IPolicyCmptType extends IType, Datatype {
     
     /**
      * Creates a new supertype hierarchy for the type and returns it.
+     * 
+     * @param ipsProject the IpsProject from which the search is started for the policy component types
      */
     public ITypeHierarchy getSupertypeHierarchy() throws CoreException;
     
     /**
      * Creates a new subtype hierarchy for the type and returns it.
+     * 
+     * @param ipsProject the IpsProject from which the search is started for the policy component types
      */
     public ITypeHierarchy getSubtypeHierarchy() throws CoreException;
 }

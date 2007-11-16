@@ -26,6 +26,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * 
@@ -36,6 +37,7 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
     private ElementSelectionPage elementSelectionPage;
 
     public FixDifferencesToModelWizard(Set ipsElementsToFix) {
+        ArgumentCheck.notNull(ipsElementsToFix, this);
         this.ipsElementsToFix = ipsElementsToFix;
         setWindowTitle(Messages.FixDifferencesToModelWizard_Title);
         this
@@ -50,7 +52,7 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
                 monitor.beginTask(Messages.FixDifferencesToModelWizard_beginTask, elementsToFix.length);
                 try {
                     for (int i = 0; i < elementsToFix.length; i++) {
-                        elementsToFix[i].fixAllDifferencesToModel();
+                        elementsToFix[i].fixAllDifferencesToModel(elementsToFix[i].getIpsSrcFile().getIpsProject());
                         elementsToFix[i].getIpsSrcFile().save(true, null);
                         monitor.worked(1);
                     }

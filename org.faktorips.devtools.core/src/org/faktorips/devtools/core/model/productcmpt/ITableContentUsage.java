@@ -88,10 +88,11 @@ public interface ITableContentUsage extends IIpsObjectPart, IPropertyValue {
     /**
      * Returns the table contents which is related or <code>null</code> if the table contents
      * can't be found.
+     * @param ipsProject TODO
      * 
      * @throws CoreException if an error occurs while searching for the table contents.
      */
-    public ITableContents findTableContents() throws CoreException;
+    public ITableContents findTableContents(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the related table structure usage or <code>null</code> if the table contents

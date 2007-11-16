@@ -225,8 +225,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     /**
      * {@inheritDoc}
      */
-    public IGenerationToTypeDelta computeDeltaToModel() throws CoreException {
-        return new GenerationToTypeDelta(this);
+    public IGenerationToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
+        return new GenerationToTypeDelta(this, ipsProject);
     }
 
     /**
@@ -708,7 +708,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             return;
         }
 
-        IGenerationToTypeDelta delta = computeDeltaToModel();
+        IGenerationToTypeDelta delta = computeDeltaToModel(ipsProject);
         IDeltaEntry[] entries = delta.getEntries();
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].getDeltaType()==DeltaType.MISSING_PROPERTY_VALUE) {

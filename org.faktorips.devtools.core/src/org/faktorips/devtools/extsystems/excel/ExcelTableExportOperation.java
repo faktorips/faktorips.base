@@ -41,8 +41,6 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
-import sun.nio.ch.SocketOpts.IP;
-
 /**
  * Operation to export an ipstablecontents to an excel-file.
  * 
@@ -129,7 +127,7 @@ public class ExcelTableExportOperation implements IWorkspaceRunnable {
         monitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 5 + currentGeneration.getNumOfRows());
 
         // first of all, check if the environment allows an export...
-        ITableStructure structure = contents.findTableStructure();
+        ITableStructure structure = contents.findTableStructure(contents.getIpsProject());
         if (structure == null) {
             String text = NLS.bind(Messages.TableExportOperation_errStructureNotFound, contents.getTableStructure());
             messageList.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$

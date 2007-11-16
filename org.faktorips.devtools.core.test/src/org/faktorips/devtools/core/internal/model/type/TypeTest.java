@@ -400,7 +400,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         IAttribute a3 = superSupertype.newAttribute();
         a3.setName("a3");
         
-        List all = Arrays.asList(type.findAllAttributes());
+        List all = Arrays.asList(type.findAllAttributes(ipsProject));
         assertTrue(all.contains(a1));
         assertTrue(all.contains(a2));
         assertTrue(all.contains(a3));
@@ -408,7 +408,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         IAttribute a1Supertype = supertype.newAttribute();
         a1Supertype.setName("a1");
         
-        all = Arrays.asList(type.findAllAttributes());
+        all = Arrays.asList(type.findAllAttributes(ipsProject));
         assertTrue(all.contains(a1));
         assertTrue(all.contains(a2));
         assertTrue(all.contains(a3));

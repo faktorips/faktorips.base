@@ -399,7 +399,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         }
         IGenerationToTypeDelta[] deltas = new IGenerationToTypeDelta[generations.length];
         for (int i = 0; i < generations.length; i++) {
-                deltas[i] = ((IProductCmptGeneration)generations[i]).computeDeltaToModel();
+                deltas[i] = ((IProductCmptGeneration)generations[i]).computeDeltaToModel(getIpsProject());
         }
 
         return new ProductCmptDeltaDialog(generations, deltas, getSite().getShell());

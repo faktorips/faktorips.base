@@ -173,7 +173,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
             addIpsElement((IIpsPackageFragment)selected, ipsElementsToFix);
         } else if (selected instanceof IFixDifferencesToModelSupport) {
             IFixDifferencesToModelSupport ipsElementToFix = (IFixDifferencesToModelSupport)selected;
-            if (ipsElementToFix.containsDifferenceToModel()) {
+            if (ipsElementToFix.containsDifferenceToModel(ipsElementToFix.getIpsSrcFile().getIpsProject())) {
                 ipsElementsToFix.add(ipsElementToFix);
             }
         } else if (selected instanceof IResource){
@@ -226,7 +226,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
             }
             if(element instanceof IFixDifferencesToModelSupport){
                 IFixDifferencesToModelSupport ipsElementToFix = (IFixDifferencesToModelSupport)element;
-                if(ipsElementToFix.containsDifferenceToModel()){
+                if(ipsElementToFix.containsDifferenceToModel(ipsElementToFix.getIpsSrcFile().getIpsProject())){
                     ipsElementsToFix.add(ipsElementToFix);
                 }
             }else if (element instanceof IIpsPackageFragment){

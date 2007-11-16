@@ -118,9 +118,9 @@ public class ColumnTest extends AbstractIpsPluginTest {
     
     public void testFindValueDatatype() throws CoreException{
         column.setDatatype(Datatype.BOOLEAN.getQualifiedName());
-        assertEquals(Datatype.BOOLEAN, column.findValueDatatype());
+        assertEquals(Datatype.BOOLEAN, column.findValueDatatype(column.getIpsProject()));
 
         column.setDatatype("NotADatatype");
-        assertNull(column.findValueDatatype());
+        assertNull(column.findValueDatatype(column.getIpsProject()));
     }
 }

@@ -299,12 +299,12 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
-    public boolean containsDifferenceToModel() throws CoreException {
+    public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
         IIpsObjectGeneration[] generations = this.getGenerations();
         for (int i = 0; i < generations.length; i++) {
             IIpsObjectGeneration generation = generations[i];
             if(generation instanceof IProductCmptGeneration){
-                IGenerationToTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToModel();
+                IGenerationToTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToModel(ipsProject);
                 if(!delta.isEmpty()){
                     return true;
                 }
@@ -316,12 +316,12 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * {@inheritDoc}
      */
-    public void fixAllDifferencesToModel() throws CoreException {
+    public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
         IIpsObjectGeneration[] generations = this.getGenerations();
         for (int i = 0; i < generations.length; i++) {
             IIpsObjectGeneration generation = generations[i];
             if(generation instanceof IProductCmptGeneration){
-                IGenerationToTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToModel();
+                IGenerationToTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToModel(ipsProject);
                 delta.fix();
                 
             }

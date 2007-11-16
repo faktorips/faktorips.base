@@ -71,31 +71,31 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
     }
     
     public void testGetTableContentUsagesWithMissingStructureUsages() throws Exception {
-        IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);  
+        IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);  
         assertEquals(0, delta.getTableContentUsagesWithMissingStructureUsages().length);
         
         ITableContentUsage tcu = generation.newTableContentUsage();
         tcu.setStructureUsage("RateTable");
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation); 
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject); 
         ITableContentUsage[] missing = delta.getTableContentUsagesWithMissingStructureUsages();
         assertEquals(1, missing.length);
         assertSame(tcu, missing[0]);
         
         ITableStructureUsage tsu = productCmptType.newTableStructureUsage();
         tsu.setRoleName("RateTable");
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation); 
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject); 
         assertEquals(0, delta.getTableContentUsagesWithMissingStructureUsages().length);
     }
 
     public void testIsEmpty() throws CoreException {
-        IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);  
+        IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);  
         assertEquals(generation, delta.getProductCmptGeneration());
         assertEquals(policyCmptType, delta.getPolicyCmptType());
         assertTrue(delta.isEmpty());
     }
     
     public void testGetAttributesWithMissingElements() throws CoreException {
-        IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);  
+        IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);  
         assertEquals(0, delta.getAttributesWithMissingConfigElements().length);
         
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
@@ -108,7 +108,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         a3.setName("a3");
         a3.setProductRelevant(false);
         
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         assertFalse(delta.isEmpty());
         IPolicyCmptTypeAttribute[] missing = delta.getAttributesWithMissingConfigElements();
         assertEquals(2, missing.length);
@@ -117,7 +117,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         
         a1.setName("a2");
         a1.setOverwrite(true);
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         assertFalse(delta.isEmpty());
         missing = delta.getAttributesWithMissingConfigElements();
         assertEquals(1, missing.length);
@@ -128,14 +128,14 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         
         IConfigElement ce = generation.newConfigElement();
         ce.setPolicyCmptTypeAttribute("a2");
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         missing = delta.getAttributesWithMissingConfigElements();
         assertEquals(1, missing.length);
         assertEquals(a1, missing[0]);
     }
 
     public void testGetElementsWithMissingAttributes() throws CoreException {
-        IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);  
+        IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);  
         assertEquals(0, delta.getConfigElementsWithMissingAttributes().length);
         
         IConfigElement ce1 = generation.newConfigElement();
@@ -143,7 +143,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         IConfigElement ce2 = generation.newConfigElement();
         ce2.setPolicyCmptTypeAttribute("a2");
         
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         assertFalse(delta.isEmpty());
         IConfigElement[] missing = delta.getConfigElementsWithMissingAttributes();
         assertEquals(2, missing.length);
@@ -157,19 +157,19 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         a2.setName("a2");
         a2.setProductRelevant(true);
         
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         missing = delta.getConfigElementsWithMissingAttributes();
         assertEquals(1, missing.length);
         assertEquals(ce1, missing[0]);
         
         a1.setProductRelevant(true);
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         missing = delta.getConfigElementsWithMissingAttributes();
         assertEquals(0, missing.length);
     }
     
     public void testGetElementsWithValueSetMismatch() throws CoreException {
-        IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);  
+        IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);  
         assertEquals(0, delta.getElementsWithValueSetMismatch().length);
         
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
@@ -186,7 +186,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         ce1.setValueSetType(ValueSetType.ENUM);
         
         // value set mismatch between a1 (range), ce1 (enum)
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         assertFalse(delta.isEmpty());
         IConfigElement[] elements = delta.getElementsWithValueSetMismatch();
         assertEquals(1, elements.length);
@@ -195,12 +195,12 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         // a1=enum, ce1=enum => no mismatch
         a1.setValueSetType(ValueSetType.ENUM);
         a1.setDatatype(Datatype.INTEGER.getQualifiedName());
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         assertTrue(delta.isEmpty());
         
         // a1=allvalue, ce1=enum => mismatch
         a1.setValueSetType(ValueSetType.ALL_VALUES);
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         assertFalse(delta.isEmpty());
         
         // a1=range, ce1=range=> no mismatch
@@ -213,7 +213,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         valueSet = (IRangeValueSet)ce1.getValueSet();
         valueSet.setLowerBound("10");
         valueSet.setUpperBound("20");
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         assertTrue(delta.isEmpty());
         
         // a1=range 10-20, ce1=range 0-10 => _NO_ mismatch
@@ -226,7 +226,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         valueSet = (IRangeValueSet)ce1.getValueSet();
         valueSet.setLowerBound("0");
         valueSet.setUpperBound("10");
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         assertEquals(0, delta.getElementsWithValueSetMismatch().length);
 
         // a1=range, ce1=allvalues=> mismatch
@@ -235,16 +235,16 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         valueSet.setLowerBound("10");
         valueSet.setUpperBound("20");
         ce1.setValueSetType(ValueSetType.ALL_VALUES);
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         assertEquals(1, delta.getElementsWithValueSetMismatch().length);
         
         // value set mismatch between a1 (range), ce1 (enum),
         // but corresponding attribute is not product relevant => this is not a mismatch as this reported otherwise
         ce1.setValueSetType(ValueSetType.ENUM);
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         assertFalse(delta.isEmpty()); // make sure there is an errror
         a1.setProductRelevant(false);
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         assertEquals(0, delta.getElementsWithValueSetMismatch().length);
         assertEquals(1, delta.getConfigElementsWithMissingAttributes().length);
 
@@ -261,24 +261,24 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         ce2.setPolicyCmptTypeAttribute("a2");
         ce2.setType(ConfigElementType.POLICY_ATTRIBUTE);
         ce2.setValueSetType(ValueSetType.ENUM);
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         assertFalse(delta.isEmpty());
         assertEquals(1, delta.getElementsWithValueSetMismatch().length);
         
         // no valuet set mismatch should be reported for missing attributes
         a2.setName("hide");
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         assertEquals(0, delta.getElementsWithValueSetMismatch().length);
         assertEquals(1, delta.getAttributesWithMissingConfigElements().length);
     }
     
     public void testGetLinksWithMissingAssociations() throws CoreException {
-        IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);  
+        IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);  
         assertEquals(0, delta.getLinksWithMissingAssociations().length);
         
         IProductCmptLink link1 = generation.newLink("typeRelation1");
         IProductCmptLink link2 = generation.newLink("typeRelation2");
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         assertFalse(delta.isEmpty());
         IProductCmptLink[] links = delta.getLinksWithMissingAssociations();
         assertEquals(2, links.length);
@@ -287,27 +287,27 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         
         productCmptType.newProductCmptTypeAssociation().setTargetRoleSingular("typeRelation1");
         productCmptSupertype.newProductCmptTypeAssociation().setTargetRoleSingular("typeRelation2");
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);
         links = delta.getLinksWithMissingAssociations();
         assertEquals(0, links.length);
     }
     
     public void testGetTableStructureUsagesWithMissingContentUsages() throws Exception {
         policyCmptType.setConfigurableByProductCmptType(true);
-        IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation);  
+        IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject);  
         assertEquals(0, delta.getTableStructureUsagesWithMissingContentUsages().length);
         
         ITableStructureUsage tsu = productCmptType.newTableStructureUsage();
         tsu.setRoleName("Egon");
         
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation); 
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject); 
         ITableStructureUsage[] missing = delta.getTableStructureUsagesWithMissingContentUsages();
         assertEquals(1, missing.length);
         assertSame(tsu, missing[0]);
         
         ITableContentUsage tcu = generation.newTableContentUsage();
         tcu.setStructureUsage("Egon");
-        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation); 
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, ipsProject); 
         assertEquals(0, delta.getTableStructureUsagesWithMissingContentUsages().length);
     }
     

@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
@@ -514,17 +515,17 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     /**
      * {@inheritDoc}
      */
-    public IValidationRule[] getTestRuleCandidates() throws CoreException {
+    public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreException {
         List validationRules = new ArrayList();
-        getValidationRules(getTestPolicyCmptTypeParameters(), validationRules);
+        getValidationRules(getTestPolicyCmptTypeParameters(), validationRules, ipsProject);
         return (IValidationRule[]) validationRules.toArray(new IValidationRule[0]);
     }
 
     /**
      * {@inheritDoc}
      */
-    public IValidationRule findValidationRule(String validationRuleName) throws CoreException {
-        IValidationRule[] validationRules = getTestRuleCandidates();
+    public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws CoreException {
+        IValidationRule[] validationRules = getTestRuleCandidates(ipsProject);
         for (int i = 0; i < validationRules.length; i++) {
             if (validationRules[i].getName().equals(validationRuleName)){
                 return validationRules[i];
@@ -536,15 +537,15 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     /*
      * Get all validation rules from all policy cmpts which are related inside this test case type
      */
-    private void getValidationRules(ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParameters, List validationRules) throws CoreException {
+    private void getValidationRules(ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParameters, List validationRules, IIpsProject ipsProject) throws CoreException {
         for (int i = 0; i < testPolicyCmptTypeParameters.length; i++) {
             ITestPolicyCmptTypeParameter parameter = testPolicyCmptTypeParameters[i];
-            IPolicyCmptType policyCmptType = parameter.findPolicyCmptType();
+            IPolicyCmptType policyCmptType = parameter.findPolicyCmptType(ipsProject);
             if (policyCmptType == null){
                 continue;
             }
             validationRules.addAll(Arrays.asList(policyCmptType.getSupertypeHierarchy().getAllRules(policyCmptType)));
-            getValidationRules(testPolicyCmptTypeParameters[i].getTestPolicyCmptTypeParamChilds(), validationRules);
+            getValidationRules(testPolicyCmptTypeParameters[i].getTestPolicyCmptTypeParamChilds(), validationRules, ipsProject);
         }
     }
 

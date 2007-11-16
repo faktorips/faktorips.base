@@ -407,7 +407,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     }
     
     public TocEntryObject createTocEntry(ITableContents tableContents) throws CoreException {
-        ITableStructure tableStructure = tableContents.findTableStructure();
+        ITableStructure tableStructure = tableContents.findTableStructure(getIpsProject());
         if (tableStructure == null) {
             return null;
         }

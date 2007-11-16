@@ -56,12 +56,11 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
     private ITableStructureUsage[] tableStructureUsagesWithMissingTableContentUsages = new ITableStructureUsage[0];
     private ITableContentUsage[] tableContentUsagesWithMissingTableStructureUsages = new ITableContentUsage[0];
     
-    public ProductCmptGenerationPolicyCmptTypeDelta(IProductCmptGeneration generation) throws CoreException {
-
+    public ProductCmptGenerationPolicyCmptTypeDelta(IProductCmptGeneration generation, IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(generation);
-        
+        ArgumentCheck.notNull(ipsProject);
         this.generation = generation;
-        ipsProject = generation.getIpsProject();
+        this.ipsProject = ipsProject;
         productCmptType = generation.findProductCmptType(ipsProject);
         if (productCmptType==null) {
             return;
@@ -71,7 +70,7 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
         computeStructureUsagesWithMissingContentUsages(hierarchyVisitor);
         computeContentUsagesWithMissingStructureUsages(hierarchyVisitor);
         computeLinksWithMissingAssociations();
-        policyCmptType = productCmptType.findPolicyCmptType(productCmptType.getIpsProject());
+        policyCmptType = productCmptType.findPolicyCmptType(ipsProject);
         if (policyCmptType==null) {
             return;
         }

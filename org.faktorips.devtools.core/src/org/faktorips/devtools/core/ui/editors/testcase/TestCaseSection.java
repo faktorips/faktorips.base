@@ -825,13 +825,13 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 try {
                     ITestPolicyCmpt tpct = (ITestPolicyCmpt) firstElement;
                     if (StringUtils.isNotEmpty(tpct.getProductCmpt())){
-                        IProductCmpt cmpt = tpct.findProductCmpt();
+                        IProductCmpt cmpt = tpct.findProductCmpt(tpct.getIpsProject());
                         IpsPlugin.getDefault().openEditor(cmpt);
                         return;
                     } else {
                         ITestPolicyCmptTypeParameter parameter = tpct.findTestPolicyCmptTypeParameter(ipsProject);
                         if (parameter != null){
-                            IPolicyCmptType type = parameter.findPolicyCmptType();
+                            IPolicyCmptType type = parameter.findPolicyCmptType(parameter.getIpsProject());
                             IpsPlugin.getDefault().openEditor(type);
                             return;
                         }
@@ -1763,7 +1763,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				}
 				String productCmptQualifiedNames[] = null;
 				if (testTypeParam.isRequiresProductCmpt()){
-                    IPolicyCmptType policyCmptType = testTypeParam.findPolicyCmptType();
+                    IPolicyCmptType policyCmptType = testTypeParam.findPolicyCmptType(testTypeParam.getIpsProject());
                     if (policyCmptType == null){
                         // policy cmpt type not found, this is a validation error
                         return;
@@ -1937,7 +1937,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	
 	private IIpsSrcFile[] getProductCmptSrcFiles(ITestPolicyCmptTypeParameter testTypeParam,
             ITestPolicyCmpt testPolicyCmptParent) throws CoreException {
-        return testTypeParam.getAllowedProductCmpt(testCase.getIpsProject(), testPolicyCmptParent!=null?testPolicyCmptParent.findProductCmpt():null);
+        return testTypeParam.getAllowedProductCmpt(testCase.getIpsProject(),
+                testPolicyCmptParent != null ? testPolicyCmptParent.findProductCmpt(testCase.getIpsProject()) : null);
     }
 
     /**

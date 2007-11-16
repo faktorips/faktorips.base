@@ -185,7 +185,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     /**
      * {@inheritDoc}
      */
-    public IAttribute[] findAllAttributes() throws CoreException {
+    public IAttribute[] findAllAttributes(IIpsProject ipsProject) throws CoreException {
         AllAttributeFinder finder = new AllAttributeFinder(getIpsProject());
         finder.start(this);
         return finder.getAttributes();

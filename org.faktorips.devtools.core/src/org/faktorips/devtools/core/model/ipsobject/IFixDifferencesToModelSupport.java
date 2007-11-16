@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.ipsobject;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * 
@@ -24,17 +25,19 @@ public interface IFixDifferencesToModelSupport {
     /**
      * Returns <code>true</code> if this element contains structural differences to its
      * corresponding model element.
+     * @param ipsProject TODO
      * 
      * @throws CoreException
      */
-    public boolean containsDifferenceToModel() throws CoreException;
+    public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Fixes all differences between this element and its corresponding model element.
+     * @param ipsProject TODO
      * 
      * @throws CoreException
      */
-    public void fixAllDifferencesToModel() throws CoreException;
+    public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns the IPS source file this object is stored in.

@@ -192,11 +192,11 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public IPolicyCmptType findPolicyCmptType() throws CoreException {
+	public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(policyCmptType)) {
             return null;
         }
-		return getIpsProject().findPolicyCmptType(policyCmptType);
+		return ipsProject.findPolicyCmptType(policyCmptType);
 	}
 
 	/**
@@ -229,7 +229,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         
         // this is a child parameter therfore a relation should exists
         ITestPolicyCmptTypeParameter parent = (ITestPolicyCmptTypeParameter) getParent();
-        IPolicyCmptType pcType = parent.findPolicyCmptType();
+        IPolicyCmptType pcType = parent.findPolicyCmptType(ipsProject);
         
         while (pcType != null){
             IPolicyCmptTypeAssociation[] relations = pcType.getPolicyCmptTypeAssociations();
@@ -533,7 +533,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
      */
     public IIpsSrcFile[] getAllowedProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmpt) throws CoreException {
         if (isRoot() || productCmpt == null){
-            IPolicyCmptType policyCmptType = findPolicyCmptType();
+            IPolicyCmptType policyCmptType = findPolicyCmptType(ipsProjectToSearch);
             if (policyCmptType == null){
                 return new IIpsSrcFile[0];
             }
@@ -581,7 +581,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         super.validateThis(list, ipsProject);
         
         // check if the policy component type exists
-        IPolicyCmptType policyCmptTypeFound = findPolicyCmptType();
+        IPolicyCmptType policyCmptTypeFound = findPolicyCmptType(ipsProject);
         if (policyCmptTypeFound == null) {
             String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_PolicyCmptTypeNotExists, policyCmptType);
             Message msg = new Message(MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS, text, Message.ERROR, this,

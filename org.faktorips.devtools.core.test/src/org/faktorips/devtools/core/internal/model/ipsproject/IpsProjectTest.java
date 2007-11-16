@@ -538,9 +538,9 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ITableContents contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "PaymentMode");
         contents.setTableStructure(structure.getQualifiedName());
         contents.newGeneration();
-        DatatypeHelper helper = ipsProject.getDatatypeHelper(new TableContentsEnumDatatypeAdapter(contents));
+        DatatypeHelper helper = ipsProject.getDatatypeHelper(new TableContentsEnumDatatypeAdapter(contents, ipsProject));
         assertNotNull(helper);
-        assertEquals(new TableContentsEnumDatatypeAdapter(contents), helper.getDatatype());
+        assertEquals(new TableContentsEnumDatatypeAdapter(contents, ipsProject), helper.getDatatype());
     }
     
     public void testFindDatatypeString() throws Exception{

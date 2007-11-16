@@ -59,10 +59,11 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
     private IProductCmptType productCmptType;
     private List entries = new ArrayList();
     
-    public GenerationToTypeDelta(IProductCmptGeneration generation) throws CoreException {
+    public GenerationToTypeDelta(IProductCmptGeneration generation, IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(generation);
+        ArgumentCheck.notNull(ipsProject);
         this.generation = generation;
-        ipsProject = generation.getIpsProject();
+        this.ipsProject = ipsProject;
         productCmptType = generation.findProductCmptType(ipsProject);
         if (productCmptType==null) {
             return;

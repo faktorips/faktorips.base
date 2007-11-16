@@ -71,8 +71,8 @@ public class TableContentsLabelProviderTest extends AbstractIpsPluginTest {
         rowNull.setValue(2, null);
         
         labelProvider = new TableContentsLabelProvider();
-        labelProvider.setValueDatatypes(new ValueDatatype[] { column0.findValueDatatype(), column1.findValueDatatype(),
-                column2.findValueDatatype() });
+        labelProvider.setValueDatatypes(new ValueDatatype[] { column0.findValueDatatype(column0.getIpsProject()), column1.findValueDatatype(column1.getIpsProject()),
+                column2.findValueDatatype(column2.getIpsProject()) });
     }
     
     public void testGetColumnImage(){

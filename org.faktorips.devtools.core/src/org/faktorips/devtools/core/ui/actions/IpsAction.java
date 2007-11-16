@@ -247,7 +247,7 @@ public abstract class IpsAction extends Action {
         // StructureNodes
         if (selected instanceof IProductCmptStructureTblUsageReference) {
             try {
-                return ((IProductCmptStructureTblUsageReference) selected).getTableContentUsage().findTableContents();
+                return ((IProductCmptStructureTblUsageReference) selected).getTableContentUsage().findTableContents(((IProductCmptStructureTblUsageReference) selected).getTableContentUsage().getIpsProject());
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }

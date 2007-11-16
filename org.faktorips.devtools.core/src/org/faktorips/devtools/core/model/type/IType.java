@@ -152,10 +152,11 @@ public interface IType extends IIpsObject, Datatype {
      * Returns this type's attributes and the attributes within the supertype hierarchy. It considers overridden attributes. 
      * That means if an attribute has been overridden by a subtype this attribute instance will be in the returned array
      * all attributes in the supertype hierarchy with the same name will be neglected.
+     * @param ipsProject TODO
      *  
      * @throws CoreException if an exception occurs while collecting the attributes 
      */
-    public IAttribute[] findAllAttributes() throws CoreException;
+    public IAttribute[] findAllAttributes(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the attribute with the given name defined in <strong>this</strong> type

@@ -17,6 +17,7 @@ package org.faktorips.devtools.core.model.testcasetype;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestRuleParameter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 
 /**
@@ -196,15 +197,17 @@ public interface ITestCaseType extends IIpsObject {
     /**
      * Returns all validation rules from the test policy cmpts which are related by the test policy
      * cmpt type parameters inside this test case type.
+     * @param ipsProject TODO
      * 
      * @throws CoreException if an error occurs
      */
-    public IValidationRule[] getTestRuleCandidates() throws CoreException;
+    public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Searchs and returns the validation rule with the given name which is inside the test case type.
      * The rule will be searched in all policy cmpt types which are related by test test policy cmpt type 
      * parameters.
+     * @param ipsProject TODO
      */
-    public IValidationRule findValidationRule(String validationRuleName) throws CoreException;
+    public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws CoreException;
 }

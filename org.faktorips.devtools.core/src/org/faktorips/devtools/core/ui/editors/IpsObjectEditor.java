@@ -670,7 +670,7 @@ public abstract class IpsObjectEditor extends FormEditor
         }
         final IFixDifferencesToModelSupport toFixIpsObject = (IFixDifferencesToModelSupport)getIpsObject();
         try {
-            if (!toFixIpsObject.containsDifferenceToModel()){
+            if (!toFixIpsObject.containsDifferenceToModel(getIpsProject())){
                 if (TRACE) {
                     logMethodFinished("checkForInconsistenciesToModel - no differences found."); //$NON-NLS-1$
                 }
@@ -683,7 +683,7 @@ public abstract class IpsObjectEditor extends FormEditor
                 }
                 IWorkspaceRunnable fix = new IWorkspaceRunnable(){
                     public void run(IProgressMonitor monitor) throws CoreException {
-                        toFixIpsObject.fixAllDifferencesToModel();
+                        toFixIpsObject.fixAllDifferencesToModel(getIpsProject());
                     }
                 };
                 IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(fix, null);

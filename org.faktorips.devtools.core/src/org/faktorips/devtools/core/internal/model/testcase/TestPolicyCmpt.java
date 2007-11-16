@@ -199,11 +199,11 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProductCmpt findProductCmpt() throws CoreException {
+	public IProductCmpt findProductCmpt(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(productCmpt)) {
             return null;
         }
-        IProductCmpt pc = getIpsProject().findProductCmpt(productCmpt);
+        IProductCmpt pc = ipsProject.findProductCmpt(productCmpt);
         return pc;
 	}
     
@@ -503,7 +503,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	 */
     public void updateDefaultTestAttributeValues() throws CoreException{
         // add the attributes which are defined in the test case type parameter
-        IProductCmptGeneration generation = findProductCmpsCurrentGeneration();
+        IProductCmptGeneration generation = findProductCmpsCurrentGeneration(getIpsProject());
         ITestAttributeValue[] testAttrValues = getTestAttributeValues();
         for (int i = 0; i < testAttrValues.length; i++) {
             ((TestAttributeValue)testAttrValues[i]).setDefaultTestAttributeValueInternal(generation);
@@ -540,12 +540,12 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
      * Returns the product components generation depending on the current working date (current working generation).
      * Returns <code>null</code> if the test policy cmpt is not product relevant, or the product cmpt wasn't found.
      */
-    public IProductCmptGeneration findProductCmpsCurrentGeneration() throws CoreException {
+    public IProductCmptGeneration findProductCmpsCurrentGeneration(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(productCmpt)){
             return null;
         }
         GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-        IProductCmpt productCmptObj = getIpsProject().findProductCmpt(productCmpt);
+        IProductCmpt productCmptObj = ipsProject.findProductCmpt(productCmpt);
         IProductCmptGeneration generation = null;
         if (productCmptObj != null){
             generation = (IProductCmptGeneration)productCmptObj.findGenerationEffectiveOn(workingDate);
@@ -635,7 +635,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         super.validateThis(list, ipsProject);
 		// validate if the test case type param exists
 		ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter(ipsProject);
-        IProductCmpt productCmptObj = findProductCmpt();
+        IProductCmpt productCmptObj = findProductCmpt(ipsProject);
         
 		if (param == null){
 			String text = NLS.bind(Messages.TestPolicyCmpt_ValidationError_TestCaseTypeParamNotFound, testPolicyCmptType);
@@ -649,7 +649,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 				list.add(msg);
 			}
 			// check if the policy component type exists
-			if (param.findPolicyCmptType() == null){
+			if (param.findPolicyCmptType(ipsProject) == null){
 			    String text = NLS.bind(Messages.TestPolicyCmpt_ValidationWarning_PolicyCmptNotExists, param.getPolicyCmptType(), testPolicyCmptType);
 			    Message msg = new Message(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS, text, Message.WARNING, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
 			    list.add(msg);
@@ -700,10 +700,11 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         }
         
         // check correct product cmpt 
-         validateAllowedProductCmpt(list, param, productCmptObj);
+         validateAllowedProductCmpt(list, param, productCmptObj, ipsProject);
 	}
 
-    private void validateAllowedProductCmpt(MessageList list, ITestPolicyCmptTypeParameter param, IProductCmpt productCmptObj) throws CoreException {
+    private void validateAllowedProductCmpt(MessageList list, ITestPolicyCmptTypeParameter param, 
+            IProductCmpt productCmptObj, IIpsProject ipsProject) throws CoreException {
         // abort validation if no product cmpt was found/or specified
         // or if the parameter wasn't found
         if (param == null || productCmptObj == null){
@@ -738,7 +739,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             isParentProductRelevant = false;
         }        
 
-        IProductCmpt productCmptOfParent = parentPolicyCmpt.findProductCmpt();
+        IProductCmpt productCmptOfParent = parentPolicyCmpt.findProductCmpt(ipsProject);
         if (isParentProductRelevant && productCmptOfParent == null){
             String text = NLS.bind(Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpCouldNotValidatedParentNotFound, productCmptObj.getName());
             Message msg = new Message(MSGCODE_PARENT_PRODUCT_CMPT_OF_RELATION_NOT_SPECIFIED, text, Message.WARNING, this,
@@ -772,7 +773,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             // currently an attributes (from sublcasses) could only be searched if an product cmpt was set
             return null;
         } 
-        IProductCmpt productCmptObj = findProductCmpt();
+        IProductCmpt productCmptObj = findProductCmpt(ipsProject);
         if (productCmptObj == null){
             return null;
         }

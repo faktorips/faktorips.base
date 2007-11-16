@@ -205,7 +205,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         // assert references to test case
         IProductCmpt productCmpt = ipsProject.findProductCmptByRuntimeId(coverage.getRuntimeId());
         assertEquals(productCmpt.getQualifiedName(), testPolicyCmpt.getProductCmpt());
-        assertEquals(productCmpt, testPolicyCmpt.findProductCmpt());
+        assertEquals(productCmpt, testPolicyCmpt.findProductCmpt(ipsProject));
         assertFalse(testCase.getIpsSrcFile().isDirty());
     }
 

@@ -169,7 +169,8 @@ public class TableImportWizard extends Wizard implements IImportWizard {
     private ITableStructure getTableStructure() {
         try {
             if (filePage.isImportIntoExisting()) {
-                return selectContentsPage.getTableContents().findTableStructure();
+                return selectContentsPage.getTableContents().findTableStructure(
+                        selectContentsPage.getTableContents().getIpsProject());
             } else {
                 return newContentsPage.getTableStructure();
             }

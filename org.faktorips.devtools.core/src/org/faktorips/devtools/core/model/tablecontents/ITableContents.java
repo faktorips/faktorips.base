@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model.tablecontents;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.XmlSaxSupport;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
 
@@ -63,11 +64,12 @@ public interface ITableContents extends ITimedIpsObject, XmlSaxSupport {
     /**
      * Searches the table structure this contents is based on and returns
      * it. Returns <code>null</code> if the structure can't be found.
+     * @param ipsProject TODO
      * 
      * @throws CoreException if an exception occurs while searching for
      * the table structure.
      */
-    public ITableStructure findTableStructure() throws CoreException;
+    public ITableStructure findTableStructure(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns the number of colums in the table contents. Note, that it is possible

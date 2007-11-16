@@ -289,7 +289,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * Returns the qualified name of the policy component where the given test policy component type parameter points to.
      */
     protected String getQualifiedNameFromTestPolicyCmptParam(ITestPolicyCmptTypeParameter testPolicyTypeParam) throws CoreException{
-        IPolicyCmptType policyCmptType = testPolicyTypeParam.findPolicyCmptType();
+        IPolicyCmptType policyCmptType = testPolicyTypeParam.findPolicyCmptType(getIpsProject());
         if ( policyCmptType== null){
         	throw new CoreException(
         			new IpsStatus("Policy component type " + testPolicyTypeParam.getPolicyCmptType() + " not found for test policy component type parameter " 

@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model.tablestructure;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  *
@@ -59,7 +60,7 @@ public interface IForeignKey extends IKey {
      * 
      * @throws CoreException if an error occurs while searching for the table structure.
      */
-    public ITableStructure findReferencedTableStructure() throws CoreException;
+    public ITableStructure findReferencedTableStructure(IIpsProject ipsProject) throws CoreException;
     
     /**
      * Returns the name of the referenced unique key. 

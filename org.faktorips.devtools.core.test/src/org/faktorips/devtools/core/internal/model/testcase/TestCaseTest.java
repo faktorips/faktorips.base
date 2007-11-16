@@ -417,7 +417,7 @@ public class TestCaseTest extends AbstractIpsPluginTest {
     }
     
     /**
-     * Test method for {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#containsDifferenceToModel()}.
+     * Test method for {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#containsDifferenceToModel(IIpsProject)}.
      * @throws CoreException 
      */
     public void testContainsDifferenceToModel() throws CoreException {
@@ -426,15 +426,15 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         ITestCase testCaseX = (ITestCase) newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "testCaseTypeX");
         testCaseX.setTestCaseType(testCaseTypeX.getName());
         
-        assertEquals(false, testCaseX.containsDifferenceToModel());
+        assertEquals(false, testCaseX.containsDifferenceToModel(ipsProject));
         ITestValueParameter parameter = testCaseTypeX.newInputTestValueParameter();
         parameter.setName("inputTestValueX");
         parameter.setDatatype("String");
-        assertEquals(true, testCaseX.containsDifferenceToModel());       
+        assertEquals(true, testCaseX.containsDifferenceToModel(ipsProject));       
     } 
 
     /**
-     * Test method for {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#fixAllDifferencesToModel()}.
+     * Test method for {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#fixAllDifferencesToModel(IIpsProject)}.
      * @throws CoreException 
      */
     public void testFixAllDifferencesToModel() throws CoreException {
@@ -442,9 +442,9 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         ITestCase testCaseX = (ITestCase) newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "testCaseTypeX");
         testCaseX.setTestCaseType(testCaseTypeX.getName());
         
-        assertEquals(false, testCaseX.containsDifferenceToModel());
-        testCaseX.fixAllDifferencesToModel();
-        assertEquals(false, testCaseX.containsDifferenceToModel());
+        assertEquals(false, testCaseX.containsDifferenceToModel(ipsProject));
+        testCaseX.fixAllDifferencesToModel(ipsProject);
+        assertEquals(false, testCaseX.containsDifferenceToModel(ipsProject));
         
         PolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "PolicyCmptType");
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
@@ -470,9 +470,9 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         parameter.setName("inputTestValueX2");
         parameter.setDatatype("String");
         
-        assertEquals(true, testCaseX.containsDifferenceToModel());
-        testCaseX.fixAllDifferencesToModel();
-        assertEquals(false, testCaseX.containsDifferenceToModel());
+        assertEquals(true, testCaseX.containsDifferenceToModel(ipsProject));
+        testCaseX.fixAllDifferencesToModel(ipsProject);
+        assertEquals(false, testCaseX.containsDifferenceToModel(ipsProject));
         
         // further check to ensure that the old default values will not be overridden
         ITestAttributeValue testAttributeValue = testCaseX.getInputTestPolicyCmpts()[0].getTestAttributeValues()[0];
@@ -483,9 +483,9 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         testAttribute.setName("Attribute2");
         testAttribute.setAttribute("Attribute2");
         
-        assertEquals(true, testCaseX.containsDifferenceToModel());
-        testCaseX.fixAllDifferencesToModel();
-        assertEquals(false, testCaseX.containsDifferenceToModel());
+        assertEquals(true, testCaseX.containsDifferenceToModel(ipsProject));
+        testCaseX.fixAllDifferencesToModel(ipsProject);
+        assertEquals(false, testCaseX.containsDifferenceToModel(ipsProject));
         
         assertEquals("1234", testAttributeValue.getValue());
         testAttributeValue = testCaseX.getInputTestPolicyCmpts()[0].getTestAttributeValues()[1];
@@ -498,8 +498,8 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         parameter.setName("testBoolean");
         parameter.setDatatype("Boolean");
         
-        testCaseX.fixAllDifferencesToModel();
-        assertEquals(false, testCaseX.containsDifferenceToModel());
+        testCaseX.fixAllDifferencesToModel(ipsProject);
+        assertEquals(false, testCaseX.containsDifferenceToModel(ipsProject));
         ml = testCaseX.validate(ipsProject);
         assertFalse(ml.containsErrorMsg());        
     }

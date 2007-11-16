@@ -118,10 +118,10 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
     
     public void testFindTableContents() throws Exception{
         contentUsage.setTableContentName("none");
-        assertNull(contentUsage.findTableContents());
+        assertNull(contentUsage.findTableContents(project));
         
         contentUsage.setTableContentName(content.getQualifiedName());
-        assertSame(content, contentUsage.findTableContents());
+        assertSame(content, contentUsage.findTableContents(project));
     }
     
     public void testFindTableStructureUsage() throws Exception {

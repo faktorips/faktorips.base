@@ -923,15 +923,15 @@ public class IpsProject extends IpsElement implements IIpsProject {
         
         // add enum types defined in tables
 		try {
-			IIpsObject[] structures = (IIpsObject[])findIpsObjects(IpsObjectType.TABLE_STRUCTURE);
-	        for (int i = 0; i < structures.length; i++) {
-                ITableStructure structure = (ITableStructure)structures[i]; 
+			IIpsSrcFile[] structureSrcFiles = findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
+	        for (int i = 0; i < structureSrcFiles.length; i++) {
+                ITableStructure structure = (ITableStructure)structureSrcFiles[i].getIpsObject(); 
 				if (structure.isModelEnumType()) {
-                    ArrayList enumTableContents = new ArrayList(structures.length);
+                    ArrayList enumTableContents = new ArrayList(structureSrcFiles.length);
                     findTableContents(structure, enumTableContents);
                     for (Iterator it = enumTableContents.iterator(); it.hasNext();) {
                         ITableContents contents = (ITableContents)it.next();
-                        result.add(new TableContentsEnumDatatypeAdapter(contents));
+                        result.add(new TableContentsEnumDatatypeAdapter(contents, this));
                     }
 				}
 			}
@@ -1077,9 +1077,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
         ITableContents contents = (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, qualifiedName);
         if (contents != null) {
-            ITableStructure structure = contents.findTableStructure();
+            ITableStructure structure = contents.findTableStructure(ipsProject);
             if (structure != null && structure.isModelEnumType()) {
-                return new TableContentsEnumDatatypeAdapter(contents);
+                return new TableContentsEnumDatatypeAdapter(contents, ipsProject);
             }
         }
         IIpsProject[] projects = ((IpsProject)ipsProject).getIpsObjectPathInternal().getReferencedIpsProjects();

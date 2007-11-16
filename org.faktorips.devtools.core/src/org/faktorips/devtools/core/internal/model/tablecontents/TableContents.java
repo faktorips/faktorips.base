@@ -110,7 +110,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     /**
      * {@inheritDoc}
      */
-    public ITableStructure findTableStructure() throws CoreException {
+    public ITableStructure findTableStructure(IIpsProject ipsProject) throws CoreException {
         return (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, structure);
     }
     
@@ -214,7 +214,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 
-        ITableStructure tableStructure = findTableStructure();
+        ITableStructure tableStructure = findTableStructure(ipsProject);
         if (tableStructure  == null) {
             String text = NLS.bind(Messages.TableContents_msgMissingTablestructure, this.structure);
             list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE)); 
@@ -229,14 +229,14 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         }
     }
     
-    ValueDatatype[] findColumnDatatypes(ITableStructure structure) throws CoreException {
+    ValueDatatype[] findColumnDatatypes(ITableStructure structure, IIpsProject ipsProject) throws CoreException {
         if (structure == null){
             return new ValueDatatype[0];
         }
         IColumn[] columns= structure.getColumns();
         ValueDatatype[] datatypes= new ValueDatatype[columns.length];
         for (int i = 0; i < columns.length; i++) {
-            datatypes[i]= columns[i].findValueDatatype();
+            datatypes[i]= columns[i].findValueDatatype(ipsProject);
         }
         return datatypes;
     }

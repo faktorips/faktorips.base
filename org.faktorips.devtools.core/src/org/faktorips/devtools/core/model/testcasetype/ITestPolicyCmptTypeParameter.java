@@ -119,9 +119,11 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     /**
      * Returns the policy component type or <code>null</code> if the policy component type does not exists.
      * 
+     * @param ipsProject the IpsProject where to start the search from
+     * 
      * @throws CoreException if an error occurs while searching for the target.
      */	
-	public IPolicyCmptType findPolicyCmptType() throws CoreException;
+	public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException;
 	
     /**
      * Returns the name of the relation.

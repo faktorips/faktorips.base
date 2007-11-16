@@ -149,8 +149,8 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
      * {@inheritDoc} 
      * @throws CoreException 
      */
-    public ValueDatatype findValueDatatype() throws CoreException {
-        return getIpsProject().findValueDatatype(datatype); 
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
+        return ipsProject.findValueDatatype(datatype); 
     }
     
 }

@@ -134,7 +134,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
                     if (parameter == null || !parameter.isRequiresProductCmpt()){
                         continue;
                     }
-                    IProductCmpt productCmpt = testPolicyCmpt.findProductCmpt();
+                    IProductCmpt productCmpt = testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject());
                     if (productCmpt == null){
                         continue;
                     }
@@ -180,7 +180,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
         for (int i = 0; i < testPolicyCmptRelations.length; i++) {
             ITestPolicyCmpt testPolicyCmptChild = testPolicyCmptRelations[i].findTarget();
             if (testPolicyCmptChild != null){
-                IProductCmpt productCmptChild = testPolicyCmptChild.findProductCmpt();
+                IProductCmpt productCmptChild = testPolicyCmptChild.findProductCmpt(testPolicyCmpt.getIpsProject());
                 if (productCmptChild == null){
                     continue;
                 }

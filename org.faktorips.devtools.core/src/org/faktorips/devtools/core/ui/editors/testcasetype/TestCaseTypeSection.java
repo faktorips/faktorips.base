@@ -1647,7 +1647,7 @@ public class TestCaseTypeSection extends IpsSection {
             // check if the policy cmpt type exists and if not
             // open a error dialog and cancel
             try {
-                if (((ITestPolicyCmptTypeParameter)selObject).findPolicyCmptType() == null) {
+                if (((ITestPolicyCmptTypeParameter)selObject).findPolicyCmptType(((ITestPolicyCmptTypeParameter)selObject).getIpsProject()) == null) {
                     MessageDialog.openInformation(getShell(), Messages.TestCaseTypeSection_ErrorDialog_AddParameterTitle,
                             Messages.TestCaseTypeSection_ErrorDialog_AddParameterPcTypeIsMissing);
                     return;
@@ -2134,7 +2134,7 @@ public class TestCaseTypeSection extends IpsSection {
         selectDialog.setMessage(message);
         selectDialog.setShowSubtypes(showSubtypeAttributes);
         
-        IPolicyCmptType policyCmptType = testPolicyCmptTypeParam.findPolicyCmptType();
+        IPolicyCmptType policyCmptType = testPolicyCmptTypeParam.findPolicyCmptType(testPolicyCmptTypeParam.getIpsProject());
         if (policyCmptType == null) {
             String msg = NLS.bind(
                     Messages.TestCaseTypeSection_ErrorDialog_AttributeChangingNotAllowedBecausePolicyCmptTypeNotExists,
