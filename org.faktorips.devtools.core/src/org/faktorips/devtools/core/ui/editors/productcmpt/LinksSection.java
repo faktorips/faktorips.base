@@ -207,8 +207,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 			
 			treeViewer = new TreeViewer(tree);
 			treeViewer.setContentProvider(new LinksContentProvider());
-			treeViewer.setLabelProvider(new LinkSectionMessageCueLabelProvider(
-					labelProvider, generation.getIpsProject()));
 			treeViewer.setInput(generation);
 			treeViewer
 					.addSelectionChangedListener(selectionChangedListener);
@@ -221,7 +219,13 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 			treeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
 			treeViewer.expandAll();
 	
-			new MessageService(treeViewer);
+            final LinkSectionMessageCueLabelProvider msgCueLp = new LinkSectionMessageCueLabelProvider(labelProvider, generation.getIpsProject());
+			treeViewer.setLabelProvider(msgCueLp);
+            new TreeMessageHoverService(treeViewer){
+                protected MessageList getMessagesFor(Object element) throws CoreException {
+                    return msgCueLp.getMessages(element);
+                }
+            };
 	
 			buildContextMenu();
 	
@@ -752,29 +756,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 		IAction delAction= site.getActionBars().getGlobalActionHandler(ActionFactory.DELETE.getId());
 		if(delAction!=null){
 			delAction.setEnabled(enabled);
-		}
-		
-	}
-
-	private MessageList validate(Object element) throws CoreException {
-		if (element instanceof IProductCmptLink) {
-			return ((IProductCmptLink) element).validate(((IProductCmptLink) element).getIpsProject());
-		} else if (element instanceof String) {
-			MessageList ml = generation.validate(generation.getIpsProject());
-			return ml.getMessagesFor(((String) element));
-		}
-		return new MessageList();
-	}
-
-	private class MessageService extends TreeMessageHoverService {
-
-		public MessageService(TreeViewer viewer) {
-			super(viewer);
-		}
-
-		protected MessageList getMessagesFor(Object element)
-				throws CoreException {
-			return validate(element);
 		}
 	}
 
