@@ -130,6 +130,9 @@ public class PcTypePage extends TypePage {
             if(superPcType.isConfigurableByProductCmptType()){
                 configurableField.setValue(Boolean.TRUE);
                 configurableField.getCheckbox().setEnabled(false);
+            } else {
+                configurableField.setValue(Boolean.FALSE);
+                configurableField.getCheckbox().setEnabled(false);
             }
         } else {
             configurableField.getCheckbox().setEnabled(true);
