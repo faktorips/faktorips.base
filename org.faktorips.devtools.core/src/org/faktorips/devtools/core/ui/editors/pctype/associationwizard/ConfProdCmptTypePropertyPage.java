@@ -192,7 +192,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     private void setDefaults() {
         association.setDerivedUnion(wizard.getAssociation().isDerivedUnion());
         if (! wizard.getAssociation().isSubsetOfADerivedUnion()){
-            derivedUnionGroup.setSubset(false);
+            derivedUnionGroup.setDefaultSubset(false);
         }
     }
 

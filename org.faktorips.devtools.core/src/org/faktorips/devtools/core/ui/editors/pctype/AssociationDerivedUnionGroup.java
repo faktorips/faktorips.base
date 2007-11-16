@@ -126,10 +126,11 @@ public class AssociationDerivedUnionGroup extends Composite {
     }
     
     /**
-     * Sets if the association defines a subset of a derived union or not defines a subset.
+     * Sets the defaults. If subset is <code>true</code> then the subset checkbox will be checked otherwise it will be unchecked.
      */
-    public void setSubset(boolean subset) {
+    public void setDefaultSubset(boolean subset) {
         pmoAssociation.setSubset(subset);
+        pmoAssociation.ignoreAutomaticSubsetEnabling();
     }
     
     private void addCompletionProcessor(IAssociation association){
@@ -145,6 +146,7 @@ public class AssociationDerivedUnionGroup extends Composite {
         private IAssociation association;
 
         private boolean subset;
+        private boolean ignoreAutomaticSubsetEnabling = false;
         
         public PmoAssociation(IAssociation association) {
             super(association);
@@ -152,6 +154,13 @@ public class AssociationDerivedUnionGroup extends Composite {
             this.subset = association.isSubsetOfADerivedUnion();
         }
         
+        /**
+         * Ignores the automatically enabling of the subset checkbox.
+         */
+        public void ignoreAutomaticSubsetEnabling() {
+            ignoreAutomaticSubsetEnabling = true;
+        }
+
         public boolean isSubset() {
             return subset;
         }
@@ -195,6 +204,10 @@ public class AssociationDerivedUnionGroup extends Composite {
                         derivedUnionCandidates[i] = associations[i].getName();
                     }
                     setDerivedUnions(derivedUnionCandidates);
+                    
+                    if (ignoreAutomaticSubsetEnabling){
+                        return;
+                    }
                     
                     // if at least one derived union candidate is available
                     // then set the first derived union as default
