@@ -53,6 +53,21 @@ public class TypeTest extends AbstractIpsPluginTest {
         type = newProductCmptType(ipsProject, "MotorProduct");
     }
     
+    public void testIsSubtype() throws CoreException {
+        IType subtype = newProductCmptType((IProductCmptType)type, "Subtype");
+        IType subsubtype = newProductCmptType((IProductCmptType)type, "SubSubtype");
+        
+        assertTrue(subtype.isSubtypeOf(type, ipsProject));
+        assertTrue(subsubtype.isSubtypeOf(type, ipsProject));
+        
+        // test with circle
+        type.setSupertype(subsubtype.getQualifiedName());
+        assertTrue(subtype.isSubtypeOf(type, ipsProject));
+        
+        IType anotherType = newProductCmptType(ipsProject, "AnotherType");
+        assertFalse(subtype.isSubtypeOf(anotherType, ipsProject));
+    }
+    
     public void testValidate_DuplicatePropertyName() throws CoreException {
         type = newPolicyCmptType(ipsProject, "Policy");
         IType supertype = newPolicyCmptType(ipsProject, "Supertype");

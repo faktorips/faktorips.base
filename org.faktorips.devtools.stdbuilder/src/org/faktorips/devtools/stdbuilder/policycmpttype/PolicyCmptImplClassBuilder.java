@@ -202,17 +202,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         buildValidation(methodsBuilder);
         generateMethodInitPropertiesFromXml(methodsBuilder);
         generateMethodCreateChildFromXml(methodsBuilder);
-        boolean hasAssociation = false;
-        IPolicyCmptTypeAssociation[] relations = getPcType().getPolicyCmptTypeAssociations();
-        for (int i = 0; i < relations.length; i++) {
-            if (relations[i].isAssoziation()) {
-                hasAssociation = true;
+        IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
+        for (int i = 0; i < associations.length; i++) {
+            if (associations[i].isAssoziation()) {
+                generateMethodCreateUnresolvedReference(methodsBuilder);
                 break;
             }
         } 
-        if (hasAssociation) {
-            generateMethodCreateUnresolvedReference(methodsBuilder);
-        }
     }
     
     protected void generateMethodGetEffectiveFromAsCalendarForAggregateRoot(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {

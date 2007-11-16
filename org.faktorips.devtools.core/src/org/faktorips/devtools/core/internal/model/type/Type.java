@@ -42,6 +42,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -144,18 +145,20 @@ public abstract class Type extends BaseIpsObject implements IType {
     /**
      * {@inheritDoc}
      */
-    public boolean isSubtypeOf(IType supertypeCandidate, IIpsProject project) throws CoreException {
+    public boolean isSubtypeOf(IType supertypeCandidate, IIpsProject ipsProject) throws CoreException {
         if (supertypeCandidate==null) {
             return false;
         }
-        IType supertype = findSupertype(project);
+        IType supertype = findSupertype(ipsProject);
         if (supertype==null) {
             return false;
         }
         if (supertypeCandidate.equals(supertype)) {
             return true;
         }
-        return supertype.isSubtypeOf(supertypeCandidate, project);
+        IsSubtypeOfVisitor visitor = new IsSubtypeOfVisitor(ipsProject, supertypeCandidate);
+        visitor.start(supertype);
+        return visitor.isSubtype();
     }
 
     /**
@@ -618,7 +621,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     
-    class SupertypesCollector extends TypeHierarchyVisitor {
+    private static class SupertypesCollector extends TypeHierarchyVisitor {
 
         private List supertypes = new ArrayList();
         
@@ -635,7 +638,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
     }
 
-    class MethodOverrideCandidatesFinder extends TypeHierarchyVisitor {
+    private class MethodOverrideCandidatesFinder extends TypeHierarchyVisitor {
 
         private List candidates = new ArrayList();
         private boolean onlyNotImplementedAbstractMethods;
@@ -684,7 +687,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     }
     
-    class AssociationFinder extends TypeHierarchyVisitor {
+    private static class AssociationFinder extends TypeHierarchyVisitor {
 
         private String associationName;
         private IAssociation association = null;
@@ -708,7 +711,7 @@ public abstract class Type extends BaseIpsObject implements IType {
      * 
      * @author Joerg Ortmann
      */
-    class AssociationTargetAndTypeFinder extends TypeHierarchyVisitor {
+    private static class AssociationTargetAndTypeFinder extends TypeHierarchyVisitor {
         private String associationTarget;
         private AssociationType associationType;
         private List associationsFound = new ArrayList();
@@ -871,6 +874,32 @@ public abstract class Type extends BaseIpsObject implements IType {
             }
             return false;
         }
-
     }
+    
+    private static class IsSubtypeOfVisitor extends TypeHierarchyVisitor {
+
+        private IType supertypeCandidate;
+        private boolean subtype = false;
+        
+        public IsSubtypeOfVisitor(IIpsProject ipsProject, IType supertypeCandidate) {
+            super(ipsProject);
+            ArgumentCheck.notNull(supertypeCandidate);
+            this.supertypeCandidate = supertypeCandidate;
+        }
+        
+        boolean isSubtype() {
+            return subtype;
+        }
+
+        protected boolean visit(IType currentType) throws CoreException {
+            if (currentType==supertypeCandidate) {
+                subtype = true;
+                return false;
+            }
+            return true;
+        }
+
+        
+    }
+    
 }

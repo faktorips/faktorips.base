@@ -74,6 +74,29 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         ipsProject.getIpsModel().removeChangeListener(this);
     }
     
+    public void testValidate_PolicyCmptTypeDoesNotSpecifyThisOneAsConfigurationType() throws CoreException {
+        MessageList result = productCmptType.validate(ipsProject);
+        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE));
+        
+        policyCmptType.setProductCmptType("OtherType");
+        result = productCmptType.validate(ipsProject);
+        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE));
+        
+        policyCmptType.setProductCmptType(superProductCmptType.getQualifiedName());
+        superProductCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
+        result = productCmptType.validate(ipsProject);
+        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE));
+    }
+    
+    public void testValidate_PolicyCmptTypeNotMarkedAsConfigurable() throws CoreException {
+        MessageList result = productCmptType.validate(ipsProject);
+        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE));
+        
+        policyCmptType.setConfigurableByProductCmptType(false);
+        result = productCmptType.validate(ipsProject);
+        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE));
+    }
+    
     /**
      * Additional, product component type specific tests
      */

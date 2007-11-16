@@ -47,6 +47,17 @@ public interface IProductCmptType extends IIpsObject, IType {
     public final static String MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST = MSGCODE_PREFIX + "PolicyCmptTypeDoesNotExist"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the referenced policy component type is not marked as confifurable.
+     */
+    public final static String MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE = MSGCODE_PREFIX + "PolicyCmptTypeNotMarkedAsConfigurable"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the referenced policy component type does specify this product
+     * component type or one if it's supertypes as configuration type. 
+     */
+    public final static String MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE = MSGCODE_PREFIX + "PolicyCmptTypeDoesNotExist"; //$NON-NLS-1$
+
+    /**
      * Validation code to indicate that a type has a different value for the ConfigurationForPolicyCmptType property
      * than it's supertype. 
      *
@@ -60,6 +71,11 @@ public interface IProductCmptType extends IIpsObject, IType {
      * policy component type hierarchy.
      */
     public final static String MSGCODE_HIERARCHY_MISMATCH = MSGCODE_PREFIX + "HierarchyMismatch"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that at least two formula signatures have the same name.
+     */
+    public final static String MSGCODE_DUPLICATE_FORMULA_NAME = MSGCODE_PREFIX + "DuplicateFormulaName"; //$NON-NLS-1$
 
     /**
      * Returns the policy component type this product component type refers to.

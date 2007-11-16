@@ -422,6 +422,16 @@ public class ProductCmptType extends Type implements IProductCmptType {
             list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST, text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE));
             return;
         }
+        if (!policyCmptTypeObj.isConfigurableByProductCmptType()) {
+            String text = NLS.bind("{0} is not marked as configurable.", policyCmptType);
+            list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE, text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE));
+            return;
+        }
+        if (!this.isSubtypeOrSameType(policyCmptTypeObj.findProductCmptType(ipsProject), ipsProject)) {
+            String text = NLS.bind("{0} does not specify this type or one its supertypes as configuration type.", policyCmptType);
+            list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE, text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE));
+            return;
+        }
         if (supertype==null) {
             return;
         }
