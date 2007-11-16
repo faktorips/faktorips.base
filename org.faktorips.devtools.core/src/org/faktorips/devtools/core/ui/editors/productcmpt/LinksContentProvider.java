@@ -155,7 +155,7 @@ public class LinksContentProvider implements ITreeContentProvider {
                     index++;
                 }
             }
-            return false;
+            return true;
         }
         
     }
