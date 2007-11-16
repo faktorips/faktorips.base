@@ -125,6 +125,13 @@ public class AssociationDerivedUnionGroup extends Composite {
         }
     }
     
+    /**
+     * Sets if the association defines a subset of a derived union or not defines a subset.
+     */
+    public void setSubset(boolean subset) {
+        pmoAssociation.setSubset(subset);
+    }
+    
     private void addCompletionProcessor(IAssociation association){
         DerivedUnionCompletionProcessor completionProcessor = new DerivedUnionCompletionProcessor(association);
         completionProcessor.setComputeProposalForEmptyPrefix(true);
@@ -161,18 +168,15 @@ public class AssociationDerivedUnionGroup extends Composite {
          * {@inheritDoc}
          */
         protected void partHasChanged() {
-            // special handling of policy component type associations
-            if (!(association instanceof IPolicyCmptTypeAssociation)) {
-                return;
-            }
-            
-            IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)association;
+            initDerivedUnionCandidates(association);
 
-            // enable subset
-            if (!policyCmptTypeAssociation.isContainerRelationApplicable()) {
-                subset = false;
+            // special handling for policy component type associations
+            if (association instanceof IPolicyCmptTypeAssociation) {
+                partHasChangedFor((IPolicyCmptTypeAssociation)association);
             }
+        }
 
+        private void initDerivedUnionCandidates(IAssociation policyCmptTypeAssociation) {
             // set derived union candidates
             String currentTarget = policyCmptTypeAssociation.getTarget();
             if (StringUtils.isEmpty(currentTarget)) {
@@ -203,5 +207,13 @@ public class AssociationDerivedUnionGroup extends Composite {
                 }
             }
         }
+        
+        private void partHasChangedFor(IPolicyCmptTypeAssociation association) {
+            IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)association;
+            // enable subset
+            if (!policyCmptTypeAssociation.isContainerRelationApplicable()) {
+                subset = false;
+            }
+        }        
     }
 }

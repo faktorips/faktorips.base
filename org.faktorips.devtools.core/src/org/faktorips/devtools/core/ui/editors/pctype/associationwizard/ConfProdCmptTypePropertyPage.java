@@ -182,9 +182,18 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
             dynamicComposite = createGeneralControls(groupGeneral);
             
             bindAllControls(productCmptAssociation);
+            
+            setDefaults();
         }
         
         refreshPageConrolLayouts();
+    }
+
+    private void setDefaults() {
+        association.setDerivedUnion(wizard.getAssociation().isDerivedUnion());
+        if (! wizard.getAssociation().isSubsetOfADerivedUnion()){
+            derivedUnionGroup.setSubset(false);
+        }
     }
 
     private void refreshPageConrolLayouts() {
