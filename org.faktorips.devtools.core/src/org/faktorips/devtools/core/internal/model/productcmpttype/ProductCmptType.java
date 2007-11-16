@@ -598,16 +598,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
         protected boolean visit(IType currentType) throws CoreException {
             super.visit(currentType);
             ProductCmptType productCmptType = (ProductCmptType)currentType;
-            for (Iterator it=productCmptType.getIteratorForMethods(); it.hasNext(); ) {
-                IProductCmptTypeMethod method = (IProductCmptTypeMethod)it.next();
-                if (method.isFormulaSignatureDefinition()) {
-                    add(method.getFormulaName(), IProductCmptTypeMethod.PROPERTY_FORMULA_NAME, method);
-                }
-            }
             for (Iterator it=productCmptType.getIteratorForTableStructureUsages(); it.hasNext(); ) {
                 ITableStructureUsage tsu = (ITableStructureUsage)it.next();
                 add(tsu.getRoleName(), ITableStructureUsage.PROPERTY_ROLENAME, tsu);
             }
+            // note: formula names arent compared as their name is often similiar to the policy component type attribute 
+            // they calculate the value for
             return true;
         }        
     }

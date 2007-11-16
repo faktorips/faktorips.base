@@ -100,24 +100,6 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest implements Conten
         tsu2.setRoleName("table2");
         result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
-        
-        // formula in same type
-        IProductCmptTypeMethod formula1 = productCmptType.newFormulaSignature("property");
-        result = productCmptType.validate(ipsProject);
-        assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
-
-        formula1.setFormulaName("formula1");
-        result = productCmptType.validate(ipsProject);
-        assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
-        
-        // formula in supertype
-        IProductCmptTypeMethod formula2 = superProductCmptType.newFormulaSignature("property");
-        result = productCmptType.validate(ipsProject);
-        assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
-
-        formula2.setFormulaName("formula2");
-        result = productCmptType.validate(ipsProject);
-        assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
     }
     
     public void testValidateMustHaveSameValueForConfigurationForPolicyCmptType() throws CoreException {
