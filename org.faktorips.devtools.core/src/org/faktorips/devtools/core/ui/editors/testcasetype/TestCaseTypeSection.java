@@ -69,10 +69,12 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
@@ -177,6 +179,80 @@ public class TestCaseTypeSection extends IpsSection {
     private SectionDetailObjectCache objectCache;
 
     private boolean showSubtypeAttributes;
+
+    private class AttributeDetails {
+        private Composite attributesDetails;
+        private Text attributesPolicyCmptType;
+        private Text attributesDescription;
+        private TextField attributesDescriptionField;
+        private ExpandableComposite attributeExpandable;
+        private IpsObjectUIController uiControllerAttributeDescription = null;
+        private boolean manualTriggered = false;
+        
+        /**
+         * Creates the attribute detail area
+         */
+        public void createAttributeDetailArea(Composite parent) {
+            attributeExpandable = new ExpandableComposite(parent, SWT.NONE);
+            attributeExpandable.setText("Attribute details");
+            GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+            gd.horizontalSpan = 2;
+            attributeExpandable.setLayoutData(gd);
+            attributeExpandable.setLayout(new GridLayout(1, true));
+            attributeExpandable.addExpansionListener(new IExpansionListener() {
+                public void expansionStateChanged(ExpansionEvent e) {
+                    redrawForm();
+                    manualTriggered = true;
+                }
+
+                public void expansionStateChanging(ExpansionEvent e) {
+                }
+            });
+            
+            attributesDetails = toolkit.createLabelEditColumnComposite(attributeExpandable);
+            attributeExpandable.setClient(attributesDetails);
+            
+            attributesDetails.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
+            
+            toolkit.createLabel(attributesDetails, "Policy component type");
+
+            attributesPolicyCmptType = toolkit.createText(attributesDetails);
+            toolkit.setDataChangeable(attributesPolicyCmptType, false);
+            
+            toolkit.createLabel(attributesDetails, "Description");
+            toolkit.createVerticalSpacer(attributesDetails, 1);
+            attributesDescription = toolkit.createMultilineText(attributesDetails);
+            gd = (GridData)attributesDescription.getLayoutData();
+            gd.horizontalSpan = 2;
+            
+            attributesDescriptionField = new TextField(attributesDescription);
+        }
+
+        /*
+         * Update the attributes deatailed area.
+         */
+        public void updateDetailAttributeArea(ITestAttribute selectedAttribute) {
+            try {
+                if (!manualTriggered){
+                    attributeExpandable.setExpanded(true);
+                    redrawForm();
+                }
+                
+                if (uiControllerAttributeDescription != null){
+                    uiControllerAttributeDescription.remove(attributesDescriptionField);
+                }
+                
+                uiControllerAttributeDescription = createUIController(selectedAttribute);
+                uiControllerAttributeDescription.add(attributesDescriptionField, ITestAttribute.PROPERTY_DESCRIPTION);
+
+                attributesPolicyCmptType.setText(selectedAttribute.getCorrespondingPolicyCmptType());
+                
+                uiControllerAttributeDescription.updateUI();
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
+    }
     
     /*
      * Object cache to store several object to render the ui
@@ -189,6 +265,7 @@ public class TestCaseTypeSection extends IpsSection {
         private HashMap attributeIdx = new HashMap();
         private HashMap sectionButtons = new HashMap();
         private HashMap attributeTableViewers = new HashMap();
+        private HashMap attributeDetailsMap = new HashMap();
         
         /*
          * Returns the key identifier for the given object
@@ -208,6 +285,7 @@ public class TestCaseTypeSection extends IpsSection {
             attributeIdx.clear();
             sectionButtons.clear();
             attributeTableViewers.clear();
+            attributeDetailsMap.clear();
         }
 
         public void putAttributeIdx(ITestAttribute attribute, int idx) {
@@ -290,6 +368,14 @@ public class TestCaseTypeSection extends IpsSection {
         public Collection getAllAttributeTable(){
             return attributeTableViewers.values();
         }
+        
+        public void putAttributeDetails(ITestParameter testParam, AttributeDetails attributeDetails){
+            attributeDetailsMap.put(getKeyFor(testParam), attributeDetails);
+        }
+        
+        public AttributeDetails getAttributeDetails(ITestParameter testParam){
+            return (AttributeDetails) attributeDetailsMap.get(getKeyFor(testParam));
+        }        
     }
     
     /*
@@ -1049,6 +1135,11 @@ public class TestCaseTypeSection extends IpsSection {
                 SectionButtons currSectionButtons = new SectionButtons();
                 currSectionButtons.createButtons(composite,(ITestPolicyCmptTypeParameter) testParam, attributeTableViewer);
                 objectCache.putSectionButtons(testParam, currSectionButtons);
+                
+                // create detail area of selected attributes
+                AttributeDetails attributeDetails = new AttributeDetails();
+                attributeDetails.createAttributeDetailArea(composite);
+                objectCache.putAttributeDetails(testParam, attributeDetails);
             } else {
                 composite.setLayout(new GridLayout(1, true));
 
@@ -1136,6 +1227,8 @@ public class TestCaseTypeSection extends IpsSection {
                         currSelectedDetailObject = (ITestAttribute)firstElement;
                         updateDetailButtonStatus((ITestAttribute)firstElement);
                         selectSection(objectCache.getSection((ITestAttribute)firstElement));
+                        AttributeDetails attributeDetails = objectCache.getAttributeDetails(((ITestAttribute)firstElement).getTestPolicyCmptTypeParameter());
+                        attributeDetails.updateDetailAttributeArea((ITestAttribute)firstElement);
                     }
                 }
             }
@@ -1371,7 +1464,7 @@ public class TestCaseTypeSection extends IpsSection {
             buttons.updateDetailButtonStatus(getRootSectionObject(currSelectedDetailObject), currSelectedDetailObject);
         }
     }
-
+    
     /*
      * Returns the object which is the root of a section, the returned object is the object in the tree
      */

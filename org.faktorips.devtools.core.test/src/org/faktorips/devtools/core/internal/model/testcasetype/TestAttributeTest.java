@@ -341,8 +341,10 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         // Benoetigen wir dazu eine migration?
         testAttribute.setAttribute(attr1);
         assertEquals("", testAttribute.getPolicyCmptType());
+        assertEquals(policyCmptTypeSuper.getQualifiedName(), testAttribute.getCorrespondingPolicyCmptType());
         
         testAttribute.setAttribute(attr3);
         assertEquals(policyCmptType.getQualifiedName(), testAttribute.getPolicyCmptType());
+        assertEquals(policyCmptType.getQualifiedName(), testAttribute.getCorrespondingPolicyCmptType());
     }
 }

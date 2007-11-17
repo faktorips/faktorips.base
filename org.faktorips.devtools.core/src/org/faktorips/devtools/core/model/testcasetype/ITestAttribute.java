@@ -118,6 +118,21 @@ public interface ITestAttribute extends IIpsObjectPart {
 
     /**
      * Returns the policy cmpt type the attribute belongs to.
+     * 
+     * @throws CoreException If there was an error while searching the corresponding policy cmpt type.
+     */
+    public String getCorrespondingPolicyCmptType() throws CoreException;
+    
+    /**
+     * Returns the policy cmpt type which is stored beside the attribute.<br>
+     * Note that if the policy cmpt type of the parent test policy cmpt type parameter is the same
+     * as the attributes policy cmpt type then this method returns an empty String. Because the
+     * policy cmpt type will only be stored in special case (see
+     * setAttribute(IPolicyCmptTypeAttribute)). To get always the corresponding policy cmpt type of
+     * the attribute use #getCorrespondingPolicyCmptType() instead.
+     * 
+     * @see #setAttribute(IPolicyCmptTypeAttribute)
+     * @see #getCorrespondingPolicyCmptType()
      */
     public String getPolicyCmptType();
 

@@ -140,6 +140,19 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
     /**
      * {@inheritDoc}
      */
+    public String getCorrespondingPolicyCmptType() throws CoreException {
+        IPolicyCmptTypeAttribute attribute = findAttribute(getIpsProject());
+        if (attribute != null){
+            return attribute.getPolicyCmptType().getQualifiedName();
+        }
+        
+        // attribute wasn't found, return at least the stored policy cmpt type
+        return policyCmptType;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public TestPolicyCmptTypeParameter getTestPolicyCmptTypeParameter() {
         return (TestPolicyCmptTypeParameter)getParent();
     }
