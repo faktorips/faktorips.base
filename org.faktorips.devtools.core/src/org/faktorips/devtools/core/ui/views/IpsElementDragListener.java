@@ -19,16 +19,14 @@ package org.faktorips.devtools.core.ui.views;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
 
 public class IpsElementDragListener implements DragSourceListener {
 
@@ -50,24 +48,31 @@ public class IpsElementDragListener implements DragSourceListener {
         // nothing to do
     }
 
-    private String[] getFilenames(IStructuredSelection selection) {
+    public static String[] getFilenames(IStructuredSelection selection) {
     	ArrayList list = new ArrayList(selection.size());
-    	Iterator iter = ((IStructuredSelection)dragSource.getSelection()).iterator();
+    	Iterator iter =  selection.iterator();
     	while (iter.hasNext()) {
     		Object selected = iter.next();
-    		if (selected instanceof IIpsElement && ((IIpsElement)selected).getCorrespondingResource() != null) {
-    			list.add(((IIpsElement)selected).getCorrespondingResource().getLocation().toOSString());
-    		}
-    		else if (selected instanceof IProductCmpt || selected instanceof ITestCase || selected instanceof ITableContents) {
-                if (((IIpsObject)selected).getIpsSrcFile().getCorrespondingFile() != null){
-                    list.add(((IIpsObject)selected).getIpsSrcFile().getCorrespondingFile().getLocation().toOSString());
+    		if(selected instanceof Object[]){
+                Object[] objetcs = (Object[])selected ;
+    			for (int i = 0; i < objetcs.length; i++) {
+                    addSelectedObject(list, objetcs[i]);
                 }
-            }else if(selected instanceof Object[]){
-    			Object ipsObject= ((Object[])selected)[0];
-    			list.add(((IIpsObject)ipsObject).getIpsSrcFile().getCorrespondingFile().getLocation().toOSString());
-    		}
+    		} else {
+                addSelectedObject(list, selected);
+            }
     	}
     	
     	return (String[])list.toArray(new String[list.size()]);
+    }
+    
+    private static void addSelectedObject(List list, Object selected){
+        if(selected instanceof IResource){
+            list.add(((IResource)selected).getLocation().toOSString());
+        } else if (selected instanceof IIpsElement){
+            if (((IIpsElement)selected).getCorrespondingResource() != null) {
+                list.add(((IIpsElement)selected).getCorrespondingResource().getLocation().toOSString());
+            }
+        }
     }
 }

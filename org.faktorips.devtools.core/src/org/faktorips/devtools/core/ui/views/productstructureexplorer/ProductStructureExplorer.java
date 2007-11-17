@@ -165,7 +165,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         }
 
         public void drop(DropTargetEvent event) {
-            IIpsElement[] transferred = super.getTransferedElements(event.currentDataType);
+            Object[] transferred = super.getTransferedElements(event.currentDataType);
             if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile) {
                 try {
                     showStructure((IIpsSrcFile)transferred[0]);

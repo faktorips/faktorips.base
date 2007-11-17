@@ -156,7 +156,7 @@ public class IpsPasteAction extends IpsAction {
      * the given <code>IContainer</code>.
      */
     private void paste(IContainer parent) {
-        Object stored = clipboard.getContents(ResourceTransfer.getInstance());
+        Object stored = getTransgeredObject();
         if (stored instanceof IResource[]) {
             IResource[] res = (IResource[])stored;
             for (int i = 0; i < res.length; i++) {
@@ -178,11 +178,7 @@ public class IpsPasteAction extends IpsAction {
      * Try to paste the <code>IResource</code> stored on the clipboard to the given parent.
      */
     private void paste(IIpsPackageFragment parent) {
-        Object stored = clipboard.getContents(ResourceTransfer.getInstance());
-        if (stored == null){
-            stored = clipboard.getContents(FileTransfer.getInstance());
-        }
-        
+        Object stored = getTransgeredObject();
         if (stored instanceof IResource[]) {
             copyResources(parent, (IResource[])stored);
         } else if (stored instanceof String[]){
@@ -192,6 +188,15 @@ public class IpsPasteAction extends IpsAction {
         // Paste objects by resource links (e.g. files inside an ips archive)
         String storedText = (String)clipboard.getContents(TextTransfer.getInstance());
         pasteResourceLinks(parent, storedText);
+    }
+    
+
+    private Object getTransgeredObject() {
+        Object stored = clipboard.getContents(ResourceTransfer.getInstance());
+        if (stored == null){
+            stored = clipboard.getContents(FileTransfer.getInstance());
+        }
+        return stored;
     }
 
     private void copyResources(IIpsPackageFragment parent, IResource[] resources){
@@ -211,10 +216,14 @@ public class IpsPasteAction extends IpsAction {
     
     private void copyFiles(IIpsPackageFragment parent, String[] fileNames) {
         IResource destinationResource = parent.getEnclosingResource();
-        if (destinationResource instanceof IFolder){
-            CopyFilesAndFoldersOperation operation = new CopyFilesAndFoldersOperation(shell);
-            operation.copyFiles(fileNames, (IFolder)destinationResource);
+        if (destinationResource instanceof IContainer){
+            copyFiles(shell, (IFolder)destinationResource, fileNames);
         }
+    }
+
+    public static void copyFiles(Shell shell, IContainer parentFolder, String[] fileNames) {
+        CopyFilesAndFoldersOperation operation = new CopyFilesAndFoldersOperation(shell);
+        operation.copyFiles(fileNames, parentFolder);
     }
 
     /*

@@ -69,7 +69,7 @@ public abstract class IpsElementDropListener implements DropTargetListener {
 	 * Returns all <code>IIpsElement</code>s transferred as files by the given transferData
 	 * object as array.
 	 */
-	protected IIpsElement[] getTransferedElements(TransferData transferData) {
+	protected Object[] getTransferedElements(TransferData transferData) {
 		String[] filenames = (String[])FileTransfer.getInstance().nativeToJava(transferData);
 		ArrayList elements = new ArrayList();
 		for (int i = 0; i < filenames.length; i++) {
@@ -84,6 +84,8 @@ public abstract class IpsElementDropListener implements DropTargetListener {
                     IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
                     if (element != null && element.exists()) {
                         elements.add(element);
+                    } else {
+                        elements.add(file);
                     }
                 }
             }
@@ -92,11 +94,13 @@ public abstract class IpsElementDropListener implements DropTargetListener {
                     IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(container);
                     if (element != null && element.exists()) {
                         elements.add(element);
+                    } else {
+                        elements.add(container);
                     }
                 }
             }
 		}
-		return (IIpsElement[])elements.toArray(new IIpsElement[elements.size()]);
+		return (Object[])elements.toArray(new Object[elements.size()]);
 	}
 	
 }

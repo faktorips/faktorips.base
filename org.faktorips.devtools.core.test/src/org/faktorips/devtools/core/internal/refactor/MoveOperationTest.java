@@ -17,10 +17,14 @@
 
 package org.faktorips.devtools.core.internal.refactor;
 
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -515,6 +519,77 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(target.exists());
     }
 
+    public void testMoveFiles() throws Exception {
+        // set up source and target
+        IProject project = ipsProject.getProject();
+        IFolder folderSource = project.getFolder("source");
+        IFolder folderTarget = project.getFolder("target");
+        folderSource.create(true, true, null);
+        folderTarget.create(true, true, null);
+        assertTrue(folderSource.exists());
+        assertTrue(folderTarget.exists());
+        
+        IFile file1 = folderSource.getFile("file1");
+        IFile file2 = folderSource.getFile("file2");
+        file1.create(new ByteArrayInputStream("File1".getBytes()), true, null);
+        file2.create(new ByteArrayInputStream("File1".getBytes()), true, null);
+        assertTrue(folderSource.exists());
+        assertTrue(folderTarget.exists());
+         
+        // test move to folder
+        MoveOperation operation = new MoveOperation(folderTarget.getProject(), new Object[] {
+                file1, file2}, folderTarget.getLocation()
+                .toOSString());
+        operation.run(null);
+      
+        assertTrue(folderTarget.getFile("file1").exists());
+        assertTrue(folderTarget.getFile("file2").exists());
+        
+        // test move to ips package fragment
+        newPolicyCmptType(ipsProject, "target.dummy");
+        IIpsPackageFragment targetIpsPackageFragment = ipsProject.getIpsPackageFragmentRoots()[0].getIpsPackageFragment("source");
+        IResource source01 = ((IContainer)targetIpsPackageFragment.getEnclosingResource()).findMember("file1");
+        assertTrue(source01 == null);
+        IFile source1 = folderTarget.getFile("file1");
+        operation = new MoveOperation(new Object[] {source1}, targetIpsPackageFragment);
+        operation.run(null);
+        source01 = ((IContainer)targetIpsPackageFragment.getEnclosingResource()).findMember("file1");
+        assertTrue(source01.exists());
+        
+        // test move to project
+        operation = new MoveOperation(ipsProject.getProject(), new Object[] { source01 }, ipsProject.getProject()
+                .getLocation().toOSString());
+        operation.run(null);
+        assertTrue(((IContainer)targetIpsPackageFragment.getEnclosingResource()).findMember("file1") == null);        
+        assertTrue(ipsProject.getProject().findMember("file1").exists());        
+    }
+    
+    public void testMoveLinks() throws Exception {
+        // set up source and target
+        IProject project = ipsProject.getProject();
+        IFolder folderSource = project.getFolder("source");
+        IFolder folderTarget = project.getFolder("target");
+        folderSource.create(true, true, null);
+        folderTarget.create(true, true, null);
+        assertTrue(folderSource.exists());
+        assertTrue(folderTarget.exists());
+        
+        IFile file1 = folderSource.getFile("file1");
+        IFile file2 = folderSource.getFile("file2");
+        file1.create(new ByteArrayInputStream("File1".getBytes()), true, null);
+        file2.create(new ByteArrayInputStream("File1".getBytes()), true, null);
+        assertTrue(folderSource.exists());
+        assertTrue(folderTarget.exists());
+         
+        MoveOperation operation = new MoveOperation(folderTarget.getProject(), new Object[] {
+                file1.getLocation().toOSString(), file2.getLocation().toOSString() }, folderTarget.getLocation()
+                .toOSString());
+        operation.run(null);
+      
+        assertTrue(folderTarget.getFile("file1").exists());
+        assertTrue(folderTarget.getFile("file2").exists());
+    }
+    
     private IIpsPackageFragmentRoot createIpsPackageFrgmtRoot() throws CoreException {
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IFolder rootFolder = ipsProject.getProject().getFolder("targetRoot");

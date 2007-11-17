@@ -19,6 +19,8 @@ package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -29,7 +31,6 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.refactor.MoveOperation;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -62,7 +63,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
             return;
         }
         Object target= event.item.getData();
-        IIpsElement[] sources = getTransferedElements(event.currentDataType);
+        Object[] sources = getTransferedElements(event.currentDataType);
         if(MoveOperation.canMove(sources, target)){
             event.detail = DND.DROP_MOVE;
         }
@@ -81,12 +82,19 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
 			return;
 		}
 		try {
-			IIpsPackageFragment target = getTarget(event);
-			if (target == null) {
-				return;
-			}
-			IIpsElement[] sources = getTransferedElements(event.currentDataType);
-			MoveOperation moveOp = new MoveOperation(sources, target);
+            MoveOperation moveOp = null; 
+            Object target = getTarget(event);
+            Object[] sources = getTransferedElements(event.currentDataType);
+            if (target instanceof IIpsPackageFragment) {
+			    moveOp = new MoveOperation(sources, (IIpsPackageFragment)target);
+			} else if (target instanceof IContainer){
+                moveOp = new MoveOperation(((IContainer)target).getProject(), sources, ((IResource)target).getLocation().toOSString());
+            }
+            
+            if (moveOp == null){
+                return;
+            }
+            
 			ProgressMonitorDialog dialog = new ProgressMonitorDialog(event.display.getActiveShell());
 			dialog.run(false, false, moveOp);
 		} catch (CoreException e) {
@@ -105,22 +113,17 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
 		
 	}
 
-	private IIpsPackageFragment getTarget(DropTargetEvent event) throws CoreException {
+	private Object getTarget(DropTargetEvent event) throws CoreException {
 		if(event.item == null){
 			return null;
 		}
 		Object dropTarget = event.item.getData();
-		IIpsPackageFragment target = null; 
-		if (dropTarget instanceof IIpsPackageFragment) {
-			target = (IIpsPackageFragment)dropTarget;
-		}
-        else if (dropTarget instanceof IIpsPackageFragmentRoot) {
-            target = ((IIpsPackageFragmentRoot)dropTarget).getDefaultIpsPackageFragment();
+        if (dropTarget instanceof IIpsPackageFragmentRoot) {
+            return ((IIpsPackageFragmentRoot)dropTarget).getDefaultIpsPackageFragment();
+        } else if (dropTarget instanceof IIpsProject){
+            return ((IIpsProject)dropTarget).getProject();
         }
-        else if (dropTarget instanceof IIpsProject) {
-            target = ((IIpsProject)dropTarget).getIpsPackageFragmentRoots()[0].getDefaultIpsPackageFragment();
-        }
-		return target;
+		return dropTarget;
 	}
 	
 	/**
