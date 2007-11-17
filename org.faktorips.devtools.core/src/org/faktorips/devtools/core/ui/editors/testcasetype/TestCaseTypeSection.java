@@ -194,7 +194,7 @@ public class TestCaseTypeSection extends IpsSection {
          */
         public void createAttributeDetailArea(Composite parent) {
             attributeExpandable = new ExpandableComposite(parent, SWT.NONE);
-            attributeExpandable.setText("Attribute details");
+            attributeExpandable.setText(Messages.TestCaseTypeSection_labelAttributeDetails);
             GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
             gd.horizontalSpan = 2;
             attributeExpandable.setLayoutData(gd);
@@ -214,12 +214,12 @@ public class TestCaseTypeSection extends IpsSection {
             
             attributesDetails.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
             
-            toolkit.createLabel(attributesDetails, "Policy component type");
+            toolkit.createLabel(attributesDetails, Messages.TestCaseTypeSection_labelPolicyCmptType);
 
             attributesPolicyCmptType = toolkit.createText(attributesDetails);
             toolkit.setDataChangeable(attributesPolicyCmptType, false);
             
-            toolkit.createLabel(attributesDetails, "Description");
+            toolkit.createLabel(attributesDetails, Messages.TestCaseTypeSection_labelDescription);
             toolkit.createVerticalSpacer(attributesDetails, 1);
             attributesDescription = toolkit.createMultilineText(attributesDetails);
             gd = (GridData)attributesDescription.getLayoutData();

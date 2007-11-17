@@ -80,6 +80,9 @@ public class Messages extends NLS {
     public static String TestCaseTypeSection_FormText_InfoAssociation_1;
     public static String TestCaseTypeSection_FormText_InfoAssociation_2;
     public static String TestCaseTypeSection_FormText_InfoAssociation_3;
+    public static String TestCaseTypeSection_labelAttributeDetails;
+    public static String TestCaseTypeSection_labelDescription;
+    public static String TestCaseTypeSection_labelPolicyCmptType;
     public static String TestCaseTypeTreeRootElement_RootElement_Text;
     public static String NewChildParamWizardPage_ValidationError_InvalidTestParameterName;
     public static String NewRootParamWizardPage_ValidationError_InvalidTestParameterName;
