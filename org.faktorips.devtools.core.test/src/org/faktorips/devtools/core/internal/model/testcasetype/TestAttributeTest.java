@@ -57,6 +57,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         Element attributeEl = XmlUtil.getFirstElement(docEl);
         testAttribute.initFromXml(attributeEl);
         assertEquals("attribute1", testAttribute.getAttribute());
+        assertEquals("policyCmptType1", testAttribute.getPolicyCmptType());
         assertEquals("attribute1Name", testAttribute.getName());
         assertTrue(testAttribute.isInputAttribute());
         assertFalse(testAttribute.isExpextedResultAttribute());
@@ -64,6 +65,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         attributeEl = XmlUtil.getElement(docEl, 1);
         testAttribute.initFromXml(attributeEl);
         assertEquals("attribute2", testAttribute.getAttribute());
+        assertEquals("", testAttribute.getPolicyCmptType());
         assertEquals("attribute2Name", testAttribute.getName());
         assertFalse(testAttribute.isInputAttribute());
         assertTrue(testAttribute.isExpextedResultAttribute());
@@ -95,16 +97,19 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
 
     public void testToXml() {
         testAttribute.setAttribute("attribute2");
+        testAttribute.setPolicyCmptType("policyCmptTyp2");
         testAttribute.setName("attribute2Name");
         ((TestAttribute)testAttribute).setTestAttributeType(TestParameterType.INPUT);
         Element el = testAttribute.toXml(newDocument());
 
         testAttribute.setAttribute("attributeName3");
+        testAttribute.setPolicyCmptType("policyCmptTyp3");
         testAttribute.setName("attribute3Name");
         ((TestAttribute)testAttribute).setTestAttributeType(TestParameterType.EXPECTED_RESULT);
         
         testAttribute.initFromXml(el);
         assertEquals("attribute2", testAttribute.getAttribute());
+        assertEquals("policyCmptTyp2", testAttribute.getPolicyCmptType());
         assertEquals("attribute2Name", testAttribute.getName());
         assertTrue(testAttribute.isInputAttribute());
         assertFalse(testAttribute.isExpextedResultAttribute());
@@ -134,32 +139,6 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertEquals(attr1, testAttribute.findAttribute(ipsProject));
     }
 
-    /**
-     * Attributes of suptypes will never been found, because this feature is only available on the 
-     * test case side, see TestAttributeValue.validateSelf()
-     */
-    public void testFindAttributeInSubtype() throws Exception{
-        IPolicyCmptType policyCmptTypeSuper = newPolicyCmptType(ipsProject, "policyCmptSuper");
-        IPolicyCmptTypeAttribute attr1 = policyCmptTypeSuper.newPolicyCmptTypeAttribute();
-        attr1.setName("attribute1");
-        IPolicyCmptTypeAttribute attr2 = policyCmptTypeSuper.newPolicyCmptTypeAttribute();
-        attr2.setName("attribute2");
-        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "policyCmpt");
-        IPolicyCmptTypeAttribute attr3 = policyCmptType.newPolicyCmptTypeAttribute();
-        attr3.setName("attribute3");
-        IPolicyCmptTypeAttribute attr4 = policyCmptType.newPolicyCmptTypeAttribute();
-        attr4.setName("attribute4");
-        policyCmptType.setSupertype(policyCmptTypeSuper.getQualifiedName());
-        
-        ((ITestPolicyCmptTypeParameter)testAttribute.getParent()).setPolicyCmptType("policyCmpt");
-        
-        ITestPolicyCmptTypeParameter cmptTypeParameter = (ITestPolicyCmptTypeParameter)testAttribute.getParent();
-        cmptTypeParameter.setPolicyCmptType(policyCmptTypeSuper.getQualifiedName());
-        
-        testAttribute.setAttribute("attribute4");
-        assertNull(testAttribute.findAttribute(ipsProject));
-    }
-    
     public void testValidateAttributeNotFound() throws Exception{
         IPolicyCmptType pct = newPolicyCmptType(ipsProject, "policyCmptType");
         IPolicyCmptTypeAttribute attr = pct.newPolicyCmptTypeAttribute();
@@ -331,5 +310,39 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         // the parameter is not product relevant, threrefore there is no product cmpt
         // in this case the attribute is always relevant
         assertTrue(testAttribute.isAttributeRelevantByProductCmpt(null, ipsProject));
+    }
+    
+    /**
+     * Attributes of suptypes will never been found, because this feature is only available on the 
+     * test case side, see TestAttributeValue.validateSelf()
+     */
+    public void testFindAttributeInSubtype() throws Exception{
+        IPolicyCmptType policyCmptTypeSuper = newPolicyCmptType(ipsProject, "policyCmptSuper");
+        IPolicyCmptTypeAttribute attr1 = policyCmptTypeSuper.newPolicyCmptTypeAttribute();
+        attr1.setName("attribute1");
+        IPolicyCmptTypeAttribute attr2 = policyCmptTypeSuper.newPolicyCmptTypeAttribute();
+        attr2.setName("attribute2");
+        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "policyCmpt");
+        IPolicyCmptTypeAttribute attr3 = policyCmptType.newPolicyCmptTypeAttribute();
+        attr3.setName("attribute3");
+        IPolicyCmptTypeAttribute attr4 = policyCmptType.newPolicyCmptTypeAttribute();
+        attr4.setName("attribute4");
+        policyCmptType.setSupertype(policyCmptTypeSuper.getQualifiedName());
+        
+        ITestPolicyCmptTypeParameter cmptTypeParameter = (ITestPolicyCmptTypeParameter)testAttribute.getParent();
+        cmptTypeParameter.setPolicyCmptType(policyCmptTypeSuper.getQualifiedName());
+        
+        testAttribute.setAttribute("attribute4");
+        testAttribute.setPolicyCmptType(policyCmptType.getQualifiedName());
+        assertNotNull(testAttribute.findAttribute(ipsProject));
+
+        // FIXME Joerg ist dieses Verhalten so richtig, evtl. namen von getPolicyCmptType umbenennen um
+        // zu verdeutlichen, dass nur unter bestimmten umstaenden der policy cmpt type gesetzt ist?
+        // Benoetigen wir dazu eine migration?
+        testAttribute.setAttribute(attr1);
+        assertEquals("", testAttribute.getPolicyCmptType());
+        
+        testAttribute.setAttribute(attr3);
+        assertEquals(policyCmptType.getQualifiedName(), testAttribute.getPolicyCmptType());
     }
 }

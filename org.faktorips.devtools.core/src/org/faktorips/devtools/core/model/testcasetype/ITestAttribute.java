@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model.testcasetype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.testcasetype.TestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -32,6 +33,8 @@ public interface ITestAttribute extends IIpsObjectPart {
 	
 	/** Property names */
     public final static String PROPERTY_ATTRIBUTE = "attribute"; //$NON-NLS-1$
+
+    public final static String PROPERTY_POLICYCMPTTYPE_OF_ATTRIBUTE = "policyCmptType"; //$NON-NLS-1$
     
     public final static String PROPERTY_TEST_ATTRIBUTE_TYPE = "testAttributeType"; //$NON-NLS-1$
     
@@ -93,12 +96,41 @@ public interface ITestAttribute extends IIpsObjectPart {
      * Returns the attribute.
      */
 	public String getAttribute();
-	
+
 	/**
-	 * Sets the given attribute.
-	 */
+     * Sets the given attribute.<br>
+     * Note that this method is not recommended, because the additional storing of the poliy cmpt
+     * type must be done manualy. Is is recommended to use the method
+     * {@link #setAttribute(IPolicyCmptTypeAttribute)} instead, because here the policy cmpt type
+     * will be stored if necessary.
+     */
 	public void setAttribute(String attribute);
-	
+
+    /**
+     * Sets the given attribute. Furthermore if the given attribute belongs to a different type the
+     * parent test policy cmpt type parameter belongs to then store the policy cmpt type in the test
+     * attribute, thus finding this kind of subtype attributes can be performed without searching
+     * the whole subtype hierarchy of the policy cmpt type. If the policy cmpt type of the attribute and
+     * the policy cmpt type of the parent test policy cmpt type parameter are the same then the policy cmpt
+     * type property of this attribute will be left empty.
+     */
+	public void setAttribute(IPolicyCmptTypeAttribute attribute);
+
+    /**
+     * Returns the policy cmpt type the attribute belongs to.
+     */
+    public String getPolicyCmptType();
+
+    /**
+     * Sets the policy cmpt type the attribute belongs to.
+     */
+    public void setPolicyCmptType(String policyCmptType);
+    
+    /**
+     * Returns the test policy cmpt type parameter this test attribute belongs to.
+     */
+    public TestPolicyCmptTypeParameter getTestPolicyCmptTypeParameter();
+    
     /**
      * Returns the model attribute or <code>null</code> if the attribute does not exists.
      * 

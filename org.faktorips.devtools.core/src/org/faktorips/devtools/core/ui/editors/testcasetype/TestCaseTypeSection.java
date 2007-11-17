@@ -1172,8 +1172,9 @@ public class TestCaseTypeSection extends IpsSection {
         } catch (CoreException e1) {
             throw new RuntimeException(e1);
         }
-        if (attributesSelected == null)
+        if (attributesSelected == null){
             return;
+        }
         
         ITestAttribute testAttribute = null;
         for (int i = 0; i < attributesSelected.length; i++) {
@@ -1196,7 +1197,7 @@ public class TestCaseTypeSection extends IpsSection {
                 throw new RuntimeException(e);
             }
             
-            testAttribute.setAttribute(modelAttribute.getName());
+            testAttribute.setAttribute(modelAttribute);
             testAttribute.setName(testCaseType.generateUniqueNameForTestAttribute(testAttribute, modelAttribute.getName()));
         }
 

@@ -288,7 +288,6 @@ public class TestCaseCopyWizard extends ResizableWizard {
 
     void deleteTestCase(ITestCase testCase) {
         try {
-            // FIXME Joerg removeIpsSrcFileContent public (pe, jo)?
             ((IpsModel)testCase.getIpsModel()).removeIpsSrcFileContent(testCase.getIpsSrcFile());
             testCase.getEnclosingResource().delete(true, null);
             deletePackageFragments();

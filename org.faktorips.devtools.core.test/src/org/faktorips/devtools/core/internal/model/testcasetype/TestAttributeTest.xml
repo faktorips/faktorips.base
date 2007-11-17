@@ -4,7 +4,7 @@
 -->
 <testcases>
 
-	<TestAttribute name="attribute1Name" attribute="attribute1" testAttributeType="input">
+	<TestAttribute name="attribute1Name" attribute="attribute1" testAttributeType="input" policyCmptType="policyCmptType1">
 	</TestAttribute>
 
 	<TestAttribute name="attribute2Name" attribute="attribute2" testAttributeType="expectedResult">

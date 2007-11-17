@@ -17,9 +17,6 @@
 
 package org.faktorips.devtools.core.internal.model.testcasetype;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -32,7 +29,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -55,6 +51,8 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 	static final String TAG_NAME = "TestAttribute"; //$NON-NLS-1$
 	
 	private String attribute = ""; //$NON-NLS-1$
+
+    private String policyCmptType = ""; //$NON-NLS-1$
     
 	private TestParameterType type = TestParameterType.COMBINED;
     
@@ -98,6 +96,54 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 		valueChanged(oldAttribute, newAttribute);
 	}
 
+    /**
+	 * {@inheritDoc}
+	 */
+	public void setAttribute(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
+	    String oldAttribute = this.attribute;
+        String oldPolicyCmptTypeNameOfAttribute = this.policyCmptType;
+        
+        this.attribute = policyCmptTypeAttribute.getName();
+
+        // set the policy cmpt type only if the given attribute belongs to a different type the test policy
+        // cmpt type parameter belogs to. Because only in this case it is necessary, in all other cases
+        // it is better to leave the policy cmpt type property empty to get a minimum dependency to the 
+        // model objects (e.g. if the attribute will be moved to a other type in the hierarchy later on).
+        String policyCmptTypeNameOfAttribute = policyCmptTypeAttribute.getPolicyCmptType().getQualifiedName();
+        if (! policyCmptTypeNameOfAttribute.equals(getTestPolicyCmptTypeParameter().getPolicyCmptType()) ){
+            policyCmptType = policyCmptTypeNameOfAttribute;
+        } else {
+            policyCmptType = ""; //$NON-NLS-1$
+        }
+        
+	    if (!valueChanged(oldAttribute, attribute)){
+	        valueChanged(oldPolicyCmptTypeNameOfAttribute, policyCmptType);
+        }
+	}
+
+    /**
+	 * {@inheritDoc}
+	 */
+	public String getPolicyCmptType() {
+	    return policyCmptType;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setPolicyCmptType(String policyCmptType) {
+	    String oldPolicyCmptType = this.policyCmptType;
+	    this.policyCmptType = policyCmptType;
+	    valueChanged(oldPolicyCmptType, policyCmptType);
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public TestPolicyCmptTypeParameter getTestPolicyCmptTypeParameter() {
+        return (TestPolicyCmptTypeParameter)getParent();
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -105,7 +151,18 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         if (StringUtils.isEmpty(attribute)) {
             return null;
         }
-        IPolicyCmptType pcType = ((TestPolicyCmptTypeParameter)getParent()).findPolicyCmptType(ipsProject);
+        // select the policy cmpt type the searching of the attribute will be started (lowest type in the hierarchy),
+        // a) if the policyCmptType property is not given then use the policy cmpt type 
+        //   of the test policy cmpt type parameter 
+        // b) if the policyCmptType property is set then use the specified policyCmptType, 
+        //   beacause maybe the test parameter points to a abstract (general)
+        //   policy cmpt type and this attribute is a attribute of a subclass.
+        IPolicyCmptType pcType = null;
+        if (StringUtils.isEmpty(policyCmptType)) {
+            pcType = ((TestPolicyCmptTypeParameter)getParent()).findPolicyCmptType(ipsProject);
+        } else {
+            pcType = ipsProject.findPolicyCmptType(policyCmptType);
+        }
         if (pcType == null){
             return null;
         }
@@ -126,6 +183,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 		super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
 		attribute = element.getAttribute(PROPERTY_ATTRIBUTE);
+        policyCmptType = element.getAttribute(PROPERTY_POLICYCMPTTYPE_OF_ATTRIBUTE);
 		type = TestParameterType.getTestParameterType(element.getAttribute(PROPERTY_TEST_ATTRIBUTE_TYPE));
 	}
 
@@ -136,6 +194,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 		super.propertiesToXml(element);
         element.setAttribute(PROPERTY_NAME, name);
 		element.setAttribute(PROPERTY_ATTRIBUTE, attribute);
+		element.setAttribute(PROPERTY_POLICYCMPTTYPE_OF_ATTRIBUTE, policyCmptType);
 		element.setAttribute(PROPERTY_TEST_ATTRIBUTE_TYPE, type.getId());
 	}  
     
@@ -202,34 +261,6 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         IPolicyCmptType policyCmptType = productCmpt.findPolicyCmptType(ipsProject);
         return ! (policyCmptType.findPolicyCmptTypeAttribute(getAttribute(), ipsProject) == null);
     }
-
-    private IPolicyCmptTypeAttribute findAttributeInSubtypehierarchy(IIpsProject ipsProject) throws CoreException {
-        if (StringUtils.isEmpty(attribute)) {
-            return null;
-        }
-        IPolicyCmptType pcType = ((TestPolicyCmptTypeParameter)getParent()).findPolicyCmptType(ipsProject);
-
-        if (pcType != null) {
-            IPolicyCmptTypeAttribute[] attributes;
-            List allAttributes = new ArrayList();
-            ITypeHierarchy subtypeHierarchy = pcType.getSubtypeHierarchy();
-            IPolicyCmptType[] allSubtypes = subtypeHierarchy.getAllSubtypes(pcType);
-            for (int i = 0; i < allSubtypes.length; i++) {
-                attributes = allSubtypes[i].getPolicyCmptTypeAttributes();
-                for (int j = 0; j < attributes.length; j++) {
-                    allAttributes.add(attributes[j]);
-                }
-            }
-            attributes = (IPolicyCmptTypeAttribute[])allAttributes.toArray(new IPolicyCmptTypeAttribute[allAttributes.size()]);
-
-            for (int i = 0; i < attributes.length; i++) {
-                if (attributes[i].getName().equals(attribute)) {
-                    return attributes[i];
-                }
-            }
-        }
-        return null;
-    }
     
     /**
      * {@inheritDoc}
@@ -246,13 +277,6 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         
         // check if the attribute exists
         IPolicyCmptTypeAttribute modelAttribute = findAttribute(ipsProject);
-        if (modelAttribute == null){
-            // special case if the attribute wasn't found in the supertype then
-            // search in the subtype hierarchy, the test case type attributes supports attributes of subclasses
-            // therefore this special validation must be performed for such types of attributes only
-            // Note: that this find method has a bad performance, therefore this should not the normal case
-            modelAttribute = findAttributeInSubtypehierarchy(ipsProject);
-        }
         if (modelAttribute == null){
             String text = NLS.bind(Messages.TestAttribute_Error_AttributeNotFound, getAttribute());
             Message msg = new Message(MSGCODE_ATTRIBUTE_NOT_FOUND, text, Message.ERROR, this, ITestAttribute.PROPERTY_ATTRIBUTE);
