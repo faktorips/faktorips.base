@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -71,12 +72,15 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.ui.test.IpsTestRunnerDelegate;
 import org.faktorips.runtime.test.AbstractIpsTestRunner;
 import org.faktorips.runtime.test.SocketIpsTestRunner;
 import org.faktorips.util.StringUtil;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Class to run ips test cases in a second VM.
@@ -84,8 +88,17 @@ import org.faktorips.util.StringUtil;
  * @author Joerg Ortmann
  */
 public class IpsTestRunner implements IIpsTestRunner { 
+    public static String INVALID_NAME = IIpsProjectNamingConventions.INVALID_NAME;
+
+    /*
+     * Characters which are used within the test runner protocol and
+     * therfore forbidden to use inside a test case name
+     */
+    private static String FORBIDDEN_CHARACTERS_IN_TESTCASENAME = "\\[\\]{},:"; //$NON-NLS-1$
+    
     private static DateFormat DEBUG_FORMAT;
     private static final int ACCEPT_TIMEOUT = 5000;
+    
     // time in ms to check for active test runner, 
     // if this time is reached then the test runner will always started
     // this avoids dead test runner (a state where the test runner didn't returned from his running state)
@@ -95,6 +108,21 @@ public class IpsTestRunner implements IIpsTestRunner {
     
     static {
         TRACE_IPS_TEST_RUNNER = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/testrunner")).booleanValue(); //$NON-NLS-1$
+    }
+    
+    /**
+     * Validate if the test case name is a valid name.
+     */
+    public static MessageList validateTestCaseName(String testCaseName) {
+        MessageList ml = new MessageList();
+        Pattern p = Pattern.compile("[" + FORBIDDEN_CHARACTERS_IN_TESTCASENAME + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+        boolean matches = p.matcher(testCaseName).find();
+        if (matches) {
+            ml.add(new Message(INVALID_NAME,
+                            NLS.bind(Messages.IpsTestRunner_validationErrorInvalidName,
+                                    testCaseName, FORBIDDEN_CHARACTERS_IN_TESTCASENAME.replaceAll("\\\\", "")), Message.ERROR)); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return ml;
     }
     
 	private int port;
@@ -465,7 +493,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         ILaunchManager lm = DebugPlugin.getDefault().getLaunchManager();
         ILaunchConfigurationType launchConfigurationType = lm.getLaunchConfigurationType(IpsTestRunnerDelegate.ID_IPSTEST_LAUNCH_CONFIGURATION_TYPE);
         if (launchConfigurationType == null){
-            throw new RuntimeException("Lauch configuration type not found: " + IpsTestRunnerDelegate.ID_IPSTEST_LAUNCH_CONFIGURATION_TYPE);
+            throw new RuntimeException("Lauch configuration type not found: " + IpsTestRunnerDelegate.ID_IPSTEST_LAUNCH_CONFIGURATION_TYPE); //$NON-NLS-1$
         }
         return launchConfigurationType;
     }

@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
@@ -162,7 +163,11 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     }
 
     private MessageList validateNameForTestCase(String name, boolean qualifiedCheck) {
-        return validateValidOsName(name, qualifiedCheck);
+        MessageList ml = validateValidOsName(name, qualifiedCheck);
+        if (!ml.containsErrorMsg()){
+            ml = IpsTestRunner.validateTestCaseName(name);
+        }
+        return ml;
     }
 
     private MessageList validateNameForTestCaseType(String name, boolean qualifiedCheck) {

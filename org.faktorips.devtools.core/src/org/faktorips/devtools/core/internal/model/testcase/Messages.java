@@ -42,6 +42,7 @@ public class Messages extends NLS {
     public static String IpsTestRunner_InfoDialogErrorsInProject_Text;
 	public static String IpsTestRunner_Job_Name;
     public static String IpsTestRunner_lauchConfigurationDefaultName;
+    public static String IpsTestRunner_validationErrorInvalidName;
 	public static String TestAttributeValue_ValidateError_TestAttributeNotFound;
 	public static String TestAttributeValue_ValidateError_AttributeNotFound;
 	public static String TestCase_Error_NoRelationOrPolicyCmptGiven;
