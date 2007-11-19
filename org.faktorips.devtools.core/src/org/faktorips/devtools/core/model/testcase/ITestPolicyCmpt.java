@@ -19,9 +19,9 @@ package org.faktorips.devtools.core.model.testcase;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.type.IAttribute;
 
 /**
  *  Specification of a test policy component.
@@ -253,13 +253,13 @@ public interface ITestPolicyCmpt extends ITestObject {
     public int getIndexOfChildTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException;
     
     /**
-     * Searches the given attribute in the supertype of the product cmpt which is stored in this test object.
-     * Returns <code>null</code> if the attribute doesn't exitsts on the policy cmpt types supertype hierarchy
+     * Searches the given attribute in the supertype of the product cmpt type which is stored in this test object.
+     * Returns <code>null</code> if the attribute doesn't exitsts on the product cmpt types supertype hierarchy
      * the product cmpt is based on or no product cmpt is set.
      * 
      * @param ipsProject The ips project which object path is used to search.
      * 
      * @throws CoreException if an error occurs while searching.
      */    
-    public IPolicyCmptTypeAttribute findProductCmptAttribute(String attribute, IIpsProject ipsProject) throws CoreException;   
+    public IAttribute findProductCmptTypeAttribute(String attribute, IIpsProject ipsProject) throws CoreException;   
 }

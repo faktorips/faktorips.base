@@ -43,7 +43,6 @@ import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -51,8 +50,8 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcase.TestRuleViolationType;
-import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -315,43 +314,27 @@ public class TestCaseDetailArea {
         // get the ctrlFactory to create the edit field
         ValueDatatype datatype = null;
         ValueDatatypeControlFactory ctrlFactory = null;
-        boolean failure = false;
+        
         try {
-            ITestAttribute testAttr = attributeValue.findTestAttribute(ipsProject);
-            if (testAttr == null) {
-                // ignore not existing test attributes, will be checked in the vaidate method
-                failure = true;
-            } else {
-                IPolicyCmptTypeAttribute attribute = testAttr.findAttribute(ipsProject);
-                if (attribute == null) {
-                    // find attribute by using the product cmpt
-                    attribute = testPolicyCmpt.findProductCmptAttribute(testAttr.getAttribute(), ipsProject);
-                    if (attribute == null && StringUtils.isEmpty(attributeValue.getValue())){
-                        // attribute not exists in subtypes, hide the edit field
-                        //   because the attribute is only relevant for product cmpts which are based on suptypes 
-                        //   which defines this attribute                        
-                        return null;
-                    }
-                    // ignore not existing attributes, will be checked in the vaidate method
-                    // the default edit field will be used to render the attribute
-                    failure = true;
-                } 
-                if (attribute != null){
-                    datatype = attribute.findDatatype(ipsProject);
-                    ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(datatype);
+            IAttribute attribute = attributeValue.findAttribute(ipsProject);
+            if (attribute != null){
+                datatype = attribute.findDatatype(ipsProject);
+                ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(datatype);
+            } else { 
+                if (StringUtils.isNotEmpty(attributeValue.getValue())){
+                    ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(ValueDatatype.STRING);
+                } else {
+                    // if the attribute wasn't found and no value is stored then no controls will be displayed
+                    // maybe this attributes are not available in subtype test policy cmpt's
+                    return null;
                 }
             }
-        } catch (CoreException e1) {
-            // ignore error, will be check in the validate methods
-            failure = true;
-        }
-
-        // if an error occured get the value datatype ctrl factory for a string
-        if (failure){
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
             ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(ValueDatatype.STRING);
         }
         
-        Label label = toolkit.createFormLabel(attributeComposite, StringUtils.capitalise(attributeValue
+        Label label = toolkit.createFormLabel(attributeComposite, StringUtils.capitalize(attributeValue
                 .getTestAttribute()));
         addSectionSelectionListeners(null, label, testPolicyCmptForSelection);
 

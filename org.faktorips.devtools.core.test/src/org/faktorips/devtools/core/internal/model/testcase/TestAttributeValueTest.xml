@@ -5,7 +5,7 @@
 <testcases>
 
 	<AttributeValue testAttribute="attribute1">
-		<value>500</value>
+		<Value>500</Value>
 	</AttributeValue>
 	
 </testcases>

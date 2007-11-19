@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -70,6 +71,13 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
 		super(parent, id);
 	}
 	
+    /**
+     * Returns the parent test policy cmpt.
+     */
+    public ITestPolicyCmpt getTestPolicyCmpt(){
+        return (ITestPolicyCmpt) getParent();
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -93,7 +101,7 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
         if (StringUtils.isEmpty(testAttribute)) {
             return null;
         }
-        ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) getParent();
+        ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpt();
         ITestPolicyCmptTypeParameter typeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
         if (typeParam == null){
         	return null;
@@ -102,8 +110,25 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
+     * {@inheritDoc}
+     */
+    public IAttribute findAttribute(IIpsProject ipsProject) throws CoreException {
+        ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpt();
+        ITestAttribute testAttr = findTestAttribute(ipsProject);
+        if (testAttr == null) {
+            return null;
+        } else {
+            if (!testPolicyCmpt.isProductRelevant()) {
+                return testAttr.findAttribute(ipsProject);
+            } else {
+                return testPolicyCmpt.findProductCmptTypeAttribute(testAttr.getAttribute(), ipsProject);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public String getValue() {
 		return value;
 	}
@@ -130,11 +155,8 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
 		testAttribute = element.getAttribute(PROPERTY_ATTRIBUTE);
+        // PROPERTY_VALUE is not used because the first character must be upper case
 		value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
-        if (value == null){
-            // TODO Joerg: Workaround for existing test cases
-            value = ValueToXmlHelper.getValueFromElement(element, PROPERTY_VALUE);
-        }        
 	}
 
     /**
@@ -267,12 +289,7 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
             Message msg = new Message(MSGCODE_TESTATTRIBUTE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUE);
             messageList.add(msg);
         } else {
-            IPolicyCmptTypeAttribute attribute = testAttr.findAttribute(ipsProject);
-            if (attribute == null){
-                // attribute not found in test case type definition, maybe this is a concrete subclass with additional attributes,
-                // therefore try to find the attribute by using the product cmpt (product cmpt type the product cmpt is based on)
-                attribute = ((ITestPolicyCmpt)getParent()).findProductCmptAttribute(testAttr.getAttribute(), ipsProject);
-            }
+            IAttribute attribute = findAttribute(ipsProject);
             // create a warning only if the attribute wasn't found and the value is set,
             // otherwise the attribute value object is disabled (not relevant for the test policy cmpt),
             // because the policy cmpt could be a subclass of the policy cmpt which is defined in the test case type,

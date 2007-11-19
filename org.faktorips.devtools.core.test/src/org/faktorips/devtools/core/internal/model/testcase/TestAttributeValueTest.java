@@ -149,24 +149,31 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
         // defines the attribute
         MessageList ml = testAttributeValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
-        
+        assertNotNull(testAttributeValue.findAttribute(ipsProject));
 
-        assertNotNull(((ITestPolicyCmpt)testAttributeValue.getParent()).findProductCmptAttribute(testAttribute.getAttribute(), ipsProject));
+        assertNotNull(((ITestPolicyCmpt)testAttributeValue.getParent()).findProductCmptTypeAttribute(testAttribute.getAttribute(), ipsProject));
         
         
-        // negative test 
+        // negative test
         
         attr.setName("attribute2");
         testAttributeValue.setValue("x"); // the value must be set, otherwise the attribute will be ignored
         ml = testAttributeValue.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
+        assertNull(testAttributeValue.findAttribute(ipsProject));
         
         testAttributeValue.setValue(null); // the value is null, thus the attribute will be ignored
         ml = testAttributeValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
+        assertNull(testAttributeValue.findAttribute(ipsProject));
         
         pctSuper.newPolicyCmptTypeAttribute().setName("attributeSuper");
         testAttribute.setAttribute("attributeSuper");
         assertNotNull(testAttribute.findAttribute(ipsProject));
+        assertNotNull(testAttributeValue.findAttribute(ipsProject));
+    }
+    
+    public void testFindAttribiute() throws CoreException{
+        testAttributeValue.findAttribute(ipsProject);
     }
 }

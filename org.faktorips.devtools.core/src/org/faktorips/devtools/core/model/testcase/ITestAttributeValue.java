@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.core.model.type.IAttribute;
 
 /**
  *  Specification of a test attribute value.
@@ -63,6 +64,15 @@ public interface ITestAttributeValue extends IIpsObjectPart{
      */		
 	public ITestAttribute findTestAttribute(IIpsProject ipsProject) throws CoreException;
 	
+    /**
+     * Search and returns the corresponding attribute.<br>
+     * If the given test policy cmpt is not product relevant then the attribute will be searched
+     * using the policy cmpt super-/subtype hierarchy. If the test policy cmpt is product relevant
+     * then the corresponding product cmpt type will be used to start the searching the supertype
+     * hierarchy.
+     */    
+    public IAttribute findAttribute(IIpsProject ipsProject) throws CoreException;
+    
 	/**
 	 * Returns value of the attribute.
 	 */
