@@ -98,7 +98,7 @@ public class IpsPackageNameComparator implements Comparator {
      * @throws CoreException
      */
     private IIpsPackageFragmentSortDefinition getSortDefinition(IIpsPackageFragment pack, String parentName) {
-        IpsPackageFragment parentPackage = (IpsPackageFragment)pack.getRoot().getIpsPackageFragment(parentName);
+        IIpsPackageFragment parentPackage = pack.getRoot().getIpsPackageFragment(parentName);
         IpsModel model = getIpsModel();
         IIpsPackageFragmentSortDefinition sortDef = model.getSortDefinition(parentPackage);
         return sortDef;
