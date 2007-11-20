@@ -270,11 +270,10 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
                 path = javaRoot.getJavaProject().getOutputLocation();
             }
             IFolder outFolder = ResourcesPlugin.getWorkspace().getRoot().getFolder(path);
-            if (handledRootFolders.contains(outFolder)) {
-                return;
+            if (!handledRootFolders.contains(outFolder)) {
+                addFiles(outFolder, outFolder, os, monitor);
+                handledRootFolders.add(outFolder);
             }
-            addFiles(outFolder, outFolder, os, monitor);
-            handledRootFolders.add(outFolder);
         }
         // Java sourcen
         if (inclJavaSources) {
