@@ -175,10 +175,8 @@ public abstract class IpsObjectEditor extends FormEditor
         if (input instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput)input).getFile();
             ipsSrcFile = (IIpsSrcFile)model.getIpsElement(file);
-            setPartName(ipsSrcFile.getName());
         } else if (input instanceof IpsArchiveEditorInput) {
             ipsSrcFile = ((IpsArchiveEditorInput)input).getIpsSrcFile();
-            setPartName(ipsSrcFile.getName());
         } else if (input instanceof IStorageEditorInput) {
             initFromStorageEditorInput((IStorageEditorInput)input);
             setPartName(((IStorageEditorInput)input).getName());
@@ -186,6 +184,10 @@ public abstract class IpsObjectEditor extends FormEditor
 
         if (ipsSrcFile == null) {
             throw new PartInitException("Unsupported editor input type " + input.getClass().getName()); //$NON-NLS-1$
+        } 
+        
+        if(!(input instanceof IStorageEditorInput)){
+            setPartName(ipsSrcFile.getName());
         }
 
         if (ipsSrcFile.isMutable() && !ipsSrcFile.getEnclosingResource().isSynchronized(0)) {

@@ -32,7 +32,6 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
@@ -56,8 +55,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentArbitrary
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentSortDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 
@@ -116,7 +115,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals("TestProject2", ipsProjects[0].getName());
     }
 
-    public void testGetIpsElement() {
+    public void testGetIpsElement() throws Exception {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         assertEquals(model, model.getIpsElement(root));
 
@@ -140,6 +139,11 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         IFile file = folderB.getFile(filename);
         IIpsSrcFile srcFile = pdFolderB.getIpsSrcFile(filename);
         assertEquals(srcFile, model.getIpsElement(file));
+        
+        IFile textFile = folderB.getFile("Textfile.txt");
+//        textFile.create(new ByteArrayInputStream("".getBytes()), true, null);
+        assertNull(model.getIpsElement(textFile));
+        
     }
 
     public void testFindIpsElement() throws CoreException {

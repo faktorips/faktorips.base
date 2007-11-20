@@ -619,6 +619,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         else if (node instanceof IFile) {
             try {
                 IIpsSrcFile file = (IIpsSrcFile)IpsPlugin.getDefault().getIpsModel().getIpsElement((IFile)node);
+                if(file == null || !file.exists()){
+                    return false;
+                }
                 IIpsObject obj = file.getIpsObject();
                 treeViewer.setSelection(new StructuredSelection(obj), true);
                 return true;

@@ -181,7 +181,9 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate implem
             if (objToAdd instanceof IIpsSrcFile){
                 objToAdd = ((IIpsSrcFile)objToAdd).getIpsObject();
             }
-            addElementToFix(ipsElementsToFix, objToAdd);
+            if(objToAdd != null){
+                addElementToFix(ipsElementsToFix, objToAdd);
+            }
         }
     }
     

@@ -57,7 +57,7 @@ public class IpsPckFragmentRootRefControl extends TextButtonControl {
         }
     }
     
-    public IIpsPackageFragmentRoot getPdPckFragmentRoot() {
+    public IIpsPackageFragmentRoot getIpsPckFragmentRoot() {
         IWorkspaceRoot wpRoot = ResourcesPlugin.getWorkspace().getRoot();
         String pathString = IPath.SEPARATOR + getText();
         try {

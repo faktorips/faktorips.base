@@ -275,11 +275,11 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     }
     
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
-        return sourceFolderControl.getPdPckFragmentRoot();
+        return sourceFolderControl.getIpsPckFragmentRoot();
     }
     
     protected void sourceFolderChanged() {
-        IIpsPackageFragmentRoot root = sourceFolderControl.getPdPckFragmentRoot();
+        IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot();
         packageControl.setIpsPckFragmentRoot(root);
     }
     
@@ -421,7 +421,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
      * The method validates the package.
      */
 	private void validateSourceRoot() {
-	    IIpsPackageFragmentRoot root = sourceFolderControl.getPdPckFragmentRoot(); 
+	    IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot(); 
         if (root!=null) {
             if (!root.getCorrespondingResource().exists()) {
                 setErrorMessage(NLS.bind(Messages.IpsObjectPage_msgRootMissing, root.getName())); 

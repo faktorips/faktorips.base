@@ -141,7 +141,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      */
     protected void setDefaults(IResource selectedResource) throws CoreException {
         if (selectedResource == null) {
-            setPdPackageFragmentRoot(null);
+            setIpsPackageFragmentRoot(null);
             return;
         }
         IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
@@ -150,7 +150,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
             try {
                 roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
                 if (roots.length > 0) {
-                    setPdPackageFragmentRoot(roots[0]);
+                    setIpsPackageFragmentRoot(roots[0]);
                 }
             }
             catch (CoreException e) {
@@ -160,18 +160,18 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
             }
         }
         else if (element instanceof IIpsPackageFragmentRoot) {
-            setPdPackageFragmentRoot((IIpsPackageFragmentRoot)element);
+            setIpsPackageFragmentRoot((IIpsPackageFragmentRoot)element);
         }
         else if (element instanceof IIpsPackageFragment) {
             IIpsPackageFragment pack = (IIpsPackageFragment)element;
-            setPdPackageFragment(pack);
+            setIpsPackageFragment(pack);
         }
         else if (element instanceof IIpsSrcFile) {
             IIpsPackageFragment pack = (IIpsPackageFragment)element.getParent();
-            setPdPackageFragment(pack);
+            setIpsPackageFragment(pack);
         }
         else {
-            setPdPackageFragmentRoot(null);
+            setIpsPackageFragmentRoot(null);
         }
     }
 
@@ -242,7 +242,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      * Returns the package fragment root corresponding to the selected source folder.
      */
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
-        return sourceFolderControl.getPdPckFragmentRoot();
+        return sourceFolderControl.getIpsPckFragmentRoot();
     }
 
     protected void packageChanged() {
@@ -253,9 +253,9 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
 
     }
 
-    private void setPdPackageFragment(IIpsPackageFragment pack) {
+    private void setIpsPackageFragment(IIpsPackageFragment pack) {
         if (pack != null) {
-            setPdPackageFragmentRoot(pack.getRoot());
+            setIpsPackageFragmentRoot(pack.getRoot());
             replacePackageFragment(pack);
         }
     }
@@ -267,7 +267,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         nameField.getTextControl().setFocus();
     }
 
-    private void setPdPackageFragmentRoot(IIpsPackageFragmentRoot root) {
+    private void setIpsPackageFragmentRoot(IIpsPackageFragmentRoot root) {
         sourceFolderControl.setPdPckFragmentRoot(root);
     }
 
@@ -359,7 +359,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      * The method validates the package.
      */
     private void validateSourceRoot() {
-        IIpsPackageFragmentRoot root = sourceFolderControl.getPdPckFragmentRoot();
+        IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot();
         if (root != null) {
             if (!root.getCorrespondingResource().exists()) {
                 setErrorMessage(NLS.bind(Messages.IpsPackagePage_msgRootMissing, root.getName()));
@@ -438,8 +438,8 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      * {@inheritDoc}
      */
     protected void sourceFolderChanged() {
-        IIpsPackageFragmentRoot root = sourceFolderControl.getPdPckFragmentRoot();
-        setPdPackageFragmentRoot(root);
+        IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot();
+        setIpsPackageFragmentRoot(root);
     }
 
 }

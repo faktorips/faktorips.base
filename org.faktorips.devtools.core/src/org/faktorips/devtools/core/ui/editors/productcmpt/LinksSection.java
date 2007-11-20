@@ -559,7 +559,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 
 			IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
 
-			if (!element.exists()) {
+			if (element == null || !element.exists()) {
 				return null;
 			}
 

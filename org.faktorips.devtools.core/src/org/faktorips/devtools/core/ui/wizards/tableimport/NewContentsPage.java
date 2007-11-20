@@ -207,11 +207,11 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
     }
     
     public IIpsPackageFragmentRoot getPdPackageFragmentRoot() {
-        return sourceFolderControl.getPdPckFragmentRoot();
+        return sourceFolderControl.getIpsPckFragmentRoot();
     }
     
     protected void sourceFolderChanged() {
-        IIpsPackageFragmentRoot root = sourceFolderControl.getPdPckFragmentRoot();
+        IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot();
         packageControl.setIpsPckFragmentRoot(root);
         if (root!=null) {
             structureControl.setIpsProject(root.getIpsProject());
@@ -330,7 +330,7 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
 	 * The method validates the package.
 	 */
 	private void validateSourceRoot() {
-	    IIpsPackageFragmentRoot root = sourceFolderControl.getPdPckFragmentRoot(); 
+	    IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot(); 
         if (root!=null) {
             if (!root.getCorrespondingResource().exists()) {
                 setErrorMessage(NLS.bind(Messages.NewContentsPage_msgRootMissing, root.getName())); 
@@ -362,7 +362,7 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
     }
 
     public ITableStructure getTableStructure() throws CoreException {
-    	IIpsPackageFragmentRoot root = sourceFolderControl.getPdPckFragmentRoot();
+    	IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot();
     	return (ITableStructure) root.getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, structureControl.getText());
     }
 	/**
@@ -370,7 +370,7 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
 	 * @throws CoreException 
 	 */
 	public ITableContents getTableContents() throws CoreException {
-		IIpsPackageFragmentRoot root = sourceFolderControl.getPdPckFragmentRoot();
+		IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot();
 		ITableStructure structure = getTableStructure();
 		
 		IIpsPackageFragment pack = root.createPackageFragment(packageControl.getText(), true, null);
