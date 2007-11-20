@@ -232,18 +232,8 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
      * {@inheritDoc}
      */
     public IIpsPackageFragmentSortDefinition getSortDefinition() {
-        // TODO Cache sort definition
-
-        IIpsPackageFragmentSortDefinition sortDef =  new IpsPackageFragmentArbitrarySortDefinition();
-
-        try {
-            String content = getSortDefinitionContent();
-            sortDef.initPersistenceContent(content);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return null;
-        }
-        return sortDef;
+        //TODO the sort definition for archives needs to be implemented
+        return null;
     }
 
     /**
