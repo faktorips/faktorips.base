@@ -187,6 +187,11 @@ public class QualifiedNameType implements Serializable{
         s.defaultReadObject();
         String typeName = (String)s.readObject();
         type = IpsPlugin.getDefault().getIpsModel().getIpsObjectType(typeName);
+        if (type == null) {
+            throw new IllegalStateException(
+                    "Unable to deserialize this qualified name type because the IpsObjectType could not be resolved: "
+                            + type);
+        }
         calculateHashCode();
     }
 }

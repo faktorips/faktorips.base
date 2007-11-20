@@ -406,10 +406,10 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
         /**
          * {@inheritDoc}
          */
-        protected boolean visit(IPolicyCmptType currentType) {
+        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
             IPolicyCmptTypeAssociation[] relations = currentType.getPolicyCmptTypeAssociations();
             for (int i = 0; i < relations.length; i++) {
-                if (relations[i].isDerivedUnion()) {
+                if (relations[i].isDerivedUnion() && relations[i].isValid()) {
                     try {
                         List implRelations = (List)containerImplMap.get(relations[i]);
                         if (implRelations!=null) {
@@ -418,7 +418,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
                     } catch (Exception e) {
                         addToBuildStatus(new IpsStatus("Error building container relation implementation. " //$NON-NLS-1$
                             + "ContainerRelation: " + relations[i] //$NON-NLS-1$
-                            + "Implementing Type: " + getPcType())); //$NON-NLS-1$
+                            + "Implementing Type: " + getPcType(), e)); //$NON-NLS-1$
                     }
                 }
             }
