@@ -1590,7 +1590,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
         if (sortDef == null) {
             // add new or updated sort order
-            IFile file = ((IpsPackageFragment) fragment).getSortOrderFile();
+            IFile file = fragment.getSortOrderFile();
             Long lastModification;
 
             try {

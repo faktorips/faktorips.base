@@ -276,10 +276,10 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
     }
 
     /**
-     * This method is not supported for archives and throws a {@link RuntimeException} if called. 
+     * This method returns null since this archive package fragment doesn't have a sort order file. 
      */
     public IFile getSortOrderFile() {
-        throw new RuntimeException("This method is not supported for archives."); //$NON-NLS-1$
+        return null;
     }
 
     /**
