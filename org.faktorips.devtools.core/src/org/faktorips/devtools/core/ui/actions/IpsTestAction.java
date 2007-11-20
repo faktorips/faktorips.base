@@ -119,9 +119,6 @@ public class IpsTestAction extends IpsAction {
             root = productCmpt.getIpsPackageFragment().getRoot();
             String name = productCmpt.getQualifiedName(); 
             addElement(pathElements, root, name);            
-        } else if (object instanceof IJavaElement) {
-            IIpsElement ipsElem = IpsPlugin.getDefault().getIpsModel().getIpsElement(((IJavaElement)object).getResource());
-            root = addPathElementFromObject(pathElements, ipsElem);
         } else if (object instanceof IResource){
             IIpsElement ipsElem = IpsPlugin.getDefault().getIpsModel().getIpsElement((IResource)object);
             root = addPathElementFromObject(pathElements, ipsElem);
