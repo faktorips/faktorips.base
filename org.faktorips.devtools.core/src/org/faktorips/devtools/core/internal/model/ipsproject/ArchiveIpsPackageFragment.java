@@ -283,18 +283,6 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
     }
 
     /**
-     * @return sort definition as String.
-     * @throws CoreException
-     */
-    //TODO pk 2007-11-11 intermediate state
-    private String getSortDefinitionContent() throws CoreException {
-//        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
-//        IIpsArchive archive = root.getIpsArchive();
-//        return archive.getSortDefinitionContent(getName());
-        return ""; //$NON-NLS-1$
-    }
-
-    /**
      * {@inheritDoc}
      */
     public boolean hasChildIpsPackageFragments()  throws CoreException {
