@@ -20,7 +20,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -55,8 +54,6 @@ public class AttributesSection extends SimpleIpsPartsSection {
      */
     public class AttributesComposite extends IpsPartsComposite {
         
-        private Button candidatesButton;
-
         public AttributesComposite(IProductCmptType type, Composite parent,
                 UIToolkit toolkit) {
             super(type, parent, toolkit);
@@ -67,7 +64,6 @@ public class AttributesSection extends SimpleIpsPartsSection {
          */
         public void setDataChangeable(boolean flag) {
             super.setDataChangeable(flag);
-            candidatesButton.setEnabled(flag);
         }
         
         public IProductCmptType getProductCmptType() {
