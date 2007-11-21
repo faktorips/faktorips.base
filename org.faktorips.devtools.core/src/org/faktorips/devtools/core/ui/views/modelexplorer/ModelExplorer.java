@@ -640,6 +640,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         private IWorkbenchAction copy = ActionFactory.COPY.create(getSite().getWorkbenchWindow());
         private IWorkbenchAction paste = ActionFactory.PASTE.create(getSite().getWorkbenchWindow());
         private IWorkbenchAction delete = ActionFactory.DELETE.create(getSite().getWorkbenchWindow());
+        private IWorkbenchAction refresh = ActionFactory.REFRESH.create(getSite().getWorkbenchWindow());
 
         private IWorkbenchAction rename = ActionFactory.RENAME.create(getSite().getWorkbenchWindow());
         private IWorkbenchAction move = ActionFactory.MOVE.create(getSite().getWorkbenchWindow());
@@ -650,6 +651,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.PASTE.getId(),
                     new IpsPasteAction(treeViewer, getSite().getShell()));
             getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.DELETE.getId(), deleteAction);
+            getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), refresh);
 
             getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.RENAME.getId(),
                     new RenameAction(getSite().getShell(), treeViewer));
@@ -680,6 +682,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             manager.add(new Separator());
             createObjectInfoActions(manager, selected);
             manager.add(new Separator());
+            createRefreshAction(manager, selected);
             createProjectActions(manager, selected, (IStructuredSelection)treeViewer.getSelection());
             manager.add(new Separator());
             createTestCaseAction(manager, selected);
@@ -689,6 +692,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             // menus with submenus
             createRefactorMenu(manager, selected);
             createAdditionalActions(manager, structuredSelection);
+            
             manager.add(new Separator());
             createPropertiesActions(manager, selected);
         }
@@ -764,10 +768,12 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             manager.add(copy);
             manager.add(paste);
             manager.add(delete);
+            
 
             copy.setEnabled(true);
             paste.setEnabled(true);
             delete.setEnabled(true);
+            
 
             if (selected instanceof IIpsObjectPart){
                 copy.setEnabled(false);
@@ -782,6 +788,20 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             }
         }
 
+        protected void createRefreshAction(IMenuManager manager, Object selected){
+            boolean open = false;
+            if(selected instanceof IIpsElement){
+                open = ((IIpsElement)selected).getIpsProject().getProject().isOpen();
+            }
+            else if(selected instanceof IResource){
+                open = ((IResource)selected).getProject().isOpen();
+            }
+            if(open){
+                manager.add(refresh);
+                refresh.setEnabled(true);
+            }
+        }
+        
         private IIpsPackageFragmentRoot getPackageFragmentRoot(Object object) {
             IIpsPackageFragmentRoot root = null;
             if (object instanceof IIpsObject) {

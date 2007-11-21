@@ -161,7 +161,7 @@ public class ModelContentProvider implements ITreeContentProvider {
                     childResources.add(children[i]);
                 }
             }
-            return childResources.toArray();
+            return childResources.toArray(new IResource[childResources.size()]);
         } catch (JavaModelException e) {
             IpsPlugin.log(e);
             return EMPTY_ARRAY;
