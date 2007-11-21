@@ -243,8 +243,8 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
      */
     public MessageList validate() throws CoreException {
         MessageList result = new MessageList();
-        if (!archive.exists()){
-            String text = NLS.bind(Messages.IpsArchiveEntry_archiveDoesNotExist, archive.getArchiveFile().toString());
+        if (archive == null || !archive.exists()){
+            String text = NLS.bind(Messages.IpsArchiveEntry_archiveDoesNotExist, archive == null ? null : archive.getArchiveFile().toString());
             Message msg = new Message(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE, text, Message.ERROR, this);
             result.add(msg);
         }
