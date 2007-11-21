@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -60,16 +61,20 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
         Type currType = (Type)currentType;
         for (Iterator it=currType.getIteratorForAttributes(); it.hasNext(); ) {
             IAttribute attr = (IAttribute)it.next();
+            //TODO it needs to be clarified if we should ask the builder set which naming convensions are used and instead of just
+            //uncapitalize ask the naming convension how it is handled
             if (!attr.isOverwrite()) {
-                add(attr.getName(), new ObjectProperty(attr, IAttribute.PROPERTY_NAME));
+                add(StringUtils.uncapitalize(attr.getName()), new ObjectProperty(attr, IAttribute.PROPERTY_NAME));
             }
         }
         for (Iterator it=currType.getIteratorForAssociations(); it.hasNext(); ) {
             IAssociation ass = (IAssociation)it.next();
+            //TODO it needs to be clarified if we should ask the builder set which naming convensions are used and instead of just
+            //uncapitalize ask the naming convension how it is handled
             if (ass.is1ToMany()) {
-                add(ass.getTargetRolePlural(), new ObjectProperty(ass, IAssociation.PROPERTY_TARGET_ROLE_PLURAL));
+                add(StringUtils.uncapitalize(ass.getTargetRolePlural()), new ObjectProperty(ass, IAssociation.PROPERTY_TARGET_ROLE_PLURAL));
             } else {
-                add(ass.getTargetRoleSingular(), new ObjectProperty(ass, IAssociation.PROPERTY_TARGET_ROLE_SINGULAR));
+                add(StringUtils.uncapitalize(ass.getTargetRoleSingular()), new ObjectProperty(ass, IAssociation.PROPERTY_TARGET_ROLE_SINGULAR));
             }
         }
         return true;
