@@ -154,5 +154,10 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         entry.setArchiveFile(project.getProject().getFile("NoneExistingFile"));
         ml = entry.validate();
         assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE));
+        
+        entry.setArchiveFile(null);
+        ml = entry.validate();
+        assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE));
+        
     }
 }
