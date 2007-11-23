@@ -34,10 +34,12 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
@@ -965,9 +967,15 @@ public class IpsTestRunner implements IIpsTestRunner {
         // on job finishing or somthing else)
         //   IWorkspace workspace = ResourcesPlugin.getWorkspace();
         //   job.setRule(workspace.getRoot());
-        job.setRule(null);
-        // wait 500ms because maybe the test case builder must run first if the test case was saved before
-        job.schedule(500);
+        try {
+            // wait until the build has finished
+            // the join invocation will block until the auto-build job completes, 
+            // or until the join is interrupted or canceled.
+            Platform.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
+        } catch (OperationCanceledException ignored) {
+        } catch (InterruptedException ignored) {
+        }
+        job.schedule();
     }
 
     private void terminateLaunch(ILaunch launch) throws DebugException {
