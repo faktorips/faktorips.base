@@ -38,6 +38,8 @@ public class Messages extends NLS {
 
     public static String DefaultLabelProvider_labelDefaultPackage;
 
+    public static String FaktorIpsPreferencePage_advancedTeamFunctionsInProductDefExplorer;
+
     public static String FaktorIpsPreferencePage_labelEnumTypeDisplay;
 
 	public static String PdPackageSelectionDialog_title;

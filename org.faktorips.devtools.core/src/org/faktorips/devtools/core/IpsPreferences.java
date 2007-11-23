@@ -91,6 +91,8 @@ public class IpsPreferences {
     
     public final static String NAVIGATE_TO_MODEL_OR_SOURCE_CODE = IpsPlugin.PLUGIN_ID + ".navigateToModel"; //$NON-NLS-1$
     
+    public final static String ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER = IpsPlugin.PLUGIN_ID + ".advancedTeamFunctionsInProductDefExplorer"; //$NON-NLS-1$
+
     /**
      * Constant identifying the ips test runner max heap size preference.
      */
@@ -115,6 +117,7 @@ public class IpsPreferences {
     	prefStore.setDefault(ENABLE_GENERATING, true);
         prefStore.setDefault(IPSTESTRUNNER_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
         prefStore.setDefault(ENUM_TYPE_DISPLAY, EnumTypeDisplay.NAME_AND_ID.getId());
+        prefStore.setDefault(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, false);
     }
     
     public void addChangeListener(IPropertyChangeListener listener) {
@@ -350,5 +353,12 @@ public class IpsPreferences {
 	public boolean canModifyRuntimeId() {
 		return prefStore.getBoolean(MODIFY_RUNTIME_ID);
 	}
-    
+ 
+    public boolean areAvancedTeamFunctionsForProductDefExplorerEnabled(){
+        return prefStore.getBoolean(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER);
+    }
+
+    public void setAvancedTeamFunctionsForProductDefExplorerEnabled(boolean enabled){
+        prefStore.setValue(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, enabled);
+    }
 }

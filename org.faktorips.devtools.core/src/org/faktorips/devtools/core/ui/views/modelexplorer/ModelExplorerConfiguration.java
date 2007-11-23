@@ -23,8 +23,8 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -160,15 +160,16 @@ public class ModelExplorerConfiguration {
      * <code>IIpsProject</code>, false otherwise.
      */
     public boolean representsFile(Object item) {
-        if (item instanceof IIpsObject) {
-            return true;
+        if(item instanceof IIpsElement){
+            IIpsElement ipsElement = (IIpsElement)item;
+            IResource resource = ipsElement.getEnclosingResource();
+            if(resource instanceof IFile){
+                return true;
+            }
+            return false;
         }
         if (item instanceof IFile) {
             return true;
-        }
-        if (item instanceof IIpsPackageFragmentRoot) {
-            IIpsPackageFragmentRoot root = (IIpsPackageFragmentRoot)item;
-            return root.isBasedOnIpsArchive();
         }
         return false;
     }

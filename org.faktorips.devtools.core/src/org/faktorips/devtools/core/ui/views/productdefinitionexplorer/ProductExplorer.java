@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.views.productdefinitionexplorer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -29,9 +30,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -172,42 +176,69 @@ public class ProductExplorer extends ModelExplorer {
                 , Messages.ProductExplorer_actionReplaceWithLocalHistory_tooltip
                 , "org.eclipse.team.cvs.ui.CVSActionSet", "replaceFromHistory"); //$NON-NLS-1$ //$NON-NLS-2$
 
+        private boolean isResourceShared(Object selectedObj){
+            if(selectedObj instanceof IIpsElement){
+                IIpsElement ipsElement = (IIpsElement)selectedObj;
+                return RepositoryProvider.isShared(ipsElement.getIpsProject().getProject());
+            }
+
+            if(selectedObj instanceof IResource){
+                IResource resource = (IResource)selectedObj;
+                return RepositoryProvider.isShared(resource.getProject());
+            }
+            
+            return false;
+        }
+        
         protected void createAdditionalActions(IMenuManager manager, IStructuredSelection structuredSelection) {
             Object selected= structuredSelection.getFirstElement();
+            boolean isResourceShared = isResourceShared(selected);
+            boolean advancedTeamFunctionsEnabled = IpsPlugin.getDefault().getIpsPreferences().areAvancedTeamFunctionsForProductDefExplorerEnabled();
+
             MenuManager teamMenu = new MenuManager(Messages.ProductExplorer_subMenuTeam);
-            if(config.representsProject(selected)){
-                teamMenu.add(team_sync);
-                teamMenu.add(team_commit);
-                teamMenu.add(team_update);
+            if(isResourceShared){
+                if(advancedTeamFunctionsEnabled || config.representsProject(selected)){
+                    teamMenu.add(team_sync);
+                    teamMenu.add(team_commit);
+                    teamMenu.add(team_update);
+                    teamMenu.add(new Separator());
+                    teamMenu.add(team_tag);
+                    teamMenu.add(team_branch);
+                    teamMenu.add(team_switchBranch);
+                }
+                if(config.representsFile(selected)){
+                    teamMenu.add(team_showResourceHistory);
+                }
                 teamMenu.add(new Separator());
-                teamMenu.add(team_tag);
-                teamMenu.add(team_branch);
-                teamMenu.add(team_switchBranch);
+                teamMenu.add(team_restoreFromRepository);
             }
-            if(config.representsFile(selected)){
-                teamMenu.add(team_showResourceHistory);
-            }
-            teamMenu.add(new Separator());
-            teamMenu.add(team_restoreFromRepository);
             manager.add(teamMenu);
 
             MenuManager compareMenu = new MenuManager(Messages.ProductExplorer_subMenuCompareWith);
-            compareMenu.add(compareWith_latest);
-            compareMenu.add(compareWith_branch);
+            if(isResourceShared){
+                compareMenu.add(compareWith_latest);
+                compareMenu.add(compareWith_branch);
+            }
             // Activate compare with each other only if exactly two elements are selected.
             compareWith_eachOther.setEnabled(structuredSelection.size()==2);
             compareMenu.add(compareWith_eachOther);
             if(config.representsFile(selected)){
-                compareMenu.add(compareWith_revision);
+                if(isResourceShared){
+                    compareMenu.add(compareWith_revision);
+                }
                 compareMenu.add(compareWith_localHistory);
             }
             manager.add(compareMenu);
 
             MenuManager replaceMenu = new MenuManager(Messages.ProductExplorer_subMenuReplaceWith);
-            replaceMenu.add(replaceWith_latest);
-            replaceMenu.add(replaceWith_branch);
+            if(isResourceShared){
+                replaceMenu.add(replaceWith_latest);
+                replaceMenu.add(replaceWith_branch);
+            }
             if(config.representsFile(selected)){
-                replaceMenu.add(replaceWith_revision);
+                if(isResourceShared){
+                    replaceMenu.add(replaceWith_revision);
+                }
                 replaceMenu.add(replaceWith_previousFromLocalHistory);
                 replaceMenu.add(replaceWith_localHistory);
             }

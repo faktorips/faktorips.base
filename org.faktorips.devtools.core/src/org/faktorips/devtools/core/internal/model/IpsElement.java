@@ -56,8 +56,12 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
      * {@inheritDoc}
      */
     public Object getAdapter(Class adapter) {
-    	if (adapter.equals(IResource.class)) {
-    		return this.getEnclosingResource();
+        if(adapter == null){
+            return null;
+        }
+        IResource enclosingResource = getEnclosingResource();
+    	if (adapter.isInstance(enclosingResource)) {
+    		return enclosingResource;
     	}
 		return null;
 	}

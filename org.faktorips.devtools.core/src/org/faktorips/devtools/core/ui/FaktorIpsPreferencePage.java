@@ -114,7 +114,12 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage
 				IpsPreferences.NAVIGATE_TO_MODEL_OR_SOURCE_CODE,
 				Messages.FaktorIpsPreferencePage_labelCanNavigateToModelOrSourceCode, getFieldEditorParent());
 		addField(canNavigateToModel);
-		
+
+        BooleanFieldEditor advancedTeamFunctionInProductDefExplorer = new BooleanFieldEditor(
+                IpsPreferences.ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER,
+                Messages.FaktorIpsPreferencePage_advancedTeamFunctionsInProductDefExplorer, getFieldEditorParent());
+        addField(advancedTeamFunctionInProductDefExplorer);
+        
 		RadioGroupFieldEditor workingMode = new RadioGroupFieldEditor(
 				IpsPreferences.WORKING_MODE, Messages.FaktorIpsPreferencePage_titleWorkingMode, 2, new String[][] {
 						{ Messages.FaktorIpsPreferencePage_labelWorkingModeBrowse, IpsPreferences.WORKING_MODE_BROWSE },
