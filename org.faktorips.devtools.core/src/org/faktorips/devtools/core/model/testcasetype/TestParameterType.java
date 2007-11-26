@@ -91,18 +91,21 @@ public class TestParameterType extends DefaultEnumValue {
      * Returns <code>true</code> if one Type is combined and the other Type is either input or expected result.
      * Otherwise returns <code>false</code>.
      * 
-     * @throws NullPointerException if one of the given Type are null.
+     * @throws NullPointerException if one of the given Types are null.
      */
     public static boolean isTypeMatching(TestParameterType type1, TestParameterType type2){
-        if (type1.equals(type2))
+        if (type1.equals(type2)){
             return true;
+        }
         
-        if (type2.equals(COMBINED) && (type2.equals(INPUT) || type2.equals(EXPECTED_RESULT)))
+        if (type1.equals(COMBINED) && (type2.equals(INPUT) || type2.equals(EXPECTED_RESULT))) {
             return true;
+        }
+    
+        if (type2.equals(COMBINED) && (type1.equals(INPUT) || type1.equals(EXPECTED_RESULT))) {
+            return true;
+        }
 
-        if (type2.equals(COMBINED) && (type1.equals(INPUT) || type1.equals(EXPECTED_RESULT)))
-            return true;
-        
         return false;
     }
 

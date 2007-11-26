@@ -26,13 +26,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.testcasetype.TestValueParameter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -148,10 +145,7 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
             if (parameter[i] instanceof ITestValueParameter) {
                 ITestValue testValue = testCase.newTestValue();
                 testValue.setTestValueParameter(parameter[i].getName());
-                ValueDatatype valueDatatype = ((TestValueParameter)parameter[i]).findValueDatatype(getIpsProject());
-                if (valueDatatype != null){
-                    testValue.setValue(valueDatatype.getDefaultValue());
-                }
+                testValue.setDefaultValue();
             } else if (parameter[i] instanceof ITestPolicyCmptTypeParameter) {
                 ITestPolicyCmptTypeParameter testCaseTypeParam = (ITestPolicyCmptTypeParameter)parameter[i];
                 ITestPolicyCmpt testPolicyCmpt = testCase.newTestPolicyCmpt();
@@ -164,13 +158,7 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
                     ITestAttribute attribute = attributes[j];
                     ITestAttributeValue attrValue = testPolicyCmpt.newTestAttributeValue();
                     attrValue.setTestAttribute(attribute.getName());
-                    // set the default value if the test attribute is an input test attribute
-                    if (attribute.isInputAttribute()) {
-                        IPolicyCmptTypeAttribute modelAttribute = attribute.findAttribute(getIpsProject());
-                        if (modelAttribute != null) {
-                            attrValue.setValue(modelAttribute.getDefaultValue());
-                        }
-                    }
+                    attrValue.setDefaultValue();
                 }
             }
         }

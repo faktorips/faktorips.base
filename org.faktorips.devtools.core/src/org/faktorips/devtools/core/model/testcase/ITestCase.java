@@ -20,6 +20,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 
 /**
  * Specification of a test case.
@@ -231,5 +232,13 @@ public interface ITestCase extends IIpsObject, IFixDifferencesToModelSupport {
      * Returns the qualified names of all referenced product cmpts. Returns an empty arrax if no product cmpts
      * are referenced.
      */
-    public String[] getReferencedProductCmpts() throws CoreException;    
+    public String[] getReferencedProductCmpts() throws CoreException;
+
+    /**
+     * Clears the test values of the given test parameter type (input, expected or combined).
+     * The values of all test objects in the test case will be cleared.
+     * 
+     * @throws CoreException if an error occurs
+     */
+    public void clearTestValues(TestParameterType testParameterType) throws CoreException;    
 }

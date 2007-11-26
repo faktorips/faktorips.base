@@ -43,6 +43,9 @@ import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
+import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
@@ -54,29 +57,63 @@ import org.w3c.dom.Element;
  * @author Joerg Ortmann
  */
 public class TestCaseTest extends AbstractIpsPluginTest {
-
     private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot root;
     private ITestCase testCase;
     private ITestCaseType testCaseType;
+    private ITestPolicyCmptTypeParameter policyCmptTypeParameterChild0;
     
     /*
      * @see AbstractIpsPluginTest#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
+        
         ipsProject = super.newIpsProject("TestProject");
         root = ipsProject.getIpsPackageFragmentRoots()[0];
+        
+        PolicyCmptType policyCmptType0 = newPolicyCmptType(ipsProject, "policyCmptType0");
+        IAssociation association = policyCmptType0.newAssociation();
+        association.setTargetRoleSingular("relation0");
+
+        PolicyCmptType policyCmptType1 = newPolicyCmptType(ipsProject, "policyCmptType1");
+        IAttribute attribute0 = policyCmptType1.newAttribute();
+        attribute0.setName("attribute0");
+        attribute0.setDatatype("Integer");
+        attribute0.setDefaultValue("99");
+        IAttribute attribute1 = policyCmptType1.newAttribute();
+        attribute1.setName("attribute1");
+        attribute1.setDatatype("Integer");
+        attribute1.setDefaultValue("11");
         
         newPolicyCmptType(ipsProject, "testCaseTypeX");
         
         testCaseType = (ITestCaseType) newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "testCaseType1");
-        testCaseType.newInputTestValueParameter().setName("inputTestValue0");
-        testCaseType.newInputTestValueParameter().setName("inputTestValue1");
-        testCaseType.newInputTestPolicyCmptTypeParameter().setName("inputTestPolicyCmpt0");
+        ITestValueParameter inputTestValueParameter0 = testCaseType.newInputTestValueParameter();
+        inputTestValueParameter0.setName("inputTestValue0");
+        inputTestValueParameter0.setDatatype("String");
+        ITestValueParameter inputTestValueParameter1 = testCaseType.newInputTestValueParameter();
+        inputTestValueParameter1.setName("inputTestValue1");
+        inputTestValueParameter1.setDatatype("Integer");
+        
+        ITestPolicyCmptTypeParameter inputTestPolicyCmptTypeParameter0 = testCaseType.newInputTestPolicyCmptTypeParameter();
+        inputTestPolicyCmptTypeParameter0.setName("inputTestPolicyCmpt0");
+        inputTestPolicyCmptTypeParameter0.setPolicyCmptType("policyCmptType0");
+        policyCmptTypeParameterChild0 = inputTestPolicyCmptTypeParameter0.newTestPolicyCmptTypeParamChild();
+        policyCmptTypeParameterChild0.setName("inputTestPolicyCmptChild0");
+        policyCmptTypeParameterChild0.setRelation("relation0");
+        policyCmptTypeParameterChild0.setPolicyCmptType("policyCmptType1");
+        ITestAttribute inputTestAttribute = policyCmptTypeParameterChild0.newInputTestAttribute();
+        inputTestAttribute.setName("testAttributeChild0.input");
+        inputTestAttribute.setAttribute("attribute0");
+        ITestAttribute expectedResultTestAttribute = policyCmptTypeParameterChild0.newExpectedResultTestAttribute();
+        expectedResultTestAttribute.setName("testAttributeChild0.expected");
+        expectedResultTestAttribute.setAttribute("attribute1");
         testCaseType.newInputTestPolicyCmptTypeParameter().setName("inputTestPolicyCmpt1");
 
-        testCaseType.newExpectedResultValueParameter().setName("expResultTestValue0");
+        ITestValueParameter expectedResultValueParameter0 = testCaseType.newExpectedResultValueParameter();
+        expectedResultValueParameter0.setName("expResultTestValue0");
+        expectedResultValueParameter0.setDatatype("Integer");
         testCaseType.newExpectedResultValueParameter().setName("expResultTestValue1");
         testCaseType.newExpectedResultValueParameter().setName("expResultTestValue2");
         testCaseType.newExpectedResultPolicyCmptTypeParameter().setName("expResultTestPolicyCmpt0");
@@ -607,5 +644,102 @@ public class TestCaseTest extends AbstractIpsPluginTest {
 
         assertFalse(testCaseType2.equals(testCase.findTestCaseType(ipsProject)));
         assertTrue(testCaseType.equals(testCase.findTestCaseType(ipsProject)));
+    }
+    
+    public void testClearInputTestValues() throws CoreException{
+        TestValues values = new TestValues(testCase);
+        testCase.clearTestValues(TestParameterType.INPUT);
+        values.assertInputValues(true);
+        values.assertExpectedValues(false);
+    }
+
+    public void testClearExpectedTestValues() throws CoreException{
+        TestValues values = new TestValues(testCase);
+        testCase.clearTestValues(TestParameterType.EXPECTED_RESULT);
+        values.assertInputValues(false);
+        values.assertExpectedValues(true);
+    }
+
+    public void testClearCombinedTestValues() throws CoreException{
+        TestValues values = new TestValues(testCase);
+        testCase.clearTestValues(TestParameterType.COMBINED);
+        values.assertInputValues(true);
+        values.assertExpectedValues(true);
+    }
+
+    private class TestValues{
+        private ITestValue paramInput;
+        private ITestValue paramExpected;
+        private ITestAttributeValue attributeValueInput;
+        private ITestAttributeValue attributeValueExpected;
+        private ITestCase testCase;
+
+        public TestValues(ITestCase testCase) {
+            this.testCase = testCase;
+            try {
+                initTestValues();
+            } catch (CoreException e) {
+                throw new ExceptionInInitializerError(e);
+             }
+        }
+
+        private void initTestValues() throws CoreException {
+            // init test case
+            paramInput = testCase.newTestValue();
+            paramInput.setTestValueParameter("inputTestValue0");
+            paramExpected = testCase.newTestValue();
+            paramExpected.setTestValueParameter("expResultTestValue0");
+            
+            ITestPolicyCmpt param3 = testCase.newTestPolicyCmpt();
+            param3.setTestPolicyCmptTypeParameter("inputTestPolicyCmpt0");
+            param3.setName("inputTestPolicyCmpt0");
+            ITestPolicyCmptRelation relation = param3.addTestPcTypeRelation(policyCmptTypeParameterChild0, null, "relation0");
+            ITestPolicyCmpt childPolicyCmpt = relation.newTargetTestPolicyCmptChild();
+            childPolicyCmpt.setTestPolicyCmptTypeParameter("inputTestPolicyCmptChild0");
+            
+            attributeValueInput = childPolicyCmpt.newTestAttributeValue();
+            attributeValueInput.setTestAttribute("testAttributeChild0.input");
+            attributeValueExpected = childPolicyCmpt.newTestAttributeValue();
+            attributeValueExpected.setTestAttribute("testAttributeChild0.expected");
+            
+            ITestPolicyCmpt param4 = testCase.newTestPolicyCmpt();
+            param4.setTestPolicyCmptTypeParameter("expResultTestPolicyCmpt0");
+            param4.setName("expResultTestPolicyCmpt0");
+            
+            ITestPolicyCmpt param5 = testCase.newTestPolicyCmpt();
+            param5.setTestPolicyCmptTypeParameter("xyz");
+            ITestPolicyCmpt param6 = testCase.newTestPolicyCmpt();
+            param6.setTestPolicyCmptTypeParameter("expResultTestPolicyCmpt1");
+            
+            ITestRule param7 = testCase.newTestRule();
+            param7.setTestRuleParameter("expResultTestRule1");
+            
+            assertTestCaseObjects(1,1,1,2,1);
+            
+            paramInput.setValue("inputTestValue0");
+            paramExpected.setValue("expResultTestValue0");
+            attributeValueInput.setValue("testAttributeChild0.input");
+            attributeValueInput.setValue("testAttributeChild0.expected");
+        }
+        
+        public void assertInputValues(boolean empty){
+            if (empty){
+                assertEquals(null, paramInput.getValue());
+                // if the type is inpunt then the default value of the model attribute will be set
+                assertEquals("99", attributeValueInput.getValue());
+            } else {
+                assertNotNull(paramInput.getValue());
+                assertNotNull(attributeValueInput.getValue());
+            }
+        }
+        public void assertExpectedValues(boolean empty){
+            if (empty){
+                assertEquals(null, paramExpected.getValue());
+                assertEquals(null, attributeValueExpected.getValue());
+            } else {
+                assertNotNull(paramExpected.getValue());
+                assertNotNull(attributeValueExpected.getValue());
+            }
+        }
     }
 }

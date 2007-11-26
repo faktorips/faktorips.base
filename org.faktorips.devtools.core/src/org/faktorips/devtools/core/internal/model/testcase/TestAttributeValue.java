@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
@@ -141,7 +142,26 @@ public class TestAttributeValue  extends AtomicIpsObjectPart implements ITestAtt
 		this.value = newValue;
 		valueChanged(oldValue, newValue);
 	}
-	
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setDefaultValue() throws CoreException {
+        IAttribute modelAttribute = findAttribute(getIpsProject());
+        if (modelAttribute == null) {
+            return;
+        }
+
+        if (isInputAttribute(getIpsProject())) {
+            setValue(modelAttribute.getDefaultValue());
+        } else {
+            ValueDatatype datatype = modelAttribute.findDatatype(getIpsProject());
+            if (datatype != null) {
+                setValue(datatype.getDefaultValue());
+            }
+        }
+    }
+
     /**
      * {@inheritDoc}
      */

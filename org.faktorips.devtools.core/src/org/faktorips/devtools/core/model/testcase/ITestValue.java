@@ -71,4 +71,12 @@ public interface ITestValue extends ITestObject {
 	 * Sets the value
 	 */
 	public void setValue(String newValue);
+    
+    /**
+     * Sets the default value of the test value. The default value of the datatype will
+     * be used.
+     * 
+     * @throws CoreException if the test value parameter wasn't found 
+     */
+    public void setDefaultValue() throws CoreException;
 }

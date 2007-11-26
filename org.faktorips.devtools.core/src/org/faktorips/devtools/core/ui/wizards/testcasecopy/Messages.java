@@ -25,6 +25,9 @@ public class Messages extends NLS {
     public static String TestCaseCopyDesinationPage_ColumnTitleToReplace;
     public static String TestCaseCopyDesinationPage_InfoMessage;
     public static String TestCaseCopyDesinationPage_InfoMessageReplacedVersion;
+    public static String TestCaseCopyDesinationPage_LabelCopyExpectedResultValues;
+    public static String TestCaseCopyDesinationPage_LabelCopyInputValues;
+    public static String TestCaseCopyDesinationPage_LabelCopyTestValues;
     public static String TestCaseCopyDesinationPage_LabelDestinationPackage;
     public static String TestCaseCopyDesinationPage_LabelRadioBtnManualReplace;
     public static String TestCaseCopyDesinationPage_LabelRadioBtnReplaceProdCmptVersion;

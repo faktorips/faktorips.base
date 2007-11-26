@@ -84,6 +84,15 @@ public interface ITestAttributeValue extends IIpsObjectPart{
 	public void setValue(String newValue);
     
     /**
+     * Sets the default value of the test attribute value. If the test attribute defines an input
+     * parameter then the default value of the model attribute will be used, otherwise the default
+     * of the datatype will be set.
+     * 
+     * @throws CoreException if the test value parameter wasn't found 
+     */    
+    public void setDefaultValue() throws CoreException;
+    
+    /**
      * Returns <code>true</code> if the test attribute value is an input attribute, 
      * otherwise <code>false</code>.
      * 

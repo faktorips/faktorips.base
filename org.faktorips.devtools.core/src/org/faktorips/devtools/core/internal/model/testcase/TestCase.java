@@ -1073,4 +1073,45 @@ public class TestCase extends IpsObject implements ITestCase {
     public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
         fixDifferences(computeDeltaToTestCaseType());
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clearTestValues(TestParameterType testParameterType) throws CoreException {
+        if (TestParameterType.isTypeMatching(TestParameterType.INPUT, testParameterType)){
+            clearAllInputTestValues();
+        }
+        if (TestParameterType.isTypeMatching(TestParameterType.EXPECTED_RESULT, testParameterType)){
+            clearAllExpectedTestValues();
+        }
+    }
+
+    private void clearAllInputTestValues() throws CoreException {
+        clearTestValues(getInputTestValues());
+        clearTestAttributeValues(getInputTestPolicyCmpts(), true);
+    }
+    
+    private void clearAllExpectedTestValues() throws CoreException {
+        clearTestValues(getExpectedResultTestValues());
+        clearTestAttributeValues(getExpectedResultTestPolicyCmpts(), false);
+    }
+
+    private void clearTestValues(ITestValue[] testValues) throws CoreException {
+        for (int i = 0; i < testValues.length; i++) {
+            testValues[i].setDefaultValue();
+        }
+    }
+    
+    private void clearTestAttributeValues(ITestPolicyCmpt[] inputTestPolicyCmpts, boolean input) throws CoreException {
+        ITestPolicyCmpt[] testPolicyCmpt = getAllTestPolicyCmpt();
+        for (int i = 0; i < testPolicyCmpt.length; i++) {
+            ITestAttributeValue[] testAttributeValues = testPolicyCmpt[i].getTestAttributeValues();
+            for (int j = 0; j < testAttributeValues.length; j++) {
+                if ((input && testAttributeValues[j].isInputAttribute(getIpsProject()))
+                        || (!input && testAttributeValues[j].isExpextedResultAttribute(getIpsProject()))) {
+                    testAttributeValues[j].setDefaultValue();
+                }
+            }
+        }
+    }    
 }

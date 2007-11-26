@@ -167,6 +167,20 @@ public class TestValue extends TestObject implements ITestValue {
     /**
      * {@inheritDoc}
      */
+    public void setDefaultValue() throws CoreException {
+        ITestValueParameter parameter = findTestValueParameter(getIpsProject());
+        if (parameter == null){
+            return;
+        }
+        ValueDatatype valueDatatype = parameter.findValueDatatype(getIpsProject());
+        if (valueDatatype != null){
+            setValue(valueDatatype.getDefaultValue());
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
 	public ITestObject getRoot() {
         // test values have no childs
         return this;

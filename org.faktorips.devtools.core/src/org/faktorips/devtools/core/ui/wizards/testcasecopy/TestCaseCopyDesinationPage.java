@@ -68,6 +68,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
 import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
@@ -103,10 +104,13 @@ public class TestCaseCopyDesinationPage extends WizardPage {
     private TableViewer tableViewer;
     private CheckboxField checkboxFieldReplaceProductCmptAutomatically;
     private CheckboxField checkboxFieldReplaceProductCmptManual;
+    private CheckboxField checkboxFieldCopyInputTestValues;
+    private CheckboxField checkboxFieldCopyExpectedTestValues;
 
     // Cache of available product cmpt to replace with
     private Map rootParameterProductCmpt = new HashMap(10);
     private Map rootParameterProductCmptCandidates = new HashMap(10);
+
     
     public TestCaseCopyDesinationPage(UIToolkit toolkit) {
         super("TestCaseCopyDesionationPage"); //$NON-NLS-1$
@@ -125,7 +129,8 @@ public class TestCaseCopyDesinationPage extends WizardPage {
         
         createTargetControls(main);
         createTestCaseCopyTypeControls(main);
-
+        createTestValueControls(main);
+        
         setControl(main);
     }
     
@@ -188,6 +193,35 @@ public class TestCaseCopyDesinationPage extends WizardPage {
         radiobuttonReplaceAutomatically.setChecked(true);
     }
 
+    private void createTestValueControls(Composite parent) {
+        Composite root = toolkit.createComposite(parent);
+        root.setLayout(new GridLayout(1, true));
+        root.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        
+
+        Group group = toolkit.createGroup(parent, Messages.TestCaseCopyDesinationPage_LabelCopyTestValues);
+        group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        
+        Checkbox checkBoxCopyInputTestValues = toolkit.createCheckbox(group, Messages.TestCaseCopyDesinationPage_LabelCopyInputValues);
+        checkboxFieldCopyInputTestValues = new CheckboxField(checkBoxCopyInputTestValues);
+        checkboxFieldCopyInputTestValues.addChangeListener(new ValueChangeListener(){
+            public void valueChanged(FieldValueChangedEvent e) {
+                pageChanged();
+            }
+        });
+        
+        Checkbox checkBoxCopyExpectedTestValues = toolkit.createCheckbox(group, Messages.TestCaseCopyDesinationPage_LabelCopyExpectedResultValues);
+        checkboxFieldCopyExpectedTestValues = new CheckboxField(checkBoxCopyExpectedTestValues);
+        checkboxFieldCopyExpectedTestValues.addChangeListener(new ValueChangeListener(){
+            public void valueChanged(FieldValueChangedEvent e) {
+                pageChanged();
+            }
+        });
+        
+        checkBoxCopyInputTestValues.setChecked(true);
+        checkBoxCopyExpectedTestValues.setChecked(true);
+    }
+    
     private void createRootParameterTable(Composite parent) {
         Composite tableComposite = toolkit.createComposite(parent);
         tableComposite.setLayout(new GridLayout(1, true));
@@ -525,5 +559,13 @@ public class TestCaseCopyDesinationPage extends WizardPage {
      */
     public void setNeedRecreateTarget(boolean needRecreateTarget) {
         this.needRecreateTarget = needRecreateTarget;
+    }
+    
+    public boolean isClearInputTestValues(){
+        return ! checkboxFieldCopyInputTestValues.getCheckbox().isChecked();
+    }
+
+    public boolean isClearExpectedTestValues(){
+        return ! checkboxFieldCopyExpectedTestValues.getCheckbox().isChecked();
     }
 }

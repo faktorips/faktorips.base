@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
 
@@ -228,38 +229,49 @@ public class TestCaseCopyWizard extends ResizableWizard {
      * {@inheritDoc}
      */
     public boolean performFinish() {
-        // delete deselected test objects
         try {
-            IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(new IWorkspaceRunnable() {
-                public void run(IProgressMonitor monitor) throws CoreException {
-                    ITestObject[] testObjects;
-                    testObjects = targetTestCase.getAllTestObjects();
-
-                    List testObjectsList = new ArrayList(testObjects.length);
-                    testObjectsList.addAll(Arrays.asList(testObjects));
-
-                    Object[] checkedObjects = testCaseStructurePage.getCheckedObjects();
-                    for (int i = 0; i < checkedObjects.length; i++) {
-                        if (checkedObjects[i] instanceof ITestObject) {
-                            testObjectsList.remove(checkedObjects[i]);
-                        }
-                    }
-
-                    for (Iterator iter = testObjectsList.iterator(); iter.hasNext();) {
-                        ITestObject toDeleteTestObj = (ITestObject)iter.next();
-                        if (toDeleteTestObj.getParent() != null) {
-                            toDeleteTestObj.delete();
-                        }
-                    }
-                }
-            }, null);
+            deleteUnselectedTestObjects();
+            clearTestValues();
+            IpsPlugin.getDefault().openEditor(targetTestCase);
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
-
-        IpsPlugin.getDefault().openEditor(targetTestCase);
-
         return super.performFinish();
+    }
+
+    private void clearTestValues() throws CoreException {
+        if (testCaseCopyDestinationPage.isClearExpectedTestValues()){
+            targetTestCase.clearTestValues(TestParameterType.EXPECTED_RESULT);
+        }
+        if (testCaseCopyDestinationPage.isClearInputTestValues()){
+            targetTestCase.clearTestValues(TestParameterType.INPUT);
+        }
+    }
+
+    private void deleteUnselectedTestObjects() throws CoreException {
+        IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(new IWorkspaceRunnable() {
+            public void run(IProgressMonitor monitor) throws CoreException {
+                ITestObject[] testObjects;
+                testObjects = targetTestCase.getAllTestObjects();
+
+                List testObjectsList = new ArrayList(testObjects.length);
+                testObjectsList.addAll(Arrays.asList(testObjects));
+
+                Object[] checkedObjects = testCaseStructurePage.getCheckedObjects();
+                for (int i = 0; i < checkedObjects.length; i++) {
+                    if (checkedObjects[i] instanceof ITestObject) {
+                        testObjectsList.remove(checkedObjects[i]);
+                    }
+                }
+
+                for (Iterator iter = testObjectsList.iterator(); iter.hasNext();) {
+                    ITestObject toDeleteTestObj = (ITestObject)iter.next();
+                    if (toDeleteTestObj.getParent() != null) {
+                        toDeleteTestObj.delete();
+                    }
+                }
+            }
+        }, null);
     }
 
     /**
