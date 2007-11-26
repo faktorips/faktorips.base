@@ -4,19 +4,21 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.editors.DescriptionPage;
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.testcase.deltapresentation.TestCaseDeltaDialog;
+import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 
 /**
  * The editor to edit test cases based on test case types.
  * 
  * @author Joerg Ortmann
  */
-public class TestCaseEditor extends IpsObjectEditor {
+public class TestCaseEditor extends IpsObjectEditor implements IModelDescriptionSupport {
 
     /*
      * Setting key for user's decision not to choose a new test case type, because the old
@@ -126,5 +128,19 @@ public class TestCaseEditor extends IpsObjectEditor {
     private boolean couldDataBeChangedIfTestCaseTypeWasntMissing() {
         return super.computeDataChangeableState();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IPage createModelDescriptionPage() throws CoreException {
+        return new TestCaseModelDescriptionPage(this);
+    }
     
+    public void addDetailAreaRedrawListener(ITestCaseDetailAreaRedrawListener listener){
+        editorPage.addDetailAreaRedrawListener(listener);
+    }
+    
+    public void removeDetailAreaRedrawListener(ITestCaseDetailAreaRedrawListener listener) {
+        editorPage.removeDetailAreaRedrawListener(listener);
+    }     
 }

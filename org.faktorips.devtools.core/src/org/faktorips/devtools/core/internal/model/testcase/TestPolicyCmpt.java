@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.util.ListElementMover;
@@ -164,6 +165,13 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	}
 
 	/**
+     * {@inheritDoc}
+     */
+    public ITestParameter findTestParameter(IIpsProject ipsProject) throws CoreException {
+        return findTestPolicyCmptTypeParameter(ipsProject);
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) throws CoreException {

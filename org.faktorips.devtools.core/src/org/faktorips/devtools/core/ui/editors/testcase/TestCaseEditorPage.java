@@ -76,4 +76,12 @@ public class TestCaseEditorPage extends IpsObjectEditorPage {
     public void setReadOnly(boolean readOnly) {
         section.setReadOnly(readOnly);
     }
+
+    public void addDetailAreaRedrawListener(ITestCaseDetailAreaRedrawListener listener) {
+        section.addDetailAreaRedrawListener(listener);
+    }
+    
+    public void removeDetailAreaRedrawListener(ITestCaseDetailAreaRedrawListener listener) {
+        section.removeDetailAreaRedrawListener(listener);
+    } 
 }

@@ -100,7 +100,6 @@ abstract public class DefaultModelDescriptionPage extends Page {
      * Create the DescrptionPage by DescriptionItems.
      */
     private void createForm() {
-
          form.setText(title);
 
         // collect all attributes in one container
@@ -225,8 +224,11 @@ abstract public class DefaultModelDescriptionPage extends Page {
            expandableContainer.dispose();
         }
 
-        createForm();
+        if (form == null){
+            return;
+        }
 
+        createForm();
         form.reflow(true);
     }
 
@@ -342,8 +344,8 @@ abstract public class DefaultModelDescriptionPage extends Page {
      * @param itemList List with DescriptionItems.
      */
     public void setDescriptionItems(DescriptionItem[] itemList) {
-        defaultList.addAll(Arrays.asList(itemList));
-        activeList.addAll(Arrays.asList(itemList));
+        defaultList = Arrays.asList(itemList);
+        activeList = Arrays.asList(itemList);
+        refresh();
     }
-
 }

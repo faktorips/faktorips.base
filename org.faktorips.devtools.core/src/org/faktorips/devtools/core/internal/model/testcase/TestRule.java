@@ -130,6 +130,14 @@ public class TestRule extends TestObject implements ITestRule {
         valueChanged(oldTestRuleParameter, testRuleParameter);
     }
     
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ITestParameter findTestParameter(IIpsProject ipsProject) throws CoreException {
+        return findTestRuleParameter(ipsProject);
+    }
+
     /**
      * {@inheritDoc}
      */

@@ -132,6 +132,13 @@ public class TestValue extends TestObject implements ITestValue {
     /**
      * {@inheritDoc}
      */
+    public ITestParameter findTestParameter(IIpsProject ipsProject) throws CoreException {
+        return findTestValueParameter(ipsProject);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public ITestValueParameter findTestValueParameter(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(testValueParameter)) {
             return null;

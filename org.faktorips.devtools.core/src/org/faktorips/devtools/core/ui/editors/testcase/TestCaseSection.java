@@ -2886,4 +2886,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     public void setReadOnly(boolean readOnly) {
         actionRunAndStoreExpectedResult.setEnabled(!readOnly);
     }
+
+    public void addDetailAreaRedrawListener(ITestCaseDetailAreaRedrawListener listener) {
+        testCaseDetailArea.addDetailAreaRedrawListener(listener);
+    }
+    
+    public void removeDetailAreaRedrawListener(ITestCaseDetailAreaRedrawListener listener) {
+        testCaseDetailArea.removeDetailAreaRedrawListener(listener);
+    }
 }

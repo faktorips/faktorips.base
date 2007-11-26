@@ -17,7 +17,10 @@
 
 package org.faktorips.devtools.core.model.testcase;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 
 /**
  *  Specification of a test object.
@@ -55,7 +58,12 @@ public interface ITestObject extends IIpsObjectPart  {
 
     /**
      * Returns <code>true</code> if the test object is a root object otherwise <code>false</code>.
-     * @return
      */
-    public boolean isRoot();    
+    public boolean isRoot();   
+    
+    /**
+     * Finds the corresponding test parameter. Returns <code>null</code> if no test parameter found.
+     */
+    public ITestParameter findTestParameter(IIpsProject ipsProject) throws CoreException;
+    
 }
