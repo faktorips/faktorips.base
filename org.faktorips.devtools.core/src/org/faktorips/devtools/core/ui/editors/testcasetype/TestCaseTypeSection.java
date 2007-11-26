@@ -981,6 +981,7 @@ public class TestCaseTypeSection extends IpsSection {
         if (showAll)
             treeViewer.expandAll();
         createDetailsArea(getRootSectionObject(currSelectedDetailObject));
+        setDataChangeable(isDataChangeable());
     }
 
     /*
@@ -1499,8 +1500,17 @@ public class TestCaseTypeSection extends IpsSection {
         editFieldDatatype.getControl().setEnabled(false);
         addSectionSelectionListeners(editFieldDatatype, label, parameter);
         
+        toolkit.createLabel(editFieldsComposite, Messages.TestCaseTypeSection_labelDescription);
+        toolkit.createVerticalSpacer(editFieldsComposite, 1);
+        Text description = toolkit.createMultilineText(editFieldsComposite);
+        GridData gd = (GridData)description.getLayoutData();
+        gd.horizontalSpan = 2;
+        
+        TextField descriptionField = new TextField(description);
+        
         // connect to model
         uiController.add(editFieldDatatype, ITestValueParameter.PROPERTY_VALUEDATATYPE);
+        uiController.add(descriptionField, ITestValueParameter.PROPERTY_DESCRIPTION);
     }
     
     /*
@@ -1969,6 +1979,7 @@ public class TestCaseTypeSection extends IpsSection {
                     selectSection(objectCache.getSection((ITestParameter)selectedObj), false);
                 } else if (selectedObj != prevSelectedTestParam) {
                     createDetailsArea((ITestParameter) selectedObj);
+                    setDataChangeable(isDataChangeable());
                 }
             } else {
                 if (! showAll){
