@@ -88,6 +88,8 @@ public abstract class IpsElementDropListener implements DropTargetListener {
                         elements.add(file);
                     }
                 }
+            } else {
+                elements.add(filenames[i]);
             }
             if(container!=null){ 
                 if(container.exists()){

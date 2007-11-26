@@ -37,6 +37,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.actions.CopyFilesAndFoldersOperation;
 import org.eclipse.ui.actions.MoveFilesAndFoldersOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -199,6 +200,8 @@ public class MoveOperation implements IRunnableWithProgress {
                 }
             } else if (sources[i] instanceof IFile) {
                 result[i] = targetFulPath;
+            } else if (sources[i] instanceof File) {
+                result[i] = targetFulPath;
             }
         }
 	    
@@ -253,7 +256,7 @@ public class MoveOperation implements IRunnableWithProgress {
      * false is returned. For all other types returns true.
      */
     private static boolean canMoveToTarget(Object target) {
-        return !(target instanceof IIpsObject) & !(target instanceof IIpsObjectPart) & !(target instanceof IFile)
+        return !(target instanceof IIpsObject) & !(target instanceof IIpsObjectPart) & !(target instanceof IFile) & !(target instanceof IIpsSrcFile)
                 & !(target instanceof ArchiveIpsPackageFragment) & !(target instanceof ArchiveIpsPackageFragmentRoot);
     }
     
@@ -336,33 +339,45 @@ public class MoveOperation implements IRunnableWithProgress {
                 }
                 
                 IFile sourceFile = targetProject.getFile(fileName);
-                if (sourceFile == null){
-                    throw new RuntimeException("File " + fileName + " not found!");
+                if (sourceFile.exists()){
+                    moveNoneIpsElement(sourceFile, targetName);
+                } else {
+                    copyNoneIpsElement(fileName, targetName);
                 }
-                
-                moveNoneIpsElement(sourceFile, targetName);
+            }
+
+            private void copyNoneIpsElement(String fileName, String targetName) {
+                IContainer targetFolder = getTargetContainer(targetName);
+                CopyFilesAndFoldersOperation operation = new CopyFilesAndFoldersOperation(Display.getCurrent()
+                        .getActiveShell());
+                operation.copyFiles(new String[] { fileName }, targetFolder);
             }
 
             private void moveNoneIpsElement(IFile sourceFile, String targetName) {
-                if (targetProject == null){
+                IContainer targetFolder = getTargetContainer(targetName);
+                MoveFilesAndFoldersOperation operation = new MoveFilesAndFoldersOperation(Display.getCurrent()
+                        .getActiveShell());
+                operation.copyResources(new IResource[] { sourceFile }, targetFolder);
+            }
+
+            private IContainer getTargetContainer(String targetName) {
+                if (targetProject == null) {
                     targetProject = targetRoot.getIpsProject().getProject();
                 }
                 String folderName = "";
-                if (targetName.startsWith(targetProject.getLocation().toOSString())){
+                if (targetName.startsWith(targetProject.getLocation().toOSString())) {
                     folderName = targetName.substring(targetProject.getLocation().toOSString().length());
                 } else {
                     folderName = targetName;
                 }
-                
+
                 IContainer targetFolder = null;
                 if (folderName.length() == 0) {
                     targetFolder = targetProject;
                 } else {
                     targetFolder = targetProject.getFolder(folderName);
                 }
-                
-                MoveFilesAndFoldersOperation operation = new MoveFilesAndFoldersOperation(Display.getCurrent().getActiveShell());
-                operation.copyResources(new IResource[]{sourceFile}, targetFolder);
+                return targetFolder;
             }
         };
         
