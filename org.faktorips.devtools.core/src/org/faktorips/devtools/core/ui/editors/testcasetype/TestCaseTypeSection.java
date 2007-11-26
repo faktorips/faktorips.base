@@ -1156,6 +1156,8 @@ public class TestCaseTypeSection extends IpsSection {
             }
         } else if (testParam instanceof ITestValueParameter){
             createTestValueParamDetails(editFieldsComposite, (ITestValueParameter)testParam, uiController);
+        } else if (testParam instanceof ITestRuleParameter){
+            createTestRuleParamDetails(editFieldsComposite, (ITestRuleParameter)testParam, uiController);
         }
         
         uiController.updateUI();
@@ -1510,6 +1512,20 @@ public class TestCaseTypeSection extends IpsSection {
         
         // connect to model
         uiController.add(editFieldDatatype, ITestValueParameter.PROPERTY_VALUEDATATYPE);
+        uiController.add(descriptionField, ITestValueParameter.PROPERTY_DESCRIPTION);
+    }
+    
+    /*
+     * Creates the edit fields for the test rule parameter
+     */
+    private void createTestRuleParamDetails(Composite editFieldsComposite, ITestRuleParameter parameter, IpsObjectUIController uiController) {
+        toolkit.createLabel(editFieldsComposite, Messages.TestCaseTypeSection_labelDescription);
+        toolkit.createVerticalSpacer(editFieldsComposite, 1);
+        Text description = toolkit.createMultilineText(editFieldsComposite);
+        GridData gd = (GridData)description.getLayoutData();
+        gd.horizontalSpan = 2;
+        
+        TextField descriptionField = new TextField(description);
         uiController.add(descriptionField, ITestValueParameter.PROPERTY_DESCRIPTION);
     }
     
